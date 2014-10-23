@@ -31,25 +31,73 @@ import java.util.NoSuchElementException;
  *   
  * This impl is for use in a single thread case only
  * 
+ * This impl supports offset, to let this bit set store items in a range n -> n + small number
+ * 
+ * If using offset, you must add ints in a range equal to or above the offset
+ * 
  */
 public class IntBitSet {
     
   private final BitSet set;
   
+  private int size = 0;  // tracked here to avoid slow counting of cardinality
+  
+  private int offset = 0;
+  
+  /**
+   * Sets the lowest int value that can be kept; trying to add a lower one throws an error
+   * <ul>
+   *   <li>Allows for a more compact representation, potentially</li>
+   *   <li>only can be set if the size is 0</li>
+   * </ul>
+   * @param offset - the lowest value that can be kept in the set. 0 is allowed.
+   */
+  public void setOffset(int offset) {
+    if (size != 0) {
+      throw new IllegalStateException("Cannot set offset unless set is empty");
+    }
+    if (offset < 0) {
+      throw new IllegalArgumentException("Offset must be 0 or a positive int, was " + offset);
+    }
+    this.offset = offset;
+  }
+  /**
+   * @return the current offset
+   */
+  public int getOffset() {
+    return offset;
+  }
+  
+  /**
+   * Construct an IntBitSet capable of holding ints from 0 to 63, (perhaps plus an offset)
+   */
   public IntBitSet() {
-    this(16);  
+    this(63);  // in current java impls, this is the minimum 1 long int is allocated  
+  }
+    
+  /**
+   * Construct an IntBitSet capable of holding ints from 0 to maxInt (perhaps plus an offset)
+   * @param maxInt the biggest int (perhaps plus an offset) that can be held without growing the space
+   */
+  public IntBitSet(int maxInt) {
+    set = new BitSet(Math.max(1, maxInt));
   }
   
-  public IntBitSet(int initialCapacity) {
-    set = new BitSet(initialCapacity);
-  }
-  
+  /**
+   * empty the IntBitSet
+   */
   public void clear() {
-    set.clear();    
+    set.clear();
+    size = 0;
   }
    
+  /**
+   * 
+   * @param key
+   * @return
+   */
   public boolean contains(int key) {
-    return (key == 0) ? false : set.get(key);
+    return (key == 0) ? false : set.get(key - offset);
   }
  
   /**
@@ -57,10 +105,19 @@ public class IntBitSet {
    * @param key
    * @return true if this set did not already contain the specified element
    */
-  public boolean add(int key) {
+  public boolean add(int original_key) {
+    if (original_key < offset) {
+      throw new IllegalArgumentException("key must be positive, but was " + original_key);
+    }
+    
+    final int key = original_key - offset;
     final boolean prev = set.get(key);
-    set.set(key);;
-    return prev == false;
+    set.set(key);
+    if (!prev) {
+      size ++;
+      return true;
+    }
+    return false;
   }
   
   /**
@@ -68,30 +125,44 @@ public class IntBitSet {
    * @param key -
    * @return true if this key was removed, false if not present
    */
-  public boolean remove(int key) {
+  public boolean remove(int original_key) {
+    final int key = original_key - offset;
     final boolean prev = set.get(key);
     set.clear(key);
-    return prev;
+    if (prev) {
+      size --;
+      return true;
+    }
+    return false;
   }
 
+  /**
+   * 
+   * @return the number of elements in this set
+   */
   public int size() {
-    return set.cardinality();
+    return size;    // bit set cardinality() is slow
+  }
+  
+  public int getSpaceUsed_in_bits() {
+    return set.size();
   }
    
   /**
    * 
    * @return space used in 32 bit words
    */
-  public int getSpaceUsed() {
-    return set.length() >> 5;  // divide by 32
+  public int getSpaceUsed_in_words() {
+    return getSpaceUsed_in_bits() >> 5;  // divide by 32
   }
   
   /**
    * 
-   * @return largest int stored plus 1, or 0 if no ints in table
+   * @return largest int in the set
+   * If the set has no members, 0 is returned
    */
-  public int getLargestIntP1() {
-    return set.length();
+  public int getLargestMenber() {
+    return set.length() - 1 + offset;
   }
   
   private class IntBitSetIterator implements IntListIterator {
@@ -103,7 +174,7 @@ public class IntBitSet {
     }
 
     public final boolean hasNext() {
-      return (curKey > 0 && curKey < set.length());
+      return (curKey >= 0);
     }
 
     public final int next() {
@@ -112,7 +183,7 @@ public class IntBitSet {
       }
       final int r = curKey;
       curKey = set.nextSetBit(curKey + 1);
-      return r;
+      return r + offset;
     }
 
     /**

@@ -25,7 +25,8 @@ import java.util.NoSuchElementException;
 import org.apache.uima.jcas.impl.JCasHashMap;
 
 /**
- * A set of non-zero ints.  
+ * A set of non-zero ints. 
+ *   0 reserved to indicate "not in the map"  
  *   
  * based on Int2IntHashMap
  * This impl is for use in a single thread case only
@@ -62,7 +63,8 @@ public class IntHashSet {
   
   private boolean secondTimeShrinkable = false;
   
-  private int mostPositive = 0;
+  private int mostPositive = Integer.MIN_VALUE;
+  private int mostNegative = Integer.MAX_VALUE;
 
   public IntHashSet() {
     this(16);
@@ -92,8 +94,10 @@ public class IntHashSet {
    size++;
   }
   
+  public int getSpaceUsedInWords() {
+    return keys.length + 8;  // 8 is overhead for this class excluding any Java object overhead
+  }
   
-
   private void increaseTableCapacity() {
     final int [] oldKeys = keys;
     final int oldCapacity = oldKeys.length;
@@ -150,6 +154,8 @@ public class IntHashSet {
     size = 0;
     Arrays.fill(keys, 0);
     resetHistogram();
+    mostPositive = Integer.MIN_VALUE;
+    mostNegative = Integer.MAX_VALUE;
   }
 
   /** 
@@ -205,8 +211,18 @@ public class IntHashSet {
    * @return true if this set did not already contain the specified element
    */
   public boolean add(int key) {
-    if (key > mostPositive) {
-      mostPositive = key;
+    if (key == 0) {
+      throw new IllegalArgumentException("0 not allowed as a key to add");
+    }
+    if (size == 0) {
+      mostPositive = mostNegative = key;
+    } else {
+      if (key > mostPositive) {
+        mostPositive = key;
+      }
+      if (key < mostNegative) {
+        mostNegative = key;
+      }
     }
     final int i = find(key);
     if (keys[i] == 0) {
@@ -228,7 +244,10 @@ public class IntHashSet {
   }
 
   /**
-   * 
+   * mostPositive and mostNegative are not updated
+   *   for removes.  So these values may be inaccurate,
+   *   but mostPositive is always >= actual most positive,
+   *   and mostNegative is always <= actual most negative.
    * @param key -
    * @return true if the key was present
    */
@@ -246,8 +265,22 @@ public class IntHashSet {
     return size;
   }
   
+  /**
+   * 
+   * @return a value that is >= the actual most positive value in the table.
+   *   it will be == unless a remove operation has removed a most positive value
+   */
   public int getMostPositive() {
     return mostPositive;
+  }
+  
+  /**
+   * 
+   * @return a value that is <= the actual least positive value in the table.
+   *   It will be == unless remove operations has removed a least positive value.
+   */
+  public int getMostNegative() {
+    return mostNegative;
   }
    
   public void showHistogram() {

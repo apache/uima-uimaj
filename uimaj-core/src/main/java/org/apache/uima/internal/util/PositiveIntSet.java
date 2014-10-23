@@ -27,19 +27,30 @@ import java.util.NoSuchElementException;
 /**
  * An set of non-zero ints.
  * 
- *   Uses two different representations depending on the ratio of the max int stored and the total number of ints stored.
- * 
+ *   Uses 2 1/2 different representations depending on the ratio of the max int stored and the total number of ints stored.
+ *     For large sparse ints, it uses the IntHashSet
+ *     
+ *     For more dense ints, it uses bitSets or bitSets with an offset
+ *     
+ *     It switches when adding new members if the other representation is sufficiently smaller (using a Hysteresis of 16 words) 
  */
 public class PositiveIntSet {
   
   // number of words a inthashset has to be better than intbitset to cause switch
-  private static final int HYSTERESIS = 4;
+  private static final int HYSTERESIS = 16;
 
-  IntBitSet intBitSet;
+  private IntBitSet intBitSet;
   
-  IntHashSet intHashSet;
+  private IntHashSet intHashSet;
   
+  //package private for test case
   boolean isBitSet;  
+  
+  /**
+   * Set false once we find we have to reduce the bit offset
+   */
+  //package private for test case
+  boolean useOffset = true;
   
   public PositiveIntSet() {
     intBitSet = new IntBitSet();
@@ -62,7 +73,7 @@ public class PositiveIntSet {
     IntListIterator it = intHashSet.getIterator();
     int i = 0;
     while (it.hasNext()) {
-      allValues[i] = it.next();
+      allValues[i++] = it.next();
     }
     Arrays.sort(allValues);
     return new IntListIteratorOverArray(allValues);
@@ -132,7 +143,7 @@ public class PositiveIntSet {
  
   /**
    * 
-   * @param key
+   * @param key -
    * @return true if this set did not already contain the specified element
    */
   public boolean add(int key) {
@@ -142,6 +153,33 @@ public class PositiveIntSet {
     } else {
       return intHashSet.add(key);
     }
+  }
+
+  /**
+   * When a key is added which is lower than the offset, we need to adjust the whole int set table.
+   * Although an array copy could do this, we don't have access to the bitset impl.
+   * 
+   * So we just set the offset to 0, and either convert the whole thing to a inthashset or copy all the bits to a new
+   * bit set.
+   * 
+   * @param key
+   */
+  private void adjustBitSetForLowerOffset(int key) {
+    final int largestInt = intBitSet.getLargestMenber();
+    final int bitSetSpaceNeeded = getBitSetSpaceFromMaxInt(largestInt);  // doesn't use offset
+    final int hashSetSpaceNeeded = getHashSetSpace(intBitSet.size());
+    
+    if (hashSetSpaceNeeded < (bitSetSpaceNeeded - HYSTERESIS)) {
+      switchToHashSet(size());
+    } else {
+      IntBitSet bs = new IntBitSet(largestInt);
+      IntListIterator it = intBitSet.getIterator();
+      while (it.hasNext()) {
+        bs.add(it.next());
+      }
+      intBitSet = bs;      
+    }
+    useOffset = false;  // stop using because we have evidence it isn't appropriate
   }
   
   public void add(int[] vs) {
@@ -155,8 +193,7 @@ public class PositiveIntSet {
       return intBitSet.remove(key);
     } else {
       return intHashSet.remove(key);
-    }
-    
+    }   
   }
 
   public int size() {
@@ -186,6 +223,24 @@ public class PositiveIntSet {
     return a;
   }
   
+  /** 
+   * number of 32 bit words in use by bit set, given the max key (less offset)
+   * @param maxKeyLessOffset
+   * @return number of words needed to store the highest value
+   */
+  private int getBitSetSpaceFromMaxInt(int maxKeyLessOffset) {
+    // e.g., 31 key => 1 word, 32 key => 2 words
+    return 2 + (maxKeyLessOffset >> 5) + 2;  // add 2 because the bits are stored in 2 words (1 long), and 2 more for IntBitSet object overhead
+  }
+  
+  private int getHashSetSpace(int numberOfEntries) {
+    long v = numberOfEntries * 3 + 8;  // plus 8 is for the overhead of the intHashSet object.
+    if (v > Integer.MAX_VALUE) {
+      throw new RuntimeException("value overflowed int, orig was " + numberOfEntries);
+    }
+    return (int) v;   // the number of 32 bit words needed is 1.5 to 3; 3 is worst case
+  }
+  
   /**
    * logic for switching representation
    * 
@@ -198,51 +253,50 @@ public class PositiveIntSet {
    *    switch to HashSet from BitSet if:
    *      HashSet space   <   BitSet space  
    *       size * 12            MaxInt / 8
-   *    with hysteresis                              1 2 4 8 16 32 64 128 256 512 1024 2048 4096 8192 16k 32k 64k 128k 256k 512k 1m 2m 4m 8m 16m
-   *       Don't switch unless space saving is         1 2 3  4  5  6  7   8   9   10   11   12   13   14  15  16  17   18   19  20 21 22 23 24
-   *           intHashSet
-   *          size    space         savings
-   *            1       12         32768   
-   *            1024   12288       32768     
-   *            16384  196608      100000    1/2 of space
-   *            
-   *          max(32768, 1/2 of hash-map space). 
+   *    with hysteresis  
    *
    *   switch to BitSet from HashSet if:
    *      BitSet used when its space requirement is less than hashset, with hysteresis:
-   *       Don't switch  unless space saving is max(32768, 1/4 of hash-map space)
-   *           intHashSet
-   *          size    space         savings
-   *            1       12         no switch   
-   *            1024   12288       no switch     
-   *            16384  196608      100000    1/2 of space
    *           
    */
   
   private void maybeSwitchRepresentation(int key) {
-    
     if (isBitSet) {
       /********************
        *    Bit Set 
        ********************/
-      final int maxKeyP1 = intBitSet.getLargestIntP1(); // p1 = plus 1
-      if (key < maxKeyP1) {
+      
+      /*********
+       * Size is 0, 
+       * use this opportunity to set the offset
+       * unless that has been a bad strategy for this 
+       * instance already 
+       ********/
+      if (intBitSet.size() == 0 && useOffset) {
+        // initialize bitSetOffset to the key, minus some amount to allow a bit of previous values
+        intBitSet.setOffset(Math.max(0, key - 63));
+        // because of offset, won't have to switch to hash for this key
         return;
       }
-      // space used in words (32 bit words)
-      int bitSetSpace = 1 + (Math.max((maxKeyP1 - 1), key) >> 5);  // space in words
-      // keep bit set unless key would grow it beyond 
-//      if (bitSetSpace < 16 || key < bitSetSpace) {
-//        return;
-//      }
       
-      // maybe switch to IntHashSet
-      final int size = size();
+      final int offset = intBitSet.getOffset();
+      
+      if (key < offset) {
+        adjustBitSetForLowerOffset(key);
+        return;
+      }
+      
+      // return if key fits in existing allocation
+      if ((key - offset) < intBitSet.getSpaceUsed_in_bits()) {
+        return;
+      }
+
       // space used in words (32 bit words)
-      long hashsetSpace = (size << 1) + size;  // size * 3 , 1.5 - 3 words per entry in IntHashSet
+      final int bitSetSpaceNeeded = getBitSetSpaceFromMaxInt(key - offset);
+      final int hashSetSpaceNeeded = getHashSetSpace(intBitSet.size());
       // switch if hashmap space plus hysteresis would be < bitmap space
-      if (hashsetSpace < (bitSetSpace - HYSTERESIS)) {
-        switchToHashSet(size);
+      if (hashSetSpaceNeeded < (bitSetSpaceNeeded - HYSTERESIS)) {
+        switchToHashSet(intBitSet.size());
       }
       return;    
     } 
@@ -251,23 +305,21 @@ public class PositiveIntSet {
      *    Hash Set 
      ********************/
     // maybe switch to IntBitSet
-    final int size = size();
     // space used in words (32 bit words)
-    long hashsetSpace = (size << 1) + size;  // size * 3 , 1.5 - 3 words per entry in IntHashSet
+    // don't bother to include the new element - it might not be "added"
+    //   if it was already there, and only serves to decrease hysteresis a bit
+    
+    final int hashSetSpaceNeeded = getHashSetSpace(size());    
     
     final int maxInt = intHashSet.getMostPositive();
-    final int bitSetSpace = bitSetSpace(maxInt);
+    final int offset = useOffset ? intHashSet.getMostNegative() : 0;
+    final int bitSetSpaceNeeded = getBitSetSpaceFromMaxInt(maxInt - offset);
  
-    if (bitSetSpace < (hashsetSpace - HYSTERESIS)) {
-      switchToBitSet(maxInt);
+    if (bitSetSpaceNeeded < (hashSetSpaceNeeded - HYSTERESIS)) {
+      switchToBitSet(maxInt, offset);
     }  
   }
-  
-  private int bitSetSpace(int maxInt) {
-    // 0 - 31 : 1;  32-63: 2
-    return 1 + (maxInt >> 5);
-  }
-  
+    
   private void switchToHashSet(int size) {
     isBitSet = false;
     intHashSet = new IntHashSet(size);
@@ -278,13 +330,15 @@ public class PositiveIntSet {
     intBitSet = null;
   }
   
-  private void switchToBitSet(int maxInt) {
+  private void switchToBitSet(int maxInt, int offset) {
     isBitSet = true;
-    intBitSet = new IntBitSet(maxInt);
+    intBitSet = new IntBitSet(maxInt - offset);
+    intBitSet.setOffset(offset);
     IntListIterator it = intHashSet.getIterator();
     while (it.hasNext()) {
       intBitSet.add(it.next());
     }
+    intHashSet = null;
   }
    
 }
