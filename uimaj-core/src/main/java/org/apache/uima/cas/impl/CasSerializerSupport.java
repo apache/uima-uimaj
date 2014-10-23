@@ -252,7 +252,7 @@ public class CasSerializerSupport {
      * set of FSs that have multiple references
      * This is for JSON which is computing the multi-refs, not depending on the setting in a feature.
      */
-    public final PositiveIntSet multiRefFSs;
+    public final IntHashSet multiRefFSs;
     
     /* *********************************************
      * FSs that need to be serialized because they're 
@@ -366,7 +366,7 @@ public class CasSerializerSupport {
     	  throw exception;
       }
       isDelta = marker != null;
-      multiRefFSs = (trackMultiRefs) ? new PositiveIntSet() : null;
+      multiRefFSs = (trackMultiRefs) ? new IntHashSet() : null;
     }
         
     // TODO: internationalize
