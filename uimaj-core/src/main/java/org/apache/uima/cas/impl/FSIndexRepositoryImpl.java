@@ -47,9 +47,19 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntSet;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet;
 
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
 
+  /**
+   * The default size of an index.
+   */
+  public static final int DEFAULT_INDEX_SIZE = 100;
+
+  /**
+   * 
+   */
+  public static final String TRACK_FS_INDEXED = "uima.track_fs_indexed";
   // Implementation note: the use of equals() here is pretty hairy and
   // should probably be fixed. We rely on the fact that when two
   // FSIndexComparators are compared, the type of the comparators is
@@ -144,7 +154,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           allTypes.add(rootType);
         } else {
           // includes the original type as element 0
-          allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.typeSystem);
+          allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.sii.typeSystem);
         }
         final int len = allTypes.size();
         int typeCode, indexPos;
@@ -975,17 +985,30 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // }
   //
   // }
+  
+  /*************************************************************
+   * Information about indexes that is shared across all views *
+   *************************************************************/
+  private static class SharedIndexInfo {
+    
+    private LinearTypeOrderBuilder defaultOrderBuilder = null;
 
-  /**
-   * The default size of an index.
-   */
-  public static final int DEFAULT_INDEX_SIZE = 100;
+    private LinearTypeOrder defaultTypeOrder = null;
+    
+    // A reference to the type system.
+    private final TypeSystemImpl typeSystem;
+    
+    private int cache_not_in_index; // a one item cache of a FS not in the index
+    
+    SharedIndexInfo(TypeSystemImpl typeSystem) {
+      this.typeSystem = typeSystem;
+    }
+  }
+  
+  /*****  I N S T A N C E   V A R I A B L E S  *****/
 
   // A reference to the CAS.
-  private CASImpl cas;
-
-  // A reference to the type system.
-  private TypeSystemImpl typeSystem;
+  private final CASImpl cas;
 
   // Is the index repository locked?
   private boolean locked = false;
@@ -1002,12 +1025,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   int[] detectIllegalIndexUpdates;
 
   // A map from names to IndexIteratorCachePairs. Different names may map to
-  // the same index.
+  // the same index.  
+  // The keys are the same across all views, but the values are different, per view
   private HashMap<String, IndexIteratorCachePair> name2indexMap;
-
-  private LinearTypeOrderBuilder defaultOrderBuilder = null;
-
-  private LinearTypeOrder defaultTypeOrder = null;
 
   private IntVector indexUpdates;
 
@@ -1025,21 +1045,36 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private IntVector usedIndexes;
 
   private boolean[] isUsed;
+  
+  private final SharedIndexInfo sii;
+  
+  // the overhead of this (if used) is anywhere from 1 bit up to 3 32-bit words per indexed item
+  // if the avg size of a fs on the heap is 8 (32 bit) words, and 
+  //    about 50 - 100 % of FSs are indexed, then the "typical" space used should be in the order of
+  //    2 bytes / indexed item, per view
+  // This mechanism is under the control of a Java system defined variable uima.track_fs_indexed
+  private final PositiveIntSet fsIndexed =
+      System.getProperty(TRACK_FS_INDEXED, "false").equals("false") ? 
+          null : 
+          new PositiveIntSet(); // set of FSs (addrs) that are in the index UIMA-4059
 
   @SuppressWarnings("unused")
   private FSIndexRepositoryImpl() {
     super();
+    cas = null;  // because it's final
+    sii = null;
   }
 
   /**
    * Constructor.
+   * Assumption: called with the base CAS view
    * 
    * @param cas
    */
   FSIndexRepositoryImpl(CASImpl cas) {
     super();
     this.cas = cas;
-    this.typeSystem = cas.getTypeSystemImpl();
+    this.sii = new SharedIndexInfo(cas.getTypeSystemImpl());
     this.name2indexMap = new HashMap<String, IndexIteratorCachePair>();
     this.indexUpdates = new IntVector();
     this.indexUpdateOperation = new BitSet();
@@ -1059,7 +1094,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   FSIndexRepositoryImpl(CASImpl cas, FSIndexRepositoryImpl baseIndexRepo) {
     super();
     this.cas = cas;
-    this.typeSystem = cas.getTypeSystemImpl();
+    this.sii = baseIndexRepo.sii;
     this.name2indexMap = new HashMap<String, IndexIteratorCachePair>();
     this.indexUpdates = new IntVector();
     this.indexUpdateOperation = new BitSet();
@@ -1078,8 +1113,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             iicp.index.getIndexingStrategy());
       }
     }
-    this.defaultOrderBuilder = baseIndexRepo.defaultOrderBuilder;
-    this.defaultTypeOrder = baseIndexRepo.defaultTypeOrder;
   }
 
   /**
@@ -1087,7 +1120,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   @SuppressWarnings("unchecked")
   private void init() {
-    final TypeSystemImpl ts = this.typeSystem;
+    final TypeSystemImpl ts = this.sii.typeSystem;
     // Type counting starts at 1.
     final int numTypes = ts.getNumberOfTypes() + 1;
     // Can't instantiate arrays of generic types.
@@ -1246,7 +1279,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return iicp;
     }
     final Type superType = comparator.getType();
-    final Vector<Type> types = this.typeSystem.getDirectlySubsumedTypes(superType);
+    final Vector<Type> types = this.sii.typeSystem.getDirectlySubsumedTypes(superType);
     final int max = types.size();
     FSIndexComparator compCopy;
     for (int i = 0; i < max; i++) {
@@ -1284,29 +1317,29 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public LinearTypeOrder getDefaultTypeOrder() {
-    if (this.defaultTypeOrder == null) {
-      if (this.defaultOrderBuilder == null) {
-        this.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.typeSystem);
+    if (this.sii.defaultTypeOrder == null) {
+      if (this.sii.defaultOrderBuilder == null) {
+        this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.typeSystem);
       }
       try {
-        this.defaultTypeOrder = this.defaultOrderBuilder.getOrder();
+        this.sii.defaultTypeOrder = this.sii.defaultOrderBuilder.getOrder();
       } catch (final CASException e) {
         // Since we're doing this on an existing type names, we can't
         // get here.
       }
     }
-    return this.defaultTypeOrder;
+    return this.sii.defaultTypeOrder;
   }
 
   public LinearTypeOrderBuilder getDefaultOrderBuilder() {
-    if (this.defaultOrderBuilder == null) {
-      this.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.typeSystem);
+    if (this.sii.defaultOrderBuilder == null) {
+      this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.typeSystem);
     }
-    return this.defaultOrderBuilder;
+    return this.sii.defaultOrderBuilder;
   }
 
   void setDefaultTypeOrder(LinearTypeOrder order) {
-    this.defaultTypeOrder = order;
+    this.sii.defaultTypeOrder = order;
   }
 
   /**
@@ -1354,10 +1387,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // // in which case we can't add the index.
     // Type oldType = cp.index.getType(); // Get old type from the index.
     // Type newType = comp.getType(); // Get new type from comparator.
-    // if (this.typeSystem.subsumes(oldType, newType)) {
+    // if (this.sii.typeSystem.subsumes(oldType, newType)) {
     // // We don't need to do anything.
     // return true;
-    // } else if (this.typeSystem.subsumes(newType, oldType)) {
+    // } else if (this.sii.typeSystem.subsumes(newType, oldType)) {
     // // Add the index, subsuming the old one.
     // cp = this.addIndexRecursive(comp);
     // // Replace the old index with the new one in the map.
@@ -1429,7 +1462,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
     }
     final Type indexType = iicp.index.getType();
-    if (!this.typeSystem.subsumes(indexType, type)) {
+    if (!this.sii.typeSystem.subsumes(indexType, type)) {
       final CASRuntimeException cre = new CASRuntimeException(
           CASRuntimeException.TYPE_NOT_IN_INDEX, new String[] { label, type.getName(),
               indexType.getName() });
@@ -1485,7 +1518,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return 0;
     }
     int numFSs = indexVector.get(0).index.size();
-    final Vector<Type> typeVector = this.typeSystem.getDirectlySubsumedTypes(type);
+    final Vector<Type> typeVector = this.sii.typeSystem.getDirectlySubsumedTypes(type);
     final int max = typeVector.size();
     for (int i = 0; i < max; i++) {
       numFSs += getIndexSize(typeVector.get(i));
@@ -1514,7 +1547,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public void removeAllIncludingSubtypes(Type type) {
     removeAllExcludingSubtypes(type);
-    List<Type> subtypes = this.typeSystem.getDirectSubtypes(type);
+    List<Type> subtypes = this.sii.typeSystem.getDirectSubtypes(type);
     for (Type subtype : subtypes) {
       removeAllIncludingSubtypes(subtype);
     }
@@ -1653,14 +1686,20 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   /*
+   * Only used by test cases
+   * Others call getDefaultOrderBuilder
+   * 
+   * This method always returns the newly created object which may be different
+   * (not identical == ) to the this.defaultOrderBuilder.  
+   * Not sure if that's important or a small bug... Oct 2014 schor
    * (non-Javadoc)
    * 
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createTypeSortOrder()
    */
   public LinearTypeOrderBuilder createTypeSortOrder() {
-    final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.typeSystem);
-    if (this.defaultOrderBuilder == null) {
-      this.defaultOrderBuilder = orderBuilder;
+    final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.sii.typeSystem);
+    if (this.sii.defaultOrderBuilder == null) {
+      this.sii.defaultOrderBuilder = orderBuilder;
     }
     return orderBuilder;
   }
@@ -1689,12 +1728,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public LowLevelIndex ll_getIndex(String indexName, int typeCode) {
-    if (!this.typeSystem.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
+    if (!this.sii.typeSystem.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
       final LowLevelException e = new LowLevelException(LowLevelException.INVALID_INDEX_TYPE);
       e.addArgument(Integer.toString(typeCode));
       throw e;
     }
-    return (LowLevelIndex) getIndex(indexName, this.typeSystem.ll_getTypeForCode(typeCode));
+    return (LowLevelIndex) getIndex(indexName, this.sii.typeSystem.ll_getTypeForCode(typeCode));
   }
 
   public final void ll_addFS(int fsRef, boolean doChecks) {
@@ -1720,7 +1759,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     if (size == 0) {
       // lazily create a default bag index for this type
-      final Type type = this.typeSystem.ll_getTypeForCode(typeCode);
+      final Type type = this.sii.typeSystem.ll_getTypeForCode(typeCode);
       final String defIndexName = getAutoIndexNameForType(type);
       final FSIndexComparator comparator = createComparator();
       comparator.setType(type);
@@ -1776,7 +1815,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // We found one of the special auto-indexes which don't inherit down the tree. So, we
       // manually need to traverse the inheritance tree to look for more indexes. Note that
       // this is not necessary when we have a regular index
-      final List<Type> subtypes = this.typeSystem.getDirectSubtypes(type);
+      final List<Type> subtypes = this.sii.typeSystem.getDirectSubtypes(type);
       for (int i = 0; i < subtypes.size(); i++) {
         getAllIndexedFS(subtypes.get(i), iteratorList);
       }
@@ -1793,7 +1832,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
         continue;
       }
-      if (this.typeSystem.subsumes(index.getType(), type)) {
+      if (this.sii.typeSystem.subsumes(index.getType(), type)) {
         if (index.getIndexingStrategy() != FSIndex.SET_INDEX) {
           iteratorList.add(getIndex(label, type).iterator());
           // Done, found non-set index.
@@ -1811,7 +1850,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // No index for this type was found at all. Since the auto-indexes are created on demand for
     // each type, there may be gaps in the inheritance chain. So keep descending the inheritance
     // tree looking for relevant indexes.
-    final List subtypes = this.typeSystem.getDirectSubtypes(type);
+    final List subtypes = this.sii.typeSystem.getDirectSubtypes(type);
     for (int i = 0; i < subtypes.size(); i++) {
       getAllIndexedFS((Type) subtypes.get(i), iteratorList);
     }

@@ -268,7 +268,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
         
     
     <section id="ug.ref.json.cas.featurestructures.embedding">
-      <title>Embedding normally referenced values</title>
+      <title>Embedding referenced values</title>
       
       <para>Consider a FS which has a feature that refers to another FS.  This can be serialized in one of two ways:</para>
       <itemizedlist spacing="compact">
