@@ -57,7 +57,7 @@ public class IntHashSetTest extends TestCase {
     assertEquals(1000, ihs.getMostPositive());
     assertEquals(-1000, ihs.getMostNegative());
     ihs.remove(1000);
-    assertEquals(1000, ihs.getMostPositive());
+    assertEquals(999, ihs.getMostPositive());
     assertEquals(-1000, ihs.getMostNegative());
     ihs.add(1001);    
     assertEquals(1001, ihs.getMostPositive());
@@ -80,7 +80,24 @@ public class IntHashSetTest extends TestCase {
     assertTrue(ihs.contains(1188));
     assertTrue(ihs.contains(1040));
     assertFalse(ihs.contains(0));
-    assertFalse(ihs.contains(99));
-    
+    assertFalse(ihs.contains(99));  
   }
+  
+  public void testTableSpace() {
+    assertEquals(32, IntHashSet.tableSpace(19, 0.6f));    // 19 / .6 = 31.xxx, round to 32
+    assertEquals(64, IntHashSet.tableSpace(21, 0.6f));
+    assertEquals(32, ihs.tableSpace(21));
+  }
+  
+  public void testWontExpand() {
+    ihs = new IntHashSet(21);
+    assertEquals(32, ihs.getSpaceUsedInWords());
+    assertTrue(ihs.wontExpand(20));
+    assertFalse(ihs.wontExpand(21));
+  }
+  
+  
+  
+ 
+  
 }

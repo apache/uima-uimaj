@@ -53,20 +53,22 @@ public class PositiveIntSetTest extends TestCase {
     s = new PositiveIntSet();
     assertTrue(s.useOffset);
     s.add(bb);
+
     s.add(bb);
     s.add(bb+1);
+    assertTrue(s.isBitSet);
     s.add(bb+2);
     
-    assertEquals(3, s.size());
     assertTrue(s.isBitSet);
+    assertEquals(3, s.size());
     assertTrue(s.useOffset);
     
     // test offset converting to hashset
-    s.add(bb - 66);
+    s.add(bb - 6000);
     assertEquals(4, s.size());
     assertFalse(s.isBitSet);
     it = s.getOrderedIterator();
-    assertEquals(bb-66, it.next());
+    assertEquals(bb-6000, it.next());
     assertEquals(bb, it.next());
     assertEquals(bb+1, it.next());
     assertEquals(bb+2, it.next());
@@ -96,37 +98,28 @@ public class PositiveIntSetTest extends TestCase {
     
     // test switch from hash set to bit set
     s.clear();  // keeps useOffset false
-    s.add(767 - 64);  // makes the space used by bit set = 25 words
+    s.add(1216);  // makes the space used by bit set = 41 words
     
-    for (int i = 1; i < 13; i++) {
+    for (int i = 1; i < 23; i++) {
       s.add(i);
 //      System.out.println("i is " + i + ", isBitSet = " + s.isBitSet);
-      assertTrue("i is " + i, (i < 12) ? (!s.isBitSet) : s.isBitSet);
+      assertTrue("i is " + i, (i < 20) ? (!s.isBitSet) : s.isBitSet);
     }
     
     it = s.getOrderedIterator();
-    assertEquals(1,it.next());
-    assertEquals(2,it.next());
-    assertEquals(3,it.next());
-    assertEquals(4,it.next());
-    assertEquals(5,it.next());
-    assertEquals(6,it.next());
-    assertEquals(7,it.next());
-    assertEquals(8,it.next());
-    assertEquals(9,it.next());
-    assertEquals(10,it.next());
-    assertEquals(11,it.next());
-    assertEquals(12,it.next());
-    assertEquals(767-64,it.next());
+    for (int i = 1; i < 23; i++) {
+      assertEquals(i, it.next());
+    }
+    assertEquals(1216,it.next());
     
     boolean reached = false;
-    for (int i = 10; i < 5122; i = i <<1) {
+    for (int i = 10; i < 20000/*5122*/; i = i <<1) {
       s.add(i);  // switches to hash set when i = 2560. == 1010 0000 0000  (>>5 = 101 0000 = 80 (decimal)
                  // hash set size for 19 entries = 19 * 3 = 57
                  // bit set size for 2560 = 80 words
                  // bit set size for prev i (1280 dec) = 101 0000 0000 (>>5 = 10 1000) = 40 words
 //      if (!s.isBitSet) {
-//        System.out.println("is Bit set? " + s.isBitSet + ", # of entries is " + s.size());
+//        System.out.println("is Bit set? " + s.isBitSet + ", i = " + i + ", # of entries is " + s.size());
 //      }
       reached = i >= 5120;
       assertTrue((!reached) ? s.isBitSet : !s.isBitSet);

@@ -36,6 +36,7 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  */
 public class IntHashSet {
   
+  public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
   private static final boolean TUNE = false;
@@ -49,7 +50,7 @@ public class IntHashSet {
   //           3   * 4                          12 bytes per entry
   // This compares with 160 bytes/entry for the IntArrayRBT impl
   
-  private final float loadFactor = 0.66F;  
+  private final float loadFactor = DEFAULT_LOAD_FACTOR;  
   
   private final int initialCapacity; 
 
@@ -81,6 +82,32 @@ public class IntHashSet {
     }
   }
   
+  /**
+   * The number of 32 bit words that are reserved when 
+   * creating a table to hold the specified number of elements
+   * 
+   * The number is a power of 2.
+   * 
+   * The number is at least 16.
+   * 
+   * The number is such that you could add this many elements without
+   *   triggering the capacity expansion.
+   *   
+   * @param numberOfElements
+   * @return
+   */
+  public int tableSpace(int numberOfElements) {
+    return tableSpace(numberOfElements, loadFactor);
+  }
+  
+  public static int tableSpace(int numberOfElements, Float factor) {
+    if (numberOfElements < 0) {
+      throw new IllegalArgumentException("must be > 0");
+    }
+    final int capacity = Math.round(numberOfElements / factor);
+    return  Math.max(16, nextHigherPowerOf2(capacity));
+  }
+  
   private void newTableKeepSize(int capacity) {
     capacity = Math.max(16, nextHigherPowerOf2(capacity));
     keys = new int[capacity];
@@ -94,8 +121,20 @@ public class IntHashSet {
    size++;
   }
   
+  public boolean wontExpand() {
+    return wontExpand(1);
+  }
+  
+  public boolean wontExpand(int n) {
+    return (size + n) < sizeWhichTriggersExpansion;  
+  }
+  
   public int getSpaceUsedInWords() {
-    return keys.length + 8;  // 8 is overhead for this class excluding any Java object overhead
+    return keys.length;  // 8 is overhead for this class excluding any Java object overhead
+  }
+  
+  public static int getSpaceOverheadInWords() {
+    return 8;
   }
   
   private void increaseTableCapacity() {
@@ -256,6 +295,12 @@ public class IntHashSet {
     if (keys[i] != 0) {
       keys[i] = 0;
       size--;
+      if (key == mostPositive) {
+        mostPositive --;  // a weak adjustment
+      }
+      if (key == mostNegative) {
+        mostNegative ++;  // a weak adjustment
+      }
       return true;
     }
     return false;

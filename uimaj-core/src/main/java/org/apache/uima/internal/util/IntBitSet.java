@@ -42,25 +42,25 @@ public class IntBitSet {
   
   private int size = 0;  // tracked here to avoid slow counting of cardinality
   
-  private int offset = 0;
+  private final int offset;
   
-  /**
-   * Sets the lowest int value that can be kept; trying to add a lower one throws an error
-   * <ul>
-   *   <li>Allows for a more compact representation, potentially</li>
-   *   <li>only can be set if the size is 0</li>
-   * </ul>
-   * @param offset - the lowest value that can be kept in the set. 0 is allowed.
-   */
-  public void setOffset(int offset) {
-    if (size != 0) {
-      throw new IllegalStateException("Cannot set offset unless set is empty");
-    }
-    if (offset < 0) {
-      throw new IllegalArgumentException("Offset must be 0 or a positive int, was " + offset);
-    }
-    this.offset = offset;
-  }
+//  /**
+//   * Sets the lowest int value that can be kept; trying to add a lower one throws an error
+//   * <ul>
+//   *   <li>Allows for a more compact representation, potentially</li>
+//   *   <li>only can be set if the size is 0</li>
+//   * </ul>
+//   * @param offset - the lowest value that can be kept in the set. 0 is allowed.
+//   */
+//  public void setOffset(int offset) {
+//    if (size != 0) {
+//      throw new IllegalStateException("Cannot set offset unless set is empty");
+//    }
+//    if (offset < 0) {
+//      throw new IllegalArgumentException("Offset must be 0 or a positive int, was " + offset);
+//    }
+//    this.offset = offset;
+//  }
   /**
    * @return the current offset
    */
@@ -80,7 +80,12 @@ public class IntBitSet {
    * @param maxInt the biggest int (perhaps plus an offset) that can be held without growing the space
    */
   public IntBitSet(int maxInt) {
+    this(maxInt, 0);
+  }
+
+  public IntBitSet(int maxInt, int offset) {
     set = new BitSet(Math.max(1, maxInt));
+    this.offset = offset;
   }
   
   /**

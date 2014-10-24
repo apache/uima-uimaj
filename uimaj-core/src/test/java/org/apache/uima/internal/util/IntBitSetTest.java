@@ -29,8 +29,7 @@ public class IntBitSetTest extends TestCase {
   
   public void setUp() {
     ibs = new IntBitSet();
-    ibs1k = new IntBitSet();
-    ibs1k.setOffset(1000);
+    ibs1k = new IntBitSet(63, 1000);
   }
 
   public void testBasic() {
@@ -62,20 +61,18 @@ public class IntBitSetTest extends TestCase {
     assertEquals(3*64, ibs.getSpaceUsed_in_bits());
     assertEquals(6, ibs.getSpaceUsed_in_words());
     
-    ibs = new IntBitSet(64);
-    ibs.setOffset(1000);
+    ibs = new IntBitSet(64, 1000);
     ibs.add(1064);
     assertEquals(1,ibs.size());
     assertEquals(2*64, ibs.getSpaceUsed_in_bits());
     
-    ibs = new IntBitSet(64);
-    ibs.setOffset(1000);
+    ibs = new IntBitSet(64, 1000);
+
     ibs.add(1063);
     assertEquals(1*64, ibs.getSpaceUsed_in_bits());
     assertEquals(1,ibs.size());
 
-    ibs = new IntBitSet(6 * 64);
-    ibs.setOffset(1000);
+    ibs = new IntBitSet(6 * 64, 1000);
 
     ibs.add(1000 + 6 * 64 - 1);
     assertEquals(6*64, ibs.getSpaceUsed_in_bits());
@@ -103,8 +100,7 @@ public class IntBitSetTest extends TestCase {
   }
   
   public void testContains() {
-    ibs = new IntBitSet();
-    ibs.setOffset(1000);
+    ibs = new IntBitSet(63, 1000);
     
     ibs.add(1015);
     ibs.add(1188);
