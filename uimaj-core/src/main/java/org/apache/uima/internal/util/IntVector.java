@@ -123,6 +123,12 @@ public class IntVector implements Serializable {
     add(elements, 0, elements.length);
   }
   
+  /**
+   * Add a slice of elements to the end
+   * @param elements
+   * @param startpos
+   * @param endpos
+   */
   public void add(int[] elements, int startpos, int endpos) {
     final int len = endpos - startpos;
     final int posNow = this.pos;
@@ -173,6 +179,8 @@ public class IntVector implements Serializable {
 
   /**
    * Set an element at a certain position in the vector. Vector will grow.
+   * Not apparently used (2014)
+   * Seems silly to grow if replacing element at index?
    */
   public void put(int index, int element) {
     ensure_size(index + 1);
@@ -274,7 +282,7 @@ public class IntVector implements Serializable {
   }
 
   /**
-   * Return the position of the first occurence of <code>elem</code> in the IntVector, if it
+   * Return the position of the first occurrence of <code>elem</code> in the IntVector, if it
    * exists.
    * 
    * @param elem
@@ -294,6 +302,7 @@ public class IntVector implements Serializable {
 
   /**
    * Set every element of the vector to some value.
+   * Not used (2014)
    * 
    * @param value
    *          The fill value.
