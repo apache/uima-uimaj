@@ -180,7 +180,7 @@ public class IntVector implements Serializable {
   /**
    * Set an element at a certain position in the vector. Vector will grow.
    * Not apparently used (2014)
-   * Seems silly to grow if replacing element at index?
+   * Seems for purposes of having pairs of adjacent elements, (e.g. map).
    */
   public void put(int index, int element) {
     ensure_size(index + 1);
