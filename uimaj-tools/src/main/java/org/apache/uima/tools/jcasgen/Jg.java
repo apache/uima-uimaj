@@ -717,9 +717,16 @@ public class Jg {
     try {
       typeDefinitionUri = new URI (td.getSourceUrlString());
     } catch (URISyntaxException e) {
-      return true; // may be overkill - but if td's source cant be parsed, ... likely out of project
+      return true; // may be overkill - but if td's source can't be parsed ... likely out of project
     }
     String tdPath = typeDefinitionUri.getPath();
+    
+    // Issue UIMA-4080 - If a type system resides in a JAR, then the path is null and it is
+    // certainly out of scope.
+    if (tdPath == null) {
+        return true;
+    }
+    
     boolean r = !tdPath.startsWith(projectDirPath);
     if (r) {
       return true;
