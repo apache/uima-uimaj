@@ -24,8 +24,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +39,6 @@ import org.apache.commons.io.output.CloseShieldOutputStream;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -99,6 +102,15 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
   @ConfigurationParameter(name = PARAM_TYPE_PATTERNS, mandatory = true, defaultValue = { "+|.*" })
   private String[] typePatterns;
 
+  /**
+   * Sort increasing by begin, decreasing by end, increasing by name instead of relying on index
+   * order.
+   */
+  public static final String PARAM_SORT = "sort";
+
+  @ConfigurationParameter(name = PARAM_SORT, mandatory = true, defaultValue = "false")
+  private boolean sort;
+    
   private InExPattern[] cookedTypePatterns;
 
   private PrintWriter out;
@@ -173,7 +185,34 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
 
   private void processFeatureStructures(CAS aCAS) {
     Set<String> typesToPrint = getTypes(aCAS);
-    FSIterator<AnnotationFS> annotationIterator = aCAS.getAnnotationIndex().iterator();
+    Iterator<AnnotationFS> annotationIterator = aCAS.getAnnotationIndex().iterator();
+
+    if (sort) {
+      List<AnnotationFS> sortedFS = new ArrayList<AnnotationFS>();
+      while (annotationIterator.hasNext()) {
+        sortedFS.add(annotationIterator.next());
+      }
+
+      Collections.sort(sortedFS, new Comparator<AnnotationFS>() {
+        @Override
+        public int compare(AnnotationFS aO1, AnnotationFS aO2) {
+          int begin = aO1.getBegin() - aO2.getBegin();
+          if (begin != 0) {
+            return begin;
+          }
+
+          int end = aO2.getEnd() - aO1.getEnd();
+          if (end != 0) {
+            return end;
+          }
+
+          return aO1.getType().getName().compareTo(aO2.getType().getName());
+        }
+      });
+      
+      annotationIterator = sortedFS.iterator();
+    }
+
     while (annotationIterator.hasNext()) {
       AnnotationFS annotation = annotationIterator.next();
       if (!typesToPrint.contains(annotation.getType().getName())) {
@@ -187,7 +226,7 @@ public class CasDumpWriter extends CasConsumer_ImplBase {
       processFeatureStructure(annotation);
     }
   }
-
+  
   private void processFeatureStructure(FeatureStructure aFS) {
     String meta = aFS.toString();
     for (String line : meta.split("\n")) {
