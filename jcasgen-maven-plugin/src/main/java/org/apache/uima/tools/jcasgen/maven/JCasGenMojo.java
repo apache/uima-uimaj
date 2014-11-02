@@ -108,20 +108,40 @@ public class JCasGenMojo extends AbstractMojo {
     this.project.addCompileSourceRoot(this.outputDirectory.getPath());
 
     // assemble the classpath
+    StringBuilder classpathBuilder = new StringBuilder();
+    
+    // Source roots
+    for (String element : this.project.getCompileSourceRoots()) {
+      if (classpathBuilder.length() > 0) {
+        classpathBuilder.append(File.pathSeparatorChar);
+      }
+      classpathBuilder.append(element);
+      getLog().debug("JCasGen: Adding source root to classpath '" + element + "'");
+    }
+
+    // Resource roots
+    for (Resource element : this.project.getResources()) {
+      if (classpathBuilder.length() > 0) {
+        classpathBuilder.append(File.pathSeparatorChar);
+      }
+      classpathBuilder.append(element.getDirectory());
+      getLog().debug("JCasGen: Adding resource root to classpath '" + element.getDirectory() + "'");
+    }
+    
+    // Dependencies
     List<String> elements;
     try {
       elements = this.project.getCompileClasspathElements();
     } catch (DependencyResolutionRequiredException e) {
       throw new MojoExecutionException(e.getMessage(), e);
     }
-    
-    StringBuilder classpathBuilder = new StringBuilder();
+
     for (String element : elements) {
       if (classpathBuilder.length() > 0) {
         classpathBuilder.append(File.pathSeparatorChar);
       }
       classpathBuilder.append(element);
-      getLog().debug("JCasGen: Adding to classpath '" + element + "'");
+      getLog().debug("JCasGen: Adding dependency to classpath '" + element + "'");
     }
     String classpath = classpathBuilder.toString();
 
