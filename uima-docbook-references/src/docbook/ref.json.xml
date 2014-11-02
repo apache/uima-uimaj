@@ -390,12 +390,12 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     
               <informalexample>  <!-- does a keep-together -->
     <programlisting>"@views" : {
-  "12" : {
+  "_InitialView" : {
      "theFirstType" : [  { ... fs1 ...}, 123, 456, { ... fsn ...} ]
      "anotherType"  : [  { ... fs1 ...}, ... { ... fsn ...} ]
       ...     // more types which have roots in view "12"
          },
-  "25" : {
+  "AnotherView" : {
      "theFirstType" : [  { ... fsv1 ...}, 123, { ... fsvn ...} ]
      "anotherType"  : [  { ... fsv1 ...}, ... { ... fsvn ...} ]
       ...     // more types which have roots in view "25"

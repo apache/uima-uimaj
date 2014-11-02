@@ -10,7 +10,7 @@
       "TOP" : {"@id" : "uima.cas.TOP", 
         "@subtypes" : ["ListBase" ] } } }, 
   "@views" : {
-    "0" : {
+    "_InitialView" : {
       "NonEmptyIntegerList" : [
         {"head" : 11,  "tail" : 5 }, 
         {"head" : 110,  "tail" : 5 } ] } }, 

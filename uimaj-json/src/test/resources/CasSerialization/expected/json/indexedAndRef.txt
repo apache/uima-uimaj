@@ -1,0 +1,21 @@
+{"@context" : {
+    "@types" : {
+      "RefTypes" : {"@id" : "org.apache.uima.test.RefTypes", 
+        "@feature_types" : {"sofa" : "@ref",  "aFS" : "@ref",  "aListFs" : "@ref",  "aArrayFS" : "@ref" } }, 
+      "Sofa" : {"@id" : "uima.cas.Sofa", 
+        "@feature_types" : {"sofaArray" : "@ref" } }, 
+      "Annotation" : {"@id" : "uima.tcas.Annotation", 
+        "@feature_types" : {"sofa" : "@ref" }, 
+        "@subtypes" : ["RefTypes" ] }, 
+      "AnnotationBase" : {"@id" : "uima.cas.AnnotationBase", 
+        "@feature_types" : {"sofa" : "@ref" }, 
+        "@subtypes" : ["Annotation" ] }, 
+      "TOP" : {"@id" : "uima.cas.TOP", 
+        "@subtypes" : ["AnnotationBase",  "Sofa" ] } } }, 
+  "@views" : {
+    "_InitialView" : {
+      "RefTypes" : [
+        {"sofa" : 8,  "aFS" : 15 },  15 ] } }, 
+  "@referenced_fss" : {
+    "8" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "15" : {"@type" : "RefTypes",  "sofa" : 8 } } }

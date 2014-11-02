@@ -1,1 +1,1 @@
-{"@views":{"6":{"TOP":[{}],"Token":[{"sofa":6}]}},"@referenced_fss":{"6":{"@type":"Sofa","sofaNum":1,"sofaID":"_InitialView"}}}
+{"@views":{"_InitialView":{"TOP":[{}],"Token":[{"sofa":6}]}},"@referenced_fss":{"6":{"@type":"Sofa","sofaNum":1,"sofaID":"_InitialView"}}}

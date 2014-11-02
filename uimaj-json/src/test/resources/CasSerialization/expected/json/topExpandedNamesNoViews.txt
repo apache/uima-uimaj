@@ -1,1 +1,1 @@
-{"@context":{"@type_system":"A URI to TypeSystem","@types":{"TOP":{"@id":"uima.cas.TOP"}}},"@views":{"0":{"TOP":[{}]}}}
+{"@context":{"@type_system":"A URI to TypeSystem","@types":{"TOP":{"@id":"uima.cas.TOP"}}},"@views":{"_InitialView":{"TOP":[{}]}}}

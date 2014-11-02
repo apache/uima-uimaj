@@ -158,6 +158,12 @@
           <rangeTypeName>uima.cas.FSList</rangeTypeName>
           <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
+      <featureDescription>
+          <name>aArrayFS</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.tcas.Annotation</elementType>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

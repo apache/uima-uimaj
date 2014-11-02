@@ -1,7 +1,7 @@
 {"@context" : {
     "@types" : {
       "AllTypes" : {"@id" : "org.apache.uima.test.AllTypes", 
-        "@feature_types" : {"sofa" : "@ref",  "aFS" : "@ref",  "aArrayBoolean" : "@array",  "aArrayMrBoolean" : "@array",  "aArrayMrByte" : "@byte_array",  "aArrayByte" : "@byte_array",  "aArrayShort" : "@array",  "aArrayMrShort" : "@array",  "aArrayString" : "@array",  "aArrayMrString" : "@array",  "aListInteger" : "@array",  "aListMrInteger" : "@array",  "aListString" : "@array",  "aListMrString" : "@array",  "aListFs" : "@ref",  "aListMrFs" : "@ref" } }, 
+        "@feature_types" : {"sofa" : "@ref",  "aFS" : "@ref",  "aArrayBoolean" : "@array",  "aArrayMrBoolean" : "@array",  "aArrayMrByte" : "@byte_array",  "aArrayByte" : "@byte_array",  "aArrayShort" : "@array",  "aArrayMrShort" : "@array",  "aArrayString" : "@array",  "aArrayMrString" : "@array",  "aListInteger" : "@array",  "aListMrInteger" : "@array",  "aListString" : "@array",  "aListMrString" : "@array",  "aListFs" : "@ref",  "aListMrFs" : "@ref",  "aArrayFS" : "@ref" } }, 
       "BooleanArray" : {"@id" : "uima.cas.BooleanArray" }, 
       "ByteArray" : {"@id" : "uima.cas.ByteArray" }, 
       "EmptyFSList" : {"@id" : "uima.cas.EmptyFSList" }, 
@@ -34,14 +34,14 @@
       "StringList" : {"@id" : "uima.cas.StringList", 
         "@subtypes" : ["EmptyStringList",  "NonEmptyStringList" ] } } }, 
   "@views" : {
-    "28" : {
+    "_InitialView" : {
       "AllTypes" : [
-        {"sofa" : 28,  "aBoolean" : false,  "aInteger" : 1,  "aLong" : 4321,  "aFloat" : "NaN",  "aDouble" : "-Infinity",  "aString" : "some \"String\"", 
-          "aFS" : {"@type" : "AllTypes",  "sofa" : 28,  "aBoolean" : false },  "aArrayBoolean" : [ ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "",  "aArrayShort" : [0,  0 ],  "aArrayMrShort" : [ ],  "aArrayString" : [ ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] }, 
-    "94" : {
+        {"sofa" : 29,  "aBoolean" : false,  "aInteger" : 1,  "aLong" : 4321,  "aFloat" : "NaN",  "aDouble" : "-Infinity",  "aString" : "some \"String\"", 
+          "aFS" : {"@type" : "AllTypes",  "sofa" : 29,  "aBoolean" : false },  "aArrayBoolean" : [ ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "",  "aArrayShort" : [0,  0 ],  "aArrayMrShort" : [ ],  "aArrayString" : [ ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] }, 
+    "View2" : {
       "AllTypes" : [
-        {"sofa" : 94,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"", 
-          "aFS" : {"@type" : "AllTypes",  "sofa" : 94,  "aBoolean" : false },  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : [ ],  "aArrayString" : [null ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
+        {"sofa" : 185,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"", 
+          "aFS" : {"@type" : "AllTypes",  "sofa" : 185,  "aBoolean" : false },  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : [false ],  "aArrayMrByte" : "AAA=",  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : [ ],  "aArrayString" : [null ],  "aArrayMrString" : [null ],  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
   "@referenced_fss" : {
-    "28" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "94" : {"@type" : "Sofa",  "sofaNum" : 2,  "sofaID" : "View2" } } }
+    "29" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "185" : {"@type" : "Sofa",  "sofaNum" : 2,  "sofaID" : "View2" } } }

@@ -17,7 +17,7 @@
         "@feature_types" : {"sofa" : "@ref" }, 
         "@subtypes" : ["Annotation" ] } } }, 
   "@views" : {
-    "5" : {
+    "_InitialView" : {
       "test:Token" : [
         {"sofa" : 5 } ], 
       "test22:Token" : [

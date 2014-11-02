@@ -479,7 +479,7 @@ public class JsonCasSerializer {
     
     private boolean isEmbedded = false; // true for embedded FSs, causes @type to be included
     
-    private boolean isEmbeddedFromFsFeature;  // used for NL formatting for this case
+    private boolean isEmbeddedFromFsFeature;  // used for NL formatting, false if embedded due to Array or List
 
     private boolean startedFeatureTypes;
     
@@ -550,7 +550,10 @@ public class JsonCasSerializer {
           continue;  // skip non-existent initial view with no sofa and no elements                    
         }
         jch.writeNlJustBeforeNext();
-        jg.writeFieldName(Integer.toString(sofaAddr));  // view sofa addr
+        String viewName = (0 == sofaAddr) ?  
+            CAS.NAME_DEFAULT_SOFA :
+            cds.cas.getStringValue(sofaAddr, cds.tsi.sofaIdFeatCode);
+        jg.writeFieldName(viewName);  // view namne
         jg.writeStartObject();
         for (Integer fs : fssInView) {
           cds.encodeFS(fs);
@@ -598,12 +601,11 @@ public class JsonCasSerializer {
     @Override
     protected void writeView(int sofaAddr, int[] members) throws IOException {
       jch.writeNlJustBeforeNext();
-      String xmiId = (0 == sofaAddr) ? "0" : cds.getXmiId(sofaAddr);
-      jg.writeArrayFieldStart(xmiId);
+      String sofaXmiId = (0 == sofaAddr) ? "0" : cds.getXmiId(sofaAddr);
+      jg.writeArrayFieldStart(sofaXmiId);
       writeViewMembers(members);
       //check for out-of-typesystem members
       if (cds.sharedData != null) {
-        String sofaXmiId = cds.getXmiId(sofaAddr);
         List<String> ootsMembers = cds.sharedData.getOutOfTypeSystemViewMembers(sofaXmiId);
         jch.writeNlJustBeforeNext();
         writeViewMembers(ootsMembers);
@@ -622,7 +624,7 @@ public class JsonCasSerializer {
     @Override
     protected void writeView(int sofaAddr, int[] added, int[] deleted, int[] reindexed) throws IOException {
       jch.writeNlJustBeforeNext();
-      jg.writeFieldName(Integer.toString(sofaAddr));
+      jg.writeFieldName(cds.getXmiId(sofaAddr));
       jg.writeStartObject();
       writeViewForDeltas(ADDED_MEMBERS_NAME, added);
       writeViewForDeltas(DELETED_MEMBERS_NAME, deleted);
@@ -885,7 +887,7 @@ public class JsonCasSerializer {
     }
     
     @Override
-    protected void writeFsStart(int addr, int typeCode) throws IOException {
+    protected boolean writeFsStart(int addr, int typeCode) throws IOException {
       if (isEmbedded) {
         if (!isEmbeddedFromFsFeature) {
           jch.writeNlJustBeforeNext();  // if from feature, already did nl
@@ -912,11 +914,22 @@ public class JsonCasSerializer {
           jg.writeFieldName(getSerializedTypeName(typeCode));
           jg.writeStartArray();
         }
-        jch.writeNlJustBeforeNext();
-        jg.writeStartObject();  // start of feat : value
+        // if we're not going to write the actual FS here, 
+        //   and are just going to write the ref, 
+        //   skip the start object
+        if (cds.multiRefFSs == null || !cds.multiRefFSs.contains(addr)) {         
+          jch.writeNlJustBeforeNext();
+          jg.writeStartObject();  // start of feat : value
+        }
       }
+      return indexId;
     }
     
+    @Override
+    protected void writeFsRef(int addr) throws Exception {
+       jg.writeNumber(cds.getXmiIdAsInt(addr));      
+    }    
+
 //    private void maybeWriteIdFeat(int addr) throws IOException {
 //      if (!omitId) {
 //        jg.writeFieldName(ID_NAME);
@@ -1346,7 +1359,8 @@ public class JsonCasSerializer {
       return (cds.multiRefFSs == null) ? 
                 (isListAsFSs || cds.isStaticMultiRef(featCode)) : 
                 cds.multiRefFSs.contains(addr);
-    }    
+    }
+
   }
 
 }

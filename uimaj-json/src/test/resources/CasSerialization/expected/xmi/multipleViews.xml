@@ -1,28 +1,28 @@
-<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:tcas="http:///uima/tcas.ecore" xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0">
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:tcas="http:///uima/tcas.ecore" xmi:version="2.0">
     <cas:NULL xmi:id="0"/>
-    <test:AllTypes xmi:id="1" sofa="28" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="1" aLong="4321" aFloat="NaN" aDouble="-Infinity" aString="some &quot;String&quot;" aFS="35" aArrayBoolean="" aArrayMrBoolean="73" aArrayMrByte="76" aArrayByte="" aArrayShort="0 0" aArrayMrShort="79" aArrayMrString="82" aListInteger="" aListFs="0">
+    <test:AllTypes xmi:id="1" sofa="29" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="1" aLong="4321" aFloat="NaN" aDouble="-Infinity" aString="some &quot;String&quot;" aFS="36" aArrayBoolean="" aArrayMrBoolean="164" aArrayMrByte="167" aArrayByte="" aArrayShort="0 0" aArrayMrShort="170" aArrayMrString="173" aListInteger="" aListFs="0">
         <aListString>testStr</aListString>
     </test:AllTypes>
-    <test:AllTypes xmi:id="101" sofa="94" begin="0" end="0" aBoolean="true" aByte="-117" aShort="-112" aInteger="0" aLong="1234" aFloat="1.3" aDouble="2.6" aString="some &quot;String&quot;" aFS="128" aArrayBoolean="false" aArrayMrBoolean="167" aArrayMrByte="170" aArrayByte="0FEE" aArrayShort="" aArrayMrShort="173" aArrayMrString="176" aListInteger="" aListFs="0">
+    <test:AllTypes xmi:id="192" sofa="185" begin="0" end="0" aBoolean="true" aByte="-117" aShort="-112" aInteger="0" aLong="1234" aFloat="1.3" aDouble="2.6" aString="some &quot;String&quot;" aFS="220" aArrayBoolean="false" aArrayMrBoolean="349" aArrayMrByte="352" aArrayByte="0FEE" aArrayShort="" aArrayMrShort="355" aArrayMrString="358" aListInteger="" aListFs="0">
         <aArrayString/>
         <aListString>testStr</aListString>
     </test:AllTypes>
-    <cas:Sofa xmi:id="28" sofaNum="1" sofaID="_InitialView"/>
-    <cas:Sofa xmi:id="94" sofaNum="2" sofaID="View2"/>
-    <test:AllTypes xmi:id="35" sofa="28" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
-    <cas:BooleanArray xmi:id="73" elements="false"/>
-    <cas:ByteArray xmi:id="76" elements="0000"/>
-    <cas:ShortArray xmi:id="79" elements=""/>
-    <cas:StringArray xmi:id="82">
+    <cas:Sofa xmi:id="29" sofaNum="1" sofaID="_InitialView"/>
+    <cas:Sofa xmi:id="185" sofaNum="2" sofaID="View2"/>
+    <test:AllTypes xmi:id="36" sofa="29" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
+    <cas:BooleanArray xmi:id="164" elements="false"/>
+    <cas:ByteArray xmi:id="167" elements="0000"/>
+    <cas:ShortArray xmi:id="170" elements=""/>
+    <cas:StringArray xmi:id="173">
         <elements/>
     </cas:StringArray>
-    <test:AllTypes xmi:id="128" sofa="94" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
-    <cas:BooleanArray xmi:id="167" elements="false"/>
-    <cas:ByteArray xmi:id="170" elements="0000"/>
-    <cas:ShortArray xmi:id="173" elements=""/>
-    <cas:StringArray xmi:id="176">
+    <test:AllTypes xmi:id="220" sofa="185" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
+    <cas:BooleanArray xmi:id="349" elements="false"/>
+    <cas:ByteArray xmi:id="352" elements="0000"/>
+    <cas:ShortArray xmi:id="355" elements=""/>
+    <cas:StringArray xmi:id="358">
         <elements/>
     </cas:StringArray>
-    <cas:View sofa="28" members="1"/>
-    <cas:View sofa="94" members="101"/>
+    <cas:View sofa="29" members="1"/>
+    <cas:View sofa="185" members="192"/>
 </xmi:XMI>
