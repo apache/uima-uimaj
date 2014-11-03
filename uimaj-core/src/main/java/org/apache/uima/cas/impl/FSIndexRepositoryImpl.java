@@ -47,7 +47,7 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntSet;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
 
@@ -57,9 +57,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public static final int DEFAULT_INDEX_SIZE = 100;
 
   /**
-   * 
+   * Define this JVM property to some value other than "false" to enable tracking which FSs are in an index,
+   * <ul>
+   *   <li>to prevent the identical FS from being added multiple times to indexes in the same View, and</li>
+   *   <li>to allow checking on feature value setting to signal a runtime exception if a feature is changed which is
+   *     being used as a key, and that FS is added to indices in some View.</li>
+   *   <li>The following are the same:  -Duima.track_fs_indexed    and -Duima.track_fs_indexed=true</li>
+   * </ul> 
    */
   public static final String TRACK_FS_INDEXED = "uima.track_fs_indexed";
+  
+  public static final boolean isTrackingFsIndexed =  !System.getProperty(TRACK_FS_INDEXED, "false").equals("false");
+  
   // Implementation note: the use of equals() here is pretty hairy and
   // should probably be fixed. We rely on the fact that when two
   // FSIndexComparators are compared, the type of the comparators is
@@ -998,7 +1007,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // A reference to the type system.
     private final TypeSystemImpl typeSystem;
     
-    private int cache_not_in_index; // a one item cache of a FS not in the index
+    private boolean isSetUpFromBaseCAS = false;
     
     SharedIndexInfo(TypeSystemImpl typeSystem) {
       this.typeSystem = typeSystem;
@@ -1006,6 +1015,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
   
   /*****  I N S T A N C E   V A R I A B L E S  *****/
+  /*****           Replicated per view         *****/                 
 
   // A reference to the CAS.
   private final CASImpl cas;
@@ -1048,16 +1058,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   private final SharedIndexInfo sii;
   
-  // the overhead of this (if used) is anywhere from 1 bit up to 3 32-bit words per indexed item
-  // if the avg size of a fs on the heap is 8 (32 bit) words, and 
-  //    about 50 - 100 % of FSs are indexed, then the "typical" space used should be in the order of
-  //    2 bytes / indexed item, per view
-  // This mechanism is under the control of a Java system defined variable uima.track_fs_indexed
-  private final PositiveIntSet fsIndexed =
-      System.getProperty(TRACK_FS_INDEXED, "false").equals("false") ? 
-          null : 
-          new PositiveIntSet(); // set of FSs (addrs) that are in the index UIMA-4059
-
   @SuppressWarnings("unused")
   private FSIndexRepositoryImpl() {
     super();
@@ -1067,7 +1067,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   /**
    * Constructor.
-   * Assumption: called with the base CAS view
+   * Assumption: called first before next constructor call, with the base CAS view
    * 
    * @param cas
    */
@@ -1095,6 +1095,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     super();
     this.cas = cas;
     this.sii = baseIndexRepo.sii;
+    sii.isSetUpFromBaseCAS = true;  // bypasses initialization already done
     this.name2indexMap = new HashMap<String, IndexIteratorCachePair>();
     this.indexUpdates = new IntVector();
     this.indexUpdateOperation = new BitSet();
@@ -1179,7 +1180,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * This is where the actual index gets created.
    */
-  private IndexIteratorCachePair addNewIndex(FSIndexComparator comparator, int initialSize,
+  private IndexIteratorCachePair addNewIndex(final FSIndexComparator comparator, int initialSize,
       int indexType) {
     final Type type = comparator.getType();
     final int typeCode = ((TypeImpl) type).getCode();
@@ -1214,6 +1215,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // ind = new FSRBTIndex(this.cas, type);
     // ind = new FSVectorIndex(this.cas, initialSize);
     ind.init(comparator);
+    
     final IndexIteratorCachePair iicp = new IndexIteratorCachePair();
     iicp.index = ind;
     indexVector.add(iicp);
@@ -1362,12 +1364,24 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @param indexType
    * @return boolean
    */
-  public boolean createIndexNoQuestionsAsked(FSIndexComparator comp, String label, int indexType) {
+  public boolean createIndexNoQuestionsAsked(final FSIndexComparator comp, String label, int indexType) {
     IndexIteratorCachePair cp = this.name2indexMap.get(label);
     // Now check if the index already exists.
     if (cp == null) {
       // The name is new.
       cp = this.addNewIndexRecursive(comp, indexType);
+      
+      // create a set of feature codes that are in one or more index definitions
+      if (isTrackingFsIndexed && !sii.isSetUpFromBaseCAS) {
+        final int nKeys = comp.getNumberOfKeys();
+        for (int i = 0; i < nKeys; i++) {
+          if (comp.getKeyType(i) == FSIndexComparator.FEATURE_KEY) {
+            final int featCode = ((FeatureImpl)comp.getKeyFeature(i)).getCode();
+            cas.featureCodesInIndexKeysAdd(featCode);
+          }
+        }
+      }
+      
       this.name2indexMap.put(label, cp);
       return true;
     }
@@ -1855,7 +1869,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       getAllIndexedFS((Type) subtypes.get(i), iteratorList);
     }
   }
-
+  
   private void logIndexOperation(int fsRef, boolean added) {
     this.indexUpdates.add(fsRef);
     if (added) {
@@ -1892,7 +1906,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (added) {
         final int indexOfDeletedItem = this.fsDeletedFromIndex.indexOf(fsRef);
         if (indexOfDeletedItem >= 0) {
-          this.fsDeletedFromIndex.remove(indexOfDeletedItem);
+          this.fsDeletedFromIndex.removeElementAt(indexOfDeletedItem);
           this.fsReindexed.add(fsRef);
         } else if (this.fsReindexed.contains(fsRef)) {
           continue;  // skip adding this to anything
@@ -1902,11 +1916,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       } else {
         final int indexOfaddedItem = this.fsAddedToIndex.indexOf(fsRef);
         if (indexOfaddedItem >= 0) {
-          this.fsAddedToIndex.remove(indexOfaddedItem);
+          this.fsAddedToIndex.removeElementAt(indexOfaddedItem);
         } else {
           final int indexOfReindexedItem = this.fsReindexed.indexOf(fsRef);
           if (indexOfReindexedItem >= 0) {
-            this.fsReindexed.remove(indexOfReindexedItem);
+            this.fsReindexed.removeElementAt(indexOfReindexedItem);
             this.fsDeletedFromIndex.add(fsRef);
           }
           else {

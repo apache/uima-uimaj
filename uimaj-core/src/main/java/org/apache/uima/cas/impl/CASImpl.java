@@ -82,6 +82,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -245,6 +246,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private List<MarkerImpl> trackingMarkList;
     
+    private int cache_not_in_index = 0; // a one item cache of a FS not in the index
+    
+    private final PositiveIntSet_impl featureCodesInIndexKeys = 
+        FSIndexRepositoryImpl.isTrackingFsIndexed ? 
+          new PositiveIntSet_impl() : null; 
+        
+    private final PositiveIntSet_impl fssIndexed =
+        FSIndexRepositoryImpl.isTrackingFsIndexed ? 
+          new PositiveIntSet_impl() : null;
+          
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
@@ -256,6 +267,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // package protected to let other things share this info
   final SharedViewData svd; // shared view data
+  
+  void featureCodesInIndexKeysAdd(int featCode) {
+    svd.featureCodesInIndexKeys.add(featCode);
+  }
+  
 
   // The index repository. Referenced by XmiCasSerializer
   FSIndexRepositoryImpl indexRepository;
@@ -1916,8 +1932,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public String getStringValue(int addr, int feat) {
-    return this.getStringHeap().getStringForCode(
-        this.getHeap().heap[addr + this.svd.casMetadata.featureOffset[feat]]);
+    return ll_getStringValue(addr, feat);
   }
 
   public float getFloatValue(int addr, int feat) {
@@ -3161,8 +3176,35 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return ll_getIntValue(fsRef, featureCode);
   }
+  
+  /**
+   * Throw an exception if a modification is made to a feature of some FS where:
+   *   - the feature is being used as a key in one or more indexes, and 
+   *   - the FS is known to already have been added to the indexes
+   * @param fsRef - the FS to test if it is in the indexes
+   * @param featureCode - the feature being tested
+   */
+  private void checkForInvalidFeatureSetting(int fsRef, int featureCode) {
+    if ((null == svd.featureCodesInIndexKeys) || 
+        (svd.cache_not_in_index == fsRef)) {
+      return;
+    }
+    if (svd.featureCodesInIndexKeys.contains(featureCode)) {
+      if (this.svd.fssIndexed.contains(fsRef)) {
+        // signal error - modifying a feature which is used in some index as a key
+        CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_FEAT_SET,
+            new String[] { 
+              this.getTypeSystemImpl().ll_getFeatureForCode(featureCode).getName(),
+              new FeatureStructureImplC(this, fsRef).toString()});
+           throw e; 
+      } else {
+        svd.cache_not_in_index = fsRef;
+      }
+    }
+  }
 
   public final void ll_setIntValue(int fsRef, int featureCode, int value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
     	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
@@ -3171,6 +3213,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setFloatValue(int fsRef, int featureCode, float value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = float2int(value);
     if (this.svd.trackingMark != null) {
     	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
@@ -3179,6 +3222,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     if (null != value) {
       final TypeSystemImpl ts = this.svd.casMetadata.ts;
       String[] stringSet = ts.ll_getStringSet(ts.ll_getRangeType(featureCode));
@@ -3202,6 +3246,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setRefValue(int fsRef, int featureCode, int value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
     	this.logFSUpdate(fsRef, fsRef +  this.svd.casMetadata.featureOffset[featureCode],
@@ -3240,6 +3285,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final void ll_setCharBufferValue(int fsRef, int featureCode, char[] buffer, int start,
       int length) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     final int stringCode = this.getStringHeap().addCharBuffer(buffer, start, length);
     ll_setIntValue(fsRef, featureCode, stringCode);
   }
@@ -3676,6 +3722,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value ? CASImpl.TRUE
         : CASImpl.FALSE;
     if (this.svd.trackingMark != null) {
@@ -3691,6 +3738,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setByteValue(int fsRef, int featureCode, byte value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
       this.logFSUpdate(fsRef, fsRef + this.svd.casMetadata.featureOffset[featureCode], ModifiedHeap.FSHEAP, 1);
@@ -3705,6 +3753,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setShortValue(int fsRef, int featureCode, short value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     this.getHeap().heap[fsRef + this.svd.casMetadata.featureOffset[featureCode]] = value;
     if (this.svd.trackingMark != null) {
       this.logFSUpdate(fsRef, fsRef + this.svd.casMetadata.featureOffset[featureCode], ModifiedHeap.FSHEAP, 1);
@@ -3719,6 +3768,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setLongValue(int fsRef, int featureCode, long value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     final int offset = this.getLongHeap().addLong(value);
     setFeatureValue(fsRef, featureCode, offset);
   }
@@ -3731,6 +3781,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setDoubleValue(int fsRef, int featureCode, double value) {
+    checkForInvalidFeatureSetting(fsRef, featureCode);
     long val = Double.doubleToLongBits(value);
     final int offset = this.getLongHeap().addLong(val);
     setFeatureValue(fsRef, featureCode, offset);

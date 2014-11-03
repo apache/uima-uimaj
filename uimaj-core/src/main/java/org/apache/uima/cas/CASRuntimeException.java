@@ -203,6 +203,9 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
   public static final String DEREF_FS_OTHER_CAS = "DEREF_FS_OTHER_CAS";
   
+  /** While FS was in the index, illegal attempt to modify Feature "{0}" which is used as a key in one or more indices; FS = "{1}" */
+  public static final String ILLEGAL_FEAT_SET = "ILLEGAL_FEAT_SET";
+
   
 	public CASRuntimeException() {
 		super();
