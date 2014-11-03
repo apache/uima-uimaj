@@ -6,7 +6,7 @@
         {"sofa" : 8,  "aListFs" : 41 },  15,  22,  29 ] } }, 
   "@referenced_fss" : {
     "8" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "41" : {"@type" : "NonEmptyFSList",  "head" : 15,  "tail" : [22,  29 ] }, 
     "15" : {"@type" : "RefTypes",  "sofa" : 8 }, 
     "22" : {"@type" : "RefTypes",  "sofa" : 8 }, 
-    "29" : {"@type" : "RefTypes",  "sofa" : 8 }, 
-    "41" : {"@type" : "NonEmptyFSList",  "head" : 15,  "tail" : [22,  29 ] } } }
+    "29" : {"@type" : "RefTypes",  "sofa" : 8 } } }

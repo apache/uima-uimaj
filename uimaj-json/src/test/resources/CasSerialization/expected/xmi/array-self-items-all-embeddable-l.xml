@@ -4,10 +4,10 @@
     <cas:NonEmptyFSList xmi:id="41" head="15" tail="44"/>
     <cas:Sofa xmi:id="8" sofaNum="1" sofaID="_InitialView"/>
     <test:RefTypes xmi:id="15" sofa="8" begin="0" end="0"/>
-    <test:RefTypes xmi:id="22" sofa="8" begin="0" end="0"/>
-    <test:RefTypes xmi:id="29" sofa="8" begin="0" end="0"/>
     <cas:NonEmptyFSList xmi:id="44" head="22" tail="47"/>
+    <test:RefTypes xmi:id="22" sofa="8" begin="0" end="0"/>
     <cas:NonEmptyFSList xmi:id="47" head="29" tail="50"/>
+    <test:RefTypes xmi:id="29" sofa="8" begin="0" end="0"/>
     <cas:EmptyFSList xmi:id="50"/>
     <cas:View sofa="8" members="1 41"/>
 </xmi:XMI>

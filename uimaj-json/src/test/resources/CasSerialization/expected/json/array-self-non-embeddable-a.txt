@@ -6,7 +6,7 @@
         {"sofa" : 8,  "aArrayFS" : 36 },  15,  22,  29 ] } }, 
   "@referenced_fss" : {
     "8" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "36" : {"@type" : "FSArray",  "@collection" : [15,  22,  29 ] }, 
     "15" : {"@type" : "RefTypes",  "sofa" : 8 }, 
     "22" : {"@type" : "RefTypes",  "sofa" : 8 }, 
-    "29" : {"@type" : "RefTypes",  "sofa" : 8 }, 
-    "36" : {"@type" : "FSArray",  "@collection" : [15,  22,  29 ] } } }
+    "29" : {"@type" : "RefTypes",  "sofa" : 8 } } }
