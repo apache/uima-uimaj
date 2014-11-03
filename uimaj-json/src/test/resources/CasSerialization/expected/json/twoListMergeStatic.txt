@@ -15,6 +15,6 @@
         {"head" : 11,  "tail" : 5 }, 
         {"head" : 110,  "tail" : 5 } ] } }, 
   "@referenced_fss" : {
-    "5" : {"@type" : "NonEmptyIntegerList",  "head" : 22,  "tail" : 2 }, 
+    "1" : {"@type" : "EmptyIntegerList" }, 
     "2" : {"@type" : "NonEmptyIntegerList",  "head" : 33,  "tail" : 1 }, 
-    "1" : {"@type" : "EmptyIntegerList" } } }
+    "5" : {"@type" : "NonEmptyIntegerList",  "head" : 22,  "tail" : 2 } } }

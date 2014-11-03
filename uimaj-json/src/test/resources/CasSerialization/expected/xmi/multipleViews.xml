@@ -8,7 +8,6 @@
         <aListString>testStr</aListString>
     </test:AllTypes>
     <cas:Sofa xmi:id="29" sofaNum="1" sofaID="_InitialView"/>
-    <cas:Sofa xmi:id="185" sofaNum="2" sofaID="View2"/>
     <test:AllTypes xmi:id="36" sofa="29" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
     <cas:BooleanArray xmi:id="164" elements="false"/>
     <cas:ByteArray xmi:id="167" elements="0000"/>
@@ -16,6 +15,7 @@
     <cas:StringArray xmi:id="173">
         <elements/>
     </cas:StringArray>
+    <cas:Sofa xmi:id="185" sofaNum="2" sofaID="View2"/>
     <test:AllTypes xmi:id="220" sofa="185" begin="0" end="0" aBoolean="false" aByte="0" aShort="0" aInteger="0" aLong="0" aFloat="0.0" aDouble="0.0"/>
     <cas:BooleanArray xmi:id="349" elements="false"/>
     <cas:ByteArray xmi:id="352" elements="0000"/>

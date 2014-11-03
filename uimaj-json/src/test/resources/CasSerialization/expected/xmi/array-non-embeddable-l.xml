@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><xmi:XMI xmlns:cas="http:///uima/cas.ecore" xmlns:test="http:///org/apache/uima/test.ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:tcas="http:///uima/tcas.ecore" xmi:version="2.0">
+    <cas:NULL xmi:id="0"/>
+    <test:RefTypes xmi:id="1" sofa="8" begin="0" end="0" aListFs="15 22 29"/>
+    <test:RefTypes xmi:id="15" sofa="8" begin="0" end="0"/>
+    <test:RefTypes xmi:id="22" sofa="8" begin="0" end="0"/>
+    <test:RefTypes xmi:id="29" sofa="8" begin="0" end="0"/>
+    <cas:Sofa xmi:id="8" sofaNum="1" sofaID="_InitialView"/>
+    <cas:View sofa="8" members="1 15 22 29"/>
+</xmi:XMI>

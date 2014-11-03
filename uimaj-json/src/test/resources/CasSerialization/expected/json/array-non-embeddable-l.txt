@@ -1,0 +1,10 @@
+{
+  "@views" : {
+    "_InitialView" : {
+      "RefTypes" : [
+        {"sofa" : 8,  "aListFs" : [15,  22,  29 ] },  15,  22,  29 ] } }, 
+  "@referenced_fss" : {
+    "8" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "15" : {"@type" : "RefTypes",  "sofa" : 8 }, 
+    "22" : {"@type" : "RefTypes",  "sofa" : 8 }, 
+    "29" : {"@type" : "RefTypes",  "sofa" : 8 } } }

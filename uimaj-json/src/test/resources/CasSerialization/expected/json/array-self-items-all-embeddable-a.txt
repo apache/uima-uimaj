@@ -1,0 +1,12 @@
+{
+  "@views" : {
+    "_InitialView" : {
+      "FSArray" : [36 ], 
+      "RefTypes" : [
+        {"sofa" : 8,  "aArrayFS" : 36 } ] } }, 
+  "@referenced_fss" : {
+    "8" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "36" : {"@type" : "FSArray",  "@collection" : [
+        {"@type" : "RefTypes",  "sofa" : 8 }, 
+        {"@type" : "RefTypes",  "sofa" : 8 }, 
+        {"@type" : "RefTypes",  "sofa" : 8 } ] } } }

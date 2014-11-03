@@ -40,8 +40,11 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.IntegerList;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.json.JsonCasSerializer.JsonContextFormat;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -320,10 +323,9 @@ public class JsonCasSerializerTest extends TestCase {
   public void testRefs() throws Exception {
     setupTypeSystem("refTypes.xml");
     jcs.setPrettyPrint(true);
+    jcs.setJsonContext(JsonContextFormat.omitContext);
 
-   
-    FeatureStructure[] fss = new FeatureStructure[20];
-    
+      
     //  make root FS that is indexed and has a ref 
     RefTypes root = new RefTypes(jcas);
     root.addToIndexes();
@@ -334,15 +336,82 @@ public class JsonCasSerializerTest extends TestCase {
     root.setAFS(ref1);
     
     serializeAndCompare("indexedAndRef.txt");
-    
-    // have the indexed & ref'd item ref an embeddable
-    RefTypes ref2 = new RefTypes(jcas);
-    ref1.setAFS(ref2);
-    serializeAndCompare("indexedAndRefEmbed.txt");
-   
- 
+
+    arrayOrListRefstst(true);
+    arrayOrListRefstst(false);
   }
 
+  public void arrayOrListRefstst(boolean tstArray) throws Exception {
+    jcas.reset();
+    
+    //  make root FS that is indexed and has a ref 
+    RefTypes root = new RefTypes(jcas);
+    root.addToIndexes();
+       
+    // Test list or array with 1 non-embeddable
+    RefTypes refa1 = new RefTypes(jcas);
+    RefTypes refa2 = new RefTypes(jcas);
+    RefTypes refa3 = new RefTypes(jcas);
+    
+    
+    FSArray a = new FSArray(jcas,  3);
+    a.set(0, refa1);
+    a.set(1, refa2);
+    a.set(2, refa3);
+
+    NonEmptyFSList l0 = new NonEmptyFSList(jcas);
+    NonEmptyFSList l1 = new NonEmptyFSList(jcas);
+    NonEmptyFSList l2 = new NonEmptyFSList(jcas);
+    EmptyFSList tailEnd = new EmptyFSList(jcas);    
+    l0.setTail(l1);
+    l1.setTail(l2);;
+    l2.setTail(tailEnd);
+    l0.setHead(refa1);
+    l1.setHead(refa2);
+    l2.setHead(refa3);;
+         
+    if (tstArray) {
+      root.setAArrayFS(a);
+    } else {
+      root.setAListFs(l0);
+    }
+    
+    String sfx = (tstArray) ? "a" : "l";
+    // all embeddable:
+    serializeAndCompare("array-all-embeddable-" + sfx + ".txt");
+    // 1 not embeddable, at all 3 positions
+    refa1.addToIndexes();
+    serializeAndCompare("array-a1-not-" + sfx + ".txt");
+    refa1.removeFromIndexes();
+    refa2.addToIndexes();
+    serializeAndCompare("array-a2-not-" + sfx + ".txt");
+    refa2.removeFromIndexes();
+    refa3.addToIndexes();
+    serializeAndCompare("array-a3-not-" + sfx + ".txt");
+    
+    // 3 not embeddable:
+    refa1.addToIndexes();
+    refa2.addToIndexes();
+    serializeAndCompare("array-non-embeddable-" + sfx + ".txt");
+    
+    // FSArray not embeddable
+    if (tstArray) {
+      a.addToIndexes();  
+    } else {
+      l0.addToIndexes();
+    }
+    
+    serializeAndCompare("array-self-non-embeddable-" + sfx + ".txt");
+    
+    
+    // all embeddable, FSArray not
+    refa1.removeFromIndexes();
+    refa2.removeFromIndexes();
+    refa3.removeFromIndexes();
+    serializeAndCompare("array-self-items-all-embeddable-" + sfx + ".txt");        
+  }
+
+  
   private FeatureStructure emptyIntList() {
     return cas.createFS(emptyIntListType);
   }

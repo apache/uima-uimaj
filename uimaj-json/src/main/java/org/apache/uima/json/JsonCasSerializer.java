@@ -41,8 +41,9 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XmiSerializationSharedData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
-import org.apache.uima.internal.util.IntHashSet;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.apache.uima.json.impl.JsonContentHandlerJacksonWrapper;
@@ -1103,11 +1104,18 @@ public class JsonCasSerializer {
         jch.writeNlJustBeforeNext();
         jg.writeFieldName(getShortFeatureName(featCode));
         isEmbeddedFromFsFeature = true;
+        //  Use cases:  can write embed, which has embed, which has non-embed
+        //     once hit non-embed, this flag would be turned off,
+        //     But it's only tested at the beginning of writeEmbeddedFs, so subsequent fields reset this
+        //     This flag only used to control new lines for embedded case
         writeEmbeddedFs(addr);
         isEmbeddedFromFsFeature = false; // restore default
       }
     }
     
+    /**
+     * Write FSArrays
+     */
     @Override
     protected void writeArrays(int addr, int typeCode, int typeClass) throws IOException {
 //      maybeWriteIdFeat(addr);
@@ -1233,7 +1241,7 @@ public class JsonCasSerializer {
       int headFeat = listUtils.getHeadFeatCode(startNodeType);
       int tailFeat = listUtils.getTailFeatCode(startNodeType);
       int neListType = listUtils.getNeListType(startNodeType);  // non-empty
-      final IntHashSet visited = new IntHashSet();
+      final PositiveIntSet visited = new PositiveIntSet_impl();
      
       jg.writeStartArray();
       while (curNode != CASImpl.NULL) { 
