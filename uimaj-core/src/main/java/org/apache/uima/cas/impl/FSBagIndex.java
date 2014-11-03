@@ -28,12 +28,16 @@ import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 
 /**
  * Used for UIMA FS Bag Indexes
  * Uses IntVector to hold values of FSs
  */
 public class FSBagIndex extends FSLeafIndexImpl {
+  
+  private static boolean USE_POSITIVE_INT_SET = false;
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 
@@ -46,7 +50,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
     private int[] detectIllegalIndexUpdates; // shared copy with Index Repository
 
     private int typeCode;
-
+    
     public boolean isConcurrentModification() {
       return this.modificationSnapshot != this.detectIllegalIndexUpdates[this.typeCode];
     }
@@ -57,7 +61,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
 
     private IntVectorIterator() {
       super();
-      this.itPos = 0;
+      moveToFirst(); 
     }
 
     private IntVectorIterator(IntComparator comp) {
@@ -66,30 +70,44 @@ public class FSBagIndex extends FSLeafIndexImpl {
     }
 
     public boolean isValid() {
-      return ((this.itPos >= 0) && (this.itPos < FSBagIndex.this.index.size()));
+      if (USE_POSITIVE_INT_SET) {
+        return FSBagIndex.this.indexP.isValid(this.itPos);
+      } else {
+        return (this.itPos >=0) && (this.itPos < FSBagIndex.this.index.size());
+      }
     }
 
     public void moveToFirst() {
-      this.itPos = 0;
+      this.itPos = (USE_POSITIVE_INT_SET) ? 
+          FSBagIndex.this.indexP.moveToFirst() : 
+          0;
     }
 
     public void moveToLast() {
-      this.itPos = FSBagIndex.this.index.size() - 1;
+      this.itPos = (USE_POSITIVE_INT_SET) ? 
+          FSBagIndex.this.indexP.moveToLast() :
+          FSBagIndex.this.index.size() - 1;
     }
 
     public void moveToNext() {
-      ++this.itPos;
+      this.itPos = (USE_POSITIVE_INT_SET) ? 
+          FSBagIndex.this.indexP.moveToNext(itPos) :
+          itPos + 1;
     }
 
     public void moveToPrevious() {
-      --this.itPos;
+      this.itPos = (USE_POSITIVE_INT_SET) ? 
+          FSBagIndex.this.indexP.moveToPrevious(itPos) :
+          itPos - 1;
     }
 
     public int ll_get() {
       if (!isValid()) {
         throw new NoSuchElementException();
       }
-      return FSBagIndex.this.index.get(this.itPos);
+      return (USE_POSITIVE_INT_SET) ?
+          FSBagIndex.this.indexP.get(this.itPos) :
+          FSBagIndex.this.index.get(this.itPos);
     }
 
     /**
@@ -159,13 +177,15 @@ public class FSBagIndex extends FSLeafIndexImpl {
 
   // The index, a vector of FS references.
   private IntVector index;
+  
+  final private PositiveIntSet indexP = USE_POSITIVE_INT_SET ? new PositiveIntSet_impl() : null;
 
   private int initialSize;
 
   FSBagIndex(CASImpl cas, Type type, int initialSize, int indexType) {
     super(cas, type, indexType);
     this.initialSize = initialSize;
-    this.index = new IntVector(initialSize);
+    this.index = USE_POSITIVE_INT_SET ? null : new IntVector(initialSize);
   }
 
   /**
@@ -185,21 +205,30 @@ public class FSBagIndex extends FSLeafIndexImpl {
     return super.init(newComp);
   }
 
+  // not used (2014)
   IntVector getVector() {
     return this.index;
   }
 
   public void flush() {
     // done this way to reset to initial size if it grows
-    if (this.index.size() > this.initialSize) {
-      this.index = new IntVector(this.initialSize);
+    if (USE_POSITIVE_INT_SET) {
+      indexP.clear();      
     } else {
-      this.index.removeAllElements();
+      if (this.index.size() > this.initialSize) {
+        this.index = new IntVector(this.initialSize);
+      } else {
+        this.index.removeAllElements();
+      }
     }
   }
 
   public final boolean insert(int fs) {
-    this.index.add(fs);
+    if (USE_POSITIVE_INT_SET) {
+      indexP.add(fs);
+    } else {
+      index.add(fs);
+    }
     return true;
   }
 
@@ -217,14 +246,18 @@ public class FSBagIndex extends FSLeafIndexImpl {
   // // return binarySearch(this.index.getArray(), ele, 0, this.index.size());
   // }
   private final int find(int ele) {
-    final int[] array = this.index.getArray();
-    final int max = this.index.size();
-    for (int i = 0; i < max; i++) {
-      if (ele == array[i]) {
-        return i;
+    if (USE_POSITIVE_INT_SET) {
+      return indexP.find(ele);
+    } else {
+      final int[] array = this.index.getArray();
+      final int max = this.index.size();
+      for (int i = 0; i < max; i++) {
+        if (ele == array[i]) {
+          return i;
+        }
       }
+      return -1;
     }
-    return -1;
   }
 
   public int compare(int fs1, int fs2) {
@@ -309,10 +342,18 @@ public class FSBagIndex extends FSLeafIndexImpl {
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
    */
   public boolean contains(FeatureStructure fs) {
-    return (find(((FeatureStructureImpl) fs).getAddress()) >= 0);
+    final int addr = ((FeatureStructureImpl) fs).getAddress(); 
+    return USE_POSITIVE_INT_SET ?
+        indexP.contains(addr) :
+        (find(addr) >= 0);
   }
 
   public FeatureStructure find(FeatureStructure fs) {
+    if (USE_POSITIVE_INT_SET) {
+      final FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
+      final int addr = fsi.getAddress();
+      return (indexP.contains(addr)) ? fsi.getCASImpl().createFS(addr) : null;
+    }
     // Cast to implementation.
     FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
     // Use internal find method.
@@ -329,7 +370,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
    * @see org.apache.uima.cas.FSIndex#size()
    */
   public int size() {
-    return this.index.size();
+    return USE_POSITIVE_INT_SET ? indexP.size() : index.size();
   }
 
   /**
@@ -340,9 +381,13 @@ public class FSBagIndex extends FSLeafIndexImpl {
   }
 
   public void remove(int fsRef) {
-    final int pos = this.index.indexOfOptimizeAscending(fsRef);
-    if (pos >= 0) {
-      this.index.remove(pos);
+    if (USE_POSITIVE_INT_SET) {
+      indexP.remove(fsRef);
+    } else {
+      final int pos = this.index.indexOfOptimizeAscending(fsRef);
+      if (pos >= 0) {
+        this.index.remove(pos);
+      }
     }
   }
 

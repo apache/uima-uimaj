@@ -290,14 +290,15 @@ public class IntVector implements Serializable {
    * @return The position, or <code>-1</code> if it doesn't exist.
    */
   public int position(int elem) {
-    int i = 0;
-    while (i < this.pos) {
-      if (this.array[i] == elem) {
-        return i;
-      }
-      ++i;
-    }
-    return -1;
+    return indexOf(elem);
+//    int i = 0;
+//    while (i < this.pos) {
+//      if (this.array[i] == elem) {
+//        return i;
+//      }
+//      ++i;
+//    }
+//    return -1;
   }
 
   /**

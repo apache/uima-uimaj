@@ -35,7 +35,7 @@ public class PositiveIntSetTest extends TestCase {
 
 
   public void testBasic() {
-    PositiveIntSet s = new PositiveIntSet();
+    PositiveIntSet_impl s = new PositiveIntSet_impl();
     s.add(128);
     assertTrue(s.isBitSet);
     s.add(128128);
@@ -50,7 +50,7 @@ public class PositiveIntSetTest extends TestCase {
 
     // test offset
     int bb = 300000;
-    s = new PositiveIntSet();
+    s = new PositiveIntSet_impl();
     assertTrue(s.useOffset);
     s.add(bb);
 
@@ -75,7 +75,7 @@ public class PositiveIntSetTest extends TestCase {
 
     
     bb = 67;
-    s = new PositiveIntSet();
+    s = new PositiveIntSet_impl();
     assertTrue(s.useOffset);
     s.add(bb);
     s.add(bb);
@@ -96,14 +96,14 @@ public class PositiveIntSetTest extends TestCase {
     assertEquals(bb+1, it.next());
     assertEquals(bb+2, it.next());
     
-    // test switch from hash set to bit set
+    // test switch from IntSet to bit set
     s.clear();  // keeps useOffset false
     s.add(1216);  // makes the space used by bit set = 41 words
     
     for (int i = 1; i < 23; i++) {
       s.add(i);
 //      System.out.println("i is " + i + ", isBitSet = " + s.isBitSet);
-      assertTrue("i is " + i, (i < 20) ? (!s.isBitSet) : s.isBitSet);
+      assertTrue("i is " + i, (i < 15) ? (s.isIntSet) : s.isBitSet);
     }
     
     it = s.getOrderedIterator();
@@ -121,32 +121,48 @@ public class PositiveIntSetTest extends TestCase {
 //      if (!s.isBitSet) {
 //        System.out.println("is Bit set? " + s.isBitSet + ", i = " + i + ", # of entries is " + s.size());
 //      }
-      reached = i >= 5120;
+      reached = i >= 2560;
       assertTrue((!reached) ? s.isBitSet : !s.isBitSet);
     }
     assertTrue(reached);
   }
   
   public void testiterators() {
-    PositiveIntSet s = new PositiveIntSet();
-    int [] e = new int [] {123, 987, 789};
+    PositiveIntSet_impl s = new PositiveIntSet_impl();
+    int [] e = new int [] {123, 987, 789, 155, 
+                           156, 177, 444, 333,
+                           242, 252, 262, 243,
+                           221, 219, 217, 300,
+                           399};
     int [] eOrdered = Arrays.copyOf(e, e.length);
     Arrays.sort(eOrdered);
-    s.add(e);
+    for (int i : e) {s.add(i);}
     int[] r = s.toUnorderedIntArray();
     assertTrue(Arrays.equals(r, eOrdered));    
    
     s.clear(); 
     e[0] = 125;
     e[2] = 1500000;
-    s.add(e);
+    eOrdered = Arrays.copyOf(e, e.length);
+    Arrays.sort(eOrdered);
+    
+    for (int i : e) {s.add(i);}
     r = s.toUnorderedIntArray();
     assertFalse(Arrays.equals(r, e));
     assertFalse(s.isBitSet);
     r = s.toOrderedIntArray();
-    assertTrue(Arrays.equals(r, e));
+    assertTrue(Arrays.equals(r, eOrdered));
     
   }
   
+  /**
+   * TODO  extra cases to verify (paths)
+   * 
+   * 1) Switching from bit set due to lower bound dropping below offset
+   *   - where result would (?) fit in "short" hash set
+   *   - where result would be size < 16 
+   *   
+   * 2) Switching from bit set (tiny) to intSet  
+   */
   
 }

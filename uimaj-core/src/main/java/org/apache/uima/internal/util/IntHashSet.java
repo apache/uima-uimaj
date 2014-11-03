@@ -31,10 +31,14 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  * based on Int2IntHashMap
  * This impl is for use in a single thread case only
  * 
- * Supports shrinking (reallocating the big table)  
+ * Supports shrinking (reallocating the big table)
+ *
+ * Supports representing ints as "short" 2byte values if possible,
+ *   together with an offset amount.
  *   
+ *   Automatically switches to full int representation if needed  
  */
-public class IntHashSet {
+public class IntHashSet implements PositiveIntSet {
   
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
@@ -58,22 +62,43 @@ public class IntHashSet {
   private int maxProbe = 0;
 
   private int sizeWhichTriggersExpansion;
-  private int size; // number of elements in the table  
+  private int size; // number of elements in the table
+  
+  // offset only used with keys2.  values stored are key - offset
+  //   intent is to have them fit into short data type.
+  //   - value of 0 reserved; if value is 0 - means no entry
+  //   store values at or below the offset are stored as 1 less to avoid mapping to "0".
+  private int offset;
  
-  private int [] keys;
+  private int [] keys4;
+  private short[] keys2;
   
   private boolean secondTimeShrinkable = false;
   
+  // these are true values (before any offset adjustment)
   private int mostPositive = Integer.MIN_VALUE;
   private int mostNegative = Integer.MAX_VALUE;
 
   public IntHashSet() {
-    this(16);
+    this(12, 0);
   }
   
   public IntHashSet(int initialCapacity) {
+    this(initialCapacity, 0);
+  }
+  
+  /**
+   * 
+   * @param initialCapacity - you can add this many before expansion
+   * @param offset - for values in the short range, the amount to subtract
+   *                 before storing.
+   *                 If == MIN_VALUE, then force 4 byte ints
+   */
+  public IntHashSet(int initialCapacity, int offset) {
     this.initialCapacity = initialCapacity;
-    newTableKeepSize(initialCapacity);
+    boolean force4 = offset == Integer.MIN_VALUE;
+    this.offset = force4 ? 0 : offset;
+    newTableKeepSize(tableSpace(initialCapacity), force4);
     size = 0;
     if (TUNE) {
       histogram = new int[200];
@@ -100,6 +125,12 @@ public class IntHashSet {
     return tableSpace(numberOfElements, loadFactor);
   }
   
+  /**
+   * 
+   * @param numberOfElements
+   * @param factor
+   * @return capacity of the main table (either 2 byte or 4 byte entries)
+   */
   public static int tableSpace(int numberOfElements, Float factor) {
     if (numberOfElements < 0) {
       throw new IllegalArgumentException("must be > 0");
@@ -108,9 +139,20 @@ public class IntHashSet {
     return  Math.max(16, nextHigherPowerOf2(capacity));
   }
   
-  private void newTableKeepSize(int capacity) {
-    capacity = Math.max(16, nextHigherPowerOf2(capacity));
-    keys = new int[capacity];
+  private void newTableKeepSize(int capacity, boolean make4) {
+    if (!make4) {
+      capacity = Math.max(4, nextHigherPowerOf2(capacity));
+      make4 = (capacity >= 65536);
+    }
+    // don't use short values unless 
+    //    the number of items is < 65536
+    if (make4) {
+      keys4 = new int[capacity];
+      keys2 = null;
+    } else {
+      keys2 = new short[capacity];
+      keys4 = null;
+    }
     sizeWhichTriggersExpansion = (int)(capacity * loadFactor);
   }
 
@@ -130,32 +172,57 @@ public class IntHashSet {
   }
   
   public int getSpaceUsedInWords() {
-    return keys.length;  // 8 is overhead for this class excluding any Java object overhead
+    return (keys4 != null) ? keys4.length : (keys2.length >> 1);  
   }
   
   public static int getSpaceOverheadInWords() {
-    return 8;
+    return 11;
+  }
+  
+  private int getCapacity() {
+    return (null == keys4) ? keys2.length : keys4.length;
   }
   
   private void increaseTableCapacity() {
-    final int [] oldKeys = keys;
-    final int oldCapacity = oldKeys.length;
-    int newCapacity = 2 * oldCapacity;
+    final int oldCapacity = getCapacity();
+    final int newCapacity = oldCapacity << 1;
     
-    if (TUNE) {
-      System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);
-    }
-    newTableKeepSize(newCapacity);
-    for (int key : oldKeys) {
-      if (key != 0) {
-        addInner(key);
+    if (keys2 != null) {
+      final short[] oldKeys = keys2;
+      newTableKeepSize(newCapacity, false);
+      if (newCapacity > 32768) {
+        // switch to 4
+        if (TUNE) {System.out.println("Switching to 4 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
+        for (short adjKey : oldKeys) {
+          if (adjKey != 0) {
+            addInner4(adjKey + offset);
+          }
+        }
+        
+      } else {
+        if (TUNE) {System.out.println("Keeping 2 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
+        for (short adjKey : oldKeys) {
+          if (adjKey != 0) {
+            addInner2(adjKey);
+          }
+        }
+      }
+      
+    } else {
+      final int [] oldKeys = keys4;      
+      if (TUNE) {System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);}
+      newTableKeepSize(newCapacity, false);
+      for (int key : oldKeys) {
+        if (key != 0) {
+          addInner4(key);
+        }
       }
     }
   }
   
   // called by clear
   private void newTable(int capacity) {
-    newTableKeepSize(capacity);
+    newTableKeepSize(capacity, false);
     size = 0;
     resetHistogram();
   }
@@ -168,6 +235,19 @@ public class IntHashSet {
     }
   }
   
+  private void resetArray() {
+    if (keys4 == null) {
+      Arrays.fill(keys2,  (short)0);
+    } else {
+      Arrays.fill(keys4, 0);
+    }
+    mostPositive = Integer.MIN_VALUE;
+    mostNegative = Integer.MAX_VALUE;
+    resetHistogram();
+    size = 0;
+  }
+  
+  @Override
   public void clear() {
     // see if size is less than the 1/2 size that triggers expansion
     if (size <  (sizeWhichTriggersExpansion >>> 1)) {
@@ -175,26 +255,22 @@ public class IntHashSet {
       //   this is done to avoid thrashing around the threshold
       if (secondTimeShrinkable) {
         secondTimeShrinkable = false;
-        final int newCapacity = Math.max(initialCapacity, keys.length >>> 1);
-        if (newCapacity < keys.length) { 
+        final int currentCapacity = getCapacity();
+        final int newCapacity = Math.max(initialCapacity, currentCapacity >>> 1);
+        if (newCapacity < currentCapacity) { 
           newTable(newCapacity);  // shrink table by 50%
         } else { // don't shrink below minimum
-          Arrays.fill(keys, 0);
+          resetArray();
         }
-        size = 0;
-        resetHistogram();
         return;
+        
       } else {
         secondTimeShrinkable = true;
       }
     } else {
       secondTimeShrinkable = false; // reset this to require 2 triggers in a row
     }
-    size = 0;
-    Arrays.fill(keys, 0);
-    resetHistogram();
-    mostPositive = Integer.MIN_VALUE;
-    mostNegative = Integer.MAX_VALUE;
+   resetArray();
   }
 
   /** 
@@ -204,24 +280,25 @@ public class IntHashSet {
   *   current value of keys[position] would be 0.
   *   
   *   if the key is found, then keys[position] == key
-  * @param key -
+  * @param adjKey -
   * @return the probeAddr in keys array - might have a 0 value, or the key value if found
   */
-  private int find(final int key) {
-    if (key == 0) {
+  private int findPosition(final int adjKey) {
+    if (adjKey == 0) {
       throw new IllegalArgumentException("0 is an invalid key");
     }
 
-    final int hash = JCasHashMap.hashInt(key);
+    final int hash = JCasHashMap.hashInt(adjKey);
     int nbrProbes = 1;
-    final int[] localKeys = keys;
-    final int bitMask = localKeys.length - 1;
+    final int[] localKeys4 = keys4;
+    final short[] localKeys2 = keys2;
+    final int bitMask = ((localKeys4 == null) ? localKeys2.length : localKeys4.length) - 1;
     int probeAddr = hash & bitMask;
     int probeDelta = 1;
 
     while (true) {
-      final int testKey = localKeys[probeAddr];
-      if (testKey == 0 || testKey == key) {
+      final int testKey = (localKeys4 != null) ? localKeys4[probeAddr] : localKeys2[probeAddr];
+      if (testKey == 0 || testKey == adjKey) {
         break;
       }
       nbrProbes++;
@@ -240,72 +317,141 @@ public class IntHashSet {
     return probeAddr;
   }
    
-  public boolean contains(int key) {
-    return (key == 0) ? false : keys[find(key)] == key;
+  @Override
+  public boolean contains(int rawKey) {
+    if (keys4 == null) {
+      final int adjKey = getAdjKey(rawKey); 
+      return (rawKey == 0) ? false : keys2[findPosition(adjKey)] == adjKey;
+    }
+    return (rawKey == 0) ? false : keys4[findPosition(rawKey)] == rawKey;
+  }
+  
+  @Override
+  public int find(int rawKey) {
+    final int adjKey = getAdjKey(rawKey);
+    final int pos = findPosition(adjKey);
+    if (keys4 == null) {
+      return (keys2[pos] == adjKey) ? pos : -1;
+    } else {
+      return (keys4[pos] == adjKey) ? pos : -1;
+    }
   }
  
+  private int getAdjKey(int rawKey) {
+    if (keys4 != null) {
+      return rawKey;
+    }
+    int adjKey = rawKey - offset;
+    if (adjKey <= 0) {
+      adjKey --;  // because 0 is reserved for null
+    }
+    if ((adjKey > 32767) || (adjKey < -32768)) {
+      // convert to 4 byte because values can't be offset and fit in a short
+      final short[] oldKeys = keys2;
+      newTableKeepSize(getCapacity(), true);  // make a 4 table
+      // next fails to convert short to int
+//      System.arraycopy(oldKeys, 0,  keys4,  0,  oldKeys.length);
+      int i = 0;
+      for (int v : oldKeys) {
+        keys4[i++] = v;
+      }
+      return rawKey; // now using 4 byte table
+    } else {     
+      return adjKey;
+    }
+  }
+  
   /**
    * 
    * @param key
    * @return true if this set did not already contain the specified element
    */
-  public boolean add(int key) {
-    if (key == 0) {
-      throw new IllegalArgumentException("0 not allowed as a key to add");
-    }
+  @Override
+  public boolean add(int rawKey) {
+    final int adjKey = getAdjKey(rawKey);
     if (size == 0) {
-      mostPositive = mostNegative = key;
+      mostPositive = mostNegative = rawKey;
     } else {
-      if (key > mostPositive) {
-        mostPositive = key;
+      if (rawKey > mostPositive) {
+        mostPositive = rawKey;
       }
-      if (key < mostNegative) {
-        mostNegative = key;
+      if (rawKey < mostNegative) {
+        mostNegative = rawKey;
       }
     }
-    final int i = find(key);
-    if (keys[i] == 0) {
-      keys[i] = key;
+    final int i = findPosition(adjKey);
+    if (keys4 == null) {
+      if (keys2[i] == 0) {
+        keys2[i] = (short) adjKey;
+        incrementSize();
+        return true;
+      }
+      return false;
+    } 
+    if (keys4[i] == 0) {
+      keys4[i] = adjKey;
       incrementSize();
       return true;
     }
     return false;
   }
-  
+      
   /**
    * used for increasing table size
-   * @param key
+   * @param rawKey
    */
-  private void addInner(int key) {
-    final int i = find(key);
-    assert(keys[i] == 0);
-    keys[i] = key;
+  private void addInner4(int rawKey) {
+    final int i = findPosition(rawKey);
+    assert(keys4[i] == 0);
+    keys4[i] = rawKey;
   }
-
+  
+  private void addInner2(short adjKey) {
+    final int i = findPosition(adjKey);
+    assert(keys2[i] == 0);
+    keys2[i] = adjKey;
+  }
+  
   /**
    * mostPositive and mostNegative are not updated
    *   for removes.  So these values may be inaccurate,
    *   but mostPositive is always >= actual most positive,
    *   and mostNegative is always <= actual most negative.
-   * @param key -
+   * No conversion from int to short
+   * @param rawKey -
    * @return true if the key was present
    */
-  public boolean remove(int key) {
-    final int i = find(key);
-    if (keys[i] != 0) {
-      keys[i] = 0;
+  @Override
+  public boolean remove(int rawKey) {
+    final int adjKey = getAdjKey(rawKey);
+    final int i = findPosition(adjKey);
+    boolean removed = false;
+    if (keys4 == null) {
+      if (keys2[i] != 0) {
+        keys2[i] = 0;
+        removed = true;
+      }
+    } else {
+      if (keys4[i] != 0) {
+        keys4[i] = 0;
+        removed = true;
+      }
+    }
+    
+    if (removed) {
       size--;
-      if (key == mostPositive) {
+      if (rawKey == mostPositive) {
         mostPositive --;  // a weak adjustment
       }
-      if (key == mostNegative) {
+      if (rawKey == mostNegative) {
         mostNegative ++;  // a weak adjustment
       }
       return true;
-    }
+    } 
     return false;
   }
-
+  
+  @Override
   public int size() {
     return size;
   }
@@ -345,12 +491,25 @@ public class IntHashSet {
         System.out.println(i + ": " + histogram[i]);
       }     
       
-      System.out.println("bytes / entry = " + (float) (keys.length) * 4 / size());
-      System.out.format("size = %,d, prevExpansionTriggerSize = %,d, next = %,d%n",
+      if (keys4 == null) {
+        System.out.println("bytes / entry = " + (float) (keys2.length) * 2 / size());
+        System.out.format("size = %,d, prevExpansionTriggerSize = %,d, next = %,d%n",
           size(),
-          (int) ((keys.length >>> 1) * loadFactor),
-          (int) (keys.length * loadFactor));
+          (int) ((keys2.length >>> 1) * loadFactor),
+          (int) (keys2.length * loadFactor));
+      } else {
+        System.out.println("bytes / entry = " + (float) (keys4.length) * 4 / size());
+        System.out.format("size = %,d, prevExpansionTriggerSize = %,d, next = %,d%n",
+          size(),
+          (int) ((keys4.length >>> 1) * loadFactor),
+          (int) (keys4.length * loadFactor));        
+      }
     }
+  }
+  
+  @Override
+  public int get(int index) {
+    return offset + ((keys4 == null) ? keys2[index] : keys4[index]);
   }
   
   /**
@@ -363,12 +522,12 @@ public class IntHashSet {
       pos = 0;
     }
     
-    final int max = keys.length;
+    final int max = getCapacity();
     while (true) {
       if (pos >= max) {
         return pos;
       }
-      if (keys[pos] != 0) {
+      if (get(pos) != 0) {
         return pos;
       }
       pos ++;
@@ -381,7 +540,7 @@ public class IntHashSet {
    * @return
    */
   private int moveToPreviousFilled(int pos) {
-    final int max = keys.length;
+    final int max = getCapacity();
     if (pos > max) {
       pos = max - 1;
     }
@@ -390,7 +549,7 @@ public class IntHashSet {
       if (pos < 0) {
         return pos;
       }
-      if (keys[pos] != 0) {
+      if (get(pos) != 0) {
         return pos;
       }
       pos --;
@@ -407,14 +566,14 @@ public class IntHashSet {
 
     public final boolean hasNext() {
       curPosition = moveToNextFilled(curPosition);
-      return curPosition < keys.length;
+      return curPosition < getCapacity();
     }
 
     public final int next() {
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
-      return keys[curPosition++];
+      return get(curPosition++);
     }
 
     /**
@@ -432,14 +591,14 @@ public class IntHashSet {
       if (!hasPrevious()) {
         throw new NoSuchElementException();
       }
-      return keys[curPosition--];
+      return get(curPosition--);
     }
 
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */
     public void moveToEnd() {
-      curPosition = keys.length - 1;
+      curPosition = getCapacity() - 1;
     }
 
     /**
@@ -448,11 +607,36 @@ public class IntHashSet {
     public void moveToStart() {
       curPosition = 0;
     }
-  }
+  } 
   
-  
-  public IntListIterator getIterator() {
+  @Override
+  public IntListIterator iterator() {
     return new IntHashSetIterator();
   }
 
+  @Override
+  public int moveToFirst() {
+    return (size() == 0) ? -1 : moveToNextFilled(0);
+  }
+
+  @Override
+  public int moveToLast() {
+    return (size() == 0) ? -1 : moveToPreviousFilled(getCapacity() -1);
+  }
+
+  @Override
+  public int moveToNext(int position) {
+    final int n = moveToNextFilled(position + 1); 
+    return (n == getCapacity()) ? -1 : n;
+  }
+
+  @Override
+  public int moveToPrevious(int position) {
+    return moveToPreviousFilled(position - 1);
+  }
+
+  @Override
+  public boolean isValid(int position) {
+    return (position >= 0) && (position < getCapacity());
+  }
 }

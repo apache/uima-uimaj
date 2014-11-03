@@ -36,7 +36,7 @@ import java.util.NoSuchElementException;
  * If using offset, you must add ints in a range equal to or above the offset
  * 
  */
-public class IntBitSet {
+public class IntBitSet implements PositiveIntSet {
     
   private final BitSet set;
   
@@ -83,14 +83,15 @@ public class IntBitSet {
     this(maxInt, 0);
   }
 
-  public IntBitSet(int maxInt, int offset) {
-    set = new BitSet(Math.max(1, maxInt));
+  public IntBitSet(int maxAdjKey, int offset) {
+    set = new BitSet(Math.max(1, maxAdjKey));
     this.offset = offset;
   }
   
   /**
    * empty the IntBitSet
    */
+  @Override
   public void clear() {
     set.clear();
     size = 0;
@@ -101,15 +102,22 @@ public class IntBitSet {
    * @param key
    * @return
    */
+  @Override
   public boolean contains(int key) {
     return (key == 0) ? false : set.get(key - offset);
   }
  
+
+  @Override
+  public int find(int element) {
+    return contains(element) ? element : -1;
+  }
   /**
    * 
    * @param key
    * @return true if this set did not already contain the specified element
    */
+  @Override
   public boolean add(int original_key) {
     if (original_key < offset) {
       throw new IllegalArgumentException("key must be positive, but was " + original_key);
@@ -130,6 +138,7 @@ public class IntBitSet {
    * @param key -
    * @return true if this key was removed, false if not present
    */
+  @Override
   public boolean remove(int original_key) {
     final int key = original_key - offset;
     final boolean prev = set.get(key);
@@ -145,6 +154,7 @@ public class IntBitSet {
    * 
    * @return the number of elements in this set
    */
+  @Override
   public int size() {
     return size;    // bit set cardinality() is slow
   }
@@ -168,6 +178,12 @@ public class IntBitSet {
    */
   public int getLargestMenber() {
     return set.length() - 1 + offset;
+  }
+  
+  @Override
+  public int get(int position) {
+    assert(set.get(position));
+    return position + offset;
   }
   
   private class IntBitSetIterator implements IntListIterator {
@@ -221,7 +237,38 @@ public class IntBitSet {
 
   }
 
-  public IntBitSetIterator getIterator() {
+  @Override
+  public IntBitSetIterator iterator() {
     return new IntBitSetIterator();
   }
+
+  @Override
+  public int moveToFirst() {
+    return set.nextSetBit(0);
+  }
+
+  @Override
+  public int moveToLast() {
+    return set.length() - 1;
+  }
+
+  @Override
+  public int moveToNext(int position) {
+    return set.nextSetBit(position + 1);
+  }
+
+  @Override
+  public int moveToPrevious(int position) {
+    return set.previousSetBit(position - 1);  
+  }
+
+  /**
+   * This impl depends on position always pointing to a valid (== non 0) 
+   * element of the set, when it should be valid 
+   */
+  @Override
+  public boolean isValid(int position) {
+    return (position >= 0) && set.get(position);
+  }
+
 }

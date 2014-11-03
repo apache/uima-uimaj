@@ -26,7 +26,7 @@ import java.util.ListIterator;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
-import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.util.Level;
@@ -194,7 +194,7 @@ public class ListUtils {
   }
   
   public int getLength(int type, int addr, int neListType, int tailFeat) {
-    final PositiveIntSet visited = new PositiveIntSet();
+    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
   	foundCycle = false;
   	// first count length of list so we can allocate array
   	int length = 0;
@@ -235,7 +235,7 @@ public class ListUtils {
     final int headFeat = getHeadFeatCode(type);
     final int tailFeat = getTailFeatCode(type);
     final int neListType = getNeListType(type);
-    final PositiveIntSet visited = new PositiveIntSet();
+    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
 
     while (curNode != CASImpl.NULL) {
       final int curNodeType = cas.getHeapValue(curNode);
@@ -385,7 +385,7 @@ public class ListUtils {
     int currLength = this.getLength(this.neIntListType, addr);
     int curNode = addr;
     int prevNode = 0;
-    final PositiveIntSet visited = new PositiveIntSet();
+    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
     boolean foundCycle = false;
     int i =0;
     
@@ -461,7 +461,7 @@ public class ListUtils {
     int currLength = this.getLength(this.neFloatListType, addr);
     int curNode = addr;
     int prevNode = 0;
-    final PositiveIntSet visited = new PositiveIntSet();
+    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
     boolean foundCycle = false;
     int i =0;
     
@@ -536,7 +536,7 @@ public class ListUtils {
     int first = addr;
     int currLength = this.getLength(this.neFsListType, addr);
     boolean foundCycle = false;
-    final PositiveIntSet visited = new PositiveIntSet();
+    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
     int curNode = addr;
     int prevNode = 0;
     
@@ -614,7 +614,7 @@ public class ListUtils {
   public int updateStringList(int addr, List<String> stringValues) throws SAXException   {
     int first = addr;
     boolean foundCycle = false;
-    final PositiveIntSet visited = new PositiveIntSet();
+    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
     int curNode = addr;
     int prevNode = 0;
     int currLength = this.getLength(this.neStringListType, addr);

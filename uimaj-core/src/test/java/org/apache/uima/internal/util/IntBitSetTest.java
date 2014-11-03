@@ -37,7 +37,7 @@ public class IntBitSetTest extends TestCase {
     ibs.add(15);
     ibs.add(188);
     
-    IntListIterator it = ibs.getIterator();    
+    IntListIterator it = ibs.iterator();    
     assertTrue(it.hasNext());
     assertEquals(15, it.next());
     assertTrue(it.hasNext());
@@ -50,7 +50,7 @@ public class IntBitSetTest extends TestCase {
     
     ibs.add(1015);
     ibs.add(1188);
-    it = ibs.getIterator();    
+    it = ibs.iterator();    
     assertTrue(it.hasNext());
     assertEquals(1015, it.next());
     assertTrue(it.hasNext());
@@ -89,7 +89,7 @@ public class IntBitSetTest extends TestCase {
     ibs.remove(188);
     assertEquals(101, ibs.getLargestMenber());
     assertEquals(2,ibs.size());
-    IntListIterator it = ibs.getIterator();    
+    IntListIterator it = ibs.iterator();    
     assertTrue(it.hasNext());
     assertEquals(15, it.next());
     assertTrue(it.hasNext());
@@ -112,5 +112,19 @@ public class IntBitSetTest extends TestCase {
     assertEquals(6, ibs.getSpaceUsed_in_words());
     assertEquals(2,ibs.size());
     
+  }
+  
+  public void testIterator() {
+    ibs = new IntBitSet(63, 1000);
+    for (int i = 0; i < 10; i = i + 4) {
+      ibs.add(1000 + i);
+    }
+    
+    IntListIterator it = ibs.iterator();
+    for (int i = 0; i < 10; i += 4) {
+      assertTrue(it.hasNext());
+      assertEquals(1000 + i, it.next());        
+    }
+    assertFalse(it.hasNext());
   }
 }

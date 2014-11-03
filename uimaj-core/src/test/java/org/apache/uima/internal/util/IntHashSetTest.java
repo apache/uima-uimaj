@@ -64,7 +64,7 @@ public class IntHashSetTest extends TestCase {
   }
   
   private int[] getSortedValues(IntHashSet s) {
-    IntListIterator it = s.getIterator();
+    IntListIterator it = s.iterator();
     int[] r = new int[s.size()];
     int i = 0;
     while (it.hasNext()) {
@@ -91,7 +91,7 @@ public class IntHashSetTest extends TestCase {
   
   public void testWontExpand() {
     ihs = new IntHashSet(21);
-    assertEquals(32, ihs.getSpaceUsedInWords());
+    assertEquals(16, ihs.getSpaceUsedInWords());
     assertTrue(ihs.wontExpand(20));
     assertFalse(ihs.wontExpand(21));
   }

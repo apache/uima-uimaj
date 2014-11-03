@@ -347,10 +347,22 @@ public class JCasTest extends TestCase {
 			FSIndex fsi1 = jfsi.getIndex("all", Root.type);
 			FSIterator fsit1 = fsi1.iterator();
 			assertTrue(fsit1.isValid());
-			assertTrue(r2 == fsit1.get());
-			fsit1.moveToNext();
-			assertTrue(fsit1.isValid());
-			assertTrue(r1 == fsit1.get());
+			Root[] fetched = new Root[2];
+			
+			fetched[0] = (Root) fsit1.get();
+      fsit1.moveToNext();
+      assertTrue(fsit1.isValid());
+
+      fetched[1] = (Root) fsit1.get();
+      assertTrue(fsit1.isValid());
+      fsit1.moveToNext();
+      assertFalse(fsit1.isValid());
+			
+      // is bag index, order may be arbitrary
+			assertTrue((fetched[0] == r1 && fetched[1] == r2) ||
+			           (fetched[1] == r1 && fetched[0] == r2));
+			
+			
 			/*
        * while (fsit1.isValid()) { System.out.println("Iterator getting: " +
        * fsit1.get().toString()); fsit1.moveToNext(); }
