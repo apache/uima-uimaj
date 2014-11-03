@@ -316,7 +316,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   public int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;  // ref from another pkg
 
-  int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
   int sofaMimeFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 

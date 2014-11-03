@@ -1227,9 +1227,10 @@ public class XmiCasSerializer {
     protected void addNameSpace(XmlElementName xmlElementName) {};
 
     @Override
-    protected void writeFsStart(int addr, int typeCode /* ignored */) {
+    protected boolean writeFsStart(int addr, int typeCode /* ignored */) {
       workAttrs.clear();
       addAttribute(workAttrs, ID_ATTR_NAME, cds.getXmiId(addr));
+      return false;  // ignored
     }
    
     /**
@@ -1280,6 +1281,10 @@ public class XmiCasSerializer {
 
     @Override
     protected void writeEndOfIndividualFs() {}
+
+    @Override
+    protected void writeFsRef(int addr) throws Exception {} // only for JSON, not used here
+     
   }
         
 //  // for testing

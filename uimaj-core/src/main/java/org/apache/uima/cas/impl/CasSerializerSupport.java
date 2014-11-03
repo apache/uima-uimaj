@@ -33,10 +33,9 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.internal.util.IntHashSet;
-import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -214,7 +213,14 @@ public class CasSerializerSupport {
     
     abstract protected void writeView(int sofaAddr, int[] added, int[] deleted, int[] reindexed) throws Exception;  
     
-    abstract protected void writeFsStart(int addr, int typeCode) throws Exception;
+    /**
+     * 
+     * @param addr
+     * @param typeCode
+     * @return true if writing out referenced items (JSON)
+     * @throws Exception
+     */
+    abstract protected boolean writeFsStart(int addr, int typeCode) throws Exception;
     
     abstract protected void writeFs(int addr, int typeCode) throws Exception;
     
@@ -225,6 +231,8 @@ public class CasSerializerSupport {
     abstract protected void writeEndOfIndividualFs() throws Exception;  
     
     abstract protected void writeEndOfSerialization() throws Exception;
+    
+    abstract protected void writeFsRef(int addr) throws Exception;
   }
   
   /**
@@ -246,13 +254,13 @@ public class CasSerializerSupport {
      *  Computed during "enqueue" phase, prior to encoding
      *  Used to prevent duplicate enqueuing
      */    
-    public final PositiveIntSet visited_not_yet_written; 
+    public final PositiveIntSet_impl visited_not_yet_written; 
     
     /**
      * set of FSs that have multiple references
      * This is for JSON which is computing the multi-refs, not depending on the setting in a feature.
      */
-    public final IntHashSet multiRefFSs;
+    public final PositiveIntSet multiRefFSs;
     
     /* *********************************************
      * FSs that need to be serialized because they're 
@@ -271,7 +279,7 @@ public class CasSerializerSupport {
     public final IntVector[] indexedFSs;
 
     // only referenced FSs.
-    private final IntStack queue;
+    private final IntVector queue;
 
     
     // utilities for dealing with CAS list types
@@ -353,8 +361,8 @@ public class CasSerializerSupport {
       eh = CasSerializerSupport.this.eh;
 
       tsi = cas.getTypeSystemImpl();
-      visited_not_yet_written = new PositiveIntSet();
-      queue = new IntStack();
+      visited_not_yet_written = new PositiveIntSet_impl();
+      queue = new IntVector();
       indexedFSs = new IntVector[cas.getBaseSofaCount()];  // number of views
       listUtils = new ListUtils(cas, logger, eh);
       typeUsed = new BitSet();
@@ -366,7 +374,7 @@ public class CasSerializerSupport {
     	  throw exception;
       }
       isDelta = marker != null;
-      multiRefFSs = (trackMultiRefs) ? new IntHashSet() : null;
+      multiRefFSs = (trackMultiRefs) ? new PositiveIntSet_impl() : null;
     }
         
     // TODO: internationalize
@@ -661,7 +669,10 @@ public class CasSerializerSupport {
       if (!visited_not_yet_written.add(addr)) {
         // was already visited; means this FS has multiple references, either from FS feature(s) or indexes or both
         if (null != multiRefFSs) {
-          multiRefFSs.add(addr);
+          boolean wasAdded = multiRefFSs.add(addr);
+          if (wasAdded) {
+            queue.add(addr);  // if was in indexed set before, isn't in the queue set, but needs to be
+          }
         }
         return -1;
       }
@@ -708,7 +719,7 @@ public class CasSerializerSupport {
       if (typeCode == -1) {
         return;  
       }
-      queue.push(addr);
+      queue.add(addr);
       enqueueFeatures(addr, typeCode);
       // Also, for FSArrays enqueue the elements
       if (cas.isFSArrayType(typeCode)) { //TODO: won't get parameterized arrays??
@@ -757,9 +768,9 @@ public class CasSerializerSupport {
       int tailFeat = listUtils.getTailFeatCode(typeCode);
       boolean foundCycle = false;
       int curNode = listNode;
-      if (listNode == 14284) { // debug
-        System.out.println(listNode); //debug
-      }
+//      if (listNode == 14284) { // debug
+//        System.out.println(listNode); //debug
+//      }
       while (typeCode == neListType) {  // stop on end or 0
         if (!visited_not_yet_written.add(curNode)) {
           foundCycle = true;
@@ -796,9 +807,7 @@ public class CasSerializerSupport {
       
       // doing dynamic determination of multi-refs
       if (alreadyVisited) {
-        // if already enqueued, 
-        multiRefFSs.add(featVal); // mark as multi-ref'd
-        return false; // already enqueued, skip, prevent loops
+        return !multiRefFSs.contains(featVal); // enqueue in the "queue" section, first time this happens
       };
       return true;  // enqueue this item.  May or may not be eventually written embedded
                     // but we enqueue to track multi-use
@@ -815,6 +824,28 @@ public class CasSerializerSupport {
      *          true iff the enclosing FS (addr) is a list type
      */
     private void enqueueFeatures(int addr, int typeCode) throws SAXException {
+      
+      /**
+       * Handle FSArrays
+       */
+      if (typeCode == tsi.fsArrayTypeCode) {
+        final int array_size = cas.ll_getArraySize(addr);
+        int position = cas.getArrayStartAddress(addr);
+        
+        for (int j = 0; j < array_size; j++) {
+          final int fsRef = cas.getHeapValue(position++);
+          if (isFiltering) {
+            String typeName = tsi.ll_getTypeForCode(cas.getHeapValue(fsRef)).getName();
+            if (filterTypeSystem.getType(typeName) == null) {
+              continue;  // don't enqueue this type because it's filtered out
+            }
+          }
+          enqueue(fsRef);  
+        }
+        return;
+      }
+      
+      
       boolean insideListNode = listUtils.isListType(typeCode);
       int[] feats = tsi.ll_getAppropriateFeatures(typeCode);
       for (int feat : feats) {
@@ -856,8 +887,8 @@ public class CasSerializerSupport {
             //   unless already enqueued, in order to pick up any multiple refs
             final boolean alreadyVisited = visited_not_yet_written.contains(featVal);
             if (isMultiRef_enqueue(feat, featVal, alreadyVisited, false, false)) {
-              enqueue(featVal);
-            // otherwise, it is singly referenced and will be embedded
+              enqueue(featVal);  // will add to queue list 1st time multi-ref detected
+            // otherwise, it is singly referenced (so far) and will be embedded
             //   (or has already been enqueued, in dynamic embedding mode), so don't enqueue
             } else if (fsClass == LowLevelCAS.TYPE_CLASS_FSARRAY && !alreadyVisited) {
               // enqueue any FSs reachable from an FSArray
@@ -959,14 +990,16 @@ public class CasSerializerSupport {
      *   later).  The isWritten test prevents dupl writes
      */
     public void encodeQueued() throws Exception {
-      final int len = queue.size();
-      for (int i = 0; i < len; i++) {
-        final int addr = queue.get(i);
+      int[] queueArray = queue.toArray();
+      for (int addr : queueArray) {
         // for some serializers, things could be enqueued multiple times in the ref queue
         // so check if already written, and if so, skip
         //    Case where this happens: JSON serialization with dynamically determined single ref embedding
         //    - have to enqueue to check if multiple refs, even if embedding eventually
-        if (visited_not_yet_written.contains(addr)) { 
+        if (visited_not_yet_written.contains(addr)) {
+          if (null != multiRefFSs && !multiRefFSs.contains(addr)) {
+            continue;  // skip writing embeddable item (for JSON dynamic embedding) from Q; will be written from reference
+          }
           encodeFS(addr);
         }
       }
@@ -1055,39 +1088,43 @@ public class CasSerializerSupport {
       final int typeCode = cas.getHeapValue(addr);
 
       final int typeClass = classifyType(typeCode);
-      visited_not_yet_written.remove(addr);  // mark as written
-      csss.writeFsStart(addr, typeCode);
-
-      switch (typeClass) {
-        case LowLevelCAS.TYPE_CLASS_FS: 
-          csss.writeFs(addr, typeCode);
-          break;
-        
-          
-        case TYPE_CLASS_INTLIST:
-        case TYPE_CLASS_FLOATLIST:
-        case TYPE_CLASS_STRINGLIST:
-        case TYPE_CLASS_FSLIST: 
-          csss.writeListsAsIndividualFSs(addr, typeCode);
-          break;
-                
-        case LowLevelCAS.TYPE_CLASS_FSARRAY:
-        case LowLevelCAS.TYPE_CLASS_INTARRAY:
-        case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
-        case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY:
-        case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
-        case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
-        case LowLevelCAS.TYPE_CLASS_LONGARRAY:
-        case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
-        case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
-          csss.writeArrays(addr, typeCode, typeClass);
-          break;
-        
-        default: 
-          throw new RuntimeException("Error classifying FS type.");
-      }
+      boolean isIndexId = csss.writeFsStart(addr, typeCode);
       
-      csss.writeEndOfIndividualFs();
+      if (!isIndexId && multiRefFSs != null && multiRefFSs.contains(addr)) {
+        csss.writeFsRef(addr);        
+      } else {
+        visited_not_yet_written.remove(addr);  // mark as written
+        switch (typeClass) {
+          case LowLevelCAS.TYPE_CLASS_FS: 
+            csss.writeFs(addr, typeCode);
+            break;
+          
+            
+          case TYPE_CLASS_INTLIST:
+          case TYPE_CLASS_FLOATLIST:
+          case TYPE_CLASS_STRINGLIST:
+          case TYPE_CLASS_FSLIST: 
+            csss.writeListsAsIndividualFSs(addr, typeCode);
+            break;
+                  
+          case LowLevelCAS.TYPE_CLASS_FSARRAY:
+          case LowLevelCAS.TYPE_CLASS_INTARRAY:
+          case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
+          case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY:
+          case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
+          case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
+          case LowLevelCAS.TYPE_CLASS_LONGARRAY:
+          case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
+          case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
+            csss.writeArrays(addr, typeCode, typeClass);
+            break;
+          
+          default: 
+            throw new RuntimeException("Error classifying FS type.");
+        }
+        
+        csss.writeEndOfIndividualFs();
+      }
     }
     
     int filterType(int addr) {
