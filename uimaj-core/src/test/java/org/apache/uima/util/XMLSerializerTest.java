@@ -21,6 +21,8 @@ package org.apache.uima.util;
 import java.io.ByteArrayOutputStream;
 
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 
 import junit.framework.TestCase;
 
@@ -52,6 +54,22 @@ public class XMLSerializerTest extends TestCase {
     ch.endElement("", "foo", "foo");
     ch.endDocument();
     String xmlStr = new String(baos.toByteArray(), "UTF-8");
+//    if (xmlStr.contains("1.0")) {
+    // useful to investigate issues when bad XML output is produced
+    //   related to which Java implementation is being used
+      Transformer t = TransformerFactory.newInstance().newTransformer();
+      t.setOutputProperty(OutputKeys.VERSION, "1.1");
+      
+      System.out.println("Java version is " + 
+                            System.getProperty("java.vendor") + " " +
+                            System.getProperty("java.version") + " " +
+                            System.getProperty("java.vm.name") + " " +
+                            System.getProperty("java.vm.version") + 
+                         "\n  javax.xml.transform.TransformerFactory: " +
+                            System.getProperty("javax.xml.transform.TransformerFactory") + 
+                         "\n  Transformer version: " +
+                            t.getOutputProperty(OutputKeys.VERSION));
+//    }
     assertEquals("<?xml version=\"1.1\" encoding=\"UTF-8\"?><foo/>", xmlStr);
   }
   
