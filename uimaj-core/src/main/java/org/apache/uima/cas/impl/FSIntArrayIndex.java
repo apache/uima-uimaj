@@ -114,10 +114,35 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
      */
     public void moveTo(int i) {
       final int position = find(i);
+      boolean found = false;
       if (position >= 0) {
         this.itPos = position;
-      } else {
+        found = true;
+      } else {  // not found
         this.itPos = -(position + 1);
+      }
+      
+      // https://issues.apache.org/jira/browse/UIMA-4094
+      // make sure you go to earliest one
+      if (!found || !isValid()) {
+        // this means the moveTo found the insert point at the end of the index
+        // so just return invalid, since there's no way to return an insert point for a position
+        // that satisfies the FS at that position is greater than fs  
+        return;
+      }    
+      // Go back until we find a FS that is really smaller
+      while (true) {
+        moveToPrevious();
+        if (isValid()) {
+          int prev = get();
+          if (compare(prev, i) != 0) {
+            moveToNext(); // go back
+            break;
+          }
+        } else {
+          moveToFirst();  // went to before first, so go back to 1st
+          break;
+        }
       }
     }
 

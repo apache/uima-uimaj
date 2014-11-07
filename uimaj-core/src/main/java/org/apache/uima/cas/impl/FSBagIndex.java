@@ -37,7 +37,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
  */
 public class FSBagIndex extends FSLeafIndexImpl {
   
-  private static boolean USE_POSITIVE_INT_SET = false;
+  private static boolean USE_POSITIVE_INT_SET = true;
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 
@@ -127,6 +127,11 @@ public class FSBagIndex extends FSLeafIndexImpl {
     }
 
     /**
+     * Strictly speaking, moving to a FS in a bag index isn't a valid operation because there are no keys
+     *   to define "equals".
+     *   
+     * However, we implement the following:  If the FS is == (identical), we return that position.
+     * If the FS is not found, we just move to the first item 
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int i) {
@@ -134,7 +139,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
       if (position >= 0) {
         this.itPos = position;
       } else {
-        this.itPos = -(position + 1);
+        moveToFirst();  
       }
     }
 
@@ -225,11 +230,11 @@ public class FSBagIndex extends FSLeafIndexImpl {
 
   public final boolean insert(int fs) {
     if (USE_POSITIVE_INT_SET) {
-      indexP.add(fs);
+      return indexP.add(fs);
     } else {
       index.add(fs);
+      return true;  // supposed to return true if added, but can't tell, return value ignored anyways
     }
-    return true;
   }
 
   /*

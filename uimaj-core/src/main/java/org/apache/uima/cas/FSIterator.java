@@ -112,6 +112,9 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * such feature structure exists in the underlying collection, set the iterator to the "insertion
    * point" for <code>fs</code>, i.e., to a point where the current feature structure is greater
    * than <code>fs</code>, and the previous one is less than <code>fs</code>.
+   * <p>
+   * If the fs is greater than all of the entries in the index, the moveTo cannot set the iterator to an insertion point
+   * where the current feature structure is greater than fs, so it marks the iterator "invalid".
    * 
    * @param fs
    *          The feature structure the iterator should be set to.

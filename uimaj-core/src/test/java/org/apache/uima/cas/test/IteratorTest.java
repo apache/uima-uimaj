@@ -204,6 +204,52 @@ public class IteratorTest extends TestCase {
     it.moveToPrevious();
     assertTrue(index.compare(match, it.get()) > 0);
   }
+  
+  public void testMoveToPastEnd() {  // https://issues.apache.org/jira/browse/UIMA-4094
+    this.cas.getIndexRepository().addFS(
+        this.cas.createAnnotation(this.annotationType, 1,2));
+    
+    AnnotationFS pastEnd = this.cas.createAnnotation(this.annotationType,  2,  3);
+    FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
+    FSIterator<AnnotationFS> it = index.iterator();
+    it.moveTo(pastEnd);
+    assertFalse(it.isValid());
+  }
+  
+  public void testMoveToFirstOfEqualOneType() {
+    for (int i = 0; i < 2; i++) {
+      cas.reset();
+      if (i == 0) {
+        this.cas.getIndexRepository().addFS(
+            this.cas.createAnnotation(this.subsentenceType, 0, 1));        
+      }
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.subsentenceType, 1,2));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.subsentenceType, 1,2));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.subsentenceType, 1,3));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.subsentenceType, 2,2));
+      this.cas.getIndexRepository().addFS(
+          this.cas.createAnnotation(this.subsentenceType, 2, 5));
+      
+      AnnotationFS testAnnot = this.cas.createAnnotation(this.subsentenceType, 1, 2);
+      
+      FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex(this.subsentenceType);
+      FSIterator<AnnotationFS> it = index.iterator();
+      it.moveTo(testAnnot);
+      for (int j = 0; j < 2; j++) {
+        assertTrue(it.isValid());
+        AnnotationFS fs = it.get();
+        assertEquals(1, fs.getBegin()); 
+        assertEquals(2, fs.getEnd());
+        it.moveToNext();
+      }
+      assertTrue(it.isValid());
+    }
+  }
+  
 
   private void createFSs(int i) {
     this.cas.getIndexRepository().addFS(

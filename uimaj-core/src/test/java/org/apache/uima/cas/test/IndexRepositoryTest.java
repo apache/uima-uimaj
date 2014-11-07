@@ -145,25 +145,43 @@ public class IndexRepositoryTest extends TestCase {
   
   public void testRemovalSpeedBagAlone() throws Exception {
     // create an instance of an non-annotation type
-    Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-    FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
-    // create 40000 token-types
-    for (int i = 0; i < fsa.length; i++) {
-      fsa[i] = this.cas.createFS(fsType);
-    }
-    
+   
+
+    for (int iii = 0; iii < 3 /*10000*/; iii++) { // change to 10000 for iterations
+      
+//      this.cas = CASInitializer.initCas(new CASTestSetup());
+//      this.typeSystem = this.cas.getTypeSystem();
+//      this.indexRep = this.cas.getIndexRepository();
+      
+      // create 40000 token-types
+      Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+//      Feature beginFeat = typeSystem.getFeatureByFullName("Token:begin");
+      FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
+      for (int i = 0; i < fsa.length; i++) {
+        fsa[i] = this.cas.createFS(fsType);
+//        fsa[i].setIntValue(beginFeat,  i);
+      }
     // warmup and jit
     timeAdd2Indexes(fsa);
     timeRemoveFromIndexes(fsa);
-    
+//    timeAdd2Indexes(fsa);
+//    timeRemoveFromIndexes(fsa);
+    System.gc();
     long a2i = timeAdd2Indexes(fsa);
+//    Thread.currentThread().sleep(1000*60*60);  // for using yourkit to investigate memory sizes
     long rfi = timeRemoveFromIndexes(fsa);
     
     long a2i2 = timeAdd2Indexes(fsa);
     long rfir = timeRemoveFromIndexesReverse(fsa);
     
-    System.out.format("Timing add/remv from bag indexes: add1: %,d msec, add2: %,d msec, rmv: %,d msec, rmvReversed: %,d msec%n", 
-        a2i, a2i2, rfi, rfir);
+//    if (iii == 600) {
+//      System.out.println("debug stop");
+//    }
+    if (iii < 10 || (iii % 200) == 0) {
+    System.out.format("%,d Timing add/remv from bag indexes: add1: %,d msec, add2: %,d msec, rmv: %,d msec, rmvReversed: %,d msec%n", 
+        iii, a2i, a2i2, rfi, rfir);
+    }
+    }
   }
 
   private long timeAdd2Indexes (FeatureStructure[] fsa) {

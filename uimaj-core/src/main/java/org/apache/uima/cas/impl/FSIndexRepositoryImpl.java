@@ -47,7 +47,6 @@ import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntSet;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.PositiveIntSet_impl;
 
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
 
@@ -663,20 +662,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // configured to continue with forward iterations
       this.wentForward = true;
       this.lastValidIndex = lvi;
-      // Go back until we find a FS that is really smaller
-      while (true) {
-        moveToPrevious();
-        if (isValid()) {
-          int prev = get();
-          if (this.iicp.index.compare(prev, fs) != 0) {
-            moveToNext();
-            break;
-          }
-        } else {
-          moveToFirst();
-          break;
-        }
-      }
+     
+      // moved to leaf iterator
+//      if (!isValid()) {
+//        // this means the moveTo found the insert point at the end of the index
+//        // so just return invalid, since there's no way to return an insert point for a position
+//        // that satisfies the FS at that position is greater than fs  
+//        return;
+//      }
+//      // Go back until we find a FS that is really smaller
+//      while (true) {
+//        moveToPrevious();
+//        if (isValid()) {
+//          int prev = get();
+//          if (this.iicp.index.compare(prev, fs) != 0) {
+//            moveToNext();
+//            break;
+//          }
+//        } else {
+//          moveToFirst();
+//          break;
+//        }
+//      }
     }
 
     /*
