@@ -31,7 +31,7 @@ public class IntHashSetTest extends TestCase {
   public void setUp() {
     ihs = new IntHashSet();
   }
-
+  
   public void testBasic() {
     
     ihs.add(15);
@@ -96,6 +96,14 @@ public class IntHashSetTest extends TestCase {
     assertFalse(ihs.wontExpand(21));
   }
   
+  public void testExpandNpe() {
+    ihs.add(15);
+    ihs.add(150000);  // makes 4 byte table entries
+    
+    for (int i = 1; i < 256; i++) {  // 0 is invalid key
+      ihs.add(i);  // causes resize, check no NPE etc thrown.
+    }
+  }
   
   
  
