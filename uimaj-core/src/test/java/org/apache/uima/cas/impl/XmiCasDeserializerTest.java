@@ -489,14 +489,19 @@ public class XmiCasDeserializerTest extends TestCase {
       CAS cas2 = cas.createView("OtherSofa");
       cas2.setDocumentText("This is only a test");
 
-      // create an annotation and add to index of both views
-      AnnotationFS anAnnot = cas.createAnnotation(cas.getAnnotationType(), 0, 5);
-      cas.getIndexRepository().addFS(anAnnot);
-      cas2.getIndexRepository().addFS(anAnnot);
-      FSIndex tIndex = cas.getAnnotationIndex();
-      FSIndex t2Index = cas2.getAnnotationIndex();
-      assertTrue(tIndex.size() == 2); // document annot and this one
-      assertTrue(t2Index.size() == 2); // ditto
+      // Change this test to create an instance of TOP because you cannot add an annotation to other than 
+      //   the view it is created in. https://issues.apache.org/jira/browse/UIMA-4099
+      // create a TOP and add to index of both views
+      Type topType = cas.getTypeSystem().getTopType();
+      FeatureStructure aTOP = (FeatureStructure) cas.createFS(topType);
+      cas.getIndexRepository().addFS(aTOP);
+      cas2.getIndexRepository().addFS(aTOP); 
+      FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(topType);
+      FSIterator<FeatureStructure> it2 = cas2.getIndexRepository().getAllIndexedFS(topType);
+      it.next(); it.next();
+      it2.next(); it2.next(); 
+      assertFalse(it.hasNext());
+      assertFalse(it2.hasNext());
 
       // serialize
       StringWriter sw = new StringWriter();
@@ -523,8 +528,14 @@ public class XmiCasDeserializerTest extends TestCase {
         assertEquals("This is only a test", newCas2.getDocumentText());
 
         // check that annotation is still indexed in both views
-        assertTrue(tIndex.size() == 2); // document annot and this one
-        assertTrue(t2Index.size() == 2); // ditto
+        // check that annotation is still indexed in both views
+        it = newCas.getIndexRepository().getAllIndexedFS(topType);
+        it2 = newCas2.getIndexRepository().getAllIndexedFS(topType);
+        it.next(); it.next();
+        it2.next(); it2.next(); 
+        assertFalse(it.hasNext());
+//        assertFalse(it2.hasNext());        assertTrue(tIndex.size() == 2); // document annot and this one
+//        assertTrue(t2Index.size() == 2); // ditto
 
         newCas.reset();
       }
