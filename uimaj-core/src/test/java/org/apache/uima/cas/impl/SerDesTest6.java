@@ -89,7 +89,8 @@ public class SerDesTest6 extends TestCase {
   private CASImpl casSrc;
   private TTypeSystem[] alternateTTypeSystems;
   
-  private final Random random;
+  private  Random random;
+  private long seed;
 
   public class CASTestSetup implements AnnotatorInitializer {
 
@@ -223,12 +224,20 @@ public class SerDesTest6 extends TestCase {
 
   // Constructor
   public SerDesTest6() {
+    setRandom();
+    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed);
+   }
+  
+  private void setRandom() {
     Random sg = new Random();
-    long seed = sg.nextLong();
+    seed = sg.nextLong();
 //    seed =  2934127305128325787L;
     random = new Random(seed);
-    System.out.format("RandomSeed: %,d%n", seed);
-   }
+  }
+  
+  private void setRandom(long seed) {
+    random = new Random(seed);
+  }
   
   public TTypeSystem setupTTypeSystem(TypeSystems kind) {
     if (kind == EqTwoTypes) {
@@ -412,32 +421,55 @@ public class SerDesTest6 extends TestCase {
   }
 
   public void testDeltaWithDblArrayMod() throws IOException {
-    TTypeSystem m = getTT(EqTwoTypes);
-    remoteCas = setupCas(m);
-    loadCas(casSrc, mSrc);
-    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
-    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    lfs = getIndexedFSs(remoteCas, m);
-    FeatureStructure fs = lfs.get(10);  /* has double array length 2 */
-    DoubleArrayFS d = (DoubleArrayFS) maybeGetFeatureKind(fs, m, "Adouble");
-    d.set(0, 12.34D);
-    verifyDelta(marker, ri);
+    for (int i = 0; i < 100; i++) {
+      TTypeSystem m = getTT(EqTwoTypes);
+      remoteCas = setupCas(m);
+      loadCas(casSrc, mSrc);
+      ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
+      MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+      lfs = getIndexedFSs(remoteCas, m);
+      FeatureStructure fs = lfs.get(10);  /* has double array length 2 */
+      DoubleArrayFS d = (DoubleArrayFS) maybeGetFeatureKind(fs, m, "Adouble");
+      if (d == null) {  // could happen because features are randomly omitted
+        System.out.println("    Adouble feature omitted, retrying");
+      } else if (d.size() == 0) {
+        System.out.println("    Adouble feature array has 0 length, retrying");    
+      } else {
+        d.set(0, 12.34D);
+        verifyDelta(marker, ri);
+        break;
+      }      
+      setRandom();
+      setUp();
+      System.out.println(" testDelta w/ dbl array mod random = " + seed + ", i = " + i);
+    }
   }
   
   public void testDeltaWithByteArrayMod() throws IOException {
-    TTypeSystem m = getTT(EqTwoTypes);
-    remoteCas = setupCas(m);
-    loadCas(casSrc, mSrc);
-    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
-    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    
-    lfs = getIndexedFSs(remoteCas, m); // gets FSs below the line
-
-    FeatureStructure fs = lfs.get(10);
-    ByteArrayFS sfs = (ByteArrayFS) maybeGetFeatureKind(fs, m, "Abyte");
-    sfs.set(0, (byte)21);
-
-    verifyDelta(marker, ri);
+    for (int i = 0; i < 10; i++) {
+      TTypeSystem m = getTT(EqTwoTypes);
+      remoteCas = setupCas(m);
+      loadCas(casSrc, mSrc);
+      ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
+      MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+      
+      lfs = getIndexedFSs(remoteCas, m); // gets FSs below the line
+  
+      FeatureStructure fs = lfs.get(10);
+      ByteArrayFS sfs = (ByteArrayFS) maybeGetFeatureKind(fs, m, "Abyte");
+      if (sfs == null) {  // could happen because features are randomly omitted
+        System.out.println("    Abyte feature omitted, retrying");
+      } else if (sfs.size() == 0) {
+        System.out.println("    Abyte feature array has 0 length, retrying");    
+      } else {
+        sfs.set(0, (byte)21);
+        verifyDelta(marker, ri);
+        break;
+      }
+      setRandom();  // retry with different random number
+      setUp();
+      System.out.println("  testDelta w byte array mod retrying, i = " + i);
+    }
   }
 
   public void testDeltaWithStrArrayMod() throws IOException {
