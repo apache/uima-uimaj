@@ -211,7 +211,7 @@ public class IntHashSet implements PositiveIntSet {
     } else {
       final int [] oldKeys = keys4;      
       if (TUNE) {System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);}
-      newTableKeepSize(newCapacity, false);
+      newTableKeepSize(newCapacity, true);
       for (int key : oldKeys) {
         if (key != 0) {
           addInner4(key);
@@ -402,6 +402,9 @@ public class IntHashSet implements PositiveIntSet {
    */
   private void addInner4(int rawKey) {
     final int i = findPosition(rawKey);
+    if (null == keys4) {
+      System.out.println("debug stop");
+    }
     assert(keys4[i] == 0);
     keys4[i] = rawKey;
   }
