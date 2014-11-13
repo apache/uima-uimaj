@@ -38,6 +38,8 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.cas_data.impl.CasComparerViewChange;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -285,10 +287,15 @@ public class CasCopierTest extends TestCase {
     LowLevelCAS lowLevelSrcCasView = srcCasView.getLowLevelCAS();
     int typeCode = lowLevelSrcCasView.ll_getTypeSystem().ll_getCodeForType(
             srcCas.getAnnotationType());
-    int destFsAddr = lowLevelSrcCasView.ll_createFS(typeCode);
-    AnnotationFS fs = (AnnotationFS) lowLevelSrcCasView.ll_getFSForRef(destFsAddr);
-    fs.setIntValue(srcCas.getBeginFeature(), 0);
-    fs.setIntValue(srcCas.getEndFeature(), 4);
+    // switch method of creating Annotation to create one with valid sofa ref https://issues.apache.org/jira/browse/UIMA-4099
+//    int destFsAddr = lowLevelSrcCasView.ll_createFS(typeCode);
+//    AnnotationFS fs = (AnnotationFS) lowLevelSrcCasView.ll_getFSForRef(destFsAddr);
+    // the above creates an invalid Annotation, because it doesn't set the sofa ref for the view
+    // replace with below that includes the proper sofa ref
+    JCas srcJCas = srcCasView.getJCas();
+    AnnotationFS fs = new Annotation(srcJCas, 0, 4);
+//    fs.setIntValue(srcCas.getBeginFeature(), 0);
+//    fs.setIntValue(srcCas.getEndFeature(), 4);
     assertEquals("This", fs.getCoveredText());
     srcCasView.addFsToIndexes(fs);
     CasCopier.copyCas(srcCas, destCas, true);
