@@ -297,6 +297,23 @@ public class JcasSofaTest extends TestCase {
       assertTrue(("cette").equals(tstAnnot.getCoveredText()));
       tstAnnot = (Annotation) anArray.get(2);
       assertTrue(("das").equals(tstAnnot.getCoveredText()));
+      
+//      // code to write out test cas used by other routines,
+//      // normally commented out, unless need to regenerate
+//      xcasFilename = "testTypeSystemNew.xml";
+//      ser = new XCASSerializer(cas.getTypeSystem());
+//      outputXCAS = new FileOutputStream(xcasFilename);
+//      xmlSer = new XMLSerializer(outputXCAS);
+//      try {
+//        ser.serialize(cas, xmlSer.getContentHandler());
+//        outputXCAS.close();
+//      } catch (IOException e) {
+//        e.printStackTrace();
+//      } catch (SAXException e) {
+//        e.printStackTrace();
+//      }
+      
+      
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
