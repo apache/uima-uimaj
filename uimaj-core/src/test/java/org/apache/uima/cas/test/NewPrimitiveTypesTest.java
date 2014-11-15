@@ -360,6 +360,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     validateFSData(cas);
 
     // editing the original FS should not change the clone
+    englishView.removeFsFromIndexes(fs);
     fs.setStringValue(stringFeature, "foo");
     fs.setFloatValue(floatFeature, -1f);
     fs.setByteValue(byteFeature, (byte) -1);
@@ -367,7 +368,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setShortValue(shortFeature, (short) -1);
     fs.setLongValue(longFeature, -1);
     fs.setDoubleValue(doubleFeature, -1);
-
+    englishView.addFsToIndexes(fs);
     validateFSData(cas);
   }
 
@@ -463,7 +464,6 @@ public class NewPrimitiveTypesTest extends TestCase {
 
     // create an FS of exampleType and index it
     AnnotationFS fs = englishView.createAnnotation(exampleType, 1, 5);
-    englishView.getIndexRepository().addFS(fs);
 
     // create Array FSs
     StringArrayFS strArrayFS = parmCas.createStringArrayFS(5);
@@ -540,6 +540,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setFeatureValue(longArrayFeature, longArrayFS);
     fs.setDoubleValue(doubleFeature, Double.MAX_VALUE);
     fs.setFeatureValue(doubleArrayFeature, doubleArrayFS);
+    
+    englishView.getIndexRepository().addFS(fs);
   }
 
   public void testNewPrimitiveTypeKeys() throws Exception {
