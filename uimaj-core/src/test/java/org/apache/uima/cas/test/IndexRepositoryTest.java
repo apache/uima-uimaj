@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -28,7 +29,10 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 
 
 public class IndexRepositoryTest extends TestCase {
@@ -106,8 +110,24 @@ public class IndexRepositoryTest extends TestCase {
     assertEquals(index.size(), 1);
 
     index = ir.getIndex(CASTestSetup.ANNOT_SORT_INDEX);
-    assertEquals(index.size(), 2);
+    assertEquals(2, index.size());
 
+  }
+  
+  /**
+   * To test non-normal case, change Eclipse run config by adding the jvm arg:
+   *   -Duima.allow_duplicate_add_to_indices
+   * @throws CASException
+   */
+  public void testDupFsIndex() throws CASException {
+    JCas jcas = cas.getJCas();
+    Annotation a = new Annotation(jcas, 0, 4);
+    cas.addFsToIndexes(a);
+    cas.addFsToIndexes(a);
+    int expected = FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES ? 2 : 1;
+    assertEquals(expected, cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX).size());
+    assertEquals(expected, cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX).size());
+    assertEquals(expected, cas.getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX).size());
   }
   
   public static int NBR_ITEMS = 40000;
