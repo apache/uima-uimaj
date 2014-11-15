@@ -44,6 +44,7 @@ import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -217,7 +218,7 @@ public class SofaTest extends TestCase {
       // Test multiple Sofas across blob serialization
       ByteArrayOutputStream fos = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas, fos);
-     this.cas.reset();
+      this.cas.reset();
       ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
       Serialization.deserializeCAS(cas, fis);
 
@@ -259,7 +260,17 @@ public class SofaTest extends TestCase {
 
         AnnotationFS engAnnot = engTcas.createAnnotation(annotationType, engBegin, engEnd);
         engTcas.getIndexRepository().addFS(engAnnot);
-
+        
+        // should throw an error, because you can't add to index a FS which is a subtype of AnnotationBase, whose
+        // whose sofa ref is to a different View
+        try {
+          frTcas.getIndexRepository().addFS(engAnnot);
+        } catch (Exception e) {
+          assertTrue(e instanceof CASRuntimeException);
+          CASRuntimeException c = (CASRuntimeException) e;
+          assertTrue("ANNOTATION_IN_WRONG_INDEX".equals(c.getMessageKey()));
+        }
+        
         AnnotationFS frAnnot = frTcas.createAnnotation(this.annotationType, frBegin, frEnd);
         frTcas.getIndexRepository().addFS(frAnnot);
 
