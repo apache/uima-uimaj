@@ -103,7 +103,11 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
    */
   public boolean contains(FeatureStructure fs) {
-    return this.tree.containsKey(((FeatureStructureImpl) fs).getAddress());
+    return ll_contains(((FeatureStructureImpl) fs).getAddress());
+  }
+  
+  boolean ll_contains(int fsAddr) {
+    return this.tree.containsKey(fsAddr);
   }
 
   /**

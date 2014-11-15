@@ -784,22 +784,13 @@ public class XCASDeserializer {
 
     private void finalizeFS(FSInfo fsInfo) {
       final int addr = fsInfo.addr;
-      if (fsInfo.indexRep.size() >= 0) {
-        // Now add FS to all specified index repositories
-        for (int i = 0; i < fsInfo.indexRep.size(); i++) {
-          if (indexMap.size() == 1) {
-            ((FSIndexRepositoryImpl) indexRepositories.get(fsInfo.indexRep.get(i))).addFS(addr);
-          } else {
-            ((FSIndexRepositoryImpl) indexRepositories.get(indexMap.get(fsInfo.indexRep.get(i))))
-                    .addFS(addr);
-          }
-        }
-      }
       final int type = cas.getHeapValue(addr);
       if (cas.isArrayType(type)) {
         finalizeArray(type, addr, fsInfo);
+        finalizeAddToIndexes(fsInfo, addr);
         return;
       }
+      
       int[] feats = cas.getTypeSystemImpl().ll_getAppropriateFeatures(type);
       int feat;
       FSInfo fsValInfo;
@@ -829,8 +820,23 @@ public class XCASDeserializer {
           }
         }
       }
+      finalizeAddToIndexes(fsInfo, addr);  // must be done after above fixes the sofa refs
     }
 
+    private void finalizeAddToIndexes(final FSInfo fsInfo, final int addr) {
+      if (fsInfo.indexRep.size() >= 0) {
+        // Now add FS to all specified index repositories
+        for (int i = 0; i < fsInfo.indexRep.size(); i++) {
+          if (indexMap.size() == 1) {
+            ((FSIndexRepositoryImpl) indexRepositories.get(fsInfo.indexRep.get(i))).addFS(addr);
+          } else {
+            ((FSIndexRepositoryImpl) indexRepositories.get(indexMap.get(fsInfo.indexRep.get(i))))
+                    .addFS(addr);
+          }
+        }
+      }
+    }
+    
     private void finalizeArray(int type, int addr, FSInfo fsInfo) {
       if (!cas.isFSArrayType(type)) {
         // Nothing to do.

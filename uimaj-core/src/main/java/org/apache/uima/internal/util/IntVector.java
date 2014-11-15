@@ -44,7 +44,7 @@ public class IntVector implements Serializable {
   final private int multiplication_limit;
 
   // Points to the next free cell in the array.
-  protected int pos = 0;
+  protected int pos;
 
   protected int[] array = null;
 
@@ -95,9 +95,7 @@ public class IntVector implements Serializable {
    *          Multiplication limit.
    */
   public IntVector(int capacity, int growth_factor, int multiplication_limit) {
-    if (capacity < 0) {
-      capacity = default_size;
-    }
+    resetSize(capacity);
     if (growth_factor < 1) {
       growth_factor = default_growth_factor;
     }
@@ -106,6 +104,13 @@ public class IntVector implements Serializable {
     }
     this.growth_factor = growth_factor;
     this.multiplication_limit = multiplication_limit;
+  }
+  
+  public void resetSize(int capacity) {
+    pos = 0;
+    if (capacity < 0) {
+      capacity = default_size;
+    }
     this.array = new int[capacity];
   }
 

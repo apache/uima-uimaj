@@ -33,6 +33,7 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
+import java.lang.annotation.AnnotationTypeMismatchException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -1138,6 +1139,22 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   public boolean isCommitted() {
     return this.locked;
   }
+  
+  /**
+   * @param typeCode for a type
+   * @return true if type is AnnotationBase or a subtype of it
+   */
+  public boolean isAnnotationBaseOrSubtype(int typeCode) {
+    return subsumes(annotBaseTypeCode, typeCode);
+  }
+  
+  /**
+   * @param typeCode for a type
+   * @return true if type is Annotation or a subtype of it
+   */
+  public boolean isAnnotationOrSubtype(int typeCode) {
+    return subsumes(annotTypeCode, typeCode);
+  }  
 
   // dangerous, and not needed, not in any interface
 //  public void setCommitted(boolean b) {
@@ -1445,6 +1462,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     return this.stringSets.get(this.stringSetMap.get(typeCode));
   }
+  
 
   /**
    * Each instance holds info needed in binary serialization

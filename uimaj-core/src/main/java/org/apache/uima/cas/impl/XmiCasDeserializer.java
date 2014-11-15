@@ -68,6 +68,17 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 
 public class XmiCasDeserializer {
+  
+  private static class ViewAddrs {
+    final private FSIndexRepositoryImpl indexRepository;
+    final private IntVector addrs;
+    
+    private ViewAddrs(FSIndexRepositoryImpl indexRepository, IntVector addrs) {
+      this.indexRepository = indexRepository;
+      this.addrs = addrs;
+    }
+  }
+
 
   private class XmiCasDeserializerHandler extends DefaultHandler {
     // ///////////////////////////////////////////////////////////////////////
@@ -216,6 +227,15 @@ public class XmiCasDeserializer {
     //caught and reported before any updates are made to the CAS being filled.
     
     boolean disallowedViewMemberEncountered;
+
+    /**
+     * a list of ints of FSs to be added to the indices
+     */
+    final private List<ViewAddrs> toBeAdded = new ArrayList<ViewAddrs>();
+    /**
+     * a list of ints of FSs to be removed from the indices
+     */
+    final private List<ViewAddrs> toBeRemoved = new ArrayList<ViewAddrs>();
     
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
@@ -521,30 +541,21 @@ public class XmiCasDeserializer {
      * @param membersString
      *          whitespace-separated string of FS addresses. Each FS is to be added to the specified
      *          sofa's index repository
+     *          The adding takes place after FSs are finalized, to enable checking the sofa refs are OK
+     *          https://issues.apache.org/jira/browse/UIMA-4099
      */
     private void processView(String sofa, String membersString) throws SAXParseException {
       // TODO: this requires View to come AFTER all of its members
       if (membersString != null) {
-        // a view with no Sofa will be added to the 1st, _InitialView, index
-        int sofaNum = 1;
-        boolean newview = false;
-        if (sofa != null) {
-          // translate sofa's xmi:id into its sofanum
-          int sofaXmiId = Integer.parseInt(sofa);
-          newview = isNewFS(sofaXmiId);
-          int sofaAddr;
-          try {
-            sofaAddr = getFsAddrForXmiId(sofaXmiId);
-          } catch (NoSuchElementException e) {
-            throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(sofaXmiId));
-          }
-          sofaNum = casBeingFilled.getFeatureValue(sofaAddr, sofaNumFeatCode);
-        }
-        FSIndexRepositoryImpl indexRep = (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
-
+        final int sofaXmiId = (sofa == null) ? 1 : Integer.parseInt(sofa);
+        FSIndexRepositoryImpl indexRep = getIndexRepo(sofa, sofaXmiId);
+        final boolean newview = (sofa == null) ? false : isNewFS(sofaXmiId);
+        
         // TODO: optimize by going straight to int[] without going through
         // intermediate String[]?
         String[] members = parseArray(membersString);
+        IntVector localAdds = new IntVector();
+        toBeAdded.add(new ViewAddrs(indexRep, localAdds));
         for (int i = 0; i < members.length; i++) {
           int id = Integer.parseInt(members[i]);
           // special handling for merge operations ...
@@ -561,11 +572,10 @@ public class XmiCasDeserializer {
             }
           }
           // have to map each ID to its "real" address (TODO: optimize?)
-          //TODO: currently broken, can't use XmiSerializationSharedData for
-          //this id mapping when merging, need local map
           try {
             int addr = getFsAddrForXmiId(id);
-            indexRep.addFS(addr);
+//            indexRep.addFS(addr);  // can't do now because sofa ref not yet fixed up
+              localAdds.add(addr);   // https://issues.apache.org/jira/browse/UIMA-4099
           } catch (NoSuchElementException e) {
             if (!lenient) {
               throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
@@ -579,6 +589,28 @@ public class XmiCasDeserializer {
       }
     }
     
+    /**
+     * 
+     * @param sofaNum 1 if sofa null, or the sofa Xmi Id
+     * @return the FS Repository associated with the sofa xmiId
+     * @throws XCASParsingException
+     */
+    private FSIndexRepositoryImpl getIndexRepo(String sofa, int sofaXmiId) throws XCASParsingException {
+      // a view with no Sofa will be added to the 1st, _InitialView, index
+
+      if (sofa == null) {
+        return (FSIndexRepositoryImpl) indexRepositories.get(1);
+      }
+      // translate sofa's xmi:id into its sofanum
+      int sofaAddr;
+      try {
+        sofaAddr = getFsAddrForXmiId(sofaXmiId);
+      } catch (NoSuchElementException e) {
+        throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(sofaXmiId));
+      }
+      int sofaNum = casBeingFilled.getFeatureValue(sofaAddr, sofaNumFeatCode);
+      return (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
+    }
     
     /**
      * Handles the processing of a cas:View element in the XMI. The cas:View element encodes indexed
@@ -595,38 +627,46 @@ public class XmiCasDeserializer {
       // TODO: this requires View to come AFTER all of its members
       if (addmembersString != null) {
     	  processView(sofa, addmembersString);
-      } 
-      int sofaNum = 1;
-      FSIndexRepositoryImpl indexRep = null;
-      if (delmemberString != null || reindexmemberString != null) {
-    	if (sofa != null) {
-              // translate sofa's xmi:id into its sofanum
-              int sofaXmiId = Integer.parseInt(sofa);
-              int sofaAddr = getFsAddrForXmiId(sofaXmiId);
-              sofaNum = casBeingFilled.getFeatureValue(sofaAddr, sofaNumFeatCode);
-        }
-        indexRep = (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
+      }
+      if (delmemberString == null && reindexmemberString == null) {
+        return;
+      }
+      
+      final int sofaXmiId = (sofa == null) ? 1 : Integer.parseInt(sofa);
+      FSIndexRepositoryImpl indexRep = getIndexRepo(sofa, sofaXmiId);
 
-        // TODO: optimize by going straight to int[] without going through
-        // intermediate String[]?
-        if (delmemberString != null) {
-          String[] members = parseArray(delmemberString);
-          for (int i = 0; i < members.length; i++) {
-            int id = Integer.parseInt(members[i]);
-            if (!isNewFS(id)) {  //preexisting FS
-              if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
-          	    this.disallowedViewMemberEncountered = true;  //ignore but flag it. 
-          	    continue;
-              } else if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
-          	    continue;  //ignore
-              }
-          	}
+//      int sofaNum = 1;
+//      FSIndexRepositoryImpl indexRep = null;
+//      
+//    	if (sofa != null) {
+//              // translate sofa's xmi:id into its sofanum
+//              int sofaXmiId = Integer.parseInt(sofa);
+//              int sofaAddr = getFsAddrForXmiId(sofaXmiId);
+//              sofaNum = casBeingFilled.getFeatureValue(sofaAddr, sofaNumFeatCode);
+//        }
+//      indexRep = (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
+
+      // TODO: optimize by going straight to int[] without going through
+      // intermediate String[]?
+      if (delmemberString != null) {
+        String[] members = parseArray(delmemberString);
+        final IntVector localRemoves = new IntVector();
+        toBeRemoved.add(new ViewAddrs(indexRep, localRemoves));
+        for (int i = 0; i < members.length; i++) {
+          int id = Integer.parseInt(members[i]);
+          if (!isNewFS(id)) {  //preexisting FS
+            if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
+        	    this.disallowedViewMemberEncountered = true;  //ignore but flag it. 
+        	    continue;
+            } else if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
+        	    continue;  //ignore
+            }
+        	}
         	// have to map each ID to its "real" address (TODO: optimize?)
-        	//TODO: currently broken, can't use XmiSerializationSharedData for
-        	//this id mapping when merging, need local map
         	try {
-        	  int addr = getFsAddrForXmiId(id);
-        	  indexRep.removeFS(addr);
+        	  int addr = getFsAddrForXmiId(id);      	  
+  //      	  indexRep.removeFS(addr); // can't do now because sofa ref not yet fixed up
+        	  localRemoves.add(addr);     // https://issues.apache.org/jira/browse/UIMA-4099
         	} catch (NoSuchElementException e) {
         	  if (!lenient) {
                 throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
@@ -635,38 +675,37 @@ public class XmiCasDeserializer {
         		this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
         	  }
         	}
-          }	
-        }
-        if (reindexmemberString != null) {
-          String[] members = parseArray(reindexmemberString);
-          for (int i = 0; i < members.length; i++) {
-            int id = Integer.parseInt(members[i]);
-            if (!isNewFS(id)) { //preexising FS
-                if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
-            	    this.disallowedViewMemberEncountered = true; //ignore but flag it.
-            	    continue;
-                } else if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
-            	    continue;  
-                }
-            }
-          	// have to map each ID to its "real" address (TODO: optimize?)
-          	//TODO: currently broken, can't use XmiSerializationSharedData for
-          	//this id mapping when merging, need local map
-          	try {
-          	  int addr = getFsAddrForXmiId(id);
-          	  indexRep.removeFS(addr);
-          	  indexRep.addFS(addr);
-          	} catch (NoSuchElementException e) {
-          	  if (!lenient) {
-                throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
-          	  } else {
-          		//unknown view member may be an OutOfTypeSystem FS
-          		this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
-          	  }
-          	}
-          }	
-        }
+        }	
       }
+//      if (reindexmemberString != null) {
+//        String[] members = parseArray(reindexmemberString);
+//        for (int i = 0; i < members.length; i++) {
+//          int id = Integer.parseInt(members[i]);
+//          if (!isNewFS(id)) { //preexising FS
+//              if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
+//          	    this.disallowedViewMemberEncountered = true; //ignore but flag it.
+//          	    continue;
+//              } else if (this.allowPreexistingFS == AllowPreexistingFS.ignore) {
+//          	    continue;  
+//              }
+//          }
+//        	// have to map each ID to its "real" address (TODO: optimize?)
+//        	//TODO: currently broken, can't use XmiSerializationSharedData for
+//        	//this id mapping when merging, need local map
+//        	try {
+//        	  int addr = getFsAddrForXmiId(id);
+//        	  indexRep.removeFS(addr);
+//        	  indexRep.addFS(addr);
+//        	} catch (NoSuchElementException e) {
+//        	  if (!lenient) {
+//              throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
+//        	  } else {
+//        		//unknown view member may be an OutOfTypeSystem FS
+//        		this.sharedData.addOutOfTypeSystemViewMember(sofa, members[i]);
+//        	  }
+//        	}
+//        }	
+//      }
     }
 
     private void readFS(final int addr, Attributes attrs) throws SAXException {
@@ -1375,6 +1414,8 @@ public class XmiCasDeserializer {
         }
       }
     }
+    
+    
 
     /*
      * (non-Javadoc)
@@ -1386,6 +1427,26 @@ public class XmiCasDeserializer {
       for (int i = 0; i < deserializedFsAddrs.size(); i++) {
         finalizeFS(deserializedFsAddrs.get(i));
       }
+      
+      // https://issues.apache.org/jira/browse/UIMA-4099
+      for (ViewAddrs va : toBeAdded) {
+        FSIndexRepositoryImpl indexRep = va.indexRepository;
+        IntVector todo = va.addrs;
+        final int len = todo.size();
+        for (int i = 0; i < len; i++) {
+          indexRep.addFS(todo.get(i));
+        }
+      }
+      
+      for (ViewAddrs va : toBeRemoved) {
+        FSIndexRepositoryImpl indexRep = va.indexRepository;
+        IntVector todo = va.addrs;
+        final int len = todo.size();
+        for (int i = 0; i < len; i++) {
+          indexRep.removeFS(todo.get(i));
+        }
+      }
+
       for (int i = 0; i < fsListNodesFromMultivaluedProperties.size(); i++) {
         remapFSListHeads(fsListNodesFromMultivaluedProperties.get(i));
       }

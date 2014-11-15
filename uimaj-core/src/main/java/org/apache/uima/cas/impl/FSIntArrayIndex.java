@@ -184,7 +184,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   }
 
   // The index, a vector of FS references.
-  private IntVector index;
+  final private IntVector index;
   
   final private int initialSize;
 
@@ -209,7 +209,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   public void flush() {
     // do this way to reset size if it grew
     if (this.index.size() > this.initialSize) {
-      this.index = new IntVector(initialSize);
+      this.index.resetSize(initialSize);
     } else {
       this.index.removeAllElements();
     }
@@ -224,19 +224,34 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     // First, check if we can insert at the end.
     final int[] indexArray = this.index.getArray();
     final int length = this.index.size();
+    
     if (length == 0) {
       this.index.add(fs);
       return true;
     }
     final int last = indexArray[length - 1];
+    // can't use compare <= because the = implies (depending on IS_ALLOW_DUP_A...)
+    //   more work to find the EQ one, or not
     if (compare(last, fs) < 0) {
       this.index.add(fs);
       return true;
     }
-    final int pos = this.binarySearch(indexArray, fs, 0, length);
-    if (pos >= 0) {
+    
+    int pos = find(fs);
+    
+    // This rather complex logic can't be simplified due to edge cases, and the need
+    // to have inserts for = compare but unequal identity things go in ascending 
+    // over time insert order (a test case need)
+    if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) {
+      int pos2 = refineToExactFsSearch(fs, pos);
+      if (pos2 < 0) { 
+        // the exact match wasn't found, OK to add
+        this.index.add(pos + 1, fs);
+      }
+    } else if (pos >= 0) {
       this.index.add(pos + 1, fs);
-    } else {
+    }
+    else {
       this.index.add(-(pos + 1), fs);
     }
     return true;
@@ -246,8 +261,56 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   // return new IntVectorIterator();
   // }
 
+  /**
+   * In a sorted array of fsAddrs, find the lowest one that matches the keys in fsRef, or
+   * if none match, return a negative number of insertion point if not found
+   * @param fsRef
+   * @return
+   */
   private final int find(int fsRef) {
     return binarySearch(this.index.getArray(), fsRef, 0, this.index.size());
+  }
+  
+  private final int findLeftmost(int fsRef) {
+    int pos = find(fsRef);
+    
+    // https://issues.apache.org/jira/browse/UIMA-4094
+    // make sure you go to earliest one
+    if (pos < 0 || pos >= size()) {
+      // this means the moveTo found the insert point at the end of the index
+      // so just return invalid, since there's no way to return an insert point for a position
+      // that satisfies the FS at that position is greater than fs  
+      return pos;
+    }    
+    // Go back until we find a FS that is really smaller
+    while (true) {
+      pos --;
+      if (pos >= 0) {
+        int prev = index.get(pos);
+        if (compare(prev, fsRef) != 0) {
+          pos++; // go back
+          break;
+        }
+      } else {
+        pos = 0;  // went to before first, so go back to 1st
+        break;
+      }
+    }
+    return pos;
+  }
+  
+  /**
+   * Like find, but if found, returns position of Exact FS spot or neg of an insert spot (if no == match)
+   * @param fsRef
+   * @return
+   */
+  private final int findEq(int fsRef) {
+    int pos = find(fsRef);
+    if (pos < 0) {
+      return pos;
+    }
+    int pos2 = refineToExactFsSearch(fsRef, pos);
+    return (pos2 == -1) ? (-pos) -1 : pos2;
   }
 
   // private final int find(int ele)
@@ -280,6 +343,8 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 
   // Do binary search on index.
   // return negative number of insertion point if not found
+  //   insertion point is the index of the element after the one that's less than the key
+  //   insertion point can be an index one past the end of the index if key is > all the elements
   // return index of an arbitrary FS that matches on the compare function
   private final int binarySearch(int[] array, int ele, int start, int end) {
     --end; // Make end a legal value.
@@ -368,9 +433,9 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
-  protected IntPointerIterator refIterator(int fsCode) {
+  protected IntPointerIterator refIterator(int fsAddr) {
     IntVectorIterator it = new IntVectorIterator();
-    final int pos = find(fsCode);
+    final int pos = findLeftmost(fsAddr);
     if (pos >= 0) {
       it.itPos = pos;
     } else {
@@ -384,6 +449,10 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    */
   public boolean contains(FeatureStructure fs) {
     return (find(((FeatureStructureImpl) fs).getAddress()) >= 0);
+  }
+  
+  public boolean ll_containsEq(int fsAddr) {
+    return findEq(fsAddr) >= 0;
   }
 
   public FeatureStructure find(FeatureStructure fs) {
@@ -434,14 +503,11 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * No error is reported if the item is not in the index  
    */
   public void remove(int fsRef) {
-    int pos = find(fsRef);  // finds "same" element per compare key
+    int pos = findEq(fsRef);  // finds  == to fsRef identity equals
     if (pos < 0) {
       return;  // not in index
     }
-    pos = refineToExactFsSearch(fsRef, pos);
-    if (pos >= 0) {
-      this.index.remove(pos);
-    }
+    this.index.remove(pos);
   }
 
 }

@@ -35,6 +35,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
@@ -55,18 +56,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public static final int DEFAULT_INDEX_SIZE = 100;
 
+
   /**
-   * Define this JVM property to some value other than "false" to enable tracking which FSs are in an index,
-   * <ul>
-   *   <li>to prevent the identical FS from being added multiple times to indexes in the same View, and</li>
-   *   <li>to allow checking on feature value setting to signal a runtime exception if a feature is changed which is
-   *     being used as a key, and that FS is added to indices in some View.</li>
-   *   <li>The following are the same:  -Duima.track_fs_indexed    and -Duima.track_fs_indexed=true</li>
-   * </ul> 
+   * Define this JVM property to allow adding the same identical FS to Set and Sorted indices more than once.  
    */
-  public static final String TRACK_FS_INDEXED = "uima.track_fs_indexed";
+
+  private static final String ALLOW_DUP_ADD_TO_INDICES = "uima.allow_duplicate_add_to_indices";
   
-  public static final boolean isTrackingFsIndexed =  !System.getProperty(TRACK_FS_INDEXED, "false").equals("false");
+  public static final boolean IS_ALLOW_DUP_ADD_2_INDICES  =  !System.getProperty(ALLOW_DUP_ADD_TO_INDICES, "false").equals("false");
+
+  private static final String DISABLE_ENHANCED_WRONG_INDEX = "uima.disable_enhanced_check_wrong_add_to_index";
+  
+  // enable if property missing, or is set to false.  If present and set to anything other than false, disable
+  private static final boolean IS_ENABLE_ENHANCED_WRONG_INDEX_CHECK = System.getProperty(DISABLE_ENHANCED_WRONG_INDEX, "false").equals("false");
   
   // Implementation note: the use of equals() here is pretty hairy and
   // should probably be fixed. We rely on the fact that when two
@@ -162,7 +164,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           allTypes.add(rootType);
         } else {
           // includes the original type as element 0
-          allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.sii.typeSystem);
+          allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.sii.tsi);
         }
         final int len = allTypes.size();
         int typeCode, indexPos;
@@ -1012,19 +1014,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private LinearTypeOrder defaultTypeOrder = null;
     
     // A reference to the type system.
-    private final TypeSystemImpl typeSystem;
+    private final TypeSystemImpl tsi;
     
     private boolean isSetUpFromBaseCAS = false;
     
     SharedIndexInfo(TypeSystemImpl typeSystem) {
-      this.typeSystem = typeSystem;
+      this.tsi = typeSystem;
     }
   }
   
   /*****  I N S T A N C E   V A R I A B L E S  *****/
   /*****           Replicated per view         *****/                 
 
-  // A reference to the CAS.
+  // A reference to the CAS View.
   private final CASImpl cas;
 
   // Is the index repository locked?
@@ -1059,8 +1061,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private IntSet fsReindexed;
 
   // Monitor indexes used to optimize getIndexedFS and flush
+  // only used for faster access to next set bit
   private IntVector usedIndexes;
 
+  // one bit per typeCode, indexed by typeCode
   private boolean[] isUsed;
   
   private final SharedIndexInfo sii;
@@ -1128,7 +1132,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   @SuppressWarnings("unchecked")
   private void init() {
-    final TypeSystemImpl ts = this.sii.typeSystem;
+    final TypeSystemImpl ts = this.sii.tsi;
     // Type counting starts at 1.
     final int numTypes = ts.getNumberOfTypes() + 1;
     // Can't instantiate arrays of generic types.
@@ -1253,6 +1257,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return addNewIndexRec(compCopy, indexType);
   }
 
+  /**
+   * Finds an index among iicp's for all defined indexes of a type, such that
+   *   the type of the index (SET, BAG, SORTED) is the same and 
+   *   the comparator (the keys) are the same
+   * @param indexes
+   * @param comp
+   * @param indexType
+   * @return the index in the set of iicps for this type for the matching index
+   */
   private static final int findIndex(ArrayList<IndexIteratorCachePair> indexes,
       FSIndexComparator comp,
       int indexType) {
@@ -1288,7 +1301,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return iicp;
     }
     final Type superType = comparator.getType();
-    final Vector<Type> types = this.sii.typeSystem.getDirectlySubsumedTypes(superType);
+    final Vector<Type> types = this.sii.tsi.getDirectlySubsumedTypes(superType);
     final int max = types.size();
     FSIndexComparator compCopy;
     for (int i = 0; i < max; i++) {
@@ -1328,7 +1341,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public LinearTypeOrder getDefaultTypeOrder() {
     if (this.sii.defaultTypeOrder == null) {
       if (this.sii.defaultOrderBuilder == null) {
-        this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.typeSystem);
+        this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
       }
       try {
         this.sii.defaultTypeOrder = this.sii.defaultOrderBuilder.getOrder();
@@ -1342,7 +1355,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   public LinearTypeOrderBuilder getDefaultOrderBuilder() {
     if (this.sii.defaultOrderBuilder == null) {
-      this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.typeSystem);
+      this.sii.defaultOrderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
     }
     return this.sii.defaultOrderBuilder;
   }
@@ -1379,7 +1392,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       cp = this.addNewIndexRecursive(comp, indexType);
       
       // create a set of feature codes that are in one or more index definitions
-      if (isTrackingFsIndexed && !sii.isSetUpFromBaseCAS) {
+      if (CASImpl.IS_CHK_FS_UPDATE_CORRUPTS_INDEX && !sii.isSetUpFromBaseCAS) {
         final int nKeys = comp.getNumberOfKeys();
         for (int i = 0; i < nKeys; i++) {
           if (comp.getKeyType(i) == FSIndexComparator.FEATURE_KEY) {
@@ -1483,7 +1496,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
     }
     final Type indexType = iicp.index.getType();
-    if (!this.sii.typeSystem.subsumes(indexType, type)) {
+    if (!this.sii.tsi.subsumes(indexType, type)) {
       final CASRuntimeException cre = new CASRuntimeException(
           CASRuntimeException.TYPE_NOT_IN_INDEX, new String[] { label, type.getName(),
               indexType.getName() });
@@ -1539,7 +1552,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return 0;
     }
     int numFSs = indexVector.get(0).index.size();
-    final Vector<Type> typeVector = this.sii.typeSystem.getDirectlySubsumedTypes(type);
+    final Vector<Type> typeVector = this.sii.tsi.getDirectlySubsumedTypes(type);
     final int max = typeVector.size();
     for (int i = 0; i < max; i++) {
       numFSs += getIndexSize(typeVector.get(i));
@@ -1568,7 +1581,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public void removeAllIncludingSubtypes(Type type) {
     removeAllExcludingSubtypes(type);
-    List<Type> subtypes = this.sii.typeSystem.getDirectSubtypes(type);
+    List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
     for (Type subtype : subtypes) {
       removeAllIncludingSubtypes(subtype);
     }
@@ -1718,7 +1731,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#createTypeSortOrder()
    */
   public LinearTypeOrderBuilder createTypeSortOrder() {
-    final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.sii.typeSystem);
+    final LinearTypeOrderBuilder orderBuilder = new LinearTypeOrderBuilderImpl(this.sii.tsi);
     if (this.sii.defaultOrderBuilder == null) {
       this.sii.defaultOrderBuilder = orderBuilder;
     }
@@ -1749,12 +1762,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public LowLevelIndex ll_getIndex(String indexName, int typeCode) {
-    if (!this.sii.typeSystem.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
+    if (!this.sii.tsi.isType(typeCode) || !this.cas.ll_isRefType(typeCode)) {
       final LowLevelException e = new LowLevelException(LowLevelException.INVALID_INDEX_TYPE);
       e.addArgument(Integer.toString(typeCode));
       throw e;
     }
-    return (LowLevelIndex) getIndex(indexName, this.sii.typeSystem.ll_getTypeForCode(typeCode));
+    return (LowLevelIndex) getIndex(indexName, this.sii.tsi.ll_getTypeForCode(typeCode));
   }
 
   public final void ll_addFS(int fsRef, boolean doChecks) {
@@ -1766,8 +1779,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   public void ll_addFS(int fsRef) {
+    cas.maybeClearCacheNotInIndex(fsRef);
     // Determine type of FS.
-    final int typeCode = this.cas.getHeapValue(fsRef);
+    final int typeCode = this.cas.getTypeCode(fsRef);
+
+    // https://issues.apache.org/jira/browse/UIMA-4099
+    if (IS_ENABLE_ENHANCED_WRONG_INDEX_CHECK && sii.tsi.isAnnotationBaseOrSubtype(typeCode)) {
+      final int sofaAddr = cas.getSofaFeat(fsRef);
+      if (!cas.isSofaView(sofaAddr)) {
+        AnnotationBaseImpl fs_abi = new AnnotationBaseImpl(fsRef, cas);
+        SofaFS annotSofaFS = cas.getSofa(sofaAddr);
+        SofaFS viewSofaFS  = cas.getSofa(cas.getSofaRef());
+        
+        CASRuntimeException e = new CASRuntimeException(
+            CASRuntimeException.ANNOTATION_IN_WRONG_INDEX, new String[] { 
+                fs_abi.toString(),
+                annotSofaFS.getSofaID(), 
+                viewSofaFS.getSofaID()});
+        throw e;
+      }
+    }
+
+    
     // indicate this type's indexes are being modified
     // in case an iterator is simultaneously active over this type
     incrementIllegalIndexUpdateDetector(typeCode);
@@ -1780,7 +1813,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     if (size == 0) {
       // lazily create a default bag index for this type
-      final Type type = this.sii.typeSystem.ll_getTypeForCode(typeCode);
+      final Type type = this.sii.tsi.ll_getTypeForCode(typeCode);
       final String defIndexName = getAutoIndexNameForType(type);
       final FSIndexComparator comparator = createComparator();
       comparator.setType(type);
@@ -1836,7 +1869,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // We found one of the special auto-indexes which don't inherit down the tree. So, we
       // manually need to traverse the inheritance tree to look for more indexes. Note that
       // this is not necessary when we have a regular index
-      final List<Type> subtypes = this.sii.typeSystem.getDirectSubtypes(type);
+      final List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
       for (int i = 0; i < subtypes.size(); i++) {
         getAllIndexedFS(subtypes.get(i), iteratorList);
       }
@@ -1853,7 +1886,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
         continue;
       }
-      if (this.sii.typeSystem.subsumes(index.getType(), type)) {
+      if (this.sii.tsi.subsumes(index.getType(), type)) {
         if (index.getIndexingStrategy() != FSIndex.SET_INDEX) {
           iteratorList.add(getIndex(label, type).iterator());
           // Done, found non-set index.
@@ -1871,10 +1904,119 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // No index for this type was found at all. Since the auto-indexes are created on demand for
     // each type, there may be gaps in the inheritance chain. So keep descending the inheritance
     // tree looking for relevant indexes.
-    final List subtypes = this.sii.typeSystem.getDirectSubtypes(type);
-    for (int i = 0; i < subtypes.size(); i++) {
-      getAllIndexedFS((Type) subtypes.get(i), iteratorList);
+    final List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
+    for (Type t : subtypes) {
+      getAllIndexedFS(t, iteratorList);
     }
+  }
+  
+//  boolean isFsInAnyIndex(int fsAddr) {
+//    final int typeCode = cas.getTypeCode(fsAddr);
+//    if (cas.getTypeSystemImpl().subsumes(superType, type))
+//  }
+  
+  /**
+   * This is used to see if a FS which has a key feature being modified
+   * could corrupt an index in this view.  It returns true if found 
+   * (sometimes it returns true, even if strictly speaking, there is 
+   * no chance of corruption - seel below)
+   * 
+   * It does this by seeing if this FS is indexed by one or more Set or Sorted
+   * indices.
+   * 
+   * If found in the first Sorted index encountered, return true
+   * Else, if found in any Set index, return true, otherwise false 
+   * 
+   *   To speed up the 2nd case, when there are more than one Set indices, 
+   *   we do an approximation if there are any bag indices: we check if found in 
+   *   the first bag index encountered -- return true if found
+   *   
+   *      This is an approximation in that it could be that none of the Set 
+   *      indices contain that FS, but it is in the bag index.
+   *      So, this method can sometimes return true incorrectly. 
+   *      
+   * If type is subtype of annotation, can just test the built-in
+   * Annotation index.
+   * 
+   * @param fsRef - the FS to see if it is in some index that could be corrupted by a key feature value change
+   * @return true if this fs is found in a Set or Sorted index.  
+   */
+  public boolean isInSetOrSortedIndexInThisView(int fsAddr) {
+    final int typeCode = cas.getTypeCode(fsAddr);
+    
+    // if subtype of Annotation, use that index to see if the fs is indexed
+    if (sii.tsi.isAnnotationOrSubtype(typeCode)) {
+      return (getAnnotationIndexNoSubtypes(typeCode).ll_containsEq(fsAddr));
+    }
+
+    // otherwise, check all the indices for this type. 
+    final ArrayList<IndexIteratorCachePair> indexesForType = indexArray[typeCode];
+    FSBagIndex index_bag = null;
+    boolean found_in_bag = false;
+    ArrayList<FSRBTSetIndex> setIndices = null;
+
+    for (IndexIteratorCachePair iicp : indexesForType) {
+      FSLeafIndexImpl<?> index_for_this_typeCode = iicp.index;
+      final int kind = index_for_this_typeCode.getIndexingStrategy(); // SORTED_INDEX, BAG_, or SET_
+      if (kind == FSIndex.SORTED_INDEX) {
+        return ((FSIntArrayIndex<?>)index_for_this_typeCode).ll_containsEq(fsAddr);
+      }
+      if (kind == FSIndex.BAG_INDEX && !found_in_bag) {
+        if (FSBagIndex.USE_POSITIVE_INT_SET) {
+          found_in_bag = ((FSBagIndex)index_for_this_typeCode).ll_contains(fsAddr);
+          if (found_in_bag == false) {
+            return false; 
+          }
+          continue; // may still return false if no set or sorted indexes
+        } 
+        index_bag = (FSBagIndex) index_for_this_typeCode;
+      } else {  // is Set case
+        if (setIndices == null) {
+          setIndices = new ArrayList<FSRBTSetIndex>();
+        }
+        setIndices.add((FSRBTSetIndex) index_for_this_typeCode);
+      } 
+    }
+    // if get here, there's no Sorted index
+    if (setIndices == null) {
+      return false;  // is not in any set or sorted index for this type, so return false
+    }
+    
+    // there is one or more Set indices
+    if (setIndices.size() == 1) { 
+      return setIndices.get(0).ll_contains(fsAddr);
+    }
+    // there is more than 1 set Indices, try to substitute a bag test
+    if (found_in_bag) {
+      return true;
+    }
+    
+    if (index_bag != null) {
+      return (index_bag).ll_contains(fsAddr);
+    }
+    
+    // there are no bag indices.  Need to check each Set index, and return true if any of them contain this FS
+    
+    for (FSRBTSetIndex index_set : setIndices) {
+      if (index_set.ll_contains(fsAddr)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * returns the annotation index for a type which is Annotation or a subtype of it.
+   * @param typeCode
+   * @return the index just for that type
+   */
+  private FSIntArrayIndex<?> getAnnotationIndexNoSubtypes(int typeCode) {
+    final IndexIteratorCachePair annotation_iicp = this.name2indexMap.get(CAS.STD_ANNOTATION_INDEX);
+    final ArrayList<IndexIteratorCachePair> iicps_for_type = indexArray[typeCode];
+    final FSLeafIndexImpl<?> ri = annotation_iicp.index;
+    // search all defined indices for this type, to find an annotation one
+    final int ii = findIndex(iicps_for_type, ri.getComparator(), FSIndex.SORTED_INDEX);
+    return ((FSIntArrayIndex<?>)iicps_for_type.get(ii).index);
   }
   
   private void logIndexOperation(int fsRef, boolean added) {

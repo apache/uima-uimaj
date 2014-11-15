@@ -37,7 +37,8 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
  */
 public class FSBagIndex extends FSLeafIndexImpl {
   
-  private static boolean USE_POSITIVE_INT_SET = true;
+  // package private
+  final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES;
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 
@@ -347,10 +348,13 @@ public class FSBagIndex extends FSLeafIndexImpl {
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
    */
   public boolean contains(FeatureStructure fs) {
-    final int addr = ((FeatureStructureImpl) fs).getAddress(); 
+    return ll_contains(((FeatureStructureImpl) fs).getAddress());
+  }
+  
+  boolean ll_contains(int fsAddr) {
     return USE_POSITIVE_INT_SET ?
-        indexP.contains(addr) :
-        (find(addr) >= 0);
+        indexP.contains(fsAddr) :
+        (find(fsAddr) >= 0);
   }
 
   public FeatureStructure find(FeatureStructure fs) {

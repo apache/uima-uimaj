@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.cas.AbstractCas_ImplBase;
-import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
@@ -117,6 +116,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public static final int DEFAULT_RESET_HEAP_SIZE = 5000000;
 
   private static final int resetHeapSize = DEFAULT_RESET_HEAP_SIZE;
+
+  /**
+   * Define this JVM property to enable checking for invalid updates to features which are used as 
+   * keys by any index.
+   * <ul>
+   *   <li>The following are the same:  -Duima.check_invalid_fs_updates    and -Duima.check_invalid_fs_updates=true</li>
+   * </ul> 
+   */
+  public static final String CHK_FS_UPDATES_CORRUPTS = "uima.check_fs_update_corrupts_index";
+
+  public static final boolean IS_CHK_FS_UPDATE_CORRUPTS_INDEX =  !System.getProperty(CHK_FS_UPDATES_CORRUPTS, "false").equals("false");
 
   // The offset for the array length cell. An array consists of length+2
   // number
@@ -245,17 +255,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * element per component being journaled.
      */
     private List<MarkerImpl> trackingMarkList;
-    
+   
     private int cache_not_in_index = 0; // a one item cache of a FS not in the index
     
     private final PositiveIntSet_impl featureCodesInIndexKeys = 
-        FSIndexRepositoryImpl.isTrackingFsIndexed ? 
+       IS_CHK_FS_UPDATE_CORRUPTS_INDEX ? 
           new PositiveIntSet_impl() : null; 
-        
-    private final PositiveIntSet_impl fssIndexed =
-        FSIndexRepositoryImpl.isTrackingFsIndexed ? 
-          new PositiveIntSet_impl() : null;
-          
+                  
     private SharedViewData(boolean useFSCache) {
       this.useFSCache = useFSCache;
     }
@@ -272,6 +278,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     svd.featureCodesInIndexKeys.add(featCode);
   }
   
+  void maybeClearCacheNotInIndex(int fsAddr) {
+    if (svd.cache_not_in_index == fsAddr) {
+      svd.cache_not_in_index = 0;
+    }
+  }
 
   // The index repository. Referenced by XmiCasSerializer
   FSIndexRepositoryImpl indexRepository;
@@ -1845,6 +1856,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
+  int getTypeCode(int fsAddr) {
+    return getHeapValue(fsAddr);
+  }
+  
   void copyFeatures(int trgAddr, int srcAddr) throws CASRuntimeException {
     int typeCode = getHeapValue(trgAddr);
     if (typeCode != getHeapValue(srcAddr)) {
@@ -2700,6 +2715,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, aSofa);
     return aView;
   }
+  
+  boolean isSofaView(int sofaAddr) {
+    if (mySofaRef == -1) {
+      // don't create initial sofa
+      return false;
+    }
+    return mySofaRef == sofaAddr;
+  }
+  
+  
 
   /*
    * for Sofas being added (determined by sofaNbr &gt; curViewCount): verify sofa
@@ -2921,7 +2946,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final int ll_createFS(int typeCode) {
-    return this.getHeap().add(this.svd.casMetadata.fsSpaceReq[typeCode], typeCode);
+    final int fsAddr = this.getHeap().add(this.svd.casMetadata.fsSpaceReq[typeCode], typeCode);
+    svd.cache_not_in_index = fsAddr;
+    return fsAddr;
   }
 
   public final int ll_createFS(int typeCode, boolean doCheck) {
@@ -3185,12 +3212,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param featureCode - the feature being tested
    */
   private void checkForInvalidFeatureSetting(int fsRef, int featureCode) {
-    if ((null == svd.featureCodesInIndexKeys) || 
+    if ((!IS_CHK_FS_UPDATE_CORRUPTS_INDEX) || 
         (svd.cache_not_in_index == fsRef)) {
       return;
     }
     if (svd.featureCodesInIndexKeys.contains(featureCode)) {
-      if (this.svd.fssIndexed.contains(fsRef)) {
+      if (isFsInCorruptableIndexAnyView(fsRef)) {
         // signal error - modifying a feature which is used in some index as a key
         CASRuntimeException e = new CASRuntimeException(CASRuntimeException.ILLEGAL_FEAT_SET,
             new String[] { 
@@ -3201,6 +3228,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         svd.cache_not_in_index = fsRef;
       }
     }
+  }
+  
+  private boolean isFsInCorruptableIndexAnyView(final int fsRef) {
+    final int typeCode = getTypeCode(fsRef);
+    final TypeSystemImpl tsi = getTypeSystemImpl();
+    if (tsi.isAnnotationBaseOrSubtype(typeCode)) {
+      // only need to check one view
+      return ll_getSofaCasView(fsRef).indexRepository.isInSetOrSortedIndexInThisView(fsRef); 
+    }
+    // not a subtype of AnnotationBase, need to check all views (except base)
+    final Iterator<CAS> viewIterator = getViewIterator();
+    while (viewIterator.hasNext()) {
+      final CAS view =  viewIterator.next();
+      if (((FSIndexRepositoryImpl)view.getIndexRepository()).isInSetOrSortedIndexInThisView(fsRef)) {
+        return true;
+      }
+    }
+    return false;  // not in any view's indexes
   }
 
   public final void ll_setIntValue(int fsRef, int featureCode, int value) {
@@ -4221,15 +4266,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @see org.apache.uima.cas.CAS#addFsToIndexes(FeatureStructure fs)
    */
   public void addFsToIndexes(FeatureStructure fs) {
-    if (fs instanceof AnnotationBaseFS) {
-      final CAS sofaView = ((AnnotationBaseFS) fs).getView();
-      if (sofaView != this) {
-        CASRuntimeException e = new CASRuntimeException(
-            CASRuntimeException.ANNOTATION_IN_WRONG_INDEX, new String[] { fs.toString(),
-                sofaView.getSofa().getSofaID(), this.getSofa().getSofaID() });
-        throw e;
-      }
-    }
+//    if (fs instanceof AnnotationBaseFS) {
+//      final CAS sofaView = ((AnnotationBaseFS) fs).getView();
+//      if (sofaView != this) {
+//        CASRuntimeException e = new CASRuntimeException(
+//            CASRuntimeException.ANNOTATION_IN_WRONG_INDEX, new String[] { fs.toString(),
+//                sofaView.getSofa().getSofaID(), this.getSofa().getSofaID() });
+//        throw e;
+//      }
+//    }
     this.indexRepository.addFS(fs);
   }
 
@@ -4264,18 +4309,52 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * 
    * @see org.apache.uima.cas.CAS#getViewIterator()
    */
+//  public Iterator<CAS> getViewIterator() {
+//    List<CAS> viewList = new ArrayList<CAS>();
+//    // add initial view if it has no sofa
+//    if (!((CASImpl) getInitialView()).mySofaIsValid()) {
+//      viewList.add(getInitialView());
+//    }
+//    // add views with Sofas
+//    FSIterator<SofaFS> sofaIter = getSofaIterator();
+//    while (sofaIter.hasNext()) {
+//      viewList.add(getView(sofaIter.next()));
+//    }
+//    return viewList.iterator();
+//  }
+  
   public Iterator<CAS> getViewIterator() {
-    List<CAS> viewList = new ArrayList<CAS>();
-    // add initial view if it has no sofa
-    if (!((CASImpl) getInitialView()).mySofaIsValid()) {
-      viewList.add(getInitialView());
-    }
-    // add views with Sofas
-    FSIterator<SofaFS> sofaIter = getSofaIterator();
-    while (sofaIter.hasNext()) {
-      viewList.add(getView(sofaIter.next()));
-    }
-    return viewList.iterator();
+    return new Iterator<CAS>() {
+      
+      final CASImpl initialView = (CASImpl) getInitialView();  // creates one if not existing, w/o sofa  
+
+      boolean testInitView = !initialView.mySofaIsValid();
+
+      final FSIterator<SofaFS> sofaIter = getSofaIterator(); 
+
+      @Override
+      public boolean hasNext() {
+        if (testInitView) {
+          return true;
+        }
+        return sofaIter.hasNext(); 
+      }
+
+      @Override
+      public CAS next() {
+        if (testInitView) {
+          testInitView = false;
+          return initialView;
+        }
+        return getView(sofaIter.next());
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
   }
 
   /*
