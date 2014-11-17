@@ -136,7 +136,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int i) {
-      final int position = find(i);
+      final int position = findLeftmost(i);
       if (position >= 0) {
         this.itPos = position;
       } else {
@@ -182,7 +182,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
   }
 
   // The index, a vector of FS references.
-  private IntVector index;
+  final private IntVector index;
   
   final private PositiveIntSet indexP = USE_POSITIVE_INT_SET ? new PositiveIntSet_impl() : null;
 
@@ -222,7 +222,8 @@ public class FSBagIndex extends FSLeafIndexImpl {
       indexP.clear();      
     } else {
       if (this.index.size() > this.initialSize) {
-        this.index = new IntVector(this.initialSize);
+        this.index.resetSize(this.initialSize);
+//        this.index = new IntVector(this.initialSize);
       } else {
         this.index.removeAllElements();
       }
@@ -255,17 +256,17 @@ public class FSBagIndex extends FSLeafIndexImpl {
     if (USE_POSITIVE_INT_SET) {
       return indexP.find(ele);
     } else {
-      final int[] array = this.index.getArray();
-      final int max = this.index.size();
-      for (int i = 0; i < max; i++) {
-        if (ele == array[i]) {
-          return i;
-        }
-      }
-      return -1;
+      return this.index.indexOfOptimizeAscending(ele);
     }
   }
 
+  private int findLeftmost(int ele) {
+    if (USE_POSITIVE_INT_SET) {
+      return indexP.find(ele);
+    } else {
+      return this.index.indexOf(ele);
+    }
+  }
   public int compare(int fs1, int fs2) {
     if (fs1 < fs2) {
       return -1;
@@ -335,7 +336,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
    */
   protected IntPointerIterator refIterator(int fsCode) {
     IntVectorIterator it = new IntVectorIterator();
-    final int pos = find(fsCode);
+    final int pos = findLeftmost(fsCode);
     if (pos >= 0) {
       it.itPos = pos;
     } else {

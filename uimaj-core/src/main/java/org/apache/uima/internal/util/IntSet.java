@@ -162,7 +162,7 @@ public class IntSet implements PositiveIntSet {
 
   @Override
   public boolean remove(int key) {
-    int i = iVec.indexOf(key);
+    int i = iVec.indexOfOptimizeAscending(key);
     if (i != -1) {
       iVec.remove(i);
     }

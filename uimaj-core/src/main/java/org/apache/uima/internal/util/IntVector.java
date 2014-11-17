@@ -295,7 +295,7 @@ public class IntVector implements Serializable {
    * @return The position, or <code>-1</code> if it doesn't exist.
    */
   public int position(int elem) {
-    return indexOf(elem);
+    return indexOfOptimizeAscending(elem);
 //    int i = 0;
 //    while (i < this.pos) {
 //      if (this.array[i] == elem) {
@@ -385,7 +385,8 @@ public class IntVector implements Serializable {
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOf(int element) {
-    for (int i = 0; i < this.pos; i++) {
+    final int size = this.pos;
+    for (int i = 0; i < size; i++) {
       if (element == this.array[i]) {
         return i;
       }
@@ -396,7 +397,8 @@ public class IntVector implements Serializable {
   /**
    * Returns the index of the first or last occurrence of the element specified in this vector.
    * optimization: 
-   * this is used only in bag index implementations
+   * this is used only in bag index implementations or cases where which element among potentially many is picked,
+   *   such as sets (at most one element) or "contains" (don't care which one is found)
    * Other optimizations for that are done for the major use case
    * that the order of adding elements results in the elements being
    * more-or-less ordered, ascending.
@@ -419,7 +421,8 @@ public class IntVector implements Serializable {
       return -1;
     }
     
-    for (int i = 0; i < this.pos; i++) {
+    final int size = this.pos;
+    for (int i = 0; i < size; i++) {
       if (element == this.array[i]) {
         return i;
       }

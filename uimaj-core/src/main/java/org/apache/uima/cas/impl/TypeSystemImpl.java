@@ -33,7 +33,6 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
-import java.lang.annotation.AnnotationTypeMismatchException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
