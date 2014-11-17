@@ -402,9 +402,9 @@ public class IntHashSet implements PositiveIntSet {
    */
   private void addInner4(int rawKey) {
     final int i = findPosition(rawKey);
-    if (null == keys4) {
-      System.out.println("debug stop");
-    }
+//    if (null == keys4) {
+//      System.out.println("debug stop");
+//    }
     assert(keys4[i] == 0);
     keys4[i] = rawKey;
   }

@@ -224,7 +224,7 @@ public class SerDesTest6 extends TestCase {
 
   // Constructor
   public SerDesTest6() {
-    setRandom();
+    setRandom(/*seed = 1994207594477441796L*/);
     System.out.format("SerDesTest6 RandomSeed: %,d%n", seed);
    }
   
@@ -408,20 +408,32 @@ public class SerDesTest6 extends TestCase {
   // broken out special instances of random tests
   public void testDeltaWithStringArrayMod() throws IOException {
     // casSrc -> remoteCas,remoteCas updated, serialized back to srcCas
-    TTypeSystem m = getTT(EqTwoTypes);
-    remoteCas = setupCas(m);
-    loadCas(casSrc, mSrc);
-    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
-    MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    lfs = getIndexedFSs(remoteCas, m);
-    FeatureStructure fs = lfs.get(10);
-    StringArrayFS sa = (StringArrayFS) maybeGetFeatureKind(fs, m, "Astring");
-    sa.set(0, "change2");
-    verifyDelta(marker, ri);
+    for (int i = 0; i < 10; i++) {
+      TTypeSystem m = getTT(EqTwoTypes);
+      remoteCas = setupCas(m);
+      loadCas(casSrc, mSrc);
+      ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
+      MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
+      lfs = getIndexedFSs(remoteCas, m);
+      FeatureStructure fs = lfs.get(10);
+      StringArrayFS sa = (StringArrayFS) maybeGetFeatureKind(fs, m, "Astring");
+      if (sa == null) {  // could happen because features are randomly omitted
+        System.out.println("    Astring feature omitted, retrying");
+      } else if (sa.size() == 0) {
+        System.out.println("    Astring feature array has 0 length, retrying");    
+      } else {
+        sa.set(0, "change2");
+        verifyDelta(marker, ri);
+        break;
+      }
+      setRandom();
+      setUp();
+      System.out.println(" testDelta w/ String array mod random = " + seed + ", i = " + i);
+    }
   }
 
   public void testDeltaWithDblArrayMod() throws IOException {
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
       loadCas(casSrc, mSrc);

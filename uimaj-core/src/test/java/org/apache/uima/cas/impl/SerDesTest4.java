@@ -581,11 +581,12 @@ public class SerDesTest4 extends TestCase {
   private static final String[] stringValues = {
     "abc", "abcdef", null, "", "ghijklm", "a", "b"
   };
+  
   private String randomString(Random r) {
     int i = r.nextInt(7);
-    if (i >= 7) {
-      System.out.println("debug");
-    }
+//    if (i >= 7) {
+//      System.out.println("debug");
+//    }
     return stringValues[i];
   }
 
