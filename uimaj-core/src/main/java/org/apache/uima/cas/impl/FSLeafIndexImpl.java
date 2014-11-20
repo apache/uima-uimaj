@@ -88,11 +88,28 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   
   @Override
   public String toString() {
+    String kind;
+    switch (indexType) {
+    case 0:
+      kind = "Sorted";
+      break;
+    case 1:
+      kind = "Set";
+      break;
+    case 2:
+      kind = "Bag";
+      break;
+    case 3:
+      kind = "Default Bag";
+      break;
+    default:
+      kind = "Invalid";
+    }
     return "FSLeafIndexImpl ["  
 //        + "indexType=" + indexType + ", comparator=" + comparator + ", keyType="
 //        + Arrays.toString(keyType) + ", keyOffset=" + Arrays.toString(keyOffset) + ", typeOrder="
 //        + Arrays.toString(typeOrder) + ", keyComp=" + Arrays.toString(keyComp) + ", numKeys=" + numKeys 
-        + ", type=" + type + "]";
+        + "type=" + type + ", kind=" + kind + "]";
   }
 
   // never called
@@ -115,7 +132,11 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
 
   abstract boolean insert(int fs);
 
-  abstract void remove(int fs);
+  /**
+   * @param fs -
+   * @return true if something was removed, false if not found
+   */
+  abstract boolean remove(int fs);
 
   // public abstract IntListIterator iterator();
 

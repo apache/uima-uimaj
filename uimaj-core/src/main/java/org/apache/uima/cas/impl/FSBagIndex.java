@@ -389,14 +389,18 @@ public class FSBagIndex extends FSLeafIndexImpl {
   public void deleteFS(FeatureStructure fs) {
     remove( ((FeatureStructureImpl) fs).getAddress());  
   }
-
-  public void remove(int fsRef) {
+  
+  @Override
+  public boolean remove(int fsRef) {
     if (USE_POSITIVE_INT_SET) {
-      indexP.remove(fsRef);
+      return indexP.remove(fsRef);
     } else {
       final int pos = this.index.indexOfOptimizeAscending(fsRef);
       if (pos >= 0) {
         this.index.remove(pos);
+        return true;
+      } else {
+        return false;
       }
     }
   }
