@@ -63,6 +63,7 @@ public interface PositiveIntSet {
 
   /**
    * For FSBagIndex low level iterator use
+   *   DOESN"T WORK WITH INCREMENTING position VALUES
    * @param position - get the element at this position
    * @return the element
    */
