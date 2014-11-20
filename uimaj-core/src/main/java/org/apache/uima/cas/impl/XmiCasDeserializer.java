@@ -27,10 +27,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
@@ -46,9 +48,13 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FSIndexRepositoryImpl.IndexRepoTodos;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -69,15 +75,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class XmiCasDeserializer {
   
-  private static class ViewAddrs {
-    final private FSIndexRepositoryImpl indexRepository;
-    final private IntVector addrs;
-    
-    private ViewAddrs(FSIndexRepositoryImpl indexRepository, IntVector addrs) {
-      this.indexRepository = indexRepository;
-      this.addrs = addrs;
-    }
-  }
 
 
   private class XmiCasDeserializerHandler extends DefaultHandler {
@@ -229,14 +226,13 @@ public class XmiCasDeserializer {
     boolean disallowedViewMemberEncountered;
 
     /**
-     * a list of ints of FSs to be added to the indices
+     * a list of ViewAddrs (view + FSs) to be added to the indices
      */
-    final private List<ViewAddrs> toBeAdded = new ArrayList<ViewAddrs>();
+    final private IndexRepoTodos toBeAdded = new IndexRepoTodos();
     /**
      * a list of ints of FSs to be removed from the indices
      */
-    final private List<ViewAddrs> toBeRemoved = new ArrayList<ViewAddrs>();
-    
+    final private IndexRepoTodos toBeRemoved = new IndexRepoTodos();
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
      * @param aCAS CAS to deserialize into
@@ -374,19 +370,19 @@ public class XmiCasDeserializer {
             if (id != null) {
               int idInt = Integer.parseInt(id);
               if (idInt > 0 && !this.isNewFS(idInt)) { //preexisting FS
-            	if (this.allowPreexistingFS == AllowPreexistingFS.ignore) { //skip elements whose ID is <= mergePoint
-            		this.state = IGNORING_XMI_ELEMENTS_STATE;
-            		this.ignoreDepth++;
-            		return;
-            	} else if (this.allowPreexistingFS == AllowPreexistingFS.disallow) { //fail 
-            		CASRuntimeException e = new CASRuntimeException(
-          		          CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
-          		          new String[] {ID_ATTR_NAME + "=" + id,
-          		        		        nameSpaceURI,
-          		        		        localName,
-          		        		        qualifiedName});
-          		    throw e;
-            	}
+              	if (this.allowPreexistingFS == AllowPreexistingFS.ignore) { //skip elements whose ID is <= mergePoint
+              		this.state = IGNORING_XMI_ELEMENTS_STATE;
+              		this.ignoreDepth++;
+              		return;
+              	} else if (this.allowPreexistingFS == AllowPreexistingFS.disallow) { //fail 
+              		CASRuntimeException e = new CASRuntimeException(
+            		          CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
+            		          new String[] {ID_ATTR_NAME + "=" + id,
+            		        		        nameSpaceURI,
+            		        		        localName,
+            		        		        qualifiedName});
+            		    throw e;
+            	  }
               }
             }
           }
@@ -489,8 +485,10 @@ public class XmiCasDeserializer {
         }
         return;
       } else if (casBeingFilled.isArrayType(currentType)) {
+        
         // store ID and array values (if specified as attribute).
         // we will actually create the array later, in endElement.
+        
         String idStr = attrs.getValue(ID_ATTR_NAME);
         currentArrayId = idStr == null ? -1 : Integer.parseInt(idStr);
         String elements = attrs.getValue("elements");
@@ -509,26 +507,35 @@ public class XmiCasDeserializer {
           }
         }
       } else {
-    	String idStr = attrs.getValue(ID_ATTR_NAME);
-    	int xmiId = idStr == null ? -1 : Integer.parseInt(idStr);
-
-    	if (isNewFS(xmiId)) {  //new FS so create it.  
-    		final int addr = casBeingFilled.ll_createFS(currentType.getCode());
-        	readFS(addr, attrs);
-    	} else {  //preexisting
-    		if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
-    		  CASRuntimeException e = new CASRuntimeException(
-        		          CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
-        		          new String[] {ID_ATTR_NAME + "=" + idStr,
-        		        		        nameSpaceURI,
-        		        		        localName,
-        		        		        qualifiedName});
-    		  throw e;
-    		} else if (this.allowPreexistingFS == AllowPreexistingFS.allow) { //get the FS 
-    		  final int addr = getFsAddrForXmiId(xmiId);
-       	  	  readFS(addr,attrs);
-    		} // otherwise ignore
-    	}
+        
+        // not an array type
+        
+      	String idStr = attrs.getValue(ID_ATTR_NAME);
+      	int xmiId = idStr == null ? -1 : Integer.parseInt(idStr);
+  
+      	if (isNewFS(xmiId)) {  //new FS so create it.  
+      		final int addr = casBeingFilled.ll_createFS(currentType.getCode());
+          	readFS(addr, attrs);
+      	} else {  //preexisting
+      		if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
+      		  CASRuntimeException e = new CASRuntimeException(
+          		          CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
+          		          new String[] {ID_ATTR_NAME + "=" + idStr,
+          		        		        nameSpaceURI,
+          		        		        localName,
+          		        		        qualifiedName});
+      		  throw e;
+      		} else if (this.allowPreexistingFS == AllowPreexistingFS.allow) { //get the FS 
+      		  final int addr = getFsAddrForXmiId(xmiId);
+      		  // remove from indices, and remember if was there, per view
+      		  //   (might be indexed in some views, not in others)
+      		  casBeingFilled.removeFromCorruptableIndexAnyView(addr, toBeAdded);
+         	  readFS(addr, attrs);
+         	  // if was removed, the remove will be added to the "toBeAdded list
+         	  // to be added back after the finalize fixups
+         	  
+      		} // otherwise ignore
+      	}
       }
     }
 
@@ -551,11 +558,12 @@ public class XmiCasDeserializer {
         FSIndexRepositoryImpl indexRep = getIndexRepo(sofa, sofaXmiId);
         final boolean newview = (sofa == null) ? false : isNewFS(sofaXmiId);
         
+        final PositiveIntSet todo = toBeAdded.getTodos(indexRep);
+        
         // TODO: optimize by going straight to int[] without going through
         // intermediate String[]?
         String[] members = parseArray(membersString);
-        IntVector localAdds = new IntVector();
-        toBeAdded.add(new ViewAddrs(indexRep, localAdds));
+        
         for (int i = 0; i < members.length; i++) {
           int id = Integer.parseInt(members[i]);
           // special handling for merge operations ...
@@ -575,7 +583,7 @@ public class XmiCasDeserializer {
           try {
             int addr = getFsAddrForXmiId(id);
 //            indexRep.addFS(addr);  // can't do now because sofa ref not yet fixed up
-              localAdds.add(addr);   // https://issues.apache.org/jira/browse/UIMA-4099
+              todo.add(addr);   // https://issues.apache.org/jira/browse/UIMA-4099
           } catch (NoSuchElementException e) {
             if (!lenient) {
               throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(id));
@@ -649,9 +657,8 @@ public class XmiCasDeserializer {
       // TODO: optimize by going straight to int[] without going through
       // intermediate String[]?
       if (delmemberString != null) {
+        PositiveIntSet localRemoves = toBeRemoved.getTodos(indexRep);
         String[] members = parseArray(delmemberString);
-        final IntVector localRemoves = new IntVector();
-        toBeRemoved.add(new ViewAddrs(indexRep, localRemoves));
         for (int i = 0; i < members.length; i++) {
           int id = Integer.parseInt(members[i]);
           if (!isNewFS(id)) {  //preexisting FS
@@ -1423,27 +1430,31 @@ public class XmiCasDeserializer {
      * @see org.xml.sax.ContentHandler#endDocument()
      */
     public void endDocument() throws SAXException {
-      // Resolve ID references, and add FSs to indexes
+      // Resolve ID references
       for (int i = 0; i < deserializedFsAddrs.size(); i++) {
         finalizeFS(deserializedFsAddrs.get(i));
       }
       
+      // add FSs to indexes
+      //   These come from the add list and from 
+      //   delta below-the-line updates
       // https://issues.apache.org/jira/browse/UIMA-4099
-      for (ViewAddrs va : toBeAdded) {
-        FSIndexRepositoryImpl indexRep = va.indexRepository;
-        IntVector todo = va.addrs;
-        final int len = todo.size();
-        for (int i = 0; i < len; i++) {
-          indexRep.addFS(todo.get(i));
+      for (Entry<FSIndexRepositoryImpl, PositiveIntSet> e : toBeAdded.entrySet()) {
+        FSIndexRepositoryImpl indexRep = e.getKey();
+        final PositiveIntSet todo = e.getValue();
+        final IntListIterator it = ((PositiveIntSet_impl)todo).getOrderedIterator();
+        while (it.hasNext()) {
+          indexRep.addFS(it.next());
         }
       }
       
-      for (ViewAddrs va : toBeRemoved) {
-        FSIndexRepositoryImpl indexRep = va.indexRepository;
-        IntVector todo = va.addrs;
-        final int len = todo.size();
-        for (int i = 0; i < len; i++) {
-          indexRep.removeFS(todo.get(i));
+      // remove FSs from indexes
+      for (Entry<FSIndexRepositoryImpl, PositiveIntSet> e : toBeRemoved.entrySet()) {
+        FSIndexRepositoryImpl indexRep = e.getKey();
+        final PositiveIntSet todo = e.getValue();
+        final IntListIterator it = ((PositiveIntSet_impl)todo).getOrderedIterator();
+        while (it.hasNext()) {
+          indexRep.removeFS(it.next());
         }
       }
 
