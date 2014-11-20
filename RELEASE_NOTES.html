@@ -81,10 +81,34 @@
 
 <h2><a name="major.changes">Major Changes in this Release</a></h2>
 <p>
+The meaning of "bag" and "sorted" index has been made consistent with how these are handled
+when sending CASes to remote services.  This means that adding the same identical FS to the
+indexes, multiple times, will not add duplicate index entries.  And, removing a FS from an index
+is guaranteed that that particular FS will no longer be in any index.  (Before, if you had 
+added a particular FS to a sorted or bag index, multiple times, the remove behavior would
+remove just one of the instances).  Deserialization of CASes sent to remote services has never 
+added Feature Structures to the index multiple times, so this change makes that behavior 
+consistent. For more details, see <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-3399">
+https://issues.apache.org/jira/browse/UIMA-3399</a>.
+</p>
+
+<p>Because some users may prefer the previous behavior that permitted duplicates of identical Feature Structures in
+the sorted and bga indexes. this change can be disabled, by running the JVN with the defined property
+"uima.allow_duplicate_add_to_indices".
+
+<p>
  JSON serialization support is added for Type System Descriptions, and for CASs.
   Several formats for JSON CAS serialization are provided, please see the chapter in the
   UIMA reference documentation for details.
 </p>
+
+<p>Java 7 is now the minimum level of Java required.</p>
+
+<p>The fixed bugs include fixes to the UIMA iterator moveTo(FeatureStructure) methods which 
+ended up doing a moveToFirst() if the Feature Structure was beyond the last element in the index;
+the fixed code now marks the position of the iterator as invalid.</p>
+
+<p>See the README file for information on special backwards compatible flags.
   
 <h2><a name="get.involved">How to Get Involved</a></h2>
 <p>
