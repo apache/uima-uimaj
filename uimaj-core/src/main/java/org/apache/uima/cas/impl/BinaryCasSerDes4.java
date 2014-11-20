@@ -1455,7 +1455,7 @@ public class BinaryCasSerDes4 {
    */
   private class Deserializer {
     
-    final private CASImpl cas;  // cas being serialized
+    final private CASImpl cas;  // cas being deserialized into
     final private DataInput deserIn;
 
     final private DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
@@ -2032,9 +2032,12 @@ public class BinaryCasSerDes4 {
       long vPrevModLong = 0;
       int iHeap;
       TypeInfo typeInfo;
+ 
 
 
       private void readModifiedFSs() throws IOException {
+        final List<FSIndexRepositoryImpl> toBeAddedRepos = new ArrayList<FSIndexRepositoryImpl>();
+
         final int modFSsLength = readVnumber(control_dis);
         iPrevHeap = 0;
                  
@@ -2053,7 +2056,11 @@ public class BinaryCasSerDes4 {
           if (typeInfo.isArray && (!typeInfo.isHeapStoredArray)) {
             readModifiedAuxHeap(numberOfModsInThisFs);
           } else {
+            // https://issues.apache.org/jira/browse/UIMA-4100
+            toBeAddedRepos.clear();
+            cas.removeFromCorruptableIndexAnyView(iHeap, toBeAddedRepos);
             readModifiedMainHeap(numberOfModsInThisFs);
+            cas.addBackRemovedFsToAppropViews(iHeap,  toBeAddedRepos);
           }
         }
       }

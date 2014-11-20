@@ -314,7 +314,7 @@ public class BinaryCasSerDes6 {
   /*****************************************************
    *  Things for both serialization and Deserialization
    *****************************************************/
-  final private CASImpl cas;  // cas being serialized
+  final private CASImpl cas;  // cas being serialized or deserialized into
   private int[] heap;           // main heap, can't be final because grow replaces it
   final private StringHeap stringHeapObj;
   final private LongHeap longHeapObj;
@@ -2269,6 +2269,7 @@ public class BinaryCasSerDes6 {
 //      int[] srcNextSkippedIndex;
 
     private void readModifiedFSs() throws IOException {
+      final List<FSIndexRepositoryImpl> toBeAddedRepos = new ArrayList<FSIndexRepositoryImpl>();
       final int modFSsLength = readVnumber(control_dis);
       int prevSeq = 0;
       
@@ -2317,7 +2318,11 @@ public class BinaryCasSerDes6 {
            **************************************************/
            readModifiedAuxHeap(numberOfModsInThisFs);
         } else {
+          // https://issues.apache.org/jira/browse/UIMA-4100
+          toBeAddedRepos.clear();
+          cas.removeFromCorruptableIndexAnyView(iHeap, toBeAddedRepos);
           readModifiedMainHeap(numberOfModsInThisFs);
+          cas.addBackRemovedFsToAppropViews(iHeap,  toBeAddedRepos);       
         }
       }
     }
