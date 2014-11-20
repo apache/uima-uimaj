@@ -139,8 +139,9 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * 
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
    */
-  void remove(int fs) {
-    this.tree.deleteKey(fs);
+  @Override
+  boolean remove(int fs) {
+    return this.tree.deleteKey(fs);
   }
 
 }

@@ -502,12 +502,14 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * 
    * No error is reported if the item is not in the index  
    */
-  public void remove(int fsRef) {
+  @Override
+  public boolean remove(int fsRef) {
     int pos = findEq(fsRef);  // finds  == to fsRef identity equals
     if (pos < 0) {
-      return;  // not in index
+      return false;  // not in index
     }
     this.index.remove(pos);
+    return true;
   }
 
 }

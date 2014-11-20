@@ -291,11 +291,14 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
    * 
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
    */
-  void remove(int fs) {
+  @Override
+  boolean remove(int fs) {
     final int pos = this.index.indexOfOptimizeAscending(fs);
     if (pos >= 0) {
       this.index.remove(pos);
+      return true;
     }
+    return false;
   }
 
 }
