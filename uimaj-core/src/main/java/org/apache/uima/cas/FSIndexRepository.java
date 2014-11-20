@@ -107,17 +107,14 @@ public interface FSIndexRepository {
   
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
-   * subtypes).
-   * <p>
-   * Limitation: If there are no sorted or bag indexes defined for this type, but there is more than
-   * one set index defined, then this method will only return the contents of one of these set
-   * indexes (chosen arbitrarily).
+   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
+   * are not removed.
    * 
    * @param aType
    *          The type
    * 
-   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
-   *         in no particular order.
+   * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>
+   *         and its subtypes, in no particular order.
    */
   FSIterator<FeatureStructure> getAllIndexedFS(Type aType);
 }
