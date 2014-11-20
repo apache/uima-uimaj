@@ -1328,10 +1328,11 @@ while (timeIter.hasNext()) {
         the method would return only those instances in the set.  So, in a pathological case, if you defined the
         set so that the key was some particular field, and all instances of this type had the same key, then 
         only one instance of this type would be found.</para>
-        <para>To guarantee the existance of an index for all types, you can define an bag or sorted index for the type.
-        If there is such an index, the same FeatureStructure could be added to the index multiple times.  In this case,
-        the iterator would return the same FeatureStructure multiple times.
-        </para>
+        <para>To guarantee the existance of an index that would have an entry for all unique indexed 
+        Feature Structures, define a bag or sorted index for the type.
+        </para>.
+        
+
         <para>All types which are subtypes of the built-in Annotation type have a sorted index, and so all instances of those
         types are guaranteed to be found (at least once) by this iterator.</para>
         

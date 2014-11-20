@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/references/ref.config/">
+<!ENTITY tp "ugr.ref.config.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.config">
+  <title>UIMA Setup and Configuration</title>
+  <titleabbrev>Setup and Configuration</titleabbrev>
+
+  <section id="ugr.ref.config.properties">
+    <title>UIMA JVM Configuration Properties</title>
+    
+    <para> Some updates change UIMA's behavior between released versions.  For example, sometimes an error check
+  is enhanced, and this can cause something that previously incorrect but not checked, to now signal an error.
+  Often, users will want these kinds of things to be ignored, at least for a while, to give them time to 
+  analyze and correct the issues.
+    </para> 
+    
+    <para>
+      To enable users to gradually address these issues, there are some global JVM properties
+  for UIMA that can restore earlier behaviors, in some cases.  
+  These are detailed in the table below.
+  For the most part, you don't need to assign any values to these properties,
+  just define them.  For example to disable the enhanced check that insures you 
+  don't add a subtype of AnnotationBase to the wrong View, you could disable this by
+  adding the JVM argument <code>-Duima.disable_enhanced_check_wrong_add_to_index</code>.  
+  This would remove the enhanced
+  checking for this, added in version 2.7.0 (the previously existing partial checking is
+  still there, though).  
+    </para>
+    
+    
+    
+    <informaltable frame="all" rowsep="1" colsep="1">
+     <tgroup cols="3">
+       <colspec colnum="1" colname="Title" colwidth="1*"/>
+       <colspec colnum="2" colname="Description" colwidth="3*"/>
+       <colspec colnum="3" colname="Version"  colwidth= "0.5*"/>
+        
+       <tbody>
+         <row>
+           <entry><emphasis role="bold">Title</emphasis></entry>
+           <entry><emphasis role="bold">Property Name &amp; Description</emphasis></entry>
+           <entry><emphasis role="bold">Since Version</emphasis></entry>
+         </row>
+         <row>
+           <entry><para>adding Annotation to wrong View</para></entry>
+           
+           <entry><para><code>uima.disable_enhanced_check_wrong_add_to_index</code></para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4099"/>.
+                        Feature Structures which are subtypes of AnnotationBase             
+                        may only be added to the View corresponding to their
+                        Sofa reference.  From version 2.7.0, there is additional 
+                        checking of this which can be disabled if needed 
+                        for backward compatibility.</para></entry>
+           <entry><para>2.7.0</para></entry>
+         </row>
+         
+         <row>
+           <entry><para>Illegal index-key Feature update</para></entry>
+           
+           <entry><para><code>uima.check_fs_update_corrupts_index</code> (default is not to check)</para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4059"/>.
+                        Updating Features which are used in Set and Sorted
+                        indices as "keys" is illegal, if the Feature Structure (FS)
+                        has been added to the indices.  To update these, you must first
+                        remove the FS from the index, then do the updates, and then
+                        add it back.  A new (by default disabled) capability
+                        checks for this.  It may be somewhat expensive in
+                        space and time, so is disabled by default, but can be
+                        enabled to check your application.</para></entry>
+           <entry><para>2.7.0</para></entry>
+         </row>
+
+         <row>
+           <entry><para>Disallow duplicate addToIndexes for identical Feature Structures</para></entry>
+           
+           <entry><para><code>uima.allow_duplicate_add_to_indices</code></para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4059"/>
+                        and <ulink url="https://issues.apache.org/jira/browse/UIMA3399"/>.
+                        As of version 2.7.0, adding a particular Feature Structure
+                        to the indices more than once is ignored.  The old behavior
+                        may be restored by this property.</para></entry>
+           <entry><para>2.7.0</para></entry>
+         </row>
+
+       </tbody>
+     </tgroup>
+   </informaltable>
+    
+  </section>
+  
+</chapter>

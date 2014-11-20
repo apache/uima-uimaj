@@ -729,16 +729,36 @@ uima.tcas.Annotation.</programlisting>
             
             <para>There are three possible values for the
               <literal>&lt;kind&gt;</literal> of index. Sorted indexes enforce an
-              ordering of feature structures, and may contain duplicates. Bag indexes do
-              not enforce ordering, and also may contain duplicates. Set indexes do not
-              enforce ordering and may not contain duplicates.  If the <literal>&lt;kind&gt;</literal>element is omitted, it will default to
+              ordering of feature structures, based on defined keys.  Bag indexes do
+              not enforce ordering, and have no defined keys. Set indexes do not
+              enforce ordering, but use defined keys to specify equivalnce classes; 
+              addToIndexes will not add a Feature Structure to a set index if its keys 
+              match those of an entry already in the index.
+              If the <literal>&lt;kind&gt;</literal>element is omitted, it will default to
               sorted, which is the most common type of index.</para>
+              
+            <para>Prior to version 2.7.0, the bag and sorted indexes stored duplicate entries for the
+            same identical FS, if it was added to the indexes multiple times. As of version 2.7.0, this 
+            is changed; a second or subsequent add to index operation has no effect.  This has the
+            consequence that a remove operation now guarantees that the particular FS is removed 
+            (as opposed to only being able to say that one (of perhaps many duplicate entries) is removed).
+            Since sending to remote annotators only adds entries to indexes at most once, this 
+            behavior is consistent with that.</para>
+            
+            <para>Note that even after this change, there is still a distinct difference in meaning for bag and set indexes.
+            The set index uses equal defined key values to determine equlivance classes for Feature Structures, and
+            will not add a Feature Structure if it has equal key values to an entry already in there.</para>
+            
+            <para>It is possible, however, that users may be depending on having multiple instances of 
+            the identical FeatureStructure in the indicies. Therefore, UIMA uses 
+             a JVM defined property,
+            "uima.allow_duplicate_add_to_indices", which (if defined whend UIMA is loaded) will restore the previous behavior.</para>
             
             <note><para>There is usually no need to explicitly declare a Bag index in your descriptor.  
               As of UIMA v2.1, if you do not declare any index for a type (or any of its 
-              supertypes), a Bag index will be automatically created.</para></note>
+              supertypes), a Bag index will be automatically created if an instance of that type is added to the indices.</para></note>
                         
-            <para>An index may define zero or more <emphasis>keys</emphasis>. These keys
+            <para>An Sorted or Set index may define zero or more <emphasis>keys</emphasis>. These keys
               determine the sort order of the feature structures within a sorted index, and
               determine equality for set indexes. Bag indexes do not use keys, and 
 			  equality is determined by Feature Structure identity (that is, two elements
