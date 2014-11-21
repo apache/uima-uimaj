@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -150,7 +149,7 @@ public class FSClassRegistry {
 
   // private final RedBlackTree rbt;
   // private final TreeMap map;
-  private FeatureStructure[] fsArray;
+//  private FeatureStructure[] fsArray;
 
   FSClassRegistry(TypeSystemImpl ts) {
     this.ts = ts;
@@ -207,11 +206,12 @@ public class FSClassRegistry {
 //    this.generators[targetType.getCode()] = this.generators[sourceType.getCode()];
 //  }
 
-  /* only of interest when caching FSes */
+  /* only of interest when caching (not JCas caching) FSes which has never been finished or enabled */
   void flush() {
-    if (this.fsArray != null) {
-      Arrays.fill(this.fsArray, null);
-    }
+    // commented out to reduce FindBugs noise.  
+//    if (this.fsArray != null) {
+//      Arrays.fill(this.fsArray, null);
+//    }
   }
   
   public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator[] newGenerators) {

@@ -117,7 +117,7 @@ public class ProcessUtil {
      */
     public Runner(Process aProcess, String procName, boolean printToConsole) {
       // get next process number
-      synchronized (getClass()) {
+      synchronized (Runner.class) {
         __processNumber++;
       }
       _process = aProcess;
