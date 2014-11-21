@@ -91,7 +91,7 @@ under the License.
     <section id="ug.ref.json.cas.bigpic">
       <title>The Big Picture</title>
 
-	    <para>CAS JSON serialization consists of several parts: an optional @context, the set of Feature Structures,
+	    <para>CAS JSON serialization consists of several parts: an optional _context, the set of Feature Structures,
 	    and (if doing a delta serialization) information about changes to what was indexed.</para>
 	    
 	    <figure id="ug.ref.json.fig.bigpic">
@@ -100,32 +100,32 @@ under the License.
 	        <imageobject>
 	          <imagedata width="3.5in" format="PNG" fileref="&imgroot;big_picture.png"/>
 	        </imageobject>
-	        <textobject><phrase>The big picture showing the parts of serialization, with the @context optional.</phrase>
+	        <textobject><phrase>The big picture showing the parts of serialization, with the _context optional.</phrase>
 	        </textobject>
 	      </mediaobject>
       </figure>
 	       
     <para>The serializer can be configured to omit
-    the @context or parts of the @context for cases where that information isn't needed.  The index changes
+    the _context or parts of the _context for cases where that information isn't needed.  The index changes
     information is only included if Delta CAS serialization is specified.  Note that Delta CAS support
     is incomplete; so this information is just for planning purposes.</para>
     </section>
     
     <section id="ug.ref.json.cas.context">
-      <title>The @context section</title>
-          <para>The @context section has entries for each used type as well as some special additional entries. 
+      <title>The _context section</title>
+          <para>The _context section has entries for each used type as well as some special additional entries. 
           Each entry for a type has multiple sub-entries, identified
           by a key-name.  Each sub-entry can be selectively omitted if not needed.
           
           
           <itemizedlist>
-            <listitem><para><emphasis role="bold">@type_system</emphasis> - a URI of the type system information</para></listitem>
-            <listitem><para><emphasis role="bold">@types</emphasis> - information about each used type
+            <listitem><para><emphasis role="bold">_type_system</emphasis> - a URI of the type system information</para></listitem>
+            <listitem><para><emphasis role="bold">_types</emphasis> - information about each used type
               <itemizedlist>
-		            <listitem><para><emphasis role="bold">@id</emphasis> - the type's fully qualified UIMA type name</para></listitem>
-		            <listitem><para><emphasis role="bold">@feature_types</emphasis> - a map from features of this type to 
+		            <listitem><para><emphasis role="bold">_id</emphasis> - the type's fully qualified UIMA type name</para></listitem>
+		            <listitem><para><emphasis role="bold">_feature_types</emphasis> - a map from features of this type to 
 		                                information about the type of the value of the feature</para></listitem>
-		            <listitem><para><emphasis role="bold">@subtypes</emphasis> - an array of used subtype short-names</para></listitem>
+		            <listitem><para><emphasis role="bold">_subtypes</emphasis> - an array of used subtype short-names</para></listitem>
               </itemizedlist>
             </para></listitem>
           </itemizedlist>
@@ -135,27 +135,27 @@ under the License.
 			    <para>Here's an example:</para>
 			    <informalexample>  <!-- does a keep-together -->
 			    <?dbfo keep-together="always" ?>
-          <programlisting>"@context" : {
-  "@type_system" : "URI to the type system information",
-  "@types : {
+          <programlisting>"_context" : {
+  "_type_system" : "URI to the type system information",
+  "_types : {
     "A_Typical_User_or_built_in_Type" : {
-      "@id" : "org.apache.uima.test.A_Typical_User_or_built_in_Type", 
-      "@feature_types" : [
-           "sofa"         : "@ref", 
-           "aFS"          : "@ref", 
-           "an_array"     : "@array",
-           "a_byte_array" : "@byte_array"],
-      "@subtypes" : [ "subtype1", "subtype2", ... ] }, 
+      "_id" : "org.apache.uima.test.A_Typical_User_or_built_in_Type", 
+      "_feature_types" : [
+           "sofa"         : "_ref", 
+           "aFS"          : "_ref", 
+           "an_array"     : "_array",
+           "a_byte_array" : "_byte_array"],
+      "_subtypes" : [ "subtype1", "subtype2", ... ] }, 
     "Sofa" : {
-      "@id" : "uima.cas.Sofa", 
-      "@feature_types" : {"sofaArray" : "@ref"} }
+      "_id" : "uima.cas.Sofa", 
+      "_feature_types" : {"sofaArray" : "_ref"} }
   }
 }</programlisting></informalexample>
 
-      <para>The <emphasis role="bold">@type_system</emphasis> is an optional URI that references a UIMA type system description that
+      <para>The <emphasis role="bold">_type_system</emphasis> is an optional URI that references a UIMA type system description that
       defines the types for the CAS being serialized.</para>
       
-      <para>In the <emphasis role="bold">@types</emphasis> section, the key (e.g. "Sofa" or "A_Typical_User_or_built_in_Type") is the "short" name 
+      <para>In the <emphasis role="bold">_types</emphasis> section, the key (e.g. "Sofa" or "A_Typical_User_or_built_in_Type") is the "short" name 
       for the type used in the serialization.  
       It is either just
       the last segment of the full type name (e.g. for the type x.y.z.TypeName, it's TypeName), or, 
@@ -168,30 +168,30 @@ under the License.
       "cname", one namespace name would be "cname", and the other would be "cname1".  The keys in this case would be
       cname:Foo and cname1:Foo.</para></blockquote>
       
-      <para>The value of the @id is the fully qualified name of the type.</para>
+      <para>The value of the _id is the fully qualified name of the type.</para>
       
-      <para>The <emphasis role="bold">@feature_types</emphasis> values of @ref, @array, and @byte_array indicate the corresponding values 
+      <para>The <emphasis role="bold">_feature_types</emphasis> values of _ref, _array, and _byte_array indicate the corresponding values 
       of the named features need special handling 
       when deserailized.
       <itemizedlist>
-        <listitem><para><emphasis role="bold">@ref</emphasis> - used when features are deserialized as numbers, but they are to be
+        <listitem><para><emphasis role="bold">_ref</emphasis> - used when features are deserialized as numbers, but they are to be
       interpreted as references to other FSs whose <code>id</code> is the number.  UIMA lists and arrays of 
-      FSs are marked with @ref; if the value is a JSON array, the elements of the array will be either
+      FSs are marked with _ref; if the value is a JSON array, the elements of the array will be either
       numbers (to be interpreted as references), or embedded serializations of FSs.</para></listitem>
       
-        <listitem><para><emphasis role="bold">@array</emphasis> - used when features are serialized as JSON 
+        <listitem><para><emphasis role="bold">_array</emphasis> - used when features are serialized as JSON 
         arrays containing embedded values, 
       unless the corresponding UIMA object has
       multiple references, in which case it is serialized as a FS reference which looks like a single number.
-      If a feature is marked with @array, then a non-array, single number should be interpreted as the
+      If a feature is marked with _array, then a non-array, single number should be interpreted as the
       <code>id</code> of the feature structure that is the array or the first element of the list of items.
       This designation is used for both UIMA arrays and lists.</para>
       
       <para>This designation is for arrays and lists of primitive values, except for byte arrays.  
-      In the case of FS arrays and lists, the @ref designation is used instead of this to indicate that the 
+      In the case of FS arrays and lists, the _ref designation is used instead of this to indicate that the 
       resulting values in a JSON array that look like numbers should be interpreted as references.</para></listitem>
       
-      <listitem><para><emphasis role="bold">@byte_array</emphasis> - @byte_array features are serialized numbers (if they are a 
+      <listitem><para><emphasis role="bold">_byte_array</emphasis> - _byte_array features are serialized numbers (if they are a 
       reference to a separate object, or as strings (if embedded).  The strings are to be decoded into
       binary byte arrays using the Base64 encoding (the standard one used by Jackson to serialize binary data).</para></listitem>
       </itemizedlist>  
@@ -202,7 +202,7 @@ under the License.
       references to arrays from embedded arrays.
       </para>
 
-      <para><emphasis role="bold">@subtypes</emphasis> are a list of the type's used subtypes.  A type is <emphasis>used</emphasis>
+      <para><emphasis role="bold">_subtypes</emphasis> are a list of the type's used subtypes.  A type is <emphasis>used</emphasis>
        if it is the type of a Feature Structure
       being serialized,
       or if it is in the supertype chain of some Feature Structure which is serialized.  If a type has no
@@ -213,14 +213,14 @@ under the License.
      
       
       <!-- 
-      <para>@supertypes are a list of the type's supertypes, in the natural nearest to farthest order.
-      The list is truncated as soon as a type is mentioned which already (in a previous @supertypes)
+      <para>_supertypes are a list of the type's supertypes, in the natural nearest to farthest order.
+      The list is truncated as soon as a type is mentioned which already (in a previous _supertypes)
       has had its supertypes enumerated.</para> -->
       
       <section id="ug.ref.json.cas.context.omit">
-          <title>Omitting parts of the @context section</title>
+          <title>Omitting parts of the _context section</title>
           <para>It is possible to selectively omit some of the 
-          @context sections (or the entire @context), via configuration.  
+          _context sections (or the entire _context), via configuration.  
           Here's an example:</para>
 
           <informalexample>  <!-- does a keep-together -->
@@ -252,15 +252,15 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     embedded (see following section) are represented as JSON arrays using the [] notation.</para>
     
     <para>Besides the feature values defined for a Feature Structure, an additional special feature
-    may be serialized:  @type.  
-    The @type is the type name, written using the short format.  This is automatically included when the type cannot 
+    may be serialized:  _type.  
+    The _type is the type name, written using the short format.  This is automatically included when the type cannot 
     easily be
     inferred from other contextual information. 
     </para>
     
     <para>Here's an example, with some comments which, since JSON doesn't support comments, are just here for explanation:</para>
               <informalexample>  <!-- does a keep-together -->
-    <programlisting>{ "@type" : "Annotation", // @type may be omitted
+    <programlisting>{ "_type" : "Annotation", // _type may be omitted
   "feat1" : true,   // boolean value represented as true or false
   "feat2" : 123,    // could be a number or a reference to FS with id 123
   "feat3" : "b3axgh"//could be a string or a base64 encoded byte array
@@ -389,7 +389,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     exist once in the two parts.</para>
     
               <informalexample>  <!-- does a keep-together -->
-    <programlisting>"@views" : {
+    <programlisting>"_views" : {
   "_InitialView" : {
      "theFirstType" : [  { ... fs1 ...}, 123, 456, { ... fsn ...} ]
      "anotherType"  : [  { ... fs1 ...}, ... { ... fsn ...} ]
@@ -403,9 +403,9 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
    ...        // more views         
 }, 
 
-"@referenced_fss" : {
-  "12" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" },
-  "25" : {"@type" : "Sofa",  "sofaNum" : 2,  "sofaID" : "AnotherView" },
+"_referenced_fss" : {
+  "12" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" },
+  "25" : {"_type" : "Sofa",  "sofaNum" : 2,  "sofaID" : "AnotherView" },
   
   "123" : { ... fs-123 ... },
   "456" : { ... fs-456 ... },
@@ -422,7 +422,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
         
     <para>The second part map has keys which are the <code>id</code> value of the FSs, and values which are 
     a map of key-value pairs corresponding to the feature-values of that FS.
-    In this case, the @type extra feature is added to record the type.</para>
+    In this case, the _type extra feature is added to record the type.</para>
     
     <!--       
     <para>
@@ -431,15 +431,15 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     If there are more than 1 of these kinds of references, then the FS is
     multiply referenced.  All FSs that are multiply referenced are not "embedded" at their reference points;
     instead each reference point has a value which is the <code>id</code> of that FS, and which can be used as the "key"
-    in the @referenced_fss map to obtain the actual serialized form of the FS.</para>
+    in the _referenced_fss map to obtain the actual serialized form of the FS.</para>
      -->
     
-    <para>The @views map, keyed by view and type name, has all the FSs (as an JSON array) for that type that were in
+    <para>The _views map, keyed by view and type name, has all the FSs (as an JSON array) for that type that were in
     one or more indexes in any View.  If a FS in this array is not multiply referenced (using dynamic mode), 
     then it is embedded here. Otherwise, only the reference (a simple number representing the <code>id</code> of that FS) is serialized for that FS.</para>
     
     <!-- 
-    <para>Here's a picture of what the @types map would look like with two views, with Sofa ids of 22 and 99.</para>
+    <para>Here's a picture of what the _types map would look like with two views, with Sofa ids of 22 and 99.</para>
     
     <figure>
       <title>Feature Structure Organization</title>
@@ -457,7 +457,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     <!--  
     <section id="ug.ref.json.cas.casviews">
       <title>CAS Views</title>
-      <para>The last section in a JSON CAS serialization is the @cas_views.  
+      <para>The last section in a JSON CAS serialization is the _cas_views.  
       This contains for each view, an array of IDs of FSs that the serializing application added to its indexes.  
         These arrays are stored in a map, with the key being the <code>id</code> for the Sofa FS associated with the view, or
         "0" for the edge case where no Sofa has (yet) been created for the initial view (this is an edge case that
@@ -489,7 +489,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     
     <para>
     JSON serialization doesn't support this, mainly because there's no type information available for the 
-    oots data, and the JSON @context information for these types can't be generated.</para>
+    oots data, and the JSON _context information for these types can't be generated.</para>
      -->      
         
 
@@ -529,14 +529,14 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
       <note><para>Delta CAS support is incomplete, and is not supported as of release 2.7.0, but may
       be supported in later releases.  The information here is just for planning purposes.</para></note>
       
-      <para><emphasis role="bold">@delta_cas</emphasis> is present only when a delta CAS serialization is being performed.  
+      <para><emphasis role="bold">_delta_cas</emphasis> is present only when a delta CAS serialization is being performed.  
       This serializes just the 
       changes in the CAS since a Mark was set; so for cases where a large CAS is deserialized into a service, which
       then does a relatively small amount of additions and modifications, only those changes are serialized.
       The values of the keys are arrays of the ids of FSs that were added to the indexes, 
       removed from the indexes, or reindexed.</para>
       
-      <para>This mode requires the static embeddability mode.  When specified, a <code>@delta_cas</code> key-value 
+      <para>This mode requires the static embeddability mode.  When specified, a <code>_delta_cas</code> key-value 
       is added to the serialization at the end, 
       which lists the FSs (by <code>id</code>) that were added, removed, or reindexed, since the mark was set.  
       Additional extra information, created when the CAS was previously deserialized and the mark set, 
@@ -545,7 +545,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
       
       <para>Here's what the last part of the serialization looks like, when Delta CAS is specified:
                 <informalexample>  <!-- does a keep-together -->
-      <programlisting>"@delta_cas" : {
+      <programlisting>"_delta_cas" : {
   "added_members" : [  123, ... ],
   "deleted_members" : [  456, ... ],
   "reindexed_members" : [] }</programlisting></informalexample>
