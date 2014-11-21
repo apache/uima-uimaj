@@ -1,15 +1,15 @@
-{"@context" : {
-    "@types" : {
-      "EmptyIntegerList" : {"@id" : "uima.cas.EmptyIntegerList" }, 
-      "NonEmptyIntegerList" : {"@id" : "uima.cas.NonEmptyIntegerList", 
-        "@feature_types" : {"tail" : "@array" } }, 
-      "IntegerList" : {"@id" : "uima.cas.IntegerList", 
-        "@subtypes" : ["EmptyIntegerList",  "NonEmptyIntegerList" ] }, 
-      "ListBase" : {"@id" : "uima.cas.ListBase", 
-        "@subtypes" : ["IntegerList" ] }, 
-      "TOP" : {"@id" : "uima.cas.TOP", 
-        "@subtypes" : ["ListBase" ] } } }, 
-  "@views" : {
+{"_context" : {
+    "_types" : {
+      "EmptyIntegerList" : {"_id" : "uima.cas.EmptyIntegerList" }, 
+      "NonEmptyIntegerList" : {"_id" : "uima.cas.NonEmptyIntegerList", 
+        "_feature_types" : {"tail" : "_array" } }, 
+      "IntegerList" : {"_id" : "uima.cas.IntegerList", 
+        "_subtypes" : ["EmptyIntegerList",  "NonEmptyIntegerList" ] }, 
+      "ListBase" : {"_id" : "uima.cas.ListBase", 
+        "_subtypes" : ["IntegerList" ] }, 
+      "TOP" : {"_id" : "uima.cas.TOP", 
+        "_subtypes" : ["ListBase" ] } } }, 
+  "_views" : {
     "_InitialView" : {
       "NonEmptyIntegerList" : [
         {"head" : 11,  "tail" : [22,  33 ] } ] } } }

@@ -1,1 +1,1 @@
-{"@context":{"@type_system":"A URI to TypeSystem","@types":{"TOP":{}}},"@views":{"_InitialView":{"TOP":[{}]}}}
+{"_context":{"_type_system":"A URI to TypeSystem","_types":{"TOP":{}}},"_views":{"_InitialView":{"TOP":[{}]}}}

@@ -101,6 +101,7 @@ public class JsonCasSerializerTest extends TestCase {
  
   protected void setUp() throws Exception {
     jcs = new JsonCasSerializer();
+    jcs.setOmit0Values(true);
     doJson = true;
   }
 
@@ -163,11 +164,11 @@ public class JsonCasSerializerTest extends TestCase {
     serializeAndCompare("topAndTokenOnlyNoContext.txt");
     
     jcs = new JsonCasSerializer();
-    jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);
+    jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames).setOmit0Values(true);
     serializeAndCompare("topAndTokenOnlyNoExpandedTypeNames.txt");
     
     jcs = new JsonCasSerializer();
-    jcs.setJsonContext(JsonContextFormat.omitSubtypes);
+    jcs.setJsonContext(JsonContextFormat.omitSubtypes).setOmit0Values(true);
     serializeAndCompare("topAndTokenOnlyNoSubtypes.txt");
     
     
@@ -188,7 +189,7 @@ public class JsonCasSerializerTest extends TestCase {
     serializeAndCompare("topNoContext.txt");
         
     cas.reset();
-    jcs = new JsonCasSerializer();
+    jcs = new JsonCasSerializer().setOmit0Values(true);
     jcs.setTypeSystemReference("A URI to TypeSystem");
     cas.addFsToIndexes(cas.createFS(topType));
     serializeAndCompare("topExpandedNamesNoViews.txt");
@@ -213,19 +214,19 @@ public class JsonCasSerializerTest extends TestCase {
     
     serializeAndCompare("nameSpaceCollisionOmits.txt");
     
-    jcs.setOmitDefaultValues(false);
+    jcs.setOmit0Values(false);
     serializeAndCompare("nameSpaceCollision.txt");
     
     cas.addFsToIndexes(cas.createFS(t3));
     serializeAndCompare("nameSpaceCollision2.txt");
 
-    jcs.setOmitDefaultValues(true);
+    jcs.setOmit0Values(true);
     serializeAndCompare("nameSpaceCollision2Omits.txt");
 
     jcs.setPrettyPrint(true);
     serializeAndCompare("nameSpaceCollision2ppOmits.txt");
 
-    jcs.setOmitDefaultValues(false);
+    jcs.setOmit0Values(false);
     serializeAndCompare("nameSpaceCollision2pp.txt");
     
     // filtering 
@@ -234,7 +235,7 @@ public class JsonCasSerializerTest extends TestCase {
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
     tsMgr.commit();
-    jcs = new JsonCasSerializer();
+    jcs = new JsonCasSerializer().setOmit0Values(true);
     jcs.setFilterTypes((TypeSystemImpl) tsMgr);
     serializeAndCompare("nameSpaceNoCollsionFiltered.txt");
     
@@ -253,10 +254,10 @@ public class JsonCasSerializerTest extends TestCase {
   public void testAllValues() throws Exception {
     setupTypeSystem("allTypes.xml");
     setAllValues(0);
-    jcs.setPrettyPrint(true);
+    jcs.setPrettyPrint(true).setOmit0Values(true);
     serializeAndCompare("allValuesOmits.txt");
     
-    jcs.setOmitDefaultValues(false);
+    jcs.setOmit0Values(false);
     serializeAndCompare("allValuesNoOmits.txt");
     
     jcs.setStaticEmbedding();
@@ -295,7 +296,7 @@ public class JsonCasSerializerTest extends TestCase {
     serializeAndCompare("twoListMergeStatic.txt");
    
     cas.reset();
-    jcs = new JsonCasSerializer();
+    jcs = new JsonCasSerializer().setOmit0Values(true);
     jcs.setPrettyPrint(true);
     fss[0] = emptyIntList();
     fss[1] = intList(33, fss[0]);   // value 33, linked to 0

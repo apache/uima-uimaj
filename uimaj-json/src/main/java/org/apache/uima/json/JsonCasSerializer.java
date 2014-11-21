@@ -101,30 +101,30 @@ public class JsonCasSerializer {
 
   private static final Integer[] EMPTY_INTEGER_ARRAY = new Integer[0];
 
-  private static final SerializedString CONTEXT_NAME = new SerializedString("@context");
+  private static final SerializedString CONTEXT_NAME = new SerializedString("_context");
  
-  private static final SerializedString TYPE_SYSTEM_NAME = new SerializedString("@type_system");
+  private static final SerializedString TYPE_SYSTEM_NAME = new SerializedString("_type_system");
   
-  private static final SerializedString TYPES_NAME = new SerializedString("@types");
+  private static final SerializedString TYPES_NAME = new SerializedString("_types");
 
-  private static final SerializedString ID_NAME = new SerializedString("@id");
-  private static final SerializedString SUB_TYPES_NAME = new SerializedString("@subtypes");
+  private static final SerializedString ID_NAME = new SerializedString("_id");
+  private static final SerializedString SUB_TYPES_NAME = new SerializedString("_subtypes");
   
-  private static final SerializedString FEATURE_TYPES_NAME = new SerializedString("@feature_types");
-  private static final SerializedString FEATURE_REFS_NAME = new SerializedString("@ref");
-  private static final SerializedString FEATURE_ARRAY_NAME = new SerializedString("@array");
-  private static final SerializedString FEATURE_BYTE_ARRAY_NAME = new SerializedString("@byte_array");    
+  private static final SerializedString FEATURE_TYPES_NAME = new SerializedString("_feature_types");
+  private static final SerializedString FEATURE_REFS_NAME = new SerializedString("_ref");
+  private static final SerializedString FEATURE_ARRAY_NAME = new SerializedString("_array");
+  private static final SerializedString FEATURE_BYTE_ARRAY_NAME = new SerializedString("_byte_array");    
   
 
-  private static final SerializedString REFERENCED_FSS_NAME = new SerializedString("@referenced_fss");
-  private static final SerializedString VIEWS_NAME = new SerializedString("@views");  
+  private static final SerializedString REFERENCED_FSS_NAME = new SerializedString("_referenced_fss");
+  private static final SerializedString VIEWS_NAME = new SerializedString("_views");  
   
-  private static final SerializedString TYPE_NAME = new SerializedString("@type");
+  private static final SerializedString TYPE_NAME = new SerializedString("_type");
   
-  private static final SerializedString COLLECTION_NAME = new SerializedString("@collection");
+  private static final SerializedString COLLECTION_NAME = new SerializedString("_collection");
  
 
-  private static final SerializedString DELTA_CAS_NAME = new SerializedString("@delta_cas");
+  private static final SerializedString DELTA_CAS_NAME = new SerializedString("_delta_cas");
 
   private static final SerializedString ADDED_MEMBERS_NAME = new SerializedString("added_members");
   private static final SerializedString DELETED_MEMBERS_NAME = new SerializedString("deleted_members");
@@ -165,7 +165,7 @@ public class JsonCasSerializer {
   private boolean isWithContext = true;
   private boolean isWithSubtypes = true;
   private boolean isWithExpandedTypeNames = true;
-  private boolean isOmitDefaultValues = true;
+  private boolean isOmit0Values = false; // https://issues.apache.org/jira/browse/UIMA-4117
 
   private String typeSystemReference;
 
@@ -175,7 +175,7 @@ public class JsonCasSerializer {
    ***********************************************/
 
   /**
-   * Creates a new XmiCasSerializer
+   * Creates a new JsonCasSerializer
    */
   public JsonCasSerializer() {
   }     
@@ -418,8 +418,8 @@ public class JsonCasSerializer {
     return this;
   }
       
-  public JsonCasSerializer setOmitDefaultValues(boolean omitDefaultValues) {
-    isOmitDefaultValues = omitDefaultValues;
+  public JsonCasSerializer setOmit0Values(boolean omitDefaultValues) {
+    isOmit0Values = omitDefaultValues;
     return this;
   }
   
@@ -478,7 +478,7 @@ public class JsonCasSerializer {
     
     private boolean indexId;  // true causes fs to be listed as "id" : { ...}, false as "type" : [ {...}
     
-    private boolean isEmbedded = false; // true for embedded FSs, causes @type to be included
+    private boolean isEmbedded = false; // true for embedded FSs, causes _type to be included
     
     private boolean isEmbeddedFromFsFeature;  // used for NL formatting, false if embedded due to Array or List
 
@@ -487,7 +487,7 @@ public class JsonCasSerializer {
     
     private JsonDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker) {
       cds = css.new CasDocSerializer(ch, cas, sharedData, marker, this, JsonCasSerializer.this.isDynamicEmbedding);
-      this.isOmitDefaultValues = JsonCasSerializer.this.isOmitDefaultValues;  
+      this.isOmitDefaultValues = JsonCasSerializer.this.isOmit0Values;  
       isWithExpandedTypeNames = JsonCasSerializer.this.isWithExpandedTypeNames; 
       isWithSubtypes = JsonCasSerializer.this.isWithSubtypes; 
       typeSystemReference = JsonCasSerializer.this.typeSystemReference;
@@ -504,7 +504,7 @@ public class JsonCasSerializer {
            cds.sharedData.hasOutOfTypeSystemArrayElements())) {
         throw new UnsupportedOperationException("Can't do JSON serialization "
             + "if there are out-of-type-system elements,"
-            + " because there's no type information available (needed for @context)");
+            + " because there's no type information available (needed for _context)");
       }
     }
 
@@ -565,7 +565,7 @@ public class JsonCasSerializer {
         jg.writeEndObject();
       }
       
-      jg.writeEndObject();  // end of value for @views
+      jg.writeEndObject();  // end of value for _views
       
       // write the non-embeddable referenced FSs
       
@@ -580,7 +580,7 @@ public class JsonCasSerializer {
       
     @Override
     protected void writeEndOfSerialization() throws IOException {
-      jg.writeEndObject(); // wrapper of @context and cas
+      jg.writeEndObject(); // wrapper of _context and cas
       jg.flush();
     }
    
@@ -678,12 +678,12 @@ public class JsonCasSerializer {
      * 
      * <p>The information for each type has 3 sections:</p>
      * <ol>
-     *   <li>@subtypes - a JSON map of key-value pairs, keyed by the short type-name of
+     *   <li>_subtypes - a JSON map of key-value pairs, keyed by the short type-name of
      *                   used subtypes of this type.  If this type has
      *                   no used subtypes, this element is omitted. 
      *                   The value is an instance of this structure, for that type.</li>
      *                   
-     *   <li>@id - the fully qualified UIMA type name</li>
+     *   <li>_id - the fully qualified UIMA type name</li>
      *   
      *   <li>@featureTypes - a map with keys being specific features of the type 
      *                       that need extra information about their contents, 
@@ -754,13 +754,13 @@ public class JsonCasSerializer {
         
       }
       
-      jg.writeEndObject();  // end of @types
+      jg.writeEndObject();  // end of _types
       
-      jg.writeEndObject();  // end of @context
+      jg.writeEndObject();  // end of _context
     }
     
     /**
-     * @feature_types : { "featName" : "@ref" or "@byte_array, ... }
+     * _feature_types : { "featName" : "_ref" or "_byte_array, ... }
      * 
      * @param type the type for which to generate the feature context info 
      * @throws IOException 
@@ -1280,7 +1280,7 @@ public class JsonCasSerializer {
      *   
      * @param fsClass the class of the feature
      * @param featCode the feature code
-     * @return @ref, @array, @byte_array, or null
+     * @return _ref, _array, _byte_array, or null
      */
    
     private SerializedString featureTypeLabel(int fsClass, int featCode) {

@@ -1,1 +1,1 @@
-{"@views":{"_InitialView":{"TOP":[{}]}}}
+{"_views":{"_InitialView":{"TOP":[{}]}}}

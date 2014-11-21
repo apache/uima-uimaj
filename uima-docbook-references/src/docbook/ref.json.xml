@@ -368,7 +368,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     as references have a <code>null</code> reference coded as the number 0; references which are embedded are serialized as 
     <code>null</code>.</para></note>
     
-    <para>Configuring the serializer with <code>setOmitDefaultValues(true)</code> (which is also the default) causes
+    <para>Configuring the serializer with <code>setOmit0Values(true)</code> causes
     additional primitive features (byte/short/int/long/float/double) to be omitted, when their values are 0 or 0.0</para>
         
     </section>
@@ -514,7 +514,8 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
         is found to have multiple references.</para>
       </listitem>
       <listitem>
-        <para>A switch to control omitting of features that have default values (default is to omit these).</para>
+        <para>A switch to control omitting of numeric features that have 0 values (default is to include these).
+        See the <code>setOmit0Values(true_or_false)</code> method in JsonCasSerializer.</para>
       </listitem>
       <listitem>
         <para>a pretty printing flag (default is not to do pretty-printing)</para>
@@ -614,7 +615,7 @@ jcs.serialize(cas, sw); // serialize into sw</programlisting></informalexample>
 
     <para>Many of the common configuration methods generally return the instance, so they can be chained together.
     For example, if <code>jcs</code> is an instance of the JsonCasSerializer, you can write
-    <code>jcs.setPrettyPrint(true).setOmitDefaultvalues(false);</code> to configure both of these.</para>
+    <code>jcs.setPrettyPrint(true).setOmit0values(true);</code> to configure both of these.</para>
 
    <!--  of configuring  -->
 

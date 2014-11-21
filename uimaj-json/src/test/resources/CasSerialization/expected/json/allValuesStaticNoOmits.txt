@@ -1,31 +1,31 @@
-{"@context" : {
-    "@types" : {
-      "AllTypes" : {"@id" : "org.apache.uima.test.AllTypes", 
-        "@feature_types" : {"sofa" : "@ref",  "aFS" : "@ref",  "aArrayBoolean" : "@array",  "aArrayMrBoolean" : "@array",  "aArrayMrByte" : "@byte_array",  "aArrayByte" : "@byte_array",  "aArrayShort" : "@array",  "aArrayMrShort" : "@array",  "aArrayString" : "@array",  "aArrayMrString" : "@array",  "aListInteger" : "@array",  "aListMrInteger" : "@array",  "aListString" : "@array",  "aListMrString" : "@array",  "aListFs" : "@ref",  "aListMrFs" : "@ref",  "aArrayFS" : "@ref" } }, 
-      "BooleanArray" : {"@id" : "uima.cas.BooleanArray" }, 
-      "ByteArray" : {"@id" : "uima.cas.ByteArray" }, 
-      "ShortArray" : {"@id" : "uima.cas.ShortArray" }, 
-      "Sofa" : {"@id" : "uima.cas.Sofa", 
-        "@feature_types" : {"sofaArray" : "@ref" } }, 
-      "StringArray" : {"@id" : "uima.cas.StringArray" }, 
-      "Annotation" : {"@id" : "uima.tcas.Annotation", 
-        "@feature_types" : {"sofa" : "@ref" }, 
-        "@subtypes" : ["AllTypes" ] }, 
-      "AnnotationBase" : {"@id" : "uima.cas.AnnotationBase", 
-        "@feature_types" : {"sofa" : "@ref" }, 
-        "@subtypes" : ["Annotation" ] }, 
-      "TOP" : {"@id" : "uima.cas.TOP", 
-        "@subtypes" : ["AnnotationBase",  "ArrayBase",  "Sofa" ] }, 
-      "ArrayBase" : {"@id" : "uima.cas.ArrayBase", 
-        "@subtypes" : ["BooleanArray",  "ByteArray",  "ShortArray",  "StringArray" ] } } }, 
-  "@views" : {
+{"_context" : {
+    "_types" : {
+      "AllTypes" : {"_id" : "org.apache.uima.test.AllTypes", 
+        "_feature_types" : {"sofa" : "_ref",  "aFS" : "_ref",  "aArrayBoolean" : "_array",  "aArrayMrBoolean" : "_array",  "aArrayMrByte" : "_byte_array",  "aArrayByte" : "_byte_array",  "aArrayShort" : "_array",  "aArrayMrShort" : "_array",  "aArrayString" : "_array",  "aArrayMrString" : "_array",  "aListInteger" : "_array",  "aListMrInteger" : "_array",  "aListString" : "_array",  "aListMrString" : "_array",  "aListFs" : "_ref",  "aListMrFs" : "_ref",  "aArrayFS" : "_ref" } }, 
+      "BooleanArray" : {"_id" : "uima.cas.BooleanArray" }, 
+      "ByteArray" : {"_id" : "uima.cas.ByteArray" }, 
+      "ShortArray" : {"_id" : "uima.cas.ShortArray" }, 
+      "Sofa" : {"_id" : "uima.cas.Sofa", 
+        "_feature_types" : {"sofaArray" : "_ref" } }, 
+      "StringArray" : {"_id" : "uima.cas.StringArray" }, 
+      "Annotation" : {"_id" : "uima.tcas.Annotation", 
+        "_feature_types" : {"sofa" : "_ref" }, 
+        "_subtypes" : ["AllTypes" ] }, 
+      "AnnotationBase" : {"_id" : "uima.cas.AnnotationBase", 
+        "_feature_types" : {"sofa" : "_ref" }, 
+        "_subtypes" : ["Annotation" ] }, 
+      "TOP" : {"_id" : "uima.cas.TOP", 
+        "_subtypes" : ["AnnotationBase",  "ArrayBase",  "Sofa" ] }, 
+      "ArrayBase" : {"_id" : "uima.cas.ArrayBase", 
+        "_subtypes" : ["BooleanArray",  "ByteArray",  "ShortArray",  "StringArray" ] } } }, 
+  "_views" : {
     "_InitialView" : {
       "AllTypes" : [
         {"sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : true,  "aByte" : -117,  "aShort" : -112,  "aInteger" : 0,  "aLong" : 1234,  "aFloat" : 1.3,  "aDouble" : 2.6,  "aString" : "some \"String\"",  "aFS" : 36,  "aArrayBoolean" : [false ],  "aArrayMrBoolean" : 165,  "aArrayMrByte" : 168,  "aArrayByte" : "D+4=",  "aArrayShort" : [ ],  "aArrayMrShort" : 171,  "aArrayString" : [null ],  "aArrayMrString" : 174,  "aListInteger" : [ ],  "aListString" : ["testStr" ],  "aListFs" : [0 ] } ] } }, 
-  "@referenced_fss" : {
-    "29" : {"@type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "36" : {"@type" : "AllTypes",  "sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 }, 
-    "165" : {"@type" : "BooleanArray",  "@collection" : [false ] }, 
-    "168" : {"@type" : "ByteArray",  "@collection" : "AAA=" }, 
-    "171" : {"@type" : "ShortArray",  "@collection" : [ ] }, 
-    "174" : {"@type" : "StringArray",  "@collection" : [null ] } } }
+  "_referenced_fss" : {
+    "29" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "36" : {"_type" : "AllTypes",  "sofa" : 29,  "begin" : 0,  "end" : 0,  "aBoolean" : false,  "aByte" : 0,  "aShort" : 0,  "aInteger" : 0,  "aLong" : 0,  "aFloat" : 0.0,  "aDouble" : 0.0 }, 
+    "165" : {"_type" : "BooleanArray",  "_collection" : [false ] }, 
+    "168" : {"_type" : "ByteArray",  "_collection" : "AAA=" }, 
+    "171" : {"_type" : "ShortArray",  "_collection" : [ ] }, 
+    "174" : {"_type" : "StringArray",  "_collection" : [null ] } } }
