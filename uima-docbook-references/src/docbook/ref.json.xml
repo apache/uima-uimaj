@@ -37,7 +37,7 @@ under the License.
     JSON is now a popular way for services to communicate; 
     its popularity is rising (in 2014) while XML is falling.</para>
     
-    <para>Starting with version 2.6.1, JSON style serialization (but not (yet) deserialization) 
+    <para>Starting with version 2.7.0, JSON style serialization (but not (yet) deserialization) 
     for CASs and UIMA descriptions is supported. 
     The exact format of the serialization is configurable in several aspects.  
     The implementation is built on top of the Jackson JSON generation library.   
@@ -525,7 +525,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
     <section id="ugr.ref.json.delta">
       <title>Delta CAS</title>
       
-      <note><para>Delta CAS support is incomplete, and is not supported as of release 2.6.1, but may
+      <note><para>Delta CAS support is incomplete, and is not supported as of release 2.7.0, but may
       be supported in later releases.  The information here is just for planning purposes.</para></note>
       
       <para><emphasis role="bold">@delta_cas</emphasis> is present only when a delta CAS serialization is being performed.  
@@ -540,7 +540,7 @@ jcs.setJsonContext(JsonContextFormat.omitExpandedTypeNames);</programlisting></i
       which lists the FSs (by <code>id</code>) that were added, removed, or reindexed, since the mark was set.  
       Additional extra information, created when the CAS was previously deserialized and the mark set, 
       must be passed to the serializer, in the form of an instance of <code>XmiSerializationSharedData</code>,
-      or JsonSerializationSharedData (not yet defined as of release 2.6.1).</para>
+      or JsonSerializationSharedData (not yet defined as of release 2.7.0).</para>
       
       <para>Here's what the last part of the serialization looks like, when Delta CAS is specified:
                 <informalexample>  <!-- does a keep-together -->
