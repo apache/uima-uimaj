@@ -34,7 +34,8 @@ What's New in 2.7.0
   a new profile flag you can specify to Maven to exclude this: -P!json-support.
   
   Adding the same identical Feature Structure to the indices no longer adds duplicate entries. Jira issue: UIMA-3399
-  The old behavior may be restored, if needed for backward compatibility; see the UIMA Reference documentation Chapter 10. 
+  The old behavior may be restored, if needed for backward compatibility by defining the JVM property
+  uima.allow_duplicate_add_to_indices; see the UIMA Reference documentation Chapter 10. 
   
   There is a new kind of check that may be optionally enabled in UIMA (by defining the JVM argument
   "-Duima.check_invalid_fs_updates") that checks all modifications to features to see if that feature is
