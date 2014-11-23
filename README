@@ -30,20 +30,27 @@ What's New in 2.7.0
   Several formats for JSON CAS serialization are provided, please see the chapter in the
   UIMA reference documentation for details.
   
+  The build from sources will include in the binary distribution tar/zip the Jackson core support for JSON.  There is
+  a new profile flag you can specify to Maven to exclude this: -P!json-support.
+  
   Adding the same identical Feature Structure to the indices no longer adds duplicate entries. Jira issue: UIMA-3399
   The old behavior may be restored, if needed for backward compatibility; see the UIMA Reference documentation Chapter 10. 
   
   There is a new kind of check that may be optionally enabled in UIMA (by defining the JVM argument
   "-Duima.check_invalid_fs_updates") that checks all modifications to features to see if that feature is
   being used as a key in a Sort or Set index, and the Feature Structure being modified is currently in
-  one or more indices (Jira issue UIMA-4059). Doing such a modification causes the index to become corrupt.  (The correct way
-  to do an update in this case is to first remove the Feature Structure from the indices, do the modification,
-  and then add it back to the indices.)
+  one or more indices (Jira issue UIMA-4059). Doing such a modification can cause the index to become corrupt.  
+  (The correct way to do an update in this case is to 
+    first remove the Feature Structure from the indices, 
+    do the modification,
+    and then add it back to the indices.)
   
   There are many bug fixes.  Some highlights: 
     - making the JCasGen Eclipse plugin work with more varieties of specifications for class paths. Jira issues: UIMA-4080/4081
-    - moveTo(a_Feature_Structure) sometimes moving to the beginning.  Jira issue: UIMA-4094
+    - moveTo(a_Feature_Structure) or creating a new iterator to start at a feature sometimes went to the 
+      wrong place. Jira issues: UIMA-4094 and UIMA-4105
     - deserialization of deltaCAS when modifying existing Feature Structures not properly reindexing them. Jira issue: UIMA-4100
+    - default bag indices created even when there are only Set indices. Jira issue: UIMA-4111
     
   The complete list of fixes is here: issuesFixed/jira-report.hmtl 
   

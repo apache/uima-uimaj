@@ -94,7 +94,7 @@ https://issues.apache.org/jira/browse/UIMA-3399</a>.
 
 <p>Because some users may prefer the previous behavior that permitted duplicates of identical Feature Structures in
 the sorted and bga indexes. this change can be disabled, by running the JVN with the defined property
-"uima.allow_duplicate_add_to_indices".
+"uima.allow_duplicate_add_to_indices".</p>
 
 <p>
  JSON serialization support is added for Type System Descriptions, and for CASs.
@@ -102,11 +102,21 @@ the sorted and bga indexes. this change can be disabled, by running the JVN with
   UIMA reference documentation for details.
 </p>
 
+<p>There is a new kind of check that may be optionally enabled in UIMA (by defining the JVM argument
+  "-Duima.check_invalid_fs_updates") that checks all modifications to features to see if that feature is
+  being used as a key in a Sort or Set index, and the Feature Structure being modified is currently in
+  one or more indices (Jira issue UIMA-4059). Doing such a modification can cause the index to become corrupt.  
+  (The correct way   to do an update in this case is to 
+    first remove the Feature Structure from the indices, 
+    do the modification,
+    and then add it back to the indices.)</p>
+
 <p>Java 7 is now the minimum level of Java required.</p>
 
-<p>The fixed bugs include fixes to the UIMA iterator moveTo(FeatureStructure) methods which 
+<p>The fixed bugs include fixes to the UIMA iterator moveTo(FeatureStructure) and creation methods which 
 ended up doing a moveToFirst() if the Feature Structure was beyond the last element in the index;
-the fixed code now marks the position of the iterator as invalid.</p>
+the fixed code now marks the position of the iterator as invalid.  Also, the positioning of these
+when there were many FSs that compared "equal" didn't always pick the "leftmost" one - that has been fixed, too.</p>
 
 <p>See the README file for information on special backwards compatible flags.
   
