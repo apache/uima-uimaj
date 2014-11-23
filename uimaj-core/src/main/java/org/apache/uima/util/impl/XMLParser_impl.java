@@ -305,7 +305,7 @@ public class XMLParser_impl implements XMLParser {
     // resolve the class name and instantiate the class
     XMLizable object;
     try {
-      object = (XMLizable) cls.newInstance();
+      object = cls.newInstance();
     } catch (Exception e) {
       throw new UIMA_IllegalStateException(
               UIMA_IllegalStateException.COULD_NOT_INSTANTIATE_XMLIZABLE, new Object[] { cls
@@ -351,7 +351,7 @@ public class XMLParser_impl implements XMLParser {
     // resolve the class name and instantiate the class
     XMLizable object;
     try {
-      object = (XMLizable) cls.newInstance();
+      object = cls.newInstance();
     } catch (Exception e) {
       throw new UIMA_IllegalStateException(
               UIMA_IllegalStateException.COULD_NOT_INSTANTIATE_XMLIZABLE, new Object[] { cls

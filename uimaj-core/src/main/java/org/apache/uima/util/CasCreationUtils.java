@@ -28,13 +28,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -699,7 +699,7 @@ public class CasCreationUtils {
           lastNumTypes = numTypes;
           Iterator<TypeDescription> it = typeList.iterator();
           while (it.hasNext()) {
-            TypeDescription curTypeDesc = (TypeDescription) it.next();
+            TypeDescription curTypeDesc = it.next();
             String typeName = curTypeDesc.getName();
             // type does not exist - add it under the appropriate supertype
             String superTypeName = curTypeDesc.getSupertypeName();
@@ -761,13 +761,13 @@ public class CasCreationUtils {
         // implementation of this is not as efficient as it could be but avoids
         // issues with cyclic definitions.
         for (int i = 0; i < typeList.size(); i++) {
-          TypeDescription td_i = (TypeDescription) typeList.get(i);
+          TypeDescription td_i = typeList.get(i);
           boolean foundSuperType = false;
           for (int j = 0; j < typeList.size(); j++) {
             if (i == j) {
               continue;
             }
-            TypeDescription td_j = (TypeDescription) typeList.get(j);
+            TypeDescription td_j = typeList.get(j);
             if (td_j.getName().equals(td_i.getSupertypeName())) {
               foundSuperType = true;
               break;
@@ -783,7 +783,7 @@ public class CasCreationUtils {
         if (numTypes > 0) {
           // We get here in either of two cases: there was only one problematic
           // type definition, or there was a cycle.
-          TypeDescription firstFailed = (TypeDescription) typeList.getFirst();
+          TypeDescription firstFailed = typeList.getFirst();
           throw new ResourceInitializationException(
               ResourceInitializationException.UNDEFINED_SUPERTYPE, new Object[] {
                   firstFailed.getSupertypeName(), firstFailed.getName(),
@@ -799,7 +799,7 @@ public class CasCreationUtils {
         // compatibility (but we might want to think about generating a warning).
         Iterator<TypeDescription> typeIter = typesInOrderOfCreation.iterator();
         while (typeIter.hasNext()) {
-          TypeDescription typeDesc = (TypeDescription) typeIter.next();
+          TypeDescription typeDesc = typeIter.next();
           Type type = typeSystemMgr.getType(typeDesc.getName());
           // assert type != null;
 
@@ -985,7 +985,7 @@ public class CasCreationUtils {
     }
     TypeDescription td[] = new TypeDescription[typesArr.size()];
     for (int j = 0; j < typesArr.size(); j++) {
-      td[j] = (TypeDescription) typesArr.get(j);
+      td[j] = typesArr.get(j);
     }
     result.setTypes(td);
     return result;
@@ -1124,7 +1124,7 @@ public class CasCreationUtils {
   private static void addTypeToMergedTypeSystem(Map<String, Set<String>> aOutputMergedTypes, Map<String,TypeDescription> typeNameMap, TypeDescription type) throws ResourceInitializationException {
     String typeName = type.getName();
     String supertypeName = type.getSupertypeName();
-    TypeDescription existingType = (TypeDescription) typeNameMap.get(typeName);
+    TypeDescription existingType = typeNameMap.get(typeName);
     if (existingType == null) {
       // create new type
       existingType = UIMAFramework.getResourceSpecifierFactory().createTypeDescription();
@@ -1337,7 +1337,7 @@ public class CasCreationUtils {
     List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
-      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      ProcessingResourceMetaData md = it.next();
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
     }
@@ -1372,7 +1372,7 @@ public class CasCreationUtils {
         FsIndexDescription[] indexes = indexColl.getFsIndexes();
         for (int i = 0; i < indexes.length; i++) {
           // does an index with this label already exist?
-          FsIndexDescription duplicateIndex = (FsIndexDescription) aggIndexes.get(indexes[i]
+          FsIndexDescription duplicateIndex = aggIndexes.get(indexes[i]
               .getLabel());
           if (duplicateIndex == null) {
             // no, so add it
@@ -1444,7 +1444,7 @@ public class CasCreationUtils {
     List<FsIndexCollection> fsIndexes = new ArrayList<FsIndexCollection>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
-      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      ProcessingResourceMetaData md = it.next();
       if (md.getFsIndexCollection() != null)
         fsIndexes.add(md.getFsIndexCollection());
     }
@@ -1587,7 +1587,7 @@ public class CasCreationUtils {
     List<TypeSystemDescription> typeSystems = new ArrayList<TypeSystemDescription>();
     Iterator<ProcessingResourceMetaData> it = mdList.iterator();
     while (it.hasNext()) {
-      ProcessingResourceMetaData md = (ProcessingResourceMetaData) it.next();
+      ProcessingResourceMetaData md = it.next();
       if (md.getTypeSystem() != null)
         typeSystems.add(md.getTypeSystem());
     }
@@ -1705,8 +1705,7 @@ public class CasCreationUtils {
         // not ok otherwise
 
         if (!(((mra1 == null) && (mra2 == null)) || ((mra1 != null) && mra1.equals(mra2))
-            || ((mra1 == null) && (mra2.booleanValue() == false)) || ((mra2 == null) && (mra1
-            .booleanValue() == false)))) {
+            || ((mra1 == null) && !mra2.booleanValue()) || ((mra2 == null) && !mra1.booleanValue()))) {
           throw new ResourceInitializationException(
               ResourceInitializationException.INCOMPATIBLE_MULTI_REFS, new Object[] {
                   aType.getName() + ":" + feat.getName(), aType.getSourceUrlString() });

@@ -435,7 +435,7 @@ public class CasCopier {
     assert (casViewsInSameCas(aFS.getCAS(), mOriginalSrcCasView));
 
     // check if we already copied this FS
-    FeatureStructure copy = (FeatureStructure) mFsMap.get(aFS);
+    FeatureStructure copy = mFsMap.get(aFS);
     if (copy != null)
       return copy;
 

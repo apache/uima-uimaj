@@ -132,7 +132,7 @@ public class TCasToInlineXml implements TCasFormatter {
         // System.out.println("Type: " + fs.getType().getName() + ", Class:" +
         // fs.getClass().getName());
         // AnnotationFS nextAnnot = (AnnotationFS)fs;
-        AnnotationFS nextAnnot = (AnnotationFS) iterator.get();
+        AnnotationFS nextAnnot = iterator.get();
 
         if (curAnnot == null || nextAnnot.getBegin() < curAnnot.getEnd()) {
           // nextAnnot's start point is within the span of curAnnot
@@ -170,7 +170,7 @@ public class TCasToInlineXml implements TCasFormatter {
           handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
           // pop next containing annotation off stack
-          curAnnot = (AnnotationFS) stack.remove(stack.size() - 1);
+          curAnnot = stack.remove(stack.size() - 1);
         }
       }
 
@@ -186,7 +186,7 @@ public class TCasToInlineXml implements TCasFormatter {
         handler.endElement("", curAnnot.getType().getName(), curAnnot.getType().getName());
 
         while (!stack.isEmpty()) {
-          curAnnot = (AnnotationFS) stack.remove(stack.size() - 1); // pop
+          curAnnot = stack.remove(stack.size() - 1); // pop
           if (curAnnot == null) {
             break;
           }
@@ -224,7 +224,7 @@ public class TCasToInlineXml implements TCasFormatter {
     List<Feature> aFeatures = aFS.getType().getFeatures();
     Iterator<Feature> iter = aFeatures.iterator();
     while (iter.hasNext()) {
-      Feature feat = (Feature) iter.next();
+      Feature feat = iter.next();
       String featName = feat.getShortName();
       // how we get feature value depends on feature's range type)
       String rangeTypeName = feat.getRange().getName();

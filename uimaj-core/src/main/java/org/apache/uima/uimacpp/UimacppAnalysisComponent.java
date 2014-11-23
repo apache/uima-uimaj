@@ -430,7 +430,7 @@ public class UimacppAnalysisComponent extends AnalysisComponent_ImplBase {
   }
 
   protected CAS getEmptyCAS() {
-    return (CAS) uimaContext.getEmptyCas(CAS.class);
+    return uimaContext.getEmptyCas(CAS.class);
   }
 
 }

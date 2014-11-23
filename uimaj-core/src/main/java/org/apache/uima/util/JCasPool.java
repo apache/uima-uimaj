@@ -133,7 +133,7 @@ public class JCasPool {
    */
   public synchronized JCas getJCas() {
     if (!mFreeInstances.isEmpty()) {
-      return (JCas) mFreeInstances.remove(0);
+      return mFreeInstances.remove(0);
     } else {
       // no instances available
       return null;

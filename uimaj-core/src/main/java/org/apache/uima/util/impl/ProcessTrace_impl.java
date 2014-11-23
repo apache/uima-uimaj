@@ -158,9 +158,9 @@ public class ProcessTrace_impl implements ProcessTrace {
 
           ProcessTraceEvent_impl owner = null;
           if (i < eventsToClose.size() - 1) {
-            owner = (ProcessTraceEvent_impl) eventsToClose.get(i + 1);
+            owner = eventsToClose.get(i + 1);
           } else if (!mOpenEvents.isEmpty()) {
-            owner = (ProcessTraceEvent_impl) mOpenEvents.peek();
+            owner = mOpenEvents.peek();
           }
 
           if (owner != null) {
@@ -205,7 +205,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   public void addEvent(ProcessTraceEvent aEvent) {
     if (mEnabled) {
       if (!mOpenEvents.isEmpty()) {
-        ProcessTraceEvent_impl owner = (ProcessTraceEvent_impl) mOpenEvents.peek();
+        ProcessTraceEvent_impl owner = mOpenEvents.peek();
         owner.addSubEvent(aEvent);
       } else // top-level event has closed, add to the Event List
       {
@@ -264,7 +264,7 @@ public class ProcessTrace_impl implements ProcessTrace {
   protected ProcessTraceEvent getEvent(List<ProcessTraceEvent> aEvents, String aComponentName, String aType) {
     Iterator<ProcessTraceEvent> it = aEvents.iterator();
     while (it.hasNext()) {
-      ProcessTraceEvent event = (ProcessTraceEvent) it.next();
+      ProcessTraceEvent event = it.next();
       if (aComponentName.equals(event.getComponentName()) && aType.equals(event.getType())) {
         return event;
       } else {
