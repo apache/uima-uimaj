@@ -726,8 +726,12 @@ public class Jg {
     if (tdPath == null) {
         return true;
     }
+
+    // UIMA-4119 - On windows, the default path representation and the URI path representation
+    // differ: "/C:/..." vs. "C:\..."
+    String resolvedProjectDirPath = new File(projectDirPath).getAbsoluteFile().toURI().getPath();
     
-    boolean r = !tdPath.startsWith(projectDirPath);
+    boolean r = !tdPath.startsWith(resolvedProjectDirPath);
     if (r) {
       return true;
     }
@@ -741,7 +745,7 @@ public class Jg {
           return true; //because a merged path is out of the project
         }
         String tempPath = tempURI.getPath();
-        if (!tempPath.startsWith(projectDirPath)) {
+        if (!tempPath.startsWith(resolvedProjectDirPath)) {
           return true; 
         }
       }
