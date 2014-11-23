@@ -20,10 +20,13 @@
 package org.apache.uima.collection.base_cpm;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.uima.resource.ConfigurableResource;
 import org.apache.uima.resource.ResourceProcessException;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.ProcessTrace;
+import org.apache.uima.util.XMLInputSource;
 
 /**
  * Any component that operates on analysis results produced by a UIMA CasDataProcessor.

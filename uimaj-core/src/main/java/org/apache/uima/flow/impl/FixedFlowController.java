@@ -22,9 +22,7 @@ package org.apache.uima.flow.impl;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -241,13 +239,13 @@ public class FixedFlowController extends CasFlowController_ImplBase {
 
       // if next step is a CasMultiplier, set wasPassedToCasMultiplier to true for next time
       // TODO: optimize
-      AnalysisEngineMetaData md = (AnalysisEngineMetaData) getContext()
+      AnalysisEngineMetaData md = getContext()
               .getAnalysisEngineMetaDataMap().get(mSequence.get(currentStep));
       if (md.getOperationalProperties().getOutputsNewCASes())
         wasPassedToCasMultiplier = true;
 
       // now send the CAS to the next AE in sequence.
-      return new SimpleStep((String)mSequence.get(currentStep++));
+      return new SimpleStep(mSequence.get(currentStep++));
     }
 
     /*

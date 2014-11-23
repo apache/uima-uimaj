@@ -22,10 +22,9 @@ package org.apache.uima.collection.metadata;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.xml.sax.SAXException;
-
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.util.XMLInputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Java representation of a Collection Processing Engine (CPE) XML descriptor. Generate an instance

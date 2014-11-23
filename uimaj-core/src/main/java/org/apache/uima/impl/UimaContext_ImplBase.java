@@ -575,14 +575,14 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     String nameToMap = aSofaName;
     String absoluteSofaName = null;
     if (index < 0) {
-      absoluteSofaName = (String) mSofaMappings.get(nameToMap);
+      absoluteSofaName = mSofaMappings.get(nameToMap);
       if (absoluteSofaName == null)
         absoluteSofaName = nameToMap;
 
     } else {
       nameToMap = aSofaName.substring(0, index);
       String rest = aSofaName.substring(index);
-      String absoluteRoot = (String) mSofaMappings.get(nameToMap);
+      String absoluteRoot = mSofaMappings.get(nameToMap);
       if (absoluteRoot == null)
         absoluteRoot = nameToMap;
       absoluteSofaName = absoluteRoot + rest;
@@ -620,8 +620,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     while (iter.hasNext()) {
       Map.Entry<String, String> elem = iter.next();
       SofaID sofaid = new SofaID_impl();
-      sofaid.setComponentSofaName((String) elem.getKey());
-      sofaid.setSofaID((String) elem.getValue());
+      sofaid.setComponentSofaName(elem.getKey());
+      sofaid.setSofaID(elem.getValue());
       sofaArr[i] = sofaid;
       i++;
     }
@@ -755,13 +755,13 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
       String nameToMap = aSofaName;
       String absoluteSofaName = null;
       if (index < 0) {
-        absoluteSofaName = (String) mSofaMappings.get(nameToMap);
+        absoluteSofaName = mSofaMappings.get(nameToMap);
         if (absoluteSofaName == null)
           absoluteSofaName = nameToMap;
       } else {
         nameToMap = aSofaName.substring(0, index);
         String rest = aSofaName.substring(index);
-        String absoluteRoot = (String) mSofaMappings.get(nameToMap);
+        String absoluteRoot = mSofaMappings.get(nameToMap);
         if (absoluteRoot == null)
           absoluteRoot = nameToMap;
         absoluteSofaName = absoluteRoot + rest;

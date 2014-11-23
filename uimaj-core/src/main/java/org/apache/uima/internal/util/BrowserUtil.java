@@ -156,7 +156,7 @@ public class BrowserUtil {
         // check for available browsers
         boolean browserAvailableBrowser = false;
         int i = 0;
-        while (i < __browserLauncher.length && browserAvailableBrowser == false) {
+        while (i < __browserLauncher.length && !browserAvailableBrowser) {
           // check if current browser is available
           process = Runtime.getRuntime().exec(new String[] { "which", __browserLauncher[i] });
           try {
@@ -171,7 +171,7 @@ public class BrowserUtil {
           }
         }
         // no browser found, return null
-        if(browserAvailableBrowser == false) {
+        if(!browserAvailableBrowser) {
           process = null;
         }
         break;

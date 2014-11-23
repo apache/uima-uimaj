@@ -109,7 +109,7 @@ public class ResourcePool {
    */
   public synchronized Resource getResource() {
     if (!mFreeInstances.isEmpty()) {
-      Resource r = (Resource) mFreeInstances.remove(0);
+      Resource r = mFreeInstances.remove(0);
       /*
        * UIMAFramework.getLogger().log( "Acquired resource " + r.getMetaData().getUUID() + " from
        * pool.");
@@ -195,7 +195,7 @@ public class ResourcePool {
   public synchronized void destroy() {
     Iterator<Resource> i = mAllInstances.iterator();
     while (i.hasNext()) {
-      Resource current = (Resource) i.next();
+      Resource current = i.next();
       current.destroy();
     }
     mAllInstances.clear();

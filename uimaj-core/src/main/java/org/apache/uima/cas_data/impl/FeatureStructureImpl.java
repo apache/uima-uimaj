@@ -59,7 +59,7 @@ public class FeatureStructureImpl implements FeatureStructure {
   }
 
   public FeatureValue getFeatureValue(String aFeatureName) {
-    return (FeatureValue) mFeatureMap.get(aFeatureName);
+    return mFeatureMap.get(aFeatureName);
   }
 
   public void setFeatureValue(String aFeatureType, FeatureValue aValue) {

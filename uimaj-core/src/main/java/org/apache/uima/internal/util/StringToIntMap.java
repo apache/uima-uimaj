@@ -65,7 +65,7 @@ public class StringToIntMap {
    *         <code>key</code> is actually defined in the map.
    */
   public int get(String key) {
-    Integer i = (Integer) this.map.get(key);
+    Integer i = this.map.get(key);
     if (i == null) {
       return DEFAULT_VALUE;
     }
@@ -82,7 +82,7 @@ public class StringToIntMap {
    * @return The previous value of <code>key</code>, if it was set. <code>0</code> else.
    */
   public int put(String key, int value) {
-    Integer i = (Integer) this.map.get(key);
+    Integer i = this.map.get(key);
     int rc;
     if (i == null) {
       rc = 0;

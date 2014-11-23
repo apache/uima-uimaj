@@ -128,7 +128,7 @@ public class CommandLineParser {
     while (i < args.length) {
       String cmdLineArg = args[i];
       if (this.paramMap.containsKey(cmdLineArg)) {
-        CmdLineParam metaParam = (CmdLineParam) this.paramMap.get(cmdLineArg);
+        CmdLineParam metaParam = this.paramMap.get(cmdLineArg);
         if (metaParam.hasArg) {
           ++i;
           if (i >= args.length) {
@@ -195,7 +195,7 @@ public class CommandLineParser {
    */
   public String getParamArgument(String paramName) {
     if (isKnownParameter(paramName)) {
-      return (String) this.cmdLineMap.get(this.paramMap.get(paramName));
+      return this.cmdLineMap.get(this.paramMap.get(paramName));
     }
     return null;
   }

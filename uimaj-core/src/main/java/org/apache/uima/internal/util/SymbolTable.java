@@ -101,7 +101,7 @@ public class SymbolTable {
     SymbolTable copy = new SymbolTable(this.start);
     int max = this.int2symbolMap.size();
     for (int i = 0; i < max; i++) {
-      copy.set((String) this.int2symbolMap.get(i));
+      copy.set(this.int2symbolMap.get(i));
     }
     return copy;
   }
@@ -128,7 +128,7 @@ public class SymbolTable {
    */
   public int set(String symbol) {
     if (this.symbol2intMap.containsKey(symbol)) {
-      return ((Integer) this.symbol2intMap.get(symbol)).intValue();
+      return this.symbol2intMap.get(symbol).intValue();
     }
     int rel;
     int abs;

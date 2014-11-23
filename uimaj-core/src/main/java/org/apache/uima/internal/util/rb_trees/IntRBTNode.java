@@ -526,7 +526,7 @@ class IntRBTNode {
       if (addressStack.empty()) {
         node = null;
       } else {
-        node = (IntRBTNode) nodeStack.pop();
+        node = nodeStack.pop();
         address = addressStack.pop();
         v.set(address, v.size() + offset);
       }

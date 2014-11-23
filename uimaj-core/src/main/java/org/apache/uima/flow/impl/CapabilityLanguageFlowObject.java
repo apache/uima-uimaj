@@ -256,9 +256,9 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
       // if flow is available get next node
       if (flow != null) {
         if (flow.size() > mIndex) {
-          node = (AnalysisSequenceCapabilityNode) flow.get(mIndex++);
+          node = flow.get(mIndex++);
           while (node == null && flow.size() > mIndex) {
-            node = (AnalysisSequenceCapabilityNode) flow.get(mIndex++);
+            node = flow.get(mIndex++);
           }
         }
       }

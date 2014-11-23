@@ -73,7 +73,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
    */
   public void initialize(FlowControllerContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
-    mComponentMetaDataMap = (Map<String, AnalysisEngineMetaData>)aContext.getAnalysisEngineMetaDataMap();
+    mComponentMetaDataMap = aContext.getAnalysisEngineMetaDataMap();
 
     // build a list of AnalysisSequenceNodes from the capabilityLanguageFlow
     mStaticSequence = new ArrayList<AnalysisSequenceCapabilityNode>();
@@ -240,7 +240,7 @@ public class CapabilityLanguageFlowController extends CasFlowController_ImplBase
 
       // should be called is false if this engine produces none of the 
       //   needed outputs of the aggregate
-      if (shouldEngineBeCalled == true) {
+      if (shouldEngineBeCalled) {
         // tell this component which output types/features need to be produced
         //   note: As an exception to the way normal result-specifications are produced,
         //         here we *don't* add the types/features which are input to

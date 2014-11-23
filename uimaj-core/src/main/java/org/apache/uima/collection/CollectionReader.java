@@ -20,12 +20,15 @@
 package org.apache.uima.collection;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
 import org.apache.uima.resource.ConfigurableResource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.util.XMLInputSource;
 
 /**
  * A <code>CollectionReader</code> is used to iterate over the elements of a Collection. Iteration

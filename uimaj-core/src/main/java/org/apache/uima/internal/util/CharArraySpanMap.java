@@ -102,7 +102,7 @@ public class CharArraySpanMap {
     boolean found = false;
     int i = 0;
     while (i < listLen) {
-      entry = (Entry) entryList.get(i);
+      entry = entryList.get(i);
       if (strLen != entry.length) {
         ++i;
         continue;
@@ -130,7 +130,7 @@ public class CharArraySpanMap {
     int i = 0, k;
     int max;
     while (i < listLen) {
-      entry = (Entry) entryList.get(i);
+      entry = entryList.get(i);
       if (strLen != entry.length) {
         ++i;
         continue;
@@ -167,7 +167,7 @@ public class CharArraySpanMap {
     ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(s, list);
     if (listPos >= 0) {
-      Entry entry = (Entry) list.get(listPos);
+      Entry entry = list.get(listPos);
       entry.value = value;
       return;
     }
@@ -206,7 +206,7 @@ public class CharArraySpanMap {
     final int hashCode = CharArrayString.hashCode(characterArray, start, (start + length));
     final ArrayList<Entry> list = this.map[hashCode % this.map.length];
     final int listPos = isInList(characterArray, start, length, list);
-    return (listPos >= 0) ? ((Entry) list.get(listPos)).value : null;
+    return (listPos >= 0) ? list.get(listPos).value : null;
   }
 
   private final void addString(String s) {

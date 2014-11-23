@@ -75,7 +75,7 @@ public class GraphNode {
    */
   public GraphNode getSuccessor(int i) {
     if (i >= 0 && i < this.successors.size()) {
-      return (GraphNode) this.successors.get(i);
+      return this.successors.get(i);
     }
     throw new UtilError(UtilError.ILLEGAL_SUCCESSOR_INDEX);
   }
@@ -108,7 +108,7 @@ public class GraphNode {
    */
   public GraphNode getPredecessor(int i) {
     if (i >= 0 && i < this.predecessors.size()) {
-      return (GraphNode) this.predecessors.get(i);
+      return this.predecessors.get(i);
     }
     throw new UtilError(UtilError.ILLEGAL_PREDECESSOR_INDEX);
   }

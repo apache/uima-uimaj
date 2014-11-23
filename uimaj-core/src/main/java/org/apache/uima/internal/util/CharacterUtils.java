@@ -177,7 +177,7 @@ public class CharacterUtils {
       if (i != 0) {
         System.out.print("\n" + spaces + " | ");
       }
-      range = (CharRange) charRanges.get(i);
+      range = charRanges.get(i);
       if (range.start == range.end) {
         System.out.print(" '" + toUnicodeChar(range.start) + "'");
       } else {

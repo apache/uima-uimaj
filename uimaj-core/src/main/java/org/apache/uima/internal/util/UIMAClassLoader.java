@@ -81,7 +81,7 @@ public class UIMAClassLoader extends URLClassLoader {
 
     // transform all classpath entries to an URL and add them to an URL array
     for (int i = 0; i < max; i++) {
-      urlArray[i] = (new File((String) pathList.get(i))).toURI().toURL();
+      urlArray[i] = (new File(pathList.get(i))).toURI().toURL();
       // calling toURI() first handles spaces in classpath
     }
 
