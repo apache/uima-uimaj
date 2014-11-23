@@ -728,10 +728,20 @@ public class Jg {
     }
 
     // UIMA-4119 - On windows, the default path representation and the URI path representation
-    // differ: "/C:/..." vs. "C:\..."
-    String resolvedProjectDirPath = new File(projectDirPath).getAbsoluteFile().toURI().getPath();
+    // differ: "/C:/..." vs. "C:\...". If the projectDirPath does not start with a /, we can be sure
+    // that it is not an absolute path in URI notation, so we try to resolve it.
+    // In this way, we can handle clients that use the URI notation (e.g. the Eclipse plugin)
+    // as well as clients that use file-system notation (e.g. jcasgen-maven-plugin or a simple
+    // invocation from the command line.
+    String resolvedProjectPath;
+    if (!projectDirPath.startsWith("/")) {
+        resolvedProjectPath = new File(projectDirPath).getAbsoluteFile().toURI().getPath();
+    }
+    else {
+        resolvedProjectPath = projectDirPath;
+    }
     
-    boolean r = !tdPath.startsWith(resolvedProjectDirPath);
+    boolean r = !tdPath.startsWith(resolvedProjectPath);
     if (r) {
       return true;
     }
@@ -745,7 +755,7 @@ public class Jg {
           return true; //because a merged path is out of the project
         }
         String tempPath = tempURI.getPath();
-        if (!tempPath.startsWith(resolvedProjectDirPath)) {
+        if (!tempPath.startsWith(resolvedProjectPath)) {
           return true; 
         }
       }
