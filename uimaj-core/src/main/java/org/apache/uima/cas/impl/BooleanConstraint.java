@@ -49,13 +49,13 @@ public class BooleanConstraint extends PathConstraint implements FSMatchConstrai
     }
     Feature feat;
     for (int i = 0; i < max; i++) {
-      feat = fs.getType().getFeatureByBaseName((String) this.featNames.get(i));
+      feat = fs.getType().getFeatureByBaseName(this.featNames.get(i));
       if (feat == null) {
         return false;
       }
       fs = fs.getFeatureValue(feat);
     }
-    feat = fs.getType().getFeatureByBaseName((String) this.featNames.get(max));
+    feat = fs.getType().getFeatureByBaseName(this.featNames.get(max));
     if (feat == null) {
       return false;
     }

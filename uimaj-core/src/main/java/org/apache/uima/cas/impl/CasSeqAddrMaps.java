@@ -19,12 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 
 /**
  * Manage the conversion of Items (FSrefs) to relative sequential index number, and back 

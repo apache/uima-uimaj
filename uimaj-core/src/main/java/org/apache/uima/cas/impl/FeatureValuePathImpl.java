@@ -975,13 +975,13 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			if (this.isArrayOrList && (this.arrayIndex != USE_ALL_ENTRIES)) {
 				// in the case of, say, authornames[0], the feature is of type
 				// string array, but it will evaluate to a string.
-				this.valueTypeName = (String) CONTAINER_TO_ELEMENTYPE_MAP.get(type.getName());
+				this.valueTypeName = CONTAINER_TO_ELEMENTYPE_MAP.get(type.getName());
 			} else if (this.isListType) { // here, we can assume that
 				// arrayIndex =
 				// USE_ALL_ENTRIES
 				// we don't return lists, but arrays, so we need to map the type
 				// accordingly
-				this.valueTypeName = (String) LIST_TO_ARRAYTYPE_MAP.get(type.getName());
+				this.valueTypeName = LIST_TO_ARRAYTYPE_MAP.get(type.getName());
 			} else {
 				this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES, type.getName())];
 			}

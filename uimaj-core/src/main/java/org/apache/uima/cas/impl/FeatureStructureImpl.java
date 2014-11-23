@@ -390,7 +390,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
 		boolean addReference(int ref) {
 			if (this.tree.containsKey(ref)) {
-				String refName = (String) this.tree.get(ref);
+				String refName = this.tree.get(ref);
 				if (refName == null) {
 					refName = refNamePrefix + Integer.toString(this.count);
 					++this.count;
@@ -403,7 +403,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		}
 
 		String getLabel(int ref) {
-			return (String) this.tree.get(ref);
+			return this.tree.get(ref);
 		}
 
 		int printInfo(int ref) {
@@ -588,7 +588,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		String stringVal;
 		for (int i = 0; i < feats.size(); i++) {
 			StringUtils.printSpaces(indent, buf);
-			feat = (Feature) feats.get(i);
+			feat = feats.get(i);
 			buf.append(feat.getShortName() + ": ");
 			approp = feat.getRange();
 			// System.out.println("Range type: " + approp);

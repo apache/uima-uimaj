@@ -38,7 +38,6 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.CASMgr;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.impl.Util;

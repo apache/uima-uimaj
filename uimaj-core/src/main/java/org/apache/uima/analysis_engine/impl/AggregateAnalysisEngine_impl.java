@@ -219,7 +219,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       // now iterate over components and call their setResultSpecification methods
       Iterator<AnalysisEngine> componentIter = _getASB().getComponentAnalysisEngines().values().iterator();
       while (componentIter.hasNext()) {
-        AnalysisEngine ae = (AnalysisEngine) componentIter.next();
+        AnalysisEngine ae = componentIter.next();
         ae.setResultSpecification(resultSpecForComponents);
       }
     }
@@ -290,7 +290,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     Map<String, AnalysisEngine> components = this._getASB().getComponentAnalysisEngines();
     Iterator<AnalysisEngine> it = components.values().iterator();
     while (it.hasNext()) {
-      ConfigurableResource component = (ConfigurableResource) it.next();
+      ConfigurableResource component = it.next();
       component.reconfigure();
     }
     //and the FlowController
@@ -332,7 +332,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       //call components in the order specified in the flow
       if (orderedNodes != null) {
         for (int i = 0; i < orderedNodes.length; i++) {
-          AnalysisEngine component = (AnalysisEngine)components.remove(orderedNodes[i]);  
+          AnalysisEngine component = components.remove(orderedNodes[i]);  
           component.collectionProcessComplete();
         }
       }
@@ -610,7 +610,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         if (ae instanceof AnalysisEngineImplBase) {
           ProcessTrace subPT = ((AnalysisEngineImplBase) ae).buildProcessTraceFromMBeanStats();
           if (subPT.getEvents().size() > 0) {
-            procEvt.addSubEvent((ProcessTraceEvent) subPT.getEvents().get(0));
+            procEvt.addSubEvent(subPT.getEvents().get(0));
           }
         }
       }

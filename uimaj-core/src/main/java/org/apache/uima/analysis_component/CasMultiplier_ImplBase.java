@@ -107,7 +107,7 @@ public abstract class CasMultiplier_ImplBase extends AnalysisComponent_ImplBase 
    * @return an empty CAS
    */
   protected final CAS getEmptyCAS() {
-    return (CAS) getContext().getEmptyCas(CAS.class);
+    return getContext().getEmptyCas(CAS.class);
   }
 
   /**

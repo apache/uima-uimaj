@@ -333,7 +333,7 @@ public class DebugFSLogicalStructure {
   }
 
   private static FeatureStructure[] getIndexContents(FSIterator<? extends FeatureStructure> it) {
-    return (FeatureStructure[]) iteratorToArray(it, FeatureStructure.class);
+    return iteratorToArray(it, FeatureStructure.class);
   }
 
   private static FeatureStructure[] getIndexContents(FSIndex<? extends FeatureStructure> fsIndex) {
@@ -407,7 +407,7 @@ public class DebugFSLogicalStructure {
     Iterator<String> it = cas.getIndexRepository().getLabels();
     List<IndexInfo> ll = new ArrayList<IndexInfo>();
     while (it.hasNext()) {
-      ll.add(new IndexInfo(cas, (String) it.next()));
+      ll.add(new IndexInfo(cas, it.next()));
     }
     return ll.toArray(new IndexInfo[ll.size()]);
 
@@ -417,7 +417,7 @@ public class DebugFSLogicalStructure {
     Iterator<SofaFS> sofaIt = cas.getSofaIterator();
     List<ViewInfo> r = new ArrayList<ViewInfo>();
     while (sofaIt.hasNext()) {
-      SofaFS item = (SofaFS) sofaIt.next();
+      SofaFS item = sofaIt.next();
       CAS oCas = cas.getView(item);
       if (oCas != cas)
         r.add(new ViewInfo(oCas));
@@ -457,7 +457,7 @@ public class DebugFSLogicalStructure {
     }
     float[] floatArray = new float[list.size()];
     for (int i = 0; i < floatArray.length; i++) {
-      floatArray[i] = ((Float) list.get(i)).floatValue();
+      floatArray[i] = list.get(i).floatValue();
     }
     return floatArray;
   }
@@ -481,7 +481,7 @@ public class DebugFSLogicalStructure {
     }
     int[] intArray = new int[list.size()];
     for (int i = 0; i < intArray.length; i++) {
-      intArray[i] = ((Integer) list.get(i)).intValue();
+      intArray[i] = list.get(i).intValue();
     }
     return intArray;
   }

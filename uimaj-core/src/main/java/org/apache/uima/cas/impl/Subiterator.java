@@ -89,7 +89,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       it.moveToNext();
     }
     // Skip annotations whose start is before the start parameter.
-    while (it.isValid() && ((AnnotationFS) it.get()).getBegin() < start) {
+    while (it.isValid() && it.get().getBegin() < start) {
       it.moveToNext();
     }
     T current;

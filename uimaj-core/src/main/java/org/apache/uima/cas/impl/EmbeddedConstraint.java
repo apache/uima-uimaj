@@ -47,7 +47,7 @@ class EmbeddedConstraint extends PathConstraint implements FSMatchConstraint {
     // compile(((FeatureStructureImpl) fs).getCAS().getTypeSystem());
     final int max = this.featNames.size();
     for (int i = 0; i < max; i++) {
-      Feature feat = fs.getType().getFeatureByBaseName((String) this.featNames.get(i));
+      Feature feat = fs.getType().getFeatureByBaseName(this.featNames.get(i));
       if (feat == null) {
         return false;
       }

@@ -85,7 +85,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
     String[] newFlow = new String[oldFlow.length];
 
     for (int i = 0; i < oldFlow.length; i++) {
-      String newID = (String) aIDMap.get(oldFlow[i]);
+      String newID = aIDMap.get(oldFlow[i]);
       if (newID != null) {
         newFlow[i] = newID;
       } else {

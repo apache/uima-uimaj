@@ -161,7 +161,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    */
   private ResultSpecification getResultSpecForLanguage(String language) {
     // we cache this since it is called for each document
-    ResultSpecification rs = (ResultSpecification) mLanguageToResultSpecMap.get(language);
+    ResultSpecification rs = mLanguageToResultSpecMap.get(language);
     if (rs == null) {
       TypeOrFeature[] tofs = mDefaultResultSpecification.getResultTypesAndFeatures(language);
       if (tofs.length > 0) {

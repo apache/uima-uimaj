@@ -219,7 +219,7 @@ public class FSClassRegistry {
   }
   
   public boolean swapInGeneratorsForClassLoader(ClassLoader cl, CASImpl casImpl) {
-    FSGenerator[] cachedGenerators = (FSGenerator[]) generatorsByClassLoader.get(cl);
+    FSGenerator[] cachedGenerators = generatorsByClassLoader.get(cl);
     if (cachedGenerators != null) {
       casImpl.setLocalFsGenerators(cachedGenerators);
       return true;
@@ -269,6 +269,6 @@ public class FSClassRegistry {
    */
   
   public synchronized FSGenerator [] getNewFSGeneratorSet() {  
-      return (FSGenerator [])this.generators.clone();   
+      return this.generators.clone();   
   }
 }

@@ -224,7 +224,7 @@ public class XmiSerializationSharedData {
    */
   public void addOutOfTypeSystemAttribute(int addr, String featName, String featVal) {
     Integer key = Integer.valueOf(addr);
-    OotsElementData oed = (OotsElementData)this.ootsFeatures.get(key);
+    OotsElementData oed = this.ootsFeatures.get(key);
     if (oed == null) {
       oed = new OotsElementData();
       this.ootsFeatures.put(key, oed);
@@ -241,7 +241,7 @@ public class XmiSerializationSharedData {
    */
   public void addOutOfTypeSystemChildElements(int addr, String featName, List<String> featVals) {
     Integer key = Integer.valueOf(addr);
-    OotsElementData oed = (OotsElementData)this.ootsFeatures.get(key);
+    OotsElementData oed = this.ootsFeatures.get(key);
     if (oed == null) {
       oed = new OotsElementData();
       this.ootsFeatures.put(key, oed);
@@ -262,7 +262,7 @@ public class XmiSerializationSharedData {
    */
   public OotsElementData getOutOfTypeSystemFeatures(int addr) {
     Integer key = Integer.valueOf(addr);
-    return (OotsElementData)this.ootsFeatures.get(key);
+    return this.ootsFeatures.get(key);
   }
   
   /**

@@ -185,7 +185,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     }
 
     private Node getNode(String name) {
-      Node node = (Node) this.nodeMap.get(name);
+      Node node = this.nodeMap.get(name);
       if (node == null) {
         node = new Node(name);
         this.nodeMap.put(name, node);
@@ -347,7 +347,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       boolean doIn = true;
       boolean doOut = true;
       for (Iterator<Type> ni = typesToModify.iterator(); ni.hasNext();) {
-	type = (Type) ni.next();
+	type = ni.next();
 	String typeName = type.getName();
 	final Node n = this.order.getNode(typeName);
 	if (doIn && (nIn != null)) {

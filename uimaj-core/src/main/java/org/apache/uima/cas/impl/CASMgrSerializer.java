@@ -200,7 +200,7 @@ public class CASMgrSerializer implements Serializable {
     final Iterator<String> namesIt = ir.getLabels();
     // Add the names to the list, filtering out auto-indexes.
     while (namesIt.hasNext()) {
-      String name = (String) namesIt.next();
+      String name = namesIt.next();
       if (ir.getIndex(name).getIndexingStrategy() != FSIndex.DEFAULT_BAG_INDEX) { 
         names.add(name);
       }
@@ -213,7 +213,7 @@ public class CASMgrSerializer implements Serializable {
     // Fill the name array.
     for (int i = 0; i < numNames; i++) {
       // Get the next label.
-      label = (String) names.get(i);
+      label = names.get(i);
       // Add the label.
       this.indexNames[i] = label;
     }
@@ -321,7 +321,7 @@ public class CASMgrSerializer implements Serializable {
     }
     this.stringSubtypeValues = new String[strVals.size()];
     for (int i = 0; i < strVals.size(); i++) {
-      this.stringSubtypeValues[i] = (String) strVals.get(i);
+      this.stringSubtypeValues[i] = strVals.get(i);
     }
   }
 
@@ -383,9 +383,10 @@ public class CASMgrSerializer implements Serializable {
 
   private String[] getSubarray(String[] array, int from, int to) {
     String[] sub = new String[to - from];
-    for (int i = from; i < to; i++) {
-      sub[i - from] = array[i];
-    }
+    System.arraycopy(array, from, sub, 0, to-from);
+//    for (int i = from; i < to; i++) {
+//      sub[i - from] = array[i];
+//    }
     return sub;
   }
 

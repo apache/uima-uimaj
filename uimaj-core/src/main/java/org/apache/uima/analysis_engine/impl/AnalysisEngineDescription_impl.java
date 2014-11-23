@@ -445,7 +445,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
       componentSpecifier = getFlowControllerDeclaration().getSpecifier();
     } else {
       try {
-        componentSpecifier = (ResourceSpecifier) getDelegateAnalysisEngineSpecifiers().get(key);
+        componentSpecifier = getDelegateAnalysisEngineSpecifiers().get(key);
       } catch (InvalidXMLException e) {
         throw new ResourceInitializationException(e);
       }
@@ -490,7 +490,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
                 + sofaMappings[s].getComponentSofaName();
         String aggSofaName = sofaMappings[s].getAggregateSofaName();
         // check for double-mapping
-        String existingMapping = (String) sofamap.get(compoundKey);
+        String existingMapping = sofamap.get(compoundKey);
         if (existingMapping != null && !existingMapping.equals(aggSofaName)) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.SOFA_MAPPING_CONFLICT, new Object[] {
@@ -539,7 +539,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           // all component output sofas must be mapped to aggregate output sofas
           String[] outputSofas = caps[i].getOutputSofas();
           for (int j = 0; j < outputSofas.length; j++) {
-            String aggSofa = (String) sofamap.get(componentKey + "@/@" + outputSofas[j]);
+            String aggSofa = sofamap.get(componentKey + "@/@" + outputSofas[j]);
             if (aggSofa == null) // no declared mapping, name remains unchanged
             {
               aggSofa = outputSofas[j];
@@ -555,7 +555,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           // all component input sofas must be mapped to aggregate input OR output sofas
           String[] inputSofas = caps[i].getInputSofas();
           for (int j = 0; j < inputSofas.length; j++) {
-            String aggSofa = (String) sofamap.get(componentKey + "@/@" + inputSofas[j]);
+            String aggSofa = sofamap.get(componentKey + "@/@" + inputSofas[j]);
             if (aggSofa == null) // no declared mapping, name remains unchanged
             {
               aggSofa = inputSofas[j];
@@ -569,7 +569,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
           }
 
           // also check default text sofa
-          String aggDefSofa = (String) sofamap.get(componentKey + "@/@" + CAS.NAME_DEFAULT_SOFA);
+          String aggDefSofa = sofamap.get(componentKey + "@/@" + CAS.NAME_DEFAULT_SOFA);
           if (aggDefSofa != null) {
             if (capabilitiesContainSofa(aggDefSofa, true)) {
               correctlyMappedAggregateOutputs.add(aggDefSofa);

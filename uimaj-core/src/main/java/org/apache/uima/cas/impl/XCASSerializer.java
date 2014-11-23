@@ -561,7 +561,7 @@ public class XCASSerializer {
             {
               ArrayElement ootsElem = iter.next();
               if (ootsElem.index == i) {
-                val = (String) mOutOfTypeSystemData.idMap.get(ootsElem.value);
+                val = mOutOfTypeSystemData.idMap.get(ootsElem.value);
                 break;
               }
             }
@@ -664,7 +664,7 @@ public class XCASSerializer {
           if (attr[0].startsWith("_ref_")) {
             if (attr[1].startsWith("a")) { // reference to OOTS FS
               // - remap
-              attr[1] = (String) mOutOfTypeSystemData.idMap.get(attr[1]);
+              attr[1] = mOutOfTypeSystemData.idMap.get(attr[1]);
             }
           }
           addAttribute(attrs, attr[0], attr[1]);
@@ -680,7 +680,7 @@ public class XCASSerializer {
       if (attrList != null) {
         Iterator<String[]> it = attrList.iterator();
         while (it.hasNext()) {
-          String[] attr = (String[]) it.next();
+          String[] attr = it.next();
           // remap ID if necessary
           if (attr[0].startsWith("_ref_")) {
             // references whose ID starts with the character 'a' are references to out of type
@@ -743,7 +743,7 @@ public class XCASSerializer {
               // to another OOTS FS;
               // we need to remap those IDs to the actual IDs used
               // in the XCAS
-              attrVal = (String) mOutOfTypeSystemData.idMap.get(attrVal);
+              attrVal = mOutOfTypeSystemData.idMap.get(attrVal);
             }
           }
           addAttribute(workAttrs, attrName, attrVal);

@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.WeakHashMap;
-import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
@@ -44,7 +44,6 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
-import org.apache.uima.resource.ResourceManagerPearWrapper;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.impl.ResourceManager_impl;

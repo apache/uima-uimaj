@@ -26,8 +26,8 @@ import java.util.ListIterator;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
-import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -264,7 +264,7 @@ public class ListUtils {
             OotsElementData oed = sharedData.getOutOfTypeSystemFeatures(curNode);
             if (oed != null) {
               assert oed.attributes.size() == 1; //only the head feature can possibly be here
-              XmlAttribute attr = (XmlAttribute)oed.attributes.get(0);
+              XmlAttribute attr = oed.attributes.get(0);
               assert CAS.FEATURE_BASE_NAME_HEAD.equals(attr.name);
               out.append(attr.value);
             } else {
@@ -656,7 +656,7 @@ public class ListUtils {
  		}
  		String curValue = cas.getStringForCode(cas.getHeapValue(curNode
  		              + cas.getFeatureOffset(stringHeadFeat)));
- 		String newValue = (String)stringValues.get(i++);
+ 		String newValue = stringValues.get(i++);
         if (!curValue.equals(newValue)) {		  
            cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
         }
@@ -681,7 +681,7 @@ public class ListUtils {
         }
         String curValue = cas.getStringForCode(cas.getHeapValue(curNode
 	              + cas.getFeatureOffset(stringHeadFeat)));
-        String newValue = (String)stringValues.get(i++);
+        String newValue = stringValues.get(i++);
         if (!curValue.equals(newValue)) {		  
           cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
         }

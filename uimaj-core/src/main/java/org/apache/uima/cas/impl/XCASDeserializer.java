@@ -764,7 +764,7 @@ public class XCASDeserializer {
       // "Resolving references for non-id data (" + idLess.size() + ").");
       // time = System.currentTimeMillis();
       for (int i = 0; i < idLess.size(); i++) {
-        finalizeFS((FSInfo) idLess.get(i));
+        finalizeFS(idLess.get(i));
       }
       // time = System.currentTimeMillis() - time;
       // System.out.println("Done in " + new TimeSpan(time));
@@ -798,7 +798,7 @@ public class XCASDeserializer {
         feat = feats[i];
         if (cas.ll_isRefType(ts.range(feats[i]))) {
           int featVal = cas.getFeatureValue(addr, feat);
-          fsValInfo = (FSInfo) fsTree.get(featVal);
+          fsValInfo = fsTree.get(featVal);
           if (fsValInfo == null) {
             cas.setFeatureValue(addr, feat, CASImpl.NULL);
             // this feature may be a ref to an out-of-typesystem FS.
@@ -846,7 +846,7 @@ public class XCASDeserializer {
       FSInfo fsValInfo;
       for (int i = 0; i < size; i++) {
         int arrayVal = cas.getArrayValue(addr, i);
-        fsValInfo = (FSInfo) fsTree.get(arrayVal);
+        fsValInfo = fsTree.get(arrayVal);
         if (fsValInfo == null) {
           cas.setArrayValue(addr, i, CASImpl.NULL);
           // this element may be a ref to an out-of-typesystem FS.
@@ -884,7 +884,7 @@ public class XCASDeserializer {
           if (val >= 0) // negative numbers represent null and are left unchanged
           {
             // attempt to locate target in type system
-            FSInfo fsValInfo = (FSInfo) fsTree.get(val);
+            FSInfo fsValInfo = fsTree.get(val);
             if (fsValInfo != null) {
               entry.setValue(Integer.toString(fsValInfo.addr));
             } else

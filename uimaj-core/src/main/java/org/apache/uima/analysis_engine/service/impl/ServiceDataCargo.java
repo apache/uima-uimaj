@@ -23,10 +23,10 @@ import java.io.Serializable;
 
 import org.apache.uima.analysis_engine.AnalysisProcessData;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.Serialization;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.util.ProcessTrace;
 
 /**

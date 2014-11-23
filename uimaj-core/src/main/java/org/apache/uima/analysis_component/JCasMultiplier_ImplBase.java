@@ -83,6 +83,6 @@ public abstract class JCasMultiplier_ImplBase extends AnalysisComponent_ImplBase
    * @return an empty JCas
    */
   protected final JCas getEmptyJCas() {
-    return (JCas) getContext().getEmptyCas(JCas.class);
+    return getContext().getEmptyCas(JCas.class);
   }
 }

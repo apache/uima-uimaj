@@ -1986,7 +1986,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (kind == FSIndex.BAG_INDEX && !found_in_bag) {
         if (FSBagIndex.USE_POSITIVE_INT_SET) {
           found_in_bag = ((FSBagIndex)index_for_this_typeCode).ll_contains(fsAddr);
-          if (found_in_bag == false) {
+          if (!found_in_bag) {
             return false; 
           }
           continue; // may still return false if no set or sorted indexes

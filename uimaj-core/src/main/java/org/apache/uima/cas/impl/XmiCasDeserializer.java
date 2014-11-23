@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -269,7 +268,7 @@ public class XmiCasDeserializer {
         //new Sofas start at 2
         this.nextSofaNum = 2;
       } else {
-        this.nextSofaNum = ((CASImpl)this.casBeingFilled).getBaseSofaCount() + 1; 
+        this.nextSofaNum = this.casBeingFilled.getBaseSofaCount() + 1; 
       }
       this.deserializedFsAddrs = new IntVector();
       this.fsListNodesFromMultivaluedProperties = new IntVector();
@@ -283,7 +282,7 @@ public class XmiCasDeserializer {
       //a mergePoint was specified)
       FSIterator<SofaFS> sofaIter = this.casBeingFilled.getSofaIterator();
       while(sofaIter.hasNext()) {
-        SofaFS sofa = (SofaFS)sofaIter.next();
+        SofaFS sofa = sofaIter.next();
         if (sofa.getSofaRef() == 1) {
           casBeingFilled.registerInitialSofa();
         } else {
@@ -392,7 +391,7 @@ public class XmiCasDeserializer {
             int colonIndex = qualifiedName.indexOf(':');
             if (colonIndex != -1) {
               String prefix = qualifiedName.substring(0, colonIndex);
-              nameSpaceURI = (String) nsPrefixToUriMap.get(prefix);
+              nameSpaceURI = nsPrefixToUriMap.get(prefix);
               if (nameSpaceURI == null) {
                 // unbound namespace. Rather than failing, just assume a reasonable default.
                 nameSpaceURI = "http:///" + prefix + ".ecore";
@@ -1221,7 +1220,7 @@ public class XmiCasDeserializer {
       casArray = fs.getAddress();
       
       for (int i = 0; i < values.size(); i++) {
-        String stringVal = (String) values.get(i);
+        String stringVal = values.get(i);
         casBeingFilled.setArrayValueFromString(casArray, i, stringVal);
       }
       
@@ -1728,7 +1727,7 @@ public class XmiCasDeserializer {
         //if we're merging, then we use a local id map for FSs above the
         //merge point, since each of the different XMI CASes being merged
         //can use these same ids for different FSs.
-        Integer localAddr = (Integer)localXmiIdToFsAddrMap.get(xmiId);
+        Integer localAddr = localXmiIdToFsAddrMap.get(xmiId);
         if (localAddr != null) {
           return localAddr.intValue();
         } else {
@@ -1771,7 +1770,7 @@ public class XmiCasDeserializer {
       Iterator<String> iter = featVals.iterator();
       XmlElementName elemName = new XmlElementName(null,featName,featName);
       while (iter.hasNext()) {
-        ootsElem.childElements.add(new XmlElementNameAndContents(elemName, (String)iter.next()));
+        ootsElem.childElements.add(new XmlElementNameAndContents(elemName, iter.next()));
       }
     } 
     
@@ -2102,7 +2101,7 @@ public class XmiCasDeserializer {
    */
   private String xmiElementName2uimaTypeName(String nsUri, String localName) throws SAXException {
     // check map first to see if we've already computed the namespace mapping
-    String uimaNamespace = (String) xmiNamespaceToUimaNamespaceMap.get(nsUri);
+    String uimaNamespace = xmiNamespaceToUimaNamespaceMap.get(nsUri);
     if (uimaNamespace == null) {
       // check for the special "no-namespace" URI, which is used for UIMA types with no namespace
       if (XmiCasSerializer.DEFAULT_NAMESPACE_URI.equals(nsUri)) {

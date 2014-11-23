@@ -19,14 +19,14 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import static org.apache.uima.analysis_engine.impl.ResultSpecification_impl.equalsOrBothNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-
-import static org.apache.uima.analysis_engine.impl.ResultSpecification_impl.equalsOrBothNull;
 
 /**
  * Holds types and/or features with language specs

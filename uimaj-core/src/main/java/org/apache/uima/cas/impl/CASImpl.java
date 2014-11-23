@@ -611,7 +611,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   FSIndexRepository getSofaIndexRepository(int aSofaRef) {
-    return (FSIndexRepositoryImpl) this.svd.sofa2indexMap.get(Integer.valueOf(aSofaRef));
+    return this.svd.sofa2indexMap.get(Integer.valueOf(aSofaRef));
   }
 
   void setSofaIndexRepository(SofaFS aSofa, FSIndexRepository indxRepos) {
@@ -692,7 +692,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private SofaFS getSofa(String sofaName) {
     FSIterator<SofaFS> iterator = this.svd.baseCAS.getSofaIterator();
     while (iterator.isValid()) {
-      SofaFS sofa = (SofaFS) iterator.get();
+      SofaFS sofa = iterator.get();
       if (sofaName.equals(getStringValue(((FeatureStructureImpl) sofa).getAddress(),
           this.svd.casMetadata.ts.sofaIdFeatCode))) {
         return sofa;
@@ -1601,7 +1601,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     // Add FSs to index repository for each View
     while (iterator.isValid()) {
-      SofaFS sofa = (SofaFS) iterator.get();
+      SofaFS sofa = iterator.get();
       String id = getLowLevelCAS().ll_getStringValue(((FeatureStructureImpl) sofa).getAddress(),
           ((FeatureImpl) idFeat).getCode());
       if (CAS.NAME_DEFAULT_SOFA.equals(id)) {
@@ -1660,7 +1660,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     // Register all Sofas
     while (iterator.isValid()) {
-      SofaFS sofa = (SofaFS) iterator.get();
+      SofaFS sofa = iterator.get();
       String id = getLowLevelCAS().ll_getStringValue(((FeatureStructureImpl) sofa).getAddress(), idFeatCode);
       if (CAS.NAME_DEFAULT_SOFA.equals(id)) {
         this.registerInitialSofa();
@@ -2698,7 +2698,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal use only
   public CAS getView(int sofaNum) {
-    return (CAS) this.svd.sofaNbr2ViewMap.get(Integer.valueOf(sofaNum));
+    return this.svd.sofaNbr2ViewMap.get(Integer.valueOf(sofaNum));
   }
 
   
@@ -2753,7 +2753,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal platform use only
   CAS getInitialView() {
-    CAS couldBeThis = (CAS) this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1));
+    CAS couldBeThis = this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1));
     if (couldBeThis != null) {
       return couldBeThis;
     }
@@ -4250,7 +4250,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       it.moveToNext();
     }
     for (int i = 0; i < list.size(); i++) {
-      getIndexRepository().removeFS((FeatureStructure) list.get(i));
+      getIndexRepository().removeFS(list.get(i));
     }
     // Create a new document annotation.
     AnnotationFS doc = createAnnotation(ts.docType, 0, length);
@@ -4281,7 +4281,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     FSIterator<AnnotationFS> it = getAnnotationIndex(this.svd.casMetadata.ts.docType).iterator();
     if (it.isValid()) {
-      return (AnnotationFS) it.get();
+      return it.get();
     }
     return createDocumentAnnotation(0);
   }
@@ -4581,7 +4581,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     List<CAS> viewList = new ArrayList<CAS>();
     FSIterator<SofaFS> sofaIter = getSofaIterator();
     while (sofaIter.hasNext()) {
-      SofaFS sofa = (SofaFS) sofaIter.next();
+      SofaFS sofa = sofaIter.next();
       String sofaId = sofa.getSofaID();
       if (sofaId.startsWith(absolutePrefix)) {
         if ((sofaId.length() == absolutePrefix.length())

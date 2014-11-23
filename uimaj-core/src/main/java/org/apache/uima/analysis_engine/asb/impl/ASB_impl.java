@@ -505,7 +505,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
             if (casIteratorStack.isEmpty()) {
               return null; // there are no more CAS Iterators to obtain CASes from
             }
-            StackFrame frame = (StackFrame) casIteratorStack.peek();
+            StackFrame frame = casIteratorStack.peek();
             try {
               if (frame.casIterator.hasNext()) {
                 cas = frame.casIterator.next();
@@ -553,7 +553,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
             //Simple Step
             if (nextStep instanceof SimpleStep) {
               String nextAeKey = ((SimpleStep) nextStep).getAnalysisEngineKey();
-              AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
+              AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
               if (nextAe != null) {
                 //check if we have to set result spec, to support capability language flow
                 if (nextStep instanceof SimpleStepWithResultSpec) {
@@ -612,7 +612,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
                 String nextAeKey = destinations.get(0);
                 destinations.remove(0); 
                 //execute this step as we would a single step
-                AnalysisEngine nextAe = (AnalysisEngine) mComponentAnalysisEngineMap.get(nextAeKey);
+                AnalysisEngine nextAe = mComponentAnalysisEngineMap.get(nextAeKey);
                 if (nextAe != null) {
                   // invoke next AE in flow
                   CasIterator casIter = null;

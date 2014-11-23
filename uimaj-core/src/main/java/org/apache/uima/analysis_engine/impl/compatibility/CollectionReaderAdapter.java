@@ -192,7 +192,7 @@ public class CollectionReaderAdapter implements AnalysisComponent {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     // get a new CAS
-    CAS cas = (CAS) mUimaContext.getEmptyCas(CAS.class);
+    CAS cas = mUimaContext.getEmptyCas(CAS.class);
 
     // check if type system changed; if so, notify CollectionReader
     checkTypeSystemChange(cas);

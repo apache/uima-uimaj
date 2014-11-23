@@ -213,7 +213,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   
   private TypeOrFeature[] getResultTypesAndFeatures(boolean skipLanguageFilter, String language) {
     List<TypeOrFeature> r = new ArrayList<TypeOrFeature>();
-    if (rsTypesMap.nbrOfTypes() == 0 && needsCompilation == false) {
+    if (rsTypesMap.nbrOfTypes() == 0 && !needsCompilation) {
       // being called on results of intersection
       // probably by a test case, not a normal call
       // attempt to construct a plausible representation

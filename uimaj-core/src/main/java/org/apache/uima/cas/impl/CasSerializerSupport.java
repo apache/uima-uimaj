@@ -808,7 +808,7 @@ public class CasSerializerSupport {
       // doing dynamic determination of multi-refs
       if (alreadyVisited) {
         return !multiRefFSs.contains(featVal); // enqueue in the "queue" section, first time this happens
-      };
+      }
       return true;  // enqueue this item.  May or may not be eventually written embedded
                     // but we enqueue to track multi-use
     }
@@ -1207,7 +1207,7 @@ public class CasSerializerSupport {
 
     public String getNameSpacePrefix(String uimaTypeName, String nsUri, int lastDotIndex) {
       // determine what namespace prefix to use
-      String prefix = (String) nsUriToPrefixMap.get(nsUri);
+      String prefix = nsUriToPrefixMap.get(nsUri);
       if (prefix == null) {
         if (lastDotIndex != -1) { // have namespace 
           int secondLastDotIndex = uimaTypeName.lastIndexOf('.', lastDotIndex-1);

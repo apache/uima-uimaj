@@ -84,7 +84,7 @@ public class UnambiguousIteratorImpl<T extends AnnotationFS> extends FSIteratorI
     it.moveToFirst();
     // Skip annotations with begin positions before the given start
     // position.
-    while (it.isValid() && start > ((AnnotationFS) it.get()).getBegin()) {
+    while (it.isValid() && start > it.get().getBegin()) {
       it.moveToNext();
     }
     // Add annotations.

@@ -153,14 +153,14 @@ class FSFloatConstraintImpl implements FSFloatConstraint {
 
   public String toString() {
     if (this.codes.size() == 1) {
-      return toString(this.codes.get(0)) + " " + ((Float) this.values.get(0)).toString();
+      return toString(this.codes.get(0)) + " " + this.values.get(0).toString();
     }
     StringBuffer buf = new StringBuffer();
     buf.append("( ");
     for (int i = 0; i < this.codes.size(); i++) {
       buf.append(toString(this.codes.get(i)));
       buf.append(' ');
-      buf.append(((Float) this.values.get(i)).toString());
+      buf.append(this.values.get(i).toString());
       buf.append(' ');
     }
     buf.append(')');
