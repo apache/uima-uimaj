@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -40,7 +39,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -252,7 +250,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
               + importedPriorityLists.size()];
       System.arraycopy(existingPriorityLists, 0, newPriorityLists, 0, existingPriorityLists.length);
       for (int i = 0; i < importedPriorityLists.size(); i++) {
-        newPriorityLists[existingPriorityLists.length + i] = (TypePriorityList) importedPriorityLists
+        newPriorityLists[existingPriorityLists.length + i] = importedPriorityLists
                 .get(i);
       }
       this.setPriorityLists(newPriorityLists);

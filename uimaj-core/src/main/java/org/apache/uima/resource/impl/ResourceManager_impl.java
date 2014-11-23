@@ -450,7 +450,7 @@ public class ResourceManager_impl implements ResourceManager {
       String name = resources[i].getName();
 
       // check for existing resource registration under this name
-      ResourceRegistration registration = (ResourceRegistration) mInternalResourceRegistrationMap
+      ResourceRegistration registration = mInternalResourceRegistrationMap
               .get(name);
       if (registration == null) {
         registerResource(name, resources[i], aQualifiedContextName, aAdditionalParams);
@@ -476,7 +476,7 @@ public class ResourceManager_impl implements ResourceManager {
     // apply bindings
     ExternalResourceBinding[] bindings = aConfiguration.getExternalResourceBindings();
     for (int i = 0; i < bindings.length; i++) {
-      ResourceRegistration registration = (ResourceRegistration) mInternalResourceRegistrationMap
+      ResourceRegistration registration = mInternalResourceRegistrationMap
               .get(bindings[i].getResourceName());
       if (registration == null) {
         throw new ResourceInitializationException(

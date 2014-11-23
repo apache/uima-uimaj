@@ -118,7 +118,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
     if (aGroupName == null) {
       return getParameterValue(aParamName);
     } else {
-      NameValuePair[] nvps = (NameValuePair[]) mSettingsForGroups.get(aGroupName);
+      NameValuePair[] nvps = mSettingsForGroups.get(aGroupName);
       if (nvps != null) {
         for (int i = 0; i < nvps.length; i++) {
           if (aParamName.equals(nvps[i].getName())) {
@@ -183,7 +183,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
     } else {
       if (aValue != null) // setting a value
       {
-        NameValuePair[] nvps = (NameValuePair[]) mSettingsForGroups.get(aGroupName);
+        NameValuePair[] nvps = mSettingsForGroups.get(aGroupName);
         if (nvps == null) // create new group
         {
           NameValuePair newNVP = new NameValuePair_impl(aParamName, aValue);
@@ -204,7 +204,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
         }
       } else // clearing a value
       {
-        NameValuePair[] nvps = (NameValuePair[]) mSettingsForGroups.get(aGroupName);
+        NameValuePair[] nvps = mSettingsForGroups.get(aGroupName);
         if (nvps != null) {
           for (int i = 0; i < nvps.length; i++) {
             if (aParamName.equals(nvps[i].getName())) {

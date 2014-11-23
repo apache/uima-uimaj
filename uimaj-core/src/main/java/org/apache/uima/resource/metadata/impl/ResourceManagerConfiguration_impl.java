@@ -36,7 +36,6 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -320,7 +319,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
               + importedResources.size()];
       System.arraycopy(existingResources, 0, newResources, 0, existingResources.length);
       for (int i = 0; i < importedResources.size(); i++) {
-        newResources[existingResources.length + i] = (ExternalResourceDescription) importedResources
+        newResources[existingResources.length + i] = importedResources
                 .get(i);
       }
       this.setExternalResources(newResources);
@@ -335,7 +334,7 @@ public class ResourceManagerConfiguration_impl extends MetaDataObject_impl imple
               + importedBindings.size()];
       System.arraycopy(existingBindings, 0, newBindings, 0, existingBindings.length);
       for (int i = 0; i < importedBindings.size(); i++) {
-        newBindings[existingBindings.length + i] = (ExternalResourceBinding) importedBindings.get(i);
+        newBindings[existingBindings.length + i] = importedBindings.get(i);
       }
       this.setExternalResourceBindings(newBindings);
     }

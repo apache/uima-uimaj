@@ -22,8 +22,8 @@ package org.apache.uima.resource.metadata.impl;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceConfigurationException;

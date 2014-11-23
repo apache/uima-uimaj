@@ -198,7 +198,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     // remove any existing MimeTypePrecondtiions
     Iterator<Precondition> i = preconditions.iterator();
     while (i.hasNext()) {
-      Precondition p = (Precondition) i.next();
+      Precondition p = i.next();
       if (p instanceof MimeTypePrecondition) {
         i.remove();
       }

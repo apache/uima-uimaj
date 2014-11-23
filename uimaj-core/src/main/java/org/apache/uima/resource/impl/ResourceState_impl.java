@@ -19,7 +19,6 @@
 
 package org.apache.uima.resource.impl;
 
-import org.apache.uima.resource.Resource_ImplBase;
 import org.apache.uima.resource.metadata.NameValuePair;
 
 /**

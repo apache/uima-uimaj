@@ -724,7 +724,7 @@ public class InstallationDescriptor implements Serializable {
    * @return The specifications of the given network component parameter.
    */
   public synchronized Properties getMainComponentNetworkParam(String paramName) {
-    return (_mainComponent != null && _mainComponent.networkParams != null) ? (Properties) _mainComponent.networkParams
+    return (_mainComponent != null && _mainComponent.networkParams != null) ? _mainComponent.networkParams
             .get(paramName)
             : null;
   }
@@ -798,7 +798,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized void setDelegateComponentDesc(String id, String descFilePath) {
     String dlgId = id.trim();
-    ComponentInfo dCompInfo = (ComponentInfo) _delegateComponents.get(dlgId);
+    ComponentInfo dCompInfo = _delegateComponents.get(dlgId);
     if (dCompInfo != null) {
       if (dCompInfo.rootDirPath == null) // set relative path
         dCompInfo.descFilePath = descFilePath.trim().replace('\\', '/');
@@ -820,7 +820,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized void setDelegateComponentName(String id, String name) {
     String dlgId = id.trim();
-    ComponentInfo dCompInfo = (ComponentInfo) _delegateComponents.get(dlgId);
+    ComponentInfo dCompInfo = _delegateComponents.get(dlgId);
     if (dCompInfo != null)
       dCompInfo.name = name.trim();
   }
@@ -837,7 +837,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized void setDelegateComponentProperty(String id, String propName, String propValue) {
     String dlgId = id.trim();
-    ComponentInfo dCompInfo = (ComponentInfo) _delegateComponents.get(dlgId);
+    ComponentInfo dCompInfo = _delegateComponents.get(dlgId);
     if (dCompInfo != null) {
       if (dCompInfo.props == null)
         dCompInfo.props = new Properties();
@@ -855,7 +855,7 @@ public class InstallationDescriptor implements Serializable {
    */
   public synchronized void setDelegateComponentRoot(String id, String rootDirPath) {
     String dlgId = id.trim();
-    ComponentInfo dCompInfo = (ComponentInfo) _delegateComponents.get(dlgId);
+    ComponentInfo dCompInfo = _delegateComponents.get(dlgId);
     if (dCompInfo != null) {
       dCompInfo.rootDirPath = rootDirPath.trim().replace('\\', '/');
       // substitute $dlg_comp_id$root macros in the
@@ -1071,7 +1071,7 @@ public class InstallationDescriptor implements Serializable {
       // substitute $main_root macros in all specs of actions
       Iterator<ActionInfo> list = getInstallationActions().iterator();
       while (list.hasNext()) {
-        ActionInfo action = (ActionInfo) list.next();
+        ActionInfo action = list.next();
         Enumeration<Object> keys = action.params.keys();
         while (keys.hasMoreElements()) {
           String key = (String) keys.nextElement();

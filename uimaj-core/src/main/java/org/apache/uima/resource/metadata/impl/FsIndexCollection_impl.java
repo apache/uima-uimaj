@@ -242,7 +242,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
               + importedIndexes.size()];
       System.arraycopy(existingIndexes, 0, newIndexes, 0, existingIndexes.length);
       for (int i = 0; i < importedIndexes.size(); i++) {
-        newIndexes[existingIndexes.length + i] = (FsIndexDescription) importedIndexes.get(i);
+        newIndexes[existingIndexes.length + i] = importedIndexes.get(i);
       }
       this.setFsIndexes(newIndexes);
     }

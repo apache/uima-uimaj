@@ -156,7 +156,7 @@ public class LocalInstallationAgent {
     // substitute $comp_id$root macros for all delegates
     Iterator<String> idList = insdObject.getDelegateComponents().keySet().iterator();
     while (idList.hasNext()) {
-      String id = (String) idList.next();
+      String id = idList.next();
       String idRoot = COMP_ROOT_PREFIX + id + COMP_ROOT_SUFFIX;
       String compRootPath = packageConfig.getProperty(idRoot);
       // substitute '$dlg_comp_id$root_rel'
@@ -346,7 +346,7 @@ public class LocalInstallationAgent {
     // backup and localize files in desc dir
     dirList = descDirFiles.iterator();
     while (dirList.hasNext()) {
-      File orgFile = (File) dirList.next();
+      File orgFile = dirList.next();
       String bakFileName = orgFile.getName().concat(BACKUP_FILE_SUFFIX);
       File bakFile = new File(orgFile.getParent(), bakFileName);
       if (FileUtil.copyFile(orgFile, bakFile)) {

@@ -21,8 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl.SerialContext;
-import org.apache.uima.resource.metadata.impl.MetaDataObject_impl.Serializer;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;

@@ -22,10 +22,8 @@ package org.apache.uima.resource.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -38,7 +36,6 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 import org.apache.uima.resource.metadata.NameValuePair;
-import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Settings;
 
@@ -186,7 +183,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
 
     // if that fails, look up in default group if one is defined
     String defaultGroup = null;
-    ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
+    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
             .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
       defaultGroup = decls.getDefaultGroupName();
@@ -205,7 +202,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   public Object getConfigParameterValue(String aQualifiedParameterName, String aGroupName) {
     // get parameter search strategy for this context
-    ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
+    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
             .get(computeParentContextName(aQualifiedParameterName));
     if (decls != null) {
       return getConfigParameterValue(aQualifiedParameterName, aGroupName,
@@ -267,7 +264,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    * @see org.apache.uima.resource.ConfigurationManager#getConfigParameterDeclarations(java.lang.String)
    */
   public ConfigurationParameterDeclarations getConfigParameterDeclarations(String aContextName) {
-    return (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap.get(aContextName);
+    return mContextNameToParamDeclsMap.get(aContextName);
   }
 
   /*
@@ -278,7 +275,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    */
   public ConfigurationParameterSettings getCurrentConfigParameterSettings(String aContextName) {
     // get declarations
-    ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
+    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
             .get(aContextName);
 
     ConfigurationParameterSettings settings = UIMAFramework.getResourceSpecifierFactory()
@@ -389,7 +386,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
    *         the complete name of that parameter is returned. Otherwise, null is returned.
    */
   protected String getLink(String aCompleteName) {
-    return (String) mLinkMap.get(aCompleteName);
+    return mLinkMap.get(aCompleteName);
   }
 
   /**
@@ -486,7 +483,7 @@ public abstract class ConfigurationManagerImplBase implements ConfigurationManag
   private void validateConfigurationParameterSettings(String aContext)
           throws ResourceConfigurationException {
     // get declarations
-    ConfigurationParameterDeclarations decls = (ConfigurationParameterDeclarations) mContextNameToParamDeclsMap
+    ConfigurationParameterDeclarations decls = mContextNameToParamDeclsMap
             .get(aContext);
     // check that all required parameters have values
     ConfigurationParameter[] params = decls.getConfigurationParameters();

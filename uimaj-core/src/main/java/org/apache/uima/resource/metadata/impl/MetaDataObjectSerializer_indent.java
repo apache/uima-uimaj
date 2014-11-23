@@ -30,7 +30,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
@@ -434,7 +433,7 @@ class MetaDataObjectSerializer_indent extends MetaDataObjectSerializer_plain {
       if (!lineEnd.equals("\n")) {
         cmt = cmt.replace("\n", lineEnd);
       }
-      ((LexicalHandler) cc).comment(cmt.toCharArray(), 0, cmt.length());
+      cc.comment(cmt.toCharArray(), 0, cmt.length());
     } else {
       String s = p.getTextContent();
       cc.characters(s.toCharArray(), 0, s.length());

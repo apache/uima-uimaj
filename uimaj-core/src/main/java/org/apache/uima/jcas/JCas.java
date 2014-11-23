@@ -45,7 +45,6 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;

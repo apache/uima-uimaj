@@ -519,7 +519,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       instantiateJCas_Types(cl);
     }
     final JCasSharedView sv = this.sharedView;
-    sv.cAddr2Jfs = (JCasHashMap) sv.cAddr2JfsByClassLoader.get(cl);
+    sv.cAddr2Jfs = sv.cAddr2JfsByClassLoader.get(cl);
     if (null == sv.cAddr2Jfs) {
       // initial size low because this is the use case where a Pear isolation is happening, 
       //   it is more likely that the PEAR is only doing a subset of the JCas things
@@ -676,7 +676,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     Type topType = ts.getTopType();
     Type superType = null;
     while (typeIt.hasNext()) {
-      Type t = (Type) typeIt.next();
+      Type t = typeIt.next();
       if (builtInsWithNoJCas.contains(t.getName()))
         continue;
       // comment here
@@ -1070,7 +1070,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       sv.fsArray0L = null;
       sv.integerArray0L = null;
     }
-    sv.cAddr2Jfs = (JCasHashMap) sv.cAddr2JfsByClassLoader
+    sv.cAddr2Jfs = sv.cAddr2JfsByClassLoader
         .get(((CASImpl) cas).getJCasClassLoader());
   }
 

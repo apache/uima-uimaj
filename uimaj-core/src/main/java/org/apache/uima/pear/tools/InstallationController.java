@@ -663,7 +663,7 @@ public class InstallationController {
       Hashtable<String, ComponentInfo> dlgComponents = insdObject.getDelegateComponents();
       Enumeration<String> dlgCompIds = dlgComponents.keys();
       while (dlgCompIds.hasMoreElements()) {
-        String dlgCompId = (String) dlgCompIds.nextElement();
+        String dlgCompId = dlgCompIds.nextElement();
         if (!deleteInstalledFiles(dlgCompId, parentDir, true))
           done = false;
       }
@@ -1446,7 +1446,7 @@ public class InstallationController {
           // process next delegate component
           String dlgId = dlgIdList.nextElement();
           String dlgRootPath = _installationTable.get(dlgId);
-          InstallationDescriptor dlgInsD = (InstallationDescriptor) _installationInsDs.get(dlgId);
+          InstallationDescriptor dlgInsD = _installationInsDs.get(dlgId);
           String dlgClassPath = buildComponentClassPath(dlgRootPath, dlgInsD, true);
           if (dlgClassPath.length() > 0) {
             if (cpBuffer.length() > 0
@@ -1481,7 +1481,7 @@ public class InstallationController {
           // process next delegate component
           String dlgId = dlgIdList.nextElement();
           String dlgRootPath = _installationTable.get(dlgId);
-          InstallationDescriptor dlgInsD = (InstallationDescriptor) _installationInsDs.get(dlgId);
+          InstallationDescriptor dlgInsD = _installationInsDs.get(dlgId);
           String dlgPath = buildComponentPath(dlgRootPath, dlgInsD);
           if (dlgPath.length() > 0) {
             if (pBuffer.length() > 0
@@ -1513,8 +1513,8 @@ public class InstallationController {
         Enumeration<String> dlgIdList = _installationTable.keys();
         while (dlgIdList.hasMoreElements()) {
           // process next delegate component
-          String dlgId = (String) dlgIdList.nextElement();
-          InstallationDescriptor dlgInsD = (InstallationDescriptor) _installationInsDs.get(dlgId);
+          String dlgId = dlgIdList.nextElement();
+          InstallationDescriptor dlgInsD = _installationInsDs.get(dlgId);
           Properties dlgEnvVars = buildTableOfEnvVars(dlgInsD);
           envVars = StringUtil.appendProperties(envVars, dlgEnvVars, false);
         }
@@ -1841,7 +1841,7 @@ public class InstallationController {
       String id = dlgIdList.next();
       String idRoot = LocalInstallationAgent.COMP_ROOT_PREFIX + id
               + LocalInstallationAgent.COMP_ROOT_SUFFIX;
-      packageConfig.setProperty(idRoot, ((String) _installationTable.get(id)).replace('\\', '/'));
+      packageConfig.setProperty(idRoot, _installationTable.get(id).replace('\\', '/'));
     }
     // save pear config file
     OutputStream oStream = null;

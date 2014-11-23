@@ -91,7 +91,7 @@ public class UIMAUtil {
    *         descriptor file.
    */
   public static Exception getLastErrorForXmlDesc(File xmlDescFile) {
-    return (Exception) __errTableByUri.get(xmlDescFile.getAbsolutePath());
+    return __errTableByUri.get(xmlDescFile.getAbsolutePath());
   }
 
   /**
@@ -104,7 +104,7 @@ public class UIMAUtil {
    *         descriptor URL.
    */
   public static Exception getLastErrorForXmlDesc(URL xmlDescUrl) {
-    return (Exception) __errTableByUri.get(xmlDescUrl.toString());
+    return __errTableByUri.get(xmlDescUrl.toString());
   }
 
   /**

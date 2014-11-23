@@ -175,7 +175,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
    * @see org.apache.uima.resource.metadata.ConfigurationParameter#getOverrides()
    */
   public String[] getOverrides() {
-    return (String[]) mOverrides.clone();
+    return mOverrides.clone();
   }
 
   /*
@@ -187,7 +187,7 @@ public class ConfigurationParameter_impl extends MetaDataObject_impl implements
     if (aOverrides == null)
       mOverrides = new String[0];
     else
-      mOverrides = (String[]) aOverrides.clone();
+      mOverrides = aOverrides.clone();
   }
 
   /*

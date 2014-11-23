@@ -610,7 +610,7 @@ public class FileUtil {
     // add directories to the list
     Enumeration<JarEntry> entries = archive.entries();
     while (entries.hasMoreElements()) {
-      JarEntry entry = (JarEntry) entries.nextElement();
+      JarEntry entry = entries.nextElement();
       File file = new File(rootDir, entry.getName());
       if (!entry.isDirectory())
         listOfFiles.add(file);

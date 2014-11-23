@@ -246,7 +246,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
       TypeDescription[] newTypes = new TypeDescription[existingTypes.length + importedTypes.size()];
       System.arraycopy(existingTypes, 0, newTypes, 0, existingTypes.length);
       for (int i = 0; i < importedTypes.size(); i++) {
-        newTypes[existingTypes.length + i] = (TypeDescription) importedTypes.get(i);
+        newTypes[existingTypes.length + i] = importedTypes.get(i);
       }
       this.setTypes(newTypes);
     }

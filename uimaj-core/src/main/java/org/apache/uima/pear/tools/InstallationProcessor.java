@@ -352,7 +352,7 @@ public class InstallationProcessor {
     // perform required actions
     Iterator<InstallationDescriptor.ActionInfo> actionList = _insdObject.getInstallationActions().iterator();
     while (actionList.hasNext()) {
-      InstallationDescriptor.ActionInfo action = (InstallationDescriptor.ActionInfo) actionList
+      InstallationDescriptor.ActionInfo action = actionList
               .next();
       // substitute string 'variables' in action parameters
       substituteStringVariablesInAction(action.params);
@@ -404,8 +404,8 @@ public class InstallationProcessor {
         // substitute '$dlg_comp_id$root'
         regexList = _pathSubstitutionTable.keys();
         while (regexList.hasMoreElements()) {
-          String regex = (String) regexList.nextElement();
-          String replacement = (String) _pathSubstitutionTable.get(regex);
+          String regex = regexList.nextElement();
+          String replacement = _pathSubstitutionTable.get(regex);
           paramValue = paramValue.replaceAll(regex, StringUtil.toRegExpReplacement(replacement));
         }
         // reset (modified) property value
@@ -457,8 +457,8 @@ public class InstallationProcessor {
       // substitute '$dlg_comp__id$root'
       regexList = _pathSubstitutionTable.keys();
       while (regexList.hasMoreElements()) {
-        String regex = (String) regexList.nextElement();
-        replacement = (String) _pathSubstitutionTable.get(regex);
+        String regex = regexList.nextElement();
+        replacement = _pathSubstitutionTable.get(regex);
         FileUtil.replaceStringInFile(file, regex, replacement);
       }
     }

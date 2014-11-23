@@ -286,7 +286,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
         oWriter.println();
         Iterator<String> nameList = netParamNames.iterator();
         while (nameList.hasNext()) {
-          String name = (String) nameList.next();
+          String name = nameList.next();
           Properties attributes = insdObject.getMainComponentNetworkParam(name);
           XMLUtil.printXMLElement(name, attributes, null, oWriter, 3);
           oWriter.println();
@@ -344,7 +344,7 @@ public class InstallationDescriptorHandler extends DefaultHandler {
       oWriter.println();
       // 3rd level elements
       String dlgId = dlgList.next();
-      InstallationDescriptor.ComponentInfo dlgInfo = (InstallationDescriptor.ComponentInfo) dlgTable
+      InstallationDescriptor.ComponentInfo dlgInfo = dlgTable
               .get(dlgId);
       XMLUtil.printXMLElement(ID_TAG, dlgId, oWriter, 3);
       oWriter.println();

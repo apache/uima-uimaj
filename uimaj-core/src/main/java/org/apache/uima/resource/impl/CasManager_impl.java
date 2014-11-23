@@ -165,7 +165,7 @@ public class CasManager_impl implements CasManager {
    * @see org.apache.uima.resource.CasManager#getCAS(org.apache.uima.analysis_engine.AnalysisEngine)
    */
   public CAS getCas(String aRequestorContextName) {
-    CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
+    CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
     if (pool == null) {
       throw new UIMARuntimeException(UIMARuntimeException.REQUESTED_TOO_MANY_CAS_INSTANCES,
               new Object[] { aRequestorContextName, "1", "0" });
@@ -187,7 +187,7 @@ public class CasManager_impl implements CasManager {
     CASImpl baseCas = (aCAS instanceof JCas) ? ((JCas)aCAS).getCasImpl().getBaseCAS() 
                                              : ((CASImpl)aCAS).getBaseCAS();
 
-    CasPool pool = (CasPool) mCasToCasPoolMap.get(baseCas);
+    CasPool pool = mCasToCasPoolMap.get(baseCas);
     if (pool == null) {
       // CAS doesn't belong to this CasManager!
       throw new UIMARuntimeException(UIMARuntimeException.CAS_RELEASED_TO_WRONG_CAS_MANAGER,
@@ -231,7 +231,7 @@ public class CasManager_impl implements CasManager {
           Properties aPerformanceTuningSettings) throws ResourceInitializationException {
     int poolSize = getCasPoolSize(aRequestorContextName, aMinimumSize);
     if (poolSize > 0) {
-      CasPool pool = (CasPool) mRequestorToCasPoolMap.get(aRequestorContextName);
+      CasPool pool = mRequestorToCasPoolMap.get(aRequestorContextName);
       if (pool == null) {
         // this requestor hasn't requested a CAS before
         pool = new CasPool(poolSize, this, aPerformanceTuningSettings);
