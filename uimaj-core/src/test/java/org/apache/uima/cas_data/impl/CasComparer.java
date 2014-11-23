@@ -59,7 +59,7 @@ public class CasComparer {
     FSIterator<SofaFS> sofaIter = c1.getSofaIterator();
     int c1Sofas = 0;
     while (sofaIter.hasNext()) {
-      SofaFS sofa = (SofaFS) sofaIter.next();
+      SofaFS sofa = sofaIter.next();
       CAS tcas1 = c1.getView(sofa);
       CAS tcas2 = c2.getView(tcas1.getViewName());
       assertEqualViews(tcas1, tcas2);

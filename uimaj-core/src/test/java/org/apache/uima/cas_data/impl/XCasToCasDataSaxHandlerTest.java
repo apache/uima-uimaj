@@ -203,8 +203,7 @@ public class XCasToCasDataSaxHandlerTest extends TestCase {
     Type arrayType = typeSystem.getType(CAS.TYPE_NAME_ARRAY_BASE);
     Iterator<FeatureStructure> fsIter = casData.getFeatureStructures();
     while (fsIter.hasNext()) {
-      org.apache.uima.cas_data.FeatureStructure fs = (org.apache.uima.cas_data.FeatureStructure) fsIter
-              .next();
+      org.apache.uima.cas_data.FeatureStructure fs = fsIter.next();
       String typeName = fs.getType();
 
       // don't do tests on the "fake" document text FS

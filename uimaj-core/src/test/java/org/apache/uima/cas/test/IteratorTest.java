@@ -655,8 +655,8 @@ public class IteratorTest extends TestCase {
       // System.out.println("Iteration: " + i);
       it2.moveToFirst();
       it2.moveTo(list.get(i));
-      assertTrue(((AnnotationFS) it2.get()).getBegin() == ((AnnotationFS) list.get(i)).getBegin());
-      assertTrue(((AnnotationFS) it2.get()).getEnd() == ((AnnotationFS) list.get(i)).getEnd());
+      assertTrue(it2.get().getBegin() == list.get(i).getBegin());
+      assertTrue(it2.get().getEnd() == list.get(i).getEnd());
     }
 
     // Check that reverse iterator produces reverse sequence.

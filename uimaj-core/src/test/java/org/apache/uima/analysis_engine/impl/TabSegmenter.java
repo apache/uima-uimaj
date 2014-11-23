@@ -56,7 +56,7 @@ public class TabSegmenter extends CasMultiplier_ImplBase {
    */
   public AbstractCas next() throws AnalysisEngineProcessException {
     String nextSeg = mStringTok.nextToken();
-    CAS cas = (CAS) getContext().getEmptyCas(CAS.class);
+    CAS cas = getContext().getEmptyCas(CAS.class);
     cas.getCurrentView().setDocumentText(nextSeg);
     return cas;
   }

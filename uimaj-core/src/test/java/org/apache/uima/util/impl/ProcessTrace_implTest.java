@@ -76,13 +76,13 @@ public class ProcessTrace_implTest extends TestCase {
 
     // verify contents of the ProcessTrace
     List<ProcessTraceEvent> evts = pt.getEvents();
-    ProcessTraceEvent evt0 = (ProcessTraceEvent) evts.get(0);
+    ProcessTraceEvent evt0 = evts.get(0);
     Assert.assertEquals("c1", evt0.getComponentName());
     Assert.assertEquals("t1", evt0.getType());
     Assert.assertEquals("testing", evt0.getDescription());
     Assert.assertEquals("success", evt0.getResultMessage());
     List<ProcessTraceEvent> subEvts = evt0.getSubEvents();
-    ProcessTraceEvent subEvt0 = (ProcessTraceEvent) subEvts.get(0);
+    ProcessTraceEvent subEvt0 = subEvts.get(0);
     Assert.assertEquals("c1", subEvt0.getComponentName());
     Assert.assertEquals("t2", subEvt0.getType());
     Assert.assertEquals("testing", subEvt0.getDescription());
@@ -116,7 +116,7 @@ public class ProcessTrace_implTest extends TestCase {
     // should be 2 events on list
     Assert.assertEquals(2, pt.getEvents().size());
     // 2nd event should have a sub-event
-    ProcessTraceEvent evt = (ProcessTraceEvent) pt.getEvents().get(1);
+    ProcessTraceEvent evt = pt.getEvents().get(1);
     Assert.assertEquals(1, evt.getSubEvents().size());
   }
 
@@ -141,25 +141,25 @@ public class ProcessTrace_implTest extends TestCase {
     // get top-level events for component c1
     List<ProcessTraceEvent> c1evts = pt.getEventsByComponentName("c1", false);
     Assert.assertEquals(1, c1evts.size());
-    ProcessTraceEvent evt = (ProcessTraceEvent) c1evts.get(0);
+    ProcessTraceEvent evt = c1evts.get(0);
     Assert.assertEquals(evt.getType(), "t1");
 
     // get all events for component c1
     c1evts = pt.getEventsByComponentName("c1", true);
     Assert.assertEquals(2, c1evts.size());
-    evt = (ProcessTraceEvent) c1evts.get(1);
+    evt = c1evts.get(1);
     Assert.assertEquals(evt.getType(), "t2");
 
     // get top-level events for component c2
     List<ProcessTraceEvent> c2evts = pt.getEventsByComponentName("c2", false);
     Assert.assertEquals(1, c2evts.size());
-    evt = (ProcessTraceEvent) c2evts.get(0);
+    evt = c2evts.get(0);
     Assert.assertEquals(evt.getType(), "t1");
 
     // get all events for component c2
     c2evts = pt.getEventsByComponentName("c2", true);
     Assert.assertEquals(4, c2evts.size());
-    evt = (ProcessTraceEvent) c2evts.get(3);
+    evt = c2evts.get(3);
     Assert.assertEquals(evt.getType(), "t4");
   }
 
@@ -184,15 +184,15 @@ public class ProcessTrace_implTest extends TestCase {
     // get top-level events of type t1
     List<ProcessTraceEvent> t1evts = pt.getEventsByType("t1", false);
     Assert.assertEquals(2, t1evts.size());
-    ProcessTraceEvent evt = (ProcessTraceEvent) t1evts.get(0);
+    ProcessTraceEvent evt = t1evts.get(0);
     Assert.assertEquals(evt.getComponentName(), "c1");
-    evt = (ProcessTraceEvent) t1evts.get(1);
+    evt = t1evts.get(1);
     Assert.assertEquals(evt.getComponentName(), "c2");
 
     // get all events for type t1
     t1evts = pt.getEventsByType("t1", true);
     Assert.assertEquals(3, t1evts.size());
-    evt = (ProcessTraceEvent) t1evts.get(2);
+    evt = t1evts.get(2);
     Assert.assertEquals(evt.getComponentName(), "c3");
   }
 
@@ -237,9 +237,9 @@ public class ProcessTrace_implTest extends TestCase {
     pt2.addEvent("c1", "t1", "testing", 250, "success");
 
     pt1.aggregate(pt2);
-    ProcessTraceEvent c1evt = (ProcessTraceEvent) pt1.getEvents().get(0);
-    ProcessTraceEvent c2evt = (ProcessTraceEvent) pt1.getEvents().get(1);
-    ProcessTraceEvent c2subEvt = (ProcessTraceEvent) c2evt.getSubEvents().get(0);
+    ProcessTraceEvent c1evt = pt1.getEvents().get(0);
+    ProcessTraceEvent c2evt = pt1.getEvents().get(1);
+    ProcessTraceEvent c2subEvt = c2evt.getSubEvents().get(0);
     Assert.assertEquals(1250, c1evt.getDuration());
     Assert.assertEquals(1000, c2subEvt.getDuration());
   }

@@ -240,7 +240,7 @@ public class AnnotationIteratorTest extends TestCase {
       ++count;
     }
     assertTrue(count == 4);
-    AnnotationFS sent = (AnnotationFS) this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
+    AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
     it = annotIndex.subiterator(sent, false, true);
     count = 0;
     while (it.isValid()) {

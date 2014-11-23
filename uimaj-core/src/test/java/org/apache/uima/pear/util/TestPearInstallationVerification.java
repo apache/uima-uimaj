@@ -24,10 +24,10 @@ import java.io.File;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.apache.uima.pear.tools.InstallationController.TestStatus;
 import org.apache.uima.pear.tools.InstallationTester;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
-import org.apache.uima.pear.tools.InstallationController.TestStatus;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 /**

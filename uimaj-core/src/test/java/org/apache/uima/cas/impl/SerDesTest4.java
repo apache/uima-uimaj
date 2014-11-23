@@ -28,9 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -699,7 +697,7 @@ public class SerDesTest4 extends TestCase {
     fs = newAkof(fsl);
     fs.setBooleanValue(akofBoolean, false);
     fs.setByteValue(akofByte, Byte.MAX_VALUE);
-    fs.setShortValue(akofShort, (short) Short.MAX_VALUE);
+    fs.setShortValue(akofShort, Short.MAX_VALUE);
     fs.setIntValue(akofInt, Integer.MAX_VALUE);
     fs.setFloatValue(akofFloat, Float.MAX_VALUE);
     fs.setLongValue(akofLong, Long.MAX_VALUE);
@@ -710,7 +708,7 @@ public class SerDesTest4 extends TestCase {
 
     fs = newAkof(fsl);
     fs.setByteValue(akofByte, Byte.MIN_VALUE);
-    fs.setShortValue(akofShort, (short) Short.MIN_VALUE);
+    fs.setShortValue(akofShort, Short.MIN_VALUE);
     fs.setIntValue(akofInt, Integer.MIN_VALUE);
     fs.setFloatValue(akofFloat, Float.MIN_VALUE);
     fs.setLongValue(akofLong, Long.MIN_VALUE);

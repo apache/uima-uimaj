@@ -97,7 +97,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
       FSIterator<AnnotationFS> typeIterator = aCAS.getCurrentView().getAnnotationIndex().iterator();
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
-        AnnotationFS annot = (AnnotationFS) typeIterator.get();
+        AnnotationFS annot = typeIterator.get();
 
         this.fileWriter.write(annot.getCoveredText());
         this.fileWriter.write(System.getProperty("line.separator"));

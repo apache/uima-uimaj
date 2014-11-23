@@ -35,15 +35,12 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -266,7 +263,7 @@ public class XCASDeserializerTest extends TestCase {
     //   the view it is created in. https://issues.apache.org/jira/browse/UIMA-4099
     // create a TOP and add to index of both views
     Type topType = cas.getTypeSystem().getTopType();
-    FeatureStructure aTOP = (FeatureStructure) cas.createFS(topType);
+    FeatureStructure aTOP = cas.createFS(topType);
     cas.getIndexRepository().addFS(aTOP);
     cas2.getIndexRepository().addFS(aTOP); 
     FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(topType);

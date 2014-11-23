@@ -174,7 +174,7 @@ public class FilteredIteratorTest extends TestCase {
 
     // do iteration
     while (it.isValid()) {
-      AnnotationFS a = (AnnotationFS) it.get();
+      AnnotationFS a = it.get();
       assertTrue(a.getType().equals(tokenType));
       // System.out.println("Annotation type: " + a.getType().getName());
       // System.out.println("Covered text: " + a.getCoveredText());
@@ -197,7 +197,7 @@ public class FilteredIteratorTest extends TestCase {
     // do iteration
     int countFiltered = 0;
     while (it.isValid()) {
-      AnnotationFS a = (AnnotationFS) it.get();
+      AnnotationFS a = it.get();
       assertTrue(ts.subsumes(annotationType, a.getType()));
       // System.out.println("Annotation type: " + a.getType().getName());
       // System.out.println("Covered text: " + a.getCoveredText());
@@ -236,7 +236,7 @@ public class FilteredIteratorTest extends TestCase {
 
     // do iteration
     while (it.isValid()) {
-      AnnotationFS a = (AnnotationFS) it.get();
+      AnnotationFS a = it.get();
       assertTrue(a.getType().equals(tokenType));
       // System.out.println("Annotation type: " + a.getType().getName());
       // System.out.println("Covered text: " + a.getCoveredText());
@@ -331,7 +331,7 @@ public class FilteredIteratorTest extends TestCase {
       int theCount = 0;
       // Iterate over the tokens.
       for (tokenIt.moveToFirst(); tokenIt.isValid(); tokenIt.moveToNext()) {
-        AnnotationFS tok = (AnnotationFS) tokenIt.get();
+        AnnotationFS tok = tokenIt.get();
         if (tok.getStringValue(lemmaFeat).equals(lemma)) {
           ++theCount;
           // System.out.println("Found token: " + tok.getCoveredText());
@@ -402,7 +402,7 @@ public class FilteredIteratorTest extends TestCase {
       int theCount = 0;
       // Iterate over the tokens.
       for (tokenIt.moveToFirst(); tokenIt.isValid(); tokenIt.moveToNext()) {
-        AnnotationFS tok = (AnnotationFS) tokenIt.get();
+        AnnotationFS tok = tokenIt.get();
         if (tok.getStringValue(lemmaFeat).equals(lemma)) {
           ++theCount;
           // System.out.println("Found token: " + tok.getCoveredText());

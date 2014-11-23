@@ -319,7 +319,7 @@ public class SerializationNoMDTest extends TestCase {
     FSIterator<AnnotationFS> it = sentenceIndex.iterator();
     AnnotationFS sentFS;
     if (it.isValid()) {
-      sentFS = (AnnotationFS) it.get();
+      sentFS = it.get();
       assertTrue(sentFS.getCoveredText() != null);
     }
     // int counter = 0;
@@ -431,7 +431,7 @@ public class SerializationNoMDTest extends TestCase {
       for (int i = 0; i < numDocs && docCount < max; i++) {
         // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        cas.setDocumentText((String) docs.get(i));
+        cas.setDocumentText(docs.get(i));
 
         tokenize();
         numTok = cas.getAnnotationIndex(tokenType).size();

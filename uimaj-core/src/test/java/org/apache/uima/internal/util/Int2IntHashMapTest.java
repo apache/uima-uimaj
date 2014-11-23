@@ -26,10 +26,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.apache.uima.internal.util.Int2IntHashMap;
-import org.apache.uima.internal.util.IntKeyValueIterator;
-import org.apache.uima.internal.util.IntListIterator;
-
 public class Int2IntHashMapTest extends TestCase {
   
   public void testIterator() {

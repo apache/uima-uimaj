@@ -1066,7 +1066,7 @@ public class SerDesTest6 extends TestCase {
     /* lfs index: 2 */
     fs = newAkof(cas, m, typeKind, lfs);
     maybeSetByte(fs, m, Byte.MIN_VALUE);
-    maybeSetShort(fs, m, (short) Short.MIN_VALUE);
+    maybeSetShort(fs, m, Short.MIN_VALUE);
     maybeSetInt(fs, m, Integer.MIN_VALUE);
     maybeSetFloat(fs, m, Float.MIN_VALUE);
     maybeSetLong(fs, m, Long.MIN_VALUE);

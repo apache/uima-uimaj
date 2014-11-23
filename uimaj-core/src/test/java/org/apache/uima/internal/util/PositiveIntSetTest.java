@@ -22,10 +22,6 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.apache.uima.internal.util.IntBitSet;
-import org.apache.uima.internal.util.IntHashSet;
-import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
-
 import junit.framework.TestCase;
 
 public class PositiveIntSetTest extends TestCase {

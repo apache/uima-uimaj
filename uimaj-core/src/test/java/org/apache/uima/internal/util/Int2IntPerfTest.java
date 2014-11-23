@@ -19,14 +19,11 @@
 
 package org.apache.uima.internal.util;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
-
-import org.apache.uima.internal.util.Int2IntHashMap;
-import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 
 import junit.framework.TestCase;
+
+import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 
 public class Int2IntPerfTest extends TestCase {
   /**

@@ -22,10 +22,9 @@
 /* First created by JCasGen Thu Jun 21 11:28:13 MDT 2007 */
 package org.apache.uima.cas.test;
 
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 

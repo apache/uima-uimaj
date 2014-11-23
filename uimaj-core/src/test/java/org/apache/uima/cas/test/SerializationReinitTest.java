@@ -460,7 +460,7 @@ public class SerializationReinitTest extends TestCase {
       for (int i = 0; i < numDocs && docCount < max; i++) {
         // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        cas.setDocumentText((String) docs.get(i));
+        cas.setDocumentText(docs.get(i));
 
         tokenize();
         numTok = cas.getAnnotationIndex(tokenType).size();
@@ -550,7 +550,7 @@ public class SerializationReinitTest extends TestCase {
       for (int i = 0; i < numDocs && docCount < max; i++) {
         // System.out.println("Processing document: " + i);
         // Set document text in first CAS.
-        cas.setDocumentText((String) docs.get(i));
+        cas.setDocumentText(docs.get(i));
 
         tokenize();
         numTok = cas.getAnnotationIndex(tokenType).size();
@@ -846,8 +846,8 @@ public class SerializationReinitTest extends TestCase {
   
       //modify FS - string feature and FS feature.
       Iterator<AnnotationFS> personIter = cas2personIndex.iterator();     
-      AnnotationFS cas2person1 = (AnnotationFS) personIter.next();
-      AnnotationFS cas2person2 = (AnnotationFS) personIter.next();
+      AnnotationFS cas2person1 = personIter.next();
+      AnnotationFS cas2person2 = personIter.next();
       
       cas2person1.setFloatValue(confidenceFeat, (float) 99.99);
       cas2person1.setStringValue(mentionTypeFeat, "FULLNAME");
@@ -856,12 +856,12 @@ public class SerializationReinitTest extends TestCase {
       cas2person2.setStringValue(mentionTypeFeat, "FIRSTNAME");
       
       Iterator<AnnotationFS> orgIter = cas2orgIndex.iterator();
-      AnnotationFS cas2orgAnnot = (AnnotationFS) orgIter.next();
+      AnnotationFS cas2orgAnnot = orgIter.next();
       cas2orgAnnot.setStringValue(mentionTypeFeat, "ORGNAME");
       
       //modify FS feature
       Iterator<AnnotationFS> ownerIter = cas2ownerIndex.iterator();
-      AnnotationFS cas2ownerAnnot = (AnnotationFS) ownerIter.next();
+      AnnotationFS cas2ownerAnnot = ownerIter.next();
       FeatureStructure cas2relArgs = cas2ownerAnnot.getFeatureValue(argsFeat);
       cas2relArgs.setFeatureValue(rangeFeat, cas2orgAnnot);
      

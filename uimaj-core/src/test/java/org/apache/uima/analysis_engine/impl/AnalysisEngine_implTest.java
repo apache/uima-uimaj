@@ -1418,11 +1418,11 @@ public class AnalysisEngine_implTest extends TestCase {
       // -- check SourceDocumentInformation FSs
       Iterator<AnnotationFS> sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
       assertTrue(sdiIter.hasNext());
-      AnnotationFS outSdiFs = (AnnotationFS) sdiIter.next();
+      AnnotationFS outSdiFs = sdiIter.next();
       assertEquals("This is", outSdiFs.getCoveredText());
       assertEquals("cas1", outSdiFs.getStringValue(uriFeat));
       assertTrue(sdiIter.hasNext());
-      outSdiFs = (AnnotationFS) sdiIter.next();
+      outSdiFs = sdiIter.next();
       assertEquals(" one.", outSdiFs.getCoveredText());
       assertEquals("cas2", outSdiFs.getStringValue(uriFeat));
       assertFalse(sdiIter.hasNext());
@@ -1437,11 +1437,11 @@ public class AnalysisEngine_implTest extends TestCase {
       // -- check SourceDocumentInformation FSs
       sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
       assertTrue(sdiIter.hasNext());
-      outSdiFs = (AnnotationFS) sdiIter.next();
+      outSdiFs = sdiIter.next();
       assertEquals("This is", outSdiFs.getCoveredText());
       assertEquals("cas2", outSdiFs.getStringValue(uriFeat));
       assertTrue(sdiIter.hasNext());
-      outSdiFs = (AnnotationFS) sdiIter.next();
+      outSdiFs = sdiIter.next();
       assertEquals(" two.", outSdiFs.getCoveredText());
       assertEquals("cas3", outSdiFs.getStringValue(uriFeat));
       assertFalse(sdiIter.hasNext());

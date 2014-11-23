@@ -19,15 +19,13 @@
 
 package org.apache.uima.internal.util.rb_trees;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
+
+import junit.framework.TestCase;
 
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntPointerIterator;
-
-import junit.framework.TestCase;
 
 public class IntArrayRBTtest extends TestCase {
   public void testIterator() {

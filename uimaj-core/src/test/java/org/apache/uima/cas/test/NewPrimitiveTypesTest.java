@@ -392,7 +392,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     assertTrue(fs.getStringValue(stringFeature).equals("aaaaaaa"));
     assertTrue(fs.getFloatValue(floatFeature) == (float) 99.99);
     assertTrue(fs.getByteValue(byteFeature) == (byte) 'z');
-    assertTrue(fs.getBooleanValue(booleanFeature) == true);
+    assertTrue(fs.getBooleanValue(booleanFeature));
     assertTrue(fs.getShortValue(shortFeature) == Short.MIN_VALUE);
     assertTrue(fs.getLongValue(longFeature) == Long.MIN_VALUE);
     assertTrue(fs.getDoubleValue(doubleFeature) == Double.MAX_VALUE);

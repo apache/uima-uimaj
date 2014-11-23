@@ -19,6 +19,8 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.net.URL;
@@ -35,8 +37,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.w3c.dom.Document;
-
-import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_implTest.encoding;
 
 public class Import_implTest extends TestCase {
 

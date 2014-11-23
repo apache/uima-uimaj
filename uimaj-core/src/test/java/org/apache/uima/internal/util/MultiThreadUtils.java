@@ -18,8 +18,6 @@
  */
 package org.apache.uima.internal.util;
 
-import java.util.Random;
-
 import junit.framework.TestCase;
 
 /**

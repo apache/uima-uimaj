@@ -28,7 +28,6 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
@@ -247,14 +246,14 @@ public class CasCopierTest extends TestCase {
 
     // copy an Annotation
     Iterator<AnnotationFS> annotIter = srcCas.getAnnotationIndex().iterator();
-    FeatureStructure annot = (FeatureStructure) annotIter.next();
+    FeatureStructure annot = annotIter.next();
     FeatureStructure copy = copier.copyFs(annot);
     // verify copy
     CasComparer.assertEquals(annot, copy);
 
     // copy a Relation (which will have references)
     Iterator<FeatureStructure> relationIter = srcCas.getIndexRepository().getIndex("testRelationIndex").iterator();
-    FeatureStructure relFS = (FeatureStructure) relationIter.next();
+    FeatureStructure relFS = relationIter.next();
     FeatureStructure relCopy = copier.copyFs(relFS);
     // verify copy
     CasComparer.assertEquals(relFS, relCopy);
@@ -273,7 +272,7 @@ public class CasCopierTest extends TestCase {
     copier = new CasCopier(((CASImpl)srcCas).getBaseCAS(), ((CASImpl)destCas).getBaseCAS());
 
     annotIter = srcCas.getAnnotationIndex().iterator();
-    annot = (FeatureStructure) annotIter.next();
+    annot = annotIter.next();
     copy = copier.copyFs(annot);
     // verify copy
     CasComparer.assertEquals(annot, copy);

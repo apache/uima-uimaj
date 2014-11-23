@@ -92,7 +92,7 @@ public class TestLog4jLogger_impl extends TestCase {
 
       String key = log4jLogger.getLevel().toString();
 
-      Level defaultLogLevel = (Level) logLevels.get(key);
+      Level defaultLogLevel = logLevels.get(key);
 
       assertNotNull(defaultLogLevel);
       // check message logging for root logger based on default log level

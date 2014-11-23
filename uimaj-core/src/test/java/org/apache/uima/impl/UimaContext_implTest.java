@@ -870,11 +870,11 @@ public class UimaContext_implTest extends TestCase {
   
   public void testGetEmptyCas() throws Exception {
     try {
-      CAS emptyCas = (CAS)mContext5.getEmptyCas(CAS.class);
+      CAS emptyCas = mContext5.getEmptyCas(CAS.class);
       //should be allowed to release this CAS 
       emptyCas.release();
       //and then get it again
-      emptyCas = (CAS)mContext5.getEmptyCas(CAS.class);
+      emptyCas = mContext5.getEmptyCas(CAS.class);
       emptyCas.release();      
     } catch (Exception e) {
       JUnitExtension.handleException(e);

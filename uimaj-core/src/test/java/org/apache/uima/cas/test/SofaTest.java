@@ -315,9 +315,9 @@ public class SofaTest extends TestCase {
       engIt.moveToNext();
       gerIt.moveToNext();
       frIt.moveToNext();
-      engAnnot = (AnnotationFS) engIt.get();
-      gerAnnot = (AnnotationFS) gerIt.get();
-      frAnnot = (AnnotationFS) frIt.get();
+      engAnnot = engIt.get();
+      gerAnnot = gerIt.get();
+      frAnnot = frIt.get();
       assertTrue(annotationType.getName().equals(engAnnot.getType().getName()));
       assertTrue(("this").equals(engAnnot.getCoveredText()));
       assertTrue(annotationType.getName().equals(frAnnot.getType().getName()));
