@@ -51,7 +51,7 @@ What's New in 2.7.0
     - moveTo(a_Feature_Structure) or creating a new iterator to start at a feature sometimes went to the 
       wrong place. Jira issues: UIMA-4094 and UIMA-4105
     - deserialization of deltaCAS when modifying existing Feature Structures not properly reindexing them. Jira issue: UIMA-4100
-    - default bag indices created even when there are only Set indices. Jira issue: UIMA-4111
+    - default bag indices will now be created if there are only Set indices. Jira issue: UIMA-4111
     
   The complete list of fixes is here: issuesFixed/jira-report.hmtl 
   
