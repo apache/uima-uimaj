@@ -103,7 +103,7 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
 </p>
 
 <p>There is a new kind of check that may be optionally enabled in UIMA (by defining the JVM argument
-  "-Duima.check_invalid_fs_updates") that checks all modifications to features to see if that feature is
+  "-Duima.uima.check_fs_update_corrupts_index") that checks all modifications to features to see if that feature is
   being used as a key in a Sort or Set index, and the Feature Structure being modified is currently in
   one or more indices (Jira issue UIMA-4059). Doing such a modification can cause the index to become corrupt.  
   (The correct way   to do an update in this case is to 
