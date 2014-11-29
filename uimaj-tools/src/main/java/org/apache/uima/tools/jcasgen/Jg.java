@@ -323,7 +323,8 @@ public class Jg {
 
     gui = new GUI(this);
     gui.addWindowListener(new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
+      @Override
+    public void windowClosing(WindowEvent e) {
         Prefs.set(gui);
         waiter.finished();
       }
@@ -741,6 +742,16 @@ public class Jg {
         resolvedProjectPath = projectDirPath;
     }
     
+    // UIMA-4131 - Make sure that paths end in a slash so that "/my/project1" is not considered
+    // to be in the scope of "/my/project"
+    if (!tdPath.endsWith("/")) {
+        tdPath += "/";
+    }
+
+    if (!resolvedProjectPath.endsWith("/")) {
+        resolvedProjectPath += "/";
+    }
+
     boolean r = !tdPath.startsWith(resolvedProjectPath);
     if (r) {
       return true;
