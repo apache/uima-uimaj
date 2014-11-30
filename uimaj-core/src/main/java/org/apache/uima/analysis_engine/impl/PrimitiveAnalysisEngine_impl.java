@@ -278,7 +278,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public void destroy() {
     if (mAnalysisComponent != null) {
       mAnalysisComponent.destroy();
-      getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "initialize", LOG_RESOURCE_BUNDLE,
+      getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "destroy", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     }
     super.destroy();
