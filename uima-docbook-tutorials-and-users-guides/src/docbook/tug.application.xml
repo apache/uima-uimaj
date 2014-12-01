@@ -1035,8 +1035,9 @@ SimpleTokenAndSentenceAnnotator.xml</literallayout></para>
           
           <listitem>
             <para> Set the <quote>Type System Descriptor</quote> to the location of the descriptor that describes
-              your type system. For this example, this will be <literal>%UIMA_HOME%/examples/
-              descriptors/tutorial/ex4/TutorialTypeSystem.xml</literal> </para>
+              your type system. For this example, this will be 
+              <literal>%UIMA_HOME%/examples/descriptors/tutorial/ex4/TutorialTypeSystem.xml</literal>
+            </para>
           </listitem>
         </itemizedlist></para>
       
