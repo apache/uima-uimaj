@@ -51,9 +51,9 @@ public class XCASDeserializer {
 
   private static class FSInfo {
 
-    private int addr;
+    final private int addr;
 
-    private IntVector indexRep;
+    final private IntVector indexRep;
 
     private FSInfo(int addr, IntVector indexRep) {
       super();
@@ -118,13 +118,13 @@ public class XCASDeserializer {
     private Locator locator;
 
     // The CAS we're filling.
-    private CASImpl cas;
+    final private CASImpl cas;
 
     // Store FSs with ID in a search tree (for later reference resolution).
-    private RedBlackTree<FSInfo> fsTree;
+    final private RedBlackTree<FSInfo> fsTree;
 
     // Store IDless FSs in a vector;
-    private List<FSInfo> idLess;
+    final private List<FSInfo> idLess;
 
     // What we expect next.
     private int state;
@@ -149,23 +149,23 @@ public class XCASDeserializer {
     private FSData currentOotsFs;
 
     // SofaFS type
-    private int sofaTypeCode;
+    final private int sofaTypeCode;
 
     // AnnotationBase type
-    private Type annotBaseType;
+    final private Type annotBaseType;
 
     // Store IndexRepositories in a vector;
-    private List<FSIndexRepository> indexRepositories;
+    final private List<FSIndexRepository> indexRepositories;
 
     // and Views too
-    private List<CAS> views;
+    final private List<CAS> views;
 
     // for processing v1.x format XCAS
     // map from sofa int values to id references
-    private IntVector sofaRefMap;
+    final  private IntVector sofaRefMap;
 
     // map incoming _indexed values
-    private IntVector indexMap;
+    final private IntVector indexMap;
 
     // working with initial view
     private int nextIndex;
@@ -1073,9 +1073,9 @@ public class XCASDeserializer {
     }
   }
 
-  private TypeSystemImpl ts;
+  final private TypeSystemImpl ts;
 
-  private UimaContext uimaContext;
+  final private UimaContext uimaContext;
 
   // private HashMap featureMap; -APL
   // ///private int[] featureType;
