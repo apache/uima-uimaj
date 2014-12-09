@@ -38,6 +38,12 @@ import org.xml.sax.SAXParseException;
 /**
  * Utilities for dealing with CAS List types.
  * 
+ * The many places operations-to-set-values are done to update feature values, 
+ * which use the notIndexed form, because
+ * list elements cannot be part of an index key.
+ *
+ * Creation methods don't journal, these are guaranteed to be above the line.
+ * 
  */
 public class ListUtils {
   private static final List<String> EMPTY_LIST_STRING = Collections.emptyList();
@@ -327,14 +333,15 @@ public class ListUtils {
     return array;
   }
 
+  
   public int createIntList(List<String> stringValues) {
     int first = cas.ll_createFS(eIntListType);
     ListIterator<String> iter = stringValues.listIterator(stringValues.size());
     while (iter.hasPrevious()) {
       int value = Integer.parseInt(iter.previous());
       int node = cas.ll_createFS(neIntListType);
-      cas.setFeatureValue(node, intHeadFeat, value);
-      cas.setFeatureValue(node, intTailFeat, first);
+      cas.setFeatureValueNotJournaled(node, intHeadFeat, value);
+      cas.setFeatureValueNotJournaled(node, intTailFeat, first);
       first = node;
     }
     return first;
@@ -346,8 +353,8 @@ public class ListUtils {
     while (iter.hasPrevious()) {
       float value = Float.parseFloat(iter.previous());
       int node = cas.ll_createFS(neFloatListType);
-      cas.setFeatureValue(node, floatHeadFeat, CASImpl.float2int(value));
-      cas.setFeatureValue(node, floatTailFeat, first);
+      cas.setFeatureValueNotJournaled(node, floatHeadFeat, CASImpl.float2int(value));
+      cas.setFeatureValueNotJournaled(node, floatTailFeat, first);
       first = node;
     }
     return first;
@@ -359,8 +366,8 @@ public class ListUtils {
     while (iter.hasPrevious()) {
       String value = iter.previous();
       int node = cas.ll_createFS(neStringListType);
-      cas.setFeatureValue(node, stringHeadFeat, cas.addString(value));
-      cas.setFeatureValue(node, stringTailFeat, first);
+      cas.setFeatureValueNotJournaled(node, stringHeadFeat, cas.addString(value));
+      cas.setFeatureValueNotJournaled(node, stringTailFeat, first);
       first = node;
     }
     return first;
@@ -373,8 +380,8 @@ public class ListUtils {
       int value = Integer.parseInt(iter.previous());
       int node = cas.ll_createFS(neFsListType);
       fsAddresses.add(node);
-      cas.setFeatureValue(node, fsHeadFeat, value);
-      cas.setFeatureValue(node, fsTailFeat, first);
+      cas.setFeatureValueNotJournaled(node, fsHeadFeat, value);
+      cas.setFeatureValueNotJournaled(node, fsTailFeat, first);
       first = node;
     }
     return first;
@@ -399,7 +406,7 @@ public class ListUtils {
   	  	           break;
   	  	}
   	  	int value = Integer.parseInt(stringValues.get(i++));
-  	    cas.setFeatureValue(curNode,floatHeadFeat, value);
+  	    cas.setFeatureValueNoIndexCorruptionCheck(curNode, intHeadFeat, value);
   	    prevNode = curNode;
   	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
   	  }
@@ -410,9 +417,9 @@ public class ListUtils {
   	  	while (i < stringValues.size()) {
   	  	  int newNode = cas.ll_createFS(neIntListType);
   	  	  int value = Integer.parseInt(stringValues.get(i++));
-  	      cas.setFeatureValue(newNode,intHeadFeat, value);
-  	      cas.setFeatureValue(newNode, intTailFeat, emptyListFs);
-  	      cas.setFeatureValue(prevNode, intTailFeat, newNode);
+  	      cas.setFeatureValueNoIndexCorruptionCheck(newNode,intHeadFeat, value);
+  	      cas.setFeatureValueNoIndexCorruptionCheck(newNode, intTailFeat, emptyListFs);
+  	      cas.setFeatureValueNoIndexCorruptionCheck(prevNode, intTailFeat, newNode);
   	  	  prevNode = newNode;
   	    }
   	  }
@@ -422,8 +429,8 @@ public class ListUtils {
   		  	           foundCycle = true;
   		  	           break;
   		  }
-  		  float value = Integer.parseInt(stringValues.get(i++));
-  		  cas.setFeatureValue(curNode,intHeadFeat, value);
+  		  int value = Integer.parseInt(stringValues.get(i++));
+  		  cas.setFeatureValueNoIndexCorruptionCheck(curNode, intHeadFeat, value);
   		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
   		}	
   		int finalNode = curNode;
@@ -437,7 +444,7 @@ public class ListUtils {
     	  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
         }
         //set the tail feature to eStringListType fs
-        cas.setFeatureValue(finalNode, intTailFeat, curNode);   
+        cas.setFeatureValueNoIndexCorruptionCheck(finalNode, intTailFeat, curNode);   
     } else {
       while (cas.getHeapValue(curNode) == neIntListType) {
         if (!visited.add(curNode)) {
@@ -445,7 +452,7 @@ public class ListUtils {
            break;
         }
         int value = Integer.parseInt(stringValues.get(i++));
-        cas.setFeatureValue(curNode,intHeadFeat, value );
+        cas.setFeatureValueNoIndexCorruptionCheck(curNode,intHeadFeat, value );
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
       }
     }
@@ -474,7 +481,7 @@ public class ListUtils {
 	  	           break;
 	  	}
 	  	float value = Float.parseFloat(stringValues.get(i++));
-	    cas.setFeatureValue(curNode,floatHeadFeat, value);
+	    cas.setFeatureValueNoIndexCorruptionCheck(curNode, floatHeadFeat, CASImpl.float2int(value));
 	    prevNode = curNode;
 	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
 	  }
@@ -485,9 +492,9 @@ public class ListUtils {
 	  	while (i < stringValues.size()) {
 	  	  int newNode = cas.ll_createFS(neFloatListType);
 	  	  float value = Float.parseFloat(stringValues.get(i++));
-	      cas.setFeatureValue(newNode,floatHeadFeat, value);
-	      cas.setFeatureValue(newNode, floatTailFeat, emptyListFs);
-	      cas.setFeatureValue(prevNode, floatTailFeat, newNode);
+	      cas.setFeatureValueNoIndexCorruptionCheck(newNode, floatHeadFeat, CASImpl.float2int(value));
+	      cas.setFeatureValueNoIndexCorruptionCheck(newNode, floatTailFeat, emptyListFs);
+	      cas.setFeatureValueNoIndexCorruptionCheck(prevNode, floatTailFeat, newNode);
 	  	  prevNode = newNode;
 	    }
 	  }
@@ -498,7 +505,7 @@ public class ListUtils {
 		  	           break;
 		  }
 		  float value = Float.parseFloat(stringValues.get(i++));
-		  cas.setFeatureValue(curNode,floatHeadFeat, value);
+		  cas.setFeatureValueNoIndexCorruptionCheck(curNode,floatHeadFeat, CASImpl.float2int(value));
 		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
 		}	
 		int finalNode = curNode;
@@ -512,7 +519,7 @@ public class ListUtils {
   	      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
         }
         //set the tail feature to eStringListType fs
-      	cas.setFeatureValue(finalNode, floatTailFeat, curNode);
+      	cas.setFeatureValueNoIndexCorruptionCheck(finalNode, floatTailFeat, curNode);
     } else {
       while (cas.getHeapValue(curNode) == neFloatListType) {
         if (!visited.add(curNode)) {
@@ -520,7 +527,7 @@ public class ListUtils {
            break;
         }
         float value = Float.parseFloat(stringValues.get(i++));
-        cas.setFeatureValue(curNode,floatHeadFeat,  CASImpl.float2int(value));
+        cas.setFeatureValueNoIndexCorruptionCheck(curNode,floatHeadFeat,  CASImpl.float2int(value));
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
       }
     }
@@ -550,7 +557,7 @@ public class ListUtils {
   	           break;
   	    }
   	    int value = Integer.parseInt(stringValues.get(i++));
-        cas.setFeatureValue(curNode,fsHeadFeat, value);
+        cas.setFeatureValueNoIndexCorruptionCheck(curNode, fsHeadFeat, value);
         fsAddresses.add(curNode);
         prevNode = curNode;
   	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
@@ -562,10 +569,10 @@ public class ListUtils {
   	    while (i < stringValues.size()) {
   	      int newNode = cas.ll_createFS(neFsListType);
   	      int value = Integer.parseInt(stringValues.get(i++));
-          cas.setFeatureValue(newNode,fsHeadFeat, value);
+          cas.setFeatureValueNoIndexCorruptionCheck(newNode, fsHeadFeat, value);
           fsAddresses.add(newNode);
-          cas.setFeatureValue(newNode, fsTailFeat, emptyListFs);
-          cas.setFeatureValue(prevNode, fsTailFeat, newNode);
+          cas.setFeatureValueNoIndexCorruptionCheck(newNode, fsTailFeat, emptyListFs);
+          cas.setFeatureValueNoIndexCorruptionCheck(prevNode, fsTailFeat, newNode);
   	      prevNode = newNode;
   	    }
   	  }
@@ -577,7 +584,7 @@ public class ListUtils {
    		  }
    	      int value = Integer.parseInt(stringValues.get(i++));
 	      fsAddresses.add(curNode);
-          cas.setFeatureValue(curNode,fsHeadFeat, value);
+          cas.setFeatureValueNoIndexCorruptionCheck(curNode, fsHeadFeat, value);
    		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
         } 
         int finalNode = curNode;
@@ -591,7 +598,7 @@ public class ListUtils {
   	      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
         }
         //set the tail feature to eStringListType fs
-      	cas.setFeatureValue(finalNode, fsTailFeat, curNode);
+      	cas.setFeatureValueNoIndexCorruptionCheck(finalNode, fsTailFeat, curNode);
     } else {
       while (cas.getHeapValue(curNode) == neFsListType) {
         if (!visited.add(curNode)) {
@@ -599,7 +606,7 @@ public class ListUtils {
            break;
         }
         int value = Integer.parseInt(stringValues.get(i++));
-        cas.setFeatureValue(curNode,fsHeadFeat, value);
+        cas.setFeatureValueNoIndexCorruptionCheck(curNode, fsHeadFeat, value);
         fsAddresses.add(curNode);
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
       }
@@ -630,7 +637,7 @@ public class ListUtils {
 	              + cas.getFeatureOffset(stringHeadFeat)));
 	    String newValue = stringValues.get(i++);
         if (!curValue.equals(newValue)) {		  
-          cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
+          cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
         }
         prevNode = curNode;
 	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
@@ -641,9 +648,9 @@ public class ListUtils {
 	   while (i < stringValues.size()) {
 	     int newNode = cas.ll_createFS(neStringListType);
 	     String value = stringValues.get(i++);
-	     cas.setFeatureValue(newNode, stringHeadFeat, cas.addString(value));
-	     cas.setFeatureValue(newNode, stringTailFeat, emptyListFs);
-	     cas.setFeatureValue(prevNode,stringTailFeat, newNode);
+	     cas.setFeatureValueNoIndexCorruptionCheck(newNode, stringHeadFeat, cas.addString(value));
+	     cas.setFeatureValueNoIndexCorruptionCheck(newNode, stringTailFeat, emptyListFs);
+	     cas.setFeatureValueNoIndexCorruptionCheck(prevNode,stringTailFeat, newNode);
 	     prevNode = newNode;
 	   }
 	 }
@@ -658,7 +665,7 @@ public class ListUtils {
  		              + cas.getFeatureOffset(stringHeadFeat)));
  		String newValue = stringValues.get(i++);
         if (!curValue.equals(newValue)) {		  
-           cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
+           cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
         }
  		curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
       } 
@@ -671,7 +678,7 @@ public class ListUtils {
 	    }
 	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
       }
-      cas.setFeatureValue(finalNode, stringTailFeat, curNode);
+      cas.setFeatureValueNoIndexCorruptionCheck(finalNode, stringTailFeat, curNode);
     } else {
       int i =0;
       while (cas.getHeapValue(curNode) == neStringListType) {
@@ -683,7 +690,7 @@ public class ListUtils {
 	              + cas.getFeatureOffset(stringHeadFeat)));
         String newValue = stringValues.get(i++);
         if (!curValue.equals(newValue)) {		  
-          cas.setFeatureValue(curNode, stringHeadFeat, cas.addString(newValue));
+          cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
         }
         curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
       }
