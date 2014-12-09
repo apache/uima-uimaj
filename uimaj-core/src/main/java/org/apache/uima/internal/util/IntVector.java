@@ -427,7 +427,7 @@ public class IntVector implements Serializable {
   }
 
   /**
-   * Returns the index of the first or last occurrence of the element specified in this vector.
+   * Returns the index of some occurrence of the element specified in this vector.
    * optimization: 
    * this is used only in bag index implementations or cases where which element among potentially many is picked,
    *   such as sets (at most one element) or "contains" (don't care which one is found)
