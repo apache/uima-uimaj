@@ -34,6 +34,11 @@ import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 /**
  * Feature structure implementation.
  * 
+ * This is the common super class of all Feature Structures
+ * 
+ *   including the JCAS (derived from TOP)
+ *   and non JCas FSs
+ * 
  * 
  * @version $Revision: 1.6 $
  */
@@ -68,7 +73,8 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 					new String[] { feat.getName(), feat.getRange().getName(), fs.getType().getName() });
 			throw e;
 		}
-		this.getCASImpl().setFeatureValue(this.getAddress(), featCode, valueAddr);
+		// keys are not fsRefs
+		this.getCASImpl().setFeatureValueNoIndexCorruptionCheck(this.getAddress(), featCode, valueAddr);
 	}
 
 	private final void setNullValue(int featCode, int rangeType) {
@@ -78,7 +84,8 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 					new String[] { this.getCASImpl().getTypeSystemImpl().ll_getFeatureForCode(featCode).getName() });
 			throw e;
 		}
-		this.getCASImpl().setFeatureValue(this.getAddress(), featCode, CASImpl.NULL);
+		// a null fsref is never an index key
+		this.getCASImpl().setFeatureValueNoIndexCorruptionCheck(this.getAddress(), featCode, CASImpl.NULL);
 	}
 
 	public void setIntValue(Feature feat, int val) {
@@ -143,7 +150,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		}
 		final int featCode = ((FeatureImpl) feat).getCode();
 
-		this.getCASImpl().setFeatureValue(this.getAddress(), featCode, val);
+		this.getCASImpl().setFeatureValueNoIndexCorruptionCheck(this.getAddress(), featCode, val);
 	}
 
 	public void setBooleanValue(Feature feat, boolean b) throws CASRuntimeException {
@@ -158,7 +165,6 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 			throwIllegalRangeExc(feat, ts.getType(CAS.TYPE_NAME_BOOLEAN));
 		}
 		final int featCode = ((FeatureImpl) feat).getCode();
-
 		this.getCASImpl().setFeatureValue(this.getAddress(), featCode, b);
 
 	}
