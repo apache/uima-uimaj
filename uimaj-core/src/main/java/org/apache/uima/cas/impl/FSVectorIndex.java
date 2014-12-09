@@ -301,4 +301,9 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
     return false;
   }
 
+  @Override
+  boolean insert(int fs, int count) {
+    throw new UnsupportedOperationException();
+  }
+
 }
