@@ -108,7 +108,9 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   void moveToLast();
 
   /**
-   * Move the iterator to the first features structure that is equal to <code>fs</code>. If no
+   * Move the iterator to the first features structure that is equal to <code>fs</code>. 
+   * First means the earliest one occurring in the index, in case multiple FSs that are "equal" to fs
+   * are in the index.  If no
    * such feature structure exists in the underlying collection, set the iterator to the "insertion
    * point" for <code>fs</code>, i.e., to a point where the current feature structure is greater
    * than <code>fs</code>, and the previous one is less than <code>fs</code>.
