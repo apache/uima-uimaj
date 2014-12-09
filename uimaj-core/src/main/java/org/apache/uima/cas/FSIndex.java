@@ -29,8 +29,15 @@ package org.apache.uima.cas;
  * 
  * <p>
  * We currently support three different kinds of indexes: sorted, set and bag indexes. The default
- * index is a sorted index. In a sorted index, all FSs that are committed are entered, even if they
- * are duplicates of already existing FSs. The index is sorted in the sense that iterators will
+ * index is a sorted index. In a sorted index, FSs that are committed (added to the index) 
+ * are added, unless they 
+ * are duplicates of already existing FSs in the index.  This behavior is new as of version 2.7.0; the old
+ * behavior can be restored by specifying the JVM property "uima.allow_duplicate_add_to_indices".
+ * Even without this flag, multiple different instances of FSs which compare equal will still 
+ * be added in the index.
+ * 
+ * <p>  
+ * The index is sorted in the sense that iterators will
  * output FSs in sorted order according to the comparator for that index. The order of FSs that are
  * equal wrt the comparator is arbitrary but fixed. That is, if you iterate over the same index
  * several times, you will see the same relative order of FSs every time. We also guarantee that
@@ -44,13 +51,12 @@ package org.apache.uima.cas;
  * is not guaranteed to be sorted.
  * 
  * <p>
- * A bag index finally simply stores everything, without any guaranteed order. Our current
- * implementation works such that for any two FSs of the same type, they will be returned in the
- * order in which they are committed (FIFO style). Note that any operation like find() or
+ * A bag index finally simply stores everything, without any guaranteed order. 
+ * Note that any operation like find() or
  * FSIterator.moveTo() will not produce useful results on bag indexes, since bag indexes do not
- * honor comparators. Only use a bag index if you want very fast adding and will have to iterate
+ * honor comparators (except that find is useful for indicating if the FS is in the index). 
+ * Only use a bag index if you want very fast adding and will have to iterate
  * over the whole index anyway.
- * 
  * 
  */
 public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
@@ -93,22 +99,25 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
   Type getType();
 
   /**
-   * Check if the index contains an element equal to the given feature structure according to the
-   * ordering of the index. Note that this is in general not the same as feature structure identity.
+   * Check if the index contains an element equal to the given feature structure 
+   * according to the comparators defined for this index.  For bag indices (which
+   * have no comparators), the equality test means the identical feature structure.
+   * Note that this is in general not the same as feature structure identity.
    * 
-   * @param fs
-   *          The FS we're looking for.
+   * @param fs A Feature Structure used a template to match for equality with the
+   *           FSs in the index.
    * @return <code>true</code> if the index contains such an element.
    */
   boolean contains(FeatureStructure fs);
 
   /**
-   * Find an entry in the index equal to the given feature structure according to the ordering of
-   * the index. Note that this is in general not the same as feature structure identity.
+   * Find an entry in the index "equal to" the given feature structure according to the comparators specified
+   * for this index.  Note that this is in general not the same as feature structure identity.  For BAG
+   * indices, it is identity, for others it means the found feature structure compares 
+   * equal with the parameter in terms of the defined comparators for the index.
    * 
-   * @param fs
-   *          The FS we're looking for.
-   * @return A FS equal to <code>fs</code>, or <code>null</code> if no such FS exists.
+   * @param fs A Feature Structure used a template to match with the Feature Structures in the index.
+   * @return A FS equal to the template argument, or <code>null</code> if no such FS exists.
    * @see FSIterator#moveTo(FeatureStructure)
    */
   FeatureStructure find(FeatureStructure fs);
@@ -134,7 +143,8 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
   /**
    * Return an iterator over the index. The position of the iterator will be set such that the
    * feature structure returned by a call to the iterator's {@link FSIterator#get() get()} method is
-   * greater than or equal to <code>fs</code>, and any previous FS is less than <code>FS</code>.
+   * greater than or equal to <code>fs</code>, and any previous FS is less than <code>FS</code>
+   * (the iterator is positioned at the earliest of equal values).
    * If no such position exists, the iterator will be invalid.
    * 
    * @param fs
@@ -149,5 +159,19 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * @return One of <code>SORTED_INDEX</code>, <code>BAG_INDEX</code> or <code>SET_INDEX</code>.
    */
   int getIndexingStrategy();
+
+  /**
+   * Creates a shared copy of this FSIndex configured to produce snapshot iterators
+   * that don't throw ConcurrentModificationExceptions.
+   * 
+   * @return a light-weight copy of this FSIndex, configured such that
+   * any iterator created using it will be a snapshot iterator - one where 
+   * a snapshot is made of the state of the index at the time the iterator
+   * is created, and where subsequent modifications to the underlying index
+   * are allowed, but don't affect the iterator (which iterates over the
+   * read-only snapshot).  Iterators produced with this won't throw
+   * ConcurrentModificationExceptions.
+   */
+  FSIndex<T> withSnapshotIterators();
 
 }
