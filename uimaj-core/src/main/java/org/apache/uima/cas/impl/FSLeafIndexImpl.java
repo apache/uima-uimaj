@@ -131,6 +131,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   }
 
   abstract boolean insert(int fs);
+  
+  abstract boolean insert(int fs, int count);  // for bulk addback
 
   /**
    * @param fs -
@@ -481,5 +483,15 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   public LowLevelIterator ll_rootIterator() {
       return this.ll_iterator();
   }
+
+  @Override
+  public FSIndex withSnapshotIterators() {
+    // should never be called
+    // this is an artifact of the fact that FSLeafIndexImpl has a super type of FSIndex
+    //   which seems incorrect?
+    throw new UnsupportedOperationException();
+  }
+  
+  
 
 }
