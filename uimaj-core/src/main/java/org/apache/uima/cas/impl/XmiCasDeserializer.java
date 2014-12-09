@@ -47,13 +47,11 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.FSIndexRepositoryImpl.IndexRepoTodos;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.PositiveIntSet;
-import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -74,7 +72,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 public class XmiCasDeserializer {
   
-
+  private final static boolean IS_NEW_FS = true;
+  private final static boolean IS_EXISTING_FS = false;
 
   private class XmiCasDeserializerHandler extends DefaultHandler {
     // ///////////////////////////////////////////////////////////////////////
@@ -225,13 +224,14 @@ public class XmiCasDeserializer {
     boolean disallowedViewMemberEncountered;
 
     /**
-     * a list of ViewAddrs (view + FSs) to be added to the indices
+     * a list by view of FSs to be added to the indices
      */
-    final private IndexRepoTodos toBeAdded = new IndexRepoTodos();
+    final private DeferredIndexUpdates toBeAdded = new DeferredIndexUpdates();
     /**
-     * a list of ints of FSs to be removed from the indices
+     * a list by view of FSs to be removed from the indices
      */
-    final private IndexRepoTodos toBeRemoved = new IndexRepoTodos();
+    final private DeferredIndexUpdates toBeRemoved = new DeferredIndexUpdates();
+
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
      * @param aCAS CAS to deserialize into
@@ -455,7 +455,14 @@ public class XmiCasDeserializer {
       }
     }
 
-    // Create a new FS.
+    /**
+     * Read one FS, create a new FS or update an existing one
+     * @param nameSpaceURI -
+     * @param localName -
+     * @param qualifiedName -
+     * @param attrs -
+     * @throws SAXException -
+     */
     private void readFS(String nameSpaceURI, String localName, String qualifiedName, 
             Attributes attrs) throws SAXException {
       String typeName = xmiElementName2uimaTypeName(nameSpaceURI, localName);
@@ -514,7 +521,7 @@ public class XmiCasDeserializer {
   
       	if (isNewFS(xmiId)) {  //new FS so create it.  
       		final int addr = casBeingFilled.ll_createFS(currentType.getCode());
-          	readFS(addr, attrs);
+          readFS(addr, attrs, IS_NEW_FS);
       	} else {  //preexisting
       		if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
       		  CASRuntimeException e = new CASRuntimeException(
@@ -528,11 +535,19 @@ public class XmiCasDeserializer {
       		  final int addr = getFsAddrForXmiId(xmiId);
       		  // remove from indices, and remember if was there, per view
       		  //   (might be indexed in some views, not in others)
-      		  casBeingFilled.removeFromCorruptableIndexAnyView(addr, toBeAdded);
-         	  readFS(addr, attrs);
-         	  // if was removed, the remove will be added to the "toBeAdded list
-         	  // to be added back after the finalize fixups
-         	  
+//      		  FSsTobeReindexed modifySafely = casBeingFilled.modifySafely()
+//       		  casBeingFilled.removeFromCorruptableIndexAnyView(addr, toBeAddedBack);
+            
+      		  AutoCloseable addbacks = casBeingFilled.protectIndices();
+      		  try {      		  
+         	    readFS(addr, attrs, IS_EXISTING_FS);
+      		  } finally {
+        		  try {
+                addbacks.close();
+              } catch (Exception e) {
+                assert(false); // never happen
+              }
+      		  }
       		} // otherwise ignore
       	}
       }
@@ -714,22 +729,22 @@ public class XmiCasDeserializer {
 //      }
     }
 
-    private void readFS(final int addr, Attributes attrs) throws SAXException {
+    private void readFS(final int fsAddr, Attributes attrs, boolean isNewFs) throws SAXException {
       // Hang on to address for handle features encoded as child elements
-      this.currentAddr = addr;
+      this.currentAddr = fsAddr;
       int id = -1;
       String attrName, attrValue;
-      final int typeCode = casBeingFilled.getHeapValue(addr);
+      final int typeCode = casBeingFilled.getHeapValue(fsAddr);
       final Type type = casBeingFilled.getTypeSystemImpl().ll_getTypeForCode(typeCode);
       int thisSofaNum = 0;
       
-      //is it a new FS
-      try {
-        id = Integer.parseInt(attrs.getValue(ID_ATTR_NAME));
-      } catch (NumberFormatException e) {
-        throw createException(XCASParsingException.ILLEGAL_ID, attrs.getValue(ID_ATTR_NAME));
-      }
-      boolean newFS = this.isNewFS(id);
+//      //is it a new FS
+//      try {
+//        id = Integer.parseInt(attrs.getValue(ID_ATTR_NAME));
+//      } catch (NumberFormatException e) {
+//        throw createException(XCASParsingException.ILLEGAL_ID, attrs.getValue(ID_ATTR_NAME));
+//      }
+      boolean newFS = isNewFs;
       
       if (sofaTypeCode == typeCode) {
         String sofaID = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAID);
@@ -737,7 +752,7 @@ public class XmiCasDeserializer {
           // initial view Sofa always has sofaNum = 1
           thisSofaNum = 1;
         } else {
-          if (newFS) {	
+          if (isNewFs) {	
             thisSofaNum = this.nextSofaNum++;
           } else {
         	thisSofaNum = Integer.parseInt(attrs.getValue(CAS.FEATURE_BASE_NAME_SOFANUM));
@@ -746,13 +761,15 @@ public class XmiCasDeserializer {
       }
       
       this.featsSeen = null;
+      
+      // loop over all features for this FS
       for (int i = 0; i < attrs.getLength(); i++) {
         attrName = attrs.getQName(i);
         attrValue = attrs.getValue(i);
         if (attrName.equals(ID_ATTR_NAME)) {
           try {
             id = Integer.parseInt(attrValue);
-            newFS = this.isNewFS(id);
+//            newFS = this.isNewFS(id);  // we already specifically got this attribute
             if (sofaTypeCode != typeCode && !newFS) {
               this.featsSeen = new IntVector(attrs.getLength());
             } else {
@@ -770,18 +787,18 @@ public class XmiCasDeserializer {
           } else if (sofaTypeCode == typeCode && attrName.equals(CAS.FEATURE_BASE_NAME_SOFANUM)) {
             attrValue = Integer.toString(thisSofaNum);
           }
-          int featCode = handleFeature(type, addr, attrName, attrValue, newFS);
+          int featCode = handleFeature(type, fsAddr, attrName, attrValue, isNewFs);
           //if processing delta cas preexisting FS, keep track of features that have
           //been deserialized.
           if (this.featsSeen != null && !newFS && featCode != -1) {
             this.featsSeen.add(featCode); 
           }
         }
-      }
+      }  // end of all features loop
       
       if (sofaTypeCode == typeCode && newFS) {
         // If a Sofa, create CAS view to get new indexRepository
-        SofaFS sofa = (SofaFS) casBeingFilled.createFS(addr);
+        SofaFS sofa = (SofaFS) casBeingFilled.createFS(fsAddr);
         // also add to indexes so we can retrieve the Sofa later
         casBeingFilled.getBaseIndexRepository().addFS(sofa);
         CAS view = casBeingFilled.getView(sofa);
@@ -794,8 +811,8 @@ public class XmiCasDeserializer {
         ((CASImpl) view).registerView(sofa);
         views.add(view);
       }
-      deserializedFsAddrs.add(addr);
-      addFsAddrXmiIdMapping(addr, id);
+      deserializedFsAddrs.add(fsAddr);
+      addFsAddrXmiIdMapping(fsAddr, id);
     }
 
     // The definition of a null value. Any other value must be in the expected
@@ -804,14 +821,24 @@ public class XmiCasDeserializer {
       return ((val == null) || (val.length() == 0));
     }
 
-    private int handleFeature(final Type type, int addr, String featName, String featVal, boolean newFS) throws SAXException {
+    /**
+     * Deserialize one feature 
+     * @param type -
+     * @param fsAddr the address of the FS
+     * @param featName the feature name
+     * @param featVal the value of the feature
+     * @param isNewFS  true if this is a new FS
+     * @return feature code or -1 if no feature in this type system
+     * @throws SAXException if Type doesn't have the feature, and we're not in lenient mode
+     */
+    private int handleFeature(final Type type, int fsAddr, String featName, String featVal, final boolean isNewFS) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!this.lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         }
         else {
-          sharedData.addOutOfTypeSystemAttribute(addr, featName, featVal);
+          sharedData.addOutOfTypeSystemAttribute(fsAddr, featName, featVal);
         }
         return -1;
       }
@@ -820,19 +847,19 @@ public class XmiCasDeserializer {
       //only update Sofa data features and mime type feature. skip other features.
       //skip Sofa data features if Sofa data is already set.
       //these features may not be modified.
-      if (sofaTypeCode == casBeingFilled.getHeapValue(addr) && !isNewFS(addr) ) {
-    	if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) || 
-    		  featName.equals(CAS.FEATURE_BASE_NAME_SOFANUM))   { 
-          return feat.getCode();
-    	} else if (featName.equals(CAS.FEATURE_BASE_NAME_SOFASTRING)  || 
-    			     featName.equals(CAS.FEATURE_BASE_NAME_SOFAURI) || 
-    			     featName.equals(CAS.FEATURE_BASE_NAME_SOFAARRAY)) {
-          int currVal = casBeingFilled.getFeatureValue(addr, feat.getCode());
-    	  if (currVal != 0) 
-    	    return feat.getCode();
-    	}
+      if (sofaTypeCode == casBeingFilled.getHeapValue(fsAddr) && !isNewFS(fsAddr) ) {
+      	if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) || 
+      		  featName.equals(CAS.FEATURE_BASE_NAME_SOFANUM))   { 
+            return feat.getCode();
+      	} else if (featName.equals(CAS.FEATURE_BASE_NAME_SOFASTRING)  || 
+      			     featName.equals(CAS.FEATURE_BASE_NAME_SOFAURI) || 
+      			     featName.equals(CAS.FEATURE_BASE_NAME_SOFAARRAY)) {
+            int currVal = casBeingFilled.getFeatureValue(fsAddr, feat.getCode());
+      	  if (currVal != 0) 
+      	    return feat.getCode();
+      	}
       }	  
-      handleFeature(addr, feat.getCode(), featVal);
+      handleFeature(fsAddr, feat.getCode(), featVal);
       return feat.getCode();
     }
 
@@ -1435,13 +1462,12 @@ public class XmiCasDeserializer {
       }
       
       // add FSs to indexes
-      //   These come from the add list and from 
-      //   delta below-the-line updates
+      //   These come from the add list
       // https://issues.apache.org/jira/browse/UIMA-4099
       for (Entry<FSIndexRepositoryImpl, PositiveIntSet> e : toBeAdded.entrySet()) {
         FSIndexRepositoryImpl indexRep = e.getKey();
         final PositiveIntSet todo = e.getValue();
-        final IntListIterator it = ((PositiveIntSet_impl)todo).getOrderedIterator();
+        final IntListIterator it = todo.iterator();
         while (it.hasNext()) {
           indexRep.addFS(it.next());
         }
@@ -1451,7 +1477,7 @@ public class XmiCasDeserializer {
       for (Entry<FSIndexRepositoryImpl, PositiveIntSet> e : toBeRemoved.entrySet()) {
         FSIndexRepositoryImpl indexRep = e.getKey();
         final PositiveIntSet todo = e.getValue();
-        final IntListIterator it = ((PositiveIntSet_impl)todo).getOrderedIterator();
+        final IntListIterator it = todo.iterator();
         while (it.hasNext()) {
           indexRep.removeFS(it.next());
         }
@@ -1467,7 +1493,7 @@ public class XmiCasDeserializer {
         ((CASImpl) views.get(i)).updateDocumentAnnotation();
       }
       
-      //check if disallowed fs was encoutered]
+      //check if disallowed fs  encoutered]
       if (this.disallowedViewMemberEncountered) {
     	  CASRuntimeException e = new CASRuntimeException(
   		          CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED,
