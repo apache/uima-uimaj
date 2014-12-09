@@ -68,6 +68,10 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
     this.tree.insertKey(fs);
     return true;
   }
+  
+  boolean insert(int fs, int count) {
+    return insert(fs);
+  }
 
   public FeatureStructure find(FeatureStructure fs) {
     LowLevelCAS llc = fs.getCAS().getLowLevelCAS();

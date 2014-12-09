@@ -257,6 +257,43 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     return true;
   }
 
+  final boolean insert(int fs, int count) {
+    // First, check if we can insert at the end.
+    final int[] indexArray = this.index.getArray();
+    final int length = this.index.size();
+    
+    if (length == 0) {
+      this.index.multiAdd(fs, count);
+      return true;
+    }
+    final int last = indexArray[length - 1];
+    // can't use compare <= because the = implies (depending on IS_ALLOW_DUP_A...)
+    //   more work to find the EQ one, or not
+    if (compare(last, fs) < 0) {
+      this.index.multiAdd(fs, count);
+      return true;
+    }
+    
+    int pos = find(fs);
+    
+    // This rather complex logic can't be simplified due to edge cases, and the need
+    // to have inserts for = compare but unequal identity things go in ascending 
+    // over time insert order (a test case need)
+    if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) {
+      int pos2 = refineToExactFsSearch(fs, pos);
+      if (pos2 < 0) { 
+        // the exact match wasn't found, OK to add
+        this.index.multiAdd(pos + 1, fs, count);
+      }
+    } else if (pos >= 0) {
+      this.index.multiAdd(pos + 1, fs, count);
+    }
+    else {
+      this.index.multiAdd(-(pos + 1), fs, count);
+    }
+    return true;
+  }
+
   // public IntIteratorStl iterator() {
   // return new IntVectorIterator();
   // }
@@ -271,7 +308,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     return binarySearch(this.index.getArray(), fsRef, 0, this.index.size());
   }
   
-  private final int findLeftmost(int fsRef) {
+  final int findLeftmost(int fsRef) {
     int pos = find(fsRef);
     
     // https://issues.apache.org/jira/browse/UIMA-4094

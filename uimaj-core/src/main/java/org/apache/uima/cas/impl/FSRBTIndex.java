@@ -137,4 +137,9 @@ class FSRBTIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
     return this.tree.deleteKey(fs);
   }
 
+  @Override
+  boolean insert(int fs, int count) {
+    throw new UnsupportedOperationException();
+  }
+
 }
