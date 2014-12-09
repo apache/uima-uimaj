@@ -409,4 +409,11 @@ public class FSBagIndex extends FSLeafIndexImpl {
     throw new UnsupportedOperationException();
   }
 
+  @Override
+  boolean insert(int fs, int count) {
+    // only need this multi-insert to support Set and Sorted indices for
+    // protectIndices kinds of things
+    throw new UnsupportedOperationException();
+  }
+
 }
