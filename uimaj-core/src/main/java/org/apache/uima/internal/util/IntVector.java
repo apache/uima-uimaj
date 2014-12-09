@@ -152,6 +152,13 @@ public class IntVector implements Serializable {
     ensure_size(this.pos);
     this.array[i] = element;
   }
+  
+  public void multiAdd(int element, int count) {
+    final int i = this.pos;
+    this.pos += count;
+    ensure_size(this.pos);
+    Arrays.fill(this.array, i, this.pos, element);    
+  }
 
   /**
    * Add an element at a certain position in the vector. Elements later in the vector are shifted
@@ -170,6 +177,21 @@ public class IntVector implements Serializable {
       System.arraycopy(this.array, index, this.array, index + 1, this.pos - (index + 1));
     }
     this.array[index] = element;
+  }
+  
+  public void multiAdd(int index, int element, int count) {
+    final int endPos = index + count;
+    if (index >= this.pos) {
+      ensure_size(endPos);
+    } else {
+      if (this.array.length < this.pos + count) {
+        ensure_size(this.pos + count);
+      } else {
+        this.pos += count;
+      }
+      System.arraycopy(this.array, index, this.array, endPos, this.pos - endPos);
+    }
+    Arrays.fill(this.array, index,  endPos, element);
   }
 
   /**
@@ -234,6 +256,16 @@ public class IntVector implements Serializable {
    */
   public void removeAllElements() {
     this.pos = 0;
+  }
+  
+  public void removeAllElementsAdjustSizeDown() {
+    removeAllElements();
+    int len = array.length;
+    int newSize =  len >> (
+        (len > 128) ? 2 : 
+        (len > 4 ) ? 1 : 
+                    0);
+    resetSize(newSize);
   }
 
   /**
