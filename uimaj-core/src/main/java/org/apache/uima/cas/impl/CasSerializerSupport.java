@@ -125,7 +125,7 @@ public class CasSerializerSupport {
    
   TypeSystemImpl filterTypeSystem;
     
-  ErrorHandler eh = null;
+  ErrorHandler errorHandler = null;
 
   // UIMA logger, to which we may write warnings
   Logger logger;
@@ -185,7 +185,7 @@ public class CasSerializerSupport {
    * @return the original instance, possibly updated
    */
   public CasSerializerSupport setErrorHandler(ErrorHandler eh) {
-    this.eh = eh;
+    this.errorHandler = eh;
     return this;
   }
   
@@ -330,7 +330,7 @@ public class CasSerializerSupport {
 
     private TypeImpl[] sortedUsedTypes;
     
-    private final ErrorHandler eh;
+    private final ErrorHandler errorHandler;
     
     public TypeSystemImpl filterTypeSystem;
     
@@ -358,13 +358,13 @@ public class CasSerializerSupport {
       filterTypeSystem = CasSerializerSupport.this.filterTypeSystem; 
       isFormattedOutput = CasSerializerSupport.this.isFormattedOutput; 
       this.marker = marker;
-      eh = CasSerializerSupport.this.eh;
+      errorHandler = CasSerializerSupport.this.errorHandler;
 
       tsi = cas.getTypeSystemImpl();
       visited_not_yet_written = new PositiveIntSet_impl();
       queue = new IntVector();
       indexedFSs = new IntVector[cas.getBaseSofaCount()];  // number of views
-      listUtils = new ListUtils(cas, logger, eh);
+      listUtils = new ListUtils(cas, logger, errorHandler);
       typeUsed = new BitSet();
 
       isFiltering = filterTypeSystem != null && filterTypeSystem != tsi;
@@ -383,8 +383,8 @@ public class CasSerializerSupport {
           + " multiple references.  These will be serialized in duplicate.", 
           tsi.ll_getFeatureForCode(featCode).getName());
       logger.log(Level.WARNING, message);
-      if (this.eh != null) {
-        this.eh.warning(new SAXParseException(message, null));
+      if (this.errorHandler != null) {
+        this.errorHandler.warning(new SAXParseException(message, null));
       }
     }
 
