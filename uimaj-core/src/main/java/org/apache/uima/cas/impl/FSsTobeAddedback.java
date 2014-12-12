@@ -180,6 +180,12 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     //   the ref to the view
     final Map<Integer, List<?>> fss2views = new HashMap<Integer, List<?>>();
     
+    final CASImpl cas;
+    
+    FSsTobeAddedbackMultiple(CASImpl cas) {
+      this.cas = cas;
+    }
+    
     @Override
     void recordRemove(int fsAddr, FSIndexRepositoryImpl view) {
       log(fsAddr, view);
@@ -202,6 +208,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
         }
       }
       clear();
+      cas.dropProtectIndicesLevel();
     }
     
     @Override
@@ -213,6 +220,10 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   
   static class FSsTobeAddedbackMultipleCounts extends FSsTobeAddedbackMultiple {
      
+    public FSsTobeAddedbackMultipleCounts(CASImpl cas) {
+      super(cas);
+    }
+    
     @Override
     void recordRemove(int fsAddr, FSIndexRepositoryImpl view, int count) {
       log(fsAddr, view, count);
@@ -256,10 +267,10 @@ abstract class FSsTobeAddedback implements AutoCloseable {
         new FSsTobeAddedbackSingle();
   }
   
-  public static FSsTobeAddedback createMultiple() {
+  public static FSsTobeAddedback createMultiple(CASImpl cas) {
     return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) ?
-       new FSsTobeAddedbackMultipleCounts() :
-       new FSsTobeAddedbackMultiple();
+       new FSsTobeAddedbackMultipleCounts(cas) :
+       new FSsTobeAddedbackMultiple(cas);
   }
 }
 

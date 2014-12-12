@@ -1693,7 +1693,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           loopIndexRep.addFS(fsIndex[i]);
         }
         loopStart += loopLen + 1;
-        ((CASImpl) view).updateDocumentAnnotation();
+          ((CASImpl) view).updateDocumentAnnotation();
       } else {
         loopStart += 1;
       }
@@ -4424,33 +4424,30 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // For the "built-in" instance of Document Annotation, set the
   // "end" feature to be the length of the sofa string
   public void updateDocumentAnnotation() {
-    if (!mySofaIsValid()) {
+    if (!mySofaIsValid() || this == this.svd.baseCAS) {
       return;
     }
     final Type SofaType = this.svd.casMetadata.ts.sofaType;
     final Feature sofaString = SofaType.getFeatureByBaseName(FEATURE_BASE_NAME_SOFASTRING);
     String newDoc = getSofa(this.mySofaRef).getStringValue(sofaString);
     if (null != newDoc) {
-      getDocumentAnnotation(newDoc.length());
-    }
-  }
-
-  private AnnotationFS getDocumentAnnotation(int length) {
-    if (this == this.svd.baseCAS) {
-      // base CAS has no document
-      return null;
-    }
-    FSIterator<AnnotationFS> it = getAnnotationIndex(this.svd.casMetadata.ts.docType).iterator();
-    if (it.isValid()) {
-      AnnotationFS doc = it.get();
-      if (doc instanceof Annotation) {
-        ((Annotation)doc).setEnd(length);
+      int count = 0;
+      final FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) ll_getIndexRepository();
+      LowLevelIterator it = 
+          ir.ll_getIndex(CAS.STD_ANNOTATION_INDEX, 
+                                              this.svd.casMetadata.ts.docType.getCode()).ll_iterator();
+      if (it.isValid()) {
+        final int docAnnot = it.ll_get();
+        count = this.indexRepository.removeIfInCorrputableIndexInThisView(docAnnot);
+        setFeatureValueNoIndexCorruptionCheck(docAnnot, getTypeSystemImpl().endFeatCode, newDoc.length());
+        if (count > 0) {
+          ir.ll_addback(docAnnot, count);
+        }
       } else {
-        setFeatureValue(((AnnotationImpl)doc).addr, getTypeSystemImpl().endFeatCode, length);
+        // not in the index (yet)
+        createDocumentAnnotation(newDoc.length());
       }
-      return doc;
     }
-    return createDocumentAnnotation(length);
   }
   
   public AnnotationFS getDocumentAnnotation() {
@@ -4789,9 +4786,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   @Override
   public AutoCloseable protectIndices() {
-    FSsTobeAddedback r = FSsTobeAddedback.createMultiple();
+    FSsTobeAddedback r = FSsTobeAddedback.createMultiple(this);
     svd.fssTobeAddedback.add(r);
     return r;
+  }
+  
+  void dropProtectIndicesLevel () {
+    svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
   }
   
   /**

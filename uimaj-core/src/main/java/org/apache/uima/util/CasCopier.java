@@ -463,9 +463,11 @@ public class CasCopier {
       //   has a reference to the DocumentAnnotation FS belonging to another view
       CAS destView = getOrCreateView(mOriginalTgtCasView, destViewName);
       FeatureStructure destDocAnnot = destView.getDocumentAnnotation();
+      destView.removeFsFromIndexes(destDocAnnot);  // because we're going to update it
       if (destDocAnnot != null) {  // Note: is always non-null, getDocumentAnnotation creates if not exist
         copyFeatures(aFS, destDocAnnot);
       }
+      destView.addFsToIndexes(destDocAnnot);  // add back
       return destDocAnnot;
     }
 
