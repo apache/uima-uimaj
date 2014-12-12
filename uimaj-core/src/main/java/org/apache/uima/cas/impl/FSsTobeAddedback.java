@@ -88,9 +88,21 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   }
   
   void recordRemove(FSIndexRepositoryImpl view)                        {throw new UnsupportedOperationException();}
-  void recordRemove(FSIndexRepositoryImpl view, int count)             {throw new UnsupportedOperationException();}
+  void recordRemove(FSIndexRepositoryImpl view, int count)             {
+    if (count == 1) {
+      recordRemove(view);
+    } else {
+      throw new UnsupportedOperationException();
+    }
+  }
   void recordRemove(int fsAddr, FSIndexRepositoryImpl view)            {throw new UnsupportedOperationException();}
-  void recordRemove(int fsAddr, FSIndexRepositoryImpl view, int count) {throw new UnsupportedOperationException();}
+  void recordRemove(int fsAddr, FSIndexRepositoryImpl view, int count) {
+    if (count == 1) {
+      recordRemove(fsAddr, view);
+    } else { 
+      throw new UnsupportedOperationException();
+    }
+  }
   
   void addback()                                                       {throw new UnsupportedOperationException();}
   void addback(int fsAddr)                                             {throw new UnsupportedOperationException();}

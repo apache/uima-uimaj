@@ -777,9 +777,21 @@ public class XCASDeserializer {
         finalizeOutOfTypeSystemFeatures();
       }
 
-      for (int i = 0; i < views.size(); i++) {
-        ((CASImpl) views.get(i)).updateDocumentAnnotation();
+      for (CAS view : views) {
+        AutoCloseable ac = view.protectIndices();
+        try {
+          ((CASImpl)view).updateDocumentAnnotation();
+        } finally {
+          try {
+            ac.close();
+          } catch (Exception e) {
+            assert(false);
+          }
+        }
       }
+//      for (int i = 0; i < views.size(); i++) {       
+//        ((CASImpl) views.get(i)).updateDocumentAnnotation();
+//      }
     }
 
     private void finalizeFS(FSInfo fsInfo) {

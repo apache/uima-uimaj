@@ -1494,9 +1494,20 @@ public class XmiCasDeserializer {
       // time = System.currentTimeMillis() - time;
       // System.out.println("Done in " + new TimeSpan(time));
 
-      for (int i = 0; i < views.size(); i++) {
-        ((CASImpl) views.get(i)).updateDocumentAnnotation();
+      
+      for (CAS view : views) {
+        AutoCloseable ac = view.protectIndices();
+        try {
+          ((CASImpl) view).updateDocumentAnnotation();
+        } finally {
+          try {
+            ac.close();
+          } catch (Exception e1) {
+            assert(false);
+          }
+        }
       }
+     
       
       //check if disallowed fs  encoutered]
       if (this.disallowedViewMemberEncountered) {
