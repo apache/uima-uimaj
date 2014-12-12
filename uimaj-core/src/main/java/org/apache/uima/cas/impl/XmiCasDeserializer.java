@@ -538,16 +538,7 @@ public class XmiCasDeserializer {
 //      		  FSsTobeReindexed modifySafely = casBeingFilled.modifySafely()
 //       		  casBeingFilled.removeFromCorruptableIndexAnyView(addr, toBeAddedBack);
             
-      		  AutoCloseable addbacks = casBeingFilled.protectIndices();
-      		  try {      		  
-         	    readFS(addr, attrs, IS_EXISTING_FS);
-      		  } finally {
-        		  try {
-                addbacks.close();
-              } catch (Exception e) {
-                assert(false); // never happen
-              }
-      		  }
+       	    readFS(addr, attrs, IS_EXISTING_FS);
       		} // otherwise ignore
       	}
       }
@@ -762,6 +753,12 @@ public class XmiCasDeserializer {
       
       this.featsSeen = null;
       
+      // before looping over all features for this FS, remove this FS if in any index.
+      // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
+      // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
+      if (!isNewFs) {   
+        casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(currentAddr, casBeingFilled.getAddbackSingle());
+      }
       // loop over all features for this FS
       for (int i = 0; i < attrs.getLength(); i++) {
         attrName = attrs.getQName(i);
@@ -795,6 +792,10 @@ public class XmiCasDeserializer {
           }
         }
       }  // end of all features loop
+      
+      if (!isNewFs) {
+        casBeingFilled.addbackSingle(currentAddr);
+      }
       
       if (sofaTypeCode == typeCode && newFS) {
         // If a Sofa, create CAS view to get new indexRepository
@@ -847,7 +848,7 @@ public class XmiCasDeserializer {
       //only update Sofa data features and mime type feature. skip other features.
       //skip Sofa data features if Sofa data is already set.
       //these features may not be modified.
-      if (sofaTypeCode == casBeingFilled.getHeapValue(fsAddr) && !isNewFS(fsAddr) ) {
+      if (sofaTypeCode == casBeingFilled.getHeapValue(fsAddr) && !isNewFS) {
       	if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) || 
       		  featName.equals(CAS.FEATURE_BASE_NAME_SOFANUM))   { 
             return feat.getCode();
@@ -858,7 +859,7 @@ public class XmiCasDeserializer {
       	  if (currVal != 0) 
       	    return feat.getCode();
       	}
-      }	  
+      }	 
       handleFeature(fsAddr, feat.getCode(), featVal);
       return feat.getCode();
     }
@@ -895,6 +896,10 @@ public class XmiCasDeserializer {
           try {
             if (!emptyVal(featVal)) {
               if (featCode == sofaFeatCode) {
+                // Debugging in 12 2014 reveals that this code is never run.
+                // because the featuretype of the sofa feature of an annotation is "fs ref", not "int".
+                // These are "fixed up" later.
+                
                 // special handling for "sofa" feature of annotation. Need to change
                 // it from a sofa reference into a sofa number
                 int sofaXmiId = Integer.parseInt(featVal);
@@ -943,7 +948,7 @@ public class XmiCasDeserializer {
         }
         case LowLevelCAS.TYPE_CLASS_FS: {
           try {
-            if (!emptyVal(featVal)) { this.
+            if (!emptyVal(featVal)) { 
               casBeingFilled.setFeatureValue(addr, featCode, Integer.parseInt(featVal));
             }
           } catch (NumberFormatException e) {
@@ -1899,7 +1904,7 @@ public class XmiCasDeserializer {
    * @param sharedData
    *          data structure used to allow the XmiCasSerializer and XmiCasDeserializer to share
    *          information.
-   * @param mergePoint
+   * @param mergePoint (represented as an xmiId, not an fsAddr)
    *          used to support merging multiple XMI CASes. If the mergePoint is negative, "normal"
    *          deserialization will be done, meaning the target CAS will be reset and the entire XMI
    *          content will be deserialized. If the mergePoint is nonnegative (including 0), the

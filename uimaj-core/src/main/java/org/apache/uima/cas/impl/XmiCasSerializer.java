@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -413,7 +414,11 @@ public class XmiCasSerializer {
     try {
       ser.cds.serialize();
     } catch (Exception e) {
-      throw (SAXException) e;
+      if (e instanceof SAXException) {
+        throw (SAXException) e;
+      } else {
+        throw new UIMARuntimeException(e);
+      }
     }  
     contentHandler.endDocument();
   }
@@ -472,7 +477,7 @@ public class XmiCasSerializer {
    * @return the original instance, possibly updated
    */
   public XmiCasSerializer setErrorHandler(ErrorHandler eh) {
-    css.eh = eh;
+    css.errorHandler = eh;
     return this;
   }
   

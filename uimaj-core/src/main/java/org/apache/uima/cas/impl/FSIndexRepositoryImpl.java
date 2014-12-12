@@ -1810,7 +1810,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       for (int j = 0; j < jMax; j++) {
         iicp = iv.get(j);
         indStrat = iicp.index.getIndexingStrategy();
-        if (indStrat != FSIndex.SET_INDEX) {
+        if (indStrat != FSIndex.SET_INDEX) {  // don't use SET indices because 
+                                              // they miss some items which have been added to the indices
           anIndex = iicp;
           break;
         }
@@ -1980,6 +1981,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         noIndexOrOnlySetIndices = indexingStrategy == FSIndex.SET_INDEX;
       }
     }
+    // log even if added back, because remove logs remove, and might want to know it was "reindexed"
+    if (this.cas.getCurrentMark() != null) {
+      logIndexOperation(fsRef, true);
+    }
     
     if (isAddback) { return; }
     
@@ -1996,9 +2001,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // which is the last one added
       indexes.get(indexes.size() - 1).index.insert(fsRef);
     }
-    if (this.cas.getCurrentMark() != null) {
-      logIndexOperation(fsRef, true);
-    }
+
     if (!this.isUsed[typeCode]) {
       // mark this index as used
       this.isUsed[typeCode] = true;

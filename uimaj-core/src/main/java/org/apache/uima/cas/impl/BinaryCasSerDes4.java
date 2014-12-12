@@ -76,6 +76,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.util.impl.DataIO;
@@ -2023,21 +2024,22 @@ public class BinaryCasSerDes4 {
      * Modified heap values need fsStartIndexes conversion
      ******************************************************************************/
 
-    class ReadModifiedFSs {
+    private class ReadModifiedFSs {
       
       // previous value - for things diff encoded
-      int vPrevModInt = 0;
-      int vPrevModHeapRef = 0;
-      short vPrevModShort = 0;
-      long vPrevModLong = 0;
-      int iHeap;
-      TypeInfo typeInfo;
- 
-
+      private int vPrevModInt = 0;
+      private int vPrevModHeapRef = 0;
+      private short vPrevModShort = 0;
+      private long vPrevModLong = 0;
+      private int iHeap;
+      private TypeInfo typeInfo;
+      
+      // next for managing index removes / readds
+      private boolean wasRemoved;
+      private FSsTobeAddedbackSingle addbackSingle;
+      private int[] featCodes;
 
       private void readModifiedFSs() throws IOException {
-        final List<FSIndexRepositoryImpl> toBeAddedRepos = new ArrayList<FSIndexRepositoryImpl>();
-
         final int modFSsLength = readVnumber(control_dis);
         iPrevHeap = 0;
                  
@@ -2057,10 +2059,15 @@ public class BinaryCasSerDes4 {
             readModifiedAuxHeap(numberOfModsInThisFs);
           } else {
             // https://issues.apache.org/jira/browse/UIMA-4100
-            toBeAddedRepos.clear();
-            cas.removeFromCorruptableIndexAnyView(iHeap, toBeAddedRepos);
-            readModifiedMainHeap(numberOfModsInThisFs);
-            cas.addBackRemovedFsToAppropViews(iHeap,  toBeAddedRepos);
+            // see if any of the mods are keys
+            featCodes = cas.getTypeSystemImpl().ll_getAppropriateFeatures(tCode);
+//            cas.removeFromCorruptableIndexAnyView(iHeap, indexToDos);
+            try {
+              wasRemoved = false;
+              readModifiedMainHeap(numberOfModsInThisFs);
+            } finally {
+              cas.addbackSingle(iHeap);
+            }
           }
         }
       }
@@ -2099,6 +2106,12 @@ public class BinaryCasSerDes4 {
       
       private void readModifiedMainHeap(int numberOfMods) throws IOException {
         int iPrevOffsetInFs = 0;
+        
+        wasRemoved = false;  // set to true when removed from index to stop further testing
+        addbackSingle = cas.getAddbackSingle();
+        addbackSingle.clear();
+        
+
         for (int i = 0; i < numberOfMods; i++) {
           final int offsetInFs = readVnumber(fsIndexes_dis) + iPrevOffsetInFs;
           iPrevOffsetInFs = offsetInFs;
@@ -2118,6 +2131,7 @@ public class BinaryCasSerDes4 {
               final int v = readDiff(int_dis, vPrevModInt);
               vPrevModInt = v;
               heap[iHeap + offsetInFs] = v;
+              maybeRemove(offsetInFs);
             }
             break;
           case Slot_Short: {
@@ -2139,15 +2153,24 @@ public class BinaryCasSerDes4 {
             break;
           case Slot_Float:
             heap[iHeap + offsetInFs] = readFloat();
+            maybeRemove(offsetInFs);
             break;
           case Slot_StrRef:
             heap[iHeap + offsetInFs] = readString();
+            maybeRemove(offsetInFs);
             break;
          default:
             throw new RuntimeException();
           }
         }   
       }
+      
+      private void maybeRemove(int srcOffsetInFs) {
+        if (!typeInfo.isHeapStoredArray && !wasRemoved) {
+          wasRemoved |= cas.removeFromCorruptableIndexAnyView(iHeap, addbackSingle, featCodes[srcOffsetInFs - 1]);
+        }
+      }    
+
     }
   }
 

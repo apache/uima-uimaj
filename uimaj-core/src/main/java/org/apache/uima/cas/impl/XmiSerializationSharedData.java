@@ -127,8 +127,7 @@ public class XmiSerializationSharedData {
     if (xmiId == 0) {
       // to be sure we get a unique Id, increment maxXmiId and use that
       xmiId = ++maxXmiId;
-      fsAddrToXmiIdMap.put(fsAddr, xmiId);
-      xmiIdToFsAddrMap.put(xmiId, fsAddr);
+      addIdMapping(fsAddr, xmiId);
     }
     return xmiId;
   }

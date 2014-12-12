@@ -70,6 +70,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
 import org.apache.uima.internal.util.IntVector;
@@ -2244,16 +2245,21 @@ public class BinaryCasSerDes6 {
    * Modified heap values need fsStartIndexes conversion
    ******************************************************************************/
 
-  class ReadModifiedFSs {
+  private class ReadModifiedFSs {
     
     // previous value - for things diff encoded
-    int vPrevModInt = 0;
-    int prevModHeapRefTgtSeq = 0;
-    short vPrevModShort = 0;
-    long vPrevModLong = 0;
-    int iHeap;
-    TypeInfo typeInfo;
-    int[] tgtF2srcF;
+    private int vPrevModInt = 0;
+    private int prevModHeapRefTgtSeq = 0;
+    private short vPrevModShort = 0;
+    private long vPrevModLong = 0;
+    private int iHeap;
+    private TypeInfo typeInfo;
+    private int[] tgtF2srcF;
+    
+    // next for managing index removes / readds
+    private boolean wasRemoved;
+    private FSsTobeAddedbackSingle addbackSingle;
+    private int[] featCodes;
     
     // for handling aux heaps with type mapping which may skip some things in the target
     //   An amount that needs to be added to the offset from target to account for
@@ -2269,7 +2275,6 @@ public class BinaryCasSerDes6 {
 //      int[] srcNextSkippedIndex;
 
     private void readModifiedFSs() throws IOException {
-      final List<FSIndexRepositoryImpl> toBeAddedRepos = new ArrayList<FSIndexRepositoryImpl>();
       final int modFSsLength = readVnumber(control_dis);
       int prevSeq = 0;
       
@@ -2319,10 +2324,14 @@ public class BinaryCasSerDes6 {
            readModifiedAuxHeap(numberOfModsInThisFs);
         } else {
           // https://issues.apache.org/jira/browse/UIMA-4100
-          toBeAddedRepos.clear();
-          cas.removeFromCorruptableIndexAnyView(iHeap, toBeAddedRepos);
-          readModifiedMainHeap(numberOfModsInThisFs);
-          cas.addBackRemovedFsToAppropViews(iHeap,  toBeAddedRepos);       
+          featCodes = cas.getTypeSystemImpl().ll_getAppropriateFeatures(tCode);
+//          cas.removeFromCorruptableIndexAnyView(iHeap, indexToDos);
+          try {
+            wasRemoved = false;
+            readModifiedMainHeap(numberOfModsInThisFs);
+          } finally {
+            cas.addbackSingle(iHeap);
+          }   
         }
       }
     }
@@ -2369,6 +2378,11 @@ public class BinaryCasSerDes6 {
     private void readModifiedMainHeap(int numberOfMods) throws IOException {
       
       int iPrevTgtOffsetInFs = 0;
+      wasRemoved = false;  // set to true when removed from index to stop further testing
+      addbackSingle = cas.getAddbackSingle();
+      addbackSingle.clear();
+
+      
       for (int i = 0; i < numberOfMods; i++) {
         final int tgtOffsetInFs = readVnumber(fsIndexes_dis) + iPrevTgtOffsetInFs;
         iPrevTgtOffsetInFs = tgtOffsetInFs;
@@ -2393,6 +2407,7 @@ public class BinaryCasSerDes6 {
             final int v = readDiff(int_dis, vPrevModInt);
             vPrevModInt = v;
             heap[iHeap + srcOffsetInFs] = v;
+            maybeRemove(srcOffsetInFs);
           }
           break;
         case Slot_Short: {
@@ -2413,20 +2428,30 @@ public class BinaryCasSerDes6 {
           }
           break;
         case Slot_Byte: case Slot_Boolean:
-          heap[iHeap + tgtOffsetInFs] = byte_dis.readByte();
+          heap[iHeap + srcOffsetInFs] = byte_dis.readByte();
           break;
         case Slot_Float:
-          heap[iHeap + tgtOffsetInFs] = readFloat();
+          heap[iHeap + srcOffsetInFs] = readFloat();
+          maybeRemove(srcOffsetInFs);
           break;
         case Slot_StrRef:
-          heap[iHeap + tgtOffsetInFs] = readString(true);
+          heap[iHeap + srcOffsetInFs] = readString(true);
+          maybeRemove(srcOffsetInFs);
           break;
        default:
           throw new RuntimeException();
         }
       }   
     }
+    
+    private void maybeRemove(int srcOffsetInFs) {
+      if (!typeInfo.isHeapStoredArray && !wasRemoved) {
+        wasRemoved |= cas.removeFromCorruptableIndexAnyView(iHeap, addbackSingle, featCodes[srcOffsetInFs - 1]);
+      }
+    }    
+    
   }
+  
   
 
   /* *******************************************************************

@@ -171,4 +171,9 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
     }
   }
 
+  @Override
+  public FSIndex withSnapshotIterators() {
+    return new AnnotationIndexImpl(index.withSnapshotIterators());
+  }
+
 }
