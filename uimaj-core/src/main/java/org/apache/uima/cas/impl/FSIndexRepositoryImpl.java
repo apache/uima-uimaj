@@ -1149,7 +1149,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     @Override
     public FSIndex withSnapshotIterators() {
-      return new IndexImpl<>(this.iicp, true);
+      return new IndexImpl(this.iicp, true);
     }
 
   }  // end of class IndexImpl
