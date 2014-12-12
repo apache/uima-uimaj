@@ -511,11 +511,42 @@ ir.getAnnotationIndex(Foo.type)      // filtered by specific type</programlistin
       
       <para>Do this after setting all features in the instance <emphasis role="bold-italic">which could be used in indexing</emphasis>, for example, in
         determining the sorting order. After indexing, do not change the values of these
-        particular features because the indexes will not be updated. If you need to change the
-        values, you must first remove the instance from the CAS indexes, change the values,
-        and then add the instance back. To remove an instance from the indexes, use the method:
+        particular features because changing these values can corrupt Set and Sorted indices. 
+        If you need to change the
+        values, you must first remove the instance from the CAS indexes in all views where it may be indexed, 
+        change the values, and then add the instance back.
+         
+              <note><para>If you've allowed duplicates of the same Feature Structure to be added to the index (which
+      was the default before version 2.7.0, and can be enabled in version 2.7.0 and later by defining the JVM
+      property <code>-Duima.allow_duplicate_add_to_indices</code>), then you have to remove 
+      <emphasis role="bold">*all*</emphasis> instances of the Feature Structure.<para></note>
         
-        <programlisting>myInstance.removeFromIndexes();</programlisting></para>
+        
+        The following two ways of writing this both use framework support (available as of Version 2.7.0) to achieve all of this, 
+        in an optimized manner: 
+        
+        <programlisting>// an approach using try / finally
+AutoCloseable ac = my_jcas.protectIndices();
+try {
+   ...  arbitrary user code which updates features which may be "keys" in one or more indices
+} finally {
+  ac.close();
+}
+
+// if Java 8 is in use, this can be written using the auto-close feature of try:
+
+try (Closeable closeable = my_jcas.protectIndices()) {
+   ...  arbitrary user code which updates features which may be "keys" in one or more indices
+}</programlisting>
+      </para>
+      <para>As an alternative to the try / finally, you can use a Runnable, as follows:
+      
+       <programlisting>// an approach using a Runnable, written in Java 8 lambda syntax
+my_jcas.protectIndices(() -> {
+  ... arbitrary user code updating "key" features, but no checked exceptions are permitted
+  });</programlisting>       
+      </para>
+        
       <note><para>It&apos;s OK to change feature values which are not used in determining
       sort ordering (or set membership), without removing and re-adding back to the index.
       </para></note>

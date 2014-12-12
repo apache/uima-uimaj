@@ -178,11 +178,11 @@ under the License.
       <para>Indexes are defined in the XML descriptor metadata for the application. Each CAS
         View has its own, separate instantiation of indexes based on these definitions, 
         kept in the view's index repository. When you obtain an index, it is always from a
-        particular CAS view. When you index an item, it is always added to all indexes where it
-        belongs, within just one repository. You can specify different repositories
+        particular CAS view's index repository. 
+        When you index an item, it is always added to all indexes where it
+        belongs, within just the view's repository. You can specify different repositories
         (associated with different CAS views) to use; a given Feature Structure instance 
-        may be indexed in more
-        than one CAS View.</para>
+        may be indexed in more than one CAS View (unless it is a subtype of AnnotationBase).</para>
       
       <para>Iterators allow you to enumerate the feature structures in an index.  FS iterators
         provide two kinds of APIs: the regular Java iterator API, and a specific FS iterator API
@@ -215,7 +215,7 @@ under the License.
         another feature structure, which is indexed, or through a chain of these).</para>
       
       <para>The framework defines an unnamed bag index which indexes all types.  The
-      only access provided for this index is the getAllIndexedFS(type) method on the
+        only access provided for this index is the getAllIndexedFS(type) method on the
         index repository, which returns an iterator over all indexed instances of the
         specified type (including its subtypes) for that CAS View.
       </para>
@@ -227,7 +227,8 @@ under the License.
       
       <para>The ordering relation used by this index is to first order by the value of the
         <quote>begin</quote> features (in ascending order) and then by the value of the
-        <quote>end</quote> feature (in descending order). This ordering insures that
+        <quote>end</quote> feature (in descending order), and then, finally, by the 
+        Type Priority. This ordering insures that
         longer annotations starting at the same spot come before shorter ones. For Subjects
         of Analysis other than Text, this may not be an appropriate index.</para>
       
@@ -671,12 +672,38 @@ private Feature initFeature(String featName, Type type)
     on particular values of the features of an indexed type, if you change the values of
     those features being used in the index key, the correct way to do this is to
     <orderedlist spacing="compact">
-      <listitem><para>remove the item from all indexes where it is indexed, in all views
+      <listitem><para>completely remove the item from all indexes where it is indexed, in all views
       where it is indexed,</para>       
       </listitem>
       <listitem><para>update the value of the features being used as keys,</para></listitem>
       <listitem><para>add the item back to the indexes, in all views.</para></listitem> 
     </orderedlist></para>
+    
+    <para>To completely remove an item from the indices may entail removing it multiple times, if it was 
+    added multiple times, and (as of version 2.7.0) the JVM global property 
+    <code>uima.allow_duplicate_add_to_indices</code> is true.</para>
+    
+    <para>Because this is complex and can be optimized by the framework, the framework (as of version 2.7.0) 
+    supports the <code>protectIndices</code> method in the CAS to make this convenient for users.  Here's two ways
+    of using this, one with a try / finally and the other with a Runnable:
+            <programlisting>// an approach using try / finally
+AutoCloseable ac = my_cas.protectIndices();
+try {
+   ...  arbitrary user code which updates features which may be "keys" in one or more indices
+} finally {
+  ac.close();
+}
+
+// if Java 8 is in use, this can be written using the auto-close feature of try:
+
+try (AutoCloseable ac = my_cas.protectIndices()) {
+   ...  arbitrary user code which updates features which may be "keys" in one or more indices
+}
+
+// an approach using a Runnable, written in Java 8 lambda syntax
+my_cas.protectIndices(() -> {
+  ... arbitrary user code updating "key" features, but no checked exceptions are permitted
+  });</programlisting></para>
     
     <para>As of version 2.4.1, there are two methods you can use on an index repository 
     to efficiently bulk-remove all
@@ -742,12 +769,20 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
         targetptr="ugr.ref.xml.component_descriptor.aes.index"/>.</para>
        
     <para>Feature structures should not be added to or removed from indexes while iterating
-      over them; a ConcurrentModificationException is thrown when this is detected.
+      over them; a ConcurrentModificationException is thrown when this is detected (but see the following paragraph).
       Certain operations are allowed with the iterators after modification, which can
       <quote>reset</quote> this condition, such as moving to beginning, end, or moving to a
       particular feature structure. So - if you have to modify the index, you can move it back to
       the last FS you had retrieved from the iterator, and then continue, if that makes sense in
       your application.</para>   
+      
+    <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
+    allows creating a light-weight FSIndex based on the original FSIndex 
+    that supports doing arbitrary index operations while iterating, and will not throw 
+    <code>ConcurrentModificationException</code>.  Iterators obtained from this instance use a 
+    <emphasis>snapshot</emphasis> technique - they create a snapshot of the original index when the 
+    iterator is created, and then use that snapshot while operating, so the iteration is unaffected by any
+    modifications to the actual index.</para>
 
     <section id="ugr.ref.cas.index.built_in_indexes">
       <title>Built-in Indexes</title>

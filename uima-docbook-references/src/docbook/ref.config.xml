@@ -49,9 +49,31 @@ under the License.
   checking for this, added in version 2.7.0 (the previously existing partial checking is
   still there, though).  
     </para>
+  </section>   
+ 
+  <section id="ugr.ref.config.protect-index">
+    <title>Configuring index protection</title>
     
-    
-    
+    <para>A new feature in version 2.7.0 optionally can include checking for invalid feature updates 
+    which could corrupt indices.  Because this checking can slighly slow down performance, there are 
+    global JVM properties to control it.  The suggested way to operation with these is as follows.
+    <itemizedlist>
+	    <listitem><para>At the beginning, run with automatic protection enabled (the default), but
+	    turn on explicit reporting (<code>uima.report_fs_update_corrupts_index</code>))</para></listitem>
+	    <listitem><para>For all reported instances, examine your code to see if you can restructure to
+	    do the updates before adding the FS to the indices.  Where you cannot, surround the code doing 
+	    these updates with a try / finally or block protectIndices() form (see documentation in the CAS Javadocs).
+	    </para></listitem>
+	    <listitem><para>After no further reports, for maximum performance, you can leave in the protections 
+	    you may have installed in the above step, and then disable the reporting and runtime checking, by setting 
+	    <code>uima.protect_indices_from_key_updates</code> to false, and removing any 
+	    <code>uima.report_fs_update_corrupts_index</code> JVM property.</para></listitem>
+    </itemizedlist></para>
+  </section>
+  
+  <section id="ugr.ref.config.property-table">
+    <title>Properties Table</title>
+      
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="3">
        <colspec colnum="1" colname="Title" colwidth="1*"/>
@@ -79,19 +101,45 @@ under the License.
          </row>
          
          <row>
-           <entry><para>Illegal index-key Feature update</para></entry>
+           <entry><para>Report Illegal Index-key Feature Updates</para></entry>
            
-           <entry><para><code>uima.check_fs_update_corrupts_index</code> (default is not to check)</para>
-           
-                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4059"/>.
+           <entry><para><code>uima.report_fs_update_corrupts_index</code> (default is not to report)</para>
+                      
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4059">UIMA-4059</ulink>.
                         Updating Features which are used in Set and Sorted
-                        indices as "keys" is illegal, if the Feature Structure (FS)
+                        indices as "keys" may corrupt the indices, if the Feature Structure (FS)
                         has been added to the indices.  To update these, you must first
-                        remove the FS from the index, then do the updates, and then
-                        add it back.  A new (by default disabled) capability
-                        checks for this.  It may be somewhat expensive in
-                        space and time, so is disabled by default, but can be
-                        enabled to check your application.</para></entry>
+                        completely remove the FS from the indexes in all views, then do the updates, and then
+                        add it back.  UIMA now checks for this (unless specifically disabled, see below),
+                        and if this property is set, will log WARN messages for each occurrence unless
+                        the user does explicit protectIndices (see CAS Javadocs), if this
+                        property is defined.</para>
+                   
+                   <para>Specifying this property also forces uima.protect_indices_from_key_updates to true
+                         even if it was set to false (see below).</para>
+                         
+                   <para>Users would run with this property defined, and then for high performance, 
+                        would use the report to manually change their code to avoid the problem or 
+                        to wrap the updates with a protectIndices kind of protection (see the
+                        reference manual, in the CAS or JCas chapters, for examples of user code doing this, 
+                        and then run with the protection turned off (see below).
+                        
+                        </para></entry>
+                        
+           <entry><para>2.7.0</para></entry>
+         </row>
+
+         <row>
+           <entry><para>Protect Indices from Key Updates</para></entry>
+           
+           <entry><para><code>uima.protect_indices_from_key_updates</code> (default is true)</para>
+                      
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4135">UIMA-4135</ulink>.
+                        After you have fixed all reported issues identified with the above report,
+                        set this to false to omit this check - which will potentially slightly speed up 
+                        runs.</para>
+           </entry>
+                        
            <entry><para>2.7.0</para></entry>
          </row>
 
@@ -101,7 +149,7 @@ under the License.
            <entry><para><code>uima.allow_duplicate_add_to_indices</code></para>
            
                   <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4059"/>
-                        and <ulink url="https://issues.apache.org/jira/browse/UIMA3399"/>.
+                        and <ulink url="https://issues.apache.org/jira/browse/UIMA-3399"/>.
                         As of version 2.7.0, adding a particular Feature Structure
                         to the indices more than once is ignored.  The old behavior
                         may be restored by this property.</para></entry>
