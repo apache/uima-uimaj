@@ -648,7 +648,6 @@ public class SerializationReinitTest extends TestCase {
   
   for (int cycle=0; cycle<10; cycle+=2) {
     FeatureStructure newFS1 = cas.createFS(theTypeType); 
-    ir.addFS(newFS1);
     newFS1.setIntValue(startFeature, cycle);
     newFS1.setIntValue(endFeature, cycle+1);
     // set string using normal string feature create
@@ -662,6 +661,7 @@ public class SerializationReinitTest extends TestCase {
     newSA1.set(0, (short)cycle);
     newFS1.setFeatureValue(theByteArrayFeature, newBA1);
     newFS1.setFeatureValue(theShortArrayFeature, newSA1);
+    ir.addFS(newFS1);
 
     FeatureStructure newFS2 = cas.createFS(theTypeType);
     ByteArrayFS newBA2 = cas.createByteArrayFS(1);
@@ -682,6 +682,7 @@ public class SerializationReinitTest extends TestCase {
     ll_cas.ll_setShortArrayValue(llsa2, 0, (short)(cycle+1));
     newFS2.setFeatureValue(theByteArrayFeature, newBA2);
     newFS2.setFeatureValue(theShortArrayFeature, newSA2);
+    ir.addFS(newFS2);
 
     ByteArrayOutputStream fos = new ByteArrayOutputStream();
     Serialization.serializeCAS(cas, fos);
