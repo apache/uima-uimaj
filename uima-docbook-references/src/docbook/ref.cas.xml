@@ -689,20 +689,24 @@ private Feature initFeature(String featName, Type type)
             <programlisting>// an approach using try / finally
 AutoCloseable ac = my_cas.protectIndices();
 try {
-   ...  arbitrary user code which updates features which may be "keys" in one or more indices
+   ...  arbitrary user code which updates features
+        which may be "keys" in one or more indices
 } finally {
   ac.close();
 }
 
-// if Java 8 is in use, this can be written using the auto-close feature of try:
+// if Java 8 is in use, 
+// this can be written using the auto-close feature of try:
 
 try (AutoCloseable ac = my_cas.protectIndices()) {
-   ...  arbitrary user code which updates features which may be "keys" in one or more indices
+   ...  arbitrary user code which updates features 
+        which may be "keys" in one or more indices
 }
 
 // an approach using a Runnable, written in Java 8 lambda syntax
 my_cas.protectIndices(() -> {
-  ... arbitrary user code updating "key" features, but no checked exceptions are permitted
+  ... arbitrary user code updating "key" features,
+      but no checked exceptions are permitted
   });</programlisting></para>
     
     <para>As of version 2.4.1, there are two methods you can use on an index repository 
