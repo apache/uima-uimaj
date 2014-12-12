@@ -296,4 +296,15 @@ public class CasWrapperForTstng implements CAS {
   public int size() {
     return originalCAS.size();
   }
+  
+  @Override
+  public void protectIndices(Runnable runnable) {
+    originalCAS.protectIndices(runnable);
+  }
+
+  @Override
+  public AutoCloseable protectIndices() {
+    return originalCAS.protectIndices();
+  }
+  
 }
