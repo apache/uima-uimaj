@@ -31,6 +31,7 @@ package org.apache.uima.impl;
 public class UimaVersion {
   /**
    * @see org.apache.uima.UIMAFramework#_getMajorVersion()
+   * @return major version
    */
   public static short getMajorVersion() {
     return ${parsedVersion.majorVersion}; // major version
@@ -38,6 +39,7 @@ public class UimaVersion {
 
   /**
    * @see org.apache.uima.UIMAFramework#_getMinorVersion()
+   * @return minor version
    */
   public static short getMinorVersion() {
     return ${parsedVersion.minorVersion}; // minor version
@@ -45,6 +47,7 @@ public class UimaVersion {
 
   /**
    * @see org.apache.uima.UIMAFramework#_getBuildRevision()
+   * @return build revision
    */
   public static short getBuildRevision() {
     return ${parsedVersion.incrementalVersion}; // build revision
