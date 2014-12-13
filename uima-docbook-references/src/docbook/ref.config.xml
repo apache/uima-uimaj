@@ -55,7 +55,7 @@ under the License.
     <title>Configuring index protection</title>
     
     <para>A new feature in version 2.7.0 optionally can include checking for invalid feature updates 
-    which could corrupt indices.  Because this checking can slighly slow down performance, there are 
+    which could corrupt indices.  Because this checking can slightly slow down performance, there are 
     global JVM properties to control it.  The suggested way to operation with these is as follows.
     <itemizedlist>
 	    <listitem><para>At the beginning, run with automatic protection enabled (the default), but
@@ -68,7 +68,12 @@ under the License.
 	    you may have installed in the above step, and then disable the reporting and runtime checking, by setting 
 	    <code>uima.protect_indices_from_key_updates</code> to false, and removing any 
 	    <code>uima.report_fs_update_corrupts_index</code> JVM property.</para></listitem>
-    </itemizedlist></para>
+    </itemizedlist>
+    One additional JVM property, <code>uima.throw_exception_when_fs_update_corrupts_index</code>, will throw
+    a UIMARuntimeException if an update outside of a protectIndices block occurs that could corrupt the indices,
+    rather than "recovering" this.  This is useful for automated builds, where you may want a strong signal if
+    this kind of mistake gets into the build.
+    </para>
   </section>
   
   <section id="ugr.ref.config.property-table">
@@ -115,7 +120,7 @@ under the License.
                         the user does explicit protectIndices (see CAS Javadocs), if this
                         property is defined.</para>
                    
-                   <para>Specifying this property also forces uima.protect_indices_from_key_updates to true
+                   <para>Specifying this property also forces <code>uima.protect_indices_from_key_updates</code> to true
                          even if it was set to false (see below).</para>
                          
                    <para>Users would run with this property defined, and then for high performance, 
@@ -129,6 +134,25 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
 
+         <row>
+           <entry><para>Throw exception on illegal Index-key Feature Updates</para></entry>
+           
+           <entry><para><code>uima.exception_when_fs_update_corrupts_index</code>(default is automatically handle)</para>
+                      
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4150">UIMA-4150</ulink>.
+                        Throws a UIMARuntimeException if an Indexed FS feature used as a key in one or more 
+                        indices is updated, outside of an explicit protectIndices block..  \
+                        This is intended for use in automated build and test environments,
+                        to provide a strong signal if this kind of mistake gets into the build.</para>
+                   
+                   <para>Specifying this property also forces <code>uima.report_fs_update_corrupts_index</code>
+                         to true even if it was set to false.</para>
+                         
+                   </entry>
+                        
+           <entry><para>2.7.0</para></entry>
+         </row>
+         
          <row>
            <entry><para>Protect Indices from Key Updates</para></entry>
            

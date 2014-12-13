@@ -142,6 +142,11 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
    */
   public static final String ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED = "illegal_adding_of_new_meta_info";
 
+  /**
+   * Message key for a standard UIMA exception message:
+   * Illegal update of indexed Feature Structure feature used as an key in one or more indices  
+   */
+  public static final String ILLEGAL_FS_FEAT_UPDATE = "illegal_update_indexed_fs";
   
   /**
    * Creates a new exception with a null message.

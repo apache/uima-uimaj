@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -123,6 +124,26 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   private static final int resetHeapSize = DEFAULT_RESET_HEAP_SIZE;
 
+
+  /**
+   * The UIMA framework detects (unless disabled, for high performance) updates to indexed FS which update
+   * key values used as keys in indices.  Normally the framework will protect against index corruption by 
+   * temporarily removing the FS from the indices, then do the update to the feature value, and then addback
+   * the changed FS.
+   * <p>
+   * Users can use the protectIndices() methods to explicitly control this remove - add back cycle, for instance
+   * to "batch" together several updates to multiple features in a FS.
+   * <p>
+   * Some build processes may want to FAIL if any unprotected updates of this kind occur, instead of having the
+   * framework silently recover them.  This is enabled by having the framework throw an exception;  this is controlled
+   * by this global JVM property, which, if defined, causes the framework to throw an exception rather than recover.
+   * 
+   */
+  private static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
+  
+  private static final boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = 
+      !System.getProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "false").equalsIgnoreCase("false");
+  
   /**
    * Define this JVM property to enable checking for invalid updates to features which are used as 
    * keys by any index.
@@ -130,22 +151,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   <li>The following are the same:  -Duima.check_invalid_fs_updates    and -Duima.check_invalid_fs_updates=true</li>
    * </ul> 
    */
-  public static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
+  private static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
 
-  public static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX =  !System.getProperty(REPORT_FS_UPDATES_CORRUPTS, "false").equalsIgnoreCase("false");
+  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX ||  
+      !System.getProperty(REPORT_FS_UPDATES_CORRUPTS, "false").equalsIgnoreCase("false");
+
 
   /**
    * Set this JVM property to false for high performance, (no checking);
    * insure you don't have the report flag (above) turned on - otherwise it will force this to "true".
    */
-  public static final String PROTECT_INDICES = "uima.protect_indices_from_key_udpates";
+  private static final String PROTECT_INDICES = "uima.protect_indices_from_key_udpates";
   
   /**
    * the protect indices flag is on by default, but may be turned of via setting the property to false.
    * 
    * This is overridden (the flag is turned back on) if a report is requested (by above flag).
    */
-  public static final boolean IS_PROTECT_INDICES = 
+  private static final boolean IS_PROTECT_INDICES = 
       System.getProperty(PROTECT_INDICES, "true").equalsIgnoreCase("true") ||
       IS_REPORT_FS_UPDATE_CORRUPTS_INDEX;
   
@@ -3510,7 +3533,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           new FeatureStructureImplC(this, fsRef).toString(),  
           sw.toString());        
       UIMAFramework.getLogger().log(Level.WARNING, msg);
+      
+      if (IS_THROW_EXCEPTION_CORRUPT_INDEX) {
+        throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE, new Object[]{});
+      }
     }
+    
+    
   }
   
   /**
