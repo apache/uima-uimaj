@@ -58,7 +58,8 @@ public class SortedIntSet {
   }
 
   /**
-   * @return <code>true</code> iff <code>ele</code is contained in
+   * @param ele - 
+   * @return <code>true</code> iff <code>ele</code> is contained in
    *  the set.
    */
   public boolean contains(int ele) {
@@ -68,6 +69,7 @@ public class SortedIntSet {
   /**
    * Add element to set.
    * 
+   * @param ele - 
    * @return <code>true</code> iff <code>ele</code> was not already contained in the set.
    */
   public boolean add(int ele) {
@@ -81,7 +83,7 @@ public class SortedIntSet {
 
   /**
    * Remove element from set.
-   * 
+   * @param ele - 
    * @return <code>true</code> iff <code>ele</code> was actually contained in the set.
    */
   public boolean remove(int ele) {

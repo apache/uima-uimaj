@@ -96,6 +96,8 @@ public class ServiceDataCargo implements Serializable {
    * 
    * @param aDataContainer
    *          the AnalysisProcessData to unmarshal into
+   * @param aReplaceCasTypeSystem -
+   * @throws CASException -
    */
   public void unmarshalInto(AnalysisProcessData aDataContainer, boolean aReplaceCasTypeSystem)
           throws CASException {

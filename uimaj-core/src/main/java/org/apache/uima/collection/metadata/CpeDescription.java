@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  * Java representation of a Collection Processing Engine (CPE) XML descriptor. Generate an instance
  * of this class by calling either the
  * {@link org.apache.uima.util.XMLParser#parseCpeDescription(XMLInputSource)} or
- * {@link org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory#produceDescriptor()}. A
+ *        org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory#produceDescriptor(). A
  * CPE instance can then be created by calling
  * {@link org.apache.uima.UIMAFramework#produceCollectionProcessingEngine(CpeDescription)}.
  */

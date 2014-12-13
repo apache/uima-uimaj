@@ -344,9 +344,9 @@ public class CharArrayString {
   /**
    * A static method to compute the hash code for a character range in an array.
    * 
-   * @param charArray
-   * @param startPos
-   * @param endPos
+   * @param charArray -
+   * @param startPos -
+   * @param endPos -
    * @return The hash code.
    * @pre charArray != null
    * @pre startPos &ge; 0

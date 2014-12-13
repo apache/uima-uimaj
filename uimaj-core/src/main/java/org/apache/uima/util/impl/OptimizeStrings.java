@@ -139,7 +139,7 @@ public class OptimizeStrings {
   /**
    * null strings not added
    * 0 length strings added
-   * @param s
+   * @param s -
    */
   public void add(String s) {
     if (inStrings.size() == (Integer.MAX_VALUE -1)) {
@@ -189,7 +189,7 @@ public class OptimizeStrings {
   /**
    * return a string which is made as a substring of the common string
    * 
-   * @param s
+   * @param s -
    * @return an equal string, made as substring of common string instance
    *         equal results return the same string
    */
@@ -220,8 +220,8 @@ public class OptimizeStrings {
   }
   
   /**
-   * given an index (not offset) to the sorted strings, 
-   * return the index of the segment it belongs to
+   * @param index an index (not offset) to the sorted strings, 
+   * @return the index of the segment it belongs to
    */
   public int getCommonStringIndex(int index) {
     for (int i = 0; i < lastIndexInCommonStringsA.length; i++) {

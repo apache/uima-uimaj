@@ -275,7 +275,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @return an <code>XMLizable</code> object constructed from the DOM element
    * 
-   * @throws InvaidXMLException
+   * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    */
   public XMLizable buildObject(Element aElement) throws InvalidXMLException {
@@ -290,7 +290,7 @@ public class XMLParser_impl implements XMLParser {
    * 
    * @return an <code>XMLizable</code> object constructed from the DOM element
    * 
-   * @throws InvaidXMLException
+   * @throws InvalidXMLException
    *           if the XML element does not specify a valid object
    */
   public XMLizable buildObject(Element aElement, ParsingOptions aOptions)

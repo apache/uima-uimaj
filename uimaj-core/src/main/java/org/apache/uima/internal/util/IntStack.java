@@ -33,13 +33,18 @@ public class IntStack extends IntVector {
     super();
   }
 
-  /** Creates an empty stack. */
+  /** Creates an empty stack.
+   * @param capacity - 
+   * */
   public IntStack(int capacity) {
     super(capacity);
   }
 
   /**
    * Creates an empty stack with specified capacity, growth_factor and multiplication limit
+   * @param capacity -
+   * @param growth_factor -
+   * @param multiplication_limit -
    */
   public IntStack(int capacity, int growth_factor, int multiplication_limit) {
     super(capacity, growth_factor, multiplication_limit);

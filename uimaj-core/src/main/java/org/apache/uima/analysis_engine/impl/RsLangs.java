@@ -32,7 +32,7 @@ import org.apache.uima.cas.text.Language;
  * Duplicate-on-update strategy
  *   Requires that all update operations to it return the
  *     possibly new RsLangs object, and that calls are always of the form
- *       rsLangInstance = rsLangInstance.<some-update-operation>
+ *       rsLangInstance = rsLangInstance.[some-update-operation]
  *   Requires that all copy operations set the shared bit:
  *     copiedInstance = origInstance.setShared(); 
  *  

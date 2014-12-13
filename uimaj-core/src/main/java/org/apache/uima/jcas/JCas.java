@@ -222,7 +222,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * Gets the document annotation. The object returned from this method can be typecast to
-   * {@link org.apache.uima.jcas.tcas.DocumentAnnotation}.
+   * org.apache.uima.jcas.tcas.DocumentAnnotation
    * <p>
    * The reason that the return type of this method is not DocumentAnnotation is because of problems
    * that arise when using the UIMA Extension ClassLoader to load annotator classes. The
@@ -638,7 +638,7 @@ public interface JCas extends AbstractCas {
   // temporarily omitted to enable some testing without updating cas wrappers 
 /**
  * Call this method to set up a region, 
- * ended by a {@link FSsTobeAddedback.close()} call on the returned object,
+ * ended by a close() call on the returned object,
  * You can use this or the {@link #protectIndices(Runnable)} method to protected
  * the indices.
  * <p>

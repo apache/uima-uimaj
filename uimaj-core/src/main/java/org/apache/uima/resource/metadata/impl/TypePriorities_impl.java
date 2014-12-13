@@ -282,10 +282,10 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
   }
 
   /**
-   * Overridden to supress <priorityLists> tag for TAF compatibility
+   * Overridden to supress &lt;priorityLists&gt; tag for TAF compatibility
    * 
    * @see MetaDataObject_impl#writePropertyAsElement(org.apache.uima.resource.metadata.impl.PropertyXmlInfo,
-   *      java.lang.String, org.xml.sax.ContentHandler)
+   *      java.lang.String)
    */
   @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {

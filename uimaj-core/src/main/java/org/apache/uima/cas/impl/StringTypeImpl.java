@@ -29,9 +29,9 @@ public class StringTypeImpl extends TypeImpl {
   /**
    * Constructor for StringTypeImpl.
    * 
-   * @param name
-   * @param code
-   * @param ts
+   * @param name -
+   * @param code -
+   * @param ts -
    */
   public StringTypeImpl(String name, int code, TypeSystemImpl ts) {
     super(name, code, ts);

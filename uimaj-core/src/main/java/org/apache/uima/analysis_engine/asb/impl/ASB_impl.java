@@ -352,6 +352,7 @@ public class ASB_impl extends Resource_ImplBase implements ASB {
   /**
    * Gets the MBean that provides the management interface to this AE. Returns the same object as
    * UimaContext.getManagementInterface() but casted to the AnalysisEngineManagement type.
+   * @return the MBean for the management interface to this AE
    */
   protected AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) mAggregateUimaContext.getManagementInterface();

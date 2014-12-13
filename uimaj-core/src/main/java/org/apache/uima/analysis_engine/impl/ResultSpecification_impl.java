@@ -173,7 +173,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    *   if the type system is available.  Otherwise, the type system *must*
    *   be set via a method call prior to querying the result spec, with the
    *   one exception of the method getResultTypesAndFeaturesWithoutCompiling
-   * @param aTypeSystem
+   * @param aTypeSystem -
    */
   public ResultSpecification_impl(TypeSystem aTypeSystem) {
     this();

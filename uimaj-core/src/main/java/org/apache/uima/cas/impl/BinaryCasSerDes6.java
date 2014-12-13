@@ -518,7 +518,7 @@ public class BinaryCasSerDes6 {
   
   /**
    * Setup to serialize (not delta) or deserialize (not delta) using binary compression, no type mapping but only processing reachable Feature Structures
-   * @param cas
+   * @param cas -
    * @throws ResourceInitializationException never thrown 
    */
   public BinaryCasSerDes6(AbstractCas cas) throws ResourceInitializationException {
@@ -527,8 +527,8 @@ public class BinaryCasSerDes6 {
   
   /**
    * Setup to serialize (not delta) or deserialize (not delta) using binary compression, with type mapping and only processing reachable Feature Structures
-   * @param cas
-   * @param tgtTs
+   * @param cas -
+   * @param tgtTs -
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, TypeSystemImpl tgtTs) throws ResourceInitializationException {
@@ -537,9 +537,9 @@ public class BinaryCasSerDes6 {
 
   /**
    * Setup to serialize (maybe delta) or deserialize (maybe delta) using binary compression, with type mapping and only processing reachable Feature Structures
-   * @param cas
-   * @param mark
-   * @param tgtTs
+   * @param cas -
+   * @param mark -
+   * @param tgtTs -
    * @param rfs Reused Feature Structure information - required for both delta serialization and delta deserialization
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
@@ -549,11 +549,11 @@ public class BinaryCasSerDes6 {
   
   /**
    * Setup to serialize (maybe delta) or deserialize (maybe delta) using binary compression, with type mapping and only processing reachable Feature Structures, output measurements
-   * @param cas
-   * @param mark
-   * @param tgtTs
+   * @param cas -
+   * @param mark -
+   * @param tgtTs -
    * @param rfs Reused Feature Structure information - speed up on serialization, required on delta deserialization
-   * @param doMeasurements
+   * @param doMeasurements -
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) throws ResourceInitializationException {
@@ -562,8 +562,8 @@ public class BinaryCasSerDes6 {
 
   /**
    * Setup to serialize (not delta) or deserialize (maybe delta) using binary compression, no type mapping and only processing reachable Feature Structures
-   * @param cas
-   * @param rfs
+   * @param cas -
+   * @param rfs -
    * @throws ResourceInitializationException never thrown
    */
   public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) throws ResourceInitializationException {
@@ -579,6 +579,7 @@ public class BinaryCasSerDes6 {
 
   /*************************************************************************************
    *   S E R I A L I Z E
+   * @param out -
    * @return null or serialization measurements (depending on setting of doMeasurements)
    * @throws IOException passthru
    *************************************************************************************/
@@ -1576,7 +1577,11 @@ public class BinaryCasSerDes6 {
   /*************************************************************************************
    *   D E S E R I A L I Z E
    *************************************************************************************/   
-
+  /**
+   * 
+   * @param istream -
+   * @throws IOException -
+   */
   public void deserialize(InputStream istream) throws IOException {
     readHeader(istream);
 

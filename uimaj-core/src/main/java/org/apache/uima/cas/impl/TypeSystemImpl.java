@@ -337,6 +337,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * 
    * @deprecated Use 0 arg constructor. Type Systems are shared by many CASes, and can't point to
    *             one. Change also your possible calls to ts.commit() - see comment on that method.
+   * @param cas -
    */
   @Deprecated
   public TypeSystemImpl(CASImpl cas) {
@@ -515,6 +516,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Check if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
+   * @param type -
+   * @param feat -
+   * @return true if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
    */
   public boolean isApprop(int type, int feat) {
     return subsumes(intro(feat), type);
@@ -852,6 +856,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Get the overall number of features defined in the type system.
+   * @return -
    */
   public int getNumberOfFeatures() {
     if (this.isCommitted()) {
@@ -862,6 +867,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Get the overall number of types defined in the type system.
+   * @return -
    */
   public int getNumberOfTypes() {
     if (this.isCommitted()) {
@@ -871,7 +877,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   /**
-   * Get the domain type for a feature.
+   * 
+   * @param feat -
+   * @return the domain type for a feature.
    */
   public int intro(int feat) {
     return this.intro.get(feat);
@@ -879,6 +887,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Get the range type for a feature.
+   * @param feat -
+   * @return -
    */
   public int range(int feat) {
     return this.featRange.get(feat);
@@ -901,6 +911,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Add a new feature to the type system.
+   * @param shortName -
+   * @param domain -
+   * @param range -
+   * @param multiRefsAllowed - 
+   * @return -
    */
   int addFeature(String shortName, int domain, int range, boolean multiRefsAllowed) {
     // Since we just looked up the domain in the symbol table, we know it
@@ -958,6 +973,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Add a top type to the (empty) type system.
+   * @param name -
+   * @return -
    */
   public Type addTopType(String name) {
     final int code = this.addTopTypeInternal(name);
@@ -988,6 +1005,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * Check if the first argument subsumes the second
+   * @param superType -
+   * @param type -
+   * @return true if first argument subsumes the second
    */
   public boolean subsumes(int superType, int type) {
     return this.ll_subsumes(superType, type);
@@ -1086,7 +1106,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   /**
    * This writes out the type hierarchy in a human-readable form.
+   *
    */
+  @Override
   public String toString() {
     // This code is maximally readable, not maximally efficient.
     StringBuffer buf = new StringBuffer();
@@ -1160,7 +1182,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 //    this.locked = b;
 //  }
 
-  /**
+  /*
    * @deprecated
    */
   @Deprecated

@@ -229,7 +229,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
   }
 
   /**
-   * @see ConfigurationParameterDeclarations#removeConfigurationParameter(.ConfigurationParameter)
+   * @see ConfigurationParameterDeclarations#removeConfigurationParameter(ConfigurationParameter)
    */
   public void removeCommonParameter(ConfigurationParameter aConfigurationParameter) {
     ConfigurationParameter[] current = getCommonParameters();
@@ -271,7 +271,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
     }
   }
 
-  /** Utility method */
+  /* Utility method */
   protected ConfigurationParameter _getConfigurationParameter(ConfigurationParameter[] aParams,
           String aName) {
     if (aParams != null) {
@@ -340,7 +340,7 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
    * 
    * 9/2013: superclasses don't have this method, so can't be overridden.
    * 9/2013: method never called
-   * 
+   * @return - 
    */
   protected String getXMLAttributeString() {
     StringBuffer buf = new StringBuffer();

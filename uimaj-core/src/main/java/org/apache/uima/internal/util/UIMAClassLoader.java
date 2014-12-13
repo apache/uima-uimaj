@@ -142,6 +142,9 @@ public class UIMAClassLoader extends URLClassLoader {
 
   /**
    * Do not use this factory method - throws unsupportedOperationException
+   * @param urls -
+   * @return -
+   * @throws UnsupportedOperationException -
    */
   public static URLClassLoader newInstance(final URL[] urls) {
     throw new UnsupportedOperationException();
@@ -149,6 +152,10 @@ public class UIMAClassLoader extends URLClassLoader {
 
   /**
    * Do not use this factory method - throws unsupportedOperationException
+   * @param urls -
+   * @param parent -
+   * @return -
+   * @throws UnsupportedOperationException -
    */
   public static URLClassLoader newInstance(final URL[] urls, final ClassLoader parent) {
     throw new UnsupportedOperationException();

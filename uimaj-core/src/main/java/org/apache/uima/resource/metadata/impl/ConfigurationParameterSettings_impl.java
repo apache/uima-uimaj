@@ -96,7 +96,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   }
 
   /**
-   * @see ConfigurationParameterSettings#getParameterValue(java.lang.String)
+   * @see ConfigurationParameterSettings#getParameterValue(String)
    */
   public Object getParameterValue(String aParamName) {
     NameValuePair[] nvps = getParameterSettings();
@@ -303,7 +303,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
    * Overridden to write the settingsForGroups property, whose value is a Map, which is not
    * supported by the default XMLization routines.
    * 
-   * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)
+   * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)
    */
   @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {

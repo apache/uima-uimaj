@@ -757,7 +757,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * Gets the hash code for this object. The hash codes of two NameClassPairs <code>x</code> and
-   * </code>y</code> must be equal if <code>x.equals(y)</code> returns true;
+   * <code>y</code> must be equal if <code>x.equals(y)</code> returns true;
    * 
    * @return the hash code for this object
    */
@@ -936,9 +936,8 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          information on how to represent the property in XML
    * @param aNamespace
    *          XML namespace URI for this object
-   * @param aContentHandler
-   *          content handler to which this object will send events that describe its XML
    *          representation
+   * @throws SAXException -
    */
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
     final SerialContext sc = serialContext.get();
@@ -1026,9 +1025,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          in which case each element will be assigned a value appropriate to its class.
    * @param aNamespace
    *          the XML namespace URI for this object
-   * @param aContentHandler
-   *          the ContentHandler to which this object will write events that describe its XML
-   *          representation
+   * @throws SAXException -         
    */
   protected void writeArrayPropertyAsElement(String aPropName, Class aPropClass, Object aValue,
           String aArrayElementTagName, String aNamespace)
@@ -1105,8 +1102,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          will be written as an empty element
    * @param aNamespace
    *          namespace for this object
-   * @param aContentHandler
-   *          ContentHandler to which this object will send events describing its XML representation
    * @throws SAXException  passthru       
    */
   protected void writeMapPropertyToXml(String aPropName, String aXmlElementName,
@@ -1263,6 +1258,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          parser to use to construct complex values
    * @param aOptions
    *          option settings
+   * @throws InvalidXMLException -         
    */
   protected void readPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo, Element aElement,
           XMLParser aParser, XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
@@ -1322,6 +1318,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          parser to use to construct complex values
    * @param aOptions
    *          option settings
+   * @throws InvalidXMLException -         
    */
   protected void readArrayPropertyValueFromXMLElement(PropertyXmlInfo aPropXmlInfo,
           Class aPropClass, Element aElement, XMLParser aParser, XMLParser.ParsingOptions aOptions)
@@ -1417,6 +1414,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    *          DOM element to read from
    * @param aParser
    *          parser to use to construct complex values
+   * @param aOptions -
    * @param aKnownPropertyNames
    *          List of propertiees that we've already values for (these values will not be
    *          overwritten)
@@ -1496,6 +1494,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aValueIsArray
    *          true if the value of the map entires is an array. This method only supports
    *          homogeneous arrays.
+   * @throws InvalidXMLException -         
    */
   protected void readMapPropertyFromXml(String aPropName, Element aElement,
           String aKeyXmlAttribute, String aValueTagName, XMLParser aParser,
@@ -1559,7 +1558,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * @param aPrimitiveType
    *          <code>Class</code> object representing a primitive type
    * 
-   * @return <code>Class</object> object representing the wrapper type for
+   * @return <code>Class</code> object representing the wrapper type for
    *     <code>PrimitiveType</code>.  If <code>aPrimitiveType</code> is not
    *     a primitive type, it is itself returned.
    */

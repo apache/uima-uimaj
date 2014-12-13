@@ -445,6 +445,10 @@ public class UIMAFramework_impl extends UIMAFramework {
    *           if the XML parser could not be configured
    * @throws SAXException
    *           if factoryConfig.xml could not be parsed
+   * @throws ClassNotFoundException -
+   * @throws IllegalAccessException -
+   * @throws InstantiationException -
+   * @throws IOException -
    */
   protected void parseFactoryConfig() throws ParserConfigurationException, SAXException,
           IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {

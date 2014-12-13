@@ -316,6 +316,8 @@ public class BinaryCasSerDes4 {
    * @param cas CAS to serialize
    * @param out output object
    * @param trackingMark tracking mark (for delta serialization)
+   * @param compressLevel -
+   * @param compressStrategy - 
    * @return null or serialization measurements (depending on setting of doMeasurements)
    * @throws IOException if the marker is invalid
    */

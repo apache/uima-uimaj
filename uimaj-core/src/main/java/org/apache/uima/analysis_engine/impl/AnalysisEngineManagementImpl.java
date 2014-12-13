@@ -154,6 +154,7 @@ public class AnalysisEngineManagementImpl
 
   /**
    * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
+   * @return Batch Process Complete time since mark
    */
   public long getBatchProcessCompleteTimeSinceMark() {
     return batchProcessCompleteTime - markedBatchProcessCompleteTime;
@@ -161,6 +162,7 @@ public class AnalysisEngineManagementImpl
 
   /**
    * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
+   * @return Collection Process Complete time since mark
    */
   public long getCollectionProcessCompleteTimeSinceMark() {
     return collectionProcessCompleteTime - markedCollectionProcessCompleteTime;
@@ -168,6 +170,7 @@ public class AnalysisEngineManagementImpl
 
   /**
    * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
+   * @return Analysis time since mark
    */
   public long getAnalysisTimeSinceMark() {
     return analysisTime - markedAnalysisTime;
@@ -175,6 +178,7 @@ public class AnalysisEngineManagementImpl
 
   /**
    * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
+   * @return service call time since mark
    */
   public long getServiceCallTimeSinceMark() {
     return serviceCallTime - markedServiceCallTime;

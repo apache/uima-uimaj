@@ -196,6 +196,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   /**
    * @deprecated
+   * @param featureName -
+   * @return -
    */
   @Deprecated
   public Feature getFeature(String featureName) {
@@ -204,6 +206,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   /**
    * guaranteed to be non-null, but might be empty list
+   * @return -
    */
   public List<Feature> getFeatures() {
     int[] feats = this.ts.ll_getAppropriateFeatures(this.code);

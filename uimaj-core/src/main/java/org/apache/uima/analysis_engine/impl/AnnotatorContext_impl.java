@@ -256,6 +256,7 @@ public class AnnotatorContext_impl implements AnnotatorContext {
    * <p>
    * This method is to be called from the Analysis Engine, not the Annotator, so it is not part of
    * the AnnotatorContext interface.
+   * @param aProcessTrace -
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mUimaContext.setProcessTrace(aProcessTrace);

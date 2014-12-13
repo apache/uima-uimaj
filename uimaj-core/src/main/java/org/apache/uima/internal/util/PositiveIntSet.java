@@ -83,18 +83,21 @@ public interface PositiveIntSet {
   
   /**
    * For FSBagIndex low level iterator use
+   * @param position -
    * @return the position of the next element, or -1;
    */
   int moveToNext(int position);
   
   /**
    * For FSBagIndex low level iterator use
+   * @param position -
    * @return the position of the next element, or -1;
    */
   int moveToPrevious(int position);
 
   /**
    * For FSBagIndex low level iterator use
+   * @param position -
    * @return true if the position is between the first and last element inclusive.
    */
   boolean isValid(int position);

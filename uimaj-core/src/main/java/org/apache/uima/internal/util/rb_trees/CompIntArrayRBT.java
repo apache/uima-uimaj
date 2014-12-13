@@ -37,7 +37,8 @@ public class CompIntArrayRBT extends IntArrayRBT {
   /**
    * Constructor for CompIntArrayRBT.
    * 
-   * @param initialSize
+   * @param comp -
+   * @param initialSize -
    */
   public CompIntArrayRBT(IntComparator comp, int initialSize) {
     super(initialSize);

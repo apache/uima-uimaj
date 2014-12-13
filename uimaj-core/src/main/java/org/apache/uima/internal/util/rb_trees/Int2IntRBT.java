@@ -291,7 +291,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
 
   /**
    * Get the value for a given key
-   * @param k
+   * @param k  -
    * @return the value
    */
   public int get(final int k) {
@@ -314,7 +314,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
    * adds a k, v pair.  
    *   if k already present, replaces v.
    *   returns previous value, or 0 if no prev value
-   * @param k
+   * @param k -
+   * @param v -
    * @return previous value or 0 if key not previously present
    */
   public int put(final int k, final int v) {
@@ -388,8 +389,9 @@ public class Int2IntRBT extends IntArrayRBTcommon {
    *   *** NOT THREAD SAFE ***
    *   
    *   Tries to shorten the search path, conditionally
+   *   @param k -
+   *   @return -
    */
-  
   protected int findKeyFast(final int k) {
     final int node;
     if (lastNodeGotten == NIL) {

@@ -1531,10 +1531,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * This is public only until the xml specifier format supports specifying index kinds (set, bag
    * etc.).
    * 
-   * @param comp
-   * @param label
-   * @param indexType
-   * @return boolean
+   * @param comp -
+   * @param label -
+   * @param indexType -
+   * @return -
    */
   public boolean createIndexNoQuestionsAsked(final FSIndexComparator comp, String label, int indexType) {
     IndexIteratorCachePair cp = this.name2indexMap.get(label);
@@ -1714,7 +1714,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   /**
    * Remove all instances of a particular type (but not its subtypes) from all indexes
-   * @param type
+   * @param type -
    */
   public void removeAllExcludingSubtypes(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
@@ -1729,7 +1729,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   /**
    * Remove all instances of a particular type (including its subtypes) from all indexes
-   * @param type
+   * @param type -
    */
   public void removeAllIncludingSubtypes(Type type) {
     removeAllExcludingSubtypes(type);
@@ -1781,6 +1781,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * The order in which FSs occur in the array does not reflect the order in which they
    * were added to the repository. This means that set indexes deserialized from this list may
    * contain different but equal elements than the original index.
+   * @return an array containing all FSs in any defined index, in this view.
    */
   public int[] getIndexedFSs() {
     final IntVector v = new IntVector();
@@ -2162,7 +2163,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * If type is subtype of annotation, can just test the built-in
    * Annotation index.
    * 
-   * @param fsRef - the FS to see if it is in some index that could be corrupted by a key feature value change
+   * @param fsAddr the FS to see if it is in some index that could be corrupted by a key feature value change
    * @return true if this fs is found in a Set or Sorted index.  
    */
   public boolean isInSetOrSortedIndexInThisView(int fsAddr) {

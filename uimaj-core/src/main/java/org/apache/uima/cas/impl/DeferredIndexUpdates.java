@@ -29,7 +29,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
    * for XCAS and XMI deserialization, need to remember
    * what's being added to the indices and/or removed, because
    * the actual FSs are not yet "fixed up" (adjusted for 
-   * reference id's -> actual addresses, including the sofa refs)
+   * reference id's &rarr; actual addresses, including the sofa refs)
    * for non-delta updates.  
    * 
    * Workaround (2014) is to remember the information, and do the

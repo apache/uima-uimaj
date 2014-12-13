@@ -77,7 +77,7 @@ public class SerializationMeasures {
    *     - the aux heaps
    *     - the string offsets, the string lengths
    *     
-   * Heap: xxxx  [name-of-delta: [Total: <TotalBytes>(negative%)  Histo: a(neg%) b(neg%) c(neg%) d(neg%) e(neg%)]]
+   * Heap: xxxx  [name-of-delta: [Total: &lt;TotalBytes&gt;(negative%)  Histo: a(neg%) b(neg%) c(neg%) d(neg%) e(neg%)]]
     *   2 styles: one uses only one counter, no delta  - used for byte, short, and long heaps
     *   other is for main heap, uses 4 deltas.
    *
@@ -170,7 +170,7 @@ public class SerializationMeasures {
     
     /**
      * v is the number of bytes to incr counter 0 by
-     * @param v
+     * @param v -
      */
     public void incrNoCompression(int v) {
       c[bytesPerCount - 1] += v;
@@ -344,7 +344,7 @@ public class SerializationMeasures {
 
   /**
    * accumulate results for multiple files
-   * @param o
+   * @param o -
    */
   public void accum(SerializationMeasures o) {
     int i = 0;

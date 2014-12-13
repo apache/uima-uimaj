@@ -95,7 +95,7 @@ public class FsIndexKeyDescription_impl extends MetaDataObject_impl implements
    * Overridden to handle XML export of the <code>typePriority</code> and <code>comparator</code>
    * properties.
    * 
-   * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)
+   * @see MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)
    */
   @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {

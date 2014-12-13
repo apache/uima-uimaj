@@ -118,8 +118,8 @@ public class IntHashSet implements PositiveIntSet {
    * The number is such that you could add this many elements without
    *   triggering the capacity expansion.
    *   
-   * @param numberOfElements
-   * @return
+   * @param numberOfElements -
+   * @return -
    */
   public int tableSpace(int numberOfElements) {
     return tableSpace(numberOfElements, loadFactor);
@@ -127,8 +127,8 @@ public class IntHashSet implements PositiveIntSet {
   
   /**
    * 
-   * @param numberOfElements
-   * @param factor
+   * @param numberOfElements -
+   * @param factor -
    * @return capacity of the main table (either 2 byte or 4 byte entries)
    */
   public static int tableSpace(int numberOfElements, Float factor) {
@@ -363,7 +363,7 @@ public class IntHashSet implements PositiveIntSet {
   
   /**
    * 
-   * @param key
+   * @param rawKey -
    * @return true if this set did not already contain the specified element
    */
   @Override
@@ -418,8 +418,8 @@ public class IntHashSet implements PositiveIntSet {
   /**
    * mostPositive and mostNegative are not updated
    *   for removes.  So these values may be inaccurate,
-   *   but mostPositive is always >= actual most positive,
-   *   and mostNegative is always <= actual most negative.
+   *   but mostPositive is always &gt;= actual most positive,
+   *   and mostNegative is always &lt;= actual most negative.
    * No conversion from int to short
    * @param rawKey -
    * @return true if the key was present
@@ -461,7 +461,7 @@ public class IntHashSet implements PositiveIntSet {
   
   /**
    * 
-   * @return a value that is >= the actual most positive value in the table.
+   * @return a value that is &gt;= the actual most positive value in the table.
    *   it will be == unless a remove operation has removed a most positive value
    */
   public int getMostPositive() {
@@ -470,7 +470,7 @@ public class IntHashSet implements PositiveIntSet {
   
   /**
    * 
-   * @return a value that is <= the actual least positive value in the table.
+   * @return a value that is &lt;= the actual least positive value in the table.
    *   It will be == unless remove operations has removed a least positive value.
    */
   public int getMostNegative() {

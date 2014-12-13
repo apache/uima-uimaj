@@ -80,6 +80,10 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
   /**
    * An alternative form of initialize that takes the number of simultaneous requests and timeout
    * period as explicit arguments.
+   * @param aResourceSpecifier -
+   * @param aNumSimultaneousRequests - 
+   * @param aTimeout -
+   * @throws ResourceInitializationException -
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, int aNumSimultaneousRequests,
           int aTimeout) throws ResourceInitializationException {
@@ -97,7 +101,7 @@ public class AnalysisEngineService_impl extends ResourceService_impl {
    *          data to be processed
    * @param aResultSpec
    *          specifies which results the Analysis Engine should produce
-   * 
+   * @throws ResourceServiceException -
    * @return the results of analysis
    */
   public ServiceDataCargo process(ServiceDataCargo aData, ResultSpecification aResultSpec)

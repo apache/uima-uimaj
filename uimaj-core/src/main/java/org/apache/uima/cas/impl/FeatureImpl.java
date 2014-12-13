@@ -47,7 +47,7 @@ public class FeatureImpl implements Feature {
   }
 
   /**
-   * Get the internal code of this feature. Necessary when using low-level APIs.
+   * @return the internal code of this feature. Necessary when using low-level APIs.-
    */
   public int getCode() {
     return this.code;

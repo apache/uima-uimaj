@@ -99,6 +99,7 @@ public class IntRedBlackTree {
    * 
    * @param key
    *          The key to be deleted.
+   * @return -
    */
   public final int remove(int key) throws java.util.NoSuchElementException {
     IntRBTNode node = IntRBTNode.find(this.root, key);

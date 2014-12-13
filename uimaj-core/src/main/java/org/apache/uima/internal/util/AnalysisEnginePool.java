@@ -138,6 +138,7 @@ public class AnalysisEnginePool {
 
   /**
    * Gets metadata for AnalysisEngines in this pool.
+   * @return -
    */
   public AnalysisEngineMetaData getMetaData() {
     return (AnalysisEngineMetaData) mPool.getMetaData();
@@ -148,6 +149,7 @@ public class AnalysisEnginePool {
    * This version only called for setResultSpecification called from an appl on the
    * MultiprocessingAnalysisEngine directly.  process(cas, result-spec) calls
    * setResultSpecification on the individual analysis engine from the pool.
+   * @param aResultSpec -
    */
   public void setResultSpecification(ResultSpecification aResultSpec) {
     
@@ -180,6 +182,7 @@ public class AnalysisEnginePool {
   
   /**
    * @see org.apache.uima.resource.ConfigurableResource#reconfigure()
+   * @throws ResourceConfigurationException -
    */
   public synchronized void reconfigure() throws ResourceConfigurationException {
     // reconfigure each AnalysisEngine in the pool
@@ -206,6 +209,7 @@ public class AnalysisEnginePool {
 
   /**
    * Calls batchProcessComplete on all AEs in pool.
+   * @throws AnalysisEngineProcessException -
    */
   public synchronized void batchProcessComplete() throws AnalysisEngineProcessException {
     List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
@@ -230,6 +234,7 @@ public class AnalysisEnginePool {
 
   /**
    * Calls collectionProcessComplete on all AEs in pool.
+   * @throws AnalysisEngineProcessException -
    */
   public synchronized void collectionProcessComplete() throws AnalysisEngineProcessException {
     List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();
@@ -264,6 +269,7 @@ public class AnalysisEnginePool {
 
   /**
    * Sets logger for all AnalysisEngines in pool.
+   * @param aLogger -
    */
   public synchronized void setLogger(Logger aLogger) {
     List<AnalysisEngine> toRelease = new ArrayList<AnalysisEngine>();

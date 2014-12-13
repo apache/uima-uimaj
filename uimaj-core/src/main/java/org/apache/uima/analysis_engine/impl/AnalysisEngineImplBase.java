@@ -485,6 +485,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * access it.
    * 
    * @see org.apache.uima.resource.ConfigurationManager#getCurrentConfigParameterSettings(String)
+   * @return -
    */
   protected ConfigurationParameterSettings getCurrentConfigParameterSettings() {
     return getUimaContextAdmin().getConfigurationManager().getCurrentConfigParameterSettings(
@@ -492,7 +493,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * Gets the MBean that provides the management interface to this AE. Returns the same object as
+   * @return the MBean that provides the management interface to this AE. Returns the same object as
    * getManagementInterface() but casted to the AnalysisEngineManagement type.
    */
   protected AnalysisEngineManagementImpl getMBean() {
@@ -527,7 +528,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
 
   /**
-   * Construct a ProcessTrace object that represents the last execution of this AnalysisEngine. This
+   * @return a constructed ProcessTrace object that represents the last execution of this AnalysisEngine. This
    * is used so that we can return a ProcessTrace object from each process() call for backwards
    * compatibility with version 1.x.
    */
@@ -541,6 +542,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * Modify an existing ProcessTrace object by adding events that represent the last excecution of
    * this AnalysisEngine. This is used so that we can return a ProcessTrace object from each
    * process() call for backwards compatibility with version 1.x.
+   * @param trace -
    */
   protected void buildProcessTraceFromMBeanStats(ProcessTrace trace) {
     // this is the implementation for primitives only. Aggregate AE overrides.

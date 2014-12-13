@@ -187,6 +187,8 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * Checks it the type system of the given CAS is different from the last type system this
    * component was operating on. If it is different, calls the typeSystemInit method on the
    * component.
+   * @param aCAS -
+   * @throws AnalysisEngineProcessException - 
    */
   public void checkTypeSystemChange(AbstractCas aCAS) throws AnalysisEngineProcessException {
     try {
@@ -283,6 +285,7 @@ public class AnnotatorAdapter implements AnalysisComponent {
    * (non-Javadoc)
    * 
    * @see org.apache.uima.analysis_component.AnalysisComponent#getCasInstancesRequired()
+   * @return the number of instances required
    */
   public int getCasInstancesRequired() {
     return 0;

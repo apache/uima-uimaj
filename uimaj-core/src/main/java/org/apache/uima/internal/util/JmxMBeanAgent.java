@@ -38,7 +38,7 @@ public class JmxMBeanAgent {
    * 
    * @param aMBean
    *          the MBean to register
-   * @param aMBeanServer
+   * @param aMBeanServerO
    *          server to register with. If null, the platform MBeanServer will be used if we are
    *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
    *          in that case, this method will do nothing.
@@ -93,7 +93,7 @@ public class JmxMBeanAgent {
    * 
    * @param aMBean
    *          the MBean to register
-   * @param aMBeanServer
+   * @param aMBeanServerO
    *          server to unregister from. If null, the platform MBeanServer will be used if we are
    *          running under Java 1.5. Earlier versions of Java did not have a platform MBeanServer;
    *          in that case, this method will do nothing.

@@ -33,13 +33,13 @@ import java.util.NoSuchElementException;
  * Optimize for small sets 
  * 
  * Graceful degradation for completely random integer operations on large sets; 
- *   keep O(1) operations, at the expense of extra space (< 3 x size).
+ *   keep O(1) operations, at the expense of extra space (&lt; 3 x size).
  * 
  *   Uses several different representations depending on the range of ints stored and the total number of ints stored.
  *   
  *     Sizes:  Tiny, medium, large 
  *     Ranges: semi-knowable, unknowable;  
- *               if semi-knowable, dense, small-range (< 65K), large-range
+ *               if semi-knowable, dense, small-range (&lt; 65K), large-range
  *     
  *     For all sizes, 
  *       if dense, use IntBitSet (with offset)
@@ -48,7 +48,7 @@ import java.util.NoSuchElementException;
  *       For large, (implies large-range, too) use IntHashSet  
  *       
  *       For medium,
- *         if small-range < 65K, use IntHashSet with offset 
+ *         if small-range &lt; 65K, use IntHashSet with offset 
  *         else use IntHashSet 
  *   
  *   Arrange switching between representations
@@ -104,9 +104,6 @@ public class PositiveIntSet_impl implements PositiveIntSet {
    *           The next two params are used only if initialSize is not 0.
    * @param estMin - the estimated minimum int value to be added
    * @param estMax - the estimated max int value to be added
-   * @param isBitSetDense - true if we should use a bit set
-   * @param offsetFlag - a number >= 0, the offset to use, or -1 to automatically
-   *                 calculate the offset based on the initialSize
    */
   public PositiveIntSet_impl(int initialSize, int estMin, int estMax) {
     if (initialSize == 0) {

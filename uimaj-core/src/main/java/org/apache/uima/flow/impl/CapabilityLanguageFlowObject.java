@@ -108,6 +108,7 @@ public class CapabilityLanguageFlowObject extends CasFlow_ImplBase implements Cl
    * 
    * @param aFlowTable
    *          a flow table
+   * @param aParentController -         
    */
   public CapabilityLanguageFlowObject(Map<String, List<AnalysisSequenceCapabilityNode>> aFlowTable, 
       CapabilityLanguageFlowController aParentController) {

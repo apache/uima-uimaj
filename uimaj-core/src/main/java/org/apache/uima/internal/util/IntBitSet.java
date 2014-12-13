@@ -31,7 +31,7 @@ import java.util.NoSuchElementException;
  *   
  * This impl is for use in a single thread case only
  * 
- * This impl supports offset, to let this bit set store items in a range n -> n + small number
+ * This impl supports offset, to let this bit set store items in a range n &rarr; n + small number
  * 
  * If using offset, you must add ints in a range equal to or above the offset
  * 
@@ -99,8 +99,8 @@ public class IntBitSet implements PositiveIntSet {
    
   /**
    * 
-   * @param key
-   * @return
+   * @param key -
+   * @return -
    */
   @Override
   public boolean contains(int key) {
@@ -114,7 +114,7 @@ public class IntBitSet implements PositiveIntSet {
   }
   /**
    * 
-   * @param key
+   * @param original_key -
    * @return true if this set did not already contain the specified element
    */
   @Override
@@ -135,7 +135,7 @@ public class IntBitSet implements PositiveIntSet {
   
   /**
    * 
-   * @param key -
+   * @param original_key -
    * @return true if this key was removed, false if not present
    */
   @Override

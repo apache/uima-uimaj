@@ -102,7 +102,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  * <li>Call <code>getValueType</code> to find out whether the feature path evaluates to a String,
  * and int, a float, or their array counterparts.
  * <li>Depending on the leaf type, call the appropriate <code>evaluateAs </code> methods
- * </ol>
+ * </ul>
  * 
  */
 public class FeatureValuePathImpl implements FeatureValuePath {

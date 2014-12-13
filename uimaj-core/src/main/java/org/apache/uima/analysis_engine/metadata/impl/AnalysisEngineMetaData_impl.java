@@ -290,6 +290,7 @@ public class AnalysisEngineMetaData_impl extends ResourceMetaData_impl implement
 
   /**
    * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
+   * @return XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;

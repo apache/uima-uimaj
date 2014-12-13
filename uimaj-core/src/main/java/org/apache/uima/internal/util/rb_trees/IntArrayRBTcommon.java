@@ -271,7 +271,7 @@ public class IntArrayRBTcommon {
    * For color (a boolean), the size for stopping doubling is 32 * 2 * 1024 * 1024,
    *   so the # of words is the same.
    * 
-   * @param requiredSize
+   * @param requiredSize -
    */
   
   protected void ensureCapacityKlrp(int requiredSize) {       
@@ -451,7 +451,8 @@ public class IntArrayRBTcommon {
   }
   
   /**
-   * Find the first node such that k &lt;= key[node].
+   * @param k -
+   * @return the first node such that k &lt;= key[node].
    */
   protected int findKey(final int k) {
     return findKeyDown(k, this.root);
@@ -474,6 +475,8 @@ public class IntArrayRBTcommon {
 
   /**
    * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
+   * @param k -
+   * @return the node such that key[node] &ge; k and key[previous(node)] &lt; k.
    */
   public int findInsertionPointNoDups(final int k) {
     int node = this.root;

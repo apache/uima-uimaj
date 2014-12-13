@@ -134,7 +134,7 @@ public class CasTypeSystemMapper {
   }
   
   /**
-   * @param c
+   * @param c -
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public int mapTypeCodeSrc2Tgt(int c) {
@@ -142,7 +142,7 @@ public class CasTypeSystemMapper {
   }
 
   /**
-   * @param c
+   * @param c -
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public int mapTypeCodeTgt2Src(int c) {
@@ -150,8 +150,8 @@ public class CasTypeSystemMapper {
   }
   /**
    * 
-   * @param c
-   * @param src2tgt
+   * @param c -
+   * @param src2tgt -
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public int mapTypeCode2Other(int c, boolean src2tgt) {

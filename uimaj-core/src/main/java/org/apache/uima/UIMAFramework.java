@@ -829,7 +829,7 @@ public abstract class UIMAFramework {
    * 
    * @deprecated As of v2.0, CAS Initializers are deprecated. A component that performs an operation
    *             like HTML detagging should instead be implemented as a "multi-Sofa" annotator. See
-   *             {@link org.apache.uima.examples.XmlDetagger} for an example.
+   *             org.apache.uima.examples.XmlDetagger for an example.
    */
   @Deprecated
   public static CasInitializer produceCasInitializer(ResourceSpecifier aSpecifier)

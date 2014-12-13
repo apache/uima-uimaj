@@ -53,7 +53,7 @@ public class AnalysisComponentAdapterFactory {
    *          parameters passed to AE's initialize method
    * 
    * @return an object that wraps <code>aAdaptee</code> and implements the
-   *         <code>AnalysisComponent> interface.
+   *         <code>AnalysisComponent</code> interface.
    * @throws ResourceInitializationException if passed an adaptee which is not an analysis component
    */
   public static AnalysisComponent createAdapter(Object aAdaptee, AnalysisEngineMetaData aMetaData,

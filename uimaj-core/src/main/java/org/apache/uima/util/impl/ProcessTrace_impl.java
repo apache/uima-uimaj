@@ -328,7 +328,11 @@ public class ProcessTrace_impl implements ProcessTrace {
   }
 
   /**
-   * Utility method used by getEventsByComponentName(String)
+   * Utility method used by getEventsByComponentName(String)   * 
+   * @param aEvent -
+   * @param aComponentName -
+   * @param aRecurseAfterMatch -
+   * @param aResultList -
    */
   protected void getEventsByComponentName(ProcessTraceEvent aEvent, String aComponentName,
           boolean aRecurseAfterMatch, List<ProcessTraceEvent> aResultList) {
@@ -347,6 +351,11 @@ public class ProcessTrace_impl implements ProcessTrace {
 
   /**
    * Utility method used by getEventsByType(String)
+   * 
+   * @param aEvent -
+   * @param aType -
+   * @param aRecurseAfterMatch -
+   * @param aResultList -
    */
   protected void getEventsByType(ProcessTraceEvent aEvent, String aType,
           boolean aRecurseAfterMatch, List<ProcessTraceEvent> aResultList) {
@@ -363,7 +372,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     }
   }
 
-  /**
+  /*
    * Utility method used by aggregate(ProcessTrace)
    */
   protected <T extends ProcessTraceEvent> T findCorrespondingEvent(List<T> aEventList, T aEvent) {
@@ -378,7 +387,7 @@ public class ProcessTrace_impl implements ProcessTrace {
     return null;
   }
 
-  /**
+  /*
    * Utility method used by aggregate(ProcessTrace)
    */
   protected void aggregateEvent(ProcessTraceEvent_impl aDest, ProcessTraceEvent_impl aSrc) {

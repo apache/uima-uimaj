@@ -122,7 +122,7 @@ public class IntVector implements Serializable {
 
   /**
    * Add an array of elements to the end.
-   * @param elements
+   * @param elements -
    */
   public void add(int[] elements) {
     add(elements, 0, elements.length);
@@ -130,9 +130,9 @@ public class IntVector implements Serializable {
   
   /**
    * Add a slice of elements to the end
-   * @param elements
-   * @param startpos
-   * @param endpos
+   * @param elements -
+   * @param startpos -
+   * @param endpos -
    */
   public void add(int[] elements, int startpos, int endpos) {
     final int len = endpos - startpos;
@@ -145,6 +145,7 @@ public class IntVector implements Serializable {
   /**
    * Add an element at the end of vector. Behaves like add(Object o) of
    * {@link java.util.Vector Vector}.
+   * @param element -
    */
   public void add(int element) {
     final int i = this.pos;
@@ -164,6 +165,8 @@ public class IntVector implements Serializable {
    * Add an element at a certain position in the vector. Elements later in the vector are shifted
    * right by one. If the position is past the end of the current vector, new <code>0</code>-valued
    * elements are added.
+   * @param index -
+   * @param element -
    */
   public void add(int index, int element) {
     if (index >= this.pos) {
@@ -196,6 +199,8 @@ public class IntVector implements Serializable {
 
   /**
    * Set an element at a certain position in the vector.
+   * @param index -
+   * @param element -
    */
   public void set(int index, int element) {
     if (index >= this.pos) {
@@ -208,6 +213,8 @@ public class IntVector implements Serializable {
    * Set an element at a certain position in the vector. Vector will grow.
    * Not apparently used (2014)
    * Seems for purposes of having pairs of adjacent elements, (e.g. map).
+   * @param index -
+   * @param element -
    */
   public void put(int index, int element) {
     ensure_size(index + 1);
@@ -217,6 +224,7 @@ public class IntVector implements Serializable {
   /**
    * Retrieve the element at index.
    * 
+   * @param index -
    * @return The element at <code>index</code>.
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>index</code> is not a valid index.
@@ -275,6 +283,7 @@ public class IntVector implements Serializable {
    * element in this <code>IntVector</code> is equal to the <i>n</i>-th element in <code>o</code>
    * for all <i>n</i> &lt; <code>this.size()</code>.
    * 
+   * @param o -
    * @return <code>true</code> if the <code>IntVector</code>s are equal, <code>false</code>
    *         otherwise.
    */
@@ -310,7 +319,7 @@ public class IntVector implements Serializable {
 
   /**
    * Tests if the specified <code>int</code> is a component of this <code>IntVector</code>.
-   * 
+   * @param elem -
    * @return <code>true</code> if and only if the <code>int</code> is an element of this
    *         <code>IntVector</code>, <code>false</code> otherwise.
    */
@@ -322,7 +331,7 @@ public class IntVector implements Serializable {
    * Return the position of the first occurrence of <code>elem</code> in the IntVector, if it
    * exists.
    * 
-   * @param elem
+   * @param elem 
    *          The element we're looking for.
    * @return The position, or <code>-1</code> if it doesn't exist.
    */
@@ -350,7 +359,7 @@ public class IntVector implements Serializable {
   }
 
   /**
-   * Return the underlying int array, where the length of the returned array is equal to the
+   * @return the underlying int array, where the length of the returned array is equal to the
    * vector's size. This is not a copy!
    */
   public int[] toArray() {
@@ -397,7 +406,7 @@ public class IntVector implements Serializable {
   }
 
   /**
-   * Return a copy of the underlying array.
+   * @return a copy of the underlying array.
    */
   public int[] toArrayCopy() {
     final int max = this.size();
@@ -406,14 +415,16 @@ public class IntVector implements Serializable {
     return copy;
   }
 
-  /** Return the internal array. */
+  /** Return the internal array. 
+   * @return - 
+   */
   public int[] getArray() {
     return this.array;
   }
 
   /**
    * Returns the index of the first occurrence of the element specified in this vector.
-   * 
+   * @param element -
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOf(int element) {
@@ -438,7 +449,7 @@ public class IntVector implements Serializable {
    * Exploit this by assuming ascending, and testing if the 
    * element is above or below the mid-element, and ordering the
    * direction of the search.
-   * 
+   * @param element -
    * @return the index or <code>-1</code> if the element was not found.
    */
   public int indexOfOptimizeAscending(int element) {

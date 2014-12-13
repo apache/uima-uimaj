@@ -128,6 +128,7 @@ public class FlowContainer {
 
   /**
    * Gets the MBean to use to report performance statistics.
+   * @return the MBean to use to report performance statistics
    */
   public AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) mFlowControllerContainer.getUimaContextAdmin()

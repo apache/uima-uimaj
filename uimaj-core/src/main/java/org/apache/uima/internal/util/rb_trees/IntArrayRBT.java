@@ -371,7 +371,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   
   /**
    * like add, but returns boolean flag true if not present before
-   * @param k 
+   * @param k -
    * @return true if added (not present before)
    */
   public boolean addAdded(int k) {
@@ -544,7 +544,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   
   /**
    * Method iterator.
-   * 
+   * @param comp comparator  
    * @return IntListIterator
    */
   public ComparableIntIterator iterator(IntComparator comp) {

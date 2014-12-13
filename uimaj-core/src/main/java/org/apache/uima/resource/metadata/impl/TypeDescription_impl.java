@@ -59,6 +59,7 @@ public class TypeDescription_impl extends MetaDataObject_impl implements TypeDes
    * 
    * @param aName
    *          name of the Type
+   * @param aDescription -
    * @param aSupertypeName
    *          name of the type's supertype
    */

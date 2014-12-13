@@ -338,6 +338,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * 
    * @param aCAS
    *          CAS to be processed by annotator
+   * @throws AnalysisEngineProcessException -         
    */
   protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
@@ -502,6 +503,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    * Calls the Analysis Component's next() method.
    * 
    * @return CAS returned by the analysis component
+   * @throws AnalysisEngineProcessException -
+   * @throws ResultNotSupportedException -
    */
   protected CAS callAnalysisComponentNext() throws AnalysisEngineProcessException,
           ResultNotSupportedException {

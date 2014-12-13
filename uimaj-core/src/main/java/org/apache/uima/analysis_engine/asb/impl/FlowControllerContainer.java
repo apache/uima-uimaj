@@ -224,7 +224,9 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     }
   }
 
-  /** Get the required CAS interface of the FlowController. */
+  /** 
+   * @return  the required CAS interface of the FlowController
+   */
   public Class<? extends AbstractCas> getRequiredCasInterface() {
     return mFlowController.getRequiredCasInterface();
   }
@@ -234,7 +236,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   }
 
   /**
-   * Gets the MBean to use to report performance statistics.
+   * @return the MBean to use to report performance statistics.
    */
   public AnalysisEngineManagementImpl getMBean() {
     return (AnalysisEngineManagementImpl) getUimaContextAdmin().getManagementInterface();
@@ -243,6 +245,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   /**
    * Notifies this FlowController that new Analysis Engines
    * @see FlowController#addAnalysisEngines(Collection)
+   * @param aKeys the keys for the delegates
    */
   public void addAnalysisEngines(Collection<String> aKeys) {
     mFlowController.addAnalysisEngines(aKeys);
@@ -251,6 +254,8 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   /**
    * Notifies this FlowController that some Analysis Engines are no longer available to route CASes to.
    * @see FlowController#removeAnalysisEngines(Collection)
+   * @param aKeys the keys of the delegates to be removed
+   * @throws AnalysisEngineProcessException - 
    */
   public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
     mFlowController.removeAnalysisEngines(aKeys);

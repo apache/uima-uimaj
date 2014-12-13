@@ -180,6 +180,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   
   /**
    * Constructor for non Root instances
+   * @param contextName -
+   * @param sofaMappings -
    */
   public UimaContext_ImplBase(String contextName, Map<String, String> sofaMappings) {
     mQualifiedContextName = contextName;

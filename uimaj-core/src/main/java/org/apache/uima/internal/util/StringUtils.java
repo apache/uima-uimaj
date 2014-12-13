@@ -51,6 +51,7 @@ public class StringUtils {
    *          Number of spaces to print.
    * @param writer
    *          Writer to print to.
+   * @throws IOException -
    */
   public static final void printSpaces(int n, Writer writer) throws IOException {
     for (int i = 0; i < n; i++) {

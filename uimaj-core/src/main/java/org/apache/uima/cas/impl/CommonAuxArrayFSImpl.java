@@ -36,6 +36,7 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
 
   /**
    * @see org.apache.uima.cas.ArrayFS#size()
+   * @return -
    */
   public int size() {
     return casImpl.ll_getArraySize(addr);
@@ -44,6 +45,11 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
   /**
    * copyFromArray - only works for things where the src and tgt are the same underlying type (long
    * and byte) src = external java object, tgt = internal CAS Aux heap
+   * @param src -
+   * @param srcOffset -
+   * @param casAuxHeap -
+   * @param tgtOffset - 
+   * @param length -
    */
   protected void copyFromJavaArray(Object src, int srcOffset, Object casAuxHeap, int tgtOffset,
           int length) {
@@ -55,6 +61,11 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
   /**
    * copyFromArray - only works for things where the src and tgt are the same underlying type (long
    * and byte) src = internal CAS Aux heap, tgt = external java object
+   * @param casAuxHeap -
+   * @param srcOffset -
+   * @param tgt -
+   * @param tgtOffset -
+   * @param length -
    */
   protected void copyToJavaArray(Object casAuxHeap, int srcOffset, Object tgt, int tgtOffset,
           int length) {
@@ -65,6 +76,8 @@ public abstract class CommonAuxArrayFSImpl extends FeatureStructureImplC {
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
+   * @param casAuxHeap -
+   * @return -
    */
   protected Object toArray(Object casAuxHeap) {
     final int size = size();

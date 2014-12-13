@@ -158,6 +158,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * Creates a new <code>ResourceManager_impl</code> with a custom ClassLoader to use for locating
    * resources.
+   * @param aClassLoader -
    */
   public ResourceManager_impl(ClassLoader aClassLoader) {
     mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
@@ -190,8 +191,8 @@ public class ResourceManager_impl implements ResourceManager {
   * things including the Component Description Editor when
   * obtaining info from CustomResourceSpecifiers
   * https://issues.apache.org/jira/browse/UIMA-1722
-  * @param uimaCL
-  * @param resolveResource
+  * @param uimaCL -
+  * @param resolveResource -
   */
  public synchronized void setExtensionClassPath(UIMAClassLoader uimaCL, boolean resolveResource) {
    this.uimaCL = uimaCL;

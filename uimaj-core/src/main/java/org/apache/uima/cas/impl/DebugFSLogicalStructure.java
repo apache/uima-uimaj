@@ -111,6 +111,7 @@ public class DebugFSLogicalStructure {
 
     /**
      * Create information about a view for given CAS.
+     * @param cas -
      */
     public ViewInfo(CAS cas) {
       this.cas = cas;
@@ -127,7 +128,7 @@ public class DebugFSLogicalStructure {
     }
 
     /**
-     * Return the sofa.
+     * @return the sofa.
      */
     public Object getSofa() {
       return cas.getSofa();
@@ -141,12 +142,6 @@ public class DebugFSLogicalStructure {
    * 
    * Includes the "label" of the index, and a ref to the CAS this index contents are in.
    * 
-   * @param cas
-   *          The CAS the index lives in.
-   * @param indexName
-   *          The name of the index to create the helper object for.
-   * @param type
-   *          The subtype to restrict the index to, <code>null</code> to use the index base type.
    */
   public static class IndexInfo {
     public String indexName;
@@ -159,6 +154,14 @@ public class DebugFSLogicalStructure {
       this(cas, indexName, null);
     }
 
+    /**
+    * @param cas
+    *          The CAS the index lives in.
+    * @param indexName
+    *          The name of the index to create the helper object for.
+    * @param type
+    *          The subtype to restrict the index to, <code>null</code> to use the index base type.
+    */          
     public IndexInfo(CAS cas, String indexName, Type type) {
       this.indexName = indexName;
       this.cas = cas;

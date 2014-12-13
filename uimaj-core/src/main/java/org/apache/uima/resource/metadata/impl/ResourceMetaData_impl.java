@@ -398,6 +398,7 @@ public class ResourceMetaData_impl extends MetaDataObject_impl implements Resour
 
   /**
    * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
+   * @return -
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;

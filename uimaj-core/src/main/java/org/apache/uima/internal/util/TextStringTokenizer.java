@@ -394,7 +394,7 @@ public class TextStringTokenizer {
 
   /**
    * Get the type of an individual character.
-   * 
+   * @param c -
    * @return The char type.
    */
   public int getCharType(char c) {

@@ -119,7 +119,7 @@ public class TextTokenizer {
 
   /**
    * Construct a tokenizer from a Java string.
-   * 
+   * @param string - 
    * @pre string != null
    */
   public TextTokenizer(String string) {
@@ -128,6 +128,7 @@ public class TextTokenizer {
 
   /**
    * Set the flag for showing whitespace tokens.
+   * @param b -
    */
   public void setShowWhitespace(boolean b) {
     this.showWhitespace = b;
@@ -135,6 +136,7 @@ public class TextTokenizer {
 
   /**
    * Set the flag for showing separator tokens.
+   * @param b -
    */
   public void setShowSeparators(boolean b) {
     this.showSeparators = b;
@@ -142,6 +144,7 @@ public class TextTokenizer {
 
   /**
    * Set the set of sentence delimiters.
+   * @param chars -
    */
   public void setEndOfSentenceChars(String chars) {
     if (chars == null) {
@@ -152,6 +155,7 @@ public class TextTokenizer {
 
   /**
    * Add to the set of sentence delimiters.
+   * @param chars -
    */
   public void addToEndOfSentenceChars(String chars) {
     if (chars == null) {
@@ -162,6 +166,7 @@ public class TextTokenizer {
 
   /**
    * Set the set of separator characters.
+   * @param chars -
    */
   public void setSeparators(String chars) {
     if (chars == null) {
@@ -172,6 +177,7 @@ public class TextTokenizer {
 
   /**
    * Add to the set of separator characters.
+   * @param chars -
    */
   public void addSeparators(String chars) {
     if (chars == null) {
@@ -182,6 +188,7 @@ public class TextTokenizer {
 
   /**
    * Set the set of whitespace characters (in addition to the Unicode whitespace chars).
+   * @param chars -
    */
   public void setWhitespaceChars(String chars) {
     if (chars == null) {
@@ -192,6 +199,7 @@ public class TextTokenizer {
 
   /**
    * Add to the set of whitespace characters.
+   * @param chars -
    */
   public void addWhitespaceChars(String chars) {
     if (chars == null) {
@@ -202,6 +210,7 @@ public class TextTokenizer {
 
   /**
    * Set the set of word characters.
+   * @param chars -
    */
   public void setWordChars(String chars) {
     if (chars == null) {
@@ -212,6 +221,7 @@ public class TextTokenizer {
 
   /**
    * Add to the set of word characters.
+   * @param chars -
    */
   public void addWordChars(String chars) {
     if (chars == null) {
@@ -234,7 +244,7 @@ public class TextTokenizer {
   }
 
   /**
-   * Return <code>true</code> iff there is a next token.
+   * @return <code>true</code> iff there is a next token.
    */
   public boolean hasNext() {
     if (this.nextComputed) {
@@ -244,7 +254,8 @@ public class TextTokenizer {
   }
 
   /**
-   * Return the next token.
+   * @return the next token.
+   * 
    */
   public String nextToken() {
     computeNextToken();
@@ -339,6 +350,8 @@ public class TextTokenizer {
 
   /**
    * Get the type of an individual character.
+   * @param c -
+   * @return -
    */
   public int getCharType(char c) {
     // First, check user-defined lists in the order end-of-sentence

@@ -127,6 +127,8 @@ public class AnnotationImplException extends Exception {
    * on). Adding a <code>null String</code> has no effect! So if you don't know the value of an
    * argument, use something like <code>""</code> or <code>"UNKNOWN"</code>, but not
    * <code>null</code>.
+   * @param s -
+   * @return true if found a null spot to insert string s into
    */
   public boolean addArgument(String s) {
     int i = 0;

@@ -126,7 +126,7 @@ public class ChildUimaContext_impl extends UimaContext_ImplBase implements UimaC
   /**
    * Set the Pear resource manager, to be used instead of any
    * containing Resource Manager.
-   * @param resourceManager
+   * @param resourceManager -
    */
   public void setPearResourceManager(ResourceManager resourceManager) {
     mPearResourceManager = resourceManager;

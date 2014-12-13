@@ -179,6 +179,7 @@ public interface LowLevelCAS {
    *          The low-level code of the type of the FS that should be created. If the
    *          <code>typeCode</code> is not a valid type code and the type check flag is not set,
    *          the results of this call are undefined.
+   * @param doTypeCheck -         
    * @return The reference of the newly created FS.
    * @exception LowLevelException
    *              If the type checking switch is set and the type code argument is not valid.
@@ -783,7 +784,7 @@ public interface LowLevelCAS {
 
   double ll_getDoubleArrayValue(int fsRef, int position);
 
-  /** for jcas / featurepath * */
+  /* for jcas / featurepath * */
   byte ll_getByteArrayValue(int fsRef, int position, boolean doTypeChecks);
 
   boolean ll_getBooleanArrayValue(int fsRef, int position, boolean doTypeChecks);
@@ -804,7 +805,7 @@ public interface LowLevelCAS {
 
   void ll_setDoubleArrayValue(int fsRef, int position, double d);
 
-  /** for jcas / featurepath * */
+  /* for jcas / featurepath * */
   void ll_setByteArrayValue(int fsRef, int position, byte value, boolean doTypeChecks);
 
   void ll_setBooleanArrayValue(int fsRef, int position, boolean b, boolean doTypeChecks);

@@ -539,7 +539,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   }
 
   /**
-   * Returns the default FlowController declaration to be used if the aggregate AE descriptor does
+   * @return the default FlowController declaration to be used if the aggregate AE descriptor does
    * not specify one.
    */
   protected FlowControllerDeclaration getDefaultFlowControllerDeclaration() {

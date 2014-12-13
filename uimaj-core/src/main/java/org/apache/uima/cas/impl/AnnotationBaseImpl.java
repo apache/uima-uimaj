@@ -57,8 +57,8 @@ public class AnnotationBaseImpl extends FeatureStructureImplC implements Annotat
   /**
    * Constructor for AnnotationImpl.
    * 
-   * @param addr
-   * @param cas
+   * @param addr -
+   * @param cas -
    */
   public AnnotationBaseImpl(int addr, CASImpl cas) {
     super.setUp(cas, addr);

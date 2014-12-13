@@ -76,7 +76,7 @@ import org.xml.sax.SAXException;
 /**
  * Reference implementation of {@link AnalysisEngineDescription}. Note that this class contains two
  * attributes of class Map, which are not supported by the default XML input/output routines.
- * Therefore we override the {@link MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String, ContentHandler)} and
+ * Therefore we override the {@link MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)} and
  * {@link MetaDataObject_impl#readPropertyValueFromXMLElement(PropertyXmlInfo, Element, XMLParser, XMLParser.ParsingOptions)} methods.
  * 
  * 
@@ -455,6 +455,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Validate SofA mappings and inputs/outputs for an aggregate AE.
+   * @throws ResourceInitializationException -
    */
   protected void validateSofaMappings() throws ResourceInitializationException {
     if (this.isPrimitive())
@@ -770,8 +771,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * delegateAnalysisEngineSpecifiersWithImports map and populates the
    * delegateAnalysisEngineSpecifiers map. 
    * 
+   * @param aResourceManager -
    * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
    *   on each delegate. If a cirular import is found, an exception will be thrown.
+   * @throws InvalidXMLException -
    */
   protected void resolveDelegateAnalysisEngineImports(ResourceManager aResourceManager, boolean aRecursive) 
           throws InvalidXMLException {
@@ -789,8 +792,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * delegateAnalysisEngineSpecifiers map. 
    * 
    * @param aEnclosingAggregateAeUrls URLs of enclosing aggregate AEs.  Used to detect circular imports.
+   * @param aResourceManager - 
    * @param aRecursive If true, this method will call {@link #resolveImports(Collection, ResourceManager)} 
    *   on each delegate. If a circular import is found, an exception will be thrown.
+   * @throws InvalidXMLException -
    */
   protected synchronized void resolveDelegateAnalysisEngineImports(Collection<String> aEnclosingAggregateAeUrls,
           ResourceManager aResourceManager, boolean aRecursive) throws InvalidXMLException {
@@ -880,7 +885,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
    * attribute has a value of type <code>Map</code>, which is not handled by the default XML
    * export logic.
    * 
-   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo,String,ContentHandler)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#writePropertyAsElement(PropertyXmlInfo, String)
+   * @param aPropInfo -
+   * @param aNamespace - 
+   * @throws SAXException -
    */
   @Override
   protected void writePropertyAsElement(PropertyXmlInfo aPropInfo, String aNamespace) throws SAXException {
@@ -927,6 +935,10 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Overridden to set default operational properties if they are not specified in descriptor.
+   * @param aElement -
+   * @param aParser - 
+   * @param aOptions -
+   * @throws InvalidXMLException - 
    */
   @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
@@ -947,6 +959,7 @@ public class AnalysisEngineDescription_impl extends ResourceCreationSpecifier_im
 
   /**
    * Static method to get XmlizationInfo, used by subclasses to set up their own XmlizationInfo.
+   * @return XmlizationInfo, used by subclasses to set up their own XmlizationInfo
    */
   protected static XmlizationInfo getXmlizationInfoForClass() {
     return XMLIZATION_INFO;

@@ -20,7 +20,7 @@
 package org.apache.uima.internal.util.rb_trees;
 
 /**
- * Part of map<int, T> RedBlackTree
+ * Part of map&lt;int, T&gt; RedBlackTree
  * 
  * Represents a key-value pair of a red-black tree.
  * 

@@ -59,8 +59,8 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
   /**
    * Constructor for AnnotationImpl.
    * 
-   * @param addr
-   * @param cas
+   * @param addr -
+   * @param cas -
    */
   public AnnotationImpl(int addr, CASImpl cas) {
     super.setUp(cas, addr);

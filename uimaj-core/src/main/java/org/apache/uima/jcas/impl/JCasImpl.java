@@ -510,7 +510,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @param cl
    *                class loader to switch to 
-   * @throws CASException passthru
    */
   public void switchClassLoader(ClassLoader cl) {
 
@@ -711,6 +710,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @param cas
    *                a CAS instance
    * @return newly created and initialized JCas
+   * @throws CASException -
    */
   public static JCas getJCas(CASImpl cas) throws CASException {
     JCasImpl jcas = new JCasImpl(cas);
@@ -1015,8 +1015,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /**
    * Internal - throw missing feature exception at runtime
    * 
-   * @param feat
-   * @param type
+   * @param feat -
+   * @param type -
    */
   public void throwFeatMissing(String feat, String type) {
     CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT,
@@ -1054,9 +1054,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
   // * Implementation of part of the Cas interface as part of JCas*
 
-  /**
+  /*
    * (Internal Use only) called by the CAS reset function - clears the hashtable holding the
-   * associations.
+   * associations. 
    */
   public static void clearData(CAS cas) {
     JCasImpl jcas = (JCasImpl) ((CASImpl) cas).getExistingJCas();

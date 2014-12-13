@@ -1050,7 +1050,7 @@ public interface CAS extends AbstractCas {
   Marker createMarker();  
   /**
    * Call this method to set up a region, 
-   * ended by a {@link FSsTobeAddedback.close()} call on the returned object,
+   * ended by a {@link java.lang.AutoCloseable#close()} call on the returned object,
    * You can use this or the {@link #protectIndices(Runnable)} method to protected
    * the indices.
    * <p>

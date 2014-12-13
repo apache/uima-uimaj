@@ -162,7 +162,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     mClassLoader = aClassLoader;
   }
 
-  /**
+  /*
    * Utility method that checks to see if a file exists at the specified URL.
    */
   protected boolean fileExistsAtUrl(URL aUrl) {
@@ -183,7 +183,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
   }
 
   /**
-   * Gets the base URLs that were parsed from the data path.
+   * @return the base URLs that were parsed from the data path.
    */
   protected URL[] getBaseUrls() {
     return mBaseUrls;

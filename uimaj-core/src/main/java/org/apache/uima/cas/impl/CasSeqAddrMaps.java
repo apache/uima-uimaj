@@ -106,8 +106,8 @@ public class CasSeqAddrMaps {
   /**
    * Add a new FS address - done during prescan of source
    * Must call in heap scan order
-   * @param srcAddr
-   * @param tgtAddr
+   * @param srcAddr -
+   * @param tgtAddr -
    * @param inTarget true if this type is in the target
    */
   public void addItemAddr(int srcAddr, int tgtAddr, boolean inTarget) {
@@ -136,8 +136,8 @@ public class CasSeqAddrMaps {
   
   /**
    * Called during deserialize to incrementally add 
-   * @param srcAddr
-   * @param inSrc
+   * @param srcAddr -
+   * @param inSrc -
    */
   public void addSrcAddrForTgt(int srcAddr, boolean inSrc) {
     if (inSrc) {
@@ -153,7 +153,7 @@ public class CasSeqAddrMaps {
              
   /**
    * 
-   * @param seq
+   * @param seq -
    * @return 0 means target seq doesn't exist in source CAS
    */
   public int getSrcAddrFromTgtSeq(int seq) {
@@ -173,7 +173,8 @@ public class CasSeqAddrMaps {
 //  }
   
   /**
-   * returns -1 if src addr not in target seq
+   * @param itemAddr -
+   * @return -1 if src addr not in target seq
    */
   public int getTgtSeqFromSrcAddr(int itemAddr) {
 //    System.out.println(" " + itemAddr);

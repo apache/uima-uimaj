@@ -122,6 +122,9 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
 
   /**
    * Constructor for FSLeafIndexImpl.
+   * @param cas -
+   * @param type -
+   * @param indexType -
    */
   protected FSLeafIndexImpl(CASImpl cas, Type type, int indexType) {
     super();
@@ -468,7 +471,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   /**
    * Method deleteFS.
    * 
-   * @param fs
+   * @param fs -
    */
   public abstract void deleteFS(FeatureStructure fs);
 

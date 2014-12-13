@@ -73,6 +73,7 @@ public class InstrumentationFacility_impl implements InstrumentationFacility {
   /**
    * Sets the process trace object wrapped by this instrumentation facility. This is not part of the
    * InstrumentationFacility interface.
+   * @param aProcessTrace -
    */
   public void setProcessTrace(ProcessTrace aProcessTrace) {
     mProcessTrace = aProcessTrace;

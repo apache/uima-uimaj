@@ -108,14 +108,14 @@ public class FeatureStructureImpl implements FeatureStructure {
   }
 
   /**
-   * @param string
+   * @param string -
    */
   public void setId(String string) {
     mId = string;
   }
 
   /**
-   * @param b
+   * @param b -
    * @deprecated
    */
   @Deprecated

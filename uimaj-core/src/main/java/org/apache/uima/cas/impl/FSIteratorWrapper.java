@@ -54,14 +54,14 @@ public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImp
   }
 
   /**
-   * @see org.apache.uima.cas.FSIterator#moveToNext()()
+   * @see org.apache.uima.cas.FSIterator#moveToNext()
    */
   public void moveToNext() {
     this.it.inc();
   }
 
   /**
-   * @see org.apache.uima.cas.FSIterator#moveToPrevious()()
+   * @see org.apache.uima.cas.FSIterator#moveToPrevious()
    */
   public void moveToPrevious() {
     this.it.dec();

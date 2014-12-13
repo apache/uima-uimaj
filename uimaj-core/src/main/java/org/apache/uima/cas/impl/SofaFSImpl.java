@@ -221,7 +221,7 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 	}
 
 	/**
-   * @see org.apache.uima.cas.SofaFS#getSofaID(). This method is duplicated in
+   * @see org.apache.uima.cas.SofaFS#getSofaID()  This method is duplicated in
    *      org.apache.uima.jcas.cas.Sofa. Any changes should be made in both places.
    */
 

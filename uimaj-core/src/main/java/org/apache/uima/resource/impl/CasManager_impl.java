@@ -301,6 +301,7 @@ public class CasManager_impl implements CasManager {
    *          The CAS
    * @param requiredInterface
    *          interface to get. Currently must be one of CAS or JCas.
+   * @return -         
    */
   public static AbstractCas getCasInterfaceStatic(CAS cas, Class<? extends AbstractCas> requiredInterface) {
     if (requiredInterface == CAS.class) {

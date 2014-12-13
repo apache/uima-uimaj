@@ -121,6 +121,7 @@ public class CASSerializer implements Serializable {
    * enough.
    * 
    * @param cas The CAS to be serialized.
+   * @param addMetaData -
    */
   public void addCAS(CASImpl cas, boolean addMetaData) {
     this.fsIndex = cas.getIndexedFSs();
@@ -253,6 +254,7 @@ public class CASSerializer implements Serializable {
    * ---------------------------------------------------------------------
    * 
    * @param cas  The CAS to be serialized. ostream The output stream.
+   * @param ostream -
    */
   public void addCAS(CASImpl cas, OutputStream ostream) {
  
@@ -410,9 +412,9 @@ public class CASSerializer implements Serializable {
    * 2			     sM64H            64-bit heap values  (preexisting cells modified)
    * 
    * 
-   * @param cas
-   * @param ostream
-   * @param trackingMark
+   * @param cas -
+   * @param ostream -
+   * @param trackingMark -
    */
   public void addCAS(CASImpl cas, OutputStream ostream, Marker trackingMark) {
 

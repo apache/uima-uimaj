@@ -68,13 +68,13 @@ import org.xml.sax.SAXParseException;
  *   
  *   XmiCasSerializer                              JsonCasSerializer
  *       Instance                                      Instance
- *      css ref ------->   CasSerializerSupport   <------ css ref
+ *      css ref -------&gt;   CasSerializerSupport   &lt;------ css ref
  *          
  *               
  *   XmiDocSerializer                                JsonDocSerializer            
  *       Instance                                       Instance 
  * (1 per serialize action)                         (1 per serialize action)
- *       cds ref ------->     CasDocSerializer  <-------   cds ref
+ *       cds ref -------&gt;     CasDocSerializer  &lt;-------   cds ref
  *                           csss points back
  *                      
  *                      
@@ -215,10 +215,10 @@ public class CasSerializerSupport {
     
     /**
      * 
-     * @param addr
-     * @param typeCode
+     * @param addr -
+     * @param typeCode -
      * @return true if writing out referenced items (JSON)
-     * @throws Exception
+     * @throws Exception -
      */
     abstract protected boolean writeFsStart(int addr, int typeCode) throws Exception;
     
@@ -344,7 +344,14 @@ public class CasSerializerSupport {
     /***********************************************
      *         C O N S T R U C T O R S             *  
      ***********************************************/
-    
+    /**
+     * 
+     * @param ch -
+     * @param cas -
+     * @param sharedData -
+     * @param marker -
+     * @param csss -
+     */
     public CasDocSerializer(ContentHandler ch, CASImpl cas, XmiSerializationSharedData sharedData, MarkerImpl marker, CasSerializerSupportSerialize csss) {
       this(ch, cas,sharedData, marker, csss, false);
     }
@@ -390,7 +397,7 @@ public class CasSerializerSupport {
 
     /**
      * Starts serialization
-     * @throws Exception 
+     * @throws Exception -
      */
     public void serialize() throws Exception {    
       typeCode2namespaceNames = new XmlElementName[tsi.getLargestTypeCode() + 1];

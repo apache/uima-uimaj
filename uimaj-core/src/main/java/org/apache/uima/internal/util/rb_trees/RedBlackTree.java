@@ -142,6 +142,7 @@ public class RedBlackTree<T> implements Iterable<T> {
    * 
    * @param key
    *          The key to be deleted.
+   * @return -         
    */
   public final T remove(int key) {
     RBTNode<T> node = RBTNode.find(this.root, key);
@@ -257,7 +258,7 @@ public class RedBlackTree<T> implements Iterable<T> {
   }
 
   /**
-   * Return a copy of the red-black tree as a BinaryTree. The node values are key-value pairs
+   * @return a copy of the red-black tree as a BinaryTree. The node values are key-value pairs
    * (RBTKeyValuePair).
    */
   public BinaryTree getBinaryTree() {

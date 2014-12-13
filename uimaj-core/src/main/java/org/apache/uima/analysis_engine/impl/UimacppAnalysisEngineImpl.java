@@ -92,7 +92,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
   private boolean mVerificationMode = false;
 
   /**
-   * @throws ResourceConfigurationException wrapping ResourceInitializationExceptions or 
+   * @throws ResourceInitializationException or 
    * wraps invalid xml exception when processing imports
    * @see org.apache.uima.resource.Resource#initialize(ResourceSpecifier, Map)
    */
@@ -258,6 +258,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * 
    * @param aCAS
    *          CAS to be processed by annotator
+   * @throws AnalysisEngineProcessException -         
    */
   protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
@@ -371,6 +372,8 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
    * Calls the Analysis Component's next() method.
    * 
    * @return CAS returned by the analysis component
+   * @throws AnalysisEngineProcessException -
+   * @throws ResultNotSupportedException -
    */
   protected CAS callAnalysisComponentNext() throws AnalysisEngineProcessException,
           ResultNotSupportedException {
@@ -403,6 +406,7 @@ public class UimacppAnalysisEngineImpl extends AnalysisEngineImplBase implements
 
   /**
    * @deprecated
+   * @return -
    */
   @Deprecated
   protected AnalysisProcessData_impl createAnalysisProcessData() {

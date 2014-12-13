@@ -132,8 +132,8 @@ public interface LowLevelTypeSystem {
   /**
    * Check subsumption between two types.
    * 
-   * @param type1
-   * @param type2
+   * @param type1 -
+   * @param type2 -
    * @return <code>true</code> iff <code>type1</code> subsumes <code>type2</code>.
    */
   boolean ll_subsumes(int type1, int type2);

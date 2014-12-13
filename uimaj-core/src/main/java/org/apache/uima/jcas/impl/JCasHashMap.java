@@ -87,7 +87,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
  * The implementation works as follows:
  * <p>
  * 1) The JCasHashMap is split into "n" sub-maps.   
- *    The number is the number of cores, but grows more slowly as the # of cores > 16. 
+ *    The number is the number of cores, but grows more slowly as the # of cores &gt; 16. 
  *    This number can be specified, but this is not currently exposed in the tuning parameters
  *    Locking occurs on the sub-maps; the outer method calls are not synchronized
  * 2) The number of sub maps is rounded to a power of 2, to allow the low order bits of the hash of the key 

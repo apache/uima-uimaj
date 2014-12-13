@@ -50,6 +50,7 @@ public class ResourceService_impl {
    *          for this service.
    * @param aResourceInitParams
    *          additional parameters to be passed on to the Resource Factory.
+   * @throws ResourceInitializationException - 
    */
   public void initialize(ResourceSpecifier aResourceSpecifier, Map<String, Object> aResourceInitParams)
           throws ResourceInitializationException {
@@ -60,7 +61,8 @@ public class ResourceService_impl {
 
   /**
    * Gets metadata for this Resource service.
-   * 
+   * @return -
+   * @throws ResourceServiceException -
    */
   public ResourceMetaData getMetaData() throws ResourceServiceException {
     return getResource().getMetaData();

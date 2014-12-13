@@ -185,6 +185,8 @@ public class FSClassRegistry {
   /**
    * No longer used, but left in for backward compatibility with older JCasgen'd 
    * classes
+   * @param type -
+   * @param fsFactory - 
    */
   public void addGeneratorForType(TypeImpl type, FSGenerator fsFactory) {
     //this.generators[type.getCode()] = fsFactory;

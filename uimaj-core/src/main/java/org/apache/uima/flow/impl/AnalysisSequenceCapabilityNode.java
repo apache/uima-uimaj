@@ -127,6 +127,7 @@ public class AnalysisSequenceCapabilityNode implements Cloneable {
 
   /**
    * Sets this node's Result Specificatoin.
+   * @param aResultSpec -
    */
   public void setResultSpec(ResultSpecification aResultSpec) {
     mResultSpec = aResultSpec;

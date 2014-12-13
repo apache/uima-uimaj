@@ -99,7 +99,7 @@ public class CasDataToXCas {
   }
 
   /**
-   * @param aIncludeAnnotationSpannedText
+   * @param aIncludeAnnotationSpannedText -
    */
   public void setIncludeAnnotationSpannedText(boolean aIncludeAnnotationSpannedText) {
     mIncludeAnnotationSpannedText = aIncludeAnnotationSpannedText;
@@ -108,7 +108,7 @@ public class CasDataToXCas {
   /**
    * Specifies names of types that will not be included in the XCAS
    * 
-   * @param aTypesToFilter
+   * @param aTypesToFilter -
    */
   public void setTypesToFilter(String[] aTypesToFilter) {
     mTypesToFilter = Arrays.asList(aTypesToFilter);
@@ -117,7 +117,7 @@ public class CasDataToXCas {
   /**
    * Sets the ContentHandler to receive the SAX events.
    * 
-   * @param aHandler
+   * @param aHandler -
    */
   public void setContentHandler(ContentHandler aHandler) {
     mHandler = aHandler;

@@ -95,7 +95,9 @@ public class IntSet implements PositiveIntSet {
     return this.iVec.get(n);
   }
 
-  /** Removes the <code>n</code>-th element in this set. */
+  /** Removes the <code>n</code>-th element in this set.
+   * @param n - 
+   * */
   public void removeElementAt(int n) {
     this.iVec.remove(n);
   }

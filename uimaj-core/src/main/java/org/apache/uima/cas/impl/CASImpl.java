@@ -948,6 +948,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   /**
    * @deprecated
+   * @param fs -
    */
   @Deprecated
   public void commitFS(FeatureStructure fs) {
@@ -1263,7 +1264,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * needed if the blob is from C++ -- C++ blob serialization writes data in
    * native byte order.
    * 
-   * @param istream
+   * @param istream -
+   * @return -
    * @throws CASRuntimeException wraps IOException
    */
 
@@ -1946,7 +1948,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param index
    *                The index of the value we're interested in.
    * @return The value at <code>index</code>.
-   * @exception ArrayIndexOutOfBoundsException
+   * @exception ArrayIndexOutOfBoundsException -
    */
   public int getArrayValue(int addr, int index) {
     checkArrayBounds(addr, index);
@@ -3244,6 +3246,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *                The type code of the array to be created.
    * @param len
    *                The length of the array to be created.
+   * @return -               
    * @exception ArrayIndexOutOfBoundsException
    *                    If <code>type</code> is not a type.
    */
