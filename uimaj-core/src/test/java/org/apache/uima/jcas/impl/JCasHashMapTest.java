@@ -244,7 +244,7 @@ public class JCasHashMapTest extends TestCase {
           }
         }
         
-        assertEquals(numberOfThreads - 1, numberWaiting);
+        assertEquals(numberOfThreads - 1, numberWaiting);  // expected 7 but was 8
         m.put(fs);
         found[threadFinished] = fs;
    

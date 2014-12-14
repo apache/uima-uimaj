@@ -38,7 +38,8 @@ import org.apache.uima.util.UimaTimer;
  */
 public class ProcessTrace_impl implements ProcessTrace {
   private static final long serialVersionUID = 7566277176545062757L;
-
+ 
+  public static ProcessTrace disabledProcessTrace = new ProcessTrace_impl(false);
   /**
    * List of closed events.
    */
@@ -65,6 +66,13 @@ public class ProcessTrace_impl implements ProcessTrace {
   public ProcessTrace_impl() {
     this(UIMAFramework.getDefaultPerformanceTuningProperties());
   }
+  
+  ProcessTrace_impl(boolean enabled) {
+    mEnabled = enabled;
+    if (mEnabled) {
+      mTimer = UIMAFramework.newTimer();
+    }
+  }
 
   /**
    * Create a ProcessTrace_impl using the framework's default timer.
@@ -74,14 +82,12 @@ public class ProcessTrace_impl implements ProcessTrace {
    *          disabled.
    */
   public ProcessTrace_impl(Properties aPerformanceTuningSettings) {
-    if (aPerformanceTuningSettings == null) {
-      aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
-    }
-    mEnabled = "true".equalsIgnoreCase(aPerformanceTuningSettings
-            .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED));
-    if (mEnabled) {
-      mTimer = UIMAFramework.newTimer();
-    }
+//    if (aPerformanceTuningSettings == null) {
+//      aPerformanceTuningSettings = UIMAFramework.getDefaultPerformanceTuningProperties();
+//    }
+    this("true".equalsIgnoreCase(
+        ((aPerformanceTuningSettings == null) ? UIMAFramework.getDefaultPerformanceTuningProperties() : aPerformanceTuningSettings)
+        .getProperty(UIMAFramework.PROCESS_TRACE_ENABLED)));
   }
 
   /**

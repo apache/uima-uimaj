@@ -66,7 +66,7 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  */
 public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBase implements
         TextAnalysisEngine {
-
+  
   /* (non-Javadoc)
    * @see org.apache.uima.resource.Resource_ImplBase#setMetaData(org.apache.uima.resource.metadata.ResourceMetaData)
    */
@@ -260,7 +260,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
           throws ResultNotSupportedException, AnalysisEngineProcessException {
     setResultSpecification(aResultSpec);
     process(aCAS);
-    buildProcessTraceFromMBeanStats(aTrace);
+    if (isProcessTraceEnabled()) {  // a slight performance speedup https://issues.apache.org/jira/browse/UIMA-4151
+      buildProcessTraceFromMBeanStats(aTrace); 
+    }
   }
 
   public ProcessTrace process(CAS aCAS) throws AnalysisEngineProcessException {
@@ -270,7 +272,9 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
       CAS cas = iter.next();
       cas.release();
     }
-    return buildProcessTraceFromMBeanStats();
+    // https://issues.apache.org/jira/browse/UIMA-4151
+    return isProcessTraceEnabled() ? buildProcessTraceFromMBeanStats() : ProcessTrace_impl.disabledProcessTrace;
+//    return buildProcessTraceFromMBeanStats();
   }
 
   /**
