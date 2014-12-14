@@ -252,6 +252,22 @@ public class IndexComparitorTest extends TestCase {
     return f;
   }
 
+  public void testFindSubtype() throws Exception {
+    cas.reset();
+    
+    ir.addFS(createFs(type1, 0, 0));
+    ir.addFS(createFs(type1Sub1, 1, 1));
+    FeatureStructure testprobe = createFs(type1Sub1, 1, 1);  // not in index, used only for key values
+    
+    assertFalse(sortedType1.contains(testprobe));
+    
+    assertTrue(sortedType1Sub1.contains(testprobe));
+    
+    FeatureStructure testProbeSuper = createFs(type1, 1, 1);
+    
+    assertTrue(sortedType1Sub1.contains(testProbeSuper));
+  }
+  
   public void testCompare() throws Exception {
     try {
       assertTrue(0 == sortedType1.compare(fss[0][0][0], fss[0][0][1]));
