@@ -37,14 +37,24 @@ What's New in 2.7.0
   The old behavior may be restored, if needed for backward compatibility by defining the JVM property
   uima.allow_duplicate_add_to_indices; see the UIMA Reference documentation Chapter 10. 
   
-  There is a new kind of check that may be optionally enabled in UIMA (by defining the JVM argument
-  "-Duima.check_fs_update_corrupts_index") that checks all modifications to features to see if that feature is
-  being used as a key in a Sort or Set index, and the Feature Structure being modified is currently in
-  one or more indices (Jira issue UIMA-4059). Doing such a modification can cause the index to become corrupt.  
-  (The correct way to do an update in this case is to 
-    first remove the Feature Structure from the indices, 
-    do the modification,
-    and then add it back to the indices.)
+  To prevent potential index corruption, UIMA now recovers (unless disabled by ("-Duima.protect_indices_from_key_updates=false")) 
+  from all illegal modifications of features.
+  
+  These are modifications to features used as index keys, done while the Feature Structure being modified is currently in
+  one or more indices (Jira issue UIMA-4135).
+  
+  Corruption is prevented by doing the needed removes and addbacks to Set and Sorted indices.
+  Because the recovery can affect performance, it is recommended that you run with JVM property
+  "-Duima.report_fs_update_corrupts_index" in order to see if any user code has this problem, and fix these via 
+  redesign, or by wrapping the affected areas with a form of protectIndices() (see the CAS Javadocs).  
+  
+  A long-standing difficulty with Feature Structure iterators, namely, that adding to / removing from the underlying
+  index being iterated over is not allowed while iterating, is addressed with a new class of "snapshot" iterators.
+  These take a snapshot of the state of the index when the iterator is created; subsequent modifications to the index
+  are then permitted, while the iterator continues to iterate over the snapshot it created; these iterators do not
+  throw ConcurrentModificationException.  The implementation of this feature is via a new method on FSIndex, which 
+  creates a light-weigh copy of the the FSIndex instance, where getting iterators gets the Snapshot kind.  This approach
+  allows using the new index in Java's "extended for" statement.
   
   There are many bug fixes.  Some highlights: 
     - making the JCasGen Eclipse plugin work with more varieties of specifications for class paths. Jira issues: UIMA-4080/4081
@@ -53,7 +63,6 @@ What's New in 2.7.0
     - default bag indices will now be created if there are only Set indices. Jira issue: UIMA-4111
     
   The complete list of fixes is here: issuesFixed/jira-report.hmtl 
-  
   
 Backward Compatibility Accommodations
 ------------------------------------  
@@ -66,8 +75,7 @@ Backward Compatibility Accommodations
   for UIMA that can restore earlier behaviors. 
   The UIMA References documentation (see http://uima.apache.org/documentation.html)
   has a table of these in Chapter 10.
-    
-     
+      
 Supported Platforms
 --------------------
 

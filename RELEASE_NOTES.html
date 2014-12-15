@@ -80,10 +80,11 @@
 			</p>
 
 <h2><a name="major.changes">Major Changes in this Release</a></h2>
+<h3>Sorted and Bag indices no longer store multiple instances of identical FSs</h3>
 <p>
 The meaning of "bag" and "sorted" index has been made consistent with how these are handled
 when sending CASes to remote services.  This means that adding the same identical FS to the
-indexes, multiple times, will not add duplicate index entries.  And, removing a FS from an index
+indexes, multiple times, will no longer add duplicate index entries.  And, removing a FS from an index
 is guaranteed that that particular FS will no longer be in any index.  (Before, if you had 
 added a particular FS to a sorted or bag index, multiple times, the remove behavior would
 remove just one of the instances).  Deserialization of CASes sent to remote services has never 
@@ -92,27 +93,33 @@ consistent. For more details, see <a target="_blank" href="https://issues.apache
 https://issues.apache.org/jira/browse/UIMA-3399</a>.
 </p>
 
-<p>Because some users may prefer the previous behavior that permitted duplicates of identical Feature Structures in
+<p>Because some users may need the previous behavior that permitted duplicates of identical Feature Structures in
 the sorted and bag indexes. this change can be disabled, by running the JVM with the defined property
 "uima.allow_duplicate_add_to_indices".</p>
 
+<h3>JSON serialization support</h3>
 <p>
  JSON serialization support is added for Type System Descriptions, and for CASs.
   Several formats for JSON CAS serialization are provided, please see the chapter in the
   UIMA reference documentation for details.
 </p>
 
-<p>There is a new kind of check that may be optionally enabled in UIMA (by defining the JVM argument
-  "-Duima.uima.check_fs_update_corrupts_index") that checks all modifications to features to see if that feature is
-  being used as a key in a Sort or Set index, and the Feature Structure being modified is currently in
-  one or more indices (Jira issue UIMA-4059). Doing such a modification can cause the index to become corrupt.  
-  (The correct way   to do an update in this case is to 
-    first remove the Feature Structure from the indices, 
-    do the modification,
-    and then add it back to the indices.)</p>
+<h3>Index corruption avoidance</h3>
+<p>To prevent potential index corruption, UIMA now recovers (unless disabled by ("-Duima.protect_indices_from_key_updates=false")) 
+  from all illegal modifications of features.</p>
+  
+  <p>These are modifications to features used as index keys, done while the Feature Structure being modified is currently in
+  one or more indices (Jira issue UIMA-4135).</p>
+  
+  <p>Corruption is prevented by doing the needed removes and addbacks to Set and Sorted indices.
+  Because the recovery can affect performance, it is recommended that you run with JVM property
+  "-Duima.report_fs_update_corrupts_index" in order to see if any user code has this problem, and fix these via 
+  redesign, or by wrapping the affected areas with a form of protectIndices() (see the CAS Javadocs).</p>
 
+<h3>Java 7 minimum level</h3>
 <p>Java 7 is now the minimum level of Java required.</p>
 
+<h3>Snapshot iterators, won't throw ConcurrentModificationException</h3>
 <p>The fixed bugs include fixes to the UIMA iterator moveTo(FeatureStructure) and creation methods which 
 ended up doing a moveToFirst() if the Feature Structure was beyond the last element in the index;
 the fixed code now marks the position of the iterator as invalid.  Also, the positioning of these
