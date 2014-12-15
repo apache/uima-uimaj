@@ -42,7 +42,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   private final int indexType;
 
   // A reference to the low-level CAS.
-  protected CASImpl lowLevelCAS;
+  final protected CASImpl lowLevelCAS;
 
   private static final int STRING_CODE = 0;
 
@@ -82,7 +82,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   // The number of keys.
   private int numKeys;
 
-  private Type type; // The type of this
+  final private Type type; // The type of this
 
   
   
@@ -116,8 +116,9 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   // declared private to block external calls
   @SuppressWarnings("unused")
   private FSLeafIndexImpl() {
-    super();
     this.indexType = 0; // must do because it's final
+    this.lowLevelCAS = null;
+    this.type = null;
   }
 
   /**
@@ -244,10 +245,14 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
 
   public int compare(int fs1, int fs2) {
     final int[] heap = this.lowLevelCAS.getHeap().heap;
-    for (int i = 0; i < this.numKeys; i++) {
-      final int val1 = heap[fs1 + this.keyOffset[i]];
-      final int val2 = heap[fs2 + this.keyOffset[i]];
-      switch (this.keyType[i]) {
+    final int[] localKeyType = this.keyType;
+    final int[] localKeyOffset = this.keyOffset;
+    final int[] localKeyComp = this.keyComp;
+    final int localNumKeys = this.numKeys;
+    for (int i = 0; i < localNumKeys; i++) {
+      final int val1 = heap[fs1 + localKeyOffset[i]];
+      final int val2 = heap[fs2 + localKeyOffset[i]];
+      switch (localKeyType[i]) {
         case STRING_CODE: {
           // System.out.println("Comparing string codes " + val1 + " and "
           // + val2);
@@ -280,7 +285,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           }
 
           if (compVal != 0) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return compVal;
             }
             return -compVal;
@@ -291,12 +296,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           final float float1 = CASImpl.int2float(val1);
           final float float2 = CASImpl.int2float(val2);
           if (float1 < float2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
             }
             return 1;
           } else if (float1 > float2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return 1;
             }
             return -1;
@@ -308,12 +313,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
             break;
           }
           if (this.typeOrder[i].lessThan(val1, val2)) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
             }
             return 1;
           }
-          if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+          if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
             return 1;
           }
           return -1;
@@ -322,12 +327,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           final long long1 = this.lowLevelCAS.getLongHeap().getHeapValue(val1);
           final long long2 = this.lowLevelCAS.getLongHeap().getHeapValue(val2);
           if (long1 < long2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
             }
             return 1;
           } else if (long1 > long2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return 1;
             }
             return -1;
@@ -338,12 +343,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           final double double1 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val1));
           final double double2 = Double.longBitsToDouble(this.lowLevelCAS.getLongHeap().getHeapValue(val2));
           if (double1 < double2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
             }
             return 1;
           } else if (double1 > double2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return 1;
             }
             return -1;
@@ -356,12 +361,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
           // byte compare done here as well.
           // short compare done here as well.
           if (val1 < val2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return -1;
             }
             return 1;
           } else if (val1 > val2) {
-            if (this.keyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
+            if (localKeyComp[i] == FSIndexComparator.STANDARD_COMPARE) {
               return 1;
             }
             return -1;

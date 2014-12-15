@@ -207,14 +207,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     // private SymbolTable stringTable;
     // private ArrayList stringList;
-    private StringHeap stringHeap;
+    final private StringHeap stringHeap = new StringHeap();
 
-    private ByteHeap byteHeap; // for storing 8 bit values
+    final private ByteHeap byteHeap = new ByteHeap(); // for storing 8 bit values
 
-    private ShortHeap shortHeap; // for storing 16 bit values
+    final private ShortHeap shortHeap = new ShortHeap(); // for storing 16 bit values
 
-    private LongHeap longHeap; // for storing 64 bit values
+    final private LongHeap longHeap = new LongHeap(); // for storing 64 bit values
 
+    // Base CAS for all views
+    final private CASImpl baseCAS;
+
+    private int cache_not_in_index = 0; // a one item cache of a FS not in the index
+    
+    private final PositiveIntSet_impl featureCodesInIndexKeys = new PositiveIntSet_impl(); 
+    
     // A map from Sofas to IndexRepositories.
     private Map<Integer, FSIndexRepository> sofa2indexMap;
 
@@ -261,9 +268,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // TODO implement the resizing algorithm used for the main heap, here too.
     private FeatureStructure[] fsArray;
 
-    // Base CAS for all views
-    private CASImpl baseCAS;
-
+    // not final because set with reinit deserialization
     private CASMetadata casMetadata;
 
     private ComponentInfo componentInfo;
@@ -300,10 +305,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private List<MarkerImpl> trackingMarkList;
    
-    private int cache_not_in_index = 0; // a one item cache of a FS not in the index
-    
-    private final PositiveIntSet_impl featureCodesInIndexKeys = new PositiveIntSet_impl(); 
-    
     /**
      * This stack corresponds to nested protectIndices contexts. Normally should be very shallow.
      */
@@ -319,9 +320,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private boolean fsTobeAddedbackSingleInUse = false;
     
-    private SharedViewData(boolean useFSCache, Heap heap) {
+    private SharedViewData(boolean useFSCache, Heap heap, CASImpl baseCAS, CASMetadata casMetadata) {
       this.useFSCache = useFSCache;
       this.heap = heap;
+      this.baseCAS = baseCAS;
+      this.casMetadata = casMetadata;
     }
   }
   
@@ -440,17 +443,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // FSClassRegistry instances
     }
 
-    this.svd = new SharedViewData(useFSCache, new Heap(initialHeapSize));
-    this.svd.casMetadata = ts.casMetadata;
-    this.svd.baseCAS = this;
+    this.svd = new SharedViewData(useFSCache, new Heap(initialHeapSize), this, ts.casMetadata);
+//    this.svd.baseCAS = this;
 
-    // Set up new heaps
 //    this.svd.heap = new Heap(initialHeapSize);
-    this.svd.stringHeap = new StringHeap();
-    // initial size 16
-    this.svd.byteHeap = new ByteHeap();
-    this.svd.shortHeap = new ShortHeap();
-    this.svd.longHeap = new LongHeap();
 
     if (externalTypeSystem) {
       commitTypeSystem();
