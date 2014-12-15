@@ -880,9 +880,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       FSLeafIndexImpl leafIndex = iicp0.index;
       FSIndexComparator comp = leafIndex.getComparator();
       
-      sortedLeafIndex = (FSIntArrayIndex) addNewIndexCore(comp, iicp0.size(), FSIndex.SORTED_INDEX);
+      final int size = iicp0.size();
+      sortedLeafIndex = (FSIntArrayIndex) addNewIndexCore(comp, size, FSIndex.SORTED_INDEX);
       snapshot = sortedLeafIndex.getVector().getArray();
       flattenCopy(iicp0, isRootOnly);
+      sortedLeafIndex.getVector().setSize(size);
       moveToFirst();      
     }
 

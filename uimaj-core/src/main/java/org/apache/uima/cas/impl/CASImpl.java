@@ -2145,9 +2145,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *                    appropriate for the type at the address.
    */
   public void setFeatureValue(int addr, int feat, int val) {
-    checkForInvalidFeatureSetting(addr, feat);
+    boolean wasRemoved = checkForInvalidFeatureSetting(addr, feat);
     setFeatureValueNotJournaled(addr, feat, val);
-    maybeAddback(addr);
+    if (wasRemoved) {
+      maybeAddback(addr);
+    }
     if (this.svd.trackingMark != null) {
     	this.logFSUpdate(addr, addr+this.svd.casMetadata.featureOffset[feat], 
     			ModifiedHeap.FSHEAP, 1);
@@ -3496,12 +3498,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   
    * @param fsRef - the FS to test if it is in the indexes
    * @param featureCode - the feature being tested
+   * @return true if something may need to be added back
    */
-  private void checkForInvalidFeatureSetting(int fsRef, int featureCode) {
+  private boolean checkForInvalidFeatureSetting(int fsRef, int featureCode) {
+    if (fsRef == svd.cache_not_in_index) {
+      return false;
+    }
     final int ssz = svd.fssTobeAddedback.size();
     // skip if protection is disabled, an no explicit protection block
     if (!IS_PROTECT_INDICES && ssz == 0) {
-      return;
+      return false;
     }
        
     // next method skips if the fsRef is not in the index (cache)
@@ -3515,27 +3521,30 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // skip message if wasn't removed
     // skip message if protected in explicit block
     if (wasRemoved && IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && ssz == 0) {
-      // prepare a message which includes the feature which is a key, the fs, and
-      // the call stack.
-      StringWriter sw = new StringWriter();
-      PrintWriter pw = new PrintWriter(sw);
-      new Throwable().printStackTrace(pw);
-      pw.close();
-      String msg = String.format(
-          "While FS was in the index, the feature \"%s\""
-          + ", which is used as a key in one or more indices, "
-          + "was modified\n FS = \"%s\"\n%s%n",
-          this.getTypeSystemImpl().ll_getFeatureForCode(featureCode).getName(),
-          new FeatureStructureImplC(this, fsRef).toString(),  
-          sw.toString());        
-      UIMAFramework.getLogger().log(Level.WARNING, msg);
-      
-      if (IS_THROW_EXCEPTION_CORRUPT_INDEX) {
-        throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE, new Object[]{});
-      }
-    }
+      featModWhileInIndexReport(fsRef, featureCode);
+    }  
+    return wasRemoved;
+  }
+  
+  private void featModWhileInIndexReport(int fsRef, int featureCode) {
+    // prepare a message which includes the feature which is a key, the fs, and
+    // the call stack.
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    new Throwable().printStackTrace(pw);
+    pw.close();
+    String msg = String.format(
+        "While FS was in the index, the feature \"%s\""
+        + ", which is used as a key in one or more indices, "
+        + "was modified\n FS = \"%s\"\n%s%n",
+        this.getTypeSystemImpl().ll_getFeatureForCode(featureCode).getName(),
+        new FeatureStructureImplC(this, fsRef).toString(),  
+        sw.toString());        
+    UIMAFramework.getLogger().log(Level.WARNING, msg);
     
-    
+    if (IS_THROW_EXCEPTION_CORRUPT_INDEX) {
+      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_FS_FEAT_UPDATE, new Object[]{});
+    }    
   }
   
   /**
