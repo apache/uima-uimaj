@@ -42,7 +42,7 @@ import org.apache.uima.internal.util.IntVector;
  */
 abstract class FSsTobeAddedback implements AutoCloseable {
   
-  final static boolean SHOW = true;
+  final static boolean SHOW = false;
   final static AtomicInteger removes = new AtomicInteger(0);
   
   /**
