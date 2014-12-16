@@ -44,6 +44,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -87,6 +88,33 @@ public class IteratorTest extends TestCase {
   private Type sentenceType;
   
   private Type subsentenceType;
+  
+  private FSIndex<FeatureStructure> bagIndex;
+  private FSIndex<FeatureStructure> ssBagIndex;
+  
+  private FSIndex<FeatureStructure> setIndex;
+  private FSIndex<FeatureStructure> ssSetIndex;
+
+  private FSIndex<FeatureStructure> sortedIndex;
+  private FSIndex<FeatureStructure> ssSortedIndex;
+  
+  private FSIndex<?> jcasBagIndex;
+  private FSIndex<?> jcasSsBagIndex;
+  
+  private FSIndex<?> jcasSetIndex;
+  private FSIndex<?> jcasSsSetIndex;
+
+  private FSIndex<?> jcasSortedIndex;
+  private FSIndex<?> jcasSsSortedIndex;
+  
+  private JCas jcas;
+
+  private FSIndex<FeatureStructure> wordSetIndex;
+  private FSIndex<FeatureStructure> ssWordSetIndex;
+
+  private Feature wordFeat;
+
+  private Type wType;
 
   /**
    * Constructor for FilteredIteratorTest.
@@ -97,7 +125,7 @@ public class IteratorTest extends TestCase {
     super(arg0);
   }
 
-  public void setUp() {
+  public void setUp() throws CASException {
     // try {
     // this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup());
     // assertTrue(this.cas != null);
@@ -117,6 +145,7 @@ public class IteratorTest extends TestCase {
       ResourceSpecifier spec = (ResourceSpecifier) parser.parse(new XMLInputSource(descriptorFile));
       AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(spec);
       this.cas = (CASImpl) ae.newCAS();
+      this.jcas = cas.getJCas();
       assertTrue(this.cas != null);
       this.ts = this.cas.getTypeSystem();
       assertTrue(this.ts != null);
@@ -176,6 +205,25 @@ public class IteratorTest extends TestCase {
     this.annotationType = null;
   }
   
+  private void setupIndices () {
+    bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
+    setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    
+    ssBagIndex = bagIndex.withSnapshotIterators();
+    ssSetIndex = setIndex.withSnapshotIterators();
+    ssSortedIndex = sortedIndex.withSnapshotIterators();
+    
+    jcasBagIndex = this.jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
+    jcasSetIndex = this.jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    jcasSortedIndex = this.jcas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    
+    jcasSsBagIndex = jcasBagIndex.withSnapshotIterators();
+    jcasSsSetIndex = jcasSetIndex.withSnapshotIterators();
+    jcasSsSortedIndex = jcasSortedIndex.withSnapshotIterators();
+
+  }
+  
   public void testGetIndexes() {
     Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
@@ -197,12 +245,19 @@ public class IteratorTest extends TestCase {
     }
     AnnotationFS match = this.cas.createAnnotation(this.annotationType, start, end);
     FSIndex<AnnotationFS> index = this.cas.getAnnotationIndex();
+    FSIndex<AnnotationFS> ssIndex = index.withSnapshotIterators();
     FSIterator<AnnotationFS> it = index.iterator();
+    FSIterator<AnnotationFS> ssit = ssIndex.iterator();
     it.moveTo(match);
+    ssit.moveTo(match);
     assertTrue(index.compare(match, it.get()) == 0);
+    assertTrue(index.compare(match, ssit.get()) == 0);
+    
     // The contract of moveTo() says that any preceding FS must be smaller.
     it.moveToPrevious();
+    ssit.moveToPrevious();
     assertTrue(index.compare(match, it.get()) > 0);
+    assertTrue(index.compare(match, ssit.get()) > 0);
   }
   
   public void testMoveToPastEnd() {  // https://issues.apache.org/jira/browse/UIMA-4094
@@ -214,6 +269,12 @@ public class IteratorTest extends TestCase {
     FSIterator<AnnotationFS> it = index.iterator();
     it.moveTo(pastEnd);
     assertFalse(it.isValid());
+    
+    index = index.withSnapshotIterators();
+    it = index.iterator();
+    it.moveTo(pastEnd);
+    assertFalse(it.isValid());
+
   }
   
   public void testMoveToFirstOfEqualOneType() {
@@ -247,6 +308,19 @@ public class IteratorTest extends TestCase {
         it.moveToNext();
       }
       assertTrue(it.isValid());
+      
+      index = index.withSnapshotIterators();
+      it = index.iterator();
+      it.moveTo(testAnnot);
+      for (int j = 0; j < 2; j++) {
+        assertTrue(it.isValid());
+        AnnotationFS fs = it.get();
+        assertEquals(1, fs.getBegin()); 
+        assertEquals(2, fs.getEnd());
+        it.moveToNext();
+      }
+      assertTrue(it.isValid());
+
     }
   }
   
@@ -326,200 +400,55 @@ public class IteratorTest extends TestCase {
   public void testIterator() {
     setupFSs();
     
-    FSIndex<FeatureStructure> bagIndex = this.cas.getIndexRepository().getIndex(
-        CASTestSetup.ANNOT_BAG_INDEX);
-    FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
-        CASTestSetup.ANNOT_SET_INDEX);
-    FSIndex<FeatureStructure> sortedIndex = this.cas.getIndexRepository().getIndex(
-        CASTestSetup.ANNOT_SORT_INDEX);
+    setupIndices();
     
     setIteratorWithoutMods(setIndex, -1);
-
-    // test find()
-    AnnotationFS annot = (AnnotationFS) setIndex.iterator().get();
-    assertNotNull(setIndex.find(annot));
-    assertNull(setIndex.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
-
-    // do same for JCas
-    JCas jcas = null;
-    try {
-      jcas = this.cas.getJCas();
-    } catch (CASException e1) {
-      e1.printStackTrace();
-      assertTrue(false);
-    }
-    FSIndex<?> jcasSetIndex = jcas.getJFSIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    Annotation jcasAnnotation = (Annotation) jcasSetIndex.find(annot);
-    assertNotNull(jcasAnnotation);
-    assertNull(jcasSetIndex.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Test fast fail.
-
-    FSIterator<FeatureStructure> it = bagIndex.iterator(); // use bag index, remove add last one
-    AnnotationFS a = null;
-    // (preserves order for other tests).
-    it.moveToLast();
-    a = (AnnotationFS) it.get();
-    it = setIndex.iterator(); // back to set iterator to do testing
-    this.cas.getIndexRepository().removeFS(a);
-    this.cas.getIndexRepository().addFS(a);
-
-    boolean ok = false;
-    try {
-      it.next(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    ok = false;
-    try {
-      it.next(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    it.moveTo(a);
-    ok = false;
-    try {
-      it.next(); // should not throw
-      ok = true;
-    } catch (ConcurrentModificationException e) {
-      // checking this with the ok variable
-    }
-    assertTrue(ok);
-
-    // Test find()
-    Type wType = this.cas.getTypeSystem().getType("org.apache.uima.cas.test.types.Word");
-
-    Feature wordFeat = wType.getFeatureByBaseName("word");
-
-    for (int i = 0; i < 20; i++) {
-      FeatureStructure fs = this.cas.createFS(wType);
-      fs.setStringValue(wordFeat, "word" + i);
-      this.cas.getIndexRepository().addFS(fs);
-    }
-
-    FSIndex<FeatureStructure> wordSetIndex = this.cas.getIndexRepository().getIndex(
-        "Word Set Index");
-
-    it = wordSetIndex.iterator();
-
-    FeatureStructure fs = this.cas.createFS(wType);
-    fs.setStringValue(wordFeat, "word1");
-
-    // TEST moveTo() and get()
-    it.moveTo(fs);
-
-    assertSame(fs.getType(), it.get().getType());
-
-    Type t1 = fs.getType();
-    Type t2 = wordSetIndex.find(fs).getType();
-    assertSame(t1, t2);
+    setIteratorWithoutMods(ssSetIndex, -2);
     
     sortedIteratorWithoutMods(sortedIndex);
-
-    // /////////////////////////////////////////////////////////////////////////
-    // Test fast fail.
-
-    it = bagIndex.iterator(); // use bag index, remove add last one
-    // (preserves order for other tests).
-    it.moveToLast();
-    a = (AnnotationFS) it.get();
-    // for (it = sortedIndex.iterator(); it.hasNext(); it.next()) {
-    // System.out.println(it.get());
-    // }
-    it = sortedIndex.iterator();
-    it.next();
-    it.next();
-    this.cas.getIndexRepository().removeFS(a);
-    this.cas.getIndexRepository().addFS(a);
-    ok = false;
-    try {
-      it.get(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    ok = false;
-    try {
-      it.next(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    ok = false;
-    try {
-      it.moveToNext(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    it.moveTo(a);
-    ok = false;
-    try {
-      it.next(); // should not throw
-      ok = true;
-    } catch (ConcurrentModificationException e) {
-      // checking with boolean "ok"
-    }
-    assertTrue(ok);
-
-    sortedIndex = null;
-
+    sortedIteratorWithoutMods(ssSortedIndex);
+    
     bagIteratorWithoutMods(bagIndex);
+    bagIteratorWithoutMods(ssBagIndex);
+
+    // test find()
+    findTst(setIndex, jcasSetIndex);
+    findTst(ssSetIndex, jcasSsSetIndex);
+    findTst(sortedIndex, jcasSortedIndex);
+    findTst(ssSortedIndex, jcasSsSortedIndex);
+    findTst(bagIndex, jcasBagIndex);
+    findTst(ssBagIndex, jcasSsBagIndex);
+    
+    basicRemoveAdd(bagIndex, 20, 21);
+    basicRemoveAdd(ssBagIndex, 20, 21);
+    basicRemoveAdd(sortedIndex, 38, 39);
+    basicRemoveAdd(ssSortedIndex, 38, 39);
+    basicRemoveAdd(setIndex, 38, 39);
+    basicRemoveAdd(ssSetIndex, 38, 39);
+
     // /////////////////////////////////////////////////////////////////////////
     // Test fast fail.
 
-    it = bagIndex.iterator(); // use bag index, remove add last one
-    // (preserves order for other tests).
-    it.moveToLast();
-    a = (AnnotationFS) it.get();
-    this.cas.getIndexRepository().removeFS(a);
-    this.cas.getIndexRepository().addFS(a);
+    fastFailTst(setIndex, true);
+    fastFailTst(ssSetIndex, false);
+    
+    fastFailTst(bagIndex, true);
+    fastFailTst(ssBagIndex, false);
+   
+    fastFailTst(sortedIndex, true);
+    fastFailTst(ssSortedIndex, false);
+    
+    
 
-    ok = false;
-    try {
-      it.get(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    it.moveToLast();
-    it.moveToPrevious();
-    it.moveToPrevious();
-    it.moveToPrevious();
-    it.moveToNext();
-    this.cas.getIndexRepository().removeFS(a);
-    this.cas.getIndexRepository().addFS(a);
-
-    ok = false;
-    try {
-      it.moveToNext(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    ok = false;
-    try {
-      it.moveToPrevious(); // should throw
-    } catch (ConcurrentModificationException e) {
-      ok = true;
-    }
-    assertTrue(ok);
-    it.moveTo(a);
-    ok = false;
-    try {
-      it.next(); // should not throw
-      ok = true;
-    } catch (ConcurrentModificationException e) {
-      // checking with boolean "ok"
-    }
-    assertTrue(ok);
-
+    // Test find()
+    setupWords();
+    
+    tstWord(wordSetIndex);
+    tstWord(ssWordSetIndex);
+    
   }
   
-  private void setIteratorWithoutMods(FSIndex<FeatureStructure> setIndex, int thrd) {
+  private void setIteratorWithoutMods(FSIndex<FeatureStructure> setIndex, int threadNumber) {
     // /////////////////////////////////////////////////////////////////////////
     // Create a reverse iterator for the set index and check that the result
     // is the same as for forward iteration.
@@ -545,7 +474,7 @@ public class IteratorTest extends TestCase {
       }
       b = a;
        sb.append(String.format("%d %d debug: n=%d, type=%s, start=%d, end-%d%n",
-           thrd,
+           threadNumber,
            ii++,
            a.hashCode(),
            a.getType().getName(),
@@ -607,6 +536,104 @@ public class IteratorTest extends TestCase {
       assertEquals(javaIt.next().hashCode(), v.get(current++));
     }
   }
+  
+  private void findTst(FSIndex index, FSIndex jcasIndex) {
+    findTestCas(index);
+    findTestJCas(jcasIndex);
+  }
+  
+  private void basicRemoveAdd(FSIndex<FeatureStructure> index, int begin, int end) {
+    FSIterator<FeatureStructure> it = index.iterator();
+    it.moveToLast();
+    AnnotationFS a = (AnnotationFS) it.get();
+    cas.removeFsFromIndexes(a);
+    cas.addFsToIndexes(a);
+
+    it.moveToLast();
+    a = (AnnotationFS) it.get();
+    assertEquals(tokenType, a.getType());
+    assertEquals(begin, a.getBegin());
+    assertEquals(end, a.getEnd());
+  }
+  
+  private void fastFailTst(FSIndex<FeatureStructure> index, boolean isShouldFail) {
+    FSIterator<FeatureStructure> it = index.iterator();
+    it.moveToLast();
+    FeatureStructure a = it.get();
+    it.moveToFirst();
+    
+    cas.removeFsFromIndexes(a);
+    cas.addFsToIndexes(a);    
+    
+    expectCCE(a, it, isShouldFail);
+    expectCCE(a, it, false);  // ok because above expectCCE reset the iterator   
+  }
+  
+  private void expectCCE(FeatureStructure a, FSIterator it, boolean isShouldFail) {
+    boolean ok = false;
+    try {
+      it.moveToNext();
+    } catch (ConcurrentModificationException e) {
+      ok = true;
+    }
+    assertTrue(isShouldFail ? ok : !ok);
+    
+    it.moveTo(a);  // should reset concurrent mod, 
+    ok = true;
+    try {
+      it.moveToNext();
+    } catch (ConcurrentModificationException e) {
+      ok = false;
+    }
+    assertTrue(ok);
+  }
+  
+  private void setupWords() {
+    wType = this.cas.getTypeSystem().getType("org.apache.uima.cas.test.types.Word");
+
+    wordFeat = wType.getFeatureByBaseName("word");
+
+    for (int i = 0; i < 20; i++) {
+      FeatureStructure fs = this.cas.createFS(wType);
+      fs.setStringValue(wordFeat, "word" + i);
+      this.cas.getIndexRepository().addFS(fs);
+    }
+
+    wordSetIndex = this.cas.getIndexRepository().getIndex("Word Set Index");
+    ssWordSetIndex = wordSetIndex.withSnapshotIterators();
+
+  }
+  
+  private void tstWord(FSIndex<FeatureStructure> index) {
+    FSIterator<FeatureStructure> it = index.iterator();
+    it.moveToLast();
+
+    FeatureStructure fs = this.cas.createFS(wType);
+    fs.setStringValue(wordFeat, "word1");
+
+    // TEST moveTo() and get()
+    it.moveTo(fs);
+
+    assertSame(fs.getType(), it.get().getType());
+
+    Type t1 = fs.getType();
+    Type t2 = wordSetIndex.find(fs).getType();
+    assertSame(t1, t2);
+
+  }
+  
+  private void findTestCas(FSIndex<FeatureStructure> index) {
+    AnnotationFS annot = (AnnotationFS) index.iterator().get();  // first element
+    assertNotNull(index.find(annot));
+    assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
+  }
+  
+  private void findTestJCas(FSIndex<?> index) {
+    Annotation annot = (Annotation) index.iterator().get();  // first element
+    assertNotNull(index.find(annot));
+    assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));    
+  }
+  
   
   private void sortedIteratorWithoutMods(FSIndex<FeatureStructure> sortedIndex) {
     // /////////////////////////////////////////////////////////////////////////
