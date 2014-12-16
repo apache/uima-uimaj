@@ -393,7 +393,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
    * returns new hash table size ( usually double) + overhead 
    * 
    * @param numberOfEntries
-   * @return
+   * @return new hash table size ( usually double) + overhead
    */
   private int getHashSetSpace() {
     return ((IntHashSet)intSet).getSpaceUsedInWords() * 2 + IntHashSet.getSpaceOverheadInWords();
@@ -426,7 +426,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
    *   could be a large.
    * 
    * @param existingSize
-   * @return
+   * @return overallocate size
    */
   private static int getHashSetOverAllocateSize(int existingSize) {
     return existingSize + (existingSize >> HASH_SET_OVERALLOCATE_DIVIDER_SHIFT);

@@ -252,10 +252,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * parameters.
    * 
    * @param aCAS
-   *          the CAS to process
-   * @param aResultSpec
-   *          A list of outputs that this annotator should produce.
-   * 
+   *          the CAS to process 
    * @throws AnnotatorProcessException
    *           if a failure occurs during processing.
    * 

@@ -302,7 +302,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * In a sorted array of fsAddrs, find the lowest one that matches the keys in fsRef, or
    * if none match, return a negative number of insertion point if not found
    * @param fsRef
-   * @return
+   * @return index of an arbitrary FS that matches on the compare function or a negative number of insertion point if not found
    */
   private final int find(int fsRef) {
     return binarySearch(this.index.getArray(), fsRef, 0, this.index.size());
@@ -339,7 +339,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   /**
    * Like find, but if found, returns position of Exact FS spot or neg of an insert spot (if no == match)
    * @param fsRef
-   * @return
+   * @return position of Exact FS spot or neg of an insert spot (if no == match)
    */
   private final int findEq(int fsRef) {
     int pos = find(fsRef);

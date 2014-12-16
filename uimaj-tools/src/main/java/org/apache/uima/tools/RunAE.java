@@ -50,7 +50,7 @@ import org.apache.uima.util.AnalysisEnginePerformanceReports;
  * An example application that reads documents from the file system, sends them though an Analysis
  * Engine(AE), and produces XML files with inline annotations. This application uses a
  * {@link CollectionProcessingEngine} to drive the processing. For a simpler introduction to using
- * AEs in an application, see {@link ExampleApplication}.
+ * AEs in an application, see class ExampleApplication in the uimaj-examples project.
  * <p>
  * <code>Usage: java org.apache.uima.examples.RunAE [OPTIONS] 
  * &lt;AE descriptor or JAR file name&gt; &lt;input dir&gt; 

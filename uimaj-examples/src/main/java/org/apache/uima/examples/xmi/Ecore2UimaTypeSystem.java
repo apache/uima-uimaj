@@ -319,8 +319,8 @@ public class Ecore2UimaTypeSystem {
   }
 
   /**
-   * @param attr
-   * @return
+   * @param attr -
+   * @return -
    */
   private static FeatureDescription eStructuralFeature2UimaFeature(
           EStructuralFeature aStructuralFeature, Map aOptions) throws URISyntaxException {

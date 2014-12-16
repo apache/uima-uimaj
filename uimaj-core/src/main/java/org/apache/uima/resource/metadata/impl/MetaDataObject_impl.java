@@ -286,7 +286,6 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
    * Any class which wants to add additional parameters needs to implement / override
    * getAdditionalParameters.
    * @return an array of Attribute objects associated with this class
-   * @throws
    */
   MetaDataAttr[] getAttributes() {
     final Class<? extends MetaDataObject_impl> clazz = this.getClass();

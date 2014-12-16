@@ -384,7 +384,7 @@ public class Int2IntHashMap {
  /**
   * advance pos until it points to a non 0 or is 1 past end
   * @param pos
-  * @return
+  * @return updated pos
   */
  private int moveToNextFilled(int pos) {
    if (pos < 0) {
@@ -406,7 +406,7 @@ public class Int2IntHashMap {
  /**
   * decrement pos until it points to a non 0 or is -1
   * @param pos
-  * @return
+  * @return updated pos
   */
  private int moveToPreviousFilled(int pos) {
    final int max = keys.length;
