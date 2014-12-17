@@ -24,20 +24,35 @@ For more details, please see http://uima.apache.org/building-uima.html
 What's New in 2.7.0
 -------------------
 
+  2.7.0 fixes some possibly significant issues, tightens checking, and changes in some subtle
+  ways how indices are handled.  Because some of these changes may break backwards
+  compatibility, JVM Property definitions are available to disable some of these.
+  
+  Java 7
+  ------
   Java 7 is now required (since UIMA-SDK 2.7.0)
   
-  JSON serialization support is added for Type System Descriptions, and for CASs.
-  Several formats for JSON CAS serialization are provided, please see the chapter in the
+  JSON serialization
+  ------------------
+  JSON serialization support is available for CASs and for UIMA Metadata.
+  Several formats for JSON CAS serialization are provided; please see the chapter in the
   UIMA reference documentation for details.
   
-  The build from sources will include in the binary distribution tar/zip the Jackson core support for JSON.  There is
+  The build from sources will include in the binary distribution tar/zip the 
+  Jackson core support JAR  for JSON.  There is
   a new profile flag you can specify to Maven to exclude this: -P!json-support.
   
-  Adding the same identical Feature Structure to the indices no longer adds duplicate entries. Jira issue: UIMA-3399
+  No Duplicate entries in indices
+  -------------------------------
+  Adding the exact same identical Feature Structure to the indices no longer adds duplicate entries;
+  this is documented in some detail as Jira issue: https://issues.apache.org/jira/browse/UIMA-3399.
   The old behavior may be restored, if needed for backward compatibility by defining the JVM property
-  uima.allow_duplicate_add_to_indices; see the UIMA Reference documentation Chapter 10. 
+  -Duima.allow_duplicate_add_to_indices; see the UIMA Reference documentation Chapter 10. 
   
-  To prevent potential index corruption, UIMA now recovers (unless disabled by ("-Duima.protect_indices_from_key_updates=false")) 
+  Index Corruption prevention
+  ---------------------------
+  To prevent potential index corruption, UIMA now recovers 
+  (unless disabled by ("-Duima.protect_indices_from_key_updates=false")) 
   from all illegal modifications of features.
   
   These are modifications to features used as index keys, done while the Feature Structure being modified is currently in
@@ -48,6 +63,8 @@ What's New in 2.7.0
   "-Duima.report_fs_update_corrupts_index" in order to see if any user code has this problem, and fix these via 
   redesign, or by wrapping the affected areas with a form of protectIndices() (see the CAS Javadocs).  
   
+  New class of UIMA iterators avoids ConcurrentModificationException
+  ------------------------------------------------------------------
   A long-standing difficulty with Feature Structure iterators, namely, that adding to / removing from the underlying
   index being iterated over is not allowed while iterating, is addressed with a new class of "snapshot" iterators.
   These take a snapshot of the state of the index when the iterator is created; subsequent modifications to the index
@@ -56,6 +73,8 @@ What's New in 2.7.0
   creates a light-weigh copy of the the FSIndex instance, where getting iterators gets the Snapshot kind.  This approach
   allows using the new index in Java's "extended for" statement.
   
+  Bug fixes
+  ---------
   There are many bug fixes.  Some highlights: 
     - making the JCasGen Eclipse plugin work with more varieties of specifications for class paths. Jira issues: UIMA-4080/4081
     - moveTo(a_Feature_Structure) or creating a new iterator to start at a feature sometimes went to the wrong place. Jira issues: UIMA-4094 and UIMA-4105
