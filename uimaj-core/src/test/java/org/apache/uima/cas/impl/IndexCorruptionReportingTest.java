@@ -20,15 +20,12 @@
 package org.apache.uima.cas.impl;
 
 import java.io.File;
-import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -44,9 +41,6 @@ public class IndexCorruptionReportingTest extends TestCase {
     System.setProperty("uima.report_fs_update_corrupts_index", "true");
 //    System.setProperty("uima.protect_indices_from_key_updates", "false");
 //    System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
-  }
-
-  static {
   }
   
   private TypeSystemDescription typeSystemDescription;

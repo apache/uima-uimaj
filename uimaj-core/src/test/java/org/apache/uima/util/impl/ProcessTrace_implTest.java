@@ -89,7 +89,7 @@ public class ProcessTrace_implTest extends TestCase {
     Assert.assertEquals("success", subEvt0.getResultMessage());
     Assert.assertTrue(subEvt0.getSubEvents().isEmpty());
 
-    ProcessTraceEvent evt1 = (ProcessTraceEvent) evts.get(1);
+    ProcessTraceEvent evt1 = evts.get(1);
     Assert.assertEquals("c2", evt1.getComponentName());
     Assert.assertEquals("t1", evt1.getType());
     Assert.assertEquals("testing", evt1.getDescription());

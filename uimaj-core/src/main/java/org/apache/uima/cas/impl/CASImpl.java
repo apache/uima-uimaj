@@ -1788,10 +1788,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         // but we need to run the loop to read over the items in the input stream
         loopStart += loopLen + 1;
         loopLen = fsIndex[loopStart];
-        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
+//        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
 //          loopIndexRep.removeFS(fsIndex[i]);
 //          loopIndexRep.addFS(fsIndex[i]);
-        }
+//        }
         loopStart += loopLen + 1;
         ((CASImpl) view).updateDocumentAnnotation();
       } else {
@@ -4862,11 +4862,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (pos >= 0) {
         for (int i = s.size() - 1; i > pos; i--) {
           s.remove(i);
-          ((FSsTobeAddedback)(s.get(i))).addback();
+          s.get(i).addback();
         }
       }      
     }
-    ((FSsTobeAddedback)addbacks).addback();
+    addbacks.addback();
   }
   
   /**

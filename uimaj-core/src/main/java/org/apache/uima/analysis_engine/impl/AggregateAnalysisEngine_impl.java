@@ -65,7 +65,6 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
-import org.apache.uima.util.ProcessTraceEvent;
 import org.apache.uima.util.impl.ProcessTraceEvent_impl;
 
 /**
