@@ -26,6 +26,7 @@ import org.apache.uima.internal.util.ComparableIntIterator;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
+import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
 
 /**
@@ -139,6 +140,11 @@ class FSRBTIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   @Override
   boolean insert(int fs, int count) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  protected void bulkAddTo(IntVector v) {
     throw new UnsupportedOperationException();
   }
 

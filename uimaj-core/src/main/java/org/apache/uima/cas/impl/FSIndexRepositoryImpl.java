@@ -233,8 +233,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   /**
-   * The next two classes (PointerIterator, and LeafPointerIterator) 
+   * The next 3 classes (PointerIterator, PointerIteratorForBag and LeafPointerIterator) 
    * implement iterators for particular indexes.
+   * 
+   * PointerIteratorForBag is not yet done... (December 2014)
    * 
    * This class handles the concepts involved with iterating over a type and
    * all of its subtypes
@@ -283,7 +285,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("PointerIterator [iicp=" + iicp + ", indexes=\n");
+      StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " [iicp=" + iicp + ", indexes=\n");
       int i = 0;
       for (ComparableIntPointerIterator item : indexes) {
         sb.append("  ").append(i++).append("  ").append(item).append('\n');
@@ -721,6 +723,24 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
   }  // end of class PointerIterator
+  
+//  /**
+//   * Version of pointer iterator for bags
+//   * Since bags have no order, simplify the iteration by just going thru sequentially
+//   * all the subtypes
+//   *
+//   */
+//  private class PointerIteratorForBag extends PointerIterator {
+//    
+//    private PointerIteratorForBag(final IndexIteratorCachePair iicp) {
+//      super(iicp);
+//    }
+//    
+//    private PointerIteratorForBag(final IndexIteratorCachePair iicp, int fs) {
+//      super(iicp, fs);
+//    }
+//    
+//  }
 
   /**
    * This class and the previous one (PointerIterator, and LeafPointerIterator) 
@@ -1840,20 +1860,23 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       // Note: This next loop removes duplicates (and also sorts
       // the fs addrs associated with one type)
-      // Duplicates arise from having multiple sets combined, and
-      // also if a non-set index had the same identical FS added
+      // Duplicates arise from having an index having the same identical FS added
       // multiple times.
-      indexedFSs.removeAllElements();
-      // get an iterator over just the leaf index for this type itself, excluding subtypes
-      it = anIndex.index.refIterator();
-      while (it.isValid()) {
-        indexedFSs.add(it.get());
-        it.inc();
+      if (IS_ALLOW_DUP_ADD_2_INDICES) {
+        indexedFSs.removeAllElements();
+        // get an iterator over just the leaf index for this type itself, excluding subtypes
+        it = anIndex.index.refIterator();
+        while (it.isValid()) {
+          indexedFSs.add(it.get());
+          it.inc();
+        }
+        // sort and remove duplicates
+        indexedFSs.sortDedup();
+        // add to previously collected types
+        v.add(indexedFSs.getArray(), 0, indexedFSs.size());  // bulk add of all elements
+      } else {
+        anIndex.index.bulkAddTo(v);
       }
-      // sort and remove duplicates
-      indexedFSs.sortDedup();
-      // add to previously collected types
-      v.add(indexedFSs.getArray(), 0, indexedFSs.size());  // bulk add of all elements
     }  // loop to accumulate in v all for all types
     return v.toArray();
   }

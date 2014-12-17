@@ -416,4 +416,15 @@ public class FSBagIndex extends FSLeafIndexImpl {
     throw new UnsupportedOperationException();
   }
 
+  @Override
+  protected void bulkAddTo(IntVector v) {
+    if (USE_POSITIVE_INT_SET) {
+      indexP.bulkAddTo(v);
+    } else {
+      v.addBulk(index);
+    }
+    
+    
+  }
+
 }

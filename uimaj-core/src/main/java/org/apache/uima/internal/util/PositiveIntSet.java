@@ -39,6 +39,11 @@ public interface PositiveIntSet {
   boolean add(int key);
 
   /**
+   * add all elements in this set to the IntVector v as a bulk operation
+   * @param v - to be added to
+   */
+  void bulkAddTo(IntVector v);
+  /**
    * 
    * @param key -
    * @return true if the set had this element before the remove

@@ -26,6 +26,7 @@ import org.apache.uima.internal.util.ComparableIntIterator;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
+import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
 
 /**
@@ -146,6 +147,11 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
   @Override
   boolean remove(int fs) {
     return this.tree.deleteKey(fs);
+  }
+
+  @Override
+  protected void bulkAddTo(IntVector v) {
+    throw new UnsupportedOperationException();
   }
 
 }

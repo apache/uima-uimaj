@@ -271,4 +271,12 @@ public class IntBitSet implements PositiveIntSet {
     return (position >= 0) && set.get(position);
   }
 
+  @Override
+  public void bulkAddTo(IntVector v) {
+    int pos = -1;
+    while (-1 != (pos = set.nextSetBit(pos + 1))) {
+      v.add(pos + offset);
+    }
+  }
+
 }

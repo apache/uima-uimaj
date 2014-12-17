@@ -30,6 +30,7 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
+import org.apache.uima.internal.util.IntVector;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index
@@ -449,6 +450,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
     return refIterator();
   }
 
+  /**
+   * For serialization: get all the items in this index and bulk add to an IntVector
+   * @param v
+   */
+  protected abstract void bulkAddTo(IntVector v);
+  
   protected abstract IntPointerIterator refIterator(int fsCode);
 
   // these next two are never called (maybe)

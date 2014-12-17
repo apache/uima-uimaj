@@ -549,4 +549,9 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     return true;
   }
 
+  @Override
+  protected void bulkAddTo(IntVector v) {
+    v.addBulk(index);
+  }
+
 }

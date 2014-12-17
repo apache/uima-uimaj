@@ -128,6 +128,10 @@ public class IntVector implements Serializable {
     add(elements, 0, elements.length);
   }
   
+  public void addBulk(IntVector elements) {
+    add(elements.array, 0, elements.size());
+  }
+  
   /**
    * Add a slice of elements to the end
    * @param elements -

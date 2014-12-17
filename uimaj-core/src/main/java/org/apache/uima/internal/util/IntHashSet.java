@@ -642,4 +642,21 @@ public class IntHashSet implements PositiveIntSet {
   public boolean isValid(int position) {
     return (position >= 0) && (position < getCapacity());
   }
+
+  @Override
+  public void bulkAddTo(IntVector v) {
+    if (null == keys4) {
+      for (int k : keys2) {
+        if (k != 0) {
+          v.add(k);
+        }
+      }
+    } else {
+      for (int k : keys4) {
+        if (k != 0) {
+          v.add(k);
+        }
+      }
+    }
+  }
 }

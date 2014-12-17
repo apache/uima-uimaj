@@ -306,4 +306,9 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
     throw new UnsupportedOperationException();
   }
 
+  @Override
+  protected void bulkAddTo(IntVector v) {
+    v.addBulk(index);
+  }
+
 }

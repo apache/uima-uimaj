@@ -711,4 +711,10 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     return (null == intSet) ? false : intSet.isValid(position);
   }
 
+  @Override
+  public void bulkAddTo(IntVector v) {
+    if (null != intSet) {
+      intSet.bulkAddTo(v);
+    }
+  }
 }

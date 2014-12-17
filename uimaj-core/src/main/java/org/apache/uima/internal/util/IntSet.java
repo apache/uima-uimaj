@@ -258,5 +258,10 @@ public class IntSet implements PositiveIntSet {
     // TODO Auto-generated method stub
     return (position >= 0) && (position < size());
   }
+
+  @Override
+  public void bulkAddTo(IntVector v) {
+    v.addBulk(iVec);
+  }
   
 }
