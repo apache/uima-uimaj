@@ -185,8 +185,9 @@ public class FileCompare {
   
   /**
    * Compare 2 strings, ignoring whitespace characters
-   * @param in1
-   * @param in2
+   * @param in1 -
+   * @param in2 -
+   * @return -
    */
   public static boolean compareStrings(String in1, String in2) {
     char c1, c2;
@@ -229,6 +230,7 @@ public class FileCompare {
    *          Filename of the first XML file.
    * @param filename2
    *          Filename of the second XML file.
+   * @return -
    * @throws IOException -
    */
   public static boolean compareXML(String filename1, String filename2) throws IOException {
@@ -279,6 +281,7 @@ public class FileCompare {
    *          Filename of the second XML file.
    * @param pattern 
    *          an instance of Pattern which matches all substrings which should be filtered out of the match
+   * @return true, if both have the same content, after filtering using the supplied Pattern.
    * @throws IOException -
    */
   public static boolean compareWithFilter(String filename1, String filename2, Pattern pattern)
@@ -312,12 +315,13 @@ public class FileCompare {
    * Compare 2 strings, showing where they differ in output to system.out, after
    * doing filtering:
    *   normalize cr nl to nl
-   *   normalize <xmltag>   </xmltag>  to <xmltag/>
+   *   normalize &lt;xmltag:&gt;   &lt;/xmltag&gt;  to &lt;xmltag/&gt;
    *   normalize by applying supplied Pattern and deleting anything it matches
    *   normalize by converting all 2 or more spaces/tabs to just 1 space
-   * @param s1
-   * @param s2
-   * @param pattern
+   * @param s1 -
+   * @param s2 -
+   * @param pattern -
+   * @return -
    */
 
   public static boolean compareStringsWithFilter(String s1, String s2, Pattern pattern) {
@@ -397,6 +401,7 @@ public class FileCompare {
    * 
    * @param xml
    *          The XML file where the empty tags are to be replaced as string.
+   * @param filename -
    * @return The XML file with short empty tags as string.
    */
   private static String shortenEmptyTags(String xml, String filename) {

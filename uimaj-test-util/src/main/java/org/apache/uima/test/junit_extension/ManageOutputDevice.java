@@ -72,7 +72,7 @@ public class ManageOutputDevice {
   /**
    * sets the <code>System.err</code> to a file based <code>java.io.PrintStream</code>
    * 
-   * @param descriptor
+   * @param descriptor -
    * @throws FileNotFoundException -
    */
   public static void setSysErrToFile(String descriptor) throws FileNotFoundException {
