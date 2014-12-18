@@ -152,7 +152,19 @@
             <target>1.7</target>
           </configuration>
         </plugin>
-        
+     
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId> 
+          <executions>
+            <execution>
+              <id>attach-javadocs</id>
+              <configuration>
+                <source>7</source>
+              </configuration> 
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
