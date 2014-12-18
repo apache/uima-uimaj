@@ -1575,6 +1575,24 @@ public class AnalysisEngine_implTest extends TestCase {
     assertEquals("D/C/B/A/F/E/", TestAnnotator2.allContexts);
     cloneFile.delete();
   }
+
+  public void testMultiViewAnnotatorInput() throws Exception {
+    try {
+      AnalysisEngineDescription transAnnotatorDesc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension
+                      .getFile("TextAnalysisEngineImplTest/MultiViewAnnotator.xml")));
+      PrimitiveAnalysisEngine_impl ae = new PrimitiveAnalysisEngine_impl();
+      ae.initialize(transAnnotatorDesc, null);
+      CAS tcas = ae.newCAS();
+      tcas.setDocumentText("this beer is good");
+      assertTrue(tcas.getView("_InitialView").getDocumentText().equals("this beer is good"));
+      ae.process(tcas);
+      assertTrue(tcas.getView("GermanDocument").getViewName().equals("GermanDocument"));
+      assertTrue(tcas.getView("GermanDocument").getDocumentText().equals("das bier ist gut"));
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
   
   /*
    * Get size of file asif has a single line-end character

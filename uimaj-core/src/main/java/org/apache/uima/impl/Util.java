@@ -32,19 +32,23 @@ import org.apache.uima.resource.impl.CasManager_impl;
  */
 public class Util {
   
-  public static CASImpl getStartingView(CAS cas, boolean sofaAware, ComponentInfo componentInfo) {   
-    // if this is a sofa-aware component, give it the Base CAS
-    // if it is a sofa-unaware component, give it whatever view maps to the _InitialView
+  public static CASImpl getStartingView(CAS cas, boolean sofaAware, ComponentInfo componentInfo) {
+    // OLD behavior:
+      // if this is a sofa-aware component, give it the Base CAS
+      // if it is a sofa-unaware component, give it whatever view maps to the _InitialView
+    // NEW behavior:
+      // always return whatever view maps to the _InitialView
     CASImpl ci;
     // need to set the componentInfo for the getView to find the sofa mappings
     // Do this *before* the getView call below
     // note: this is in a shared view part of the CAS
     cas.setCurrentComponentInfo(componentInfo);  
-    if (sofaAware) {
-      ci = ((CASImpl) cas).getBaseCAS();
-    } else {
-      ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
-    }
+//    if (sofaAware) {
+//      ci = ((CASImpl) cas).getBaseCAS();
+//    } else {
+//      ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
+//    }
+    ci = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);
     
     return ci;
   }
