@@ -126,11 +126,6 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
         does not mention any input or output Sofa names, the framework treats that component
         as a Single-View component.</para>
       
-      <para>A Multi-View component is passed a special kind of a CAS object, called a base CAS,
-        which it must use to switch to the particular view it wishes to process. The base CAS
-        object itself has no Sofa and no ability to use Indexes; only the views have that
-        capability.</para>
-      
     </section>
     
     <section id="ugr.tug.mvs.additional_capabilities">
@@ -344,11 +339,11 @@ aView.removeFsFromIndexes(aFeatureStructure)</programlisting>
       
     </section>
     
-    <section id="ugr.tug.mvs.specifying_cas_view_for_single_view">
-      <title>Specifying the CAS View for a Single-View Component</title>
-      <titleabbrev>CAS View for Single-View Parts</titleabbrev>
+    <section id="ugr.tug.mvs.specifying_cas_view_for_process">
+      <title>Specifying the CAS View delivered to a Components Process Method</title>
+      <titleabbrev>CAS View received by Process</titleabbrev>
       
-      <para>Single-View components receive a Sofa named <quote>_InitialView</quote>, or
+      <para>All components receive a Sofa named <quote>_InitialView</quote>, or
         a Sofa that is mapped to this name.</para>
       
       <para>For example, assume that the CAS Consumer to be used in our CPE is a Single-View
@@ -435,8 +430,8 @@ AnalysisEngine ae =
   <section id="ugr.tug.mvs.jcas_extensions_for_multi_views">
     <title>JCas extensions for Multiple Views</title>
     
-    <para>The JCas interface to the CAS can be used with any / all views, as well as the base CAS
-      sent to Multi-View components. You can always get a JCas object from an existing CAS
+    <para>The JCas interface to the CAS can be used with any / all views. 
+      You can always get a JCas object from an existing CAS
       object by using the method getJCas(); this call will create the JCas if it doesn&apos;t
       already exist. If it does exist, it just returns the existing JCas that corresponds to
       the CAS.</para>
@@ -508,7 +503,7 @@ AnalysisEngine ae =
       
       <para>The application driver instantiates an analysis engine,
         <literal>seAnnotator</literal>, from the annotator descriptor, obtains a new
-        base CAS using that engine&apos;s CAS definition, and creates the expected input
+        CAS using that engine&apos;s CAS definition, and creates the expected input
         Sofa using:</para>
       
       
@@ -683,6 +678,11 @@ InputStream is = aCasOrJCas.getSofaDataStream();</programlisting>
     <para>The process method of Multi-View annotators receive the base CAS, however the base
       CAS no longer has an index repository to hold <quote>global</quote> data. Global data
       needs to be put in a specific named CAS view of your choice.</para>
+    
+      <note>New behavior as of version 2.7.0
+      <para>A Multi-View component is no longer passed the base CAS view.
+        See <xref linkend="ugr.tug.mvs.specifying_cas_view_for_process"/>.</para>
+      </note>
     
     <para>Because of these changes, the following scenarios will break with v2.0 clients:
       

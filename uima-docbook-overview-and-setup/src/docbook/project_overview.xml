@@ -754,6 +754,10 @@ under the License.
                     any inputSofas or outputSofas will now be passed the view of default
                     Sofa instead of the Base CAS. </para>
                 </listitem>
+                <listitem>
+                  <para> As of version 2.7.0, all annotators will be passed the view of 
+                    the default Sofa. </para>
+                </listitem>
               </itemizedlist> </para>
           </listitem>
         </itemizedlist> </para>

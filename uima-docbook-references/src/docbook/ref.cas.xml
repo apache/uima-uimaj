@@ -49,11 +49,6 @@ under the License.
   JCas for the same reasons.
   </para>
   
-  <para>CASes passed to Annotator Components are either a base CAS or a regular CAS. Base CASes
-    are only passed to Multi-View components - they are like regular CASes, but do not have user
-    accessible indexes or Sofas. They are used by the component only for switching to other CAS
-    views, which are regular CASes.</para>
-  
   <section id="ugr.ref.cas.javadocs">
     <title>Javadocs</title>
     
