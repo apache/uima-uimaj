@@ -209,7 +209,7 @@
               <instructions>
                 <Bundle-SymbolicName>org.apache.uima.caseditor;singleton:=true</Bundle-SymbolicName>
                 <Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
-                <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+                <Bundle-RequiredExecutionEnvironment>J2SE-1.7</Bundle-RequiredExecutionEnvironment>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Export-Package>
                   org.apache.uima.caseditor.*

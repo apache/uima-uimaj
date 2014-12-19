@@ -326,7 +326,7 @@
             </Export-Package>
             <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
+            <Bundle-RequiredExecutionEnvironment>J2SE-1.7</Bundle-RequiredExecutionEnvironment>
 
             <!-- handle split packages in Eclipse.
               We do this by using Require-Bundle, and excluding from the Import-Package those
