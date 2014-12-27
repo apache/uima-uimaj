@@ -527,7 +527,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   private void handleIntSet(int newKey) {
     IntSet is = (IntSet) intSet;
     final int size = is.size() + 1;
-    if (size < INT_SET_MAX_SIZE) {
+    if (size <= INT_SET_MAX_SIZE) {
       return;
     }
     
@@ -551,7 +551,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     //   bit set is approx 2 + range / 32
     final int bitSetSpace = getBitSetSpaceFromRange(mostPos - mostNeg, 0);
     final int hashSetOverAllocSize = getHashSetOverAllocateSize(size);
-    final int hashSetSpace = getHashSetSpace(hashSetOverAllocSize, mostPos, mostNeg);
+     final int hashSetSpace = getHashSetSpace(hashSetOverAllocSize, mostPos, mostNeg);
     if (bitSetSpace < hashSetSpace) {
       switchToBitSet(mostPos, mostNeg, estimatedBitSetOffset(mostNeg, -1));
       return;
@@ -572,10 +572,11 @@ public class PositiveIntSet_impl implements PositiveIntSet {
       return;
     }
     
-    final int hashSetSpaceNeeded = getHashSetSpace(); //computes the doubline of space   
+    final int hashSetSpaceNeeded = getHashSetSpace(); //computes the doubling of space   
     
     final int maxInt = intHashSet.getMostPositive();
-    final int offset = useOffset ? intHashSet.getMostNegative() : 0;
+    // https://issues.apache.org/jira/browse/UIMA-4159
+    final int offset = useOffset ? Math.min(intHashSet.getMostNegative(), newKey) : 0;
     final int bitSetSpaceNeeded = getBitSetSpaceFromRange(BIT_SET_OVERALLOCATE + maxInt - offset, 0);
  
     if (bitSetSpaceNeeded < (hashSetSpaceNeeded - HYSTERESIS)) {
