@@ -104,7 +104,9 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean contains(int key) {
-    return (key == 0) ? false : set.get(key - offset);
+    return (key == 0) ? false : 
+           (key - offset < 0) ? false :
+           set.get(key - offset);
   }
  
 
