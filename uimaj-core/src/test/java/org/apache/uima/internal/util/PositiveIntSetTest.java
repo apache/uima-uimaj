@@ -30,18 +30,30 @@ public class PositiveIntSetTest extends TestCase {
   
   public void testSwitchFromHashToBitWithOffset() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
-    s.add(100000);  // start as bit set with offset 100000
-    s.add(101328);  // switches to intSet
+    int [] x = new int[100];
+    int ix = 0;
+    
+    s.add(x[ix++] = 100000);  // start as bit set with offset 100000
+    
+    s.add(x[ix++] = 101328);  // switches to intSet
     for (int i = 0; i < 14; i++) {
-      s.add(100001 + i);  
+      s.add(x[ix++] = 100001 + i);  
     }
-    s.add(100001 + 14);  // switches to hashSet, size = 64 entries in short table = 32 words + 11
+    s.add(x[ix++] = 100001 + 14);  // switches to hashSet, size = 64 entries in short table = 32 words + 11
     for (int i = 0; i < 24; i++) {
-      s.add(100100 + i);
+      s.add(x[ix++] = 100100 + i);
     }
     // next causes an exception on 2.7.0 rc2 
-    s.add(99999);  // switch to bit set with key being the lowest value      
-    s.add(100501);
+    s.add(x[ix++] = 99999);  // switch to bit set with key being the lowest value      
+    s.add(x[ix++] = 100501);
+    
+    
+    // validate s
+    assertEquals(19 + 24, s.size());
+    for (int i = 0; i < (19 + 24); i++) {
+      assertTrue(s.contains(x[i]));
+    }
+    assertFalse(s.contains(1));
   }
   
 
