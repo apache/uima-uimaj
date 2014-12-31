@@ -746,7 +746,7 @@ uima.tcas.Annotation.</programlisting>
             behavior is consistent with that.</para>
             
             <para>Note that even after this change, there is still a distinct difference in meaning for bag and set indexes.
-            The set index uses equal defined key values to determine equlivance classes for Feature Structures, and
+            The set index uses equal defined key values to determine equivalence classes for Feature Structures, and
             will not add a Feature Structure if it has equal key values to an entry already in there.</para>
             
             <para>It is possible, however, that users may be depending on having multiple instances of 
