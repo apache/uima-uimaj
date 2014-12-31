@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -39,6 +40,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.MessageReport;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -116,6 +118,8 @@ public class CasSerializerSupport {
     
   public static int PP_LINE_LENGTH = 120;
   public static int PP_ELEMENTS = 30;  // number of elements to do before nl
+  
+  public static AtomicInteger errorCount = new AtomicInteger(0);
   
   final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
     public int compare(TypeImpl object1, TypeImpl object2) {
@@ -389,7 +393,7 @@ public class CasSerializerSupport {
       String message = String.format("Feature %s is marked multipleReferencesAllowed=false, but it has"
           + " multiple references.  These will be serialized in duplicate.", 
           tsi.ll_getFeatureForCode(featCode).getName());
-      logger.log(Level.WARNING, message);
+      MessageReport.decreasingWithTrace(errorCount, message, logger);
       if (this.errorHandler != null) {
         this.errorHandler.warning(new SAXParseException(message, null));
       }

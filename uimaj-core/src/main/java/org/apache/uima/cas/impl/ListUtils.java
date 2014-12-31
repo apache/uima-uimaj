@@ -19,10 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
@@ -31,6 +35,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.MessageReport;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -47,52 +52,135 @@ import org.xml.sax.SAXParseException;
  */
 public class ListUtils {
   private static final List<String> EMPTY_LIST_STRING = Collections.emptyList();
+  
+  private static final AtomicInteger errorCount = new AtomicInteger(0);
 
-  CASImpl cas;
+  private abstract class UpdateTypeActions {
+    final int neType;
+    final int tailFeat;
+    final String listTypeName;
+    
+    UpdateTypeActions(int neType, int tailFeat, String listTypeName) {
+      this.neType = neType;
+      this.tailFeat = tailFeat;
+      this.listTypeName = listTypeName;
+    }
+        
+    abstract void setNewValueInExistingNode(int curNode, List<String> stringValues, int i);
+    abstract void setNewValueInNewNode(int newNode, List<String> stringValues, int i);
+  }
+  // ********** Int List *********
+  private class UpdateIntActions extends UpdateTypeActions {
+    UpdateIntActions() {super(neIntListType, intTailFeat, "IntegerList");}
+
+    void setNewValueInExistingNode(int curNode, List<String> stringValues, int i) {
+      setNewValueInNewNode(curNode, stringValues, i);
+    }
+
+    void setNewValueInNewNode(int newNode, List<String> stringValues, int i) {
+      int value = Integer.parseInt(stringValues.get(i));
+      cas.setFeatureValueNoIndexCorruptionCheck(newNode, intHeadFeat, value);
+    } 
+  }
+  // ********** Float List *********
+  private class UpdateFloatActions extends UpdateTypeActions {
+    UpdateFloatActions() {super(neFloatListType, floatTailFeat, "FloatList");}
+
+    void setNewValueInExistingNode(int curNode, List<String> stringValues, int i) {
+      setNewValueInNewNode(curNode, stringValues, i);
+    }
+
+    void setNewValueInNewNode(int newNode, List<String> stringValues, int i) {
+      float value = Float.parseFloat(stringValues.get(i));
+      cas.setFeatureValueNoIndexCorruptionCheck(newNode, floatHeadFeat, CASImpl.float2int(value));
+    } 
+  }
+  
+  // ********** Fs List *********
+  private class UpdateFsActions extends UpdateTypeActions {
+    IntVector fsAddresses;
+    
+    UpdateFsActions() {super(neFsListType, fsTailFeat, "FsList");}
+
+    void setNewValueInExistingNode(int curNode, List<String> stringValues, int i) {
+      setNewValueInNewNode(curNode, stringValues, i);
+    }
+
+    void setNewValueInNewNode(int newNode, List<String> stringValues, int i) {
+      int value = Integer.parseInt(stringValues.get(i));
+      cas.setFeatureValueNoIndexCorruptionCheck(newNode, fsHeadFeat, value);
+      fsAddresses.add(newNode);
+    } 
+  }
+
+  // ********** String List *********
+  private class UpdateStringActions extends UpdateTypeActions {
+    UpdateStringActions() {super(neStringListType, stringTailFeat, "StringList");}
+
+    void setNewValueInExistingNode(int curNode, List<String> stringValues, int i) {
+      String curValue = cas.getStringForCode(cas.getHeapValue(curNode + cas.getFeatureOffset(stringHeadFeat)));
+      String newValue = stringValues.get(i++);
+      if (!curValue.equals(newValue)) {     
+        cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
+      }
+    }
+
+    void setNewValueInNewNode(int newNode, List<String> stringValues, int i) {
+      String newValue = stringValues.get(i++);
+      cas.setFeatureValueNoIndexCorruptionCheck(newNode, stringHeadFeat, cas.addString(newValue));
+    } 
+  }
+  
+  final private UpdateIntActions updateIntActions;
+  final private UpdateFloatActions updateFloatActions; 
+  final private UpdateFsActions updateFsActions; 
+  final private UpdateStringActions updateStringActions;
+  
+  final CASImpl cas;
 
   // list type and feature codes
-  private int intListType;
+  final private int intListType;
 
-  private int floatListType;
+  final private int floatListType;
 
-  private int stringListType;
+  final private int stringListType;
 
-  private int fsListType;
+  final private int fsListType;
 
   
-  public int neIntListType;
+  final public int neIntListType;
 
-  public int neFloatListType;
+  final public int neFloatListType;
 
-  public int neStringListType;
+  final public int neStringListType;
 
-  public  int neFsListType;
+  final public int neFsListType;
 
-  private int eIntListType;
+  final private int eIntListType;
 
-  private int eFloatListType;
+  final private int eFloatListType;
 
-  private int eStringListType;
+  final private int eStringListType;
 
-  private int eFsListType;
+  final private int eFsListType;
 
-  private int intHeadFeat;
+  final private int intHeadFeat;
 
-  private int intTailFeat;
+  final private int intTailFeat;
 
-  private int floatHeadFeat;
+  final private int floatHeadFeat;
 
-  private int floatTailFeat;
+  final private int floatTailFeat;
 
   private int stringHeadFeat;
 
   private int stringTailFeat;
 
-  int fsHeadFeat;
+  final int fsHeadFeat;
 
-  private int fsTailFeat;
+  final private int fsTailFeat;
 
-  private Logger logger;
+  final private Logger logger;
 
   private ErrorHandler eh;
 
@@ -133,6 +221,12 @@ public class ListUtils {
     this.floatTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FLOAT_LIST_TAIL);
     this.stringTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_STRING_LIST_TAIL);
     this.fsTailFeat = ts.ll_getCodeForFeatureName(CAS.FEATURE_FULL_NAME_FS_LIST_TAIL);
+    
+    // must follow above:
+    updateIntActions = new UpdateIntActions();
+    updateFloatActions = new UpdateFloatActions();
+    updateFsActions = new UpdateFsActions();
+    updateStringActions = new UpdateStringActions();
   }
   
   public int getHeadFeatCode(int type) {
@@ -388,326 +482,82 @@ public class ListUtils {
   }
 
   public int updateIntList(int addr, List<String> stringValues) throws SAXException  {
-    int first = addr;
-    int currLength = this.getLength(this.neIntListType, addr);
-    int curNode = addr;
-    int prevNode = 0;
-    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
-    boolean foundCycle = false;
-    int i =0;
-    
-    //if (currLength != stringValues.size() ) {  
-	//   first = createIntList(stringValues);
-	   
-    if (currLength < stringValues.size()) {
-  	  while (cas.getHeapValue(curNode) == neIntListType) {
-  	  	if (!visited.add(curNode)) {
-  	  	           foundCycle = true;
-  	  	           break;
-  	  	}
-  	  	int value = Integer.parseInt(stringValues.get(i++));
-  	    cas.setFeatureValueNoIndexCorruptionCheck(curNode, intHeadFeat, value);
-  	    prevNode = curNode;
-  	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
-  	  }
-  	  //add nodes for remaining values
-  	  if (i < stringValues.size()) {
-  	  	int emptyListFs = curNode; 
-  	  	//check that first is eintlisttype
-  	  	while (i < stringValues.size()) {
-  	  	  int newNode = cas.ll_createFS(neIntListType);
-  	  	  int value = Integer.parseInt(stringValues.get(i++));
-  	      cas.setFeatureValueNoIndexCorruptionCheck(newNode,intHeadFeat, value);
-  	      cas.setFeatureValueNoIndexCorruptionCheck(newNode, intTailFeat, emptyListFs);
-  	      cas.setFeatureValueNoIndexCorruptionCheck(prevNode, intTailFeat, newNode);
-  	  	  prevNode = newNode;
-  	    }
-  	  }
-  	} else if (currLength > stringValues.size()) {
-  		while (cas.getHeapValue(curNode) == neIntListType && i < stringValues.size()) {
-  		  if (!visited.add(curNode)) {
-  		  	           foundCycle = true;
-  		  	           break;
-  		  }
-  		  int value = Integer.parseInt(stringValues.get(i++));
-  		  cas.setFeatureValueNoIndexCorruptionCheck(curNode, intHeadFeat, value);
-  		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
-  		}	
-  		int finalNode = curNode;
-        //loop till we get a FS that is of type eStringListType
-        while (cas.getHeapValue(curNode) == neIntListType) {
-    	  if (!visited.add(curNode)) {
-    	    foundCycle = true;
-    	    break;
-    	    //TODO throw exc
-    	  }
-    	  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
-        }
-        //set the tail feature to eStringListType fs
-        cas.setFeatureValueNoIndexCorruptionCheck(finalNode, intTailFeat, curNode);   
-    } else {
-      while (cas.getHeapValue(curNode) == neIntListType) {
-        if (!visited.add(curNode)) {
-           foundCycle = true;
-           break;
-        }
-        int value = Integer.parseInt(stringValues.get(i++));
-        cas.setFeatureValueNoIndexCorruptionCheck(curNode,intHeadFeat, value );
-        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(intTailFeat));
-      }
-    }
-    if (foundCycle) {
-        reportWarning("Found a cycle in an IntegerList.  List truncated to "
-                + i);
-    }
-    return first;
+    return updateCommonList(addr, stringValues, updateIntActions);
   }
 	  
   public int updateFloatList(int addr, List<String> stringValues) throws SAXException  {
-    int first = addr;
-    int currLength = this.getLength(this.neFloatListType, addr);
-    int curNode = addr;
-    int prevNode = 0;
-    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
-    boolean foundCycle = false;
-    int i =0;
-    
-    //if (currLength != stringValues.size() ) {  
-	//   first = createFloatList(stringValues);
-	if (currLength < stringValues.size()) {
-	  while (cas.getHeapValue(curNode) == neFloatListType) {
-	  	if (!visited.add(curNode)) {
-	  	           foundCycle = true;
-	  	           break;
-	  	}
-	  	float value = Float.parseFloat(stringValues.get(i++));
-	    cas.setFeatureValueNoIndexCorruptionCheck(curNode, floatHeadFeat, CASImpl.float2int(value));
-	    prevNode = curNode;
-	  	curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
-	  }
-	  //add nodes for remaining values
-	  if (i < stringValues.size()) {
-	  	int emptyListFs = curNode; 
-	  	//check that first is efloatlisttype
-	  	while (i < stringValues.size()) {
-	  	  int newNode = cas.ll_createFS(neFloatListType);
-	  	  float value = Float.parseFloat(stringValues.get(i++));
-	      cas.setFeatureValueNoIndexCorruptionCheck(newNode, floatHeadFeat, CASImpl.float2int(value));
-	      cas.setFeatureValueNoIndexCorruptionCheck(newNode, floatTailFeat, emptyListFs);
-	      cas.setFeatureValueNoIndexCorruptionCheck(prevNode, floatTailFeat, newNode);
-	  	  prevNode = newNode;
-	    }
-	  }
-	} else if (currLength > stringValues.size()) {
-		while (cas.getHeapValue(curNode) == neFloatListType && i < stringValues.size()) {
-		  if (!visited.add(curNode)) {
-		  	           foundCycle = true;
-		  	           break;
-		  }
-		  float value = Float.parseFloat(stringValues.get(i++));
-		  cas.setFeatureValueNoIndexCorruptionCheck(curNode,floatHeadFeat, CASImpl.float2int(value));
-		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
-		}	
-		int finalNode = curNode;
-        //loop till we get a FS that is of type eStringListType
-        while (cas.getHeapValue(curNode) == neFloatListType) {
-  	      if (!visited.add(curNode)) {
-  	        foundCycle = true;
-  	        break;
-  	      //TODO throw exc
-  	      }
-  	      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
-        }
-        //set the tail feature to eStringListType fs
-      	cas.setFeatureValueNoIndexCorruptionCheck(finalNode, floatTailFeat, curNode);
-    } else {
-      while (cas.getHeapValue(curNode) == neFloatListType) {
-        if (!visited.add(curNode)) {
-           foundCycle = true;
-           break;
-        }
-        float value = Float.parseFloat(stringValues.get(i++));
-        cas.setFeatureValueNoIndexCorruptionCheck(curNode,floatHeadFeat,  CASImpl.float2int(value));
-        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(floatTailFeat));
-      }
-    }
-	
-    if (foundCycle) {
-        reportWarning("Found a cycle in an IntegerList.  List truncated to "
-                  + i);
-    }
-    return first;
+    return updateCommonList(addr, stringValues, updateFloatActions);
   }  
   
   public int updateFsList(int addr, List<String> stringValues, IntVector fsAddresses) throws SAXException  {
-    int first = addr;
-    int currLength = this.getLength(this.neFsListType, addr);
-    boolean foundCycle = false;
-    final PositiveIntSet_impl visited = new PositiveIntSet_impl();
-    int curNode = addr;
-    int prevNode = 0;
-    
-    //if (currLength != stringValues.size() ) {  
-	//   first = createFsList(stringValues, fsAddresses);
-    int i=0;
-    if (currLength < stringValues.size() ) {    
-  	  while (cas.getHeapValue(curNode) == neFsListType) {
-  	    if (!visited.add(curNode)) {
-  	           foundCycle = true;
-  	           break;
-  	    }
-  	    int value = Integer.parseInt(stringValues.get(i++));
-        cas.setFeatureValueNoIndexCorruptionCheck(curNode, fsHeadFeat, value);
-        fsAddresses.add(curNode);
-        prevNode = curNode;
-  	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-  	  }
-  	  //add nodes for remaining values
-  	  if (i < stringValues.size()) {
-  	    int emptyListFs = curNode; 
-  	    //check that first is estringlisttype
-  	    while (i < stringValues.size()) {
-  	      int newNode = cas.ll_createFS(neFsListType);
-  	      int value = Integer.parseInt(stringValues.get(i++));
-          cas.setFeatureValueNoIndexCorruptionCheck(newNode, fsHeadFeat, value);
-          fsAddresses.add(newNode);
-          cas.setFeatureValueNoIndexCorruptionCheck(newNode, fsTailFeat, emptyListFs);
-          cas.setFeatureValueNoIndexCorruptionCheck(prevNode, fsTailFeat, newNode);
-  	      prevNode = newNode;
-  	    }
-  	  }
-    } else if (currLength > stringValues.size()) {	
-        while (cas.getHeapValue(curNode) == neFsListType && i < stringValues.size()) {
-   	      if (!visited.add(curNode)) {
-   		    foundCycle = true;
-   		    break;
-   		  }
-   	      int value = Integer.parseInt(stringValues.get(i++));
-	      fsAddresses.add(curNode);
-          cas.setFeatureValueNoIndexCorruptionCheck(curNode, fsHeadFeat, value);
-   		  curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-        } 
-        int finalNode = curNode;
-        //loop till we get a FS that is of type eStringListType
-        while (cas.getHeapValue(curNode) == neFsListType) {
-  	      if (!visited.add(curNode)) {
-  	        foundCycle = true;
-  	        break;
-  	      //TODO throw exc
-  	      }
-  	      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-        }
-        //set the tail feature to eStringListType fs
-      	cas.setFeatureValueNoIndexCorruptionCheck(finalNode, fsTailFeat, curNode);
-    } else {
-      while (cas.getHeapValue(curNode) == neFsListType) {
-        if (!visited.add(curNode)) {
-           foundCycle = true;
-           break;
-        }
-        int value = Integer.parseInt(stringValues.get(i++));
-        cas.setFeatureValueNoIndexCorruptionCheck(curNode, fsHeadFeat, value);
-        fsAddresses.add(curNode);
-        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(fsTailFeat));
-      }
-    }
-    if (foundCycle) {
-      reportWarning("Found a cycle in an IntegerList.  List truncated to "
-                  + i);
-    }
-    return first;
+    updateFsActions.fsAddresses = fsAddresses;
+    return updateCommonList(addr, stringValues, updateFsActions);
   }  
   
   public int updateStringList(int addr, List<String> stringValues) throws SAXException   {
-    int first = addr;
+    return updateCommonList(addr, stringValues, updateStringActions);
+  }  
+		  
+	private int updateCommonList(int addr, List<String> stringValues, final UpdateTypeActions actions) throws SAXException {
+    final int first = addr;
+    final int numberOfValues = stringValues.size();
     boolean foundCycle = false;
     final PositiveIntSet_impl visited = new PositiveIntSet_impl();
     int curNode = addr;
     int prevNode = 0;
-    int currLength = this.getLength(this.neStringListType, addr);
+    int i =0;
+    final int neListType = actions.neType;
+    final int tailFeat = actions.tailFeat; 
+    final int currLength = this.getLength(neListType, addr);
     
-    if (currLength < stringValues.size() ) {    
-      int i =0;
-	  while (cas.getHeapValue(curNode) == neStringListType) {
-	    if (!visited.add(curNode)) {
-	           foundCycle = true;
-	           break;
-	    }
-	    String curValue = cas.getStringForCode(cas.getHeapValue(curNode
-	              + cas.getFeatureOffset(stringHeadFeat)));
-	    String newValue = stringValues.get(i++);
-        if (!curValue.equals(newValue)) {		  
-          cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
-        }
-        prevNode = curNode;
-	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
-	 }
-	 //extend the list
-	 if (i < stringValues.size()) {
-	   int emptyListFs = curNode; 
-	   while (i < stringValues.size()) {
-	     int newNode = cas.ll_createFS(neStringListType);
-	     String value = stringValues.get(i++);
-	     cas.setFeatureValueNoIndexCorruptionCheck(newNode, stringHeadFeat, cas.addString(value));
-	     cas.setFeatureValueNoIndexCorruptionCheck(newNode, stringTailFeat, emptyListFs);
-	     cas.setFeatureValueNoIndexCorruptionCheck(prevNode,stringTailFeat, newNode);
-	     prevNode = newNode;
-	   }
-	 }
-    } else if (currLength > stringValues.size()) {
-      int i=0;	
-      while (cas.getHeapValue(curNode) == neStringListType && i < stringValues.size()) {
- 	    if (!visited.add(curNode)) {
- 		           foundCycle = true;
- 		           break;
- 		}
- 		String curValue = cas.getStringForCode(cas.getHeapValue(curNode
- 		              + cas.getFeatureOffset(stringHeadFeat)));
- 		String newValue = stringValues.get(i++);
-        if (!curValue.equals(newValue)) {		  
-           cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
-        }
- 		curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
-      } 
-      int finalNode = curNode;
-      while (cas.getHeapValue(curNode) == neStringListType) {
-	    if (!visited.add(curNode)) {
-	      foundCycle = true;
-	      break;
-	      //TODO throw exc
-	    }
-	    curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
+    // replace list value with values from string
+    // reuse existing list cells
+    // reuse existing end-of-list cell
+    
+    while (cas.getHeapValue(curNode) == neListType && i < numberOfValues) {
+      if (!visited.add(curNode)) {
+        foundCycle = true;
+        break;
       }
-      cas.setFeatureValueNoIndexCorruptionCheck(finalNode, stringTailFeat, curNode);
-    } else {
-      int i =0;
-      while (cas.getHeapValue(curNode) == neStringListType) {
-        if (!visited.add(curNode)) {
-           foundCycle = true;
-           break;
-        }
-        String curValue = cas.getStringForCode(cas.getHeapValue(curNode
-	              + cas.getFeatureOffset(stringHeadFeat)));
-        String newValue = stringValues.get(i++);
-        if (!curValue.equals(newValue)) {		  
-          cas.setFeatureValueNoIndexCorruptionCheck(curNode, stringHeadFeat, cas.addString(newValue));
-        }
-        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(stringTailFeat));
-      }
+      actions.setNewValueInExistingNode(curNode, stringValues, i++);
+      prevNode = curNode;
+      curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(actions.tailFeat));
     }
-    
+
+    // if there are more values add them to the list
+    if ((!foundCycle) && (currLength < numberOfValues) ) {    
+      int emptyListFs = curNode; 
+      while (i < numberOfValues) {
+        int newNode = cas.ll_createFS(neListType);
+        actions.setNewValueInNewNode(newNode, stringValues, i++);
+        cas.setFeatureValueNoIndexCorruptionCheck(newNode, tailFeat, emptyListFs);
+        cas.setFeatureValueNoIndexCorruptionCheck(prevNode, tailFeat, newNode);
+        prevNode = newNode;
+      }
+    } else if ((!foundCycle) && (currLength > numberOfValues)) {
+      
+      // if there are fewer values than in the list, truncate the list
+      //   (move the end node)
+      int finalNode = curNode;
+      while (cas.getHeapValue(curNode) == neListType) {
+        if (!visited.add(curNode)) {
+          foundCycle = true;
+          break;
+          //TODO throw exc
+        }
+        curNode = cas.getHeapValue(curNode + cas.getFeatureOffset(tailFeat));
+      }
+      cas.setFeatureValueNoIndexCorruptionCheck(finalNode, tailFeat, curNode);
+    } 
+
     if (foundCycle) {
-        reportWarning("Found a cycle in an IntegerList.  List truncated. ");
+      reportWarning("While updating a " + actions.listTypeName + ", a cycle was found; the list is truncated at that point.");
     }
     return first;
-  }  
-		  
-	  
+	}
   
   private void reportWarning(String message) throws SAXException {
-    if (this.logger != null) {
-      logger.log(Level.WARNING, message);
-    }
+    MessageReport.decreasingWithTrace(errorCount, message, logger);
     if (this.eh != null) {
       this.eh.warning(new SAXParseException(message, null));
     }
