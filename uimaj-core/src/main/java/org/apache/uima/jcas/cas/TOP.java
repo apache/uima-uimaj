@@ -128,7 +128,7 @@ public class TOP extends FeatureStructureImpl {
 	}
 
 	/**
-	 * remove this FS from indices in a specific view, perhaps different from the view where this was created.
+	 * remove this FS from indexes in a specific view, perhaps different from the view where this was created.
 	 * @param jcas the JCas
 	 */
 	public void removeFromIndexes(JCas jcas) {

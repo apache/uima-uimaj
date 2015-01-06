@@ -35,7 +35,7 @@ import org.apache.uima.util.XMLInputSource;
  * collection processing, the CPM will pass each CAS from its Analysis Engine to each CAS consumer's
  * process method. The CAS consumer can extract information from the CAS and do anything it wants
  * with that information; commonly CAS consumers will build aggregate data structures such as search
- * engine indices or glossaries.
+ * engine indexes or glossaries.
  * <p>
  * <code>CasConsumer</code>s are also UIMA {@link ConfigurableResource}s, and can be
  * instantiated from descriptors. See

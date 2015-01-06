@@ -39,7 +39,7 @@ public class IndexCorruptionReportingTest extends TestCase {
   
   static {
     System.setProperty("uima.report_fs_update_corrupts_index", "true");
-//    System.setProperty("uima.protect_indices_from_key_updates", "false");
+//    System.setProperty("uima.disable_auto_protect_indexes", "false");
 //    System.setProperty("uima.exception_when_fs_update_corrupts_index", "true");
   }
   

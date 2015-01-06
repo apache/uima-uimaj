@@ -34,7 +34,7 @@ import org.apache.uima.util.XMLInputSource;
  * {@link org.apache.uima.collection.CollectionProcessingManager} (CPM). During collection
  * processing, the CPM will pass each CasData from CasProcessor to each consumer's process method.
  * The CAS consumer can do anything it wants with the CASes it receives; commonly CAS consumers will
- * build aggregate data structures such as search engine indices or glossaries.
+ * build aggregate data structures such as search engine indexes or glossaries.
  * <p>
  * The CPM will also call each CAS Consumer's {@link #batchProcessComplete(ProcessTrace)} method at
  * the end of each batch and their {@link #collectionProcessComplete(ProcessTrace)} method called at

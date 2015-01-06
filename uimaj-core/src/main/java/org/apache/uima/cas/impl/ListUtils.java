@@ -19,9 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +30,6 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlAttribute;
-import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.MessageReport;
 import org.xml.sax.ErrorHandler;
