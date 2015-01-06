@@ -88,6 +88,47 @@ public class GrowingTheCasTest extends TestCase {
       this.ae = null;
     }
   }
+  
+  public void testIteratorPerf() {
+    File textFile = JUnitExtension.getFile("data/moby.txt");
+    String text = null;
+    try {
+      text = FileUtils.file2String(textFile, "utf-8");
+    } catch (IOException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+    StringBuffer buf = new StringBuffer(text.length() * 10);
+    for (int i = 0; i < 10; i++) {
+      buf.append(text);
+    }
+    JCas jcas = null;
+    try {
+      jcas = this.ae.newJCas();
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+    text = buf.toString();
+    jcas.setDocumentText(text);
+    int numberOfSentences = 0;
+    int numberOfTokens = 0;
+    try {
+//      long time = System.currentTimeMillis();
+      this.ae.process(jcas);
+//      time = System.currentTimeMillis() - time;
+//      System.out.println("Time for large CAS: " + new TimeSpan(time));
+      numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
+      numberOfTokens = jcas.getAnnotationIndex(Token.type).size();
+      System.out.println(numberOfSentences);
+      System.out.println(numberOfTokens);
+    } catch (AnalysisEngineProcessException e) {
+      e.printStackTrace();
+      assertTrue(false);
+    }
+    jcas = null;
+    
+  }
 
   public void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
