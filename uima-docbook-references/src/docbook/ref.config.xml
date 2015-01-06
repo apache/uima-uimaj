@@ -40,7 +40,8 @@ under the License.
     <para>
       To enable users to gradually address these issues, there are some global JVM properties
   for UIMA that can restore earlier behaviors, in some cases.  
-  These are detailed in the table below.
+  These are detailed in the table below.  Additionally, there are other JVM properties that can
+  be used in checking and optimizing some performance trade-offs, such as the automatic index protection.
   For the most part, you don't need to assign any values to these properties,
   just define them.  For example to disable the enhanced check that insures you 
   don't add a subtype of AnnotationBase to the wrong View, you could disable this by
@@ -55,24 +56,28 @@ under the License.
     <title>Configuring index protection</title>
     
     <para>A new feature in version 2.7.0 optionally can include checking for invalid feature updates 
-    which could corrupt indices.  Because this checking can slightly slow down performance, there are 
+    which could corrupt indexes.  Because this checking can slightly slow down performance, there are 
     global JVM properties to control it.  The suggested way to operation with these is as follows.
     <itemizedlist>
 	    <listitem><para>At the beginning, run with automatic protection enabled (the default), but
 	    turn on explicit reporting (<code>-Duima.report_fs_update_corrupts_index</code>)</para></listitem>
 	    <listitem><para>For all reported instances, examine your code to see if you can restructure to
-	    do the updates before adding the FS to the indices.  Where you cannot, surround the code doing 
-	    these updates with a try / finally or block <code>protectIndices()</code> form (see documentation in the CAS Javadocs).
+	    do the updates before adding the FS to the indexes.  Where you cannot, surround the code doing 
+	    these updates with a try / finally or block form of <code>protectIndexes()</code>, 
+	    which is described in  
+	     <xref linkend="ugr.ref.cas.updating_indexed_feature_structures"/> (and also is similarly available with JCas). 
 	    </para></listitem>
 	    <listitem><para>After no further reports, for maximum performance, leave in the protections 
-	    you may have installed in the above step, and then disable the reporting and runtime checking, by setting 
-	    <code>-Duima.protect_indices_from_key_updates</code> to false, and removing any 
-	    <code>-Duima.report_fs_update_corrupts_index</code> JVM property.</para></listitem>
+	    you may have installed in the above step, and then disable the reporting and runtime checking, 
+	    using the JVM argument  
+	    <code>-Duima.disable_auto_protect_indexes</code>, and removing (if present) 
+	    <code>-Duima.report_fs_update_corrupts_index</code>.</para></listitem>
     </itemizedlist>
-    One additional JVM property, <code>-Duima.throw_exception_when_fs_update_corrupts_index</code>, will throw
-    a UIMARuntimeException if an update outside of a <code>protectIndices</code> block occurs that could corrupt the indices,
-    rather than "recovering" this.  This is useful for automated builds, where you may want a strong signal if
-    this kind of mistake gets into the build.
+    One additional JVM property, <code>-Duima.throw_exception_when_fs_update_corrupts_index</code>, 
+    is intended to be used in automated build / testing configurations.  It causes the framework to throw
+    a UIMARuntimeException if an update outside of a <code>protectIndexes</code> block occurs 
+    that could corrupt the indexes,
+    rather than "recovering" this.  
     </para>
   </section>
   
@@ -87,6 +92,8 @@ under the License.
        <colspec colnum="1" colname="Title" colwidth="1*"/>
        <colspec colnum="2" colname="Description" colwidth="3*"/>
        <colspec colnum="3" colname="Version"  colwidth= "0.5*"/>
+       
+       <spanspec spanname="fullwidth" namest="Title" nameend="Version" align="center"/>
         
        <tbody>
          <row>
@@ -94,6 +101,22 @@ under the License.
            <entry><emphasis role="bold">Property Name &amp; Description</emphasis></entry>
            <entry><emphasis role="bold">Since Version</emphasis></entry>
          </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
+           
+           <entry><para><code>uima.allow_duplicate_add_to_indexes</code> (default is false)</para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4135">UIMA-4135</ulink>
+                        and <ulink url="https://issues.apache.org/jira/browse/UIMA-3399">UIMA-3399</ulink>.
+                        As of version 2.7.0, adding a particular Feature Structure
+                        to the indexes more than once is ignored.  The old behavior
+                        may be restored by this property.</para></entry>
+           <entry><para>2.7.0</para></entry>
+         </row>
+         
+         <!-- ******************************************************************************* -->
          <row>
            <entry><para>adding Annotation to wrong View</para></entry>
            
@@ -107,7 +130,11 @@ under the License.
                         for backward compatibility.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
-         
+
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Index protection properties</emphasis></entry>
+         </row>         
+         <!-- ******************************************************************************* -->
          <row>
            <entry><para>Report Illegal Index-key Feature Updates</para></entry>
            
@@ -115,20 +142,19 @@ under the License.
                       
                   <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4135">UIMA-4135</ulink>.
                         Updating Features which are used in Set and Sorted
-                        indices as "keys" may corrupt the indices, if the Feature Structure (FS)
-                        has been added to the indices.  To update these, you must first
+                        indexes as "keys" may corrupt the indexes, if the Feature Structure (FS)
+                        has been added to the indexes.  To update these, you must first
                         completely remove the FS from the indexes in all views, then do the updates, and then
                         add it back.  UIMA now checks for this (unless specifically disabled, see below),
                         and if this property is set, will log WARN messages for each occurrence unless
-                        the user does explicit <code>protectIndices</code> (see CAS JavaDocs for CAS <code>protectIndices</code> methods), if this
+                        the user does explicit <code>protectIndexes</code> (see CAS JavaDocs for CAS / JCas <code>protectIndexes</code> methods), if this
                         property is defined.</para>
                    
-                   <para>Specifying this property also forces <code>uima.protect_indices_from_key_updates</code> to true
-                         even if it was set to false (see below).</para>
+                   <para>Specifying this property overrides <code>uima.disable_auto_protect_indexes</code>.</para>
                          
                    <para>Users would run with this property defined, and then for high performance, 
                         would use the report to manually change their code to avoid the problem or 
-                        to wrap the updates with a <code>protectIndices</code> kind of protection (see the
+                        to wrap the updates with a <code>protectIndexes</code> kind of protection (see the
                         reference manual, in the CAS or JCas chapters, for examples of user code doing this, 
                         and then run with the protection turned off (see below).
                         
@@ -137,6 +163,7 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
 
+         <!-- ******************************************************************************* -->
          <row>
            <entry><para>Throw exception on illegal Index-key Feature Updates</para></entry>
            
@@ -144,7 +171,7 @@ under the License.
                       
                   <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4150">UIMA-4150</ulink>.
                         Throws a UIMARuntimeException if an Indexed FS feature used as a key in one or more 
-                        indices is updated, outside of an explicit <code>protectIndices</code> block..  \
+                        indexes is updated, outside of an explicit <code>protectIndexes</code> block..  \
                         This is intended for use in automated build and test environments,
                         to provide a strong signal if this kind of mistake gets into the build.
                         If it is not set, then the other properties specify if corruption should be checked for, 
@@ -158,32 +185,24 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
          
+         <!-- ******************************************************************************* -->
          <row>
-           <entry><para>Protect Indices from Key Updates</para></entry>
+           <entry><para>Disable the index corruption checking</para></entry>
            
-           <entry><para><code>uima.protect_indices_from_key_updates</code> (default is true)</para>
+           <entry><para><code>uima.disable_auto_protect_indexes</code></para>
                       
                   <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4135">UIMA-4135</ulink>.
                         After you have fixed all reported issues identified with the above report,
-                        set this to false to omit this check - which will potentially slightly speed up 
-                        runs.</para>
+                        you may set this property to omit this check, which may slightly improve
+                        performance.</para>
+                  <para>Note that this property is ignored if the <code>-Dexception_when_fs_update_corrupts_index</code>
+                  or <code>-Dreport_fs_update_corrupts_index</code></para>
            </entry>
                         
            <entry><para>2.7.0</para></entry>
          </row>
 
-         <row>
-           <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
-           
-           <entry><para><code>uima.allow_duplicate_add_to_indices</code> (default is false)</para>
-           
-                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4135">UIMA-4135</ulink>
-                        and <ulink url="https://issues.apache.org/jira/browse/UIMA-3399">UIMA-3399</ulink>.
-                        As of version 2.7.0, adding a particular Feature Structure
-                        to the indices more than once is ignored.  The old behavior
-                        may be restored by this property.</para></entry>
-           <entry><para>2.7.0</para></entry>
-         </row>
+         
 
        </tbody>
      </tgroup>

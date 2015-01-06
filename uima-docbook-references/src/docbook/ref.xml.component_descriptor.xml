@@ -752,20 +752,20 @@ uima.tcas.Annotation.</programlisting>
             <para>It is possible, however, that users may be depending on having multiple instances of 
             the identical FeatureStructure in the indicies. Therefore, UIMA uses 
              a JVM defined property,
-            "uima.allow_duplicate_add_to_indices", which (if defined whend UIMA is loaded) will restore the previous behavior.</para>
+            "uima.allow_duplicate_add_to_indexes", which (if defined whend UIMA is loaded) will restore the previous behavior.</para>
             
             <note><para>If duplicates are allowed, then the proper way to update an indexed Feature Structure is to
               <itemizedlist>
                 <listitem><para>remove <emphasis role="bold">*all*</emphasis> instances of the FS to be
                   updated </para></listitem>
                 <listitem><para>update the features</para></listitem>
-                <listitem><para>re-add the Feature Structure to the indices (perhaps multiple times, depending on the
+                <listitem><para>re-add the Feature Structure to the indexes (perhaps multiple times, depending on the
                 details of your logic).</para></listitem>
               </itemizedlist></para></note>
             
             <note><para>There is usually no need to explicitly declare a Bag index in your descriptor.  
               As of UIMA v2.1, if you do not declare any index for a type (or any of its 
-              supertypes), a Bag index will be automatically created if an instance of that type is added to the indices.</para></note>
+              supertypes), a Bag index will be automatically created if an instance of that type is added to the indexes.</para></note>
                         
             <para>An Sorted or Set index may define zero or more <emphasis>keys</emphasis>. These keys
               determine the sort order of the feature structures within a sorted index, and
