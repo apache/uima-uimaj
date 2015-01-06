@@ -1051,26 +1051,26 @@ public interface CAS extends AbstractCas {
   /**
    * Call this method to set up a region, 
    * ended by a {@link java.lang.AutoCloseable#close()} call on the returned object,
-   * You can use this or the {@link #protectIndices(Runnable)} method to protected
-   * the indices.
+   * You can use this or the {@link #protectIndexes(Runnable)} method to protected
+   * the indexes.
    * <p>
-   * This approach allows arbitrary code between  the protectIndices and the associated close method.
+   * This approach allows arbitrary code between  the protectIndexes and the associated close method.
    * <p>
    * The close method is best done in a finally block, or using the try-with-resources statement in 
    * Java 8.
    * 
    * @return an object used to record things that need adding back
    */
-  AutoCloseable protectIndices();
+  AutoCloseable protectIndexes();
   
   /**
    * Runs the code in the runnable inside a protection block, where any modifications to features
-   * done while in this block will be done in a way to protect any indices which otherwise 
+   * done while in this block will be done in a way to protect any indexes which otherwise 
    * might become corrupted by the update action; the protection is achieved by temporarily
-   * removing the FS (if it is in the indices), before the update happens.
-   * At the end of the block, affected indices have any removed-under-the-covers FSs added back.
-   * @param runnable code to execute while protecting the indices. 
+   * removing the FS (if it is in the indexes), before the update happens.
+   * At the end of the block, affected indexes have any removed-under-the-covers FSs added back.
+   * @param runnable code to execute while protecting the indexes. 
    */
-  void protectIndices(Runnable runnable);
+  void protectIndexes(Runnable runnable);
 
 }

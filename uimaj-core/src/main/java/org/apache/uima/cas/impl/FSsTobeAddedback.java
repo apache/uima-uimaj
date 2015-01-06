@@ -175,7 +175,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
 
   static class FSsTobeAddedbackMultiple extends FSsTobeAddedback {
   
-    // impl note: for support of allow_multiple_add_to_indices, each entry is two List elements:
+    // impl note: for support of allow_multiple_add_to_indexes, each entry is two List elements:
     //   the count
     //   the ref to the view
     final Map<Integer, List<?>> fss2views = new HashMap<Integer, List<?>>();
@@ -208,7 +208,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
         }
       }
       clear();
-      cas.dropProtectIndicesLevel();
+      cas.dropProtectIndexesLevel();
     }
     
     @Override
@@ -262,13 +262,13 @@ abstract class FSsTobeAddedback implements AutoCloseable {
    * @return an impl of this class
    */
   public static FSsTobeAddedback createSingle() {
-    return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) ?
+    return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) ?
         new FSsTobeAddedbackSingleCounts() :
         new FSsTobeAddedbackSingle();
   }
   
   public static FSsTobeAddedback createMultiple(CASImpl cas) {
-    return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) ?
+    return (FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) ?
        new FSsTobeAddedbackMultipleCounts(cas) :
        new FSsTobeAddedbackMultiple(cas);
   }

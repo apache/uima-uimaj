@@ -1563,19 +1563,19 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#protectIndices()
+   * @see org.apache.uima.jcas.JCas#protectIndexes()
    */
   @Override
-  public AutoCloseable protectIndices() {
-    return casImpl.protectIndices();
+  public AutoCloseable protectIndexes() {
+    return casImpl.protectIndexes();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#protectIndices(java.lang.Runnable)
+   * @see org.apache.uima.jcas.JCas#protectIndexes(java.lang.Runnable)
    */
   @Override
-  public void protectIndices(Runnable runnable) {
-    casImpl.protectIndices(runnable);  
+  public void protectIndexes(Runnable runnable) {
+    casImpl.protectIndexes(runnable);  
   }
   
   

@@ -298,13 +298,13 @@ public class CasWrapperForTstng implements CAS {
   }
   
   @Override
-  public void protectIndices(Runnable runnable) {
-    originalCAS.protectIndices(runnable);
+  public void protectIndexes(Runnable runnable) {
+    originalCAS.protectIndexes(runnable);
   }
 
   @Override
-  public AutoCloseable protectIndices() {
-    return originalCAS.protectIndices();
+  public AutoCloseable protectIndexes() {
+    return originalCAS.protectIndexes();
   }
   
 }

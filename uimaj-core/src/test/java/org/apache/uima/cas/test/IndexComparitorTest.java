@@ -312,6 +312,10 @@ public class IndexComparitorTest extends TestCase {
       assertFalse(bagType1.contains(testType1_0_0));
       assertFalse(bagType1.contains(testType1_0_x));
       assertFalse(bagType1.contains(testTypeSub1_0_x));
+      
+      FeatureStructure testType1_0_0_eq = fss[0][0][0];
+      FeatureStructure testType1_0_x_eq = fss[0][0][0];
+      FeatureStructure testTypeSub1_0_x_eq = fss[1][0][0];
 
       assertTrue(sortedType1TypeOrder.contains(testType1_0_0));
       assertTrue(sortedType1TypeOrder.contains(testType1_0_x));
@@ -358,9 +362,9 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(setType1.iterator(testType1_0_0).isValid());
       assertTrue(setType1.iterator(testType1_0_x).isValid());
       assertTrue(setType1.iterator(testTypeSub1_0_x).isValid());
-      assertTrue(bagType1.iterator(testType1_0_0).isValid());
-      assertTrue(bagType1.iterator(testType1_0_x).isValid());
-      assertTrue(bagType1.iterator(testTypeSub1_0_x).isValid());
+      assertTrue(bagType1.iterator(testType1_0_0_eq).isValid());
+      assertTrue(bagType1.iterator(testType1_0_x_eq).isValid());
+      assertTrue(bagType1.iterator(testTypeSub1_0_x_eq).isValid());
 
       assertTrue(sortedType1TypeOrder.iterator(testType1_0_0).isValid());
       assertTrue(sortedType1TypeOrder.iterator(testType1_0_x).isValid());
@@ -368,9 +372,9 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(setType1TypeOrder.iterator(testType1_0_0).isValid());
       assertTrue(setType1TypeOrder.iterator(testType1_0_x).isValid());
       assertTrue(setType1TypeOrder.iterator(testTypeSub1_0_x).isValid());
-      assertTrue(bagType1TypeOrder.iterator(testType1_0_0).isValid());
-      assertTrue(bagType1TypeOrder.iterator(testType1_0_x).isValid());
-      assertTrue(bagType1TypeOrder.iterator(testTypeSub1_0_x).isValid());
+      assertTrue(bagType1TypeOrder.iterator(testType1_0_0_eq).isValid());
+      assertTrue(bagType1TypeOrder.iterator(testType1_0_x_eq).isValid());
+      assertTrue(bagType1TypeOrder.iterator(testTypeSub1_0_x_eq).isValid());
 
       // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_0).get()));
       assertTrue(fss[0][1][0].equals(sortedType1.iterator(testType1_1_0).get()));
@@ -379,9 +383,9 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testTypeSub1_0_x).get()));
+      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get()));
+      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get()));
+      assertTrue(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get()));
 
       // assertTrue(fss[0][0][0].equals(sortedType1.iterator(testType1_0_0).get()));
       assertTrue(fss[0][1][0].equals(sortedType1.iterator(testType1_1_0).get()));
@@ -390,9 +394,9 @@ public class IndexComparitorTest extends TestCase {
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_0).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testType1_0_x).get()));
       assertTrue(fss[0][0][0].equals(setType1.iterator(testTypeSub1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x).get()));
-      assertTrue(fss[0][0][0].equals(bagType1.iterator(testTypeSub1_0_x).get()));
+      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_0_eq).get()));
+      assertTrue(fss[0][0][0].equals(bagType1.iterator(testType1_0_x_eq).get()));
+      assertTrue(fss[1][0][0].equals(bagType1.iterator(testTypeSub1_0_x_eq).get()));
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);

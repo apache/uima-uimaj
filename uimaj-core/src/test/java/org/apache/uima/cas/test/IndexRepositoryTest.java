@@ -116,7 +116,7 @@ public class IndexRepositoryTest extends TestCase {
   
   /**
    * To test non-normal case, change Eclipse run config by adding the jvm arg:
-   *   -Duima.allow_duplicate_add_to_indices
+   *   -Duima.allow_duplicate_add_to_indexes
    * @throws CASException
    */
   public void testDupFsIndex() throws CASException {
@@ -124,7 +124,7 @@ public class IndexRepositoryTest extends TestCase {
     Annotation a = new Annotation(jcas, 0, 4);
     cas.addFsToIndexes(a);
     cas.addFsToIndexes(a);
-    int expected = FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES ? 2 : 1;
+    int expected = FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES ? 2 : 1;
     assertEquals(expected, cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX).size());
     assertEquals(expected, cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX).size());
     assertEquals(expected, cas.getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX).size());

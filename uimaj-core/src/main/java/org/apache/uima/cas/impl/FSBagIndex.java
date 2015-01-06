@@ -33,12 +33,12 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
 
 /**
  * Used for UIMA FS Bag Indexes
- * Uses IntVector to hold values of FSs
+ * Uses IntVector or PositiveIntSet to hold values of FSs
  */
 public class FSBagIndex extends FSLeafIndexImpl {
   
   // package private
-  final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES;
+  final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 
@@ -78,12 +78,18 @@ public class FSBagIndex extends FSLeafIndexImpl {
       }
     }
 
+    /**
+     * If empty, make position -1 (invalid)
+     */
     public void moveToFirst() {
       this.itPos = (USE_POSITIVE_INT_SET) ? 
           FSBagIndex.this.indexP.moveToFirst() : 
-          0;
+          ((FSBagIndex.this.index.size() == 0) ? -1 : 0);
     }
 
+    /**
+     * If empty, make position -1 (invalid)
+     */
     public void moveToLast() {
       this.itPos = (USE_POSITIVE_INT_SET) ? 
           FSBagIndex.this.indexP.moveToLast() :
@@ -94,6 +100,7 @@ public class FSBagIndex extends FSLeafIndexImpl {
       this.itPos = (USE_POSITIVE_INT_SET) ? 
           FSBagIndex.this.indexP.moveToNext(itPos) :
           itPos + 1;
+     
     }
 
     public void moveToPrevious() {
@@ -132,16 +139,17 @@ public class FSBagIndex extends FSLeafIndexImpl {
      *   to define "equals".
      *   
      * However, we implement the following:  If the FS is == (identical), we return that position.
-     * If the FS is not found, we just move to the first item 
+     * If the FS is not found, we mark the iterator as invalid. 
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int i) {
-      final int position = findLeftmost(i);
-      if (position >= 0) {
-        this.itPos = position;
-      } else {
-        moveToFirst();  
-      }
+      this.itPos = find(i);
+//      final int position = find(i);
+//      if (position >= 0) {
+//        this.itPos = position;
+//      } else {
+//        moveToFirst();  
+//      }
     }
 
     /*
@@ -252,6 +260,11 @@ public class FSBagIndex extends FSLeafIndexImpl {
   // return this.index.indexOf(ele);
   // // return binarySearch(this.index.getArray(), ele, 0, this.index.size());
   // }
+  /**
+   * 
+   * @param ele the element to find
+   * @return the position of the element, or if not found, -1
+   */
   private final int find(int ele) {
     if (USE_POSITIVE_INT_SET) {
       return indexP.find(ele);
@@ -411,8 +424,8 @@ public class FSBagIndex extends FSLeafIndexImpl {
 
   @Override
   boolean insert(int fs, int count) {
-    // only need this multi-insert to support Set and Sorted indices for
-    // protectIndices kinds of things
+    // only need this multi-insert to support Set and Sorted indexes for
+    // protectIndexes kinds of things
     throw new UnsupportedOperationException();
   }
 

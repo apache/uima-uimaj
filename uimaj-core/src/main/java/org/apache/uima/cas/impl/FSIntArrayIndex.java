@@ -242,7 +242,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     // This rather complex logic can't be simplified due to edge cases, and the need
     // to have inserts for = compare but unequal identity things go in ascending 
     // over time insert order (a test case need)
-    if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) {
+    if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) {
       int pos2 = refineToExactFsSearch(fs, pos);
       if (pos2 < 0) { 
         // the exact match wasn't found, OK to add
@@ -279,7 +279,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     // This rather complex logic can't be simplified due to edge cases, and the need
     // to have inserts for = compare but unequal identity things go in ascending 
     // over time insert order (a test case need)
-    if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDICES) {
+    if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) {
       int pos2 = refineToExactFsSearch(fs, pos);
       if (pos2 < 0) { 
         // the exact match wasn't found, OK to add
@@ -341,7 +341,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @param fsRef
    * @return position of Exact FS spot or neg of an insert spot (if no == match)
    */
-  private final int findEq(int fsRef) {
+  final int findEq(int fsRef) {
     int pos = find(fsRef);
     if (pos < 0) {
       return pos;
