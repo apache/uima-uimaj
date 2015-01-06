@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.6.0 Release Notes</title>
+  <title>Apache UIMA v2.7.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.6.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.7.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -80,7 +80,22 @@
 			</p>
 
 <h2><a name="major.changes">Major Changes in this Release</a></h2>
-<h3>Sorted and Bag indices no longer store multiple instances of identical FSs</h3>
+
+<h3>Java 7 minimum level</h3>
+<p>Java 7 is now the minimum level of Java required.</p>
+
+<h3>Several JVM properties support backwards compatibility</h3>
+<p>See the README and <a target="_blank" href="http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.config">
+the Reference chapter</a> for a description of these.
+
+<h3>JSON serialization support</h3>
+<p>
+ JSON serialization support is added for Type System Descriptions, and for CASs.
+  Several formats for JSON CAS serialization are provided, please see the chapter in the
+  UIMA reference documentation for details.
+</p>
+
+<h3>Sorted and Bag indexes no longer store multiple instances of identical FSs</h3>
 <p>
 The meaning of "bag" and "sorted" index has been made consistent with how these are handled
 when sending CASes to remote services.  This means that adding the same identical FS to the
@@ -90,49 +105,67 @@ added a particular FS to a sorted or bag index, multiple times, the remove behav
 remove just one of the instances).  Deserialization of CASes sent to remote services has never 
 added Feature Structures to the index multiple times, so this change makes that behavior 
 consistent. For more details, see <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-3399">
-https://issues.apache.org/jira/browse/UIMA-3399</a>.
+Jira issue UIMA-3399</a>.
 </p>
 
 <p>Because some users may need the previous behavior that permitted duplicates of identical Feature Structures in
 the sorted and bag indexes. this change can be disabled, by running the JVM with the defined property
-"uima.allow_duplicate_add_to_indices".</p>
+"uima.allow_duplicate_add_to_indexes".</p>
 
-<h3>JSON serialization support</h3>
-<p>
- JSON serialization support is added for Type System Descriptions, and for CASs.
-  Several formats for JSON CAS serialization are provided, please see the chapter in the
-  UIMA reference documentation for details.
-</p>
 
 <h3>Index corruption avoidance</h3>
-<p>To prevent potential index corruption, UIMA now recovers (unless disabled by ("-Duima.protect_indices_from_key_updates=false")) 
-  from all illegal modifications of features.</p>
+<p>To prevent potential index corruption, UIMA now recovers (unless disabled by 
+   <code>"-Duima.disable_auto_protect_indexes"</code>) 
+  from illegal modifications of features.</p>
   
-  <p>These are modifications to features used as index keys, done while the Feature Structure being modified is currently in
-  one or more indices (Jira issue UIMA-4135).</p>
+  <p>These are modifications to features used as index keys, done while the Feature Structure 
+  being modified is currently in one or more indexes (see
+  <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4135">Jira issue UIMA-4135</a>).</p>
   
-  <p>Corruption is prevented by doing the needed removes and addbacks to Set and Sorted indices.
-  Because the recovery can affect performance, it is recommended that you run with JVM property
+  <p>Corruption is prevented by first removing the feature structure being updated, 
+  then doing the update, and then adding the feature structure back to the indexes.
+  Because these actions can affect performance, it is recommended that you run with JVM property
   "-Duima.report_fs_update_corrupts_index" in order to see if any user code has this problem, and fix these via 
-  redesign, or by wrapping the affected areas with a form of protectIndices() (see the CAS Javadocs).</p>
-
-<h3>Java 7 minimum level</h3>
-<p>Java 7 is now the minimum level of Java required.</p>
-
-<h3>MoveTo moves iterator to leftmost item</h3>
-<p>The fixed bugs include fixes to the UIMA iterator moveTo(FeatureStructure) and creation methods which 
-previously had a bug where they did a moveToFirst() if the Feature Structure was beyond the last element in the index;
-the fixed code now marks the position of the iterator as invalid in this case.  Also, the positioning of these
-when there were many FSs that compared "equal" didn't always pick the "leftmost" one - that has been fixed, too.</p>
+  redesign, or by wrapping the affected areas with a form of <code>protectIndexes()</code>, which does the
+  needed removes and add-backs under your control, so you can do several feature updates at once,
+  before adding the feature structure back.  <code>protectIndexes</code> is described in the
+  <a target="_blank" href=
+  "http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.cas.updating_indexed_feature_structures">
+  CAS Reference Chapter</a> and the CAS Javadocs; you can also use it with the JCas.</p>
 
 <h3>New Snapshot iterators won't throw ConcurrentModificationException</h3>
-<p>New iterators obtained from FS indices created using the .withSnapshotIterators() method now allow
-arbitrary modifications to the underlying index they're iterating over, because these iterators iterate 
-over a snapshot of the index, taken at the time the iterator was created.
+<p>A long-standing difficulty with Feature Structure iterators, namely, that adding to / removing from the underlying
+  index being iterated over is not allowed while iterating (unless you use a moveToXXX kind of operation to "reset" the
+  iterator), is addressed with a new class of "snapshot" iterators.
+  These take a snapshot of the state of the index when the iterator is created; subsequent modifications to the index
+  are then permitted, while the iterator continues to iterate over the snapshot it created; these iterators do not
+  throw ConcurrentModificationException.  The implementation of this feature is via a new method on FSIndex, which 
+  creates a light-weigh copy of the the FSIndex instance whose iterator method iterators gets the Snapshot kind.  
+  This approach allows using the new index in Java's "extended for" statement.</p>
+  
+  <p>The current implementation of the snapshot iterators makes a snapshot of the index being iterated over, at
+  creation time, which has a cost in space and time.</p>
 
-<h3>Several JVM properties support backwards compatibility</h3>
-<p>See chapter 10 in the reference documentation for a list of these.
-The README file also has some information on these properties.</p>
+<h3>Other bug fixes</h3>
+<ul><li> making the JCasGen Eclipse plugin work with more varieties of specifications for class paths.
+ Jira issues: UIMA-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4080">4080</a>/
+ <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4081">4081</a></li>
+ 
+ <li>moveTo(a_Feature_Structure) or creating a new iterator to start at a feature sometimes went to the wrong place. 
+ Jira issues: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4094">UIMA-4094</a> 
+ and <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4105">UIMA-4105</a>.</li>
+ 
+ <li>deserialization of deltaCAS when modifying existing indexed Feature Structures could corrupt the indexes. 
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4100">UIMA-4100</a>.</li>
+ 
+ <li>default bag indexes will now be created if there are only Set indexes. 
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4111">UIMA-4111</a>.</li>
+ 
+ <li>Unordered iterators (for bag indexes and <code>getAllIndexedFS</code>) performance improvement.
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-41661">UIMA-4166</a>.</li>
+ </ul>
+ 
+ <p>The complete list of fixes is <a href="issuesFixed/jira-report.html">here</a>.
   
 <h2><a name="get.involved">How to Get Involved</a></h2>
 <p>

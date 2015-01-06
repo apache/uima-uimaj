@@ -2,6 +2,41 @@
       Apache UIMA (Unstructured Information Management Architecture) v2.7.0 SDK
       -------------------------------------------------------------------------
 
+Backwards Compatibility
+-----------------------
+
+New releases strive to maintain backwards compatibility; in general you should
+expect that upgrading will not break existing UIMA pipelines.  
+
+From time to time, non-backward compatible changes are made, such as increased
+checking for error situations.  This may cause existing pipelines to fail. In 
+most cases, there are new JVM -D properties that can be used to disable new
+features, until the underlying issues are corrected or accommodated.
+
+The JVM -D property names for these, and their meaning, are:
+  as of version 2.7.0:
+  
+    -Duima.disable_enhanced_check_wrong_add_to_index 
+      Feature Structures which are subtypes of AnnotationBase may only be added
+      to the View corresponding to their Sofa reference.  
+      See https://issues.apache.org/jira/browse/UIMA-4099  
+      This check was improved to catch more cases, but can be disabled by this property. 
+      
+    -Duima.allow_duplicate_add_to_indexes
+      Adding the same exact FS instance to the indexes multiple times won't 
+      result in duplicate entries in the indexes.  You may restore the previous
+      behavior using this flag.    
+    
+    -Duima.disable_auto_protect_indexes
+      UIMA now checks and automatically protects indexes if users (after adding
+      a feature structure to the indexes) updates a feature which is being used
+      as a key.  For production runs, after insuring there are no such updates
+      going on, you can disable this protection and checking, which may make
+      things run slightly faster.  
+
+  See the UIMA References http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.config
+  for a table of these and other settings.
+        
 Building from the Source Distribution
 -------------------------------------
 
@@ -21,79 +56,18 @@ Look for the result here:
 
 For more details, please see http://uima.apache.org/building-uima.html   
 
-What's New in 2.7.0
--------------------
 
-  2.7.0 fixes some possibly significant issues, tightens checking, and changes in some subtle
-  ways how indices are handled.  Because some of these changes may break backwards
-  compatibility, JVM Property definitions are available to disable some of these.
+
+What's New 
+----------
+  Please refer to the RELEASE_NOTES.html
+
+  Backwards Compatibility
+  -----------------------
+  This version has changes which can affect backwards compatibility.  Out of the box,
+  it will do additional checking and fixups for some hard-to-find user errors; see
+  the first section above coping with backwards compatibility issues.
   
-  Java 7
-  ------
-  Java 7 is now required (since UIMA-SDK 2.7.0)
-  
-  JSON serialization
-  ------------------
-  JSON serialization support is available for CASs and for UIMA Metadata.
-  Several formats for JSON CAS serialization are provided; please see the chapter in the
-  UIMA reference documentation for details.
-  
-  The build from sources will include in the binary distribution tar/zip the 
-  Jackson core support JAR  for JSON.  There is
-  a new profile flag you can specify to Maven to exclude this: -P!json-support.
-  
-  No Duplicate entries in indices
-  -------------------------------
-  Adding the exact same identical Feature Structure to the indices no longer adds duplicate entries;
-  this is documented in some detail as Jira issue: https://issues.apache.org/jira/browse/UIMA-3399.
-  The old behavior may be restored, if needed for backward compatibility by defining the JVM property
-  -Duima.allow_duplicate_add_to_indices; see the UIMA Reference documentation Chapter 10. 
-  
-  Index Corruption prevention
-  ---------------------------
-  To prevent potential index corruption, UIMA now recovers 
-  (unless disabled by ("-Duima.protect_indices_from_key_updates=false")) 
-  from all illegal modifications of features.
-  
-  These are modifications to features used as index keys, done while the Feature Structure being modified is currently in
-  one or more indices (Jira issue UIMA-4135).
-  
-  Corruption is prevented by doing the needed removes and addbacks to Set and Sorted indices.
-  Because the recovery can affect performance, it is recommended that you run with JVM property
-  "-Duima.report_fs_update_corrupts_index" in order to see if any user code has this problem, and fix these via 
-  redesign, or by wrapping the affected areas with a form of protectIndices() (see the CAS Javadocs).  
-  
-  New class of UIMA iterators avoids ConcurrentModificationException
-  ------------------------------------------------------------------
-  A long-standing difficulty with Feature Structure iterators, namely, that adding to / removing from the underlying
-  index being iterated over is not allowed while iterating, is addressed with a new class of "snapshot" iterators.
-  These take a snapshot of the state of the index when the iterator is created; subsequent modifications to the index
-  are then permitted, while the iterator continues to iterate over the snapshot it created; these iterators do not
-  throw ConcurrentModificationException.  The implementation of this feature is via a new method on FSIndex, which 
-  creates a light-weigh copy of the the FSIndex instance, where getting iterators gets the Snapshot kind.  This approach
-  allows using the new index in Java's "extended for" statement.
-  
-  Bug fixes
-  ---------
-  There are many bug fixes.  Some highlights: 
-    - making the JCasGen Eclipse plugin work with more varieties of specifications for class paths. Jira issues: UIMA-4080/4081
-    - moveTo(a_Feature_Structure) or creating a new iterator to start at a feature sometimes went to the wrong place. Jira issues: UIMA-4094 and UIMA-4105
-    - deserialization of deltaCAS when modifying existing indexed Feature Structures could corrupt the indices. Jira issue: UIMA-4100
-    - default bag indices will now be created if there are only Set indices. Jira issue: UIMA-4111
-    
-  The complete list of fixes is here: issuesFixed/jira-report.hmtl 
-  
-Backward Compatibility Accommodations
-------------------------------------  
-  
-  Some updates change UIMA's behavior.  For example, sometimes an error check
-  will be enhanced, and something that previously was incorrect, but wasn't checked,
-  will now report an exception.
-  
-  To enable users to gradually fix these, there are some global JVM properties
-  for UIMA that can restore earlier behaviors. 
-  The UIMA References documentation (see http://uima.apache.org/documentation.html)
-  has a table of these in Chapter 10.
       
 Supported Platforms
 --------------------
