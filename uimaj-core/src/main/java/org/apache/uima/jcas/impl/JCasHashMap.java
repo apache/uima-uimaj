@@ -141,7 +141,17 @@ public class JCasHashMap {
     DEFAULT_CONCURRENCY_LEVEL = nextHigherPowerOf2(dEFAULT_CONCURRENCY_LEVEL);
 //    System.out.println("JCasHashMap setting concurrency level to " + DEFAULT_CONCURRENCY_LEVEL);
   }
+  
+  static final ThreadLocal<int[]> probeInfoGet = new ThreadLocal<int[]>() {
+    protected int[] initialValue() { return new int[2]; } };
+      
+  static final ThreadLocal<int[]> probeInfoPut = new ThreadLocal<int[]>() {
+    protected int[] initialValue() { return new int[2]; } };
 
+  static final ThreadLocal<int[]> probeInfoPutInner = new ThreadLocal<int[]>() {
+    protected int[] initialValue() { return new int[2]; } };
+
+    
   private static final int PROBE_ADDR_INDEX = 0;
   private static final int PROBE_DELTA_INDEX = 1;
     
@@ -161,16 +171,14 @@ public class JCasHashMap {
     return m != null && ((TOP)m).jcasType != RESERVE_TOP_TYPE_INSTANCE;
   }
   
-  private static int[] resetProbeInfo(int[] probeInfo) {
+  private static void resetProbeInfo(int[] probeInfo) {
     probeInfo[PROBE_ADDR_INDEX] = -1;
     probeInfo[PROBE_DELTA_INDEX] = 1;
-    return probeInfo;
   }
   
-  private static int[] setProbeInfo(int[] probeInfo, int probeAddr, int probeDelta) {
+  private static void setProbeInfo(int[] probeInfo, int probeAddr, int probeDelta) {
     probeInfo[PROBE_ADDR_INDEX] = probeAddr;
-    probeInfo[PROBE_DELTA_INDEX] = probeDelta;
-    return probeInfo;    
+    probeInfo[PROBE_DELTA_INDEX] = probeDelta;   
   }
   
   private final float loadFactor = (float)0.60;
@@ -279,47 +287,40 @@ public class JCasHashMap {
      *    1: (in/out) probeDelta (starts at 1)
      * @return the probeAddr in original table (which might have been resized)
      */
-    private FeatureStructureImpl find(final int key, final int hash, final int[] probeInfo) {
+    private FeatureStructureImpl find(final FeatureStructureImpl[] localTable, final int key, final int hash, final int[] probeInfo) {
       int nbrProbes = 1;
-      final boolean isContinue = TUNE && (probeInfo[PROBE_ADDR_INDEX] != -1); 
-      FeatureStructureImpl[] localTable = table;
       final int bitMask = localTable.length - 1;
       final int startProbe = probeInfo[PROBE_ADDR_INDEX];      
       int probeAddr = (startProbe < 0) ? (hash & bitMask) : startProbe; 
+      FeatureStructureImpl m = localTable[probeAddr];
+      // fast paths 
+      if (m == null) {
+        // not in table
+        setProbeInfo(probeInfo, probeAddr, 0);
+        return m;  // returns null
+      }
+      
+      if (m.getAddress() == key) {
+        setProbeInfo(probeInfo, probeAddr, 0);
+        if (TUNE) {
+          updateHistogram(nbrProbes, probeInfo[PROBE_ADDR_INDEX] != -1);
+        }
+        return m;
+      }
+
+      final boolean isContinue = TUNE && (probeInfo[PROBE_ADDR_INDEX] != -1); 
       assert((startProbe < 0) ? probeInfo[PROBE_DELTA_INDEX] == 1 : true);
       int probeDelta = probeInfo[PROBE_DELTA_INDEX];
-      FeatureStructureImpl m = localTable[probeAddr];
+
+      nbrProbes++;
+      probeAddr = bitMask & (probeAddr + (probeDelta++));
+      m = localTable[probeAddr];
 
       while (null != m) {  // loop to traverse bucket chain
         if (m.getAddress() == key) {
-          setProbeInfo(probeInfo, probeAddr, probeDelta);
+          setProbeInfo(probeInfo, probeAddr, 0);
           if (TUNE) {
-            
-            /* LOCK if not already, to update stats */
-            final boolean needUnlock;
-            if (!lock.isHeldByCurrentThread()) {
-              lock.lock();
-              needUnlock = true;
-            } else {
-              needUnlock = false;
-            }
-            
-            try {
-              histogram[nbrProbes] += 1;
-              if (maxProbe < nbrProbes) {
-                maxProbe = nbrProbes;
-              }
-              if (isContinue) {
-                if (maxProbeAfterContinue < nbrProbes) {
-                  maxProbeAfterContinue = nbrProbes;
-                }
-                continues ++;
-              }
-            } finally {
-              if (needUnlock) {
-                lock.unlock();
-              }
-            }
+            updateHistogram(nbrProbes, isContinue); 
           }
           return m;
         }
@@ -328,9 +329,39 @@ public class JCasHashMap {
         m = localTable[probeAddr];
       }
       setProbeInfo(probeInfo, probeAddr, probeDelta);
-      return m;
+      return m;  // returns null
     }
-        
+
+    private void updateHistogram(int nbrProbes, boolean isContinue) {
+      
+      /* LOCK if not already, to update stats */
+      final boolean needUnlock;
+      if (!lock.isHeldByCurrentThread()) {
+        lock.lock();
+        needUnlock = true;
+      } else {
+        needUnlock = false;
+      }
+      
+      try {
+        histogram[nbrProbes] += 1;
+        if (maxProbe < nbrProbes) {
+          maxProbe = nbrProbes;
+        }
+        if (isContinue) {
+          if (maxProbeAfterContinue < nbrProbes) {
+            maxProbeAfterContinue = nbrProbes;
+          }
+          continues ++;
+        }
+      } finally {
+        if (needUnlock) {
+          lock.unlock();
+        }
+      }
+
+    }
+    
     /**
      * Gets a value, but if the value isn't there, it reserves the slot where it will go
      * with a new instance where the key matches, but the type is a unique value.
@@ -349,16 +380,16 @@ public class JCasHashMap {
     private FeatureStructureImpl getReserve(final int key, final int hash) {
 
       boolean isLocked = false;
-      int[] probeInfo = new int[2];
+      final int[] probeInfo = probeInfoGet.get();
       try {
  
      retry:
         while (true) { // loop back point after locking against updates, to re-traverse the bucket chain from the beginning
-          probeInfo = resetProbeInfo(probeInfo);
+          resetProbeInfo(probeInfo);
           final FeatureStructureImpl m;
           final FeatureStructureImpl[] localTable = table;
           
-          if (isReal(m = find(key, hash, probeInfo))) {
+          if (isReal(m = find(localTable, key, hash, probeInfo))) {
             return m;  // fast path for found item       
           }
           
@@ -372,9 +403,13 @@ public class JCasHashMap {
           /*****************
            *    LOCKED     *
            *****************/
+          final FeatureStructureImpl[] localTable3;
           if (localTable != table) {
             // redo search from top, because table resized
             resetProbeInfo(probeInfo);
+            localTable3 = table;
+          } else {
+            localTable3 = localTable;
           }
 //          // re acquire the FeatureStructure m, because another thread could change it before the lock got acquired
 //          final FeatureStructureImpl m2 = localTable[probeInfo[PROBE_ADDR_INDEX]];
@@ -384,7 +419,7 @@ public class JCasHashMap {
           
           // note: localTable not used from this point, unless reset
           // note: this "find" either finds from the top (if size changed) or finds from current spot.
-          final FeatureStructureImpl m2 = find(key, hash, probeInfo);
+          final FeatureStructureImpl m2 = find(localTable3, key, hash, probeInfo);
           if (isReal(m2)) {
             return m2;  // fast path for found item       
           }
@@ -434,9 +469,11 @@ public class JCasHashMap {
 
       lock.lock();
       try {
-        final int[] probeInfo = resetProbeInfo(new int[2]);
-        FeatureStructureImpl prevValue = find(key, hash, probeInfo);
-        table[probeInfo[PROBE_ADDR_INDEX]] = value;
+        final int[] probeInfo = probeInfoPut.get();
+        resetProbeInfo(probeInfo);
+        final FeatureStructureImpl[] localTable = table;
+        final FeatureStructureImpl prevValue = find(localTable, key, hash, probeInfo);
+        localTable[probeInfo[PROBE_ADDR_INDEX]] = value;
         if (isReserve(prevValue)) {
           lockCondition.signalAll();
           // dont update size - was updated when reserve was added
@@ -453,6 +490,7 @@ public class JCasHashMap {
        
    /**
     * Only used to fill in newly expanded table
+    * always called with lock held
     * @param key -
     * @param value -
     * @param hash -
@@ -460,11 +498,13 @@ public class JCasHashMap {
     
     private void putInner(int key, FeatureStructureImpl value, int hash) {
       assert(lock.getHoldCount() > 0);
-      final int[] probeInfo = resetProbeInfo(new int[2]);
-      
-      FeatureStructureImpl m = find(key, hash, probeInfo);
+      final int[] probeInfo = probeInfoPutInner.get();
+      resetProbeInfo(probeInfo);
+      final FeatureStructureImpl[] localTable = table;
+
+      final FeatureStructureImpl m = find(localTable, key, hash, probeInfo);
       assert(m == null);  // no dups in original table imply no hits in new one
-      table[probeInfo[PROBE_ADDR_INDEX]] = value;
+      localTable[probeInfo[PROBE_ADDR_INDEX]] = value;
     }
       
 
