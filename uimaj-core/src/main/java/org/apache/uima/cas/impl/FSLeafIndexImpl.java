@@ -502,7 +502,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   @Override
   public FSIndex withSnapshotIterators() {
     // should never be called
-    // this is an artifact of the fact that FSLeafIndexImpl has a super type of FSIndex
+    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
     //   which seems incorrect?
     throw new UnsupportedOperationException();
   }
