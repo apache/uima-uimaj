@@ -30,7 +30,12 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.FSIteratorWrapper;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
@@ -48,6 +53,8 @@ public class GrowingTheCasTest extends TestCase {
   private AnalysisEngine ae = null;
 
   private JCas smallHeapCas = null;
+
+  private JCas jcas;
 
   public GrowingTheCasTest(String arg0) {
     super(arg0);
@@ -89,7 +96,8 @@ public class GrowingTheCasTest extends TestCase {
     }
   }
   
-  public void testIteratorPerf() {
+  // rename to test to run this test
+  public void tstIteratorPerf() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
@@ -102,7 +110,7 @@ public class GrowingTheCasTest extends TestCase {
     for (int i = 0; i < 10; i++) {
       buf.append(text);
     }
-    JCas jcas = null;
+    jcas = null;
     try {
       jcas = this.ae.newJCas();
     } catch (ResourceInitializationException e) {
@@ -120,16 +128,37 @@ public class GrowingTheCasTest extends TestCase {
 //      System.out.println("Time for large CAS: " + new TimeSpan(time));
       numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
       numberOfTokens = jcas.getAnnotationIndex(Token.type).size();
-      System.out.println(numberOfSentences);
-      System.out.println(numberOfTokens);
+      System.out.println("Moby * 10, nbr of sentences = " + numberOfSentences);
+      System.out.println("Moby * 10, nbr of tokens = " + numberOfTokens);
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
       assertTrue(false);
     }
-    jcas = null;
     
+    // performance testing of "unordered" iterators
+    for (int i = 0; i < 4; i++) {
+      timeIt(i);
+    }
+//    ((JCasImpl)jcas).showJfsFromCaddrHistogram();
+    jcas= null;
   }
 
+  private void timeIt(int i) {
+    FSIterator<FeatureStructure> it = jcas.getIndexRepository().getAllIndexedFS(jcas.getCasType(Annotation.type));   
+    int c = 0;
+    long startTime = System.nanoTime();
+    while (it.hasNext()) {
+      it.next();
+//      it.ll_get();
+//      it.moveToNext();
+      c ++;
+    }
+    if ((i % 1) == 0) {
+      System.out.format("%,d Moby * 10, nbr of annotations = %,d; took %,d microsec%n",
+          i, c, (System.nanoTime() - startTime) / 1000);
+    }
+  }
+  
   public void testAnnotator() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;

@@ -19,12 +19,15 @@
 
 package org.apache.uima.cas.test;
 
+import java.util.Iterator;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
@@ -34,6 +37,7 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
@@ -43,6 +47,11 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
  */
 public class IndexComparitorTest extends TestCase {
 
+  static {
+    // only works if test run by itself, otherwise some other test loads the CASImpl class
+    // which inits itself then without this property being used.
+    System.setProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
+  }
   CAS cas;
 
   TypeSystem ts;
@@ -50,6 +59,12 @@ public class IndexComparitorTest extends TestCase {
   Type topType;
 
   Type integerType;
+  Type shortType;
+  Type byteType;
+  Type doubleType;
+  Type booleanType;
+  Type longType;
+  Type stringType;
 
   Type type1;
 
@@ -58,14 +73,32 @@ public class IndexComparitorTest extends TestCase {
   Type type1Sub2;
 
   Feature type1Used;
+  Feature type1UsedShort;
+  Feature type1UsedByte;
+  Feature type1UsedBoolean;
+  Feature type1UsedString;
+  Feature type1UsedLong;
+  Feature type1UsedDouble;  
 
   Feature type1Ignored;
 
   Feature type1Sub1Used;
+  Feature type1Sub1UsedShort;
+  Feature type1Sub1UsedByte;
+  Feature type1Sub1UsedBoolean;
+  Feature type1Sub1UsedString;
+  Feature type1Sub1UsedLong;
+  Feature type1Sub1UsedDouble;  
 
   Feature type1Sub1Ignored;
 
   Feature type1Sub2Used;
+  Feature type1Sub2UsedShort;
+  Feature type1Sub2UsedByte;
+  Feature type1Sub2UsedBoolean;
+  Feature type1Sub2UsedString;
+  Feature type1Sub2UsedLong;
+  Feature type1Sub2UsedDouble;  
 
   Feature type1Sub2Ignored;
 
@@ -99,6 +132,7 @@ public class IndexComparitorTest extends TestCase {
 
   private FSIndex<FeatureStructure> bagType1Sub1TypeOrder;
 
+
   public IndexComparitorTest(String arg0) {
     super(arg0);
   }
@@ -108,6 +142,7 @@ public class IndexComparitorTest extends TestCase {
    */
 
   private class SetupForIndexCompareTesting implements AnnotatorInitializer {
+
     /**
      * @see org.apache.uima.cas.test.AnnotatorInitializer#initTypeSystem(TypeSystemMgr)
      */
@@ -115,18 +150,43 @@ public class IndexComparitorTest extends TestCase {
       // Add new types and features.
       topType = tsm.getTopType();
       integerType = tsm.getType("uima.cas.Integer");
-
+      stringType = tsm.getType("uima.cas.String");
+      booleanType = tsm.getType("uima.cas.Boolean");
+      doubleType = tsm.getType("uima.cas.Double");
+      longType = tsm.getType("uima.cas.Long");
+      byteType = tsm.getType("uima.cas.Byte");
+      shortType = tsm.getType("uima.cas.Short");
+      
       type1 = tsm.addType("Type1", topType);
       type1Sub1 = tsm.addType("Type1Sub1", type1);
       type1Sub2 = tsm.addType("Type1Sub2", type1);
 
       type1Used = tsm.addFeature("used", type1, integerType);
+      type1UsedShort = tsm.addFeature("usedShort", type1, shortType);
+      type1UsedByte = tsm.addFeature("usedByte", type1, byteType);
+      type1UsedBoolean = tsm.addFeature("usedBoolean", type1, booleanType);
+      type1UsedString = tsm.addFeature("usedString", type1, stringType);
+      type1UsedLong = tsm.addFeature("usedLong", type1, longType);
+      type1UsedDouble = tsm.addFeature("usedDouble", type1, doubleType);
+      
       type1Ignored = tsm.addFeature("ignored", type1, integerType);
 
       type1Sub1Used = tsm.addFeature("used", type1Sub1, integerType);
+      type1Sub1UsedShort = tsm.addFeature("usedShort", type1Sub1, shortType);
+      type1Sub1UsedByte = tsm.addFeature("usedByte", type1Sub1, byteType);
+      type1Sub1UsedBoolean = tsm.addFeature("usedBoolean", type1Sub1, booleanType);
+      type1Sub1UsedString = tsm.addFeature("usedString", type1Sub1, stringType);
+      type1Sub1UsedLong = tsm.addFeature("usedLong", type1Sub1, longType);
+      type1Sub1UsedDouble = tsm.addFeature("usedDouble", type1Sub1, doubleType);
       type1Sub1Ignored = tsm.addFeature("ignored", type1Sub1, integerType);
 
       type1Sub2Used = tsm.addFeature("used", type1Sub2, integerType);
+      type1Sub2UsedShort = tsm.addFeature("usedShort", type1Sub2, shortType);
+      type1Sub2UsedByte = tsm.addFeature("usedByte", type1Sub2, byteType);
+      type1Sub2UsedBoolean = tsm.addFeature("usedBoolean", type1Sub2, booleanType);
+      type1Sub2UsedString = tsm.addFeature("usedString", type1Sub2, stringType);
+      type1Sub2UsedLong = tsm.addFeature("usedLong", type1Sub2, longType);
+      type1Sub2UsedDouble = tsm.addFeature("usedDouble", type1Sub2, doubleType);
       type1Sub2Ignored = tsm.addFeature("ignored", type1Sub2, integerType);
     }
 
@@ -158,6 +218,12 @@ public class IndexComparitorTest extends TestCase {
       FSIndexComparator c = irm.createComparator();
       c.setType(type);
       c.addKey(type1Used, FSIndexComparator.STANDARD_COMPARE);
+      c.addKey(type1UsedShort, FSIndexComparator.STANDARD_COMPARE);
+      c.addKey(type1UsedByte, FSIndexComparator.STANDARD_COMPARE);
+      c.addKey(type1UsedBoolean, FSIndexComparator.STANDARD_COMPARE);
+      c.addKey(type1UsedString, FSIndexComparator.STANDARD_COMPARE);
+      c.addKey(type1UsedLong, FSIndexComparator.STANDARD_COMPARE);
+      c.addKey(type1UsedDouble, FSIndexComparator.STANDARD_COMPARE);
       return c;
     }
 
@@ -248,6 +314,13 @@ public class IndexComparitorTest extends TestCase {
   private FeatureStructure createFs(Type type, int i, int j) {
     FeatureStructure f = cas.createFS(type);
     f.setIntValue(type.getFeatureByBaseName("used"), i);
+    f.setShortValue(type.getFeatureByBaseName("usedShort"), (short) i);
+    f.setByteValue(type.getFeatureByBaseName("usedByte"), (byte) i);
+    f.setBooleanValue(type.getFeatureByBaseName("usedBoolean"), i == 0 ? false : true);
+    f.setStringValue(type.getFeatureByBaseName("usedString"), Integer.toString(i));
+    f.setLongValue(type.getFeatureByBaseName("usedLong"), i);
+    f.setDoubleValue(type.getFeatureByBaseName("usedDouble"), i);
+
     f.setIntValue(type.getFeatureByBaseName("ignored"), j);
     return f;
   }
@@ -327,11 +400,14 @@ public class IndexComparitorTest extends TestCase {
       assertFalse(bagType1TypeOrder.contains(testType1_0_x));
       assertFalse(bagType1TypeOrder.contains(testTypeSub1_0_x));
 
-      // for (Iterator it = sortedType1TypeOrder.iterator(); it.hasNext();) {
-      // System.out.println(it.next().toString());
-      // }
-      // assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_0));
-      // assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_x));
+//       for (Iterator it = sortedType1TypeOrder.iterator(); it.hasNext();) {
+//       System.out.println(it.next().toString());
+//       }
+      // current impl of "contains" - not used, but is implemented to only check
+      // the type, not the subtypes.
+      // So the next tests fail.
+//      assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_0));
+//      assertTrue(sortedType1TypeOrder.contains(testTypeSub1_0_x));
 
       // test find
 
@@ -404,6 +480,19 @@ public class IndexComparitorTest extends TestCase {
 
   }
 
+  // note: this test is here because the setup is done
+  public void testProtectIndex() throws Exception {
+    FSIterator<FeatureStructure> it = sortedType1.iterator();
+    FeatureStructure fs = it.get();
+    boolean ok = false;
+    try {
+      fs.setBooleanValue(type1UsedBoolean, ! fs.getBooleanValue(type1UsedBoolean));  // should cause protection
+    } catch (Exception e) {
+      ok = true;
+    }
+    assertTrue(CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX ? ok : !ok);
+  }
+  
   public static void main(String[] args) {
     junit.textui.TestRunner.run(IndexComparitorTest.class);
   }

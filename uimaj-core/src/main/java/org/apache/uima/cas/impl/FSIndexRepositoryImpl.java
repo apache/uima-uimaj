@@ -2274,7 +2274,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public FSIterator<FeatureStructure> getAllIndexedFS(Type type) {
     final List<FSIterator<FeatureStructure>> iteratorList = new ArrayList<FSIterator<FeatureStructure>>();
     getAllIndexedFS(type, iteratorList);
-    return new FSIteratorAggregate<FeatureStructure>(iteratorList);
+    return (iteratorList.size() == 1) ? iteratorList.get(0) : 
+        new FSIteratorAggregate<FeatureStructure>(iteratorList);
   }
 
   private final void getAllIndexedFS(Type type, List<FSIterator<FeatureStructure>> iteratorList) {
