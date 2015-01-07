@@ -793,7 +793,8 @@ uima.tcas.Annotation.</programlisting>
               for the equality testing.</para>
             
             <para>Each key used in comparisons must refer to a feature whose range type is
-              String, Float, or Integer.</para>
+              Boolean, Byte, Short, Integer, Long, Float, Double, or String.
+              </para>
             
             <para>There is a second type of a key, one which contains only the
               <literal>&lt;typePriority/&gt;</literal>. When this key is used, it
