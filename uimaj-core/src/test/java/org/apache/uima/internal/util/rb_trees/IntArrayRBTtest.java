@@ -28,6 +28,19 @@ import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntPointerIterator;
 
 public class IntArrayRBTtest extends TestCase {
+  
+  public void testFindInsertionPoint() {
+    IntArrayRBT ia = new IntArrayRBT();
+    Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
+    for (Integer i : vs) {
+      ia.insertKey(i);
+    }
+    
+    assertTrue(ia.findInsertionPoint(7) != 0);
+    assertEquals(0, ia.findInsertionPoint(8));
+    
+  }
+  
   public void testIterator() {
     IntArrayRBT ia = new IntArrayRBT();
     Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
