@@ -141,7 +141,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
   
-  private static final boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc.getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
+  // public for test case use
+  public static final boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc.getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
   
   /**
    * Define this JVM property to enable checking for invalid updates to features which are used as 
@@ -229,7 +230,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // number 0 - not used
     // number 1 - used for view named "_InitialView"
     // number 2-n used for other views
-    private Map<Integer, CAS> sofaNbr2ViewMap;
+//    private Map<Integer, CAS> sofaNbr2ViewMap;
+    private ArrayList<CAS> sofaNbr2ViewMap;
 
     // set of instantiated sofaNames
     private Set<String> sofaNameSet;
@@ -453,7 +455,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
 
     this.svd.sofa2indexMap = new HashMap<Integer, FSIndexRepository>();
-    this.svd.sofaNbr2ViewMap = new HashMap<Integer, CAS>();
+    this.svd.sofaNbr2ViewMap = new ArrayList<CAS>();
     this.svd.sofaNameSet = new HashSet<String>();
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
@@ -1202,7 +1204,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     // freshen the initial view
     ((CASImpl) initialView).refreshView(this.svd.baseCAS, null);
-    this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), initialView);
+    setViewForSofaNbr(1, initialView);
     this.svd.viewCount = 1;
 
     // deserialize heap
@@ -2225,8 +2227,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // byte
   public void setFeatureValue(int addr, int feat, byte v) {
-    // keys are not byte
-    setFeatureValueNoIndexCorruptionCheck(addr, feat, (int) v);
+    setFeatureValue(addr, feat, (int) v);
   }
 
   public byte getByteValue(int addr, int feat) {
@@ -2235,7 +2236,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // boolean
   public void setFeatureValue(int addr, int feat, boolean v) {
-    setFeatureValueNoIndexCorruptionCheck(addr, feat, v ? CASImpl.TRUE : CASImpl.FALSE);
+    setFeatureValue(addr, feat, v ? CASImpl.TRUE : CASImpl.FALSE);
   }
 
   public boolean getBooleanValue(int addr, int feat) {
@@ -2244,8 +2245,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // short
   public void setFeatureValue(int addr, int feat, short s) {
-    // shorts are not keys
-    setFeatureValueNoIndexCorruptionCheck(addr, feat, (int) s);
+    setFeatureValue(addr, feat, (int) s);
   }
 
   public short getShortValue(int addr, int feat) {
@@ -2265,9 +2265,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.ll_setFloatValue(addr,  feat, f);
   }
   
-  public void setFeatureValueNoIndexCorruptionCheck(int addr, int feat, float f) {
-    this.ll_setFloatValueNoIndexCorruptionCheck(addr,  feat,  f);
-  }
+//  public void setFeatureValueNoIndexCorruptionCheck(int addr, int feat, float f) {
+//    this.ll_setFloatValueNoIndexCorruptionCheck(addr,  feat,  f);
+//  }
   
   // double
   public void setFeatureValue(int addr, int feat, double s) {
@@ -2827,7 +2827,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal use only
   public CAS getView(int sofaNum) {
-    return this.svd.sofaNbr2ViewMap.get(Integer.valueOf(sofaNum));
+    return getViewFromSofaNbr(sofaNum);
   }
 
   
@@ -2879,16 +2879,32 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // sofa guaranteed to be non-null by above method.
     return getJCas(sofa);
   }
+  
+  private CAS getViewFromSofaNbr(int nbr) {
+    ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    if (nbr < sn2v.size()) {
+      return sn2v.get(nbr);
+    }
+    return null;
+  }
+  
+  private void setViewForSofaNbr(int nbr, CAS view) {
+    ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    while (sn2v.size() <= nbr) {
+      sn2v.add(null);
+    }
+    sn2v.set(nbr, view);
+  }
 
   // For internal platform use only
   CAS getInitialView() {
-    CAS couldBeThis = this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1));
+    CAS couldBeThis = getViewFromSofaNbr(1);
     if (couldBeThis != null) {
       return couldBeThis;
     }
     // create the initial view, without a Sofa
     CAS aView = new CASImpl(this.svd.baseCAS, null, this.isUsedJcasCache);
-    this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), aView);
+    setViewForSofaNbr(1, aView);
     assert (this.svd.viewCount <= 1);
     this.svd.viewCount = 1;
     return aView;
@@ -2961,9 +2977,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public CAS getView(SofaFS aSofa) {
     final int sofaNbr = aSofa.getSofaRef();
-    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
+//    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
 
-    CASImpl aView = (CASImpl) this.svd.sofaNbr2ViewMap.get(sofaNbrInteger);
+    CASImpl aView = (CASImpl) getViewFromSofaNbr(sofaNbr);
     if (null == aView) {
       // This is the deserializer case, or the case where an older API created a
       // sofa,
@@ -2971,7 +2987,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       // create a new CAS view
       aView = new CASImpl(this.svd.baseCAS, aSofa, this.isUsedJcasCache);
-      this.svd.sofaNbr2ViewMap.put(sofaNbrInteger, aView);
+      setViewForSofaNbr(sofaNbr, aView);
       verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, aSofa);
       return aView;
     }
@@ -3680,9 +3696,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     setFeatureValue(fsRef, featureCode, float2int(value));
   }
   
-  public final void ll_setFloatValueNoIndexCorruptionCheck(int fsRef, int featureCode, float value) {
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, float2int(value));
-  }
+//  public final void ll_setFloatValueNoIndexCorruptionCheck(int fsRef, int featureCode, float value) {
+//    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, float2int(value));
+//  }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
     if (null != value) {
@@ -4175,8 +4191,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value) {
-    // no index check because booleans can't be keys
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value ? CASImpl.TRUE : CASImpl.FALSE);
+    setFeatureValue(fsRef, featureCode, value ? CASImpl.TRUE : CASImpl.FALSE);
   }
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value, boolean doTypeChecks) {
@@ -4187,8 +4202,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setByteValue(int fsRef, int featureCode, byte value) {
-    // no index check because bytes can't be keys
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value);
+    setFeatureValue(fsRef, featureCode, value);
   }
 
   public void ll_setByteValue(int fsRef, int featureCode, byte value, boolean doTypeChecks) {
@@ -4199,8 +4213,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setShortValue(int fsRef, int featureCode, short value) {
-    // no index corruption check - shorts not valid as keys
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value);
+    setFeatureValue(fsRef, featureCode, value);
   }
 
   public void ll_setShortValue(int fsRef, int featureCode, short value, boolean doTypeChecks) {
@@ -4211,9 +4224,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setLongValue(int fsRef, int featureCode, long value) {
-    // no index corruption check - longs not valid as keys
     final int offset = this.getLongHeap().addLong(value);
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, offset);
+    setFeatureValue(fsRef, featureCode, offset);
   }
 
   public void ll_setLongValue(int fsRef, int featureCode, long value, boolean doTypeChecks) {
@@ -4224,10 +4236,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setDoubleValue(int fsRef, int featureCode, double value) {
-    // no index corruption check - doubles not valid as keys
     long val = Double.doubleToLongBits(value);
     final int offset = this.getLongHeap().addLong(val);
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, offset);
+    setFeatureValue(fsRef, featureCode, offset);
   }
 
   public void ll_setDoubleValue(int fsRef, int featureCode, double value, boolean doTypeChecks) {
@@ -4573,7 +4584,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public String getViewName() {
-    if (this == this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1))) {
+    if (this == getViewFromSofaNbr(1)) {
       return CAS.NAME_DEFAULT_SOFA;
     } else if (this.mySofaRef > 0) {
       return this.getSofa().getSofaID();
