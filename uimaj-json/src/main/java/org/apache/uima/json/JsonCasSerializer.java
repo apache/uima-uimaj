@@ -246,6 +246,7 @@ public class JsonCasSerializer {
    *          the mark was set. Used to serialize a Delta CAS consisting of only new FSs and views and
    *          preexisting FSs and Views that have been modified.  If null, full serialization is done.        
    *          See the JavaDocs for {@link Marker} for details.
+   * @param sharedData optional, used for delta serialization (not yet supported)
    * @throws IOException if there was an IOException
    */
   public static void jsonSerialize(CAS aCAS, TypeSystem aTargetTypeSystem, Object output, boolean aPrettyPrint, 
