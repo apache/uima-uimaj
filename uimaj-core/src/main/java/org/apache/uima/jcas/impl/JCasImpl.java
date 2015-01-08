@@ -816,7 +816,21 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // 2) a dereference of an existing FS
     // 3) an iterator
     public FeatureStructure createFS(int addr, CASImpl casView) {
-      JCasImpl jcasView = null;
+      try {
+        JCasImpl jcasView = (JCasImpl) casView.getJCas();
+        TOP fs = jcasView.getJfsFromCaddr(addr);
+        if (null != fs) {
+          fs.jcasType = jcasView.getType(type);
+          return fs;
+        }       
+        return doCreateFS(addr, casView);
+      } catch (CASException e1) {
+        logAndThrow(e1, null);
+        return null;  // to avoid compile warning
+      }
+    }
+  
+    private FeatureStructure doCreateFS(int addr, CASImpl casView) {
       // this funny logic is because although the annotationView should always be set if
       // a type is a subtype of annotation, it isn't always set if an application uses low-level
       // api's. Rather than blow up, we limp along.
@@ -830,18 +844,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       final CASImpl view = (null != maybeAnnotationView) ? maybeAnnotationView : casView;
 
       try {
-        jcasView = (JCasImpl) view.getJCas();
-      } catch (CASException e1) {
-        logAndThrow(e1, jcasView);
-      }
-
-      // Return eq fs instance if already created
-      TOP fs = jcasView.getJfsFromCaddr(addr);
-      if (null != fs) {
-        fs.jcasType = jcasView.getType(type);
-      } else {
+        JCasImpl jcasView = (JCasImpl) view.getJCas();
         initargs[0] = Integer.valueOf(addr);
         initargs[1] = jcasView.getType(type);
+        FeatureStructure fs = null;
         try {
           fs = (TOP) c.newInstance(initargs);
         } catch (IllegalArgumentException e) {
@@ -854,8 +860,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
           logAndThrow(e, jcasView);
         }
         jcasView.putJfsFromCaddr(addr, fs);
+        return fs;
+      } catch (CASException e1) {
+        logAndThrow(e1, null);
+        return null;
       }
-      return fs;
     }
 
     private void logAndThrow(Exception e, JCasImpl jcasView) {

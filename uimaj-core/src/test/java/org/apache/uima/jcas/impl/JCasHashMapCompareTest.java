@@ -98,14 +98,14 @@ public class JCasHashMapCompareTest extends TestCase {
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
           final int key = hash(i, threadNumber) / 2;
           final Object waiter = waiters[key & (numberOfWaiters - 1)];
-          FeatureStructureImpl fs = m.putIfAbsent(key, new TOP(key, JCasHashMap.RESERVE_TOP_TYPE_INSTANCE));
-          while (fs != null && ((TOP)fs).jcasType == JCasHashMap.RESERVE_TOP_TYPE_INSTANCE) {
+          FeatureStructureImpl fs = m.putIfAbsent(key, new TOP(key, JCasHashMapSubMap.RESERVE_TOP_TYPE_INSTANCE));
+          while (fs != null && ((TOP)fs).jcasType == JCasHashMapSubMap.RESERVE_TOP_TYPE_INSTANCE) {
             // someone else reserved this
 
             // wait for notify
             synchronized (waiter) {
               fs = m.get(key);
-              if (((TOP)fs).jcasType == JCasHashMap.RESERVE_TOP_TYPE_INSTANCE) {
+              if (((TOP)fs).jcasType == JCasHashMapSubMap.RESERVE_TOP_TYPE_INSTANCE) {
                 try {
                   waiter.wait();
                 } catch (InterruptedException e) {
@@ -118,7 +118,7 @@ public class JCasHashMapCompareTest extends TestCase {
           if (null == fs) {
 //            puts ++;
             FeatureStructureImpl prev = m.put(key,  new TOP(key, FAKE_TOP_TYPE_INSTANCE));
-            if (((TOP)prev).jcasType == JCasHashMap.RESERVE_TOP_TYPE_INSTANCE) {
+            if (((TOP)prev).jcasType == JCasHashMapSubMap.RESERVE_TOP_TYPE_INSTANCE) {
               synchronized (waiter) {
                 waiter.notifyAll();
               }

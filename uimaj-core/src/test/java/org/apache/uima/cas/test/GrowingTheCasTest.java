@@ -97,7 +97,7 @@ public class GrowingTheCasTest extends TestCase {
   }
   
   // rename to test to run this test
-  public void tstIteratorPerf() {
+  public void testIteratorPerf() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
@@ -136,7 +136,7 @@ public class GrowingTheCasTest extends TestCase {
     }
     
     // performance testing of "unordered" iterators
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < /*4*/ 400000; i++) {
       timeIt(i);
     }
 //    ((JCasImpl)jcas).showJfsFromCaddrHistogram();
