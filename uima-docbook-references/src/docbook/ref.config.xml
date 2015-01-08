@@ -149,6 +149,8 @@ under the License.
                         and if this property is set, will log WARN messages for each occurrence unless
                         the user does explicit <code>protectIndexes</code> (see CAS JavaDocs for CAS / JCas <code>protectIndexes</code> methods), if this
                         property is defined.</para>
+                   <para>To scan the logs for these reports, search for instances of lines having the string 
+                         <code>While FS was in the index, the feature</code></para>
                    
                    <para>Specifying this property overrides <code>uima.disable_auto_protect_indexes</code>.</para>
                          
