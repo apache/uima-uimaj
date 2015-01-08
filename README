@@ -14,7 +14,6 @@ most cases, there are new JVM -D properties that can be used to disable new
 features, until the underlying issues are corrected or accommodated.
 
 The JVM -D property names for these, and their meaning, are:
-  as of version 2.7.0:
   
     -Duima.disable_enhanced_check_wrong_add_to_index 
       Feature Structures which are subtypes of AnnotationBase may only be added
@@ -23,16 +22,38 @@ The JVM -D property names for these, and their meaning, are:
       This check was improved to catch more cases, but can be disabled by this property. 
       
     -Duima.allow_duplicate_add_to_indexes
-      Adding the same exact FS instance to the indexes multiple times won't 
-      result in duplicate entries in the indexes.  You may restore the previous
+      Adding the same exact FS instance to the indexes multiple times no longer
+      results in duplicate entries in the indexes.  You may restore the previous
       behavior using this flag.    
     
     -Duima.disable_auto_protect_indexes
       UIMA now checks and automatically protects indexes if users (after adding
       a feature structure to the indexes) updates a feature which is being used
       as a key.  For production runs, after insuring there are no such updates
-      going on, you can disable this protection and checking, which may make
-      things run slightly faster.  
+      going on, or explicitly protecting those that are being done using the 
+      protectIndexes() method,  you can disable this protection and checking, 
+      which may make things run slightly faster.
+      
+    -Duima.report_fs_update_corrupts_index
+      See https://issues.apache.org/jira/browse/UIMA-4135. 
+      Updating Features which are used in Set and Sorted indexes 
+      as "keys" may corrupt the indexes, if the Feature Structure (FS) has been 
+      added to the indexes. To update these, you must first completely remove
+      the FS from the indexes in all views, then do the updates, and then add 
+      it back. UIMA now checks for this (unless specifically disabled), 
+      and if this property is set, will log WARN messages for each occurrence 
+      unless the user wraps these updates inside explicit protectIndexes
+      blocks.
+ 
+      To scan the logs for these reports, search for instances of lines having 
+      the string     While FS was in the index, the feature     
+
+    -Duima.disable_enhanced_check_wrong_add_to_index
+      See https://issues.apache.org/jira/browse/UIMA-4099. 
+      Feature Structures which are subtypes of AnnotationBase may only be 
+      added to the View corresponding to their Sofa reference. From version 
+      2.7.0, there is additional checking of this which can be disabled 
+      if needed for backward compatibility.
 
   See the UIMA References http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.config
   for a table of these and other settings.
