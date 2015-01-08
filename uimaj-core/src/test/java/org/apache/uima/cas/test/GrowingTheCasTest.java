@@ -97,7 +97,7 @@ public class GrowingTheCasTest extends TestCase {
   }
   
   // rename to test to run this test
-  public void testIteratorPerf() {
+  public void tstIteratorPerf() {
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
