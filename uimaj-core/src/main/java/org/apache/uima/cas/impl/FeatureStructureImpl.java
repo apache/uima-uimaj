@@ -150,7 +150,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		}
 		final int featCode = ((FeatureImpl) feat).getCode();
 
-		this.getCASImpl().setFeatureValueNoIndexCorruptionCheck(this.getAddress(), featCode, val);
+		this.getCASImpl().setFeatureValue(this.getAddress(), featCode, val);
 	}
 
 	public void setBooleanValue(Feature feat, boolean b) throws CASRuntimeException {

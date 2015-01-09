@@ -48,7 +48,7 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
 
   /**
    * Set the type of this comparator. Note that you can use this method more than once, in case you
-   * need to generate indices that are identical except for the type.
+   * need to generate indexes that are identical except for the type.
    * 
    * @param type
    *          The type of the index.

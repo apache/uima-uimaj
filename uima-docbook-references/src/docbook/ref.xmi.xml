@@ -272,6 +272,11 @@ myFeature = "bar"</programlisting>
         not support interoperability with other XMI-based systems, so we instead recommend using the
         multi-valued-property representation described in the previous section whenever it is possible.</para>
       
+      <para>When a feature is specified in the descriptor without a multipleReferencesAllowed attribute, or with the 
+      attribute specified as <code>false</code>, but the framework discovers multiple references during 
+      serialization, it will issue a message to the log say that it discovered this (look for the phrase
+      "serialized in duplicate").  The serialization will continue, but the multiply-referenced items will 
+      be serialized in duplicate.</para>
     </section>
     
     <section id="ugr.ref.xmi.null_array_list_elements">

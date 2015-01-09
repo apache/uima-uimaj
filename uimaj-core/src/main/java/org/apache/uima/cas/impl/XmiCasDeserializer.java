@@ -224,11 +224,11 @@ public class XmiCasDeserializer {
     boolean disallowedViewMemberEncountered;
 
     /**
-     * a list by view of FSs to be added to the indices
+     * a list by view of FSs to be added to the indexes
      */
     final private DeferredIndexUpdates toBeAdded = new DeferredIndexUpdates();
     /**
-     * a list by view of FSs to be removed from the indices
+     * a list by view of FSs to be removed from the indexes
      */
     final private DeferredIndexUpdates toBeRemoved = new DeferredIndexUpdates();
 
@@ -533,7 +533,7 @@ public class XmiCasDeserializer {
       		  throw e;
       		} else if (this.allowPreexistingFS == AllowPreexistingFS.allow) { //get the FS 
       		  final int addr = getFsAddrForXmiId(xmiId);
-      		  // remove from indices, and remember if was there, per view
+      		  // remove from indexes, and remember if was there, per view
       		  //   (might be indexed in some views, not in others)
 //      		  FSsTobeReindexed modifySafely = casBeingFilled.modifySafely()
 //       		  casBeingFilled.removeFromCorruptableIndexAnyView(addr, toBeAddedBack);
@@ -1496,7 +1496,7 @@ public class XmiCasDeserializer {
 
       
       for (CAS view : views) {
-        AutoCloseable ac = view.protectIndices();
+        AutoCloseable ac = view.protectIndexes();
         try {
           ((CASImpl) view).updateDocumentAnnotation();
         } finally {

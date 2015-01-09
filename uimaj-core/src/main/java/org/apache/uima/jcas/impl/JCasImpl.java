@@ -388,45 +388,49 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * 
    * @see org.apache.uima.jcas.JCas#getType(int)
    */
-  public TOP_Type getType(int i) {
+  public TOP_Type getType(final int i) {
     if (i >= typeArray.length || null == typeArray[i]) {
-      // unknown ID. This may be due to a need to update the typeArray
-      // due to switching class loaders. This updating is done
-      // partially lazily - when needed, beyond the particular CAS instance and
-      // view that was being passed to a process method when the
-      // class loader switch was done.
-
-      // In order for this to work, all access to the typeArray must be
-      // via this getter.
-
-      // Try instantiating the entries in typeArray for this class loader
-      instantiateJCas_Types(this.sharedView.currentClassLoader);
-      if (i >= typeArray.length || null == typeArray[i]) {
-
-        // unknown ID. Attempt to get offending class.
-        Class cls = JCasRegistry.getClassForIndex(i);
-        if (cls != null) {
-          String typeName = cls.getName();
-          // is type in type system
-          if (this.casImpl.getTypeSystem().getType(typeName) == null) {
-            // no - report error that JCAS type was not defined in XML
-            // descriptor
-            CASRuntimeException casEx = new CASRuntimeException(
-                CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, new String[] { typeName });
-            throw casEx;
-          } else {
-            // yes - there was some problem loading the _Type object
-            CASRuntimeException casEx = new CASRuntimeException(
-                CASRuntimeException.JCAS_MISSING_COVERCLASS, new String[] { typeName + "_Type" });
-            throw casEx;
-          }
-
-        } else {
-          throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
-        }
-      }
+      getTypeInit(i); 
     }
     return typeArray[i];
+  }
+  
+  private void getTypeInit(final int i) {
+    // unknown ID. This may be due to a need to update the typeArray
+    // due to switching class loaders. This updating is done
+    // partially lazily - when needed, beyond the particular CAS instance and
+    // view that was being passed to a process method when the
+    // class loader switch was done.
+
+    // In order for this to work, all access to the typeArray must be
+    // via this getter.
+
+    // Try instantiating the entries in typeArray for this class loader
+    instantiateJCas_Types(this.sharedView.currentClassLoader);
+    if (i >= typeArray.length || null == typeArray[i]) {
+
+      // unknown ID. Attempt to get offending class.
+      Class cls = JCasRegistry.getClassForIndex(i);
+      if (cls != null) {
+        String typeName = cls.getName();
+        // is type in type system
+        if (this.casImpl.getTypeSystem().getType(typeName) == null) {
+          // no - report error that JCAS type was not defined in XML
+          // descriptor
+          CASRuntimeException casEx = new CASRuntimeException(
+              CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, new String[] { typeName });
+          throw casEx;
+        } else {
+          // yes - there was some problem loading the _Type object
+          CASRuntimeException casEx = new CASRuntimeException(
+              CASRuntimeException.JCAS_MISSING_COVERCLASS, new String[] { typeName + "_Type" });
+          throw casEx;
+        }
+
+      } else {
+        throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
+      }
+    }
   }
 
   /*
@@ -795,6 +799,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     private final int sofaNbrFeatCode;
 
     private final int annotSofaFeatCode;
+    
+    private final Object[] initargs = new Object[2];
 
     JCasFsGenerator(int type, Constructor c, boolean isSubtypeOfAnnotationBase,
         int sofaNbrFeatCode, int annotSofaFeatCode) {
@@ -810,8 +816,21 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // 2) a dereference of an existing FS
     // 3) an iterator
     public FeatureStructure createFS(int addr, CASImpl casView) {
-      Object[] initargs = new Object[2];
-      JCasImpl jcasView = null;
+      try {
+        JCasImpl jcasView = (JCasImpl) casView.getJCas();
+        TOP fs = jcasView.getJfsFromCaddr(addr);
+        if (null != fs) {
+          fs.jcasType = jcasView.getType(type);
+          return fs;
+        }       
+        return doCreateFS(addr, casView);
+      } catch (CASException e1) {
+        logAndThrow(e1, null);
+        return null;  // to avoid compile warning
+      }
+    }
+  
+    private FeatureStructure doCreateFS(int addr, CASImpl casView) {
       // this funny logic is because although the annotationView should always be set if
       // a type is a subtype of annotation, it isn't always set if an application uses low-level
       // api's. Rather than blow up, we limp along.
@@ -825,18 +844,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       final CASImpl view = (null != maybeAnnotationView) ? maybeAnnotationView : casView;
 
       try {
-        jcasView = (JCasImpl) view.getJCas();
-      } catch (CASException e1) {
-        logAndThrow(e1, jcasView);
-      }
-
-      // Return eq fs instance if already created
-      TOP fs = jcasView.getJfsFromCaddr(addr);
-      if (null != fs) {
-        fs.jcasType = jcasView.getType(type);
-      } else {
+        JCasImpl jcasView = (JCasImpl) view.getJCas();
         initargs[0] = Integer.valueOf(addr);
         initargs[1] = jcasView.getType(type);
+        FeatureStructure fs = null;
         try {
           fs = (TOP) c.newInstance(initargs);
         } catch (IllegalArgumentException e) {
@@ -849,8 +860,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
           logAndThrow(e, jcasView);
         }
         jcasView.putJfsFromCaddr(addr, fs);
+        return fs;
+      } catch (CASException e1) {
+        logAndThrow(e1, null);
+        return null;
       }
-      return fs;
     }
 
     private void logAndThrow(Exception e, JCasImpl jcasView) {
@@ -863,10 +877,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       throw casEx;
     }
 
-    private int getSofaNbr(int addr, CASImpl casView) {
-      final LowLevelCAS llCas = casView.getLowLevelCAS();
-      final int sofa = llCas.ll_getIntValue(addr, annotSofaFeatCode, false);
-      return (sofa == 0) ? 0 : llCas.ll_getIntValue(sofa, sofaNbrFeatCode);
+    private int getSofaNbr(final int addr, final CASImpl casView) {      
+      final int sofa = casView.ll_getIntValue(addr, annotSofaFeatCode, false);
+      return (sofa == 0) ? 0 : casView.ll_getIntValue(sofa, sofaNbrFeatCode);
     }
   }
 
@@ -1563,19 +1576,19 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#protectIndices()
+   * @see org.apache.uima.jcas.JCas#protectIndexes()
    */
   @Override
-  public AutoCloseable protectIndices() {
-    return casImpl.protectIndices();
+  public AutoCloseable protectIndexes() {
+    return casImpl.protectIndexes();
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#protectIndices(java.lang.Runnable)
+   * @see org.apache.uima.jcas.JCas#protectIndexes(java.lang.Runnable)
    */
   @Override
-  public void protectIndices(Runnable runnable) {
-    casImpl.protectIndices(runnable);  
+  public void protectIndexes(Runnable runnable) {
+    casImpl.protectIndexes(runnable);  
   }
   
   

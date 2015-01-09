@@ -204,7 +204,7 @@ public class IteratorTest extends TestCase {
     this.annotationType = null;
   }
   
-  private void setupIndices () {
+  private void setupindexes () {
     bagIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX);
     setIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SET_INDEX);
     sortedIndex = this.cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX);
@@ -399,7 +399,7 @@ public class IteratorTest extends TestCase {
   public void testIterator() {
     setupFSs();
     
-    setupIndices();
+    setupindexes();
     
     setIteratorWithoutMods(setIndex, -1);
     setIteratorWithoutMods(ssSetIndex, -2);
@@ -456,7 +456,7 @@ public class IteratorTest extends TestCase {
     FSIterator<FeatureStructure> it = setIndex.iterator();
     AnnotationFS a, b = null;
     int ii = 0;
-    StringBuilder sb = new StringBuilder();
+//    StringBuilder sb = new StringBuilder();
     while (it.isValid()) {
       a = (AnnotationFS) it.get();
       if (b != null) {
@@ -472,20 +472,20 @@ public class IteratorTest extends TestCase {
 //        }
       }
       b = a;
-       sb.append(String.format("%d %d debug: n=%d, type=%s, start=%d, end-%d%n",
-           threadNumber,
-           ii++,
-           a.hashCode(),
-           a.getType().getName(),
-           a.getBegin(),
-           a.getEnd()));
+//       sb.append(String.format("%d %d debug: n=%d, type=%s, start=%d, end-%d%n",
+//           threadNumber,
+//           ii++,
+//           a.hashCode(),
+//           a.getType().getName(),
+//           a.getBegin(),
+//           a.getEnd()));
       v.add(it.get().hashCode());
       it.moveToNext();
     }
     // System.out.println("Number of annotations: " + v.size());
     if (v.size() != ((10 * 3) + (10 * 3))) {
       System.err.format("Expected number in set was 60, but has %d elements%n%s%n", v.size(), it);
-      System.err.println(sb);
+//      System.err.println(sb);
       assertTrue(false);
     }
 //    else
@@ -558,8 +558,9 @@ public class IteratorTest extends TestCase {
   private void fastFailTst(FSIndex<FeatureStructure> index, boolean isShouldFail) {
     FSIterator<FeatureStructure> it = index.iterator();
     it.moveToLast();
-    FeatureStructure a = it.get();
     it.moveToFirst();
+    // moved to first, 2.7.0, because new bag iterator is more forgiving re concurrentmodexception
+    FeatureStructure a = it.get();
     
     cas.removeFsFromIndexes(a);
     cas.addFsToIndexes(a);    
@@ -584,6 +585,9 @@ public class IteratorTest extends TestCase {
     } catch (ConcurrentModificationException e) {
       ok = false;
     }
+//    if (!ok) {
+//      System.out.println("debug");
+//    }
     assertTrue(ok);
   }
   
@@ -736,12 +740,21 @@ public class IteratorTest extends TestCase {
     IntVector v = new IntVector();
     FSIterator<FeatureStructure> it = bagIndex.iterator();
     AnnotationFS a, b = null;
-    while (it.isValid()) {
-      a = (AnnotationFS) it.get();
-      assertTrue(a != null);
-      if (b != null) {
-        assertTrue(bagIndex.compare(b, a) <= 0);
+//    int debug_i = 0;
+    while (true) {
+//      if (debug_i == 20) {
+//        System.out.println("Debug");
+//      }
+      if (!it.isValid()) {
+        break;
       }
+       a = (AnnotationFS) it.get();
+//      debug_i ++;
+      assertTrue(a != null);
+      // bag indices no longer are in sort by fs order
+//      if (b != null) {
+//        assertTrue(bagIndex.compare(b, a) <= 0);
+//      }
       b = a;
       v.add(a.hashCode());
       it.moveToNext();
@@ -751,6 +764,9 @@ public class IteratorTest extends TestCase {
     // Check that reverse iterator produces reverse sequence.
     it.moveToLast();
     for (int i = v.size() - 1; i >= 0; i--) {
+//      if (!it.isValid()) {
+//        System.out.println("debug");
+//      }
       assertTrue(it.isValid());
       assertTrue(it.get().hashCode() == v.get(i));
       it.moveToPrevious();
@@ -771,6 +787,9 @@ public class IteratorTest extends TestCase {
       it.moveToNext();
       assertTrue(it.isValid());
       assertTrue(it.get().hashCode() == v.get(current + 1));
+//      if (current == 19) {
+//        System.out.println("debug");
+//      }
       it.moveToPrevious();
       assertTrue(it.isValid());
       assertTrue(it.get().hashCode() == v.get(current));
@@ -1022,6 +1041,9 @@ public class IteratorTest extends TestCase {
     } catch (Exception e) {
       caught = true;
     }
+//    if (caught != true) {
+//      System.out.println("Debug");
+//    }
     assertTrue(caught);
   }
   

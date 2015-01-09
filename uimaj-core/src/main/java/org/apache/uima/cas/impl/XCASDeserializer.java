@@ -778,7 +778,7 @@ public class XCASDeserializer {
       }
 
       for (CAS view : views) {
-        AutoCloseable ac = view.protectIndices();
+        AutoCloseable ac = view.protectIndexes();
         try {
           ((CASImpl)view).updateDocumentAnnotation();
         } finally {

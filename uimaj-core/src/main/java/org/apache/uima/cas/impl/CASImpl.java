@@ -89,9 +89,9 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Misc;
 
 /**
  * Implements the CAS interfaces. This class must be public because we need to
@@ -127,11 +127,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   /**
    * The UIMA framework detects (unless disabled, for high performance) updates to indexed FS which update
-   * key values used as keys in indices.  Normally the framework will protect against index corruption by 
-   * temporarily removing the FS from the indices, then do the update to the feature value, and then addback
+   * key values used as keys in indexes.  Normally the framework will protect against index corruption by 
+   * temporarily removing the FS from the indexes, then do the update to the feature value, and then addback
    * the changed FS.
    * <p>
-   * Users can use the protectIndices() methods to explicitly control this remove - add back cycle, for instance
+   * Users can use the protectIndexes() methods to explicitly control this remove - add back cycle, for instance
    * to "batch" together several updates to multiple features in a FS.
    * <p>
    * Some build processes may want to FAIL if any unprotected updates of this kind occur, instead of having the
@@ -139,10 +139,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * by this global JVM property, which, if defined, causes the framework to throw an exception rather than recover.
    * 
    */
-  private static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
+  public static final String THROW_EXCEPTION_FS_UPDATES_CORRUPTS = "uima.exception_when_fs_update_corrupts_index";
   
-  private static final boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = 
-      !System.getProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "false").equalsIgnoreCase("false");
+  // public for test case use
+  public static final boolean IS_THROW_EXCEPTION_CORRUPT_INDEX = Misc.getNoValueSystemProperty(THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
   
   /**
    * Define this JVM property to enable checking for invalid updates to features which are used as 
@@ -151,26 +151,27 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   <li>The following are the same:  -Duima.check_invalid_fs_updates    and -Duima.check_invalid_fs_updates=true</li>
    * </ul> 
    */
-  private static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
+  public static final String REPORT_FS_UPDATES_CORRUPTS = "uima.report_fs_update_corrupts_index";
 
-  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = IS_THROW_EXCEPTION_CORRUPT_INDEX ||  
-      !System.getProperty(REPORT_FS_UPDATES_CORRUPTS, "false").equalsIgnoreCase("false");
+  private static final boolean IS_REPORT_FS_UPDATE_CORRUPTS_INDEX = 
+      IS_THROW_EXCEPTION_CORRUPT_INDEX || Misc.getNoValueSystemProperty(REPORT_FS_UPDATES_CORRUPTS);
 
 
   /**
    * Set this JVM property to false for high performance, (no checking);
    * insure you don't have the report flag (above) turned on - otherwise it will force this to "true".
    */
-  private static final String PROTECT_INDICES = "uima.protect_indices_from_key_udpates";
+  public static final String DISABLE_PROTECT_INDEXES = "uima.disable_auto_protect_indexes";
   
   /**
-   * the protect indices flag is on by default, but may be turned of via setting the property to false.
+   * the protect indexes flag is on by default, but may be turned of via setting the property.
    * 
-   * This is overridden (the flag is turned back on) if a report is requested (by above flag).
+   * This is overridden if a report is requested or the exception detection is on.
    */
-  private static final boolean IS_PROTECT_INDICES = 
-      System.getProperty(PROTECT_INDICES, "true").equalsIgnoreCase("true") ||
-      IS_REPORT_FS_UPDATE_CORRUPTS_INDEX;
+  private static final boolean IS_DISABLED_PROTECT_INDEXES = 
+      Misc.getNoValueSystemProperty(DISABLE_PROTECT_INDEXES) &&
+      !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX &&
+      !IS_THROW_EXCEPTION_CORRUPT_INDEX;
   
   // The offset for the array length cell. An array consists of length+2
   // number
@@ -229,7 +230,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // number 0 - not used
     // number 1 - used for view named "_InitialView"
     // number 2-n used for other views
-    private Map<Integer, CAS> sofaNbr2ViewMap;
+//    private Map<Integer, CAS> sofaNbr2ViewMap;
+    private ArrayList<CAS> sofaNbr2ViewMap;
 
     // set of instantiated sofaNames
     private Set<String> sofaNameSet;
@@ -306,7 +308,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private List<MarkerImpl> trackingMarkList;
    
     /**
-     * This stack corresponds to nested protectIndices contexts. Normally should be very shallow.
+     * This stack corresponds to nested protectIndexes contexts. Normally should be very shallow.
      */
     private final List<FSsTobeAddedback> fssTobeAddedback = new ArrayList<FSsTobeAddedback>();
     
@@ -453,7 +455,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
 
     this.svd.sofa2indexMap = new HashMap<Integer, FSIndexRepository>();
-    this.svd.sofaNbr2ViewMap = new HashMap<Integer, CAS>();
+    this.svd.sofaNbr2ViewMap = new ArrayList<CAS>();
     this.svd.sofaNameSet = new HashSet<String>();
     this.svd.initialSofaCreated = false;
     this.svd.viewCount = 0;
@@ -1202,7 +1204,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     // freshen the initial view
     ((CASImpl) initialView).refreshView(this.svd.baseCAS, null);
-    this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), initialView);
+    setViewForSofaNbr(1, initialView);
     this.svd.viewCount = 1;
 
     // deserialize heap
@@ -1546,7 +1548,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   /**
    * for Deserialization of Delta, when updating existing FSs,
-   * If the heap addr is for the next FS, re-add the previous one to those indices where it was removed,
+   * If the heap addr is for the next FS, re-add the previous one to those indexes where it was removed,
    * and then maybe remove the new one (and remember which views to re-add to).
    * @param heapAddr
    */
@@ -2225,8 +2227,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // byte
   public void setFeatureValue(int addr, int feat, byte v) {
-    // keys are not byte
-    setFeatureValueNoIndexCorruptionCheck(addr, feat, (int) v);
+    setFeatureValue(addr, feat, (int) v);
   }
 
   public byte getByteValue(int addr, int feat) {
@@ -2235,7 +2236,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // boolean
   public void setFeatureValue(int addr, int feat, boolean v) {
-    setFeatureValueNoIndexCorruptionCheck(addr, feat, v ? CASImpl.TRUE : CASImpl.FALSE);
+    setFeatureValue(addr, feat, v ? CASImpl.TRUE : CASImpl.FALSE);
   }
 
   public boolean getBooleanValue(int addr, int feat) {
@@ -2244,8 +2245,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // short
   public void setFeatureValue(int addr, int feat, short s) {
-    // shorts are not keys
-    setFeatureValueNoIndexCorruptionCheck(addr, feat, (int) s);
+    setFeatureValue(addr, feat, (int) s);
   }
 
   public short getShortValue(int addr, int feat) {
@@ -2265,9 +2265,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.ll_setFloatValue(addr,  feat, f);
   }
   
-  public void setFeatureValueNoIndexCorruptionCheck(int addr, int feat, float f) {
-    this.ll_setFloatValueNoIndexCorruptionCheck(addr,  feat,  f);
-  }
+//  public void setFeatureValueNoIndexCorruptionCheck(int addr, int feat, float f) {
+//    this.ll_setFloatValueNoIndexCorruptionCheck(addr,  feat,  f);
+//  }
   
   // double
   public void setFeatureValue(int addr, int feat, double s) {
@@ -2827,7 +2827,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal use only
   public CAS getView(int sofaNum) {
-    return this.svd.sofaNbr2ViewMap.get(Integer.valueOf(sofaNum));
+    return getViewFromSofaNbr(sofaNum);
   }
 
   
@@ -2879,16 +2879,32 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // sofa guaranteed to be non-null by above method.
     return getJCas(sofa);
   }
+  
+  private CAS getViewFromSofaNbr(int nbr) {
+    ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    if (nbr < sn2v.size()) {
+      return sn2v.get(nbr);
+    }
+    return null;
+  }
+  
+  private void setViewForSofaNbr(int nbr, CAS view) {
+    ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    while (sn2v.size() <= nbr) {
+      sn2v.add(null);
+    }
+    sn2v.set(nbr, view);
+  }
 
   // For internal platform use only
   CAS getInitialView() {
-    CAS couldBeThis = this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1));
+    CAS couldBeThis = getViewFromSofaNbr(1);
     if (couldBeThis != null) {
       return couldBeThis;
     }
     // create the initial view, without a Sofa
     CAS aView = new CASImpl(this.svd.baseCAS, null, this.isUsedJcasCache);
-    this.svd.sofaNbr2ViewMap.put(Integer.valueOf(1), aView);
+    setViewForSofaNbr(1, aView);
     assert (this.svd.viewCount <= 1);
     this.svd.viewCount = 1;
     return aView;
@@ -2961,9 +2977,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public CAS getView(SofaFS aSofa) {
     final int sofaNbr = aSofa.getSofaRef();
-    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
+//    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
 
-    CASImpl aView = (CASImpl) this.svd.sofaNbr2ViewMap.get(sofaNbrInteger);
+    CASImpl aView = (CASImpl) getViewFromSofaNbr(sofaNbr);
     if (null == aView) {
       // This is the deserializer case, or the case where an older API created a
       // sofa,
@@ -2971,7 +2987,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       // create a new CAS view
       aView = new CASImpl(this.svd.baseCAS, aSofa, this.isUsedJcasCache);
-      this.svd.sofaNbr2ViewMap.put(sofaNbrInteger, aView);
+      setViewForSofaNbr(sofaNbr, aView);
       verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, aSofa);
       return aView;
     }
@@ -3483,12 +3499,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * <p>
    * If enabled, it will check if the update may corrupt any index in any view.  The check tests
    * whether the feature is being used as a key in one or more indexes and if the FS is in one or more 
-   * corruptable view indices. 
+   * corruptable view indexes. 
    * <p>
    * If true, then:
    * <ul>
-   *   <li>it may remove and remember (for later adding-back) the FS from all corruptable indices
-   *   (bag indices are not corruptable via updating, so these are skipped). 
+   *   <li>it may remove and remember (for later adding-back) the FS from all corruptable indexes
+   *   (bag indexes are not corruptable via updating, so these are skipped). 
    *   The addback occurs later either via an explicit call to do so, or the end of a protectIndex block, or.
    *   (if autoIndexProtect is enabled) after the individual feature update is completed.</li>
    *   <li>it may give a WARN level message to the log. This enables users to 
@@ -3506,7 +3522,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     final int ssz = svd.fssTobeAddedback.size();
     // skip if protection is disabled, an no explicit protection block
-    if (!IS_PROTECT_INDICES && ssz == 0) {
+    if (IS_DISABLED_PROTECT_INDEXES && ssz == 0) {
       return false;
     }
        
@@ -3535,7 +3551,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     pw.close();
     String msg = String.format(
         "While FS was in the index, the feature \"%s\""
-        + ", which is used as a key in one or more indices, "
+        + ", which is used as a key in one or more indexes, "
         + "was modified\n FS = \"%s\"\n%s%n",
         this.getTypeSystemImpl().ll_getFeatureForCode(featureCode).getName(),
         new FeatureStructureImplC(this, fsRef).toString(),  
@@ -3550,7 +3566,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   /**
    * Do the individual feat update addback if
    *   a) not in a block mode, and 
-   *   b) running with auto protect indices
+   *   b) running with auto protect indexes
    *   c) not in block-single mode
    *   
    * if running in block mode, the add back is delayed until the end of the block
@@ -3558,7 +3574,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param fsRef the fs to add back
    */
   private void maybeAddback(int fsRef) {
-    if (!svd.fsTobeAddedbackSingleInUse && IS_PROTECT_INDICES && svd.fssTobeAddedback.size() == 0) {
+    if (!svd.fsTobeAddedbackSingleInUse && (!IS_DISABLED_PROTECT_INDEXES) && svd.fssTobeAddedback.size() == 0) {
       svd.fsTobeAddedbackSingle.addback(fsRef);
     }
   }
@@ -3607,7 +3623,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   /**
    * A conditional remove, depends on the featCode being used as a key
-   * Skip tests if the FS is known not to be in the indices in any view
+   * Skip tests if the FS is known not to be in the indexes in any view
    *
    * @param fsRef the fs
    * @param toBeAdded the place to record removal actions
@@ -3657,7 +3673,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * remove a FS from corruptable indices in this view
+   * remove a FS from corruptable indexes in this view
    * @param fsRef the fs to be removed
    * @param ir the view
    * @param toBeAdded the place to record how many times it was in the index, per view
@@ -3680,9 +3696,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     setFeatureValue(fsRef, featureCode, float2int(value));
   }
   
-  public final void ll_setFloatValueNoIndexCorruptionCheck(int fsRef, int featureCode, float value) {
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, float2int(value));
-  }
+//  public final void ll_setFloatValueNoIndexCorruptionCheck(int fsRef, int featureCode, float value) {
+//    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, float2int(value));
+//  }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value) {
     if (null != value) {
@@ -4175,8 +4191,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value) {
-    // no index check because booleans can't be keys
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value ? CASImpl.TRUE : CASImpl.FALSE);
+    setFeatureValue(fsRef, featureCode, value ? CASImpl.TRUE : CASImpl.FALSE);
   }
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value, boolean doTypeChecks) {
@@ -4187,8 +4202,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setByteValue(int fsRef, int featureCode, byte value) {
-    // no index check because bytes can't be keys
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value);
+    setFeatureValue(fsRef, featureCode, value);
   }
 
   public void ll_setByteValue(int fsRef, int featureCode, byte value, boolean doTypeChecks) {
@@ -4199,8 +4213,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final void ll_setShortValue(int fsRef, int featureCode, short value) {
-    // no index corruption check - shorts not valid as keys
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value);
+    setFeatureValue(fsRef, featureCode, value);
   }
 
   public void ll_setShortValue(int fsRef, int featureCode, short value, boolean doTypeChecks) {
@@ -4211,9 +4224,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setLongValue(int fsRef, int featureCode, long value) {
-    // no index corruption check - longs not valid as keys
     final int offset = this.getLongHeap().addLong(value);
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, offset);
+    setFeatureValue(fsRef, featureCode, offset);
   }
 
   public void ll_setLongValue(int fsRef, int featureCode, long value, boolean doTypeChecks) {
@@ -4224,10 +4236,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void ll_setDoubleValue(int fsRef, int featureCode, double value) {
-    // no index corruption check - doubles not valid as keys
     long val = Double.doubleToLongBits(value);
     final int offset = this.getLongHeap().addLong(val);
-    setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, offset);
+    setFeatureValue(fsRef, featureCode, offset);
   }
 
   public void ll_setDoubleValue(int fsRef, int featureCode, double value, boolean doTypeChecks) {
@@ -4573,7 +4584,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public String getViewName() {
-    if (this == this.svd.sofaNbr2ViewMap.get(Integer.valueOf(1))) {
+    if (this == getViewFromSofaNbr(1)) {
       return CAS.NAME_DEFAULT_SOFA;
     } else if (this.mySofaRef > 0) {
       return this.getSofa().getSofaID();
@@ -4811,24 +4822,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * protectIndices
+   * protectIndexes
    * 
-   * Within the scope of protectIndices, 
+   * Within the scope of protectIndexes, 
    *   feature updates are checked, and if found to be a key, and the FS is in a corruptable index,
-   *     then the FS is removed from the indices (in all necessary views) (perhaps multiple times
-   *     if the FS was added to the indices multiple times), and this removal is recorded on
+   *     then the FS is removed from the indexes (in all necessary views) (perhaps multiple times
+   *     if the FS was added to the indexes multiple times), and this removal is recorded on
    *     an new instance of FSsTobeReindexed appended to fssTobeAddedback.
    *     
-   *   Later, when the protectIndices is closed, the tobe items are added back to the indies.
+   *   Later, when the protectIndexes is closed, the tobe items are added back to the indies.
    */
   @Override
-  public AutoCloseable protectIndices() {
+  public AutoCloseable protectIndexes() {
     FSsTobeAddedback r = FSsTobeAddedback.createMultiple(this);
     svd.fssTobeAddedback.add(r);
     return r;
   }
   
-  void dropProtectIndicesLevel () {
+  void dropProtectIndexesLevel () {
     svd.fssTobeAddedback.remove(svd.fssTobeAddedback.size() -1);
   }
   
@@ -4844,7 +4855,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *    3) the addbacks are in the list but not at the end
    *         - remove it and all later ones     
    *  
-   * If the "withProtectedIndices" approach is used, it guarantees proper 
+   * If the "withProtectedindexes" approach is used, it guarantees proper 
    * nesting, but the Runnable can't throw checked exceptions.
    * 
    * You can do your own try-finally blocks (or use the try with resources
@@ -4874,8 +4885,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param r an inner block of code to be run with 
    */
   @Override
-  public void protectIndices(Runnable r) {
-    AutoCloseable addbacks = protectIndices();
+  public void protectIndexes(Runnable r) {
+    AutoCloseable addbacks = protectIndexes();
     try {
       r.run();
     } finally {

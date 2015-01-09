@@ -663,47 +663,6 @@ private Feature initFeature(String featName, Type type)
     <para>There is also a corresponding <literal>removeFsFromIndexes(token)</literal>
       method on CAS objects.</para>
     
-    <para>Because some of the indexes (the Sorted and Set types) use comparators defined
-    on particular values of the features of an indexed type, if you change the values of
-    those features being used in the index key, the correct way to do this is to
-    <orderedlist spacing="compact">
-      <listitem><para>completely remove the item from all indexes where it is indexed, in all views
-      where it is indexed,</para>       
-      </listitem>
-      <listitem><para>update the value of the features being used as keys,</para></listitem>
-      <listitem><para>add the item back to the indexes, in all views.</para></listitem> 
-    </orderedlist></para>
-    
-    <para>To completely remove an item from the indices may entail removing it multiple times, if it was 
-    added multiple times, and (as of version 2.7.0) the JVM global property 
-    <code>uima.allow_duplicate_add_to_indices</code> is true.</para>
-    
-    <para>Because this is complex and can be optimized by the framework, the framework (as of version 2.7.0) 
-    supports the <code>protectIndices</code> method in the CAS to make this convenient for users.  Here's two ways
-    of using this, one with a try / finally and the other with a Runnable:
-            <programlisting>// an approach using try / finally
-AutoCloseable ac = my_cas.protectIndices();
-try {
-   ...  arbitrary user code which updates features
-        which may be "keys" in one or more indices
-} finally {
-  ac.close();
-}
-
-// if Java 8 is in use, 
-// this can be written using the auto-close feature of try:
-
-try (AutoCloseable ac = my_cas.protectIndices()) {
-   ...  arbitrary user code which updates features 
-        which may be "keys" in one or more indices
-}
-
-// an approach using a Runnable, written in Java 8 lambda syntax
-my_cas.protectIndices(() -> {
-  ... arbitrary user code updating "key" features,
-      but no checked exceptions are permitted
-  });</programlisting></para>
-    
     <para>As of version 2.4.1, there are two methods you can use on an index repository 
     to efficiently bulk-remove all
     instances of particular types of feature structures from a particular view.  One of these, 
@@ -712,6 +671,110 @@ my_cas.protectIndices(() -> {
     <code>aCas.getIndexRepository().removeAllExcludingSubtypes(aType)</code> remove all instances of a particular
     type, only.  In both cases, the removal is done from the particular view of the CAS referenced
     by aCas.</para>
+    
+    <section id="ugr.ref.cas.updating_indexed_feature_structures">
+    <title>Updating indexed feature structures</title>
+    <para>Version 2.7.0 added protection for indexes when feature structure key
+    value features are updated.  By default this protection is automatic, but 
+    at some performance cost.  Users may optimize this further.</para>
+    
+    <para>Protection is needed because some of the indexes (the Sorted and Set types) use comparators defined
+    to use values of the particular features; if these values 
+    need to be changed after the feature structure is added to the indexes, 
+    the correct way to do this is to:
+    <orderedlist spacing="compact">
+      <listitem><para>completely remove the item from all indexes where it is indexed, in all views
+      where it is indexed,</para>       
+      </listitem>
+      <listitem><para>update the value of the features being used as keys,</para></listitem>
+      <listitem><para>add the item back to the indexes, in all views.</para></listitem> 
+    </orderedlist></para>
+            
+      <note><para>It&rsquo;s OK to change feature values which are not used in determining
+      sort ordering (or set membership), without removing and re-adding back to the index.
+      </para></note>
+      
+    <para>To completely remove an item from the indexes may entail removing it multiple times, if it was 
+    added multiple times and (as of version 2.7.0) the JVM global property 
+    <code>uima.allow_duplicate_add_to_indexes</code> is true.</para>
+    
+    <para>The automatic protection checks for updates of
+    features being used as keys, and if it finds an update like this for a feature structure that
+    is in the indexes, it removes the feature structure from the indexes, does the update,
+    and adds it back.  It will do this for every feature update.  This is obviously not 
+    so efficient, when multiple features are being updated; in that case it would better to 
+    remove the feature structure, do all the updates to all the features needing updates, and then
+    do a single add-back operation.</para>
+   
+    <para>This is supported in user&rsquo;s code by using the new method <code>protectIndexes</code> 
+    available in both the CAS and JCas interface.    
+    
+    Here's two ways
+    of using this, one with a try / finally and the other with a Runnable:
+            <programlisting>// an approach using try / finally
+AutoCloseable ac = my_cas.protectIndexes();  // my_cas is a CAS or a JCas
+try {
+   ...  arbitrary user code which updates features
+        which may be "keys" in one or more indexes
+} finally {
+  ac.close();
+}
+
+// if Java 8 is in use, 
+// this can be written using the auto-close feature of try:
+
+try (AutoCloseable ac = my_cas.protectIndexes()) {
+   ...  arbitrary user code which updates features 
+        which may be "keys" in one or more indexes
+}
+
+// an approach using a Runnable, written in Java 8 lambda syntax
+my_cas.protectIndexes(() -> {
+  ... arbitrary user code updating "key" features,
+      but no checked exceptions are permitted
+  });</programlisting></para>
+    
+    <para>The <code>protectIndexes</code> implementation only removes feature structures that
+    have features being updated which are used as keys in some index(es). At the end of the scope
+    of the protectIndexes, it adds all of these back.  It also skips removing feature structures
+    from bag indexes, since these have no keys.</para>
+
+    <para>The JVM property <code>-Duima.report_fs_update_corrupts_index</code> will generate a log entry
+    everytime the frameworks finds (and automatically surrounds with a remove - add-back) an update to 
+    a feature which could corrupt the index.  The log entries can be identified by scanning for messages
+    starting with <code>While FS was in the index, the feature</code> - the message goes on to identify
+    the feature in question.  Users can use these reports to find the places in their code where 
+    they can either change the design to avoid updating these values after the item is indexed, or
+    surround the updates with their own <code>protectIndexes</code> blocks.</para>
+    
+    <para>Initially, the out-of-the-box defaults
+    for the UIMA framework will run with an automatic (but somewhat inefficient) protection.  To improve upon this,
+    users would:
+    <itemizedlist>
+      <listitem><para>Turn on reporting using a global JVM flag <code>
+      -Duima.report_fs_update_corrupts_index</code>.
+      This will cause a message to be logged each time the automatic protection is being invoked,
+      and allows the user to find the spots to improve.</para>
+      </listitem>
+      <listitem><para>Improve each spot, perhaps by surrounding the update code with a protectIndexes
+      block, or by rearranging code to reduce updating feature values used as index keys.</para>
+      </listitem>
+      <listitem><para>Once the code is no longer generating any reports, you can turn off the
+      automatic protection for production runs using the JVM global property
+      <code>-Duima.disable_auto_protect_indexes</code>, and rely on the protectIndexes blocks.
+      If protection is disabled, then the corruption detection is skipped, making the production 
+      runs perhaps a bit faster, although this is not significant in most cases.</para></listitem>
+      <listitem><para>For automated build systems, there&rsquo;s a JVM parameter, 
+      <code>-Duima.exception_when_fs_update_corrupts_index</code>, which will throw an
+      exception if any automatic recovery situation is encountered.  You can use this 
+      in build/test scenarios to insure
+      (after adding all needed protectIndexes blocks) that the code remains safe for 
+      turning off the checking in production runs.</para></listitem>
+      
+    </itemizedlist>
+    </para>
+        
+    </section>
   </section>
   
   <section id="ugr.ref.cas.accessing_modifying_features_of_feature_structures">

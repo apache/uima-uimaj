@@ -117,6 +117,10 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * <p>
    * If the fs is greater than all of the entries in the index, the moveTo cannot set the iterator to an insertion point
    * where the current feature structure is greater than fs, so it marks the iterator "invalid".
+   * <p>
+   * If the underlying index is a bag index, no ordering is present, and the moveTo operation moves to the
+   * fs which is the same identical fs as the key. If no such fs is in the index, the iterator is marked 
+   * invalid.
    * 
    * @param fs
    *          The feature structure the iterator should be set to.

@@ -27,7 +27,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
 
   /**
    * for XCAS and XMI deserialization, need to remember
-   * what's being added to the indices and/or removed, because
+   * what's being added to the indexes and/or removed, because
    * the actual FSs are not yet "fixed up" (adjusted for 
    * reference id's &rarr; actual addresses, including the sofa refs)
    * for non-delta updates.  
@@ -44,7 +44,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
    * so we store the list as a "set" to prevent duplicates.
    * 
    * The remove operation only removes 1 instance (in case multiple instances
-   * of the same FS are in the indices). 
+   * of the same FS are in the indexes). 
    * 
    * Currently only used by XMI deserialization
    *

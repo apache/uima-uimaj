@@ -104,7 +104,9 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean contains(int key) {
-    return (key == 0) ? false : set.get(key - offset);
+    return (key == 0) ? false : 
+           (key - offset < 0) ? false :
+           set.get(key - offset);
   }
  
 
@@ -120,7 +122,7 @@ public class IntBitSet implements PositiveIntSet {
   @Override
   public boolean add(int original_key) {
     if (original_key < offset) {
-      throw new IllegalArgumentException("key must be positive, but was " + original_key);
+      throw new IllegalArgumentException("key " + original_key + " must be greater than or equal to the offset: " + offset);
     }
     
     final int key = original_key - offset;

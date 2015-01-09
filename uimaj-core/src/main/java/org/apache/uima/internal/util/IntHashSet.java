@@ -34,7 +34,9 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  * Supports shrinking (reallocating the big table)
  *
  * Supports representing ints as "short" 2byte values if possible,
- *   together with an offset amount.
+ *   together with an offset amount.  The impl stores
+ *   both positive and negative numbers, accounting for 0 not being
+ *   allowed
  *   
  *   Automatically switches to full int representation if needed  
  */

@@ -486,12 +486,14 @@ public class IntArrayRBT extends IntArrayRBTcommon {
    * @return the index of the node
    */
   public int findInsertionPoint(final int k) {
+    boolean onlyWentRight = true;
     int node = this.root;
     int found = node;
     while (node != NIL) {
       found = node;
       final int keyNode = getKey(node);
       if (k < keyNode) {
+        onlyWentRight = false;
         node = getLeft(node);
       } else if (k == keyNode) {
         // In the presence of duplicates, we have to check if there are
@@ -514,7 +516,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
       }
     }
     // node == NIL
-    return found;
+    return onlyWentRight ? NIL : found;
   }
 
 //  private final boolean isLeftDtr(int node) {

@@ -144,7 +144,7 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
 
   /**
    * Message key for a standard UIMA exception message:
-   * Illegal update of indexed Feature Structure feature used as an key in one or more indices  
+   * Illegal update of indexed Feature Structure feature used as an key in one or more indexes  
    */
   public static final String ILLEGAL_FS_FEAT_UPDATE = "illegal_update_indexed_fs";
   

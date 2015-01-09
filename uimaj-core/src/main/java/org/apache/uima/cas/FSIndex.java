@@ -32,7 +32,7 @@ package org.apache.uima.cas;
  * index is a sorted index. In a sorted index, FSs that are committed (added to the index) 
  * are added, unless they 
  * are duplicates of already existing FSs in the index.  This behavior is new as of version 2.7.0; the old
- * behavior can be restored by specifying the JVM property "uima.allow_duplicate_add_to_indices".
+ * behavior can be restored by specifying the JVM property "uima.allow_duplicate_add_to_indexes".
  * Even without this flag, multiple different instances of FSs which compare equal will still 
  * be added in the index.
  * 
@@ -100,7 +100,7 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
 
   /**
    * Check if the index contains an element equal to the given feature structure 
-   * according to the comparators defined for this index.  For bag indices (which
+   * according to the comparators defined for this index.  For bag indexes (which
    * have no comparators), the equality test means the identical feature structure.
    * Note that this is in general not the same as feature structure identity.
    * 
@@ -113,7 +113,7 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
   /**
    * Find an entry in the index "equal to" the given feature structure according to the comparators specified
    * for this index.  Note that this is in general not the same as feature structure identity.  For BAG
-   * indices, it is identity, for others it means the found feature structure compares 
+   * indexes, it is identity, for others it means the found feature structure compares 
    * equal with the parameter in terms of the defined comparators for the index.
    * 
    * @param fs A Feature Structure used a template to match with the Feature Structures in the index.
