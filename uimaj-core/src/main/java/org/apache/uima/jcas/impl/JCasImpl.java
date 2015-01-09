@@ -790,6 +790,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // see comment under getType(int))
 
   static private class JCasFsGenerator implements FSGenerator {
+    // multiple reader threads in same CAS
+    static final ThreadLocal<Object[]> initArgsThreadLocal = new ThreadLocal<Object[]>() {
+      protected Object[] initialValue() { return new Object[2]; } };
+
     private final int type;
 
     private final Constructor c;
@@ -800,7 +804,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     private final int annotSofaFeatCode;
     
-    private final Object[] initargs = new Object[2];
 
     JCasFsGenerator(int type, Constructor c, boolean isSubtypeOfAnnotationBase,
         int sofaNbrFeatCode, int annotSofaFeatCode) {
@@ -845,6 +848,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
       try {
         JCasImpl jcasView = (JCasImpl) view.getJCas();
+        final Object[] initargs = initArgsThreadLocal.get();  
         initargs[0] = Integer.valueOf(addr);
         initargs[1] = jcasView.getType(type);
         FeatureStructure fs = null;
