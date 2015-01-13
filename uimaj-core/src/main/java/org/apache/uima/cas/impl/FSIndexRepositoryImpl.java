@@ -1811,6 +1811,17 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     return indexList.iterator();
   }
+  
+  public Iterator<LowLevelIndex> ll_getIndexes() {
+    ArrayList<LowLevelIndex> indexList = new ArrayList<LowLevelIndex>();
+    final Iterator<String> it = this.getLabels();
+    String label;
+    while (it.hasNext()) {
+      label = it.next();
+      indexList.add(ll_getIndex(label));
+    }
+    return indexList.iterator();
+  }
 
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#getLabels()
@@ -2264,6 +2275,53 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   @Override
   public void ll_removeFS(int fsRef) {
     ll_removeFS_ret(fsRef);
+  }
+  
+  public LowLevelIterator ll_getAllIndexedFS(Type type) {
+    final List<LowLevelIterator> iteratorList = new ArrayList<LowLevelIterator>();
+    ll_getAllIndexedFS(type, iteratorList);
+    return (iteratorList.size() == 1) ? iteratorList.get(0) : 
+        new LowLevelIteratorAggregate(iteratorList);
+  }
+  
+  private final void ll_getAllIndexedFS(Type type, List<LowLevelIterator> iteratorList) {
+    // Start by looking for an auto-index, because its existence implies no set or bag index for that type 
+    final LowLevelIndex autoIndex = ll_getIndex(getAutoIndexNameForType(type));
+    if (autoIndex != null) {
+      iteratorList.add(autoIndex.ll_iterator());
+      // We found one of the special auto-indexes which don't inherit down the tree. So, we
+      // manually need to traverse the inheritance tree to look for more indexes. Note that
+      // this is not necessary when we have a regular index
+      final List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
+      for (int i = 0; i < subtypes.size(); i++) {
+        ll_getAllIndexedFS(subtypes.get(i), iteratorList);
+      }
+      return;
+    }
+    // use the first non-set index found; this is
+    // guaranteed to exist https://issues.apache.org/jira/browse/UIMA-4111
+    
+    // iterate over all defined indexes for this type
+    
+    ArrayList<IndexIteratorCachePair> iicps = this.indexArray[((TypeImpl)type).getCode()];
+    for (IndexIteratorCachePair iicp : iicps) {
+      if (iicp.index.getIndexingStrategy() != FSIndex.SET_INDEX) {
+        // return an iterator that covers this type and all its subtypes
+        iteratorList.add(new IndexImpl<FeatureStructure>(iicp, IteratorExtraFunction.UNORDERED).ll_iterator());
+        return;
+      }
+    }
+    
+    // No index for this type was found at all. 
+    // Example:  You ask for an iterator over "TOP", but no instances of TOP are created,
+    //   and no index over TOP was ever created.
+    // Since the auto-indexes are created on demand for
+    //   each type, there may be gaps in the inheritance chain. So keep descending the inheritance
+    //   tree looking for relevant indexes.
+    final List<Type> subtypes = this.sii.tsi.getDirectSubtypes(type);
+    for (Type t : subtypes) {
+      ll_getAllIndexedFS(t, iteratorList);
+    }
   }
   
   /*
