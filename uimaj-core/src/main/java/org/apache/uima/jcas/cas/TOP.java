@@ -58,6 +58,10 @@ public class TOP extends FeatureStructureImpl {
 	/*
    * Note this class doesn't extend FeatureStructureImpl because that would add one more slot (the
    * casImpl ref) to every instance.
+   * 
+   * Note: the jcasType slot points to an instance of the _Type class;
+   *   there's one per CAS (unique base cas)
+   *   This slot is updated to reflect the current View, though, to make add to indexes more likely to be what's intended
    */
 	/** used to reference the corresponding TOP_Type instance */
 	public TOP_Type jcasType;
