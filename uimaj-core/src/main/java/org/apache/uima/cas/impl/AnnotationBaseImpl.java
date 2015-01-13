@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.SofaFS;
 
 /**
  * Class comment for AnnotationImpl.java goes here.
@@ -61,7 +60,8 @@ public class AnnotationBaseImpl extends FeatureStructureImplC implements Annotat
    * @param cas -
    */
   public AnnotationBaseImpl(int addr, CASImpl cas) {
-    super.setUp(cas, addr);
+    super(cas, addr);
+//    super.setUp(cas, addr);
   }
 
   public String toString() {
@@ -69,15 +69,17 @@ public class AnnotationBaseImpl extends FeatureStructureImplC implements Annotat
   }
 
   private final String getSofaId() {
-    String sofaID = "<none>";
-    CAS cas = getView();
+//    String sofaID = "<none>";
+    CAS cas = getView();  // get view associated with this sofa
     if (cas != null) {
-      SofaFS sofaFs = cas.getSofa();
-      if (sofaFs != null) {
-        sofaID = sofaFs.getSofaID();
-      }
+      return ((CASImpl)cas).getViewName();
+//      SofaFS sofaFs = cas.getSofa();
+//      if (sofaFs != null) {
+//        sofaID = sofaFs.getSofaID();
+//      }
     }
-    return sofaID;
+    return "<none>";
+//    return sofaID;
   }
   
   public String toString(int indent) {

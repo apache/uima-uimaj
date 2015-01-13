@@ -28,9 +28,9 @@ import org.apache.uima.cas.CAS;
  */
 public class FeatureStructureImplC extends FeatureStructureImpl {
 
-  protected CASImpl casImpl;
+  final protected CASImpl casImpl;
 
-  protected int addr;
+  final protected int addr;
 
   protected FeatureStructureImplC() {
     this.casImpl = null;
@@ -43,10 +43,10 @@ public class FeatureStructureImplC extends FeatureStructureImpl {
     this.casImpl = casImpl;
   }
 
-  public void setUp(CASImpl casImpl, int addr) {
-    this.addr = addr;
-    this.casImpl = casImpl;
-  }
+//  public void setUp(CASImpl casImpl, int addr) {
+//    this.addr = addr;
+//    this.casImpl = casImpl;
+//  }
 
   public int getAddress() {
     return this.addr;

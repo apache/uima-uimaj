@@ -63,7 +63,8 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
    * @param cas -
    */
   public AnnotationImpl(int addr, CASImpl cas) {
-    super.setUp(cas, addr);
+    super(addr, cas);
+//    super.setUp(cas, addr);
   }
 
   /**
