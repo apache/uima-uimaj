@@ -153,7 +153,6 @@ class JCasHashMapSubMap {
    * @return the probeAddr in original table (which might have been resized)
    */
   private FeatureStructureImpl find(final FeatureStructureImpl[] localTable, final int key, final int hash, final int[] probeInfo) {
-    final int nbrProbes = 1;
     final int bitMask = localTable.length - 1;
     final int startProbe = probeInfo[PROBE_ADDR_INDEX];      
     final int probeAddr = (startProbe < 0) ? (hash & bitMask) : startProbe; 
@@ -168,15 +167,15 @@ class JCasHashMapSubMap {
     if (m.getAddress() == key) {
       setProbeInfo(probeInfo, probeAddr, 0);
       if (TUNE) {
-        updateHistogram(nbrProbes, probeInfo[PROBE_ADDR_INDEX] != -1);
+        updateHistogram(1, probeInfo[PROBE_ADDR_INDEX] != -1);
       }
       return m;
     }
     
-    return find2(localTable, key, hash, probeInfo, probeAddr);
+    return find2(localTable, key, probeInfo, probeAddr);
   }
 
-  private FeatureStructureImpl find2(final FeatureStructureImpl[] localTable, final int key, final int hash, final int[] probeInfo, int probeAddr) {
+  private FeatureStructureImpl find2(final FeatureStructureImpl[] localTable, final int key, final int[] probeInfo, int probeAddr) {
     final boolean isContinue = TUNE && (probeInfo[PROBE_ADDR_INDEX] != -1); 
     final int bitMask = localTable.length - 1;
 //    assert((startProbe < 0) ? probeInfo[PROBE_DELTA_INDEX] == 1 : true);
@@ -200,6 +199,7 @@ class JCasHashMapSubMap {
     setProbeInfo(probeInfo, probeAddr, probeDelta);
     return m;  // returns null    
   }
+  
   private void updateHistogram(int nbrProbes, boolean isContinue) {
     
     /* LOCK if not already, to update stats */

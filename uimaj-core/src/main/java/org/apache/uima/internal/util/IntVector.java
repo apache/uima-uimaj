@@ -256,6 +256,10 @@ public class IntVector implements Serializable {
     }
     --this.pos;
     int retval = this.array[index];
+    // special case - remove from end
+    if (index == pos) {
+      return retval;
+    }
     System.arraycopy(this.array, index + 1, this.array, index, this.pos - index);
 //    for (int i = index; i < this.pos; i++) {
 //      this.array[i] = this.array[i + 1];
