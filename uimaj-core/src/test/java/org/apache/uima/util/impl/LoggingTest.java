@@ -114,9 +114,11 @@ public class LoggingTest extends TestCase {
       Assert.assertTrue(logger.isLoggable(Level.INFO));
       Assert.assertFalse(logger.isLoggable(Level.FINER));
       Assert.assertFalse(logger.isLoggable(Level.ALL));
+      uimaLogger.setLevel(Level.INFO);
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
+
   }
 
 }
