@@ -235,7 +235,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   TypeImpl fsArrayType;
 
-  TypeImpl sofaType;
+  // needed for CasCopier
+  public TypeImpl sofaType;
 
   TypeImpl annotType;
 
@@ -280,13 +281,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   int arrayBaseTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int intArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int intArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int floatArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int floatArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int stringArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int stringArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int fsArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int fsArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
   int sofaTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
@@ -304,33 +305,35 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   int doubleTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int byteArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int byteArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int booleanArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int booleanArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int shortArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int shortArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int longArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int longArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  int doubleArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int doubleArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
 
-  public int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;  // ref from another pkg
+  public int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;  // ref from another pkg
 
-  public int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  
+  public int sofaStringFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
-  int sofaMimeFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  int sofaMimeFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
-  int sofaUriFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  int sofaUriFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
-  int sofaArrayFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  int sofaArrayFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
-  public int annotSofaFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE; // ref from another pkg
+  public int annotSofaFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE; // ref from another pkg
 
-  int startFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int startFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
-  int endFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public int endFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
-  int langFeatCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  int langFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
 
   /**
    * Default constructor.
@@ -463,6 +466,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
         .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END));
     this.langFeatCode = ll_getCodeForFeature(this.docType
         .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE));
+    this.sofaStringFeatCode = ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFASTRING));
   }
 
   // Some implementation helpers for users of the type system.

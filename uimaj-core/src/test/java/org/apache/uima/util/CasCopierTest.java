@@ -22,12 +22,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
@@ -100,14 +100,14 @@ public class CasCopierTest extends TestCase {
     CasComparer.assertEquals(srcCasBase, destCasBase);
     
     //try with source and dest cas the same
-    // test throws concurrent update exception
+    // 
     Exception ee = null;
     try {
       CasCopier.copyCas(srcCasBase,  srcCasBase, false);
     } catch (Exception e) {
       ee = e;
     }
-    assertTrue(ee instanceof ConcurrentModificationException);
+    assertTrue(ee instanceof UIMARuntimeException);
     
     ee = null;
     CAS v2 = srcCas.createView("v2");
@@ -175,10 +175,16 @@ public class CasCopierTest extends TestCase {
     // create a destination CAS
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
 
+    CasCopier copier;
     // do the copy
-    CasCopier copier = new CasCopier(srcCas, destCas);
-    copier.copyCasView(srcCas, true);
-
+//    for (int i = 0; i < 1200; i++) {  // uncomment for perf test.  was more than 2x faster than version 2.6.0
+      destCas.reset();
+      long startTime = System.nanoTime();
+      copier = new CasCopier(srcCas, destCas);
+      copier.copyCasView(srcCas, true);
+//      System.out.format("CasCopier speed for 400KB xcas is %,d microseconds%n", (System.nanoTime() - startTime)/ 1000 );
+//    }
+    
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);
     
