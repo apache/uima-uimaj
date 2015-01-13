@@ -817,4 +817,7 @@ public interface LowLevelCAS {
   void ll_setDoubleArrayValue(int fsRef, int position, double d, boolean doTypeChecks);
 
   CASImpl ll_getSofaCasView(int addr);
+  
+  int ll_getSofa();
 }
+
