@@ -217,7 +217,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         // wait for threads to finish and check if they got exceptions
         for (int i = 0; i < NUM_THREADS; i++) {
           try {
-            threads[i].join(30000);
+            threads[i].join();
           } catch (InterruptedException ie) {
             System.err.println("got unexpected Interrupted exception " + ie);
           }
@@ -293,7 +293,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
         // wait for threads to finish and check if they got exceptions
       for (int i = 0; i < NUM_THREADS; i++) {
         try {
-          threads[i].join(30000);  // increase timeout - Jenkins sometimes is slow
+          threads[i].join();  // increase timeout - Jenkins sometimes is slow
         } catch (InterruptedException ie) {
           System.err.println("got unexpected Interrupted exception " + ie);
         }

@@ -21,6 +21,8 @@ package org.apache.uima.cas;
 
 import java.util.Iterator;
 
+import org.apache.uima.cas.impl.LowLevelIndex;
+
 /**
  * Repository of indexes over feature structures. Use this interface to access previously defined
  * indexes.
@@ -64,6 +66,13 @@ public interface FSIndexRepository {
    */
   Iterator<FSIndex<FeatureStructure>> getIndexes();
 
+  /**
+   * Get all indexes in this repository as low level indexes
+   * 
+   * @return All indexes.
+   */
+  Iterator<LowLevelIndex> ll_getIndexes();
+  
   /**
    * Add a feature structure to all appropriate indexes in the repository. If no indexes exist for
    * the type of FS that you are adding, then a bag (unsorted) index will be automatically created.

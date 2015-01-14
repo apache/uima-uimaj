@@ -161,8 +161,14 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
  <li>default bag indexes will now be created if there are only Set indexes. 
  Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4111">UIMA-4111</a>.</li>
  
- <li>Unordered iterators (for bag indexes and <code>getAllIndexedFS</code>) performance improvement.
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4166">UIMA-4166</a>.</li>
+ </ul>
+ 
+ <h3>Performance change highlights</h3>
+ <ul>
+ <li>Iterators obtained for Bag indexes and from the method getAllIndexedFS( ... type ... ) 
+ are much faster, in that they take advantage of the unordered aspect of these things.
+  Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4166">UIMA-4166</a>.</li>
+ <li>CasCopier has been reimplemented and is more than 2 times faster.</li>
  </ul>
  
  <p>The complete list of fixes is <a href="issuesFixed/jira-report.html">here</a>.

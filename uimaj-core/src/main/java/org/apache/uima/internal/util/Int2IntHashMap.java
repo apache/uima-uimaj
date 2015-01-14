@@ -323,11 +323,29 @@ public class Int2IntHashMap {
    }
    
    final int hash = JCasHashMap.hashInt(key);
-   int nbrProbes = 1;
+
    final int[] localKeys = keys;
    final int bitMask = localKeys.length - 1;
-   int probeAddr = hash & bitMask; 
+   int probeAddr = hash & bitMask;
+   
+   // fast paths
+   final int testKey = localKeys[probeAddr];
+   if (testKey == 0 || testKey == key) {
+     if (TUNE) {
+       updateHistogram(1);
+     }
+     return probeAddr;
+   }
+   
+   return find2(localKeys, key, probeAddr);
+ }
+ 
+ 
+ private int find2(final int[] localKeys, final int key, int probeAddr) { 
+   final int bitMask = localKeys.length - 1;
+   int nbrProbes = 2;   
    int probeDelta = 1;
+   probeAddr = bitMask & (probeAddr + (probeDelta++));
 
    while (true) {
      final int testKey = localKeys[probeAddr];
@@ -346,10 +364,16 @@ public class Int2IntHashMap {
        maxProbe = nbrProbes;
      }
    }
-   
    return probeAddr;
  }
-   
+
+ private void updateHistogram(int nbrProbes) {
+   histogram[nbrProbes] = 1 + histogram[nbrProbes];
+   if (maxProbe < nbrProbes) {
+     maxProbe = nbrProbes;
+   }
+ }
+
  public int get(int key) {
    return (key == 0) ? 0 : values[find(key)];
  }

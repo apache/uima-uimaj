@@ -313,7 +313,7 @@ public class XCASDeserializer {
       // Hang on address for setting content feature
       this.currentAddr = addr;
       int id = -1;
-      IntVector indexRep = new IntVector(); // empty means not indexed
+      IntVector indexRep = new IntVector(1); // empty means not indexed
       String attrName, attrValue;
       final int heapValue = cas.getHeapValue(addr);
       final Type type = cas.ll_getTypeSystem().ll_getTypeForCode(cas.ll_getFSRefType(addr));

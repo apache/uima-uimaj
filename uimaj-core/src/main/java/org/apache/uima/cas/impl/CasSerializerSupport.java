@@ -38,7 +38,6 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.internal.util.XmlElementName;
-import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.MessageReport;
 import org.xml.sax.ContentHandler;
@@ -452,8 +451,7 @@ public class CasSerializerSupport {
     public int getSofaAddr(int sofaNum) {  
       if (sofaNum != 1 || cas.isInitialSofaCreated()) { //skip if initial view && no Sofa yet
                                                         // all non-initial-views must have a sofa
-        FeatureStructureImpl sofa = (FeatureStructureImpl) cas.getView(sofaNum).getSofa();
-        return sofa.getAddress();
+        return ((CASImpl)cas.getView(sofaNum)).getSofaRef();
       }
       return 0;
     }
@@ -654,7 +652,8 @@ public class CasSerializerSupport {
     
     private int enqueueCommon(int addr, boolean doDeltaAndFilteringCheck) {
 
-      final int typeCode = cas.getHeapValue(addr);     
+      final int typeCode = cas.getHeapValue(addr);
+      assert(typeCode != 0);
       if (doDeltaAndFilteringCheck) {
         if (isDelta) {
           if (!marker.isNew(addr) && !marker.isModified(addr)) {

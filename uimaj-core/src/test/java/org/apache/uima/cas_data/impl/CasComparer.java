@@ -107,7 +107,10 @@ public class CasComparer {
       return;
     }
 
-    // System.out.println("Comparing " + fs1.getType().getName());
+//    System.out.println("Comparing " + fs1.getType().getName());
+//    if (!fs1.getType().getName().equals(fs2.getType().getName())) {
+//      System.out.println("debug");
+//    }
     Assert.assertEquals(fs1.getType().getName(), fs2.getType().getName());
     
     if (fs1 instanceof SofaFS) {
