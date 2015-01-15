@@ -98,7 +98,7 @@ under the License.
 	      <title>The major sections of JSON serialization</title>
 		    <mediaobject>
 	        <imageobject>
-	          <imagedata width="3.5in" format="PNG" fileref="&imgroot;big_picture.png"/>
+	          <imagedata width="3.5in" format="PNG" fileref="&imgroot;big_picture2.png"/>
 	        </imageobject>
 	        <textobject><phrase>The big picture showing the parts of serialization, with the _context optional.</phrase>
 	        </textobject>
