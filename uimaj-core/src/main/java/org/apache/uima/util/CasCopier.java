@@ -617,10 +617,13 @@ public class CasCopier {
   private void copyFeatures(int srcFS, int tgtFS) {
     // set feature values
     TypeSystemImpl srcTsi = srcCasViewImpl.getTypeSystemImpl();
+    TypeSystemImpl tgtTsi = tgtCasViewImpl.getTypeSystemImpl();
+    
     int srcTypeCode = srcCasViewImpl.getTypeCode(srcFS);
     Type srcType = srcTsi.ll_getTypeForCode(srcTypeCode);
     
-    Type tgtType = srcTsi.ll_getTypeForCode(srcTypeCode);
+    int tgtTypeCode = tgtCasViewImpl.getTypeCode(tgtFS);
+    Type tgtType = tgtTsi.ll_getTypeForCode(tgtTypeCode);
     
     for (Feature srcFeat : srcType.getFeatures()) {
       FeatureImpl tgtFeat;
