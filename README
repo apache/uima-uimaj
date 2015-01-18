@@ -14,13 +14,7 @@ most cases, there are new JVM -D properties that can be used to disable new
 features, until the underlying issues are corrected or accommodated.
 
 The JVM -D property names for these, and their meaning, are:
-  
-    -Duima.disable_enhanced_check_wrong_add_to_index 
-      Feature Structures which are subtypes of AnnotationBase may only be added
-      to the View corresponding to their Sofa reference.  
-      See https://issues.apache.org/jira/browse/UIMA-4099  
-      This check was improved to catch more cases, but can be disabled by this property. 
-      
+        
     -Duima.allow_duplicate_add_to_indexes
       Adding the same exact FS instance to the indexes multiple times no longer
       results in duplicate entries in the indexes.  You may restore the previous
