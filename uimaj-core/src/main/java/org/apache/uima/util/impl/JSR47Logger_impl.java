@@ -455,6 +455,9 @@ public class JSR47Logger_impl implements Logger {
    * @return Level - corresponding JSR47 level
    */
   private java.util.logging.Level getJSR47Level(Level level) {
+    if (null == level) {
+      return null;
+    }
     switch (level.toInteger()) {
       case org.apache.uima.util.Level.OFF_INT:
         return java.util.logging.Level.OFF;

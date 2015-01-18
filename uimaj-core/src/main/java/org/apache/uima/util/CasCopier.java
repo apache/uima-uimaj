@@ -617,10 +617,13 @@ public class CasCopier {
   private void copyFeatures(int srcFS, int tgtFS) {
     // set feature values
     TypeSystemImpl srcTsi = srcCasViewImpl.getTypeSystemImpl();
+    TypeSystemImpl tgtTsi = tgtCasViewImpl.getTypeSystemImpl();
+    
     int srcTypeCode = srcCasViewImpl.getTypeCode(srcFS);
     Type srcType = srcTsi.ll_getTypeForCode(srcTypeCode);
     
-    Type tgtType = srcTsi.ll_getTypeForCode(srcTypeCode);
+    int tgtTypeCode = tgtCasViewImpl.getTypeCode(tgtFS);
+    Type tgtType = tgtTsi.ll_getTypeForCode(tgtTypeCode);
     
     for (Feature srcFeat : srcType.getFeatures()) {
       FeatureImpl tgtFeat;
@@ -651,10 +654,19 @@ public class CasCopier {
       
       if (srcRangeName.equals(CAS.TYPE_NAME_STRING)) {
         tgtCasViewImpl.setStringValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getStringValue(srcFS, srcFeatCode));
-      } else if (srcRangeName.equals(CAS.TYPE_NAME_INTEGER)) {
+      } else if (srcRangeName.equals(CAS.TYPE_NAME_INTEGER) || 
+                 srcRangeName.equals(CAS.TYPE_NAME_FLOAT) ||
+                 srcRangeName.equals(CAS.TYPE_NAME_BOOLEAN) ||
+                 srcRangeName.equals(CAS.TYPE_NAME_BYTE) ||
+                 srcRangeName.equals(CAS.TYPE_NAME_SHORT)) {
         tgtCasViewImpl.ll_setIntValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getIntValue(srcFS, srcFeatCode));
-      } else if (srcFeat.getRange().isPrimitive()) {
-        tgtCasViewImpl.setFeatureValueFromString(tgtFS, tgtFeatCode, srcCasViewImpl.getFeatureValueAsString(srcFS, srcFeatCode));
+        // primitive = boolean, byte, short, ..., float, long, double
+      } else if (srcRangeName.equals(CAS.TYPE_NAME_LONG)) {
+        tgtCasViewImpl.ll_setLongValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getLongValue(srcFS,  srcFeatCode));
+      } else if (srcRangeName.equals(CAS.TYPE_NAME_DOUBLE)) {
+        tgtCasViewImpl.ll_setDoubleValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getDoubleValue(srcFS,  srcFeatCode));
+//      } else if (srcFeat.getRange().isPrimitive()) {
+//        tgtCasViewImpl.setFeatureValueFromString(tgtFS, tgtFeatCode, srcCasViewImpl.getFeatureValueAsString(srcFS, srcFeatCode));
       } else {
         // recursive copy no longer done recursively, to avoid blowing the stack
         int refFS = srcCasViewImpl.ll_getRefValue(srcFS, srcFeatCode);

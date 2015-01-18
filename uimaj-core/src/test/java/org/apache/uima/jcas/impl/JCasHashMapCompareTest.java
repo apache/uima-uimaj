@@ -137,7 +137,7 @@ public class JCasHashMapCompareTest extends TestCase {
           public void run() {
             m.clear();
         }});
-    System.out.format("JCasCompTest - concur, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
+    System.out.format("JCasCompTest - using ConcurrentHashMap, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
     return m.size();
   }
   
@@ -171,7 +171,7 @@ public class JCasHashMapCompareTest extends TestCase {
           public void run() {
             m.clear();
         }});
-    System.out.format("JCasCompTest - custom, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
+    System.out.format("JCasCompTest - using JCasHashMap, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
     m.showHistogram();
     return m.getApproximateSize();
   }

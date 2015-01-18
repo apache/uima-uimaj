@@ -20,6 +20,7 @@
 package org.apache.uima.util.impl;
 
 import java.util.HashMap;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
@@ -51,11 +52,14 @@ public class JSR47Logger_implTest extends TestCase {
   }
 
   public void testLogWrapperCreation() throws Exception {
+    
     // Set the root logger's level to INFO ... may not be the default
     java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.INFO);
 
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
+    uimaLogger.setLevel(null);  // causes it to inherit from above
+    classLogger.setLevel(null);  // causes it to inherit from above
 
     // check base configuration
     Assert.assertNotNull(uimaLogger);
@@ -68,6 +72,8 @@ public class JSR47Logger_implTest extends TestCase {
     // create logger
     org.apache.uima.util.Logger uimaLogger = JSR47Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = JSR47Logger_impl.getInstance(this.getClass());
+    uimaLogger.setLevel(null);  // causes it to inherit from above
+    classLogger.setLevel(null);  // causes it to inherit from above
 
     //get uimaLogger log level, get parent logger of "org.apache.uima" until we have the
     //JSR47 root logger that defines the default log level
