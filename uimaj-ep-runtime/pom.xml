@@ -230,7 +230,7 @@
     
                 <!-- These just get made into the corresponding manifest entries -->
                 <Bundle-SymbolicName>org.apache.uima.runtime;singleton:=true</Bundle-SymbolicName>
-                <!-- Bundle-RequiredExecutionEnvironment>J2SE-1.7</Bundle-RequiredExecutionEnvironment-->
+                <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
                 <Eclipse-ExtensibleAPI>true</Eclipse-ExtensibleAPI>
                 <Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
               </instructions>
