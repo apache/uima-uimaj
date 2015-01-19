@@ -61,6 +61,8 @@ public class IntHashSetTest extends TestCase {
     assertEquals(-1000, ihs.getMostNegative());
     ihs.add(1001);    
     assertEquals(1001, ihs.getMostPositive());
+    sv = getSortedValues(ihs);
+    assertTrue(Arrays.equals(sv, new int[]{-1000, -500, 189, 500, 1001}));
   }
   
   private int[] getSortedValues(IntHashSet s) {
