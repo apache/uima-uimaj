@@ -135,10 +135,10 @@ public class FSBagIndex extends FSLeafIndexImpl {
     }
 
     /**
-     * Strictly speaking, moving to a FS in a bag index isn't a valid operation because there are no keys
-     *   to define "equals".
+     * Although you might think that moving to a FS in a bag index isn't a valid operation because there are no key
+     *   to define "equals", the copy() operation uses this to move to the same spot.
      *   
-     * However, we implement the following:  If the FS is == (identical), we return that position.
+     * This requires moving to the == (identical) position.
      * If the FS is not found, we mark the iterator as invalid. 
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
