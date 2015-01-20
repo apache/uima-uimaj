@@ -142,10 +142,13 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean remove(int original_key) {
-    final int key = original_key - offset;
-    final boolean prev = set.get(key);
-    set.clear(key);
+    final int adjKey = original_key - offset;
+    if (adjKey < 0) {
+      return false;
+    }
+    final boolean prev = set.get(adjKey);
     if (prev) {
+      set.clear(adjKey);  // avoid clearing which may expand bit set, if not present
       size --;
       return true;
     }
@@ -279,6 +282,21 @@ public class IntBitSet implements PositiveIntSet {
     while (-1 != (pos = set.nextSetBit(pos + 1))) {
       v.add(pos + offset);
     }
+  }
+
+  @Override
+  public int[] toIntArray() {
+    final int s = size();
+    if (s == 0) {
+      return PositiveIntSet_impl.EMPTY_INT_ARRAY;
+    }
+    final int[] r = new int[s];
+    int pos = moveToFirst();
+    for (int i = 0; i < s; i++) {
+      r[i] = pos + offset;
+      pos = set.nextSetBit(pos + 1);
+    }
+    return r;
   }
 
 }
