@@ -504,6 +504,15 @@ public class IntVector implements Serializable {
     System.arraycopy(this.array, 0, copy.array, 0, this.pos);
     return copy;
   }
+  
+  /**
+   * @return a copy of the internal int array, trimmed
+   */
+  public int[] toIntArray() {
+    final int[] r = new int[size()];
+    System.arraycopy(this.array, 0, r, 0, this.pos);
+    return r;
+  }
 
   public String toString() {
     StringBuffer buf = new StringBuffer();

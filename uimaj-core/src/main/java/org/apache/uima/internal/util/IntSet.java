@@ -90,8 +90,13 @@ public class IntSet implements PositiveIntSet {
   }
 
   /** @return the <code>n</code>-th element in this set. */
+  /**
+   * Used for FsBagIndex, and internally to compute most positive/neg
+   * @param n the position
+   * @return the value at that position
+   */
   @Override
-  public int get(int n) {
+  public int get(int n) {  
     return this.iVec.get(n);
   }
 
@@ -124,17 +129,20 @@ public class IntSet implements PositiveIntSet {
     IntSet s = (IntSet) o;
     int size = size();
     if (size == s.size()) {
+      // maybe a speedup - is order size(), vs order size*size
       int sum1 = 0;
       int sum2 = 0;
+      final IntVector v1 = this.iVec;
+      final IntVector v2 = s.iVec;
       for (int i = 0; i < size; i++) {
-        sum1 += this.iVec.get(i);
-        sum2 += s.get(i);
+        sum1 += v1.get(i);
+        sum2 += v2.get(i);
       }
       if (sum1 != sum2)
         return false;
 
       for (int i = 0; i < size; i++) {
-        if (!s.contains(this.iVec.get(i)))
+        if (!s.contains(v1.get(i)))
           return false;
       }
       return true;
@@ -170,7 +178,7 @@ public class IntSet implements PositiveIntSet {
     }
     return i != -1;
   }
-
+  
   private class IntSetIterator implements IntListIterator {
 
     protected int pos = 0;
@@ -262,6 +270,11 @@ public class IntSet implements PositiveIntSet {
   @Override
   public void bulkAddTo(IntVector v) {
     v.addBulk(iVec);
+  }
+
+  @Override
+  public int[] toIntArray() {
+    return iVec.toIntArray();
   }
   
 }

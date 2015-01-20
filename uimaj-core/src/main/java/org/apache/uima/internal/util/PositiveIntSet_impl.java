@@ -75,7 +75,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   // Extra space in hashset for initial capacity - when creating from bitmap set - multiplier of existing size
   private static final int HASH_SET_OVERALLOCATE_DIVIDER_SHIFT = 1; // bit shift right = divide by 2 = 50% of existing capacity
   
-  private static final int[] EMPTY_INT_ARRAY = new int[0];
+  public static final int[] EMPTY_INT_ARRAY = new int[0];
 
   private PositiveIntSet intSet;  // one of 3 representations: IntBitSet, IntHashSet, IntSet (based on IntVector)
   
@@ -717,5 +717,13 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     if (null != intSet) {
       intSet.bulkAddTo(v);
     }
+  }
+
+  @Override
+  public int[] toIntArray() {
+    if (null != intSet) {
+      return intSet.toIntArray();
+    }
+    return EMPTY_INT_ARRAY;
   }
 }

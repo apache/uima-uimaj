@@ -46,8 +46,9 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
-import org.apache.uima.internal.util.IntSet;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.util.Misc;
 
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
@@ -1363,6 +1364,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
   }
   
+  private static class ProcessedIndexInfo {
+    final private PositiveIntSet fsAddedToIndex = new PositiveIntSet_impl(); // only used when processing updates in batch mode
+
+    final private PositiveIntSet fsDeletedFromIndex = new PositiveIntSet_impl(); // only used when processing updates in batch mode
+
+    final private PositiveIntSet fsReindexed = new PositiveIntSet_impl(); // only used when processing updates in batch mode
+  }
+  
   /*****  I N S T A N C E   V A R I A B L E S  *****/
   /*****           Replicated per view         *****/                 
 
@@ -1395,11 +1404,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   private boolean logProcessed;
 
-  private IntSet fsAddedToIndex;
-
-  private IntSet fsDeletedFromIndex;
-
-  private IntSet fsReindexed;
 
   // Monitor indexes used to optimize getIndexedFS and flush
   // only used for faster access to next set bit
@@ -1409,6 +1413,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   final private boolean[] isUsed;
   
   private final SharedIndexInfo sii;
+
+  private ProcessedIndexInfo mPii;
   
   @SuppressWarnings("unused")
   private FSIndexRepositoryImpl() {
@@ -1421,7 +1427,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.indexUpdateOperation = null;
     this.usedIndexes = null;
     this.isUsed = null;
-
   }
 
   /**
@@ -1447,7 +1452,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.indexArray = new ArrayList[this.sii.tsi.getNumberOfTypes() + 1];
     this.usedIndexes = new IntVector();
     this.isUsed = new boolean[numTypes];
-
     init();
   }
 
@@ -1505,9 +1509,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     for (int i = 0; i < this.detectIllegalIndexUpdates.length; i++) {
       this.detectIllegalIndexUpdates[i] = Integer.MIN_VALUE;
     }
-    this.fsAddedToIndex = new IntSet();
-    this.fsDeletedFromIndex = new IntSet();
-    this.fsReindexed = new IntSet();
+    mPii = new ProcessedIndexInfo();
+//    this.fsAddedToIndex = new PositiveIntSet_impl();
+//    this.fsDeletedFromIndex = new PositiveIntSet_impl();
+//    this.fsReindexed = new PositiveIntSet_impl();
   }
 
   /**
@@ -1535,9 +1540,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     this.indexUpdates.removeAllElements();
     this.indexUpdateOperation.clear();
-    this.fsAddedToIndex = new IntSet();
-    this.fsDeletedFromIndex = new IntSet();
-    this.fsReindexed = new IntSet();
+    mPii = new ProcessedIndexInfo();
+//    this.fsAddedToIndex = new IntSet();
+//    this.fsDeletedFromIndex = new IntSet();
+//    this.fsReindexed = new PositiveIntSet_impl();
     this.logProcessed = false;
     this.usedIndexes.removeAllElements();
   }
@@ -2593,32 +2599,27 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * The journal is cleared after processing.
    */
   private void processIndexUpdates() {
+    
+    final ProcessedIndexInfo pii = mPii;
+        
     for (int i = 0; i < this.indexUpdates.size(); i++) {
       final int fsRef = this.indexUpdates.get(i);
       final boolean added = this.indexUpdateOperation.get(i);
       if (added) {
-        final int indexOfDeletedItem = this.fsDeletedFromIndex.indexOf(fsRef);
-        if (indexOfDeletedItem >= 0) {
-          this.fsDeletedFromIndex.removeElementAt(indexOfDeletedItem);
-          this.fsReindexed.add(fsRef);
-        } else if (this.fsReindexed.contains(fsRef)) {
-          continue;  // skip adding this to anything
-        } else {
-          this.fsAddedToIndex.add(fsRef);  // this is a set, so dups not added
+        boolean wasRemoved = pii.fsDeletedFromIndex.remove(fsRef);
+        if (wasRemoved) {
+          pii.fsReindexed.add(fsRef);  
+        } else if (pii.fsReindexed.contains(fsRef)) {
+          continue;  // add on top of reindex is ignored
+        } else {  // wasn't in deleted, wasn't in reindexed
+          pii.fsAddedToIndex.add(fsRef);
         }
       } else {
-        final int indexOfaddedItem = this.fsAddedToIndex.indexOf(fsRef);
-        if (indexOfaddedItem >= 0) {
-          this.fsAddedToIndex.removeElementAt(indexOfaddedItem);
-        } else {
-          final int indexOfReindexedItem = this.fsReindexed.indexOf(fsRef);
-          if (indexOfReindexedItem >= 0) {
-            this.fsReindexed.removeElementAt(indexOfReindexedItem);
-            this.fsDeletedFromIndex.add(fsRef);
-          }
-          else {
-            this.fsDeletedFromIndex.add(fsRef);
-          }
+        // operation was remove-from-indexes
+        boolean wasRemoved = pii.fsAddedToIndex.remove(fsRef);
+        if (!wasRemoved) {
+          pii.fsReindexed.remove(fsRef);
+          pii.fsDeletedFromIndex.add(fsRef);
         }
       }
     }
@@ -2626,45 +2627,32 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.indexUpdates.removeAllElements();
     this.indexUpdateOperation.clear();
   }
-
-  public int[] getAddedFSs() {
+  
+  public int[] getUpdatedFSs(PositiveIntSet items) {
     if (!this.logProcessed) {
       processIndexUpdates();
     }
-    final int[] fslist = new int[this.fsAddedToIndex.size()];
-    for (int i = 0; i < fslist.length; i++) {
-      fslist[i] = this.fsAddedToIndex.get(i);
-    }
-    return fslist;
+    return items.toIntArray();    
+  }
+  
+  public int[] getAddedFSs() {
+    return getUpdatedFSs(mPii.fsAddedToIndex);
   }
 
   public int[] getDeletedFSs() {
-    if (!this.logProcessed) {
-      processIndexUpdates();
-    }
-    final int[] fslist = new int[this.fsDeletedFromIndex.size()];
-    for (int i = 0; i < fslist.length; i++) {
-      fslist[i] = this.fsDeletedFromIndex.get(i);
-    }
-    return fslist;
+    return getUpdatedFSs(mPii.fsDeletedFromIndex);
   }
 
   public int[] getReindexedFSs() {
-    if (!this.logProcessed) {
-      processIndexUpdates();
-    }
-    final int[] fslist = new int[this.fsReindexed.size()];
-    for (int i = 0; i < fslist.length; i++) {
-      fslist[i] = this.fsReindexed.get(i);
-    }
-    return fslist;
+    return getUpdatedFSs(mPii.fsReindexed);
   }
 
   public boolean isModified() {
     if (!this.logProcessed) {
       processIndexUpdates();
     }
-    return ((this.fsAddedToIndex.size() > 0) || (this.fsDeletedFromIndex.size() > 0) || (this.fsReindexed
+    final ProcessedIndexInfo pii = mPii;
+    return ((pii.fsAddedToIndex.size() > 0) || (pii.fsDeletedFromIndex.size() > 0) || (pii.fsReindexed
         .size() > 0));
   }
 
