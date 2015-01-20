@@ -2722,8 +2722,8 @@ public class BinaryCasSerDes4 {
    */
   private static class ComprItemRefs {
     
-    private IntVector itemIndexToAddr = new IntVector();  // item is feature structure or string segment
-    private Map<Integer, Integer>  itemAddrToIndex = new HashMap<Integer, Integer>();
+    final private IntVector itemIndexToAddr = new IntVector();  // item is feature structure or string segment
+    final private Map<Integer, Integer>  itemAddrToIndex = new HashMap<Integer, Integer>();
 
     public ComprItemRefs() {
       addItemAddr(0);
