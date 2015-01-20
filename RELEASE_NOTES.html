@@ -146,7 +146,7 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
   <p>The current implementation of the snapshot iterators makes a snapshot of the index being iterated over, at
   creation time, which has a cost in space and time.</p>
 
-<h3>Other bug fixes</h3>
+<h3>Other changes</h3>
 <ul><li> making the JCasGen Eclipse plugin work with more varieties of specifications for class paths.
  Jira issues: UIMA-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4080">4080</a>/
  <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4081">4081</a></li>
@@ -161,13 +161,20 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
  <li>default bag indexes will now be created if there are only Set indexes. 
  Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4111">UIMA-4111</a>.</li>
  
+ <li>Xmi CAS Serialization now checks to see that list and array feature values marked as multipleReferencesAllowed=false
+ (or not marked at all, which defaults to multipleReferencesAllowed=false) are not multiply-referenced.  If they are,
+ they continue to be serialized as if they are independent objects (as was previously done), but now a new 
+ warning message is issued.  Because there can be a huge number of these messages, they are automatically
+ throttled down, to prevent running out of room in the error logs.</li>
  </ul>
  
  <h3>Performance change highlights</h3>
  <ul>
- <li>Iterators obtained for Bag indexes and from the method getAllIndexedFS( ... type ... ) 
- are much faster, in that they take advantage of the unordered aspect of these things.
-  Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4166">UIMA-4166</a>.</li>
+ <li>Iterators obtained for Bag indexes and from the method getAllIndexedFS( ... type ... ) are 
+ by definition, unordered.  The implementation for these iterators is now  
+ much faster, taking advantage of the unordered aspect of these things and returning items in a more 
+ efficient sequence.
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4166">UIMA-4166</a>.</li>
  <li>CasCopier has been reimplemented and is more than 2 times faster.</li>
  </ul>
  
