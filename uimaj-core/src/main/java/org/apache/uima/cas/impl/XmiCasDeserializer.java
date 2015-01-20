@@ -720,7 +720,7 @@ public class XmiCasDeserializer {
 //      }
     }
 
-    private void readFS(final int fsAddr, Attributes attrs, boolean isNewFs) throws SAXException {
+    private void readFS(final int fsAddr, Attributes attrs, final boolean isNewFs) throws SAXException {
       // Hang on to address for handle features encoded as child elements
       this.currentAddr = fsAddr;
       int id = -1;
@@ -735,7 +735,6 @@ public class XmiCasDeserializer {
 //      } catch (NumberFormatException e) {
 //        throw createException(XCASParsingException.ILLEGAL_ID, attrs.getValue(ID_ATTR_NAME));
 //      }
-      boolean newFS = isNewFs;
       
       if (sofaTypeCode == typeCode) {
         String sofaID = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAID);
@@ -757,7 +756,11 @@ public class XmiCasDeserializer {
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
       if (!isNewFs) {   
-        casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(currentAddr, casBeingFilled.getAddbackSingle());
+        casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(fsAddr, casBeingFilled.getAddbackSingle());
+        // else clause not needed because caller does ll_createFS which sets this anyways
+//      } else {  
+//        // need this to prevent using sofa ref before it's set
+//        casBeingFilled.setCacheNotInIndex(fsAddr);  // new FSs are not indexed (yet)
       }
       // loop over all features for this FS
       for (int i = 0; i < attrs.getLength(); i++) {
@@ -767,7 +770,7 @@ public class XmiCasDeserializer {
           try {
             id = Integer.parseInt(attrValue);
 //            newFS = this.isNewFS(id);  // we already specifically got this attribute
-            if (sofaTypeCode != typeCode && !newFS) {
+            if (sofaTypeCode != typeCode && !isNewFs) {
               this.featsSeen = new IntVector(attrs.getLength());
             } else {
               this.featsSeen = null;
@@ -787,17 +790,17 @@ public class XmiCasDeserializer {
           int featCode = handleFeature(type, fsAddr, attrName, attrValue, isNewFs);
           //if processing delta cas preexisting FS, keep track of features that have
           //been deserialized.
-          if (this.featsSeen != null && !newFS && featCode != -1) {
+          if (this.featsSeen != null && !isNewFs && featCode != -1) {
             this.featsSeen.add(featCode); 
           }
         }
       }  // end of all features loop
       
       if (!isNewFs) {
-        casBeingFilled.addbackSingle(currentAddr);
+        casBeingFilled.addbackSingle(fsAddr);
       }
       
-      if (sofaTypeCode == typeCode && newFS) {
+      if (sofaTypeCode == typeCode && isNewFs) {
         // If a Sofa, create CAS view to get new indexRepository
         SofaFS sofa = (SofaFS) casBeingFilled.createFS(fsAddr);
         // also add to indexes so we can retrieve the Sofa later
