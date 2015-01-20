@@ -32,6 +32,7 @@ import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.impl.LowLevelIterator;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.Int2IntHashMap;
 import org.apache.uima.internal.util.IntVector;
@@ -74,6 +75,12 @@ public class CasCopier {
   private String srcViewName;  // these are used when the view name is changed
   private String tgtViewName;  // this is the corresponding target view name for the source view name
   
+  private final TypeSystemImpl srcTsi;
+  private final TypeSystemImpl tgtTsi;
+  
+  private final TypeImpl srcStringType;
+  private final int srcStringTypeCode;
+  
   /**
    * true if the copyCasView api was used, and the target view name corresponding to the source view name is changed
    */
@@ -111,6 +118,7 @@ public class CasCopier {
    * List is operated as a stack, from the end, for efficiency
    */
   private IntVector fsToDo = new IntVector();
+
 
   /**
    * Creates a new CasCopier that can be used to copy FeatureStructures from one CAS to another.
@@ -151,7 +159,13 @@ public class CasCopier {
     
     originalSrcCasImpl = (CASImpl) aSrcCas.getLowLevelCAS(); 
     originalTgtCasImpl = (CASImpl) aDestCas.getLowLevelCAS(); 
+    
+    srcTsi = originalSrcCasImpl.getTypeSystemImpl();
+    tgtTsi = originalTgtCasImpl.getTypeSystemImpl();
 
+    srcStringType = srcTsi.stringType;
+    srcStringTypeCode = srcStringType.getCode();
+    
     mDestSofaFeature = aDestCas.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFA);
     mDestSofaFeatureCode = ((FeatureImpl)mDestSofaFeature).getCode();
     srcSofaTypeCode = originalSrcCasImpl.getTypeSystemImpl().sofaType.getCode();
@@ -378,7 +392,6 @@ public class CasCopier {
     // NOTE: FeatureStructure hashcode / equals use the int "address" of the FS in the heap.
     
     final PositiveIntSet indexedFs = new PositiveIntSet_impl();
-    final TypeSystemImpl srcTsi = originalSrcCasImpl.getTypeSystemImpl();
     
     // The indexFs set starts out "cleared", but 
     // we don't clear the cas copier instance map "mFsMap" here, in order to skip actually copying the
@@ -507,7 +520,6 @@ public class CasCopier {
 
     // get the type of the FS
     final int srcTypeCode = originalSrcCasImpl.ll_getFSRefType(aFS);
-    final TypeSystemImpl srcTsi = originalSrcCasImpl.getTypeSystemImpl();
     final Type srcType = srcTsi.ll_getTypeForCode(srcTypeCode);
     
 //    if (srcType.getShortName().equals("DocumentAnnotation")) {
@@ -612,12 +624,10 @@ public class CasCopier {
    * @param srcFS
    *          FeatureStructure to copy from
    * @param tgtFS
-   *          FeatureStructure to copy to
+   *          FeatureStructure to copy to, which must not be in the index (index corruption checks skipped)
    */
   private void copyFeatures(int srcFS, int tgtFS) {
     // set feature values
-    TypeSystemImpl srcTsi = srcCasViewImpl.getTypeSystemImpl();
-    TypeSystemImpl tgtTsi = tgtCasViewImpl.getTypeSystemImpl();
     
     int srcTypeCode = srcCasViewImpl.getTypeCode(srcFS);
     Type srcType = srcTsi.ll_getTypeForCode(srcTypeCode);
@@ -625,6 +635,8 @@ public class CasCopier {
     int tgtTypeCode = tgtCasViewImpl.getTypeCode(tgtFS);
     Type tgtType = tgtTsi.ll_getTypeForCode(tgtTypeCode);
     
+    tgtCasViewImpl.setCacheNotInIndex(tgtFS);
+        
     for (Feature srcFeat : srcType.getFeatures()) {
       FeatureImpl tgtFeat;
       if (tgtType == srcType) {
@@ -645,28 +657,29 @@ public class CasCopier {
           }
         }
       }
-
       final int srcFeatCode = ((FeatureImpl)srcFeat).getCode();
       final int tgtFeatCode = ((FeatureImpl)tgtFeat).getCode();
       
-      // copy primitive values 
-      String srcRangeName = srcFeat.getRange().getName();
-      
-      if (srcRangeName.equals(CAS.TYPE_NAME_STRING)) {
+      TypeImpl srcRangeType = (TypeImpl) srcFeat.getRange();      
+      TypeImpl tgtRangeType = (TypeImpl) tgtFeat.getRange(); 
+
+      verifyRangeType(srcFeat, srcRangeType, tgtRangeType);
+
+      // copy primitive values      
+      if (srcTsi.ll_subsumes(srcStringTypeCode, srcRangeType.getCode())) {
+        // do string copying for subtypes of uima.cas.String as well of uima.cas.String
         tgtCasViewImpl.setStringValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getStringValue(srcFS, srcFeatCode));
-      } else if (srcRangeName.equals(CAS.TYPE_NAME_INTEGER) || 
-                 srcRangeName.equals(CAS.TYPE_NAME_FLOAT) ||
-                 srcRangeName.equals(CAS.TYPE_NAME_BOOLEAN) ||
-                 srcRangeName.equals(CAS.TYPE_NAME_BYTE) ||
-                 srcRangeName.equals(CAS.TYPE_NAME_SHORT)) {
+      } else if (srcRangeType == srcTsi.intType || 
+                 srcRangeType == srcTsi.floatType ||
+                 srcRangeType == srcTsi.booleanType ||
+                 srcRangeType == srcTsi.byteType ||
+                 srcRangeType == srcTsi.shortType) {
         tgtCasViewImpl.ll_setIntValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getIntValue(srcFS, srcFeatCode));
         // primitive = boolean, byte, short, ..., float, long, double
-      } else if (srcRangeName.equals(CAS.TYPE_NAME_LONG)) {
+      } else if (srcRangeType == srcTsi.longType) {
         tgtCasViewImpl.ll_setLongValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getLongValue(srcFS,  srcFeatCode));
-      } else if (srcRangeName.equals(CAS.TYPE_NAME_DOUBLE)) {
+      } else if (srcRangeType == srcTsi.doubleType) {
         tgtCasViewImpl.ll_setDoubleValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getDoubleValue(srcFS,  srcFeatCode));
-//      } else if (srcFeat.getRange().isPrimitive()) {
-//        tgtCasViewImpl.setFeatureValueFromString(tgtFS, tgtFeatCode, srcCasViewImpl.getFeatureValueAsString(srcFS, srcFeatCode));
       } else {
         // recursive copy no longer done recursively, to avoid blowing the stack
         int refFS = srcCasViewImpl.ll_getRefValue(srcFS, srcFeatCode);
@@ -676,6 +689,13 @@ public class CasCopier {
         }
       }
     }
+  }
+  
+  private void verifyRangeType(Feature srcFeat, Type srcRangeType, Type tgtRangeType) {
+    if (!srcRangeType.getName().equals(tgtRangeType.getName())) {
+      throw new UIMARuntimeException(UIMARuntimeException.COPY_CAS_RANGE_TYPE_NAMES_NOT_EQUAL, 
+          new Object[] {srcFeat.getName(), srcRangeType.getName(), tgtRangeType.getName()});
+    }    
   }
 
   /**
@@ -695,8 +715,6 @@ public class CasCopier {
    */
   private int copyArray(int srcFS) {
     // TODO: there should be a way to do this without enumerating all the array types!
-    final TypeSystemImpl srcTsi = srcCasViewImpl.getTypeSystemImpl();
-    final TypeSystemImpl tgtTsi = tgtCasViewImpl.getTypeSystemImpl();
     
     final int len = srcCasViewImpl.ll_getArraySize(srcFS);
     

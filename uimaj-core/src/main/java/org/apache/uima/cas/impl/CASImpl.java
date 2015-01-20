@@ -363,6 +363,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       svd.cache_not_in_index = 0;
     }
   }
+  
+  /**
+   * Called by feature setters which know the FS is not in any index
+   * to bypass any index corruption checking, e.g., CasCopier
+   * 
+   * Internal use only
+   * @param fsAddr
+   */
+  public void setCacheNotInIndex(int fsAddr) {
+    svd.cache_not_in_index = fsAddr;
+  }
 
   // The index repository. Referenced by XmiCasSerializer
   FSIndexRepositoryImpl indexRepository;

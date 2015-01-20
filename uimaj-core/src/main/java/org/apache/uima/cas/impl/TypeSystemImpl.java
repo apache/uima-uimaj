@@ -219,11 +219,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // must be volatile to force the right memory barriers
   volatile boolean areBuiltInTypesSetup = false;
 
-  TypeImpl intType;
+  public TypeImpl intType;
 
-  TypeImpl stringType;
+  public TypeImpl stringType;
 
-  TypeImpl floatType;
+  public TypeImpl floatType;
 
   TypeImpl arrayBaseType;
 
@@ -252,23 +252,23 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   FeatureImpl sofaNum;
 
-  TypeImpl byteType;
+  public TypeImpl byteType;
 
   TypeImpl byteArrayType;
 
-  TypeImpl booleanType;
+  public TypeImpl booleanType;
 
   TypeImpl booleanArrayType;
 
-  TypeImpl shortType;
+  public TypeImpl shortType;
 
   TypeImpl shortArrayType;
 
-  TypeImpl longType;
+  public TypeImpl longType;
 
   TypeImpl longArrayType;
 
-  TypeImpl doubleType;
+  public TypeImpl doubleType;
 
   TypeImpl doubleArrayType;
 

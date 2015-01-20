@@ -100,11 +100,18 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
    */
   public static final String FEATURE_NOT_FOUND_DURING_CAS_COPY = "feature_not_found_during_cas_copy";
 
+//  /**
+//   * Message key for a standard UIMA exception message: 
+//   * "CAS Copying of the same view to the same CAS with the same view name is not allowed."
+//   */
+//  public static final String ILLEGAL_CAS_COPY_TO_SAME_CAS_SAME_VIEW = "illegal_copy_same_cas_same_view";
+
   /**
    * Message key for a standard UIMA exception message: 
-   * "CAS Copying of the same view to the same CAS with the same view name is not allowed."
+   * CAS Copying of Feature "{0}": range names must be the same: source range name was "{1}", target range name was "{2}".
    */
-  public static final String ILLEGAL_CAS_COPY_TO_SAME_CAS_SAME_VIEW = "illegal_copy_same_cas_same_view";
+  public static final String COPY_CAS_RANGE_TYPE_NAMES_NOT_EQUAL = "copy_cas_range_type_names_not_equal";
+  
   /**
    * Message key for a standard UIMA exception message: 
    * Saved UIMA context is null; probable cause: Annotator initialize(context) method failed to call super.initialize(context). 
