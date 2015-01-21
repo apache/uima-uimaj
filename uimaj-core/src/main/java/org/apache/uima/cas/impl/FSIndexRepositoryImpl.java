@@ -2601,8 +2601,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private void processIndexUpdates() {
     
     final ProcessedIndexInfo pii = mPii;
-        
-    for (int i = 0; i < this.indexUpdates.size(); i++) {
+       
+    final int len = this.indexUpdates.size();
+    for (int i = 0; i < len; i++) {
       final int fsRef = this.indexUpdates.get(i);
       final boolean added = this.indexUpdateOperation.get(i);
       if (added) {

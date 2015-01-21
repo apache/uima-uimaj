@@ -1905,7 +1905,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //      v.add(newSofas.get(k));
 //    }
 
-    // Get indexes for each SofaFS in the CAS
+    // Get indexes for each view in the CAS
     for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
       FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) this.svd.baseCAS
           .getSofaIndexRepository(sofaNum);
