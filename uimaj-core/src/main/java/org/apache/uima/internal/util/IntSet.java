@@ -276,5 +276,14 @@ public class IntSet implements PositiveIntSet {
   public int[] toIntArray() {
     return iVec.toIntArray();
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String.format("IntSet [iVec=%s]", iVec);
+  }
+  
   
 }

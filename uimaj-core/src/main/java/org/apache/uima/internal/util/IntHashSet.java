@@ -727,4 +727,19 @@ public class IntHashSet implements PositiveIntSet {
     }
     return r;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String
+        .format(
+            "IntHashSet [loadFactor=%s, initialCapacity=%s, sizeWhichTriggersExpansion=%s, size=%s, offset=%s%n keys4=%s%n keys2=%s%n secondTimeShrinkable=%s, mostPositive=%s, mostNegative=%s]",
+            loadFactor, initialCapacity, sizeWhichTriggersExpansion, size, offset,
+            Arrays.toString(keys4), Arrays.toString(keys2), secondTimeShrinkable, mostPositive,
+            mostNegative);
+  }
+  
+  
 }

@@ -726,4 +726,15 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     }
     return EMPTY_INT_ARRAY;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String.format("PositiveIntSet_impl [%n  intSet=%s%n secondTimeShrinkable=%s, useOffset=%s]",
+        intSet, secondTimeShrinkable, useOffset);
+  }
+  
+  
 }
