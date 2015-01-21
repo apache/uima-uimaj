@@ -2907,7 +2907,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   private CAS getViewFromSofaNbr(int nbr) {
-    ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    final ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
     if (nbr < sn2v.size()) {
       return sn2v.get(nbr);
     }
@@ -3677,7 +3677,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final TypeSystemImpl tsi = getTypeSystemImpl();
     if (tsi.isAnnotationBaseOrSubtype(typeCode)) {
       // only need to check one view
-      return removeAndRecord(fsRef, ll_getSofaCasView(fsRef).indexRepository, toBeAdded);
+      // get that view carefully, in case things are not yet properly initialized
+      final int addrOfSofaFS = this.getSofaFeat(fsRef);
+      if (addrOfSofaFS == 0) {
+        return false;  // uninitialized sofa ref- can't be indexed 
+      }
+      CASImpl view;
+      if (addrOfSofaFS == this.getSofaRef()) {
+        view = this;
+      } else {
+        int sofaNum = ll_getSofaNum(addrOfSofaFS);
+        view = (CASImpl) getViewFromSofaNbr(sofaNum);
+        if (null == view) {
+          return false;
+        }
+      }
+      return removeAndRecord(fsRef, view.indexRepository, toBeAdded);
     }
     
     // not a subtype of AnnotationBase, need to check all views (except base)
