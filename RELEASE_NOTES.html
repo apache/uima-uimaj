@@ -34,7 +34,7 @@
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
    
-<h2><a name="what.is.uima">1. What is UIMA?</a></h2>
+<h2><a id="what.is.uima">1. What is UIMA?</a></h2>
 
      <p>
   			Unstructured Information Management applications are
@@ -79,7 +79,7 @@
 				for Perl, Python and TCL.
 			</p>
 
-<h2><a name="major.changes">Major Changes in this Release</a></h2>
+<h2><a id="major.changes">Major Changes in this Release</a></h2>
 
 <h3>Java 7 minimum level</h3>
 <p>Java 7 is now the minimum level of Java required.</p>
@@ -166,6 +166,12 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
  they continue to be serialized as if they are independent objects (as was previously done), but now a new 
  warning message is issued.  Because there can be a huge number of these messages, they are automatically
  throttled down, to prevent running out of room in the error logs.</li>
+ 
+ <li>The CasCopier now checks to insure that the range type of the target feature has the same name as the 
+ range type of the source feature, which catches errors when two different type systems are used for the source and
+ target.  For example, this now prevents a feature with range type "uima.cas.Float" from being copied 
+ into one with range type "uima.cas.String".
+ </li>
  </ul>
  
  <h3>Performance change highlights</h3>
@@ -180,7 +186,7 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
  
  <p>The complete list of fixes is <a href="issuesFixed/jira-report.html">here</a>.
   
-<h2><a name="get.involved">How to Get Involved</a></h2>
+<h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 
 including documentation help, source code and feedback.  If you are interested
@@ -189,14 +195,14 @@ in contributing, please visit
   http://uima.apache.org/get-involved.html</a>.
 </p>
   
-<h2><a name="report.issues">How to Report Issues</a></h2>
+<h2><a id="report.issues">How to Report Issues</a></h2>
 <p>
 The Apache UIMA project uses JIRA for issue tracking.  Please report any 
 issues you find at 
 <a href="http://issues.apache.org/jira/browse/uima">http://issues.apache.org/jira/browse/uima</a>
 </p>
   
-<h2><a name="list.issues">List of JIRA Issues Fixed in this Release</a></h2>
+<h2><a id="list.issues">List of JIRA Issues Fixed in this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
 issues fixed in this release.  
     
