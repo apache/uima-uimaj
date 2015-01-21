@@ -78,6 +78,8 @@ public class CasCopier {
   private final TypeSystemImpl srcTsi;
   private final TypeSystemImpl tgtTsi;
   
+  private final boolean needRuntimeRangeCheck;
+  
   private final TypeImpl srcStringType;
   private final int srcStringTypeCode;
   
@@ -163,6 +165,8 @@ public class CasCopier {
     srcTsi = originalSrcCasImpl.getTypeSystemImpl();
     tgtTsi = originalTgtCasImpl.getTypeSystemImpl();
 
+    needRuntimeRangeCheck = srcTsi.isRangeCheckNeeded(tgtTsi);
+    
     srcStringType = srcTsi.stringType;
     srcStringTypeCode = srcStringType.getCode();
     
@@ -171,6 +175,8 @@ public class CasCopier {
     srcSofaTypeCode = originalSrcCasImpl.getTypeSystemImpl().sofaType.getCode();
     this.lenient = lenient;
   }
+  
+
   
   /**
    * Does a complete deep copy of one CAS into another CAS.  The contents of each view
@@ -358,7 +364,7 @@ public class CasCopier {
     
     srcViewName = srcCasViewImpl.getViewName();
     tgtViewName = tgtCasViewImpl.getViewName();
-    isChangeViewName = srcViewName != tgtViewName;
+    isChangeViewName = !srcViewName.equals(tgtViewName);
 
     if ((aSrcCasView == srcCasViewImpl.getBaseCAS()) || (aTgtCasView == tgtCasViewImpl.getBaseCAS())) {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_COPY_TO_OR_FROM_BASE_CAS, null);
@@ -655,15 +661,15 @@ public class CasCopier {
             throw new UIMARuntimeException(UIMARuntimeException.FEATURE_NOT_FOUND_DURING_CAS_COPY,
                 new Object[] { srcFeat.getName() });
           }
-        }
+        }        
       }
       final int srcFeatCode = ((FeatureImpl)srcFeat).getCode();
       final int tgtFeatCode = ((FeatureImpl)tgtFeat).getCode();
       
-      TypeImpl srcRangeType = (TypeImpl) srcFeat.getRange();      
-      TypeImpl tgtRangeType = (TypeImpl) tgtFeat.getRange(); 
-
-      verifyRangeType(srcFeat, srcRangeType, tgtRangeType);
+      TypeImpl srcRangeType = (TypeImpl) srcFeat.getRange();
+      if (needRuntimeRangeCheck) {
+        verifyRangeType(srcFeat, srcRangeType, (TypeImpl) tgtFeat.getRange());
+      }
 
       // copy primitive values      
       if (srcTsi.ll_subsumes(srcStringTypeCode, srcRangeType.getCode())) {
