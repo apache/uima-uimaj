@@ -99,7 +99,7 @@ public class IntBitSet implements PositiveIntSet {
    
   /**
    * 
-   * @param key -
+   * @param key - the integer (not adjusted for offset)
    * @return -
    */
   @Override
@@ -187,12 +187,15 @@ public class IntBitSet implements PositiveIntSet {
   
   @Override
   public int get(int position) {
-    assert(set.get(position));
-    return position + offset;
+    assert(set.get(position - offset));
+    return position;
   }
   
   private class IntBitSetIterator implements IntListIterator {
 
+    /**
+     * This is the bit set position ***WITHOUT OFFSET***
+     */
     protected int curKey;
 
     protected IntBitSetIterator() {
@@ -249,22 +252,22 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int moveToFirst() {
-    return set.nextSetBit(0);
+    return set.nextSetBit(0) + offset;
   }
 
   @Override
   public int moveToLast() {
-    return set.length() - 1;
+    return set.length() - 1 + offset;
   }
 
   @Override
   public int moveToNext(int position) {
-    return set.nextSetBit(position + 1);
+    return set.nextSetBit(position - offset + 1) + offset;
   }
 
   @Override
   public int moveToPrevious(int position) {
-    return set.previousSetBit(position - 1);  
+    return set.previousSetBit(position - offset - 1) + offset;  
   }
 
   /**
@@ -273,9 +276,12 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean isValid(int position) {
-    return (position >= 0) && set.get(position);
+    return (position >= offset) && set.get(position - offset);
   }
 
+  /**
+   * Add all elements of this bit set to the passed in IntVector
+   */
   @Override
   public void bulkAddTo(IntVector v) {
     int pos = -1;
@@ -291,12 +297,20 @@ public class IntBitSet implements PositiveIntSet {
       return PositiveIntSet_impl.EMPTY_INT_ARRAY;
     }
     final int[] r = new int[s];
-    int pos = moveToFirst();
+    int pos = moveToFirst() - offset;
     for (int i = 0; i < s; i++) {
       r[i] = pos + offset;
       pos = set.nextSetBit(pos + 1);
     }
     return r;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String.format("IntBitSet [set=%s, size=%s, offset=%s]", set, size, offset);
   }
 
 }
