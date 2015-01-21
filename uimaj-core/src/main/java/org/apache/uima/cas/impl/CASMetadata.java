@@ -66,7 +66,7 @@ class CASMetadata {
   // Properties of types.
 
   // Those types can not be created with CAS.createFS().
-  private static String[] nonCreatableTypes = { CAS.TYPE_NAME_INTEGER, CAS.TYPE_NAME_FLOAT,
+  final private static String[] nonCreatableTypes = { CAS.TYPE_NAME_INTEGER, CAS.TYPE_NAME_FLOAT,
       CAS.TYPE_NAME_STRING, CAS.TYPE_NAME_ARRAY_BASE, CAS.TYPE_NAME_FS_ARRAY,
       CAS.TYPE_NAME_INTEGER_ARRAY, CAS.TYPE_NAME_FLOAT_ARRAY, CAS.TYPE_NAME_STRING_ARRAY,
       CAS.TYPE_NAME_SOFA, CAS.TYPE_NAME_BYTE, CAS.TYPE_NAME_BYTE_ARRAY, CAS.TYPE_NAME_BOOLEAN,
