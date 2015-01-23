@@ -115,6 +115,7 @@ public class CasCopierTest extends TestCase {
     try {
       cc.copyCasView(srcCas, v2, false);
     } catch (Exception e) {
+      e.printStackTrace();
       ee = e;
     }
     assertEquals(ee, null);
@@ -201,7 +202,7 @@ public class CasCopierTest extends TestCase {
     // do the copy
     long shortest = Long.MAX_VALUE;
     int i = 0;
-//    for (; i < 6000; i++) {  // uncomment for perf test.  was more than 2x faster than version 2.6.0
+//    for (; i < 6000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
       destCas.reset();
       long startTime = System.nanoTime();
       copier = new CasCopier(srcCas, destCas);
@@ -278,6 +279,14 @@ public class CasCopierTest extends TestCase {
     // set sofa data in destination CAS (this is not copied automtically)
     destCas.setDocumentText(srcCas.getDocumentText());
 
+    // copy all entities
+    Iterator<FeatureStructure> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
+//    while(it.hasNext()) {
+      FeatureStructure fs = it.next();
+      FeatureStructure fsc = copier.copyFs(fs);
+//      destCas.addFsToIndexes(fsc);
+      CasComparer.assertEquals(fs, fsc);
+//    }
     // copy an Annotation
     Iterator<AnnotationFS> annotIter = srcCas.getAnnotationIndex().iterator();
     FeatureStructure annot = annotIter.next();

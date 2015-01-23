@@ -4436,6 +4436,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getTypeSystem().subsumes(getAnnotationType(), t);
   }
 
+  /**
+   * @param t the type code to test
+   * @return true if that type is subsumed by AnnotationBase type
+   */
   public boolean isSubtypeOfAnnotationBaseType(int t) {
     return this.svd.casMetadata.ts.subsumes(this.svd.casMetadata.ts.annotBaseTypeCode, t);
   }
