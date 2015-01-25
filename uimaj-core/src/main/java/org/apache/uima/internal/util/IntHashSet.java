@@ -48,6 +48,7 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  */
 public class IntHashSet implements PositiveIntSet {
   
+  public static final int SIZE_NEEDING_4_BYTES = 256 * 256 - 1;   // because there's a "hole" for 2 byte things to represent null
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
@@ -74,13 +75,17 @@ public class IntHashSet implements PositiveIntSet {
   
   // offset only used with keys2.  values stored are key - offset
   //   intent is to have them fit into short data type.
-  //   - value of 0 reserved; if value is 0 - means no entry
+  //   If the offset is 100,000, then the keys range from 100000 - 32767 to 100000 + 32767, includes "0"
+  //                 -32767 == Short.MIN_VALUE + 1,   
+  //                 Numbers 0 and below are stored as n - 1, so "0" itself isn't actually stored
+  //                   because it's used to represent an empty slot
+  //   - value after key adjustment of 0 reserved; if value is 0 - means no entry
   //   store values at or below the offset are stored as 1 less to avoid mapping to "0".
   private int offset;
  
   private int [] keys4;
   private short[] keys2;
-  
+
   private boolean secondTimeShrinkable = false;
   
   // these are true values (before any offset adjustment)
@@ -150,7 +155,7 @@ public class IntHashSet implements PositiveIntSet {
   private void newTableKeepSize(int capacity, boolean make4) {
     if (!make4) {
       capacity = Math.max(4, nextHigherPowerOf2(capacity));
-      make4 = (capacity >= 65536);
+      make4 = (capacity >= SIZE_NEEDING_4_BYTES);
     }
     // don't use short values unless 
     //    the number of items is < 65536
@@ -342,15 +347,7 @@ public class IntHashSet implements PositiveIntSet {
   
   @Override
   public boolean contains(int rawKey) {
-    if (rawKey == 0) {  // 0 means null, no key is this value
-      return false;
-    }
-    
-    if (keys4 == null) {
-      final int adjKey = getAdjKey(rawKey);
-      return (isAdjKeyOutOfRange(adjKey)) ? false : keys2[findPosition(adjKey)] == adjKey;
-    }
-    return keys4[findPosition(rawKey)] == rawKey;
+    return find(rawKey) != -1;
   }
   
   @Override
@@ -367,15 +364,20 @@ public class IntHashSet implements PositiveIntSet {
     }
   }
  
+  /**
+   * return the adjusted key.
+   *   for 4 byte key mode, no adjustment
+   *   for 2 byte key mode, subtract the offset, and adjust by -1 if 0 or less
+   *     Note: returned value can be less than Short.MIN_VALUE 
+   * @param rawKey
+   * @return adjusted key
+   */
   private int getAdjKey(int rawKey) {
     if (keys4 != null) {
       return rawKey;
     }
     int adjKey = rawKey - offset;
-    if (adjKey <= 0) {
-      adjKey --;  // because 0 is reserved for null
-    }
-    return adjKey;
+    return adjKey - (  (adjKey <= 0) ? 1 : 0);
   }
   
   private void switchTo4byte() {
@@ -384,11 +386,10 @@ public class IntHashSet implements PositiveIntSet {
     newTableKeepSize(getCapacity(), true);  // make a 4 table
     // next fails to convert short to int
     //  System.arraycopy(oldKeys, 0,  keys4,  0,  oldKeys.length);
-    for (int i = 0; i < oldKeys.length; i++) {
-      final int v = oldKeys[i];
-      if (v != 0) {
-        keys4[i] = v;
-      };
+    for (short adjKey : oldKeys) {
+      if (adjKey != 0) {
+        addInner4(getRawFromAdjKey(adjKey));
+      }
     } 
   }
    
@@ -399,7 +400,7 @@ public class IntHashSet implements PositiveIntSet {
    */
   @Override
   public boolean add(int rawKey) {
-    final int adjKey = getAdjKey(rawKey);
+    int adjKey = getAdjKey(rawKey);
     
     if (size == 0) {
       mostPositive = mostNegative = rawKey;
@@ -414,6 +415,7 @@ public class IntHashSet implements PositiveIntSet {
     
     if (keys4 == null && isAdjKeyOutOfRange(adjKey)) {
       switchTo4byte();
+      adjKey = rawKey;
     }
     final int i = findPosition(adjKey);
     if (keys4 == null) {
