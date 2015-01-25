@@ -19,6 +19,10 @@
 
 package org.apache.uima.internal.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 
@@ -80,6 +84,36 @@ public class IntBitSetTest extends TestCase {
     assertEquals(2,ibs.size());
     assertEquals(12*64, ibs.getSpaceUsed_in_bits());
     
+  }
+  
+  public void testoffset() {
+    ibs = new IntBitSet(64,1000);
+    ibs.add(1064);
+    IntListIterator it = ibs.iterator();
+    List<Integer> ints = new ArrayList<Integer>();
+    while (it.hasNext()) {
+      ints.add(it.next());
+    }
+    assertTrue(Arrays.equals(ints.toArray(), new Object[]{Integer.valueOf(1064)}));
+    
+    ibs.add(1063);
+    it = ibs.iterator();
+    ints.clear();
+    while (it.hasNext()) {
+      ints.add(it.next());
+    }
+    assertTrue(Arrays.equals(ints.toArray(), new Object[]{1063, 1064}));
+    
+    PositiveIntSet_impl posIntSet = new PositiveIntSet_impl();
+    posIntSet.add(10);
+    posIntSet.add(1);
+    it = posIntSet.iterator();
+    it.moveToStart();
+    ints.clear();
+    while (it.hasNext()) {
+      ints.add(it.next());
+    }
+    assertTrue(Arrays.equals(ints.toArray(), new Object[]{1, 10}));
   }
   
   public void testRemove() {

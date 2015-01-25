@@ -89,7 +89,8 @@ public class IntBitSet implements PositiveIntSet {
   }
   
   /**
-   * empty the IntBitSet
+   * empty the IntBitSet.
+   * keeps the offset
    */
   @Override
   public void clear() {
@@ -112,11 +113,11 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int find(int element) {
-    return contains(element) ? element : -1;
+    return contains(element) ? element - offset : -1;
   }
   /**
    * 
-   * @param original_key -
+   * @param original_key - the int to add to the set
    * @return true if this set did not already contain the specified element
    */
   @Override
@@ -125,9 +126,9 @@ public class IntBitSet implements PositiveIntSet {
       throw new IllegalArgumentException("key " + original_key + " must be greater than or equal to the offset: " + offset);
     }
     
-    final int key = original_key - offset;
-    final boolean prev = set.get(key);
-    set.set(key);
+    final int adjKey = original_key - offset;
+    final boolean prev = set.get(adjKey);
+    set.set(adjKey);
     if (!prev) {
       size ++;
       return true;
@@ -187,20 +188,21 @@ public class IntBitSet implements PositiveIntSet {
   
   @Override
   public int get(int position) {
-    assert(set.get(position - offset));
-    return position;
+    assert(set.get(position));
+    return position + offset;
   }
   
   private class IntBitSetIterator implements IntListIterator {
 
     /**
-     * This is the bit set position ***WITHOUT OFFSET***
+     * This is the bit set position which is -1 (if invalid) or
+     *   the position in the bit set of the key - offset
+     *   
+     *   If the offset is not 0, then the position != key
      */
-    protected int curKey;
+    protected int curKey = set.nextSetBit(0);
 
-    protected IntBitSetIterator() {
-      curKey = set.nextSetBit(0);
-    }
+    protected IntBitSetIterator() {}
 
     public final boolean hasNext() {
       return (curKey >= 0);
@@ -252,22 +254,22 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int moveToFirst() {
-    return set.nextSetBit(0) + offset;
+    return set.nextSetBit(0);
   }
 
   @Override
   public int moveToLast() {
-    return set.length() - 1 + offset;
+    return set.length() - 1;
   }
 
   @Override
   public int moveToNext(int position) {
-    return set.nextSetBit(position - offset + 1) + offset;
+    return set.nextSetBit(position + 1);
   }
 
   @Override
   public int moveToPrevious(int position) {
-    return set.previousSetBit(position - offset - 1) + offset;  
+    return set.previousSetBit(position - 1);  
   }
 
   /**
@@ -276,7 +278,7 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean isValid(int position) {
-    return (position >= offset) && set.get(position - offset);
+    return (position >= 0) && set.get(position);
   }
 
   /**
@@ -297,9 +299,9 @@ public class IntBitSet implements PositiveIntSet {
       return PositiveIntSet_impl.EMPTY_INT_ARRAY;
     }
     final int[] r = new int[s];
-    int pos = moveToFirst() - offset;
+    int pos = moveToFirst();
     for (int i = 0; i < s; i++) {
-      r[i] = pos + offset;
+      r[i] = get(pos);
       pos = set.nextSetBit(pos + 1);
     }
     return r;
