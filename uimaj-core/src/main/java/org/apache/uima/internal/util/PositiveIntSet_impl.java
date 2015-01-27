@@ -83,7 +83,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   boolean isBitSet = false;
   boolean isIntSet = false;  
   boolean isHashSet = false;
-  
+    
   boolean secondTimeShrinkable = false;
   
   /**
@@ -493,7 +493,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     }
     
     // return if newKey fits in existing allocation
-    final int spaceUsed = intBitSet.getSpaceUsed_in_bits();
+    final int spaceUsed = intBitSet.getSpaceUsed_in_bits_no_overhead();
     final int adjKey = newKey - offset;
     if (adjKey < spaceUsed) {
       return;
@@ -736,5 +736,14 @@ public class PositiveIntSet_impl implements PositiveIntSet {
         intSet, secondTimeShrinkable, useOffset);
   }
   
+  // for testing
+  boolean isOffsetBitSet() {
+    return (isBitSet && ((IntBitSet)intSet).getOffset() != 0);
+  }
+
+  // for testing
+  boolean isShortHashSet() {
+    return (isHashSet && ((IntHashSet)intSet).isShortHashSet());
+  }
   
 }

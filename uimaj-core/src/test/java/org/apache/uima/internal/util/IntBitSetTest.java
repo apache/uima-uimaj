@@ -47,8 +47,8 @@ public class IntBitSetTest extends TestCase {
     assertTrue(it.hasNext());
     assertEquals(188, it.next());
     assertFalse(it.hasNext());
-    assertEquals(3*64, ibs.getSpaceUsed_in_bits());
-    assertEquals(6, ibs.getSpaceUsed_in_words());
+    assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
+    assertEquals(6, ibs.getSpaceUsed_in_words_no_overhead());
     
     ibs = ibs1k;
     
@@ -62,27 +62,27 @@ public class IntBitSetTest extends TestCase {
     assertFalse(it.hasNext());
     assertEquals(2,ibs.size());
     
-    assertEquals(3*64, ibs.getSpaceUsed_in_bits());
-    assertEquals(6, ibs.getSpaceUsed_in_words());
+    assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
+    assertEquals(6, ibs.getSpaceUsed_in_words_no_overhead());
     
     ibs = new IntBitSet(64, 1000);
     ibs.add(1064);
     assertEquals(1,ibs.size());
-    assertEquals(2*64, ibs.getSpaceUsed_in_bits());
+    assertEquals(2*64, ibs.getSpaceUsed_in_bits_no_overhead());
     
     ibs = new IntBitSet(64, 1000);
 
     ibs.add(1063);
-    assertEquals(1*64, ibs.getSpaceUsed_in_bits());
+    assertEquals(1*64, ibs.getSpaceUsed_in_bits_no_overhead());
     assertEquals(1,ibs.size());
 
     ibs = new IntBitSet(6 * 64, 1000);
 
     ibs.add(1000 + 6 * 64 - 1);
-    assertEquals(6*64, ibs.getSpaceUsed_in_bits());
+    assertEquals(6*64, ibs.getSpaceUsed_in_bits_no_overhead());
     ibs.add(1000 + 6 * 64);
     assertEquals(2,ibs.size());
-    assertEquals(12*64, ibs.getSpaceUsed_in_bits());
+    assertEquals(12*64, ibs.getSpaceUsed_in_bits_no_overhead());
     
   }
   
@@ -129,7 +129,7 @@ public class IntBitSetTest extends TestCase {
     assertTrue(it.hasNext());
     assertEquals(101, it.next());
     assertFalse(it.hasNext());
-    assertEquals(3*64, ibs.getSpaceUsed_in_bits());
+    assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
     
   }
   
@@ -142,8 +142,8 @@ public class IntBitSetTest extends TestCase {
     assertFalse(ibs.contains(1187));
     assertFalse(ibs.contains(1189));
     assertTrue(ibs.contains(1188));
-    assertEquals(3*64, ibs.getSpaceUsed_in_bits());
-    assertEquals(6, ibs.getSpaceUsed_in_words());
+    assertEquals(3*64, ibs.getSpaceUsed_in_bits_no_overhead());
+    assertEquals(6, ibs.getSpaceUsed_in_words_no_overhead());
     assertEquals(2,ibs.size());
     
   }

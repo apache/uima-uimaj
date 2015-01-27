@@ -31,7 +31,9 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  *   
  *   0 will be returned if the value is missing from the map.
  *    
- *   allowed range is Integer.MIN_VALUE to Integer.MAX_VALUE with 0 omitted.
+ *   allowed range is Integer.MIN_VALUE + 1 to Integer.MAX_VALUE 
+ *     0 is the value for an empty cell
+ *     Integer.MIN_VALUE is the value for a deleted (removed) value
  *   
  * based on Int2IntHashMap
  * This impl is for use in a single thread case only
@@ -40,15 +42,18 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  *
  * Supports representing ints as "short" 2byte values if possible,
  *   together with an offset amount.
- *     For short values, only, the range is:
- *        Short.MIN_VALUE+1 to Short.MAX_VALUE after Offset,
- *        with the "0" hole moved to the bottom of the range. 
+ *   Because of the offset, the adjusted key could be == to the offset,
+ *   so we subtract 1 from it to preserve 0 value as being the null / empty.
+ *   For short values, the range is:
+ *        Short.MIN_VALUE+2 to Short.MAX_VALUE after Offset,
+ *        with the "0" value moved to Short.MIN_VALUE + 1, and
+ *        the Short.MIN_VALUE used for deleted (removed) items 
  *   
  *   Automatically switches to full int representation if needed  
  */
 public class IntHashSet implements PositiveIntSet {
   
-  public static final int SIZE_NEEDING_4_BYTES = 256 * 256 - 1;   // because there's a "hole" for 2 byte things to represent null
+  public static final int SIZE_NEEDING_4_BYTES = 256 * 256 - 2;  
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
@@ -72,10 +77,11 @@ public class IntHashSet implements PositiveIntSet {
 
   private int sizeWhichTriggersExpansion;
   private int size; // number of elements in the table
+  private int nbrRemoved; // number of removed elements (coded as removed)
   
   // offset only used with keys2.  values stored are key - offset
   //   intent is to have them fit into short data type.
-  //   If the offset is 100,000, then the keys range from 100000 - 32767 to 100000 + 32767, includes "0"
+  //   If the offset is 100,000, then the keys range from 100000 - 32766 to 100000 + 32767, includes "0"
   //                 -32767 == Short.MIN_VALUE + 1,   
   //                 Numbers 0 and below are stored as n - 1, so "0" itself isn't actually stored
   //                   because it's used to represent an empty slot
@@ -113,6 +119,7 @@ public class IntHashSet implements PositiveIntSet {
     this.offset = force4 ? 0 : offset;
     newTableKeepSize(tableSpace(initialCapacity), force4);
     size = 0;
+    nbrRemoved = 0;
     if (TUNE) {
       histogram = new int[200];
       Arrays.fill(histogram, 0);
@@ -167,13 +174,14 @@ public class IntHashSet implements PositiveIntSet {
       keys4 = null;
     }
     sizeWhichTriggersExpansion = (int)(capacity * loadFactor);
+    nbrRemoved = 0;
   }
 
   private void incrementSize() {
-    if (size >= sizeWhichTriggersExpansion) {
+    if ((size + nbrRemoved) >= sizeWhichTriggersExpansion) {
      increaseTableCapacity();
-   }
-   size++;
+    }
+    size++;
   }
   
   public boolean wontExpand() {
@@ -181,7 +189,7 @@ public class IntHashSet implements PositiveIntSet {
   }
   
   public boolean wontExpand(int n) {
-    return (size + n) < sizeWhichTriggersExpansion;  
+    return (size + nbrRemoved + n) < sizeWhichTriggersExpansion;  
   }
   
   public int getSpaceUsedInWords() {
@@ -202,6 +210,7 @@ public class IntHashSet implements PositiveIntSet {
    * @return raw key
    */
   private int getRawFromAdjKey(int adjKey) {
+    assert (adjKey != Short.MIN_VALUE);
     return adjKey + offset + ((adjKey < 0) ? 1 : 0); 
   }
   
@@ -216,7 +225,7 @@ public class IntHashSet implements PositiveIntSet {
         // switch to 4
         if (TUNE) {System.out.println("Switching to 4 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
         for (short adjKey : oldKeys) {
-          if (adjKey != 0) {
+          if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
             addInner4(getRawFromAdjKey(adjKey));
           }
         }
@@ -245,8 +254,7 @@ public class IntHashSet implements PositiveIntSet {
   // called by clear
   private void newTable(int capacity) {
     newTableKeepSize(capacity, false);
-    size = 0;
-    resetHistogram();
+    resetTable();
   }
 
   private void resetHistogram() {
@@ -263,10 +271,15 @@ public class IntHashSet implements PositiveIntSet {
     } else {
       Arrays.fill(keys4, 0);
     }
+    resetTable();
+  }
+  
+  private void resetTable() {
     mostPositive = Integer.MIN_VALUE;
     mostNegative = Integer.MAX_VALUE;
     resetHistogram();
     size = 0;
+    nbrRemoved = 0;    
   }
   
   @Override
@@ -312,19 +325,33 @@ public class IntHashSet implements PositiveIntSet {
 
     final int hash = JCasHashMap.hashInt(adjKey);
     int nbrProbes = 1;
-    final int[] localKeys4 = keys4;
-    final short[] localKeys2 = (localKeys4 == null) ? keys2 : null;
-    final int bitMask = ((localKeys4 == null) ? localKeys2.length : localKeys4.length) - 1;
-    int probeAddr = hash & bitMask;
     int probeDelta = 1;
-
-    while (true) {
-      final int testKey = (localKeys4 != null) ? localKeys4[probeAddr] : localKeys2[probeAddr];
-      if (testKey == 0 || testKey == adjKey) {
-        break;
+    int probeAddr;
+    
+    if (keys4 == null) {
+      final short[] localKeys2 = keys2;
+      final int bitMask = localKeys2.length - 1;
+      probeAddr = hash & bitMask;
+      while (true) {
+        final int testKey = localKeys2[probeAddr];
+        if (testKey == 0 || testKey == adjKey) {
+          break;
+        }
+        nbrProbes++;
+        probeAddr = bitMask & (probeAddr + (probeDelta++));
       }
-      nbrProbes++;
-      probeAddr = bitMask & (probeAddr + (probeDelta++));
+    } else {
+      final int[] localKeys4 = keys4;
+      final int bitMask = localKeys4.length - 1;
+      probeAddr = hash & bitMask;
+      while (true) {
+        final int testKey = localKeys4[probeAddr];
+        if (testKey == 0 || testKey == adjKey) {
+          break;
+        }
+        nbrProbes++;
+        probeAddr = bitMask & (probeAddr + (probeDelta++));
+      }
     }
 
     if (TUNE) {
@@ -342,7 +369,7 @@ public class IntHashSet implements PositiveIntSet {
   private boolean isAdjKeyOutOfRange(int adjKey) {
     return keys4 == null && 
            (adjKey > Short.MAX_VALUE ||
-            adjKey < Short.MIN_VALUE);   
+            adjKey < (Short.MIN_VALUE + 1));   
   }
   
   @Override
@@ -352,6 +379,9 @@ public class IntHashSet implements PositiveIntSet {
   
   @Override
   public int find(int rawKey) {
+    if (rawKeyNotFound(rawKey)) {
+      return -1;
+    }
     final int adjKey = getAdjKey(rawKey);
     if (isAdjKeyOutOfRange(adjKey)) {
       return -1;
@@ -363,6 +393,13 @@ public class IntHashSet implements PositiveIntSet {
       return (keys4[pos] == adjKey) ? pos : -1;
     }
   }
+  
+  private boolean rawKeyNotFound(int rawKey) {
+    if (rawKey == 0) {
+      return true;
+    }
+    return (keys4 == null) ? (rawKey == Short.MIN_VALUE) : (rawKey == Integer.MIN_VALUE);
+  }
  
   /**
    * return the adjusted key.
@@ -373,6 +410,9 @@ public class IntHashSet implements PositiveIntSet {
    * @return adjusted key
    */
   private int getAdjKey(int rawKey) {
+    if (rawKey == 0 || (rawKey <= Integer.MIN_VALUE + 1)) {
+      throw new ArrayIndexOutOfBoundsException(rawKey);
+    }
     if (keys4 != null) {
       return rawKey;
     }
@@ -387,7 +427,7 @@ public class IntHashSet implements PositiveIntSet {
     // next fails to convert short to int
     //  System.arraycopy(oldKeys, 0,  keys4,  0,  oldKeys.length);
     for (short adjKey : oldKeys) {
-      if (adjKey != 0) {
+      if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
         addInner4(getRawFromAdjKey(adjKey));
       }
     } 
@@ -401,7 +441,7 @@ public class IntHashSet implements PositiveIntSet {
   @Override
   public boolean add(int rawKey) {
     int adjKey = getAdjKey(rawKey);
-    
+       
     if (size == 0) {
       mostPositive = mostNegative = rawKey;
     } else {
@@ -460,41 +500,36 @@ public class IntHashSet implements PositiveIntSet {
    *   but mostPositive is always &gt;= actual most positive,
    *   and mostNegative is always &lt;= actual most negative.
    * No conversion from int to short
+   * 
+   * Can't replace the item with a 0 because other keys that were
+   * stored in the table which previously collided with the removed item
+   * won't be found.  UIMA-4204
    * @param rawKey -
    * @return true if the key was present
    */
   @Override
   public boolean remove(int rawKey) {
-    final int adjKey = getAdjKey(rawKey);
-    if (isAdjKeyOutOfRange(adjKey)) {
+    final int pos = find(rawKey);
+    if (pos < 0) {
       return false;
     }
-    final int i = findPosition(adjKey);
-    boolean removed = false;
+    
     if (keys4 == null) {
-      if (keys2[i] != 0) {
-        keys2[i] = 0;
-        removed = true;
-      }
+      keys2[pos] = Short.MIN_VALUE;
     } else {
-      if (keys4[i] != 0) {
-        keys4[i] = 0;
-        removed = true;
-      }
+      keys4[pos] = Integer.MIN_VALUE;
     }
     
-    if (removed) {
-      size--;
-      if (rawKey == mostPositive) {
-        mostPositive --;  // a weak adjustment
-      }
-      if (rawKey == mostNegative) {
-        mostNegative ++;  // a weak adjustment
-      }
-      return true;
-    } 
-    return false;
-  }
+    size--;
+    nbrRemoved ++;
+    if (rawKey == mostPositive) {
+      mostPositive --;  // a weak adjustment
+    }
+    if (rawKey == mostNegative) {
+      mostNegative ++;  // a weak adjustment
+    }
+    return true;
+  }    
   
   @Override
   public int size() {
@@ -558,15 +593,20 @@ public class IntHashSet implements PositiveIntSet {
    */
   @Override
   public int get(int index) {
-    final boolean isShort = keys4 == null;
-    final int adjKey = (isShort) ? keys2[index] : keys4[index];
-    if (adjKey == 0) {
-      return 0;  // null
-    }
-    if (isShort) {
+    final int adjKey;
+    if (keys4 == null) {
+      adjKey = keys2[index];
+      if (adjKey == 0 || adjKey == Short.MIN_VALUE) {
+        return 0;  // null, not present
+      }
       return getRawFromAdjKey(adjKey);
+    } else {
+      adjKey = keys4[index];
+      if (adjKey == 0 || adjKey == Integer.MIN_VALUE) {
+        return 0;  // null, not present
+      }
+      return adjKey;
     }
-    return adjKey; 
   }
   
   /**
@@ -584,7 +624,8 @@ public class IntHashSet implements PositiveIntSet {
       if (pos >= max) {
         return pos;
       }
-      if (get(pos) != 0) {
+      int v = get(pos);
+      if (v != 0 && v != ( (keys4 == null) ? Short.MIN_VALUE : Integer.MIN_VALUE)) {
         return pos;
       }
       pos ++;
@@ -606,7 +647,8 @@ public class IntHashSet implements PositiveIntSet {
       if (pos < 0) {
         return pos;
       }
-      if (get(pos) != 0) {
+      int v = get(pos);
+      if (v != 0 && v != ( (keys4 == null) ? Short.MIN_VALUE : Integer.MIN_VALUE)) {
         return pos;
       }
       pos --;
@@ -702,13 +744,13 @@ public class IntHashSet implements PositiveIntSet {
   public void bulkAddTo(IntVector v) {
     if (null == keys4) {
       for (int k : keys2) {
-        if (k != 0) {
+        if (k != 0 && k != Short.MIN_VALUE) {
           v.add(k);
         }
       }
     } else {
       for (int k : keys4) {
-        if (k != 0) {
+        if (k != 0 && k != Integer.MIN_VALUE) {
           v.add(k);
         }
       }
@@ -741,6 +783,15 @@ public class IntHashSet implements PositiveIntSet {
             loadFactor, initialCapacity, sizeWhichTriggersExpansion, size, offset,
             Arrays.toString(keys4), Arrays.toString(keys2), secondTimeShrinkable, mostPositive,
             mostNegative);
+  }
+  
+  // for testing
+  boolean isShortHashSet() {
+    return keys2 != null;
+  }
+  
+  int getOffset() {
+    return offset;
   }
   
   

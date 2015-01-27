@@ -20,13 +20,32 @@
 package org.apache.uima.internal.util;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
 public class PositiveIntSetTest extends TestCase {
    
-  Random r = new Random();
+  Random rand = new Random();
+  
+  static class R {
+    boolean useInitParms = false;
+    int initSize = 2;
+    int estMin = 15;
+    int estMax = 100;
+    int firstValue = estMin;
+    float add_pc = .9f;
+    float clear_pc = .001f;
+    float remove_not_present_pc = .01f;
+  }
+  
+  private R r = new R();
+  private Set<Integer> cs = new HashSet<Integer>();
+  private PositiveIntSet s;
+  private int gi;
   
   public void testSwitchFromHashToBitWithOffset() {
     PositiveIntSet_impl s = new PositiveIntSet_impl();
@@ -188,4 +207,191 @@ public class PositiveIntSetTest extends TestCase {
    * 2) Switching from bit set (tiny) to intSet  
    */
   
+  public void testBit2ShortHash() {
+    PositiveIntSet_impl s = new PositiveIntSet_impl();
+    for (int i = 0; i < 16; i++) {
+      s.add(1000 + i);
+    }
+    assertTrue(s.isBitSet && s.isOffsetBitSet());
+    s.add(874);  // bit sets with offset have some space below; this is below that
+    assertTrue(s.isBitSet && (!s.isOffsetBitSet()));
+    s.add(1);
+    assertTrue(s.isBitSet);  // without offset, fits
+    s.add(10000);
+    assertTrue(s.isHashSet && s.isShortHashSet() && !s.isBitSet);
+    s.add(100000);
+    assertTrue(!s.isShortHashSet());
+    int[] sv = s.toIntArray();
+    Arrays.sort(sv);
+    assertTrue(Arrays.equals(sv,  new int[] {1, 874, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009,
+      1010, 1011, 1012, 1013, 1014, 1015, 10000, 100000}));
+    
+    // try going from bit set with offset directly to hash set
+    s = new PositiveIntSet_impl();
+    for (int i = 0; i < 16; i++) {
+      s.add(1000 + i);
+    }
+    s.add(10000);
+    assertTrue(s.isHashSet && s.isShortHashSet() && !s.isBitSet);
+    s.add(100000);
+    assertTrue(!s.isShortHashSet());
+    sv = s.toIntArray();
+    Arrays.sort(sv);
+    assertTrue(Arrays.equals(sv,  new int[] { 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009,
+      1010, 1011, 1012, 1013, 1014, 1015, 10000, 100000}));
+    
+    // going from bit set to intset
+    s = new PositiveIntSet_impl();
+    s.add(1000);
+    assertTrue(s.isBitSet && s.isOffsetBitSet());
+    s.add(1259);   // 1258 doesn't switch, because 1258 "fits" in existing bit set allocation
+    assertTrue(!s.isBitSet && s.isIntSet);
+    
+    // going from int set to bit set
+    for (int i = 0; i < 14; i++) {
+      s.add(1001 + i);   // add ints that will fit in bit set
+      assertTrue(s.isIntSet);
+    }
+    s.add(1015);
+    assertTrue(s.isBitSet && s.isOffsetBitSet());
+    assertTrue(Arrays.equals(s.toIntArray(),  new int[] { 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009,
+        1010, 1011, 1012, 1013, 1014, 1015, 1259}));
+    s.remove(1015);  // removing doesn't cause re-sizing
+    assertTrue(s.isBitSet && s.isOffsetBitSet());
+    assertTrue(Arrays.equals(s.toIntArray(),  new int[] { 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009,
+       1010, 1011, 1012, 1013, 1014, 1259}));
+  }
+  
+  public void testRandom() {
+    long seed = rand.nextLong();
+    System.out.println("PositiveIntSet test random seed = " + seed);
+//    seed = 4792065516170927870L;
+    rand.setSeed(seed);
+    for (gi = 0; gi < 10; gi++) {
+      generateRandomParameters();
+      runRandomTests();
+    }
+  }
+  
+  public void generateRandomParameters() {
+    r.initSize = rand.nextInt(100) + 2;
+    r.add_pc = rand.nextFloat() + .5f;
+    r.clear_pc = rand.nextFloat() * .01f;
+    r.remove_not_present_pc = rand.nextFloat() * .1f;
+  }
+  
+  /**
+   * Random testing
+   * 
+   *   Do updates to both positiveintset and plain java set<Integer>
+   * 
+   *   adds and removes (in x % ratio)
+   *   adds are unique x % of time
+   *   removes remove existing x % of time
+   *   
+   *   clear() done x % of each run.
+   *   
+   *   clustering:  
+   *     values > offset x % of runs.
+   *     values in range offset - 32K to offset + 32K  x % of runs
+   *     values < (offset + n * 32) x % of runs   
+   *   
+   *   checks: 
+   *     at end:
+   *       content as expected via compare to plain java set<integer>
+   *       style of intSet as expected
+   *     iterator: produces values, as expected via compare  
+   *     
+   *       
+   */
+  private void runRandomTests() { 
+    s = r.useInitParms ? new PositiveIntSet_impl(r.initSize, r.estMin, r.estMax) : new PositiveIntSet_impl();
+    cs.clear();
+    dadd(r.firstValue);
+    
+    for (int i = 0; i < 10000; i++) {
+      add_remove_clear(i);
+    }
+    compare();
+  }
+  
+  /**
+   * @param perCent the percent to use
+   * @return true x perCent of the time, randomly
+   */
+  private boolean choose(float perCent) {
+    return rand.nextFloat() <= perCent;
+  }
+  
+  private void add_remove_clear(int i) {
+    if (choose(r.clear_pc)) {
+      s.clear();
+      cs.clear();
+    } else if (choose(r.add_pc)) {
+      dadd(r.firstValue + i);      
+    } else {
+      dremove(i);
+    }
+  }
+  
+  private void compare() {
+    int[] v1 = s.toIntArray();
+    int[] v2 = new int[cs.size()];
+    Iterator<Integer> it = cs.iterator();
+    int i = 0;
+    while (it.hasNext()) {
+      v2[i++] = it.next();
+    }
+    Arrays.sort(v1);
+    Arrays.sort(v2);
+    assertTrue(Arrays.equals(v1, v2));
+    
+    IntListIterator it2 = s.iterator();
+    i = 0;
+    while (it2.hasNext()) {
+      v1[i++] = it2.next();
+    }
+    Arrays.sort(v1);
+    assertTrue(Arrays.equals(v1, v2));    
+  }
+  
+  
+  private boolean dadd(int v) {
+    boolean wasAdded = s.add(v);
+    boolean wasAddedc = cs.add(v);
+    assertEquals(wasAdded, wasAddedc);
+    return wasAdded;
+  }
+  
+  private boolean dremove(int i) {
+    int key = getKeyToBeRemoved(i);
+    boolean wasRemoved = s.remove(key);
+    boolean wasRemovedc = cs.remove(key);
+    assertEquals(wasRemoved, wasRemovedc);
+    return wasRemoved;
+  }
+  
+  private int getKeyToBeRemoved(int w) {
+    Iterator<Integer> it = cs.iterator();
+    int sz = cs.size();
+    if (sz == 0 || choose(r.remove_not_present_pc)) {
+      return nonPresentValue();
+    }
+    int which = Math.min(sz - 1, w % 8);
+    for (int i = 0; i < which; i++) {it.next();}
+    return it.next();
+  }
+  
+  private int nonPresentValue() {
+    for (int i = 1; ; i++) {
+      if (!cs.contains(i)) {
+        return i;
+      }
+      if (i > 0) {
+        i = -i;
+      } else {
+        i = (-i) + 1;
+      }
+    }
+  }
 }

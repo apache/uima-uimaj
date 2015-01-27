@@ -165,7 +165,7 @@ public class IntBitSet implements PositiveIntSet {
     return size;    // bit set cardinality() is slow
   }
   
-  public int getSpaceUsed_in_bits() {
+  public int getSpaceUsed_in_bits_no_overhead() {
     return set.size();
   }
    
@@ -173,8 +173,8 @@ public class IntBitSet implements PositiveIntSet {
    * 
    * @return space used in 32 bit words
    */
-  public int getSpaceUsed_in_words() {
-    return getSpaceUsed_in_bits() >> 5;  // divide by 32
+  public int getSpaceUsed_in_words_no_overhead() {
+    return getSpaceUsed_in_bits_no_overhead() >> 5;  // divide by 32
   }
   
   /**

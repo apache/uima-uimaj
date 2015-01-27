@@ -98,7 +98,7 @@ public class IntHashSetTest extends TestCase {
     ihs.add(1040);
     assertTrue(ihs.contains(1188));
     assertTrue(ihs.contains(1040));
-    assertFalse(ihs.contains(0));
+    assertFalse(ihs.contains(1));
     assertFalse(ihs.contains(99));  
   }
   
