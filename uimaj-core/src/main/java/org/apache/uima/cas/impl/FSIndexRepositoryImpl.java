@@ -2010,7 +2010,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @return an array containing all FSs in any defined index, in this view.
    */
   public int[] getIndexedFSs() {
-    final IntVector v = new IntVector();
+    final IntVector v = new IntVector();  // accumulates fsAddrs from various indexes
     IndexIteratorCachePair iicp;
     IntPointerIterator it;
     ArrayList<IndexIteratorCachePair> iv;
