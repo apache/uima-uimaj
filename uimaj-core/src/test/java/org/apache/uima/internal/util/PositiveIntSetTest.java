@@ -265,19 +265,22 @@ public class PositiveIntSetTest extends TestCase {
   public void testRandom() {
     long seed = rand.nextLong();
     System.out.println("PositiveIntSet test random seed = " + seed);
-//    seed = 4792065516170927870L;
+//    seed = 3324098689001789475L;
     rand.setSeed(seed);
-    for (gi = 0; gi < 10; gi++) {
+    for (gi = 0; gi < 100 /*10000*/; gi++) {
       generateRandomParameters();
       runRandomTests();
     }
   }
   
   public void generateRandomParameters() {
-    r.initSize = rand.nextInt(100) + 2;
+    r.initSize = rand.nextInt(100000) + 2;
     r.add_pc = rand.nextFloat() + .5f;
     r.clear_pc = rand.nextFloat() * .01f;
     r.remove_not_present_pc = rand.nextFloat() * .1f;
+    r.useInitParms = choose(.2f);
+    r.estMin = rand.nextInt(100000) + 1;
+    r.estMax = r.estMin + ((choose(.5f)) ? rand.nextInt(1000) : rand.nextInt(100000)); 
   }
   
   /**
@@ -306,7 +309,7 @@ public class PositiveIntSetTest extends TestCase {
    */
   private void runRandomTests() { 
     s = r.useInitParms ? new PositiveIntSet_impl(r.initSize, r.estMin, r.estMax) : new PositiveIntSet_impl();
-    cs.clear();
+    cs = new HashSet<Integer>();
     dadd(r.firstValue);
     
     for (int i = 0; i < 10000; i++) {
@@ -372,13 +375,16 @@ public class PositiveIntSetTest extends TestCase {
   }
   
   private int getKeyToBeRemoved(int w) {
-    Iterator<Integer> it = cs.iterator();
     int sz = cs.size();
+
     if (sz == 0 || choose(r.remove_not_present_pc)) {
       return nonPresentValue();
     }
+    Iterator<Integer> it = cs.iterator();
     int which = Math.min(sz - 1, w % 8);
-    for (int i = 0; i < which; i++) {it.next();}
+    for (int i = 0; i < which; i++) {
+      it.next();
+    }
     return it.next();
   }
   
