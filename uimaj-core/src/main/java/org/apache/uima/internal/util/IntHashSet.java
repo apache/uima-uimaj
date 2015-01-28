@@ -46,7 +46,7 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  *   so we subtract 1 from it to preserve 0 value as being the null / empty.
  *   For short values, the range is:
  *        Short.MIN_VALUE+2 to Short.MAX_VALUE after Offset,
- *        with the "0" value moved to Short.MIN_VALUE + 1, and
+ *        with the "0" value moved down by 1 and 
  *        the Short.MIN_VALUE used for deleted (removed) items 
  *   
  *   Automatically switches to full int representation if needed  
@@ -119,7 +119,6 @@ public class IntHashSet implements PositiveIntSet {
     this.offset = force4 ? 0 : offset;
     newTableKeepSize(tableSpace(initialCapacity), force4);
     size = 0;
-    nbrRemoved = 0;
     if (TUNE) {
       histogram = new int[200];
       Arrays.fill(histogram, 0);
@@ -179,7 +178,7 @@ public class IntHashSet implements PositiveIntSet {
 
   private void incrementSize() {
     if ((size + nbrRemoved) >= sizeWhichTriggersExpansion) {
-     increaseTableCapacity();
+      increaseTableCapacity();
     }
     size++;
   }
@@ -216,12 +215,15 @@ public class IntHashSet implements PositiveIntSet {
   
   private void increaseTableCapacity() {
     final int oldCapacity = getCapacity();
-    final int newCapacity = oldCapacity << 1;
+    // keep same capacity if just removing the "removed" markers would 
+    // shrink the used slots to the same they would have been had there been no removed, and 
+    // the capacity was doubled.
+    final int newCapacity = (nbrRemoved > size) ? oldCapacity : oldCapacity << 1;
     
     if (keys2 != null) {
       final short[] oldKeys = keys2;
       newTableKeepSize(newCapacity, false);
-      if (newCapacity > 32768) {
+      if (newCapacity >= 256 * 256) {  // = 65536
         // switch to 4
         if (TUNE) {System.out.println("Switching to 4 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
         for (short adjKey : oldKeys) {
@@ -233,7 +235,7 @@ public class IntHashSet implements PositiveIntSet {
       } else {
         if (TUNE) {System.out.println("Keeping 2 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
         for (short adjKey : oldKeys) {
-          if (adjKey != 0) {
+          if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
             addInner2(adjKey);
           }
         }
@@ -244,7 +246,7 @@ public class IntHashSet implements PositiveIntSet {
       if (TUNE) {System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);}
       newTableKeepSize(newCapacity, true);
       for (int key : oldKeys) {
-        if (key != 0) {
+        if (key != 0 && key != Integer.MIN_VALUE) {
           addInner4(key);
         }
       }
@@ -366,10 +368,12 @@ public class IntHashSet implements PositiveIntSet {
     return probeAddr;
   }
    
+  // only called when keys are shorts
   private boolean isAdjKeyOutOfRange(int adjKey) {
-    return keys4 == null && 
-           (adjKey > Short.MAX_VALUE ||
-            adjKey < (Short.MIN_VALUE + 1));   
+    return (adjKey > Short.MAX_VALUE ||
+           // the minimum adjKey value stored in a short is
+           // Short.MIN_VALUE + 1
+            adjKey <= Short.MIN_VALUE);   
   }
   
   @Override
@@ -379,43 +383,44 @@ public class IntHashSet implements PositiveIntSet {
   
   @Override
   public int find(int rawKey) {
-    if (rawKeyNotFound(rawKey)) {
-      return -1;
-    }
-    final int adjKey = getAdjKey(rawKey);
-    if (isAdjKeyOutOfRange(adjKey)) {
-      return -1;
-    }
-    final int pos = findPosition(adjKey);
-    if (keys4 == null) {
-      return (keys2[pos] == adjKey) ? pos : -1;
-    } else {
-      return (keys4[pos] == adjKey) ? pos : -1;
-    }
-  }
-  
-  private boolean rawKeyNotFound(int rawKey) {
     if (rawKey == 0) {
-      return true;
+      return -1;
     }
-    return (keys4 == null) ? (rawKey == Short.MIN_VALUE) : (rawKey == Integer.MIN_VALUE);
+
+    if (keys4 == null) {
+      // check for keys never stored in short table 
+      //   adjKey of Short.MIN_VALUE which is the removed flag
+      final int adjKey = getAdjKey(rawKey);
+      if (isAdjKeyOutOfRange(adjKey)) {
+        return -1;
+      }
+      final int pos = findPosition(adjKey);   
+      return (keys2[pos] == adjKey) ? pos : -1;
+    }
+    
+    // using 4 byte keys, no offset
+    if (rawKey == Integer.MIN_VALUE) {
+      return -1;  // not stored in table (reserved value for removed items)
+    }
+    final int pos = findPosition(rawKey);
+    return (keys4[pos] == rawKey) ? pos : -1;
   }
- 
+   
   /**
    * return the adjusted key.
-   *   for 4 byte key mode, no adjustment
+   *   never called for 4 byte form
    *   for 2 byte key mode, subtract the offset, and adjust by -1 if 0 or less
    *     Note: returned value can be less than Short.MIN_VALUE 
    * @param rawKey
    * @return adjusted key
    */
   private int getAdjKey(int rawKey) {
-    if (rawKey == 0 || (rawKey <= Integer.MIN_VALUE + 1)) {
-      throw new ArrayIndexOutOfBoundsException(rawKey);
-    }
-    if (keys4 != null) {
-      return rawKey;
-    }
+//    if (rawKey == 0 || (rawKey == Integer.MIN_VALUE)) {
+//      throw new ArrayIndexOutOfBoundsException(rawKey);
+//    }
+//    if (keys4 != null) {
+//      return rawKey;
+//    }
     int adjKey = rawKey - offset;
     return adjKey - (  (adjKey <= 0) ? 1 : 0);
   }
@@ -423,9 +428,7 @@ public class IntHashSet implements PositiveIntSet {
   private void switchTo4byte() {
     // convert to 4 byte because values can't be offset and fit in a short
     final short[] oldKeys = keys2;
-    newTableKeepSize(getCapacity(), true);  // make a 4 table
-    // next fails to convert short to int
-    //  System.arraycopy(oldKeys, 0,  keys4,  0,  oldKeys.length);
+    newTableKeepSize(getCapacity(), true);  // make a 4 table. same size
     for (short adjKey : oldKeys) {
       if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
         addInner4(getRawFromAdjKey(adjKey));
@@ -440,7 +443,9 @@ public class IntHashSet implements PositiveIntSet {
    */
   @Override
   public boolean add(int rawKey) {
-    int adjKey = getAdjKey(rawKey);
+    if (rawKey == 0) {
+      throw new IllegalArgumentException("argument must be non-zero");
+    }
        
     if (size == 0) {
       mostPositive = mostNegative = rawKey;
@@ -453,27 +458,62 @@ public class IntHashSet implements PositiveIntSet {
       }
     }
     
-    if (keys4 == null && isAdjKeyOutOfRange(adjKey)) {
-      switchTo4byte();
-      adjKey = rawKey;
-    }
-    final int i = findPosition(adjKey);
-    if (keys4 == null) {
-      if (keys2[i] == 0) {
+    if (keys4 != null) {
+      return find4(rawKey);
+      
+      // short keys
+    } else {
+      int adjKey = getAdjKey(rawKey);
+      if (isAdjKeyOutOfRange(adjKey)) {
+        switchTo4byte();
+        return find4(rawKey);
+        
+        // key in range
+      } else {
+        final int i = findPosition(adjKey);
+        if (keys2[i] == adjKey) {
+          return false;
+        }
         keys2[i] = (short) adjKey;
-      } else {
-        return false;
-      }
-    } else { 
-      if (keys4[i] == 0) {
-        keys4[i] = adjKey;
-      } else {
-        return false;
+        incrementSize();
+        return true;
       }
     }
+  }
+  
+  private boolean find4(int rawKey) {
+    final int i = findPosition(rawKey);
+    if (keys4[i] == rawKey) {
+      return false;
+    }
+    keys4[i] = rawKey;
     incrementSize();
     return true;
   }
+  
+//    int adjKey = getAdjKey(rawKey);
+//
+//    if (keys4 == null && isAdjKeyOutOfRange(adjKey)) {
+//      switchTo4byte();
+//      adjKey = rawKey;
+//    }
+//    final int i = findPosition(adjKey);
+//    if (keys4 == null) {
+//      if (keys2[i] == 0) {
+//        keys2[i] = (short) adjKey;
+//      } else {
+//        return false;
+//      }
+//    } else { 
+//      if (keys4[i] == 0) {
+//        keys4[i] = adjKey;
+//      } else {
+//        return false;
+//      }
+//    }
+//    incrementSize();
+//    return true;
+//  }
       
   /**
    * used for increasing table size
@@ -481,16 +521,13 @@ public class IntHashSet implements PositiveIntSet {
    */
   private void addInner4(int rawKey) {
     final int i = findPosition(rawKey);
-//    if (null == keys4) {
-//      System.out.println("debug stop");
-//    }
     assert(keys4[i] == 0);
     keys4[i] = rawKey;
   }
   
   private void addInner2(short adjKey) {
     final int i = findPosition(adjKey);
-    assert(keys2[i] == 0);
+    assert(keys2[i] == 0);    
     keys2[i] = adjKey;
   }
   
@@ -504,7 +541,7 @@ public class IntHashSet implements PositiveIntSet {
    * Can't replace the item with a 0 because other keys that were
    * stored in the table which previously collided with the removed item
    * won't be found.  UIMA-4204
-   * @param rawKey -
+   * @param rawKey the value to remove
    * @return true if the key was present
    */
   @Override
@@ -620,15 +657,29 @@ public class IntHashSet implements PositiveIntSet {
     }
     
     final int max = getCapacity();
-    while (true) {
-      if (pos >= max) {
-        return pos;
+    if (null == keys4) {
+      while (true) {
+        if (pos >= max) {
+          return pos;
+        }
+        int v = get(pos);
+        if (v != 0 && v != Short.MIN_VALUE) {
+          return pos;
+        }
+        pos++;
       }
-      int v = get(pos);
-      if (v != 0 && v != ( (keys4 == null) ? Short.MIN_VALUE : Integer.MIN_VALUE)) {
-        return pos;
+    } else {
+      // keys4 case
+      while (true) {
+        if (pos >= max) {
+          return pos;
+        }
+        int v = get(pos);
+        if (v != 0 && v != Integer.MIN_VALUE) {
+          return pos;
+        }
+        pos ++;
       }
-      pos ++;
     }
   }
    
@@ -745,7 +796,7 @@ public class IntHashSet implements PositiveIntSet {
     if (null == keys4) {
       for (int k : keys2) {
         if (k != 0 && k != Short.MIN_VALUE) {
-          v.add(k);
+          v.add(getRawFromAdjKey(k));
         }
       }
     } else {
