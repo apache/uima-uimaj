@@ -153,7 +153,7 @@ public class GrowingTheCasTest extends TestCase {
 //      it.moveToNext();
       c ++;
     }
-    if ((i % 1) == 0) {
+    if ((i % 1000) == 0) {
       System.out.format("%,d Moby * 10, nbr of annotations = %,d; took %,d microsec%n",
           i, c, (System.nanoTime() - startTime) / 1000);
     }
