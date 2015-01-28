@@ -139,7 +139,6 @@ public class JCasTest extends TestCase {
 		try {
 			// jcasCasMisMatch(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS, CASException.JCAS_INIT_ERROR);
 			CAS localCas;
-			TypeSystem ts;
 			JCas localJcas = null;
 			boolean errFound = false;
 			try {
@@ -184,7 +183,6 @@ public class JCasTest extends TestCase {
 	public void jcasCasMisMatch(int testId, String expectedErr) throws Exception {
 		try {
 			CAS localCas;
-			TypeSystem ts;
 			JCas localJcas;
 			boolean errFound = false;
 			try {
