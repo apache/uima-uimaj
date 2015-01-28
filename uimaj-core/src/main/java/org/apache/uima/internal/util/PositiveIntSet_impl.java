@@ -660,7 +660,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   private void switchToHashSet(int size, int offset) {
     IntListIterator it = intSet.iterator();
 
-    intSet = new IntHashSet(size);
+    intSet = new IntHashSet(size, offset);
     isIntSet = isBitSet = false;
     isHashSet = true;
     
