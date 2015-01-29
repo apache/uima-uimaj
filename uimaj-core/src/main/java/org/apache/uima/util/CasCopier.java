@@ -60,21 +60,21 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
  */
 public class CasCopier {
   
-  private enum FeatureRangeClass {
-    STRING,
-    LONG,
-    DOUBLE,
-    INT_LIKE,
-    REF,
-    SKIP,
-  }
+  private static final int FRC_SKIP = 0;  // is the default, must be 0
+  private static final int FRC_STRING = 1;
+  private static final int FRC_LONG = 2;
+  private static final int FRC_DOUBLE = 3;
+  private static final int FRC_INT_LIKE = 4;
+  private static final int FRC_REF = 5;
+  
+  private static final int K_SRC_FEAT_OFFSET = 0;
+  private static final int K_TGT_FEAT_CODE = 1;
   
   private class TypeInfo {
-    final int[] srcFeatCodes;
-    final int[] tgtFeatCodes;
-    final FeatureRangeClass[] frc;
+    final int[] codesAndOffsets;  // indexed with count * 2
+    final byte[] frc;
     final int tgtTypeCode;
-    
+        
     TypeInfo(int srcTypeCode) {    
 
       if (tgtTsi == srcTsi) {
@@ -95,24 +95,32 @@ public class CasCopier {
           tgtTypeCode = tgtTsi.ll_getCodeForType(tgtType);
         }
       }
-            
-      srcFeatCodes = srcTsi.ll_getAppropriateFeatures(srcTypeCode);
-      frc = new FeatureRangeClass[srcFeatCodes.length];
+                  
+      int[] srcFeatCodes = srcTsi.ll_getAppropriateFeatures(srcTypeCode);
+      int arrayLength = srcFeatCodes.length << 1;
+      
+      codesAndOffsets = new int[arrayLength];
+      frc = new byte[srcFeatCodes.length];
+
       if (srcTsi == tgtTsi) {
-        tgtFeatCodes = srcFeatCodes;
-      } else {
-        tgtFeatCodes = new int[srcFeatCodes.length];
-        
+        for (int i = 0; i < srcFeatCodes.length; i++) {
+          final int srcFeatCode = srcFeatCodes[i];
+          Feature srcFeat = srcTsi.ll_getFeatureForCode(srcFeatCode);
+          setRangeClass((TypeImpl) srcFeat.getRange(), i);
+          final int i2 = i << 1;
+          codesAndOffsets[i2 + K_SRC_FEAT_OFFSET] = originalSrcCasImpl.getFeatureOffset(srcFeatCode);
+          codesAndOffsets[i2 + K_TGT_FEAT_CODE] = srcFeatCodes[i];
+        }
+      } else {        
         for (int i = 0; i < srcFeatCodes.length; i++) { 
-          int featCode = srcFeatCodes[i];
-          Feature srcFeat = srcTsi.ll_getFeatureForCode(featCode);
+         final int srcFeatCode = srcFeatCodes[i];
+         Feature srcFeat = srcTsi.ll_getFeatureForCode(srcFeatCode);
           String srcFeatName = srcFeat.getName();
           Feature tgtFeat = tgtTsi.getFeatureByFullName(srcFeatName);
           if (tgtFeat == null) {
             // If in lenient mode, ignore this feature and move on to the next
             // feature in this FS (if one exists)
             if (lenient) {
-              frc[i] = FeatureRangeClass.SKIP;
               continue; // Ignore this feature in the source CAS since it doesn't exist in
                         // in the target CAS.
             } else {
@@ -120,7 +128,10 @@ public class CasCopier {
                   new Object[] { srcFeatName });
             }
           } else {
-            tgtFeatCodes[i] = ((FeatureImpl)tgtFeat).getCode();
+            final int i2 = i << 1;
+            int tgtFeatCode = ((FeatureImpl)tgtFeat).getCode();
+            codesAndOffsets[i2 + K_SRC_FEAT_OFFSET] = originalSrcCasImpl.getFeatureOffset(srcFeatCode);
+            codesAndOffsets[i2 + K_TGT_FEAT_CODE] = tgtFeatCode;
           }
 
           TypeImpl srcRangeType = (TypeImpl) srcFeat.getRange();
@@ -131,29 +142,27 @@ public class CasCopier {
             throw new UIMARuntimeException(UIMARuntimeException.COPY_CAS_RANGE_TYPE_NAMES_NOT_EQUAL, 
                 new Object[] {srcFeatName, srcFeat.getRange().getName(), tgtFeat.getRange().getName()});
           }
+          
+          setRangeClass(srcRangeType, i);
         }
-      }
-        
-      // set up featureRangeClassification
-      for (int i = 0; i < srcFeatCodes.length; i++) {    
-        Feature srcFeat = srcTsi.ll_getFeatureForCode(srcFeatCodes[i]);
-        TypeImpl srcRangeType = (TypeImpl) srcFeat.getRange();
-        
-        if (srcTsi.ll_subsumes(srcStringTypeCode, srcRangeType.getCode())) {
-          frc[i] = FeatureRangeClass.STRING;
-        } else if (srcRangeType == srcTsi.intType || 
-            srcRangeType == srcTsi.floatType ||
-            srcRangeType == srcTsi.booleanType ||
-            srcRangeType == srcTsi.byteType ||
-            srcRangeType == srcTsi.shortType) {
-          frc[i] = FeatureRangeClass.INT_LIKE;
-        } else if (srcRangeType == srcTsi.longType) {
-          frc[i] = FeatureRangeClass.LONG;
-        } else if (srcRangeType == srcTsi.doubleType) {
-          frc[i] = FeatureRangeClass.DOUBLE;
-        } else {
-          frc[i] = FeatureRangeClass.REF;
-        }
+      }        
+    }
+    
+    void setRangeClass(TypeImpl srcRangeType, int i) {
+      if (srcTsi.ll_subsumes(srcStringTypeCode, srcRangeType.getCode())) {
+        frc[i] = FRC_STRING;
+      } else if (srcRangeType == srcTsi.intType || 
+          srcRangeType == srcTsi.floatType ||
+          srcRangeType == srcTsi.booleanType ||
+          srcRangeType == srcTsi.byteType ||
+          srcRangeType == srcTsi.shortType) {
+        frc[i] = FRC_INT_LIKE;
+      } else if (srcRangeType == srcTsi.longType) {
+        frc[i] = FRC_LONG;
+      } else if (srcRangeType == srcTsi.doubleType) {
+        frc[i] = FRC_DOUBLE;
+      } else {
+        frc[i] = FRC_REF;
       }
     }
   }
@@ -733,29 +742,30 @@ public class CasCopier {
         
     tgtCasViewImpl.setCacheNotInIndex(tgtFS);
         
-    for (int i = 0; i < tInfo.srcFeatCodes.length; i++) {
-      final int srcFeatCode = tInfo.srcFeatCodes[i];
-      final int tgtFeatCode = tInfo.tgtFeatCodes[i];
+    for (int i = 0; i < tInfo.codesAndOffsets.length; i = i + 2) {
+      final int tgtFeatCode = tInfo.codesAndOffsets[i + K_TGT_FEAT_CODE];
       if (0 == tgtFeatCode) {
-        continue; // feature missing in target and lenient specified 
+        continue; 
       }
-      switch (tInfo.frc[i]) {
-      case SKIP:
+      final int srcFeatOffset = tInfo.codesAndOffsets[i + K_SRC_FEAT_OFFSET];
+      switch (tInfo.frc[i >> 1]) {
+      case FRC_SKIP:
         break;
-      case STRING:
-        tgtCasViewImpl.setStringValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getStringValue(srcFS, srcFeatCode));
+      case FRC_STRING:
+        // need feature code to check subtype constraints
+        tgtCasViewImpl.ll_setStringValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getStringValueFeatOffset(srcFS, srcFeatOffset));
         break;
-      case INT_LIKE:
-        tgtCasViewImpl.ll_setIntValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getIntValue(srcFS, srcFeatCode));
+      case FRC_INT_LIKE:
+        tgtCasViewImpl.ll_setIntValue(tgtFS, tgtFeatCode, srcCasViewImpl.ll_getIntValueFeatOffset(srcFS, srcFeatOffset));
         break;
-      case LONG:
-        tgtCasViewImpl.ll_setLongValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getLongValue(srcFS,  srcFeatCode));
+      case FRC_LONG:
+        tgtCasViewImpl.ll_setLongValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getLongValueFeatOffset(srcFS,  srcFeatOffset));
         break;
-      case DOUBLE:
-        tgtCasViewImpl.ll_setDoubleValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getDoubleValue(srcFS,  srcFeatCode));
+      case FRC_DOUBLE:
+        tgtCasViewImpl.ll_setDoubleValue(tgtFS,  tgtFeatCode,  srcCasViewImpl.ll_getDoubleValueFeatOffset(srcFS,  srcFeatOffset));
         break;
-      case REF:
-        int refFS = srcCasViewImpl.ll_getRefValue(srcFS, srcFeatCode);
+      case FRC_REF:
+        int refFS = srcCasViewImpl.ll_getRefValueFeatOffset(srcFS, srcFeatOffset);
         if (refFS != 0) {
           int copyRefFs = copyFsInner(refFS);
           tgtCasViewImpl.ll_setRefValue(tgtFS, tgtFeatCode, copyRefFs);
@@ -763,8 +773,7 @@ public class CasCopier {
         break;
       default:
         throw new UIMARuntimeException();  // internal error
-      }
-      
+      }      
     }
   }
   

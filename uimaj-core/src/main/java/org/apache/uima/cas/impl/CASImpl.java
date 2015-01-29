@@ -2216,7 +2216,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   void setFeatureValueNotJournaled(int addr, int feat, int val) {
     this.getHeap().heap[(addr + this.svd.casMetadata.featureOffset[feat])] = val;
   }
-
+  
   public void setStringValue(int addr, int feat, String s) {
     final int stringCode = ((s == null) ? NULL : this.getStringHeap().addString(s));
     setFeatureValue(addr, feat, stringCode);
@@ -3461,6 +3461,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.getHeap().heap[(fsRef + this.svd.casMetadata.featureOffset[featureCode])];
   }
 
+  public final int ll_getIntValueFeatOffset(int fsRef, int featureOffset) {
+    return this.getHeap().heap[fsRef + featureOffset];
+  }
+
   public final float ll_getFloatValue(int fsRef, int featureCode) {
     return int2float(ll_getIntValue(fsRef, featureCode));
   }
@@ -3468,9 +3472,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final String ll_getStringValue(int fsRef, int featureCode) {
     return this.getStringHeap().getStringForCode(ll_getIntValue(fsRef, featureCode));
   }
+  
+  public final String ll_getStringValueFeatOffset(int fsRef, int featureOffset) {
+    return this.getStringHeap().getStringForCode(ll_getIntValueFeatOffset(fsRef, featureOffset));
+  }
 
   public final int ll_getRefValue(int fsRef, int featureCode) {
     return ll_getIntValue(fsRef, featureCode);
+  }
+
+  public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
+    return ll_getIntValueFeatOffset(fsRef, featureOffset);
   }
 
   public final int ll_getIntValue(int fsRef, int featureCode, boolean doTypeChecks) {
@@ -3766,7 +3778,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // no index check because refs can't be keys
     setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value);
   }
-
+  
   public final void ll_setIntValue(int fsRef, int featureCode, int value, boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.intTypeCode, featureCode);
@@ -4214,6 +4226,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (val);
   }
 
+  public long ll_getLongValueFeatOffset(int fsRef, int featureOffset) {
+    final int offset = this.getHeap().heap[fsRef + featureOffset];
+    long val = this.getLongHeap().getHeapValue(offset);
+    return (val);
+  }
+
   public long ll_getLongValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.longTypeCode, featureCode);
@@ -4226,6 +4244,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     long val = this.getLongHeap().getHeapValue(offset);
     return Double.longBitsToDouble(val);
   }
+  
+  public double ll_getDoubleValueFeatOffset(int fsRef, int featureOffset) {
+    final int offset = this.getHeap().heap[fsRef + featureOffset];
+    long val = this.getLongHeap().getHeapValue(offset);
+    return Double.longBitsToDouble(val);
+  }
+
 
   public double ll_getDoubleValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {

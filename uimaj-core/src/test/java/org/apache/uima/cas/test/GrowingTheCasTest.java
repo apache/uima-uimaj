@@ -29,15 +29,16 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.FSIteratorWrapper;
+import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
@@ -98,6 +99,12 @@ public class GrowingTheCasTest extends TestCase {
   
   // rename to test to run this test
   public void tstIteratorPerf() {
+//    Properties props = System.getProperties();
+//    for (Map.Entry es : props.entrySet()) {
+//      System.out.format("JVM Prop %s: %s%n",  es.getKey(), es.getValue());
+//    }
+
+//    System.out.format("JVM total memory: %,d, JVM Max Mem: %,d%n", Runtime.getRuntime().totalMemory(), Runtime.getRuntime().maxMemory());
     File textFile = JUnitExtension.getFile("data/moby.txt");
     String text = null;
     try {
@@ -136,9 +143,42 @@ public class GrowingTheCasTest extends TestCase {
     }
     
     // performance testing of "unordered" iterators
-    for (int i = 0; i < /*4*/ 400000; i++) {
+    for (int i = 0; i < 10; i++) {
       timeIt(i);
     }
+    
+    // performance testing of CasCopier
+    
+    // create a destination CAS
+    CAS destCas;
+    try {
+      destCas = this.ae.newCAS();
+    } catch (ResourceInitializationException e) {
+      e.printStackTrace();
+      assertTrue(false);
+      return;  // to avoid compile problems
+    }
+    CAS srcCas = jcas.getCas();
+
+    CasCopier copier;
+    // do the copy
+    long shortest = Long.MAX_VALUE;
+    int i = 0;
+    for (; i < 200; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
+      destCas.reset();
+      long startTime = System.nanoTime();
+      copier = new CasCopier(srcCas, destCas);
+      copier.copyCasView(srcCas, true);
+      long time = (System.nanoTime() - startTime)/ 1000;
+      if (time < shortest) {
+        shortest = time;
+        System.out.format("CasCopier speed for Moby is %,d microseconds on iteration %,d%n", shortest, i);
+      }
+    }
+    
+    // verify copy
+    CasComparer.assertEquals(srcCas, destCas);
+
 //    ((JCasImpl)jcas).showJfsFromCaddrHistogram();
     jcas= null;
   }
@@ -153,10 +193,10 @@ public class GrowingTheCasTest extends TestCase {
 //      it.moveToNext();
       c ++;
     }
-    if ((i % 1000) == 0) {
+//    if ((i % 2) == 0) {
       System.out.format("%,d Moby * 10, nbr of annotations = %,d; took %,d microsec%n",
           i, c, (System.nanoTime() - startTime) / 1000);
-    }
+//    }
   }
   
   public void testAnnotator() {
