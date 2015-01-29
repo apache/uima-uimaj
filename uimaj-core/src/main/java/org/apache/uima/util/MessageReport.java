@@ -43,11 +43,11 @@ public class MessageReport {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             e.printStackTrace(ps);
-            message = "Message count: " + c + "; " + message + ". Message count indicates messages skipped to avoid potential flooding.\n" + baos.toString();
+            message = "Message count: " + c + "; " + message + " Message count indicates messages skipped to avoid potential flooding.\n" + baos.toString();
             logger.log(Level.FINE, message);
           }
         } else {
-          message = "Message count: " + c + "; " + message + ". Message count indicates messages skipped to avoid potential flooding. Set FINE logging level for stacktrace.";
+          message = "Message count: " + c + "; " + message + " Message count indicates messages skipped to avoid potential flooding. Set FINE logging level for stacktrace.";
           logger.log(Level.WARNING, message);
         }
       }
