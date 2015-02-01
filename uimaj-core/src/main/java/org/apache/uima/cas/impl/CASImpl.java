@@ -363,6 +363,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       svd.cache_not_in_index = 0;
     }
   }
+  
+  /**
+   * Called by feature setters which know the FS is not in any index
+   * to bypass any index corruption checking, e.g., CasCopier
+   * 
+   * Internal use only
+   * @param fsAddr
+   */
+  public void setCacheNotInIndex(int fsAddr) {
+    svd.cache_not_in_index = fsAddr;
+  }
 
   // The index repository. Referenced by XmiCasSerializer
   FSIndexRepositoryImpl indexRepository;
@@ -684,7 +695,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   FSIndexRepository getSofaIndexRepository(int aSofaRef) {
-    return this.svd.sofa2indexMap.get(Integer.valueOf(aSofaRef));
+    return this.svd.sofa2indexMap.get(aSofaRef);
   }
 
   void setSofaIndexRepository(SofaFS aSofa, FSIndexRepository indxRepos) {
@@ -1894,7 +1905,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //      v.add(newSofas.get(k));
 //    }
 
-    // Get indexes for each SofaFS in the CAS
+    // Get indexes for each view in the CAS
     for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
       FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) this.svd.baseCAS
           .getSofaIndexRepository(sofaNum);
@@ -2168,7 +2179,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       maybeAddback(addr);
     }
     if (this.svd.trackingMark != null) {
-    	this.logFSUpdate(addr, addr+this.svd.casMetadata.featureOffset[feat], 
+    	this.logFSUpdate(addr, addr + this.svd.casMetadata.featureOffset[feat], 
     			ModifiedHeap.FSHEAP, 1);
     }
   }
@@ -2205,7 +2216,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   void setFeatureValueNotJournaled(int addr, int feat, int val) {
     this.getHeap().heap[(addr + this.svd.casMetadata.featureOffset[feat])] = val;
   }
-
+  
   public void setStringValue(int addr, int feat, String s) {
     final int stringCode = ((s == null) ? NULL : this.getStringHeap().addString(s));
     setFeatureValue(addr, feat, stringCode);
@@ -2896,7 +2907,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   private CAS getViewFromSofaNbr(int nbr) {
-    ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    final ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
     if (nbr < sn2v.size()) {
       return sn2v.get(nbr);
     }
@@ -2905,6 +2916,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   private void setViewForSofaNbr(int nbr, CAS view) {
     ArrayList<CAS> sn2v = this.svd.sofaNbr2ViewMap;
+    // cant use ensure capacity here
     while (sn2v.size() <= nbr) {
       sn2v.add(null);
     }
@@ -3314,12 +3326,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public int ll_createArray(int typeCode, int arrayLength) {
     final int addr = this.getHeap().add(arrayContentOffset + arrayLength, typeCode);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = arrayLength;
+    svd.cache_not_in_index = addr;
     return addr;
   }
 
   public int ll_createAuxArray(int typeCode, int arrayLength) {
     final int addr = this.getHeap().add(arrayContentOffset + 1, typeCode);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = arrayLength;
+    svd.cache_not_in_index = addr;
     return addr;
   }
 
@@ -3447,6 +3461,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.getHeap().heap[(fsRef + this.svd.casMetadata.featureOffset[featureCode])];
   }
 
+  public final int ll_getIntValueFeatOffset(int fsRef, int featureOffset) {
+    return this.getHeap().heap[fsRef + featureOffset];
+  }
+
   public final float ll_getFloatValue(int fsRef, int featureCode) {
     return int2float(ll_getIntValue(fsRef, featureCode));
   }
@@ -3454,9 +3472,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final String ll_getStringValue(int fsRef, int featureCode) {
     return this.getStringHeap().getStringForCode(ll_getIntValue(fsRef, featureCode));
   }
+  
+  public final String ll_getStringValueFeatOffset(int fsRef, int featureOffset) {
+    return this.getStringHeap().getStringForCode(ll_getIntValueFeatOffset(fsRef, featureOffset));
+  }
 
   public final int ll_getRefValue(int fsRef, int featureCode) {
     return ll_getIntValue(fsRef, featureCode);
+  }
+
+  public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
+    return ll_getIntValueFeatOffset(fsRef, featureOffset);
   }
 
   public final int ll_getIntValue(int fsRef, int featureCode, boolean doTypeChecks) {
@@ -3666,7 +3692,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final TypeSystemImpl tsi = getTypeSystemImpl();
     if (tsi.isAnnotationBaseOrSubtype(typeCode)) {
       // only need to check one view
-      return removeAndRecord(fsRef, ll_getSofaCasView(fsRef).indexRepository, toBeAdded);
+      // get that view carefully, in case things are not yet properly initialized
+      final int addrOfSofaFS = this.getSofaFeat(fsRef);
+      if (addrOfSofaFS == 0) {
+        return false;  // uninitialized sofa ref- can't be indexed 
+      }
+      CASImpl view;
+      if (addrOfSofaFS == this.getSofaRef()) {
+        view = this;
+      } else {
+        int sofaNum = ll_getSofaNum(addrOfSofaFS);
+        view = (CASImpl) getViewFromSofaNbr(sofaNum);
+        if (null == view) {
+          return false;
+        }
+      }
+      return removeAndRecord(fsRef, view.indexRepository, toBeAdded);
     }
     
     // not a subtype of AnnotationBase, need to check all views (except base)
@@ -3737,7 +3778,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // no index check because refs can't be keys
     setFeatureValueNoIndexCorruptionCheck(fsRef, featureCode, value);
   }
-
+  
   public final void ll_setIntValue(int fsRef, int featureCode, int value, boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.intTypeCode, featureCode);
@@ -4185,6 +4226,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (val);
   }
 
+  public long ll_getLongValueFeatOffset(int fsRef, int featureOffset) {
+    final int offset = this.getHeap().heap[fsRef + featureOffset];
+    long val = this.getLongHeap().getHeapValue(offset);
+    return (val);
+  }
+
   public long ll_getLongValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
       checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.longTypeCode, featureCode);
@@ -4197,6 +4244,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     long val = this.getLongHeap().getHeapValue(offset);
     return Double.longBitsToDouble(val);
   }
+  
+  public double ll_getDoubleValueFeatOffset(int fsRef, int featureOffset) {
+    final int offset = this.getHeap().heap[fsRef + featureOffset];
+    long val = this.getLongHeap().getHeapValue(offset);
+    return Double.longBitsToDouble(val);
+  }
+
 
   public double ll_getDoubleValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
@@ -4407,6 +4461,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getTypeSystem().subsumes(getAnnotationType(), t);
   }
 
+  /**
+   * @param t the type code to test
+   * @return true if that type is subsumed by AnnotationBase type
+   */
   public boolean isSubtypeOfAnnotationBaseType(int t) {
     return this.svd.casMetadata.ts.subsumes(this.svd.casMetadata.ts.annotBaseTypeCode, t);
   }
@@ -4510,16 +4568,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     String newDoc = ll_getSofaDataString(this.mySofaRef);
     if (null != newDoc) {
       int count = 0;
-      final FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) ll_getIndexRepository();
-      LowLevelIterator it = 
-          ir.ll_getIndex(CAS.STD_ANNOTATION_INDEX, 
-                                              this.svd.casMetadata.ts.docType.getCode()).ll_iterator();
-      if (it.isValid()) {
-        final int docAnnot = it.ll_get();
+      final int docAnnot = ll_getDocumentAnnotation();
+      if (docAnnot != 0) {
         count = this.indexRepository.removeIfInCorrputableIndexInThisView(docAnnot);
         setFeatureValueNoIndexCorruptionCheck(docAnnot, getTypeSystemImpl().endFeatCode, newDoc.length());
         if (count > 0) {
-          ir.ll_addback(docAnnot, count);
+          ((FSIndexRepositoryImpl)ll_getIndexRepository()).ll_addback(docAnnot, count);
         }
       } else {
         // not in the index (yet)
@@ -4563,9 +4617,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // base CAS has no document
       return null;
     }
-    LowLevelCAS llc = this;
-    final int docAnnotAddr = llc.ll_getFSRef(getDocumentAnnotation());
-    return llc.ll_getStringValue(docAnnotAddr, this.svd.casMetadata.ts.langFeatCode);
+    final int docAnnotAddr = ll_getFSRef(getDocumentAnnotation());
+    return ll_getStringValue(docAnnotAddr, this.svd.casMetadata.ts.langFeatCode);
   }
 
   public String getDocumentText() {
@@ -4578,7 +4631,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return null;
     }
     if (mySofaIsValid()) {
-      return this.ll_getSofaDataString(this.mySofaRef);
+      return ll_getSofaDataString(this.mySofaRef);
     }
     return null;
   }

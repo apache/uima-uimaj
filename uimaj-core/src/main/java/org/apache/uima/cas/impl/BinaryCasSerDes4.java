@@ -2189,7 +2189,7 @@ public class BinaryCasSerDes4 {
   }
 
   
-  private void initFsStartIndexes (ComprItemRefs fsStartIndexes, int[] heap, int heapStart, int heapEnd, int[] histo) {
+  private void initFsStartIndexes (final ComprItemRefs fsStartIndexes, final int[] heap, int heapStart, int heapEnd, int[] histo) {
     for (int iHeap = 1; iHeap < heapEnd;) {
       fsStartIndexes.addItemAddr(iHeap);
       final int tCode = heap[iHeap];
@@ -2247,7 +2247,7 @@ public class BinaryCasSerDes4 {
       c1heap = c1HO.heap;
       c2heap = c2HO.heap;
       
-      ComprItemRefs fsStartIndexes = new ComprItemRefs();
+      final ComprItemRefs fsStartIndexes = new ComprItemRefs();
       initFsStartIndexes(fsStartIndexes, c1heap, 1, endi, null);
       
       final int endsi = fsStartIndexes.getNbrOfItems();
@@ -2722,9 +2722,10 @@ public class BinaryCasSerDes4 {
    */
   private static class ComprItemRefs {
     
-    private IntVector itemIndexToAddr = new IntVector();  // item is feature structure or string segment
-    private Map<Integer, Integer>  itemAddrToIndex = new HashMap<Integer, Integer>();
-
+    final private IntVector itemIndexToAddr = new IntVector();  // item is feature structure or string segment
+    // can't use Int2IntHashMap here because 0 is stored and used as a value
+    final private Map<Integer, Integer>  itemAddrToIndex = new HashMap<Integer, Integer>();
+    
     public ComprItemRefs() {
       addItemAddr(0);
     }

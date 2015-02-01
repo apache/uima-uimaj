@@ -219,11 +219,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // must be volatile to force the right memory barriers
   volatile boolean areBuiltInTypesSetup = false;
 
-  TypeImpl intType;
+  public TypeImpl intType;
 
-  TypeImpl stringType;
+  public TypeImpl stringType;
 
-  TypeImpl floatType;
+  public TypeImpl floatType;
 
   TypeImpl arrayBaseType;
 
@@ -252,23 +252,23 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   FeatureImpl sofaNum;
 
-  TypeImpl byteType;
+  public TypeImpl byteType;
 
   TypeImpl byteArrayType;
 
-  TypeImpl booleanType;
+  public TypeImpl booleanType;
 
   TypeImpl booleanArrayType;
 
-  TypeImpl shortType;
+  public TypeImpl shortType;
 
   TypeImpl shortArrayType;
 
-  TypeImpl longType;
+  public TypeImpl longType;
 
   TypeImpl longArrayType;
 
-  TypeImpl doubleType;
+  public TypeImpl doubleType;
 
   TypeImpl doubleArrayType;
 
@@ -1669,4 +1669,33 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return m;
   }
   
+//  /**
+//   * @param otherTs type system to compare to this one
+//   * @return true if one or more identically named features have differently named ranges
+//   */
+//  public boolean isRangeCheckNeeded(TypeSystemImpl otherTs) {
+//    if (this == otherTs) {
+//      return false;
+//    }
+//    final List<Feature> smallerList;
+//    if (features.size() > otherTs.features.size()) {
+//      smallerList = otherTs.features;
+//      otherTs = this; 
+//    } else {
+//      smallerList = features;
+//    }
+//    
+//    for (int i = smallerList.size() - 1; i > 0; i--) { // position 0 is null
+//      final Feature f1 = smallerList.get(i);
+//      final Feature f2 = otherTs.getFeatureByFullName(f1.getName());
+//      if (f2 == null) {
+//        continue;
+//      }
+//      if (!f1.getRange().getName().equals(f2.getRange().getName())) {
+//        return true;
+//      }
+//    }
+//    return false;
+//  }
+//  
 }

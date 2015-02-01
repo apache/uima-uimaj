@@ -1038,8 +1038,8 @@ public class CasSerializerSupport {
     
     
     private int compareFeat(int o1, int o2, int featCode) {
-      final int f1 = cas.ll_getIntValue(o1, tsi.annotSofaFeatCode);
-      final int f2 = cas.ll_getIntValue(o2, tsi.annotSofaFeatCode);
+      final int f1 = cas.ll_getIntValue(o1, featCode);
+      final int f2 = cas.ll_getIntValue(o2, featCode);
       return compareInts(f1, f2);
     }
     

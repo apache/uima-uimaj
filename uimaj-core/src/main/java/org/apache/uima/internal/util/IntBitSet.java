@@ -89,7 +89,8 @@ public class IntBitSet implements PositiveIntSet {
   }
   
   /**
-   * empty the IntBitSet
+   * empty the IntBitSet.
+   * keeps the offset
    */
   @Override
   public void clear() {
@@ -99,7 +100,7 @@ public class IntBitSet implements PositiveIntSet {
    
   /**
    * 
-   * @param key -
+   * @param key - the integer (not adjusted for offset)
    * @return -
    */
   @Override
@@ -112,11 +113,11 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int find(int element) {
-    return contains(element) ? element : -1;
+    return contains(element) ? element - offset : -1;
   }
   /**
    * 
-   * @param original_key -
+   * @param original_key - the int to add to the set
    * @return true if this set did not already contain the specified element
    */
   @Override
@@ -125,9 +126,9 @@ public class IntBitSet implements PositiveIntSet {
       throw new IllegalArgumentException("key " + original_key + " must be greater than or equal to the offset: " + offset);
     }
     
-    final int key = original_key - offset;
-    final boolean prev = set.get(key);
-    set.set(key);
+    final int adjKey = original_key - offset;
+    final boolean prev = set.get(adjKey);
+    set.set(adjKey);
     if (!prev) {
       size ++;
       return true;
@@ -142,10 +143,13 @@ public class IntBitSet implements PositiveIntSet {
    */
   @Override
   public boolean remove(int original_key) {
-    final int key = original_key - offset;
-    final boolean prev = set.get(key);
-    set.clear(key);
+    final int adjKey = original_key - offset;
+    if (adjKey < 0) {
+      return false;
+    }
+    final boolean prev = set.get(adjKey);
     if (prev) {
+      set.clear(adjKey);  // avoid clearing which may expand bit set, if not present
       size --;
       return true;
     }
@@ -161,7 +165,7 @@ public class IntBitSet implements PositiveIntSet {
     return size;    // bit set cardinality() is slow
   }
   
-  public int getSpaceUsed_in_bits() {
+  public int getSpaceUsed_in_bits_no_overhead() {
     return set.size();
   }
    
@@ -169,8 +173,8 @@ public class IntBitSet implements PositiveIntSet {
    * 
    * @return space used in 32 bit words
    */
-  public int getSpaceUsed_in_words() {
-    return getSpaceUsed_in_bits() >> 5;  // divide by 32
+  public int getSpaceUsed_in_words_no_overhead() {
+    return getSpaceUsed_in_bits_no_overhead() >> 5;  // divide by 32
   }
   
   /**
@@ -190,11 +194,15 @@ public class IntBitSet implements PositiveIntSet {
   
   private class IntBitSetIterator implements IntListIterator {
 
-    protected int curKey;
+    /**
+     * This is the bit set position which is -1 (if invalid) or
+     *   the position in the bit set of the key - offset
+     *   
+     *   If the offset is not 0, then the position != key
+     */
+    protected int curKey = set.nextSetBit(0);
 
-    protected IntBitSetIterator() {
-      curKey = set.nextSetBit(0);
-    }
+    protected IntBitSetIterator() {}
 
     public final boolean hasNext() {
       return (curKey >= 0);
@@ -273,12 +281,38 @@ public class IntBitSet implements PositiveIntSet {
     return (position >= 0) && set.get(position);
   }
 
+  /**
+   * Add all elements of this bit set to the passed in IntVector
+   */
   @Override
   public void bulkAddTo(IntVector v) {
     int pos = -1;
     while (-1 != (pos = set.nextSetBit(pos + 1))) {
       v.add(pos + offset);
     }
+  }
+
+  @Override
+  public int[] toIntArray() {
+    final int s = size();
+    if (s == 0) {
+      return PositiveIntSet_impl.EMPTY_INT_ARRAY;
+    }
+    final int[] r = new int[s];
+    int pos = moveToFirst();
+    for (int i = 0; i < s; i++) {
+      r[i] = get(pos);
+      pos = set.nextSetBit(pos + 1);
+    }
+    return r;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String.format("IntBitSet [set=%s, size=%s, offset=%s]", set, size, offset);
   }
 
 }

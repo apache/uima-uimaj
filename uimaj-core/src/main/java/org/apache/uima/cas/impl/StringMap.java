@@ -20,8 +20,7 @@
 package org.apache.uima.cas.impl;
 
 /**
- * Class comment for StringMap.java goes here.
- * 
+ * Appears to be unused, 1-2015 schor
  * 
  */
 public interface StringMap {

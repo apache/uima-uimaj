@@ -75,7 +75,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   // Extra space in hashset for initial capacity - when creating from bitmap set - multiplier of existing size
   private static final int HASH_SET_OVERALLOCATE_DIVIDER_SHIFT = 1; // bit shift right = divide by 2 = 50% of existing capacity
   
-  private static final int[] EMPTY_INT_ARRAY = new int[0];
+  public static final int[] EMPTY_INT_ARRAY = new int[0];
 
   private PositiveIntSet intSet;  // one of 3 representations: IntBitSet, IntHashSet, IntSet (based on IntVector)
   
@@ -83,7 +83,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   boolean isBitSet = false;
   boolean isIntSet = false;  
   boolean isHashSet = false;
-  
+    
   boolean secondTimeShrinkable = false;
   
   /**
@@ -493,7 +493,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     }
     
     // return if newKey fits in existing allocation
-    final int spaceUsed = intBitSet.getSpaceUsed_in_bits();
+    final int spaceUsed = intBitSet.getSpaceUsed_in_bits_no_overhead();
     final int adjKey = newKey - offset;
     if (adjKey < spaceUsed) {
       return;
@@ -660,7 +660,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   private void switchToHashSet(int size, int offset) {
     IntListIterator it = intSet.iterator();
 
-    intSet = new IntHashSet(size);
+    intSet = new IntHashSet(size, offset);
     isIntSet = isBitSet = false;
     isHashSet = true;
     
@@ -718,4 +718,32 @@ public class PositiveIntSet_impl implements PositiveIntSet {
       intSet.bulkAddTo(v);
     }
   }
+
+  @Override
+  public int[] toIntArray() {
+    if (null != intSet) {
+      return intSet.toIntArray();
+    }
+    return EMPTY_INT_ARRAY;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return String.format("PositiveIntSet_impl [%n  intSet=%s%n secondTimeShrinkable=%s, useOffset=%s]",
+        intSet, secondTimeShrinkable, useOffset);
+  }
+  
+  // for testing
+  boolean isOffsetBitSet() {
+    return (isBitSet && ((IntBitSet)intSet).getOffset() != 0);
+  }
+
+  // for testing
+  boolean isShortHashSet() {
+    return (isHashSet && ((IntHashSet)intSet).isShortHashSet());
+  }
+  
 }

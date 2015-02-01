@@ -61,6 +61,25 @@ public class IntHashSetTest extends TestCase {
     assertEquals(-1000, ihs.getMostNegative());
     ihs.add(1001);    
     assertEquals(1001, ihs.getMostPositive());
+    sv = getSortedValues(ihs);
+    assertTrue(Arrays.equals(sv, new int[]{-1000, -500, 189, 500, 1001}));
+  }
+  
+  public void testSwitching224() {
+    final int OS = 100000;
+    ihs = new IntHashSet(16, OS);
+    ihs.add(OS - 1);
+    ihs.add(OS);
+    ihs.add(OS + 1);
+    int[] sv = getSortedValues(ihs);
+    assertTrue(Arrays.equals(sv, new int[]{99999, 100000, 100001 }));
+    ihs.add(OS - 32767);
+    sv = getSortedValues(ihs);
+    assertTrue(Arrays.equals(sv, new int[]{OS - 32767, 99999, 100000, 100001}));
+    ihs.add(OS - 32768);
+    sv = getSortedValues(ihs);
+    assertTrue(Arrays.equals(sv, new int[]{OS - 32768, OS - 32767, 99999, 100000, 100001}));
+    
   }
   
   private int[] getSortedValues(IntHashSet s) {
@@ -79,7 +98,7 @@ public class IntHashSetTest extends TestCase {
     ihs.add(1040);
     assertTrue(ihs.contains(1188));
     assertTrue(ihs.contains(1040));
-    assertFalse(ihs.contains(0));
+    assertFalse(ihs.contains(1));
     assertFalse(ihs.contains(99));  
   }
   

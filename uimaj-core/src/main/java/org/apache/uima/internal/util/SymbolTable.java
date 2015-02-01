@@ -41,9 +41,9 @@ public class SymbolTable {
   // The actual starting point
   private int start;
 
-  private HashMap<String, Integer> symbol2intMap; // String -> Integer
+  final private HashMap<String, Integer> symbol2intMap; // String -> Integer
 
-  private ArrayList<String> int2symbolMap; // switch from Vector to avoid sync contention 
+  final private ArrayList<String> int2symbolMap; // switch from Vector to avoid sync contention 
   
   /**
    * Use this constructor if you need your symbol numbering to start at a different point than 0.

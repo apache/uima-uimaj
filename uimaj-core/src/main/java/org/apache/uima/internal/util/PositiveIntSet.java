@@ -56,6 +56,10 @@ public interface PositiveIntSet {
   int size();
   
   /**
+   * @return the set as an arbitrarily ordered int array
+   */
+  int[] toIntArray();
+  /**
    * @return an iterator (may be ordered or unordered) over the members of the set
    */
   IntListIterator iterator();
@@ -69,7 +73,7 @@ public interface PositiveIntSet {
   /**
    * For FSBagIndex low level iterator use
    *   DOESN"T WORK WITH INCREMENTING position VALUES
-   * @param position - get the element at this position
+   * @param position - get the element at this position.  This is for iterator use only, and is not related to any key
    * @return the element
    */
   int get(int position);

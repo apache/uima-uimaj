@@ -115,6 +115,7 @@ public class CasCopierTest extends TestCase {
     try {
       cc.copyCasView(srcCas, v2, false);
     } catch (Exception e) {
+      e.printStackTrace();
       ee = e;
     }
     assertEquals(ee, null);
@@ -155,8 +156,30 @@ public class CasCopierTest extends TestCase {
     destTypeSystems.add(typeSystem);
     CAS destCas2 = CasCreationUtils.createCas(destTypeSystems);
     CasCopier.copyCas(srcCas, destCas2, true);
-    CasComparer.assertEquals(srcCas, destCas);
-
+    CasComparer.assertEquals(srcCas, destCas2);
+    
+    // try with src type system having extra type (no instances) with
+    //   incompatible ranges
+    additionalTypes = new TypeSystemDescription_impl();
+    fooType = additionalTypes.addType("test.Foo", "Test Type",
+            "uima.tcas.Annotation");
+    fooType.addFeature("bar", "Test Feature", "uima.cas.Float");
+    
+    ArrayList<TypeSystemDescription> srcTypeSystems = new ArrayList<TypeSystemDescription>();
+    srcTypeSystems.add(additionalTypes);
+    srcTypeSystems.add(typeSystem);
+    
+    srcCas = CasCreationUtils.createCas(srcTypeSystems);
+    serCasStream = new FileInputStream(JUnitExtension
+            .getFile("ExampleCas/multiSofaCas.xml"));
+    XCASDeserializer.deserialize(serCasStream, srcCas);
+    serCasStream.close();
+    
+    destCas2.reset();
+    
+    CasCopier.copyCas(srcCas, destCas2, true);
+    CasComparer.assertEquals(srcCas, destCas2);
+    
     // try with base CAS rather than initial view
     CAS srcCasBase = ((CASImpl) srcCas).getBaseCAS();
     destCas.reset();
@@ -177,12 +200,18 @@ public class CasCopierTest extends TestCase {
 
     CasCopier copier;
     // do the copy
-//    for (int i = 0; i < 1200; i++) {  // uncomment for perf test.  was more than 2x faster than version 2.6.0
+    long shortest = Long.MAX_VALUE;
+    int i = 0;
+//    for (; i < 6000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
       destCas.reset();
       long startTime = System.nanoTime();
       copier = new CasCopier(srcCas, destCas);
       copier.copyCasView(srcCas, true);
-//      System.out.format("CasCopier speed for 400KB xcas is %,d microseconds%n", (System.nanoTime() - startTime)/ 1000 );
+      long time = (System.nanoTime() - startTime)/ 1000;
+      if (time < shortest) {
+        shortest = time;
+        System.out.format("CasCopier speed for 400KB xcas is %,d microseconds on iteration %,d%n", shortest, i);
+      }
 //    }
     
     // verify copy
@@ -250,6 +279,14 @@ public class CasCopierTest extends TestCase {
     // set sofa data in destination CAS (this is not copied automtically)
     destCas.setDocumentText(srcCas.getDocumentText());
 
+    // copy all entities
+    Iterator<FeatureStructure> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
+//    while(it.hasNext()) {
+      FeatureStructure fs = it.next();
+      FeatureStructure fsc = copier.copyFs(fs);
+//      destCas.addFsToIndexes(fsc);
+      CasComparer.assertEquals(fs, fsc);
+//    }
     // copy an Annotation
     Iterator<AnnotationFS> annotIter = srcCas.getAnnotationIndex().iterator();
     FeatureStructure annot = annotIter.next();

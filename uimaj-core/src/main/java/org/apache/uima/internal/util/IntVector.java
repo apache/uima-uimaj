@@ -108,7 +108,7 @@ public class IntVector implements Serializable {
   
   public void resetSize(int capacity) {
     pos = 0;
-    if (capacity < 0) {
+    if (capacity <= 0) {
       capacity = default_size;
     }
     this.array = new int[capacity];
@@ -191,7 +191,7 @@ public class IntVector implements Serializable {
     if (index >= this.pos) {
       ensure_size(endPos);
     } else {
-      if (this.array.length < this.pos + count) {
+      if (this.array.length < this.pos + count) {  // "<" because cocunt
         ensure_size(this.pos + count);
       } else {
         this.pos += count;
@@ -503,6 +503,15 @@ public class IntVector implements Serializable {
 //    }
     System.arraycopy(this.array, 0, copy.array, 0, this.pos);
     return copy;
+  }
+  
+  /**
+   * @return a copy of the internal int array, trimmed
+   */
+  public int[] toIntArray() {
+    final int[] r = new int[size()];
+    System.arraycopy(this.array, 0, r, 0, this.pos);
+    return r;
   }
 
   public String toString() {
