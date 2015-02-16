@@ -500,9 +500,10 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     final int resultAddr = find(fsRef);
     // If found, create new FS to return.
     if (resultAddr >= 0) {
-      return (fsRef == resultAddr) ? 
+      int foundFsRef = this.index.get(resultAddr);
+      return (fsRef == foundFsRef) ? 
           fs : 
-          fsi.getCASImpl().createFS(this.index.get(resultAddr));
+          fsi.getCASImpl().createFS(foundFsRef);
     }
     // Not found.
     return null;
@@ -536,8 +537,8 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * the exact FS, not just one which matches in the sort comparator.
    * 
    * It only removes one of the exact FSs, if the same FS was indexed more than once.
-   * 
-   * No error is reported if the item is not in the index  
+   * @param fsRef the address of the fs to be removed
+   * @return true if was in the index  
    */
   @Override
   public boolean remove(int fsRef) {
