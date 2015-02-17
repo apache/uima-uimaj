@@ -702,7 +702,7 @@ private Feature initFeature(String featName, Type type)
     features being used as keys, and if it finds an update like this for a feature structure that
     is in the indexes, it removes the feature structure from the indexes, does the update,
     and adds it back.  It will do this for every feature update.  This is obviously not 
-    so efficient, when multiple features are being updated; in that case it would better to 
+    efficient when multiple features are being updated; in that case it would better to 
     remove the feature structure, do all the updates to all the features needing updates, and then
     do a single add-back operation.</para>
    
@@ -738,6 +738,10 @@ my_cas.protectIndexes(() -> {
     have features being updated which are used as keys in some index(es). At the end of the scope
     of the protectIndexes, it adds all of these back.  It also skips removing feature structures
     from bag indexes, since these have no keys.</para>
+    
+    <para>Within a <code>protectIndexes</code> block, do not do any operations which depend on the 
+    indexes being valid, such as creating and using an iterator.  This is because the removed FSs 
+    are only added back at the end of the protectIndexes block.</para>
 
     <para>The JVM property <code>-Duima.report_fs_update_corrupts_index</code> will generate a log entry
     everytime the frameworks finds (and automatically surrounds with a remove - add-back) an update to 
