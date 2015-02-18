@@ -840,7 +840,15 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       <quote>reset</quote> this condition, such as moving to beginning, end, or moving to a
       particular feature structure. So - if you have to modify the index, you can move it back to
       the last FS you had retrieved from the iterator, and then continue, if that makes sense in
-      your application.</para>   
+      your application.</para>
+      
+    <para>Feature structures being iterated over should not have features which are used as the "keys" of an index, updated.
+    If this is done, UIMA, to prevent index corruption, will recover by automatically removing the FS from the indexes, 
+    updating the field, and adding the FS back to the index.  This recovery operation, because it updates the index, 
+    will make the iterator throw a ConcurrentModificationException if the iterator is incremented or decremented;
+    this exception will likely be unexpected because because it is hidden and automatic.  
+    If you must do this kind of operation, consider using Snapshot iterators (see next),
+    which don't throw ConcurrentModificationException.</para>   
       
     <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
     allows creating a light-weight FSIndex based on the original FSIndex 
