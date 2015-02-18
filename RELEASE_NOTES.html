@@ -132,6 +132,11 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
   <a target="_blank" href=
   "http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.cas.updating_indexed_feature_structures">
   CAS Reference Chapter</a> and the CAS Javadocs; you can also use it with the JCas.</p>
+  
+  <p>Because this protection is automatic and hidden, if you are iterating over sorted or set indexes, the
+  automatic recovery may cause unexpected ConcurrentModificationExceptions to be thrown by the iterator when
+  advancing. To work around this, either stop modifying features which are used as keys in the index being iterated over,
+  or use Snapshot iterators (see following).</p>
 
 <h3>New Snapshot iterators won't throw ConcurrentModificationException</h3>
 <p>A long-standing difficulty with Feature Structure iterators, namely, that adding to / removing from the underlying

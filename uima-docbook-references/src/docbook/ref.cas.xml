@@ -702,7 +702,7 @@ private Feature initFeature(String featName, Type type)
     features being used as keys, and if it finds an update like this for a feature structure that
     is in the indexes, it removes the feature structure from the indexes, does the update,
     and adds it back.  It will do this for every feature update.  This is obviously not 
-    so efficient, when multiple features are being updated; in that case it would better to 
+    efficient when multiple features are being updated; in that case it would better to 
     remove the feature structure, do all the updates to all the features needing updates, and then
     do a single add-back operation.</para>
    
@@ -738,6 +738,10 @@ my_cas.protectIndexes(() -> {
     have features being updated which are used as keys in some index(es). At the end of the scope
     of the protectIndexes, it adds all of these back.  It also skips removing feature structures
     from bag indexes, since these have no keys.</para>
+    
+    <para>Within a <code>protectIndexes</code> block, do not do any operations which depend on the 
+    indexes being valid, such as creating and using an iterator.  This is because the removed FSs 
+    are only added back at the end of the protectIndexes block.</para>
 
     <para>The JVM property <code>-Duima.report_fs_update_corrupts_index</code> will generate a log entry
     everytime the frameworks finds (and automatically surrounds with a remove - add-back) an update to 
@@ -836,7 +840,15 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       <quote>reset</quote> this condition, such as moving to beginning, end, or moving to a
       particular feature structure. So - if you have to modify the index, you can move it back to
       the last FS you had retrieved from the iterator, and then continue, if that makes sense in
-      your application.</para>   
+      your application.</para>
+      
+    <para>Feature structures being iterated over should not have features which are used as the "keys" of an index, updated.
+    If this is done, UIMA, to prevent index corruption, will recover by automatically removing the FS from the indexes, 
+    updating the field, and adding the FS back to the index.  This recovery operation, because it updates the index, 
+    will make the iterator throw a ConcurrentModificationException if the iterator is incremented or decremented;
+    this exception will likely be unexpected because because it is hidden and automatic.  
+    If you must do this kind of operation, consider using Snapshot iterators (see next),
+    which don't throw ConcurrentModificationException.</para>   
       
     <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
     allows creating a light-weight FSIndex based on the original FSIndex 

@@ -235,7 +235,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, boolean is_unordered) {
     iicp.createIndexIteratorCache();
     if (iicp.iteratorCache.size() > 1) {
-      if (iicp.index.getIndexingStrategy() == FSIndex.BAG_INDEX || is_unordered) {
+      final int strat = iicp.index.getIndexingStrategy();
+      if (strat == FSIndex.BAG_INDEX || 
+          /*
+          strat == FSIndex.SET_INDEX ||  // because set indexes do not enforce ordering
+          */  // not added for 2.7.0 release, may break existing user code
+          is_unordered) {
         return new PointerIteratorUnordered(iicp);
       } else {
         return new PointerIterator(iicp);
@@ -885,6 +890,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     /* (non-Javadoc)
      * @see org.apache.uima.cas.impl.FSIndexRepositoryImpl.PointerIterator#moveTo(int)
+     * 
+     * NOTE: This logic is for the "Unordered" iterator case
+     * For unordered iterating, it doesn't make sense to find one not equal, any will do...
+     * but if one is exactly equal, we return that (backwards compatibility)
      */
     @Override
     public void moveTo(int fs) {
@@ -1052,6 +1061,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     final private FSIntArrayIndex sortedLeafIndex;
     final private int[] snapshot;
+    final private int size;   // can't get from snapshot.length - that might have extra space  https://issues.apache.org/jira/browse/UIMA-4248
     private int pos = 0;
       
     @Override
@@ -1067,9 +1077,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       FSLeafIndexImpl leafIndex = iicp0.index;
       FSIndexComparator comp = leafIndex.getComparator();
       
-      final int size = iicp0.size();
+      final int size = iicp0.size();  // adds up all the sizes of the indexes
       sortedLeafIndex = (FSIntArrayIndex) addNewIndexCore(comp, size, FSIndex.SORTED_INDEX);
       snapshot = sortedLeafIndex.getVector().getArray();
+      this.size = size;
       flattenCopy(iicp0, isRootOnly);
       sortedLeafIndex.getVector().setSize(size);
       moveToFirst();      
@@ -1102,11 +1113,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
        
     public boolean isValid() {
-      return (0 <= pos) && (pos < snapshot.length);
+      return (0 <= pos) && (pos < size);
     }
     
     public void moveToLast() {
-      pos = snapshot.length - 1;
+      pos = size - 1;
     }
 
     public void moveToFirst() {
@@ -1139,7 +1150,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (sortedLeafIndex.getComparator().getNumberOfKeys() == 0) {
         // use identity, search from beginning to get "left-most"
         int i = 0;
-        for (; i < snapshot.length; i++) {
+        for (; i < size; i++) {
           if (fs == snapshot[i]) {
             break;
           }
@@ -1174,7 +1185,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     
     public int ll_indexSize() {
-      return snapshot.length;
+      return size;
     }
     
     public Object copy() {
@@ -2420,7 +2431,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * This is used to see if a FS which has a key feature being modified
    * could corrupt an index in this view.  It returns true if found 
    * (sometimes it returns true, even if strictly speaking, there is 
-   * no chance of corruption - seel below)
+   * no chance of corruption - see below)
    * 
    * It does this by seeing if this FS is indexed by one or more Set or Sorted
    * indexes.

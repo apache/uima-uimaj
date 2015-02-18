@@ -52,32 +52,32 @@ public class OptimizeStringsTest extends TestCase {
   }
    
   public void testOpStr() {
-    OptimizeStrings os = new OptimizeStrings(true, 4);
-    os.add("a");
-    os.add("b");
-    os.add("c");
-    os.add("d");
-    os.add("e");
-    os.add("f");
+    OptimizeStrings os = new OptimizeStrings(true, 6);
+    os.add("a0");
+    os.add("b0");
+    os.add("c0");
+    os.add("d0");
+    os.add("e0");
+    os.add("f0");
     os.optimize();
-    String a = os.getString("a");
-    String b = os.getString("b");
-    String c = os.getString("c");
-    String d = os.getString("d");
-    String e = os.getString("e");
-    String f = os.getString("f");
-    assertEquals(a, "a");
-    assertEquals(b, "b");
-    assertEquals(c, "c");
-    assertEquals(d, "d");
-    assertEquals(e, "e");
-    assertEquals(f, "f");
+    String a = os.getString("a0");
+    String b = os.getString("b0");
+    String c = os.getString("c0");
+    String d = os.getString("d0");
+    String e = os.getString("e0");
+    String f = os.getString("f0");
+    assertEquals(a, "a0");
+    assertEquals(b, "b0");
+    assertEquals(c, "c0");
+    assertEquals(d, "d0");
+    assertEquals(e, "e0");
+    assertEquals(f, "f0");
     checkOffset(f, 0);
-    checkOffset(e, 1);
-    checkOffset(d, 2);
-    checkOffset(c, 3);
-    checkOffset(b, 0);
-    checkOffset(a, 1);
+    checkOffset(e, 2);
+    checkOffset(d, 4);
+    checkOffset(c, 0);
+    checkOffset(b, 2);
+    checkOffset(a, 4);
     
  }
   

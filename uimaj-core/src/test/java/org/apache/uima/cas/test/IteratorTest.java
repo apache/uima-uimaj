@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
 
@@ -223,6 +224,29 @@ public class IteratorTest extends TestCase {
 
   }
   
+  public void testEmptySnapshotIterator() {
+    setupindexes();
+    FSIterator<FeatureStructure> it = sortedIndex.iterator();
+    assertFalse(it.isValid());
+    boolean ok = false;
+    try {
+      it.get();
+    } catch (NoSuchElementException e) {
+      ok = true;
+    }
+    assertTrue(ok);
+    
+    it = ssSortedIndex.iterator();
+    assertFalse(it.isValid());
+    ok = false;
+    try {
+      it.get();
+    } catch (NoSuchElementException e) {
+      ok = true;
+    }
+    assertTrue(ok);    
+  }
+  
   public void testGetIndexes() {
     Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
@@ -359,8 +383,10 @@ public class IteratorTest extends TestCase {
     
     System.out.println("test multicore iterator with " + numberOfCores + " threads");
     Thread[] threads = new Thread[numberOfCores];
-    final Throwable[] tthrowable = new Throwable[1];
+    
+    final Throwable[] tthrowable = new Throwable[1];  // trick to get a return value in a parameter
     tthrowable[0] = null;
+    
     for (int r = 0; r < 10; r++) {
       for (int i = 0; i < numberOfCores; i++) {
         final int finalI = i;
@@ -460,8 +486,13 @@ public class IteratorTest extends TestCase {
     while (it.isValid()) {
       a = (AnnotationFS) it.get();
       if (b != null) {
-        // note compare may be equal for two items of different types 
-        assertTrue(setIndex.compare(b, a) <= 0);
+        // note compare may be equal for two items of different types
+        // because setIndex is not using type priorities (I think) (2/2015)
+        int compareResult = setIndex.compare(b, a);
+        if (compareResult == 0) {
+          // types must be different
+          assertFalse(a.getType().getName().equals(b.getType().getName()));
+        }
         if (a.hashCode() == b.hashCode()) {
           System.err.format("set Iterator: should not have 2 identical elements%n%s%n", it);
           assertTrue(false);
