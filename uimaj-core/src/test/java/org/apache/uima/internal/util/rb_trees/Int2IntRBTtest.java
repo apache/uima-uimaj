@@ -30,6 +30,28 @@ import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
 
 public class Int2IntRBTtest extends TestCase {
+  
+  public void testexpand() {
+    Int2IntRBT ia = new Int2IntRBT();
+    
+    int shiftpoint = 1 + (1 << 30);
+    shiftpoint = 1040;  // bigger than 1024, to get 1 realloc
+    shiftpoint = 6291500;  // bigger than the first observed outof bounds
+    
+    for (int i = 11; i < shiftpoint; i++) {
+//      if (i == 1034) {
+//        System.out.println("Debug");
+//      }
+      try {
+      ia.put(i,  i * 8);
+      } catch (ArrayIndexOutOfBoundsException e) {
+        System.err.format("%,d%n", i);
+        throw e;
+      }
+    }
+  }
+  
+  
   public void testIterator() {
     Int2IntRBT ia = new Int2IntRBT();
     Integer[] vs = new Integer[] {2, 2, 5, 1, 6, 7, 3, 4};
