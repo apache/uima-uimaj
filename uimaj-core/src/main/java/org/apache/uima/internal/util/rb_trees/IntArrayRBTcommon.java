@@ -335,10 +335,6 @@ public class IntArrayRBTcommon {
     this.parent = ensureArrayCapacity(this.parent, requiredSize);
   }
   
-  protected void ensureCapacity(int requiredSize) {
-    this.color = ensureBooleanArraySize(this.color, requiredSize);
-  }
-
   // only called for krlp style
   private int[] maximize(int[] array) {
     if (array.length < MAXklrp0) {
