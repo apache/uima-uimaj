@@ -236,14 +236,16 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     lastNodeGotten = NIL;
   }
   
-  protected void ensureCapacity(int requiredSize) {
-    super.ensureCapacity(requiredSize);
+  @Override
+  protected void ensureCapacityKlrp(int requiredSize) {
+    super.ensureCapacityKlrp(requiredSize);
     this.values = ensureArrayCapacity(this.values, requiredSize);
   }
   
   /**
    * 
-   * @param k
+   * @param k the key to insert
+   * @param v the value to insert (or replace, if key already present)
    * @return negative index if key is found
    */
   private int treeInsert(final int k, final int v) {

@@ -335,10 +335,6 @@ public class IntArrayRBTcommon {
     this.parent = ensureArrayCapacity(this.parent, requiredSize);
   }
   
-  protected void ensureCapacity(int requiredSize) {
-    this.color = ensureBooleanArraySize(this.color, requiredSize);
-  }
-
   // only called for krlp style
   private int[] maximize(int[] array) {
     if (array.length < MAXklrp0) {
@@ -350,7 +346,7 @@ public class IntArrayRBTcommon {
   }
   
   protected int newNode(final int k) {
-    // Make sure the tree is big enough to accomodate a new node.
+    // Make sure the tree is big enough to accommodate a new node.
 
     if (useklrp) {
       int lenKlrp = (klrp.length >> 2);
@@ -366,15 +362,15 @@ public class IntArrayRBTcommon {
       if (this.next >= lenKlrp) {
         ensureCapacityKlrp(this.next + 1);
       }
+    } else {
+      // not using klrp format
+      ensureCapacityNotKrlp(this.next + 1);
     }
     
     if (this.next >= this.color.length){
-      if (!useklrp) {
-        ensureCapacityNotKrlp(this.next + 1);
-      }
-      ensureCapacity(this.next + 1);
+      this.color = ensureBooleanArraySize(this.color, this.next + 1);        
     }
-
+    
     // assert(key.length > next);
     final int z = this.next;
     ++this.next;

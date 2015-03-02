@@ -144,14 +144,19 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
   iterator), is addressed with a new class of "snapshot" iterators.
   These take a snapshot of the state of the index when the iterator is created; subsequent modifications to the index
   are then permitted, while the iterator continues to iterate over the snapshot it created; these iterators do not
-  throw ConcurrentModificationException.  The implementation of this feature is via a new method on FSIndex, which 
-  creates a light-weigh copy of the the FSIndex instance whose iterator method iterators gets the Snapshot kind.  
+  throw ConcurrentModificationException.  The implementation of this feature is via a new method on FSIndex, 
+  <a target="_blank" href=
+  "http://uima.apache.org/d/uimaj-2.7.0/apidocs/org/apache/uima/cas/FSIndex.html#withSnapshotIterators--">
+  withSnapshotIterators()</a>, which 
+  creates a light-weight copy of the the FSIndex instance whose iterator method iterators gets the Snapshot kind.  
   This approach allows using the new index in Java's "extended for" statement.</p>
   
   <p>The current implementation of the snapshot iterators makes a snapshot of the index being iterated over, at
   creation time, which has a cost in space and time.</p>
 
 <h3>Other changes</h3>
+<p>Some of the other major changes are listed here; for the complete list, see <a href="issuesFixed/jira-report.html">
+the Issues Fixed report</a>.</p> 
 <ul><li> making the JCasGen Eclipse plugin work with more varieties of specifications for class paths.
  Jira issues: UIMA-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4080">4080</a>/
  <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4081">4081</a></li>
@@ -166,11 +171,13 @@ the sorted and bag indexes. this change can be disabled, by running the JVM with
  <li>default bag indexes will now be created if there are only Set indexes. 
  Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4111">UIMA-4111</a>.</li>
  
- <li>Xmi CAS Serialization now checks to see that list and array feature values marked as multipleReferencesAllowed=false
+ <li><p>Xmi CAS Serialization now checks to see that list and array feature values marked as multipleReferencesAllowed=false
  (or not marked at all, which defaults to multipleReferencesAllowed=false) are not multiply-referenced.  If they are,
  they continue to be serialized as if they are independent objects (as was previously done), but now a new 
  warning message is issued.  Because there can be a huge number of these messages, they are automatically
- throttled down, to prevent running out of room in the error logs.</li>
+ throttled down, to prevent running out of room in the error logs.</p>
+ <p>The message strings for these look like "Feature [some-feature-name] is marked multipleReferencesAllowed=false,
+ but it has multiple references.  These will be serialized in duplicate."</p></li>
  
  <li>The CasCopier now checks to insure that the range type of the target feature has the same name as the 
  range type of the source feature, which catches errors when two different type systems are used for the source and
