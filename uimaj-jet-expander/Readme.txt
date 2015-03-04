@@ -24,6 +24,9 @@
  of UIMA.
 
  It is not part of the Maven build (at this time).
+ 
+ To get it into your Eclipse workspace, use the SVN Repo view, and
+ do an eclipse SVN checkout.
 
  It is set up with launchers for use within the Eclipse
  IDE.  There are 2 launchers - one creates Java code
