@@ -85,6 +85,7 @@ public class FsIndexFactoryTest extends ComponentTestBase {
     token1.addToIndexes();
 
     // index1 is a sorted index, so when adding a token twice, both remain in the index
+    // Since UIMA 2.7.0, annotations are not added twice to the index by default.
     Token token2 = new Token(jcas, 3, 4);
     token2.addToIndexes();
     token2.addToIndexes();
@@ -100,7 +101,7 @@ public class FsIndexFactoryTest extends ComponentTestBase {
     FSIndex<FeatureStructure> index1 = jcas.getFSIndexRepository().getIndex("index1");
     FSIndex<FeatureStructure> index2 = jcas.getFSIndexRepository().getIndex("index2");
 
-    assertEquals(3, index1.size());
+    assertEquals(2, index1.size());
     assertEquals(2, index2.size());
 
     // AnalysisEngine dumpWriter = createPrimitive(CASDumpWriter.class);
