@@ -14,13 +14,12 @@
 	<inceptionYear>2012</inceptionYear>
 	<properties>
 		<spring.version>3.1.2.RELEASE</spring.version>
-		<uima.version>2.7.0-SNAPSHOT</uima.version>
+		<uima.version>2.7.0</uima.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
     <!--
       - Only required while uimaFIT depends on unreleased versions of UIMA.
-  	  -->
 	<repositories>
 		<repository>
 			<id>apache.snapshots</id>
@@ -47,7 +46,8 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
+    -->
+    
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
