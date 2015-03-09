@@ -257,13 +257,14 @@ public class IteratorTest extends TestCase {
   public void testMoveTo() {
     // Add some arbitrary annotations
     for (int i = 0; i < 10; i++) {
-      createFSs(i);
+      createFSs(i);  // add annotation, sentence, and 3 tokens, all with same begin / end
     }
     final int start = 5;
     final int end = 7;
     FSIndexRepository repo = this.cas.getIndexRepository();
     for (int i = 0; i < 10; i++) {
-      AnnotationFS annotation = this.cas.createAnnotation(this.annotationType, start, end);
+      // add 10 annotations with start 5, end 7
+      AnnotationFS annotation = this.cas.createAnnotation(this.annotationType, start, end);  
       repo.addFS(annotation);
     }
     AnnotationFS match = this.cas.createAnnotation(this.annotationType, start, end);
@@ -271,7 +272,7 @@ public class IteratorTest extends TestCase {
     FSIndex<AnnotationFS> ssIndex = index.withSnapshotIterators();
     FSIterator<AnnotationFS> it = index.iterator();
     FSIterator<AnnotationFS> ssit = ssIndex.iterator();
-    it.moveTo(match);
+    it.moveTo(match);  // should move to left-most of the 10 with start=5 end=7
     ssit.moveTo(match);
     assertTrue(index.compare(match, it.get()) == 0);
     assertTrue(index.compare(match, ssit.get()) == 0);
@@ -460,7 +461,7 @@ public class IteratorTest extends TestCase {
     fastFailTst(bagIndex, true);
     fastFailTst(ssBagIndex, false);
    
-    fastFailTst(sortedIndex, true);
+    fastFailTst(sortedIndex, true);  
     fastFailTst(ssSortedIndex, false);
     
     
