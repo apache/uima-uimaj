@@ -21,15 +21,16 @@ package org.apache.uima.analysis_engine.impl;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngineManagement;
+import org.apache.uima.util.ConcurrentHashMapWithProducer;
 
 /**
  * Implements Monitoring/Management interface to an AnalysisEngine.
@@ -48,7 +49,7 @@ public class AnalysisEngineManagementImpl
    * This static set is needed to keep track of what names we've already used for "root" MBeans
    * (those representing top-level AEs and CPEs).
    */
-  private static Set<String> usedRootNames = new HashSet<String>();
+  private static ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<String, AtomicInteger>();
 
   private String name;
 
@@ -255,7 +256,7 @@ public class AnalysisEngineManagementImpl
       prefix = aCustomPrefix;
       if (!prefix.endsWith(":") && !prefix.endsWith(",")) {
         prefix += ",";
-}
+      }
     }
     // compute the unique name   
     // (first get the rootMBean and assign it a unique name if it doesn't already have one)
@@ -263,18 +264,8 @@ public class AnalysisEngineManagementImpl
             .getRootContext().getManagementInterface();
     if (rootMBean.getUniqueMBeanName() == null) {
       // try to find a unique name for the root MBean
-      String baseRootName = rootMBean.getName();
-      if (baseRootName == null) {
-        baseRootName = "CPE"; // CPE's don't currently have names
-      }
-      String rootName = baseRootName;
-      int i = 2;
-      while (usedRootNames.contains(rootName)) {
-        rootName = baseRootName + " " + i++;
-      }
-      usedRootNames.add(rootName);
-      // create a propertly-formatted MBean name, using the specified prefix
-      rootMBean.uniqueMBeanName = prefix + "name=" + escapeValue(rootName);
+      String rootName = getRootName(rootMBean.getName());
+      rootMBean.uniqueMBeanName = prefix + "name=" + escapeValue(getRootName(rootMBean.getName()));
     }
 
     if (rootMBean != this) {
@@ -293,6 +284,28 @@ public class AnalysisEngineManagementImpl
       }      
       uniqueMBeanName = makeMBeanName(prefix, aContext.getQualifiedContextName().substring(1), 1);
     }
+  }
+  
+  static private final Callable<AtomicInteger> produceAtomicInteger = new Callable<AtomicInteger>() {  
+    @Override
+    public AtomicInteger call() throws Exception{
+      return new AtomicInteger(1);
+    }
+  };
+  
+  // package private for testing
+  static String getRootName(String baseRootName) {
+    if (baseRootName == null) {
+      baseRootName = "CPE"; // CPE's don't currently have names
+    }
+    AtomicInteger suffix;
+    try {
+      suffix = usedRootNames.get(baseRootName, produceAtomicInteger);
+    } catch (Exception e) {
+      throw new RuntimeException(e); // never happen.
+    }
+    int suffixI = suffix.getAndIncrement();
+    return (suffixI == 1) ? baseRootName : baseRootName + suffixI;
   }
 
   /**
