@@ -47,11 +47,6 @@ public class MultiThreadUtils extends TestCase {
   }
   
   public static Runnable emptyReset = new Runnable() {public void run() {}};
-  
-  // needed because
-  //   this class extends TestCase (in order to have access to assertTrue, etc
-  //   this causes the junit runner to warn if there are no "test"s in this class
-  public void testDummy() {}
 
   // also serves as a lock
   
