@@ -40,21 +40,12 @@ import java.util.StringTokenizer;
 public class UIMAClassLoader extends URLClassLoader {
   
   //public so other users can use this
-  public final static boolean SUPPORTS_PARALLEL_LOADING = Float.parseFloat(System.getProperty("java.version").substring(0,3)) >= 1.7;
-  static {
-    if (SUPPORTS_PARALLEL_LOADING) {
-      try {
-        Method m = ClassLoader.class.getDeclaredMethod("registerAsParallelCapable");
-        m.setAccessible(true);
-        m.invoke(null);
-      } catch (NoSuchMethodException e) {
-      } catch (SecurityException e) {
-      } catch (IllegalAccessException e) {
-      } catch (IllegalArgumentException e) {
-      } catch (InvocationTargetException e) {
-      }
-    }
-  }
+  public final static boolean SUPPORTS_PARALLEL_LOADING = true;
+  static {if (!ClassLoader.registerAsParallelCapable()) {
+           System.err.println("WARNING - Failed to register the UIMA Class loader as parallel-capable - should never happen");     
+          }
+         }
+
   /**
    * Transforms the string classpath to a URL array based classpath.
    * 
