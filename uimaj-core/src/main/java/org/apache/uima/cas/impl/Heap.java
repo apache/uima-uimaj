@@ -35,12 +35,14 @@ public final class Heap {
   /**
    * Minimum size of the heap. Currently set to <code>1000</code>.
    */
-  public static final int MIN_SIZE = 1000;
+  public static final int MIN_SIZE = 1024;
 
   /**
    * Default size of the heap. Currently set to <code>500000</code>(2 MB).
    */
-  public static final int DEFAULT_SIZE = 500000; // 2 MB pages
+  public static final int DEFAULT_SIZE = 1024 * 512; // 2 MB pages
+  
+  private static final int MULTIPLICATION_LIMIT = 1024 * 1024 * 16;  
 
   // Initial size of the heap. This is also the size the heap will be reset to
   // on a full reset.
@@ -184,7 +186,7 @@ public final class Heap {
     final int start = this.heap.length;
     // This will grow the heap by doubling its size if it's smaller than
     // DEFAULT_SIZE, and by DEFAULT_SIZE if it's larger.
-    this.heap = IntArrayUtils.ensure_size(this.heap, start + this.initialSize, 2, DEFAULT_SIZE);
+    this.heap = IntArrayUtils.ensure_size(this.heap, start + this.initialSize, 2, MULTIPLICATION_LIMIT);
     this.max = this.heap.length;
   }
 

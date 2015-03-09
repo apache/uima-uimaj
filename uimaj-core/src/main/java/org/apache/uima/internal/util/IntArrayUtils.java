@@ -26,7 +26,7 @@ public final class IntArrayUtils {
 
   private static final int default_growth_factor = 2;
 
-  private static final int default_multiplication_limit = 1024;
+  private static final int default_multiplication_limit = 1024 * 1024 * 16;
 
   public static final int[] ensure_size(int[] array, int req) {
     return ensure_size(array, req, default_growth_factor, default_multiplication_limit);

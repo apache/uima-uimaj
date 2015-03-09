@@ -31,6 +31,7 @@ import org.apache.uima.internal.util.StringUtils;
  */
 public class IntArrayRBTcommon {
 
+  static final boolean debug = false;
   static final protected boolean useklrp = true;
   // Keys.
   protected int[] key;
@@ -178,7 +179,7 @@ public class IntArrayRBTcommon {
 
   final protected int growth_factor = 2;  // must be pwr of 2 for useklrp true
 
-  final protected int multiplication_limit = 1024 * 1024 * 2;  // must be pwr of 2 for useklrp true
+  final protected int multiplication_limit = 1024 * 1024 * 16;  // must be pwr of 2 for useklrp true
   
   // The NIL sentinel
   public static final int NIL = 0;
@@ -309,6 +310,9 @@ public class IntArrayRBTcommon {
       break;
     case 1: {
       if (klrp1 == null) {
+        if (debug) {
+          System.out.format("initializing klrp1 to %d%n", requiredCapacityForLastSegment << 2);
+        }
         klrp1 = new int[requiredCapacityForLastSegment << 2];
       } else {
         klrp1 = ensureArrayCapacity(klrp1, requiredCapacityForLastSegment << 2);
@@ -394,6 +398,9 @@ public class IntArrayRBTcommon {
    * @return expanded array
    */
   protected final int[] ensureArrayCapacity(final int[] array, final int newSize) {
+    if (debug) {
+      System.out.format("expanding array from to %,d to %,d%n", array.length, newSize);
+    }
     return IntArrayUtils.ensure_size(array, newSize, this.growth_factor, this.multiplication_limit);    
   }
 

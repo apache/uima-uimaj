@@ -38,10 +38,7 @@ public class Int2IntRBTtest extends TestCase {
     shiftpoint = 1040;  // bigger than 1024, to get 1 realloc
     shiftpoint = 6291500;  // bigger than the first observed outof bounds
     
-    for (int i = 11; i < shiftpoint; i++) {
-//      if (i == 1034) {
-//        System.out.println("Debug");
-//      }
+    for (int i = 1; i < shiftpoint; i++) {
       try {
       ia.put(i,  i * 8);
       } catch (ArrayIndexOutOfBoundsException e) {

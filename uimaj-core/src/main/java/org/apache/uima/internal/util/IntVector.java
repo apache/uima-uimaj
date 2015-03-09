@@ -37,7 +37,7 @@ public class IntVector implements Serializable {
 
   private static final int default_growth_factor = 2;
 
-  private static final int default_multiplication_limit = 2000000;
+  private static final int default_multiplication_limit = 1024 * 1024 * 16;
 
   final private int growth_factor;
 
