@@ -39,7 +39,15 @@ final class LongHeap extends CommonAuxHeap {
   final void initMemory() {
     this.heap = new long[this.heapBaseSize];
   }
+  
+  final void initMemory(int size) {
+    this.heap = new long[size];
+  }
 
+  final int getCapacity() {
+    return this.heap.length;
+  }
+  
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
       return;

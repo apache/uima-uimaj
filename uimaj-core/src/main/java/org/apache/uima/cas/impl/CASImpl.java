@@ -310,7 +310,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     /**
      * This stack corresponds to nested protectIndexes contexts. Normally should be very shallow.
      */
-    private final List<FSsTobeAddedback> fssTobeAddedback = new ArrayList<FSsTobeAddedback>();
+    private final ArrayList<FSsTobeAddedback> fssTobeAddedback = new ArrayList<FSsTobeAddedback>();
     
     /**
      * This version is for single fs use, by binary deserializers and by automatic mode
@@ -1068,7 +1068,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         ((CASImpl) tcas).mySofaRef = (1 == view) ? -1 : 0;
       }
     }
-    this.getHeap().reset(this.getHeap().getHeapSize() > CASImpl.resetHeapSize);
+    this.getHeap().reset(/*this.getHeap().getHeapSize() > CASImpl.resetHeapSize*/);
 
     resetStringTable();
 
@@ -1077,7 +1077,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.getLongHeap().reset();
 
     this.indexRepository.flush();
-    this.svd.sofaNameSet.clear();
+    this.svd.sofaNameSet = new HashSet<String>();
     this.svd.initialSofaCreated = false;
     // always an Initial View now!!!
     this.svd.viewCount = 1;
@@ -1093,6 +1093,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     clearTrackingMarks();
     this.svd.cache_not_in_index = 0;
     this.svd.fssTobeAddedback.clear();
+    this.svd.fssTobeAddedback.trimToSize();
   }
 
   /**
@@ -1102,7 +1103,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void flush() {
     reset();
   }
-
   
   public FSIndexRepository getIndexRepository() {
     if (this == this.svd.baseCAS) {

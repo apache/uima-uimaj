@@ -39,6 +39,14 @@ final class ByteHeap extends CommonAuxHeap {
   final void initMemory() {
     this.heap = new byte[this.heapBaseSize];
   }
+  
+  final void initMemory(int size) {
+    this.heap = new byte[size];
+  }
+
+  final int getCapacity() {
+    return this.heap.length;
+  }
 
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)

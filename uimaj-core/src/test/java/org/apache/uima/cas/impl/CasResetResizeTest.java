@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -27,6 +31,7 @@ import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.resource.Resource;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
 
@@ -48,8 +53,11 @@ public class CasResetResizeTest extends TestCase {
               new XMLInputSource(JUnitExtension
                       .getFile("TextAnalysisEngineImplTest/TestPrimitiveTae1.xml")));
 
-      // check default setting
-      TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor);
+
+      Properties perfSettings = new Properties();
+      perfSettings.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "50000");
+      //(UIMAFramework.CAS_INITIAL_HEAP_SIZE, (Object)50000);
+      TextAnalysisEngine taeDefault = UIMAFramework.produceTAE(testDescriptor, Collections.singletonMap(Resource.PARAM_PERFORMANCE_TUNING_SETTINGS, (Object) perfSettings));
       CAS cas = taeDefault.newCAS();
       int heapSize = ((CASImpl) cas).getHeap().getHeapSize();
       int bufSize = ((CASImpl)cas).getHeap().heap.length;
@@ -63,33 +71,42 @@ public class CasResetResizeTest extends TestCase {
         cas.createAnnotation(annotType, i, i);
       }
       
-      heapSize = ((CASImpl) cas).getHeap().getHeapSize();
-      bufSize = ((CASImpl)cas).getHeap().heap.length;
-      //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);      
-      assertTrue(heapSize <= bufSize);
-      Assert.assertTrue(heapSize > CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      // heap growth (words):
+      //                      500K is the switchover point
+      //                     16 * 1024 *1024 = 16,777,216 is the switchover point
+      //                        then the additional is 16,777,216
+      //  50k, 100k, 200k, 400k, 800k, 1.6m, 3.2m, 6.4m, 12.8m
+      //   8    7     6     5     4     3     2     1       0  
       
-      //reset the CAS - it should shrink
-      cas.reset();
       heapSize = ((CASImpl) cas).getHeap().getHeapSize();
-      bufSize = ((CASImpl)cas).getHeap().heap.length;
-      //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);
-      assertTrue(heapSize <= bufSize);
-      Assert.assertTrue(bufSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);
+      assertEquals(12800000, heapSize);
+      
+      //reset the CAS - it should shrink the 4th time
+      //  first time, Cas is of capacity 8,500,000, but has 8,000,008 cells used ==> shrunk size should remain the same
+      //  second time, prev is 8,500,000, so no shrinking
+      //  third time, gets shrunk to half the # of steps
+      //  fourth time, gets shrunk to half the # of steps
+      
+//      int[] expected = new int[] {8300000, 8300000, 3800000, 1300000, 400000, 200000, 100000, 50000};  // for doubling
+      
+      int[] expected = {12800000, 12800000, 6400000, 3200000, 1600000, 800000, 400000, 200000};    // for 1 step
+      for (int i = 0; i < 8; i++) {
+        cas.reset();
+        heapSize = ((CASImpl) cas).getHeap().getHeapSize();
+        assertEquals(expected[i], heapSize);       
+      }
 
-      
       //If instead we create the annotations in smaller chunks and reset each time,
-      //the CAS buffer size shouldn't grow    
+      //the CAS buffer size shouldn't grow
+      cas = taeDefault.newCAS();
+      
       for (int j = 0; j < 10; j++) {
         for (int i = 0; i < 200000; i++) {
           cas.createAnnotation(annotType, i, i);
         }
         
         heapSize = ((CASImpl) cas).getHeap().getHeapSize();
-        bufSize = ((CASImpl)cas).getHeap().heap.length;
-        //System.out.println("Heap size: " + heapSize + ", buffer size: " + bufSize);      
-        assertTrue(heapSize <= bufSize);
-        Assert.assertTrue(bufSize < CASImpl.DEFAULT_RESET_HEAP_SIZE);      
+        Assert.assertTrue(heapSize == 1600000);      
         cas.reset();
       }
   

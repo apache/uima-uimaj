@@ -39,6 +39,14 @@ final class ShortHeap extends CommonAuxHeap {
   final void initMemory() {
     this.heap = new short[this.heapBaseSize];
   }
+  
+  final void initMemory(int size) {
+    this.heap = new short[size];
+  }
+
+  final int getCapacity() {
+    return this.heap.length;
+  }
 
   void growHeapIfNeeded() {
     if (heap.length >= heapPos)
