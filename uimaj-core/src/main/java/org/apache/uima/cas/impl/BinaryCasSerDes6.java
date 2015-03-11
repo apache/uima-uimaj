@@ -3493,9 +3493,12 @@ public class BinaryCasSerDes6 {
     Inflater inflater = new Inflater(true);
     inflaters[slotIndex] = inflater;  // save to be able to call end() when done. 
     ByteArrayInputStream baiStream = new ByteArrayInputStream(b);      
-    int zipBufSize = Math.max(32768, bytesCompr);
+    int zipBufSize = Math.max(1 << 10, bytesCompr); // 32768 == 1<< 15.  Tuned by trials on 2015 intel i7
+     // caches: L1 = 128KB    L2 = 1M     L3 = 6M
+     // increasing the max causes cache dumping on this machine, and things slow down
     InflaterInputStream iis = new InflaterInputStream(baiStream, inflater, zipBufSize);
-    dataInputs[slotIndex] = new DataInputStream(new BufferedInputStream(iis, zipBufSize));
+    // increasing the following buffer stream buffer size also seems to slow things down
+    dataInputs[slotIndex] = new DataInputStream(new BufferedInputStream(iis, zipBufSize * 1 ));
   }
   
   private void closeDataInputs() {

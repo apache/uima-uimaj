@@ -1852,7 +1852,7 @@ public class BinaryCasSerDes4 {
       Inflater inflater = new Inflater(true);
       inflaters[slotIndex] = inflater;  // save to be able to call end() when done. 
       ByteArrayInputStream baiStream = new ByteArrayInputStream(b);      
-      int zipBufSize = Math.max(32768, bytesCompr);
+      int zipBufSize = Math.max(1024, bytesCompr);
       InflaterInputStream iis = new InflaterInputStream(baiStream, inflater, zipBufSize);
       dataInputs[slotIndex] = new DataInputStream(new BufferedInputStream(iis, zipBufSize));
     }
