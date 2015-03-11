@@ -36,7 +36,7 @@ import org.apache.uima.cas.FSIterator;
  * annotations a and b, if <code>a.start &lt; b.start</code> then <code> a &lt; b</code>.</li>
  * <li>Annotations whose start offsets are equal are next sorted by <i>decreasing</i> order of
  * their end offsets. That is, if <code>a.start = b.start</code> and <code>a.end &gt; b.end</code>,
- * then <code> a &lt; b</code>. This causes annotations with larger to be sorted before
+ * then <code> a &lt; b</code>. This causes annotations with larger spans to be sorted before
  * annotations with smaller spans, which produces an iteration order similar to a preorder tree
  * traversal.</li>
  * <li>Annotations whose start offsets are equal and whose end offsets are equal are sorted based
@@ -61,8 +61,9 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * <p>
    * A disambiguated iterator is defined as follows. The first annotation returned is the same as
    * would be returned by the corresponding ambiguous iterator. If the unambiguous iterator has
-   * returned a previously, it will next return the smallest b s.t. a &lt; b and a.getEnd() &lt;=
-   * b.getBegin().
+   * returned <code>a</code> previously, it will next return the smallest <code>b</code> s.t. a &lt; b and a.getEnd() &lt;=
+   * b.getBegin().  In other words, the <code>b</code> annotation's start will be large enough to not
+   * overlap the span of <code>a</code>.
    * </p>
    * 
    * @param ambiguous
