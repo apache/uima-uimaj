@@ -108,7 +108,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // A list of indexes (the sub-indexes that we need for an
     // iterator). I.e., one index for each type that's subsumed by the
     // iterator's type.
-    private ArrayList<FSLeafIndexImpl<?>> iteratorCache = null;
+    private ArrayList<FSLeafIndexImpl<?>> cachedSubIndexes = null;
+    
     
     // VOLATILE to permit double-checked locking technique
     private volatile boolean isIteratorCacheSetup = false;
@@ -121,7 +122,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (!isIteratorCacheSetup) {
         sb.append(" cache not set up yet");
       } else {  
-        for (FSLeafIndexImpl lii : iteratorCache) {
+        for (FSLeafIndexImpl lii : cachedSubIndexes) {
           sb.append("  cache ").append(i++);
           sb.append("  ").append(lii).append('\n');
         }
@@ -171,7 +172,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         if (isIteratorCacheSetup) {
           return;
         }
-        final ArrayList<FSLeafIndexImpl<?>> tempIteratorCache = new ArrayList<FSLeafIndexImpl<?>>();
+        final ArrayList<FSLeafIndexImpl<?>> tempSubIndexCache = new ArrayList<FSLeafIndexImpl<?>>();
         final Type rootType = this.index.getComparator().getType();
         ArrayList<Type> allTypes = null;
         if (this.index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
@@ -189,10 +190,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
           indexPos = indexList.indexOf(this);
           if (indexPos >= 0) {
-            tempIteratorCache.add(indexList.get(indexPos).index);
+            tempSubIndexCache.add(indexList.get(indexPos).index);
           }
         }
-        this.iteratorCache = tempIteratorCache; 
+        this.cachedSubIndexes = tempSubIndexCache; 
         // assign to "volatile" at end, after all initialization is complete
         this.isIteratorCacheSetup = true;
       }  // end of synchronized block
@@ -227,7 +228,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     int size() {
       int size = 0;
       createIndexIteratorCache();  // does nothing if already created
-      final ArrayList<FSLeafIndexImpl<?>> localIc = this.iteratorCache;
+      final ArrayList<FSLeafIndexImpl<?>> localIc = this.cachedSubIndexes;
       final int len = localIc.size();
       for (int i = 0; i < len; i++) {
         size += localIc.get(i).size();
@@ -254,7 +255,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, boolean is_unordered) {
     iicp.createIndexIteratorCache();
-    if (iicp.iteratorCache.size() > 1) {
+    if (iicp.cachedSubIndexes.size() > 1) {
       final int strat = iicp.index.getIndexingStrategy();
       if (strat == FSIndex.BAG_INDEX || 
           /*
@@ -271,7 +272,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, int fs) {
     iicp.createIndexIteratorCache();
-    if (iicp.iteratorCache.size() > 1) {
+    if (iicp.cachedSubIndexes.size() > 1) {
       return new PointerIterator(iicp, fs);
     }
     return new LeafPointerIterator(iicp, fs);
@@ -286,7 +287,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * iterator pieces.
    * 
    * This class handles the concepts involved with iterating over a type and
-   * all of its subtypes
+   * all of its subtypes, keeping the ordering among the subtypes. 
    * 
    * The LeafPointerIterator handles just iterating over a particular type or subtype
    * (the one that this class picks).
@@ -308,7 +309,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // An array of ComparableIntPointerIterators, one for each subtype.
     //   Each instance of these has a Class.this kind of ref to a particular variety of FSLeafIndex (bag, set, sorted) corresponding to 1 type
     //   This array has the indexes for all the subtypes
-    protected ComparableIntPointerIterator[] indexes;
+    protected ComparableIntPointerIterator[] iterators;
 
     int lastValidIndex;
 
@@ -334,7 +335,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     public String toString() {
       StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " [iicp=" + iicp + ", indexes=\n");
       int i = 0;
-      for (ComparableIntPointerIterator item : indexes) {
+      for (ComparableIntPointerIterator item : iterators) {
         sb.append("  ").append(i++).append("  ").append(item).append('\n');
       }
       sb.append("  lastValidIndex="
@@ -343,13 +344,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     private ComparableIntPointerIterator[] initPointerIterator() {
-      // Make sure the iterator cache exists.
-      final ArrayList<FSLeafIndexImpl<?>> iteratorCache = iicp.iteratorCache;
+      // Note to maintainers: Make sure the iterator cache exists on all paths calling this
+      final ArrayList<FSLeafIndexImpl<?>> cachedSubIndexes = iicp.cachedSubIndexes;
       
-      final ComparableIntPointerIterator[] pia = new ComparableIntPointerIterator[iteratorCache.size()];
+      final ComparableIntPointerIterator[] pia = new ComparableIntPointerIterator[cachedSubIndexes.size()];
            
       for (int i = 0; i < pia.length; i++) {
-        final FSLeafIndexImpl<?> leafIndex = iteratorCache.get(i);
+        final FSLeafIndexImpl<?> leafIndex = cachedSubIndexes.get(i);
         pia[i] = leafIndex.pointerIterator(
             this.iteratorComparator,
             FSIndexRepositoryImpl.this.detectIllegalIndexUpdates,
@@ -361,16 +362,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private PointerIterator(final IndexIteratorCachePair iicp) {
       // next 3 are final so aren't done in the common init
       this.iicp = iicp;
-      this.iteratorComparator = iicp.iteratorCache.get(0);
-      this.indexes = initPointerIterator();
+      this.iteratorComparator = iicp.cachedSubIndexes.get(0);
+      this.iterators = initPointerIterator();
       moveToFirst();
     }
 
     private PointerIterator(final IndexIteratorCachePair iicp, int fs) {
       // next 3 are final so aren't done in the common init
       this.iicp = iicp;
-      this.iteratorComparator = iicp.iteratorCache.get(0);
-      this.indexes = initPointerIterator();
+      this.iteratorComparator = iicp.cachedSubIndexes.get(0);
+      this.iterators = initPointerIterator();
       moveTo(fs);
     }
 
@@ -380,7 +381,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     protected ComparableIntPointerIterator checkConcurrentModification(int i) {
-      final ComparableIntPointerIterator cipi = this.indexes[i];
+      final ComparableIntPointerIterator cipi = this.iterators[i];
       if (cipi.isConcurrentModification()) {
         throw new ConcurrentModificationException();
       }
@@ -431,25 +432,25 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       while (idx > SORTED_SECTION) {
         nidx = (idx + SORTED_SECTION - 1) >> 1;
-        if (!is_before(it, this.indexes[nidx], dir)) {
-          this.indexes[idx] = it;
+        if (!is_before(it, this.iterators[nidx], dir)) {
+          this.iterators[idx] = it;
           return;
         }
-        this.indexes[idx] = this.indexes[nidx];
+        this.iterators[idx] = this.iterators[nidx];
         idx = nidx;
       }
 
       while (idx > 0) {
         nidx = idx - 1;
-        if (!is_before(it, this.indexes[nidx], dir)) {
-          this.indexes[idx] = it;
+        if (!is_before(it, this.iterators[nidx], dir)) {
+          this.iterators[idx] = it;
           return;
         }
-        this.indexes[idx] = this.indexes[nidx];
+        this.iterators[idx] = this.iterators[nidx];
         idx = nidx;
       }
 
-      this.indexes[idx] = it;
+      this.iterators[idx] = it;
     }
 
     /**
@@ -463,8 +464,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     private void heapify_down(ComparableIntPointerIterator it, int dir) {
       if (!it.isValid()) {
         final ComparableIntPointerIterator itl = checkConcurrentModification(this.lastValidIndex);
-        this.indexes[this.lastValidIndex] = it;
-        this.indexes[0] = itl;
+        this.iterators[this.lastValidIndex] = it;
+        this.iterators[0] = itl;
         --this.lastValidIndex;
         it = itl;
       }
@@ -475,7 +476,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
 
       int idx = 1;
-      this.indexes[0] = this.indexes[1];
+      this.iterators[0] = this.iterators[1];
       final int end = Math.min(num, SORTED_SECTION);
       int nidx = idx + 1;
 
@@ -488,7 +489,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             return; // passes through finally
           }
 
-          this.indexes[idx] = this.indexes[nidx];
+          this.iterators[idx] = this.iterators[nidx];
           idx = nidx;
           nidx = idx + 1;
         }
@@ -501,26 +502,26 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             ++nidx;
           }
 
-          if (!is_before(this.indexes[nidx], it, dir)) {
+          if (!is_before(this.iterators[nidx], it, dir)) {
             return;
           }
 
-          this.indexes[idx] = this.indexes[nidx];
+          this.iterators[idx] = this.iterators[nidx];
           idx = nidx;
           nidx = (nidx << 1) - (SORTED_SECTION - 1);
         }
       } finally {
-        this.indexes[idx] = it;
+        this.iterators[idx] = it;
       }
     }
 
     public void moveToFirst() {
-      int lvi = this.indexes.length - 1;
+      int lvi = this.iterators.length - 1;
       // Need to consider all iterators.
       // Set all iterators to insertion point.
       int i = 0;
       while (i <= lvi) {
-        final ComparableIntPointerIterator it = this.indexes[i];
+        final ComparableIntPointerIterator it = this.iterators[i];
         it.resetConcurrentModification();
         it.moveToFirst();
         if (it.isValid()) {
@@ -529,8 +530,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         } else {
           // swap this iterator with the last possibly valid one
           // lvi might be equal to i, this will not be a problem
-          this.indexes[i] = this.indexes[lvi];
-          this.indexes[lvi] = it;
+          this.iterators[i] = this.iterators[lvi];
+          this.iterators[lvi] = it;
           --lvi;
         }
       }
@@ -540,12 +541,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     public void moveToLast() {
-      int lvi = this.indexes.length - 1;
+      int lvi = this.iterators.length - 1;
       // Need to consider all iterators.
       // Set all iterators to insertion point.
       int i = 0;
       while (i <= lvi) {
-        final ComparableIntPointerIterator it = this.indexes[i];
+        final ComparableIntPointerIterator it = this.iterators[i];
         it.resetConcurrentModification();
         it.moveToLast();
         if (it.isValid()) {
@@ -554,8 +555,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         } else {
           // swap this iterator with the last possibly valid one
           // lvi might be equal to i, this will not be a problem
-          this.indexes[i] = this.indexes[lvi];
-          this.indexes[lvi] = it;
+          this.iterators[i] = this.iterators[lvi];
+          this.iterators[lvi] = it;
           --lvi;
         }
       }
@@ -576,7 +577,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         heapify_down(it0, 1);
       } else {
         // We need to increment everything.
-        int lvi = this.indexes.length - 1;
+        int lvi = this.iterators.length - 1;
         int i = 1;
         while (i <= lvi) {
           // Any iterator other than the current one needs to be
@@ -601,8 +602,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           } else {
             // swap this iterator with the last possibly valid one
             // lvi might be equal to i, this will not be a problem
-            this.indexes[i] = this.indexes[lvi];
-            this.indexes[lvi] = it;
+            this.iterators[i] = this.iterators[lvi];
+            this.iterators[lvi] = it;
             --lvi;
           }
         }
@@ -627,7 +628,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         heapify_down(it0, -1);
       } else {
         // We need to decrement everything.
-        int lvi = this.indexes.length - 1;
+        int lvi = this.iterators.length - 1;
         int i = 1;
         while (i <= lvi) {
           // Any iterator other than the current one needs to be
@@ -652,8 +653,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           } else {
             // swap this iterator with the last possibly valid one
             // lvi might be equal to i, this will not be a problem
-            this.indexes[i] = this.indexes[lvi];
-            this.indexes[lvi] = it;
+            this.iterators[i] = this.iterators[lvi];
+            this.iterators[lvi] = it;
             --lvi;
           }
         }
@@ -698,12 +699,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int fs) {
-      int lvi = this.indexes.length - 1;
+      int lvi = this.iterators.length - 1;
       // Need to consider all iterators.
       // Set all iterators to insertion point.
       int i = 0;
       while (i <= lvi) {
-        final ComparableIntPointerIterator it = this.indexes[i];
+        final ComparableIntPointerIterator it = this.iterators[i];
         it.resetConcurrentModification();
         it.moveTo(fs);
         if (it.isValid()) {
@@ -712,8 +713,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         } else {
           // swap this iterator with the last possibly valid one
           // lvi might be equal to i, this will not be a problem
-          this.indexes[i] = this.indexes[lvi];
-          this.indexes[lvi] = it;
+          this.iterators[i] = this.iterators[lvi];
+          this.iterators[lvi] = it;
           --lvi;
         }
       }
@@ -794,7 +795,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     @Override
     public boolean isValid() {
-      return (lastValidIndex >= 0) && (lastValidIndex < indexes.length);
+      return (lastValidIndex >= 0) && (lastValidIndex < iterators.length);
     }
     
     
@@ -815,8 +816,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     @Override
     public void moveToFirst() {
-      for (int i = 0; i < indexes.length; i++) {
-        ComparableIntPointerIterator it = indexes[i];
+      for (int i = 0; i < iterators.length; i++) {
+        ComparableIntPointerIterator it = iterators[i];
         it.moveToFirst();
         it.resetConcurrentModification();
         if (it.isValid()) {
@@ -832,8 +833,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     @Override
     public void moveToLast() {
-      for (int i = indexes.length -1; i >= 0; i--) {
-        ComparableIntPointerIterator it = indexes[i];
+      for (int i = iterators.length -1; i >= 0; i--) {
+        ComparableIntPointerIterator it = iterators[i];
         it.moveToLast();
         it.resetConcurrentModification();
         if (it.isValid()) {
@@ -860,10 +861,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       while (!it.isValid()) {
         // loop until find valid index, or end
         lastValidIndex ++;
-        if (lastValidIndex == indexes.length) {
+        if (lastValidIndex == iterators.length) {
           return; // all subsequent indices are invalid
         }
-        it = indexes[lastValidIndex];
+        it = iterators[lastValidIndex];
         it.moveToFirst();
       }
     }
@@ -887,7 +888,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         if (lastValidIndex < 0) {
           return; 
         }
-        it = indexes[lastValidIndex];
+        it = iterators[lastValidIndex];
         it.moveToLast();
       }
     }
@@ -919,15 +920,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     public void moveTo(int fs) {
       IndexIteratorCachePair iicp = getIicp();
       int kind = iicp.index.getIndexingStrategy();
-      for (int i = 0; i < indexes.length; i++) {
+      for (int i = 0; i < iterators.length; i++) {
         if (kind == FSIndex.SORTED_INDEX) {
-          FSIntArrayIndex sortedIndex = (FSIntArrayIndex) iicp.iteratorCache.get(i);
+          FSIntArrayIndex sortedIndex = (FSIntArrayIndex) iicp.cachedSubIndexes.get(i);
           if (sortedIndex.findEq(fs) < 0) {
             continue;  // 
           }
         }
         // if sorted index, fs is in this leaf index
-        ComparableIntPointerIterator li = indexes[i];
+        ComparableIntPointerIterator li = iterators[i];
         li.moveTo(fs); 
         if (li.isValid()) {
           lastValidIndex = i;
@@ -957,20 +958,20 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final private IndexIteratorCachePair iicp;
 
     // The underlying iterator
-    final private ComparableIntPointerIterator index;
+    final private ComparableIntPointerIterator iter;
 
     
     @Override
     public String toString() {
-      return "LeafPointerIterator [iicp=" + iicp + ", index=" + index + "]";
+      return "LeafPointerIterator [iicp=" + iicp + ", index=" + iter + "]";
     }
 
     private LeafPointerIterator(final IndexIteratorCachePair iicp) {
       this.iicp = iicp;
       // Make sure the iterator cache exists.
-      final ArrayList<FSLeafIndexImpl<?>> iteratorCache = iicp.iteratorCache;
+      final ArrayList<FSLeafIndexImpl<?>> iteratorCache = iicp.cachedSubIndexes;
       final FSLeafIndexImpl<?> leafIndex = iteratorCache.get(0);
-      this.index = leafIndex.pointerIterator(leafIndex,
+      this.iter = leafIndex.pointerIterator(leafIndex,
           FSIndexRepositoryImpl.this.detectIllegalIndexUpdates,
           ((TypeImpl) leafIndex.getType()).getCode());
 
@@ -983,24 +984,24 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     private ComparableIntPointerIterator checkConcurrentModification() {
-      if (this.index.isConcurrentModification()) {
+      if (this.iter.isConcurrentModification()) {
         throw new ConcurrentModificationException();
       }
-      return this.index;
+      return this.iter;
     }
 
     public boolean isValid() {
-      return this.index.isValid();
+      return this.iter.isValid();
     }
 
     public void moveToLast() {
-      this.index.resetConcurrentModification();
-      this.index.moveToLast();
+      this.iter.resetConcurrentModification();
+      this.iter.moveToLast();
     }
 
     public void moveToFirst() {
-      this.index.resetConcurrentModification();
-      this.index.moveToFirst();
+      this.iter.resetConcurrentModification();
+      this.iter.moveToFirst();
     }
 
     public void moveToNext() {
@@ -1038,8 +1039,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int fs) {
-      this.index.resetConcurrentModification();
-      this.index.moveTo(fs);
+      this.iter.resetConcurrentModification();
+      this.iter.moveTo(fs);
     }
 
     /*
@@ -1328,15 +1329,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.cas.FSIndex#size()
      */
     public int size() {
-      this.iicp.createIndexIteratorCache();
-      // int size = this.iicp.index.size();
-      int size = 0;
-      final ArrayList<FSLeafIndexImpl<?>> subIndex = this.iicp.iteratorCache;
-      final int max = subIndex.size();
-      for (int i = 0; i < max; i++) {
-        size += subIndex.get(i).size();
-      }
-      return size;
+      return this.iicp.size();
     }
 
     /*
