@@ -198,8 +198,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }  // end of synchronized block
     }
 
-
+    
     /**
+     * Maybe not used 3/2015
+     * 
+     * Compares first using the type code of the main types
+     *   If those are equal,
+     *   Compares using the comparator objects
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(IndexIteratorCachePair o) {
@@ -215,6 +220,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
     }
 
+    /**
+     * 
+     * @return the sum of the sizes of the indexes of the type + all subtypes
+     */
     int size() {
       int size = 0;
       createIndexIteratorCache();  // does nothing if already created
@@ -228,10 +237,21 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   }  // end of class definition for IndexIteratorCachePair
 
+  /**
+   * Create an "ordered" (e.g. one that maintains iicp sort order for sorted index) pointer iterator over an iicp
+   * @param iicp - the index plus its subtype list of indexes
+   * @return an int iterator
+   */
   IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp) {
     return createPointerIterator(iicp, false);
   }
 
+  /**
+   * Create an ordered or iicp-unordered pointer iterator over an iicp 
+   * @param iicp - the index plus its subtype list of indexes
+   * @param is_unordered true if ordering among subtypes not needed
+   * @return an int iterator
+   */
   IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, boolean is_unordered) {
     iicp.createIndexIteratorCache();
     if (iicp.iteratorCache.size() > 1) {
