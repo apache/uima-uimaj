@@ -306,6 +306,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // The IICP
     final private IndexIteratorCachePair iicp;
 
+    protected IndexIteratorCachePair getIicp() {
+      return iicp;
+    }
+
     // An array of ComparableIntPointerIterators, one for each subtype.
     //   Each instance of these has a Class.this kind of ref to a particular variety of FSLeafIndex (bag, set, sorted) corresponding to 1 type
     //   This array has the indexes for all the subtypes
@@ -326,22 +330,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // Comparator that is used to compare FS addresses for the purposes of
     // iteration.
     final private IntComparator iteratorComparator;
-
-    protected IndexIteratorCachePair getIicp() {
-      return iicp;
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " [iicp=" + iicp + ", indexes=\n");
-      int i = 0;
-      for (ComparableIntPointerIterator item : iterators) {
-        sb.append("  ").append(i++).append("  ").append(item).append('\n');
-      }
-      sb.append("  lastValidIndex="
-          + lastValidIndex + ", wentForward=" + wentForward + ", iteratorComparator=" + iteratorComparator + "]");
-      return sb.toString();
-    }
 
     private ComparableIntPointerIterator[] initPointerIterator() {
       // Note to maintainers: Make sure the iterator cache exists on all paths calling this
@@ -769,6 +757,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     public LowLevelIndex ll_getIndex() {
       return this.iicp.index;
+    }
+    
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder(this.getClass().getSimpleName() + " [iicp=" + iicp + ", indexes=\n");
+      int i = 0;
+      for (ComparableIntPointerIterator item : iterators) {
+        sb.append("  ").append(i++).append("  ").append(item).append('\n');
+      }
+      sb.append("  lastValidIndex="
+          + lastValidIndex + ", wentForward=" + wentForward + ", iteratorComparator=" + iteratorComparator + "]");
+      return sb.toString();
     }
 
   }  // end of class PointerIterator
