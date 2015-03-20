@@ -1076,7 +1076,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.getShortHeap().reset();
     this.getLongHeap().reset();
 
-    this.indexRepository.flush();
+    this.indexRepository.flush();  // for base view, other views flushed above
     this.svd.sofaNameSet = new HashSet<String>();
     this.svd.initialSofaCreated = false;
     // always an Initial View now!!!
