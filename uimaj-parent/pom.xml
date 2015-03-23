@@ -163,6 +163,12 @@
                 <source>7</source>
               </configuration> 
             </execution>
+            <execution>
+              <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
+              <configuration>
+                <source>7</source>
+              </configuration> 
+            </execution>
           </executions>
         </plugin>
       </plugins>
