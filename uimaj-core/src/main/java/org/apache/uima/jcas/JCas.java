@@ -28,6 +28,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.ConstraintFactory;
+import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
@@ -592,7 +593,7 @@ public interface JCas extends AbstractCas {
    *          The annotation type the index is restricted to.
    * @return The standard annotation index, restricted to <code>type</code>.
    */
-  AnnotationIndex<Annotation> getAnnotationIndex(Type type) throws CASRuntimeException;
+  <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException;
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -604,8 +605,32 @@ public interface JCas extends AbstractCas {
    * @return The standard annotation index, restricted to <code>type</code>.
    * @throws CASRuntimeException -
    */
-  AnnotationIndex<Annotation> getAnnotationIndex(int type) throws CASRuntimeException;
+  <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) throws CASRuntimeException;
 
+  /**
+   * Get the standard annotation index restricted to a specific annotation type.
+   * 
+   * @param clazz The JCas cover class for the annotation type the index is restricted to, 
+   * @return The standard annotation index, restricted to <code>type</code>.
+   * @throws CASRuntimeException -
+   */
+  <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Class<T> clazz) throws CASRuntimeException;
+
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
+   * are not removed.
+   *
+   * Generics: T is the JCas Java class
+   * 
+   * @param clazz - the JCas Java class specifing which type and subtypes are included
+   * 
+   * @return An iterator that returns all indexed FeatureStructures of the JCas clazz 
+   *         and its subtypes, in no particular order.
+   */
+  <T extends TOP> FSIterator<T> getAllIndexedFS(Class<T> clazz);
+
+  
   /**
    * Get iterator over all views in this JCas.  Each view provides access to Sofa data
    * and the index repository that contains metadata (annotations and other feature 
@@ -635,30 +660,42 @@ public interface JCas extends AbstractCas {
    */
   Iterator<JCas> getViewIterator(String localViewNamePrefix) throws CASException;
   
-  // temporarily omitted to enable some testing without updating cas wrappers 
-/**
- * Call this method to set up a region, 
- * ended by a close() call on the returned object,
- * You can use this or the {@link #protectIndexes(Runnable)} method to protected
- * the indexes.
- * <p>
- * This approach allows arbitrary code between  the protectIndexes and the associated close method.
- * <p>
- * The close method is best done in a finally block, or using the try-with-resources statement in 
- * Java 8.
- * 
- * @return an object used to record things that need adding back
- */
-AutoCloseable protectIndexes();
-
-/**
- * Runs the code in the runnable inside a protection block, where any modifications to features
- * done while in this block will be done in a way to protect any indexes which otherwise 
- * might become corrupted by the update action; the protection is achieved by temporarily
- * removing the FS (if it is in the indexes), before the update happens.
- * At the end of the block, affected indexes have any removed-under-the-covers FSs added back.
- * @param runnable code to execute while protecting the indexes. 
- */
-void protectIndexes(Runnable runnable);
+  /**
+   * Call this method to set up a region, 
+   * ended by a close() call on the returned object,
+   * You can use this or the {@link #protectIndexes(Runnable)} method to protected
+   * the indexes.
+   * <p>
+   * This approach allows arbitrary code between  the protectIndexes and the associated close method.
+   * <p>
+   * The close method is best done in a finally block, or using the try-with-resources statement in 
+   * Java 8.
+   * 
+   * @return an object used to record things that need adding back
+   */
+  AutoCloseable protectIndexes();
+  
+  /**
+   * Runs the code in the runnable inside a protection block, where any modifications to features
+   * done while in this block will be done in a way to protect any indexes which otherwise 
+   * might become corrupted by the update action; the protection is achieved by temporarily
+   * removing the FS (if it is in the indexes), before the update happens.
+   * At the end of the block, affected indexes have any removed-under-the-covers FSs added back.
+   * @param runnable code to execute while protecting the indexes. 
+   */
+  void protectIndexes(Runnable runnable);
+  
+  /**
+   * Retrieve an index according to a label and a type specified using a JCas class. 
+   * The type is used to narrow down the index of a more general type to a more specific one.
+   * 
+   * Generics: T is the associated Java cover class for the type.
+   * 
+   * @param label The name of the index.
+   * @param clazz The JCas class (mostly likely written as MyJCasClass.class), which must correspond to a subtype of the type of the index.
+   * @return The specified, or <code>null</code> if an index with that name doesn't exist.
+   * @exception CASRuntimeException When <code>clazz</code> doesn't correspond to a subtype of the index's type.
+   */
+  <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz);
 
 }

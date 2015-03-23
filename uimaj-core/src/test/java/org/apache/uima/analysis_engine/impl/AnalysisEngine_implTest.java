@@ -60,6 +60,9 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.examples.SourceDocumentInformation;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -1414,9 +1417,20 @@ public class AnalysisEngine_implTest extends TestCase {
       iter = ae.processAndOutputNewCASes(inputCas2);
       assertTrue(iter.hasNext());
       CAS outCas = iter.next();
+      JCas outJCas = outCas.getJCas();
       assertEquals("This is one.", outCas.getDocumentText());
       // -- check SourceDocumentInformation FSs
-      Iterator<AnnotationFS> sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
+      AnnotationIndex<SourceDocumentInformation> ai = outCas.getAnnotationIndex(sdiType);
+      Iterator<SourceDocumentInformation> sdiIter = ai.iterator();
+      Iterator<SourceDocumentInformation> sdiIter2 = outCas.<SourceDocumentInformation>getAnnotationIndex(sdiType).iterator();
+      
+      AnnotationIndex<SourceDocumentInformation> ai2 = outJCas.getAnnotationIndex(SourceDocumentInformation.class);
+      Iterator<SourceDocumentInformation> sdiIter3 = outJCas.getAnnotationIndex(SourceDocumentInformation.class).iterator();
+      
+      // testing to see if these compile OK
+      for (SourceDocumentInformation sdi : ai) { }
+      for (SourceDocumentInformation sdi : outCas.<SourceDocumentInformation>getAnnotationIndex(sdiType)) {}
+      
       assertTrue(sdiIter.hasNext());
       AnnotationFS outSdiFs = sdiIter.next();
       assertEquals("This is", outSdiFs.getCoveredText());
@@ -1433,9 +1447,10 @@ public class AnalysisEngine_implTest extends TestCase {
       iter = ae.processAndOutputNewCASes(inputCas3);
       assertTrue(iter.hasNext());
       outCas = iter.next();
+      outJCas = outCas.getJCas();
       assertEquals("This is two.", outCas.getDocumentText());
       // -- check SourceDocumentInformation FSs
-      sdiIter = outCas.getAnnotationIndex(sdiType).iterator();
+      sdiIter = outCas.<SourceDocumentInformation>getAnnotationIndex(sdiType).iterator();
       assertTrue(sdiIter.hasNext());
       outSdiFs = sdiIter.next();
       assertEquals("This is", outSdiFs.getCoveredText());

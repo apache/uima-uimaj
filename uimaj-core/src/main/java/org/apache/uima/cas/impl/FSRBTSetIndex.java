@@ -35,6 +35,9 @@ import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
  * Uses CompIntArrayRBT red black tree to hold items
  * 
  * Same as FSRBTIndex, but duplicates are not inserted.
+ * 
+ * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
+ *
  */
 class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 

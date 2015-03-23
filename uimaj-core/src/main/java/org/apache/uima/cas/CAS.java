@@ -704,9 +704,11 @@ public interface CAS extends AbstractCas {
   /**
    * Get the standard annotation index.
    * 
+   * Generics: The object can be either Annotation (if JCas is in use) or AnnotationImpl 
+   * 
    * @return The standard annotation index.
    */
-  AnnotationIndex<AnnotationFS> getAnnotationIndex();
+  <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex();
 
   /**
    * Get the standard annotation index restricted to a specific annotation type.
@@ -716,8 +718,8 @@ public interface CAS extends AbstractCas {
    * @return The standard annotation index, restricted to <code>type</code>.
    * @exception CASRuntimeException When <code>type</code> is not an annotation type.
    */
-  AnnotationIndex<AnnotationFS> getAnnotationIndex(Type type) throws CASRuntimeException;
-
+  <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException;
+  
   /**
    * Create a new annotation. Note that you still need to insert the annotation into the index
    * repository yourself.
@@ -730,15 +732,16 @@ public interface CAS extends AbstractCas {
    *          The end of the annotation.
    * @return A new annotation object.
    */
-  AnnotationFS createAnnotation(Type type, int begin, int end);
+  <T extends AnnotationFS> AnnotationFS createAnnotation(Type type, int begin, int end);
 
   /**
    * Get the document annotation. The document has a string-valued feature called "language" where
    * the document language is specified.
    * 
-   * @return The document annotation, or <code>null</code> if there is none.
+   * @return The document annotation, or <code>null</code> if there is none.  The return value is the
+   *         JCas cover class or the plain Java cover class for FeatureStructures if JCas is not in use.
    */
-  AnnotationFS getDocumentAnnotation();
+  <T extends AnnotationFS> T getDocumentAnnotation();
 
   /**
    * Informs the CAS of relevant information about the component that is currently processing it.

@@ -31,6 +31,6 @@ public interface AnnotationTree<T extends AnnotationFS> {
    * 
    * @return The root node of the tree.
    */
-  AnnotationTreeNode<T> getRoot();
+  AnnotationTreeNode<? extends T> getRoot();
 
 }

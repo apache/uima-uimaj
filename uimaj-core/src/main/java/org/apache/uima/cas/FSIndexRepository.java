@@ -26,22 +26,30 @@ import org.apache.uima.cas.impl.LowLevelIndex;
 /**
  * Repository of indexes over feature structures. Use this interface to access previously defined
  * indexes.
+ * 
+ * Generics: T is the associated Java cover class for the top type defined for this index name.
+ * If JCas is being used, it is that JCas class.  Otherwise it is the standard non-JCas Java cover class.
+ * 
  */
 public interface FSIndexRepository {
 
   /**
    * Retrieve an index according to a label.
    * 
+   * Generics: T is the associated Java cover class for the top type defined for this index name.
+   * 
    * @param label
    *          The name of the index.
    * @return The index with the name <code>label</code>, or <code>null</code> if no such index
    *         is defined.
    */
-  FSIndex<FeatureStructure> getIndex(String label);
+  <T extends FeatureStructure> FSIndex<T> getIndex(String label);
 
   /**
    * Retrieve an index according to a label and a type. The type is used to narrow down the index of
    * a more general type to a more specific one.
+   * 
+   * Generics: T is the associated Java cover class for the type.
    * 
    * @param label
    *          The name of the index.
@@ -50,8 +58,8 @@ public interface FSIndexRepository {
    * @return The specified, or <code>null</code> if an index with that name doesn't exist.
    * @exception CASRuntimeException When <code>type</code> is not a subtype of the index's type.
    */
-  FSIndex<FeatureStructure> getIndex(String label, Type type) throws CASRuntimeException;
-
+  <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type) throws CASRuntimeException;
+  
   /**
    * Get all labels for all indexes.
    * 
@@ -118,12 +126,14 @@ public interface FSIndexRepository {
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
    * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
    * are not removed.
-   * 
+   *
+   * Generics: T is the Java class for aType.
    * @param aType
    *          The type
    * 
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>
    *         and its subtypes, in no particular order.
    */
-  FSIterator<FeatureStructure> getAllIndexedFS(Type aType);
+  <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type aType);
+  
 }

@@ -51,6 +51,30 @@ import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.util.Misc;
 
+/**
+ * There is one instance of this class per CAS View.
+ * 
+ * Some parts of the data here are shared between all views of a CAS.
+ * 
+ * Many things refer to specific types, and their associated Java Cover classes.
+ *    There are 2 kinds of cover classes:
+ *        If JCas is not being used, or if there is no JCas cover class defined for a type, then
+ *        the Java class FeatureStructureImplC is used as the cover class.
+ *        
+ *        If the JCas is being used, then the JCas cover type (a subtype of TOP) is used as the cover class.
+ *        
+ *        Both of these classes inherit from FeatureStructureImpl (an abstract class)
+ *        
+ *    Both of these classes implement the common interface FeatureStructure.
+ *
+ * Generic typing: 
+ *   User facing APIs can make use of the (JCas) Java cover types, for indexes and iterators over them
+ *   The general generic type used is typically written here as T extends FeatureStructure, where
+ *   FeatureStructure is the super interface of all cover types (JCas and non-JCas).  
+ *
+ *   APIs having no reference to Java cover types (i.e., low level iterators) are not generic, unless they
+ *   are needed to be to pass along the associated type to other APIs. 
+ */
 public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelIndexRepository {
 
   /**
@@ -77,7 +101,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public enum IteratorExtraFunction {
     SNAPSHOT,  // snapshot iterators
-    UNORDERED, // unordered iterators
+    UNORDERED, // unordered iterators - means unordered among subtypes, but each subtype may have an order
   }
     
 
@@ -97,18 +121,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * 
    *  This includes the index for the type of this index, as well as all subtypes.
    *  
-   * compareTo() is based on types and the
-   * comparator of the index.
+   * compareTo() is based on types and the comparator of the index.
+   * 
+   * T is the Java cover class of the top type (root) in the index set
    */
-  private class IndexIteratorCachePair implements Comparable<IndexIteratorCachePair> {
+  private class IndexIteratorCachePair<T extends FeatureStructure> implements Comparable<IndexIteratorCachePair<? extends FeatureStructure>> {
 
     // The "root" index, i.e., index of the type of the iterator.
-    private FSLeafIndexImpl<?> index = null;
+    private FSLeafIndexImpl<T> fsLeafIndex = null;
 
     // A list of indexes (the sub-indexes that we need for an
     // iterator). I.e., one index for each type that's subsumed by the
-    // iterator's type.
-    private ArrayList<FSLeafIndexImpl<?>> cachedSubIndexes = null;
+    // iterator's type; includes the iterator's type leaf index too.
+    private ArrayList<FSLeafIndexImpl<? extends T>> cachedSubFsLeafIndexes = null;
     
     
     // VOLATILE to permit double-checked locking technique
@@ -117,12 +142,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder("IndexIteratorCachePair, index=");
-      sb.append(index).append('\n');
+      sb.append(fsLeafIndex).append('\n');
       int i = 0;
       if (!isIteratorCacheSetup) {
         sb.append(" cache not set up yet");
       } else {  
-        for (FSLeafIndexImpl lii : cachedSubIndexes) {
+        for (FSLeafIndexImpl<? extends T> lii : cachedSubFsLeafIndexes) {
           sb.append("  cache ").append(i++);
           sb.append("  ").append(lii).append('\n');
         }
@@ -142,9 +167,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (!(o instanceof IndexIteratorCachePair)) {
         return false;
       }
+      @SuppressWarnings("rawtypes")
       final IndexIteratorCachePair iicp = (IndexIteratorCachePair) o;
-      return this.index.getComparator().equals(iicp.index.getComparator())
-          && (this.index.getIndexingStrategy() == iicp.index.getIndexingStrategy());
+      return this.fsLeafIndex.getComparator().equals(iicp.fsLeafIndex.getComparator())
+          && (this.fsLeafIndex.getIndexingStrategy() == iicp.fsLeafIndex.getIndexingStrategy());
     }
 
 // if this throws, then the Eclipse debugger fails to show the object saying 
@@ -153,12 +179,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + this.index.getComparator().hashCode();
-      result = prime * result + this.index.getIndexingStrategy();
+      result = prime * result + this.fsLeafIndex.getComparator().hashCode();
+      result = prime * result + this.fsLeafIndex.getIndexingStrategy();
       return result;
     }
-
-
 
     // Populate the cache.
     // For read-only CASes, this may be called on multiple threads, so do some synchronization
@@ -172,28 +196,30 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         if (isIteratorCacheSetup) {
           return;
         }
-        final ArrayList<FSLeafIndexImpl<?>> tempSubIndexCache = new ArrayList<FSLeafIndexImpl<?>>();
-        final Type rootType = this.index.getComparator().getType();
+        final Type rootType = this.fsLeafIndex.getComparator().getType();
         ArrayList<Type> allTypes = null;
-        if (this.index.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
+        if (this.fsLeafIndex.getIndexingStrategy() == FSIndex.DEFAULT_BAG_INDEX) {
           allTypes = new ArrayList<Type>();
           allTypes.add(rootType);
         } else {
           // includes the original type as element 0
           allTypes = getAllSubsumedTypes(rootType, FSIndexRepositoryImpl.this.sii.tsi);
         }
+        
+        final ArrayList<FSLeafIndexImpl<? extends T>> tempSubIndexCache = new ArrayList<FSLeafIndexImpl<? extends T>>();        
         final int len = allTypes.size();
-        int typeCode, indexPos;
-        ArrayList<IndexIteratorCachePair> indexList;
+        
         for (int i = 0; i < len; i++) {
-          typeCode = ((TypeImpl) allTypes.get(i)).getCode();
-          indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
-          indexPos = indexList.indexOf(this);
+          final int typeCode = ((TypeImpl) allTypes.get(i)).getCode();
+          final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
+          final int indexPos = indexList.indexOf(this);
           if (indexPos >= 0) {
-            tempSubIndexCache.add(indexList.get(indexPos).index);
+            // unchecked:  the fsLeafIndex is for some subtype of FeatureStructure, but needs to be restricted to
+            //             being a subtype of T
+            tempSubIndexCache.add((FSLeafIndexImpl<? extends T>) indexList.get(indexPos).fsLeafIndex);
           }
         }
-        this.cachedSubIndexes = tempSubIndexCache; 
+        this.cachedSubFsLeafIndexes = tempSubIndexCache; 
         // assign to "volatile" at end, after all initialization is complete
         this.isIteratorCacheSetup = true;
       }  // end of synchronized block
@@ -207,17 +233,17 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      *   If those are equal,
      *   Compares using the comparator objects
      * @see java.lang.Comparable#compareTo(Object)
+     * 
      */
-    public int compareTo(IndexIteratorCachePair o) {
-      final IndexIteratorCachePair cp = o;
-      final int typeCode1 = ((TypeImpl) this.index.getType()).getCode();
-      final int typeCode2 = ((TypeImpl) cp.index.getType()).getCode();
+    public int compareTo(IndexIteratorCachePair<? extends FeatureStructure> cp) {
+      final int typeCode1 = ((TypeImpl) this.fsLeafIndex.getType()).getCode();
+      final int typeCode2 = ((TypeImpl) cp.fsLeafIndex.getType()).getCode();
       if (typeCode1 < typeCode2) {
         return -1;
       } else if (typeCode1 > typeCode2) {
         return 1;
       } else { // types are equal
-        return this.index.getComparator().compareTo(cp.index.getComparator());
+        return this.fsLeafIndex.getComparator().compareTo(cp.fsLeafIndex.getComparator());
       }
     }
 
@@ -228,7 +254,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     int size() {
       int size = 0;
       createIndexIteratorCache();  // does nothing if already created
-      final ArrayList<FSLeafIndexImpl<?>> localIc = this.cachedSubIndexes;
+      final ArrayList<FSLeafIndexImpl<? extends T>> localIc = this.cachedSubFsLeafIndexes;
       final int len = localIc.size();
       for (int i = 0; i < len; i++) {
         size += localIc.get(i).size();
@@ -238,14 +264,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   }  // end of class definition for IndexIteratorCachePair
 
+  
+  /* ============================================================================================================*/
+  /*           Pointer Iterators                                                                                
+  /* ============================================================================================================*/
   /**
    * Create an "ordered" (e.g. one that maintains iicp sort order for sorted index) pointer iterator over an iicp
    * @param iicp - the index plus its subtype list of indexes
    * @return an int iterator
    */
-  IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp) {
+  IntPointerIterator createPointerIterator(IndexIteratorCachePair<? extends FeatureStructure> iicp) {
     return createPointerIterator(iicp, false);
   }
+
 
   /**
    * Create an ordered or iicp-unordered pointer iterator over an iicp 
@@ -253,10 +284,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @param is_unordered true if ordering among subtypes not needed
    * @return an int iterator
    */
-  IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, boolean is_unordered) {
+  <T extends FeatureStructure> IntPointerIterator createPointerIterator(IndexIteratorCachePair<? extends FeatureStructure> iicp, boolean is_unordered) {
     iicp.createIndexIteratorCache();
-    if (iicp.cachedSubIndexes.size() > 1) {
-      final int strat = iicp.index.getIndexingStrategy();
+    if (iicp.cachedSubFsLeafIndexes.size() > 1) {
+      final int strat = iicp.fsLeafIndex.getIndexingStrategy();
       if (strat == FSIndex.BAG_INDEX || 
           /*
           strat == FSIndex.SET_INDEX ||  // because set indexes do not enforce ordering
@@ -264,15 +295,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           is_unordered) {
         return new PointerIteratorUnordered(iicp);
       } else {
+//        if (strat == FSIndex.SORTED_INDEX && iicp.)
         return new PointerIterator(iicp);
       }
     }
     return new LeafPointerIterator(iicp);
   }
 
-  IntPointerIterator createPointerIterator(IndexIteratorCachePair iicp, int fs) {
+  <T extends FeatureStructure> IntPointerIterator createPointerIterator(IndexIteratorCachePair<? extends FeatureStructure> iicp, int fs) {
     iicp.createIndexIteratorCache();
-    if (iicp.cachedSubIndexes.size() > 1) {
+    if (iicp.cachedSubFsLeafIndexes.size() > 1) {
       return new PointerIterator(iicp, fs);
     }
     return new LeafPointerIterator(iicp, fs);
@@ -304,9 +336,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     static final int SORTED_SECTION = 3;
 
     // The IICP
-    final private IndexIteratorCachePair iicp;
+    final private IndexIteratorCachePair<? extends FeatureStructure> iicp;
 
-    protected IndexIteratorCachePair getIicp() {
+    protected IndexIteratorCachePair<? extends FeatureStructure> getIicp() {
       return iicp;
     }
 
@@ -333,12 +365,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     private ComparableIntPointerIterator[] initPointerIterator() {
       // Note to maintainers: Make sure the iterator cache exists on all paths calling this
-      final ArrayList<FSLeafIndexImpl<?>> cachedSubIndexes = iicp.cachedSubIndexes;
+       ArrayList<?> cachedSubIndexes = iicp.cachedSubFsLeafIndexes;
       
       final ComparableIntPointerIterator[] pia = new ComparableIntPointerIterator[cachedSubIndexes.size()];
            
       for (int i = 0; i < pia.length; i++) {
-        final FSLeafIndexImpl<?> leafIndex = cachedSubIndexes.get(i);
+        final FSLeafIndexImpl<?> leafIndex = (FSLeafIndexImpl<?>) cachedSubIndexes.get(i);
         pia[i] = leafIndex.pointerIterator(
             this.iteratorComparator,
             FSIndexRepositoryImpl.this.detectIllegalIndexUpdates,
@@ -347,18 +379,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return pia;
     }
 
-    private PointerIterator(final IndexIteratorCachePair iicp) {
+    private PointerIterator(final IndexIteratorCachePair<? extends FeatureStructure> iicp) {
       // next 3 are final so aren't done in the common init
       this.iicp = iicp;
-      this.iteratorComparator = iicp.cachedSubIndexes.get(0);
+      this.iteratorComparator = iicp.cachedSubFsLeafIndexes.get(0);
       this.iterators = initPointerIterator();
       moveToFirst();
     }
 
-    private PointerIterator(final IndexIteratorCachePair iicp, int fs) {
+    private PointerIterator(final IndexIteratorCachePair<? extends FeatureStructure> iicp, int fs) {
       // next 3 are final so aren't done in the common init
       this.iicp = iicp;
-      this.iteratorComparator = iicp.cachedSubIndexes.get(0);
+      this.iteratorComparator = iicp.cachedSubFsLeafIndexes.get(0);
       this.iterators = initPointerIterator();
       moveTo(fs);
     }
@@ -682,7 +714,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       pi.moveToPrevious();
       return pi;
     }
-
+  
     /**
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
@@ -756,7 +788,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     public LowLevelIndex ll_getIndex() {
-      return this.iicp.index;
+      return (LowLevelIndex) this.iicp.fsLeafIndex;
     }
     
     @Override
@@ -781,11 +813,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   private class PointerIteratorUnordered extends PointerIterator {
     
-    private PointerIteratorUnordered(final IndexIteratorCachePair iicp) {
+    private PointerIteratorUnordered(final IndexIteratorCachePair<? extends FeatureStructure> iicp) {
       super(iicp);
     }
     
-    private PointerIteratorUnordered(final IndexIteratorCachePair iicp, int fs) {
+    private PointerIteratorUnordered(final IndexIteratorCachePair<? extends FeatureStructure> iicp, int fs) {
       super(iicp); 
       moveTo(fs);
     }
@@ -918,11 +950,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     @Override
     public void moveTo(int fs) {
-      IndexIteratorCachePair iicp = getIicp();
-      int kind = iicp.index.getIndexingStrategy();
+      IndexIteratorCachePair<? extends FeatureStructure> iicp = getIicp();
+      int kind = iicp.fsLeafIndex.getIndexingStrategy();
       for (int i = 0; i < iterators.length; i++) {
         if (kind == FSIndex.SORTED_INDEX) {
-          FSIntArrayIndex sortedIndex = (FSIntArrayIndex) iicp.cachedSubIndexes.get(i);
+          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = getCachedSortedSubFsLeafIndexes(iicp, i); 
           if (sortedIndex.findEq(fs) < 0) {
             continue;  // 
           }
@@ -955,7 +987,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private class LeafPointerIterator implements IntPointerIterator, LowLevelIterator {
 
     // The IICP
-    final private IndexIteratorCachePair iicp;
+    final private IndexIteratorCachePair<? extends FeatureStructure> iicp;
 
     // The underlying iterator
     final private ComparableIntPointerIterator iter;
@@ -966,11 +998,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return "LeafPointerIterator [iicp=" + iicp + ", index=" + iter + "]";
     }
 
-    private LeafPointerIterator(final IndexIteratorCachePair iicp) {
+    private LeafPointerIterator(final IndexIteratorCachePair<? extends FeatureStructure> iicp) {
       this.iicp = iicp;
       // Make sure the iterator cache exists.
-      final ArrayList<FSLeafIndexImpl<?>> iteratorCache = iicp.cachedSubIndexes;
-      final FSLeafIndexImpl<?> leafIndex = iteratorCache.get(0);
+      final ArrayList<?> iteratorCache = iicp.cachedSubFsLeafIndexes;
+      final FSLeafIndexImpl<?> leafIndex = (FSLeafIndexImpl<?>) iteratorCache.get(0);
       this.iter = leafIndex.pointerIterator(leafIndex,
           FSIndexRepositoryImpl.this.detectIllegalIndexUpdates,
           ((TypeImpl) leafIndex.getType()).getCode());
@@ -978,7 +1010,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       moveToFirst();
     }
 
-    private LeafPointerIterator(IndexIteratorCachePair iicp, int fs) {
+    private LeafPointerIterator(IndexIteratorCachePair<? extends FeatureStructure> iicp, int fs) {
       this(iicp);
       moveTo(fs);
     }
@@ -1066,7 +1098,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     public LowLevelIndex ll_getIndex() {
-      return this.iicp.index;
+      return (LowLevelIndex) this.iicp.fsLeafIndex;
     }
 
   }  // end of LeafPointerIterator
@@ -1078,9 +1110,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * returns an iterator over that 
    * 
    */
-  private class SnapshotPointerIterator implements IntPointerIterator, LowLevelIterator {
+  private class SnapshotPointerIterator<T extends FeatureStructure> implements IntPointerIterator, LowLevelIterator {
 
-    final private FSIntArrayIndex sortedLeafIndex;
+    final private FSIntArrayIndex<T> sortedLeafIndex;
     final private int[] snapshot;
     final private int size;   // can't get from snapshot.length - that might have extra space  https://issues.apache.org/jira/browse/UIMA-4248
     private int pos = 0;
@@ -1090,16 +1122,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return "SnapshotPointerIterator[size: " + snapshot.length + ", position: " + pos + "]";
     }
     
-    private SnapshotPointerIterator(IndexIteratorCachePair iicp0) {
+    private SnapshotPointerIterator(IndexIteratorCachePair<T> iicp0) {
       this(iicp0, false);
     }
     
-    private SnapshotPointerIterator(IndexIteratorCachePair iicp0, boolean isRootOnly) {
-      FSLeafIndexImpl leafIndex = iicp0.index;
+    private SnapshotPointerIterator(IndexIteratorCachePair<T> iicp0, boolean isRootOnly) {
+      FSLeafIndexImpl<T> leafIndex = iicp0.fsLeafIndex;
       FSIndexComparator comp = leafIndex.getComparator();
       
       final int size = iicp0.size();  // adds up all the sizes of the indexes
-      sortedLeafIndex = (FSIntArrayIndex) addNewIndexCore(comp, size, FSIndex.SORTED_INDEX);
+      sortedLeafIndex = (FSIntArrayIndex<T>) addNewIndexCore(comp, size, FSIndex.SORTED_INDEX);
       snapshot = sortedLeafIndex.getVector().getArray();
       this.size = size;
       flattenCopy(iicp0, isRootOnly);
@@ -1107,12 +1139,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       moveToFirst();      
     }
 
-    private SnapshotPointerIterator(IndexIteratorCachePair iicp0, int fs) {
+    private SnapshotPointerIterator(IndexIteratorCachePair<T> iicp0, int fs) {
       this(iicp0);
       moveTo(fs);
     }
     
-    private void flattenCopy(IndexIteratorCachePair iicp0, boolean isRootOnly) {
+    private void flattenCopy(IndexIteratorCachePair<T> iicp0, boolean isRootOnly) {
     
       
 //      if (iicp0.iteratorCache.size() > 1) {
@@ -1211,19 +1243,19 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     public Object copy() {
       // If this.isValid(), return a copy pointing to the same element.
-      IndexIteratorCachePair iicp = new IndexIteratorCachePair();
-      iicp.index = sortedLeafIndex;
+      IndexIteratorCachePair<T> iicp = new IndexIteratorCachePair<T>();
+      iicp.fsLeafIndex = sortedLeafIndex;  
       if (this.isValid()) {
-        return new SnapshotPointerIterator(iicp, this.get());
+        return new SnapshotPointerIterator<T>(iicp, this.get());
       }
       // Else, create a copy that is also not valid.
-      SnapshotPointerIterator pi = new SnapshotPointerIterator(iicp);
+      SnapshotPointerIterator<T> pi = new SnapshotPointerIterator<T>(iicp);
       pi.pos = -1;
       return pi;
     }
 
     public LowLevelIndex ll_getIndex() {
-      return sortedLeafIndex;
+      return (LowLevelIndex) sortedLeafIndex;
     }
 
   }  // end of SnapshotPointerIterator
@@ -1235,67 +1267,69 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   private class IndexImpl<T extends FeatureStructure> implements FSIndex<T>, FSIndexImpl {
 
-    private final IndexIteratorCachePair iicp;
+    private final IndexIteratorCachePair<T> iicp;
     
     private final boolean is_with_snapshot_iterators;
 
     private final boolean is_unordered; //Set for getAllIndexedFSs
 
-    private IndexImpl(IndexIteratorCachePair iicp) {
+    private IndexImpl(IndexIteratorCachePair<T> iicp) {
       this.iicp = iicp;
       is_with_snapshot_iterators = false;
       is_unordered = false;
     }
     
-    private IndexImpl(IndexIteratorCachePair iicp, IteratorExtraFunction extraFn) {
+    private IndexImpl(IndexIteratorCachePair<T> iicp, IteratorExtraFunction extraFn) {
       this.iicp = iicp;
       is_with_snapshot_iterators = (extraFn == IteratorExtraFunction.SNAPSHOT);
       is_unordered = (extraFn == IteratorExtraFunction.UNORDERED);
     }    
 
     public int ll_compare(int ref1, int ref2) {
-      return this.iicp.index.ll_compare(ref1, ref2);
+      return this.iicp.fsLeafIndex.ll_compare(ref1, ref2);
     }
 
     public int getIndexingStrategy() {
-      return this.iicp.index.getIndexingStrategy();
+      return this.iicp.fsLeafIndex.getIndexingStrategy();
     }
 
     public FSIndexComparator getComparator() {
-      return this.iicp.index.getComparator();
+      return this.iicp.fsLeafIndex.getComparator();
     }
 
-    protected IntComparator getIntComparator() {
-      return this.iicp.index.getIntComparator();
-    }
+    // never used 3/2015
+//    protected IntComparator getIntComparator() {
+//      return this.iicp.fsLeafIndex.getIntComparator();
+//    }
 
+    // probably never called 3/15/2015
     public void flush() {
-      this.iicp.index.flush();
+      this.iicp.fsLeafIndex.flush();
     }
 
     /**
      * @see org.apache.uima.cas.FSIndex#compare(FeatureStructure, FeatureStructure)
      */
     public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-      return this.iicp.index.compare(fs1, fs2);
+      return this.iicp.fsLeafIndex.compare(fs1, fs2);
     }
 
     /**
      * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
      */
     public boolean contains(FeatureStructure fs) {
-      return this.iicp.index.contains(fs);
+      return this.iicp.fsLeafIndex.contains(fs);
     }
 
     public FeatureStructure find(FeatureStructure fs) {
-      return this.iicp.index.find(fs);
+      return this.iicp.fsLeafIndex.find(fs);
     }
 
     /**
      * @see org.apache.uima.cas.FSIndex#getType()
      */
     public Type getType() {
-      return this.iicp.index.getType();
+      return this.iicp.fsLeafIndex.getType();
     }
 
     /**
@@ -1304,7 +1338,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     public FSIterator<T> iterator() {
       return new FSIteratorWrapper<T>(
           is_with_snapshot_iterators ?
-             new SnapshotPointerIterator(iicp) :               
+             new SnapshotPointerIterator<T>(iicp) :               
              createPointerIterator(this.iicp, is_unordered), 
           FSIndexRepositoryImpl.this.cas);
     }
@@ -1316,11 +1350,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       final int fsAddr = ((FeatureStructureImpl) fs).getAddress();
       return new FSIteratorWrapper<T>(
           is_with_snapshot_iterators ?
-              new SnapshotPointerIterator(iicp, fsAddr) :
+              new SnapshotPointerIterator<T>(iicp, fsAddr) :
               createPointerIterator(this.iicp, fsAddr),
           FSIndexRepositoryImpl.this.cas);
     }
-
+ 
+    // probably never called 3/15/2015
     public IntPointerIterator getIntIterator() {
       return createPointerIterator(this.iicp);
     }
@@ -1340,14 +1375,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     public LowLevelIterator ll_iterator() {
       return (LowLevelIterator) 
           (is_with_snapshot_iterators ?
-              new SnapshotPointerIterator(iicp) :
+              new SnapshotPointerIterator<T>(iicp) :
               createPointerIterator(this.iicp));
     }
 
     public LowLevelIterator ll_rootIterator() {
       this.iicp.createIndexIteratorCache();
       return is_with_snapshot_iterators ?
-          new SnapshotPointerIterator(iicp, true) : 
+          new SnapshotPointerIterator<T>(iicp, true) : 
           new LeafPointerIterator(this.iicp);
     }
 
@@ -1355,12 +1390,47 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (ambiguous) {
         return this.ll_iterator();
       }
-      return new LLUnambiguousIteratorImpl(this.ll_iterator(), this.iicp.index.lowLevelCAS);
+      return new LLUnambiguousIteratorImpl(this.ll_iterator(), this.iicp.fsLeafIndex.lowLevelCAS);
     }
 
     @Override
-    public FSIndex withSnapshotIterators() {
-      return new IndexImpl(this.iicp, IteratorExtraFunction.SNAPSHOT);
+    public FSIndex<T> withSnapshotIterators() {
+      return new IndexImpl<T>(this.iicp, IteratorExtraFunction.SNAPSHOT);
+    }
+
+    @Override
+    public void fillFlatArray(FeatureStructure[] flatArray) {
+      LowLevelIterator it = (LowLevelIterator) createPointerIterator(iicp, true);
+      int i = 0;
+      while (it.isValid()) {
+        flatArray[i] = cas.createFS(it.ll_get());
+        it.moveToNext();
+      }  
+    }
+
+    @Override
+    public int getNumberOfTypes() {
+      return iicp.cachedSubFsLeafIndexes.size();
+    }
+
+    @Override
+    public boolean isValidCache(int[] indexUpdateCounts) {
+      int i = 0;
+      for (FSLeafIndexImpl<?> leafIndex : iicp.cachedSubFsLeafIndexes) {
+        if (indexUpdateCounts[i++] != detectIllegalIndexUpdates[((TypeImpl)leafIndex.getType()).getCode()]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    @Override
+    public void captureIndexUpdatecounters(int[] indexUpdateCounts) {
+      int i = 0;
+      
+      for (FSLeafIndexImpl<? extends T> leafIndex : iicp.cachedSubFsLeafIndexes) {
+        indexUpdateCounts[i++] = detectIllegalIndexUpdates[((TypeImpl)leafIndex.getType()).getCode()];
+      }
     }
 
   }  // end of class IndexImpl
@@ -1408,7 +1478,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // An array of ArrayLists, one for each type in the type hierarchy.
   // The ArrayLists are unordered lists of IndexIteratorCachePairs for
   // that type, corresponding to the different index definitions over that type
-  final private ArrayList<IndexIteratorCachePair>[] indexArray;
+  final private ArrayList<IndexIteratorCachePair<? extends FeatureStructure>>[] indexArray;
 
   // an array of ints, one for each type in the type hierarchy.
   // Used to enable iterators to detect modifications (adds / removes)
@@ -1419,7 +1489,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // A map from names to IndexIteratorCachePairs. Different names may map to
   // the same index.  
   // The keys are the same across all views, but the values are different, per view
-  final private HashMap<String, IndexIteratorCachePair> name2indexMap;
+  final private HashMap<String, IndexIteratorCachePair<? extends FeatureStructure>> name2indexMap;
   
   // the next are for journaling updates to indexes
   final private IntVector indexUpdates;
@@ -1469,7 +1539,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int numTypes = ts.getNumberOfTypes() + 1;
     this.detectIllegalIndexUpdates = new int[numTypes];
     
-    this.name2indexMap = new HashMap<String, IndexIteratorCachePair>();
+    this.name2indexMap = new HashMap<String, IndexIteratorCachePair<? extends FeatureStructure>>();
     this.indexUpdates = new IntVector();
     this.indexUpdateOperation = new BitSet();
     this.logProcessed = false;
@@ -1497,7 +1567,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int numTypes = ts.getNumberOfTypes() + 1;
     this.detectIllegalIndexUpdates = new int[numTypes];
     
-    this.name2indexMap = new HashMap<String, IndexIteratorCachePair>();
+    this.name2indexMap = new HashMap<String, IndexIteratorCachePair<? extends FeatureStructure>>();
     this.indexUpdates = new IntVector();
     this.indexUpdateOperation = new BitSet();
     this.logProcessed = false;
@@ -1512,9 +1582,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       final Iterator<String> keysIter = keys.iterator();
       while (keysIter.hasNext()) {
         final String key = keysIter.next();
-        final IndexIteratorCachePair iicp = baseIndexRepo.name2indexMap.get(key);
-        createIndexNoQuestionsAsked(iicp.index.getComparator(), key,
-            iicp.index.getIndexingStrategy());
+        final IndexIteratorCachePair<? extends FeatureStructure> iicp = baseIndexRepo.name2indexMap.get(key);
+        createIndexNoQuestionsAsked(iicp.fsLeafIndex.getComparator(), key,
+            iicp.fsLeafIndex.getIndexingStrategy());
       }
     }
   }
@@ -1528,7 +1598,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int numTypes = ts.getNumberOfTypes() + 1;
     // Can't instantiate arrays of generic types.
     for (int i = 1; i < numTypes; i++) {
-      this.indexArray[i] = new ArrayList<IndexIteratorCachePair>();
+      this.indexArray[i] = new ArrayList<IndexIteratorCachePair<? extends FeatureStructure>>();
     }
     for (int i = 0; i < this.detectIllegalIndexUpdates.length; i++) {
       this.detectIllegalIndexUpdates[i] = Integer.MIN_VALUE;
@@ -1540,6 +1610,30 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   /**
+   * Get a particular sorted subLeafIndex
+   * Implemented as a subroutine to have the unchecked cast done in one place
+   * @param iicp having the subLeafIndexes
+   * @param i which sub index to get
+   * @return the subindex, cast to FSIntArrayIndex<T>
+   */
+  private <T extends FeatureStructure> FSIntArrayIndex<T> getCachedSortedSubFsLeafIndexes(IndexIteratorCachePair<T>iicp, int i) {
+    return (FSIntArrayIndex<T>) iicp.cachedSubFsLeafIndexes.get(i);
+  }
+  
+  /**
+   * Get a particular sorted subLeafIndex
+   * Implemented as a subroutine to have the unchecked cast done in one place
+   * @param iicp having the subLeafIndexes
+   * @param i which sub index to get
+   * @return the subindex, cast to FSIntArrayIndex<T>
+   */
+  private <T extends FeatureStructure> FSLeafIndexImpl<T> getCachedSubFsLeafIndexes(IndexIteratorCachePair<T>iicp, int i) {
+    return (FSLeafIndexImpl<T>) iicp.cachedSubFsLeafIndexes.get(i);
+  }
+
+
+
+  /**
    * Reset all indexes.
    */
   public void flush() {
@@ -1547,7 +1641,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return;
     }
     int max;
-    ArrayList<IndexIteratorCachePair> v;
+    ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> v;
 
     // Do nothing really fast!
     if (this.usedIndexes.size() == 0) {
@@ -1559,7 +1653,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       v = this.indexArray[this.usedIndexes.get(i)];
       max = v.size();
       for (int j = 0; j < max; j++) {
-        v.get(j).index.flush();
+        v.get(j).fsLeafIndex.flush();
       }
     }
     this.indexUpdates.removeAllElements();
@@ -1576,37 +1670,37 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     ll_addFS(fsRef);
   }
 
-  private IndexIteratorCachePair addNewIndex(FSIndexComparator comparator, int indexType) {
+  private IndexIteratorCachePair<? extends FeatureStructure> addNewIndex(FSIndexComparator comparator, int indexType) {
     return addNewIndex(comparator, DEFAULT_INDEX_SIZE, indexType);
   }
 
   /**
    * This is where the actual index gets created.
    */
-  private IndexIteratorCachePair addNewIndex(final FSIndexComparator comparator, int initialSize,
+  private <T extends FeatureStructure> IndexIteratorCachePair<T> addNewIndex(final FSIndexComparator comparator, int initialSize,
       int indexType) {
     
-    IndexIteratorCachePair iicp = new IndexIteratorCachePair(); 
-    iicp.index = addNewIndexCore(comparator, initialSize, indexType);
+    IndexIteratorCachePair<T> iicp = new IndexIteratorCachePair<T>(); 
+    iicp.fsLeafIndex =  addNewIndexCore(comparator, initialSize, indexType);
     final Type type = comparator.getType();
     final int typeCode = ((TypeImpl) type).getCode();
     this.indexArray[typeCode].add(iicp);
     return iicp;
   }
   
-  private FSLeafIndexImpl<?> addNewIndexCore(final FSIndexComparator comparator, int initialSize,
+  private <T extends FeatureStructure> FSLeafIndexImpl<T> addNewIndexCore(final FSIndexComparator comparator, int initialSize,
       int indexType) {
     final Type type = comparator.getType();
     // final int vecLen = indexVector.size();
-    FSLeafIndexImpl<?> ind;
+    FSLeafIndexImpl<T> ind;
     switch (indexType) {
     case FSIndex.SET_INDEX: {
-      ind = new FSRBTSetIndex(this.cas, type, indexType);
+      ind = new FSRBTSetIndex<T>(this.cas, type, indexType);
       break;
     }
     case FSIndex.BAG_INDEX:
     case FSIndex.DEFAULT_BAG_INDEX: {
-      ind = new FSBagIndex(this.cas, type, initialSize, indexType);
+      ind = new FSBagIndex<T>(this.cas, type, initialSize, indexType);
       break;
     }
     default: {
@@ -1614,7 +1708,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // code
       // is unknown, we just create a sorted index (with duplicates).
       // ind = new FSRBTIndex(this.cas, type, FSIndex.SORTED_INDEX);
-      ind = new FSIntArrayIndex(this.cas, type, initialSize, FSIndex.SORTED_INDEX);
+      ind = new FSIntArrayIndex<T>(this.cas, type, initialSize, FSIndex.SORTED_INDEX);
       break;
     }
     }
@@ -1643,7 +1737,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // ((FSIndexComparatorImpl) comparator).copy();
   // return addIndexRec(compCopy);
   // }
-  private IndexIteratorCachePair addNewIndexRecursive(FSIndexComparator comparator, int indexType) {
+  private IndexIteratorCachePair<? extends FeatureStructure> addNewIndexRecursive(FSIndexComparator comparator, int indexType) {
     final FSIndexComparatorImpl compCopy = ((FSIndexComparatorImpl) comparator).copy();
     return addNewIndexRec(compCopy, indexType);
   }
@@ -1657,13 +1751,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @param indexType
    * @return the index in the set of iicps for this type for the matching index
    */
-  private static final int findIndex(ArrayList<IndexIteratorCachePair> indexes,
+  private static final <T extends FeatureStructure> int findIndex(ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> indexes,
       FSIndexComparator comp,
       int indexType) {
     FSIndexComparator indexComp;
     final int max = indexes.size();
     for (int i = 0; i < max; i++) {
-      FSLeafIndexImpl index = indexes.get(i).index;
+      FSLeafIndexImpl<? extends FeatureStructure> index = indexes.get(i).fsLeafIndex;
       if (index.getIndexingStrategy() != indexType) {
         continue;
       }
@@ -1685,8 +1779,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * types.get(i)); addIndexRec(compCopy); } return cp; }
    */
   // Will modify comparator, so call with copy.
-  private IndexIteratorCachePair addNewIndexRec(FSIndexComparator comparator, int indexType) {
-    final IndexIteratorCachePair iicp = this.addNewIndex(comparator, indexType);
+  private IndexIteratorCachePair<? extends FeatureStructure> addNewIndexRec(FSIndexComparator comparator, int indexType) {
+    final IndexIteratorCachePair<? extends FeatureStructure> iicp = this.addNewIndex(comparator, indexType);
     if (indexType == FSIndex.DEFAULT_BAG_INDEX) {
       // In this special case, we do not add indexes for subtypes.
       return iicp;
@@ -1776,7 +1870,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @return -
    */
   public boolean createIndexNoQuestionsAsked(final FSIndexComparator comp, String label, int indexType) {
-    IndexIteratorCachePair cp = this.name2indexMap.get(label);
+    IndexIteratorCachePair<? extends FeatureStructure> cp = this.name2indexMap.get(label);
     // Now check if the index already exists.
     if (cp == null) {
       // The name is new.
@@ -1873,7 +1967,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     String label;
     while (it.hasNext()) {
       label = it.next();
-      if (this.name2indexMap.get(label).index.getComparator().equals(comp)) {
+      if (this.name2indexMap.get(label).fsLeafIndex.getComparator().equals(comp)) {
         labels.add(label);
       }
     }
@@ -1883,8 +1977,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String, Type)
    */
-  public FSIndex<FeatureStructure> getIndex(String label, Type type) {
-    final IndexIteratorCachePair iicp = this.name2indexMap.get(label);
+
+  @SuppressWarnings("unchecked")
+  public <T extends FeatureStructure> FSIndex<T> getIndex(String label, Type type) {
+    // iicp is for the type the index was defined for
+    final IndexIteratorCachePair<? extends FeatureStructure> iicp = this.name2indexMap.get(label);
     if (iicp == null) {
       return null;
     }
@@ -1897,7 +1994,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         return null;
       }
     }
-    final Type indexType = iicp.index.getType();
+    final Type indexType = iicp.fsLeafIndex.getType();
     if (!this.sii.tsi.subsumes(indexType, type)) {
       final CASRuntimeException cre = new CASRuntimeException(
           CASRuntimeException.TYPE_NOT_IN_INDEX, new String[] { label, type.getName(),
@@ -1905,15 +2002,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       throw cre;
     }
     final int typeCode = ((TypeImpl) type).getCode();
-    final ArrayList<IndexIteratorCachePair> inds = this.indexArray[typeCode];
+
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> inds = this.indexArray[typeCode];
     // Since we found an index for the correct type, find() must return a
     // valid result -- unless this is a special auto-index.
-    final int indexCode = findIndex(inds, iicp.index.getComparator(), iicp.index.getIndexingStrategy());
+    final int indexCode = findIndex(inds, iicp.fsLeafIndex.getComparator(), iicp.fsLeafIndex.getIndexingStrategy());
     if (indexCode < 0) {
       return null;
     }
     // assert((indexCode >= 0) && (indexCode < inds.size()));
-    return new IndexImpl<FeatureStructure>(inds.get(indexCode));
+    return new IndexImpl<T>((IndexIteratorCachePair<T>) inds.get(indexCode));
     // return ((IndexIteratorCachePair)inds.get(indexCode)).index;
   }
   
@@ -1921,12 +2019,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String)
    */
-  public FSIndex<FeatureStructure> getIndex(String label) {
-    final IndexIteratorCachePair iicp = this.name2indexMap.get(label);
+  @SuppressWarnings("unchecked")
+  public <T extends FeatureStructure> FSIndex<T> getIndex(String label) {
+    final IndexIteratorCachePair<? extends FeatureStructure> iicp = this.name2indexMap.get(label);
     if (iicp == null) {
       return null;
     }
-    return new IndexImpl<FeatureStructure>(iicp);
+    return new IndexImpl<T>((IndexIteratorCachePair<T>) iicp);
     // return ((IndexIteratorCachePair)name2indexMap.get(label)).index;
   }
 
@@ -1948,12 +2047,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   public int getIndexSize(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
-    final ArrayList<IndexIteratorCachePair> indexVector = this.indexArray[typeCode];
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> indexVector = this.indexArray[typeCode];
     if (indexVector.size() == 0) {
       // No index for this type exists.
       return 0;
     }
-    int numFSs = indexVector.get(0).index.size();
+    int numFSs = indexVector.get(0).fsLeafIndex.size();
     final Vector<Type> typeVector = this.sii.tsi.getDirectlySubsumedTypes(type);
     final int max = typeVector.size();
     for (int i = 0; i < max; i++) {
@@ -1971,9 +2070,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     incrementIllegalIndexUpdateDetector(typeCode);
     // get a list of all indexes defined over this type
     // Includes indexes defined on supertypes of this type
-    final ArrayList<IndexIteratorCachePair> allIndexesForType = this.indexArray[typeCode];
-    for (IndexIteratorCachePair iicp : allIndexesForType) {
-      iicp.index.flush();
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> allIndexesForType = this.indexArray[typeCode];
+    for (IndexIteratorCachePair<? extends FeatureStructure> iicp : allIndexesForType) {
+      iicp.fsLeafIndex.flush();
     }
   }
   
@@ -2035,9 +2134,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public int[] getIndexedFSs() {
     final IntVector v = new IntVector();  // accumulates fsAddrs from various indexes
-    IndexIteratorCachePair iicp;
+    IndexIteratorCachePair<? extends FeatureStructure> iicp;
     IntPointerIterator it;
-    ArrayList<IndexIteratorCachePair> iv;
+    ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> iv;
     // We may need to profile this. If this is a bottleneck, use a different
     // implementation.
     IntVector indexedFSs = new IntVector();
@@ -2057,10 +2156,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // index, pick one arbitrarily and add its FSs (since it contains all
       // FSs that all other indexes for the same type contain). 
       
-      IndexIteratorCachePair anIndex = null;
+      IndexIteratorCachePair<? extends FeatureStructure> anIndex = null;
       for (int j = 0; j < jMax; j++) {
         iicp = iv.get(j);
-        indStrat = iicp.index.getIndexingStrategy();
+        indStrat = iicp.fsLeafIndex.getIndexingStrategy();
         if (indStrat != FSIndex.SET_INDEX) {  // don't use SET indexes because 
                                               // they miss some items which have been added to the indexes
           anIndex = iicp;
@@ -2076,7 +2175,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (IS_ALLOW_DUP_ADD_2_INDEXES) {
         indexedFSs.removeAllElements();
         // get an iterator over just the leaf index for this type itself, excluding subtypes
-        it = anIndex.index.refIterator();
+        it = anIndex.fsLeafIndex.refIterator();
         while (it.isValid()) {
           indexedFSs.add(it.get());
           it.inc();
@@ -2086,7 +2185,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         // add to previously collected types
         v.add(indexedFSs.getArray(), 0, indexedFSs.size());  // bulk add of all elements
       } else {
-        anIndex.index.bulkAddTo(v);
+        anIndex.fsLeafIndex.bulkAddTo(v);
       }
     }  // loop to accumulate in v all for all types
     return v.toArray();
@@ -2218,18 +2317,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // in case an iterator is simultaneously active over this type
     incrementIllegalIndexUpdateDetector(typeCode);
     // Get the indexes for the type.
-    final ArrayList<IndexIteratorCachePair> indexes = this.indexArray[typeCode];
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> indexes = this.indexArray[typeCode];
     // Add fsRef to all indexes.
     boolean noIndexOrOnlySetindexes = true;
-    for (IndexIteratorCachePair iicp : indexes) {
-      final int indexingStrategy = iicp.index.getIndexingStrategy(); 
+    for (IndexIteratorCachePair<? extends FeatureStructure> iicp : indexes) {
+      final int indexingStrategy = iicp.fsLeafIndex.getIndexingStrategy(); 
       if (isAddback) {
         if (indexingStrategy == FSIndex.BAG_INDEX) {
         continue;  // skip adding back to bags - because removes are skipped for bags
         }
-        iicp.index.insert(fsRef, count);
+        iicp.fsLeafIndex.insert(fsRef, count);
       } else {
-        iicp.index.insert(fsRef);  // if not addback, only insert 1
+        iicp.fsLeafIndex.insert(fsRef);  // if not addback, only insert 1
       }
       if (noIndexOrOnlySetindexes) {
         noIndexOrOnlySetindexes = indexingStrategy == FSIndex.SET_INDEX;
@@ -2253,7 +2352,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       // add the FS to the bag index
       // which is the last one added
-      indexes.get(indexes.size() - 1).index.insert(fsRef);
+      indexes.get(indexes.size() - 1).fsLeafIndex.insert(fsRef);
     }
 
     if (!this.isUsed[typeCode]) {
@@ -2270,11 +2369,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   boolean ll_removeFS_ret(int fsRef) {
     final int typeCode = this.cas.ll_getFSRefType(fsRef);
     incrementIllegalIndexUpdateDetector(typeCode);
-    final ArrayList<IndexIteratorCachePair> idxList = this.indexArray[typeCode];
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> idxList = this.indexArray[typeCode];
     final int max = idxList.size();
     boolean atLeastOneRemoved = false;
     for (int i = 0; i < max; i++) {
-      atLeastOneRemoved |= idxList.get(i).index.remove(fsRef);
+      atLeastOneRemoved |= idxList.get(i).fsLeafIndex.remove(fsRef);
     }
     if (atLeastOneRemoved) {
       if (this.cas.getCurrentMark() != null) {
@@ -2333,11 +2432,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     // iterate over all defined indexes for this type
     
-    ArrayList<IndexIteratorCachePair> iicps = this.indexArray[((TypeImpl)type).getCode()];
-    for (IndexIteratorCachePair iicp : iicps) {
-      if (iicp.index.getIndexingStrategy() != FSIndex.SET_INDEX) {
+    ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> iicps = this.indexArray[((TypeImpl)type).getCode()];
+    for (IndexIteratorCachePair<? extends FeatureStructure> iicp : iicps) {
+      if (iicp.fsLeafIndex.getIndexingStrategy() != FSIndex.SET_INDEX) {
         // return an iterator that covers this type and all its subtypes
-        iteratorList.add(new IndexImpl<FeatureStructure>(iicp, IteratorExtraFunction.UNORDERED).ll_iterator());
+        iteratorList.add(new IndexImpl<>(iicp, IteratorExtraFunction.UNORDERED).ll_iterator());
         return;
       }
     }
@@ -2359,16 +2458,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * 
    * @see org.apache.uima.cas.FSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
-  public FSIterator<FeatureStructure> getAllIndexedFS(Type type) {
-    final List<FSIterator<FeatureStructure>> iteratorList = new ArrayList<FSIterator<FeatureStructure>>();
+  public <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type type) {
+    final List<FSIterator<T>> iteratorList = new ArrayList<>();
     getAllIndexedFS(type, iteratorList);
-    return (iteratorList.size() == 1) ? iteratorList.get(0) : 
-        new FSIteratorAggregate<FeatureStructure>(iteratorList);
+    return (iteratorList.size() == 1) ? iteratorList.get(0) : new FSIteratorAggregate<T>(iteratorList);
   }
 
-  private final void getAllIndexedFS(Type type, List<FSIterator<FeatureStructure>> iteratorList) {
+  private final <T extends FeatureStructure> void getAllIndexedFS(Type type, List<FSIterator<T>> iteratorList) {
     // Start by looking for an auto-index. 
-    final FSIndex<FeatureStructure> autoIndex = getIndex(getAutoIndexNameForType(type));
+    final FSIndex<T> autoIndex = getIndex(getAutoIndexNameForType(type));
     if (autoIndex != null) {
       iteratorList.add(autoIndex.iterator());
       // We found one of the special auto-indexes which don't inherit down the tree. So, we
@@ -2385,11 +2483,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     // iterate over all defined indexes for this type
     
-    ArrayList<IndexIteratorCachePair> iicps = this.indexArray[((TypeImpl)type).getCode()];
-    for (IndexIteratorCachePair iicp : iicps) {
-      if (iicp.index.getIndexingStrategy() != FSIndex.SET_INDEX) {
+    @SuppressWarnings("unchecked")  // the indexArray is guaranteed to have iicp for the type represented by the code
+    ArrayList<IndexIteratorCachePair<T>> iicps = (ArrayList<IndexIteratorCachePair<T>>) (Object) this.indexArray[((TypeImpl)type).getCode()];
+    for (IndexIteratorCachePair<T> iicp : iicps) {
+      if (iicp.fsLeafIndex.getIndexingStrategy() != FSIndex.SET_INDEX) {
         // return an iterator that covers this type and all its subtypes
-        iteratorList.add(new IndexImpl<FeatureStructure>(iicp, IteratorExtraFunction.UNORDERED).iterator());
+        iteratorList.add(new IndexImpl<T>(iicp, IteratorExtraFunction.UNORDERED).iterator());
         return;
       }
     }
@@ -2475,31 +2574,31 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 
     // otherwise, check all the indexes for this type. 
-    final ArrayList<IndexIteratorCachePair> indexesForType = indexArray[typeCode];
-    FSBagIndex index_bag = null;
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> indexesForType = indexArray[typeCode];
+    FSBagIndex<? extends FeatureStructure> index_bag = null;
     boolean found_in_bag = false;
-    ArrayList<FSRBTSetIndex> setindexes = null;
+    ArrayList<FSRBTSetIndex<? extends FeatureStructure>> setindexes = null;
 
-    for (IndexIteratorCachePair iicp : indexesForType) {
-      FSLeafIndexImpl<?> index_for_this_typeCode = iicp.index;
+    for (IndexIteratorCachePair<? extends FeatureStructure> iicp : indexesForType) {
+      FSLeafIndexImpl<?> index_for_this_typeCode = iicp.fsLeafIndex;
       final int kind = index_for_this_typeCode.getIndexingStrategy(); // SORTED_INDEX, BAG_, or SET_
       if (kind == FSIndex.SORTED_INDEX) {
         return ((FSIntArrayIndex<?>)index_for_this_typeCode).ll_containsEq(fsAddr);
       }
       if (kind == FSIndex.BAG_INDEX && !found_in_bag) {
         if (FSBagIndex.USE_POSITIVE_INT_SET) {
-          found_in_bag = ((FSBagIndex)index_for_this_typeCode).ll_contains(fsAddr);
+          found_in_bag = ((FSBagIndex<?>)index_for_this_typeCode).ll_contains(fsAddr);
           if (!found_in_bag) {
             return false; 
           }
           continue; // may still return false if no set or sorted indexes
         } 
-        index_bag = (FSBagIndex) index_for_this_typeCode;
+        index_bag = (FSBagIndex<?>) index_for_this_typeCode;
       } else {  // is Set case
         if (setindexes == null) {
-          setindexes = new ArrayList<FSRBTSetIndex>();
+          setindexes = new ArrayList<FSRBTSetIndex<?>>();
         }
-        setindexes.add((FSRBTSetIndex) index_for_this_typeCode);
+        setindexes.add((FSRBTSetIndex<?>) index_for_this_typeCode);
       } 
     }
     // if get here, there's no Sorted index
@@ -2522,7 +2621,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     // there are no bag indexes.  Need to check each Set index, and return true if any of them contain this FS
     
-    for (FSRBTSetIndex index_set : setindexes) {
+    for (FSRBTSetIndex<?> index_set : setindexes) {
       if (index_set.ll_contains(fsAddr)) {
         return true;
       }
@@ -2558,8 +2657,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     // otherwise, check all the indexes for this type to see if there is a Set or Sorted one. 
 
-    for (IndexIteratorCachePair iicp : indexArray[typeCode]) {
-      FSLeafIndexImpl<?> index_for_this_typeCode = iicp.index;
+    for (IndexIteratorCachePair<? extends FeatureStructure> iicp : indexArray[typeCode]) {
+      FSLeafIndexImpl<?> index_for_this_typeCode = iicp.fsLeafIndex;
       final int kind = index_for_this_typeCode.getIndexingStrategy(); // SORTED_INDEX, BAG_, or SET_
       if (kind == FSIndex.SORTED_INDEX || kind == FSIndex.SET_INDEX) {
         // next call removes from all defined indexes for this type
@@ -2585,12 +2684,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @return the index just for that type
    */
   private FSIntArrayIndex<?> getAnnotationIndexNoSubtypes(int typeCode) {
-    final IndexIteratorCachePair annotation_iicp = this.name2indexMap.get(CAS.STD_ANNOTATION_INDEX);
-    final ArrayList<IndexIteratorCachePair> iicps_for_type = indexArray[typeCode];
-    final FSLeafIndexImpl<?> ri = annotation_iicp.index;
+    final IndexIteratorCachePair<? extends FeatureStructure> annotation_iicp = this.name2indexMap.get(CAS.STD_ANNOTATION_INDEX);
+    final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> iicps_for_type = indexArray[typeCode];
+    final FSLeafIndexImpl<?> ri = annotation_iicp.fsLeafIndex;
     // search all defined indexes for this type, to find an annotation one
     final int ii = findIndex(iicps_for_type, ri.getComparator(), FSIndex.SORTED_INDEX);
-    return ((FSIntArrayIndex<?>)iicps_for_type.get(ii).index);
+    return ((FSIntArrayIndex<?>)iicps_for_type.get(ii).fsLeafIndex);
   }
   
   private void logIndexOperation(int fsRef, boolean added) {

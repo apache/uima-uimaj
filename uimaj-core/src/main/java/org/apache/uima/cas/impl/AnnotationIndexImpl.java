@@ -32,10 +32,10 @@ import org.apache.uima.cas.text.AnnotationTree;
  */
 public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIndex<T> {
 
-  private FSIndex<AnnotationFS> index;
+  private FSIndex<T> index;
 
   
-  public AnnotationIndexImpl(FSIndex<AnnotationFS> index) {
+  public AnnotationIndexImpl(FSIndex<T> index) {
     super();
     this.index = index;
   }
@@ -149,6 +149,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#tree(org.apache.uima.cas.text.AnnotationFS)
    */
+  @Override
   public AnnotationTree<T> tree(T annot) {
     AnnotationTreeImpl<T> tree = new AnnotationTreeImpl<T>();
     AnnotationTreeNodeImpl<T> root = new AnnotationTreeNodeImpl<T>();
@@ -172,8 +173,8 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
   }
 
   @Override
-  public FSIndex withSnapshotIterators() {
-    return new AnnotationIndexImpl(index.withSnapshotIterators());
+  public FSIndex<T> withSnapshotIterators() {
+    return new AnnotationIndexImpl<T>(index.withSnapshotIterators());
   }
 
 }

@@ -36,7 +36,7 @@ import org.apache.uima.internal.util.IntVector;
  * The common (among all index kinds - set, sorted, bag) info for an index
  * Subtypes define the actual index repository (integers indexing the CAS) for each kind.
  * 
- * 
+ * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
 public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements IntComparator, FSIndex<T>, FSIndexImpl {
 
@@ -420,7 +420,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
       return false;
     if (getClass() != obj.getClass())
       return false;
-    FSLeafIndexImpl other = (FSLeafIndexImpl) obj;
+    FSLeafIndexImpl<?> other = (FSLeafIndexImpl<?>) obj;
     if (comparator == null) {
       if (other.comparator != null)
         return false;
@@ -500,13 +500,43 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   }
 
   @Override
-  public FSIndex withSnapshotIterators() {
+  public FSIndex<T> withSnapshotIterators() {
     // should never be called
     // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
     //   which seems incorrect?
     throw new UnsupportedOperationException();
   }
   
-  
+  @Override
+  public void fillFlatArray(FeatureStructure[] flatArray) {
+    // should never be called
+    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
+    //   which seems incorrect?
+    throw new UnsupportedOperationException();  
+  }
+
+  @Override
+  public int getNumberOfTypes() {
+    // should never be called
+    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
+    //   which seems incorrect?
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isValidCache(int[] indexUpdateCounts) {
+    // should never be called
+    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
+    //   which seems incorrect?
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void captureIndexUpdatecounters(int[] indexUpdateCounts) {
+    // should never be called
+    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
+    //   which seems incorrect?
+    throw new UnsupportedOperationException();
+  }
 
 }

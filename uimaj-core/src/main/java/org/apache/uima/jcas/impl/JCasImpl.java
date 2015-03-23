@@ -43,6 +43,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CasOwner;
 import org.apache.uima.cas.ConstraintFactory;
+import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
@@ -1535,9 +1536,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex(org.apache.uima.cas.Type)
    */
   @SuppressWarnings("unchecked")
-  public AnnotationIndex<Annotation> getAnnotationIndex(Type type) throws CASRuntimeException {
-    return (AnnotationIndex<Annotation>) (AnnotationIndex<?>)  
-            casImpl.getAnnotationIndex(type);
+  @Override
+  public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException {
+    return (AnnotationIndex<T>) casImpl.getAnnotationIndex(type);
   }
 
   /*
@@ -1546,10 +1547,14 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @see org.apache.uima.jcas.JCas#getAnnotationIndex(int)
    */
   @SuppressWarnings("unchecked")
-  public AnnotationIndex<Annotation> getAnnotationIndex(int type) throws CASRuntimeException {
-    return (AnnotationIndex<Annotation>) (AnnotationIndex<?>) 
-            casImpl.getAnnotationIndex(this.getCasType(type));
+  public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) throws CASRuntimeException {
+    return (AnnotationIndex<T>) casImpl.getAnnotationIndex(this.getCasType(type));
   }
+  
+  public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Class<T> clazz) {
+    return getAnnotationIndex(getCasType(clazz));
+  }
+
 
   /*
    * (non-Javadoc)
@@ -1595,5 +1600,34 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     casImpl.protectIndexes(runnable);  
   }
   
+  /**
+   * Static method to get the corresponding Type for a JCas class object 
+   */
+  private int getTypeRegistryIndex(Class<? extends TOP> clazz) {
+    try {
+      return clazz.getField("type").getInt(clazz);
+    } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+      throw new RuntimeException(e);  // should never happen
+    }
+  }
   
+  /**
+   * Return the UIMA Type object corresponding to this JCas's JCas cover class
+   *   (Note: different JCas's, with different type systems, may share the same cover class impl)
+   * @param clazz
+   * @return the corresponding UIMA Type object
+   */
+  public Type getCasType(Class<? extends TOP> clazz) {
+    return getCasType(getTypeRegistryIndex(clazz));
+  }
+
+  @Override
+  public <T extends TOP> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
+    return getFSIndexRepository().getAllIndexedFS(getCasType(clazz));
+  }
+
+  @Override
+  public <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz) {
+    return getFSIndexRepository().getIndex(label, getCasType(clazz));
+  }     
 }

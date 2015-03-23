@@ -24,10 +24,10 @@ import org.apache.uima.cas.FSIterator;
 
 /**
  * An annotation index provides additional iterator functionality that applies only to instances of
- * <code>uima.tcas.Annotation</code>. You can obtain an AnnotationIndex by calling:
+ * <code>uima.tcas.Annotation</code> (or its subtypes). You can obtain an AnnotationIndex by calling:
  * <p>
- * <code>AnnotationIndex idx = (AnnotationIndex)cas.getAnnotationIndex();</code> <br>(the
- * typecast is necessary for historical reasons).
+ * <code>AnnotationIndex idx = cas.getAnnotationIndex();</code> or <br/>
+ * <code AnnotationIndex<SomeJCasType> idx = jcas.getAnnotationIndex(SomeJCasType.class);  
  * </p>
  * <p>
  * Note that the AnnotationIndex defines the following sort order between two annotations:
@@ -52,9 +52,11 @@ import org.apache.uima.cas.FSIterator;
  * <p>
  * In the method descriptions below, the notation <code>a &lt; b</code>, where <code>a</code>
  * and <code>b</code> are annotations, should be taken to mean <code>a</code> comes before
- * <code>b</code> in the index, according to the above rules.
- * </p>
+ * <code>b</code> in the index, according to the above rules.</p>
+ * 
+ * @param <T> The top most Java cover class (usually a JCas Class) specified for the underlying index.
  */
+
 public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
   /**
    * Return an iterator over annotations that can be constrained to be unambiguous.
@@ -158,9 +160,8 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * obtained from a strict, unambiguous subiterator of the node's annotation.
    * 
    * @param annot
-   *          The annotation at the root of the tree.
+   *          The annotation at the root of the tree.  This must be of type T or a subtype
    * @return The annotation tree rooted at <code>annot</code>.
    */
-  AnnotationTree<T> tree(T annot);
-
+   AnnotationTree<T> tree(T annot);
 }

@@ -34,8 +34,9 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
 /**
  * Used for UIMA FS Bag Indexes
  * Uses IntVector or PositiveIntSet to hold values of FSs
+ * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
-public class FSBagIndex extends FSLeafIndexImpl {
+public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
   
   // package private
   final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;

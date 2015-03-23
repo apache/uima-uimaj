@@ -4495,18 +4495,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     setFeatureValueNotJournaled(addr, ts.endFeatCode, end); // because it's a create - not in index
     return addr;
   }
-
-  @SuppressWarnings("unchecked")
-  public AnnotationIndex<AnnotationFS> getAnnotationIndex() {
-    return new AnnotationIndexImpl<AnnotationFS>(
-            (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
+  
+  public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex() {
+    return new AnnotationIndexImpl<T>(
+            getIndexRepository().<T>getIndex(
              CAS.STD_ANNOTATION_INDEX));
   }
 
-  @SuppressWarnings("unchecked")
-  public AnnotationIndex<AnnotationFS> getAnnotationIndex(Type type) {
-    return new AnnotationIndexImpl<AnnotationFS>(
-            (FSIndex<AnnotationFS>) (FSIndex<?>) getIndexRepository().getIndex(
+  public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type) {
+    return new AnnotationIndexImpl<T>(
+             getIndexRepository().<T>getIndex(
             CAS.STD_ANNOTATION_INDEX, type));
   }
 
