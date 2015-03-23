@@ -24,6 +24,9 @@ import org.apache.uima.cas.impl.FeatureStructureImpl;
 /**
  * Version 2 (2014) of map between CAS addr and JCasCover Objects
  * 
+ * Note: in the general case, the cover object may *not* be a JCas one, but rather the general one
+ *       This happens if there is no JCas cover object defined for the type.
+ * 
  * Assumptions:  Each addr has a corresponding JCas; it is not
  * permitted to "update" an addr with a different JCas
  * cover class (unless the table is cleared first).

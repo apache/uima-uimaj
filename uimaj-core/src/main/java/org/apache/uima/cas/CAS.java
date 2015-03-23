@@ -474,7 +474,7 @@ public interface CAS extends AbstractCas {
    *          The type of the FS.
    * @return The new FS.
    */
-  FeatureStructure createFS(Type type) throws CASRuntimeException;
+  <T extends FeatureStructure> T createFS(Type type) throws CASRuntimeException;
 
   /**
    * Create a new feature structure array.

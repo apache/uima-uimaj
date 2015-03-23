@@ -20,35 +20,33 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyStringList_Type extends StringList_Type {
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (instanceOf_Type.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new NonEmptyStringList(addr, instanceOf_Type);
-          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new NonEmptyStringList(addr, instanceOf_Type);
-    }
-  };
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    @SuppressWarnings("unchecked")
+//    public NonEmptyStringList createFS(int addr, CASImpl cas) {
+//      if (instanceOf_Type.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        NonEmptyStringList fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new NonEmptyStringList(addr, instanceOf_Type);
+//          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new NonEmptyStringList(addr, instanceOf_Type);
+//    }
+//  };
 
   public final static int typeIndexID = NonEmptyStringList.typeIndexID;
 
@@ -89,7 +87,7 @@ public class NonEmptyStringList_Type extends StringList_Type {
   // * initialize variables to correspond with Cas Type and Features
   public NonEmptyStringList_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_head = jcas.getRequiredFeatureDE(casType, "head", "uima.cas.String", featOkTst);
     casFeatCode_head = (null == casFeat_head) ? JCas.INVALID_FEATURE_CODE

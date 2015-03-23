@@ -19,9 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.FeatureStructure;
 
-public class ArrayFSGenerator implements FSGenerator {
+public class ArrayFSGenerator implements FSGenerator<ArrayFSImpl> {
 
   public ArrayFSGenerator() {
     super();
@@ -30,7 +29,7 @@ public class ArrayFSGenerator implements FSGenerator {
   /**
    * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, CASImpl)
    */
-  public FeatureStructure createFS(int addr, CASImpl cas) {
+  public ArrayFSImpl createFS(int addr, CASImpl cas) {
     return new ArrayFSImpl(addr, cas);
   }
 

@@ -76,7 +76,7 @@ public class TypePriorityList_impl extends MetaDataObject_impl implements TypePr
     //surprise: super.clone sets the final field to the same array list as the original
     TypePriorityList_impl clone = (TypePriorityList_impl) super.clone();
     
-    clone.mTypeNames = new ArrayList();  // because above clone has set it to the == object
+    clone.mTypeNames = new ArrayList<>();  // because above clone has set it to the == object
     for (String name : mTypeNames) {
       clone.addType(name);
     }

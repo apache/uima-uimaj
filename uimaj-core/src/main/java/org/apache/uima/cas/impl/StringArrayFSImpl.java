@@ -29,7 +29,7 @@ import org.apache.uima.cas.StringArrayFS;
  */
 public class StringArrayFSImpl extends CommonArrayFSImpl implements StringArrayFS {
 
-  private static class StringArrayGenerator implements FSGenerator {
+  private static class StringArrayGenerator implements FSGenerator<StringArrayFSImpl> {
 
     private StringArrayGenerator() {
       super();
@@ -38,7 +38,7 @@ public class StringArrayFSImpl extends CommonArrayFSImpl implements StringArrayF
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public  StringArrayFSImpl createFS(int addr, CASImpl cas) {
       return new StringArrayFSImpl(addr, cas);
     }
 
@@ -48,7 +48,7 @@ public class StringArrayFSImpl extends CommonArrayFSImpl implements StringArrayF
     super(cas, addr);
   }
 
-  static FSGenerator generator() {
+  static FSGenerator<StringArrayFSImpl> generator() {
     return new StringArrayGenerator();
   }
 

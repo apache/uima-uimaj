@@ -35,7 +35,7 @@ import org.apache.uima.cas.Type;
  */
 public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 
-	private static class SofaFSGenerator implements FSGenerator {
+	private static class SofaFSGenerator implements FSGenerator<SofaFSImpl> {
 
 		private SofaFSGenerator() {
 			super();
@@ -44,13 +44,13 @@ public class SofaFSImpl extends FeatureStructureImplC implements SofaFS {
 		/**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-		public FeatureStructure createFS(int addr, CASImpl cas) {
+    public SofaFSImpl createFS(int addr, CASImpl cas) {
 			return new SofaFSImpl(addr, cas);
 		}
 
 	}
 
-	static FSGenerator getSofaFSGenerator() {
+	static FSGenerator<SofaFSImpl> getSofaFSGenerator() {
 		return new SofaFSGenerator();
 	}
 

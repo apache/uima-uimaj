@@ -19,11 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
 // *********************************
@@ -39,36 +36,34 @@ public final class DoubleArray_Type extends CommonArray_Type {
    */
   public final static int typeIndexID = DoubleArray.typeIndexID;
 
-  // generator used by the CAS system when it needs to make a new instance
-
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+//  // generator used by the CAS system when it needs to make a new instance
+//
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (DoubleArray_Type.this.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = DoubleArray_Type.this.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new DoubleArray(addr, DoubleArray_Type.this);
-          DoubleArray_Type.this.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new DoubleArray(addr, DoubleArray_Type.this);
-    }
-  };
-
-  private DoubleArray_Type() {
-  } // block default new operator
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    @SuppressWarnings("unchecked")
+//    public DoubleArray createFS(int addr, CASImpl cas) {
+//      if (DoubleArray_Type.this.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        DoubleArray fs = (DoubleArray) DoubleArray_Type.this.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new DoubleArray(addr, DoubleArray_Type.this);
+//          DoubleArray_Type.this.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new DoubleArray(addr, DoubleArray_Type.this);
+//    }
+//  };
 
   public DoubleArray_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     // Do not factor to TOP_Type - requires access to instance values
     // which are not set when super is called (per JVM spec)
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
   }
 
   // ******************************************************

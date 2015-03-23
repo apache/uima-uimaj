@@ -21,10 +21,8 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -32,25 +30,26 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but needed for compatibility with existing JCasGen'd cover classes
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (AnnotationBase_Type.this.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = AnnotationBase_Type.this.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new AnnotationBase(addr, AnnotationBase_Type.this);
-          AnnotationBase_Type.this.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new AnnotationBase(addr, AnnotationBase_Type.this);
-    }
-  };
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    @SuppressWarnings("unchecked")
+//    public AnnotationBase createFS(int addr, CASImpl cas) {
+//      if (AnnotationBase_Type.this.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        AnnotationBase fs = AnnotationBase_Type.this.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new AnnotationBase(addr, AnnotationBase_Type.this);
+//          AnnotationBase_Type.this.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new AnnotationBase(addr, AnnotationBase_Type.this);
+//    }
+//  };
 
   public final static int typeIndexID = AnnotationBase.typeIndexID;
 
@@ -73,7 +72,7 @@ public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
   // * initialize variables to correspond with Cas Type and Features
   public AnnotationBase_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_sofa = jcas.getRequiredFeatureDE(casType, "sofa", "uima.cas.Sofa", featOkTst);
     casFeatCode_sofa = (null == casFeat_sofa) ? JCas.INVALID_FEATURE_CODE

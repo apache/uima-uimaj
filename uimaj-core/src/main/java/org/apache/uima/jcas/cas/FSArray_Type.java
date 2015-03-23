@@ -23,9 +23,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
 // *********************************
@@ -39,36 +37,34 @@ public class FSArray_Type extends CommonArray_Type {
 
   public final static int typeIndexID = FSArray.typeIndexID;
 
-  // generator used by the CAS system when it needs to make a new instance
-
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+//  // generator used by the CAS system when it needs to make a new instance
+//
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (instanceOf_Type.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new FSArray(addr, instanceOf_Type);
-          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new FSArray(addr, instanceOf_Type);
-    }
-  };
-
-  private FSArray_Type() {
-  } // block default new operator
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    @SuppressWarnings("unchecked")
+//    public FSArray createFS(int addr, CASImpl cas) {
+//      if (instanceOf_Type.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        FSArray fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new FSArray(addr, instanceOf_Type);
+//          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new FSArray(addr, instanceOf_Type);
+//    }
+//  };
 
   public FSArray_Type(JCas jcas, Type casType) {
     super(jcas, casType);
     // Do not factor to TOP_Type - requires access to instance values
     // which are not set when super is called (per JVM spec)
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
   }
 
   // ******************************************************

@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
@@ -30,7 +29,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
 
-  private static class AnnotationFSGenerator implements FSGenerator {
+  private static class AnnotationFSGenerator implements FSGenerator<AnnotationImpl> {
 
     private AnnotationFSGenerator() {
       super();
@@ -39,13 +38,13 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public AnnotationImpl createFS(int addr, CASImpl cas) {
       return new AnnotationImpl(addr, cas);
     }
 
   }
 
-  static FSGenerator getAnnotationGenerator() {
+  static FSGenerator<AnnotationImpl> getAnnotationGenerator() {
     return new AnnotationFSGenerator();
   }
 

@@ -248,7 +248,7 @@ public class IteratorTest extends TestCase {
   }
   
   public void testGetIndexes() {
-    Iterator<FSIndex<FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
+     Iterator<FSIndex<? extends FeatureStructure>> it = this.cas.getIndexRepository().getIndexes();
     while (it.hasNext()) {
       assertNotNull(it.next());
     }

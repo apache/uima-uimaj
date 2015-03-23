@@ -71,17 +71,17 @@ public class Util {
     return r;
   }
 
-  public static AbstractCas setupViewSwitchClassLoaders(
+  public static <T extends AbstractCas> T setupViewSwitchClassLoaders(
       CAS cas, 
       boolean sofaAware, 
       ComponentInfo componentInfo,
       ResourceManager resourceManager, 
-      Class<? extends AbstractCas> casInterface) {
+      Class<T> casInterface) {
     CASImpl ci = getStartingView(cas, sofaAware, componentInfo);
     // get requested interface to CAS (CAS or JCas)
     // next will create JCas if needed, but not already created
     // must precede the switchClassLoader call - that one needs the JCas link, if it is being used
-    AbstractCas r = CasManager_impl.getCasInterfaceStatic(ci, casInterface);
+    T r = CasManager_impl.<T>getCasInterfaceStatic(ci, casInterface);
     // This cas will be unlocked and its class loader restored when the
     //   next() method returns it
     // Insure the same view is passed for switching/restoring  https://issues.apache.org/jira/browse/UIMA-2211

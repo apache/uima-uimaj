@@ -24,10 +24,13 @@ import java.util.Iterator;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * 
@@ -49,7 +52,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getIndex(java.lang.String)
    */
-  public FSIndex getIndex(String label) {
+  public <T extends TOP> FSIndex<T> getIndex(String label) {
     return fsIndexRepository.getIndex(label);
   }
 
@@ -58,7 +61,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getIndex(java.lang.String, int)
    */
-  public FSIndex getIndex(String label, int type) {
+  public <T extends TOP> FSIndex<T> getIndex(String label, int type) {
     return fsIndexRepository.getIndex(label, jcas.getCasType(type));
   }
 
@@ -67,7 +70,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getAnnotationIndex()
    */
-  public AnnotationIndex getAnnotationIndex() {
+  public AnnotationIndex<Annotation> getAnnotationIndex() {
     return this.jcas.getCas().getAnnotationIndex();
   }
 
@@ -76,7 +79,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getAnnotationIndex(int)
    */
-  public AnnotationIndex getAnnotationIndex(int type) {
+  public <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type) {
       return this.jcas.getCas().getAnnotationIndex(this.jcas.getCasType(type));
   }
 
@@ -85,7 +88,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getLabels()
    */
-  public Iterator getLabels() {
+  public Iterator<String> getLabels() {
     return fsIndexRepository.getLabels();
   }
 
@@ -94,7 +97,8 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * 
    * @see org.apache.uima.jcas.JFSIndexRepository#getIndexes()
    */
-  public Iterator getIndexes() {
+  @Override
+  public Iterator<FSIndex<? extends FeatureStructure>> getIndexes() {
     return fsIndexRepository.getIndexes();
 
   }
@@ -111,14 +115,14 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
-  public FSIterator getAllIndexedFS(Type aType) {
+  public FSIterator<FeatureStructure> getAllIndexedFS(Type aType) {
     return fsIndexRepository.getAllIndexedFS(aType);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JFSIndexRepository#getAllIndexedFS(int)
    */
-  public FSIterator getAllIndexedFS(int aType) {
+  public FSIterator<FeatureStructure> getAllIndexedFS(int aType) {
     return fsIndexRepository.getAllIndexedFS(jcas.getCasType(aType));
   }
 }

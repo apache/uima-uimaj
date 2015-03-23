@@ -153,7 +153,7 @@ public interface JCas extends AbstractCas {
   /*
    * Internal Use - sets the corresponding Java instance for a Cas instance
    */
-  public abstract TOP getJfsFromCaddr(int casAddr);
+  public abstract <T extends TOP> T getJfsFromCaddr(int casAddr);
 
   /*
    * Internal Use. 

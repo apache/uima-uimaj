@@ -29,7 +29,7 @@ import org.apache.uima.cas.IntArrayFS;
  */
 public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
 
-  private static class IntArrayFSGenerator implements FSGenerator {
+  private static class IntArrayFSGenerator implements FSGenerator<IntArrayFSImpl> {
 
     private IntArrayFSGenerator() {
       super(); // does nothing, super is Object, is implicit by Java Lang rules
@@ -38,7 +38,7 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public IntArrayFSImpl createFS(int addr, CASImpl cas) {
       return new IntArrayFSImpl(addr, cas);
     }
 
@@ -48,7 +48,7 @@ public class IntArrayFSImpl extends CommonArrayFSImpl implements IntArrayFS {
     super(cas, addr);
   }
 
-  static FSGenerator generator() {
+  static FSGenerator<IntArrayFSImpl> generator() {
     return new IntArrayFSGenerator();
   }
 

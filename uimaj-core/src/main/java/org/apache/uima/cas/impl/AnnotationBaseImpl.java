@@ -21,7 +21,6 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Class comment for AnnotationImpl.java goes here.
@@ -30,19 +29,19 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public class AnnotationBaseImpl extends FeatureStructureImplC implements AnnotationBaseFS {
 
-  private static class AnnotationBaseFSGenerator implements FSGenerator {
+  private static class AnnotationBaseFSGenerator implements FSGenerator<AnnotationBaseImpl> {
 
     private AnnotationBaseFSGenerator() {
       super();
     }
 
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public AnnotationBaseImpl createFS(int addr, CASImpl cas) {
       return new AnnotationBaseImpl(addr, cas);
     }
 
   }
 
-  static FSGenerator getAnnotationGenerator() {
+  static FSGenerator<? extends AnnotationBaseFS> getAnnotationGenerator() {
     return new AnnotationBaseFSGenerator();
   }
 

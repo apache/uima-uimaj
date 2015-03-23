@@ -94,6 +94,14 @@
 		<finalName>uima-core</finalName>
     <pluginManagement>
       <plugins>
+        <!-- Uncomment the next to run with -Xlint:unchecked  -->
+        <!--plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <compilerArgument>-Xlint:unchecked</compilerArgument>
+          </configuration>
+        </plugin-->
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>

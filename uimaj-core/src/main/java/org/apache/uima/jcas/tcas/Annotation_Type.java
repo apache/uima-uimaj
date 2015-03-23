@@ -20,35 +20,34 @@
 package org.apache.uima.jcas.tcas;
 
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (Annotation_Type.this.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = Annotation_Type.this.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new Annotation(addr, Annotation_Type.this);
-          Annotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new Annotation(addr, Annotation_Type.this);
-    }
-  };
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    @SuppressWarnings("unchecked")
+//    public Annotation createFS(int addr, CASImpl cas) {
+//      if (Annotation_Type.this.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        Annotation fs = (Annotation) Annotation_Type.this.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new Annotation(addr, Annotation_Type.this);
+//          Annotation_Type.this.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new Annotation(addr, Annotation_Type.this);
+//    }
+//  };
 
   public final static int typeIndexID = Annotation.typeIndexID;
 
@@ -103,7 +102,7 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   // * initialize variables to correspond with Cas Type and Features
   public Annotation_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_begin = jcas.getRequiredFeatureDE(casType, "begin", "uima.cas.Integer", featOkTst);
     casFeatCode_begin = (null == casFeat_begin) ? JCas.INVALID_FEATURE_CODE

@@ -667,7 +667,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContext#getEmptyCas(java.lang.Class)
    * see http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
    */
-  public AbstractCas getEmptyCas(Class aCasInterface) {
+  @Override
+  public <T extends AbstractCas> T getEmptyCas(Class<T> aCasInterface) {
     if (!mCasPoolCreated) {
       synchronized (this) {
         if (!mCasPoolCreated) {

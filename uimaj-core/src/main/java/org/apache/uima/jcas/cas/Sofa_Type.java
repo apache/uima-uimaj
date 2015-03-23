@@ -20,12 +20,9 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -35,27 +32,27 @@ import org.apache.uima.jcas.JCasRegistry;
  * @generated
  */
 public class Sofa_Type extends TOP_Type {
-  /** @generated */
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+//  /** @generated */
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  /** @generated */
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (Sofa_Type.this.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = Sofa_Type.this.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new Sofa(addr, Sofa_Type.this);
-          Sofa_Type.this.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new Sofa(addr, Sofa_Type.this);
-    }
-  };
+//
+//  /** @generated */
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    public FeatureStructure createFS(int addr, CASImpl cas) {
+//      if (Sofa_Type.this.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        FeatureStructure fs = Sofa_Type.this.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new Sofa(addr, Sofa_Type.this);
+//          Sofa_Type.this.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new Sofa(addr, Sofa_Type.this);
+//    }
+//  };
 
   /** @generated */
   public final static int typeIndexID = Sofa.typeIndexID;
@@ -93,7 +90,7 @@ public class Sofa_Type extends TOP_Type {
    */
   public Sofa_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
     casFeat_sofaNum = jcas.getRequiredFeatureDE(casType, "sofaNum", "uima.cas.Integer", featOkTst);
     casFeatCode_sofaNum = (null == casFeat_sofaNum) ? JCas.INVALID_FEATURE_CODE

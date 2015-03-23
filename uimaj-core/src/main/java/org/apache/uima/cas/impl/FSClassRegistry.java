@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 
 /*
@@ -110,21 +109,21 @@ import org.apache.uima.cas.Type;
 
 public class FSClassRegistry {
 
-  private static class DefaultFSGenerator implements FSGenerator {
+  private static class DefaultFSGenerator implements FSGenerator<FeatureStructureImplC> {
     private DefaultFSGenerator() {
       super();
     }
 
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public FeatureStructureImplC createFS(int addr, CASImpl cas) {
       return new FeatureStructureImplC(cas, addr);
     }
   }
 
   private TypeSystemImpl ts;
 
-  private FSGenerator[] generators; 
+  private FSGenerator<?>[] generators; 
   
-  private static final FSGenerator defaultGenerator = new DefaultFSGenerator();
+  private static final FSGenerator<FeatureStructureImplC> defaultGenerator = new DefaultFSGenerator();
  
   /*
    * Generators sometimes need to be changed while running
@@ -144,8 +143,8 @@ public class FSClassRegistry {
    *   
    */
   // This map can be accessed on different threads at the same time
-  private final Map<ClassLoader, FSGenerator[]> generatorsByClassLoader = 
-          Collections.synchronizedMap(new HashMap<ClassLoader, FSGenerator[]>(4));
+  private final Map<ClassLoader, FSGenerator<?>[]> generatorsByClassLoader = 
+          Collections.synchronizedMap(new HashMap<ClassLoader, FSGenerator<?>[]>(4));
 
   // private final RedBlackTree rbt;
   // private final TreeMap map;
@@ -171,7 +170,7 @@ public class FSClassRegistry {
    * @param fsFactory
    *          the object having a createFS method in it for this type
    */
-  synchronized void addClassForType(Type type, FSGenerator fsFactory) {
+  synchronized void addClassForType(Type type, FSGenerator<?> fsFactory) {
     Iterator<Type> it = this.ts.getTypeIterator();
     TypeImpl sub;
     while (it.hasNext()) {
@@ -188,7 +187,7 @@ public class FSClassRegistry {
    * @param type -
    * @param fsFactory - 
    */
-  public void addGeneratorForType(TypeImpl type, FSGenerator fsFactory) {
+  public void addGeneratorForType(TypeImpl type, FSGenerator<?> fsFactory) {
     //this.generators[type.getCode()] = fsFactory;
   }
 
@@ -216,12 +215,12 @@ public class FSClassRegistry {
 //    }
   }
   
-  public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator[] newGenerators) {
+  public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator<?>[] newGenerators) {
     generatorsByClassLoader.put(cl, newGenerators);
   }
   
   public boolean swapInGeneratorsForClassLoader(ClassLoader cl, CASImpl casImpl) {
-    FSGenerator[] cachedGenerators = generatorsByClassLoader.get(cl);
+    FSGenerator<?>[] cachedGenerators = generatorsByClassLoader.get(cl);
     if (cachedGenerators != null) {
       casImpl.setLocalFsGenerators(cachedGenerators);
       return true;
@@ -257,12 +256,12 @@ public class FSClassRegistry {
    *   another thread
    */
   
-  public synchronized FSGenerator [] getBaseGenerators() {
+  public synchronized FSGenerator<?> [] getBaseGenerators() {
     return this.generators;
   }
   
   // internal use, public only for cross package ref
-  public synchronized void setBaseGenerators(FSGenerator [] generators) {
+  public synchronized void setBaseGenerators(FSGenerator<?>[] generators) {
     this.generators = generators;
   }
   
@@ -270,7 +269,7 @@ public class FSClassRegistry {
    * Internal Use Only
    */
   
-  public synchronized FSGenerator [] getNewFSGeneratorSet() {  
+  public synchronized FSGenerator<?>[] getNewFSGeneratorSet() {  
       return this.generators.clone();   
   }
 }

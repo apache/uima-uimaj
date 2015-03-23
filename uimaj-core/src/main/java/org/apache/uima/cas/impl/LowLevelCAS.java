@@ -250,7 +250,7 @@ public interface LowLevelCAS {
    *          The FS reference.
    * @return A FS object corresponding to the input reference.
    */
-  FeatureStructure ll_getFSForRef(int fsRef);
+  <T extends FeatureStructure> T ll_getFSForRef(int fsRef);
 
   /**
    * Get the value of an integer valued feature.

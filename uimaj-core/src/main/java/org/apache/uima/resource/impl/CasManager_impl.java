@@ -303,18 +303,19 @@ public class CasManager_impl implements CasManager {
    *          interface to get. Currently must be one of CAS or JCas.
    * @return -         
    */
-  public static AbstractCas getCasInterfaceStatic(CAS cas, Class<? extends AbstractCas> requiredInterface) {
+  @SuppressWarnings("unchecked")
+  public static <T extends AbstractCas> T getCasInterfaceStatic(CAS cas, Class<T> requiredInterface) {
     if (requiredInterface == CAS.class) {
-      return cas;
+      return (T) cas;
     } else if (requiredInterface == JCas.class) {
       try {
-        return cas.getJCas();
+        return (T) cas.getJCas();
       } catch (CASException e) {
         throw new UIMARuntimeException(e);
       }
     } else if (requiredInterface.isInstance(cas)) // covers AbstractCas
     {
-      return cas;
+      return (T) cas;
     }
     {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_INTERFACE,

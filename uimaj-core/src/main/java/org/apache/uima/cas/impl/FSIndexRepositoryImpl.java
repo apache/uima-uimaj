@@ -187,6 +187,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // Populate the cache.
     // For read-only CASes, this may be called on multiple threads, so do some synchronization
         
+    @SuppressWarnings("unchecked")
     private void createIndexIteratorCache() {
       // using double-checked sync - see http://en.wikipedia.org/wiki/Double-checked_locking#Usage_in_Java
       if (isIteratorCacheSetup) {
@@ -211,7 +212,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         
         for (int i = 0; i < len; i++) {
           final int typeCode = ((TypeImpl) allTypes.get(i)).getCode();
-          final ArrayList<IndexIteratorCachePair<? extends FeatureStructure>> indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
+          final ArrayList<IndexIteratorCachePair<?>> indexList = FSIndexRepositoryImpl.this.indexArray[typeCode];
           final int indexPos = indexList.indexOf(this);
           if (indexPos >= 0) {
             // unchecked:  the fsLeafIndex is for some subtype of FeatureStructure, but needs to be restricted to
@@ -954,7 +955,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       int kind = iicp.fsLeafIndex.getIndexingStrategy();
       for (int i = 0; i < iterators.length; i++) {
         if (kind == FSIndex.SORTED_INDEX) {
-          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = getCachedSortedSubFsLeafIndexes(iicp, i); 
+          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = getCachedSortedSubFsLeafIndex(iicp, i); 
           if (sortedIndex.findEq(fs) < 0) {
             continue;  // 
           }
@@ -1131,7 +1132,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       FSIndexComparator comp = leafIndex.getComparator();
       
       final int size = iicp0.size();  // adds up all the sizes of the indexes
-      sortedLeafIndex = (FSIntArrayIndex<T>) addNewIndexCore(comp, size, FSIndex.SORTED_INDEX);
+      sortedLeafIndex = (FSIntArrayIndex<T>) FSIndexRepositoryImpl.this.<T>addNewIndexCore(comp, size, FSIndex.SORTED_INDEX);
       snapshot = sortedLeafIndex.getVector().getArray();
       this.size = size;
       flattenCopy(iicp0, isRootOnly);
@@ -1616,22 +1617,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @param i which sub index to get
    * @return the subindex, cast to FSIntArrayIndex<T>
    */
-  private <T extends FeatureStructure> FSIntArrayIndex<T> getCachedSortedSubFsLeafIndexes(IndexIteratorCachePair<T>iicp, int i) {
-    return (FSIntArrayIndex<T>) iicp.cachedSubFsLeafIndexes.get(i);
+  private FSIntArrayIndex<? extends FeatureStructure> getCachedSortedSubFsLeafIndex(
+      IndexIteratorCachePair<? extends FeatureStructure> iicp, int i) {
+    return (FSIntArrayIndex<? extends FeatureStructure>) iicp.cachedSubFsLeafIndexes.get(i);
   }
-  
-  /**
-   * Get a particular sorted subLeafIndex
-   * Implemented as a subroutine to have the unchecked cast done in one place
-   * @param iicp having the subLeafIndexes
-   * @param i which sub index to get
-   * @return the subindex, cast to FSIntArrayIndex<T>
-   */
-  private <T extends FeatureStructure> FSLeafIndexImpl<T> getCachedSubFsLeafIndexes(IndexIteratorCachePair<T>iicp, int i) {
-    return (FSLeafIndexImpl<T>) iicp.cachedSubFsLeafIndexes.get(i);
-  }
-
-
 
   /**
    * Reset all indexes.
@@ -1925,8 +1914,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * @see org.apache.uima.cas.admin.FSIndexRepositoryMgr#getIndexes()
    */
-  public Iterator<FSIndex<FeatureStructure>> getIndexes() {
-    final ArrayList<FSIndex<FeatureStructure>> indexList = new ArrayList<FSIndex<FeatureStructure>>();
+  public Iterator<FSIndex<? extends FeatureStructure>> getIndexes() {
+    final ArrayList<FSIndex<? extends FeatureStructure>> indexList = new ArrayList<>();
     final Iterator<String> it = this.getLabels();
     String label;
     while (it.hasNext()) {

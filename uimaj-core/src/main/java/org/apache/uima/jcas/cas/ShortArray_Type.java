@@ -19,11 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
-import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
 // *********************************
@@ -39,27 +36,27 @@ public final class ShortArray_Type extends CommonArray_Type {
    */
   public final static int typeIndexID = ShortArray.typeIndexID;
 
-  // generator used by the CAS system when it needs to make a new instance
-
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+//  // generator used by the CAS system when it needs to make a new instance
+//
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (ShortArray_Type.this.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = ShortArray_Type.this.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new ShortArray(addr, ShortArray_Type.this);
-          ShortArray_Type.this.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new ShortArray(addr, ShortArray_Type.this);
-    }
-  };
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    public FeatureStructure createFS(int addr, CASImpl cas) {
+//      if (ShortArray_Type.this.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        FeatureStructure fs = ShortArray_Type.this.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new ShortArray(addr, ShortArray_Type.this);
+//          ShortArray_Type.this.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new ShortArray(addr, ShortArray_Type.this);
+//    }
+//  };
 
   private ShortArray_Type() {
   } // block default new operator
@@ -68,7 +65,7 @@ public final class ShortArray_Type extends CommonArray_Type {
     super(jcas, casType);
     // Do not factor to TOP_Type - requires access to instance values
     // which are not set when super is called (per JVM spec)
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
   }
 
   // ******************************************************

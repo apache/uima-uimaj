@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.BooleanArrayFS;
-import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Implementation of the {@link org.apache.uima.cas.BooleanArrayFS BooleanArrayFS} interface.
@@ -29,11 +28,11 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public class BooleanArrayFSImpl extends CommonAuxArrayFSImpl implements BooleanArrayFS {
 
-  private static class BooleanArrayGenerator implements FSGenerator {
+  private static class BooleanArrayGenerator implements FSGenerator<BooleanArrayFSImpl> {
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public BooleanArrayFSImpl createFS(int addr, CASImpl cas) {
       return new BooleanArrayFSImpl(addr, cas);
     }
   }
@@ -42,7 +41,7 @@ public class BooleanArrayFSImpl extends CommonAuxArrayFSImpl implements BooleanA
     super(cas, addr); // note arg reversal
   }
 
-  static FSGenerator generator() {
+  static FSGenerator<BooleanArrayFSImpl> generator() {
     return new BooleanArrayGenerator();
   }
 

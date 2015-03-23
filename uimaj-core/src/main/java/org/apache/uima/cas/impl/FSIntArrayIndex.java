@@ -34,7 +34,7 @@ import org.apache.uima.internal.util.IntVector;
  * Uses IntVector (sorted) as the index (of FSs)
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
-public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl {
+public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
 

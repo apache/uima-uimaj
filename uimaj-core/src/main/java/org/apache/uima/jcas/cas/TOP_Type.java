@@ -20,7 +20,6 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
@@ -88,25 +87,26 @@ public class TOP_Type {
 	// new subtypes of TOP_Type use <class-name>.this instead
 	protected final TOP_Type instanceOf_Type; // allow ref to this in inner class
 
-	protected FSGenerator getFSGenerator() {
-		return fsGenerator;
-	}
-
-	private FSGenerator fsGenerator = new FSGenerator() {
-		public FeatureStructure createFS(int addr, CASImpl cas) {
-			if (TOP_Type.this.useExistingInstance) {
-				// Return eq fs instance if already created
-				FeatureStructure fs = TOP_Type.this.jcas.getJfsFromCaddr(addr);
-				if (null == fs) {
-					fs = new TOP(addr, TOP_Type.this);
-					TOP_Type.this.jcas.putJfsFromCaddr(addr, fs);
-					return fs;
-				}
-				return fs;
-			} else
-				return new TOP(addr, TOP_Type.this);
-		}
-	};
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
+  }
+//
+//	private FSGenerator fsGenerator = new FSGenerator() {
+//		@SuppressWarnings("unchecked")
+//    public TOP createFS(int addr, CASImpl cas) {
+//			if (TOP_Type.this.useExistingInstance) {
+//				// Return eq fs instance if already created
+//				TOP fs = TOP_Type.this.jcas.getJfsFromCaddr(addr);
+//				if (null == fs) {
+//					fs = new TOP(addr, TOP_Type.this);
+//					TOP_Type.this.jcas.putJfsFromCaddr(addr, fs);
+//					return fs;
+//				}
+//				return fs;
+//			} else
+//				return new TOP(addr, TOP_Type.this);
+//		}
+//	};
 
 	// cas.getKnownJCas().getType(TOP.typeIndexID));}
 
@@ -169,10 +169,10 @@ public class TOP_Type {
 		// during the super calls will incorrectly set the generator for the casType, but
 		// this is OK because after the supers all run, the bottom one runs and sets it correctly.
 
-		if (installGenerator) {
-			((CASImpl) ll_cas).getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType,
-					getFSGenerator());
-		}
+//		if (installGenerator) {
+//			((CASImpl) ll_cas).getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType,
+//					getFSGenerator());
+//		}
 	}
 
 	// ************ No Object support ********************

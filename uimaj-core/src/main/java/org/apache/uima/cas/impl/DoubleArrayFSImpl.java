@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.DoubleArrayFS;
-import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Implementation of the {@link org.apache.uima.cas.DoubleArrayFS DoubleArrayFS} interface.
@@ -29,11 +28,11 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public class DoubleArrayFSImpl extends CommonAuxArrayFSImpl implements DoubleArrayFS {
 
-  private static class DoubleArrayGenerator implements FSGenerator {
+  private static class DoubleArrayGenerator implements FSGenerator<DoubleArrayFSImpl> {
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public DoubleArrayFSImpl createFS(int addr, CASImpl cas) {
       return new DoubleArrayFSImpl(addr, cas);
     }
   }
@@ -42,7 +41,7 @@ public class DoubleArrayFSImpl extends CommonAuxArrayFSImpl implements DoubleArr
     super(cas, addr); // note arg reversal
   }
 
-  static FSGenerator generator() {
+  static FSGenerator<DoubleArrayFSImpl> generator() {
     return new DoubleArrayGenerator();
   }
 

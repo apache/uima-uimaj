@@ -22,8 +22,8 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FeatureStructure;
 
 
-public interface FSGenerator {
+public interface FSGenerator<T extends FeatureStructure> {
 
-  FeatureStructure createFS(int addr, CASImpl cas);
+  T createFS(int addr, CASImpl cas);
 
 }

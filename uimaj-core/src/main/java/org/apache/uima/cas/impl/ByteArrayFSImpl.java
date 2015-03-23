@@ -29,12 +29,12 @@ import org.apache.uima.cas.FeatureStructure;
  */
 public class ByteArrayFSImpl extends CommonAuxArrayFSImpl implements ByteArrayFS {
 
-  private static class ByteArrayGenerator implements FSGenerator {
+  private static class ByteArrayGenerator implements FSGenerator<ByteArrayFSImpl> {
 
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public ByteArrayFSImpl createFS(int addr, CASImpl cas) {
       return new ByteArrayFSImpl(addr, cas);
     }
   }
@@ -43,7 +43,7 @@ public class ByteArrayFSImpl extends CommonAuxArrayFSImpl implements ByteArrayFS
     super(cas, addr); // note arg reversal
   }
 
-  static FSGenerator generator() {
+  static FSGenerator<ByteArrayFSImpl> generator() {
     return new ByteArrayGenerator();
   }
 

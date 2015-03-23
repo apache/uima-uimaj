@@ -50,7 +50,7 @@ public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImp
    * @see org.apache.uima.cas.FSIterator#get()
    */
   public T get() {
-    return (T) this.casImpl.createFS(this.it.get());
+    return this.casImpl.createFS(this.it.get());
   }
 
   /**

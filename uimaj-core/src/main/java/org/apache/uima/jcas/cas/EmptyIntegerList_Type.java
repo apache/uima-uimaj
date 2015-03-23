@@ -19,34 +19,33 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 public class EmptyIntegerList_Type extends IntegerList_Type {
-  protected FSGenerator getFSGenerator() {
-    return fsGenerator;
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
   }
-
-  private final FSGenerator fsGenerator = new FSGenerator() {
-    public FeatureStructure createFS(int addr, CASImpl cas) {
-      if (instanceOf_Type.useExistingInstance) {
-        // Return eq fs instance if already created
-        FeatureStructure fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
-        if (null == fs) {
-          fs = new EmptyIntegerList(addr, instanceOf_Type);
-          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
-          return fs;
-        }
-        return fs;
-      } else
-        return new EmptyIntegerList(addr, instanceOf_Type);
-    }
-  };
+//
+//  private final FSGenerator fsGenerator = new FSGenerator() {
+//    @SuppressWarnings("unchecked")
+//    public EmptyIntegerList createFS(int addr, CASImpl cas) {
+//      if (instanceOf_Type.useExistingInstance) {
+//        // Return eq fs instance if already created
+//        EmptyIntegerList fs = instanceOf_Type.jcas.getJfsFromCaddr(addr);
+//        if (null == fs) {
+//          fs = new EmptyIntegerList(addr, instanceOf_Type);
+//          instanceOf_Type.jcas.putJfsFromCaddr(addr, fs);
+//          return fs;
+//        }
+//        return fs;
+//      } else
+//        return new EmptyIntegerList(addr, instanceOf_Type);
+//    }
+//  };
 
   public final static int typeIndexID = EmptyIntegerList.typeIndexID;
 
@@ -55,7 +54,7 @@ public class EmptyIntegerList_Type extends IntegerList_Type {
   // * initialize variables to correspond with Cas Type and Features
   public EmptyIntegerList_Type(JCas jcas, Type casType) {
     super(jcas, casType);
-    casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
+//     casImpl.getFSClassRegistry().addGeneratorForType((TypeImpl) this.casType, getFSGenerator());
 
   }
 

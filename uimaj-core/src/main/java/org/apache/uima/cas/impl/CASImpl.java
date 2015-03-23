@@ -121,8 +121,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public static final int DEFAULT_INITIAL_HEAP_SIZE = 500000;
 
   public static final int DEFAULT_RESET_HEAP_SIZE = 5000000;
-
-  private static final int resetHeapSize = DEFAULT_RESET_HEAP_SIZE;
+//  no longer used 3/2015
+//  private static final int resetHeapSize = DEFAULT_RESET_HEAP_SIZE;
 
 
   /**
@@ -275,7 +275,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     private ComponentInfo componentInfo;
 
-    private FSGenerator[] localFsGenerators;
+    private FSGenerator<? extends FeatureStructure>[] localFsGenerators;
     
     /**
      * This tracks the changes for delta cas
@@ -592,7 +592,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return ConstraintFactory.instance();
   }
 
-  public FeatureStructure createFS(Type type) {
+  public <T extends FeatureStructure> T  createFS(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
     if (!isCreatableType(typeCode)) {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.NON_CREATABLE_TYPE,
@@ -975,7 +975,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   // internal use, public for cross class ref
-  public void setLocalFsGenerators(FSGenerator[] fsGenerators) {
+  public void setLocalFsGenerators(FSGenerator<? extends FeatureStructure>[] fsGenerators) {
     this.svd.localFsGenerators = fsGenerators;
   }
 
@@ -1968,7 +1968,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *         addresses in the valid address space actually represent feature
    *         structures, and which don't.
    */
-  public FeatureStructure createFS(int addr) {
+  public <T extends FeatureStructure> T createFS(int addr) {
     return ll_getFSForRef(addr);
   }
 
@@ -3419,7 +3419,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return fsi.getAddress();
   }
 
-  public FeatureStructure ll_getFSForRef(int fsRef) {
+  @SuppressWarnings("unchecked")
+  public <T extends FeatureStructure> T ll_getFSForRef(int fsRef) {
     // return this.svd.casMetadata.fsClassRegistry.createFS(fsRef, this);
     if (fsRef == 0) {
       return null;
@@ -3427,14 +3428,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (this.svd.useFSCache) {
       // FS object cache code.
       // ***** NOTE: This code has not been maintained and may not work ******
-      FeatureStructure fs = null;
+      T fs = null;
       try {
-        fs = this.svd.fsArray[fsRef];
+        fs = (T) this.svd.fsArray[fsRef];
       } catch (ArrayIndexOutOfBoundsException e) {
         // Do nothing. Code below will expand array as needed.
       }
       if (fs == null) {
-        fs = this.svd.localFsGenerators[getHeap().heap[fsRef]].createFS(fsRef, this);
+        fs = (T) this.svd.localFsGenerators[getHeap().heap[fsRef]].createFS(fsRef, this);
         // fs =
         // this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef,
         // this);
@@ -3452,7 +3453,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return fs;
     }
 
-    return this.svd.localFsGenerators[getHeap().heap[fsRef]].createFS(fsRef, this);
+    return (T) this.svd.localFsGenerators[getHeap().heap[fsRef]].createFS(fsRef, this);
     // return this.svd.casMetadata.fsClassRegistry.createFSusingGenerator(fsRef,
     // this);
   }
@@ -4529,11 +4530,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.casMetadata.ts.startFeat;
   }
 
-  private AnnotationFS createDocumentAnnotation(int length) {
+  private <T extends AnnotationFS> T createDocumentAnnotation(int length) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
     // Remove any existing document annotations.
-    FSIterator<AnnotationFS> it = getAnnotationIndex(ts.docType).iterator();
-    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    FSIterator<T> it = this.<T>getAnnotationIndex(ts.docType).iterator();
+    List<T> list = new ArrayList<T>();
     while (it.isValid()) {
       list.add(it.get());
       it.moveToNext();
@@ -4541,7 +4542,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     for (int i = 0; i < list.size(); i++) {
       getIndexRepository().removeFS(list.get(i));
     }
-    return (AnnotationFS) ll_getFSForRef(ll_createDocumentAnnotation(length));
+    return this.<T>ll_getFSForRef(ll_createDocumentAnnotation(length));
   }
   
   public int ll_createDocumentAnnotation(int length) {
@@ -4580,12 +4581,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
   
-  public AnnotationFS getDocumentAnnotation() {
+  /**
+   * Generic issue:  The returned document annotation could be either an instance of 
+   *   DocumentAnnotation or an instance of AnnotationImpl - the Java cover class used for 
+   *   annotations when JCas is not being used.
+   */
+  public <T extends AnnotationFS> T getDocumentAnnotation() {
     if (this == this.svd.baseCAS) {
       // base CAS has no document
       return null;
     }
-    FSIterator<AnnotationFS> it = getAnnotationIndex(this.svd.casMetadata.ts.docType).iterator();
+    FSIterator<T> it = this.<T>getAnnotationIndex(this.svd.casMetadata.ts.docType).iterator();
     if (it.isValid()) {
       return it.get();
     }

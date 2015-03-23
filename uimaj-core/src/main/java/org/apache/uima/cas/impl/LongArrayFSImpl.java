@@ -29,7 +29,7 @@ import org.apache.uima.cas.LongArrayFS;
  */
 public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS {
 
-  private static class LongArrayGenerator implements FSGenerator {
+  private static class LongArrayGenerator implements FSGenerator<LongArrayFSImpl> {
 
     private LongArrayGenerator() {
       super();
@@ -38,7 +38,7 @@ public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS
     /**
      * @see org.apache.uima.cas.impl.FSGenerator#createFS(int, LowLevelCAS)
      */
-    public FeatureStructure createFS(int addr, CASImpl cas) {
+    public LongArrayFSImpl createFS(int addr, CASImpl cas) {
       return new LongArrayFSImpl(addr, cas);
     }
 
@@ -48,7 +48,7 @@ public class LongArrayFSImpl extends CommonAuxArrayFSImpl implements LongArrayFS
     super(cas, addr);
   }
 
-  static FSGenerator generator() {
+  static FSGenerator<LongArrayFSImpl> generator() {
     return new LongArrayGenerator();
   }
 

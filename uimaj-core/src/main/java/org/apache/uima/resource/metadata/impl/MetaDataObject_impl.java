@@ -766,7 +766,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     // add the hash codes of all attributes
     MetaDataAttr[] attrs = getAttributes();
     for (MetaDataAttr attr : attrs) {
-      String attrName = attr.name;
+//      String attrName = attr.name;
       Object val = getAttributeValue(attr);
       if (val != null) {
         if (val instanceof Object[]) {
@@ -1433,7 +1433,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
         PropertyXmlInfo[] props = getXmlizationInfo().propertyInfo;
         for (int i = 0; i < props.length; i++) {
           String propName = props[i].propertyName;
-          Class propClass = getAttributeClass(propName);
+          Class<?> propClass = getAttributeClass(propName);
           if (propClass.isAssignableFrom(valueObj.getClass())) {
             // check if we have already read a value for this attribute
             if (!aKnownPropertyNames.contains(propName)) {
@@ -1476,7 +1476,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /**
    * Utility method for reading from XML an attribute whose value is a <code>Map</code> with
-   * <code>String</code> keys and <code>XMLizable</code> values.
+   * <code>String</code> keys and <code>XMLizable</code> (or an array of these) values.
    * 
    * @param aPropName
    *          name of the property to read from XML
@@ -1499,7 +1499,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           String aKeyXmlAttribute, String aValueTagName, XMLParser aParser,
           XMLParser.ParsingOptions aOptions, boolean aValueIsArray) throws InvalidXMLException {
     // get the Map to which we add entries (it should already exist)
-    Map theMap = (Map) getAttributeValue(aPropName);
+    Map<String, Object> theMap = (Map<String, Object>) getAttributeValue(aPropName);
 
     // get all child nodes
     NodeList childNodes = aElement.getChildNodes();
@@ -1529,7 +1529,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
           val = aParser.buildObject(valElem, aOptions);
         } else // array
         {
-          ArrayList vals = new ArrayList();
+          ArrayList<XMLizable> vals = new ArrayList<>();
           NodeList arrayNodes = curElem.getChildNodes();
           for (int j = 0; j < arrayNodes.getLength(); j++) {
             Node curArrayNode = arrayNodes.item(j);
