@@ -72,7 +72,7 @@ public interface FSIndexRepository {
    * 
    * @return All indexes.
    */
-  Iterator<FSIndex<? extends FeatureStructure>> getIndexes();
+  <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes();
 
   /**
    * Get all indexes in this repository as low level indexes
