@@ -98,7 +98,7 @@ public class JFSIndexRepositoryImpl implements JFSIndexRepository {
    * @see org.apache.uima.jcas.JFSIndexRepository#getIndexes()
    */
   @Override
-  public Iterator<FSIndex<? extends FeatureStructure>> getIndexes() {
+  public <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes() {
     return fsIndexRepository.getIndexes();
 
   }
