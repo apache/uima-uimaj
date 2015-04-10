@@ -19,8 +19,10 @@
 
 package org.apache.uima.cas_data.impl;
 
-import static junit.framework.Assert.assertTrue;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,12 +45,22 @@ import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 
 /**
- * A non-perfect CAS equality checker for JUnit.
+ * A CAS equality checker for JUnit.
+ * SKIPS SOFA FS Comparisons - to make it useful for
+ * CasCopier to new view testing.
+ * 
+ * The top level static methods return void, but throw junit assert errors if not equal
  * 
  */
 public class CasComparer {
+  
+  enum ARRAY_TYPE {
+    FS, STRING, BOOLEAN, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE,
+  }
+
   public static void assertEquals(CAS c1, CAS c2) {
     
     // this code handles initial views with no SofaFS
@@ -75,89 +87,144 @@ public class CasComparer {
   }
 
   public static void assertEqualViews(CAS c1, CAS c2) {
-    Set<FeatureStructure> visited = new HashSet<FeatureStructure>();
-    
-    FSIterator<FeatureStructure> it1 = c1.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType());
-    FSIterator<FeatureStructure> it2 = c2.getIndexRepository().getAllIndexedFS(c2.getTypeSystem().getTopType());
-    while (it1.isValid()) {
-      Assert.assertTrue(it2.isValid());
-
-      FeatureStructure fs1 = it1.get();
-      FeatureStructure fs2 = it2.get();
-      assertEquals(fs1, fs2, visited);
-
-      it1.moveToNext();
-      it2.moveToNext();
-    }
-  }
-
-  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2) {
-    assertEquals(fs1, fs2, new HashSet<FeatureStructure>());
-  }
-
-  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2, Set<FeatureStructure> visited) {
-    if (fs1 == null) {
-      Assert.assertNull(fs2);
-      return;
-    } else {
-      Assert.assertNotNull(fs2);
-    }
-    
-    if (!visited.add(fs1)) {  // true if item already in the set
-      return;
-    }
-
-//    System.out.println("Comparing " + fs1.getType().getName());
-//    if (!fs1.getType().getName().equals(fs2.getType().getName())) {
-//      System.out.println("debug");
-//    }
-    Assert.assertEquals(fs1.getType().getName(), fs2.getType().getName());
-    
-    if (fs1 instanceof SofaFS) {
-      return;
-    }
-
-    List<Feature> features1 = fs1.getType().getFeatures();
-    List<Feature> features2 = fs2.getType().getFeatures();
-    for (int i = 0; i < features1.size(); i++) {
-      Feature feat1 = features1.get(i);
-      Feature feat2 = features2.get(i);
-      // System.out.println("Comparing " + feat1.getName());
-      Type rangeType1 = feat1.getRange();
-      Type rangeType2 = feat2.getRange();
-      Assert.assertEquals(rangeType1.getName(), rangeType2.getName());
-      // System.out.println("Range type " + rangeType1);
-      String rangeTypeName = rangeType1.getName();
-
-      if (fs1.getCAS().getTypeSystem().subsumes(
-              fs1.getCAS().getTypeSystem().getType(CAS.TYPE_NAME_STRING), rangeType1)) {
-        assertEqualsNullIsEmpty(fs1.getStringValue(feat1), fs2.getStringValue(feat2));
-      } else if (compareArrayFSs(rangeTypeName, fs1, feat1, fs2, feat2, visited)) {
-        continue;
-      } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getIntValue(feat1), fs2.getIntValue(feat2));
-      } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getFloatValue(feat1), fs2.getFloatValue(feat2), 0);        
-      } else if (CAS.TYPE_NAME_BYTE.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getByteValue(feat1), fs2.getByteValue(feat2));
-      } else if (CAS.TYPE_NAME_SHORT.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getShortValue(feat1), fs2.getShortValue(feat2));
-      } else if (CAS.TYPE_NAME_LONG.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getLongValue(feat1), fs2.getLongValue(feat2));
-      } else if (CAS.TYPE_NAME_DOUBLE.equals(rangeTypeName)) {
-        Assert.assertEquals(fs1.getDoubleValue(feat1), fs2.getDoubleValue(feat2));
-      } else { // single feature value
-        FeatureStructure fsVal1 = fs1.getFeatureValue(feat1);
-        FeatureStructure fsVal2 = fs2.getFeatureValue(feat2);
-        assertEquals(fsVal1, fsVal2, visited);
-      }
-    }
+    CasComparer instance = new CasComparer();
+    instance.assertEqualViews(c1,  c2,  new HashSet<FeatureStructure>());
   }
   
-  // returns true if the items were arrays
-  public static boolean compareArrayFSs(String rangeTypeName, FeatureStructure arrayFS1fs, Feature feat1, FeatureStructure arrayFS2fs, Feature feat2, Set<FeatureStructure> visited) {
+  public static void assertEquals(FeatureStructure fs1, FeatureStructure fs2) {
+    CasComparer instance = new CasComparer();
+    Assert.assertTrue(0 == instance.compare1(fs1,  fs2));
+  }
+  
+  
+  private void assertEqualViews(CAS c1, CAS c2, Set<FeatureStructure> visited) {
     
-    if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName) ||
+    // allow for different ordering in the getAllIndexedFSs
+    
+    List<FeatureStructure> list1 = populate(c1.getIndexRepository().getAllIndexedFS(c1.getTypeSystem().getTopType()), visited);
+    List<FeatureStructure> list2 = populate(c2.getIndexRepository().getAllIndexedFS(c2.getTypeSystem().getTopType()), visited);
+    
+    Assert.assertEquals(list1.size(),  list2.size());
+    
+    isSortUse = true;  // while sorting
+    Collections.sort(list1, fsComparator);
+    Collections.sort(list2, fsComparator);
+
+    isSortUse = false;  // makes the compare1 throw exception if not equal
+    int i = 0;
+    try {
+      for (; i < list1.size(); i++) {
+        compare1(list1.get(i), list2.get(i), visited);
+      }
+    } catch (ConcurrentModificationException e) {
+      Assert.fail();
+    }
+  }
+
+  /**
+   * True if the compares should return int -1, 0, 1, false if miscompare should throw JUnit assert exceptions
+   */
+  private boolean isSortUse = true;
+  private TypeSystem ts;
+  private Type casStringType;
+  
+  private Comparator<FeatureStructure> fsComparator = new Comparator<FeatureStructure>() {
+    @Override
+    public int compare(FeatureStructure o1, FeatureStructure o2) {
+      return compare1(o1, o2);
+    }   
+  };
+   
+  /**
+   * Comparator that establishes an ordering among all FSs in a view.
+   * This is used to put fss into an ordered list, or to compare two fs for equality
+   * 
+   * @param fs1
+   * @param fs2
+   */
+
+  public int compare1(FeatureStructure fs1, FeatureStructure fs2) {
+    return compare1(fs1, fs2, new HashSet<FeatureStructure>());
+  }
+  
+  private int compare1(FeatureStructure fs1, FeatureStructure fs2, Set<FeatureStructure> visited) {
+    if (fs1 == null && fs2 == null) {
+      return 0;
+    }
+    if (fs1 == null) return chkEqual(-1, "fs1 was null and fs2 was not");
+    if (fs2 == null) return chkEqual(1,  "fs2 was null and fs1 was not");
+    
+    if (!visited.add(fs1)) {
+      return 0;  // already checked and found equal
+    }
+        
+    int r;
+    Type t1, t2;
+    if (0 != (r = compStr((t1 = fs1.getType()).getName(), (t2 = fs2.getType()).getName()))) {
+      return chkEqual(r, String.format("Types of FSs are different: Type1 = %s, Type2 = %s", t1, t2));
+    }
+    // types are the same
+    
+    if (CAS.TYPE_NAME_SOFA.equals(t1.getName())) {
+      return 0;  // skip comparing sofa so this routine can be used for cas copier testing
+    }
+
+    ts = fs1.getCAS().getTypeSystem();
+    casStringType = ts.getType(CAS.TYPE_NAME_STRING);
+    return compareFeatures(fs1, fs2, t1.getFeatures(), t2.getFeatures(), visited);     
+  }
+    
+  private int compareFeatures(
+      FeatureStructure fs1, FeatureStructure fs2, 
+      List<Feature> feats1, List<Feature> feats2,
+      Set<FeatureStructure> visited) {
+    
+    for (int i = 0; i < feats1.size(); i++) {
+      Feature feat1 = feats1.get(i);
+      Feature feat2 = feats2.get(i);
+      Type rangeType;
+      String rangeTypeName;
+      int r;
+      if (0 != (r = compStr(rangeTypeName = (rangeType = feat1.getRange()).getName(), feat2.getRange().getName()))) {
+        return chkEqual(r, String.format("Range compare unequal for types %s and %s", feat1.getRange(), feat2.getRange()));
+      }
+      // range types are the same
+      
+      //String or subtypes of it
+      if (ts.subsumes(casStringType, rangeType)) {  
+        if (0 != (r = compStr(fs1.getStringValue(feat1), fs2.getStringValue(feat2)))) {
+          return chkEqual(r, String.format("String features miscompare, s1 = %s, s2 = %s", fs1.getStringValue(feat1), fs2.getStringValue(feat2)));
+        }
+        // check arrays
+      } else if (isArray(rangeTypeName)) { 
+        if (0 != ( r = compareArrayFSs(fs1, feat1, fs2, feat2, visited))) return r;
+        
+        // check primitive types
+      } else if (CAS.TYPE_NAME_INTEGER.equals(rangeTypeName)) {
+        if (0 != ( r = compLong(fs1.getIntValue(feat1), fs2.getIntValue(feat2)))) return r; 
+      } else if (CAS.TYPE_NAME_FLOAT.equals(rangeTypeName)) {
+        if (0 != ( r = compDouble(fs1.getFloatValue(feat1), fs2.getFloatValue(feat2)))) return r;
+      } else if (CAS.TYPE_NAME_BYTE.equals(rangeTypeName)) {
+        if (0 != ( r = compLong(fs1.getByteValue(feat1), fs2.getByteValue(feat2)))) return r;
+      } else if (CAS.TYPE_NAME_SHORT.equals(rangeTypeName)) {
+        if (0 != ( r = compLong(fs1.getShortValue(feat1), fs2.getShortValue(feat2)))) return r;
+      } else if (CAS.TYPE_NAME_LONG.equals(rangeTypeName)) {
+        if (0 != ( r = compLong(fs1.getLongValue(feat1), fs2.getLongValue(feat2)))) return r;
+      } else if (CAS.TYPE_NAME_DOUBLE.equals(rangeTypeName)) {
+        if (0 != ( r = compDouble(fs1.getDoubleValue(feat1), fs2.getDoubleValue(feat2)))) return r;
+      } else if (CAS.TYPE_NAME_BOOLEAN.equals(rangeTypeName)) {
+        if (0 != ( r = compBoolean(fs1.getBooleanValue(feat1), fs2.getBooleanValue(feat2)))) return r;
+        
+        // check single feature ref
+      } else {
+        if (0 != ( r = compare1(fs1.getFeatureValue(feat1), fs2.getFeatureValue(feat2), visited))) return r;
+      }
+    }
+    return 0;
+  }
+  
+  private boolean isArray(String rangeTypeName) {
+    return CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName) ||
@@ -165,72 +232,142 @@ public class CasComparer {
         CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName) ||
         CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName) ||
-        CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName)) {
-
-      CommonArrayFS arrayFS1 = (CommonArrayFS)arrayFS1fs.getFeatureValue(feat1);
-      CommonArrayFS arrayFS2 = (CommonArrayFS)arrayFS2fs.getFeatureValue(feat2);
-      
-      if ((arrayFS1 == null) && (arrayFS2 == null)) {
-        return true; // is ok
-      } else if (arrayFS1 != null && arrayFS2 != null) {        
-        
-        Assert.assertEquals(arrayFS1.size(), arrayFS2.size());
-        
-        for (int j = 0; j < arrayFS1.size(); j++) {
-          if (arrayFS1      instanceof ArrayFS) {
-              Assert.assertTrue(arrayFS2 instanceof ArrayFS);
-              assertEquals(((ArrayFS)arrayFS1).get(j), ((ArrayFS)arrayFS2).get(j), visited);
-          } else if (arrayFS1 instanceof BooleanArrayFS) {
-              assertTrue(arrayFS2 instanceof BooleanArrayFS);
-              Assert.assertEquals(((BooleanArrayFS)arrayFS1).get(j), ((BooleanArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof ByteArrayFS) {
-            assertTrue(arrayFS2 instanceof ByteArrayFS);
-            Assert.assertEquals(((ByteArrayFS)arrayFS1).get(j), ((ByteArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof DoubleArrayFS) {
-            assertTrue(arrayFS2 instanceof DoubleArrayFS);
-            Assert.assertEquals(((DoubleArrayFS)arrayFS1).get(j), ((DoubleArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof FloatArrayFS) {
-            assertTrue(arrayFS2 instanceof FloatArrayFS);
-            Assert.assertEquals(((FloatArrayFS)arrayFS1).get(j), ((FloatArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof IntArrayFS) {
-            assertTrue(arrayFS2 instanceof IntArrayFS);
-            Assert.assertEquals(((IntArrayFS)arrayFS1).get(j), ((IntArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof LongArrayFS) {
-            assertTrue(arrayFS2 instanceof LongArrayFS);
-            Assert.assertEquals(((LongArrayFS)arrayFS1).get(j), ((LongArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof ShortArrayFS) {
-            assertTrue(arrayFS2 instanceof ShortArrayFS);
-            Assert.assertEquals(((ShortArrayFS)arrayFS1).get(j), ((ShortArrayFS)arrayFS2).get(j));
-          } else if (arrayFS1 instanceof StringArrayFS) {
-            assertTrue(arrayFS2 instanceof StringArrayFS);
-            // Temporary workaround for UIMA-2490 - null and "" string values
-            assertEqualsNullIsEmpty(((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j));
-          }
-        }
-      } else {
-        assertTrue(String.format("One array was null, the other not-null%n  array1=%s%n  array2=%s%n",
-                                 arrayFS1fs, arrayFS2fs),
-                   false);
-      }
-      return true;
+        CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName);
+  }
+  
+  private int chkEqual(int v, String msg) {
+    if (v == 0) {
+      return 0;
     }
-    return false;
+    if (!isSortUse) {  // no message for use in sort
+      Assert.fail(msg); 
+    }
+    return v;
+  }
+      
+  private int compLong(long v1, long v2) {
+    return chkEqual(Long.compare(v1, v2), String.format("Intregal format number miscompare,  v1 = %,d v2 = %,d", v1, v2));
+  }
+
+  private int compDouble(double v1, double v2) {
+    return chkEqual(Double.compare(v1,  v2), String.format("Floating format number miscompare,  v1 = %,f v2 = %,f", v1, v2));
+  }
+  
+  private int compStr(String s1, String s2) {
+    s1 = (s1 == null) ? "" : s1;
+    s2 = (s2 == null) ? "" : s2;
+    return s1.compareTo(s2);
+  }
+  
+  private int compBoolean(boolean v1, boolean v2) {
+    return chkEqual(Boolean.compare(v1, v2), String.format("Boolean values unequal, v1 = %s, v2 = %s", v1, v2));
+  }
+  
+  /* 
+   * When populating, skip items already visted and compared in other views
+   */
+  private static List<FeatureStructure> populate(FSIterator<FeatureStructure> it, Set<FeatureStructure> visited) {
+    List<FeatureStructure> s = new ArrayList<FeatureStructure>();
+    while (it.hasNext()) {
+      FeatureStructure fs = it.next();
+      if (!(fs instanceof SofaFS) && !visited.contains(fs)) {
+        s.add(fs);
+      }
+    }
+    return s;
+  }
+  
+  // returns true if the items were arrays
+  private int compareArrayFSs(FeatureStructure arrayFS1fs, Feature feat1, FeatureStructure arrayFS2fs, Feature feat2, Set<FeatureStructure> visited) {
+  
+    CommonArrayFS arrayFS1 = (CommonArrayFS)arrayFS1fs.getFeatureValue(feat1);
+    CommonArrayFS arrayFS2 = (CommonArrayFS)arrayFS2fs.getFeatureValue(feat2);
+    
+    if (null == arrayFS1 && null == arrayFS2)return 0; // are equal
+    if (null == arrayFS1) return chkEqual(-1,  "Array FS1 is null, but Array FS2 is not");
+    if (null == arrayFS2) return chkEqual(-1,  "Array FS2 is null, but Array FS1 is not");
+
+    int r, len;
+    if (0 != (r = compLong(len = arrayFS1.size(), arrayFS2.size()))) {
+      return chkEqual(r, String.format("ArrayFSs are different sizes, fs1 size is %d, fs2 size is %d", arrayFS1.size(), arrayFS2.size()));
+    }
+    // are same size
+    r = validateSameType(arrayFS1, arrayFS2);
+    if (0 != r) return r;
+    
+    switch(getArrayType(arrayFS1)) {
+    case FS:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compare1(((ArrayFS)arrayFS1).get(j), ((ArrayFS)arrayFS2).get(j), visited))) return r;
+      }
+      break;
+    case BOOLEAN:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compBoolean(((BooleanArrayFS)arrayFS1).get(j), ((BooleanArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case BYTE:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compLong(((ByteArrayFS)arrayFS1).get(j), ((ByteArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case SHORT:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compLong(((ShortArrayFS)arrayFS1).get(j), ((ShortArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case INT:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compLong(((IntArrayFS)arrayFS1).get(j), ((IntArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case LONG:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compLong(((LongArrayFS)arrayFS1).get(j), ((LongArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case FLOAT:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compDouble(((FloatArrayFS)arrayFS1).get(j), ((FloatArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case DOUBLE:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compDouble(((DoubleArrayFS)arrayFS1).get(j), ((DoubleArrayFS)arrayFS2).get(j)))) return r;
+      }
+      break;
+    case STRING:
+      for (int j = 0; j < len; j++) {
+        if (0 != (r = compStr(((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j)))) {
+          return chkEqual(r, String.format("String miscompare, s1 = %s, s2 = %s", ((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j)));
+        }
+      }
+      break;
+    }
+    return 0;  // all were equal
   }
     
-  public static void assertEqualsNullIsEmpty(String s1, String s2) {
-    // override the Assert.assertEquals for strings to make null and "" be equal
-    if (((s1 == null) && (s2 != null) && (s2.length() == 0)) || 
-        ((s2 == null) && (s1 != null) && (s1.length() == 0))) {
-      return;
-    }
-    if ((s1 != null) && (s2 != null)) {
-      Assert.assertEquals(s1, s2);
-      return;
-    }
-    if ((s1 == null) && (s2 == null)) {
-      return;
-    }
-    assertTrue(String.format("one string value was null,  the other not%n  s1=%s%n  s2=%s%n", s1, s2), false);
+  private ARRAY_TYPE getArrayType(CommonArrayFS c) {
+    if (c instanceof ArrayFS) return ARRAY_TYPE.FS; 
+    if (c instanceof StringArrayFS) return ARRAY_TYPE.STRING; 
+    if (c instanceof BooleanArrayFS) return ARRAY_TYPE.BOOLEAN; 
+    if (c instanceof ByteArrayFS) return ARRAY_TYPE.BYTE; 
+    if (c instanceof ShortArrayFS) return ARRAY_TYPE.SHORT; 
+    if (c instanceof IntArrayFS) return ARRAY_TYPE.INT; 
+    if (c instanceof LongArrayFS) return ARRAY_TYPE.LONG; 
+    if (c instanceof FloatArrayFS) return ARRAY_TYPE.FLOAT; 
+    if (c instanceof DoubleArrayFS) return ARRAY_TYPE.DOUBLE;
+    return null;
   }
-
+  
+  private int validateSameType(CommonArrayFS a1, CommonArrayFS a2) {
+    if (a1.getClass() == a2.getClass()) {
+      return 0;
+    }
+    ARRAY_TYPE at1 = getArrayType(a1);
+    ARRAY_TYPE at2 = getArrayType(a2);
+    return chkEqual(Integer.compare(at1.ordinal(), at2.ordinal()), 
+        String.format("Types not equal, type1 = %s, type2 = %s", a1.getClass(), a2.getClass()));    
+  }
+      
 }
