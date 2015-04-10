@@ -177,12 +177,9 @@ public class MultiThreadUtils extends TestCase {
                   return;
                 }
               }
-            }
-            
-            synchronized(threadState[finalI]) {
               assertEquals(ThreadControl.RUN, threadState[finalI][0]);
             }
-            
+                        
             try {
               assertTrue(numberRunning.get() > 0);
               sb.append(name).append(", thread ").append(finalI).append(' ');
