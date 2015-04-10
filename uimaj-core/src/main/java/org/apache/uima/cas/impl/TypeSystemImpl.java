@@ -158,29 +158,42 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // feature is declared on).
   private final StringToIntMap featureMap;
 
+  /**
+   * List indexed by supertype code
+   * Value is an IntVector representing type codes for directly subsumed types (just one level below)
+   */
   private final List<IntVector> tree; // Collection of IntVectors encoding type tree
 
+  /**
+   * List indexed by supertype code, 
+   * Value is bits set of subtypes of that code, including the type itself
+   */
   private final List<BitSet> subsumes; // Collection of BitSets for subsumption relation
-
+  
   private final IntVector intro;
 
   // Indicates which type introduces a feature (domain)
   private final IntVector featRange; // Indicates range type of features
-
-  private final ArrayList<IntVector> approp; // For each type, an IntVector of appropriate
-
-  // features
+  
+  /**
+   * For each type, an IntVector of appropriate feature codes
+   */
+  private final ArrayList<IntVector> approp; // For each type, an IntVector of appropriate features
 
   // Code of root of hierarchy (will be 1 with current implementation)
   private int top;
 
-  // An ArrayList (unsynchronized) of TypeImpl objects.
+  /**
+   * An ArrayList, unsynchronized, indexed by typeCode, of Type objects
+   */
   private final List<Type> types;
 
   // An ArrayList (unsynchronized) of FeatureImpl objects.
   private final List<Feature> features;
 
-  // List of parent types.
+  /**
+   * array of parent typeCodes indexed by typeCode
+   */
   private final IntVector parents;
 
   // String sets for string subtypes.
@@ -1158,7 +1171,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // this.cas.commitTypeSystem();
     // }
   }
-
+  
   /**
    * @see org.apache.uima.cas.admin.TypeSystemMgr#isCommitted()
    */
