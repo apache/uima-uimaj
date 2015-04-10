@@ -36,7 +36,7 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
   // annotation list.
   protected static class AnnotationComparator<T extends FeatureStructure> implements Comparator<T> {
 
-    private AnnotationIndex<? extends AnnotationFS> index;
+    private AnnotationIndex<? extends AnnotationFS> index;  // used only to support compare
 
     protected AnnotationComparator(AnnotationIndex<? extends FeatureStructure> index) {
       super();
