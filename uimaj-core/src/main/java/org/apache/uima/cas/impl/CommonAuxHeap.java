@@ -51,7 +51,7 @@ abstract class CommonAuxHeap {
 
   protected int heapPos = FIRST_CELL_REF;
   
-  private int prevSize = 1;
+  private final int[] shrinkableCount = new int[1];
 
   CommonAuxHeap() {
     this(DEFAULT_HEAP_BASE_SIZE, DEFAULT_HEAP_MULT_LIMIT);
@@ -99,15 +99,14 @@ abstract class CommonAuxHeap {
       final int curCapacity = getCapacity();
       final int curSize = getSize();
       int newSize = computeShrunkArraySize(
-          curCapacity, Math.max(prevSize, curSize), GROWTH_FACTOR, heapMultLimit, heapBaseSize);
+          curCapacity, curSize, GROWTH_FACTOR, heapMultLimit, heapBaseSize, shrinkableCount);
       if (newSize == getCapacity()) { // means didn't shrink
         resetToZeros();
       } else {
-        if (debugLogShrink) System.out.format("Debug shrink CommonAux from %,d to %,d, prevSize=%,d for %s%n",
-            curCapacity, newSize, prevSize, this.getClass().getSimpleName());
+        if (debugLogShrink) System.out.format("Debug shrink CommonAux from %,d to %,d for %s%n",
+            curCapacity, newSize, this.getClass().getSimpleName());
         initMemory(newSize);
       }
-      prevSize = curSize;
     }
     this.heapPos = FIRST_CELL_REF;
   }
@@ -131,11 +130,30 @@ abstract class CommonAuxHeap {
   }
   
   /**
-   * Guard against two resets in a row, by having the minimum size
+   * This routine is used to compute the capacity an internal expandable array 
+   * should be reallocated to, upon reset.
+   * 
+   * It returns at most a 1 increment shrink, based on the doubling up to multiplication
+   * limit, then addition thereafter.
+   * 
+   * It maintains a shrinkableCount - the number of consecutive times this could be shrunk.
+   * This is reset to 0 if current size requires current capacity,
+   *   that is, no shrinkage is possible for current size.
+   * Otherwise, the count is incremented.
+   * 
+   * If the shrinkableCount is incremented to exceed 20, 
+   * the capacity is allowed to drop by 1 allocation unit.
+   * 
+   * This guarantees the shrinkages are delayed until 20 shrinkable sizes 
+   * are found (with no intervening non-shrinkable ones).
+   * When a shrinkage happens, the count is reset to 16; this delays subsequent
+   * shrinkages to happen only every (20 - 16) 4 resets. 
+   * 
    * @param capacity the current capacity
    * @param size_used the maximum number of used entries, <= current capacity
    * @param growth_factor is 2
    * @param multiplication_limit the point where we start adding this limit, vs using the growth factor
+   * @param shrinkableCount a pass-by-reference int reflecting the number of times it was shrinkable
    * @return the capacity shrink down by one step, if that will still hold the size_used number of entries, 
    *   minimum limited to min_size.
    */
@@ -143,53 +161,37 @@ abstract class CommonAuxHeap {
       int capacity, 
       int size_used, 
       int growth_factor, 
-      int multiplication_limit, 
-      int min_size) {
-    int nbrOfSteps = 0;
+      int multiplication_limit,
+      int min_size, 
+      int[] shrinkableCount) {  // pass by reference
+
     if (capacity < size_used) {
       throw new IllegalArgumentException("The Capacity " + capacity + " must be >= sized_used " + size_used);
     }
     
     // this if for shrinking down 1 step if possible
-    int shrunk = ((capacity - multiplication_limit) < multiplication_limit) ?
-    // the last expansion was by multiplying; the next expansion would be by adding
-    capacity / growth_factor :
-    capacity - multiplication_limit;
+    int oneSizeLowerCapacity = ((capacity - multiplication_limit) < multiplication_limit) ?
+        // the last expansion was by multiplying; the next expansion would be by adding
+        (capacity / growth_factor) :
+        (capacity - multiplication_limit);
 
-    return (size_used > shrunk) ? capacity : shrunk;
-    
-    
-    // this is for shrinking down to the minimum needed, and then expanding back up halfway (by # of steps)
-//    while (true) {
-//      int shrunk = ((capacity - multiplication_limit) < multiplication_limit) ?
-//        // the last expansion was by multiplying; the next expansion would be by adding
-//        capacity / growth_factor :
-//        capacity - multiplication_limit;
-//      if (size_used > shrunk) {
-//        return computeHalfWaySize(capacity, nbrOfSteps, growth_factor, multiplication_limit);
-//      }
-//      if (shrunk < min_size) {
-//        return computeHalfWaySize(min_size, nbrOfSteps, growth_factor, multiplication_limit);
-//      }
-//      nbrOfSteps ++;
-//      capacity = shrunk;
-//    }
-  }
-  
-  static int computeHalfWaySize(int shrunkCapacity, final int nbrOfSteps, int growth_factor, int multiplication_limit) {
-    // n is nbrOfSteps / 2 rounded up, except for 1, where it is rounded down.
-    //   to permit shrinking all the way to initial size
-    int n2 = nbrOfSteps >> 1;
-    int n = (nbrOfSteps       == 1) ? 0 : 
-            ((nbrOfSteps % 2) == 0) ? n2 :
-                                      n2 + 1;
-               
-    for (int i = 0; i < n; i++) {
-      shrunkCapacity = (shrunkCapacity < multiplication_limit)? shrunkCapacity * growth_factor : shrunkCapacity + multiplication_limit;
+    if (oneSizeLowerCapacity < min_size) {
+      return capacity;
     }
-    return shrunkCapacity;
+    
+    boolean isShrink = (size_used < oneSizeLowerCapacity);
+    if (isShrink) {
+      shrinkableCount[0] ++;
+      if (shrinkableCount[0] > 20) {
+        shrinkableCount[0] = 16;
+        return oneSizeLowerCapacity;
+      }
+      return capacity;
+    }
+    shrinkableCount[0] = 0;
+    return capacity;
   }
-
+    
   int getSize() {
     return this.heapPos;
   }

@@ -64,7 +64,7 @@ public final class Heap {
   // this.heap.length at all times.
   private int max;
   
-  private int prevSize = 1;
+  private final int[] shrinkableCount = new int[1];
 
   // Serialization constants. There are holes in the numbering for historical
   // reasons. Keep the holes for compatibility.
@@ -228,22 +228,21 @@ public final class Heap {
   
   void reset(boolean doFullReset) {
     if (doFullReset) {
-      if (debugLogShrink) System.out.format("Debug shrink Heap full reset from %,d, prevSize = %n", getHeapSize(), prevSize);
+      if (debugLogShrink) System.out.format("Debug shrink Heap full reset from %,d%n", getHeapSize());
       this.initHeap();
     } else {
       final int curCapacity = getHeapSize();
       final int curSize = getCellsUsed();
       // shrink based on max of prevSize and curSize
       final int newCapacity = CommonAuxHeap.computeShrunkArraySize(
-            curCapacity, Math.max(curSize, prevSize), 2, MULTIPLICATION_LIMIT, initialSize);
+            curCapacity, curSize, 2, MULTIPLICATION_LIMIT, initialSize, shrinkableCount);
       if (newCapacity == curCapacity) {
         Arrays.fill(this.heap, 0, this.pos, 0);
       } else {
-        if (debugLogShrink) System.out.format("Debug shrink Heap from %,d to %,d, prevSize= %,d%n",
-            curCapacity, newCapacity, prevSize);
+        if (debugLogShrink) System.out.format("Debug shrink Heap from %,d to %,d%n",
+            curCapacity, newCapacity);
         this.initHeap(newCapacity);
       }
-      prevSize = curSize;
       this.pos = 1;
     }
   }
