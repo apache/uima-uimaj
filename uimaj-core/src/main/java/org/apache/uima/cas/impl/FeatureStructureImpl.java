@@ -436,7 +436,12 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		}
 		LowLevelCAS llcas = this.getCASImpl().getLowLevelCAS();
 		LowLevelTypeSystem llts = llcas.ll_getTypeSystem();
-		final int typeCode = llcas.ll_getFSRefType(ref, true);
+		final int typeCode;
+		try {
+		  typeCode = llcas.ll_getFSRefType(ref, true);
+		} catch (LowLevelException e) {
+		  return;  // can't find ref, may be invalid or null
+		}
 		int[] feats = llts.ll_getAppropriateFeatures(typeCode);
 		for (int i = 0; i < feats.length; i++) {
 			if (llcas.ll_isRefType(llts.ll_getRangeType(feats[i]))) {
@@ -590,7 +595,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		List<Feature> feats = getType().getFeatures();
 		Feature feat;
 		Type approp;
-		FeatureStructureImpl val;
+		FeatureStructureImpl val = null;
 		String stringVal;
 		for (int i = 0; i < feats.size(); i++) {
 			StringUtils.printSpaces(indent, buf);
@@ -610,8 +615,15 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 				}
 				buf.append(stringVal + "\n");
 			} else if (!approp.isPrimitive()) {
-				val = (FeatureStructureImpl) getFeatureValue(feat);
-				if (val == null) {
+			  Exception e = null;
+			  try {
+			    val = (FeatureStructureImpl) getFeatureValue(feat);
+			  } catch (Exception ee) {
+			    e = ee;
+			  }
+			  if (e != null) {
+			    buf.append("<exception").append(e.getMessage()).append('>');
+			  } else if (val == null) {
 					buf.append("<null>\n");
 				} else {
 					if (!approp.getName().equals("uima.cas.Sofa")) {
