@@ -883,7 +883,7 @@ public class XmiCasDeserializerTest extends TestCase {
     deserialize(newSerCasMerged, cas, serSharedData, false, -1);
     
     //check covered text of annotations
-    FSIterator iter = cas.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> iter = cas.getAnnotationIndex().iterator();
     while (iter.hasNext()) {
       AnnotationFS annot = (AnnotationFS)iter.next();
       assertEquals(cas.getDocumentText().substring(
@@ -893,7 +893,7 @@ public class XmiCasDeserializerTest extends TestCase {
     iter = cas.getAnnotationIndex(ownerType).iterator();
     while (iter.hasNext()) {
       AnnotationFS
-      annot = (AnnotationFS)iter.next();
+      annot = iter.next();
       String componentId = annot.getStringValue(componentIdFeat);
       if ("XCasDeserializerTest".equals(componentId)) {
         FeatureStructure targetRelArgs = annot.getFeatureValue(argsFeat);
@@ -968,7 +968,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	  
 	  //create Marker, add/modify fs and serialize in delta xmi format.
 	  Marker marker = cas2.createMarker();
-	  FSIndex cas2tIndex = cas2.getAnnotationIndex();
+	  FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
 	  
 	  //create an annotation and add to index
 	  AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
@@ -976,7 +976,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	  assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
 	  
 	  //modify an existing annotation
-	  Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
+	  Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
 	  AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
 	  //delete from index
 	  AnnotationFS delAnnot = (AnnotationFS) tIndexIter.next(); //annot
@@ -1030,7 +1030,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
-      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
       
       //create an annotation and add to index
       AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
@@ -1038,7 +1038,7 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
       
       //modify language feature
-      Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
+      Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
       AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next();
       Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
       docAnnot.setStringValue(languageF, "en");
@@ -1136,7 +1136,7 @@ public class XmiCasDeserializerTest extends TestCase {
 	      
 	      //create Marker, add/modify fs and serialize in delta xmi format.
 	      Marker marker = cas2.createMarker();
-	      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+	      FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
 	      
 	      // serialize cas2 in delta format 
 	      String deltaxml1 = serialize(cas2, sharedData2, marker);
@@ -1167,7 +1167,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas1.getIndexRepository().addFS(anAnnot1);
       AnnotationFS anAnnot2 = cas1.createAnnotation(cas1.getAnnotationType(), 5, 10);
       cas1.getIndexRepository().addFS(anAnnot2);
-      FSIndex tIndex = cas1.getAnnotationIndex();
+      FSIndex<AnnotationFS> tIndex = cas1.getAnnotationIndex();
       assertTrue(tIndex.size() == 3); //doc annot plus 2 annots
       
       //serialize complete  
@@ -1182,7 +1182,7 @@ public class XmiCasDeserializerTest extends TestCase {
       
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
-      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
       
       //create an annotation and add to index
       AnnotationFS cas2newAnnot = cas2.createAnnotation(cas2.getAnnotationType(), 6, 8);
@@ -1190,7 +1190,7 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2tIndex.size() == 4); // prev annots and this new one
       
       //modify language feature
-      Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
+      Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
       AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next();
       
       //delete annotation from index    
@@ -1264,7 +1264,7 @@ public class XmiCasDeserializerTest extends TestCase {
       cas1.getIndexRepository().addFS(anAnnot3);
       AnnotationFS anAnnot4 = cas1.createAnnotation(cas1.getAnnotationType(), 15, 30);
       cas1.getIndexRepository().addFS(anAnnot4);
-      FSIndex tIndex = cas1.getAnnotationIndex();
+      FSIndex<AnnotationFS> tIndex = cas1.getAnnotationIndex();
       assertTrue(tIndex.size() == 5); //doc annot plus 4 annots
       
       FeatureStructure entityFS = cas1.createFS(entityType);
@@ -1318,7 +1318,7 @@ public class XmiCasDeserializerTest extends TestCase {
       //=======================================================================
       //create Marker, add/modify fs and serialize in delta xmi format.
       Marker marker = cas2.createMarker();
-      FSIndex cas2tIndex = cas2.getAnnotationIndex();
+      FSIndex<AnnotationFS> cas2tIndex = cas2.getAnnotationIndex();
       CAS cas2preexistingView = cas2.getView("preexistingView");
       FSIndex cas2personIndex = cas2preexistingView.getAnnotationIndex(personType);
       FSIndex cas2orgIndex = cas2preexistingView.getAnnotationIndex(orgType);
@@ -1339,7 +1339,7 @@ public class XmiCasDeserializerTest extends TestCase {
       assertTrue(cas2view1Index.size() == 2); //document annot and this annot
       
       //modify an existing annotation
-      Iterator<FeatureStructure> tIndexIter = cas2tIndex.iterator();
+      Iterator<AnnotationFS> tIndexIter = cas2tIndex.iterator();
       AnnotationFS docAnnot = (AnnotationFS) tIndexIter.next(); //doc annot
       AnnotationFS modAnnot1 = (AnnotationFS) tIndexIter.next();
       AnnotationFS delAnnot = (AnnotationFS)  tIndexIter.next();
