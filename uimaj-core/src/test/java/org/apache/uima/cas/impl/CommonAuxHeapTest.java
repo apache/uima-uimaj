@@ -33,51 +33,83 @@ import org.apache.uima.util.XMLInputSource;
 
 public class CommonAuxHeapTest extends TestCase {
 
+  private int capacity;
+  private int multLimit;
+  private int minSize;
+  private final int[] shrinkableCount = new int[1];
+
   public void testcomputeShrunkArraySize() {
     CommonAuxHeap cah = new ByteHeap();
     
-    // should return 1/2 way to the size needed
-                                             //             cap    sz      limit    
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 1000, 2, 1000, 10));
+    multLimit = 1000;
+    capacity = 1000;
+    minSize = 10;
+    
+    tst(1000, 1000);        
     boolean ok = false;
     try {
-      CommonAuxHeap.computeShrunkArraySize(1000, 10000, 2, 1000, 10);
+      tst(1000, 10000);  // should throw
     } catch (IllegalArgumentException e) {
       ok = true;
     }
     assertTrue(ok);
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 999, 2, 1000, 10));
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 501, 2, 1000, 10));
-    assertEquals(500, CommonAuxHeap.computeShrunkArraySize(1000, 500, 2, 1000, 10));
+        
+    tst(1000, 999);    // size needs capacity - no shrink
+    repeatedNoShrink(1000, 999);
     
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 999, 2, 999, 10));
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 501, 2, 999, 10));
-    assertEquals( 500, CommonAuxHeap.computeShrunkArraySize(1000, 500, 2, 999, 10));
+    repeatedNoShrink(1000,  500);
     
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 999, 2, 500, 10));
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 501, 2, 500, 10));
-    assertEquals( 500, CommonAuxHeap.computeShrunkArraySize(1000, 500, 2, 500, 10));
+    repeatedShrink(500,  499);
+    multLimit = 999;
     
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 999, 2, 300, 10));
-    assertEquals(1000, CommonAuxHeap.computeShrunkArraySize(1000, 701, 2, 300, 10));
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 700, 2, 300, 10));
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 401, 2, 300, 10));
+    repeatedNoShrink(1000, 999);
+    repeatedNoShrink(1000, 500);
+    repeatedShrink(500, 499);
     
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 400, 2, 300, 10));  // 1000 700 400,   400 700   shrink 2, exp 1
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 201, 2, 300, 10));  // 1000 700 400,   400 700   shrink 2, exp 1
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 200, 2, 300, 10));  // 1000 700 400 200, 200 400 700 shrink 3, exp 2    
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 101, 2, 300, 10));  // 1000 700 400 200, 200 400 700 shrink 3, exp 2
-//    assertEquals( 400, CommonAuxHeap.computeShrunkArraySize(1000, 100, 2, 300, 10));  // 1000 700 400 200 100  100 200 400  shrink 4, exp 2
-    assertEquals( 400, CommonAuxHeap.computeShrunkArraySize( 700, 100, 2, 300, 10));  // 700 400 200 100  100 200 400  shrink 3, exp 2
-
-    // shrink by 1 tests
-    assertEquals( 700, CommonAuxHeap.computeShrunkArraySize(1000, 200, 2, 300, 399)); // 1000 700 400 399, 399 699 shrink 3, exp 2
+    multLimit = 500;
+    repeatedNoShrink(1000, 999);
+    repeatedNoShrink(1000, 500);
+    repeatedShrink(500, 499);
     
-    // halving tests    
-//    assertEquals( 699, CommonAuxHeap.computeShrunkArraySize(1000, 200, 2, 300, 399)); // 1000 700 400 399, 399 699 shrink 3, exp 2
-//    assertEquals( 688, CommonAuxHeap.computeShrunkArraySize(1000, 101, 2, 300, 388)); // 1000 700 400 388, 388 688
-//    assertEquals( 699, CommonAuxHeap.computeShrunkArraySize(1000, 100, 2, 300, 399)); // 1000 700 400 399, 399 699
-
+    multLimit = 300;
+    repeatedNoShrink(1000, 999);
+    repeatedNoShrink(1000, 700);
+    repeatedShrink(700, 699);
+    repeatedShrink(700, 400);
+    repeatedShrink(700, 399);
+    repeatedShrink2(700, 400, 399);
+   
   }
-
+  
+  private void tst(int expected, int size) {
+    assertEquals(expected,  CommonAuxHeap.computeShrunkArraySize(capacity, size, 2, multLimit, minSize, shrinkableCount));
+  }
+  
+  private void repeatedNoShrink(int expected, int size) {
+    assertEquals(expected,  CommonAuxHeap.computeShrunkArraySize(capacity, size, 2, multLimit, minSize, shrinkableCount));
+    assertEquals(0, shrinkableCount[0]);
+    assertEquals(expected,  CommonAuxHeap.computeShrunkArraySize(capacity, size, 2, multLimit, minSize, shrinkableCount));
+    assertEquals(expected,  CommonAuxHeap.computeShrunkArraySize(capacity, size, 2, multLimit, minSize, shrinkableCount));
+    assertEquals(0, shrinkableCount[0]);
+  }
+  
+  private void repeatedShrink(int expected, int size) {
+    // see if shrinkable gets reset to 0
+    CommonAuxHeap.computeShrunkArraySize(capacity, capacity-1, 2, multLimit, minSize, shrinkableCount);
+    assertEquals(0, shrinkableCount[0]);
+   
+    for (int i = 0; i < 20; i++) {
+      assertEquals(capacity,  CommonAuxHeap.computeShrunkArraySize(capacity, size, 2, multLimit, minSize, shrinkableCount));
+    }
+    assertEquals(20, shrinkableCount[0]);
+    assertEquals(expected, CommonAuxHeap.computeShrunkArraySize(capacity, size, 2, multLimit, minSize, shrinkableCount));
+  }
+  
+  private void repeatedShrink2(int expected1, int expected2, int size) {
+    repeatedShrink(expected1, size);
+    for (int i = 0; i < 4; i++) {
+      CommonAuxHeap.computeShrunkArraySize(expected1,  size, 2, multLimit, minSize, shrinkableCount);
+    }
+    assertEquals(expected2, CommonAuxHeap.computeShrunkArraySize(expected1,  size, 2, multLimit, minSize, shrinkableCount));
+  }
 }
