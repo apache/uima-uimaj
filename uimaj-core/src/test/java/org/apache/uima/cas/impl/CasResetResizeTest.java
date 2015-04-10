@@ -89,11 +89,10 @@ public class CasResetResizeTest extends TestCase {
       
 //      int[] expected = new int[] {8300000, 8300000, 3800000, 1300000, 400000, 200000, 100000, 50000};  // for doubling
       
-      int[] expected = {12800000, 12800000, 6400000, 3200000, 1600000, 800000, 400000, 200000};    // for 1 step
-      for (int i = 0; i < 8; i++) {
-        cas.reset();
-        heapSize = ((CASImpl) cas).getHeap().getHeapSize();
-        assertEquals(expected[i], heapSize);       
+      int[] expected = {6400000, 3200000, 1600000, 800000, 400000, 200000};    // for 1 step
+      resets(cas, 20, 12800000);
+      for (int i = 0; i < 6; i++) {
+        resets(cas, 5, expected[i]);
       }
 
       //If instead we create the annotations in smaller chunks and reset each time,
@@ -114,5 +113,16 @@ public class CasResetResizeTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  
+  void resets(CAS cas, int n, int expected) {
+    for (int i = 0; i < n; i++) {
+      cas.reset();
+    }
+    int heapSize = ((CASImpl) cas).getHeap().getHeapSize();
+//    System.out.format("Actual: %,d expected: %,d%n", heapSize, expected);
+    assertEquals(expected, heapSize);       
+  }
+  
+  
 
 }
