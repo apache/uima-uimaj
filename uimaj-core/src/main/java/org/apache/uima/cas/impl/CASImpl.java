@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -100,6 +101,11 @@ import org.apache.uima.util.Misc;
  * 
  */
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS {
+  
+  private static final boolean trace = false;
+  
+  // debug
+  private static final AtomicInteger casIdProvider = new AtomicInteger(0);
 
   // Notes on the implementation
   // ---------------------------
@@ -322,11 +328,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      */
     private boolean fsTobeAddedbackSingleInUse = false;
     
+    private final AtomicInteger casResets = new AtomicInteger(0);
+    
+    private final int casId;
+    
     private SharedViewData(boolean useFSCache, Heap heap, CASImpl baseCAS, CASMetadata casMetadata) {
       this.useFSCache = useFSCache;
       this.heap = heap;
       this.baseCAS = baseCAS;
       this.casMetadata = casMetadata;
+      casId = casIdProvider.incrementAndGet();
     }
   }
   
@@ -1052,6 +1063,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void resetNoQuestions() {
+    svd.casResets.incrementAndGet();
+    if (trace) {
+      System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
+          " for CasId = " + getCasId() + ", new reset count = " + svd.casResets.get());
+    }
     int numViews = this.getBaseSofaCount();
     // Flush indexRepository for all Sofa
     for (int view = 1; view <= numViews; view++) {
@@ -5127,5 +5143,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                                getSofa(this.mySofaRef).getSofaID();
     return "CASImpl [view: " + sofa + "]";
   }
+    
+  int getCasResets() {
+    return svd.casResets.get();
+  }
   
+  int getCasId() {
+    return svd.casId;
+  }
 }
