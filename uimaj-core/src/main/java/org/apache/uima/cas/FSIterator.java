@@ -123,7 +123,9 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * invalid.
    * 
    * @param fs
-   *          The feature structure the iterator should be set to.
+   *          The feature structure the iterator that supplies the 
+   *          comparison information.  It need not be a subtype of
+   *          T, but must be comparable with it as the index is defined.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveTo(FeatureStructure fs);
