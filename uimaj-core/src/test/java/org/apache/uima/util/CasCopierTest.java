@@ -36,7 +36,6 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
-import org.apache.uima.cas_data.impl.CasComparerViewChange;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -226,7 +225,7 @@ public class CasCopierTest extends TestCase {
     copier.copyCasView(srcCas, "aNewView", true);
 
     // verify copy
-    (new CasComparerViewChange(srcCas, destCas.getView("aNewView"))).assertEqualViews();
+    CasComparer.assertEqualViews(srcCas, destCas.getView("aNewView"));
     
   }
   
@@ -261,7 +260,7 @@ public class CasCopierTest extends TestCase {
     copier.copyCasView(wrappedSrcCas, "aNewView", true);
 
     // verify copy
-    (new CasComparerViewChange(wrappedSrcCas, wrappedTgtCas.getView("aNewView"))).assertEqualViews();
+    CasComparer.assertEqualViews(wrappedSrcCas, wrappedTgtCas.getView("aNewView"));
     
   }
 
@@ -279,6 +278,7 @@ public class CasCopierTest extends TestCase {
     // set sofa data in destination CAS (this is not copied automtically)
     destCas.setDocumentText(srcCas.getDocumentText());
 
+    CasComparer cci = new CasComparer();
     // copy all entities
     Iterator<FeatureStructure> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
 //    while(it.hasNext()) {
