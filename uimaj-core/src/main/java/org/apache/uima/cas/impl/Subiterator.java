@@ -39,7 +39,6 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 
   private Comparator<FeatureStructure> annotationComparator = null;
 
-  
   private Subiterator() {
     super();
     this.list = new ArrayList<T>();
@@ -75,20 +74,26 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
   Subiterator(FSIterator<T> it, AnnotationFS annot, final boolean ambiguous, final boolean strict) {
     this();
     if (ambiguous) {
+      
       initAmbiguousSubiterator(it, annot, strict);
     } else {
       initUnambiguousSubiterator(it, annot, strict);
     }
   }
 
+  // makes an extra copy of the items
   private void initAmbiguousSubiterator(FSIterator<T> it, AnnotationFS annot, final boolean strict) {
     final int start = annot.getBegin();
     final int end = annot.getEnd();
-    it.moveTo(annot);
+    it.moveTo(annot);  // to "earliest" equal, or if none are equal, to the one just later than annot
+    
+    // This is a little silly, it skips 1 of possibly many indexed annotations if the earliest one is "equal"
+    //    (just means matching the keys) to the control annot  4/2015
     if (it.isValid() && it.get().equals(annot)) {
       it.moveToNext();
     }
     // Skip annotations whose start is before the start parameter.
+    // should never have any???
     while (it.isValid() && it.get().getBegin() < start) {
       it.moveToNext();
     }
@@ -112,6 +117,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     final int start = annot.getBegin();
     final int end = annot.getEnd();
     it.moveTo(annot);
+    
     if (it.isValid() && it.get().equals(annot)) {
       it.moveToNext();
     }
@@ -126,13 +132,12 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       it.moveToNext();
     }
     // Add annotations.
-    T current, next;
     if (!it.isValid()) {
       return;
     }
-    current = null;
+    T current = null;
     while (it.isValid()) {
-      next =  it.get();
+      final T next = it.get();
       // If the next annotation overlaps, skip it. Don't check while there is no "current" yet.
       if ((current != null) && (next.getBegin() < current.getEnd())) {
         it.moveToNext();
@@ -224,11 +229,30 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   public void moveTo(FeatureStructure fs) {
-    final int found = Collections.binarySearch(this.list, fs, getAnnotationComparator(fs));
-    if (found >= 0) {
-      this.pos = found;
+    final Comparator<FeatureStructure> comparator = getAnnotationComparator(fs);
+    pos = Collections.binarySearch(this.list, fs, comparator);
+    if (pos >= 0) {
+      if (!isValid()) {
+        return;
+      }
+      T foundFs = get();
+      // Go back until we find a FS that is really smaller
+      while (true) {
+        moveToPrevious();
+        if (isValid()) {
+          if (comparator.compare(get(), foundFs) != 0) {
+            moveToNext(); // go back
+            break;
+          }
+        } else {
+          moveToFirst();  // went to before first, so go back to 1st
+          break;
+        }
+      }       
+      return;
     } else {
-      this.pos = (-found) - 1;
+      pos = (-pos) - 1;
+      return;
     }
   }
 
