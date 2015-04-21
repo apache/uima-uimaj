@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.Assert;
