@@ -20,7 +20,6 @@
 package org.apache.uima.util.impl;
 
 import java.util.HashMap;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import junit.framework.Assert;
