@@ -20,7 +20,8 @@
 package org.apache.uima.internal.util;
 
 /**
- * Used in the CAS implementation.
+ * Int iterator moving forwards and backwards, in the UIMA style.
+ * Contrast with IntListIterator, which is the Java style.
  */
 public interface IntPointerIterator {
 

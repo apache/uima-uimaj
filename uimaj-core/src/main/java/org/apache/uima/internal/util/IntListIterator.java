@@ -22,7 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.NoSuchElementException;
 
 /**
- * Integer list iterator.
+ * Int iterator in the Java style, but returning/using ints.
+ * Contrast with IntPointerIterator, which is in the UIMA style allowing forward and backwards movement.
  */
 public interface IntListIterator {
 
