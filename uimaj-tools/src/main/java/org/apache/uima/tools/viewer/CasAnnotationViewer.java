@@ -133,30 +133,12 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
   // Mode constants
   private static final short MODE_ANNOTATIONS = 0;
-
   private static final short MODE_ENTITIES = 1;
 
-  private ArrayList userTypes = null;
-
-  /**
-   * @return Returns the userTypes.
-   */
-  public ArrayList getUserTypes() {
-    return userTypes;
-  }
-
-  /**
-   * @param userTypes
-   *          The userTypes to set.
-   */
-  public void setUserTypes(ArrayList userTypes) {
-    this.userTypes = userTypes;
-  }
-
+  private static String[] DEFAULT_HIDDEN_FEATURES = { "sofa" };
   // colors to use for highlighting annotations
   // (use high brightness for best contrast against black text)
   private static final float BRIGHT = 0.95f;
-
   private static final Color[] COLORS = new Color[] {
       // low saturation colors are best, so put them first
       Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
@@ -185,83 +167,46 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       Color.getHSBColor(80f / 360, 0.75f, BRIGHT), Color.getHSBColor(330f / 360, 0.75f, BRIGHT),
       Color.getHSBColor(160f / 360, 0.75f, BRIGHT), Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
 
-  private static String[] DEFAULT_HIDDEN_FEATURES = { "sofa" };
-
+  private CAS mCAS;
+  private Type mStringType;
+  private Type mFsArrayType;
+  private boolean mConsistentColors = true;
+  private List mHighFrequencyTypes = new ArrayList();
+  private String[] mBoldfaceKeywords = new String[0];
+  private int[] mBoldfaceSpans = new int[0];
+  private Set mHiddenFeatureNames = new HashSet();
+  private Set mHiddenTypeNames = new HashSet();
+  private Set mDisplayedTypeNames = null;
+  private Set mInitiallySelectedTypeNames = null;
+  private boolean mHideUnselectedCheckboxes = false;
+  private ArrayList userTypes = null;
+  private HashSet noCheckSet = new HashSet();
   private Map mTypeNameToColorMap = new HashMap();
 
-  private HashSet noCheckSet = new HashSet();
-
-  private List mHighFrequencyTypes = new ArrayList();
-
-  private Set mDisplayedTypeNames = null;
-
-  private Set mHiddenTypeNames = new HashSet();
-
-  private Set mInitiallySelectedTypeNames = null;
-
-  private Map mTypeToCheckboxMap = new HashMap();
-
-  private Map mEntityToCheckboxMap = new HashMap();
-
-  private CAS mCAS;
-
-  private Type mStringType;
-
-  private Type mFsArrayType;
-
-  private boolean mConsistentColors = true;
-
-  private Set mHiddenFeatureNames = new HashSet();
-
   private boolean mEntityViewEnabled = false; 
-
   private short mViewMode = MODE_ANNOTATIONS;
-
-  private boolean mHideUnselectedCheckboxes = false;
-
   // GUI components
+  private Map mTypeToCheckboxMap = new HashMap();
+  private Map mEntityToCheckboxMap = new HashMap();
   private JSplitPane horizSplitPane;
-
   private JSplitPane vertSplitPane;
-
   private JScrollPane textScrollPane;
-
   private JTextPane textPane;
-
   private JPanel legendPanel;
-
   private JLabel legendLabel;
-
   private JScrollPane legendScrollPane;
-
   private JPanel annotationCheckboxPanel;
-
   private JPanel entityCheckboxPanel;
-
   private JPanel buttonPanel;
-
   private JButton selectAllButton;
-
   private JButton deselectAllButton;
-
   private JButton showHideUnselectedButton;
-
   private JTree selectedAnnotationTree;
-
   private DefaultTreeModel selectedAnnotationTreeModel;
-
   private JPanel viewModePanel;
-
   private JRadioButton annotationModeButton;
-
   private JRadioButton entityModeButton;
-
-  private String[] mBoldfaceKeywords = new String[0];
-
-  private int[] mBoldfaceSpans = new int[0];
-
   private JPanel sofaSelectionPanel;
-
   private JComboBox sofaSelectionComboBox;
 
   private EntityResolver mEntityResolver = new DefaultEntityResolver();
@@ -387,6 +332,21 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   @Deprecated
   public CasAnnotationViewer(boolean aEntityViewEnabled) {
     this();
+  }
+  
+  /**
+   * @return Returns the userTypes.
+   */
+  public ArrayList getUserTypes() {
+    return userTypes;
+  }
+
+  /**
+   * @param userTypes
+   *          The userTypes to set.
+   */
+  public void setUserTypes(ArrayList userTypes) {
+    this.userTypes = userTypes;
   }
 
   /**
