@@ -30,7 +30,7 @@ import org.apache.uima.internal.util.IntVector;
 
 public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
-  private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
+  private class IntIterator4unused implements ComparableIntPointerIterator, LowLevelIterator {
 
     private int itPos;
 
@@ -50,12 +50,12 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
       modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     }
 
-    private IntVectorIterator() {
+    private IntIterator4unused() {
       super();
       this.itPos = 0;
     }
 
-    private IntVectorIterator(IntComparator comp) {
+    private IntIterator4unused(IntComparator comp) {
       this();
       this.comp = comp;
     }
@@ -91,7 +91,7 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
      * @see org.apache.uima.internal.util.IntPointerIterator#copy()
      */
     public Object copy() {
-      IntVectorIterator copy = new IntVectorIterator(this.comp);
+      IntIterator4unused copy = new IntIterator4unused(this.comp);
       copy.itPos = this.itPos;
       return copy;
     }
@@ -100,7 +100,7 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(Object o) throws NoSuchElementException {
-      return this.comp.compare(get(), ((IntVectorIterator) o).get());
+      return this.comp.compare(get(), ((IntIterator4unused) o).get());
     }
 
     /**
@@ -219,7 +219,7 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
-    IntVectorIterator ivi = new IntVectorIterator(comp);
+    IntIterator4unused ivi = new IntIterator4unused(comp);
     ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
     ivi.typeCode = typeCode;
@@ -230,14 +230,14 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
    */
   protected IntPointerIterator refIterator() {
-    return new IntVectorIterator();
+    return new IntIterator4unused();
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
   protected IntPointerIterator refIterator(int fsCode) {
-    IntVectorIterator it = new IntVectorIterator();
+    IntIterator4unused it = new IntIterator4unused();
     final int pos = find(fsCode);
     if (pos >= 0) {
       it.itPos = pos;
@@ -283,7 +283,7 @@ public class FSVectorIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
    * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
    */
   public LowLevelIterator ll_iterator() {
-    return new IntVectorIterator();
+    return new IntIterator4unused();
   }
 
   /*
