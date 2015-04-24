@@ -36,7 +36,7 @@ import org.apache.uima.internal.util.IntVector;
  */
 public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
-  private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
+  private class IntIterator4sorted implements ComparableIntPointerIterator, LowLevelIterator {
 
     private int itPos;
 
@@ -56,12 +56,12 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
       modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     }
 
-    private IntVectorIterator() {
+    private IntIterator4sorted() {
       super();
       this.itPos = 0;
     }
 
-    private IntVectorIterator(IntComparator comp) {
+    private IntIterator4sorted(IntComparator comp) {
       this();
       this.comp = comp;
     }
@@ -97,7 +97,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
      * @see org.apache.uima.internal.util.IntPointerIterator#copy()
      */
     public Object copy() {
-      IntVectorIterator copy = new IntVectorIterator(this.comp);
+      IntIterator4sorted copy = new IntIterator4sorted(this.comp);
       copy.itPos = this.itPos;
       return copy;
     }
@@ -106,7 +106,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(Object o) throws NoSuchElementException {
-      return this.comp.compare(get(), ((IntVectorIterator) o).get());
+      return this.comp.compare(get(), ((IntIterator4sorted) o).get());
     }
 
     /**
@@ -299,7 +299,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   // }
 
   /**
-   * In a sorted array of fsAddrs, find the lowest one that matches the keys in fsRef, or
+   * In a sorted array of fsAddrs, find one (perhaps out of many) that matches the keys in fsRef, or
    * if none match, return a negative number of insertion point if not found
    * @param fsRef
    * @return index of an arbitrary FS that matches on the compare function or a negative number of insertion point if not found
@@ -308,6 +308,12 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     return binarySearch(this.index.getArray(), fsRef, 0, this.index.size());
   }
   
+  /**
+   * In a sorted array of fsAddrs, find the lowest one that matches the keys in fsRef, or
+   * if none match, return a negative number of insertion point if not found
+   * @param fsRef
+   * @return index of the left-most FS for this particular type that matches on the compare function or a negative number of insertion point if not found
+   */  
   final int findLeftmost(int fsRef) {
     int pos = find(fsRef);
     
@@ -444,7 +450,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
-    IntVectorIterator ivi = new IntVectorIterator(comp);
+    IntIterator4sorted ivi = new IntIterator4sorted(comp);
     ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
     ivi.typeCode = typeCode;
@@ -455,7 +461,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
    */
   protected IntPointerIterator refIterator() {
-    return new IntVectorIterator();
+    return new IntIterator4sorted();
   }
 
   /*
@@ -464,14 +470,14 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
    */
   public LowLevelIterator ll_iterator() {
-    return new IntVectorIterator();
+    return new IntIterator4sorted();
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
   protected IntPointerIterator refIterator(int fsAddr) {
-    IntVectorIterator it = new IntVectorIterator();
+    IntIterator4sorted it = new IntIterator4sorted();
     final int pos = findLeftmost(fsAddr);
     if (pos >= 0) {
       it.itPos = pos;
