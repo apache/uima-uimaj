@@ -41,7 +41,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
   // package private
   final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;
 
-  private class IntVectorIterator implements ComparableIntPointerIterator, LowLevelIterator {
+  private class IntIterator4bag implements ComparableIntPointerIterator, LowLevelIterator {
 
     private int itPos;
 
@@ -61,12 +61,12 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
       this.modificationSnapshot = this.detectIllegalIndexUpdates[this.typeCode];
     }
 
-    private IntVectorIterator() {
+    private IntIterator4bag() {
       super();
       moveToFirst(); 
     }
 
-    private IntVectorIterator(IntComparator comp) {
+    private IntIterator4bag(IntComparator comp) {
       this();
       this.comp = comp;
     }
@@ -123,7 +123,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
      * @see org.apache.uima.internal.util.IntPointerIterator#copy()
      */
     public Object copy() {
-      IntVectorIterator copy = new IntVectorIterator(this.comp);
+      IntIterator4bag copy = new IntIterator4bag(this.comp);
       copy.itPos = this.itPos;
       return copy;
     }
@@ -132,7 +132,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(Object o) throws NoSuchElementException {
-      return this.comp.compare(get(), ((IntVectorIterator) o).get());
+      return this.comp.compare(get(), ((IntIterator4bag) o).get());
     }
 
     /**
@@ -281,6 +281,10 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
       return this.index.indexOf(ele);
     }
   }
+  
+  /**
+   * For bag indexes, compare equal only if identical addresses
+   */
   public int compare(int fs1, int fs2) {
     if (fs1 < fs2) {
       return -1;
@@ -322,7 +326,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
-    IntVectorIterator ivi = new IntVectorIterator(comp);
+    IntIterator4bag ivi = new IntIterator4bag(comp);
     ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
     ivi.typeCode = typeCode;
@@ -333,7 +337,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
    */
   protected IntPointerIterator refIterator() {
-    return new IntVectorIterator();
+    return new IntIterator4bag();
   }
 
   /*
@@ -342,14 +346,14 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
    */
   public LowLevelIterator ll_iterator() {
-    return new IntVectorIterator();
+    return new IntIterator4bag();
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
   protected IntPointerIterator refIterator(int fsCode) {
-    IntVectorIterator it = new IntVectorIterator();
+    IntIterator4bag it = new IntIterator4bag();
     final int pos = findLeftmost(fsCode);
     if (pos >= 0) {
       it.itPos = pos;
