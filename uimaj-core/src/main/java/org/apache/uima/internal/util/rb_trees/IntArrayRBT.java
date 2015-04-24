@@ -48,10 +48,12 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
   /**
    * Implement a comparable iterator over the keys.
-   * 
+   * Adds support to PointerIterator for
+   *   - concurrent modification detection
+   *   - comparing two iterators (for type/subtype ordering)
    * 
    */
-  private class ComparablePointerIterator extends PointerIterator implements
+  private class IntArrayRBTIterator extends PointerIterator implements
           ComparableIntPointerIterator {
 
     private final IntComparator comp;
@@ -70,7 +72,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
       modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     }
 
-    private ComparablePointerIterator(IntComparator comp) {
+    private IntArrayRBTIterator(IntComparator comp) {
       super();
       this.comp = comp;
     }
@@ -85,7 +87,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     }
 
     public Object copy() {
-      ComparablePointerIterator copy = new ComparablePointerIterator(this.comp);
+      IntArrayRBTIterator copy = new IntArrayRBTIterator(this.comp);
       copy.currentNode = this.currentNode;
       return copy;
     }
@@ -99,7 +101,13 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   }
 
   /**
-   * Class comment for IntArrayRBT.java goes here.
+   * IntPointerIterator support for IntArrayRBT style indexes
+   * 
+   * No Concurrent Modification testing
+   * 
+   * No support for type/subtype iterator comparison
+   * 
+   * For these, see above class
    * 
    * 
    */
@@ -570,7 +578,7 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   public ComparableIntPointerIterator pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
     // assert(comp != null);
-    ComparablePointerIterator cpi = new ComparablePointerIterator(comp);
+    IntArrayRBTIterator cpi = new IntArrayRBTIterator(comp);
     cpi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
     cpi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
     cpi.typeCode = typeCode;
