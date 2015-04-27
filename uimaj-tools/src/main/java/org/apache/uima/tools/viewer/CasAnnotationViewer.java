@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -167,27 +166,28 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       Color.getHSBColor(80f / 360, 0.75f, BRIGHT), Color.getHSBColor(330f / 360, 0.75f, BRIGHT),
       Color.getHSBColor(160f / 360, 0.75f, BRIGHT), Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
 
-  private CAS mCAS;
-  private Type mStringType;
-  private Type mFsArrayType;
-  private boolean mConsistentColors = true;
-  private List mHighFrequencyTypes = new ArrayList();
-  private String[] mBoldfaceKeywords = new String[0];
-  private int[] mBoldfaceSpans = new int[0];
-  private Set mHiddenFeatureNames = new HashSet();
-  private Set mHiddenTypeNames = new HashSet();
-  private Set mDisplayedTypeNames = null;
-  private Set mInitiallySelectedTypeNames = null;
-  private boolean mHideUnselectedCheckboxes = false;
-  private ArrayList userTypes = null;
-  private HashSet noCheckSet = new HashSet();
-  private Map mTypeNameToColorMap = new HashMap();
+  private CAS cas;
+  private Type stringType;
+  private Type fsArrayType;
+  private boolean useConsistentColors = true;
+  private List<String> highFrequencyTypes = new ArrayList<String>();
+  private String[] boldfaceKeywords = new String[0];
+  private int[] boldfaceSpans = new int[0];
+  private Set<String> hiddenFeatureNames = new HashSet<String>();
+  private Set<String> hiddenTypeNames = new HashSet<String>();
+  private Set<String> displayedTypeNames = null;
+  private Set<String> initiallySelectedTypeNames = null;
+  private boolean hideUnselectedCheckboxes = false;
+  private List<String> userTypes = null;
+  private Set<String> typesNotChecked = new HashSet<String>();
+  private Map<String, Color> typeColorMap = new HashMap<String, Color>();
+  private EntityResolver mEntityResolver = new DefaultEntityResolver();
 
-  private boolean mEntityViewEnabled = false; 
-  private short mViewMode = MODE_ANNOTATIONS;
+  private boolean entityViewEnabled = false; 
+  private short viewMode = MODE_ANNOTATIONS;
   // GUI components
-  private Map mTypeToCheckboxMap = new HashMap();
-  private Map mEntityToCheckboxMap = new HashMap();
+  private Map<Type, JCheckBox> typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
+  private Map<EntityResolver.Entity, JCheckBox> entityToCheckBoxMap = new HashMap<EntityResolver.Entity, JCheckBox>();
   private JSplitPane horizSplitPane;
   private JSplitPane vertSplitPane;
   private JScrollPane textScrollPane;
@@ -207,13 +207,13 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   private JRadioButton annotationModeButton;
   private JRadioButton entityModeButton;
   private JPanel sofaSelectionPanel;
+  @SuppressWarnings("rawtypes")
   private JComboBox sofaSelectionComboBox;
-
-  private EntityResolver mEntityResolver = new DefaultEntityResolver();
 
   /**
    * Creates a CAS Annotation Viewer.
    */
+  @SuppressWarnings("rawtypes")
   public CasAnnotationViewer() {
     // create a horizonal JSplitPane
     horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -323,7 +323,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     textPane.addMouseListener(this);
 
     // initialize hidden feature names map
-    mHiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+    hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
   }
 
   /**
@@ -337,7 +337,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   /**
    * @return Returns the userTypes.
    */
-  public ArrayList getUserTypes() {
+  public List<String> getUserTypes() {
     return userTypes;
   }
 
@@ -345,7 +345,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param userTypes
    *          The userTypes to set.
    */
-  public void setUserTypes(ArrayList userTypes) {
+  public void setUserTypes(List<String> userTypes) {
     this.userTypes = userTypes;
   }
 
@@ -359,10 +359,10 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   public void setHighFrequencyTypes(String[] aTypeNames) {
     // store these types for later
-    mHighFrequencyTypes.clear();
-    mHighFrequencyTypes.addAll(Arrays.asList(aTypeNames));
-    mTypeNameToColorMap.clear();
-    assignColors(mHighFrequencyTypes);
+    highFrequencyTypes.clear();
+    highFrequencyTypes.addAll(Arrays.asList(aTypeNames));
+    typeColorMap.clear();
+    assignColors(highFrequencyTypes);
   }
 
   /**
@@ -377,10 +377,10 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   public void setDisplayedTypes(String[] aDisplayedTypeNames) {
     if (aDisplayedTypeNames == null) {
-      mDisplayedTypeNames = null;
+      displayedTypeNames = null;
     } else {
-      mDisplayedTypeNames = new HashSet();
-      mDisplayedTypeNames.addAll(Arrays.asList(aDisplayedTypeNames));
+      displayedTypeNames = new HashSet<String>();
+      displayedTypeNames.addAll(Arrays.asList(aDisplayedTypeNames));
     }
   }
 
@@ -391,8 +391,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          names of types that are never to be highlighted.
    */
   public void setHiddenTypes(String[] aTypeNames) {
-    mHiddenTypeNames.clear();
-    mHiddenTypeNames.addAll(Arrays.asList(aTypeNames));
+    hiddenTypeNames.clear();
+    hiddenTypeNames.addAll(Arrays.asList(aTypeNames));
   }
 
   /**
@@ -403,22 +403,22 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          array of fully-qualified names of types to be initially selected
    */
   public void setInitiallySelectedTypes(String[] aTypeNames) {
-    mInitiallySelectedTypeNames = new HashSet();
+    initiallySelectedTypeNames = new HashSet<String>();
     for (int i = 0; i < aTypeNames.length; i++) {
-      mInitiallySelectedTypeNames.add(aTypeNames[i]);
+      initiallySelectedTypeNames.add(aTypeNames[i]);
     }
     // apply to existing checkboxes
-    Iterator iterator = mTypeToCheckboxMap.entrySet().iterator();
+    Iterator<Map.Entry<Type, JCheckBox>> iterator = typeToCheckBoxMap.entrySet().iterator();
     while (iterator.hasNext()) {
-      Map.Entry entry = (Map.Entry) iterator.next();
+      Map.Entry<Type, JCheckBox> entry = iterator.next();
       String type = ((Type) entry.getKey()).getName();
       JCheckBox checkbox = (JCheckBox) entry.getValue();
-      checkbox.setSelected(typeNamesContains(mInitiallySelectedTypeNames, type));
+      checkbox.setSelected(typeNamesContains(initiallySelectedTypeNames, type));
     }
 
     // redisplay (if we have a CAS) - this allows this method to be called
     // either before or after displaying the viewer
-    if (mCAS != null) {
+    if (cas != null) {
       display();
     }
   }
@@ -430,11 +430,11 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          array of (short) feature names to be hidden
    */
   public void setHiddenFeatures(String[] aFeatureNames) {
-    mHiddenFeatureNames.clear();
+    hiddenFeatureNames.clear();
     // add default hidden features
-    mHiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+    hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
     // add user-defined hidden features
-    mHiddenFeatureNames.addAll(Arrays.asList(aFeatureNames));
+    hiddenFeatureNames.addAll(Arrays.asList(aFeatureNames));
   }
 
   /**
@@ -448,7 +448,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          The default is false.
    */
   public void setEntityViewEnabled(boolean aEnabled) {
-    mEntityViewEnabled = aEnabled;
+    entityViewEnabled = aEnabled;
     this.viewModePanel.setVisible(aEnabled);
   }
   
@@ -474,7 +474,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          to vary
    */
   public void setConsistentColors(boolean aConsistent) {
-    mConsistentColors = aConsistent;
+    useConsistentColors = aConsistent;
   }
 
   /**
@@ -497,7 +497,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param aHideUnselected
    */
   public void setHideUnselectedCheckboxes(boolean aHideUnselected) {
-    mHideUnselectedCheckboxes = aHideUnselected;
+    hideUnselectedCheckboxes = aHideUnselected;
     display();
   }
 
@@ -507,39 +507,40 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param aCAS
    *          the CSA to be viewed
    */
+  @SuppressWarnings("unchecked")
   public void setCAS(CAS aCAS) {
-    mCAS = aCAS;
-    mStringType = mCAS.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
-    mFsArrayType = mCAS.getTypeSystem().getType(CAS.TYPE_NAME_FS_ARRAY);
+    cas = aCAS;
+    stringType = cas.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
+    fsArrayType = cas.getTypeSystem().getType(CAS.TYPE_NAME_FS_ARRAY);
     // clear checkbox panel so it will be repopulated
     annotationCheckboxPanel.removeAll();
     entityCheckboxPanel.removeAll();
-    mTypeToCheckboxMap.clear();
-    mEntityToCheckboxMap.clear();
+    typeToCheckBoxMap.clear();
+    entityToCheckBoxMap.clear();
     // clear selected annotation details tree
     this.updateSelectedAnnotationTree(-1);
 
     // clear type to color map if color consistency is off
-    if (!mConsistentColors) {
-      mTypeNameToColorMap.clear();
+    if (!useConsistentColors) {
+      typeColorMap.clear();
       // but reassign colors to high frequency types
-      assignColors(mHighFrequencyTypes);
+      assignColors(highFrequencyTypes);
     }
 
     // clear boldface
-    mBoldfaceKeywords = new String[0];
-    mBoldfaceSpans = new int[0];
+    boldfaceKeywords = new String[0];
+    boldfaceSpans = new int[0];
 
     // enable or disable entity view depending on user's choice 
-    this.viewModePanel.setVisible(mEntityViewEnabled);
+    this.viewModePanel.setVisible(entityViewEnabled);
 
     // Populate sofa combo box with the names of all text Sofas in the CAS
     sofaSelectionComboBox.removeAllItems();
-    Iterator sofas = aCAS.getSofaIterator();
+    Iterator<SofaFS> sofas = aCAS.getSofaIterator();
     Feature sofaIdFeat = aCAS.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     boolean nonDefaultSofaFound = false;
     while (sofas.hasNext()) {
-      SofaFS sofa = (SofaFS) sofas.next();
+      SofaFS sofa = sofas.next();
       if (sofa.getLocalStringData() != null) {
         String sofaId = sofa.getStringValue(sofaIdFeat);
         if (CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
@@ -576,7 +577,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          array of words to highlight in boldface.
    */
   public void applyBoldfaceToKeywords(String[] aWords) {
-    mBoldfaceKeywords = aWords;
+    boldfaceKeywords = aWords;
     doBoldface();
   }
 
@@ -589,7 +590,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          spans to appear in boldface (begin1, end1, begin2, end2, ...)
    */
   public void applyBoldfaceToSpans(int[] aSpans) {
-    mBoldfaceSpans = aSpans;
+    boldfaceSpans = aSpans;
     doBoldface();
   }
 
@@ -609,8 +610,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   public void configureViewForXmlFragmentsQuery(String aQuery, String aTypeNamespace) {
     // need to parse query and produce type list and keyword list
-    List typeList = new ArrayList();
-    List keywordList = new ArrayList();
+    List<String> typeList = new ArrayList<String>();
+    List<String> keywordList = new ArrayList<String>();
 
     String delims = "<>+-*\" \t\n";
     StringTokenizer tokenizer = new StringTokenizer(aQuery, delims, true);
@@ -665,12 +666,12 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param aNotChecked
    *          list of types not to be initially checked JMP
    */
-  public void assignCheckedFromList(ArrayList aNotChecked) {
-    Iterator iterC = aNotChecked.iterator();
+  public void assignCheckedFromList(List<String> aNotChecked) {
+    Iterator<String> iterC = aNotChecked.iterator();
     while (iterC.hasNext()) {
-      String typeName = (String) iterC.next();
+      String typeName = iterC.next();
       // assign to list of types not to be initially checked
-      noCheckSet.add(typeName);
+      typesNotChecked.add(typeName);
     }
   }
 
@@ -682,24 +683,24 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param aTypeNames
    *          list of type names JMP
    */
-  public void assignColorsFromList(List aColors, ArrayList aTypeNames) {
+  public void assignColorsFromList(List<Color> aColors, List<String> aTypeNames) {
     // populate mTypeNameToColorMap
-    Iterator iter = aTypeNames.iterator();
-    Iterator iterC = aColors.iterator();
+    Iterator<String> iter = aTypeNames.iterator();
+    Iterator<Color> iterC = aColors.iterator();
     while (iter.hasNext()) {
       if (!iterC.hasNext())
         break;
       String typeName = (String) iter.next();
       Color color = (Color) iterC.next();
       // assign background color
-      mTypeNameToColorMap.put(typeName, color);
+      typeColorMap.put(typeName, color);
     }
 
     setUserTypes(aTypeNames);
 
     // clear checkbox panel so it will be refreshed
     annotationCheckboxPanel.removeAll();
-    mTypeToCheckboxMap.clear();
+    typeToCheckBoxMap.clear();
   }
 
   /**
@@ -708,19 +709,19 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @param aTypeNames
    *          list of type names
    */
-  private void assignColors(List aTypeNames) {
+  private void assignColors(List<String> aTypeNames) {
     // populate mTypeNameToColorMap
-    Iterator iter = aTypeNames.iterator();
+    Iterator<String> iter = aTypeNames.iterator();
     while (iter.hasNext()) {
-      String typeName = (String) iter.next();
+      String typeName = iter.next();
       // assign background color
-      Color c = COLORS[mTypeNameToColorMap.size() % COLORS.length];
-      mTypeNameToColorMap.put(typeName, c);
+      Color c = COLORS[typeColorMap.size() % COLORS.length];
+      typeColorMap.put(typeName, c);
     }
 
     // clear checkbox panel so it will be refreshed
     annotationCheckboxPanel.removeAll();
-    mTypeToCheckboxMap.clear();
+    typeToCheckBoxMap.clear();
   }
 
   /**
@@ -736,7 +737,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     int verticalScrollPos = this.textScrollPane.getVerticalScrollBar().getValue();
 
     // type of display depends on whether we are in annotation or entity mode
-    switch (mViewMode) {
+    switch (viewMode) {
       case MODE_ANNOTATIONS:
         displayAnnotations();
         break;
@@ -749,7 +750,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     doBoldface();
 
     // update the label of the Show/Hide Unselected Button
-    if (mHideUnselectedCheckboxes) {
+    if (hideUnselectedCheckboxes) {
       showHideUnselectedButton.setText("Show Unselected");
     } else {
       showHideUnselectedButton.setText("Hide Unselected");
@@ -781,33 +782,33 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     // add text from CAS
     try {
       doc.remove(0, doc.getLength());
-      doc.insertString(0, mCAS.getDocumentText(), new SimpleAttributeSet());
+      doc.insertString(0, cas.getDocumentText(), new SimpleAttributeSet());
     } catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
 
     // Iterate over annotations
-    FSIterator iter = mCAS.getAnnotationIndex().iterator();
-    Hashtable checkBoxes = new Hashtable();
-    HashSet checkBoxesDone = new HashSet();
+    FSIterator<AnnotationFS> iter = cas.getAnnotationIndex().iterator();
+    Hashtable<String, JCheckBox> checkBoxes = new Hashtable<String, JCheckBox>();
+    Set<JCheckBox> checkBoxesDone = new HashSet<JCheckBox>();
     while (iter.isValid()) {
-      AnnotationFS fs = (AnnotationFS) iter.get();
+      AnnotationFS fs = iter.get();
       iter.moveToNext();
 
       Type type = fs.getType();
 
       // have we seen this type before?
-      JCheckBox checkbox = (JCheckBox) mTypeToCheckboxMap.get(type);
+      JCheckBox checkbox = (JCheckBox) typeToCheckBoxMap.get(type);
       if (checkbox == null) {
         // check that type should be displayed
-        if ((mDisplayedTypeNames == null || typeNamesContains(mDisplayedTypeNames, type.getName()))
-                && !typeNamesContains(mHiddenTypeNames, type.getName())) {
+        if ((displayedTypeNames == null || typeNamesContains(displayedTypeNames, type.getName()))
+                && !typeNamesContains(hiddenTypeNames, type.getName())) {
           // if mTypeNameToColorMap exists, get color from there
-          Color c = (Color) mTypeNameToColorMap.get(type.getName());
+          Color c = (Color) typeColorMap.get(type.getName());
           if (c == null) // assign next available color
           {
-            c = COLORS[mTypeNameToColorMap.size() % COLORS.length];
-            mTypeNameToColorMap.put(type.getName(), c);
+            c = COLORS[typeColorMap.size() % COLORS.length];
+            typeColorMap.put(type.getName(), c);
           }
           // This next section required until priorities work properly
           // HashSet noCheckSet = new HashSet();
@@ -817,17 +818,17 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           // "VOCAB_ANNOT_TYPE"
           };
           for (int i = 0; i < noCheckArray.length; i++) {
-            noCheckSet.add(noCheckArray[i]);
+            typesNotChecked.add(noCheckArray[i]);
           }
           // end of section
 
           // should type be initially selected?
-          boolean selected = ((mInitiallySelectedTypeNames == null &&
+          boolean selected = ((initiallySelectedTypeNames == null &&
           // document annotation is not initially selected in default case
-                  !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(type.getName()) && !noCheckSet
+                  !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(type.getName()) && !typesNotChecked
                   .contains(type.getName()) // priorities JMP
-          ) || (mInitiallySelectedTypeNames != null && typeNamesContains(
-                  mInitiallySelectedTypeNames, type.getName())));
+          ) || (initiallySelectedTypeNames != null && typeNamesContains(
+                  initiallySelectedTypeNames, type.getName())));
 
           // add checkbox
           checkbox = new JCheckBox(type.getShortName(), selected);
@@ -838,7 +839,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           checkBoxes.put(type.getName(), checkbox);
           checkBoxesDone.add(checkbox);
           // add to (Type, Checkbox) map
-          mTypeToCheckboxMap.put(type, checkbox);
+          typeToCheckBoxMap.put(type, checkbox);
         } else {
           // this type is not hidden, skip it
           continue;
@@ -853,7 +854,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         // entire document. In either of these cases, if we try to set
         // background color, it will set the input text style, which is not
         // what we want.
-        if (begin == 0 && end == mCAS.getDocumentText().length()) {
+        if (begin == 0 && end == cas.getDocumentText().length()) {
           end--;
         }
 
@@ -866,11 +867,11 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     }
 
     // now populate panel with checkboxes in order specified in user file. JMP
-    ArrayList aTypeNames = getUserTypes();
+    List<String> aTypeNames = getUserTypes();
     if (aTypeNames != null) {
-      Iterator iterT = aTypeNames.iterator();
+      Iterator<String> iterT = aTypeNames.iterator();
       while (iterT.hasNext()) {
-        String typeName = (String) iterT.next();
+        String typeName = iterT.next();
         JCheckBox cb = (JCheckBox) checkBoxes.get(typeName);
         if (cb != null) {
           annotationCheckboxPanel.add(cb);
@@ -879,25 +880,25 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       }
     }
     // add additional checkboxes in alphabetical order
-    LinkedList checkboxes = new LinkedList(checkBoxesDone);
-    Collections.sort(checkboxes, new Comparator() {
-      public int compare(Object o1, Object o2) {
-        return ((JCheckBox) o1).getText().toLowerCase().compareTo(
-                ((JCheckBox) o2).getText().toLowerCase());
+    List<JCheckBox> checkboxes = new LinkedList<JCheckBox>(checkBoxesDone);
+    Collections.sort(checkboxes, new Comparator<JCheckBox>() {
+      public int compare(JCheckBox o1, JCheckBox o2) {
+        return o1.getText().toLowerCase().compareTo(
+                 o2.getText().toLowerCase());
       }
     });
-    Iterator iterC = checkboxes.iterator();
+    Iterator<JCheckBox> iterC = checkboxes.iterator();
     while (iterC.hasNext()) {
-      JCheckBox cb = (JCheckBox) iterC.next();
+      JCheckBox cb = iterC.next();
       annotationCheckboxPanel.add(cb);
     }
 
     // add/remove checkboxes from display as determined by the
     // mHideUnselectedCheckboxes toggle
-    Iterator cbIter = mTypeToCheckboxMap.values().iterator();
+    Iterator<JCheckBox> cbIter = typeToCheckBoxMap.values().iterator();
     while (cbIter.hasNext()) {
-      JCheckBox cb = (JCheckBox) cbIter.next();
-      if (mHideUnselectedCheckboxes && !cb.isSelected()) {
+      JCheckBox cb = cbIter.next();
+      if (hideUnselectedCheckboxes && !cb.isSelected()) {
         if (cb.getParent() == annotationCheckboxPanel) {
           annotationCheckboxPanel.remove(cb);
         }
@@ -927,7 +928,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     // add text from CAS
     try {
       doc.remove(0, doc.getLength());
-      doc.insertString(0, mCAS.getDocumentText(), new SimpleAttributeSet());
+      doc.insertString(0, cas.getDocumentText(), new SimpleAttributeSet());
     } catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
@@ -938,13 +939,13 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     try {
       // NOTE: for a large type system, this can take a few seconds, which results in a
       // noticeable delay when the user first switches to Entity mode.
-      jcas = mCAS.getJCas();
+      jcas = cas.getJCas();
     } catch (CASException e) {
       throw new RuntimeException(e);
     }
-    FSIterator iter = jcas.getAnnotationIndex().iterator();
+    FSIterator<Annotation> iter = jcas.getAnnotationIndex().iterator();
     while (iter.isValid()) {
-      Annotation annot = (Annotation) iter.get();
+      Annotation annot = iter.get();
       iter.moveToNext();
 
       // find out what entity this annotation represents
@@ -955,10 +956,10 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         continue;
       
       // have we seen this entity before?
-      JCheckBox checkbox = (JCheckBox) mEntityToCheckboxMap.get(entity);
+      JCheckBox checkbox = entityToCheckBoxMap.get(entity);
       if (checkbox == null) {
         // assign next available color
-        Color c = COLORS[mEntityToCheckboxMap.size() % COLORS.length];
+        Color c = COLORS[entityToCheckBoxMap.size() % COLORS.length];
         // add checkbox
         checkbox = new JCheckBox(entity.getCanonicalForm(), true);
         checkbox.setToolTipText(entity.getCanonicalForm());
@@ -966,7 +967,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         checkbox.setBackground(c);
         entityCheckboxPanel.add(checkbox);
         // add to (Entity, Checkbox) map
-        mEntityToCheckboxMap.put(entity, checkbox);
+        entityToCheckBoxMap.put(entity, checkbox);
       }
 
       // if checkbox is checked, assign color to text
@@ -985,10 +986,10 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
 
     // add/remove checkboxes from display as determined by the
     // mHideUnselectedCheckboxes toggle
-    Iterator cbIter = mEntityToCheckboxMap.values().iterator();
+    Iterator<JCheckBox> cbIter = entityToCheckBoxMap.values().iterator();
     while (cbIter.hasNext()) {
-      JCheckBox cb = (JCheckBox) cbIter.next();
-      if (mHideUnselectedCheckboxes && !cb.isSelected()) {
+      JCheckBox cb = cbIter.next();
+      if (hideUnselectedCheckboxes && !cb.isSelected()) {
         if (cb.getParent() == entityCheckboxPanel) {
           entityCheckboxPanel.remove(cb);
         }
@@ -1012,13 +1013,13 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel
             .getRoot();
     root.removeAllChildren();
-    FSIterator annotIter = this.mCAS.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> annotIter = this.cas.getAnnotationIndex().iterator();
     while (annotIter.isValid()) {
-      AnnotationFS annot = (AnnotationFS) annotIter.get();
+      AnnotationFS annot = annotIter.get();
       // if (getPanePosition(annot.getBegin()) <= aPosition
       // && getPanePosition(annot.getEnd()) > aPosition)
       if (annot.getBegin() <= aPosition && annot.getEnd() > aPosition) {
-        JCheckBox checkbox = (JCheckBox) mTypeToCheckboxMap.get(annot.getType());
+        JCheckBox checkbox = typeToCheckBoxMap.get(annot.getType());
         if (checkbox != null && checkbox.isSelected()) {
           addAnnotationToTree(annot);
         }
@@ -1059,13 +1060,12 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
             .getRoot();
     // try to find a node for the type
     DefaultMutableTreeNode typeNode = null;
-    Enumeration typeNodes = root.children();
-    while (typeNodes.hasMoreElements()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) typeNodes.nextElement();
-      if (aAnnotation.getType().equals(((TypeTreeNodeObject) node.getUserObject()).getType())) {
-        typeNode = node;
-        break;
-      }
+    for (int i = 0; i < root.getChildCount(); i++) {
+    	DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
+    	if (aAnnotation.getType().equals(((TypeTreeNodeObject) child.getUserObject()).getType())) {
+    		typeNode = child;
+    		break;
+    	}
     }
     if (typeNode == null) {
       typeNode = new DefaultMutableTreeNode(new TypeTreeNodeObject(aAnnotation.getType()));
@@ -1081,20 +1081,20 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   }
 
   private void addFeatureTreeNodes(DefaultMutableTreeNode aParentNode, FeatureStructure aFS) {
-    List aFeatures = aFS.getType().getFeatures();
-    Iterator iter = aFeatures.iterator();
+    List<Feature> aFeatures = aFS.getType().getFeatures();
+    Iterator<Feature> iter = aFeatures.iterator();
     while (iter.hasNext()) {
       Feature feat = (Feature) iter.next();
       String featName = feat.getShortName();
       // skip hidden features
-      if (mHiddenFeatureNames.contains(featName)) {
+      if (hiddenFeatureNames.contains(featName)) {
         continue;
       }
       // how we get feature value depends on feature's range type)
       String featVal = "null";
       Type rangeType = feat.getRange();
       String rangeTypeName = rangeType.getName();
-      if (mCAS.getTypeSystem().subsumes(mStringType, rangeType)) {
+      if (cas.getTypeSystem().subsumes(stringType, rangeType)) {
         featVal = aFS.getStringValue(feat);
         if (featVal == null) {
           featVal = "null";
@@ -1103,7 +1103,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         }
       } else if (rangeType.isPrimitive()) {
         featVal = aFS.getFeatureValueAsString(feat);
-      } else if (mCAS.getTypeSystem().subsumes(mFsArrayType, rangeType)) {
+      } else if (cas.getTypeSystem().subsumes(fsArrayType, rangeType)) {
         ArrayFS arrayFS = (ArrayFS) aFS.getFeatureValue(feat);
         if (arrayFS != null) {
           // Add featName = FSArray node, then add each array element as a child
@@ -1207,13 +1207,13 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          A type name
    * @return True iff name matches a name in type names
    */
-  private boolean typeNamesContains(Set names, String name) {
+  private boolean typeNamesContains(Set<String> names, String name) {
     if (names.contains(name))
       return true;
     else {
-      Iterator namesIterator = names.iterator();
+      Iterator<String> namesIterator = names.iterator();
       while (namesIterator.hasNext()) {
-        String otherName = (String) namesIterator.next();
+        String otherName = namesIterator.next();
         if (otherName.indexOf('*') != -1) {
           if (wildCardMatch(name, otherName)) {
             return true;
@@ -1276,29 +1276,29 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == selectAllButton) {
-      Iterator cbIter = (mViewMode == MODE_ANNOTATIONS) ? mTypeToCheckboxMap.values().iterator()
-              : mEntityToCheckboxMap.values().iterator();
+      Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
+              : entityToCheckBoxMap.values().iterator();
       while (cbIter.hasNext()) {
-        ((JCheckBox) cbIter.next()).setSelected(true);
+        cbIter.next().setSelected(true);
       }
       display();
     } else if (e.getSource() == deselectAllButton) {
-      Iterator cbIter = (mViewMode == MODE_ANNOTATIONS) ? mTypeToCheckboxMap.values().iterator()
-              : mEntityToCheckboxMap.values().iterator();
+      Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
+              : entityToCheckBoxMap.values().iterator();
       while (cbIter.hasNext()) {
-        ((JCheckBox) cbIter.next()).setSelected(false);
+        cbIter.next().setSelected(false);
       }
       display();
     } else if (e.getSource() == annotationModeButton) {
-      mViewMode = MODE_ANNOTATIONS;
+      viewMode = MODE_ANNOTATIONS;
       display();
     } else if (e.getSource() == entityModeButton) {
-      mViewMode = MODE_ENTITIES;
+      viewMode = MODE_ENTITIES;
       display();
       // make sure we clear the annotation tree when we go into entity mode
       // this.updateSelectedAnnotationTree(0);
     } else if (e.getSource() == showHideUnselectedButton) {
-      mHideUnselectedCheckboxes = !mHideUnselectedCheckboxes;
+      hideUnselectedCheckboxes = !hideUnselectedCheckboxes;
       display();
     } else if (e.getSource() instanceof JCheckBox) {
       display();
@@ -1311,7 +1311,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
    */
   public void mouseClicked(MouseEvent e) {
-    if (mViewMode == MODE_ANNOTATIONS) {
+    if (viewMode == MODE_ANNOTATIONS) {
       int pos = textPane.viewToModel(e.getPoint());
       this.updateSelectedAnnotationTree(pos);
     }
@@ -1427,7 +1427,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         }
         if (type != null) {
           // look up checkbox to get color
-          JCheckBox checkbox = (JCheckBox) mTypeToCheckboxMap.get(type);
+          JCheckBox checkbox = typeToCheckBoxMap.get(type);
           if (checkbox != null) {
             background = checkbox.getBackground();
           }
@@ -1514,9 +1514,9 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       // a new sofa was selected. Switch to that view and update display
       String sofaId = (String) e.getItem();
       if ("DEFAULT".equals(sofaId)) {
-        mCAS = mCAS.getView(CAS.NAME_DEFAULT_SOFA);
+        cas = cas.getView(CAS.NAME_DEFAULT_SOFA);
       } else {
-        mCAS = mCAS.getView(sofaId);
+        cas = cas.getView(sofaId);
       }
       display();
     }
@@ -1528,15 +1528,15 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   private void doBoldface() {
     // Keywords
-    if (mBoldfaceKeywords.length > 0) {
+    if (boldfaceKeywords.length > 0) {
       // build regular expression
       StringBuffer regEx = new StringBuffer();
-      for (int i = 0; i < mBoldfaceKeywords.length; i++) {
+      for (int i = 0; i < boldfaceKeywords.length; i++) {
         if (i > 0) {
           regEx.append('|');
         }
         regEx.append("\\b");
-        String word = mBoldfaceKeywords[i];
+        String word = boldfaceKeywords[i];
         for (int j = 0; j < word.length(); j++) {
           char c = word.charAt(j);
           if (Character.isLetter(c)) {
@@ -1552,7 +1552,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       }
       // System.out.println("RegEx: " + regEx);
       Pattern pattern = Pattern.compile(regEx.toString());
-      Matcher matcher = pattern.matcher(mCAS.getDocumentText());
+      Matcher matcher = pattern.matcher(cas.getDocumentText());
       // match
       int pos = 0;
       while (matcher.find(pos)) {
@@ -1568,14 +1568,14 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       }
     }
     // Spans
-    int docLength = mCAS.getDocumentText().length();
-    int len = mBoldfaceSpans.length;
+    int docLength = cas.getDocumentText().length();
+    int len = boldfaceSpans.length;
     len -= len % 2; // to avoid ArrayIndexOutOfBoundsException if some numbskull passes in an
     // odd-length array
     int i = 0;
     while (i < len) {
-      int begin = mBoldfaceSpans[i];
-      int end = mBoldfaceSpans[i + 1];
+      int begin = boldfaceSpans[i];
+      int end = boldfaceSpans[i + 1];
       if (begin >= 0 && begin <= docLength && end >= 0 && end <= docLength) {
         MutableAttributeSet attrs = new SimpleAttributeSet();
         StyleConstants.setBold(attrs, true);
