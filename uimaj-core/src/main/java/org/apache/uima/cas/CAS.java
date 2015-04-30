@@ -1004,7 +1004,11 @@ public interface CAS extends AbstractCas {
 
   /**
    * Remove a feature structure from all indexes in the repository associated with this CAS View.
+   * The remove operation removes the exact fs from the indexes, unlike operations such as 
+   * moveTo which use the fs argument as a template.  
    * 
+   * It is not an error if the FS is not present in the indexes. 
+   *
    * @param fs
    *          The Feature Structure to be removed.
    * @exception NullPointerException
