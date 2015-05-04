@@ -264,12 +264,12 @@ public class IntBitSet implements PositiveIntSet {
 
   @Override
   public int moveToNext(int position) {
-    return set.nextSetBit(position + 1);
+    return (position < 0) ? position : set.nextSetBit(position + 1);
   }
 
   @Override
   public int moveToPrevious(int position) {
-    return set.previousSetBit(position - 1);  
+    return (position < 0) ? position : set.previousSetBit(position - 1);  
   }
 
   /**
