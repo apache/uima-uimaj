@@ -94,6 +94,8 @@
 <p>The class <strong>PointerIterator</strong> in FSIndexRepositoryImpl is an int iterator that combines iterators for type and their subtypes, into one aggregated iterator, taking into account the comparator sorting order among the various iterators. So, for instance, if you do a moveTo operation, it does a move to on all the individual iterators, and then figures out which of those is the left-most one in the comparator ordering.</p>
 <p><strong>PointerIteratorUnordered</strong> is a variant that also combines iterators for a type and its subtypes, but doesn't try to keep these in order.&nbsp; It is designed to be used when iterating through all instances of a type and its subtypes, in an arbitrary order, such as what the method <strong><code>getAllIndexedFS(type)</code></strong> does.</p>
 <p><strong>SnapshotPointerIterator</strong> is a variant which creates a snapshot when the iterator is created, and then (ignoring any subsequent index updates) iterates over that.&nbsp; This iterator won't throw <strong><code>ConcurrentModificationException</code></strong>.</p>
+<p>The basic impls of IntIterator4bag/set/sorted are created by calls to pointerIterator; this method is implemented in each of the IntIterator4bag/set/sorted classes.</p>
+<p>The 2nd argument passed is a ref to this FSIndexRepositoryImpl's int[] used to detect concurrent modification exception.&nbsp; If null is passed, then no testing for this is done.&nbsp; This kind of call happens with the use of the <strong>refIterator()</strong> methods, which are used internally when it is known that the iteration will not be modifying the indexes in any way.</p>
 <hr />
 <p>Iterators which return Java cover object:</p>
 <p>&nbsp;</p>
