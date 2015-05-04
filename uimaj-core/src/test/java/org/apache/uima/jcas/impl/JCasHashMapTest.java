@@ -207,10 +207,13 @@ public class JCasHashMapTest extends TestCase {
 
     for (int loopCount = 0; loopCount < 10; loopCount ++) {
       System.out.println("  JCasHashMap collide loop count is " + loopCount);
-      final Random r = new Random();
+      final Random r = new Random();  // used to sleep from 0 to 4 milliseconds
       final int hashKey = 15;
       final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
   
+      // create threads and start them
+      // note: this needs to be fixed, following the discovery that creating a thread takes much longer than expected;
+      // use the Executor framework instead and create the threads ahead of time.  See or use MultiThreadUtils
       for (int th = 2; th <= numberOfThreads; th *= 2) {
         JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
         final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
@@ -226,14 +229,15 @@ public class JCasHashMapTest extends TestCase {
                 Thread.sleep(r.nextInt(5));
               } catch (InterruptedException e) {
               }
-               found[finalI] = m.getReserve(hashKey);
+              found[finalI] = m.getReserve(hashKey);
             }
           });
           threads[i].setPriority(subThreadPriority);
           threads[i].start();
         }
         Thread.sleep(20); 
-        // verify that one thread finished, others are waiting
+        // verify that one thread finished, others are waiting, because of the reserve.
+        // this assumes that all the threads got to run.
         int numberWaiting = 0;
         int threadFinished = -1;
         for (int i = 0; i < numberOfThreads; i++) {
