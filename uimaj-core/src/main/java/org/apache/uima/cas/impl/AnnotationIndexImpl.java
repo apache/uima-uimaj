@@ -29,11 +29,14 @@ import org.apache.uima.cas.text.AnnotationTree;
 
 /**
  * Implementation of annotation indexes.
+ * A wrapper not an extend, because 
+ *   the constructor argument index has 
+ *     customization for additional fns and
+ *     a ref to it's enclosing instance of the FSIndexRepositoryImpl.
  */
 public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIndex<T> {
 
   private FSIndex<T> index;
-
   
   public AnnotationIndexImpl(FSIndex<T> index) {
     super();
@@ -45,6 +48,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#size()
    */
+  @Override
   public int size() {
     return this.index.size();
   }
@@ -54,6 +58,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#getType()
    */
+  @Override
   public Type getType() {
     return this.index.getType();
   }
@@ -63,6 +68,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#contains(org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public boolean contains(FeatureStructure fs) {
     return this.index.contains(fs);
   }
@@ -72,6 +78,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#find(org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public FeatureStructure find(FeatureStructure fs) {
     return this.index.find(fs);
   }
@@ -82,6 +89,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * @see org.apache.uima.cas.FSIndex#compare(org.apache.uima.cas.FeatureStructure,
    *      org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
     return this.index.compare(fs1, fs2);
   }
@@ -91,6 +99,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
+  @Override
   public FSIterator<T> iterator() {
     return (FSIterator<T>) this.index.iterator();
   }
@@ -100,6 +109,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#iterator(org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public FSIterator<T> iterator(FeatureStructure fs) {
     return (FSIterator<T>) this.index.iterator(fs);
   }
@@ -109,6 +119,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.FSIndex#getIndexingStrategy()
    */
+  @Override
   public int getIndexingStrategy() {
     return this.index.getIndexingStrategy();
   }
@@ -118,6 +129,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
    */
+  @Override
   public FSIterator<T> iterator(boolean ambiguous) {
     if (ambiguous) {
       return (FSIterator<T>) this.index.iterator();
@@ -130,6 +142,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * 
    * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS)
    */
+  @Override
   public FSIterator<T> subiterator(AnnotationFS annot) {
     return subiterator(annot, true, true);
   }
@@ -140,6 +153,7 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    * @see org.apache.uima.cas.text.AnnotationIndex#subiterator(org.apache.uima.cas.text.AnnotationFS,
    *      boolean, boolean)
    */
+  @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
     return new Subiterator<T>((FSIterator<T>)this.index.iterator(), annot, ambiguous, strict);
   }
@@ -176,5 +190,5 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
   public FSIndex<T> withSnapshotIterators() {
     return new AnnotationIndexImpl<T>(index.withSnapshotIterators());
   }
-
+  
 }
