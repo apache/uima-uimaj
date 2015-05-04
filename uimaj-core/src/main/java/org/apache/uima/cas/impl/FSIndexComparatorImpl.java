@@ -69,6 +69,10 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   public Type getType() {
     return this.type;
   }
+  
+  int getTypeCode() {
+    return ((TypeImpl)this.type).getCode();
+  }
 
   public int addKey(Feature feat, int compareKey) {
     if (!checkType(feat.getRange())) {
@@ -190,6 +194,10 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   }
 
   /**
+   * Compares two FSIndexComparator instances.
+   * 
+   * The code to compare two FSs is in the compare method of FSLeafIndexImpl.
+   * 
    * @see java.lang.Comparable#compareTo(Object)
    */
   public int compareTo(FSIndexComparator o) {
