@@ -97,6 +97,7 @@ import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.tools.viewer.EntityResolver.Entity;
 
 /**
  * A Swing component that displays annotations in a text pane with highlighting. There is also a
@@ -126,8 +127,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * which are read from right to left.</li>
  * </ul>
  */
-public class CasAnnotationViewer extends JPanel implements ActionListener, MouseListener,
-        TreeWillExpandListener, TreeExpansionListener, ItemListener {
+public class CasAnnotationViewer extends JPanel {
   private static final long serialVersionUID = 3559118488371946999L;
 
   // Mode constants
@@ -151,8 +151,10 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       Color.getHSBColor(160f / 360, 0.25f, BRIGHT), // aqua?
       Color.getHSBColor(250f / 360, 0.25f, BRIGHT), // light violet?
       // higher saturation colors
-      Color.getHSBColor(55f / 360, 0.5f, BRIGHT), Color.getHSBColor(0f / 360, 0.5f, BRIGHT),
-      Color.getHSBColor(210f / 360, 0.5f, BRIGHT), Color.getHSBColor(120f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(55f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(0f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(210f / 360, 0.5f, BRIGHT),
+      Color.getHSBColor(120f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(290f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(30f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(80f / 360, 0.5f, BRIGHT),
@@ -160,19 +162,24 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
       Color.getHSBColor(160f / 360, 0.5f, BRIGHT),
       Color.getHSBColor(250f / 360, 0.5f, BRIGHT),
       // even higher saturation colors
-      Color.getHSBColor(55f / 360, 0.75f, BRIGHT), Color.getHSBColor(0f / 360, 0.75f, BRIGHT),
-      Color.getHSBColor(210f / 360, 0.75f, BRIGHT), Color.getHSBColor(120f / 360, 0.75f, BRIGHT),
-      Color.getHSBColor(290f / 360, 0.75f, BRIGHT), Color.getHSBColor(30f / 360, 0.75f, BRIGHT),
-      Color.getHSBColor(80f / 360, 0.75f, BRIGHT), Color.getHSBColor(330f / 360, 0.75f, BRIGHT),
-      Color.getHSBColor(160f / 360, 0.75f, BRIGHT), Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
+      Color.getHSBColor(55f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(0f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(210f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(120f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(290f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(30f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(80f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(330f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(160f / 360, 0.75f, BRIGHT),
+      Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
 
   private CAS cas;
   private Type stringType;
   private Type fsArrayType;
   private boolean useConsistentColors = true;
   private List<String> highFrequencyTypes = new ArrayList<String>();
-  private String[] boldfaceKeywords = new String[0];
-  private int[] boldfaceSpans = new int[0];
+  private String[] boldFaceKeyWords = new String[0];
+  private int[] boldFaceSpans = new int[0];
   private Set<String> hiddenFeatureNames = new HashSet<String>();
   private Set<String> hiddenTypeNames = new HashSet<String>();
   private Set<String> displayedTypeNames = null;
@@ -187,17 +194,14 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   private short viewMode = MODE_ANNOTATIONS;
   // GUI components
   private Map<Type, JCheckBox> typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
-  private Map<EntityResolver.Entity, JCheckBox> entityToCheckBoxMap = new HashMap<EntityResolver.Entity, JCheckBox>();
-  private JSplitPane horizSplitPane;
-  private JSplitPane vertSplitPane;
-  private JScrollPane textScrollPane;
+  private Map<Entity, JCheckBox> entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
+  private JSplitPane horizontalSplitPane;
+  private JSplitPane verticalSplitPane;
   private JTextPane textPane;
-  private JPanel legendPanel;
-  private JLabel legendLabel;
+  private JScrollPane textScrollPane;
   private JScrollPane legendScrollPane;
   private JPanel annotationCheckboxPanel;
   private JPanel entityCheckboxPanel;
-  private JPanel buttonPanel;
   private JButton selectAllButton;
   private JButton deselectAllButton;
   private JButton showHideUnselectedButton;
@@ -213,117 +217,304 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   /**
    * Creates a CAS Annotation Viewer.
    */
-  @SuppressWarnings("rawtypes")
   public CasAnnotationViewer() {
-    // create a horizonal JSplitPane
-    horizSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    horizSplitPane.setResizeWeight(0.6);
     this.setLayout(new BorderLayout());
-    this.add(horizSplitPane);
-
-    // create a vertical JSplitPane and add to left of horizSplitPane
-    vertSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-    vertSplitPane.setResizeWeight(0.8);
-    vertSplitPane.setPreferredSize(new Dimension(620, 600));
-    vertSplitPane.setMinimumSize(new Dimension(200, 200));
-    horizSplitPane.setLeftComponent(vertSplitPane);
-
-    // add JTextPane to top of vertical split pane
-    textPane = new JTextPane();
-    textPane.setEditable(false);
-    textPane.setPreferredSize(new Dimension(620, 400));
-    textPane.setMinimumSize(new Dimension(200, 100));
-    textScrollPane = new JScrollPane(textPane);
-    vertSplitPane.setTopComponent(textScrollPane);
-
-    // bottom pane is the legend, with checkboxes
-    legendPanel = new JPanel();
-    legendPanel.setPreferredSize(new Dimension(620, 200));
-    legendPanel.setLayout(new BorderLayout());
-    legendLabel = new JLabel("Legend");
-    legendPanel.add(legendLabel, BorderLayout.NORTH);
-    // checkboxes are contained in a scroll pane
-    legendScrollPane = new JScrollPane();
-    legendScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    legendPanel.add(legendScrollPane, BorderLayout.CENTER);
-    // there are two checkbox panels - one for annotations, one for entities
-    annotationCheckboxPanel = new VerticallyScrollablePanel();
-    annotationCheckboxPanel.setLayout(new GridLayout(0, 5));
-    entityCheckboxPanel = new VerticallyScrollablePanel();
-    entityCheckboxPanel.setLayout(new GridLayout(0, 4));
-    // add annotation panel first, since that is the default
-    legendScrollPane.setViewportView(annotationCheckboxPanel);
-
+    // create a horizonal JSplitPane
+    this.createHorizontalSplitPane();
+    this.add(this.horizontalSplitPane, BorderLayout.CENTER);
     // at very bottom is the Button Panel, with Select All, Deselect All,
     // and Hide/Show Unselected Buttons. It also may show the sofa-selection
     // combo box and/or the Viewer Mode radio group; either are both may
     // be hidden.
-    buttonPanel = new JPanel();
+    this.add(this.createControlPanel(), BorderLayout.SOUTH);
 
-    selectAllButton = new JButton("Select All");
-    selectAllButton.addActionListener(this);
-    buttonPanel.add(selectAllButton);
-    deselectAllButton = new JButton("Deselect All");
-    deselectAllButton.addActionListener(this);
-    buttonPanel.add(deselectAllButton);
-    showHideUnselectedButton = new JButton("Hide Unselected");
-    showHideUnselectedButton.addActionListener(this);
-    buttonPanel.add(showHideUnselectedButton);
+    // initialize hidden feature names map
+    this.hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+  }
 
-    sofaSelectionPanel = new JPanel();
-    JLabel sofaSelectionLabel = new JLabel("Sofa:");
-    sofaSelectionPanel.add(sofaSelectionLabel);
-    sofaSelectionComboBox = new JComboBox();
-    sofaSelectionPanel.add(sofaSelectionComboBox);
-    sofaSelectionComboBox.addItemListener(this);
-    buttonPanel.add(sofaSelectionPanel);
+  private JPanel createControlPanel() {
+    JPanel buttonPanel = new JPanel();
+    this.createSelectAllButton();
+    buttonPanel.add(this.selectAllButton);
+    this.createDeselectAllButton();
+    buttonPanel.add(this.deselectAllButton);
+    this.createShowHidenUnselectedButton();
+    buttonPanel.add(this.showHideUnselectedButton);
+    this.createSofaSelectionPanel();
+    buttonPanel.add(this.sofaSelectionPanel);
+    this.createViewModePanel();
+    buttonPanel.add(this.viewModePanel);
 
-    viewModePanel = new JPanel();
-    viewModePanel.add(new JLabel("Mode: "));
-    annotationModeButton = new JRadioButton("Annotations");
-    annotationModeButton.setSelected(true);
-    annotationModeButton.addActionListener(this);
-    viewModePanel.add(annotationModeButton);
-    entityModeButton = new JRadioButton("Entities");
-    entityModeButton.addActionListener(this);
-    viewModePanel.add(entityModeButton);
+    return buttonPanel;
+  }
+
+  private void createViewModePanel() {
+    this.viewModePanel = new JPanel();
+    this.viewModePanel.add(new JLabel("Mode: "));
+    this.createAnnotationModeButton();
+    this.viewModePanel.add(this.annotationModeButton);
+    this.createEntityModeButton();
+    this.viewModePanel.add(this.entityModeButton);
     ButtonGroup group = new ButtonGroup();
-    group.add(annotationModeButton);
-    group.add(entityModeButton);
-    buttonPanel.add(viewModePanel);
-    viewModePanel.setVisible(false);
-    this.add(buttonPanel, BorderLayout.SOUTH);
+    group.add(this.annotationModeButton);
+    group.add(this.entityModeButton);
+    this.viewModePanel.setVisible(false);
+  }
 
-    textPane.setMinimumSize(new Dimension(200, 100));
-    vertSplitPane.setBottomComponent(legendPanel);
+  private void createEntityModeButton() {
+    this.entityModeButton = new JRadioButton("Entities");
+    this.entityModeButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+          viewMode = MODE_ENTITIES;
+          display();
+        }
+    });
+  }
 
+  private void createAnnotationModeButton() {
+    this.annotationModeButton = new JRadioButton("Annotations");
+    this.annotationModeButton.setSelected(true);
+    this.annotationModeButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+          viewMode = MODE_ANNOTATIONS;
+          display();
+		}
+    });
+  }
+
+  private void createSofaSelectionPanel() {
+    this.sofaSelectionPanel = new JPanel();
+    JLabel sofaSelectionLabel = new JLabel("Sofa:");
+    this.sofaSelectionPanel.add(sofaSelectionLabel);
+    this.createSofaSelectionComboBox();
+    this.sofaSelectionPanel.add(this.sofaSelectionComboBox);
+  }
+
+  @SuppressWarnings("rawtypes")
+  private void createSofaSelectionComboBox() {
+    this.sofaSelectionComboBox = new JComboBox();
+    this.sofaSelectionComboBox.addItemListener(new ItemListener() {
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+          if (e.getSource() == sofaSelectionComboBox) {
+            // a new sofa was selected. Switch to that view and update display
+            String sofaId = (String) e.getItem();
+            if ("DEFAULT".equals(sofaId)) {
+              cas = cas.getView(CAS.NAME_DEFAULT_SOFA);
+            } else {
+              cas = cas.getView(sofaId);
+            }
+            display();
+          }
+        }
+    });
+  }
+
+  private void createShowHidenUnselectedButton() {
+    this.showHideUnselectedButton = new JButton("Hide Unselected");
+    this.showHideUnselectedButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+          hideUnselectedCheckboxes = !hideUnselectedCheckboxes;
+          display();
+		}
+    });
+  }
+
+  private void createDeselectAllButton() {
+    this.deselectAllButton = new JButton("Deselect All");
+    this.deselectAllButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+          Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
+              : entityToCheckBoxMap.values().iterator();
+          while (cbIter.hasNext()) {
+            cbIter.next().setSelected(false);
+          }
+          display();
+        }
+    });
+  }
+
+  private void createSelectAllButton() {
+    this.selectAllButton = new JButton("Select All");
+    this.selectAllButton.addActionListener(new ActionListener() {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+          Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
+		              : entityToCheckBoxMap.values().iterator();
+          while (cbIter.hasNext()) {
+            cbIter.next().setSelected(true);
+          }
+          display();
+        }
+    });
+  }
+
+  private void createHorizontalSplitPane() {
+    this.horizontalSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+	this.horizontalSplitPane.setResizeWeight(0.6);
+    // create a vertical JSplitPane and add to left of horizSplitPane
+	this.createVerticalSplitPane();
+    this.horizontalSplitPane.setLeftComponent(this.verticalSplitPane);
     // right pane has a JTree
-    selectedAnnotationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Annotations"));
-    selectedAnnotationTree = new JTree(selectedAnnotationTreeModel) {
+    this.horizontalSplitPane.setRightComponent(this.createTreePanel());
+  }
+
+  private JPanel createTreePanel() {
+    JPanel treePanel = new JPanel();
+    treePanel.setLayout(new BorderLayout());
+    treePanel.add(new JLabel("Click In Text to See Annotation Detail"), BorderLayout.NORTH);
+    this.createSelectedAnnotationTree();
+    treePanel.add(new JScrollPane(this.selectedAnnotationTree), BorderLayout.CENTER);
+	return treePanel;
+  }
+
+  private void createSelectedAnnotationTree() {
+    this.selectedAnnotationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Annotations"));
+    this.selectedAnnotationTree = new JTree(selectedAnnotationTreeModel) {
       private static final long serialVersionUID = -7882967150283952907L;
 
       public Dimension getPreferredScrollableViewportSize() {
         return new Dimension(230, 500);
       }
     };
-    selectedAnnotationTree.setMinimumSize(new Dimension(50, 100));
-    selectedAnnotationTree.setScrollsOnExpand(true);
-    selectedAnnotationTree.setRootVisible(true);
-    selectedAnnotationTree.setCellRenderer(new AnnotationTreeCellRenderer());
-    selectedAnnotationTree.addTreeWillExpandListener(this);
-    selectedAnnotationTree.addTreeExpansionListener(this);
-    JPanel treePanel = new JPanel();
-    treePanel.setLayout(new BorderLayout());
-    treePanel.add(new JLabel("Click In Text to See Annotation Detail"), BorderLayout.NORTH);
+    this.selectedAnnotationTree.setMinimumSize(new Dimension(50, 100));
+    this.selectedAnnotationTree.setScrollsOnExpand(true);
+    this.selectedAnnotationTree.setRootVisible(true);
+    this.selectedAnnotationTree.setCellRenderer(new AnnotationTreeCellRenderer());
+    this.selectedAnnotationTree.addTreeWillExpandListener(new TreeWillExpandListener() {
+		@Override
+		public void treeWillExpand(TreeExpansionEvent event)
+				throws ExpandVetoException {
+          // if FS node is expanded and it has a dummy child, replace with
+          // feature value nodes (this is what lets us do infinite tree)
+          Object lastPathComponent = event.getPath().getLastPathComponent();
+          if (lastPathComponent instanceof DefaultMutableTreeNode) {
+            DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
+            Object userObj = expandedNode.getUserObject();
+            if (userObj instanceof FsTreeNodeObject) {
+              TreeNode firstChild = expandedNode.getFirstChild();
+              if (firstChild instanceof DefaultMutableTreeNode
+                      && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
+                expandedNode.removeAllChildren();
+                FeatureStructure fs = ((FsTreeNodeObject) userObj).getFeatureStructure();
+                addFeatureTreeNodes(expandedNode, fs);
+                ((JTree) event.getSource()).treeDidChange();
+              }
+            }
+          }
+		}
 
-    treePanel.add(new JScrollPane(selectedAnnotationTree), BorderLayout.CENTER);
-    horizSplitPane.setRightComponent(treePanel);
+		@Override
+		public void treeWillCollapse(TreeExpansionEvent event)
+				throws ExpandVetoException {
+		}    	
+    });
+    this.selectedAnnotationTree.addTreeExpansionListener(new TreeExpansionListener() {
+		@Override
+		public void treeExpanded(TreeExpansionEvent event) {
+          // if a Type node is expanded and has only one child,
+          // also expand this child (a usability improvement)
+          Object lastPathComponent = event.getPath().getLastPathComponent();
+          if (lastPathComponent instanceof DefaultMutableTreeNode) {
+            DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
+            Object userObj = expandedNode.getUserObject();
+            if (userObj instanceof TypeTreeNodeObject && expandedNode.getChildCount() == 1) {
+              TreePath childPath = event.getPath().pathByAddingChild(expandedNode.getFirstChild());
+              ((JTree) event.getSource()).expandPath(childPath);
+              ((JTree) event.getSource()).treeDidChange();
+            }
+          }
+		}
 
+		@Override
+		public void treeCollapsed(TreeExpansionEvent event) {
+		}    	
+    });
+  }
+
+  private void createVerticalSplitPane() {
+    this.verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    this.verticalSplitPane.setResizeWeight(0.8);
+    this.verticalSplitPane.setPreferredSize(new Dimension(620, 600));
+    this.verticalSplitPane.setMinimumSize(new Dimension(200, 200));
+
+    // add JTextPane to top of vertical split pane
+    this.createTextScrollPane();
+    this.verticalSplitPane.setTopComponent(this.textScrollPane);
+    // bottom pane is the legend, with checkboxes
+    this.verticalSplitPane.setBottomComponent(this.createLegendPanel());
+  }
+
+  private JPanel createLegendPanel() {
+    JPanel legendPanel = new JPanel();
+    legendPanel.setPreferredSize(new Dimension(620, 200));
+    legendPanel.setLayout(new BorderLayout());
+    JLabel legendLabel = new JLabel("Legend");
+    legendPanel.add(legendLabel, BorderLayout.NORTH);
+
+    // checkboxes are contained in a scroll pane
+    this.createLegendScrollPane();
+    legendPanel.add(this.legendScrollPane, BorderLayout.CENTER);
+
+    return legendPanel;
+  }
+
+  private void createLegendScrollPane() {
+    this.legendScrollPane = new JScrollPane();
+    this.legendScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    // there are two checkbox panels - one for annotations, one for entities
+    this.createAnnotationCheckBoxPanel();
+    this.createEntityCheckBoxPanel();
+    // add annotation panel first, since that is the default
+    this.legendScrollPane.setViewportView(this.annotationCheckboxPanel);
+  }
+
+  private void createEntityCheckBoxPanel() {
+    this.entityCheckboxPanel = new VerticallyScrollablePanel();
+    this.entityCheckboxPanel.setLayout(new GridLayout(0, 4));
+  }
+
+  private void createAnnotationCheckBoxPanel() {
+    this.annotationCheckboxPanel = new VerticallyScrollablePanel();
+    this.annotationCheckboxPanel.setLayout(new GridLayout(0, 5));
+  }
+
+  private void createTextScrollPane() {
+    this.textPane = new JTextPane();
+    this.textPane.setEditable(false);
+    this.textPane.setPreferredSize(new Dimension(620, 400));
+    this.textPane.setMinimumSize(new Dimension(200, 100));
     // add mouse listener to update annotation tree
-    textPane.addMouseListener(this);
+    this.textPane.addMouseListener(new MouseListener() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+          if (viewMode == MODE_ANNOTATIONS) {
+            int pos = textPane.viewToModel(e.getPoint());
+            updateSelectedAnnotationTree(pos);
+          }
+		}
 
-    // initialize hidden feature names map
-    hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+		@Override
+		public void mousePressed(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+		}    	
+    });
+    this.textScrollPane = new JScrollPane(this.textPane);
   }
 
   /**
@@ -528,8 +719,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     }
 
     // clear boldface
-    boldfaceKeywords = new String[0];
-    boldfaceSpans = new int[0];
+    boldFaceKeyWords = new String[0];
+    boldFaceSpans = new int[0];
 
     // enable or disable entity view depending on user's choice 
     this.viewModePanel.setVisible(entityViewEnabled);
@@ -577,7 +768,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          array of words to highlight in boldface.
    */
   public void applyBoldfaceToKeywords(String[] aWords) {
-    boldfaceKeywords = aWords;
+    boldFaceKeyWords = aWords;
     doBoldface();
   }
 
@@ -590,7 +781,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    *          spans to appear in boldface (begin1, end1, begin2, end2, ...)
    */
   public void applyBoldfaceToSpans(int[] aSpans) {
-    boldfaceSpans = aSpans;
+    boldFaceSpans = aSpans;
     doBoldface();
   }
 
@@ -730,7 +921,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   private void display() {
     // remember split pane divider location so we can restore it later
-    int dividerLoc = vertSplitPane.getDividerLocation();
+    int dividerLoc = verticalSplitPane.getDividerLocation();
 
     // remember caret pos and scroll position
     int caretPos = this.textPane.getCaretPosition();
@@ -762,7 +953,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     textScrollPane.revalidate();
 
     // reset split pane divider
-    vertSplitPane.setDividerLocation(dividerLoc);
+    verticalSplitPane.setDividerLocation(dividerLoc);
   }
 
   /**
@@ -833,7 +1024,12 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
           // add checkbox
           checkbox = new JCheckBox(type.getShortName(), selected);
           checkbox.setToolTipText(type.getName());
-          checkbox.addActionListener(this);
+          checkbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+              display();
+			}        	  
+          });
           checkbox.setBackground(c);
           // annotationCheckboxPanel.add(checkbox); do it later JMP
           checkBoxes.put(type.getName(), checkbox);
@@ -963,7 +1159,12 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
         // add checkbox
         checkbox = new JCheckBox(entity.getCanonicalForm(), true);
         checkbox.setToolTipText(entity.getCanonicalForm());
-        checkbox.addActionListener(this);
+        checkbox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+              display();
+			}
+        });
         checkbox.setBackground(c);
         entityCheckboxPanel.add(checkbox);
         // add to (Entity, Checkbox) map
@@ -1045,7 +1246,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     this.selectedAnnotationTree.treeDidChange();
     // this.selectedAnnotationTree.setPreferredSize(this.selectedAnnotationTree.getSize());
     this.selectedAnnotationTree.revalidate();
-    this.horizSplitPane.revalidate();
+    this.horizontalSplitPane.revalidate();
   }
 
   /**
@@ -1265,262 +1466,8 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
             - insets.bottom);
 
-    horizSplitPane.setPreferredSize(paneSize);
-    horizSplitPane.setSize(paneSize);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == selectAllButton) {
-      Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
-              : entityToCheckBoxMap.values().iterator();
-      while (cbIter.hasNext()) {
-        cbIter.next().setSelected(true);
-      }
-      display();
-    } else if (e.getSource() == deselectAllButton) {
-      Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
-              : entityToCheckBoxMap.values().iterator();
-      while (cbIter.hasNext()) {
-        cbIter.next().setSelected(false);
-      }
-      display();
-    } else if (e.getSource() == annotationModeButton) {
-      viewMode = MODE_ANNOTATIONS;
-      display();
-    } else if (e.getSource() == entityModeButton) {
-      viewMode = MODE_ENTITIES;
-      display();
-      // make sure we clear the annotation tree when we go into entity mode
-      // this.updateSelectedAnnotationTree(0);
-    } else if (e.getSource() == showHideUnselectedButton) {
-      hideUnselectedCheckboxes = !hideUnselectedCheckboxes;
-      display();
-    } else if (e.getSource() instanceof JCheckBox) {
-      display();
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-   */
-  public void mouseClicked(MouseEvent e) {
-    if (viewMode == MODE_ANNOTATIONS) {
-      int pos = textPane.viewToModel(e.getPoint());
-      this.updateSelectedAnnotationTree(pos);
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
-   */
-  public void mouseEntered(MouseEvent e) {
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
-   */
-  public void mouseExited(MouseEvent e) {
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-   */
-  public void mousePressed(MouseEvent e) {
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-   */
-  public void mouseReleased(MouseEvent e) {
-  }
-
-  /**
-   * Inner class containing data for a tree node representing a FeatureStructure
-   */
-  static class FsTreeNodeObject {
-    public FsTreeNodeObject(FeatureStructure aFS, String aFeatureName) {
-      mFS = aFS;
-      mFeatureName = aFeatureName;
-      mCaption = mFS.getType().getShortName();
-      if (mFS instanceof AnnotationFS) {
-        String coveredText = ((AnnotationFS) mFS).getCoveredText();
-        if (coveredText.length() > 64)
-          coveredText = coveredText.substring(0, 64) + "...";
-        mCaption += " (\"" + coveredText + "\")";
-      }
-      if (mFeatureName != null) {
-        mCaption = mFeatureName + " = " + mCaption;
-      }
-    }
-
-    public FeatureStructure getFS() {
-      return mFS;
-    }
-
-    public String toString() {
-      return mCaption;
-    }
-
-    private FeatureStructure mFS;
-
-    private String mFeatureName;
-
-    private String mCaption;
-  }
-
-  /**
-   * Inner class containing data for a tree node representing a Type
-   */
-  static class TypeTreeNodeObject {
-    public TypeTreeNodeObject(Type aType) {
-      mType = aType;
-    }
-
-    public Type getType() {
-      return mType;
-    }
-
-    public String toString() {
-      return mType.getShortName();
-    }
-
-    private Type mType;
-  }
-
-  class AnnotationTreeCellRenderer extends DefaultTreeCellRenderer {
-    private static final long serialVersionUID = -8661556785397184756L;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree,
-     *      java.lang.Object, boolean, boolean, boolean, int, boolean)
-     */
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
-            boolean expanded, boolean leaf, int row, boolean aHasFocus) {
-
-      // set background color if this is an Annotation or a Type
-      Color background = null;
-      if (value instanceof DefaultMutableTreeNode) {
-        Object userObj = ((DefaultMutableTreeNode) value).getUserObject();
-        Type type = null;
-        if (userObj instanceof FsTreeNodeObject) {
-          FeatureStructure fs = ((FsTreeNodeObject) userObj).getFS();
-          type = fs.getType();
-        } else if (userObj instanceof TypeTreeNodeObject) {
-          type = ((TypeTreeNodeObject) userObj).getType();
-        }
-        if (type != null) {
-          // look up checkbox to get color
-          JCheckBox checkbox = typeToCheckBoxMap.get(type);
-          if (checkbox != null) {
-            background = checkbox.getBackground();
-          }
-        }
-      }
-      this.setBackgroundNonSelectionColor(background);
-      this.setBackgroundSelectionColor(background);
-
-      Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-              row, aHasFocus);
-      return component;
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.swing.event.TreeWillExpandListener#treeWillCollapse(javax.swing.event.TreeExpansionEvent)
-   */
-  public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.swing.event.TreeWillExpandListener#treeWillExpand(javax.swing.event.TreeExpansionEvent)
-   */
-  public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-    // if FS node is expanded and it has a dummy child, replace with
-    // feature value nodes (this is what lets us do infinite tree)
-    Object lastPathComponent = event.getPath().getLastPathComponent();
-    if (lastPathComponent instanceof DefaultMutableTreeNode) {
-      DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
-      Object userObj = expandedNode.getUserObject();
-      if (userObj instanceof FsTreeNodeObject) {
-        TreeNode firstChild = expandedNode.getFirstChild();
-        if (firstChild instanceof DefaultMutableTreeNode
-                && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
-          expandedNode.removeAllChildren();
-          FeatureStructure fs = ((FsTreeNodeObject) userObj).getFS();
-          addFeatureTreeNodes(expandedNode, fs);
-          ((JTree) event.getSource()).treeDidChange();
-        }
-
-      }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.swing.event.TreeExpansionListener#treeCollapsed(javax.swing.event.TreeExpansionEvent)
-   */
-  public void treeCollapsed(TreeExpansionEvent event) {
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.swing.event.TreeExpansionListener#treeExpanded(javax.swing.event.TreeExpansionEvent)
-   */
-  public void treeExpanded(TreeExpansionEvent event) {
-    // if a Type node is expanded and has only one child,
-    // also expand this child (a usability improvement)
-    Object lastPathComponent = event.getPath().getLastPathComponent();
-    if (lastPathComponent instanceof DefaultMutableTreeNode) {
-      DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
-      Object userObj = expandedNode.getUserObject();
-      if (userObj instanceof TypeTreeNodeObject && expandedNode.getChildCount() == 1) {
-        TreePath childPath = event.getPath().pathByAddingChild(expandedNode.getFirstChild());
-        ((JTree) event.getSource()).expandPath(childPath);
-        ((JTree) event.getSource()).treeDidChange();
-      }
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
-   */
-  public void itemStateChanged(ItemEvent e) {
-    if (e.getSource() == sofaSelectionComboBox) {
-      // a new sofa was selected. Switch to that view and update display
-      String sofaId = (String) e.getItem();
-      if ("DEFAULT".equals(sofaId)) {
-        cas = cas.getView(CAS.NAME_DEFAULT_SOFA);
-      } else {
-        cas = cas.getView(sofaId);
-      }
-      display();
-    }
-
+    horizontalSplitPane.setPreferredSize(paneSize);
+    horizontalSplitPane.setSize(paneSize);
   }
 
   /**
@@ -1528,15 +1475,15 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    */
   private void doBoldface() {
     // Keywords
-    if (boldfaceKeywords.length > 0) {
+    if (boldFaceKeyWords.length > 0) {
       // build regular expression
       StringBuffer regEx = new StringBuffer();
-      for (int i = 0; i < boldfaceKeywords.length; i++) {
+      for (int i = 0; i < boldFaceKeyWords.length; i++) {
         if (i > 0) {
           regEx.append('|');
         }
         regEx.append("\\b");
-        String word = boldfaceKeywords[i];
+        String word = boldFaceKeyWords[i];
         for (int j = 0; j < word.length(); j++) {
           char c = word.charAt(j);
           if (Character.isLetter(c)) {
@@ -1569,13 +1516,13 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
     }
     // Spans
     int docLength = cas.getDocumentText().length();
-    int len = boldfaceSpans.length;
+    int len = boldFaceSpans.length;
     len -= len % 2; // to avoid ArrayIndexOutOfBoundsException if some numbskull passes in an
     // odd-length array
     int i = 0;
     while (i < len) {
-      int begin = boldfaceSpans[i];
-      int end = boldfaceSpans[i + 1];
+      int begin = boldFaceSpans[i];
+      int end = boldFaceSpans[i + 1];
       if (begin >= 0 && begin <= docLength && end >= 0 && end <= docLength) {
         MutableAttributeSet attrs = new SimpleAttributeSet();
         StyleConstants.setBold(attrs, true);
@@ -1595,6 +1542,133 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
   protected JTree getSelectedAnnotationTree() {
     return this.selectedAnnotationTree;
   }
+  
+  /**
+   * Trivial entity resolver that's applied if the user turns on entity mode without
+   * specifying their own entity resolver.  Returns the covered text as the canonical form,
+   * and treats annotations with equal covered text as belonging to the same entity.
+   */
+  public class DefaultEntityResolver implements EntityResolver {
+
+    /* (non-Javadoc)
+     * @see org.apache.uima.tools.viewer.EntityResolver#getCanonicalForm(org.apache.uima.jcas.tcas.Annotation)
+     */
+    public Entity getEntity(final Annotation inAnnotation) {
+      return new Entity() {
+        
+        public String getCanonicalForm() {
+          return inAnnotation.getCoveredText();
+        }
+
+        @Override
+        public boolean equals(Object inObject) {
+          if (inObject instanceof Entity) {
+            String canon = ((Entity)inObject).getCanonicalForm();
+            return canon != null && canon.equals(this.getCanonicalForm());
+          }
+          return false;
+        }
+
+        @Override
+        public int hashCode() {
+          return this.getCanonicalForm().hashCode();
+        }
+      };
+    }
+  }
+
+  /**
+   * Inner class containing data for a tree node representing a Type
+   */
+  private static class TypeTreeNodeObject {
+    private Type type;
+
+    public TypeTreeNodeObject(Type inType) {
+      this.type = inType;
+    }
+
+    public Type getType() {
+      return this.type;
+    }
+
+    @Override
+    public String toString() {
+      return this.type.getShortName();
+    }
+  }
+
+  /**
+   * Inner class containing data for a tree node representing a FeatureStructure
+   */
+  private static class FsTreeNodeObject {
+    private FeatureStructure featureStructure;
+    private String featureName;
+    private String caption;
+
+    public FsTreeNodeObject(FeatureStructure inFeatureStructure, String inFeatureName) {
+      this.featureStructure = inFeatureStructure;
+      this.featureName = inFeatureName;
+      this.caption = this.featureStructure.getType().getShortName();
+      if (this.featureStructure instanceof AnnotationFS) {
+        String coveredText = ((AnnotationFS) this.featureStructure).getCoveredText();
+        if (coveredText.length() > 64)
+          coveredText = coveredText.substring(0, 64) + "...";
+        this.caption += " (\"" + coveredText + "\")";
+      }
+      if (this.featureName != null) {
+        this.caption = this.featureName + " = " + this.caption;
+      }
+    }
+
+    public FeatureStructure getFeatureStructure() {
+      return this.featureStructure;
+    }
+
+    @Override
+    public String toString() {
+      return this.caption;
+    }
+  }
+
+  private class AnnotationTreeCellRenderer extends DefaultTreeCellRenderer {
+    private static final long serialVersionUID = -8661556785397184756L;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree,
+     *      java.lang.Object, boolean, boolean, boolean, int, boolean)
+     */
+    @Override
+    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
+            boolean expanded, boolean leaf, int row, boolean hasFocus) {
+      // set background color if this is an Annotation or a Type
+      Color background = null;
+      if (value instanceof DefaultMutableTreeNode) {
+        Object userObj = ((DefaultMutableTreeNode) value).getUserObject();
+        Type type = null;
+        if (userObj instanceof FsTreeNodeObject) {
+          FeatureStructure fs = ((FsTreeNodeObject) userObj).getFeatureStructure();
+          type = fs.getType();
+        } else if (userObj instanceof TypeTreeNodeObject) {
+          type = ((TypeTreeNodeObject) userObj).getType();
+        }
+        if (type != null) {
+          // look up checkbox to get color
+          JCheckBox checkbox = typeToCheckBoxMap.get(type);
+          if (checkbox != null) {
+            background = checkbox.getBackground();
+          }
+        }
+      }
+      this.setBackgroundNonSelectionColor(background);
+      this.setBackgroundSelectionColor(background);
+
+      Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+              row, hasFocus);
+      return component;
+    }
+  }
 
   /**
    * A panel that is to be placed in a JScrollPane that can only scroll vertically. This panel
@@ -1603,7 +1677,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
    * 
    * 
    */
-  static class VerticallyScrollablePanel extends JPanel implements Scrollable {
+  private static class VerticallyScrollablePanel extends JPanel implements Scrollable {
     private static final long serialVersionUID = 1009744410018634511L;
 
     /*
@@ -1611,8 +1685,9 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      * 
      * @see javax.swing.Scrollable#getPreferredScrollableViewportSize()
      */
+    @Override
     public Dimension getPreferredScrollableViewportSize() {
-      return getPreferredSize();
+      return this.getPreferredSize();
     }
 
     /*
@@ -1620,6 +1695,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      * 
      * @see javax.swing.Scrollable#getScrollableBlockIncrement(java.awt.Rectangle, int, int)
      */
+    @Override
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
       return 50;
     }
@@ -1629,6 +1705,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      * 
      * @see javax.swing.Scrollable#getScrollableTracksViewportHeight()
      */
+    @Override
     public boolean getScrollableTracksViewportHeight() {
       return false;
     }
@@ -1638,6 +1715,7 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      * 
      * @see javax.swing.Scrollable#getScrollableTracksViewportWidth()
      */
+    @Override
     public boolean getScrollableTracksViewportWidth() {
       return true;
     }
@@ -1647,42 +1725,9 @@ public class CasAnnotationViewer extends JPanel implements ActionListener, Mouse
      * 
      * @see javax.swing.Scrollable#getScrollableUnitIncrement(java.awt.Rectangle, int, int)
      */
+    @Override
     public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
       return 10;
     }
-
-  }
-  
-  /**
-   * Trivial entity resolver that's applied if the user turns on entity mode without
-   * specifying their own entity resolver.  Returns the covered text as the canonical form,
-   * and treats annotations with equal covered text as belonging to the same entity.
-   */
-  static class DefaultEntityResolver implements EntityResolver {
-
-    /* (non-Javadoc)
-     * @see org.apache.uima.tools.viewer.EntityResolver#getCanonicalForm(org.apache.uima.jcas.tcas.Annotation)
-     */
-    public Entity getEntity(final Annotation aAnnotation) {
-      return new Entity() {
-        
-        public String getCanonicalForm() {          
-          return aAnnotation.getCoveredText();
-        }
-
-        public boolean equals(Object obj) {
-          if (obj instanceof Entity) {
-            String canon = ((Entity)obj).getCanonicalForm();
-            return getCanonicalForm().equals(canon);
-          }
-          return false;
-        }
-
-        public int hashCode() {          
-          return getCanonicalForm().hashCode();
-        }              
-      };              
-    }
-    
   }
 }
