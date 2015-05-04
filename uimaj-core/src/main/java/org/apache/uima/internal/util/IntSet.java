@@ -253,12 +253,19 @@ public class IntSet implements PositiveIntSet {
 
   @Override
   public int moveToNext(int position) {
-    return (size() == (position + 1)) ? -1 : position + 1;
+    if (position < 0) {
+      return -1;
+    }
+    final int r = position + 1;
+    return (size() <= r) ? -1 : r;
   }
 
   @Override
   public int moveToPrevious(int position) {
-    return position - 1;
+    if (position >= size()) {
+      return -1;
+    }
+    return (position < 0) ? -1 : position - 1;
   }
 
   @Override
