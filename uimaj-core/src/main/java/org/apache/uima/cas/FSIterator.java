@@ -124,8 +124,7 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * 
    * @param fs
    *          The feature structure the iterator that supplies the 
-   *          comparison information.  It need not be a subtype of
-   *          T, but must be comparable with it as the index is defined.
+   *          comparison information.  It must be of type T or a subtype of T.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveTo(FeatureStructure fs);
