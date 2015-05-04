@@ -93,7 +93,7 @@ public interface LowLevelIterator {
   int ll_indexSize();
 
   /**
-   * Get the index of this iterator.
+   * Get the index for just the top most type of this iterator (excludes subtypes).
    * 
    * @return The index.
    */
