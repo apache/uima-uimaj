@@ -3109,9 +3109,8 @@ public class BinaryCasSerDes6 {
         }
         return true;
       }
-      if (
-          ((c1ref == 0) && (c2ref != 0)) ||
-          ((c1ref != 0) && (c2ref == 0))) {
+      // c1ref != 0 at this point
+      if (c2ref == 0) {
         System.err.format("heapRef one is 0, other not: c1Ref = %,d c2Ref = %,d%n", c1ref, c2ref);
         return false;
       }
