@@ -777,12 +777,18 @@ public class IntHashSet implements PositiveIntSet {
 
   @Override
   public int moveToNext(int position) {
+    if (position < 0) {
+      return position;
+    }
     final int n = moveToNextFilled(position + 1); 
-    return (n == getCapacity()) ? -1 : n;
+    return (n >= getCapacity()) ? -1 : n;
   }
 
   @Override
   public int moveToPrevious(int position) {
+    if (position >= getCapacity()) {
+      return -1;
+    }
     return moveToPreviousFilled(position - 1);
   }
 
