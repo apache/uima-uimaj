@@ -93,7 +93,7 @@ public interface JFSIndexRepository {
    * Generics: Some may be for things not having JCas cover classes, so the type of FSIndex is ? extends FeatureStructure
    * @return All indexes.
    */
-  <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes();
+  Iterator<FSIndex<FeatureStructure>> getIndexes();
 
   /**
    * Get the underlying FSIndexRepository associated with this JFSIndexRepository.
