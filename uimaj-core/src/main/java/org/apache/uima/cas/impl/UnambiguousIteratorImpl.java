@@ -43,7 +43,7 @@ public class UnambiguousIteratorImpl<T extends AnnotationFS> extends FSIteratorI
 
   private int pos;
 
-  private Comparator<FeatureStructure> annotationComparator;
+  private Comparator<AnnotationFS> annotationComparator;
 
   private UnambiguousIteratorImpl() {
     super();
@@ -182,7 +182,7 @@ public class UnambiguousIteratorImpl<T extends AnnotationFS> extends FSIteratorI
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   public void moveTo(FeatureStructure fs) {
-    final int found = Collections.binarySearch(this.list, fs, getAnnotationComparator(fs));
+    final int found = Collections.binarySearch(this.list, (AnnotationFS) fs, getAnnotationComparator(fs));
     if (found >= 0) {
       this.pos = found;
     } else {
@@ -190,9 +190,10 @@ public class UnambiguousIteratorImpl<T extends AnnotationFS> extends FSIteratorI
     }
   }
   
-  private final Comparator<FeatureStructure> getAnnotationComparator(FeatureStructure fs) {
+  private final Comparator<AnnotationFS> getAnnotationComparator(FeatureStructure fs) {
     if (this.annotationComparator == null) {
-      this.annotationComparator = new AnnotationComparator<FeatureStructure>(fs.getCAS().getAnnotationIndex());
+      this.annotationComparator = 
+          ((FSIndexRepositoryImpl)(fs.getCAS().getIndexRepository())).getAnnotationFsComparator(); 
     }
     return this.annotationComparator;
   }
