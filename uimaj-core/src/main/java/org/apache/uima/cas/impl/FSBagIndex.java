@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.NoSuchElementException;
-
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -40,155 +38,6 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
   
   // package private
   final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;
-
-  private class IntIterator4bag implements ComparableIntPointerIterator, LowLevelIterator {
-
-    private int itPos;
-
-    private IntComparator comp;
-
-    private int modificationSnapshot; // to catch illegal modifications
-
-    private int[] detectIllegalIndexUpdates; // shared copy with Index Repository
-
-    private int typeCode;
-    
-    public boolean isConcurrentModification() {
-      return this.modificationSnapshot != this.detectIllegalIndexUpdates[this.typeCode];
-    }
-
-    public void resetConcurrentModification() {
-      this.modificationSnapshot = this.detectIllegalIndexUpdates[this.typeCode];
-    }
-
-    private IntIterator4bag() {
-      super();
-      moveToFirst(); 
-    }
-
-    private IntIterator4bag(IntComparator comp) {
-      this();
-      this.comp = comp;
-    }
-
-    public boolean isValid() {
-      if (USE_POSITIVE_INT_SET) {
-        return FSBagIndex.this.indexP.isValid(this.itPos);
-      } else {
-        return (this.itPos >=0) && (this.itPos < FSBagIndex.this.index.size());
-      }
-    }
-
-    /**
-     * If empty, make position -1 (invalid)
-     */
-    public void moveToFirst() {
-      this.itPos = (USE_POSITIVE_INT_SET) ? 
-          FSBagIndex.this.indexP.moveToFirst() : 
-          ((FSBagIndex.this.index.size() == 0) ? -1 : 0);
-    }
-
-    /**
-     * If empty, make position -1 (invalid)
-     */
-    public void moveToLast() {
-      this.itPos = (USE_POSITIVE_INT_SET) ? 
-          FSBagIndex.this.indexP.moveToLast() :
-          FSBagIndex.this.index.size() - 1;
-    }
-
-    public void moveToNext() {
-      this.itPos = (USE_POSITIVE_INT_SET) ? 
-          FSBagIndex.this.indexP.moveToNext(itPos) :
-          itPos + 1;
-     
-    }
-
-    public void moveToPrevious() {
-      this.itPos = (USE_POSITIVE_INT_SET) ? 
-          FSBagIndex.this.indexP.moveToPrevious(itPos) :
-          itPos - 1;
-    }
-
-    public int ll_get() {
-      if (!isValid()) {
-        throw new NoSuchElementException();
-      }
-      return (USE_POSITIVE_INT_SET) ?
-          FSBagIndex.this.indexP.get(this.itPos) :
-          FSBagIndex.this.index.get(this.itPos);
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#copy()
-     */
-    public Object copy() {
-      IntIterator4bag copy = new IntIterator4bag(this.comp);
-      copy.itPos = this.itPos;
-      return copy;
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(Object)
-     */
-    public int compareTo(Object o) throws NoSuchElementException {
-      return this.comp.compare(get(), ((IntIterator4bag) o).get());
-    }
-
-    /**
-     * Although you might think that moving to a FS in a bag index isn't a valid operation because there are no key
-     *   to define "equals", the copy() operation uses this to move to the same spot.
-     *   
-     * This requires moving to the == (identical) position.
-     * If the FS is not found, we mark the iterator as invalid. 
-     * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
-     */
-    public void moveTo(int i) {
-      this.itPos = find(i);
-//      final int position = find(i);
-//      if (position >= 0) {
-//        this.itPos = position;
-//      } else {
-//        moveToFirst();  
-//      }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIterator#ll_get()
-     */
-    public int get() throws NoSuchElementException {
-      return ll_get();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIterator#moveToNext()
-     */
-    public void inc() {
-      moveToNext();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIterator#moveToPrevious()
-     */
-    public void dec() {
-      moveToPrevious();
-    }
-
-    public int ll_indexSize() {
-      return FSBagIndex.this.size();
-    }
-
-    public LowLevelIndex ll_getIndex() {
-      return FSBagIndex.this;
-    }
-
-  }
 
   // The index, a vector of FS references.
   final private IntVector index;
@@ -220,11 +69,6 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
     return super.init(newComp);
   }
 
-  // not used (2014)
-  IntVector getVector() {
-    return this.index;
-  }
-
   public void flush() {
     // done this way to reset to initial size if it grows
     if (USE_POSITIVE_INT_SET) {
@@ -248,25 +92,12 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
     }
   }
 
-  /*
-   * public final boolean insert(int fs) { // First, check if we can insert at the end. final int []
-   * indexArray = this.index.getArray(); final int length = this.index.size(); if (length == 0) {
-   * this.index.add(fs); return true; } final int last = indexArray[length - 1]; if (compare(last,
-   * fs) < 0) { index.add(fs); return true; } final int pos = this.binarySearch(indexArray, fs, 0,
-   * length); if (pos >= 0) { return false; } index.add(-(pos+1), fs); return true; } // public
-   * IntIteratorStl iterator() { // return new IntVectorIterator(); // }
-   */
-
-  // private final int find(int ele) {
-  // return this.index.indexOf(ele);
-  // // return binarySearch(this.index.getArray(), ele, 0, this.index.size());
-  // }
   /**
    * 
    * @param ele the element to find
    * @return the position of the element, or if not found, -1
    */
-  private final int find(int ele) {
+  private int find(int ele) {
     if (USE_POSITIVE_INT_SET) {
       return indexP.find(ele);
     } else {
@@ -274,7 +105,15 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
     }
   }
 
-  private int findLeftmost(int ele) {
+  /**
+   * Left most in case there are multiple instances of the same item
+   * This only works if not use Positive Int Set
+   * because that's the only time there are multiple instances of the same
+   * (meaning having the same heap address) item
+   * @param ele
+   * @return
+   */
+  int findLeftmost(int ele) {
     if (USE_POSITIVE_INT_SET) {
       return indexP.find(ele);
     } else {
@@ -324,20 +163,16 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * }
    */
 
-  public ComparableIntPointerIterator pointerIterator(IntComparator comp,
+  public ComparableIntPointerIterator<T> pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode) {
-    IntIterator4bag ivi = new IntIterator4bag(comp);
-    ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-    ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
-    ivi.typeCode = typeCode;
-    return ivi;
+    return new IntIterator4bag<T>(this, detectIllegalIndexUpdates);
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
    */
   protected IntPointerIterator refIterator() {
-    return new IntIterator4bag();
+    return new IntIterator4bag<T>(this, null);  // no concurrent mod checking, internal use
   }
 
   /*
@@ -346,20 +181,15 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
    */
   public LowLevelIterator ll_iterator() {
-    return new IntIterator4bag();
+    return new IntIterator4bag<T>(this, null); // no concurrent mod checking
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
   protected IntPointerIterator refIterator(int fsCode) {
-    IntIterator4bag it = new IntIterator4bag();
-    final int pos = findLeftmost(fsCode);
-    if (pos >= 0) {
-      it.itPos = pos;
-    } else {
-      it.itPos = -(pos + 1);
-    }
+    IntIterator4bag<T> it = new IntIterator4bag<T>(this, null); // no concurrent mod checking, internal use
+    it.moveTo(fsCode);
     return it;
   }
 
@@ -440,9 +270,48 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
       indexP.bulkAddTo(v);
     } else {
       v.addBulk(index);
+    }    
+  }
+  
+  /*
+   * Iterator support 
+   */
+  boolean isValid(int itPos) {
+    if (USE_POSITIVE_INT_SET) {
+      return indexP.isValid(itPos);
+    } else {
+      return (itPos >=0) && (itPos < index.size());
     }
-    
-    
+  }
+  
+  int moveToFirst() {
+    return USE_POSITIVE_INT_SET ? 
+          indexP.moveToFirst() : 
+          ((index.size() == 0) ? -1 : 0);
+  }
+
+  int moveToLast() {
+    return FSBagIndex.USE_POSITIVE_INT_SET ? 
+        indexP.moveToLast() :
+        index.size() - 1;
+  }
+  
+  int moveToNext(int itPos) {
+    return USE_POSITIVE_INT_SET ? 
+      indexP.moveToNext(itPos) :
+      (itPos < 0) ? -1 : itPos + 1;
+  }
+  
+  int moveToPrevious(int itPos) {
+    return USE_POSITIVE_INT_SET ? 
+      indexP.moveToPrevious(itPos) :
+      (itPos >= index.size())? -1 : (itPos - 1);
+  }
+  
+  int get(int itPos) {
+    return FSBagIndex.USE_POSITIVE_INT_SET ?
+        indexP.get(itPos) :
+        index.get(itPos);
   }
 
 }
