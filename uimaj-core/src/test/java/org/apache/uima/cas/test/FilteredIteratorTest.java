@@ -36,6 +36,8 @@ import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FSIndexFlat;
+import org.apache.uima.cas.impl.FSIteratorWrapper;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
@@ -165,13 +167,22 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
+    iterAndCount1(false);
+    
+    expandBeyondFlatThreshold(6);  // enables flat iterator
+    iterAndCount1(true);
+    
+  }
+  
+  private void iterAndCount1(boolean isFlat) {
     // create filtered iterator over Tokens only
-    FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();
+    FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();  // always non-flat because just did index update
+    
     FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
     constraint.add(tokenType);
     
     it = cas.createFilteredIterator(it, constraint);
-
+    
     // do iteration
     while (it.isValid()) {
       AnnotationFS a = it.get();
@@ -182,7 +193,8 @@ public class FilteredIteratorTest extends TestCase {
     }
 
     // Count number of annotations.
-    it = cas.getAnnotationIndex().iterator();
+    it = cas.getAnnotationIndex().iterator();  
+    assertTrue( (isFlat) ? (it instanceof FSIndexFlat.FSIteratorFlat) : it instanceof FSIteratorWrapper);
     int countAll = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++countAll;
@@ -228,6 +240,13 @@ public class FilteredIteratorTest extends TestCase {
     cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, 14, 15));
     cas.getIndexRepository().addFS(cas.createAnnotation(sentenceType, 0, 15));
 
+    iterAndCount1a();
+    
+    expandBeyondFlatThreshold(6);  // enables flat iterator
+    iterAndCount1a();
+  }
+  
+  private void iterAndCount1a() {
     // create filtered iterator over Tokens only
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex().iterator();
     FSTypeConstraint constraint = cas.getConstraintFactory().createTypeConstraint();
@@ -242,6 +261,7 @@ public class FilteredIteratorTest extends TestCase {
       // System.out.println("Covered text: " + a.getCoveredText());
       it.moveToNext();
     }
+
   }
 
   // test uses constraint compiler
@@ -306,51 +326,58 @@ public class FilteredIteratorTest extends TestCase {
       token.setStringValue(lemmaFeat, type1);
       cas.getIndexRepository().addFS(token);
 
-      String lemma = "the";
-      // create filtered iterator over Tokens of type 1
-      FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
-      FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
-      type1Constraint.equals(lemma);
-      FeaturePath path = cas.createFeaturePath();
-      path.addFeature(lemmaFeat);
-      FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
-      it = cas.createFilteredIterator(it, cons);
-
-      int count = 0;
-      for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-        ++count;
-      }
-
-      // /////////////////////////////////////////////////////////////
-      // Count instances of tokens with lemma "the".
-
-      // Create an iterator over Token annotations.
-      FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
-      FSIterator<AnnotationFS> tokenIt = tokenIndex.iterator();
-      // Create a counter.
-      int theCount = 0;
-      // Iterate over the tokens.
-      for (tokenIt.moveToFirst(); tokenIt.isValid(); tokenIt.moveToNext()) {
-        AnnotationFS tok = tokenIt.get();
-        if (tok.getStringValue(lemmaFeat).equals(lemma)) {
-          ++theCount;
-          // System.out.println("Found token: " + tok.getCoveredText());
-        }
-      }
-      assertTrue(count == theCount);
-      // System.out.println(
-      // "Number of tokens with \"" + lemma + "\": " + theCount);
-      // System.out.println("Number of tokens overall: " + tokenIndex.size());
-
-      // System.out.println("Count: " + count);
-      // assertTrue(count == 4);
-
+      iterAndCount2();
+      
+      expandBeyondFlatThreshold(6);  // enables flat iterator
+      iterAndCount2();
+          
     } catch (Exception e) {
       e.printStackTrace();
-      assertTrue(false);
+      fail();
     }
   }
 
+  private void iterAndCount2() {
+    String lemma = "the";
+    // create filtered iterator over Tokens of type 1
+    FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
+    FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
+    type1Constraint.equals(lemma);
+    FeaturePath path = cas.createFeaturePath();
+    path.addFeature(lemmaFeat);
+    FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
+    it = cas.createFilteredIterator(it, cons);
+
+    int count = 0;
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      ++count;
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // Count instances of tokens with lemma "the".
+
+    // Create an iterator over Token annotations.
+    FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
+    FSIterator<AnnotationFS> tokenIt = tokenIndex.iterator();
+    // Create a counter.
+    int theCount = 0;
+    // Iterate over the tokens.
+    for (tokenIt.moveToFirst(); tokenIt.isValid(); tokenIt.moveToNext()) {
+      AnnotationFS tok = tokenIt.get();
+      if (tok.getStringValue(lemmaFeat).equals(lemma)) {
+        ++theCount;
+        // System.out.println("Found token: " + tok.getCoveredText());
+      }
+    }
+    assertTrue(count == theCount);
+    // System.out.println(
+    // "Number of tokens with \"" + lemma + "\": " + theCount);
+    // System.out.println("Number of tokens overall: " + tokenIndex.size());
+
+    // System.out.println("Count: " + count);
+    // assertTrue(count == 4);
+  }
+  
   public void testIterator2a() {
     try {
       cas.setDocumentText("This is a test with the word \"the\" in it.");
@@ -378,48 +405,56 @@ public class FilteredIteratorTest extends TestCase {
       token.setStringValue(lemmaFeat, type1);
       cas.getIndexRepository().addFS(token);
 
-      String lemma = "the";
-      FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
-      FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
-      type1Constraint.equals(lemma);
-      ArrayList<String> path = new ArrayList<String>();
-      path.add(lemmaFeat.getShortName());
-      FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
-      it = cas.createFilteredIterator(it, cons);
-
-      int count = 0;
-      for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-        ++count;
-      }
-
-      // /////////////////////////////////////////////////////////////
-      // Count instances of tokens with lemma "the".
-
-      // Create an iterator over Token annotations.
-      FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
-      FSIterator<AnnotationFS> tokenIt = tokenIndex.iterator();
-      // Create a counter.
-      int theCount = 0;
-      // Iterate over the tokens.
-      for (tokenIt.moveToFirst(); tokenIt.isValid(); tokenIt.moveToNext()) {
-        AnnotationFS tok = tokenIt.get();
-        if (tok.getStringValue(lemmaFeat).equals(lemma)) {
-          ++theCount;
-          // System.out.println("Found token: " + tok.getCoveredText());
-        }
-      }
-      assertTrue(count == theCount);
-      // System.out.println(
-      // "Number of tokens with \"" + lemma + "\": " + theCount);
-      // System.out.println("Number of tokens overall: " + tokenIndex.size());
-
-      // System.out.println("Count: " + count);
-      // assertTrue(count == 4);
-
+      iterAndCount2a();
+      
+      expandBeyondFlatThreshold(6);  // enables flat iterator
+      iterAndCount2a();
+      
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
     }
+  }
+  
+  private void iterAndCount2a() {
+    String lemma = "the";
+    FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
+    FSStringConstraint type1Constraint = cas.getConstraintFactory().createStringConstraint();
+    type1Constraint.equals(lemma);
+    ArrayList<String> path = new ArrayList<String>();
+    path.add(lemmaFeat.getShortName());
+    FSMatchConstraint cons = cas.getConstraintFactory().embedConstraint(path, type1Constraint);
+    it = cas.createFilteredIterator(it, cons);
+
+    int count = 0;
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      ++count;
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // Count instances of tokens with lemma "the".
+
+    // Create an iterator over Token annotations.
+    FSIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
+    FSIterator<AnnotationFS> tokenIt = tokenIndex.iterator();
+    // Create a counter.
+    int theCount = 0;
+    // Iterate over the tokens.
+    for (tokenIt.moveToFirst(); tokenIt.isValid(); tokenIt.moveToNext()) {
+      AnnotationFS tok = tokenIt.get();
+      if (tok.getStringValue(lemmaFeat).equals(lemma)) {
+        ++theCount;
+        // System.out.println("Found token: " + tok.getCoveredText());
+      }
+    }
+    assertTrue(count == theCount);
+    // System.out.println(
+    // "Number of tokens with \"" + lemma + "\": " + theCount);
+    // System.out.println("Number of tokens overall: " + tokenIndex.size());
+
+    // System.out.println("Count: " + count);
+    // assertTrue(count == 4);
+
   }
 
   public void testIterator2b() {
@@ -459,26 +494,34 @@ public class FilteredIteratorTest extends TestCase {
       token.setFeatureValue(tokenTypeFeat, eosFS);
       cas.getIndexRepository().addFS(token);
 
-      FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
-
-      ConstraintFactory cf = this.cas.getConstraintFactory();
-      FSTypeConstraint tc = cf.createTypeConstraint();
-      tc.add(sepType);
-      tc.add(eosType.getName());
-      ArrayList<String> path = new ArrayList<String>();
-      path.add(tokenTypeFeat.getShortName());
-      FSMatchConstraint cons = cf.embedConstraint(path, tc);
-      it = this.cas.createFilteredIterator(it, cons);
-      int count = 0;
-      for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-        ++count;
-      }
-      assertTrue(count == 4);
-
+      iterAndCount2b();
+      
+      expandBeyondFlatThreshold(6);  // enables flat iterator
+      iterAndCount2b();
+      
     } catch (Exception e) {
       e.printStackTrace();
       assertTrue(false);
     }
+  }
+  
+  private void iterAndCount2b() {
+    FSIterator<AnnotationFS> it = cas.getAnnotationIndex(tokenType).iterator();
+
+    ConstraintFactory cf = this.cas.getConstraintFactory();
+    FSTypeConstraint tc = cf.createTypeConstraint();
+    tc.add(sepType);
+    tc.add(eosType.getName());
+    ArrayList<String> path = new ArrayList<String>();
+    path.add(tokenTypeFeat.getShortName());
+    FSMatchConstraint cons = cf.embedConstraint(path, tc);
+    it = this.cas.createFilteredIterator(it, cons);
+    int count = 0;
+    for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
+      ++count;
+    }
+    assertTrue(count == 4);
+
   }
 
   // test uses constraint compiler
@@ -516,5 +559,17 @@ public class FilteredIteratorTest extends TestCase {
    * public static void main(String[] args) { FilteredIteratorTest test = new
    * FilteredIteratorTest(null); test.run(); }
    */
-
+  
+  // add enough tokens to make the total be > THRESHOLD_FOR_FLATTENING, ii is the current number...
+  // this is so that the flattening can happen 
+  private void expandBeyondFlatThreshold(int ii) {
+    int t = FSIndexFlat.THRESHOLD_FOR_FLATTENING;
+    FeatureStructure wordFS = this.cas.createFS(wordType);
+    for (int i = 0; i < t - ii; i++) {
+      AnnotationFS token = cas.createAnnotation(tokenType, 99, 99);
+      token.setStringValue(lemmaFeat, "dummytype");  // stuff to make the filter not throw null pointer exceptions
+      token.setFeatureValue(tokenTypeFeat, wordFS);
+      cas.getIndexRepository().addFS(token);
+    }
+  }
 }

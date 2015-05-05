@@ -63,7 +63,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       if (!isValid()) {
         throw new NoSuchElementException();
       }
-      return Int2IntRBT.this.getKey(this.currentNode);
+      return Int2IntRBT.this.getKeyForNode(this.currentNode);
     }
     
     public int getValue() {
@@ -137,7 +137,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
         throw new NoSuchElementException();
       }
       this.currentNode = (this.currentNode == NIL) ? getFirstNode() : nextNode(this.currentNode);
-      return Int2IntRBT.this.getKey(this.currentNode);
+      return Int2IntRBT.this.getKeyForNode(this.currentNode);
     }
 
     /**
@@ -154,7 +154,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       if (!hasPrevious()) {
         throw new NoSuchElementException();
       }
-      final int currentKey = Int2IntRBT.this.getKey(this.currentNode);
+      final int currentKey = Int2IntRBT.this.getKeyForNode(this.currentNode);
       if (this.currentNode == getFirstNode()) {
         this.currentNode = NIL;
       } else {
@@ -207,17 +207,10 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   
   public Int2IntRBT copy() {
     Int2IntRBT c = new Int2IntRBT();
-    if (useklrp) {
-      c.klrp = klrp.clone();
-      c.klrp1 = (klrp1 != null) ? klrp1.clone() : null;
-      c.klrp2 = (klrp2 != null) ? klrp2.clone() : null;
-      c.klrp3 = (klrp3 != null) ? klrp3.clone() : null;
-    } else {
-      c.key = key.clone();
-      c.left = left.clone();
-      c.right = right.clone();
-      c.parent = parent.clone();
-    }
+    c.klrp = klrp.clone();
+    c.klrp1 = (klrp1 != null) ? klrp1.clone() : null;
+    c.klrp2 = (klrp2 != null) ? klrp2.clone() : null;
+    c.klrp3 = (klrp3 != null) ? klrp3.clone() : null;
     c.color = color.clone();
     c.values = values.clone();
     c.root = root;
@@ -249,7 +242,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
    * @return negative index if key is found
    */
   private int treeInsert(final int k, final int v) {
-    if ((this.greatestNode != NIL) && (getKey(this.greatestNode) < k)) {
+    if ((this.greatestNode != NIL) && (getKeyForNode(this.greatestNode) < k)) {
       final int y = this.greatestNode;
       final int z = newNode(k);
       values[z] = v;   // addition
@@ -262,7 +255,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     int y = NIL;
     while (x != NIL) {
       y = x;
-      final int xKey = getKey(x);
+      final int xKey = getKeyForNode(x);
       if (k == xKey) {
         // key found
         prevValue = values[x];  // addition
@@ -281,7 +274,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
       setParent(z, NIL);
     } else {
       setParent(z, y);
-      if (k < getKey(y)) {
+      if (k < getKeyForNode(y)) {
         setLeft(y, z);
       } else {
         setRight(y, z);
@@ -399,8 +392,8 @@ public class Int2IntRBT extends IntArrayRBTcommon {
     if (lastNodeGotten == NIL) {
       node = findKey(k);
     } else {
-      final int distanceToTop = Math.abs(k - getKey(this.root));
-      final int distanceToLast = Math.abs(k - getKey(this.lastNodeGotten));
+      final int distanceToTop = Math.abs(k - getKeyForNode(this.root));
+      final int distanceToLast = Math.abs(k - getKeyForNode(this.lastNodeGotten));
       node = (distanceToTop < distanceToLast) ? findKey(k) : findKeyFromLast(k);
     }
     if (node != NIL) {
@@ -412,7 +405,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
   
   private int findKeyFromLast(final int k) {
     int node = lastNodeGotten;
-    int keyNode = getKey(node);
+    int keyNode = getKeyForNode(node);
     int prevNode;
     if (k < keyNode) {
       do {
@@ -421,7 +414,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
         if (node == NIL) {
           break;
         }
-        keyNode = getKey(node);
+        keyNode = getKeyForNode(node);
       } while  (k < keyNode);
       if (keyNode == k) {
         return node;
@@ -435,7 +428,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
         if (node == NIL) {
           break;
         }
-        keyNode = getKey(node);
+        keyNode = getKeyForNode(node);
       } while (k > keyNode);
       if (keyNode == k) {
         return node;
@@ -453,7 +446,7 @@ public class Int2IntRBT extends IntArrayRBTcommon {
 //    int found = node;
 //    while (node != NIL) {
 //      found = node;
-//      final int keyNode = getKey(node);
+//      final int keyNode = getKeyForNode(node);
 //      if (k < keyNode) {
 //        node = getLeft(node);
 //      } else if (k == keyNode) {
@@ -463,12 +456,12 @@ public class Int2IntRBT extends IntArrayRBTcommon {
 //        while (true) {
 //          final int left_node = getLeft(node);
 //          if ((left_node == NIL) ||
-//              (getKey(left_node) != keyNode)) {
+//              (getKeyForNode(left_node) != keyNode)) {
 //            break;
 //          }
 //          node = left_node;
 //        }
-////        while ((getLeft(node) != NIL) && (getKey(getLeft(node)) == keyNode)) {
+////        while ((getLeft(node) != NIL) && (getKeyForNode(getLeft(node)) == keyNode)) {
 ////          node = getLeft(node);
 ////        }
 //        return node;

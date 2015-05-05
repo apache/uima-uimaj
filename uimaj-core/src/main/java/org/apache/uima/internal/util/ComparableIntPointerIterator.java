@@ -19,12 +19,29 @@
 
 package org.apache.uima.internal.util;
 
-/**
- * Interface for a comparable IntListIterator. Two IntIterators are compared according to the
- * element that would be returned by the next call to next().
- */
-public interface ComparableIntPointerIterator extends IntPointerIterator, Comparable {
-  public boolean isConcurrentModification();
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.FSIntIteratorImplBase;
 
-  public void resetConcurrentModification();
+/**
+ * Interface for a comparable IntPointerIterator. 
+ * 
+ * This allows two iterators to be compared with each other.  Two IntIterators are compared according to the
+ * element that would be returned by the next call to next().
+ * 
+ * The purpose of this is for keeping multiple iterators, one for each subtype of a type, in a sorted order,
+ * when desiring to iterate over a type and its subtypes, in a combined merged order.
+ * 
+ * This is only needed for iterators over Sorted indexes. Iterators over Bags and Sets have no ordering requirement.
+ * 
+ * (Note, however, that backwards compatibility may require this)
+ * 
+ * All ComparableIntPointerIterators must implement the ConcurrentModificationException mechanism, so that interface is included
+ * 
+ */
+public interface ComparableIntPointerIterator<F extends FeatureStructure> extends IntPointerIterator, Comparable<FSIntIteratorImplBase<F>> {
+
+//  public void checkConcurrentModification();
+//
+//  public void resetConcurrentModification();
+  
 }

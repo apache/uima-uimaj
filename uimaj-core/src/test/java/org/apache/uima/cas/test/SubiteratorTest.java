@@ -100,13 +100,10 @@ public class SubiteratorTest extends TestCase {
     jcas.setDocumentText(text);
     try {
       this.ae.process(jcas);
-      AnnotationIndex<Annotation> tokenIndex = jcas.getAnnotationIndex(jcas.getCasType(Token.type));
-      Annotation sentence = jcas.getAnnotationIndex(jcas.getCasType(Sentence.type)).iterator().next();
-      FSIterator<Annotation> tokenIterator = tokenIndex.subiterator(sentence);
-      Annotation token = tokenIndex.iterator().next();
-      tokenIterator.moveTo(token); //throws ClassCastException    
-      UnambiguousIteratorImpl<Annotation> it = new UnambiguousIteratorImpl<Annotation>(tokenIndex.iterator());
-      it.moveTo(token);
+      
+      iterateAndcheck(jcas);
+          
+      iterateAndcheck(jcas);
     } catch (AnalysisEngineProcessException e) {
       e.printStackTrace();
       assertTrue(false);
@@ -114,6 +111,16 @@ public class SubiteratorTest extends TestCase {
       // UIMA-464: Subiterator.moveTo() throws ClassCastException.
       assertTrue(false);
     }
+  }
+  
+  private void iterateAndcheck(JCas jcas) {
+    AnnotationIndex<Token> tokenIndex = jcas.getAnnotationIndex(Token.class);
+    Annotation sentence = jcas.getAnnotationIndex(Sentence.class).iterator().next();
+    FSIterator<Token> tokenIterator = tokenIndex.subiterator(sentence);
+    Annotation token = tokenIndex.iterator().next();
+    tokenIterator.moveTo(token); //throws ClassCastException    
+    UnambiguousIteratorImpl<Token> it = new UnambiguousIteratorImpl<Token>(tokenIndex.iterator());
+    it.moveTo(token);
   }
 
   public static void main(String[] args) {

@@ -32,20 +32,6 @@ import org.apache.uima.internal.util.StringUtils;
 public class IntArrayRBTcommon {
 
   static final boolean debug = false;
-  static final protected boolean useklrp = true;
-  // Keys.
-  protected int[] key;
-
-  // Left daughters.
-  protected int[] left;
-
-  // Right daughters.
-  protected int[] right;
-
-  // Parents.
-  protected int[] parent;
-  
-  // alternate layout
   protected int[] klrp;
   // the next 3 are for the rare cases where the number of entries
   // in this instance exceeds 512 * 1024 * 1024 - 1
@@ -79,9 +65,6 @@ public class IntArrayRBTcommon {
 
   protected int setXXX(int node, int offset, int value) {
     if (node < MAXklrp0) {
-//      if (((node << 2) + offset) >= klrp.length) {
-//        System.out.println("caught");
-//      }
       return klrp[(node << 2) + offset] = value;
     } else {
       final int w = node >> 29;
@@ -99,60 +82,45 @@ public class IntArrayRBTcommon {
     }
   }
 
-  protected int getKey(int node) {
-    if (useklrp) {
-      return getXXX(node, 0);
-    }
-    return key[node];
+  private int getKey(int node) {
+    return getXXX(node, 0);
   }
 
-  protected int setKey(int node, int value) {
-    if (useklrp) {
-      return setXXX(node, 0, value);
-    }
-    return key[node] = value;
+  private int setKey(int node, int value) {
+    return setXXX(node, 0, value);
   }
   
   protected int getLeft(int node) {
-    if (useklrp) {
-      return getXXX(node, 1);
-    }
-    return left[node];
+    return getXXX(node, 1);
   }
   
   protected int setLeft(int node, int value) {
-    if (useklrp) {
-      return setXXX(node, 1, value);
-    }
-    return left[node] = value;
+    return setXXX(node, 1, value);
   }
   
   protected int getRight(int node) {
-    if (useklrp) {
-      return getXXX(node, 2);
-    }
-    return right[node];
+    return getXXX(node, 2);
   }
   
   protected int setRight(int node, int value) {
-    if (useklrp) {
-      return setXXX(node, 2, value);
-    }
-    return right[node] = value;
+    return setXXX(node, 2, value);
   }
   
   protected int getParent(int node) {
-    if (useklrp) {
-      return getXXX(node, 3);
-    }
-    return parent[node];
+    return getXXX(node, 3);
   }
   
+  /**
+   * @param node
+   * @param value
+   * @return the value
+   */
   protected int setParent(int node, int value) {
-    if (useklrp) {
-      return setXXX(node, 3, value);
-    }
-    return parent[node] = value;
+    return setXXX(node, 3, value);
+  }
+  
+  protected int getKeyForNode(int node) {
+    return getKey(node);
   }
   
   // Colors.
@@ -170,10 +138,11 @@ public class IntArrayRBTcommon {
 
   // Keep a pointer to the largest node around so we can optimize for
   // inserting
-  // keys that are larger than all keys already in the tree.
-  protected int greatestNode;
+  // keys that are larger than all keys already in the tree
+  // internal use, public because used by iterators in different package
+  public int greatestNode;
 
-  protected static final int default_size = 1024;  // must be pwr of 2 for useklrp true
+  protected static final int default_size = 8;  // must be pwr of 2 for useklrp true
   
   final protected int initialSize;
 
@@ -213,14 +182,7 @@ public class IntArrayRBTcommon {
   
   protected void setupArrays() {
     // Init the arrays.
-    if (useklrp) {
-      klrp = new int[initialSize << 2];
-    } else {
-      this.key = new int[initialSize];
-      this.left = new int[initialSize];
-      this.right = new int[initialSize];
-      this.parent = new int[initialSize];
-    }
+    klrp = new int[initialSize << 2];
     this.color = new boolean[initialSize];
     setLeft(NIL, NIL);
     setRight(NIL, NIL);
@@ -239,14 +201,8 @@ public class IntArrayRBTcommon {
     // All we do for flush is set the root to NIL and the size to 0.
     initVars();
     // and potentially release extra storage
-    if (useklrp) {
-      if (klrp.length > (initialSize << 2)) {
-        setupArrays();
-      }
-    } else {
-      if (key.length > initialSize) {
-        setupArrays();
-      }
+    if (klrp.length > (initialSize << 2)) {
+      setupArrays();
     }
   }
 
@@ -285,7 +241,7 @@ public class IntArrayRBTcommon {
     //        to be expanded.
     
     final int w = requiredSize >> 29;  // w is 0-3
-    final int requiredCapacityForLastSegment = Math.max(1024, requiredSize - w * MAXklrp0);
+    final int requiredCapacityForLastSegment = nextPowerOf2(requiredSize - w * MAXklrp0);
     switch (w) {
     case 3: {
       if (klrp3 == null) {
@@ -331,13 +287,6 @@ public class IntArrayRBTcommon {
       throw new RuntimeException();
     }
   }
-
-  private void ensureCapacityNotKrlp(int requiredSize) {
-    this.key = ensureArrayCapacity(this.key, requiredSize);
-    this.left = ensureArrayCapacity(this.left, requiredSize);
-    this.right = ensureArrayCapacity(this.right, requiredSize);
-    this.parent = ensureArrayCapacity(this.parent, requiredSize);
-  }
   
   // only called for krlp style
   private int[] maximize(int[] array) {
@@ -352,23 +301,18 @@ public class IntArrayRBTcommon {
   protected int newNode(final int k) {
     // Make sure the tree is big enough to accommodate a new node.
 
-    if (useklrp) {
-      int lenKlrp = (klrp.length >> 2);
-      if (klrp1 != null) {
-        lenKlrp += (klrp1.length >> 2);
-        if (klrp2 != null) {
-          lenKlrp += (klrp2.length >> 2);
-          if (klrp3 != null) {
-            lenKlrp += (klrp3.length >> 2);
-          }
+    int lenKlrp = (klrp.length >> 2);
+    if (klrp1 != null) {
+      lenKlrp += (klrp1.length >> 2);
+      if (klrp2 != null) {
+        lenKlrp += (klrp2.length >> 2);
+        if (klrp3 != null) {
+          lenKlrp += (klrp3.length >> 2);
         }
       }
-      if (this.next >= lenKlrp) {
-        ensureCapacityKlrp(this.next + 1);
-      }
-    } else {
-      // not using klrp format
-      ensureCapacityNotKrlp(this.next + 1);
+    }
+    if (this.next >= lenKlrp) {
+      ensureCapacityKlrp(this.next + 1);
     }
     
     if (this.next >= this.color.length){
@@ -455,48 +399,74 @@ public class IntArrayRBTcommon {
   
   /**
    * @param k -
-   * @return the first node such that k &lt;= key[node].
+   * @return the first node such that k = key[node].
    */
-  protected int findKey(final int k) {
+  public int findKey(final int k) {
     return findKeyDown(k, this.root);
   }
   
   protected int findKeyDown(final int k, int node) {
     while (node != NIL) {
-      final int keyNode = getKey(node);
-      if (k < keyNode) {
-        node = getLeft(node);
-      } else if (k == keyNode) {
+      final int cr = compare(k, getKey(node));
+      if (0 == cr) {
         return node;
-      } else {
-        node = getRight(node);
-      }
+      }      
+      node = (cr < 0) ? getLeft(node) : getRight(node);
     }
-    // node == NIL
     return NIL;
   }
 
   /**
    * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
-   * @param k -
-   * @return the node such that key[node] &ge; k and key[previous(node)] &lt; k.
+   *   If k is less than all the nodes, then the first node is returned
+   *   If k is greater than all the nodes, then NIL is returned (invalid signal)
+   * @param k the key
+   * @return the index of the node, or NIL if k > all keys
    */
+  public int findInsertionPoint(final int k) {
+    return findInsertionPointCmn(k, true);
+  }
+     
+     /**
+      * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
+      * @param k -
+      * @return the node such that key[node] &ge; k and key[previous(node)] &lt; k.
+      */
   public int findInsertionPointNoDups(final int k) {
+    return findInsertionPointCmn(k, false);
+  }
+  
+  public int findInsertionPointCmn(final int k, boolean moveToLeftmost) {
     int node = this.root;
     int found = node;
+    int cr = 0;
+    
     while (node != NIL) {
       found = node;
-      final int keyNode = getKey(node);
-      if (k < keyNode) {
-        node = getLeft(node);
-      } else if (k == keyNode) {
-        return node;
-      } else {
-        node = getRight(node);
+      cr = compare(k, getKey(node));
+      
+      if (0 == cr) { 
+        // found a match, but in the presence of duplicates, need to 
+        // move to the left most one
+        if (moveToLeftmost) {
+          while (true) {
+            int leftmost = previousNode(node);
+            if (NIL == leftmost || (0 != compare(k, getKey(leftmost)))) {
+              return node;
+            }
+            node = leftmost;
+          }
+        } else {
+          return found;
+        }
       }
+      
+      node = (cr < 0) ? getLeft(node) : getRight(node);
     }
-    // node == NIL
-    return found;
+    
+    // compare not equal, and ran out of elements (not found)
+    // if k > all nodes, return NIL
+    return (cr > 0) ? NIL : found; 
   }
 
   public final boolean containsKey(int k) {
@@ -507,7 +477,8 @@ public class IntArrayRBTcommon {
     return (findKey(k) != NIL);
   }
 
-  protected final int getFirstNode() {
+  // internal use, public to access by internal routine in another package
+  public final int getFirstNode() {
     if (this.root == NIL) {
       return NIL;
     }
@@ -519,118 +490,138 @@ public class IntArrayRBTcommon {
       }
       node = left_node;
     }
-//    while (getLeft(node) != NIL) {
-//      node = getLeft(node);
-//    }
     return node;
   }
 
-  // private final int nextNode(int node) {
-  // if (right[node] != NIL) {
-  // node = right[node];
-  // while (left[node] != NIL) {
-  // node = left[node];
-  // }
-  // } else {
-  // while (isRightDtr(node)) {
-  // node = parent[node];
-  // }
-  // if (node == root) {
-  // return NIL;
-  // }
-  // // node is now a left dtr, so we can go one up.
-  // node = parent[node];
-  // }
-  // return node;
-  // }
-
-  protected final int nextNode(int node) {
-    int y;
+  // internal use, public only to get cross package internal reference
+  /**
+   * Method: if there's a right descendant, return the left-most chain down on that link
+   * Else, go up until parent has a right descendant not the previous, and return that.
+   * 
+   * @param node starting point
+   * @return the node logically following this one.
+   */
+  public final int nextNode(int node) {
+    if (node == NIL) {
+      return NIL;
+    }
     final int rightNode = getRight(node);
     if (rightNode != NIL) {
       node = rightNode;
       while (true) {
         final int leftNode = getLeft(node);
         if (leftNode == NIL) {
-          break;
+          return node;
         }
         node = leftNode;
       }
-//      while (getLeft(node) != NIL) {
-//        node = getLeft(node);
-//      }
-    } else {
-      y = getParent(node);
-      while ((y != NIL) && (node == getRight(y))) {
-        node = y;
-        y = getParent(y);
-      }
-      node = y;
     }
-    return node;
+    
+    while (true) {
+      if (node == this.root) { // if initial node is the root, can't go up.
+        return NIL;
+      }
+      final int parentNode = getParent(node);  // guaranteed parentNode not NIL because it's tested above and below
+      final int nextNode = getRight(parentNode);  // Can be NIL
+      if (node != nextNode) {
+        return parentNode;
+      }
+      if (parentNode == this.root) {
+        return NIL;
+      }
+      node = parentNode;  
+    }
   }
 
-  protected final int previousNode(int node) {
+  // internal use, public only to get cross package internal reference
+  /**
+   * Method: if there's a left descendant, go to the right-most bottom of that
+   * Otherwise, ascend up until the parent's left descendant isn't the previous link
+   * @param node the current node index
+   * @return the previous node index or NIL 
+   */
+  public final int previousNode(int node) {
+    if (node == NIL) {
+      return NIL;
+    }
     final int leftNode = getLeft(node);
     if (leftNode != NIL) {
       node = leftNode;
       while (true) {
         final int rightNode = getRight(node);
         if (rightNode == NIL) {
-          break;
+          return node;
         }
         node = rightNode;
       }
-//      while (getRight(node) != NIL) {
-//        node = getRight(node);
-//      }
-    } else {
-      while (true) {
-        final int parentNode = getParent(node);
-        if (node == this.root || (node != getLeft(parentNode))) {
-          break;
-        }
-        node = parentNode;
-      }
-      
-//      (node != this.root) && (node == getLeft(getParent(node))))
-//      while (node != this.root && (node == getLeft(parentNode))) {
-//        node = getParent(node);
-//      }
-      if (node == this.root) {
+    }
+    
+    // ascend until a parent node has left non-nil child not equal to the previous node
+    //   this means the parent node's right child is this previous node. 
+
+    while (true) {
+      if (node == this.root) { // if initial node is the root, can't go up.
         return NIL;
       }
-      // node is now a left dtr, so we can go one up.
-      node = getParent(node);
+      final int parentNode = getParent(node);  // guaranteed parentNode not NIL because it's tested above and below
+      final int nextNode = getLeft(parentNode);  // can be NIL
+      if (node != nextNode) {
+        return parentNode;  
+      }
+      node = parentNode;
     }
-    return node;
-  }
+  } 
+   
 
+  /**
+   * delete node z
+   *   Step 1: locate a node to delete at the bottom of the tree.  Bottom means left or right (or both) descendant is NIL.
+   *   
+   *   There are 2 cases:  either the node to delete is z, or the node is the nextNode.
+   *     If z has one or both descendants NIL, then it's the one to delete.
+   *     Otherwise, the next node which is found by descending right then left until reaching the bottom (left = 0) node.
+   *     
+   *   y is node to remove from the tree.
+   *   
+   *   x is the non-NIL descendant of y (if one exists).  It will be reparented to y's parent, and y's parent's left or right
+   *   will point to it, skipping over y.
+   *       
+   * @param z node to be removed, logically
+   */
   protected void deleteNode(final int z) {
+    // y is the node to remove from the tree; is the input node, or the next node.
+    
     final int y = ((getLeft(z) == NIL) || (getRight(z) == NIL)) ?  z : nextNode(z);
-//    if ((getLeft(z) == NIL) || (getRight(z) == NIL)) {
-//      y = z;
-//    } else {
-//      y = nextNode(z);
-//    }
-    final int left_y = getLeft(y);
+    
+    if (y == this.greatestNode) {
+      if (y == z) {
+        this.greatestNode = previousNode(z);
+      } else {
+        this.greatestNode = z;
+      }
+    }
+
+    final int left_y = getLeft(y);  // will be NIL if y is nextNode(z)
+
+    // x is the descendant of y (or NIL) that needs reparenting to the parent of y
+    // and also serves as the initializing value for rebalancing
     final int x = (left_y != NIL) ? left_y : getRight(y);
-//    if (left_y != NIL) {
-//      x = left_y;
-//    } else {
-//      x = getRight(y);
-//    }
+
     final int parent_y = getParent(y);
-    setParent(x, parent_y);
+    
+    // if x is NIL, we still may pass it to the red-black rebalancer; so set it's "parent" value in any case.  
+    setParent(x, parent_y); // "splice out" y by pointing parent link of x to parent of y 
+    
     if (parent_y == NIL) {
       setAsRoot(x);
     } else {
       if (y == getLeft(parent_y)) {
-        setLeft(parent_y, x);
+        setLeft(parent_y, x);  // splice out y 
       } else {
-        setRight(parent_y, x);
+        setRight(parent_y, x); // splice out y
       }
     }
+    
     if (y != z) {
       setKey(z, getKey(y));
     }
@@ -696,6 +687,9 @@ public class IntArrayRBTcommon {
     this.color[x] = black;
   }
 
+  protected int compare(int v1, int v2) {
+    return (v1 < v2) ? -1 : ((v1 > v2) ? 1 : 0);
+  }
 
   // ///////////////////////////////////////////////////////////////////////////
   // Debug utilities

@@ -19,12 +19,8 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Comparator;
-
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas.text.AnnotationIndex;
 
 /**
  * Base class for FSIterator implementations. Defines the hasNext, next, and remove methods required
@@ -34,20 +30,20 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
 
   // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
   // annotation list.
-  protected static class AnnotationComparator<T extends FeatureStructure> implements Comparator<T> {
-
-    private AnnotationIndex<? extends AnnotationFS> index;  // used only to support compare
-
-    protected AnnotationComparator(AnnotationIndex<? extends FeatureStructure> index) {
-      super();
-      this.index = index;
-    }
-
-    public int compare(T fs1, T fs2) {
-      return this.index.compare(fs1, fs2);
-    }
-
-  }
+//  protected static class AnnotationComparator<T extends FeatureStructure> implements Comparator<T> {
+//
+//    private AnnotationIndex<? extends AnnotationFS> index;  // used only to support compare
+//
+//    protected AnnotationComparator(AnnotationIndex<? extends FeatureStructure> index) {
+//      super();
+//      this.index = index;
+//    }
+//
+//    public int compare(T fs1, T fs2) {
+//      return this.index.compare(fs1, fs2);
+//    }
+//
+//  }
 
   /*
    * (non-Javadoc)

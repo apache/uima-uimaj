@@ -19,8 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -38,9 +39,9 @@ import org.apache.uima.internal.util.IntVector;
  * 
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
-public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements IntComparator, FSIndex<T>, FSIndexImpl {
+public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Comparator<T>, IntComparator, FSIndexImpl {
 
-  private final int indexType;
+  private final int indexType;  // Sorted, Set, Bag, Default-bag, etc.
 
   // A reference to the low-level CAS.
   final protected CASImpl lowLevelCAS;
@@ -84,6 +85,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   private int numKeys;
 
   final private Type type; // The type of this
+  
+  final private int typeCode;
 
   
   
@@ -120,6 +123,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
     this.indexType = 0; // must do because it's final
     this.lowLevelCAS = null;
     this.type = null;
+    this.typeCode = 0;
   }
 
   /**
@@ -133,6 +137,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
     this.indexType = indexType;
     this.lowLevelCAS = cas;
     this.type = type;
+    this.typeCode = ((TypeImpl)type).getCode();
   }
 
   abstract boolean insert(int fs);
@@ -140,7 +145,10 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   abstract boolean insert(int fs, int count);  // for bulk addback
 
   /**
-   * @param fs -
+   * @param fs - the Feature Structure to be removed.
+   * Only this exact Feature Structure is removed (this is a stronger test than, for example,
+   * what moveTo(fs) does, where the fs in that case is used as a template).  
+   * It is not an error if this exact Feature Structure is not in an index.
    * @return true if something was removed, false if not found
    */
   abstract boolean remove(int fs);
@@ -149,7 +157,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
 
   // public abstract ComparableIntIterator iterator(IntComparator comp);
 
-  public abstract ComparableIntPointerIterator pointerIterator(IntComparator comp,
+  public abstract ComparableIntPointerIterator<T> pointerIterator(IntComparator comp,
           int[] detectIllegalIndexUpdates, int typeCode);
 
   public FSIndexComparator getComparator() {
@@ -240,10 +248,22 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
     return this.comparator.getLowLevelCAS().getFeatureOffset(((FeatureImpl) feat).getCode());
   }
 
+  /**
+   * Note: may return other than -1 , 0, and 1  (e.g., might return -6)
+   * @param fs1 -
+   * @param fs2 -
+   * @return 0 if equal, < 0 if fs1 < fs2, > 0 if fs1 > fs2
+   */
   public int ll_compare(int ref1, int ref2) {
     return this.compare(ref1, ref2);
   }
 
+  /**
+   * Note: may return other than -1 , 0, and 1  (e.g., might return -6)
+   * @param fs1 -
+   * @param fs2 -
+   * @return 0 if equal, < 0 if fs1 < fs2, > 0 if fs1 > fs2
+   */
   public int compare(int fs1, int fs2) {
     final int[] heap = this.lowLevelCAS.getHeap().heap;
     final int[] localKeyType = this.keyType;
@@ -443,6 +463,10 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   public Type getType() {
     return this.type;
   }
+  
+  int getTypeCode() {
+    return this.typeCode;
+  }
 
   protected abstract IntPointerIterator refIterator();
 
@@ -465,15 +489,19 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
   // It would be good to refactor this so that this confusion is eliminated,
   // perhaps by not having this class implement FSIndex
 
-  /**
-   * @see org.apache.uima.cas.FSIndex#iterator()
-   */
-  public FSIterator<T> iterator() {
-    return new FSIteratorWrapper<T>(refIterator(), this.lowLevelCAS);
-  }
+//  /**
+//   * @see org.apache.uima.cas.FSIndex#iterator()
+//   */
+//  public FSIterator<T> iterator() {
+//    return new FSIteratorWrapper<T>(refIterator(), this.lowLevelCAS);
+//  }
 
   /**
    * @see org.apache.uima.cas.FSIndex#iterator(FeatureStructure)
+   * 
+   * This has no callers, and is probably not used.
+   * The iterator it produces is only over one leaf index and
+   * doesn't include Concurrent Modification Exception testing
    */
   public FSIterator<T> iterator(FeatureStructure fs) {
     return new FSIteratorWrapper<T>(refIterator(((FeatureStructureImpl) fs).getAddress()),
@@ -499,44 +527,12 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Int
       return this.ll_iterator();
   }
 
-  @Override
-  public FSIndex<T> withSnapshotIterators() {
-    // should never be called
-    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
-    //   which seems incorrect?
-    throw new UnsupportedOperationException();
-  }
-  
-  @Override
-  public void fillFlatArray(FeatureStructure[] flatArray) {
-    // should never be called
-    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
-    //   which seems incorrect?
-    throw new UnsupportedOperationException();  
-  }
-
-  @Override
-  public int getNumberOfTypes() {
-    // should never be called
-    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
-    //   which seems incorrect?
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public boolean isValidCache(int[] indexUpdateCounts) {
-    // should never be called
-    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
-    //   which seems incorrect?
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void captureIndexUpdatecounters(int[] indexUpdateCounts) {
-    // should never be called
-    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
-    //   which seems incorrect?
-    throw new UnsupportedOperationException();
-  }
+//  @Override
+//  public FSIndex<T> withSnapshotIterators() {
+//    // should never be called
+//    // this is an artifact of the fact that FSLeafIndexImpl implements FSIndex interface
+//    //   which seems incorrect?
+//    throw new UnsupportedOperationException();
+//  }
 
 }

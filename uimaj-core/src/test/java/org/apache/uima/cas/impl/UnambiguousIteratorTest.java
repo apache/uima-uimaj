@@ -109,6 +109,10 @@ public class UnambiguousIteratorTest extends TestCase {
       assertEquals(annotSizeU1, annotSizeU2);
       assertTrue(annotSizeA2 > annotSizeU2);
       assertEquals(annotSizeA2, annotSizeU2 * 2);
+      
+      annotIdx = llc.ll_getIndexRepository().ll_getIndex(CAS.STD_ANNOTATION_INDEX, ((TypeImpl)(cas.getAnnotationType())).getCode());
+      iteratorSize(annotIdx.ll_iterator());
+      iteratorSize(annotIdx.ll_iterator(false));
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
@@ -120,6 +124,7 @@ public class UnambiguousIteratorTest extends TestCase {
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       ++size;
     }
+    assertEquals(size, it.ll_indexSize());
     return size;
   }
 

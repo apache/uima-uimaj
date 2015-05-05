@@ -39,9 +39,10 @@ import org.apache.uima.internal.util.rb_trees.CompIntArrayRBT;
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  *
  */
-class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
+// internal use only
+public class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
-  private CompIntArrayRBT tree;
+  CompIntArrayRBT tree;
 
   /**
    * Constructor for FSRBTIndex.
@@ -88,23 +89,25 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
   }
 
   public IntPointerIterator refIterator() {
-    return this.tree.pointerIterator();
+    return this.tree.pointerIterator(this, null, this);
   }
 
   ComparableIntIterator refIterator(IntComparator comp) {
-    return this.tree.iterator(comp);
+    return (ComparableIntIterator) this.tree.pointerIterator(this, null, comp);
   }
 
-  public ComparableIntPointerIterator pointerIterator(IntComparator comp,
-          int[] detectIllegalIndexUpdates, int typeCode) {
-    return this.tree.pointerIterator(comp, detectIllegalIndexUpdates, typeCode);
+  public ComparableIntPointerIterator<T> pointerIterator(
+      IntComparator comp, int[] detectIllegalIndexUpdates, int typeCode) {
+    return this.tree.pointerIterator(this, detectIllegalIndexUpdates, comp);
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
   protected IntPointerIterator refIterator(int fsCode) {
-    return this.tree.pointerIterator(fsCode);
+    ComparableIntPointerIterator<T> it = this.tree.pointerIterator(this, null, null);
+    it.moveTo(fsCode);
+    return it;
   }
 
   /**
@@ -139,11 +142,11 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
    */
   public LowLevelIterator ll_iterator() {
-    return new LowLevelIteratorWrapper(this.tree.pointerIterator(), this);
+    return (LowLevelIterator) this.tree.pointerIterator(this, null, this);
   }
 
   /*
-   * (non-Javadoc)
+   * This code is written to remove the exact fs, not just one which matches equal to the argument
    * 
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#remove(int)
    */
@@ -155,6 +158,11 @@ class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
   @Override
   protected void bulkAddTo(IntVector v) {
     throw new UnsupportedOperationException();
+  }
+  
+  // For testing only
+  public void setTree(CompIntArrayRBT compIntArrayRBT) {
+    this.tree = compIntArrayRBT;
   }
 
 }

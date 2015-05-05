@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
@@ -27,6 +30,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FSIndexFlat;
+import org.apache.uima.cas.impl.FSIteratorWrapper;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 
@@ -144,9 +149,12 @@ public class AnnotationIteratorTest extends TestCase {
     try {
       this.cas.setDocumentText(text);
     } catch (CASRuntimeException e) {
-      assertTrue(false);
+      fail();
     }
 
+    /***************************************************
+     * Create and index tokens an sentences 
+     ***************************************************/
     int annotCount = 1; // Init with document annotation.
     // create token and sentence annotations
     for (int i = 0; i < text.length() - 5; i++) {
@@ -161,23 +169,40 @@ public class AnnotationIteratorTest extends TestCase {
       this.cas.getIndexRepository().addFS(this.cas.createAnnotation(this.sentenceType, i, i + 10));
     }
 
+    /***************************************************
+     * iterate over them
+     ***************************************************/
+    List fss = new ArrayList();
+    iterateOverAnnotations(annotCount, fss);
+    
+    iterateOverAnnotations(annotCount, fss);  // should be using flattened version
+  }
+  
+  private void iterateOverAnnotations(int annotCount, List fss) {
+    boolean isSave = fss.size() == 0;
     int count;
     AnnotationIndex<AnnotationFS> annotIndex = this.cas.getAnnotationIndex();
     FSIterator<AnnotationFS> it = annotIndex.iterator(true);
+    assertTrue((isSave) ? it instanceof FSIteratorWrapper : it instanceof FSIndexFlat.FSIteratorFlat);
     count = 0;
     while (it.isValid()) {
       ++count;
-      it.moveToNext();
+      AnnotationFS fs = it.next();
+      if (isSave) {
+        fss.add(fs);
+      } else {
+        assertEquals(fss.get(count -1).hashCode(), fs.hashCode());
+      }
     }
-    assertTrue(annotCount == count);
+    assertEquals(annotCount, count);
     // System.out.println("Size of ambiguous iterator: " + count);
-    it = annotIndex.iterator(false);
+    it = annotIndex.iterator(false);  // false means create an unambiguous iterator
     count = 0;
     while (it.isValid()) {
       ++count;
       it.moveToNext();
     }
-    assertTrue(count == 1);
+    assertEquals(1, count); // because of document Annotation
     // System.out.println("Size of unambiguous iterator: " + count);
     AnnotationFS bigAnnot = this.cas.createAnnotation(this.sentenceType, 10, 41);
     it = annotIndex.subiterator(bigAnnot, true, true);
@@ -188,12 +213,12 @@ public class AnnotationIteratorTest extends TestCase {
       // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
-    assertTrue(count == 32);
+    assertEquals(32, count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
     }
-    assertTrue(count == 32);
+    assertEquals(32, count);
     // System.out.println("Size of subiterator(true, true): " + count);
     it = annotIndex.subiterator(bigAnnot, false, true);
     count = 0;
@@ -203,13 +228,13 @@ public class AnnotationIteratorTest extends TestCase {
       // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
-    assertTrue(count == 3);
+    assertEquals(3, count);
     // System.out.println("Size of subiterator(false, true): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
     }
-    assertTrue(count == 3);
+    assertEquals(3, count);
     it = annotIndex.subiterator(bigAnnot, true, false);
     count = 0;
     while (it.isValid()) {
@@ -218,13 +243,13 @@ public class AnnotationIteratorTest extends TestCase {
       // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
-    assertTrue(count == 39);
+    assertEquals(39, count);
     // System.out.println("Size of subiterator(true, false): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
     }
-    assertTrue(count == 39);
+    assertEquals(39, count);
     it = annotIndex.subiterator(bigAnnot, false, false);
     count = 0;
     while (it.isValid()) {
@@ -233,13 +258,13 @@ public class AnnotationIteratorTest extends TestCase {
       // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
-    assertTrue(count == 4);
+    assertEquals(4, count);
     // System.out.println("Size of subiterator(false, false): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
     }
-    assertTrue(count == 4);
+    assertEquals(4, count);
     AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
     it = annotIndex.subiterator(sent, false, true);
     count = 0;
@@ -249,13 +274,14 @@ public class AnnotationIteratorTest extends TestCase {
       // System.out.println("Annotation from " + a.getBegin() + " to " + a.getEnd());
       it.moveToNext();
     }
-    assertTrue(count == 2);
+    assertEquals(2, count);
     // System.out.println("Size of subiterator(false, false): " + count);
     count = 0;
     for (it.moveToLast(); it.isValid(); it.moveToPrevious()) {
       ++count;
     }
-    assertTrue(count == 2);
+    assertEquals(2, count);
+    
   }
   
   public void testIncorrectIndexTypeException() {

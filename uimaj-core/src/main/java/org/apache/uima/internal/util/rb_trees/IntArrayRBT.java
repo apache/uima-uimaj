@@ -20,9 +20,11 @@
 package org.apache.uima.internal.util.rb_trees;
 
 import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.uima.internal.util.ComparableIntIterator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.FSRBTSetIndex;
+import org.apache.uima.cas.impl.IntIterator4set;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntListIterator;
@@ -46,142 +48,143 @@ import org.apache.uima.internal.util.IntPointerIterator;
  */
 public class IntArrayRBT extends IntArrayRBTcommon {
 
-  /**
-   * Implement a comparable iterator over the keys.
-   * Adds support to PointerIterator for
-   *   - concurrent modification detection
-   *   - comparing two iterators (for type/subtype ordering)
-   * 
-   */
-  private class IntArrayRBTIterator extends PointerIterator implements
-          ComparableIntPointerIterator {
+//  /**
+//   * This is the int iterator used for Set indexes
+//   * Implement a comparable iterator over the keys.
+//   * Adds support to PointerIterator for
+//   *   - concurrent modification detection
+//   *   - comparing two iterators (for type/subtype ordering)
+//   * 
+//   */
+//  private class IntIteratorForSets extends PointerIterator implements
+//          ComparableIntPointerIterator {
+//
+//    private final IntComparator comp;
+//
+//    private int modificationSnapshot; // to catch illegal modifications
+//
+//    private int[] detectIllegalIndexUpdates; // shared copy with Index Repository
+//
+//    private int typeCode;
+//
+//    public boolean isConcurrentModification() {
+//      return modificationSnapshot != detectIllegalIndexUpdates[typeCode];
+//    }
+//
+//    public void resetConcurrentModification() {
+//      modificationSnapshot = detectIllegalIndexUpdates[typeCode];
+//    }
+//
+//    private IntIteratorForSets(IntComparator comp) {
+//      super();
+//      this.comp = comp;
+//    }
+//
+//    /**
+//     * @see java.lang.Comparable#compareTo(Object)
+//     */
+//    public int compareTo(Object o) throws NoSuchElementException {
+//      ComparableIntPointerIterator it = (ComparableIntPointerIterator) o;
+//      // assert(this.comp != null);
+//      return this.comp.compare(get(), it.get());
+//    }
+//
+//    public Object copy() {
+//      IntIteratorForSets copy = new IntIteratorForSets(this.comp);
+//      copy.currentNode = this.currentNode;
+//      return copy;
+//    }
+//
+//    @Override
+//    public String toString() {
+//      return "ComparablePointerIterator [comp=" + comp + ", typeCode=" + typeCode + ", currentNode=" + currentNode
+//          + "]";
+//    }
+//    
+//  }
 
-    private final IntComparator comp;
-
-    private int modificationSnapshot; // to catch illegal modifications
-
-    private int[] detectIllegalIndexUpdates; // shared copy with Index Repository
-
-    private int typeCode;
-
-    public boolean isConcurrentModification() {
-      return modificationSnapshot != detectIllegalIndexUpdates[typeCode];
-    }
-
-    public void resetConcurrentModification() {
-      modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-    }
-
-    private IntArrayRBTIterator(IntComparator comp) {
-      super();
-      this.comp = comp;
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(Object)
-     */
-    public int compareTo(Object o) throws NoSuchElementException {
-      ComparableIntPointerIterator it = (ComparableIntPointerIterator) o;
-      // assert(this.comp != null);
-      return this.comp.compare(get(), it.get());
-    }
-
-    public Object copy() {
-      IntArrayRBTIterator copy = new IntArrayRBTIterator(this.comp);
-      copy.currentNode = this.currentNode;
-      return copy;
-    }
-
-    @Override
-    public String toString() {
-      return "ComparablePointerIterator [comp=" + comp + ", typeCode=" + typeCode + ", currentNode=" + currentNode
-          + "]";
-    }
-    
-  }
-
-  /**
-   * IntPointerIterator support for IntArrayRBT style indexes
-   * 
-   * No Concurrent Modification testing
-   * 
-   * No support for type/subtype iterator comparison
-   * 
-   * For these, see above class
-   * 
-   * 
-   */
-  private class PointerIterator implements IntPointerIterator {
-
-    protected int currentNode;
-
-    private PointerIterator() {
-      super();
-      moveToFirst();
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#dec()
-     */
-    public void dec() {
-      this.currentNode = previousNode(this.currentNode);
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#get()
-     */
-    public int get() {
-      if (!isValid()) {
-        throw new NoSuchElementException();
-      }
-      return IntArrayRBT.this.getKey(this.currentNode);
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#inc()
-     */
-    public void inc() {
-      this.currentNode = nextNode(this.currentNode);
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#isValid()
-     */
-    public boolean isValid() {
-      return (this.currentNode != NIL);
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#moveToFirst()
-     */
-    public void moveToFirst() {
-      this.currentNode = getFirstNode();
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#moveToLast()
-     */
-    public void moveToLast() {
-      this.currentNode = IntArrayRBT.this.greatestNode;
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#copy()
-     */
-    public Object copy() {
-      PointerIterator it = new PointerIterator();
-      it.currentNode = this.currentNode;
-      return it;
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
-     */
-    public void moveTo(int i) {
-      this.currentNode = findInsertionPoint(i);
-    }
-
-  }
+//  /**
+//   * IntPointerIterator support for IntArrayRBT style indexes
+//   * 
+//   * No Concurrent Modification testing
+//   * 
+//   * No support for type/subtype iterator comparison
+//   * 
+//   * For these, see above class
+//   * 
+//   * 
+//   */
+//  private class PointerIterator implements IntPointerIterator {
+//
+//    protected int currentNode;
+//
+//    private PointerIterator() {
+//      super();
+//      moveToFirst();
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#dec()
+//     */
+//    public void dec() {
+//      this.currentNode = previousNode(this.currentNode);
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#get()
+//     */
+//    public int get() {
+//      if (!isValid()) {
+//        throw new NoSuchElementException();
+//      }
+//      return IntArrayRBT.this.getKey(this.currentNode);
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#inc()
+//     */
+//    public void inc() {
+//      this.currentNode = nextNode(this.currentNode);
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#isValid()
+//     */
+//    public boolean isValid() {
+//      return (this.currentNode != NIL);
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#moveToFirst()
+//     */
+//    public void moveToFirst() {
+//      this.currentNode = getFirstNode();
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#moveToLast()
+//     */
+//    public void moveToLast() {
+//      this.currentNode = IntArrayRBT.this.greatestNode;
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#copy()
+//     */
+//    public Object copy() {
+//      PointerIterator it = new PointerIterator();
+//      it.currentNode = this.currentNode;
+//      return it;
+//    }
+//
+//    /**
+//     * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
+//     */
+//    public void moveTo(int i) {
+//      this.currentNode = findInsertionPoint(i);
+//    }
+//
+//  }
 
   private class IntArrayRBTKeyIterator implements IntListIterator {
 
@@ -189,47 +192,48 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
     protected IntArrayRBTKeyIterator() {
       super();
-      this.currentNode = NIL;
+      moveToStart();
     }
 
+    @Override
     public final boolean hasNext() {
-      return (this.currentNode != IntArrayRBT.this.greatestNode);
+      return (this.currentNode != NIL);
     }
 
+    @Override
     public final int next() {
       if (!hasNext()) {
         throw new NoSuchElementException();
       }
-      this.currentNode = (this.currentNode == NIL) ? getFirstNode() : nextNode(this.currentNode);
-      return IntArrayRBT.this.getKey(this.currentNode);
+      int r = IntArrayRBT.this.getKeyForNode(this.currentNode);
+      this.currentNode = nextNode(this.currentNode);
+      return r;
     }
 
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
+    @Override
     public boolean hasPrevious() {
-      return (this.currentNode != NIL);
+      return (previousNode(this.currentNode) != NIL);
     }
 
     /**
      * @see org.apache.uima.internal.util.IntListIterator#previous()
      */
+    @Override
     public int previous() {
-      if (!hasPrevious()) {
-        throw new NoSuchElementException();
+      this.currentNode = previousNode(this.currentNode);
+      if (this.currentNode != NIL) {
+        return getKey(this.currentNode);
       }
-      final int currentKey = IntArrayRBT.this.getKey(this.currentNode);
-      if (this.currentNode == getFirstNode()) {
-        this.currentNode = NIL;
-      } else {
-        this.currentNode = previousNode(this.currentNode);
-      }
-      return currentKey;
+      throw new NoSuchElementException();
     }
 
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToEnd()
      */
+    @Override
     public void moveToEnd() {
       this.currentNode = IntArrayRBT.this.greatestNode;
     }
@@ -237,42 +241,37 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     /**
      * @see org.apache.uima.internal.util.IntListIterator#moveToStart()
      */
+    @Override
     public void moveToStart() {
-      this.currentNode = NIL;
+      this.currentNode = getFirstNode();
     }
 
-    protected final int getKey(int node) {
-      return IntArrayRBT.this.getKey(node);
-    }
-
-  }
-
-  private class ComparableIterator extends IntArrayRBTKeyIterator implements ComparableIntIterator {
-
-    private final IntComparator comparator;
-
-    private ComparableIterator(IntComparator comp) {
-      super();
-      this.comparator = comp;
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(Object)
-     */
-    public int compareTo(Object o) {
-      ComparableIterator it = (ComparableIterator) o;
-      return this.comparator.compare(
-          IntArrayRBT.this.getKey(this.currentNode), 
-          it.getKey(it.currentNode));
+    protected final int getKey(int node) { 
+      return IntArrayRBT.this.getKeyForNode(node);
     }
 
   }
 
-
- 
-
-  // Random number generator to randomize inserts of identical keys.
-  protected final Random rand;
+//  private class ComparableIterator extends IntArrayRBTKeyIterator implements ComparableIntIterator {
+//
+//    private final IntComparator comparator;
+//
+//    private ComparableIterator(IntComparator comp) {
+//      super();
+//      this.comparator = comp;
+//    }
+//
+//    /**
+//     * @see java.lang.Comparable#compareTo(Object)
+//     */
+//    public int compareTo(Object o) {
+//      ComparableIterator it = (ComparableIterator) o;
+//      return this.comparator.compare(
+//          IntArrayRBT.this.getKey(this.currentNode), 
+//          it.getKey(it.currentNode));
+//    }
+//
+//  }
 
   /**
    * Constructor for IntArrayRBT.
@@ -283,83 +282,78 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
   public IntArrayRBT(int initialSize) {
     super();
-    this.rand = new Random();
   }
     
-  public int getKeyForNode(final int node) {
-    return getKey(node);
-  }
-
+  /**
+   * 
+   * @param k the value to insert
+   * @return negative of the node number of the found key, if the key was found, else, the node number of the inserted new node
+   */
   protected int treeInsert(final int k) {
-    if ((this.greatestNode != NIL) && (getKey(this.greatestNode) < k)) {
-      final int y = this.greatestNode;
-      final int z = newNode(k);
-      this.greatestNode = z;
-      setRight(y, z);
-      setParent(z, y);
-      return z;
-    } 
-    int x = this.root;
-    int y = NIL;
-    while (x != NIL) {
-      y = x;
-      final int xKey = getKey(x);
-      if (k == xKey) {
-        return -x;
-      }
-      x = (k < xKey) ? getLeft(x) : getRight(x);
-    }
-    // The key was not found, so we create a new node, inserting the
-    // key.
-    final int z = newNode(k);
-    if (y == NIL) {
-      setAsRoot(z);
-      this.greatestNode = z;
-      setParent(z, NIL);
-    } else {
-      setParent(z, y);
-      if (k < getKey(y)) {
-        setLeft(y, z);
-      } else {
-        setRight(y, z);
-      }
-    }
-    return z;
+    return treeInsert(k, false);
   }
 
   protected int treeInsertWithDups(final int k) {
-    if ((this.greatestNode != NIL) && (getKey(this.greatestNode) <= k)) {
-      final int y = this.greatestNode;
-      final int z = newNode(k);
-      this.greatestNode = z;
-      setRight(y, z);
-      setParent(z, y);
-      return z;
+    return treeInsert(k, true);
+  }
+    
+  protected int treeInsert(final int k, boolean withDups) {  
+    if (this.greatestNode != NIL) {
+      final int lt = withDups? 1 : 0;
+      if (compare(getKeyForNode(this.greatestNode), k) < lt) {
+        final int y = this.greatestNode;
+        final int z = newNode(k);
+        this.greatestNode = z;
+        setRight(y, z);
+        setParent(z, y);
+        return z;
+      }
     }
+    
+    int x = this.root;  // could be NIL
     int y = NIL;
-    int x = this.root;
+    
+    // find existing value (key)
+    int cr = 0;
+    boolean wentLeft = false;
+    ThreadLocalRandom rand = withDups? ThreadLocalRandom.current() : null;
     while (x != NIL) {
       y = x;
-      final int xKey = getKey(x);
-      x = (k < xKey) ? getLeft(x) :
-          (k > xKey) ? getRight(x) :
-        //(k == xKey)
-          (this.rand.nextBoolean()) ?  getLeft(x) : getRight(x);
+      cr = compare(k, getKeyForNode(x));
+      if (cr == 0) {
+        if (withDups) {
+          if (rand.nextBoolean()) {
+            x = getLeft(x);
+            wentLeft = true;
+          } else {
+            x = getRight(x);
+            wentLeft = false;
+          }  
+        } else {
+          // not with dups, found, return negative of found index
+          return -x;
+        }
+      } else {
+        // cr not 0
+        x = (cr < 0) ? getLeft(x) : getRight(x);
+      }
     }
+    
+    // The key was not found or was found but inserting dups
+    
     final int z = newNode(k);
-    if (y == NIL) {
-      setAsRoot(z);
+    if (y == NIL) {  // only happens if this.root is NIL, e.g. table is empty.
+      setAsRoot(z); // also set parent to NIL
       this.greatestNode = z;
-      setParent(z, NIL);
     } else {
       setParent(z, y);
-      if (k < getKey(y)) {
+      if (cr < 0) {
         setLeft(y, z);
-      } else if (k > getKey(y)) {
+      } else if (cr > 0) {
         setRight(y, z);
       } else { // k == key[y]
         // Randomly insert node to the left or right.
-        if (this.rand.nextBoolean()) {
+        if (wentLeft) {
           setLeft(y, z);
         } else {
           setRight(y, z);
@@ -398,9 +392,9 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     return true;
   }
 
-  public int insertKeyWithDups(int k) {
-    return insertKey(k, true);
-  }
+//  public int insertKeyWithDups(int k) {
+//    return insertKey(k, true);
+//  }
 
   private int insertKey(final int k, final boolean withDups) {
     if (this.root == NIL) {
@@ -410,13 +404,34 @@ public class IntArrayRBT extends IntArrayRBTcommon {
       this.greatestNode = x;
       return x;
     }
-    final int x = withDups ? treeInsertWithDups(k) : treeInsert(k);
-    if (x < NIL) {
+    final int x = treeInsert(k, withDups);
+    if (x < NIL) {  // means was found, not inserted
       return -x;
     }
     return commonInsertKey(x);
   }
   
+  //for testing only
+  public int insertKeyShowNegative(int k) {
+    if (this.root == NIL) {
+      final int x = newNode(k);
+      setAsRoot(x);
+      this.color[this.root] = black;
+      this.greatestNode = x;
+      return x;
+    }
+    final int x = treeInsert(k, false);
+    if (x < NIL) {  // means was found, not inserted
+      return x;
+    }
+    return commonInsertKey(x);
+    
+  }
+  /**
+   * Code run after the insert operation, done to rebalance the red black tree
+   * @param x -
+   * @return -
+   */
   private int commonInsertKey(int x) {
     this.color[x] = red;
     final int node = x;
@@ -469,64 +484,6 @@ public class IntArrayRBT extends IntArrayRBTcommon {
   // return (node == (next - 1));
   // }
 
-  /**
-   * Find the first node such that k &lt;= key[node].
-   */
-  public int findKey(final int k) {
-    int node = this.root;
-    while (node != NIL) {
-      final int keyNode = getKey(node);
-      if (k < keyNode) {
-        node = getLeft(node);
-      } else if (k == keyNode) {
-        return node;
-      } else {
-        node = getRight(node);
-      }
-    }
-    // node == NIL
-    return NIL;
-  }
-
-  /**
-   * Find the node such that key[node] &ge; k and key[previous(node)] &lt; k.
-   * @param k the key
-   * @return the index of the node
-   */
-  public int findInsertionPoint(final int k) {
-    boolean onlyWentRight = true;
-    int node = this.root;
-    int found = node;
-    while (node != NIL) {
-      found = node;
-      final int keyNode = getKey(node);
-      if (k < keyNode) {
-        onlyWentRight = false;
-        node = getLeft(node);
-      } else if (k == keyNode) {
-        // In the presence of duplicates, we have to check if there are
-        // identical
-        // keys to the left of us.
-        while (true) {
-          final int left_node = getLeft(node);
-          if ((left_node == NIL) ||
-              (getKey(left_node) != keyNode)) {
-            break;
-          }
-          node = left_node;
-        }
-//        while ((getLeft(node) != NIL) && (getKey(getLeft(node)) == keyNode)) {
-//          node = getLeft(node);
-//        }
-        return node;
-      } else {
-        node = getRight(node);
-      }
-    }
-    // node == NIL
-    return onlyWentRight ? NIL : found;
-  }
-
 //  private final boolean isLeftDtr(int node) {
 //    return ((node != this.root) && (node == getLeft(getParent(node))));
 //  }
@@ -537,7 +494,11 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 
   public boolean deleteKey(int aKey) {
     final int node = findKey(aKey);
-    if (node == NIL) {
+    // for use with FS set index, key is the fs addr, and the compare fn is the UIMA Set compare definition
+    //   Multiple FSs may compare equal, even though they are different FSs
+    //   Only delete if the fs addr found is the one being looked for
+    //   For this use, there are never multiple FSs comparing equal in the set because it's a set.
+    if (node == NIL || getKeyForNode(node) != aKey) {
       return false;
     }
     deleteNode(node);
@@ -547,44 +508,52 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     }
     return true;
   }
-
+  
   public void clear() {
     flush();
   }
   
-  /**
-   * Method iterator.
-   * @param comp comparator  
-   * @return IntListIterator
-   */
-  public ComparableIntIterator iterator(IntComparator comp) {
-    return new ComparableIterator(comp);
-  }
+//  /**
+//   * Method iterator.
+//   * @param comp comparator  
+//   * @return IntListIterator
+//   */
+//  public ComparableIntIterator iterator(IntComparator comp) {
+//    return new ComparableIterator(comp);
+//  }
 
   public IntListIterator iterator() {
     return new IntArrayRBTKeyIterator();
   }
 
-  public IntPointerIterator pointerIterator() {
-    return new PointerIterator();
+  // this version doesn't do ConcurrentModificationException testing
+  public <T extends FeatureStructure> IntPointerIterator pointerIterator(IntComparator comp, FSRBTSetIndex<T> fsSetIndex) {
+    return new IntIterator4set<T>(fsSetIndex, null, comp);
   }
 
-  public IntPointerIterator pointerIterator(int aKey) {
-    PointerIterator it = new PointerIterator();
-    it.currentNode = this.findKey(aKey);
-    return it;
-  }
+//  public IntPointerIterator pointerIterator(int aKey) {
+//    PointerIterator it = new PointerIterator();
+//    it.currentNode = this.findKey(aKey);
+//    return it;
+//  }
 
-  public ComparableIntPointerIterator pointerIterator(IntComparator comp,
-          int[] detectIllegalIndexUpdates, int typeCode) {
-    // assert(comp != null);
-    IntArrayRBTIterator cpi = new IntArrayRBTIterator(comp);
-    cpi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-    cpi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
-    cpi.typeCode = typeCode;
+  public <T extends FeatureStructure> ComparableIntPointerIterator<T> pointerIterator(
+      FSRBTSetIndex<T> fsSetIndex, int[] detectIllegalIndexUpdates, IntComparator comp) {
+    IntIterator4set<T> cpi = new IntIterator4set<T>(fsSetIndex, detectIllegalIndexUpdates, comp);
     return cpi;
   }
+  
+  //debug
+  public boolean debugScanFor(int key) {
+    for (int i = 1; i < next; i++) {
+      if (getKeyForNode(i) == key) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-
-
+  public int getKeyForNode(int node) { // is public
+    return super.getKeyForNode(node);  // is protected
+  }
 }

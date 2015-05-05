@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.NoSuchElementException;
-
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -36,162 +34,20 @@ import org.apache.uima.internal.util.IntVector;
  */
 public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
-  private class IntIterator4sorted implements ComparableIntPointerIterator, LowLevelIterator {
-
-    private int itPos;
-
-    private IntComparator comp;
-
-    private int modificationSnapshot; // to catch illegal modifications
-
-    private int[] detectIllegalIndexUpdates; // shared copy with Index Repository
-
-    private int typeCode;
-
-    public boolean isConcurrentModification() {
-      return modificationSnapshot != detectIllegalIndexUpdates[typeCode];
-    }
-
-    public void resetConcurrentModification() {
-      modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-    }
-
-    private IntIterator4sorted() {
-      super();
-      this.itPos = 0;
-    }
-
-    private IntIterator4sorted(IntComparator comp) {
-      this();
-      this.comp = comp;
-    }
-
-    public boolean isValid() {
-      return ((this.itPos >= 0) && (this.itPos < FSIntArrayIndex.this.index.size()));
-    }
-
-    public void moveToFirst() {
-      this.itPos = 0;
-    }
-
-    public void moveToLast() {
-      this.itPos = FSIntArrayIndex.this.index.size() - 1;
-    }
-
-    public void moveToNext() {
-      ++this.itPos;
-    }
-
-    public void moveToPrevious() {
-      --this.itPos;
-    }
-
-    public int ll_get() {
-      if (!isValid()) {
-        throw new NoSuchElementException();
-      }
-      return FSIntArrayIndex.this.index.get(this.itPos);
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#copy()
-     */
-    public Object copy() {
-      IntIterator4sorted copy = new IntIterator4sorted(this.comp);
-      copy.itPos = this.itPos;
-      return copy;
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(Object)
-     */
-    public int compareTo(Object o) throws NoSuchElementException {
-      return this.comp.compare(get(), ((IntIterator4sorted) o).get());
-    }
-
-    /**
-     * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
-     */
-    public void moveTo(int i) {
-      final int position = find(i);
-      boolean found = false;
-      if (position >= 0) {
-        this.itPos = position;
-        found = true;
-      } else {  // not found
-        this.itPos = -(position + 1);
-      }
-      
-      // https://issues.apache.org/jira/browse/UIMA-4094
-      // make sure you go to earliest one
-      if (!found || !isValid()) {
-        // this means the moveTo found the insert point at the end of the index
-        // so just return invalid, since there's no way to return an insert point for a position
-        // that satisfies the FS at that position is greater than fs  
-        return;
-      }    
-      // Go back until we find a FS that is really smaller
-      while (true) {
-        moveToPrevious();
-        if (isValid()) {
-          int prev = get();
-          if (compare(prev, i) != 0) {
-            moveToNext(); // go back
-            break;
-          }
-        } else {
-          moveToFirst();  // went to before first, so go back to 1st
-          break;
-        }
-      }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIterator#ll_get()
-     */
-    public int get() throws NoSuchElementException {
-      return ll_get();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIterator#moveToNext()
-     */
-    public void inc() {
-      moveToNext();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.uima.cas.impl.LowLevelIterator#moveToPrevious()
-     */
-    public void dec() {
-      moveToPrevious();
-    }
-
-    public int ll_indexSize() {
-      return FSIntArrayIndex.this.size();
-    }
-
-    public LowLevelIndex ll_getIndex() {
-      return FSIntArrayIndex.this;
-    }
-
-  }
-
   // The index, a vector of FS references.
-  final private IntVector index;
+  final private IntVector indexIntVector;
   
   final private int initialSize;
+  
+  final private boolean isAnnotationIndex;
+    
+  private IntComparator annotationIntComparator = null; // lazy init because index repo not set up initially
 
-  FSIntArrayIndex(CASImpl cas, Type type, int initialSize, int indexType) {
+  FSIntArrayIndex(CASImpl cas, Type type, int initialSize, int indexType, boolean isAnnotationIndex) {
     super(cas, type, indexType);
     this.initialSize = initialSize;
-    this.index = new IntVector(initialSize);
+    this.indexIntVector = new IntVector(initialSize);
+    this.isAnnotationIndex = isAnnotationIndex;
   }
 
   /**
@@ -203,15 +59,15 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   }
 
   IntVector getVector() {
-    return this.index;
+    return this.indexIntVector;
   }
 
   public void flush() {
     // do this way to reset size if it grew
-    if (this.index.size() > this.initialSize) {
-      this.index.resetSize(initialSize);
+    if (this.indexIntVector.size() > this.initialSize) {
+      this.indexIntVector.resetSize(initialSize);
     } else {
-      this.index.removeAllElements();
+      this.indexIntVector.removeAllElements();
     }
   }
 
@@ -222,18 +78,18 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 
   public final boolean insert(int fs) {
     // First, check if we can insert at the end.
-    final int[] indexArray = this.index.getArray();
-    final int length = this.index.size();
+    final int[] indexArray = this.indexIntVector.getArray();
+    final int length = this.indexIntVector.size();
     
     if (length == 0) {
-      this.index.add(fs);
+      this.indexIntVector.add(fs);
       return true;
     }
     final int last = indexArray[length - 1];
     // can't use compare <= because the = implies (depending on IS_ALLOW_DUP_A...)
     //   more work to find the EQ one, or not
     if (compare(last, fs) < 0) {
-      this.index.add(fs);
+      this.indexIntVector.add(fs);
       return true;
     }
     
@@ -246,31 +102,31 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
       int pos2 = refineToExactFsSearch(fs, pos);
       if (pos2 < 0) { 
         // the exact match wasn't found, OK to add
-        this.index.add(pos + 1, fs);
+        this.indexIntVector.add(pos + 1, fs);
       }
     } else if (pos >= 0) {
-      this.index.add(pos + 1, fs);
+      this.indexIntVector.add(pos + 1, fs);
     }
     else {
-      this.index.add(-(pos + 1), fs);
+      this.indexIntVector.add(-(pos + 1), fs);
     }
     return true;
   }
 
   final boolean insert(int fs, int count) {
     // First, check if we can insert at the end.
-    final int[] indexArray = this.index.getArray();
-    final int length = this.index.size();
+    final int[] indexArray = this.indexIntVector.getArray();
+    final int length = this.indexIntVector.size();
     
     if (length == 0) {
-      this.index.multiAdd(fs, count);
+      this.indexIntVector.multiAdd(fs, count);
       return true;
     }
     final int last = indexArray[length - 1];
     // can't use compare <= because the = implies (depending on IS_ALLOW_DUP_A...)
     //   more work to find the EQ one, or not
     if (compare(last, fs) < 0) {
-      this.index.multiAdd(fs, count);
+      this.indexIntVector.multiAdd(fs, count);
       return true;
     }
     
@@ -283,13 +139,13 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
       int pos2 = refineToExactFsSearch(fs, pos);
       if (pos2 < 0) { 
         // the exact match wasn't found, OK to add
-        this.index.multiAdd(pos + 1, fs, count);
+        this.indexIntVector.multiAdd(pos + 1, fs, count);
       }
     } else if (pos >= 0) {
-      this.index.multiAdd(pos + 1, fs, count);
+      this.indexIntVector.multiAdd(pos + 1, fs, count);
     }
     else {
-      this.index.multiAdd(-(pos + 1), fs, count);
+      this.indexIntVector.multiAdd(-(pos + 1), fs, count);
     }
     return true;
   }
@@ -305,7 +161,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @return index of an arbitrary FS that matches on the compare function or a negative number of insertion point if not found
    */
   private final int find(int fsRef) {
-    return binarySearch(this.index.getArray(), fsRef, 0, this.index.size());
+    return binarySearch(this.indexIntVector.getArray(), fsRef, 0, this.indexIntVector.size());
   }
   
   /**
@@ -329,7 +185,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     while (true) {
       pos --;
       if (pos >= 0) {
-        int prev = index.get(pos);
+        int prev = indexIntVector.get(pos);
         if (compare(prev, fsRef) != 0) {
           pos++; // go back
           break;
@@ -423,7 +279,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
   //   the same address as fsRef, or
   //   -1 if not found
   private final int refineToExactFsSearch(int fsRef, int startingPos) {
-    final int[] array = this.index.getArray();
+    final int[] array = this.indexIntVector.getArray();
     // search down and up for == fsRef, while key values ==
     for (int movingPos = startingPos; movingPos >= 0; movingPos --) {
       final int v = array[movingPos];
@@ -435,7 +291,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
       }
     }
     // search up
-    final int lenArray = this.index.size();
+    final int lenArray = this.indexIntVector.size();
     for (int movingPos = startingPos + 1; movingPos < lenArray; movingPos ++) {
       final int v = array[movingPos];
       if (v == fsRef) {
@@ -448,20 +304,19 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     return -1;
   }
 
-  public ComparableIntPointerIterator pointerIterator(IntComparator comp,
-          int[] detectIllegalIndexUpdates, int typeCode) {
-    IntIterator4sorted ivi = new IntIterator4sorted(comp);
-    ivi.modificationSnapshot = detectIllegalIndexUpdates[typeCode];
-    ivi.detectIllegalIndexUpdates = detectIllegalIndexUpdates;
-    ivi.typeCode = typeCode;
-    return ivi;
+  /**
+   * The comp value is only used when ordering iterators in type/subtype collections
+   */
+  public ComparableIntPointerIterator<T> pointerIterator(
+      IntComparator comp, int[] detectIllegalIndexUpdates, int typeCode) {
+    return new IntIterator4sorted<T>(this, detectIllegalIndexUpdates, comp);
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator()
    */
   protected IntPointerIterator refIterator() {
-    return new IntIterator4sorted();
+    return new IntIterator4sorted<T>(this, null);  // null means no detectIllegalIndexUpdates checking
   }
 
   /*
@@ -470,20 +325,15 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @see org.apache.uima.cas.impl.LowLevelIndex#ll_iterator()
    */
   public LowLevelIterator ll_iterator() {
-    return new IntIterator4sorted();
+    return new IntIterator4sorted<T>(this, null);  // null means no detectIllegalIndexUpdates checking
   }
 
   /**
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#refIterator(int)
    */
   protected IntPointerIterator refIterator(int fsAddr) {
-    IntIterator4sorted it = new IntIterator4sorted();
-    final int pos = findLeftmost(fsAddr);
-    if (pos >= 0) {
-      it.itPos = pos;
-    } else {
-      it.itPos = -(pos + 1);
-    }
+    IntIterator4sorted<T> it = new IntIterator4sorted<T>(this, null);
+    it.moveTo(fsAddr);
     return it;
   }
 
@@ -506,7 +356,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     final int resultAddr = find(fsRef);
     // If found, create new FS to return.
     if (resultAddr >= 0) {
-      int foundFsRef = this.index.get(resultAddr);
+      int foundFsRef = this.indexIntVector.get(resultAddr);
       return (fsRef == foundFsRef) ? 
           fs : 
           fsi.getCASImpl().createFS(foundFsRef);
@@ -519,7 +369,7 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @see org.apache.uima.cas.FSIndex#size()
    */
   public int size() {
-    return this.index.size();
+    return this.indexIntVector.size();
   }
 
   /**
@@ -552,13 +402,24 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     if (pos < 0) {
       return false;  // not in index
     }
-    this.index.remove(pos);
+    this.indexIntVector.remove(pos);
     return true;
   }
 
   @Override
   protected void bulkAddTo(IntVector v) {
-    v.addBulk(index);
+    v.addBulk(indexIntVector);
+  }
+  
+  @Override
+  public int compare(int fs1, int fs2) {
+    if (isAnnotationIndex) {
+      if (annotationIntComparator == null) {
+        annotationIntComparator = lowLevelCAS.indexRepository.getAnnotationIntComparator();
+      }
+      return annotationIntComparator.compare(fs1, fs2);
+    }
+    return super.compare(fs1, fs2);
   }
 
 }

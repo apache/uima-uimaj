@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
 import org.apache.uima.cas.CAS;
@@ -332,9 +330,11 @@ public class IndexComparitorTest extends TestCase {
     ir.addFS(createFs(type1Sub1, 1, 1));
     FeatureStructure testprobe = createFs(type1Sub1, 1, 1);  // not in index, used only for key values
     
-    assertFalse(sortedType1.contains(testprobe));
+    https://issues.apache.org/jira/browse/UIMA-4352
+    assertTrue(sortedType1.contains(testprobe));  
     
     assertTrue(sortedType1Sub1.contains(testprobe));
+    
     
     FeatureStructure testProbeSuper = createFs(type1, 1, 1);
     

@@ -22,6 +22,7 @@ package org.apache.uima.cas.test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +43,11 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureStructureImpl;
+import org.apache.uima.cas.impl.LowLevelIndex;
+import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.impl.LowLevelIterator;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
@@ -350,16 +356,27 @@ public class IteratorTest extends TestCase {
   
 
   private void createFSs(int i) {
+    FeatureStructureImpl fsi;
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
-        this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+        fsi = (FeatureStructureImpl) this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+    //debug
+    System.out.format("Token at %,d %n", fsi.getAddress());
+  }
+  
+  private void debugls() {
+    LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
+    LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
+    LowLevelIterator it = setIndexForType.ll_iterator();
+    it.moveToLast();
+    System.out.format("Last token in set index is %,d%n", it.ll_get());
   }
   
   private void setupFSs() {
@@ -445,13 +462,18 @@ public class IteratorTest extends TestCase {
     findTst(bagIndex, jcasBagIndex);
     findTst(ssBagIndex, jcasSsBagIndex);
     
+    debugls();  //debug
+    
     basicRemoveAdd(bagIndex, 20, 21);
     basicRemoveAdd(ssBagIndex, 20, 21);
     basicRemoveAdd(sortedIndex, 38, 39);
+    debugls();  //debug
     basicRemoveAdd(ssSortedIndex, 38, 39);
     basicRemoveAdd(setIndex, 38, 39);
     basicRemoveAdd(ssSetIndex, 38, 39);
 
+   
+    
     // /////////////////////////////////////////////////////////////////////////
     // Test fast fail.
 
@@ -464,6 +486,8 @@ public class IteratorTest extends TestCase {
     fastFailTst(sortedIndex, true);  
     fastFailTst(ssSortedIndex, false);
     
+    debugls();  //debug
+    
     
 
     // Test find()
@@ -471,7 +495,52 @@ public class IteratorTest extends TestCase {
     
     tstWord(wordSetIndex);
     tstWord(ssWordSetIndex);
+
+    debugls();  //debug
     
+
+    // moved IntArrayRBTtest for pointer iterators here
+    LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
+    LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
+    int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+    setIndexIterchk(setIndexForType, expected);
+    
+    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)sentenceType).getCode());
+    expected = new int[] {12, 48, 84, 120, 156, 192, 228, 264, 300, 336, 696, 660, 624, 588, 552, 516, 480, 444, 408, 372};
+    setIndexIterchk(setIndexForType, expected);
+    
+    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    expected = new int[] {
+        1,   44,  80,  116, 152, 188, 224, 260, 296, 332,         692, 656, 620, 584, 548, 512, 476, 440, 404, 368, 
+        12,  48,  84,  120, 156, 192, 228, 264, 300, 336,         696, 660, 624, 588, 552, 516, 480, 444, 408, 372, 
+        17,  53,  89,  125, 161, 197, 233, 269, 305, 341,         701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+    setIndexIterchk(setIndexForType, expected);
+    
+    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
+    LowLevelIterator it = setIndexForType.ll_iterator();
+    assertTrue(it.isValid());
+    it.moveToPrevious();
+    assertFalse(it.isValid());
+    it.moveToNext();
+    assertFalse(it.isValid());
+    it.moveToLast();
+    assertTrue(it.isValid());
+    it.moveToNext();
+    assertFalse(it.isValid());
+    it.moveToPrevious();
+    assertFalse(it.isValid());
+   }
+  
+  private void setIndexIterchk(LowLevelIndex idx, int[] expected) {
+    LowLevelIterator it = idx.ll_iterator();
+    int[] r = new int[70];
+    int i = 0;
+    while (it.isValid()) {
+      r[i++] = it.ll_get();
+      it.moveToNext();
+    }
+    // r 17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 719, 665, 629, 593, 557, 521, 485, 449, 413, 395
+    assertTrue(Arrays.equals(Arrays.copyOfRange(r, 0, expected.length), expected));
   }
   
   private void setIteratorWithoutMods(FSIndex<FeatureStructure> setIndex, int threadNumber) {
