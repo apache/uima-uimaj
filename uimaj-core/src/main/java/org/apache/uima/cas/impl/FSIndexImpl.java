@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 
@@ -30,21 +29,14 @@ import org.apache.uima.internal.util.IntPointerIterator;
  */
 public interface FSIndexImpl extends LowLevelIndex {
 
+  /**
+   * 
+   * @return the FSIndexComparator structure used by this index
+   */
   FSIndexComparator getComparator();
 
-  void flush();
+  void flush();  // probably not needed, but left for backwards compatibility  4/2015
 
-  IntPointerIterator getIntIterator();
-  
-  /**
-   * @param flatArray where the FeatureStructures are put
-   */
-  void fillFlatArray(FeatureStructure[] flatArray);
-
-  int getNumberOfTypes();
-  
-  boolean isValidCache(int[] indexUpdateCounts);
-  
-  void captureIndexUpdatecounters(int[] indexUpdateCounts);
-  
+  IntPointerIterator getIntIterator();  // probably not needed, but left for backwards compatibility 4/2015
+      
 }

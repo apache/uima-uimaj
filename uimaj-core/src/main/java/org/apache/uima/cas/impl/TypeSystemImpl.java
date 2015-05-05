@@ -71,6 +71,8 @@ import org.apache.uima.resource.ResourceInitializationException;
 public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   
   private final static int[] INT0 = new int[0];
+  
+  private final static IntVector zeroLengthIntVector = new IntVector(1);  // capacity is 1; 0 makes length default to 16
 
   private static class ListIterator<T> implements Iterator<T> {
 
@@ -825,15 +827,76 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     if (type.isArray()) {
       return new ArrayList<Type>();
     }
-    List<Type> list = new ArrayList<Type>();
     IntVector sub = this.tree.get(((TypeImpl) type).getCode());
     final int max = sub.size();
+    List<Type> list = new ArrayList<Type>(max);
+    
     for (int i = 0; i < max; i++) {
       list.add(this.types.get(sub.get(i)));
     }
     return list;
   }
+  
+  /**
+   * 
+   * @param type whose direct instantiable subtypes to iterate over
+   * @return an iterator over the direct instantiable subtypes
+   */
+  public Iterator<Type> getDirectSubtypesIterator(final Type type) {
+       
+    return new Iterator<Type>() {
 
+      private IntVector sub = (type.isArray()) ? zeroLengthIntVector :  TypeSystemImpl.this.tree.get(((TypeImpl) type).getCode());
+      private int pos = 0; 
+      
+      private boolean isTop = (((TypeImpl)type).getCode() == top);
+       
+      {
+        if (isTop) {
+          skipOverNonCreatables();
+        }
+      }
+
+      @Override
+      public boolean hasNext() {
+        return pos < sub.size();
+      }
+
+      @Override
+      public Type next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        Type result = TypeSystemImpl.this.types.get(sub.get(pos));
+        pos++;
+        if (isTop) {
+          skipOverNonCreatables();
+        }
+        return result;
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+      private void skipOverNonCreatables() {
+        if (!hasNext()) {
+          return;
+        }
+        int typeCode = sub.get(pos);
+        while (! ll_isPrimitiveArrayType(typeCode) &&
+               ! casMetadata.creatableType[typeCode]) {
+          pos++;
+          if (!hasNext()) {
+            break;
+          }
+          typeCode = sub.get(pos);
+        }
+      }
+    };
+  }
+  
   public boolean directlySubsumes(int t1, int t2) {
     IntVector sub = this.tree.get(t1);
     return sub.contains(t2);
