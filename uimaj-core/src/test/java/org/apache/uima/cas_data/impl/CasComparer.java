@@ -46,6 +46,7 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.IntVector;
 
 /**
  * A CAS equality checker for JUnit.
@@ -161,7 +162,7 @@ public class CasComparer {
     int r;
     Type t1, t2;
     if (0 != (r = compStr((t1 = fs1.getType()).getName(), (t2 = fs2.getType()).getName()))) {
-      return chkEqual(r, String.format("Types of FSs are different: Type1 = %s, Type2 = %s", t1, t2));
+      return chkEqual(r, "Types of FSs are different: Type1 = %s, Type2 = %s", t1, t2);
     }
     // types are the same
     
@@ -179,6 +180,7 @@ public class CasComparer {
       List<Feature> feats1, List<Feature> feats2,
       Set<FeatureStructure> visited) {
     
+    IntVector fsCompares = new IntVector(2);
     for (int i = 0; i < feats1.size(); i++) {
       Feature feat1 = feats1.get(i);
       Feature feat2 = feats2.get(i);
@@ -186,14 +188,14 @@ public class CasComparer {
       String rangeTypeName;
       int r;
       if (0 != (r = compStr(rangeTypeName = (rangeType = feat1.getRange()).getName(), feat2.getRange().getName()))) {
-        return chkEqual(r, String.format("Range compare unequal for types %s and %s", feat1.getRange(), feat2.getRange()));
+        return chkEqual(r, "Range compare unequal for types %s and %s", feat1.getRange(), feat2.getRange());
       }
       // range types are the same
       
       //String or subtypes of it
       if (ts.subsumes(casStringType, rangeType)) {  
         if (0 != (r = compStr(fs1.getStringValue(feat1), fs2.getStringValue(feat2)))) {
-          return chkEqual(r, String.format("String features miscompare, s1 = %s, s2 = %s", fs1.getStringValue(feat1), fs2.getStringValue(feat2)));
+          return chkEqual(r, "String features miscompare, s1 = %s, s2 = %s", fs1.getStringValue(feat1), fs2.getStringValue(feat2));
         }
         // check arrays
       } else if (isArray(rangeTypeName)) { 
@@ -217,8 +219,17 @@ public class CasComparer {
         
         // check single feature ref
       } else {
-        if (0 != ( r = compare1(fs1.getFeatureValue(feat1), fs2.getFeatureValue(feat2), visited))) return r;
+//        if (0 != ( r = compare1(fs1.getFeatureValue(feat1), fs2.getFeatureValue(feat2), visited))) return r;
+        fsCompares.add(i);
       }
+    }
+    
+    if (fsCompares.size() > 0) {
+      int r = 0;
+      for (int j = 0; j < fsCompares.size(); j++) {
+        int i = fsCompares.get(j);
+        if (0 != ( r = compare1(fs1.getFeatureValue(feats1.get(i)), fs2.getFeatureValue(feats2.get(i)), visited))) return r; 
+      }      
     }
     return 0;
   }
@@ -235,22 +246,22 @@ public class CasComparer {
         CAS.TYPE_NAME_FS_ARRAY.equals(rangeTypeName);
   }
   
-  private int chkEqual(int v, String msg) {
+  private int chkEqual(int v, String format, Object ... o) {
     if (v == 0) {
       return 0;
     }
     if (!isSortUse) {  // no message for use in sort
-      Assert.fail(msg); 
+      Assert.fail(String.format(format,  o)); 
     }
     return v;
   }
       
   private int compLong(long v1, long v2) {
-    return chkEqual(Long.compare(v1, v2), String.format("Intregal format number miscompare,  v1 = %,d v2 = %,d", v1, v2));
+    return chkEqual(Long.compare(v1, v2), "Intregal format number miscompare,  v1 = %,d v2 = %,d", v1, v2);
   }
 
   private int compDouble(double v1, double v2) {
-    return chkEqual(Double.compare(v1,  v2), String.format("Floating format number miscompare,  v1 = %,f v2 = %,f", v1, v2));
+    return chkEqual(Double.compare(v1,  v2), "Floating format number miscompare,  v1 = %,f v2 = %,f", v1, v2);
   }
   
   private int compStr(String s1, String s2) {
@@ -260,7 +271,7 @@ public class CasComparer {
   }
   
   private int compBoolean(boolean v1, boolean v2) {
-    return chkEqual(Boolean.compare(v1, v2), String.format("Boolean values unequal, v1 = %s, v2 = %s", v1, v2));
+    return chkEqual(Boolean.compare(v1, v2), "Boolean values unequal, v1 = %s, v2 = %s", v1, v2);
   }
   
   /* 
@@ -289,7 +300,7 @@ public class CasComparer {
 
     int r, len;
     if (0 != (r = compLong(len = arrayFS1.size(), arrayFS2.size()))) {
-      return chkEqual(r, String.format("ArrayFSs are different sizes, fs1 size is %d, fs2 size is %d", arrayFS1.size(), arrayFS2.size()));
+      return chkEqual(r, "ArrayFSs are different sizes, fs1 size is %d, fs2 size is %d", arrayFS1.size(), arrayFS2.size());
     }
     // are same size
     r = validateSameType(arrayFS1, arrayFS2);
@@ -339,7 +350,7 @@ public class CasComparer {
     case STRING:
       for (int j = 0; j < len; j++) {
         if (0 != (r = compStr(((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j)))) {
-          return chkEqual(r, String.format("String miscompare, s1 = %s, s2 = %s", ((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j)));
+          return chkEqual(r, "String miscompare, s1 = %s, s2 = %s", ((StringArrayFS)arrayFS1).get(j), ((StringArrayFS)arrayFS2).get(j));
         }
       }
       break;
@@ -367,7 +378,7 @@ public class CasComparer {
     ARRAY_TYPE at1 = getArrayType(a1);
     ARRAY_TYPE at2 = getArrayType(a2);
     return chkEqual(Integer.compare(at1.ordinal(), at2.ordinal()), 
-        String.format("Types not equal, type1 = %s, type2 = %s", a1.getClass(), a2.getClass()));    
+        "Types not equal, type1 = %s, type2 = %s", a1.getClass(), a2.getClass());    
   }
       
 }
