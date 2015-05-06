@@ -52,6 +52,10 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 		return this.getCASImpl().getTypeSystemImpl().ll_getTypeForCode(
 				this.getCASImpl().getHeapValue(this.getAddress()));
 	}
+	
+	public int getTypeCode() {
+	  return this.getCASImpl().getHeapValue(this.getAddress());
+	}
 
 	public void setFeatureValue(Feature feat, FeatureStructure fs) {
 		final int valueAddr = this.getCASImpl().ll_getFSRef(fs);

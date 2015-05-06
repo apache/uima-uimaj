@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,6 +49,7 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.impl.FSIndexFlat.FSIteratorFlat;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.ComparableIntPointerIterator;
+import org.apache.uima.internal.util.Int2IntArrayMapFixedSize;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 import org.apache.uima.internal.util.IntVector;
@@ -225,7 +227,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     /**
      * The type codes corresponding to the cachedSubFsLeafIndexes, set up lazily
      */
-    int[] typeCodes;
+    int[] sortedTypeCodes;
     
     @Override
     public String toString() {
@@ -306,7 +308,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         final ArrayList<FSLeafIndexImpl<? extends T>> tempSubIndexCache = new ArrayList<FSLeafIndexImpl<? extends T>>();
         final int len = allTypes.size();
         if (indexKind == FSIndex.SORTED_INDEX) {
-          typeCodes = new int[len];
+          sortedTypeCodes = new int[len];
         }
         
         for (int i = 0; i < len; i++) {
@@ -320,11 +322,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             throw new RuntimeException("never happen");
           }
           if (indexKind == FSIndex.SORTED_INDEX) {
-            typeCodes[i] = leafIndex.getTypeCode();
+            sortedTypeCodes[i] = leafIndex.getTypeCode();
           }
         }
         this.cachedSubFsLeafIndexes = tempSubIndexCache; 
         if (this.fsLeafIndex.getIndexingStrategy() == FSIndex.SORTED_INDEX) {
+          Arrays.sort(sortedTypeCodes);
           this.flatIndex = new FSIndexFlat<>(this); // must follow cachedSubFsLeafIndexes setup
         }
         // assign to "volatile" at end, after all initialization is complete
@@ -434,27 +437,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
     }
     
-    int[] createIndexUpdateCountsAtReset() {
-      final int ni = cachedSubFsLeafIndexes.size();
-      int [] ia = new int[ni];
-      for (int i = 0; i < ni; i++) { 
-        ia[i] = detectIllegalIndexUpdates[typeCodes[i]];
-      }
-      return ia;
+    Int2IntArrayMapFixedSize createIndexUpdateCountsAtReset() {
+      Int2IntArrayMapFixedSize m = new Int2IntArrayMapFixedSize(sortedTypeCodes.length);
+      captureIndexUpdateCounts(m);
+      return m;
     }
     
-    void captureIndexUpdateCounts(int [] ia) {
-      final int ni = ia.length;
-      for (int i = 0; i < ni; i++) {
-        ia[i] = detectIllegalIndexUpdates[typeCodes[i]];
-      }      
+    void captureIndexUpdateCounts() {
+      captureIndexUpdateCounts(this.flatIndex.indexUpdateCountsResetValues);
+    }
+    
+    private void captureIndexUpdateCounts(Int2IntArrayMapFixedSize m) {
+      final int[] localSortedTypeCodes = sortedTypeCodes;
+      for (int i = 0; i < localSortedTypeCodes.length; i++) {
+        m.putAtIndex(i, detectIllegalIndexUpdates[localSortedTypeCodes[i]]);
+      } 
     }
     
     boolean isUpdateFreeSinceLastCounterReset() {
-      final int[] ia = flatIndex.indexUpdateCountsResetValues;
-      final int ni = ia.length;
-      for (int i = 0; i < ni; i++) {
-        if (ia[i] != detectIllegalIndexUpdates[typeCodes[i]]) {
+      final Int2IntArrayMapFixedSize typeCode2updateCount = this.flatIndex.indexUpdateCountsResetValues;
+      final int[] localSortedTypeCodes = sortedTypeCodes;
+      for (int i = 0; i < localSortedTypeCodes.length; i++) {
+        if (typeCode2updateCount.getAtIndex(i) != detectIllegalIndexUpdates[localSortedTypeCodes[i]]) {
           return false;
         }
       }
@@ -462,21 +466,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
         
     boolean isUpdateFreeSinceLastCounterReset(final int typeCode) {
-      final int[] ia = flatIndex.indexUpdateCountsResetValues;
-      final int ni = ia.length;
-      for (int i = 0; i < ni; i++) {
-        final int localTypeCode = typeCodes[i];
-        if (typeCode != localTypeCode) {
-          continue;
-        }
-        if (ia[i] != detectIllegalIndexUpdates[localTypeCode]) {
-          return false;
-        }
-        break; // just checking one typecode, and found it; no need to check others
-      }
-      return true;
+      return this.flatIndex.indexUpdateCountsResetValues.get(typeCode, sortedTypeCodes) == 
+          detectIllegalIndexUpdates[typeCode];
     }
-
+      
     boolean subsumes(int superType, int subType) {
       return cas.getTypeSystemImpl().subsumes(superType,  subType);
     }
@@ -2893,7 +2886,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             if (FSIndexFlat.trace) {
               System.out.format("FSIndexFlattened getAllIndexedFS use: %s%n", flatIterator.toString());
             }
-            iteratorList.add(flatIterator.toLLiterator());
+            iteratorList.add(flatIterator);
             return;
           }
         }

@@ -68,6 +68,9 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * overlap the span of <code>a</code>.
    * </p>
    * 
+   * <p>An unambiguous iterator makes a snapshot copy of the index containing just the disambiguated items, and 
+   * iterates over that.  It doesn't check for concurrent index modifications (the ambiguous iterator does check for this).
+   * 
    * @param ambiguous
    *          If set to false, iterator will be unambiguous.
    * @return A annotation iterator.

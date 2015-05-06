@@ -34,6 +34,8 @@ import org.apache.uima.cas.text.AnnotationFS;
  * <p>
  * Warning: this implementation creates a copy of the collection, so changes in the underlying
  * collection are not reflected by this iterator.
+ * </p>  
+ * <p>This iterator does not check for concurrent modifications and doesn't throw ConcurrentModificationExceptions.</p>
  * 
  * 
  */

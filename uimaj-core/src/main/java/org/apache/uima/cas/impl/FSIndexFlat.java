@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl.IndexIteratorCachePair;
+import org.apache.uima.internal.util.Int2IntArrayMapFixedSize;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -105,7 +106,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
    * The inner class implementing the Iterator
    * The class can't be static - makes ref to "T" invalid
    ******************************************** */
-  public static class FSIteratorFlat<TI extends FeatureStructure> extends FSIteratorImplBase<TI> {
+  public static class FSIteratorFlat<TI extends FeatureStructure> extends FSIteratorImplBase<TI> implements LowLevelIterator {
     /**
      * iterator's Feature Structure array, points to the instance
      * in existence when the iterator was created, from the FSIndex
@@ -158,7 +159,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
         throw new NoSuchElementException();
       }
       final TI fs = ifsa[pos];
-      final int typeCode = ((TypeImpl)(fs.getType())).getCode();
+      final int typeCode = ((FeatureStructureImpl)fs).getTypeCode();
       if (debugTypeCodeUnstable) {
         if ((fs instanceof TOP) &&  // insures jcas in use
             !iicp.subsumes(((TOP)fs).jcasType.casTypeCode, typeCode)) { 
@@ -254,62 +255,25 @@ public class FSIndexFlat<T extends FeatureStructure> {
           fsIndexFlat.idInfo());
     }
     
-    // A special wrapper that is just for getAllIndexed FS
-    //   Doesn't implement moveTo(fs)
-    public LowLevelIterator toLLiterator() {
-      return new LowLevelIterator() {
-        
-        @Override
-        public void moveToPrevious() {
-          FSIteratorFlat.this.moveToPrevious();
-        }
-        
-        @Override
-        public void moveToNext() {
-          FSIteratorFlat.this.moveToNext();
-        }
-        
-        @Override
-        public void moveToLast() {
-          FSIteratorFlat.this.moveToLast();
-        }
-        
-        @Override
-        public void moveToFirst() {
-          FSIteratorFlat.this.moveToFirst();
-        }
-        
-        @Override
-        public void moveTo(int fsRef) {
-          throw new UnsupportedOperationException();
-        }
-        
-        @Override
-        public int ll_indexSize() {
-          throw new UnsupportedOperationException();
-        }
-        
-        @Override
-        public LowLevelIndex ll_getIndex() {
-          throw new UnsupportedOperationException();
-        }
-        
-        @Override
-        public int ll_get() throws NoSuchElementException {
-          FeatureStructureImpl fsi = (FeatureStructureImpl) FSIteratorFlat.this.get();
-          return fsi.getAddress();
-        }
-        
-        @Override
-        public boolean isValid() {
-          return FSIteratorFlat.this.isValid();
-        }
-        
-        @Override
-        public Object copy() {
-          throw new UnsupportedOperationException();
-        }
-      };
+    // methods for low level iterator
+    @Override
+    public int ll_get() throws NoSuchElementException {
+      return ((FeatureStructureImpl) get()).getAddress();
+    }
+
+    @Override
+    public void moveTo(int fsRef) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int ll_indexSize() {
+      return ifsa.length;
+    }
+
+    @Override
+    public LowLevelIndex ll_getIndex() {
+      throw new UnsupportedOperationException();
     }
   }
   
@@ -317,7 +281,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
    * A reference to the non-flat shared index iterator cache pair
    */
   private final IndexIteratorCachePair<T> iicp;
-    
+
   /**
    * The flattened version of the above, or null
    * set under fsaLock
@@ -352,7 +316,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
    * These are read on multiple threads to determine if a 
    * flattened iterator is still valid.
    */
-  final int[] indexUpdateCountsResetValues;
+  final Int2IntArrayMapFixedSize indexUpdateCountsResetValues;
   
   /**
    * a map from type codes to offsets in indexUpdateCountsResetValues
@@ -386,12 +350,8 @@ public class FSIndexFlat<T extends FeatureStructure> {
    */
   public FSIndexFlat(IndexIteratorCachePair<T> iicp) {
     this.iicp = iicp;
+    
     indexUpdateCountsResetValues = iicp.createIndexUpdateCountsAtReset();
-//    offset_indexUpdateCountsAtReset = new Int2IntHashMap(iicp.typeCodes.length);
-//    int i = 0;
-//    for (int typeCode : iicp.typeCodes) {
-//      offset_indexUpdateCountsAtReset.put(typeCode, i++);
-//    }
     debugTypeCode = iicp.getFsLeafIndex().getTypeCode();
     casResetCount = iicp.getCASImpl().getCasResets();
     casId = iicp.getCASImpl().getCasId();
@@ -524,7 +484,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
       System.out.println(String.format("Detected cas reset while iterating in %s", idInfo()));
       return null;
     }
-    int topCode = iicp.typeCodes[0];
+    int topCode = iicp.getFsLeafIndex().getTypeCode();
     String m;
     if (topCode != debugTypeCode || topCode != iicp.getFsLeafIndex().getTypeCode()) {
       m = String.format("TypeCodesWrong: iicp[0]: %d, original=%d, leafindex=%d%n",
@@ -570,7 +530,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
   
   void captureIndexUpdateCounts() {
     iteratorReorderingCount = 0;
-    iicp.captureIndexUpdateCounts(indexUpdateCountsResetValues);
+    iicp.captureIndexUpdateCounts();
     if (trace || smalltrace) {
       casResetCount = iicp.getCASImpl().getCasResets();
     }

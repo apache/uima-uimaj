@@ -46,7 +46,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
   }
 
   /**
-   * Create a disambiguated iterator.
+   * Create a disambiguated iterator.  No concurrent modification exception checking is done.
    * 
    * @param it
    *          The iterator to be disambiguated.
@@ -71,6 +71,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     }
   }
 
+  
   Subiterator(FSIterator<T> it, AnnotationFS annot, final boolean ambiguous, final boolean strict) {
     this();
     if (ambiguous) {
