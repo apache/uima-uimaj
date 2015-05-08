@@ -98,6 +98,9 @@ public class ResourcePool {
     mNumInstances = aNumInstances;
 
     fillPool(aResourceSpecifier, aResourceClass, aResourceInitParams);
+
+    // store metadata so it can be accessed without a check-out
+    mMetaData = mAllInstances.get(0).getMetaData();
   }
 
   /**
@@ -245,11 +248,6 @@ public class ResourcePool {
 
       mAllInstances.add(resource);
       mFreeInstances.add(resource);
-
-      // store metadata so it can be accessed without a check-out
-      if (i == 0) {
-        mMetaData = resource.getMetaData();
-      }
     }
   }
 
@@ -261,11 +259,11 @@ public class ResourcePool {
     return mFreeInstances;
   }
 
-  private Vector<Resource> mAllInstances = new Vector<Resource>();
+  private final Vector<Resource> mAllInstances = new Vector<Resource>();
 
-  private Vector<Resource> mFreeInstances = new Vector<Resource>();
+  private final Vector<Resource> mFreeInstances = new Vector<Resource>();
 
-  private int mNumInstances;
+  private final int mNumInstances;
 
-  private ResourceMetaData mMetaData;
+  private final ResourceMetaData mMetaData;
 }
