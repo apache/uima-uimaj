@@ -40,6 +40,9 @@ import org.apache.uima.internal.util.ComparableIntPointerIterator;
  *       excluded from this discussion because this class is only for int iterators.
  *    
  * This class is the superclass of the 3 standard int iterators, and the SnapshotPointerIterator.
+ * 
+ * It is an iterator for just one UIMA type (excludes subtypes).  Other wrappers handle combining
+ * multiple of these kinds of iterators into one covering all the subtypes.
  *   
  */
 public abstract class FSIntIteratorImplBase<T extends FeatureStructure> 
