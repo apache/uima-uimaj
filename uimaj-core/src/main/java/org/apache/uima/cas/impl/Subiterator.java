@@ -33,7 +33,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  */
 public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 
-  private ArrayList<T> list;
+  final private ArrayList<T> list;
 
   private int pos;
 
@@ -42,6 +42,12 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
   private Subiterator() {
     super();
     this.list = new ArrayList<T>();
+    this.pos = 0;
+  }
+  
+  private Subiterator(ArrayList<T> list) {
+    super();
+    this.list = list;
     this.pos = 0;
   }
 
@@ -126,7 +132,6 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       return;
     }
     annot = it.get();
-    this.list = new ArrayList<T>();
     // Skip annotations with begin positions before the given start
     // position.
     while (it.isValid() && ((start > annot.getBegin()) || (strict && annot.getEnd() > end))) {
@@ -264,8 +269,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   public FSIterator<T> copy() {
-    Subiterator<T> copy = new Subiterator<T>();
-    copy.list = this.list;
+    Subiterator<T> copy = new Subiterator<T>(this.list);;
     copy.pos = this.pos;
     return copy;
   }
