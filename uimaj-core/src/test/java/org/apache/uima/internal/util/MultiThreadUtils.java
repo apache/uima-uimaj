@@ -270,4 +270,115 @@ public class MultiThreadUtils extends TestCase {
       }
     }
   }
+
+  /*
+   * Thread management utilities
+   */
+  
+  public final static int THREAD_ABOUT_TO_WAIT = 1;
+  public final static int THREAD_RUNNING = 2;
+  private final static int THREAD_TERMINATE = 3;
+  private final static int THREAD_ABOUT_TO_RUN = 4;
+  
+  public static class ThreadM extends Thread {   
+    public ThreadM(Runnable runnable) {
+      super(runnable);
+    }
+    
+    public ThreadM() {
+      super();
+    }
+
+    public volatile int state = 0;
+  }
+  
+  public static void waitForAllReady(ThreadM[] threads) {
+    for (ThreadM thread : threads) {
+      wait4wait(thread);
+    }    
+  }
+  
+//  public static void waitForAllTerminate(ThreadM[] threads) {
+//    for (Thread t : threads) {
+//      while (true) {
+//        if (t.getState() == Thread.State.TERMINATED) {
+//          break;
+//        }
+//        sleep(10000);
+//      }
+//    }
+//  }
+
+  public static void sleep(int nanoSeconds) {
+    try {
+      Thread.sleep(0, nanoSeconds); 
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static void wait4wait(ThreadM t) {
+    while (true) {
+      if (t.state == THREAD_ABOUT_TO_WAIT && t.getState() == Thread.State.WAITING) {
+        return;
+      }
+      sleep(1000);
+    }
+  }
+  /**
+   * 
+   * @param t the thread
+   * @return true if running, false if time to terminate
+   */
+  public static boolean wait4go(ThreadM t) {
+    synchronized(t) {
+      try {
+        t.state = THREAD_ABOUT_TO_WAIT;
+        t.wait();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    if (t.state == MultiThreadUtils.THREAD_TERMINATE) {
+      return false;
+    }
+    t.state = MultiThreadUtils.THREAD_RUNNING;
+    return true;
+  }
+  
+  public static void kickOffThreads(ThreadM[] threads) {
+    waitForAllReady(threads);
+    // after all threads in wait state, rapidly release them
+    for (ThreadM t : threads) {
+      synchronized (t) {
+        t.state = THREAD_ABOUT_TO_RUN;
+        t.notify();
+//        System.out.println("Debug notifying thread " + thread.getName());
+      }
+    } 
+    // insure all threads started
+    for (ThreadM t : threads) {
+      wait4start(t);
+    }  
+  }
+  
+  private static void wait4start(ThreadM t) {
+    while (true) {
+      if (t.state != THREAD_ABOUT_TO_RUN || t.getState() == Thread.State.RUNNABLE) {
+        return;
+      }
+      sleep(1000);
+    }
+  }
+  
+  public static void terminateThreads(ThreadM[] threads) {
+    for (ThreadM t : threads) {
+      wait4wait(t);
+      t.state = THREAD_TERMINATE;
+      synchronized (t) {
+        t.notify();
+      }
+    }    
+  }
+
 }

@@ -50,6 +50,7 @@ import org.apache.uima.cas.impl.LowLevelIterator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -400,44 +401,52 @@ public class IteratorTest extends TestCase {
     int numberOfCores = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
     
     System.out.println("test multicore iterator with " + numberOfCores + " threads");
-    Thread[] threads = new Thread[numberOfCores];
+    MultiThreadUtils.ThreadM[] threads = new MultiThreadUtils.ThreadM[numberOfCores];
     
     final Throwable[] tthrowable = new Throwable[1];  // trick to get a return value in a parameter
     tthrowable[0] = null;
     
-    for (int r = 0; r < 10; r++) {
-      for (int i = 0; i < numberOfCores; i++) {
-        final int finalI = i;
-        threads[i] = new Thread(new Runnable() {
-  
-          public void run() {
-            try {
+    for (int i = 0; i < numberOfCores; i++) {
+      final int finalI = i;
+      threads[i] = new MultiThreadUtils.ThreadM() {
+
+        public void run() {
+          try {
+            while (true) {
+              if (!MultiThreadUtils.wait4go(this)) {
+                break;
+              }
               setIteratorWithoutMods(setIndex, finalI);
               sortedIteratorWithoutMods(sortedIndex);
               bagIteratorWithoutMods(bagIndex);
-            } catch (Throwable e) {
-              tthrowable[0] = e;
-              e.printStackTrace();
-              throw new RuntimeException(e);
             }
-          }} );
-        threads[i].start();
-      }
+          } catch (Throwable e) {
+            tthrowable[0] = e;
+            e.printStackTrace();
+            throw new RuntimeException(e);
+          }
+        }};
+      threads[i].start();      
+    }
+    
+    
+    for (int r = 0; r < 10; r++) {
+            
+      MultiThreadUtils.kickOffThreads(threads);
+      
+      MultiThreadUtils.waitForAllReady(threads);
+      
       for (int i = 0; i < numberOfCores; i++) {
-        try {
           if (tthrowable[0] != null) {
             assertTrue(false);
           }
-          threads[i].join();
           if (tthrowable[0] != null) {
             assertTrue(false);
           }
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-          assertTrue(false);
-        }
       }
     }
+    
+    MultiThreadUtils.terminateThreads(threads);
   }
   
   public void testIterator() {

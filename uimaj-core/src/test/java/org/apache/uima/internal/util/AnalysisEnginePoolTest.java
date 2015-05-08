@@ -123,10 +123,12 @@ public class AnalysisEnginePoolTest extends TestCase {
         threads[i] = new ProcessThread(pool, i);
         threads[i].start();
       }
+      
+      MultiThreadUtils.kickOffThreads(threads);
+      
+      MultiThreadUtils.waitForAllReady(threads);
 
-      // wait for threads to finish and check if they got exceptions
       for (int i = 0; i < NUM_THREADS; i++) {
-        threads[i].join();
         Throwable failure = threads[i].getFailure();
         if (failure != null) {
           if (failure instanceof Exception) {
@@ -145,6 +147,7 @@ public class AnalysisEnginePoolTest extends TestCase {
       resultSpec.addResultType("NamedEntity", true);
       assertEquals(resultSpec, TestAnnotator.getLastResultSpec());
 
+      MultiThreadUtils.terminateThreads(threads);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -228,22 +231,27 @@ public class AnalysisEnginePoolTest extends TestCase {
     }
   }
 
-  class ProcessThread extends Thread {
+  class ProcessThread extends MultiThreadUtils.ThreadM {
     ProcessThread(AnalysisEnginePool aPool, int aId) {
       mPool = aPool;
       mId = aId;
     }
 
     public void run() {
-      try {
-        // System.out.println("thread started");
-        _testProcess(mPool, mId);
-        // System.out.println("thread finished");
-      } catch (Throwable t) {
-        t.printStackTrace();
-        //can't cause unit test to fail by throwing exception from thread.
-        //record the failure and the main thread will check for it later.
-        mFailure = t;
+      while (true) {
+        try {
+          if (!MultiThreadUtils.wait4go(this)) {
+            break;
+          }
+          // System.out.println("thread started");
+          _testProcess(mPool, mId);
+          // System.out.println("thread finished");
+        } catch (Throwable t) {
+          t.printStackTrace();
+          //can't cause unit test to fail by throwing exception from thread.
+          //record the failure and the main thread will check for it later.
+          mFailure = t;
+        }
       }
     }
     

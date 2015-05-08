@@ -57,6 +57,8 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
+import org.apache.uima.internal.util.MultiThreadUtils;
+import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.resource.metadata.FsIndexDescription;
@@ -259,16 +261,20 @@ public class XmiCasDeserializerTest extends TestCase {
   	
 		public void run() {
 			try {
-				serialize(cas, null);
+			  while (true) {
+  			  if (!MultiThreadUtils.wait4go((ThreadM) Thread.currentThread())) {
+  			    break;
+  			  }
+  
+  			  serialize(cas, null);
+			  }
 //				serialize(cas, null);
 //				serialize(cas, null);
 //				serialize(cas, null);
 			} catch (IOException e) {
-			
-				e.printStackTrace();
+			  throw new RuntimeException(e);
 			} catch (SAXException e) {
-				
-				e.printStackTrace();
+        throw new RuntimeException(e);				
 			}
 		}
   }
@@ -301,23 +307,29 @@ public class XmiCasDeserializerTest extends TestCase {
     	CasCopier.copyCas(cas, cases[i], true);
     }
     
-    // start n threads, serializing as XMI   
+    // start n threads, serializing as XMI
+    MultiThreadUtils.ThreadM [] threads = new MultiThreadUtils.ThreadM[MAX_THREADS];
+    for (int i = 0; i < MAX_THREADS; i++) {
+      threads[i] = new MultiThreadUtils.ThreadM(new DoSerialize(cases[i]));
+      threads[i].start();
+    }
+    MultiThreadUtils.waitForAllReady(threads);
     
     for (int i = 0; i < threadsToUse.length; i++) {
-    	Thread [] threads = new Thread[MAX_THREADS];
+      MultiThreadUtils.ThreadM[] sliceOfThreads = new MultiThreadUtils.ThreadM[threadsToUse[i]];
+      System.arraycopy(threads, 0, sliceOfThreads, 0, threadsToUse[i]);
+      
     	long startTime = System.currentTimeMillis();
-    	for (int ti = 0; ti < threadsToUse[i]; ti++) {
-    		threads[ti] = new Thread(new DoSerialize(cases[ti]));
-    		
-    		threads[ti].start();
-    	}
-    	for (int ti = 0; ti < threadsToUse[i]; ti++) {
-    		threads[ti].join();
-    		//System.out.print(" "+ ti);
-    	}
+    	
+    	MultiThreadUtils.kickOffThreads(sliceOfThreads);
+    	
+    	MultiThreadUtils.waitForAllReady(sliceOfThreads);
+    	
     	System.out.println("\nNumber of threads serializing: " + threadsToUse[i] + 
     			               "  Normalized millisecs (should be close to the same): " + (System.currentTimeMillis() - startTime) / threadsToUse[i]);
     }
+    
+    MultiThreadUtils.terminateThreads(threads);
   }
 
   public void testDeltaCasIndexExistingFsInView() throws Exception {

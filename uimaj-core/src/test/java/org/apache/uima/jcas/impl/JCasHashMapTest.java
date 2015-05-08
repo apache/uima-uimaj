@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.impl;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -203,45 +204,49 @@ public class JCasHashMapTest extends TestCase {
 
     Thread thisThread = Thread.currentThread();
     final int subThreadPriority = thisThread.getPriority();
-    thisThread.setPriority(subThreadPriority - 1);  
+    thisThread.setPriority(subThreadPriority - 1);
+    final MultiThreadUtils.ThreadM[] threads = new MultiThreadUtils.ThreadM[numberOfThreads];
+    final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+    final Random r = new Random();  // used to sleep from 0 to 4 milliseconds
+    final int hashKey = 15;
+    final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
+    final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
+    
+    for (int i = 0; i < numberOfThreads; i++) {
+      final int finalI = i;
+      threads[i] = new MultiThreadUtils.ThreadM() {
+            public void run() {
+              while (true) {
+                if (!MultiThreadUtils.wait4go(this)) {
+                  break;
+                }
+                MultiThreadUtils.sleep(r.nextInt(500000)); // 0-500 microseconds 
+                found[finalI] = m.getReserve(hashKey);
+              }
+            }
+          };
+      threads[i].setPriority(subThreadPriority);
+      threads[i].start();
+    }    
 
     for (int loopCount = 0; loopCount < 10; loopCount ++) {
       System.out.println("  JCasHashMap collide loop count is " + loopCount);
-      final Random r = new Random();  // used to sleep from 0 to 4 milliseconds
-      final int hashKey = 15;
-      final TOP fs = new TOP(hashKey, FAKE_TOP_TYPE_INSTANCE);
   
       // create threads and start them
-      // note: this needs to be fixed, following the discovery that creating a thread takes much longer than expected;
-      // use the Executor framework instead and create the threads ahead of time.  See or use MultiThreadUtils
       for (int th = 2; th <= numberOfThreads; th *= 2) {
         JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
-        final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
-    
-        final Thread[] threads = new Thread[numberOfThreads];
-        final FeatureStructureImpl[] found = new FeatureStructureImpl[numberOfThreads];
+        Arrays.fill(found,  null);
+        m.clear();
         
-        for (int i = 0; i < numberOfThreads; i++) {
-          final int finalI = i;
-          threads[i] = new Thread(new Runnable() {
-            public void run() {
-              try {
-                Thread.sleep(r.nextInt(5));
-              } catch (InterruptedException e) {
-              }
-              found[finalI] = m.getReserve(hashKey);
-            }
-          });
-          threads[i].setPriority(subThreadPriority);
-          threads[i].start();
-        }
+        MultiThreadUtils.kickOffThreads(threads);  
+
         Thread.sleep(20); 
         // verify that one thread finished, others are waiting, because of the reserve.
         // this assumes that all the threads got to run.
         int numberWaiting = 0;
         int threadFinished = -1;
         for (int i = 0; i < numberOfThreads; i++) {
-          if (threads[i].isAlive()) {
+          if (threads[i].state == MultiThreadUtils.THREAD_RUNNING) {
             numberWaiting ++;
           } else {
             threadFinished = i;
@@ -251,28 +256,30 @@ public class JCasHashMapTest extends TestCase {
         assertEquals(numberOfThreads - 1, numberWaiting);  // expected 7 but was 8
         m.put(fs);
         found[threadFinished] = fs;
-   
-        // loop a few times to give enough time for the other threads to finish.
-        long startOfWait = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startOfWait < 30000) { // wait up to 30 seconds in case of machine stall
-                  
-          // Attempt to insure we let the threads under test run in preference to this one       
-          Thread.sleep(20);   // imprecise.  Intent is to allow other thread that was waiting, to run
-                              // before this thread resumes.  Depends on thread priorities, but
-                              // multiple threads could be running at the same time.
-          
-          numberWaiting = 0;
-          for (int i = 0; i < numberOfThreads; i++) {
-            if (threads[i].isAlive()) {
-              numberWaiting ++;
-            }
-          }
-          if (numberWaiting == 0) {
-            break;
-          }
-        }
         
-        assertEquals(0, numberWaiting);  // if not 0 by now, something is likely wrong, or machine stalled more than 30 seconds
+        MultiThreadUtils.waitForAllReady(threads);
+   
+//        // loop a few times to give enough time for the other threads to finish.
+//        long startOfWait = System.currentTimeMillis();
+//        while (System.currentTimeMillis() - startOfWait < 30000) { // wait up to 30 seconds in case of machine stall
+//                  
+//          // Attempt to insure we let the threads under test run in preference to this one       
+//          Thread.sleep(20);   // imprecise.  Intent is to allow other thread that was waiting, to run
+//                              // before this thread resumes.  Depends on thread priorities, but
+//                              // multiple threads could be running at the same time.
+//          
+//          numberWaiting = 0;
+//          for (int i = 0; i < numberOfThreads; i++) {
+//            if (threads[i].state == MultiThreadUtils.THREAD_RUNNING) {
+//              numberWaiting ++;
+//            }
+//          }
+//          if (numberWaiting == 0) {
+//            break;
+//          }
+//        }
+        
+//        assertEquals(0, numberWaiting);  // if not 0 by now, something is likely wrong, or machine stalled more than 30 seconds
   //      System.out.format("JCasHashMapTest collide,  found = %s%n", intList(found));
         for (FeatureStructureImpl f : found) {
           if (f != fs) {
@@ -282,6 +289,8 @@ public class JCasHashMapTest extends TestCase {
         }
       }
     }
+    
+    MultiThreadUtils.terminateThreads(threads);
   }
   
 
