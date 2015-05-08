@@ -28,7 +28,6 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.impl.UnambiguousIteratorImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -118,8 +117,11 @@ public class SubiteratorTest extends TestCase {
     Annotation sentence = jcas.getAnnotationIndex(Sentence.class).iterator().next();
     FSIterator<Token> tokenIterator = tokenIndex.subiterator(sentence);
     Annotation token = tokenIndex.iterator().next();
-    tokenIterator.moveTo(token); //throws ClassCastException    
-    UnambiguousIteratorImpl<Token> it = new UnambiguousIteratorImpl<Token>(tokenIndex.iterator());
+    tokenIterator.moveTo(token); //throws ClassCastException 
+    
+    // check unambiguous iterator creation
+    
+    FSIterator<Token> it = tokenIndex.iterator(false);
     it.moveTo(token);
   }
 
