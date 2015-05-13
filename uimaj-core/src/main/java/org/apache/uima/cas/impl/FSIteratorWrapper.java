@@ -19,8 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntPointerIterator;
 
 public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImplBase<T> {
@@ -33,10 +36,17 @@ public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImp
   IntPointerIterator it;
 
   CASImpl casImpl;
+  
+  final int beginOffset;
+  final int endOffset;
+  
 
   FSIteratorWrapper(IntPointerIterator it, CASImpl casImpl) {
     this.it = it;
     this.casImpl = casImpl;
+    TypeSystemImpl tsi = casImpl.getTypeSystemImpl(); 
+    beginOffset = casImpl.getFeatureOffset(tsi.startFeatCode);
+    endOffset = casImpl.getFeatureOffset(tsi.endFeatCode);
   }
 
   /**
@@ -94,5 +104,22 @@ public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImp
   public void moveTo(FeatureStructure fs) {
     this.it.moveTo(((FeatureStructureImpl) fs).getAddress());
   }
+
+  @Override
+  int getBegin() {
+    return casImpl.getHeapValue(it.get() + beginOffset);
+  }
+
+  @Override
+  int getEnd() {
+    return casImpl.getHeapValue(it.get() + endOffset);
+  }
+
+  @Override
+  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+    ((FSIteratorImplBase<TT>)it).moveTo(begin, end);
+  }
+  
+  
 
 }

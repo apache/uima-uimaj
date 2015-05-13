@@ -19,9 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.FSIndexFlat.FSIteratorFlat;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Only used for debugging
@@ -31,6 +34,7 @@ import org.apache.uima.cas.impl.FSIndexFlat.FSIteratorFlat;
  */
 public class FSIteratorWrapperDoubleCheck<T extends FeatureStructure> extends FSIteratorImplBase<T> {
   
+
   @Override
   public String toString() {
     return "FSIteratorWrapper [it=" + nonFlatIterator + "]";
@@ -134,6 +138,16 @@ public class FSIteratorWrapperDoubleCheck<T extends FeatureStructure> extends FS
     this.nonFlatIterator.moveTo(fs);
     this.flatIterator.moveTo(fs);
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+   */
+  @Override
+  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+    ((FSIteratorImplBase<TT>)(this.nonFlatIterator)).moveTo(begin, end);
+    this.flatIterator.moveTo(begin, end);
+  }
+
 
   private void error(String msg) {
     msg = flatIterator.verifyFsaSubsumes() + msg;

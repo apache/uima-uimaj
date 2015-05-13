@@ -34,7 +34,7 @@ import org.apache.uima.cas.text.AnnotationTree;
  *     customization for additional fns and
  *     a ref to it's enclosing instance of the FSIndexRepositoryImpl.
  */
-public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIndex<T> {
+public class AnnotationIndexImpl <T extends AnnotationFS> implements AnnotationIndex<T> {
 
   private FSIndex<T> index;
   
@@ -134,7 +134,10 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
     if (ambiguous) {
       return (FSIterator<T>) this.index.iterator();
     }
-    return new Subiterator<T>((FSIterator<T>) this.index.iterator());
+    // return non-constrained, non-strict, unambiguous iterator
+    boolean strict = true;
+    boolean isBounded = false;
+    return new Subiterator<T>(this.index.iterator(), null, 0, 0, ambiguous, strict, isBounded, ((FSIndexRepositoryImpl.IndexImpl<T>)(this.index)).getFsRepositoryImpl());
   }
 
   /*
@@ -155,7 +158,8 @@ public class AnnotationIndexImpl<T extends AnnotationFS> implements AnnotationIn
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    return new Subiterator<T>((FSIterator<T>)this.index.iterator(), annot, ambiguous, strict);
+    boolean isBounded = true;
+    return new Subiterator<T>(this.index.iterator(), annot, 0, 0, ambiguous, strict, isBounded, ((FSIndexRepositoryImpl.IndexImpl<T>)(this.index)).getFsRepositoryImpl());
   }
 
   /*

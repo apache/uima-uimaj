@@ -19,11 +19,13 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Implements a filtered iterator.
@@ -58,34 +60,40 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
     // can simply refer to the underlying iterator.
     return this.it.isValid();
   }
-
-  public void moveToFirst() {
-    this.it.moveToFirst();
+  
+  private void adjustForConstraintForward() {
     // If the iterator is valid, but doesn't match the constraint, advance.
     while (this.it.isValid() && !this.cons.match(this.it.get())) {
       this.it.moveToNext();
-    }
+    }    
+  }
+  
+  private void adjustForConstraintBackward() {
+    // If the iterator is valid, but doesn't match the constraint, advance.
+    while (this.it.isValid() && !this.cons.match(this.it.get())) {
+      this.it.moveToPrevious();
+    }    
+  }
+  
+
+  public void moveToFirst() {
+    this.it.moveToFirst();
+    adjustForConstraintForward();
   }
 
   public void moveToLast() {
     this.it.moveToLast();
-    while (this.it.isValid() && !this.cons.match(this.it.get())) {
-      this.it.moveToPrevious();
-    }
+    adjustForConstraintBackward();
   }
 
   public void moveToNext() {
     this.it.moveToNext();
-    while (this.it.isValid() && !this.cons.match(this.it.get())) {
-      this.it.moveToNext();
-    }
+    adjustForConstraintForward();
   }
 
   public void moveToPrevious() {
     this.it.moveToPrevious();
-    while (this.it.isValid() && !this.cons.match(this.it.get())) {
-      this.it.moveToPrevious();
-    }
+    adjustForConstraintBackward();
   }
 
   public T get() throws NoSuchElementException {
@@ -105,9 +113,15 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
    */
   public void moveTo(FeatureStructure fs) {
     this.it.moveTo(fs);
-    if (!this.cons.match(this.it.get())) {
-      moveToNext();
-    }
+    adjustForConstraintForward();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+   */
+  @Override
+  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+    ((FSIteratorImplBase<T>)(this.it)).moveTo(begin, end);
+    adjustForConstraintForward();
+  }
 }

@@ -19,8 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Base class for FSIterator implementations. Defines the hasNext, next, and remove methods required
@@ -71,6 +74,25 @@ public abstract class FSIteratorImplBase<T extends FeatureStructure> implements 
    * @see java.util.Iterator#remove()
    */
   public void remove() {
+    throw new UnsupportedOperationException();
+  }
+  
+  // methods to be overridden that can speed up this operation
+  int getBegin() {
+    return ((AnnotationFS)get()).getBegin();
+  }
+  
+  int getEnd() {
+    return ((AnnotationFS)get()).getEnd();
+  }
+  
+  /**
+   * A special version of moveTo for subtypes of AnnotationFS, which moves to a particular begin/end
+   * (no type priority). 
+   * @param begin the starting point (inclusive)
+   * @param end the ending point (inclusive)
+   */
+  <TT extends AnnotationFS> void moveTo(int begin, int end) {
     throw new UnsupportedOperationException();
   }
 }

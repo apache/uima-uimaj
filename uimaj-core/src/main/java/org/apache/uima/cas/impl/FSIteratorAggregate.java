@@ -21,11 +21,13 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Aggregate several FS iterators.  Simply iterates over one after the other, no sorting or merging
@@ -39,7 +41,7 @@ class FSIteratorAggregate<T extends FeatureStructure> extends FSIteratorImplBase
   // Internal contract for this class is that isValid() iff the current iterator isValid().
 
   // A list of iterators, unordered.
-  private final List<FSIterator<T>> iterators;
+  private final List<FSIteratorImplBase<T>> iterators;
   
   // The offset of the current index.
   private int iteratorIndex = 0;
@@ -48,9 +50,9 @@ class FSIteratorAggregate<T extends FeatureStructure> extends FSIteratorImplBase
    * The one and only constructor.
    * @param c Collection of input iterators.
    */
-  public FSIteratorAggregate(Collection<FSIterator<T>> c) {
+  public FSIteratorAggregate(Collection<FSIteratorImplBase<T>> c) {
     super();
-    this.iterators = new ArrayList<FSIterator<T>>();
+    this.iterators = new ArrayList<FSIteratorImplBase<T>>();
     this.iterators.addAll(c);
     // The unwritten contract of FSIterators is that they point to the first element when they are
     // constructed.  This is also one way of checking that the new iterator is valid (non-empty).
@@ -58,9 +60,9 @@ class FSIteratorAggregate<T extends FeatureStructure> extends FSIteratorImplBase
   }
 
   public FSIterator<T> copy() {
-    ArrayList<FSIterator<T>> itCopies = new ArrayList<FSIterator<T>>(this.iterators.size());
+    ArrayList<FSIteratorImplBase<T>> itCopies = new ArrayList<FSIteratorImplBase<T>>(this.iterators.size());
     for (int i = 0; i < this.iterators.size(); i++) {
-      itCopies.add(this.iterators.get(i).copy());
+      itCopies.add((FSIteratorImplBase<T>) this.iterators.get(i).copy());
     }
     FSIteratorAggregate<T> copy = new FSIteratorAggregate<T>(itCopies);
     copy.iteratorIndex = this.iteratorIndex;
@@ -162,4 +164,24 @@ class FSIteratorAggregate<T extends FeatureStructure> extends FSIteratorImplBase
     this.iteratorIndex = this.iterators.size();
   }
 
+  @Override
+  int getBegin() {
+    return this.iterators.get(this.iteratorIndex).getBegin();
+  }
+
+  @Override
+  int getEnd() {
+    // TODO Auto-generated method stub
+    return super.getEnd();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+   */
+  @Override
+  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+    throw new UnsupportedOperationException();
+  }
+
+  
 }

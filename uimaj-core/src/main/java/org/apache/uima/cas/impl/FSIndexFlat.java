@@ -20,6 +20,7 @@ package org.apache.uima.cas.impl;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -29,6 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl.IndexIteratorCachePair;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.Int2IntArrayMapFixedSize;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -107,6 +109,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
    * The class can't be static - makes ref to "T" invalid
    ******************************************** */
   public static class FSIteratorFlat<TI extends FeatureStructure> extends FSIteratorImplBase<TI> implements LowLevelIterator {
+
     /**
      * iterator's Feature Structure array, points to the instance
      * in existence when the iterator was created, from the FSIndex
@@ -155,10 +158,10 @@ public class FSIndexFlat<T extends FeatureStructure> {
 
     @Override
     public TI get() throws NoSuchElementException {
-      if (!hasNext()) {
+      if (!isValid()) {
         throw new NoSuchElementException();
       }
-      final TI fs = ifsa[pos];
+      final TI fs = (TI) ifsa[pos];
       final int typeCode = ((FeatureStructureImpl)fs).getTypeCode();
       if (debugTypeCodeUnstable) {
         if ((fs instanceof TOP) &&  // insures jcas in use
@@ -205,15 +208,27 @@ public class FSIndexFlat<T extends FeatureStructure> {
 
     @Override
     public void moveTo(FeatureStructure fs) {
-      final FSLeafIndexImpl<TI> li = iicp.getFsLeafIndex();
-      @SuppressWarnings("unchecked")
-      final TI fsTI = (TI)fs;
-      pos = Arrays.binarySearch(ifsa, fsTI, li);
+      moveToCommon((Comparator<TI>) iicp.getFsLeafIndex(), (TI)fs);     
+    }
+    
+    /* 
+     * Version for subiterator where begin and end are specified without an FS
+     * (non-Javadoc)
+     * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+     */
+    @Override
+    void moveTo(int begin, int end) {
+      moveToCommon((Comparator<TI>) (Subiterator.getAnnotationBeginEndComparator(begin, end)), null); 
+    }
+
+    //The comparator may embed the compare values, and in that case, fs may be null
+    private void moveToCommon(Comparator<TI> comparator, TI fs) {
+      pos = Arrays.binarySearch(ifsa, fs, comparator);
       if (pos < 0) {
         pos = (-pos) - 1;
         return;
       }
-      if (!hasNext()) {
+      if (!isValid()) {
         return;
       }
       TI foundFs = get();
@@ -221,15 +236,15 @@ public class FSIndexFlat<T extends FeatureStructure> {
       while (true) {
         moveToPrevious();
         if (isValid()) {
-          if (li.compare(get(), foundFs) != 0) {
-            moveToNext(); // go back
+          if (comparator.compare(get(), foundFs) != 0) {
+            moveToNext(); // go forwards back to the last valid one
             break;
           }
         } else {
           moveToFirst();  // went to before first, so go back to 1st
           break;
         }
-      }      
+      }        
     }
 
     @Override
@@ -275,6 +290,28 @@ public class FSIndexFlat<T extends FeatureStructure> {
     public LowLevelIndex ll_getIndex() {
       throw new UnsupportedOperationException();
     }
+    
+    /* (non-Javadoc)
+     * @see org.apache.uima.cas.impl.FSIteratorImplBase#getBegin()
+     */
+    @Override
+    int getBegin() {
+      // all callers validate position before call
+      final AnnotationFS fs = (AnnotationFS) ifsa[pos];
+      return fs.getBegin();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.uima.cas.impl.FSIteratorImplBase#getEnd()
+     */
+    @Override
+    int getEnd() {
+      // all callers validate position before call
+      final AnnotationFS fs = (AnnotationFS) ifsa[pos];
+      return fs.getEnd();
+    }
+
+
   }
   
   /**
