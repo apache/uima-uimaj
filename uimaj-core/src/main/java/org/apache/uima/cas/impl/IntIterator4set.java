@@ -46,6 +46,7 @@ public class IntIterator4set<T extends FeatureStructure> extends FSIntIteratorIm
     moveToFirst();
   }
 
+  @Override
   public boolean isValid() {
     return this.currentNode != NIL;
   }
@@ -53,6 +54,7 @@ public class IntIterator4set<T extends FeatureStructure> extends FSIntIteratorIm
   /**
    * If empty, make position -1 (invalid)
    */
+  @Override
   public void moveToFirst() {
     resetConcurrentModification();
     this.currentNode = intArrayRBTindex.getFirstNode();
@@ -61,21 +63,25 @@ public class IntIterator4set<T extends FeatureStructure> extends FSIntIteratorIm
   /**
    * If empty, make position -1 (invalid)
    */
+  @Override
   public void moveToLast() {
     resetConcurrentModification();
     this.currentNode = intArrayRBTindex.greatestNode;
   }
 
+  @Override
   public void moveToNext() {
     checkConcurrentModification();
     this.currentNode = intArrayRBTindex.nextNode(this.currentNode);
   }
 
+  @Override
   public void moveToPrevious() {
     checkConcurrentModification(); 
     this.currentNode = intArrayRBTindex.previousNode(this.currentNode);
   }
 
+  @Override
   public int get() {
     if (!isValid()) {
       throw new NoSuchElementException();
@@ -87,6 +93,7 @@ public class IntIterator4set<T extends FeatureStructure> extends FSIntIteratorIm
   /**
    * @see org.apache.uima.internal.util.IntPointerIterator#copy()
    */
+  @Override
   public Object copy() {
     IntIterator4set<T> copy = new IntIterator4set<T>(this.fsSetIndex, this.detectIllegalIndexUpdates, this.comp);
     copy.currentNode = this.currentNode;
@@ -96,11 +103,13 @@ public class IntIterator4set<T extends FeatureStructure> extends FSIntIteratorIm
   /**
    * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
    */
+  @Override
   public void moveTo(int i) {
     resetConcurrentModification();
     this.currentNode = intArrayRBTindex.findInsertionPoint(i);
   }
 
+  @Override
   public int ll_indexSize() {
     return fsSetIndex.size();
   }

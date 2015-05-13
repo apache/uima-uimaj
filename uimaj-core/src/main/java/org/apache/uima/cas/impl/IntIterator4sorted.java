@@ -51,20 +51,24 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
     this.itPos = 0;
   }
 
+  @Override
   public boolean isValid() {
     return ((this.itPos >= 0) && (this.itPos < this.indexIntVector.size()));
   }
 
+  @Override
   public void moveToFirst() {
     resetConcurrentModification();
     this.itPos = 0;
   }
 
+  @Override
   public void moveToLast() {
     resetConcurrentModification();
     this.itPos = this.indexIntVector.size() - 1;
   }
 
+  @Override
   public void moveToNext() {
     if (itPos < 0) {
       return;
@@ -73,6 +77,7 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
     ++this.itPos;
   }
 
+  @Override
   public void moveToPrevious() {
     if (itPos >= this.indexIntVector.size()) {
       return;
@@ -81,6 +86,7 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
     --this.itPos;
   }
 
+  @Override
   public int get() {
     if (!isValid()) {
       throw new NoSuchElementException();
@@ -92,6 +98,7 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
   /**
    * @see org.apache.uima.internal.util.IntPointerIterator#copy()
    */
+  @Override
   public Object copy() {
     IntIterator4sorted<T> copy = new IntIterator4sorted<T>(this.fsIntArrayIndex, this.detectIllegalIndexUpdates, this.comp);
     copy.itPos = this.itPos;
@@ -109,6 +116,7 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
   /**
    * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
    */
+  @Override
   public void moveTo(int i) {
     resetConcurrentModification();
     final int pos = fsIntArrayIndex.findLeftmost(i);
@@ -155,6 +163,7 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
 
 
 
+  @Override
   public int ll_indexSize() {
     return indexIntVector.size();
   }
