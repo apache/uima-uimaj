@@ -39,9 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -86,6 +84,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.BooleanArrayFSImpl;
 import org.apache.uima.cas.impl.ByteArrayFSImpl;
 import org.apache.uima.cas.impl.DoubleArrayFSImpl;
@@ -95,6 +94,7 @@ import org.apache.uima.cas.impl.LongArrayFSImpl;
 import org.apache.uima.cas.impl.ShortArrayFSImpl;
 import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.tools.viewer.EntityResolver.Entity;
@@ -174,21 +174,22 @@ public class CasAnnotationViewer extends JPanel {
       Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
 
   private CAS cas;
+  private TypeSystem typeSystem;
   private Type stringType;
   private Type fsArrayType;
   private boolean useConsistentColors = true;
-  private List<String> highFrequencyTypes = new ArrayList<String>();
-  private String[] boldFaceKeyWords = new String[0];
-  private int[] boldFaceSpans = new int[0];
-  private Set<String> hiddenFeatureNames = new HashSet<String>();
-  private Set<String> hiddenTypeNames = new HashSet<String>();
-  private Set<String> displayedTypeNames = null;
-  private Set<String> initiallySelectedTypeNames = null;
-  private boolean hideUnselectedCheckboxes = false;
-  private List<String> userTypes = null;
-  private Set<String> typesNotChecked = new HashSet<String>();
-  private Map<String, Color> typeColorMap = new HashMap<String, Color>();
-  private EntityResolver mEntityResolver = new DefaultEntityResolver();
+  private List<String> highFrequencyTypes;
+  private String[] boldFaceKeyWords;
+  private int[] boldFaceSpans;
+  private Set<String> hiddenFeatureNames;
+  private Set<String> hiddenTypeNames;
+  private Set<String> displayedTypeNames;
+  private Set<String> initiallySelectedTypeNames;
+  private boolean hideUnselectedCheckBoxes;
+  private List<String> userTypes;
+  private Set<String> typesNotChecked;
+  private Map<String, Color> typeColorMap;
+  private EntityResolver entityResolver = new DefaultEntityResolver();
 
   private boolean entityViewEnabled = false; 
   private short viewMode = MODE_ANNOTATIONS;
@@ -218,6 +219,7 @@ public class CasAnnotationViewer extends JPanel {
    * Creates a CAS Annotation Viewer.
    */
   public CasAnnotationViewer() {
+    this.viewMode = MODE_ANNOTATIONS;
     this.setLayout(new BorderLayout());
     // create a horizonal JSplitPane
     this.createHorizontalSplitPane();
@@ -229,23 +231,36 @@ public class CasAnnotationViewer extends JPanel {
     this.add(this.createControlPanel(), BorderLayout.SOUTH);
 
     // initialize hidden feature names map
-    this.hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+    this.hiddenFeatureNames = new HashSet<String>(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
   }
 
   private JPanel createControlPanel() {
-    JPanel buttonPanel = new JPanel();
-    this.createSelectAllButton();
-    buttonPanel.add(this.selectAllButton);
-    this.createDeselectAllButton();
-    buttonPanel.add(this.deselectAllButton);
-    this.createShowHidenUnselectedButton();
-    buttonPanel.add(this.showHideUnselectedButton);
-    this.createSofaSelectionPanel();
-    buttonPanel.add(this.sofaSelectionPanel);
-    this.createViewModePanel();
-    buttonPanel.add(this.viewModePanel);
+    JPanel controlPanel = new JPanel();
+    controlPanel.setLayout(new BorderLayout());
+    controlPanel.add(this.createViewPanel(), BorderLayout.CENTER);
+    controlPanel.add(this.createSelectButtonPanel(), BorderLayout.SOUTH);
+    return controlPanel;
+  }
 
-    return buttonPanel;
+  private JPanel createSelectButtonPanel() {
+    JPanel selectButtonPanel = new JPanel();
+    this.createSelectAllButton();
+    selectButtonPanel.add(this.selectAllButton);
+    this.createDeselectAllButton();
+    selectButtonPanel.add(this.deselectAllButton);
+    this.createShowHideUnselectedButton();
+    selectButtonPanel.add(this.showHideUnselectedButton);
+    return selectButtonPanel;
+  }
+
+  private JPanel createViewPanel() {
+    JPanel viewPanel = new JPanel();
+    viewPanel.setLayout(new BorderLayout());
+    this.createSofaSelectionPanel();
+    viewPanel.add(this.sofaSelectionPanel, BorderLayout.NORTH);
+    this.createViewModePanel();
+    viewPanel.add(this.viewModePanel, BorderLayout.CENTER);
+    return viewPanel;
   }
 
   private void createViewModePanel() {
@@ -262,32 +277,42 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   private void createEntityModeButton() {
-    this.entityModeButton = new JRadioButton("Entities");
+    this.entityModeButton = new JRadioButton("Entities", this.viewMode == MODE_ENTITIES);
     this.entityModeButton.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-          viewMode = MODE_ENTITIES;
-          display();
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        JRadioButton radioButton = (JRadioButton) e.getSource();
+        if (!radioButton.isSelected() || viewMode == MODE_ENTITIES) {
+          // If the radio button is unselected, there is no need to refresh the UI.
+          // If the view mode is already entities view mode, there is no need to refresh the UI.
+          return;
         }
+        viewMode = MODE_ENTITIES;
+        display();
+      }
     });
   }
 
   private void createAnnotationModeButton() {
-    this.annotationModeButton = new JRadioButton("Annotations");
-    this.annotationModeButton.setSelected(true);
+    this.annotationModeButton = new JRadioButton("Annotations", this.viewMode == MODE_ANNOTATIONS);
     this.annotationModeButton.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-          viewMode = MODE_ANNOTATIONS;
-          display();
-		}
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        JRadioButton radioButton = (JRadioButton) e.getSource();
+        if (!radioButton.isSelected() || viewMode == MODE_ANNOTATIONS) {
+          // If the radio button is unselected, there is no need to refresh the UI.
+          // If the view mode is already annotations view mode, there is no need to refresh the UI.
+          return;
+        }
+        viewMode = MODE_ANNOTATIONS;
+        display();
+      }
     });
   }
 
   private void createSofaSelectionPanel() {
     this.sofaSelectionPanel = new JPanel();
-    JLabel sofaSelectionLabel = new JLabel("Sofa:");
-    this.sofaSelectionPanel.add(sofaSelectionLabel);
+    this.sofaSelectionPanel.add(new JLabel("Sofa:"));
     this.createSofaSelectionComboBox();
     this.sofaSelectionPanel.add(this.sofaSelectionComboBox);
   }
@@ -296,68 +321,68 @@ public class CasAnnotationViewer extends JPanel {
   private void createSofaSelectionComboBox() {
     this.sofaSelectionComboBox = new JComboBox();
     this.sofaSelectionComboBox.addItemListener(new ItemListener() {
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-          if (e.getSource() == sofaSelectionComboBox) {
-            // a new sofa was selected. Switch to that view and update display
-            String sofaId = (String) e.getItem();
-            if ("DEFAULT".equals(sofaId)) {
-              cas = cas.getView(CAS.NAME_DEFAULT_SOFA);
-            } else {
-              cas = cas.getView(sofaId);
-            }
-            display();
-          }
+      @Override
+      public void itemStateChanged(ItemEvent e) {
+        if (e.getSource() != sofaSelectionComboBox || cas == null) {
+          return;
         }
+        // a new sofa was selected. Switch to that view and update display
+        String sofaId = (String) e.getItem();
+        CAS newCas = "DEFAULT".equalsIgnoreCase(sofaId) ? cas.getView(CAS.NAME_DEFAULT_SOFA) : cas.getView(sofaId);
+        if (newCas != cas) {
+          cas = newCas;
+          display();
+        }
+      }
     });
   }
 
-  private void createShowHidenUnselectedButton() {
+  private void createShowHideUnselectedButton() {
     this.showHideUnselectedButton = new JButton("Hide Unselected");
     this.showHideUnselectedButton.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-          hideUnselectedCheckboxes = !hideUnselectedCheckboxes;
-          display();
-		}
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        hideUnselectedCheckBoxes = !hideUnselectedCheckBoxes;
+        display();
+      }
     });
   }
 
   private void createDeselectAllButton() {
     this.deselectAllButton = new JButton("Deselect All");
     this.deselectAllButton.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-          Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
-              : entityToCheckBoxMap.values().iterator();
-          while (cbIter.hasNext()) {
-            cbIter.next().setSelected(false);
-          }
-          display();
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
+            : entityToCheckBoxMap.values().iterator();
+        while (cbIter.hasNext()) {
+          cbIter.next().setSelected(false);
         }
+        display();
+      }
     });
   }
 
   private void createSelectAllButton() {
     this.selectAllButton = new JButton("Select All");
     this.selectAllButton.addActionListener(new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-          Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
 		              : entityToCheckBoxMap.values().iterator();
-          while (cbIter.hasNext()) {
-            cbIter.next().setSelected(true);
-          }
-          display();
+        while (cbIter.hasNext()) {
+          cbIter.next().setSelected(true);
         }
+        display();
+      }
     });
   }
 
   private void createHorizontalSplitPane() {
     this.horizontalSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-	this.horizontalSplitPane.setResizeWeight(0.6);
+    this.horizontalSplitPane.setResizeWeight(0.6);
     // create a vertical JSplitPane and add to left of horizSplitPane
-	this.createVerticalSplitPane();
+    this.createVerticalSplitPane();
     this.horizontalSplitPane.setLeftComponent(this.verticalSplitPane);
     // right pane has a JTree
     this.horizontalSplitPane.setRightComponent(this.createTreePanel());
@@ -369,12 +394,12 @@ public class CasAnnotationViewer extends JPanel {
     treePanel.add(new JLabel("Click In Text to See Annotation Detail"), BorderLayout.NORTH);
     this.createSelectedAnnotationTree();
     treePanel.add(new JScrollPane(this.selectedAnnotationTree), BorderLayout.CENTER);
-	return treePanel;
+    return treePanel;
   }
 
   private void createSelectedAnnotationTree() {
     this.selectedAnnotationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Annotations"));
-    this.selectedAnnotationTree = new JTree(selectedAnnotationTreeModel) {
+    this.selectedAnnotationTree = new JTree(this.selectedAnnotationTreeModel) {
       private static final long serialVersionUID = -7882967150283952907L;
 
       public Dimension getPreferredScrollableViewportSize() {
@@ -386,53 +411,51 @@ public class CasAnnotationViewer extends JPanel {
     this.selectedAnnotationTree.setRootVisible(true);
     this.selectedAnnotationTree.setCellRenderer(new AnnotationTreeCellRenderer());
     this.selectedAnnotationTree.addTreeWillExpandListener(new TreeWillExpandListener() {
-		@Override
-		public void treeWillExpand(TreeExpansionEvent event)
-				throws ExpandVetoException {
-          // if FS node is expanded and it has a dummy child, replace with
-          // feature value nodes (this is what lets us do infinite tree)
-          Object lastPathComponent = event.getPath().getLastPathComponent();
-          if (lastPathComponent instanceof DefaultMutableTreeNode) {
-            DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
-            Object userObj = expandedNode.getUserObject();
-            if (userObj instanceof FsTreeNodeObject) {
-              TreeNode firstChild = expandedNode.getFirstChild();
-              if (firstChild instanceof DefaultMutableTreeNode
-                      && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
-                expandedNode.removeAllChildren();
-                FeatureStructure fs = ((FsTreeNodeObject) userObj).getFeatureStructure();
-                addFeatureTreeNodes(expandedNode, fs);
-                ((JTree) event.getSource()).treeDidChange();
-              }
-            }
-          }
-		}
-
-		@Override
-		public void treeWillCollapse(TreeExpansionEvent event)
-				throws ExpandVetoException {
-		}    	
-    });
-    this.selectedAnnotationTree.addTreeExpansionListener(new TreeExpansionListener() {
-		@Override
-		public void treeExpanded(TreeExpansionEvent event) {
-          // if a Type node is expanded and has only one child,
-          // also expand this child (a usability improvement)
-          Object lastPathComponent = event.getPath().getLastPathComponent();
-          if (lastPathComponent instanceof DefaultMutableTreeNode) {
-            DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
-            Object userObj = expandedNode.getUserObject();
-            if (userObj instanceof TypeTreeNodeObject && expandedNode.getChildCount() == 1) {
-              TreePath childPath = event.getPath().pathByAddingChild(expandedNode.getFirstChild());
-              ((JTree) event.getSource()).expandPath(childPath);
+      @Override
+      public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+        // if FS node is expanded and it has a dummy child, replace with
+        // feature value nodes (this is what lets us do infinite tree)
+        Object lastPathComponent = event.getPath().getLastPathComponent();
+        if (lastPathComponent instanceof DefaultMutableTreeNode) {
+          DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
+          Object userObject = expandedNode.getUserObject();
+          if (userObject instanceof FsTreeNodeObject) {
+            TreeNode firstChild = expandedNode.getFirstChild();
+            if (firstChild instanceof DefaultMutableTreeNode
+              && ((DefaultMutableTreeNode) firstChild).getUserObject() == null) {
+              expandedNode.removeAllChildren();
+              FeatureStructure fs = ((FsTreeNodeObject) userObject).getFeatureStructure();
+              addFeatureTreeNodes(expandedNode, fs);
               ((JTree) event.getSource()).treeDidChange();
             }
           }
-		}
+        }
+      }
 
-		@Override
-		public void treeCollapsed(TreeExpansionEvent event) {
-		}    	
+      @Override
+      public void treeWillCollapse(TreeExpansionEvent e) throws ExpandVetoException {
+      }
+    });
+    this.selectedAnnotationTree.addTreeExpansionListener(new TreeExpansionListener() {
+      @Override
+      public void treeExpanded(TreeExpansionEvent event) {
+        // if a Type node is expanded and has only one child,
+        // also expand this child (a usability improvement)
+        Object lastPathComponent = event.getPath().getLastPathComponent();
+        if (lastPathComponent instanceof DefaultMutableTreeNode) {
+          DefaultMutableTreeNode expandedNode = (DefaultMutableTreeNode) lastPathComponent;
+          Object userObject = expandedNode.getUserObject();
+          if (userObject instanceof TypeTreeNodeObject && expandedNode.getChildCount() == 1) {
+            TreePath childPath = event.getPath().pathByAddingChild(expandedNode.getFirstChild());
+            ((JTree) event.getSource()).expandPath(childPath);
+            ((JTree) event.getSource()).treeDidChange();
+          }
+        }
+      }
+
+      @Override
+      public void treeCollapsed(TreeExpansionEvent event) {
+      }
     });
   }
 
@@ -490,29 +513,27 @@ public class CasAnnotationViewer extends JPanel {
     this.textPane.setMinimumSize(new Dimension(200, 100));
     // add mouse listener to update annotation tree
     this.textPane.addMouseListener(new MouseListener() {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-          if (viewMode == MODE_ANNOTATIONS) {
-            int pos = textPane.viewToModel(e.getPoint());
-            updateSelectedAnnotationTree(pos);
-          }
-		}
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        int pos = textPane.viewToModel(e.getPoint());
+        updateSelectedAnnotationTree(pos);
+      }
 
-		@Override
-		public void mousePressed(MouseEvent e) {
-		}
+      @Override
+      public void mousePressed(MouseEvent e) {
+      }
 
-		@Override
-		public void mouseReleased(MouseEvent e) {
-		}
+      @Override
+      public void mouseReleased(MouseEvent e) {
+      }
 
-		@Override
-		public void mouseEntered(MouseEvent e) {
-		}
+      @Override
+      public void mouseEntered(MouseEvent e) {
+      }
 
-		@Override
-		public void mouseExited(MouseEvent e) {
-		}    	
+      @Override
+      public void mouseExited(MouseEvent e) {
+      }
     });
     this.textScrollPane = new JScrollPane(this.textPane);
   }
@@ -524,7 +545,7 @@ public class CasAnnotationViewer extends JPanel {
   public CasAnnotationViewer(boolean aEntityViewEnabled) {
     this();
   }
-  
+
   /**
    * @return Returns the userTypes.
    */
@@ -550,10 +571,20 @@ public class CasAnnotationViewer extends JPanel {
    */
   public void setHighFrequencyTypes(String[] aTypeNames) {
     // store these types for later
-    highFrequencyTypes.clear();
-    highFrequencyTypes.addAll(Arrays.asList(aTypeNames));
-    typeColorMap.clear();
-    assignColors(highFrequencyTypes);
+    if (this.highFrequencyTypes == null) {
+      this.highFrequencyTypes = new ArrayList<String>();
+    }
+    if (this.highFrequencyTypes.size() > 0) {
+      this.highFrequencyTypes.clear();
+    }
+    this.highFrequencyTypes.addAll(Arrays.asList(aTypeNames));
+    if (this.typeColorMap == null) {
+      this.typeColorMap = new HashMap<String, Color>();
+    }
+    if (this.typeColorMap.size() > 0) {
+      this.typeColorMap.clear();
+    }
+    this.assignTypeColors(this.highFrequencyTypes);
   }
 
   /**
@@ -568,10 +599,15 @@ public class CasAnnotationViewer extends JPanel {
    */
   public void setDisplayedTypes(String[] aDisplayedTypeNames) {
     if (aDisplayedTypeNames == null) {
-      displayedTypeNames = null;
+      this.displayedTypeNames = null;
     } else {
-      displayedTypeNames = new HashSet<String>();
-      displayedTypeNames.addAll(Arrays.asList(aDisplayedTypeNames));
+      if (this.displayedTypeNames == null) {
+        this.displayedTypeNames = new HashSet<String>();
+      }
+      if (this.displayedTypeNames.size() > 0) {
+        this.displayedTypeNames.clear();
+      }
+      this.displayedTypeNames.addAll(Arrays.asList(aDisplayedTypeNames));
     }
   }
 
@@ -582,8 +618,13 @@ public class CasAnnotationViewer extends JPanel {
    *          names of types that are never to be highlighted.
    */
   public void setHiddenTypes(String[] aTypeNames) {
-    hiddenTypeNames.clear();
-    hiddenTypeNames.addAll(Arrays.asList(aTypeNames));
+    if (this.hiddenTypeNames == null) {
+      this.hiddenTypeNames = new HashSet<String>();
+    }
+    if (this.hiddenTypeNames.size() > 0) {
+      this.hiddenTypeNames.clear();
+    }
+    this.hiddenTypeNames.addAll(Arrays.asList(aTypeNames));
   }
 
   /**
@@ -621,11 +662,16 @@ public class CasAnnotationViewer extends JPanel {
    *          array of (short) feature names to be hidden
    */
   public void setHiddenFeatures(String[] aFeatureNames) {
-    hiddenFeatureNames.clear();
+    if (this.hiddenFeatureNames == null) {
+      this.hiddenFeatureNames = new HashSet<String>();
+    }
+    if (this.hiddenFeatureNames.size() > 0) {
+      this.hiddenFeatureNames.clear();
+    }
     // add default hidden features
-    hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+    this.hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
     // add user-defined hidden features
-    hiddenFeatureNames.addAll(Arrays.asList(aFeatureNames));
+    this.hiddenFeatureNames.addAll(Arrays.asList(aFeatureNames));
   }
 
   /**
@@ -650,7 +696,7 @@ public class CasAnnotationViewer extends JPanel {
    *   to the same entity.
    */
   public void setEntityResolver(EntityResolver aEntityResolver) {
-    mEntityResolver = aEntityResolver;
+    this.entityResolver = aEntityResolver;
   }
 
   /**
@@ -665,7 +711,7 @@ public class CasAnnotationViewer extends JPanel {
    *          to vary
    */
   public void setConsistentColors(boolean aConsistent) {
-    useConsistentColors = aConsistent;
+    this.useConsistentColors = aConsistent;
   }
 
   /**
@@ -676,8 +722,10 @@ public class CasAnnotationViewer extends JPanel {
    *          true to put the viewer in right-to-left mode, false for left-to-right (the default).
    */
   public void setRightToLeftTextOrientation(boolean aRightToLeft) {
-    textPane.applyComponentOrientation(aRightToLeft ? ComponentOrientation.RIGHT_TO_LEFT
+    if (this.textPane != null) {
+      this.textPane.applyComponentOrientation(aRightToLeft ? ComponentOrientation.RIGHT_TO_LEFT
             : ComponentOrientation.LEFT_TO_RIGHT);
+    }
   }
 
   /**
@@ -688,8 +736,8 @@ public class CasAnnotationViewer extends JPanel {
    * @param aHideUnselected
    */
   public void setHideUnselectedCheckboxes(boolean aHideUnselected) {
-    hideUnselectedCheckboxes = aHideUnselected;
-    display();
+    this.hideUnselectedCheckBoxes = aHideUnselected;
+    this.display();
   }
 
   /**
@@ -698,65 +746,122 @@ public class CasAnnotationViewer extends JPanel {
    * @param aCAS
    *          the CSA to be viewed
    */
-  @SuppressWarnings("unchecked")
   public void setCAS(CAS aCAS) {
-    cas = aCAS;
-    stringType = cas.getTypeSystem().getType(CAS.TYPE_NAME_STRING);
-    fsArrayType = cas.getTypeSystem().getType(CAS.TYPE_NAME_FS_ARRAY);
-    // clear checkbox panel so it will be repopulated
-    annotationCheckboxPanel.removeAll();
-    entityCheckboxPanel.removeAll();
-    typeToCheckBoxMap.clear();
-    entityToCheckBoxMap.clear();
+    this.reset();
+    this.cas = aCAS;
+    this.typeSystem = this.cas.getTypeSystem();
+    this.stringType = this.typeSystem.getType(CAS.TYPE_NAME_STRING);
+    this.fsArrayType = this.typeSystem.getType(CAS.TYPE_NAME_FS_ARRAY);
     // clear selected annotation details tree
-    this.updateSelectedAnnotationTree(-1);
-
-    // clear type to color map if color consistency is off
-    if (!useConsistentColors) {
-      typeColorMap.clear();
-      // but reassign colors to high frequency types
-      assignColors(highFrequencyTypes);
-    }
-
-    // clear boldface
-    boldFaceKeyWords = new String[0];
-    boldFaceSpans = new int[0];
+    this.initializeSofaSelectionPanel();
 
     // enable or disable entity view depending on user's choice 
     this.viewModePanel.setVisible(entityViewEnabled);
+    // Instead of relying on the SofaSelectionComboBox itemChanged event to trigger the initial display,
+    // which does not necessarily need to happen unless we indeed switch over to different sofa,
+    // explicitly invoke display() here.
+    this.display();
+  }
 
+  @SuppressWarnings("unchecked")
+  private void initializeSofaSelectionPanel() {
     // Populate sofa combo box with the names of all text Sofas in the CAS
-    sofaSelectionComboBox.removeAllItems();
-    Iterator<SofaFS> sofas = aCAS.getSofaIterator();
-    Feature sofaIdFeat = aCAS.getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
-    boolean nonDefaultSofaFound = false;
-    while (sofas.hasNext()) {
-      SofaFS sofa = sofas.next();
-      if (sofa.getLocalStringData() != null) {
-        String sofaId = sofa.getStringValue(sofaIdFeat);
-        if (CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
-          sofaId = "DEFAULT"; // make nicer display
-        } else {
-          nonDefaultSofaFound = true;
-        }
-        sofaSelectionComboBox.addItem(sofaId);
-        // if this sofa matches the view passed to this method, select it
-        CAS viewOfSofa = aCAS.getView(sofa);
-        if (viewOfSofa == aCAS) {
-          sofaSelectionComboBox.setSelectedIndex(sofaSelectionComboBox.getItemCount() - 1);
-        }
+    if (this.sofaSelectionComboBox == null) {
+      return;
+    }
+    this.sofaSelectionComboBox.removeAllItems();
+    boolean hasNonDefaultSofa = false;
+    Feature sofaIdFeature = this.typeSystem.getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
+    FSIterator<SofaFS> sofaIterator = this.cas.getSofaIterator();
+    while (sofaIterator != null && sofaIterator.hasNext()) {
+      SofaFS sofa = sofaIterator.next();
+      if (sofa.getLocalStringData() == null) {
+        continue;
+      }
+      String sofaId = sofa.getStringValue(sofaIdFeature);
+      if (CAS.NAME_DEFAULT_SOFA.equals(sofaId)) {
+        sofaId = "DEFAULT"; // make nicer display
+      } else {
+        hasNonDefaultSofa = true;
+      }
+      this.sofaSelectionComboBox.addItem(sofaId);
+      // if this sofa matches the view passed to this method, select it
+      if (this.cas.getView(sofa) == this.cas) {
+        this.sofaSelectionComboBox.setSelectedIndex(this.sofaSelectionComboBox.getItemCount() - 1);
       }
     }
-    if (sofaSelectionComboBox.getItemCount() == 0) {
+    if (this.sofaSelectionComboBox.getItemCount() == 0) {
       throw new RuntimeException("This CAS contains no document to view.");
     }
     // make sofa selector visible if any text sofa other than the default was found
-    sofaSelectionPanel.setVisible(nonDefaultSofaFound);
+    if (this.sofaSelectionPanel != null) {
+      this.sofaSelectionPanel.setVisible(hasNonDefaultSofa);
+    }
 
     // Note that selection of the Sofa from the combo box happens during
     // population, and that triggers the call to display() to display
     // that document and its annotations/entities.
     // display();
+  }
+
+  private void reset() {
+    // clear type to color map if color consistency is off
+    this.resetTypeColorMap();
+    this.resetTypeCheckBoxPanel();
+    this.resetEntityCheckBoxPanel();
+    this.resetSelectedAnnotationTree();
+
+    // clear boldface
+    this.boldFaceKeyWords = new String[0];
+    this.boldFaceSpans = new int[0];
+  }
+
+  private void resetSelectedAnnotationTree() {
+    if (this.selectedAnnotationTreeModel != null) {
+      DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
+      if (root != null) {
+        root.removeAllChildren();
+      }
+    }
+  }
+
+  private void resetEntityCheckBoxPanel() {
+    if (this.entityToCheckBoxMap == null) {
+      this.entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
+    }
+    if (this.entityToCheckBoxMap.size() > 0) {
+      this.entityToCheckBoxMap.clear();
+    }
+    if (this.entityCheckboxPanel != null) {
+      this.entityCheckboxPanel.removeAll();
+    }
+  }
+
+  private void resetTypeCheckBoxPanel() {
+    // clear checkbox panel so it will be repopulated
+    if (this.typeToCheckBoxMap == null) {
+      this.typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
+    }
+    if (this.typeToCheckBoxMap.size() > 0) {
+      this.typeToCheckBoxMap.clear();
+    }
+    if (this.annotationCheckboxPanel != null) {
+      this.annotationCheckboxPanel.removeAll();
+    }
+  }
+
+  private void resetTypeColorMap() {
+    if (this.typeColorMap == null) {
+      this.typeColorMap = new HashMap<String, Color>();
+    }
+    if (!this.useConsistentColors) {
+      if (this.typeColorMap.size() > 0) {
+        this.typeColorMap.clear();
+      }
+      if (this.highFrequencyTypes != null && this.highFrequencyTypes.size() > 0) {
+        this.assignTypeColors(this.highFrequencyTypes);
+      }
+    }
   }
 
   /**
@@ -768,8 +873,8 @@ public class CasAnnotationViewer extends JPanel {
    *          array of words to highlight in boldface.
    */
   public void applyBoldfaceToKeywords(String[] aWords) {
-    boldFaceKeyWords = aWords;
-    doBoldface();
+    this.boldFaceKeyWords = aWords;
+    this.doBoldFace();
   }
 
   /**
@@ -781,8 +886,8 @@ public class CasAnnotationViewer extends JPanel {
    *          spans to appear in boldface (begin1, end1, begin2, end2, ...)
    */
   public void applyBoldfaceToSpans(int[] aSpans) {
-    boldFaceSpans = aSpans;
-    doBoldface();
+    this.boldFaceSpans = aSpans;
+    this.doBoldFace();
   }
 
   /**
@@ -858,11 +963,14 @@ public class CasAnnotationViewer extends JPanel {
    *          list of types not to be initially checked JMP
    */
   public void assignCheckedFromList(List<String> aNotChecked) {
-    Iterator<String> iterC = aNotChecked.iterator();
-    while (iterC.hasNext()) {
-      String typeName = iterC.next();
-      // assign to list of types not to be initially checked
-      typesNotChecked.add(typeName);
+    if (aNotChecked == null || aNotChecked.size() == 0) {
+      return;
+    }
+    if (this.typesNotChecked == null) {
+      this.typesNotChecked = new HashSet<String>();
+    }
+    for (String typeName : aNotChecked) {
+      this.typesNotChecked.add(typeName);
     }
   }
 
@@ -876,22 +984,32 @@ public class CasAnnotationViewer extends JPanel {
    */
   public void assignColorsFromList(List<Color> aColors, List<String> aTypeNames) {
     // populate mTypeNameToColorMap
-    Iterator<String> iter = aTypeNames.iterator();
-    Iterator<Color> iterC = aColors.iterator();
-    while (iter.hasNext()) {
-      if (!iterC.hasNext())
-        break;
-      String typeName = (String) iter.next();
-      Color color = (Color) iterC.next();
-      // assign background color
-      typeColorMap.put(typeName, color);
+    if (aColors == null || aColors.size() == 0 || aTypeNames == null || aTypeNames.size() == 0) {
+      return;
+    }
+    if (this.userTypes == null) {
+      this.userTypes = new ArrayList<String>();
+    }
+    if (this.userTypes.size() > 0) {
+      this.userTypes.clear();
+    }
+    if (this.typeColorMap == null) {
+      this.typeColorMap = new HashMap<String, Color>();
+    }
+    if (this.typeColorMap.size() > 0) {
+      this.typeColorMap.clear();
+    }
+    int colorCount = aColors.size();
+    for (int i = 0; i < aTypeNames.size(); i++) {
+      Color color = aColors.get(i % colorCount);
+      String inTypeName = aTypeNames.get(i);
+      this.typeColorMap.put(inTypeName, color);
+      this.userTypes.add(inTypeName);
     }
 
-    setUserTypes(aTypeNames);
-
     // clear checkbox panel so it will be refreshed
-    annotationCheckboxPanel.removeAll();
-    typeToCheckBoxMap.clear();
+    this.annotationCheckboxPanel.removeAll();
+    this.typeToCheckBoxMap.clear();
   }
 
   /**
@@ -900,19 +1018,27 @@ public class CasAnnotationViewer extends JPanel {
    * @param aTypeNames
    *          list of type names
    */
-  private void assignColors(List<String> aTypeNames) {
+  private void assignTypeColors(List<String> aTypeNames) {
     // populate mTypeNameToColorMap
-    Iterator<String> iter = aTypeNames.iterator();
-    while (iter.hasNext()) {
-      String typeName = iter.next();
-      // assign background color
-      Color c = COLORS[typeColorMap.size() % COLORS.length];
-      typeColorMap.put(typeName, c);
+    if (aTypeNames == null || aTypeNames.size() == 0) {
+      return;
+    }
+
+    if (this.typeColorMap == null) {
+      this.typeColorMap = new HashMap<String, Color>();
+    }
+    for (String typeName : aTypeNames) {
+      if (!this.typeColorMap.containsKey(typeName)) {
+        // assign background color
+        this.typeColorMap.put(typeName, COLORS[this.typeColorMap.size() % COLORS.length]);
+      }
     }
 
     // clear checkbox panel so it will be refreshed
-    annotationCheckboxPanel.removeAll();
-    typeToCheckBoxMap.clear();
+    this.annotationCheckboxPanel.removeAll();
+    if (this.typeToCheckBoxMap != null) {
+      this.typeToCheckBoxMap.clear();
+    }
   }
 
   /**
@@ -921,49 +1047,49 @@ public class CasAnnotationViewer extends JPanel {
    */
   private void display() {
     // remember split pane divider location so we can restore it later
-    int dividerLoc = verticalSplitPane.getDividerLocation();
+    int dividerLocation = this.verticalSplitPane.getDividerLocation();
 
     // remember caret pos and scroll position
-    int caretPos = this.textPane.getCaretPosition();
+    int caretPosition = this.textPane.getCaretPosition();
     int verticalScrollPos = this.textScrollPane.getVerticalScrollBar().getValue();
 
     // type of display depends on whether we are in annotation or entity mode
-    switch (viewMode) {
+    switch (this.viewMode) {
       case MODE_ANNOTATIONS:
-        displayAnnotations();
+        this.displayAnnotationView();
         break;
       case MODE_ENTITIES:
-        displayEntities();
+        this.displayEntityView();
         break;
     }
 
     // apply boldface to keywords and spans as indicated by user
-    doBoldface();
+    this.doBoldFace();
 
     // update the label of the Show/Hide Unselected Button
-    if (hideUnselectedCheckboxes) {
-      showHideUnselectedButton.setText("Show Unselected");
+    if (this.hideUnselectedCheckBoxes) {
+      this.showHideUnselectedButton.setText("Show Unselected");
     } else {
-      showHideUnselectedButton.setText("Hide Unselected");
+      this.showHideUnselectedButton.setText("Hide Unselected");
     }
 
     // reset scroll position
-    textPane.setCaretPosition(caretPos);
-    textScrollPane.getVerticalScrollBar().setValue(verticalScrollPos);
-    textScrollPane.revalidate();
+    this.textPane.setCaretPosition(caretPosition);
+    this.textScrollPane.getVerticalScrollBar().setValue(verticalScrollPos);
+    this.textScrollPane.revalidate();
 
     // reset split pane divider
-    verticalSplitPane.setDividerLocation(dividerLoc);
+    this.verticalSplitPane.setDividerLocation(dividerLocation);
   }
 
   /**
    * Creates the annotation display.
    */
-  private void displayAnnotations() {
+  private void displayAnnotationView() {
     // for speed, detach document from text pane before updating
-    StyledDocument doc = (StyledDocument) textPane.getDocument();
+    StyledDocument doc = (StyledDocument) this.textPane.getDocument();
     Document blank = new DefaultStyledDocument();
-    textPane.setDocument(blank);
+    this.textPane.setDocument(blank);
 
     // make sure annotationCheckboxPanel is showing
     if (legendScrollPane.getViewport().getView() != annotationCheckboxPanel) {
@@ -973,158 +1099,162 @@ public class CasAnnotationViewer extends JPanel {
     // add text from CAS
     try {
       doc.remove(0, doc.getLength());
-      doc.insertString(0, cas.getDocumentText(), new SimpleAttributeSet());
+      doc.insertString(0, this.cas.getDocumentText(), new SimpleAttributeSet());
     } catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
 
     // Iterate over annotations
-    FSIterator<AnnotationFS> iter = cas.getAnnotationIndex().iterator();
-    Hashtable<String, JCheckBox> checkBoxes = new Hashtable<String, JCheckBox>();
-    Set<JCheckBox> checkBoxesDone = new HashSet<JCheckBox>();
-    while (iter.isValid()) {
-      AnnotationFS fs = iter.get();
-      iter.moveToNext();
-
-      Type type = fs.getType();
-
-      // have we seen this type before?
-      JCheckBox checkbox = (JCheckBox) typeToCheckBoxMap.get(type);
-      if (checkbox == null) {
-        // check that type should be displayed
-        if ((displayedTypeNames == null || typeNamesContains(displayedTypeNames, type.getName()))
-                && !typeNamesContains(hiddenTypeNames, type.getName())) {
-          // if mTypeNameToColorMap exists, get color from there
-          Color c = (Color) typeColorMap.get(type.getName());
-          if (c == null) // assign next available color
-          {
-            c = COLORS[typeColorMap.size() % COLORS.length];
-            typeColorMap.put(type.getName(), c);
-          }
-          // This next section required until priorities work properly
-          // HashSet noCheckSet = new HashSet();
-          String noCheckArray[] = {
-          // "org.apache.jresporator.PROPER",
-          // "DOCSTRUCT_ANNOT_TYPE",
-          // "VOCAB_ANNOT_TYPE"
-          };
-          for (int i = 0; i < noCheckArray.length; i++) {
-            typesNotChecked.add(noCheckArray[i]);
-          }
-          // end of section
-
-          // should type be initially selected?
-          boolean selected = ((initiallySelectedTypeNames == null &&
-          // document annotation is not initially selected in default case
-                  !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(type.getName()) && !typesNotChecked
-                  .contains(type.getName()) // priorities JMP
-          ) || (initiallySelectedTypeNames != null && typeNamesContains(
-                  initiallySelectedTypeNames, type.getName())));
-
-          // add checkbox
-          checkbox = new JCheckBox(type.getShortName(), selected);
-          checkbox.setToolTipText(type.getName());
-          checkbox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-              display();
-			}        	  
-          });
-          checkbox.setBackground(c);
-          // annotationCheckboxPanel.add(checkbox); do it later JMP
-          checkBoxes.put(type.getName(), checkbox);
-          checkBoxesDone.add(checkbox);
-          // add to (Type, Checkbox) map
-          typeToCheckBoxMap.put(type, checkbox);
-        } else {
-          // this type is not hidden, skip it
-          continue;
-        }
-      }
-      // if checkbox is checked, assign color to text
-      if (checkbox.isSelected()) {
-        int begin = fs.getBegin();
-        int end = fs.getEnd();
-
-        // Be careful of 0-length annotations and annotations that span the
-        // entire document. In either of these cases, if we try to set
-        // background color, it will set the input text style, which is not
-        // what we want.
-        if (begin == 0 && end == cas.getDocumentText().length()) {
-          end--;
-        }
-
-        if (begin < end) {
-          MutableAttributeSet attrs = new SimpleAttributeSet();
-          StyleConstants.setBackground(attrs, checkbox.getBackground());
-          doc.setCharacterAttributes(begin, end - begin, attrs, false);
-        }
-      }
+    AnnotationIndex<AnnotationFS> annotationIndex = this.cas.getAnnotationIndex();
+    if (annotationIndex == null) {
+      return;
     }
-
+    FSIterator<AnnotationFS> annotationIterator = annotationIndex.iterator();
+    if (annotationIterator == null || !annotationIterator.hasNext()) {
+      return;
+    }
+    while (annotationIterator.hasNext()) {
+      this.processOneAnnotationInAnnotationView(doc, annotationIterator.next());
+    }
     // now populate panel with checkboxes in order specified in user file. JMP
-    List<String> aTypeNames = getUserTypes();
-    if (aTypeNames != null) {
-      Iterator<String> iterT = aTypeNames.iterator();
-      while (iterT.hasNext()) {
-        String typeName = iterT.next();
-        JCheckBox cb = (JCheckBox) checkBoxes.get(typeName);
-        if (cb != null) {
-          annotationCheckboxPanel.add(cb);
-          checkBoxesDone.remove(cb);
-        }
-      }
-    }
-    // add additional checkboxes in alphabetical order
-    List<JCheckBox> checkboxes = new LinkedList<JCheckBox>(checkBoxesDone);
-    Collections.sort(checkboxes, new Comparator<JCheckBox>() {
-      public int compare(JCheckBox o1, JCheckBox o2) {
-        return o1.getText().toLowerCase().compareTo(
-                 o2.getText().toLowerCase());
-      }
-    });
-    Iterator<JCheckBox> iterC = checkboxes.iterator();
-    while (iterC.hasNext()) {
-      JCheckBox cb = iterC.next();
-      annotationCheckboxPanel.add(cb);
-    }
-
-    // add/remove checkboxes from display as determined by the
-    // mHideUnselectedCheckboxes toggle
-    Iterator<JCheckBox> cbIter = typeToCheckBoxMap.values().iterator();
-    while (cbIter.hasNext()) {
-      JCheckBox cb = cbIter.next();
-      if (hideUnselectedCheckboxes && !cb.isSelected()) {
-        if (cb.getParent() == annotationCheckboxPanel) {
-          annotationCheckboxPanel.remove(cb);
-        }
-      } else if (cb.getParent() != annotationCheckboxPanel) {
-        annotationCheckboxPanel.add(cb);
-      }
-    }
-
+    this.addTypeCheckBoxes();
     // reattach document to text pane
-    textPane.setDocument(doc);
+    this.textPane.setDocument(doc);
+  }
+
+  private void addTypeCheckBoxes() {
+    if (this.typeToCheckBoxMap == null || this.typeToCheckBoxMap.size() == 0) {
+      return;
+    }
+
+    Map<String, JCheckBox> checkBoxMap = new HashMap<String, JCheckBox>();
+    Set<JCheckBox> checkBoxSet = new HashSet<JCheckBox>();
+    for (Type type : this.typeToCheckBoxMap.keySet()) {
+      JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
+      if (typeCheckBox.getParent() == this.annotationCheckboxPanel) {
+        // The check box is already added to the check box panel.
+        if (!typeCheckBox.isSelected() && this.hideUnselectedCheckBoxes) {
+          // But it is unselected and we choose to hide the unselected.
+          // Then it needs to be removed from the panel.
+          this.annotationCheckboxPanel.remove(typeCheckBox);
+        }
+      } else {
+        // The check box is not yet added to the check box panel.
+        if (typeCheckBox.isSelected() || !this.hideUnselectedCheckBoxes) {
+          // The check box needs to be marked to be added.
+          checkBoxMap.put(type.getName(), typeCheckBox);
+          checkBoxSet.add(typeCheckBox);
+        }
+      }
+    }
+    // First add the type check boxes for the types specified by user.
+    if (this.userTypes != null && this.userTypes.size() > 0) {
+      for (String userType : this.userTypes) {
+        JCheckBox typeCheckBox = checkBoxMap.get(userType);
+        if (typeCheckBox != null) {
+          this.annotationCheckboxPanel.add(typeCheckBox);
+          checkBoxSet.remove(typeCheckBox);
+        }
+      }
+    }
+    // If we still have remaining type check boxes that need to be added,
+    // add them in sorted order.
+    if (checkBoxSet != null && checkBoxSet.size() > 0) {
+      List<JCheckBox> remainingCheckBoxes = new ArrayList<JCheckBox>(checkBoxSet);
+      Collections.sort(remainingCheckBoxes, new Comparator<JCheckBox>() {
+        @Override
+        public int compare(JCheckBox o1, JCheckBox o2) {
+          return o1.getText().toLowerCase().compareTo(o2.getText().toLowerCase());
+        }
+      });
+      for (JCheckBox checkBox : remainingCheckBoxes) {
+        this.annotationCheckboxPanel.add(checkBox);
+      }
+    }
+  }
+
+  private void processOneAnnotationInAnnotationView(StyledDocument doc, AnnotationFS annotation) {
+    Type type = annotation.getType();
+    String typeName = type.getName();
+    // check that type should be displayed
+    if ((this.displayedTypeNames != null && !typeNamesContains(this.displayedTypeNames, typeName)) ||
+        (this.hiddenTypeNames != null && typeNamesContains(this.hiddenTypeNames, typeName))) {
+      return;
+    }
+    if (this.typeToCheckBoxMap == null) {
+      this.typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
+    }
+    // have we seen this type before?
+    JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
+    if (typeCheckBox == null) {
+      // There is no type checkbox representing this annotation yet.
+      // if mTypeNameToColorMap exists, get color from there
+      if (this.typeColorMap == null) {
+        this.typeColorMap = new HashMap<String, Color>();
+      }
+      Color typeColor = this.typeColorMap.get(typeName);
+      if (typeColor == null) { // assign next available color
+        typeColor = COLORS[this.typeColorMap.size() % COLORS.length];
+        this.typeColorMap.put(typeName, typeColor);
+      }
+      // should type be initially selected?
+      // document annotation is not initially selected in default case
+      boolean selected = (this.initiallySelectedTypeNames == null &&
+          !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(typeName) && (this.typesNotChecked == null || !this.typesNotChecked.contains(typeName))) ||
+          (this.initiallySelectedTypeNames != null && typeNamesContains(this.initiallySelectedTypeNames, typeName));
+      // add checkbox
+      typeCheckBox = new JCheckBox(type.getShortName(), selected);
+      typeCheckBox.setToolTipText(typeName);
+      typeCheckBox.setBackground(typeColor);
+      typeCheckBox.setOpaque(true);
+      typeCheckBox.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          display();
+        }
+      });
+      this.typeToCheckBoxMap.put(type, typeCheckBox);
+    }
+
+    // if checkbox is checked, assign color to text
+    if (typeCheckBox.isSelected()) {
+      int begin = annotation.getBegin();
+      int end = annotation.getEnd();
+
+      // Be careful of 0-length annotations and annotations that span the
+      // entire document. In either of these cases, if we try to set
+      // background color, it will set the input text style, which is not
+      // what we want.
+      if (begin == 0 && end == this.cas.getDocumentText().length()) {
+        end--;
+      }
+
+      if (begin < end) {
+        MutableAttributeSet attrs = new SimpleAttributeSet();
+        StyleConstants.setBackground(attrs, typeCheckBox.getBackground());
+        doc.setCharacterAttributes(begin, end - begin, attrs, false);
+      }
+    }
   }
 
   /**
    * Creates the entity display.
    */
-  private void displayEntities() {
+  private void displayEntityView() {
     // for speed, detach document from text pane before updating
-    StyledDocument doc = (StyledDocument) textPane.getDocument();
+    StyledDocument doc = (StyledDocument) this.textPane.getDocument();
     Document blank = new DefaultStyledDocument();
-    textPane.setDocument(blank);
+    this.textPane.setDocument(blank);
 
     // make sure entityCheckboxPanel is showing
-    if (legendScrollPane.getViewport().getView() != entityCheckboxPanel) {
-      legendScrollPane.setViewportView(entityCheckboxPanel);
+    if (this.legendScrollPane.getViewport().getView() != this.entityCheckboxPanel) {
+      this.legendScrollPane.setViewportView(entityCheckboxPanel);
     }
 
     // add text from CAS
     try {
       doc.remove(0, doc.getLength());
-      doc.insertString(0, cas.getDocumentText(), new SimpleAttributeSet());
+      doc.insertString(0, this.cas.getDocumentText(), new SimpleAttributeSet());
     } catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
@@ -1139,68 +1269,73 @@ public class CasAnnotationViewer extends JPanel {
     } catch (CASException e) {
       throw new RuntimeException(e);
     }
-    FSIterator<Annotation> iter = jcas.getAnnotationIndex().iterator();
-    while (iter.isValid()) {
-      Annotation annot = iter.get();
-      iter.moveToNext();
-
-      // find out what entity this annotation represents
-      EntityResolver.Entity entity = mEntityResolver.getEntity(annot);
-
-      //if not an entity, skip it
-      if (entity == null)
-        continue;
-      
-      // have we seen this entity before?
-      JCheckBox checkbox = entityToCheckBoxMap.get(entity);
-      if (checkbox == null) {
-        // assign next available color
-        Color c = COLORS[entityToCheckBoxMap.size() % COLORS.length];
-        // add checkbox
-        checkbox = new JCheckBox(entity.getCanonicalForm(), true);
-        checkbox.setToolTipText(entity.getCanonicalForm());
-        checkbox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-              display();
-			}
-        });
-        checkbox.setBackground(c);
-        entityCheckboxPanel.add(checkbox);
-        // add to (Entity, Checkbox) map
-        entityToCheckBoxMap.put(entity, checkbox);
-      }
-
-      // if checkbox is checked, assign color to text
-      if (checkbox.isSelected()) {
-        int begin = annot.getBegin();
-        int end = annot.getEnd();
-        // be careful of 0-length annotation. If we try to set background color when there
-        // is no selection, it will set the input text style, which is not what we want.
-        if (begin != end) {
-          MutableAttributeSet attrs = new SimpleAttributeSet();
-          StyleConstants.setBackground(attrs, checkbox.getBackground());
-          doc.setCharacterAttributes(begin, end - begin, attrs, false);
-        }
-      }
+    AnnotationIndex<Annotation> annotationIndex = jcas.getAnnotationIndex();
+    if (annotationIndex == null) {
+      return;
+    }
+    FSIterator<Annotation> annotationIterator = annotationIndex.iterator();
+    if (annotationIterator == null || !annotationIterator.hasNext()) {
+      return;
+    }
+    while (annotationIterator.hasNext()) {
+      this.processOneAnnotationInEntityView(doc, annotationIterator.next());
     }
 
     // add/remove checkboxes from display as determined by the
     // mHideUnselectedCheckboxes toggle
-    Iterator<JCheckBox> cbIter = entityToCheckBoxMap.values().iterator();
-    while (cbIter.hasNext()) {
-      JCheckBox cb = cbIter.next();
-      if (hideUnselectedCheckboxes && !cb.isSelected()) {
-        if (cb.getParent() == entityCheckboxPanel) {
-          entityCheckboxPanel.remove(cb);
-        }
-      } else if (cb.getParent() != entityCheckboxPanel) {
-        entityCheckboxPanel.add(cb);
+    for (JCheckBox entityCheckBox : this.entityToCheckBoxMap.values()) {
+      if (entityCheckBox.getParent() != this.entityCheckboxPanel &&
+          (entityCheckBox.isSelected() || !this.hideUnselectedCheckBoxes)) {
+        this.entityCheckboxPanel.add(entityCheckBox);
       }
     }
 
     // reattach document to text pane
-    textPane.setDocument(doc);
+    this.textPane.setDocument(doc);
+  }
+
+  private void processOneAnnotationInEntityView(StyledDocument doc, Annotation annotation) {
+    // find out what entity this annotation represents
+    EntityResolver.Entity entity = this.entityResolver.getEntity(annotation);
+    //if not an entity, skip it
+    if (entity == null) {
+      return;
+    }
+    if (this.entityToCheckBoxMap == null) {
+      this.entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
+    }
+    // have we seen this entity before?
+    JCheckBox entityCheckBox = this.entityToCheckBoxMap.get(entity);
+    if (entityCheckBox == null) {
+      // assign next available color
+      Color entityColor = COLORS[this.entityToCheckBoxMap.size() % COLORS.length];
+      // add checkbox
+      entityCheckBox = new JCheckBox(entity.getCanonicalForm(), true);
+      entityCheckBox.setToolTipText(entity.getCanonicalForm());
+      entityCheckBox.setBackground(entityColor);
+      entityCheckBox.setOpaque(true);
+      entityCheckBox.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          display();
+        }
+      });
+      this.entityCheckboxPanel.add(entityCheckBox);
+      // add to (Entity, Checkbox) map
+      this.entityToCheckBoxMap.put(entity, entityCheckBox);
+    }
+    // if checkbox is checked, assign color to text
+    if (entityCheckBox.isSelected()) {
+      int begin = annotation.getBegin();
+      int end = annotation.getEnd();
+      // be careful of 0-length annotation. If we try to set background color when there
+      // is no selection, it will set the input text style, which is not what we want.
+      if (begin != end) {
+        MutableAttributeSet attrs = new SimpleAttributeSet();
+        StyleConstants.setBackground(attrs, entityCheckBox.getBackground());
+        doc.setCharacterAttributes(begin, end - begin, attrs, false);
+      }
+    }
   }
 
   /**
@@ -1211,42 +1346,80 @@ public class CasAnnotationViewer extends JPanel {
    *          point will be rendered in the tree.
    */
   private void updateSelectedAnnotationTree(int aPosition) {
-    DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel
-            .getRoot();
+    if (this.cas == null || this.selectedAnnotationTreeModel == null) {
+      return;
+    }
+    JCas jcas = null;
+    try {
+      jcas = this.cas.getJCas();
+	} catch (CASException e) {
+      e.printStackTrace();
+      return;
+	}
+
+    DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
     root.removeAllChildren();
-    FSIterator<AnnotationFS> annotIter = this.cas.getAnnotationIndex().iterator();
-    while (annotIter.isValid()) {
-      AnnotationFS annot = annotIter.get();
-      // if (getPanePosition(annot.getBegin()) <= aPosition
-      // && getPanePosition(annot.getEnd()) > aPosition)
-      if (annot.getBegin() <= aPosition && annot.getEnd() > aPosition) {
-        JCheckBox checkbox = typeToCheckBoxMap.get(annot.getType());
-        if (checkbox != null && checkbox.isSelected()) {
-          addAnnotationToTree(annot);
-        }
-      }
-      // else if (getPanePosition(annot.getBegin()) > aPosition)
-      else if (annot.getBegin() > aPosition)
+
+    AnnotationIndex<Annotation> annotationIndex = jcas.getAnnotationIndex();
+    if (annotationIndex == null) {
+      return;
+    }
+    FSIterator<Annotation> annotationIterator = annotationIndex.iterator();
+    if (annotationIterator == null || !annotationIterator.hasNext()) {
+      return;
+    }
+
+    while (annotationIterator.hasNext()) {
+      Annotation annotation = annotationIterator.next();
+      int begin = annotation.getBegin();
+      if (begin > aPosition) {
+        // Assuming all annotation objects are sorted by begin/end, if this one passed the given offset,
+        // there is no need to keep looking at the subsequent ones.
         break;
-      annotIter.moveToNext();
+      }
+      if (annotation.getEnd() > aPosition && this.isMatch(annotation)) {
+        // The annotation covers the given position (begins before and ends after the given position).
+        this.addAnnotationToTree(annotation);
+      }
     }
     this.selectedAnnotationTreeModel.nodeStructureChanged(root);
-    // expand first level
-    // int row = 0;
-    // while (row < this.selectedAnnotationTree.getRowCount())
-    // {
-    // if (this.selectedAnnotationTree.getPathForRow(row).getPathCount() <= 2)
-    // {
-    // this.selectedAnnotationTree.expandRow(row);
-    // }
-    // row++;
-    // }
-
     // hmmm.. how to get scroll pane to resize properly??
     this.selectedAnnotationTree.treeDidChange();
     // this.selectedAnnotationTree.setPreferredSize(this.selectedAnnotationTree.getSize());
     this.selectedAnnotationTree.revalidate();
     this.horizontalSplitPane.revalidate();
+  }
+
+  /**
+   * Check if an annotation matches the filters set by the user. If true, the
+   * annotation will be added to the annotation tree display panel.
+   * 
+   * @param annotation
+   * @return
+   */
+  private boolean isMatch(Annotation annotation) {
+    Type type = annotation.getType();
+    switch (this.viewMode) {
+      case MODE_ANNOTATIONS:
+        if (this.typeToCheckBoxMap == null || this.typeToCheckBoxMap.size() == 0) {
+          return false;
+        }
+        JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
+        return typeCheckBox != null && typeCheckBox.isSelected();
+      case MODE_ENTITIES:
+        if (this.entityToCheckBoxMap == null || this.entityToCheckBoxMap.size() == 0) {
+          return false;
+        }
+        Entity entity = this.entityResolver.getEntity(annotation);
+        if (entity == null) {
+          return false;
+        }
+        JCheckBox entityCheckBox = this.entityToCheckBoxMap.get(entity);
+        return entityCheckBox != null && entityCheckBox.isSelected();
+      default:
+        break;
+    }
+    return false;
   }
 
   /**
@@ -1257,16 +1430,15 @@ public class CasAnnotationViewer extends JPanel {
    *          the annotation to add
    */
   protected void addAnnotationToTree(AnnotationFS aAnnotation) {
-    DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel
-            .getRoot();
+    DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
     // try to find a node for the type
     DefaultMutableTreeNode typeNode = null;
     for (int i = 0; i < root.getChildCount(); i++) {
-    	DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
-    	if (aAnnotation.getType().equals(((TypeTreeNodeObject) child.getUserObject()).getType())) {
-    		typeNode = child;
-    		break;
-    	}
+      DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
+      if (aAnnotation.getType().equals(((TypeTreeNodeObject) child.getUserObject()).getType())) {
+        typeNode = child;
+        break;
+      }
     }
     if (typeNode == null) {
       typeNode = new DefaultMutableTreeNode(new TypeTreeNodeObject(aAnnotation.getType()));
@@ -1274,129 +1446,181 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     // add annotation node
-    DefaultMutableTreeNode annotationNode = new DefaultMutableTreeNode(new FsTreeNodeObject(
-            aAnnotation, null));
+    DefaultMutableTreeNode annotationNode = new DefaultMutableTreeNode(new FsTreeNodeObject(aAnnotation, null));
     typeNode.insert(annotationNode, 0);
     // add child nodes for features
-    addFeatureTreeNodes(annotationNode, aAnnotation);
+    this.addFeatureTreeNodes(annotationNode, aAnnotation);
   }
 
   private void addFeatureTreeNodes(DefaultMutableTreeNode aParentNode, FeatureStructure aFS) {
-    List<Feature> aFeatures = aFS.getType().getFeatures();
-    Iterator<Feature> iter = aFeatures.iterator();
-    while (iter.hasNext()) {
-      Feature feat = (Feature) iter.next();
-      String featName = feat.getShortName();
+    List<Feature> features = aFS.getType().getFeatures();
+    if (features == null || features.size() == 0) {
+      return;
+    }
+
+    for (Feature feature : features) {
+      String featureName = feature.getShortName();
       // skip hidden features
-      if (hiddenFeatureNames.contains(featName)) {
+      if (this.hiddenFeatureNames != null && this.hiddenFeatureNames.contains(featureName)) {
         continue;
       }
       // how we get feature value depends on feature's range type)
-      String featVal = "null";
-      Type rangeType = feat.getRange();
-      String rangeTypeName = rangeType.getName();
-      if (cas.getTypeSystem().subsumes(stringType, rangeType)) {
-        featVal = aFS.getStringValue(feat);
-        if (featVal == null) {
-          featVal = "null";
-        } else if (featVal.length() > 64) {
-          featVal = featVal.substring(0, 64) + "...";
-        }
-      } else if (rangeType.isPrimitive()) {
-        featVal = aFS.getFeatureValueAsString(feat);
-      } else if (cas.getTypeSystem().subsumes(fsArrayType, rangeType)) {
-        ArrayFS arrayFS = (ArrayFS) aFS.getFeatureValue(feat);
+      String featureValue = this.getFeatureValueInString(aFS, feature);
+      if (featureValue == null) {
+        continue;
+      }
+      if (featureValue.equalsIgnoreCase("*FSArray*")) {
+        // The feature value is an FSArray. Cannot render it as simple as "name=value".
+        ArrayFS arrayFS = (ArrayFS) aFS.getFeatureValue(feature);
         if (arrayFS != null) {
-          // Add featName = FSArray node, then add each array element as a child
-          DefaultMutableTreeNode arrayNode = new DefaultMutableTreeNode(featName + " = FSArray");
+          // Create a node to represent the FSArray.
+          DefaultMutableTreeNode arrayNode = new DefaultMutableTreeNode(featureName + " = FSArray");
           for (int i = 0; i < arrayFS.size(); i++) {
-            FeatureStructure fsVal = arrayFS.get(i);
-            if (fsVal != null) {
-              // Add the FS node and a dummy child, so that user can expand it.
-              // When user expands it, new nodes for feature values will be created.
-              DefaultMutableTreeNode fsValNode = new DefaultMutableTreeNode(new FsTreeNodeObject(
-                      fsVal, featName));
-              if (!fsVal.getType().getFeatures().isEmpty()) {
-                fsValNode.add(new DefaultMutableTreeNode(null));
+            // Each FSArray element will be represented by a new tree node and added under the array node.
+            FeatureStructure featureStructure = arrayFS.get(i);
+            if (featureStructure != null) {
+              DefaultMutableTreeNode fsValueNode = new DefaultMutableTreeNode(
+                  new FsTreeNodeObject(featureStructure, featureName));
+              if (!featureStructure.getType().getFeatures().isEmpty()) {
+                fsValueNode.add(new DefaultMutableTreeNode(null));
               }
-              arrayNode.add(fsValNode);
+              arrayNode.add(fsValueNode);
             } else {
               arrayNode.add(new DefaultMutableTreeNode("null"));
             }
           }
           aParentNode.add(arrayNode);
-          continue;
         }
-      } else if (rangeType.isArray()) // primitive array
-      {
-        String[] vals = null;
-        if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
-          StringArrayFSImpl arrayFS = (StringArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toArray();
-        } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
-          IntArrayFSImpl arrayFS = (IntArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
-          FloatArrayFSImpl arrayFS = (FloatArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        } else if (CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName)) {
-          BooleanArrayFSImpl arrayFS = (BooleanArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        } else if (CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)) {
-          ByteArrayFSImpl arrayFS = (ByteArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        } else if (CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)) {
-          ShortArrayFSImpl arrayFS = (ShortArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        } else if (CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)) {
-          LongArrayFSImpl arrayFS = (LongArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        }
-        if (CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)) {
-          DoubleArrayFSImpl arrayFS = (DoubleArrayFSImpl) aFS.getFeatureValue(feat);
-          if (arrayFS != null)
-            vals = arrayFS.toStringArray();
-        }
-        if (vals == null) {
-          featVal = "null";
+      } else {
+        if (featureValue.equalsIgnoreCase("*FS*")) {
+          // The feature value is an annotation object. Cannot render it as simple as "name=value".
+          FeatureStructure featureStructure = aFS.getFeatureValue(feature);
+          if (featureStructure != null) {
+            // Need to create a node to represent the annotation.
+            DefaultMutableTreeNode fsValueNode = new DefaultMutableTreeNode(
+                new FsTreeNodeObject(featureStructure, featureName));
+            if (!featureStructure.getType().getFeatures().isEmpty()) {
+              fsValueNode.add(new DefaultMutableTreeNode(null));
+            }
+            aParentNode.add(fsValueNode);
+          }
         } else {
-          StringBuffer displayVal = new StringBuffer();
-          displayVal.append('[');
-          for (int i = 0; i < vals.length - 1; i++) {
-            displayVal.append(vals[i]);
-            displayVal.append(',');
-          }
-          if (vals.length > 0) {
-            displayVal.append(vals[vals.length - 1]);
-          }
-          displayVal.append(']');
-          featVal = displayVal.toString();
-        }
-      } else
-      // single feature value
-      {
-        FeatureStructure fsVal = aFS.getFeatureValue(feat);
-        if (fsVal != null) {
-          // Add the FS node and a dummy child, so that user can expand it.
-          // When user expands it, new nodes for feature values will be created.
-          DefaultMutableTreeNode fsValNode = new DefaultMutableTreeNode(new FsTreeNodeObject(fsVal,
-                  featName));
-          if (!fsVal.getType().getFeatures().isEmpty()) {
-            fsValNode.add(new DefaultMutableTreeNode(null));
-          }
-          aParentNode.add(fsValNode);
-          continue;
+          // The feature value can be rendered as simple as "name=value". There is no need to go down any further.
+          aParentNode.add(new DefaultMutableTreeNode(featureName + " = " + featureValue));
         }
       }
-      aParentNode.add(new DefaultMutableTreeNode(featName + " = " + featVal));
     }
+  }
+
+  /**
+   * Get feature value in string, if value is not another annotation and not
+   * an array of annotations.
+   * 
+   * @param aFS
+   * @param feature
+   * @return
+   */
+  private String getFeatureValueInString(FeatureStructure aFS, Feature feature) {
+    if (this.cas == null || this.typeSystem == null || this.stringType == null || this.fsArrayType == null) {
+      return "null";
+    }
+
+    Type rangeType = feature.getRange();
+    if (this.typeSystem.subsumes(this.fsArrayType, rangeType)) {
+      // If the feature is an FSArray, cannot render it as simple as "name=value".
+      return "*FSArray*";
+    }
+    if (this.typeSystem.subsumes(this.stringType, rangeType)) {
+      return checkString(aFS.getStringValue(feature), "null", 64);
+    }
+    if (rangeType.isPrimitive()) {
+      return checkString(aFS.getFeatureValueAsString(feature), "null", 64);
+    }
+    if (rangeType.isArray()) {
+      String rangeTypeName = rangeType.getName();
+      String[] values = null;
+      if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
+        StringArrayFSImpl arrayFS = (StringArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toArray();
+        }
+      } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
+        IntArrayFSImpl arrayFS = (IntArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
+        FloatArrayFSImpl arrayFS = (FloatArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else if (CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName)) {
+        BooleanArrayFSImpl arrayFS = (BooleanArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else if (CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)) {
+        ByteArrayFSImpl arrayFS = (ByteArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else if (CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)) {
+        ShortArrayFSImpl arrayFS = (ShortArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else if (CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)) {
+        LongArrayFSImpl arrayFS = (LongArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else if (CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)) {
+        DoubleArrayFSImpl arrayFS = (DoubleArrayFSImpl) aFS.getFeatureValue(feature);
+        if (arrayFS != null) {
+          values = arrayFS.toStringArray();
+        }
+      } else {
+        // Unknown array type.
+      }
+      if (values == null || values.length == 0) {
+        return "null";
+      }
+
+      StringBuffer displayValue = new StringBuffer();
+      displayValue.append("[");
+      for (int i = 0; i < values.length - 1; i++) {
+        displayValue.append(values[i]);
+        displayValue.append(",");
+      }
+      displayValue.append(values[values.length - 1]);
+      displayValue.append("]");
+      return displayValue.toString();
+    }
+
+    // If none of the above, then it is an annotation object. Cannot render it as simple as "name=value".
+    return "*FS*";
+  }
+
+  /**
+   * Check if a string is null or longer than specified limit. If null, use
+   * default value. If longer than specified limit, take only the leading
+   * substring that would fit in the limit.
+   * 
+   * @param stringValue
+   * @param defaultIfNull
+   * @param maxLength
+   * @return
+   */
+  private static String checkString(String stringValue, String defaultIfNull, int maxLength) {
+    if (stringValue == null) {
+      return defaultIfNull;
+    }
+
+    if (maxLength > 0 && stringValue.length() > maxLength) {
+      return stringValue.substring(0, maxLength) + "...";
+    }
+
+    return stringValue;
   }
 
   /**
@@ -1408,21 +1632,19 @@ public class CasAnnotationViewer extends JPanel {
    *          A type name
    * @return True iff name matches a name in type names
    */
-  private boolean typeNamesContains(Set<String> names, String name) {
-    if (names.contains(name))
+  private static boolean typeNamesContains(Set<String> names, String name) {
+    if (names.contains(name)) {
       return true;
-    else {
-      Iterator<String> namesIterator = names.iterator();
-      while (namesIterator.hasNext()) {
-        String otherName = namesIterator.next();
-        if (otherName.indexOf('*') != -1) {
-          if (wildCardMatch(name, otherName)) {
-            return true;
-          }
-        } else {
-          if (otherName.equalsIgnoreCase(name)) {
-            return true;
-          }
+    }
+
+    for (String pattern : names) {
+      if (pattern.indexOf('*') != -1) {
+        if (wildCardMatch(name, pattern)) {
+          return true;
+        }
+      } else {
+        if (pattern.equalsIgnoreCase(name)) {
+          return true;
         }
       }
     }
@@ -1432,29 +1654,33 @@ public class CasAnnotationViewer extends JPanel {
   /**
    * Helper for {@link #typeNamesContains(HashSet, String)}.
    * 
-   * @param s
+   * @param name
    *          A litteral string
    * @param pattern
    *          A string that includes one or more *'s as wildcards
    * @return True iff the string matches the pattern.
    */
-  private boolean wildCardMatch(String s, String pattern) {
-    StringBuffer regexpPatternBuffer = new StringBuffer();
+  private static boolean wildCardMatch(String name, String pattern) {
+    if (pattern == null || pattern.length() == 0) {
+      return false;
+    }
+    StringBuffer regex = new StringBuffer();
     for (int i = 0; i < pattern.length(); i++) {
       char c = pattern.charAt(i);
-      if (c == '*')
-        regexpPatternBuffer.append('.');
-      else if (c == '.')
-        regexpPatternBuffer.append('\\');
+      if (c == '*') {
+        regex.append('.');
+      }
+      if (c == '.') {
+        regex.append('\\');
+      }
       if (Character.isLetter(c)) {
-        regexpPatternBuffer.append('(').append(Character.toLowerCase(c)).append('|').append(
-                Character.toUpperCase(c)).append(')');
+        regex.append('(').append(Character.toLowerCase(c)).append('|').append(Character.toUpperCase(c)).append(')');
       } else {
-        regexpPatternBuffer.append(c);
+        regex.append(c);
       }
     }
 
-    return s.matches(new String(regexpPatternBuffer));
+    return name != null && name.length() > 0 && name.matches(new String(regex));
   }
 
   /**
@@ -1466,70 +1692,80 @@ public class CasAnnotationViewer extends JPanel {
     Dimension paneSize = new Dimension(d.width - insets.left - insets.right, d.height - insets.top
             - insets.bottom);
 
-    horizontalSplitPane.setPreferredSize(paneSize);
-    horizontalSplitPane.setSize(paneSize);
+    this.horizontalSplitPane.setPreferredSize(paneSize);
+    this.horizontalSplitPane.setSize(paneSize);
   }
 
   /**
    * Applies boldface as per the mBoldfaceKeywords and mBoldfaceSpans fields.
    */
-  private void doBoldface() {
+  private void doBoldFace() {
     // Keywords
-    if (boldFaceKeyWords.length > 0) {
-      // build regular expression
-      StringBuffer regEx = new StringBuffer();
-      for (int i = 0; i < boldFaceKeyWords.length; i++) {
-        if (i > 0) {
-          regEx.append('|');
-        }
-        regEx.append("\\b");
-        String word = boldFaceKeyWords[i];
-        for (int j = 0; j < word.length(); j++) {
-          char c = word.charAt(j);
-          if (Character.isLetter(c)) {
-            regEx.append('[').append(Character.toLowerCase(c)).append(Character.toUpperCase(c))
-                    .append(']');
-          } else if (c == '.' || c == '^' || c == '&' || c == '\\' || c == '(' || c == ')') {
-            regEx.append('\\').append(c);
-          } else {
-            regEx.append('c');
-          }
-        }
-        regEx.append("\\b");
-      }
-      // System.out.println("RegEx: " + regEx);
-      Pattern pattern = Pattern.compile(regEx.toString());
-      Matcher matcher = pattern.matcher(cas.getDocumentText());
-      // match
-      int pos = 0;
-      while (matcher.find(pos)) {
-        MutableAttributeSet attrs = new SimpleAttributeSet();
-        StyleConstants.setBold(attrs, true);
-        StyledDocument doc = (StyledDocument) textPane.getDocument();
-        doc.setCharacterAttributes(matcher.start(), matcher.end() - matcher.start(), attrs, false);
-
-        if (pos == matcher.end()) // infinite loop check
-          break;
-        else
-          pos = matcher.end();
-      }
-    }
+    this.doBoldFaceByKeyWords();
     // Spans
-    int docLength = cas.getDocumentText().length();
-    int len = boldFaceSpans.length;
-    len -= len % 2; // to avoid ArrayIndexOutOfBoundsException if some numbskull passes in an
-    // odd-length array
+    this.doBoldFaceBySpans();
+  }
+
+  private void doBoldFaceBySpans() {
+    if (this.boldFaceSpans == null || this.boldFaceSpans.length == 0) {
+      return;
+    }
+    int docLength = this.cas.getDocumentText().length();
+    int spanLength = this.boldFaceSpans.length - (this.boldFaceSpans.length % 2);
     int i = 0;
-    while (i < len) {
-      int begin = boldFaceSpans[i];
-      int end = boldFaceSpans[i + 1];
-      if (begin >= 0 && begin <= docLength && end >= 0 && end <= docLength) {
+    while (i < spanLength) {
+      int begin = this.boldFaceSpans[i];
+      int end = this.boldFaceSpans[i + 1];
+      if (begin >= 0 && begin <= docLength && end >= 0 && end <= docLength && begin < end) {
         MutableAttributeSet attrs = new SimpleAttributeSet();
         StyleConstants.setBold(attrs, true);
-        StyledDocument doc = (StyledDocument) textPane.getDocument();
+        StyledDocument doc = (StyledDocument) this.textPane.getDocument();
         doc.setCharacterAttributes(begin, end - begin, attrs, false);
       }
       i += 2;
+    }
+  }
+
+  private void doBoldFaceByKeyWords() {
+    if (this.boldFaceKeyWords == null || this.boldFaceKeyWords.length == 0) {
+      return;
+    }
+
+    // build regular expression
+    StringBuffer regex = new StringBuffer();
+    for (int i = 0; i < this.boldFaceKeyWords.length; i++) {
+      if (i > 0) {
+        regex.append('|');
+      }
+      regex.append("\\b");
+      String keyWord = this.boldFaceKeyWords[i];
+      for (int j = 0; j < keyWord.length(); j++) {
+        char c = keyWord.charAt(j);
+        if (Character.isLetter(c)) {
+          regex.append('[').append(Character.toLowerCase(c)).append(Character.toUpperCase(c)).append(']');
+        } else if (c == '.' || c == '^' || c == '&' || c == '\\' || c == '(' || c == ')') {
+          regex.append('\\').append(c);
+        } else {
+          regex.append(c);
+        }
+      }
+      regex.append("\\b");
+    }
+    Pattern pattern = Pattern.compile(regex.toString());
+    Matcher matcher = pattern.matcher(this.cas.getDocumentText());
+    // match
+    int pos = 0;
+    while (matcher.find(pos)) {
+      int begin = matcher.start();
+      int end = matcher.end();
+      MutableAttributeSet attrs = new SimpleAttributeSet();
+      StyleConstants.setBold(attrs, true);
+      StyledDocument doc = (StyledDocument) this.textPane.getDocument();
+      doc.setCharacterAttributes(begin, end - begin, attrs, false);
+      if (pos == end) { // infinite loop check
+        break;
+      }
+      pos = end;
     }
   }
 
@@ -1542,7 +1778,7 @@ public class CasAnnotationViewer extends JPanel {
   protected JTree getSelectedAnnotationTree() {
     return this.selectedAnnotationTree;
   }
-  
+
   /**
    * Trivial entity resolver that's applied if the user turns on entity mode without
    * specifying their own entity resolver.  Returns the covered text as the canonical form,
