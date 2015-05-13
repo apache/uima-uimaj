@@ -137,7 +137,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     @Override
     public FSIterator<FeatureStructure> copy() {
       return this;
-    } 
+    }
+    @Override
+    <TT extends AnnotationFS> void moveTo(int begin, int end) {}
   };
 
   private static final LowLevelIterator emptyLlIterator = new FSIntIteratorImplBase<FeatureStructure>(null, null) {
@@ -1540,7 +1542,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    *
    * @param <T> - the particular type (and it subtypes) this particular index is associated with
    */
-  private class IndexImpl<T extends FeatureStructure> implements FSIndex<T>, FSIndexImpl {
+  // needs default visibility
+  class IndexImpl<T extends FeatureStructure> implements FSIndex<T>, FSIndexImpl {
 
     private final IndexIteratorCachePair<T> iicp;
     
@@ -1725,6 +1728,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return new IndexImpl<T>(this.iicp, IteratorExtraFunction.SNAPSHOT);
     }
 
+    FSIndexRepositoryImpl getFsRepositoryImpl() {
+      return iicp.getCASImpl().indexRepository;
+    }
   }  // end of class IndexImpl
   
    
@@ -2953,14 +2959,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @see org.apache.uima.cas.FSIndexRepository#getAllIndexedFS(org.apache.uima.cas.Type)
    */
   public <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type type) {
-    final List<FSIterator<T>> iteratorList = new ArrayList<>();
+    final List<FSIteratorImplBase<T>> iteratorList = new ArrayList<>();
     getAllIndexedFS(type, iteratorList);
     return 
         (iteratorList.size() == 0) ? emptyFSIterator :  
           (iteratorList.size() == 1) ? iteratorList.get(0) : new FSIteratorAggregate<T>(iteratorList);
   }
 
-  private final <T extends FeatureStructure> void getAllIndexedFS(Type type, List<FSIterator<T>> iteratorList) {
+  private final <T extends FeatureStructure> void getAllIndexedFS(Type type, List<FSIteratorImplBase<T>> iteratorList) {
     // Strategy:  go through the list of all indexes for this type.
     //   The list is intentially ordered when created to have "SORTED" indexes come first.
     //   
@@ -2994,7 +3000,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
             if (FSIndexFlat.trace) {
               System.out.format("FSIndexFlattened getAllIndexedFS use: %s%n", flatIterator.toString());
             }
-            iteratorList.add(flatIterator);
+            iteratorList.add((FSIteratorImplBase<T>) flatIterator);
             return;
           }
         }
@@ -3023,7 +3029,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         
     if (null != iicpSorted) {
       if (iicpSorted.has1OrMoreEntries()) {
-        iteratorList.add(new IndexImpl<T>((IndexIteratorCachePair<T>) iicpSorted, IteratorExtraFunction.UNORDERED).iterator());
+        iteratorList.add((FSIteratorImplBase<T>) new IndexImpl<T>((IndexIteratorCachePair<T>) iicpSorted, IteratorExtraFunction.UNORDERED).iterator());
         // even though this is not a sorted index (because of UNORDERED) and therefore won't normally increment the
         // count used to figure out when to create a flattened index, increment this count to 
         // get a small speedup by caching the Java cover classes.
@@ -3043,7 +3049,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     if (null != iicpBag) {
       if (iicpBag.has1OrMoreEntries()) {
-        iteratorList.add(new IndexImpl<T>(iicpBag).iterator());
+        iteratorList.add((FSIteratorImplBase<T>) new IndexImpl<T>(iicpBag).iterator());
       }
       return;
     }
@@ -3052,7 +3058,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // default bag index is guaranteed to exist if any FS of Type type were added to the indexes
     //   https://issues.apache.org/jira/browse/UIMA-4111
     if (iicpDefaultBag != null) {      // There must be a default bag index defined if any FSs of this type were added to indexes
-      iteratorList.add(new IndexImpl<T>(iicpDefaultBag).iterator());
+      iteratorList.add((FSIteratorImplBase<T>) new IndexImpl<T>(iicpDefaultBag).iterator());
       // We found one of the special auto-indexes which don't inherit down the tree. So, we
       // manually need to traverse the inheritance tree to look for more indexes. Note that
       // this is not necessary when we have a regular index
@@ -3074,7 +3080,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    if (cas.getTypeSystemImpl().subsumes(superType, type))
 //  }
 
-  private <T extends FeatureStructure> void addDirectSubtypes(Type type, List<FSIterator<T>> iteratorList) {
+  private <T extends FeatureStructure> void addDirectSubtypes(Type type, List<FSIteratorImplBase<T>> iteratorList) {
     Iterator<Type> typeIterator = this.sii.tsi.getDirectSubtypesIterator(type);
     while(typeIterator.hasNext()) {
       getAllIndexedFS(typeIterator.next(), iteratorList);
@@ -3382,7 +3388,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
           if (e1 > e2) return -1;  // reverse
           if (e1 < e2) return 1;
           
-          return (typeOrder.lessThan(ci.getTypeCode(fs1), ci.getTypeCode(fs2))) ? -1 : 1;
+          final int tc1 = ci.getTypeCode(fs1);
+          final int tc2 = ci.getTypeCode(fs2);
+          
+          return (tc1 == tc2) ? 0 : 
+            ((typeOrder.lessThan(ci.getTypeCode(fs1), ci.getTypeCode(fs2))) ? -1 : 1);
         }
       };
     }
