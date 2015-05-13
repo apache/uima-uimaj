@@ -4513,6 +4513,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return addr;
   }
   
+  /**
+   * The <T extends AnnotationFS> (rather than AnnotationFS) allows the method
+   * JCasImpl getAnnotationIndex to return Annotation instead of AnnotationFS
+   */
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex() {
     return new AnnotationIndexImpl<T>(
             getIndexRepository().<T>getIndex(
