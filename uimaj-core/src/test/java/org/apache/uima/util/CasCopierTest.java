@@ -275,7 +275,7 @@ public class CasCopierTest extends TestCase {
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     CasCopier copier = new CasCopier(srcCas, destCas);
 
-    // set sofa data in destination CAS (this is not copied automtically)
+    // set sofa data in destination CAS (this is not copied automatically)
     destCas.setDocumentText(srcCas.getDocumentText());
 
     CasComparer cci = new CasComparer();
