@@ -55,7 +55,7 @@ import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
-import org.apache.uima.internal.util.rb_trees.RedBlackTree;
+import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -200,9 +200,10 @@ public class XmiCasDeserializer {
     //Current out-of-typesystem element, if any
     private OotsElementData outOfTypeSystemElement = null;
 
-    //local map from xmi:id to FS address, used when merging multiple XMI CASes
-    //into one CAS object.
-    private RedBlackTree<Integer> localXmiIdToFsAddrMap = new RedBlackTree<Integer>();
+     /**
+     * local map from xmi:id to FS address, used when merging multiple XMI CASes into one CAS object.
+     */
+    private IntRedBlackTree localXmiIdToFsAddrMap = new IntRedBlackTree();
     
     //if mergepoint is set, are preexisting FS allowed, disallowed or ignored.
     AllowPreexistingFS allowPreexistingFS;
@@ -315,6 +316,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       // Do setup work in the constructor.
       this.state = DOC_STATE;
@@ -328,6 +330,7 @@ public class XmiCasDeserializer {
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
      *      java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
             Attributes attrs) throws SAXException {
       // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
@@ -1339,6 +1342,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] chars, int start, int length) throws SAXException {
       switch (this.state) {
         case FEAT_CONTENT_STATE:
@@ -1364,6 +1368,7 @@ public class XmiCasDeserializer {
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
             throws SAXException {
       switch (this.state) {
@@ -1463,6 +1468,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#endDocument()
      */
+    @Override
     public void endDocument() throws SAXException {
       // Resolve ID references
       for (int i = 0; i < deserializedFsAddrs.size(); i++) {
@@ -1663,6 +1669,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1672,6 +1679,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1681,6 +1689,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
+    @Override
     public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {
       // Since we're not validating, we don't need to do anything; this won't
       // be called.
@@ -1691,6 +1700,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
      */
+    @Override
     public void setDocumentLocator(Locator loc) {
       // System.out.println("Setting document locator.");
       this.locator = loc;
@@ -1701,6 +1711,7 @@ public class XmiCasDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1746,7 +1757,7 @@ public class XmiCasDeserializer {
           //if we're doing a merge, we can't update the shared map because we could
           //have duplicate xmi:id values in the different parts of the merge.
           //instead we keep a local mapping used only within this deserialization.
-          localXmiIdToFsAddrMap.put(xmiId, Integer.valueOf(fsAddr));
+          localXmiIdToFsAddrMap.put(xmiId, fsAddr);
         }
       }
     }
@@ -1772,12 +1783,12 @@ public class XmiCasDeserializer {
         //if we're merging, then we use a local id map for FSs above the
         //merge point, since each of the different XMI CASes being merged
         //can use these same ids for different FSs.
-        Integer localAddr = localXmiIdToFsAddrMap.get(xmiId);
-        if (localAddr != null) {
-          return localAddr.intValue();
-        } else {
-          throw new java.util.NoSuchElementException();
-        }
+        return localXmiIdToFsAddrMap.get(xmiId);
+//        if (localAddr != null) {
+//          return localAddr.intValue();
+//        } else {
+//          throw new java.util.NoSuchElementException();
+//        }
       }
     }
     
