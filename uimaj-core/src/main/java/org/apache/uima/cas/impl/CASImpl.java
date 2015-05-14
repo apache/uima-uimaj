@@ -222,6 +222,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     final private LongHeap longHeap = new LongHeap(); // for storing 64 bit values
 
+    // for efficiency in accessing the begin and end offsets of annotations
+    private int annotFeatOffset_begin;
+    private int annotFeatOffset_end;
+    
     // Base CAS for all views
     final private CASImpl baseCAS;
 
@@ -983,6 +987,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // After the type system has been committed, we can create the
     // index repository.
     createIndexRepository();
+    svd.annotFeatOffset_begin = getFeatureOffset(ts.startFeatCode);
+    svd.annotFeatOffset_end   = getFeatureOffset(ts.endFeatCode);
   }
 
   // internal use, public for cross class ref
@@ -3547,6 +3553,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return ll_getIntValue(fsRef, featureCode);
   }
   
+  public int ll_getAnnotBegin(int fsRef) {
+    return ll_getIntValueFeatOffset(fsRef, svd.annotFeatOffset_begin);
+  }
+  
+  public int ll_getAnnotEnd(int fsRef) {
+    return ll_getIntValueFeatOffset(fsRef, svd.annotFeatOffset_end);
+  }
+
   /**
    * This is the method all normal FS feature "setters" call before doing the set operation.
    * <p style="margin-left:2em">

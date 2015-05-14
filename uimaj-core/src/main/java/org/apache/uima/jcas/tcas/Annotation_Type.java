@@ -58,9 +58,11 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   final int casFeatCode_begin;
 
   public int getBegin(int addr) {
-    if (featOkTst && casFeat_begin == null)
-      this.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-    return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
+    // not needed - is built in
+//    if (featOkTst && casFeat_begin == null)
+//      this.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
+    return casImpl.ll_getAnnotBegin(addr);
+//    return ll_cas.ll_getIntValue(addr, casFeatCode_begin);
   }
 
   public void setBegin(int addr, int v) {
@@ -72,11 +74,13 @@ public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Typ
   final Feature casFeat_end;
 
   final int casFeatCode_end;
-
+  
   public int getEnd(int addr) {
-    if (featOkTst && casFeat_end == null)
-      this.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-    return ll_cas.ll_getIntValue(addr, casFeatCode_end);
+    // not needed - is built in
+//    if (featOkTst && casFeat_end == null)
+//      this.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
+    return casImpl.ll_getAnnotEnd(addr);
+//    return ll_cas.ll_getIntValue(addr, casFeatCode_end);
   }
 
   public void setEnd(int addr, int v) {

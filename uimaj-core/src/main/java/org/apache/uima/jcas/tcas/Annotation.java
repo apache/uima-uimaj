@@ -61,17 +61,20 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * getter for begin - gets beginning of span of annotation
    */
   public int getBegin() {
-    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin);
+    // not needed - is built in
+//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
+//      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
+    return ((Annotation_Type)jcasType).getBegin(addr);
+//    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin);
   }
 
   /*
    * setter for begin - sets beginning of span of annotation
    */
   public void setBegin(int v) {
-    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
+    // not needed - is built in
+//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
+//      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
     jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin, v);
   }
 
@@ -83,17 +86,20 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * getter for end - gets ending of span of annotation
    */
   public int getEnd() {
-    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end);
+    // not needed - is built in
+//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
+//      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
+    return ((Annotation_Type)jcasType).getEnd(addr);
+//    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end);
   }
 
   /*
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {
-    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
+    // not needed - is built in
+//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
+//      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
     jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end, v);
   }
 
