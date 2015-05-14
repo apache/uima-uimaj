@@ -368,17 +368,17 @@ public class IteratorTest extends TestCase {
         this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
-    //debug
-    System.out.format("Token at %,d %n", fsi.getAddress());
+//    //debug
+//    System.out.format("Token at %,d %n", fsi.getAddress());
   }
   
-  private void debugls() {
-    LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
-    LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
-    LowLevelIterator it = setIndexForType.ll_iterator();
-    it.moveToLast();
-    System.out.format("Last token in set index is %,d%n", it.ll_get());
-  }
+//  private void debugls() {
+//    LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
+//    LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
+//    LowLevelIterator it = setIndexForType.ll_iterator();
+//    it.moveToLast();
+//    System.out.format("Last token in set index is %,d%n", it.ll_get());
+//  }
   
   private void setupFSs() {
     for (int i = 0; i < 10; i++) {
@@ -471,12 +471,12 @@ public class IteratorTest extends TestCase {
     findTst(bagIndex, jcasBagIndex);
     findTst(ssBagIndex, jcasSsBagIndex);
     
-    debugls();  //debug
+//    debugls();  //debug
     
     basicRemoveAdd(bagIndex, 20, 21);
     basicRemoveAdd(ssBagIndex, 20, 21);
     basicRemoveAdd(sortedIndex, 38, 39);
-    debugls();  //debug
+//    debugls();  //debug
     basicRemoveAdd(ssSortedIndex, 38, 39);
     basicRemoveAdd(setIndex, 38, 39);
     basicRemoveAdd(ssSetIndex, 38, 39);
@@ -495,7 +495,7 @@ public class IteratorTest extends TestCase {
     fastFailTst(sortedIndex, true);  
     fastFailTst(ssSortedIndex, false);
     
-    debugls();  //debug
+//    debugls();  //debug
     
     
 
@@ -505,7 +505,7 @@ public class IteratorTest extends TestCase {
     tstWord(wordSetIndex);
     tstWord(ssWordSetIndex);
 
-    debugls();  //debug
+//    debugls();  //debug
     
 
     // moved IntArrayRBTtest for pointer iterators here
