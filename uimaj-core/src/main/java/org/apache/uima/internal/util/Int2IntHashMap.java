@@ -378,6 +378,11 @@ public class Int2IntHashMap {
    return (key == 0) ? 0 : values[find(key)];
  }
  
+ public boolean containsKey(int key) {
+   int probeAddr = find(key);
+   return probeAddr != 0 && keys[probeAddr] != 0;
+ }
+ 
  public boolean isKeyValid(int position) {
    return (position != 0) && (keys[position] != 0);
  }
