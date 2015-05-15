@@ -180,20 +180,31 @@ public class AnnotationIteratorTest extends TestCase {
     FSIndexRepository ir = this.cas.getIndexRepository();
     int annotCount = 1; // Init with document annotation.
     // create token and sentence annotations
+    AnnotationFS fs;
     for (int i = 0; i < text.length() - 5; i++) {
       ++annotCount;
-      ir.addFS(this.cas.createAnnotation(this.tokenType, i, i + 5));
+      ir.addFS(fs = this.cas.createAnnotation(this.tokenType, i, i + 5));
+      if (showFSs) {
+        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+      }
     }
     // for (int i = 0; i < text.length() - 5; i++) {
     // cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
     // }
     for (int i = 0; i < text.length() - 10; i += 5) {
       ++annotCount;
-      ir.addFS(this.cas.createAnnotation(this.sentenceType, i, i + 10));
+      ir.addFS(fs = this.cas.createAnnotation(this.sentenceType, i, i + 10));
+      if (showFSs) {
+        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+      }
     }
     
     ++annotCount;
-    ir.addFS(this.cas.createAnnotation(this.sentenceType,  12, 31));
+    ir.addFS(fs = this.cas.createAnnotation(this.sentenceType,  12, 31));
+    if (showFSs) {
+      System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+    }
+
 
     /***************************************************
      * iterate over them
