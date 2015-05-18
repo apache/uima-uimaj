@@ -670,8 +670,9 @@ public class FSIndexFlat<T extends FeatureStructure> {
     return (fsa.get() != null && iicp.isUpdateFreeSinceLastCounterReset());
   }
     
-  private static void dumpFlattenTime() {
-    if (tune) {
+  private static final Thread dumpMeasurements = tune ? new Thread(new Runnable() {
+    @Override
+    public void run() {
       System.out.println(String.format("Time to flatten was %,d microseconds", flattenTime.get() / 1000));
       System.out.println(String.format(
           "Flatten tuning, threshold: %d, creations: %,d uses: %d, discards: %d",
@@ -680,17 +681,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
           numberFlatIterators.get(), 
           numberDiscardedDueToUpdates.get()));
     }
-  }
+  }) : null;
   
-  static {
-    if (tune) {
-      Thread sdh = new Thread(new Runnable() {
-        @Override
-        public void run() {
-          dumpFlattenTime();
-        }
-      });
-      Runtime.getRuntime().addShutdownHook(sdh);
-    }
-  }
+  static {if (tune) {Runtime.getRuntime().addShutdownHook(dumpMeasurements);}}
 }
