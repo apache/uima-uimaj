@@ -27,10 +27,14 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -56,6 +60,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.Scrollable;
@@ -133,6 +138,7 @@ public class CasAnnotationViewer extends JPanel {
   // Mode constants
   private static final short MODE_ANNOTATIONS = 0;
   private static final short MODE_ENTITIES = 1;
+  private static final short MODE_FEATURES = 2;
 
   private static String[] DEFAULT_HIDDEN_FEATURES = { "sofa" };
   // colors to use for highlighting annotations
@@ -178,20 +184,20 @@ public class CasAnnotationViewer extends JPanel {
   private Type stringType;
   private Type fsArrayType;
   private boolean useConsistentColors = true;
-  private List<String> highFrequencyTypes;
-  private String[] boldFaceKeyWords;
-  private int[] boldFaceSpans;
-  private Set<String> hiddenFeatureNames;
-  private Set<String> hiddenTypeNames;
+  private List<String> highFrequencyTypes = new ArrayList<String>();
+  private String[] boldFaceKeyWords = new String[0];
+  private int[] boldFaceSpans = new int[0];
+  private Set<String> hiddenFeatureNames = new HashSet<String>();
+  private Set<String> hiddenTypeNames = new HashSet<String>();
   private Set<String> displayedTypeNames;
   private Set<String> initiallySelectedTypeNames;
   private boolean hideUnselectedCheckBoxes;
-  private List<String> userTypes;
-  private Set<String> typesNotChecked;
-  private Map<String, Color> typeColorMap;
+  private List<String> userTypes = new ArrayList<String>();
+  private Set<String> typesNotChecked = new HashSet<String>();
+  private Map<String, Color> typeColorMap = new HashMap<String, Color>();
+  private Map<String, Color> featureColorMap = new HashMap<String, Color>();
   private EntityResolver entityResolver = new DefaultEntityResolver();
 
-  private boolean entityViewEnabled = false; 
   private short viewMode = MODE_ANNOTATIONS;
   // GUI components
   private Map<Type, JCheckBox> typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
@@ -200,20 +206,31 @@ public class CasAnnotationViewer extends JPanel {
   private JSplitPane verticalSplitPane;
   private JTextPane textPane;
   private JScrollPane textScrollPane;
-  private JScrollPane legendScrollPane;
-  private JPanel annotationCheckboxPanel;
-  private JPanel entityCheckboxPanel;
-  private JButton selectAllButton;
-  private JButton deselectAllButton;
+  private Map<Type, JRadioButton> typeRadioButtonMap = new HashMap<Type, JRadioButton>();
+  private Map<String, JRadioButton> featureRadioButtonMap = new HashMap<String, JRadioButton>();
+  private Map<String, JCheckBox> featureValueCheckBoxMap = new HashMap<String, JCheckBox>();
+  private Map<String, Color> featureValueColorMap = new HashMap<String, Color>();
   private JButton showHideUnselectedButton;
   private JTree selectedAnnotationTree;
   private DefaultTreeModel selectedAnnotationTreeModel;
-  private JPanel viewModePanel;
   private JRadioButton annotationModeButton;
   private JRadioButton entityModeButton;
+  private JRadioButton featureModeButton;
   private JPanel sofaSelectionPanel;
   @SuppressWarnings("rawtypes")
   private JComboBox sofaSelectionComboBox;
+
+  private JTabbedPane tabbedChoicePane;
+  private JScrollPane typeCheckBoxScrollPane;
+  private VerticallyScrollablePanel typeCheckBoxVerticalScrollPanel;
+  private JScrollPane entityCheckBoxScrollPane;
+  private VerticallyScrollablePanel entityCheckBoxVerticalScrollPanel;
+  private JScrollPane typeRadioButtonScrollPane;
+  private VerticallyScrollablePanel typeRadioButtonVerticalScrollPanel;
+  private JScrollPane featureRadioButtonScrollPane;
+  private VerticallyScrollablePanel featureRadioButtonVerticalScrollPanel;
+  private JScrollPane featureValueCheckBoxScrollPane;
+  private VerticallyScrollablePanel featureValueCheckBoxVerticalScrollPanel;
 
   /**
    * Creates a CAS Annotation Viewer.
@@ -231,7 +248,7 @@ public class CasAnnotationViewer extends JPanel {
     this.add(this.createControlPanel(), BorderLayout.SOUTH);
 
     // initialize hidden feature names map
-    this.hiddenFeatureNames = new HashSet<String>(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
+    this.hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
   }
 
   private JPanel createControlPanel() {
@@ -244,10 +261,8 @@ public class CasAnnotationViewer extends JPanel {
 
   private JPanel createSelectButtonPanel() {
     JPanel selectButtonPanel = new JPanel();
-    this.createSelectAllButton();
-    selectButtonPanel.add(this.selectAllButton);
-    this.createDeselectAllButton();
-    selectButtonPanel.add(this.deselectAllButton);
+    selectButtonPanel.add(this.createSelectAllButton());
+    selectButtonPanel.add(this.createDeselectAllButton());
     this.createShowHideUnselectedButton();
     selectButtonPanel.add(this.showHideUnselectedButton);
     return selectButtonPanel;
@@ -258,22 +273,42 @@ public class CasAnnotationViewer extends JPanel {
     viewPanel.setLayout(new BorderLayout());
     this.createSofaSelectionPanel();
     viewPanel.add(this.sofaSelectionPanel, BorderLayout.NORTH);
-    this.createViewModePanel();
-    viewPanel.add(this.viewModePanel, BorderLayout.CENTER);
+    viewPanel.add(this.createViewModePanel(), BorderLayout.CENTER);
     return viewPanel;
   }
 
-  private void createViewModePanel() {
-    this.viewModePanel = new JPanel();
-    this.viewModePanel.add(new JLabel("Mode: "));
+  private JPanel createViewModePanel() {
+    JPanel viewModePanel = new JPanel();
+    viewModePanel.add(new JLabel("Mode: "));
     this.createAnnotationModeButton();
-    this.viewModePanel.add(this.annotationModeButton);
+    viewModePanel.add(this.annotationModeButton);
     this.createEntityModeButton();
-    this.viewModePanel.add(this.entityModeButton);
+    viewModePanel.add(this.entityModeButton);
+    this.createFeatureModeButton();
+    viewModePanel.add(this.featureModeButton);
     ButtonGroup group = new ButtonGroup();
     group.add(this.annotationModeButton);
     group.add(this.entityModeButton);
-    this.viewModePanel.setVisible(false);
+    group.add(this.featureModeButton);
+    return viewModePanel;
+  }
+
+  private void createFeatureModeButton() {
+    this.featureModeButton = new JRadioButton("Features", (this.viewMode == MODE_FEATURES));
+    this.featureModeButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        JRadioButton radioButton = (JRadioButton) e.getSource();
+        if (!radioButton.isSelected() || viewMode == MODE_FEATURES) {
+            // If the radio button is unselected, there is no need to refresh the UI.
+            // If the view mode is already features view mode, there is no need to refresh the UI.
+          return;
+        }
+        viewMode = MODE_FEATURES;
+        resetTabbedPane();
+        display();
+      }
+    });
   }
 
   private void createEntityModeButton() {
@@ -288,6 +323,7 @@ public class CasAnnotationViewer extends JPanel {
           return;
         }
         viewMode = MODE_ENTITIES;
+        resetTabbedPane();
         display();
       }
     });
@@ -305,6 +341,7 @@ public class CasAnnotationViewer extends JPanel {
           return;
         }
         viewMode = MODE_ANNOTATIONS;
+        resetTabbedPane();
         display();
       }
     });
@@ -330,8 +367,7 @@ public class CasAnnotationViewer extends JPanel {
         String sofaId = (String) e.getItem();
         CAS newCas = "DEFAULT".equalsIgnoreCase(sofaId) ? cas.getView(CAS.NAME_DEFAULT_SOFA) : cas.getView(sofaId);
         if (newCas != cas) {
-          cas = newCas;
-          display();
+          setCAS(newCas);
         }
       }
     });
@@ -343,39 +379,235 @@ public class CasAnnotationViewer extends JPanel {
       @Override
       public void actionPerformed(ActionEvent e) {
         hideUnselectedCheckBoxes = !hideUnselectedCheckBoxes;
-        display();
+        switch (viewMode) {
+        case MODE_ANNOTATIONS:
+          if (typeToCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox typeCheckBox : typeToCheckBoxMap.values()) {
+              if (!typeCheckBox.isSelected()) {
+                // If any check boxes for types are unchecked, the UI needs to be refreshed.
+                needRefresh = true;
+                break;
+              }
+            }
+            if (needRefresh) {
+              if (typeCheckBoxVerticalScrollPanel != null) {
+                typeCheckBoxVerticalScrollPanel.removeAll();
+              }
+              display();
+            }
+          }
+          break;
+        case MODE_ENTITIES:
+          if (entityToCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox entityCheckBox : entityToCheckBoxMap.values()) {
+              if (!entityCheckBox.isSelected()) {
+                // If any check boxes for entities are unchecked, the UI needs to be refreshed.
+                needRefresh = true;
+                break;
+              }
+            }
+            if (needRefresh) {
+              if (entityCheckBoxVerticalScrollPanel != null) {
+                entityCheckBoxVerticalScrollPanel.removeAll();
+              }
+              display();
+            }
+          }
+          break;
+        case MODE_FEATURES:
+          if (featureValueCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox featureValueCheckBox : featureValueCheckBoxMap.values()) {
+              if (!featureValueCheckBox.isSelected()) {
+                // If any check boxes for feature values are unchecked, the UI needs to be refreshed.
+                needRefresh = true;
+                break;
+              }
+            }
+            if (needRefresh) {
+              if (featureValueCheckBoxVerticalScrollPanel != null) {
+                featureValueCheckBoxVerticalScrollPanel.removeAll();
+              }
+              display();
+              // Make the feature value tab as selected.
+              tabbedChoicePane.setSelectedIndex(2);
+            }
+          }
+          break;
+        default:
+          break;
+        }
       }
     });
   }
 
-  private void createDeselectAllButton() {
-    this.deselectAllButton = new JButton("Deselect All");
-    this.deselectAllButton.addActionListener(new ActionListener() {
+  private JButton createDeselectAllButton() {
+    JButton deselectAllButton = new JButton("Deselect All");
+    deselectAllButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
-            : entityToCheckBoxMap.values().iterator();
-        while (cbIter.hasNext()) {
-          cbIter.next().setSelected(false);
+        switch (viewMode) {
+        case MODE_ANNOTATIONS:
+          if (typeToCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox typeCheckBox : typeToCheckBoxMap.values()) {
+              if (typeCheckBox.isSelected()) {
+                // If a check box for a type is checked, need to uncheck it,
+                // and the UI needs to be refreshed.
+                typeCheckBox.setSelected(false);
+                needRefresh = true;
+              }
+            }
+            if (needRefresh) {
+              display();
+            }
+          }
+          break;
+        case MODE_ENTITIES:
+          if (entityToCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox entityCheckBox : entityToCheckBoxMap.values()) {
+              if (entityCheckBox.isSelected()) {
+                // If a check box for an entity is checked, need to uncheck it,
+                // and the UI needs to be refreshed.
+                entityCheckBox.setSelected(false);
+                needRefresh = true;
+              }
+            }
+            if (needRefresh) {
+              display();
+            }
+          }
+          break;
+        case MODE_FEATURES:
+          if (featureValueCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox featureValueCheckBox : featureValueCheckBoxMap.values()) {
+              if (featureValueCheckBox.isSelected()) {
+                // If a check box for a feature value is checked, need to uncheck it,
+                // and the UI needs to be refreshed.
+                featureValueCheckBox.setSelected(false);
+                needRefresh = true;
+              }
+            }
+            if (needRefresh) {
+              display();
+              // Make the feature value tab as selected.
+              tabbedChoicePane.setSelectedIndex(2);
+            }
+          }
+          break;
+        default:
+          break;
         }
-        display();
       }
     });
+    return deselectAllButton;
   }
 
-  private void createSelectAllButton() {
-    this.selectAllButton = new JButton("Select All");
-    this.selectAllButton.addActionListener(new ActionListener() {
+  private JButton createSelectAllButton() {
+    JButton selectAllButton = new JButton("Select All");
+    selectAllButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Iterator<JCheckBox> cbIter = (viewMode == MODE_ANNOTATIONS) ? typeToCheckBoxMap.values().iterator()
-		              : entityToCheckBoxMap.values().iterator();
-        while (cbIter.hasNext()) {
-          cbIter.next().setSelected(true);
+        switch (viewMode) {
+        case MODE_ANNOTATIONS:
+          if (typeToCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox typeCheckBox : typeToCheckBoxMap.values()) {
+              if (!typeCheckBox.isSelected()) {
+                // If a check box for a type is unchecked, need to check it,
+                // and the UI needs to be refreshed.
+                typeCheckBox.setSelected(true);
+                needRefresh = true;
+              }
+            }
+            if (needRefresh) {
+              display();
+            }
+          }
+          break;
+        case MODE_ENTITIES:
+          if (entityToCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox entityCheckBox : entityToCheckBoxMap.values()) {
+              if (!entityCheckBox.isSelected()) {
+                // If a check box for an entity is unchecked, need to check it,
+                // and the UI needs to be refreshed.
+                entityCheckBox.setSelected(true);
+                needRefresh = true;
+              }
+            }
+            if (needRefresh) {
+              display();
+            }
+          }
+          break;
+        case MODE_FEATURES:
+          if (featureValueCheckBoxMap.size() > 0) {
+            boolean needRefresh = false;
+            for (JCheckBox featureValueCheckBox : featureValueCheckBoxMap.values()) {
+              if (!featureValueCheckBox.isSelected()) {
+                // If a check box for a feature value is unchecked, need to check it,
+                // and the UI needs to be refreshed.
+                featureValueCheckBox.setSelected(true);
+                needRefresh = true;
+              }
+            }
+            if (needRefresh) {
+              display();
+              // Make the feature value tab as selected.
+              tabbedChoicePane.setSelectedIndex(2);
+            }
+          }
+          break;
+        default:
+          break;
         }
-        display();
       }
     });
+    return selectAllButton;
+  }
+
+  /**
+   * Re-populate the tabbed pane's tabs depending on the current view mode.
+   */
+  private void resetTabbedPane() {
+    if (this.tabbedChoicePane == null) {
+      return;
+    }
+    this.tabbedChoicePane.removeAll();
+    
+    switch (this.viewMode) {
+    case MODE_ANNOTATIONS:
+      if (this.typeCheckBoxScrollPane != null) {
+        this.tabbedChoicePane.addTab("Annotation Types", this.typeCheckBoxScrollPane);
+      }
+      break;
+    case MODE_ENTITIES:
+      if (this.entityCheckBoxScrollPane != null) {
+        this.tabbedChoicePane.addTab("Entities", this.entityCheckBoxScrollPane);
+      }
+      break;
+    case MODE_FEATURES:
+      if (this.typeRadioButtonScrollPane != null) {
+        this.tabbedChoicePane.addTab("Annotation Types", this.typeRadioButtonScrollPane);
+        this.tabbedChoicePane.setMnemonicAt(0, KeyEvent.VK_1);
+      }
+      if (this.featureRadioButtonScrollPane != null) {
+        this.tabbedChoicePane.addTab("Features", this.featureRadioButtonScrollPane);
+        this.tabbedChoicePane.setMnemonicAt(1, KeyEvent.VK_2);
+      }
+      if (this.featureValueCheckBoxScrollPane != null) {
+        this.tabbedChoicePane.addTab("Feature Values", this.featureValueCheckBoxScrollPane);
+        this.tabbedChoicePane.setMnemonicAt(2, KeyEvent.VK_3);
+      }
+      break;
+    default:
+      break;
+    }
   }
 
   private void createHorizontalSplitPane() {
@@ -469,41 +701,95 @@ public class CasAnnotationViewer extends JPanel {
     this.createTextScrollPane();
     this.verticalSplitPane.setTopComponent(this.textScrollPane);
     // bottom pane is the legend, with checkboxes
-    this.verticalSplitPane.setBottomComponent(this.createLegendPanel());
+    this.verticalSplitPane.setBottomComponent(this.createTabbedChoicePane());
   }
 
-  private JPanel createLegendPanel() {
-    JPanel legendPanel = new JPanel();
-    legendPanel.setPreferredSize(new Dimension(620, 200));
-    legendPanel.setLayout(new BorderLayout());
-    JLabel legendLabel = new JLabel("Legend");
-    legendPanel.add(legendLabel, BorderLayout.NORTH);
+  private JTabbedPane createTabbedChoicePane() {
+    this.tabbedChoicePane = new JTabbedPane();
+    // Create the pane to hold check boxes for the annotation types in annotation view.
+    // It will be added to the first tab of the tabbed pane in annotation view.
+    this.createTypeCheckBoxPane();
+    // Create the pane to hold check boxes for the entities in entity view.
+    // It will be added to the first tab of the tabbed pane in entity view.
+    this.createEntityCheckBoxPane();
+    // Create the pane to hold radio buttons for the annotation types in features view.
+    // It will be added to the first tab of the tabbed pane in feature view.
+    this.createTypeRadioButtonPane();
+    // Create the pane to hold radio buttons for selected annotation type's features
+    // in feature view. It will be added as the second tab of the tabbed pane in
+    // feature view.
+    this.createFeatureRadioButtonPane();
+    // Create the pane to hold check boxes for feature values for selected feature of
+    // the selected annotation type in feature view. It will be added as the third tab
+    // of the tabbed pane in feature view.
+    this.createFeatureValueCheckBoxPane();
 
-    // checkboxes are contained in a scroll pane
-    this.createLegendScrollPane();
-    legendPanel.add(this.legendScrollPane, BorderLayout.CENTER);
-
-    return legendPanel;
+    switch (this.viewMode) {
+    case MODE_ANNOTATIONS:
+      this.tabbedChoicePane.addTab("Annotation Types", this.typeCheckBoxScrollPane);
+      this.tabbedChoicePane.setMnemonicAt(0, KeyEvent.VK_1);
+      break;
+    case MODE_ENTITIES:
+      this.tabbedChoicePane.addTab("Entities", this.entityCheckBoxScrollPane);
+      this.tabbedChoicePane.setMnemonicAt(0, KeyEvent.VK_1);
+      break;
+    case MODE_FEATURES:
+      this.tabbedChoicePane.addTab("Annotation Types", this.typeRadioButtonScrollPane);
+      this.tabbedChoicePane.setMnemonicAt(0, KeyEvent.VK_1);
+      this.tabbedChoicePane.addTab("Features", this.featureRadioButtonScrollPane);
+      this.tabbedChoicePane.setMnemonicAt(1, KeyEvent.VK_2);
+      this.tabbedChoicePane.addTab("Feature Values", this.featureValueCheckBoxScrollPane);
+      this.tabbedChoicePane.setMnemonicAt(2, KeyEvent.VK_3);
+      break;
+    default:
+      break;
+    }
+    return this.tabbedChoicePane;
   }
 
-  private void createLegendScrollPane() {
-    this.legendScrollPane = new JScrollPane();
-    this.legendScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    // there are two checkbox panels - one for annotations, one for entities
-    this.createAnnotationCheckBoxPanel();
-    this.createEntityCheckBoxPanel();
-    // add annotation panel first, since that is the default
-    this.legendScrollPane.setViewportView(this.annotationCheckboxPanel);
+  private void createFeatureValueCheckBoxPane() {
+    this.featureValueCheckBoxVerticalScrollPanel = new VerticallyScrollablePanel();
+    this.featureValueCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
+
+    this.featureValueCheckBoxScrollPane = new JScrollPane();
+    this.featureValueCheckBoxScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.featureValueCheckBoxScrollPane.setViewportView(this.featureValueCheckBoxVerticalScrollPanel);
   }
 
-  private void createEntityCheckBoxPanel() {
-    this.entityCheckboxPanel = new VerticallyScrollablePanel();
-    this.entityCheckboxPanel.setLayout(new GridLayout(0, 4));
+  private void createFeatureRadioButtonPane() {
+    this.featureRadioButtonVerticalScrollPanel = new VerticallyScrollablePanel();
+    this.featureRadioButtonVerticalScrollPanel.setLayout(new GridLayout(0, 5));
+
+    this.featureRadioButtonScrollPane = new JScrollPane();
+    this.featureRadioButtonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	this.featureRadioButtonScrollPane.setViewportView(this.featureRadioButtonVerticalScrollPanel);
   }
 
-  private void createAnnotationCheckBoxPanel() {
-    this.annotationCheckboxPanel = new VerticallyScrollablePanel();
-    this.annotationCheckboxPanel.setLayout(new GridLayout(0, 5));
+  private void createTypeRadioButtonPane() {
+    this.typeRadioButtonVerticalScrollPanel = new VerticallyScrollablePanel();
+    this.typeRadioButtonVerticalScrollPanel.setLayout(new GridLayout(0, 5));
+
+    this.typeRadioButtonScrollPane = new JScrollPane();
+    this.typeRadioButtonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.typeRadioButtonScrollPane.setViewportView(this.typeRadioButtonVerticalScrollPanel);
+  }
+
+  private void createEntityCheckBoxPane() {
+    this.entityCheckBoxVerticalScrollPanel = new VerticallyScrollablePanel();
+    this.entityCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
+
+    this.entityCheckBoxScrollPane = new JScrollPane();
+    this.entityCheckBoxScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.entityCheckBoxScrollPane.setViewportView(this.entityCheckBoxVerticalScrollPanel);
+  }
+
+  private void createTypeCheckBoxPane() {
+    this.typeCheckBoxVerticalScrollPanel = new VerticallyScrollablePanel();
+    this.typeCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
+
+    this.typeCheckBoxScrollPane = new JScrollPane();
+    this.typeCheckBoxScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.typeCheckBoxScrollPane.setViewportView(this.typeCheckBoxVerticalScrollPanel);
   }
 
   private void createTextScrollPane() {
@@ -533,6 +819,31 @@ public class CasAnnotationViewer extends JPanel {
 
       @Override
       public void mouseExited(MouseEvent e) {
+      }
+    });
+    // Added a key listener to support CTRL-C for copy selected text into clipboard.
+    this.textPane.addKeyListener(new KeyListener() {
+      @Override
+      public void keyTyped(KeyEvent e) {
+      }
+
+      @Override
+      public void keyPressed(KeyEvent ke) {
+        if (ke != null && ke.getKeyCode() == KeyEvent.VK_C &&
+            (ke.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+          String selection = textPane.getSelectedText();
+          if (selection != null && selection.length() > 0) {
+            Clipboard clipboard = getToolkit().getSystemClipboard();
+            if (clipboard != null) {
+              StringSelection data = new StringSelection(selection);
+              clipboard.setContents(data, data);
+            }
+          }
+        }
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
       }
     });
     this.textScrollPane = new JScrollPane(this.textPane);
@@ -571,16 +882,10 @@ public class CasAnnotationViewer extends JPanel {
    */
   public void setHighFrequencyTypes(String[] aTypeNames) {
     // store these types for later
-    if (this.highFrequencyTypes == null) {
-      this.highFrequencyTypes = new ArrayList<String>();
-    }
     if (this.highFrequencyTypes.size() > 0) {
       this.highFrequencyTypes.clear();
     }
     this.highFrequencyTypes.addAll(Arrays.asList(aTypeNames));
-    if (this.typeColorMap == null) {
-      this.typeColorMap = new HashMap<String, Color>();
-    }
     if (this.typeColorMap.size() > 0) {
       this.typeColorMap.clear();
     }
@@ -618,9 +923,6 @@ public class CasAnnotationViewer extends JPanel {
    *          names of types that are never to be highlighted.
    */
   public void setHiddenTypes(String[] aTypeNames) {
-    if (this.hiddenTypeNames == null) {
-      this.hiddenTypeNames = new HashSet<String>();
-    }
     if (this.hiddenTypeNames.size() > 0) {
       this.hiddenTypeNames.clear();
     }
@@ -635,17 +937,17 @@ public class CasAnnotationViewer extends JPanel {
    *          array of fully-qualified names of types to be initially selected
    */
   public void setInitiallySelectedTypes(String[] aTypeNames) {
-    initiallySelectedTypeNames = new HashSet<String>();
+    this.initiallySelectedTypeNames = new HashSet<String>();
     for (int i = 0; i < aTypeNames.length; i++) {
-      initiallySelectedTypeNames.add(aTypeNames[i]);
+      this.initiallySelectedTypeNames.add(aTypeNames[i]);
     }
     // apply to existing checkboxes
-    Iterator<Map.Entry<Type, JCheckBox>> iterator = typeToCheckBoxMap.entrySet().iterator();
+    Iterator<Map.Entry<Type, JCheckBox>> iterator = this.typeToCheckBoxMap.entrySet().iterator();
     while (iterator.hasNext()) {
       Map.Entry<Type, JCheckBox> entry = iterator.next();
       String type = ((Type) entry.getKey()).getName();
       JCheckBox checkbox = (JCheckBox) entry.getValue();
-      checkbox.setSelected(typeNamesContains(initiallySelectedTypeNames, type));
+      checkbox.setSelected(typeNamesContains(this.initiallySelectedTypeNames, type));
     }
 
     // redisplay (if we have a CAS) - this allows this method to be called
@@ -662,9 +964,6 @@ public class CasAnnotationViewer extends JPanel {
    *          array of (short) feature names to be hidden
    */
   public void setHiddenFeatures(String[] aFeatureNames) {
-    if (this.hiddenFeatureNames == null) {
-      this.hiddenFeatureNames = new HashSet<String>();
-    }
     if (this.hiddenFeatureNames.size() > 0) {
       this.hiddenFeatureNames.clear();
     }
@@ -674,21 +973,6 @@ public class CasAnnotationViewer extends JPanel {
     this.hiddenFeatureNames.addAll(Arrays.asList(aFeatureNames));
   }
 
-  /**
-   * Configures whether the viewer will allow the user to switch to "Entity" view, which highlight
-   * entities rather than annotations.  Entity mode is typically only useful if the
-   * {@link #setEntityResolver(EntityResolver)} method has been called with a user-supplied
-   * class that can determine which annotations refer to the same entity.
-   * 
-   * @param aEnabled
-   *          true to enable entity viewing mode, false to allow annotation viewing only.
-   *          The default is false.
-   */
-  public void setEntityViewEnabled(boolean aEnabled) {
-    entityViewEnabled = aEnabled;
-    this.viewModePanel.setVisible(aEnabled);
-  }
-  
   /**
    * Sets the {@link EntityResolver} to use when the viewer is in entity mode.
    * Entity mode must be turned on using the {@link #setEntityViewEnabled(boolean)} method.
@@ -755,8 +1039,6 @@ public class CasAnnotationViewer extends JPanel {
     // clear selected annotation details tree
     this.initializeSofaSelectionPanel();
 
-    // enable or disable entity view depending on user's choice 
-    this.viewModePanel.setVisible(entityViewEnabled);
     // Instead of relying on the SofaSelectionComboBox itemChanged event to trigger the initial display,
     // which does not necessarily need to happen unless we indeed switch over to different sofa,
     // explicitly invoke display() here.
@@ -807,8 +1089,18 @@ public class CasAnnotationViewer extends JPanel {
   private void reset() {
     // clear type to color map if color consistency is off
     this.resetTypeColorMap();
+    // Clear the panel holding radio buttons for annotation types.
+    this.resetTypeRadioButtonPanel();
+    // Clear the panel holding radio buttons for features of selected annotation type.
+    this.resetFeaturePanel();
+    // Clear the panel holding check boxes for feature values of selected feature of
+    // selected annotation type.
+    this.resetFeatureValuePanel();
+    // Clear the panel holding check boxes for annotation types in annotation view.
     this.resetTypeCheckBoxPanel();
+    // Clear the panel holding check boxes for entities in entitiy view. 
     this.resetEntityCheckBoxPanel();
+    // Clear the tree view for selected annotations.
     this.resetSelectedAnnotationTree();
 
     // clear boldface
@@ -826,39 +1118,63 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   private void resetEntityCheckBoxPanel() {
-    if (this.entityToCheckBoxMap == null) {
-      this.entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
-    }
     if (this.entityToCheckBoxMap.size() > 0) {
       this.entityToCheckBoxMap.clear();
     }
-    if (this.entityCheckboxPanel != null) {
-      this.entityCheckboxPanel.removeAll();
+    if (this.entityCheckBoxVerticalScrollPanel != null) {
+      this.entityCheckBoxVerticalScrollPanel.removeAll();
     }
   }
 
   private void resetTypeCheckBoxPanel() {
     // clear checkbox panel so it will be repopulated
-    if (this.typeToCheckBoxMap == null) {
-      this.typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
-    }
     if (this.typeToCheckBoxMap.size() > 0) {
       this.typeToCheckBoxMap.clear();
     }
-    if (this.annotationCheckboxPanel != null) {
-      this.annotationCheckboxPanel.removeAll();
+    if (this.typeCheckBoxVerticalScrollPanel != null) {
+      this.typeCheckBoxVerticalScrollPanel.removeAll();
+    }
+  }
+
+  private void resetFeatureValuePanel() {
+    if (this.featureValueColorMap.size() > 0) {
+      this.featureValueColorMap.clear();
+    }
+    if (this.featureValueCheckBoxMap.size() > 0) {
+      this.featureValueCheckBoxMap.clear();
+    }
+    if (this.featureValueCheckBoxVerticalScrollPanel != null) {
+      this.featureValueCheckBoxVerticalScrollPanel.removeAll();
+    }
+  }
+
+  private void resetFeaturePanel() {
+    if (this.featureColorMap.size() > 0) {
+      this.featureColorMap.clear();
+    }
+    if (this.featureRadioButtonMap.size() > 0) {
+      this.featureRadioButtonMap.clear();
+    }
+    if (this.featureRadioButtonVerticalScrollPanel != null) {
+      this.featureRadioButtonVerticalScrollPanel.removeAll();
+    }
+  }
+
+  private void resetTypeRadioButtonPanel() {
+    if (this.typeRadioButtonMap.size() > 0) {
+      this.typeRadioButtonMap.clear();
+    }
+    if (this.typeRadioButtonVerticalScrollPanel != null) {
+      this.typeRadioButtonVerticalScrollPanel.removeAll();
     }
   }
 
   private void resetTypeColorMap() {
-    if (this.typeColorMap == null) {
-      this.typeColorMap = new HashMap<String, Color>();
-    }
     if (!this.useConsistentColors) {
       if (this.typeColorMap.size() > 0) {
         this.typeColorMap.clear();
       }
-      if (this.highFrequencyTypes != null && this.highFrequencyTypes.size() > 0) {
+      if (this.highFrequencyTypes.size() > 0) {
         this.assignTypeColors(this.highFrequencyTypes);
       }
     }
@@ -966,12 +1282,7 @@ public class CasAnnotationViewer extends JPanel {
     if (aNotChecked == null || aNotChecked.size() == 0) {
       return;
     }
-    if (this.typesNotChecked == null) {
-      this.typesNotChecked = new HashSet<String>();
-    }
-    for (String typeName : aNotChecked) {
-      this.typesNotChecked.add(typeName);
-    }
+    this.typesNotChecked.addAll(aNotChecked);
   }
 
   /**
@@ -987,14 +1298,8 @@ public class CasAnnotationViewer extends JPanel {
     if (aColors == null || aColors.size() == 0 || aTypeNames == null || aTypeNames.size() == 0) {
       return;
     }
-    if (this.userTypes == null) {
-      this.userTypes = new ArrayList<String>();
-    }
     if (this.userTypes.size() > 0) {
       this.userTypes.clear();
-    }
-    if (this.typeColorMap == null) {
-      this.typeColorMap = new HashMap<String, Color>();
     }
     if (this.typeColorMap.size() > 0) {
       this.typeColorMap.clear();
@@ -1008,8 +1313,20 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     // clear checkbox panel so it will be refreshed
-    this.annotationCheckboxPanel.removeAll();
+    if (this.typeRadioButtonVerticalScrollPanel != null) {
+      this.typeRadioButtonVerticalScrollPanel.removeAll();
+    }
+    if (this.typeCheckBoxVerticalScrollPanel != null) {
+      this.typeCheckBoxVerticalScrollPanel.removeAll();
+    }
+    if (this.featureRadioButtonVerticalScrollPanel != null) {
+      this.featureRadioButtonVerticalScrollPanel.removeAll();
+    }
+    if (this.featureValueCheckBoxVerticalScrollPanel != null) {
+      this.featureValueCheckBoxVerticalScrollPanel.removeAll();
+    }
     this.typeToCheckBoxMap.clear();
+    this.typeRadioButtonMap.clear();
   }
 
   /**
@@ -1024,9 +1341,6 @@ public class CasAnnotationViewer extends JPanel {
       return;
     }
 
-    if (this.typeColorMap == null) {
-      this.typeColorMap = new HashMap<String, Color>();
-    }
     for (String typeName : aTypeNames) {
       if (!this.typeColorMap.containsKey(typeName)) {
         // assign background color
@@ -1035,10 +1349,14 @@ public class CasAnnotationViewer extends JPanel {
     }
 
     // clear checkbox panel so it will be refreshed
-    this.annotationCheckboxPanel.removeAll();
-    if (this.typeToCheckBoxMap != null) {
-      this.typeToCheckBoxMap.clear();
+    if (this.typeRadioButtonVerticalScrollPanel != null) {
+      this.typeRadioButtonVerticalScrollPanel.removeAll();
     }
+    if (this.typeCheckBoxVerticalScrollPanel != null) {
+      this.typeCheckBoxVerticalScrollPanel.removeAll();
+    }
+    this.typeRadioButtonMap.clear();
+    this.typeToCheckBoxMap.clear();
   }
 
   /**
@@ -1060,6 +1378,11 @@ public class CasAnnotationViewer extends JPanel {
         break;
       case MODE_ENTITIES:
         this.displayEntityView();
+        break;
+      case MODE_FEATURES:
+        this.displayFeatureView();
+        break;
+      default:
         break;
     }
 
@@ -1083,6 +1406,334 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
+   * Create/update the feature view.
+   */
+  private void displayFeatureView() {
+    StyledDocument doc = (StyledDocument) this.textPane.getDocument();
+    Document blank = new DefaultStyledDocument();
+    this.textPane.setDocument(blank);
+
+    // add text from CAS
+    try {
+      doc.remove(0, doc.getLength());
+      doc.insertString(0, this.cas.getDocumentText(), new SimpleAttributeSet());
+    } catch (BadLocationException e) {
+      throw new RuntimeException(e);
+    }
+
+    JCas jcas = null;
+    try {
+		jcas = this.cas.getJCas();
+	} catch (CASException e) {
+		e.printStackTrace();
+	}
+    AnnotationIndex<Annotation> annotationIndex = jcas.getAnnotationIndex();
+    if (annotationIndex == null) {
+      return;
+    }
+    FSIterator<Annotation> annotationIterator = annotationIndex.iterator();
+    if (annotationIterator == null || !annotationIterator.hasNext()) {
+      return;
+    }
+
+    // If we don't have any type radio button yet, then we will be showing the
+    // first type by default. Otherwise, we will show whichever type that is
+    // selected already.
+    boolean firstType = this.typeRadioButtonMap.size() == 0;
+    while (annotationIterator.hasNext()) {
+      if (this.processOneAnnotationInFeatureView(doc, annotationIterator.next(), firstType) && firstType) {
+        firstType = false;
+      }
+    }
+
+    this.addTypeRadioButtons();
+    this.addFeatureRadioButtons();
+    this.addFeatureValueCheckBoxes();
+    this.textPane.setDocument(doc);
+  }
+
+  private void addFeatureValueCheckBoxes() {
+    if (this.featureValueCheckBoxMap.size() == 0) {
+      return;
+    }
+
+    List<JCheckBox> checkBoxes = new ArrayList<JCheckBox>(this.featureValueCheckBoxMap.values());
+    Collections.sort(checkBoxes, new Comparator<JCheckBox>() {
+      @Override
+      public int compare(JCheckBox arg0, JCheckBox arg1) {
+        return arg0.getText().toLowerCase().compareTo(arg1.getText().toLowerCase());
+      }
+    });
+
+    for (JCheckBox checkBox : checkBoxes) {
+      if (checkBox.getParent() != this.featureValueCheckBoxVerticalScrollPanel &&
+          (checkBox.isSelected() || !this.hideUnselectedCheckBoxes)) {
+        this.featureValueCheckBoxVerticalScrollPanel.add(checkBox);
+      }
+    }
+  }
+
+  private void addFeatureRadioButtons() {
+    if (this.featureRadioButtonMap.size() == 0) {
+      return;
+    }
+
+    List<JRadioButton> radioButtons = new ArrayList<JRadioButton>(this.featureRadioButtonMap.values());
+    Collections.sort(radioButtons, new Comparator<JRadioButton>() {
+      @Override
+      public int compare(JRadioButton arg0, JRadioButton arg1) {
+        return arg0.getText().toLowerCase().compareTo(arg1.getText().toLowerCase());
+      }
+    });
+
+    ButtonGroup featureRadioButtonGroup = new ButtonGroup();
+    for (JRadioButton radioButton : radioButtons) {
+      if (radioButton.getParent() != this.featureRadioButtonVerticalScrollPanel) {
+        this.featureRadioButtonVerticalScrollPanel.add(radioButton);
+      }
+      featureRadioButtonGroup.add(radioButton);
+    }
+  }
+
+  private void addTypeRadioButtons() {
+    if (this.typeRadioButtonMap.size() == 0) {
+      return;
+    }
+
+    Map<String, JRadioButton> radioButtonMap = new HashMap<String, JRadioButton>();
+    Set<JRadioButton> radioButtonSet = new HashSet<JRadioButton>();
+    for (Type type : this.typeRadioButtonMap.keySet()) {
+      JRadioButton typeRadioButton = this.typeRadioButtonMap.get(type);
+      radioButtonMap.put(type.getName(), typeRadioButton);
+      radioButtonSet.add(typeRadioButton);
+    }
+
+    ButtonGroup typeRadioButtonGroup = new ButtonGroup();
+    if (this.userTypes.size() > 0) {
+      for (String typeName : this.userTypes) {
+        JRadioButton typeRadioButton = radioButtonMap.get(typeName);
+        if (typeRadioButton != null) {
+          this.typeRadioButtonVerticalScrollPanel.add(typeRadioButton);
+          typeRadioButtonGroup.add(typeRadioButton);
+          radioButtonSet.remove(typeRadioButton);
+        }
+      }
+    }
+
+    if (radioButtonSet != null && radioButtonSet.size() > 0) {
+      List<JRadioButton> remainingRadioButtons = new ArrayList<JRadioButton>(radioButtonSet);
+      Collections.sort(remainingRadioButtons, new Comparator<JRadioButton>() {
+        @Override
+        public int compare(JRadioButton arg0, JRadioButton arg1) {
+          return arg0.getText().toLowerCase().compareTo(arg1.getText().toLowerCase());
+        }
+      });
+      for (JRadioButton radioButton : remainingRadioButtons) {
+        if (radioButton.getParent() != this.typeRadioButtonVerticalScrollPanel) {
+          this.typeRadioButtonVerticalScrollPanel.add(radioButton);
+        }
+        typeRadioButtonGroup.add(radioButton);
+      }
+    }
+  }
+
+  /**
+   * Examine an annotation and add type/feature/value-related controls if
+   * necessary.
+   * 
+   * @param doc
+   * @param annotation
+   * @param firstType
+   *            If true, the annotation being examined has the first
+   *            type-related radio button that needs to be created and also
+   *            set as selected.
+   * @return If true, the annotation being examined has its type being
+   *         selected, its feature-related radio buttons being displayed and
+   *         one of its features being selected, and the feature's value is
+   *         selected. So that the next annotation of different type will not
+   *         have its features being displayed in the control panel.
+   */
+  private boolean processOneAnnotationInFeatureView(StyledDocument doc,
+      Annotation annotation, boolean firstType) {
+    Type type = annotation.getType();
+    String typeName = type.getName();
+    if ((this.displayedTypeNames != null && !typeNamesContains(this.displayedTypeNames, typeName))
+      || typeNamesContains(this.hiddenTypeNames, typeName)) {
+      return false;
+    }
+
+    JRadioButton typeRadioButton = this.typeRadioButtonMap.get(type);
+    if (typeRadioButton == null) {
+      Color typeColor = this.typeColorMap.get(typeName);
+      if (typeColor == null) {
+        typeColor = COLORS[this.typeColorMap.size() % COLORS.length];
+        this.typeColorMap.put(typeName, typeColor);
+      }
+      typeRadioButton = new JRadioButton(type.getShortName(), firstType);
+      typeRadioButton.setToolTipText(typeName);
+      typeRadioButton.setBackground(typeColor);
+      typeRadioButton.setOpaque(true);
+      typeRadioButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+          JRadioButton typeRadioButton = (JRadioButton) ae.getSource();
+          if (typeRadioButton == null || !typeRadioButton.isSelected()) {
+            return;
+          }
+          // Need to reset the feature radio button panel and feature
+          // value check box panel.
+          resetFeaturePanel();
+          resetFeatureValuePanel();
+          resetSelectedAnnotationTree();
+          display();
+          // Make the feature tab as selected.
+          tabbedChoicePane.setSelectedIndex(1);
+        }
+      });
+      this.typeRadioButtonMap.put(type, typeRadioButton);
+    }
+
+    if (!typeRadioButton.isSelected()) {
+      return true;
+    }
+    List<Feature> features = type.getFeatures();
+    if (features == null || features.size() == 0) {
+      return false;
+    }
+
+    // If we don't have any feature radio button yet, then we will showing
+    // the first feature by default. Otherwise, we will show whichever
+    // feature that is selected already.
+    boolean firstFeature = this.featureRadioButtonMap.size() == 0;
+    for (Feature feature : features) {
+      if (this.processOneFeature(doc, annotation, feature, firstFeature) && firstFeature) {
+        firstFeature = false;
+      }
+    }
+    return this.featureValueCheckBoxMap.size() > 0;
+  }
+
+  /**
+   * Examine one feature of the given annotation and create the
+   * feature-related controls.
+   * 
+   * @param doc
+   * @param annotation
+   * @param feature
+   * @param firstFeature
+   * @return
+   */
+  private boolean processOneFeature(StyledDocument doc, Annotation annotation,
+      Feature feature, boolean firstFeature) {
+    String featureName = feature.getShortName();
+    if (this.hiddenFeatureNames.contains(featureName)) {
+      return false;
+    }
+
+    // Skip FSArray, array, and FS type features.
+    Type rangeType = feature.getRange();
+    if (this.typeSystem != null &&
+        (this.typeSystem.subsumes(this.fsArrayType, rangeType) || rangeType.isArray())) {
+      return false;
+    }
+    String featureValue = this.getFeatureValueInString(annotation, feature);
+    if (featureValue == null || featureValue.equalsIgnoreCase("*FS*")) {
+      return false;
+    }
+
+    JRadioButton featureRadioButton = this.featureRadioButtonMap.get(featureName);
+    if (featureRadioButton == null) {
+      Color featureColor = this.featureColorMap.get(featureName);
+      if (featureColor == null) {
+        featureColor = COLORS[this.featureColorMap.size() % COLORS.length];
+        this.featureColorMap.put(featureName, featureColor);
+      }
+      featureRadioButton = new JRadioButton(featureName, firstFeature);
+      featureRadioButton.setToolTipText(feature.getName());
+      featureRadioButton.setBackground(featureColor);
+      featureRadioButton.setOpaque(true);
+      featureRadioButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+          JRadioButton featureRadioButton = (JRadioButton) ae.getSource();
+          if (featureRadioButton == null || !featureRadioButton.isSelected()) {
+            return;
+          }
+          // Need to reset the feature value check box panel.
+          resetFeatureValuePanel();
+          resetSelectedAnnotationTree();
+          display();
+          // Make the feature value tab as selected.
+          tabbedChoicePane.setSelectedIndex(2);
+        }
+      });
+      this.featureRadioButtonMap.put(featureName, featureRadioButton);
+    }
+
+    if (!featureRadioButton.isSelected()) {
+      return true;
+    }
+
+    return this.processOneFeatureValue(doc, annotation, feature);
+  }
+
+  /**
+   * Examine one feature of the given annotation and create the
+   * feature-value-related controls.
+   * 
+   * @param doc
+   * @param annotation
+   * @param feature
+   * @return
+   */
+  private boolean processOneFeatureValue(StyledDocument doc,
+      Annotation annotation, Feature feature) {
+    String featureValue = this.getFeatureValueInString(annotation, feature);
+    if (featureValue == null || featureValue.length() == 0) {
+      return false;
+    }
+
+    JCheckBox featureValueCheckBox = this.featureValueCheckBoxMap.get(featureValue);
+    if (featureValueCheckBox == null) {
+      Color featureValueColor = this.featureValueColorMap.get(featureValue);
+      if (featureValueColor == null) {
+        featureValueColor = COLORS[this.featureValueColorMap.size() % COLORS.length];
+        this.featureValueColorMap.put(featureValue, featureValueColor);
+      }
+      featureValueCheckBox = new JCheckBox(checkString(featureValue, "null", 16), true);
+      featureValueCheckBox.setToolTipText(featureValue);
+      featureValueCheckBox.setBackground(featureValueColor);
+      featureValueCheckBox.setOpaque(true);
+      featureValueCheckBox.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          resetSelectedAnnotationTree();
+          display();
+          // Make the feature value tab as selected.
+          tabbedChoicePane.setSelectedIndex(2);
+        }
+      });
+      this.featureValueCheckBoxMap.put(featureValue, featureValueCheckBox);
+    }
+
+    if (featureValueCheckBox.isSelected()) {
+      int begin = annotation.getBegin();
+      int end = annotation.getEnd();
+
+      if (begin == 0 && end == this.cas.getDocumentText().length()) {
+        end--;
+      }
+
+      if (begin < end) {
+        MutableAttributeSet attrs = new SimpleAttributeSet();
+        StyleConstants.setBackground(attrs, featureValueCheckBox.getBackground());
+        doc.setCharacterAttributes(begin, end - begin, attrs, false);
+      }
+    }
+    return true;
+  }
+
+  /**
    * Creates the annotation display.
    */
   private void displayAnnotationView() {
@@ -1092,9 +1743,7 @@ public class CasAnnotationViewer extends JPanel {
     this.textPane.setDocument(blank);
 
     // make sure annotationCheckboxPanel is showing
-    if (legendScrollPane.getViewport().getView() != annotationCheckboxPanel) {
-      legendScrollPane.setViewportView(annotationCheckboxPanel);
-    }
+    this.typeCheckBoxVerticalScrollPanel.removeAll();
 
     // add text from CAS
     try {
@@ -1123,7 +1772,7 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   private void addTypeCheckBoxes() {
-    if (this.typeToCheckBoxMap == null || this.typeToCheckBoxMap.size() == 0) {
+    if (this.typeToCheckBoxMap.size() == 0) {
       return;
     }
 
@@ -1131,28 +1780,21 @@ public class CasAnnotationViewer extends JPanel {
     Set<JCheckBox> checkBoxSet = new HashSet<JCheckBox>();
     for (Type type : this.typeToCheckBoxMap.keySet()) {
       JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
-      if (typeCheckBox.getParent() == this.annotationCheckboxPanel) {
-        // The check box is already added to the check box panel.
-        if (!typeCheckBox.isSelected() && this.hideUnselectedCheckBoxes) {
-          // But it is unselected and we choose to hide the unselected.
-          // Then it needs to be removed from the panel.
-          this.annotationCheckboxPanel.remove(typeCheckBox);
-        }
-      } else {
-        // The check box is not yet added to the check box panel.
-        if (typeCheckBox.isSelected() || !this.hideUnselectedCheckBoxes) {
-          // The check box needs to be marked to be added.
-          checkBoxMap.put(type.getName(), typeCheckBox);
-          checkBoxSet.add(typeCheckBox);
-        }
+      // If the type check box is already added or not selected but needs
+      // to be hidden, skip it.
+      if (typeCheckBox.getParent() == this.typeCheckBoxVerticalScrollPanel ||
+          (!typeCheckBox.isSelected() && this.hideUnselectedCheckBoxes)) {
+        continue;
       }
+      checkBoxMap.put(type.getName(), typeCheckBox);
+      checkBoxSet.add(typeCheckBox);
     }
     // First add the type check boxes for the types specified by user.
-    if (this.userTypes != null && this.userTypes.size() > 0) {
+    if (this.userTypes.size() > 0) {
       for (String userType : this.userTypes) {
         JCheckBox typeCheckBox = checkBoxMap.get(userType);
         if (typeCheckBox != null) {
-          this.annotationCheckboxPanel.add(typeCheckBox);
+          this.typeCheckBoxVerticalScrollPanel.add(typeCheckBox);
           checkBoxSet.remove(typeCheckBox);
         }
       }
@@ -1168,7 +1810,7 @@ public class CasAnnotationViewer extends JPanel {
         }
       });
       for (JCheckBox checkBox : remainingCheckBoxes) {
-        this.annotationCheckboxPanel.add(checkBox);
+        this.typeCheckBoxVerticalScrollPanel.add(checkBox);
       }
     }
   }
@@ -1178,20 +1820,14 @@ public class CasAnnotationViewer extends JPanel {
     String typeName = type.getName();
     // check that type should be displayed
     if ((this.displayedTypeNames != null && !typeNamesContains(this.displayedTypeNames, typeName)) ||
-        (this.hiddenTypeNames != null && typeNamesContains(this.hiddenTypeNames, typeName))) {
+        typeNamesContains(this.hiddenTypeNames, typeName)) {
       return;
-    }
-    if (this.typeToCheckBoxMap == null) {
-      this.typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
     }
     // have we seen this type before?
     JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
     if (typeCheckBox == null) {
       // There is no type checkbox representing this annotation yet.
       // if mTypeNameToColorMap exists, get color from there
-      if (this.typeColorMap == null) {
-        this.typeColorMap = new HashMap<String, Color>();
-      }
       Color typeColor = this.typeColorMap.get(typeName);
       if (typeColor == null) { // assign next available color
         typeColor = COLORS[this.typeColorMap.size() % COLORS.length];
@@ -1200,7 +1836,7 @@ public class CasAnnotationViewer extends JPanel {
       // should type be initially selected?
       // document annotation is not initially selected in default case
       boolean selected = (this.initiallySelectedTypeNames == null &&
-          !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(typeName) && (this.typesNotChecked == null || !this.typesNotChecked.contains(typeName))) ||
+          !CAS.TYPE_NAME_DOCUMENT_ANNOTATION.equals(typeName) && !this.typesNotChecked.contains(typeName)) ||
           (this.initiallySelectedTypeNames != null && typeNamesContains(this.initiallySelectedTypeNames, typeName));
       // add checkbox
       typeCheckBox = new JCheckBox(type.getShortName(), selected);
@@ -1210,6 +1846,7 @@ public class CasAnnotationViewer extends JPanel {
       typeCheckBox.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+          resetSelectedAnnotationTree();
           display();
         }
       });
@@ -1246,11 +1883,6 @@ public class CasAnnotationViewer extends JPanel {
     Document blank = new DefaultStyledDocument();
     this.textPane.setDocument(blank);
 
-    // make sure entityCheckboxPanel is showing
-    if (this.legendScrollPane.getViewport().getView() != this.entityCheckboxPanel) {
-      this.legendScrollPane.setViewportView(entityCheckboxPanel);
-    }
-
     // add text from CAS
     try {
       doc.remove(0, doc.getLength());
@@ -1284,9 +1916,9 @@ public class CasAnnotationViewer extends JPanel {
     // add/remove checkboxes from display as determined by the
     // mHideUnselectedCheckboxes toggle
     for (JCheckBox entityCheckBox : this.entityToCheckBoxMap.values()) {
-      if (entityCheckBox.getParent() != this.entityCheckboxPanel &&
+      if (entityCheckBox.getParent() != this.entityCheckBoxVerticalScrollPanel &&
           (entityCheckBox.isSelected() || !this.hideUnselectedCheckBoxes)) {
-        this.entityCheckboxPanel.add(entityCheckBox);
+        this.entityCheckBoxVerticalScrollPanel.add(entityCheckBox);
       }
     }
 
@@ -1296,13 +1928,10 @@ public class CasAnnotationViewer extends JPanel {
 
   private void processOneAnnotationInEntityView(StyledDocument doc, Annotation annotation) {
     // find out what entity this annotation represents
-    EntityResolver.Entity entity = this.entityResolver.getEntity(annotation);
+    Entity entity = this.entityResolver.getEntity(annotation);
     //if not an entity, skip it
     if (entity == null) {
       return;
-    }
-    if (this.entityToCheckBoxMap == null) {
-      this.entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
     }
     // have we seen this entity before?
     JCheckBox entityCheckBox = this.entityToCheckBoxMap.get(entity);
@@ -1317,10 +1946,11 @@ public class CasAnnotationViewer extends JPanel {
       entityCheckBox.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+          resetSelectedAnnotationTree();
           display();
         }
       });
-      this.entityCheckboxPanel.add(entityCheckBox);
+      this.entityCheckBoxVerticalScrollPanel.add(entityCheckBox);
       // add to (Entity, Checkbox) map
       this.entityToCheckBoxMap.put(entity, entityCheckBox);
     }
@@ -1330,7 +1960,10 @@ public class CasAnnotationViewer extends JPanel {
       int end = annotation.getEnd();
       // be careful of 0-length annotation. If we try to set background color when there
       // is no selection, it will set the input text style, which is not what we want.
-      if (begin != end) {
+      if (begin == 0 && end == this.cas.getDocumentText().length()) {
+        end--;
+      }
+      if (begin < end) {
         MutableAttributeSet attrs = new SimpleAttributeSet();
         StyleConstants.setBackground(attrs, entityCheckBox.getBackground());
         doc.setCharacterAttributes(begin, end - begin, attrs, false);
@@ -1401,13 +2034,13 @@ public class CasAnnotationViewer extends JPanel {
     Type type = annotation.getType();
     switch (this.viewMode) {
       case MODE_ANNOTATIONS:
-        if (this.typeToCheckBoxMap == null || this.typeToCheckBoxMap.size() == 0) {
+        if (this.typeToCheckBoxMap.size() == 0) {
           return false;
         }
         JCheckBox typeCheckBox = this.typeToCheckBoxMap.get(type);
         return typeCheckBox != null && typeCheckBox.isSelected();
       case MODE_ENTITIES:
-        if (this.entityToCheckBoxMap == null || this.entityToCheckBoxMap.size() == 0) {
+        if (this.entityToCheckBoxMap.size() == 0) {
           return false;
         }
         Entity entity = this.entityResolver.getEntity(annotation);
@@ -1416,6 +2049,32 @@ public class CasAnnotationViewer extends JPanel {
         }
         JCheckBox entityCheckBox = this.entityToCheckBoxMap.get(entity);
         return entityCheckBox != null && entityCheckBox.isSelected();
+      case MODE_FEATURES:
+        JRadioButton typeRadioButton = this.typeRadioButtonMap.get(type);
+        if (typeRadioButton == null || !typeRadioButton.isSelected()) {
+          return false;
+        }
+        List<Feature> features = type.getFeatures();
+        if (features == null || features.size() == 0) {
+          return false;
+        }
+        for (Feature feature : features) {
+          String featureName = feature.getShortName();
+          if (featureName == null || featureName.length() == 0) {
+            continue;
+          }
+          JRadioButton featureRadioButton = this.featureRadioButtonMap.get(featureName);
+          if (featureRadioButton == null || !featureRadioButton.isSelected()) {
+            continue;
+          }
+          String featureValue = this.getFeatureValueInString(annotation, feature);
+          if (featureValue == null || featureValue.length() == 0) {
+            continue;
+          }
+          JCheckBox featureValueCheckBox = this.featureValueCheckBoxMap.get(featureValue);
+          return featureValueCheckBox != null && featureValueCheckBox.isSelected();
+        }
+        break;
       default:
         break;
     }
@@ -1461,7 +2120,7 @@ public class CasAnnotationViewer extends JPanel {
     for (Feature feature : features) {
       String featureName = feature.getShortName();
       // skip hidden features
-      if (this.hiddenFeatureNames != null && this.hiddenFeatureNames.contains(featureName)) {
+      if (this.hiddenFeatureNames.contains(featureName)) {
         continue;
       }
       // how we get feature value depends on feature's range type)
@@ -1876,7 +2535,7 @@ public class CasAnnotationViewer extends JPanel {
      *      java.lang.Object, boolean, boolean, boolean, int, boolean)
      */
     @Override
-    public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel,
+    public Component getTreeCellRendererComponent(JTree tree, final Object value, boolean sel,
             boolean expanded, boolean leaf, int row, boolean hasFocus) {
       // set background color if this is an Annotation or a Type
       Color background = null;
@@ -1891,15 +2550,36 @@ public class CasAnnotationViewer extends JPanel {
         }
         if (type != null) {
           // look up checkbox to get color
-          JCheckBox checkbox = typeToCheckBoxMap.get(type);
-          if (checkbox != null) {
-            background = checkbox.getBackground();
-          }
+          background = typeColorMap.get(type.getName());
         }
       }
-      this.setBackgroundNonSelectionColor(background);
-      this.setBackgroundSelectionColor(background);
+      if (background != null) {
+        this.setBackgroundNonSelectionColor(background);
+        this.setBackgroundSelectionColor(background);
+      }
+      this.addKeyListener(new KeyListener() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
 
+        @Override
+        public void keyPressed(KeyEvent ke) {
+          if (ke == null || ke.getKeyCode() != KeyEvent.VK_C ||
+              (ke.getModifiers() & KeyEvent.CTRL_MASK) == 0) {
+            return;
+          }
+          String selection = ((DefaultMutableTreeNode) value).getUserObject().toString();
+          Clipboard clipboard = getToolkit().getSystemClipboard();
+          if (clipboard != null) {
+            StringSelection data = new StringSelection(selection);
+            clipboard.setContents(data, data);
+          }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+        }
+      });
       Component component = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
               row, hasFocus);
       return component;
