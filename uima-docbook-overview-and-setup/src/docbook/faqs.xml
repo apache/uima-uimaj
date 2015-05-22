@@ -61,8 +61,7 @@ under the License.
         <listitem><para>UIMA is an architecture which specifies component interfaces,
           design patterns, data representations and development roles.</para>
           
-          <para>Apache UIMA is an open source, Apache-licensed software project,
-            currently undergoing incubation at Apache.org.  It includes run-time
+          <para>Apache UIMA is an open source, Apache-licensed software project.  It includes run-time
             frameworks in Java and C++, APIs and tools for implementing, composing, packaging
             and deploying UIMA components.</para>
           
@@ -71,6 +70,13 @@ under the License.
             deployment options that range from tightly-coupled (running in the same
             process space) to loosely-coupled (distributed across different processes or
             machines for greater scale, flexibility and recoverability).</para>
+            
+          <para>The UIMA project has several significant subprojects, including UIMA-AS (for flexibly
+          scaling out UIMA pipelines over clusters of machines), UIMA-DUCC (for managing clusters of 
+          machines running scaled-out UIMA "jobs" in a "fair" way), RUTA (Eclipse-based tooling and \
+          a runtime framework for development of rule-based
+          Annotators), Addons (where you can find many extensions), and uimaFIT supplying a Java centric
+          set of friendlier interfaces and avoiding XML.</para>
         </listitem>
       </varlistentry>
      

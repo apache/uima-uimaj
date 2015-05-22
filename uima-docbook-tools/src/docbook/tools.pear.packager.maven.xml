@@ -289,8 +289,9 @@
 ]]></programlisting>
 
     </section>
+<!-- 
 
-  <section id="ugr.tools.pear.packager.maven.plugin.install">
+ <section id="ugr.tools.pear.packager.maven.plugin.install">
     <title>Installing The PEAR Packaging Plugin</title>
 
     <para>If you specify the Apache Incubating Repository as one of the repositories 
@@ -304,11 +305,12 @@
     <id>apache-incubating-repository</id>
     <url>http://people.apache.org/repo/m2-incubating-repository</url>
     <releases>
-      <!-- never: because artifacts are never updated in the repo -->
+      
       <updatePolicy>never</updatePolicy> 
     </releases>
   </repository>
 </repositories>]]></programlisting>
+
 
     <para>
       Otherwise, the 
@@ -324,7 +326,7 @@
       </itemizedlist>
     </para>
   </section>
-
+-->
   <section id="ugr.tools.pear.packager.maven.plugin.commandline">
     <title>Running from the command line</title>
     <para>
