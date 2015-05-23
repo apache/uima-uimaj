@@ -209,11 +209,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createBooleanArrayFS(aArray.length), aArray);
   }
 
-  public static BooleanArray createBooleanArray(JCas aJCas, Collection<Boolean> aCollection) {
+  public static BooleanArrayFS createBooleanArray(JCas aJCas, Collection<Boolean> aCollection) {
     return fillArrayFS(new BooleanArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static BooleanArray createBooleanArray(JCas aJCas, boolean[] aArray) {
+  public static BooleanArrayFS createBooleanArray(JCas aJCas, boolean[] aArray) {
     return fillArrayFS(new BooleanArray(aJCas, aArray.length), aArray);
   }
 
@@ -225,11 +225,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createByteArrayFS(aArray.length), aArray);
   }
 
-  public static ByteArray createByteArray(JCas aJCas, Collection<Byte> aCollection) {
+  public static ByteArrayFS createByteArray(JCas aJCas, Collection<Byte> aCollection) {
     return fillArrayFS(new ByteArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static ByteArray createByteArray(JCas aJCas, byte[] aArray) {
+  public static ByteArrayFS createByteArray(JCas aJCas, byte[] aArray) {
     return fillArrayFS(new ByteArray(aJCas, aArray.length), aArray);
   }
 
@@ -241,11 +241,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createDoubleArrayFS(aArray.length), aArray);
   }
 
-  public static DoubleArray createDoubleArray(JCas aJCas, Collection<Double> aCollection) {
+  public static DoubleArrayFS createDoubleArray(JCas aJCas, Collection<Double> aCollection) {
     return fillArrayFS(new DoubleArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static DoubleArray createDoubleArray(JCas aJCas, double[] aArray) {
+  public static DoubleArrayFS createDoubleArray(JCas aJCas, double[] aArray) {
     return fillArrayFS(new DoubleArray(aJCas, aArray.length), aArray);
   }
 
@@ -257,11 +257,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createFloatArrayFS(aArray.length), aArray);
   }
 
-  public static FloatArray createFloatArray(JCas aJCas, Collection<Float> aCollection) {
+  public static FloatArrayFS createFloatArray(JCas aJCas, Collection<Float> aCollection) {
     return fillArrayFS(new FloatArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static FloatArray createFloatArray(JCas aJCas, float[] aArray) {
+  public static FloatArrayFS createFloatArray(JCas aJCas, float[] aArray) {
     return fillArrayFS(new FloatArray(aJCas, aArray.length), aArray);
   }
 
@@ -273,11 +273,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createIntArrayFS(aArray.length), aArray);
   }
 
-  public static IntegerArray createIntArray(JCas aJCas, Collection<Integer> aCollection) {
+  public static IntArrayFS createIntArray(JCas aJCas, Collection<Integer> aCollection) {
     return fillArrayFS(new IntegerArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static IntegerArray createIntArray(JCas aJCas, int[] aArray) {
+  public static IntArrayFS createIntArray(JCas aJCas, int[] aArray) {
     return fillArrayFS(new IntegerArray(aJCas, aArray.length), aArray);
   }
 
@@ -289,11 +289,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createLongArrayFS(aArray.length), aArray);
   }
 
-  public static LongArray createLongArray(JCas aJCas, Collection<Long> aCollection) {
+  public static LongArrayFS createLongArray(JCas aJCas, Collection<Long> aCollection) {
     return fillArrayFS(new LongArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static LongArray createLongArray(JCas aJCas, long[] aArray) {
+  public static LongArrayFS createLongArray(JCas aJCas, long[] aArray) {
     return fillArrayFS(new LongArray(aJCas, aArray.length), aArray);
   }
 
@@ -305,11 +305,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createShortArrayFS(aArray.length), aArray);
   }
 
-  public static ShortArray createShortArray(JCas aJCas, Collection<Short> aCollection) {
+  public static ShortArrayFS createShortArray(JCas aJCas, Collection<Short> aCollection) {
     return fillArrayFS(new ShortArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static ShortArray createShortArray(JCas aJCas, short[] aArray) {
+  public static ShortArrayFS createShortArray(JCas aJCas, short[] aArray) {
     return fillArrayFS(new ShortArray(aJCas, aArray.length), aArray);
   }
 
@@ -321,11 +321,11 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return fillArrayFS(aCas.createStringArrayFS(aArray.length), aArray);
   }
 
-  public static StringArray createStringArray(JCas aJCas, Collection<String> aCollection) {
+  public static StringArrayFS createStringArray(JCas aJCas, Collection<String> aCollection) {
     return fillArrayFS(new StringArray(aJCas, aCollection.size()), aCollection);
   }
 
-  public static StringArray createStringArray(JCas aJCas, String[] aArray) {
+  public static StringArrayFS createStringArray(JCas aJCas, String[] aArray) {
     return fillArrayFS(new StringArray(aJCas, aArray.length), aArray);
   }
 
@@ -344,7 +344,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends BooleanArrayFS> T fillArrayFS(T aArrayFs, Iterable<Boolean> aCollection) {
+  public static BooleanArrayFS fillArrayFS(BooleanArrayFS aArrayFs, Iterable<Boolean> aCollection) {
     int i = 0;
     for (Boolean fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -353,12 +353,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends BooleanArrayFS> T  fillArrayFS(T aArrayFs, boolean[] aArray) {
+  public static BooleanArrayFS fillArrayFS(BooleanArrayFS aArrayFs, boolean[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends ByteArrayFS> T fillArrayFS(T aArrayFs, Iterable<Byte> aCollection) {
+  public static ByteArrayFS fillArrayFS(ByteArrayFS aArrayFs, Iterable<Byte> aCollection) {
     int i = 0;
     for (Byte fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -367,12 +367,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends ByteArrayFS> T fillArrayFS(T aArrayFs, byte[] aArray) {
+  public static ByteArrayFS fillArrayFS(ByteArrayFS aArrayFs, byte[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends DoubleArrayFS> T fillArrayFS(T aArrayFs, Iterable<Double> aCollection) {
+  public static DoubleArrayFS fillArrayFS(DoubleArrayFS aArrayFs, Iterable<Double> aCollection) {
     int i = 0;
     for (Double fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -381,12 +381,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends DoubleArrayFS> T fillArrayFS(T aArrayFs, double[] aArray) {
+  public static DoubleArrayFS fillArrayFS(DoubleArrayFS aArrayFs, double[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends FloatArrayFS> T fillArrayFS(T aArrayFs, Iterable<Float> aCollection) {
+  public static FloatArrayFS fillArrayFS(FloatArrayFS aArrayFs, Iterable<Float> aCollection) {
     int i = 0;
     for (Float fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -395,12 +395,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends FloatArrayFS> T fillArrayFS(T aArrayFs, float[] aArray) {
+  public static FloatArrayFS fillArrayFS(FloatArrayFS aArrayFs, float[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends IntArrayFS> T fillArrayFS(T aArrayFs, Iterable<Integer> aCollection) {
+  public static IntArrayFS fillArrayFS(IntArrayFS aArrayFs, Iterable<Integer> aCollection) {
     int i = 0;
     for (Integer fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -409,12 +409,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends IntArrayFS> T fillArrayFS(T aArrayFs, int[] aArray) {
+  public static IntArrayFS fillArrayFS(IntArrayFS aArrayFs, int[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends LongArrayFS> T fillArrayFS(T aArrayFs, Iterable<Long> aCollection) {
+  public static LongArrayFS fillArrayFS(LongArrayFS aArrayFs, Iterable<Long> aCollection) {
     int i = 0;
     for (Long fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -423,12 +423,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends LongArrayFS> T fillArrayFS(T aArrayFs, long[] aArray) {
+  public static LongArrayFS fillArrayFS(LongArrayFS aArrayFs, long[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends ShortArrayFS> T fillArrayFS(T aArrayFs, Iterable<Short> aCollection) {
+  public static ShortArrayFS fillArrayFS(ShortArrayFS aArrayFs, Iterable<Short> aCollection) {
     int i = 0;
     for (Short fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -437,12 +437,12 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends ShortArrayFS> T fillArrayFS(T aArrayFs, short[] aArray) {
+  public static ShortArrayFS fillArrayFS(ShortArrayFS aArrayFs, short[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
 
-  public static <T extends StringArrayFS> T fillArrayFS(T aArrayFs, Iterable<String> aCollection) {
+  public static StringArrayFS fillArrayFS(StringArrayFS aArrayFs, Iterable<String> aCollection) {
     int i = 0;
     for (String fs : aCollection) {
       aArrayFs.set(i, fs);
@@ -451,7 +451,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
     return aArrayFs;
   }
 
-  public static <T extends StringArrayFS> T fillArrayFS(T aArrayFs, String[] aArray) {
+  public static StringArrayFS fillArrayFS(StringArrayFS aArrayFs, String[] aArray) {
     aArrayFs.copyFromArray(aArray, 0, 0, aArrayFs.size());
     return aArrayFs;
   }
