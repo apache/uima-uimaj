@@ -274,6 +274,15 @@ public final class ExternalResourceFactory {
    */
   public static ExternalResourceDescription createExternalResourceDescription(final String aName,
           Class<? extends SharedResourceObject> aInterface, String aUrl, Object... aParams) {
+    // Extract ExternalResourceDescriptions from configurationData
+    List<ExternalResourceBinding> bindings = new ArrayList<ExternalResourceBinding>();
+    List<ExternalResourceDescription> descs = new ArrayList<ExternalResourceDescription>();
+    for (Entry<String, ExternalResourceDescription> res : extractExternalResourceParameters(aParams)
+            .entrySet()) {
+      bindings.add(createExternalResourceBinding(res.getKey(), res.getValue()));
+      descs.add(res.getValue());
+    }
+
     ConfigurationData cfg = ConfigurationParameterFactory.createConfigurationData(aParams);
     ResourceMetaData_impl meta = new ResourceMetaData_impl();
 
@@ -292,6 +301,8 @@ public final class ExternalResourceFactory {
     extRes.setName(aName);
     extRes.setResourceSpecifier(spec);
     extRes.setImplementationName(aInterface.getName());
+    extRes.setExternalResourceBindings(bindings);
+    extRes.setExternalResources(descs);
 
     return extRes;
   }

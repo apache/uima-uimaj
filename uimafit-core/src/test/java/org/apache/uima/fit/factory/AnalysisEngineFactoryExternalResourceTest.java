@@ -275,6 +275,28 @@ public class AnalysisEngineFactoryExternalResourceTest {
   }
 
   /**
+   * Test simple nesting.
+   */
+  @Test
+  public void sharedObject_testSimpleNesting() throws Exception {
+    AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
+            TestAnalysisEngineWithSharedResourceObject.class,
+            TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE,
+            createExternalResourceDescription(
+                    TestSharedResourceObject2.class,
+                    "http://dumm.my",
+                    TestSharedResourceObject2.PARAM_VALUE,
+                    TestSharedResourceObject2.EXPECTED_VALUE,
+                    TestSharedResourceObject2.PARAM_RESOURCE,
+                    createExternalResourceDescription(TestSharedResourceObject.class,
+                            "http://dumm.my", TestSharedResourceObject.PARAM_VALUE,
+                            TestSharedResourceObject.EXPECTED_VALUE))));
+
+    AnalysisEngine ae = createEngine(aeDesc);
+    ae.process(ae.newCAS());
+  }
+
+  /**
    * Test self-injection
    */
   @Test
