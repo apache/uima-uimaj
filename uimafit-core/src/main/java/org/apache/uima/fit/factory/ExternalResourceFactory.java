@@ -1030,7 +1030,7 @@ public final class ExternalResourceFactory {
     // For the current resource, add resource and binding
     ExternalResourceBinding extResBind = createExternalResourceBinding(aBindTo, aNestedRes);
     bindings.put(extResBind.getKey(), extResBind);
-    resources.put(aRes.getName(), aRes);
+    resources.put(aNestedRes.getName(), aNestedRes);
 
     // Handle nested resources
     bindNestedResources(aRes, bindings, resources);
