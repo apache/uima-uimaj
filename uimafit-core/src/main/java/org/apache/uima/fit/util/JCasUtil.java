@@ -425,7 +425,7 @@ public final class JCasUtil {
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation, S extends Annotation> Map<T, Collection<S>> indexCovering(
-          JCas jCas, Class<T> type, Class<S> coveringType) {
+          JCas jCas, Class<? extends T> type, Class<? extends S> coveringType) {
     return cast(CasUtil.indexCovering(jCas.getCas(), getType(jCas, type),
             getType(jCas, coveringType)));
   }
@@ -449,7 +449,7 @@ public final class JCasUtil {
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   public static <T extends Annotation, S extends Annotation> Map<T, Collection<S>> indexCovered(
-          JCas jCas, Class<T> type, Class<S> coveredType) {
+          JCas jCas, Class<? extends T> type, Class<? extends S> coveredType) {
     return cast(CasUtil
             .indexCovered(jCas.getCas(), getType(jCas, type), getType(jCas, coveredType)));
   }
