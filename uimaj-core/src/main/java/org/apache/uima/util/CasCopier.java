@@ -784,6 +784,10 @@ public class CasCopier {
    * @param aFS a feature structure
    * @return true if the given FS has already been copied using this CasCopier.
    */
+  public boolean alreadyCopied(FeatureStructure aFs) {
+    return alreadyCopied(((FeatureStructureImpl)aFs).getAddress());
+  }
+  
   public boolean alreadyCopied(int aFS) {
     return mFsMap.get(aFS) != 0;
   }
