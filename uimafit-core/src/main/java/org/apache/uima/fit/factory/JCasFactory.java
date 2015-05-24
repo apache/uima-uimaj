@@ -39,6 +39,37 @@ public final class JCasFactory {
   }
 
   /**
+   * Creates a new JCas with the given text and the automatically derived type system. 
+   * See {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
+   * 
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
+   */
+  public static JCas createText(String aText) throws UIMAException {
+    return createText(aText, null);
+  }
+
+  /**
+   * Creates a new JCas with the given text and language and the automatically derived type system. 
+   * See {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
+   * 
+   * @return a new JCas
+   * @throws UIMAException
+   *           if the JCas could not be initialized
+   */
+  public static JCas createText(String aText, String aLanguage) throws UIMAException {
+    JCas jcas = createJCas();
+    if (aText != null) {
+      jcas.setDocumentText(aText);
+    }
+    if (aLanguage != null) {
+      jcas.setDocumentLanguage(aLanguage);
+    }
+    return jcas;
+  }
+  
+  /**
    * Creates a new JCas for the automatically derived type system. See
    * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
    * 

@@ -68,4 +68,11 @@ public class JCasFactoryTest extends ComponentTestBase {
     assertEquals("For", JCasUtil.selectByIndex(jCas, Token.class, 0).getCoveredText());
   }
 
+  @Test
+  public void testCreateText() throws UIMAException {
+    jCas = JCasFactory.createText("For great 20 minute talks, check out TED.com.", "en");
+    AnnotationFactory.createAnnotation(jCas, 0, 3, Token.class);
+    assertEquals("For", JCasUtil.selectByIndex(jCas, Token.class, 0).getCoveredText());
+    assertEquals("en", jCas.getDocumentLanguage());
+  }
 }
