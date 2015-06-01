@@ -99,25 +99,15 @@ under the License.
 
       
       <para>To use the Eclipse Update mechanism, start Eclipse, and then pick the menu 
-        <command>Help &rarr; Software Updates &rarr; Find and Install...</command>.
-      On the next page, select the option to Search for new features to install, and press the
-        <command>Next</command> button.  On the next panel, update sites to visit, press the "Add a new
-        remote site" button and enter the URL 
-        http://www.apache.org/dist/uima/eclipse-update-site, and press OK.  On the previous
-        page will now appear this new Site, and it should be checked.</para>
+        <command>Help &rarr; Install new software...</command>.  In the next page, enter
+        the following URL in the "Work with" box and press enter: 
+        http://www.apache.org/dist/uima/eclipse-update-site/.</para>
       
-      <para>Also check the Europa (or Callisto) 
-        Discovery Site, which is where the EMF core plugins are (EMF stands for Eclipse Modeling Framework; 
-        it is an add-on to Eclipse, and is used
-        by some of the UIMA Eclipse tooling).</para>
-      <para>Now click finish, and follow the 
-        remaining panels to install the UIMA plugins.  If
-        you do not have a compatible level of EMF installed, when you select the UIMA plugins, you will get a
-        message saying it needs EMF.  To add EMF to the list of plugins to be downloaded, just expand the
-        Discovery Site entry by clicking it's little "plus" sign and then push the "Select Required" button on the right
-        of the panel.  This will select the part of EMF that is needed.</para>
+      <para>Now select the plugin tools you wish to install, and click Next, and follow the 
+        remaining panels to install the UIMA plugins.</para>
     </section>
-    
+
+    <!--      
     <section id="ugr.ovv.eclipse_setup.install_emf">
       <title>Manual Install additional Eclipse component: EMF</title>
       <para>You can skip this section if you installed EMF using the above process.</para>
@@ -192,6 +182,7 @@ under the License.
       </section>
       
     </section>
+     -->
     
     <section id="ugr.ovv.eclipse_setup.install_uima_sdk">
       <title>Install the UIMA SDK</title>
