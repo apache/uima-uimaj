@@ -281,6 +281,18 @@ public class CasCopier {
     mDestSofaFeatureCode = ((FeatureImpl)mDestSofaFeature).getCode();
     srcSofaTypeCode = originalSrcCasImpl.getTypeSystemImpl().sofaType.getCode();
     this.lenient = lenient;
+    
+    // the next is to support the style of use where
+    //   an instance of this copier is made, corresponding to two views in the same CAS
+    //   or corresponding to two views in different CASs
+    //   and then individual FeatureStructures are copied using copyFS(...)\
+    
+    srcCasViewImpl = (CASImpl) originalSrcCas.getLowLevelCAS();
+    tgtCasViewImpl = (CASImpl) originalTgtCas.getLowLevelCAS();
+    
+    srcViewName = srcCasViewImpl.getViewName();
+    tgtViewName = tgtCasViewImpl.getViewName();
+    isChangeViewName = (srcViewName != null) && (tgtViewName != null) && !srcViewName.equals(tgtViewName);
   }
   
 

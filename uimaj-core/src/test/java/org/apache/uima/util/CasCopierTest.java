@@ -30,6 +30,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
@@ -37,6 +38,7 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -194,6 +196,30 @@ public class CasCopierTest extends TestCase {
     XCASDeserializer.deserialize(serCasStream, srcCas);
     serCasStream.close();
 
+    // create a new view
+    CAS tgtCas = srcCas.createView("view2");
+    CasCopier copierv = new CasCopier(srcCas, tgtCas);
+    
+    // copy a fs while in an iteration
+    FSIterator<FeatureStructure> itv = srcCas.getJCas().getFSIndexRepository().getIndex("testEntityIndex").iterator();
+    FSIterator<Annotation> ita = srcCas.getJCas().getAnnotationIndex().iterator();
+
+    while (ita.hasNext()) {
+      Annotation fs = (Annotation) ita.next();
+      Annotation fsv2 = (Annotation) copierv.copyFs(fs);
+      fsv2.addToIndexes();
+    }
+
+    while (itv.hasNext()) {
+      FeatureStructure fs =  itv.next();
+      TOP fsv2 = (TOP) copierv.copyFs(fs);
+      fsv2.addToIndexes();      
+    }
+    
+    serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
+    XCASDeserializer.deserialize(serCasStream, srcCas);
+    serCasStream.close();    
+    
     // create a destination CAS
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
 
