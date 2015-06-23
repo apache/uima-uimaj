@@ -733,7 +733,7 @@ uima.tcas.Annotation.</programlisting>
               not enforce ordering, and have no defined keys. Set indexes do not
               enforce ordering, but use defined keys to specify equivalnce classes; 
               addToIndexes will not add a Feature Structure to a set index if its keys 
-              match those of an entry already in the index.
+              match those of an entry of the same type already in the index.
               If the <literal>&lt;kind&gt;</literal>element is omitted, it will default to
               sorted, which is the most common type of index.</para>
               
@@ -746,8 +746,8 @@ uima.tcas.Annotation.</programlisting>
             behavior is consistent with that.</para>
             
             <para>Note that even after this change, there is still a distinct difference in meaning for bag and set indexes.
-            The set index uses equal defined key values to determine equivalence classes for Feature Structures, and
-            will not add a Feature Structure if it has equal key values to an entry already in there.</para>
+            The set index uses equal defined key values plus the type of the Feature Structure to determine equivalence classes for Feature Structures, and
+            will not add a Feature Structure if it has equal key values and the same type to an entry already in there.</para>
             
             <para>It is possible, however, that users may be depending on having multiple instances of 
             the identical FeatureStructure in the indicies. Therefore, UIMA uses 
@@ -769,7 +769,8 @@ uima.tcas.Annotation.</programlisting>
                         
             <para>An Sorted or Set index may define zero or more <emphasis>keys</emphasis>. These keys
               determine the sort order of the feature structures within a sorted index, and
-              determine equality for set indexes. Bag indexes do not use keys, and 
+              partially determine equality for set indexes (the equality measure always includes testing that the types are the same). 
+              Bag indexes do not use keys, and 
 			  equality is determined by Feature Structure identity (that is, two elements
 			  are considered equal if and only if they are exactly the same feature structure,
 			  located in the same place in the CAS). Keys are
