@@ -282,13 +282,13 @@ public class CasAnnotationViewer extends JPanel {
     viewModePanel.add(new JLabel("Mode: "));
     this.createAnnotationModeButton();
     viewModePanel.add(this.annotationModeButton);
-    this.createEntityModeButton();
-    viewModePanel.add(this.entityModeButton);
+//    this.createEntityModeButton();
+//    viewModePanel.add(this.entityModeButton);
     this.createFeatureModeButton();
     viewModePanel.add(this.featureModeButton);
     ButtonGroup group = new ButtonGroup();
     group.add(this.annotationModeButton);
-    group.add(this.entityModeButton);
+//    group.add(this.entityModeButton);
     group.add(this.featureModeButton);
     return viewModePanel;
   }
