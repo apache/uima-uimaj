@@ -144,7 +144,7 @@
      BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
+    <compat.level>BACKWARD_COMPATIBLE_IMPLEMENTER</compat.level>
     <compat.previous.version>2.7.0</compat.previous.version>
   </properties>
   
