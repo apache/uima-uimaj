@@ -161,25 +161,82 @@ Java Viewer, Java Viewer (JV) with User Colors, HTML, and XML.
 Format, you can double-click on one of the files in the list to view the
 analysis done on that file.</para>
 
-<para>For the Java viewer, the results display looks like this
-(for the AE descriptor <literal>examples/descriptors/tutorial/ex4/MeetingDetectorAE.xml</literal>):
+<para>For the Java viewer, two different view modes are supported, each represented by one of two 
+radio buttons titled "Annnotations", and "Features":</para>
+
+<para>In the "Annotations" view, each annotation which is declared to be an output of the pipeline 
+(in the top most Annotator Descriptor) is given a checkbox and a color, in the bottom panel. You can control which
+annotations are shown by using the checkboxes in the bottom panel, the Select All button, 
+or the Deselet All button. The results display looks like this (for the AE descriptor 
+<literal>examples/descriptors/tutorial/ex4/MeetingDetectorTAE.xml</literal>):
 
   <screenshot>
     <mediaobject>
       <imageobject>
-        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image006.jpg"/>
+        <imagedata width="5.8in" format="PNG" fileref="&imgroot;image006v2.png"/>
       </imageobject>
-      <textobject><phrase>Analysis Results Window showing results from tutorial example 4</phrase></textobject>
+      <textobject><phrase>Analysis Results Window showing results from tutorial example 4 in Annotations view mode</phrase></textobject>
     </mediaobject>
   </screenshot></para>
-
 
 <para>You can click the mouse on one of the highlighted
 annotations to see a list of all its features in the frame on the right.</para>
 
-<para>If there are multiple annotation types in the view, you
-can control which ones are selected by using the checkboxes in the legend, the
-Select All button, or the Deselect All button.</para>
+<!--
+<para>In the "Entities" view, annotations are grouped by the type of entities they resolve to, 
+through a user specified entity resolver. You can control which groups of annotations are 
+selected by using the checkboxes in the legend, each representing a specific type of entity. 
+The results display looks like this 
+
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="5.8in" format="JPG" fileref="&imgroot;image007.jpg"/>
+      </imageobject>
+      <textobject><phrase>Analysis Results Window showing results from tutorial example 4 in Entities view mode</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+-->
+
+<para>In the "Features" view, you can specify a combination of a single type, a single feature of that type, and some feature values for that feature.
+The annotations whose feature values match will be highlighted.  Step by step, you first select a specific type of annotations by using 
+a radio button in the first tab of the legend.
+
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="5.8in" format="PNG" fileref="&imgroot;image007-1v2.png"/>
+      </imageobject>
+      <textobject><phrase>Analysis Results Window showing results from tutorial example 4 in Features view mode by selecting the DateAnnotation type.</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+
+<para>Selecting this automatically transitions to the second tab, where you then select a specific feature 
+of the annotation type.
+
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="5.8in" format="PNG" fileref="&imgroot;image007-2v2.png"/>
+      </imageobject>
+      <textobject><phrase>Analysis Results Window showing results from tutorial example 4 in Features view mode by selecting the shortDateString feature.</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+
+<para>Selecting this again automatically transitions you to the thrid tab, where you select some specific feature 
+values in the third tab of the legend.
+
+  <screenshot>
+    <mediaobject>
+      <imageobject>
+        <imagedata width="5.8in" format="PNG" fileref="&imgroot;image007-3v2.png"/>
+      </imageobject>
+      <textobject><phrase>Analysis Results Window showing results from tutorial example 4 in Features view mode by selecting individual shortDateString feature values.</phrase></textobject>
+    </mediaobject>
+  </screenshot></para>
+
+<para>In each of the above two view modes, you can click the mouse on one of the highlighted 
+annotations to see a list of all its features in the frame on the right.</para>
 
 <para>If you are viewing a CAS that contains multiple subjects
 of analysis, then a selector will appear at the bottom right of the Annotation
