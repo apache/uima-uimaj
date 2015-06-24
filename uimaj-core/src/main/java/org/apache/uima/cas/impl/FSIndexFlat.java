@@ -33,6 +33,7 @@ import org.apache.uima.cas.impl.FSIndexRepositoryImpl.IndexIteratorCachePair;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.Int2IntArrayMapFixedSize;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.Misc;
 
 /**
  * Flattened indexes built as a speed-up alternative for Sorted indexes.
@@ -94,7 +95,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
   
   final static boolean trace = false;  // causes tracing msgs to system.out
   private final static boolean smalltrace = false;
-  private final static boolean tune = true;
+  private final static boolean tune = Misc.getNoValueSystemProperty("uima.measure.flatten_index");
   private final static boolean debugTypeCodeUnstable = false;
   
   // public for testing
@@ -437,7 +438,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
       return false;
     }
     try { // finally to reset the isBeingFlattened flag no matter what
-      long flattenStartTime;
+      long flattenStartTime = 0;
       if (tune) {
         flattenStartTime = System.nanoTime();
       }

@@ -204,6 +204,24 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
 
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Measurement properties</emphasis></entry>
+         </row>         
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>Measure index flattening optimization</para></entry>
+           
+           <entry><para><code>uima.measure.flatten_index</code></para>
+                      
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-4357">UIMA-4357</ulink>.
+                        This creates a short report to System.out when Java is shutdown.
+                        The report has some statistics about the automatic management of 
+                        flattened index creation and use.</para>
+          
+           </entry>
+                        
+           <entry><para>2.8.0</para></entry>
+         </row>         
          
 
        </tbody>
