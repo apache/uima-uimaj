@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.7.0 Release Notes</title>
+  <title>Apache UIMA v2.8.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.7.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -81,123 +81,47 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<h3>Java 7 minimum level</h3>
-<p>Java 7 is now the minimum level of Java required.</p>
+<h3>Iterating over sorted indexes performance improvement</h3>
+<p>Sorted index usage by iterators is monitored, and when it is determined that
+a particular index is no longer being updated and is experiencing poor performance due to
+merging of subindexes for the subtypes being iterated over, a one-time conversion
+of this index to a "flattened" version is done; the flattened form incurs the cost
+of merging subindexes once, and for subsequent uses, iteration speed is improved.
+Any update that affects this flattened index will cause it to be discarded and 
+not used for subsequent iterations.  Performance improvement should be seen for the
+perhaps common use case where one annotator creates and indexes instances of a type and its subtypes, 
+and subsequent annotators read and perhaps update these, 
+but don't add or remove entries of this type/subtypes from the index.
+Jira issue <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4357">UIMA-4357</a></p>
 
-<h3>Several JVM properties support backwards compatibility</h3>
-<p>See the README and <a target="_blank" href="http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.config">
-the Reference chapter</a> for a description of these.
-
-<h3>JSON serialization support</h3>
-<p>
- JSON serialization support is added for Type System Descriptions, and for CASs.
-  Several formats for JSON CAS serialization are provided, please see the chapter in the
-  UIMA reference documentation for details.
-</p>
-
-<h3>Sorted and Bag indexes no longer store multiple instances of identical FSs</h3>
-<p>
-The meaning of "bag" and "sorted" index has been made consistent with how these are handled
-when sending CASes to remote services.  This means that adding the same identical FS to the
-indexes, multiple times, will no longer add duplicate index entries.  And, removing a FS from an index
-is guaranteed that that particular FS will no longer be in any index.  (Before, if you had 
-added a particular FS to a sorted or bag index, multiple times, the remove behavior would
-remove just one of the instances).  Deserialization of CASes sent to remote services has never 
-added Feature Structures to the index multiple times, so this change makes that behavior 
-consistent. For more details, see <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-3399">
-Jira issue UIMA-3399</a>.
-</p>
-
-<p>Because some users may need the previous behavior that permitted duplicates of identical Feature Structures in
-the sorted and bag indexes. this change can be disabled, by running the JVM with the defined property
-"uima.allow_duplicate_add_to_indexes".</p>
-
-
-<h3>Index corruption avoidance</h3>
-<p>To prevent potential index corruption, UIMA now recovers (unless disabled by 
-   <code>"-Duima.disable_auto_protect_indexes"</code>) 
-  from illegal modifications of features.</p>
-  
-  <p>These are modifications to features used as index keys, done while the Feature Structure 
-  being modified is currently in one or more indexes (see
-  <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4135">Jira issue UIMA-4135</a>).</p>
-  
-  <p>Corruption is prevented by first removing the feature structure being updated, 
-  then doing the update, and then adding the feature structure back to the indexes.
-  Because these actions can affect performance, it is recommended that you run with JVM property
-  "-Duima.report_fs_update_corrupts_index" in order to see if any user code has this problem, and fix these via 
-  redesign, or by wrapping the affected areas with a form of <code>protectIndexes()</code>, which does the
-  needed removes and add-backs under your control, so you can do several feature updates at once,
-  before adding the feature structure back.  <code>protectIndexes</code> is described in the
-  <a target="_blank" href=
-  "http://uima.apache.org/d/uimaj-2.7.0/references.html#ugr.ref.cas.updating_indexed_feature_structures">
-  CAS Reference Chapter</a> and the CAS Javadocs; you can also use it with the JCas.</p>
-  
-  <p>Because this protection is automatic and hidden, if you are iterating over sorted or set indexes, the
-  automatic recovery may cause unexpected ConcurrentModificationExceptions to be thrown by the iterator when
-  advancing. To work around this, either stop modifying features which are used as keys in the index being iterated over,
-  or use Snapshot iterators (see following).</p>
-
-<h3>New Snapshot iterators won't throw ConcurrentModificationException</h3>
-<p>A long-standing difficulty with Feature Structure iterators, namely, that adding to / removing from the underlying
-  index being iterated over is not allowed while iterating (unless you use a moveToXXX kind of operation to "reset" the
-  iterator), is addressed with a new class of "snapshot" iterators.
-  These take a snapshot of the state of the index when the iterator is created; subsequent modifications to the index
-  are then permitted, while the iterator continues to iterate over the snapshot it created; these iterators do not
-  throw ConcurrentModificationException.  The implementation of this feature is via a new method on FSIndex, 
-  <a target="_blank" href=
-  "http://uima.apache.org/d/uimaj-2.7.0/apidocs/org/apache/uima/cas/FSIndex.html#withSnapshotIterators--">
-  withSnapshotIterators()</a>, which 
-  creates a light-weight copy of the the FSIndex instance whose iterator method iterators gets the Snapshot kind.  
-  This approach allows using the new index in Java's "extended for" statement.</p>
-  
-  <p>The current implementation of the snapshot iterators makes a snapshot of the index being iterated over, at
-  creation time, which has a cost in space and time.</p>
-
-<h3>Other changes</h3>
-<p>Some of the other major changes are listed here; for the complete list, see <a href="issuesFixed/jira-report.html">
-the Issues Fixed report</a>.</p> 
-<ul><li> making the JCasGen Eclipse plugin work with more varieties of specifications for class paths.
- Jira issues: UIMA-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4080">4080</a>/
- <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4081">4081</a></li>
+<h3>Other major changes</h3> 
+<ul><li>The Document Analyzer's Java-based Cas Viewer was extended to support being
+able to select which annotations are highlighted, using a selection approach where you can
+specify a type plus a feature of that type plus one or more values of that feature.
+ Jira issue <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-3374">UIMA-3374</a></li>
  
- <li>moveTo(a_Feature_Structure) or creating a new iterator to start at a feature sometimes went to the wrong place. 
- Jira issues: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4094">UIMA-4094</a> 
- and <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4105">UIMA-4105</a>.</li>
- 
- <li>deserialization of deltaCAS when modifying existing indexed Feature Structures could corrupt the indexes. 
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4100">UIMA-4100</a>.</li>
- 
- <li>default bag indexes will now be created if there are only Set indexes. 
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4111">UIMA-4111</a>.</li>
- 
- <li><p>Xmi CAS Serialization now checks to see that list and array feature values marked as multipleReferencesAllowed=false
- (or not marked at all, which defaults to multipleReferencesAllowed=false) are not multiply-referenced.  If they are,
- they continue to be serialized as if they are independent objects (as was previously done), but now a new 
- warning message is issued.  Because there can be a huge number of these messages, they are automatically
- throttled down, to prevent running out of room in the error logs.</p>
- <p>The message strings for these look like "Feature [some-feature-name] is marked multipleReferencesAllowed=false,
- but it has multiple references.  These will be serialized in duplicate."</p></li>
- 
- <li>The CasCopier now checks to insure that the range type of the target feature has the same name as the 
- range type of the source feature, which catches errors when two different type systems are used for the source and
- target.  For example, this now prevents a feature with range type "uima.cas.Float" from being copied 
- into one with range type "uima.cas.String".
- </li>
+ <li>Performance for iterators over UIMA Set Indexes was improved. 
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4345">UIMA-4345</a>.</li>
  </ul>
  
- <h3>Performance change highlights</h3>
+ <h3>API changes</h3>
+ <p>Note that we have moved to a more formal semantic versioning, following
+ the ideas in <a target="_blank" href="http://semver.org/">http://semver.org/</a>.</p>
+ <p> 
+ There were no API changes that affect backward compatibility.  Some new APIs were added or extended.</p>
  <ul>
- <li>Iterators obtained for Bag indexes and from the method getAllIndexedFS( ... type ... ) are 
- by definition, unordered.  The implementation for these iterators is now  
- much faster, taking advantage of the unordered aspect of these things and returning items in a more 
- efficient sequence.
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4166">UIMA-4166</a>.</li>
- <li>CasCopier has been reimplemented and is approximately 5-10 times faster.</li>
- </ul>
+ <li>Add back the API <code>alreadyCopied</code> that was accidentally removed in the CasCopier class in version 2.7.0.
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4428">UIMA-4428</a>.</li>
  
- <p>The complete list of fixes is <a href="issuesFixed/jira-report.html">here</a>.
-  
+ <li>add new variants of <code>getAllIndexedFS, getIndex, and getAnnotationIndex</code> which take an additional argument
+ that specifies the JCas class, and permits these to return the correct generically typed indexes. 
+ Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4299">UIMA-4299</a>.</li>
+ </ul>
+
+<h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
+Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
+issues fixed in this release.  
+   
 <h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 
@@ -214,9 +138,6 @@ issues you find at
 <a href="http://issues.apache.org/jira/browse/uima">http://issues.apache.org/jira/browse/uima</a>
 </p>
   
-<h2><a id="list.issues">List of JIRA Issues Fixed in this Release</a></h2>
-Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
-issues fixed in this release.  
     
 </body>
 </html>
