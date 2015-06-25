@@ -384,7 +384,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
   /**
    * Constructor
    * 
-   * @param indexarg the sorted index for a type being cached
+   * @param iicp the sorted index for a type being cached
    */
   public FSIndexFlat(IndexIteratorCachePair<T> iicp) {
     this.iicp = iicp;

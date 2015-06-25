@@ -111,7 +111,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * because that's the only time there are multiple instances of the same
    * (meaning having the same heap address) item
    * @param ele
-   * @return
+   * @return -1 if the item is not found, or a position value that can be used with iterators to start at that item.
    */
   int findLeftmost(int ele) {
     if (USE_POSITIVE_INT_SET) {

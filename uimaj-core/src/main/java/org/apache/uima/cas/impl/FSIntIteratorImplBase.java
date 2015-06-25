@@ -74,7 +74,7 @@ public abstract class FSIntIteratorImplBase<T extends FeatureStructure>
 
   /**
    * 
-   * @param index
+   * @param fsLeafIndexImpl the leaf index this iterator is over
    * @param detectIllegalIndexUpdates may be null
    */
   public FSIntIteratorImplBase(FSLeafIndexImpl<T> fsLeafIndexImpl, int[] detectIllegalIndexUpdates) {

@@ -254,8 +254,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Com
    * @param fs2 -
    * @return 0 if equal, < 0 if fs1 < fs2, > 0 if fs1 > fs2
    */
-  public int ll_compare(int ref1, int ref2) {
-    return this.compare(ref1, ref2);
+  public int ll_compare(int fs1, int fs2) {
+    return this.compare(fs1, fs2);
   }
 
   /**

@@ -2141,10 +2141,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // }
   
   /**
-   * Top level call to add the indexs for a particular index definition
+   * Top level call to add the indexes for a particular index definition
    * @param comparator
    * @param indexType
-   * @return
+   * @return the iicp for the top new index
    */
   private IndexIteratorCachePair<? extends FeatureStructure> addNewIndexRecursive(FSIndexComparator comparator, int indexType) {
     final FSIndexComparatorImpl compCopy = ((FSIndexComparatorImpl) comparator).copy();
@@ -2194,7 +2194,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * DEFAULT_BAG_INDEX), call yourself recursively to add the indexes for all the directly subsumed subtypes.
    * @param comparator
    * @param indexType
-   * @return
+   * @return the new iicp for the new index
    */
   private IndexIteratorCachePair<? extends FeatureStructure> addNewIndexRec(FSIndexComparator comparator, int indexType) {
     final IndexIteratorCachePair<? extends FeatureStructure> iicp = this.addNewIndex(comparator, indexType);
