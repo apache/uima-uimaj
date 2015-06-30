@@ -129,4 +129,9 @@ public abstract class FSIntIteratorImplBase<T extends FeatureStructure>
   FSLeafIndexImpl<T> getFSLeafIndexImpl() {
     return fsLeafIndexImpl;
   }
+  
+  void moveTo(int fs, boolean isExact) { 
+    //default impl: ignore isExact for bag and set
+    moveTo(fs);
+  }
 }

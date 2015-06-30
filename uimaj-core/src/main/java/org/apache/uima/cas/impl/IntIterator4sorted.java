@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import java.util.NoSuchElementException;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntVector;
@@ -118,11 +119,18 @@ class IntIterator4sorted<T extends FeatureStructure> extends FSIntIteratorImplBa
    */
   @Override
   public void moveTo(int i) {
+    moveTo(i, false);
+  }
+  
+  void moveTo(int i, boolean isExact) {
     resetConcurrentModification();
-    final int pos = fsIntArrayIndex.findLeftmost(i);
+    final int pos = isExact ? fsIntArrayIndex.findEq(i) : fsIntArrayIndex.findLeftmost(i);
     if (pos >= 0) {
       itPos = pos;
     } else {
+      if (isExact) {
+        throw new UIMARuntimeException(); // internal error
+      }
       itPos = -(pos + 1);
     }
 //
