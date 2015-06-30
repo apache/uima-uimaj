@@ -1226,7 +1226,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       for (int i = 0; i < iterators.length; i++) {
         if (kind == FSIndex.SORTED_INDEX) {
           // case: sorted index being used in unordered mode, eg. for getAllIndexedFSs
-          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = getCachedSortedSubFsLeafIndex(iicp, i); 
+          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = 
+              (FSIntArrayIndex<? extends FeatureStructure>) ((FSIntIteratorImplBase) iterators[i]).getFSLeafIndexImpl(); 
           if (sortedIndex.findLeftmost(fs) < 0) {
             continue;  // fs not found in the index of this subtype  
           }
@@ -1972,18 +1973,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     for (int i = 0; i < detectIllegalIndexUpdates.length; i++) {
       detectIllegalIndexUpdates[i] = Integer.MIN_VALUE;
     }
-  }
-
-  /**
-   * Get a particular sorted subLeafIndex
-   * Implemented as a subroutine to have the unchecked cast done in one place
-   * @param iicp having the subLeafIndexes
-   * @param i which sub index to get
-   * @return the subindex, cast to FSIntArrayIndex<T>
-   */
-  private <T extends FeatureStructure> FSIntArrayIndex<T> getCachedSortedSubFsLeafIndex(
-      IndexIteratorCachePair<T> iicp, int i) {
-    return (FSIntArrayIndex<T>) iicp.cachedSubFsLeafIndexes.get(i);
   }
 
   /**

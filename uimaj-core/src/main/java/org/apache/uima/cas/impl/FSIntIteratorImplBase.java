@@ -125,4 +125,8 @@ public abstract class FSIntIteratorImplBase<T extends FeatureStructure>
   public int ll_get() throws NoSuchElementException {
     return get();
   }
+  
+  FSLeafIndexImpl<T> getFSLeafIndexImpl() {
+    return fsLeafIndexImpl;
+  }
 }
