@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import org.apache.uima.UimaContextAdmin;
@@ -49,29 +50,29 @@ public class AnalysisEngineManagementImpl
    * This static set is needed to keep track of what names we've already used for "root" MBeans
    * (those representing top-level AEs and CPEs).
    */
-  private static ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<String, AtomicInteger>();
+  private final static ConcurrentHashMapWithProducer<String, AtomicInteger> usedRootNames = new ConcurrentHashMapWithProducer<String, AtomicInteger>();
 
   private String name;
 
-  private long numProcessed;
+  private final AtomicLong numProcessed = new AtomicLong(0);
 
-  private long markedAnalysisTime;
+  private final AtomicLong markedAnalysisTime = new AtomicLong(0);
 
-  private long markedBatchProcessCompleteTime;
+  private final AtomicLong markedBatchProcessCompleteTime = new AtomicLong(0);
 
-  private long markedCollectionProcessCompleteTime;
+  private final AtomicLong markedCollectionProcessCompleteTime = new AtomicLong(0);
 
-  private long markedServiceCallTime;
+  private final AtomicLong markedServiceCallTime = new AtomicLong(0);
 
-  private long analysisTime;
+  private final AtomicLong analysisTime = new AtomicLong(0);
 
-  private long batchProcessCompleteTime;
+  private final AtomicLong batchProcessCompleteTime = new AtomicLong(0);
 
-  private long collectionProcessCompleteTime;
+  private final AtomicLong collectionProcessCompleteTime = new AtomicLong(0);
 
-  private long serviceCallTime;
+  private final AtomicLong serviceCallTime = new AtomicLong(0);
 
-  private Map<String, AnalysisEngineManagement> components = new LinkedHashMap<String, AnalysisEngineManagement>();
+  private final Map<String, AnalysisEngineManagement> components = Collections.synchronizedMap(new LinkedHashMap<String, AnalysisEngineManagement>());
 
   private String uniqueMBeanName;
 
@@ -102,54 +103,52 @@ public class AnalysisEngineManagementImpl
 
   
   public void reportAnalysisTime(long time) {
-    analysisTime += time;
+    analysisTime.addAndGet(time);
   }
 
   public void reportBatchProcessCompleteTime(long time) {
-    batchProcessCompleteTime += time;
+    batchProcessCompleteTime.addAndGet(time);
   }
 
   public void reportCollectionProcessCompleteTime(long time) {
-    collectionProcessCompleteTime += time;
+    collectionProcessCompleteTime.addAndGet(time);
   }
 
   public void reportServiceCallTime(long time) {
-    serviceCallTime += time;
+    serviceCallTime.addAndGet(time);
   }
 
   public void incrementCASesProcessed() {
-    numProcessed++;
+    numProcessed.incrementAndGet();
   }
 
   public long getBatchProcessCompleteTime() {
-    return batchProcessCompleteTime;
+    return batchProcessCompleteTime.get();
   }
 
   public long getCollectionProcessCompleteTime() {
-    return collectionProcessCompleteTime;
+    return collectionProcessCompleteTime.get();
   }
 
   public long getAnalysisTime() {
-  	return analysisTime + serviceCallTime;
+  	return analysisTime.get() + serviceCallTime.get();
   }
 
   public long getServiceCallTime() {
-    return serviceCallTime;
+    return serviceCallTime.get();
   }
 
   /**
    * Internal use only. Used to implement backwards compatibility with the ProcessTrace interface.
    */
   public void mark() {
-    markedAnalysisTime = analysisTime;
-    markedBatchProcessCompleteTime = batchProcessCompleteTime;
-    markedCollectionProcessCompleteTime = collectionProcessCompleteTime;
-    markedServiceCallTime = serviceCallTime;
+    markedAnalysisTime.set(analysisTime.get());
+    markedBatchProcessCompleteTime.set(batchProcessCompleteTime.get());
+    markedCollectionProcessCompleteTime.set(collectionProcessCompleteTime.get());
+    markedServiceCallTime.set(serviceCallTime.get());
     // mark components also
-    Iterator<AnalysisEngineManagement> iter = components.values().iterator();
-    while (iter.hasNext()) {
-      AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl) iter.next();
-      component.mark();
+    for (AnalysisEngineManagement component : components.values()) {
+      ((AnalysisEngineManagementImpl)component).mark();
     }
   }
 
@@ -158,7 +157,7 @@ public class AnalysisEngineManagementImpl
    * @return Batch Process Complete time since mark
    */
   public long getBatchProcessCompleteTimeSinceMark() {
-    return batchProcessCompleteTime - markedBatchProcessCompleteTime;
+    return batchProcessCompleteTime.get() - markedBatchProcessCompleteTime.get();
   }
 
   /**
@@ -166,7 +165,7 @@ public class AnalysisEngineManagementImpl
    * @return Collection Process Complete time since mark
    */
   public long getCollectionProcessCompleteTimeSinceMark() {
-    return collectionProcessCompleteTime - markedCollectionProcessCompleteTime;
+    return collectionProcessCompleteTime.get() - markedCollectionProcessCompleteTime.get();
   }
 
   /**
@@ -174,7 +173,7 @@ public class AnalysisEngineManagementImpl
    * @return Analysis time since mark
    */
   public long getAnalysisTimeSinceMark() {
-    return analysisTime - markedAnalysisTime;
+    return analysisTime.get() - markedAnalysisTime.get();
   }
 
   /**
@@ -182,17 +181,18 @@ public class AnalysisEngineManagementImpl
    * @return service call time since mark
    */
   public long getServiceCallTimeSinceMark() {
-    return serviceCallTime - markedServiceCallTime;
+    return serviceCallTime.get() - markedServiceCallTime.get();
   }
 
   public long getNumberOfCASesProcessed() {
-    return numProcessed;
+    return numProcessed.get();
   }
 
   public String getCASesPerSecond() {
-    if (getAnalysisTime() == 0)
+    long analysisTime = getAnalysisTime();
+    if (analysisTime == 0)
       return "0";
-    float docsPerSecond = (float) numProcessed / getAnalysisTime() * 1000;
+    float docsPerSecond = (float) numProcessed.get() / analysisTime * 1000;
     return format.format(docsPerSecond);
   }
 
@@ -213,19 +213,17 @@ public class AnalysisEngineManagementImpl
   }
 
   public void resetStats() {
-    numProcessed = 0;
-    analysisTime = 0;
-    batchProcessCompleteTime = 0;
-    collectionProcessCompleteTime = 0;
-    serviceCallTime = 0;
-    markedAnalysisTime = 0;
-    markedBatchProcessCompleteTime = 0;
-    markedCollectionProcessCompleteTime = 0;
-    markedServiceCallTime = 0;
+    numProcessed.set(0);
+    analysisTime.set(0);
+    batchProcessCompleteTime.set(0);
+    collectionProcessCompleteTime.set(0);
+    serviceCallTime.set(0);
+    markedAnalysisTime.set(0);
+    markedBatchProcessCompleteTime.set(0);
+    markedCollectionProcessCompleteTime.set(0);
+    markedServiceCallTime.set(0);
     // reset components also
-    Iterator<AnalysisEngineManagement> iter = components.values().iterator();
-    while (iter.hasNext()) {
-      AnalysisEngineManagementImpl component = (AnalysisEngineManagementImpl) iter.next();
+    for (AnalysisEngineManagement component : components.values()) {
       component.resetStats();
     }
   }
@@ -264,7 +262,6 @@ public class AnalysisEngineManagementImpl
             .getRootContext().getManagementInterface();
     if (rootMBean.getUniqueMBeanName() == null) {
       // try to find a unique name for the root MBean
-      String rootName = getRootName(rootMBean.getName());
       rootMBean.uniqueMBeanName = prefix + "name=" + escapeValue(getRootName(rootMBean.getName()));
     }
 
@@ -293,6 +290,11 @@ public class AnalysisEngineManagementImpl
     }
   };
   
+  /**
+   * 
+   * @param baseRootName
+   * @return the baseRootName (or CPE if null) plus a suffix 2, 3, ... to be unique
+   */
   // package private for testing
   static String getRootName(String baseRootName) {
     if (baseRootName == null) {
