@@ -74,7 +74,7 @@ public abstract class FSIntIteratorImplBase<T extends FeatureStructure>
 
   /**
    * 
-   * @param index
+   * @param fsLeafIndexImpl the leaf index this iterator is over
    * @param detectIllegalIndexUpdates may be null
    */
   public FSIntIteratorImplBase(FSLeafIndexImpl<T> fsLeafIndexImpl, int[] detectIllegalIndexUpdates) {
@@ -124,5 +124,14 @@ public abstract class FSIntIteratorImplBase<T extends FeatureStructure>
   @Override
   public int ll_get() throws NoSuchElementException {
     return get();
+  }
+  
+  FSLeafIndexImpl<T> getFSLeafIndexImpl() {
+    return fsLeafIndexImpl;
+  }
+  
+  void moveTo(int fs, boolean isExact) { 
+    //default impl: ignore isExact for bag and set
+    moveTo(fs);
   }
 }

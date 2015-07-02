@@ -32,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
@@ -962,7 +963,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     public Object copy() {
       // If this.isValid(), return a copy pointing to the same element.
       if (this.isValid()) {
-        return new PointerIterator(this.iicp, this.get());
+        PointerIterator it = new PointerIterator(this.iicp);
+        moveTo(this.get());
+        return it;
       }
       // Else, create a copy that is also not valid.
       final PointerIterator pi = new PointerIterator(this.iicp);
@@ -975,14 +978,24 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int fs) {
+      moveTo(fs, false);
+    }
+    /**
+     * @param fs the FS to move to
+     * @param isExact if true, move to this exact one (must be present),
+     *                if false, move to the left-most element that is equal to fs
+     *                using the comparator for the index or if none is equal,
+     *                move to the next element that is greater than this fs
+     *                or invalid position of all are less than this fs
+     */
+   void moveTo(int fs, boolean isExact) {
       int lvi = this.iterators.length - 1;
       // Need to consider all iterators.
       // Set all iterators to insertion point.
       int i = 0;
       while (i <= lvi) {
         final FSIntIteratorImplBase<?> it = (FSIntIteratorImplBase<?>) this.iterators[i];
-
-        it.moveTo(fs);
+        it.moveTo(fs, isExact);
         if (it.isValid()) {
           heapify_up(it, i, 1);
           ++i;
@@ -1221,13 +1234,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      */
     @Override
     public void moveTo(int fs) {
+      moveTo(fs, false);
+    }
+    
+    void moveTo(int fs, boolean isExact) {
       IndexIteratorCachePair<? extends FeatureStructure> iicp = getIicp();
       int kind = iicp.fsLeafIndex.getIndexingStrategy();
       for (int i = 0; i < iterators.length; i++) {
         if (kind == FSIndex.SORTED_INDEX) {
           // case: sorted index being used in unordered mode, eg. for getAllIndexedFSs
-          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = getCachedSortedSubFsLeafIndex(iicp, i); 
-          if (sortedIndex.findLeftmost(fs) < 0) {
+          FSIntArrayIndex<? extends FeatureStructure> sortedIndex = 
+              (FSIntArrayIndex<? extends FeatureStructure>) ((FSIntIteratorImplBase) iterators[i]).getFSLeafIndexImpl(); 
+          if ((isExact ? sortedIndex.findEq(fs) :sortedIndex.findLeftmost(fs)) < 0) {
             continue;  // fs not found in the index of this subtype  
           }
         }
@@ -1478,6 +1496,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * @see org.apache.uima.internal.util.IntPointerIterator#moveTo(int)
      */
     public void moveTo(int fs) {
+      moveTo(fs, false);
+    }
+    
+    void moveTo(int fs, boolean isExact) {
       if (sortedLeafIndex.getComparator().getNumberOfKeys() == 0) {
         // use identity, search from beginning to get "left-most"
         int i = 0;
@@ -1488,10 +1510,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         }
         pos = i;
       } else {
-        int position = sortedLeafIndex.findLeftmost(fs);
+        int position = isExact ? sortedLeafIndex.findEq(fs) : sortedLeafIndex.findLeftmost(fs);
         if (position >= 0) {
           pos = position;
         } else {
+          if (isExact) {
+            throw new UIMARuntimeException(); // Internal error
+          }
           pos = -(position + 1);
         }
       }
@@ -1523,7 +1548,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // If this.isValid(), return a copy pointing to the same element.
       IndexIteratorCachePair<T> iicp = new IndexIteratorCachePair<T>(sortedLeafIndex);
       if (this.isValid()) {
-        return new SnapshotPointerIterator<T>(iicp, this.get());
+        SnapshotPointerIterator<T> it = new SnapshotPointerIterator<T>(iicp);
+        it.moveTo(this.get(), true); // move to exact match
+        return it;
       }
       // Else, create a copy that is also not valid.
       SnapshotPointerIterator<T> pi = new SnapshotPointerIterator<T>(iicp);
@@ -1975,18 +2002,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   /**
-   * Get a particular sorted subLeafIndex
-   * Implemented as a subroutine to have the unchecked cast done in one place
-   * @param iicp having the subLeafIndexes
-   * @param i which sub index to get
-   * @return the subindex, cast to FSIntArrayIndex<T>
-   */
-  private <T extends FeatureStructure> FSIntArrayIndex<T> getCachedSortedSubFsLeafIndex(
-      IndexIteratorCachePair<T> iicp, int i) {
-    return (FSIntArrayIndex<T>) iicp.cachedSubFsLeafIndexes.get(i);
-  }
-
-  /**
    * Reset all indexes, in one view.
    */
   public void flush() {
@@ -2141,10 +2156,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // }
   
   /**
-   * Top level call to add the indexs for a particular index definition
+   * Top level call to add the indexes for a particular index definition
    * @param comparator
    * @param indexType
-   * @return
+   * @return the iicp for the top new index
    */
   private IndexIteratorCachePair<? extends FeatureStructure> addNewIndexRecursive(FSIndexComparator comparator, int indexType) {
     final FSIndexComparatorImpl compCopy = ((FSIndexComparatorImpl) comparator).copy();
@@ -2194,7 +2209,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * DEFAULT_BAG_INDEX), call yourself recursively to add the indexes for all the directly subsumed subtypes.
    * @param comparator
    * @param indexType
-   * @return
+   * @return the new iicp for the new index
    */
   private IndexIteratorCachePair<? extends FeatureStructure> addNewIndexRec(FSIndexComparator comparator, int indexType) {
     final IndexIteratorCachePair<? extends FeatureStructure> iicp = this.addNewIndex(comparator, indexType);

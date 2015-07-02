@@ -217,7 +217,8 @@ under the License.
         <typeSystemIncludes>
           <!-- one or more ant-like file patterns 
                identifying top level descriptors --> 
-          <typeSystemInclude>src/main/resources/MyTs.xml</typeSystemInclude
+          <typeSystemInclude>src/main/resources/MyTs.xml
+          </typeSystemInclude>
         </typeSystemIncludes>
 
         <!-- OPTIONAL -->

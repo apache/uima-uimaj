@@ -801,10 +801,17 @@ public class CasCopier {
    * @param aFS a feature structure
    * @return true if the given FS has already been copied using this CasCopier.
    */
-  public boolean alreadyCopied(FeatureStructure aFs) {
-    return alreadyCopied(((FeatureStructureImpl)aFs).getAddress());
+  public boolean alreadyCopied(FeatureStructure aFS) {
+    return alreadyCopied(((FeatureStructureImpl)aFS).getAddress());
   }
   
+  /**
+   * Note: if lenient is in effect, this method will return false for
+   * FSs which are not copied because the target doesn't have that type.
+   * It also returns false for sofa FSs and the documentAnnotation FS.
+   * @param aFS a feature structure
+   * @return true if the given FS has already been copied using this CasCopier.
+   */
   public boolean alreadyCopied(int aFS) {
     return mFsMap.get(aFS) != 0;
   }
