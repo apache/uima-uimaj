@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.MultiThreadUtils;
+import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 
@@ -57,8 +58,8 @@ public class JCasHashMapCompareTest extends TestCase {
   
   public void testComp() throws Exception {
     Thread.sleep(0000);  // set non-zero to delay so you can get yourkit tooling hooked up, if using yourkit
-    int numberOfThreads =  MultiThreadUtils.PROCESSORS; 
-    numberOfThreads = Math.min(8, JCasHashMap.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.
+    int numberOfThreads =  Utilities.numberOfCores; 
+    numberOfThreads = Math.min(8, Utilities.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.
     System.out.format("test JCasHashMapComp with %d threads%n", numberOfThreads);
     runCustom(numberOfThreads);
     runConCur(numberOfThreads);

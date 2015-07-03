@@ -20,6 +20,7 @@
 package org.apache.uima.jcas.impl;
 
 import org.apache.uima.cas.impl.FeatureStructureImpl;
+import org.apache.uima.internal.util.Utilities;
 
 /**
  * Version 2 (2014) of map between CAS addr and JCasCover Objects
@@ -113,9 +114,6 @@ public class JCasHashMap {
   static final boolean check = true;  // message if concurrency level reduced because initial size was small
 //  private static final boolean MEASURE_CACHE = false /* Misc.getNoValueSystemProperty("uima.measure.jcas.hashmap.cache")*/;
 
-  static int nextHigherPowerOf2(int i) {
-    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
-  }
 
   /** 
    * must be a power of 2, > 0 
@@ -126,21 +124,19 @@ public class JCasHashMap {
    * 
    */
   static int DEFAULT_CONCURRENCY_LEVEL;
-  static final int cores;
   
   static {
-    cores = Runtime.getRuntime().availableProcessors();
     // high concurrency can increase L1 cache dumping
     DEFAULT_CONCURRENCY_LEVEL =  // approx between 10-20% of the number of cores dropping to 5% at high core values (to control cache loading)
         // min is 1
         // max is 16 (the number of l1 slots is 256 in some high performance cpus (2015) so going higer than this 
         //  probably has too much cache loading
         // 
-        1 + (int)(cores * 
-                   ((cores > 64) ? .08 : 
-                    (cores > 32) ? .1  :
-                    (cores > 16) ? .2  :
-                    (cores > 8)  ? .3  : .4));
+        1 + (int)(Utilities.numberOfCores * 
+                   ((Utilities.numberOfCores > 64) ? .08 : 
+                    (Utilities.numberOfCores > 32) ? .1  :
+                    (Utilities.numberOfCores > 16) ? .2  :
+                    (Utilities.numberOfCores > 8)  ? .3  : .4));
   }
 
   static int getDEFAULT_CONCURRENCY_LEVEL() {
@@ -149,7 +145,7 @@ public class JCasHashMap {
   
   // used in test cases
   static void setDEFAULT_CONCURRENCY_LEVEL(int dEFAULT_CONCURRENCY_LEVEL) {
-    DEFAULT_CONCURRENCY_LEVEL = nextHigherPowerOf2(dEFAULT_CONCURRENCY_LEVEL);
+    DEFAULT_CONCURRENCY_LEVEL = Utilities.nextHigherPowerOf2(dEFAULT_CONCURRENCY_LEVEL);
   }
   
 //  // size set to ~1 cache line 
@@ -189,13 +185,13 @@ public class JCasHashMap {
     //   concurrency = capacity / 32
     this(capacity, doUseCache,
         ((capacity / DEFAULT_CONCURRENCY_LEVEL) < 32) ?
-            nextHigherPowerOf2(
+            Utilities.nextHigherPowerOf2(
                 Math.max(1, capacity / 32)) :
             DEFAULT_CONCURRENCY_LEVEL);
     if (check && (capacity / DEFAULT_CONCURRENCY_LEVEL) < 32) {
       System.out.println(String.format("JCasHashMap concurrency reduced, capacity: %,d DefaultConcur: %d, concur: %d%n",
           capacity, DEFAULT_CONCURRENCY_LEVEL, 
-          nextHigherPowerOf2(Math.max(1, capacity / 32))));
+          Utilities.nextHigherPowerOf2(Math.max(1, capacity / 32))));
     }
   }
   
@@ -205,7 +201,7 @@ public class JCasHashMap {
     if (aConcurrencyLevel < 1|| capacity < 1) {
       throw new RuntimeException(String.format("capacity %d and concurrencyLevel %d must be > 0", capacity, aConcurrencyLevel));
     }
-    concurrencyLevel = nextHigherPowerOf2(aConcurrencyLevel);
+    concurrencyLevel = Utilities.nextHigherPowerOf2(aConcurrencyLevel);
     concurrencyBitmask = concurrencyLevel - 1;
     // for clvl=1, lvlbits = 0,  
     // for clvl=2  lvlbits = 1;
@@ -213,7 +209,7 @@ public class JCasHashMap {
     concurrencyLevelBits = Integer.numberOfTrailingZeros(concurrencyLevel); 
     
     // capacity is the greater of the passed in capacity, rounded up to a power of 2, or 32.
-    capacity = Math.max(32,  nextHigherPowerOf2(capacity));
+    capacity = Math.max(32, Utilities.nextHigherPowerOf2(capacity));
     // if capacity / concurrencyLevel <32, increase capacity
     if ((capacity / concurrencyLevel) < 32) {
       capacity = 32 * concurrencyLevel;
@@ -248,7 +244,7 @@ public class JCasHashMap {
     int submapSize = curMapSize / DEFAULT_CONCURRENCY_LEVEL;
     
     int newConcurrencyLevel = (submapSize < 32) ?
-        nextHigherPowerOf2(
+        Utilities.nextHigherPowerOf2(
             Math.max(1, curMapSize / 32)) :
               DEFAULT_CONCURRENCY_LEVEL;
         
@@ -259,7 +255,7 @@ public class JCasHashMap {
     int submapSize = curMapSize / DEFAULT_CONCURRENCY_LEVEL;
     
     int newConcurrencyLevel = (submapSize < 32) ?
-        nextHigherPowerOf2(
+        Utilities.nextHigherPowerOf2(
             Math.max(1, curMapSize / 32)) :
               DEFAULT_CONCURRENCY_LEVEL;
     return Math.max(32 * newConcurrencyLevel,   curMapSize / 2);  

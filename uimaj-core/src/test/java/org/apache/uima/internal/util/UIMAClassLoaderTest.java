@@ -22,6 +22,7 @@ package org.apache.uima.internal.util;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Random;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -63,19 +64,17 @@ public class UIMAClassLoaderTest extends TestCase {
     rsrcMgr.setExtensionClassPath("../this/is/a/simple/test.jar", false);
     ClassLoader cl = rsrcMgr.getExtensionClassLoader();
     Assert.assertNotNull(cl);
-    if (UIMAClassLoader.SUPPORTS_PARALLEL_LOADING) {
-      //assertTrue(cl != cl.getClassLoadingLock("Aclass"));
-      Class classOfLoader = cl.getClass().getSuperclass();
-      while (!(classOfLoader.getName().equals("java.lang.ClassLoader"))) {
-        classOfLoader = classOfLoader.getSuperclass(); 
-      }
-      Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
-      m.setAccessible(true);
-      Object o = m.invoke(cl, "someString");
-      Object o2 = m.invoke(cl, "s2");
-      assertTrue(o != o2);
-      assertTrue(cl != o);      
+    //assertTrue(cl != cl.getClassLoadingLock("Aclass"));
+    Class classOfLoader = cl.getClass().getSuperclass();
+    while (!(classOfLoader.getName().equals("java.lang.ClassLoader"))) {
+      classOfLoader = classOfLoader.getSuperclass(); 
     }
+    Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
+    m.setAccessible(true);
+    Object o = m.invoke(cl, "someString");
+    Object o2 = m.invoke(cl, "s2");
+    assertTrue(o != o2);
+    assertTrue(cl != o);      
   }
 
   public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
@@ -102,6 +101,24 @@ public class UIMAClassLoaderTest extends TestCase {
     
     Assert.assertNotNull(testClass);
     Assert.assertEquals(this.getClass().getClassLoader(),testClass.getClassLoader());
+  }
+  
+  public void testParallelClassLoading() throws Exception {
+    final UIMAClassLoader cl = new UIMAClassLoader(this.testClassPath, this.getClass().getClassLoader());
+    final Class<?>[] loadedClasses = new Class<?>[Utilities.numberOfCores];
+    
+    MultiThreadUtils.Run2isb callable = new MultiThreadUtils.Run2isb() {
+      @Override
+      public void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception {
+        loadedClasses[threadNumber] = cl.loadClass("org.apache.uima.internal.util.ClassloadingTestClass");
+      }
+    };
+
+    MultiThreadUtils.tstMultiThread("MultiThreadLoading",  Utilities.numberOfCores, 1, callable, MultiThreadUtils.emptyReset);
+    Class<?> c = loadedClasses[0];
+    for (int i = 1; i < Utilities.numberOfCores; i++) {
+      assertEquals(c, loadedClasses[i]);
+    }
   }
 
   public void testSimpleClassloadingSampleURL() throws Exception {
