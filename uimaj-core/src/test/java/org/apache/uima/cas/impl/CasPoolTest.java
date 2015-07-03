@@ -37,6 +37,7 @@ import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.impl.RootUimaContext_impl;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.internal.util.MultiThreadUtils;
+import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -79,7 +80,7 @@ public class CasPoolTest extends TestCase {
   public void testMultiThread() throws Exception {
     final Properties p = new Properties();
     p.put(UIMAFramework.CAS_INITIAL_HEAP_SIZE,  200);   
-    int numberOfThreads = Math.min(50, MultiThreadUtils.PROCESSORS * 10);    
+    int numberOfThreads = Math.min(50, Utilities.numberOfCores * 10);    
     final int casPoolSize = numberOfThreads / 3 ;
     System.out.format("test CasPools with %d threads and %d CASes",
         numberOfThreads, casPoolSize);

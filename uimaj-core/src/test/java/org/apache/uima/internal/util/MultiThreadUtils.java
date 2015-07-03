@@ -39,8 +39,6 @@ import junit.framework.TestCase;
 public class MultiThreadUtils extends TestCase {
   
   public final static boolean debug = false;
-
-  public final static int PROCESSORS = Runtime.getRuntime().availableProcessors();
   
   public static interface Run2isb {
     public void call(int threadNumber, int repeatNumber, StringBuilder sb) throws Exception;

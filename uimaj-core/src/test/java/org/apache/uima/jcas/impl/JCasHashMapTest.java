@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.MultiThreadUtils;
+import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 
@@ -96,7 +97,7 @@ public class JCasHashMapTest extends TestCase {
   
   public void testMultiThread() throws Exception {
     final Random random = new Random();
-    int numberOfThreads = MultiThreadUtils.PROCESSORS;    
+    int numberOfThreads = Utilities.numberOfCores;    
     System.out.format("test JCasHashMap with up to %d threads%n", numberOfThreads);
 
     
@@ -134,7 +135,7 @@ public class JCasHashMapTest extends TestCase {
 
   public void testMultiThreadCompare() throws Exception {
     final Random random = new Random();
-    int numberOfThreads = MultiThreadUtils.PROCESSORS;    
+    int numberOfThreads = Utilities.numberOfCores;    
     System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
 
     final ConcurrentMap<Integer, FeatureStructureImpl> check = 
@@ -196,7 +197,7 @@ public class JCasHashMapTest extends TestCase {
    * @throws Exception
    */
   public void testMultiThreadCollide() throws Exception {
-    int numberOfThreads = MultiThreadUtils.PROCESSORS;
+    int numberOfThreads = Utilities.numberOfCores;
     if (numberOfThreads < 2) {
       return;
     }

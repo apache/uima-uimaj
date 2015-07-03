@@ -37,13 +37,19 @@ import java.util.StringTokenizer;
  */
 public class UIMAClassLoader extends URLClassLoader {
   
-  //public so other users can use this
-  public final static boolean SUPPORTS_PARALLEL_LOADING = true;
   static {if (!ClassLoader.registerAsParallelCapable()) {
            System.err.println("WARNING - Failed to register the UIMA Class loader as parallel-capable - should never happen");     
           }
          }
 
+  /**
+   * locks for loading more than 1 class at a time (on different threads)
+   * no more than the total number of cores, rounded up to pwr of 2
+   */
+  final private static int nbrLocks = Utilities.nextHigherPowerOf2(Runtime.getRuntime().availableProcessors());
+  // not static
+  final private Object[] syncLocks = new Object[nbrLocks];
+   
   /**
    * Transforms the string classpath to a URL array based classpath.
    * 
@@ -88,6 +94,7 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(String classpath) throws MalformedURLException {
     super(transformClasspath(classpath));
+    commonInit();
   }
 
   /**
@@ -98,8 +105,9 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(URL[] classpath) {
     super(classpath);
+    commonInit();
   }
-
+  
   /**
    * Creates a new UIMAClassLoader based on a classpath URL's. Also a parent ClassLoader can be
    * specified.
@@ -111,6 +119,7 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(URL[] classpath, ClassLoader parent) {
     super(classpath, parent);
+    commonInit();
   }
 
   /**
@@ -127,7 +136,15 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   public UIMAClassLoader(String classpath, ClassLoader parent) throws MalformedURLException {
     super(transformClasspath(classpath), parent);
+    commonInit();
   }
+  
+  private void commonInit() {
+      for (int i = 0; i < nbrLocks; i++) {
+      syncLocks[i] = new Object();
+    }
+  }
+
 
   /**
    * Do not use this factory method - throws unsupportedOperationException
@@ -155,31 +172,29 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   protected Class<?> loadClass(String name, boolean resolve)
           throws ClassNotFoundException {
-    if (SUPPORTS_PARALLEL_LOADING) {
-      return loadClassImpl(name, resolve);
-    } else {
-      synchronized (this) {
-        return loadClassImpl(name, resolve);
+ 
+    // requirement: ensure that the protected defineClass() method is called only once for each class loader and class name pair.
+    // pick a random syncLock to synchronize
+    // Although the sync locks are not one/per/class, there should be enough of them to make the likelyhood
+    //   of needing to wait very low (unless it's the same class-name being loaded, of course).
+    synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) {
+      // First, check if the class has already been loaded
+      Class<?> c = findLoadedClass(name);
+      if (c == null) {
+        try {
+          // try to load class
+          c = findClass(name);
+        } catch (ClassNotFoundException e) {
+          // delegate class loading for this class-name
+          c = super.loadClass(name, false);
+        }
       }
-    }
-  }
+      if (resolve) {
+        resolveClass(c);
+      }
+      return c;    
 
-  private Class<?> loadClassImpl(String name, boolean resolve) throws ClassNotFoundException {
-    // First, check if the class has already been loaded
-    Class<?> c = findLoadedClass(name);
-    if (c == null) {
-      try {
-        // try to load class
-        c = findClass(name);
-      } catch (ClassNotFoundException e) {
-        // delegate class loading for clas
-        c = super.loadClass(name, false);
-      }
     }
-    if (resolve) {
-      resolveClass(c);
-    }
-    return c;    
   }
   
 }
