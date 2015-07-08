@@ -58,6 +58,12 @@ package org.apache.uima.cas;
  * Only use a bag index if you want very fast adding and will have to iterate
  * over the whole index anyway.
  * 
+ * <p>
+ * Indexes have a top-most type, either the top of the type hierarchy, or some subtype of that.
+ * The top-most type in an index is represented by the generic T.
+ * 
+ * @param T the topmost type in this Index
+ * 
  */
 public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
 

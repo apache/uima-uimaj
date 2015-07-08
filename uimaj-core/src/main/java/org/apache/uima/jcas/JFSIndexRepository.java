@@ -47,6 +47,7 @@ public interface JFSIndexRepository {
    * 
    * @param label
    *          The name of the index.
+   * @param <T> the Java class corresponding to the top most type defined by this index
    * @return The index with the name <code>label</code>, or <code>null</code> if no such index
    *         is defined.
    */
@@ -60,6 +61,7 @@ public interface JFSIndexRepository {
    *          The name of the index
    * @param type
    *          A subtype of the type of the index, written as Foo.type
+   * @param <T> the Java class corresponding to the type
    * @return The specified index, or <code>null</code> if an index with that name doesn't exist,
    *         or it exists but <code>type</code> is not a subtype of the index's type.
    */
@@ -77,6 +79,7 @@ public interface JFSIndexRepository {
    * 
    * @param type
    *          The annotation type the index is restricted to, written as Foo.type
+   * @param <T> the Java class corresponding to type
    * @return The standard annotation index, restricted to <code>type</code>.
    */
   <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(int type);

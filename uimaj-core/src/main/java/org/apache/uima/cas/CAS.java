@@ -472,6 +472,7 @@ public interface CAS extends AbstractCas {
    * 
    * @param type
    *          The type of the FS.
+   * @param <T> the Java cover class for the FS being created
    * @return The new FS.
    */
   <T extends FeatureStructure> T createFS(Type type) throws CASRuntimeException;
@@ -704,7 +705,7 @@ public interface CAS extends AbstractCas {
   /**
    * Get the standard annotation index.
    * 
-   * Generics: The object can be either Annotation (if JCas is in use) or AnnotationImpl 
+   * @param <T> either Annotation (if JCas is in use) or AnnotationImpl 
    * 
    * @return The standard annotation index.
    */
@@ -715,6 +716,7 @@ public interface CAS extends AbstractCas {
    * 
    * @param type
    *          The annotation type the index is restricted to.
+   * @param <T> the topmost Java class corresponding to the type
    * @return The standard annotation index, restricted to <code>type</code>.
    * @exception CASRuntimeException When <code>type</code> is not an annotation type.
    */
@@ -730,6 +732,7 @@ public interface CAS extends AbstractCas {
    *          The start of the annotation.
    * @param end
    *          The end of the annotation.
+   * @param <T> the Java class corresponding to the type
    * @return A new annotation object.
    */
   <T extends AnnotationFS> AnnotationFS createAnnotation(Type type, int begin, int end);
@@ -738,6 +741,7 @@ public interface CAS extends AbstractCas {
    * Get the document annotation. The document has a string-valued feature called "language" where
    * the document language is specified.
    * 
+   * @param <T> the Java class for the document annotation.  Could be the JCas cover class or FeatureStructure
    * @return The document annotation, or <code>null</code> if there is none.  The return value is the
    *         JCas cover class or the plain Java cover class for FeatureStructures if JCas is not in use.
    */

@@ -591,6 +591,7 @@ public interface JCas extends AbstractCas {
    * 
    * @param type
    *          The annotation type the index is restricted to.
+   * @param <T> the Java class corresponding to type
    * @return The standard annotation index, restricted to <code>type</code>.
    */
   <T extends Annotation> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException;
@@ -602,6 +603,7 @@ public interface JCas extends AbstractCas {
    *          The annotation type the index is restricted to, 
    *          passed as an integer using the form
    *          MyAnnotationType.type
+   * @param <T> the Java class corresponding to type
    * @return The standard annotation index, restricted to <code>type</code>.
    * @throws CASRuntimeException -
    */
@@ -611,6 +613,7 @@ public interface JCas extends AbstractCas {
    * Get the standard annotation index restricted to a specific annotation type.
    * 
    * @param clazz The JCas cover class for the annotation type the index is restricted to, 
+   * @param <T> the Java class clazz
    * @return The standard annotation index, restricted to <code>type</code>.
    * @throws CASRuntimeException -
    */
@@ -621,10 +624,9 @@ public interface JCas extends AbstractCas {
    * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
    * are not removed.
    *
-   * Generics: T is the JCas Java class
-   * 
    * @param clazz - the JCas Java class specifing which type and subtypes are included
-   * 
+   * @param <T> the Java clazz
+   *  
    * @return An iterator that returns all indexed FeatureStructures of the JCas clazz 
    *         and its subtypes, in no particular order.
    */
@@ -693,6 +695,7 @@ public interface JCas extends AbstractCas {
    * 
    * @param label The name of the index.
    * @param clazz The JCas class (mostly likely written as MyJCasClass.class), which must correspond to a subtype of the type of the index.
+   * @param <T> the Java clazz
    * @return The specified, or <code>null</code> if an index with that name doesn't exist.
    * @exception CASRuntimeException When <code>clazz</code> doesn't correspond to a subtype of the index's type.
    */

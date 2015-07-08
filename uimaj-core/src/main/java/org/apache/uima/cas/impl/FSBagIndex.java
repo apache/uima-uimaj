@@ -110,7 +110,7 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
    * This only works if not use Positive Int Set
    * because that's the only time there are multiple instances of the same
    * (meaning having the same heap address) item
-   * @param ele
+   * @param ele the featuresturcture to match
    * @return -1 if the item is not found, or a position value that can be used with iterators to start at that item.
    */
   int findLeftmost(int ele) {
@@ -195,6 +195,9 @@ public class FSBagIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T> {
 
   /**
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
+   * @param fs A Feature Structure used a template to match for equality with the
+   *           FSs in the index.
+   * @return <code>true</code> if the index contains such an element.
    */
   public boolean contains(FeatureStructure fs) {
     return ll_contains(((FeatureStructureImpl) fs).getAddress());

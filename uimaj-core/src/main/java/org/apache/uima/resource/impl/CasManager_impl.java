@@ -301,6 +301,7 @@ public class CasManager_impl implements CasManager {
    *          The CAS
    * @param requiredInterface
    *          interface to get. Currently must be one of CAS or JCas.
+   * @param <T> the particular interface
    * @return -         
    */
   @SuppressWarnings("unchecked")

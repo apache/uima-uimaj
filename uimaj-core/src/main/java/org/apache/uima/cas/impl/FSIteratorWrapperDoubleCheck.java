@@ -30,7 +30,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  * Only used for debugging
  * Takes two iterators, and compares them; returns the 1st, throws error if unequal
  *
- * @param <T>
+ * @param <T> -
  */
 public class FSIteratorWrapperDoubleCheck<T extends FeatureStructure> extends FSIteratorImplBase<T> {
   

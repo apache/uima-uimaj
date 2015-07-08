@@ -339,6 +339,8 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
 
   /**
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
+   * @param fs the feature structure
+   * @return true if the fs is contained
    */
   public boolean contains(FeatureStructure fs) {
     return (find(((FeatureStructureImpl) fs).getAddress()) >= 0);

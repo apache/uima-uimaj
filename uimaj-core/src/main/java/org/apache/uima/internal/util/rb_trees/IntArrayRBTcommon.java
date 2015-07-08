@@ -111,8 +111,8 @@ public class IntArrayRBTcommon {
   }
   
   /**
-   * @param node
-   * @param value
+   * @param node -
+   * @param value -
    * @return the value
    */
   protected int setParent(int node, int value) {
@@ -421,7 +421,7 @@ public class IntArrayRBTcommon {
    *   If k is less than all the nodes, then the first node is returned
    *   If k is greater than all the nodes, then NIL is returned (invalid signal)
    * @param k the key
-   * @return the index of the node, or NIL if k > all keys
+   * @return the index of the node, or NIL if k &gt; all keys
    */
   public int findInsertionPoint(final int k) {
     return findInsertionPointCmn(k, true);

@@ -47,7 +47,9 @@ public class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
   /**
    * Constructor for FSRBTIndex.
    * 
-   * @param cas
+   * @param cas -
+   * @param type -
+   * @param indexType -
    */
   public FSRBTSetIndex(CASImpl cas, Type type, int indexType) {
     super(cas, type, indexType);
@@ -112,6 +114,8 @@ public class FSRBTSetIndex<T extends FeatureStructure> extends FSLeafIndexImpl<T
 
   /**
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
+   * @param fs feature structure
+   * @return true if the set contains the feature structure
    */
   public boolean contains(FeatureStructure fs) {
     return ll_contains(((FeatureStructureImpl) fs).getAddress());

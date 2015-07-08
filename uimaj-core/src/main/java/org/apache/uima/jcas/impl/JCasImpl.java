@@ -1632,7 +1632,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /**
    * Return the UIMA Type object corresponding to this JCas's JCas cover class
    *   (Note: different JCas's, with different type systems, may share the same cover class impl)
-   * @param clazz
+   * @param clazz a JCas cover class
    * @return the corresponding UIMA Type object
    */
   public Type getCasType(Class<? extends TOP> clazz) {
