@@ -20,13 +20,18 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescriptionFromPath;
+import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
+import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
+import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.metadata.FsIndexCollection;
+import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 
@@ -39,8 +44,10 @@ public final class JCasFactory {
   }
 
   /**
-   * Creates a new JCas with the given text and the automatically derived type system. 
-   * See {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
+   * Creates a new JCas with the given text. The type system is detected automatically using
+   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type priorities are
+   * detected automatically using {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are
+   * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new JCas
    * @throws UIMAException
@@ -51,8 +58,10 @@ public final class JCasFactory {
   }
 
   /**
-   * Creates a new JCas with the given text and language and the automatically derived type system. 
-   * See {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
+   * Creates a new JCas with the given text and language. The type system is detected automatically
+   * using {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type priorities are
+   * detected automatically using {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are
+   * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new JCas
    * @throws UIMAException
@@ -70,20 +79,25 @@ public final class JCasFactory {
   }
   
   /**
-   * Creates a new JCas for the automatically derived type system. See
-   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}
+   * Creates a new {@link JCas}. The type system is detected automatically using
+   * {@link TypeSystemDescriptionFactory#createTypeSystemDescription()}. Type priorities are
+   * detected automatically using {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are
+   * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new JCas
    * @throws UIMAException
    *           if the JCas could not be initialized
    */
   public static JCas createJCas() throws UIMAException {
-    return CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
-
+    TypeSystemDescription tsd = createTypeSystemDescription();
+    TypePriorities tp = createTypePriorities();
+    FsIndexCollection indexes = createFsIndexCollection();
+    return CasCreationUtils.createCas(tsd, tp, indexes.getFsIndexes()).getJCas();
   }
 
   /**
-   * Creates a new JCas from type system descriptor files found by name
+   * Creates a new JCas from type system descriptor files found by name. No auto-detection for type
+   * priorities, or indexes is performed.
    * 
    * @param typeSystemDescriptorNames
    *          names of the type system descriptors on the classpath used to initialize the JCas (in
@@ -98,7 +112,8 @@ public final class JCasFactory {
   }
 
   /**
-   * Creates a new JCas from type system descriptor files.
+   * Creates a new JCas from type system descriptor files. No auto-detection for type priorities, or
+   * indexes is performed.
    * 
    * @param typeSystemDescriptorPaths
    *          paths to type system descriptor files
@@ -111,7 +126,8 @@ public final class JCasFactory {
   }
 
   /**
-   * Create a new JCas for the given type system description
+   * Create a new JCas for the given type system description. No auto-detection type priorities, or
+   * indexes is performed.
    * 
    * @param typeSystemDescription
    *          a type system description to initialize the JCas
