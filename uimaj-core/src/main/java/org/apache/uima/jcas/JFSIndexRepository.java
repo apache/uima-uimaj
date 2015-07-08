@@ -93,10 +93,9 @@ public interface JFSIndexRepository {
 
   /**
    * Get all indexes in this repository.
-   * Generics: Some may be for things not having JCas cover classes, so the type of FSIndex is ? extends FeatureStructure
    * @return All indexes.
    */
-  Iterator<FSIndex<FeatureStructure>> getIndexes();
+  Iterator<FSIndex<TOP>> getIndexes();
 
   /**
    * Get the underlying FSIndexRepository associated with this JFSIndexRepository.
@@ -117,11 +116,11 @@ public interface JFSIndexRepository {
    * 
    * @param aType
    *          The type
-   * 
+   * @param <T> the Java Class corresponding to aType
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.
    */
-  FSIterator<FeatureStructure> getAllIndexedFS(Type aType);
+  <T extends TOP> FSIterator<T> getAllIndexedFS(Type aType);
 
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
@@ -135,10 +134,10 @@ public interface JFSIndexRepository {
    * 
    * @param aType
    *          The type obtained by doing MyJCasClass.type
-   * 
+   * @param <T> the Java Class corresponding to aType
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.
    */
-  FSIterator<FeatureStructure> getAllIndexedFS(int aType);
+  <T extends TOP> FSIterator<T> getAllIndexedFS(int aType);
 
 }
