@@ -26,8 +26,8 @@ import org.apache.uima.cas.FSIterator;
  * An annotation index provides additional iterator functionality that applies only to instances of
  * <code>uima.tcas.Annotation</code> (or its subtypes). You can obtain an AnnotationIndex by calling:
  * <p>
- * <code>AnnotationIndex idx = cas.getAnnotationIndex();</code> or <br/>
- * <code AnnotationIndex<SomeJCasType> idx = jcas.getAnnotationIndex(SomeJCasType.class);  
+ * <code>AnnotationIndex idx = cas.getAnnotationIndex();</code> or <br>
+ * <code>AnnotationIndex&lt;SomeJCasType&gt; idx = jcas.getAnnotationIndex(SomeJCasType.class);</code> 
  * </p>
  * <p>
  * Note that the AnnotationIndex defines the following sort order between two annotations:

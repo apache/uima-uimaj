@@ -252,7 +252,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Com
    * Note: may return other than -1 , 0, and 1  (e.g., might return -6)
    * @param fs1 -
    * @param fs2 -
-   * @return 0 if equal, < 0 if fs1 < fs2, > 0 if fs1 > fs2
+   * @return 0 if equal, &lt; 0 if fs1 &lt; fs2, &gt; 0 if fs1 &gt; fs2
    */
   public int ll_compare(int fs1, int fs2) {
     return this.compare(fs1, fs2);
@@ -262,7 +262,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Com
    * Note: may return other than -1 , 0, and 1  (e.g., might return -6)
    * @param fs1 -
    * @param fs2 -
-   * @return 0 if equal, < 0 if fs1 < fs2, > 0 if fs1 > fs2
+   * @return 0 if equal, &lt; 0 if fs1 &lt; fs2, &gt; 0 if fs1 &gt; fs2
    */
   public int compare(int fs1, int fs2) {
     final int[] heap = this.lowLevelCAS.getHeap().heap;
@@ -459,6 +459,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Com
 
   /**
    * @see org.apache.uima.cas.FSIndex#getType()
+   * @return The type of feature structures in this index.
    */
   public Type getType() {
     return this.type;
@@ -476,7 +477,7 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Com
 
   /**
    * For serialization: get all the items in this index and bulk add to an IntVector
-   * @param v
+   * @param v the set of items to add
    */
   protected abstract void bulkAddTo(IntVector v);
   
@@ -502,6 +503,8 @@ public abstract class FSLeafIndexImpl<T extends FeatureStructure> implements Com
    * This has no callers, and is probably not used.
    * The iterator it produces is only over one leaf index and
    * doesn't include Concurrent Modification Exception testing
+   * @param fs -
+   * @return -
    */
   public FSIterator<T> iterator(FeatureStructure fs) {
     return new FSIteratorWrapper<T>(refIterator(((FeatureStructureImpl) fs).getAddress()),

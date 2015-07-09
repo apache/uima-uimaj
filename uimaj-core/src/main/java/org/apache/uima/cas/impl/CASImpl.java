@@ -384,7 +384,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * to bypass any index corruption checking, e.g., CasCopier
    * 
    * Internal use only
-   * @param fsAddr
+   * @param fsAddr the address of the feature structure
    */
   public void setCacheNotInIndex(int fsAddr) {
     svd.cache_not_in_index = fsAddr;
@@ -1985,6 +1985,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * 
    * @param addr
    *                The address of the feature structure to be created.
+   * @param <T> The Java class associated with this feature structure
    * @return A FeatureStructure object. Note that no checking whatsoever is done
    *         on the input address. There is really no way of finding out which
    *         addresses in the valid address space actually represent feature
@@ -4528,8 +4529,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * The <T extends AnnotationFS> (rather than AnnotationFS) allows the method
+   * The generic spec T extends AnnotationFS (rather than AnnotationFS) allows the method
    * JCasImpl getAnnotationIndex to return Annotation instead of AnnotationFS
+   * @param <T> the Java class associated with the annotation index
+   * @return the annotation index
    */
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex() {
     return new AnnotationIndexImpl<T>(
@@ -4537,6 +4540,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
              CAS.STD_ANNOTATION_INDEX));
   }
 
+  /**
+   * @see org.apache.uima.cas.CAS#getAnnotationIndex(Type)
+   */
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type) {
     return new AnnotationIndexImpl<T>(
              getIndexRepository().<T>getIndex(

@@ -248,6 +248,7 @@ public interface LowLevelCAS {
    * 
    * @param fsRef
    *          The FS reference.
+   * @param <T> the Java class for the Feature Structure
    * @return A FS object corresponding to the input reference.
    */
   <T extends FeatureStructure> T ll_getFSForRef(int fsRef);

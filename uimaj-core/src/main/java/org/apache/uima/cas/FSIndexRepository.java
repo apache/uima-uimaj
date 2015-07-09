@@ -40,6 +40,7 @@ public interface FSIndexRepository {
    * 
    * @param label
    *          The name of the index.
+   * @param <T> the Java class associated with the top-most type of the index
    * @return The index with the name <code>label</code>, or <code>null</code> if no such index
    *         is defined.
    */
@@ -55,6 +56,7 @@ public interface FSIndexRepository {
    *          The name of the index.
    * @param type
    *          A subtype of the type of the index.
+   * @param <T> The Java class associated with the type
    * @return The specified, or <code>null</code> if an index with that name doesn't exist.
    * @exception CASRuntimeException When <code>type</code> is not a subtype of the index's type.
    */
@@ -130,7 +132,7 @@ public interface FSIndexRepository {
    * Generics: T is the Java class for aType.
    * @param aType
    *          The type
-   * 
+   * @param <T> The Java class associated with aType
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>
    *         and its subtypes, in no particular order.
    */
