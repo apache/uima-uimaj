@@ -767,7 +767,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     builtInsWithNoJCas.add(CAS.TYPE_NAME_LIST_BASE);
   }
 
-  private static final Collection<String> builtInsWithAltNames = new ArrayList<String>();
+  public static final Collection<String> builtInsWithAltNames = new ArrayList<String>();
   static { // initialization code
     builtInsWithAltNames.add(CAS.TYPE_NAME_TOP);
     builtInsWithAltNames.add(CAS.TYPE_NAME_STRING_ARRAY);

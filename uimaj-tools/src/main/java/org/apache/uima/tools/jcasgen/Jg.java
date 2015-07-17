@@ -173,7 +173,7 @@ public class Jg {
   }
 
   // table builtInTypes initialized inside TypeInfo constructor
-  static Map builtInTypes = new HashMap();
+  static Map<String, TypeInfo> builtInTypes = new HashMap<>();
 
   static private void addBuiltInTypeInfo(String casName, String javaName, String casElementName) {
     TypeInfo ti = new TypeInfo(casName, javaName, casElementName);
@@ -186,7 +186,7 @@ public class Jg {
 
   // first type needed by fsArrayType; in hash map will be overwritten, though
   static {
-    addBuiltInTypeInfo("uima.cas.TOP", "org.apache.uima.cas.FeatureStructure");
+//    addBuiltInTypeInfo("uima.cas.TOP", "org.apache.uima.cas.FeatureStructure"); // overridden below
     addBuiltInTypeInfo("uima.cas.Integer", "int");
     addBuiltInTypeInfo("uima.cas.Float", "float");
     addBuiltInTypeInfo("uima.cas.String", "String");

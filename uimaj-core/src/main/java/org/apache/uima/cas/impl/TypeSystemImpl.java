@@ -33,14 +33,23 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.Vector;
 import java.util.WeakHashMap;
 
@@ -57,7 +66,13 @@ import org.apache.uima.internal.util.StringToIntMap;
 import org.apache.uima.internal.util.SymbolTable;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Misc;
+
+import com.strobel.decompiler.Decompiler;
+import com.strobel.decompiler.DecompilerSettings;
+import com.strobel.decompiler.PlainTextOutput;
 
 /**
  * Type system implementation.
@@ -69,6 +84,9 @@ import org.apache.uima.resource.ResourceInitializationException;
  * 
  */
 public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
+  
+  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
+  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
   
   private final static int[] INT0 = new int[0];
   
@@ -144,6 +162,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     arrayTypeComponentNameMap.put(CAS.TYPE_NAME_DOUBLE_ARRAY, CAS.TYPE_NAME_DOUBLE);
     arrayTypeComponentNameMap.put(CAS.TYPE_NAME_STRING_ARRAY, CAS.TYPE_NAME_STRING);
   }
+
+  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
+
+  private static final Object GLOBAL_TYPESYS_LOCK = new Object();
 
   // Current implementation has online update. Look-up could be made
   // more efficient by computing some tables, but the assumption is
@@ -236,6 +258,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // saw evidence that in some cases the setup is called on the same instance on two threads
   // must be volatile to force the right memory barriers
   volatile boolean areBuiltInTypesSetup = false;
+
+  private final DecompilerSettings decompilerSettings = (IS_DECOMPILE_JCAS) ? DecompilerSettings.javaDefaults() : null;
 
   public TypeImpl intType;
 
@@ -1249,6 +1273,57 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // if (this.cas != null) {
     // this.cas.commitTypeSystem();
     // }
+    if (IS_DECOMPILE_JCAS) {  
+      synchronized(GLOBAL_TYPESYS_LOCK) {
+        for(Type t : types) {
+          if (t == null) continue;
+          decompile(t);
+        }
+      }
+    }
+  }
+  
+  private void decompile(Type t) {
+    String name = t.getName();  
+    if (name.endsWith(arrayTypeSuffix)) return;
+    if (decompiled.contains(name)) return;
+    decompiled.add(name);
+    
+    if(JCasImpl.builtInsWithAltNames.contains(name) )
+      name = "org.apache.uima.jcas."+ name.substring(5 /* "uima.".length() */);
+        
+    String fn = "decompiled/" + name + ".java";
+ 
+    try { 
+      final FileOutputStream stream = new FileOutputStream(fn);
+      final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stream));
+      final PlainTextOutput plainTextOutput = new PlainTextOutput(writer);
+      
+      Decompiler.decompile(
+           name.replace('.', '/'),
+           plainTextOutput,
+           decompilerSettings
+       );
+       writer.close();
+       if (decompiledFailed(fn)) {
+         File f = new File(fn);
+         f.delete();
+       }
+    }
+    catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private boolean decompiledFailed(String fn) throws IOException {
+    BufferedReader rdr = null;
+    try {
+      rdr = new BufferedReader(new FileReader(fn));
+      String line = rdr.readLine();
+      return line != null && line.startsWith("!!! ERROR: Failed to load class");
+    } finally {
+      if (null != rdr) rdr.close();
+    }
   }
   
   /**
