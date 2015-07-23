@@ -31,8 +31,10 @@ public class AnalyzeContent {
   
   private static final String ppFeatCode = ppJcasTypeCasted + "\\.casFeatCode_\\w*"; 
   
+  private static final String methodStart = "(?:\\s*\\@Override)?\\s*public \\w*";
+  
   private static final String ppMaybeValueRef = "(?:, (?:" + ppLlAccess + "getFSRef\\(v\\)|v))?";
-
+  
   /********************************************
    * instance variables
    ********************************************/
@@ -46,6 +48,7 @@ public class AnalyzeContent {
   String packageName;
   String shortClassName;
   String shortSuperName;
+  boolean foundRegister = false; // because register might be in two places it seems
   
   public boolean isCustomized = true;
 
@@ -54,11 +57,12 @@ public class AnalyzeContent {
   private final Brna bClass = newBrna("\\s*public class (\\w*) extends (\\w*)\\s*\\{", "class");
   private final Brna bBp1 = newBrna(
         "\\s*public static final int typeIndexID;"
-      + "\\s*public static final int type;"
-      + "\\s*static \\{"
+      + "\\s*public static final int type;", "type and index declares");
+  private final Brna bRegister = newBrna(
+        "\\s*static \\{"
       + "\\s*typeIndexID = JCasRegistry.register\\((\\w*)\\.class\\);"
       + "\\s*type = (\\w*).typeIndexID;"
-      + "\\s*\\}", "type/index/register");
+      + "\\s*\\}", "register");
   private final Brna bBp2 = newBrna(
         "\\s*\\@Override"
       + "\\s*public int getTypeIndexID\\(\\) \\{"
@@ -95,6 +99,9 @@ public class AnalyzeContent {
   private final Brna bWhiteSpace = newBrna("\\s*", "bWhiteSpace");
   private final Brna bReturn = newBrna("\\s*return ", "bReturn");
   private final Brna bEndOfClass = newBrna("\\s*\\}\\s*$", "end of class");
+  private final Brna bCopyright = newBrna("\\s*static String copyright\\(\\) \\{"
+      + "\\s*return \"[^\"]*\";"
+      + "\\s*}\\s*?(?m:$)", "Copyright function");  // (?m:  ) turns on multiline, which makes $ match end of line 
 
   private final Brna bSimpleCore = newBrna(
       ppLlAccess + "(?:get|set)\\w*Value\\(this\\.addr, " + ppFeatCode + ppMaybeValueRef + "\\)",
@@ -111,16 +118,16 @@ public class AnalyzeContent {
   private final Brna bGetFeatureValue; // initialized in constructor, otherwise may get null value due to order of initialization of fields
   private final Brna bSetFeatureValue; // initialized in constructor, otherwise may get null value due to order of initialization of fields
 
-  private final Brna pGet1 = newBrna("\\s*public \\w* get\\w*\\(\\) \\{" + ppFeatOkTst, "get start");  
+  private final Brna pGet1 = newBrna(methodStart + " get\\w*\\(\\) \\{" + ppFeatOkTst, "get start");  
   private final Brna bGet;  // initialized in constructor, otherwise may get null value due to order of initialization of fields
 
-  private final Brna bSet1 = newBrna("\\s*public \\w* set\\w*\\(final \\w* v\\) \\{" + ppFeatOkTst, "set start");  
+  private final Brna bSet1 = newBrna(methodStart + " set\\w*\\(final \\w* v\\) \\{" + ppFeatOkTst, "set start");  
   private final Brna bSet;  // initialized in constructor, otherwise may get null value due to order of initialization of fields
 
-  private final Brna bArrayGet1 = newBrna("\\s*public \\w* get\\w*\\(final int i\\) \\{" + ppFeatOkTst, "arrayGet start");
+  private final Brna bArrayGet1 = newBrna(methodStart + " get\\w*\\(final int i\\) \\{" + ppFeatOkTst, "arrayGet start");
   private final Brna bArrayGet;  // initialized in constructor, otherwise may get null value due to order of initialization of fields
   
-  private final Brna bArraySet1 = newBrna("\\s*public \\w* set\\w*\\(final int i, final \\w* v\\) \\{" + ppFeatOkTst, "arraySet start");
+  private final Brna bArraySet1 = newBrna(methodStart + " set\\w*\\(final int i, final \\w* v\\) \\{" + ppFeatOkTst, "arraySet start");
   private final Brna bArraySet;  // initialized in constructor, otherwise may get null value due to order of initialization of fields
 
   private final Brna bCastStart = newBrna("\\s*\\(\\w\\)\\(", "bCastStart");
@@ -160,7 +167,7 @@ public class AnalyzeContent {
   }
   
   private String stringPart() {
-    int endPos = Math.min(s.length(), pos + 120);
+    int endPos = Math.min(s.length(), pos + 360);
     return s.substring(pos, endPos);
   }
 
@@ -250,52 +257,67 @@ public class AnalyzeContent {
     
     bArraySet = all(bArraySet1, bArrayBoundsCheck, bWhiteSpace, bArrayCore, bSemicolon, bCloseBrace);
     
-    msg = analyzeJCas();
+    analyzeJCas();
     
   }
   
   private String analyzeJCas() {    
    
     m = Pattern.compile("").matcher(s);
-    if (!bPackage.match()) return "No package statement, string:" + stringPart();
+    if (!bPackage.match()) return msg = "No package statement, string:" + stringPart();
     packageName = m.group(1);
     
-    if (!bImports.match()) return "Missing imports, string:" + stringPart();
+    if (!bImports.match()) return msg = "Missing imports, string:" + stringPart();
 
-    if (!bClass.match()) return "Missing class, string:" + stringPart();
+    if (!bClass.match()) return msg = "Missing class, string:" + stringPart();
     shortClassName = m.group(1);
     shortSuperName = m.group(2);
 
-    if (!bBp1.match()) return "Missing type/index/register boilerplate, string:" + stringPart();
-    if (!m.group(1).equals(shortClassName) ||
-        !m.group(2).equals(shortClassName)) {
-      return String.format("initial boilerplate has wrong name parts: expected short class name %s but saw %s and/or %s", 
-          shortClassName, m.group(1), m.group(2));
-    }
+    if (!bBp1.match()) return msg = "Missing type/index declares, string:" + stringPart();
+
+    checkRegister();
     
-    if (!bBp2.match()) return "missing getTypeIndex and/or empty constructor, string:" + stringPart();
+    bCopyright.match();  // ok if not match
     
-    if (!bConstr.match()) return "missing some constructors, string:" + stringPart();
+    if (!bBp2.match()) return msg = "missing getTypeIndex and/or empty constructor, string:" + stringPart();
+    
+    if (!bConstr.match()) return msg = "missing some constructors, string:" + stringPart();
     
     bConstrAnnot.match(); // ok if not match
     
-//    if (!bReadObj.match()) return "readObject missing or customized, string:" + stringPart();
+//    if (!bReadObj.match()) return msg = "readObject missing or customized, string:" + stringPart();
     bReadObj.match();  // ok if not there 
     /**
      * match getters and setters
      */
     
+    
+    
     while (!bEndOfClass.match()) {
-      if (!bGet.match()) return "getter customized or moved or missing, string:" + stringPart();
-      if (!bSet.match()) return "setter customized or moved or missing, string:" + stringPart();
+      if (!checkRegister()) return msg;
+      if (bEndOfClass.match()) break;
+      if (!bGet.match()) return msg = "getter customized or moved or missing, string:" + stringPart();
+      if (!bSet.match()) return msg = "setter customized or moved or missing, string:" + stringPart();
       
       if (bArrayGet.match()) {
-        if (!bArraySet.match()) return "array setter customized or moved or missing, string:" + stringPart();
+        if (!bArraySet.match()) return msg ="array setter customized or moved or missing, string:" + stringPart();
       }
     }
     
     isCustomized = false;
-    return "Not Customized";
+    return msg = "Not Customized";
+  }
+  
+  private boolean checkRegister() {
+    if (!foundRegister && bRegister.match()) {
+      foundRegister = true;
+      if (!m.group(1).equals(shortClassName) || !m.group(2).equals(shortClassName)) {
+        msg =  String.format("register boilerplate has wrong name parts: expected short class name %s but saw %s and/or %s", 
+                              shortClassName, m.group(1), m.group(2));
+        return false;
+      }      
+    }
+    return true;
   }
     
 }

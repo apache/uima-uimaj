@@ -53,7 +53,7 @@ public class DecompiledFilter {
    */
   public static void main(String[] args) throws IOException {
     DecompiledFilter df = new DecompiledFilter();
-    df.process(/*args[0]*/"../uimaj-core/decompiled");
+    df.process(/*args[0]*/"/au/wksps/450uimaV3/learn/decompiled");
   }
   
   private void process(String decompiledFilesStr) throws IOException {
@@ -122,6 +122,8 @@ public class DecompiledFilter {
 //    
 //    }
     synchronized (this) {
+      if (m.isCustomized)
+//        System.out.println(filePath.toString());
       System.out.format("%s %s    %s%n", m.isCustomized ? "Cust   " : "notCust" , filePath.toString(), m.isCustomized ? m.msg : "");
     }
     return !m.isCustomized;
