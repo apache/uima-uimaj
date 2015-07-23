@@ -70,7 +70,7 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
    * @see org.apache.uima.cas.text.AnnotationFS#getBegin()
    */
   public int getBegin() {
-    return this.casImpl.getFeatureValue(addr, this.casImpl.getTypeSystemImpl().startFeatCode);
+    return this.casImpl.getFeatureValue(addr, TypeSystemImpl.startFeatCode);
     // return ((CASImpl) this.casImpl).getStartFeat(this.addr);
   }
 
@@ -78,7 +78,7 @@ public class AnnotationImpl extends AnnotationBaseImpl implements AnnotationFS {
    * @see org.apache.uima.cas.text.AnnotationFS#getEnd()
    */
   public int getEnd() {
-    return this.casImpl.getFeatureValue(addr, this.casImpl.getTypeSystemImpl().endFeatCode);
+    return this.casImpl.getFeatureValue(addr, TypeSystemImpl.endFeatCode);
     // return ((CASImpl) this.casImpl).getEndFeat(this.addr);
   }
 

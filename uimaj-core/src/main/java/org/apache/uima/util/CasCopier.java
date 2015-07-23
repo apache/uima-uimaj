@@ -827,32 +827,32 @@ public class CasCopier {
     
     int srcTypeCode = srcCasViewImpl.getTypeCode(srcFS);
     
-    if (srcTypeCode == srcTsi.stringArrayTypeCode) {
-      final int tgtFS = tgtCasViewImpl.ll_createArray(tgtTsi.stringArrayTypeCode, len);
+    if (srcTypeCode == TypeSystemImpl.stringArrayTypeCode) {
+      final int tgtFS = tgtCasViewImpl.ll_createArray(TypeSystemImpl.stringArrayTypeCode, len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setStringArrayValue(tgtFS, i, srcCasViewImpl.ll_getStringArrayValue(srcFS, i));
       }
       return tgtFS;
     }
     
-    if (srcTypeCode == srcTsi.intArrayTypeCode) {     
-      final int tgtFS = tgtCasViewImpl.ll_createArray(tgtTsi.intArrayTypeCode, len);
+    if (srcTypeCode == TypeSystemImpl.intArrayTypeCode) {     
+      final int tgtFS = tgtCasViewImpl.ll_createArray(TypeSystemImpl.intArrayTypeCode, len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setIntArrayValue(tgtFS, i,  srcCasViewImpl.ll_getIntArrayValue(srcFS,  i));
       }
       return tgtFS;
     }
 
-    if (srcTypeCode == srcTsi.floatArrayTypeCode) {     
-      final int tgtFS = tgtCasViewImpl.ll_createArray(tgtTsi.floatArrayTypeCode, len);
+    if (srcTypeCode == TypeSystemImpl.floatArrayTypeCode) {     
+      final int tgtFS = tgtCasViewImpl.ll_createArray(TypeSystemImpl.floatArrayTypeCode, len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setFloatArrayValue(tgtFS, i,  srcCasViewImpl.ll_getFloatArrayValue(srcFS, i));
       }
       return tgtFS;
     }
 
-    if (srcTypeCode == srcTsi.fsArrayTypeCode) {     
-      final int tgtFS = tgtCasViewImpl.ll_createArray(tgtTsi.fsArrayTypeCode, len);
+    if (srcTypeCode == TypeSystemImpl.fsArrayTypeCode) {     
+      final int tgtFS = tgtCasViewImpl.ll_createArray(TypeSystemImpl.fsArrayTypeCode, len);
       for (int i = 0; i < len; i++) {
         int srcItem = srcCasViewImpl.ll_getRefArrayValue(srcFS, i);
         tgtCasViewImpl.ll_setRefArrayValue(tgtFS, i, (srcItem == 0) ? 0 : copyFsInner(srcItem));
@@ -860,7 +860,7 @@ public class CasCopier {
       return tgtFS;
     }
 
-    if (srcTypeCode == srcTsi.byteArrayTypeCode) {
+    if (srcTypeCode == TypeSystemImpl.byteArrayTypeCode) {
       final int tgtFS = tgtCasViewImpl.ll_createByteArray(len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setByteArrayValue(tgtFS,  i, srcCasViewImpl.ll_getByteArrayValue(srcFS, i));
@@ -868,7 +868,7 @@ public class CasCopier {
       return tgtFS;      
     }
     
-    if (srcTypeCode == srcTsi.shortArrayTypeCode) {
+    if (srcTypeCode == TypeSystemImpl.shortArrayTypeCode) {
       final int tgtFS = tgtCasViewImpl.ll_createShortArray(len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setShortArrayValue(tgtFS,  i, srcCasViewImpl.ll_getShortArrayValue(srcFS, i));
@@ -876,7 +876,7 @@ public class CasCopier {
       return tgtFS;      
     }
 
-    if (srcTypeCode == srcTsi.longArrayTypeCode) {
+    if (srcTypeCode == TypeSystemImpl.longArrayTypeCode) {
       final int tgtFS = tgtCasViewImpl.ll_createLongArray(len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setLongArrayValue(tgtFS,  i, srcCasViewImpl.ll_getLongArrayValue(srcFS, i));
@@ -884,7 +884,7 @@ public class CasCopier {
       return tgtFS;      
     }
     
-    if (srcTypeCode == srcTsi.doubleArrayTypeCode) {
+    if (srcTypeCode == TypeSystemImpl.doubleArrayTypeCode) {
       final int tgtFS = tgtCasViewImpl.ll_createDoubleArray(len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setDoubleArrayValue(tgtFS,  i, srcCasViewImpl.ll_getDoubleArrayValue(srcFS, i));
@@ -892,7 +892,7 @@ public class CasCopier {
       return tgtFS;      
     }
 
-    if (srcTypeCode == srcTsi.booleanArrayTypeCode) {
+    if (srcTypeCode == TypeSystemImpl.booleanArrayTypeCode) {
       final int tgtFS = tgtCasViewImpl.ll_createBooleanArray(len);
       for (int i = 0; i < len; i++) {
         tgtCasViewImpl.ll_setBooleanArrayValue(tgtFS,  i, srcCasViewImpl.ll_getBooleanArrayValue(srcFS, i));

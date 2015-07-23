@@ -746,15 +746,15 @@ public class CasSerializerSupport {
     
     private boolean isArrayType(int typeCode) {
       return
-          (typeCode == tsi.intArrayTypeCode) ||
-          (typeCode == tsi.floatArrayTypeCode) ||
-          (typeCode == tsi.stringArrayTypeCode) ||
-          (typeCode == tsi.fsArrayTypeCode) ||
-          (typeCode == tsi.booleanArrayTypeCode) ||
-          (typeCode == tsi.byteArrayTypeCode) ||
-          (typeCode == tsi.shortArrayTypeCode) ||
-          (typeCode == tsi.longArrayTypeCode) ||
-          (typeCode == tsi.doubleArrayTypeCode);
+          (typeCode == TypeSystemImpl.intArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.floatArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.stringArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.fsArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.booleanArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.byteArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.shortArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.longArrayTypeCode) ||
+          (typeCode == TypeSystemImpl.doubleArrayTypeCode);
     }
     
     private boolean isListType(int typeCode) {
@@ -838,7 +838,7 @@ public class CasSerializerSupport {
       /**
        * Handle FSArrays
        */
-      if (typeCode == tsi.fsArrayTypeCode) {
+      if (typeCode == TypeSystemImpl.fsArrayTypeCode) {
         final int array_size = cas.ll_getArraySize(addr);
         int position = cas.getArrayStartAddress(addr);
         
@@ -1062,10 +1062,10 @@ public class CasSerializerSupport {
 //              if (c != 0) {
 //                return c;
 //              }
-            final boolean isAnnot = tsi.subsumes(tsi.annotTypeCode, typeCode1);
+            final boolean isAnnot = tsi.subsumes(TypeSystemImpl.annotTypeCode, typeCode1);
             if (isAnnot) {
-              c = compareFeat(o1, o2, tsi.startFeatCode);
-              return (c != 0) ? c : compareFeat(o2, o1, tsi.endFeatCode);  // reverse order
+              c = compareFeat(o1, o2, TypeSystemImpl.startFeatCode);
+              return (c != 0) ? c : compareFeat(o2, o1, TypeSystemImpl.endFeatCode);  // reverse order
             }
             // not sofa nor annotation
             return compareInts(o1, o2);  // return in @id order

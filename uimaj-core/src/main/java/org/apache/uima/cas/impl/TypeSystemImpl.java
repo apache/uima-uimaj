@@ -137,9 +137,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   // static maps ok for now - only built-in mappings stored here
   // which are the same for all type system instances
-  private final static Map<String, String> arrayComponentTypeNameMap = new HashMap<String, String>();
+  private final static Map<String, String> arrayComponentTypeNameMap = new HashMap<String, String>(9);
 
-  private final static Map<String, String> arrayTypeComponentNameMap = new HashMap<String, String>();
+  private final static Map<String, String> arrayTypeComponentNameMap = new HashMap<String, String>(9);
 
   private static final String arrayTypeSuffix = "[]";
 
@@ -212,7 +212,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   private final ArrayList<IntVector> approp; // For each type, an IntVector of appropriate features
 
   // Code of root of hierarchy (will be 1 with current implementation)
-  private int top;
+  private static final int top = 1;
 
   /**
    * An ArrayList, unsynchronized, indexed by typeCode, of Type objects
@@ -319,67 +319,67 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   TypeImpl doubleArrayType;
 
   // int topTypeCode;
-  int intTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int intTypeCode = 2;
 
-  int stringTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int stringTypeCode = 4;
 
-  int floatTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int floatTypeCode = 3;
 
-  int arrayBaseTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int arrayBaseTypeCode = 5;
 
-  public int intArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int intArrayTypeCode = 8;
 
-  public int floatArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int floatArrayTypeCode = 7;
 
-  public int stringArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int stringArrayTypeCode = 9;
 
-  public int fsArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int fsArrayTypeCode = 6;
 
-  int sofaTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int sofaTypeCode = 33;
 
-  int annotTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int annotTypeCode = 35;
 
-  int annotBaseTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int annotBaseTypeCode = 34;
 
-  int byteTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int byteTypeCode = 24;
 
-  int booleanTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int booleanTypeCode = 23;
 
-  int shortTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int shortTypeCode = 25;
 
-  int longTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int longTypeCode = 26;
 
-  int doubleTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  static final int doubleTypeCode = 27;
 
-  public int byteArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int byteArrayTypeCode = 29;
 
-  public int booleanArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int booleanArrayTypeCode = 28;
 
-  public int shortArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int shortArrayTypeCode = 30;
 
-  public int longArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int longArrayTypeCode = 31;
 
-  public int doubleArrayTypeCode = LowLevelTypeSystem.UNKNOWN_TYPE_CODE;
+  public static final int doubleArrayTypeCode = 32;
 
-  public int sofaNumFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;  // ref from another pkg
+  public static final int sofaNumFeatCode = 9;  // ref from another pkg
 
-  public int sofaIdFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  public static final int sofaIdFeatCode = 10;
   
-  public int sofaStringFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  public static final int sofaStringFeatCode = 13;
 
-  int sofaMimeFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  static final int sofaMimeFeatCode = 11;
 
-  int sofaUriFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  static final int sofaUriFeatCode = 14;
 
-  int sofaArrayFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  static final int sofaArrayFeatCode = 12;
 
-  public int annotSofaFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE; // ref from another pkg
+  public static final int annotSofaFeatCode = 15; // ref from another pkg
 
-  public int startFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  public static final int startFeatCode = 16;
 
-  public int endFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  public static final int endFeatCode = 17;
 
-  int langFeatCode = LowLevelTypeSystem.UNKNOWN_FEATURE_CODE;
+  static final int langFeatCode = 18;
 
   /**
    * Default constructor.
@@ -526,26 +526,26 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 //    this.arrayBaseTypeCode = this.arrayBaseType.getCode();
 
     final Type sofaT = this.sofaType;
-    this.sofaNumFeatCode = ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM));
-    this.sofaIdFeatCode = ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID));
-    this.sofaMimeFeatCode = ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAMIME));
-    this.sofaUriFeatCode = ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAURI));
-    this.sofaArrayFeatCode = ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAARRAY));
-    this.annotSofaFeatCode = ll_getCodeForFeature(this.annotBaseType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA));
-    this.startFeatCode = ll_getCodeForFeature(this.annotType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN));
-    this.endFeatCode = ll_getCodeForFeature(this.annotType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END));
-    this.langFeatCode = ll_getCodeForFeature(this.docType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE));
-    this.sofaStringFeatCode = ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFASTRING));
+    if (sofaNumFeatCode != ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM))) throw new RuntimeException();
+    if (sofaIdFeatCode != ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID))) throw new RuntimeException();
+    if (sofaMimeFeatCode != ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAMIME))) throw new RuntimeException();
+    if (sofaUriFeatCode != ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAURI))) throw new RuntimeException();
+    if (sofaArrayFeatCode != ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAARRAY))) throw new RuntimeException();
+    if (annotSofaFeatCode != ll_getCodeForFeature(this.annotBaseType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA))) throw new RuntimeException();
+    if (startFeatCode != ll_getCodeForFeature(this.annotType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN))) throw new RuntimeException();
+    if (endFeatCode != ll_getCodeForFeature(this.annotType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END))) throw new RuntimeException();
+    if (langFeatCode != ll_getCodeForFeature(this.docType
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE))) throw new RuntimeException();
+    if (sofaStringFeatCode != ll_getCodeForFeature(sofaT
+        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFASTRING))) throw new RuntimeException();
   }
 
   // Some implementation helpers for users of the type system.
@@ -587,15 +587,15 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   int ll_computeArrayParentFromComponentType(int componentType) {
     if (ll_isPrimitiveType(componentType) ||
-    // note: not using this.top - until we can confirm this is set
+    // note: not using top - until we can confirm this is set
         // in all cases
         (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
-      return this.arrayBaseTypeCode;
+      return arrayBaseTypeCode;
     }
     // is a subtype of FSArray.
     // note: not using this.fsArray - until we can confirm this is set in
     // all cases
-    return this.fsArrayTypeCode;
+    return fsArrayTypeCode;
     // return ll_getArrayType(ll_getParentType(componentType));
   }
 
@@ -861,7 +861,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public Type getTopType() {
-    return this.types.get(this.top);
+    return this.types.get(top);
   }
 
   /**
@@ -1148,18 +1148,18 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       // System.out.println("Size of type table > 0.");
       return 0;
     } // Add name of top type to symbol table.
-    this.top = this.typeNameST.set(name);
+    if (top != this.typeNameST.set(name)) throw new RuntimeException();
     // System.out.println("Size of name table is: " + typeNameST.size());
     // assert (typeNameST.size() == 1);
-    // System.out.println("Code of top type is: " + this.top);
+    // System.out.println("Code of top type is: " + top);
     // Create space for top type.
     newType();
     // Make top subsume itself.
-    addSubsubsumption(this.top, this.top);
-    this.types.add(new TypeImpl(name, this.top, this));
+    addSubsubsumption(top, top);
+    this.types.add(new TypeImpl(name, top, this));
     this.parents.add(LowLevelTypeSystem.UNKNOWN_TYPE_CODE);
     this.numCommittedTypes = this.types.size();
-    return this.top;
+    return top;
   }
 
   /**
@@ -1173,10 +1173,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
 
   private boolean ll_isPrimitiveArrayType(int type) {
-    return type == this.floatArrayTypeCode || type == this.intArrayTypeCode
-        || type == this.booleanArrayTypeCode || type == this.shortArrayTypeCode
-        || type == this.byteArrayTypeCode || type == this.longArrayTypeCode
-        || type == this.doubleArrayTypeCode || type == this.stringArrayTypeCode;
+    return type == floatArrayTypeCode || type == intArrayTypeCode
+        || type == booleanArrayTypeCode || type == shortArrayTypeCode
+        || type == byteArrayTypeCode || type == longArrayTypeCode
+        || type == doubleArrayTypeCode || type == stringArrayTypeCode;
   }
 
   @Override
@@ -1200,12 +1200,12 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // (this second relation because all we can generate are instances of
     // FSArray
     // and we must be able to assign them to xxx[] )
-    if (superType == this.fsArrayTypeCode) {
+    if (superType == fsArrayTypeCode) {
       return !ll_isPrimitiveArrayType(type) && ll_isArrayType(type);
     }
 
-    if (type == this.fsArrayTypeCode) {
-      return superType == this.top || superType == this.arrayBaseTypeCode
+    if (type == fsArrayTypeCode) {
+      return superType == top || superType == arrayBaseTypeCode
           || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
     }
 
@@ -1224,7 +1224,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     } else if (isSubArray) {
       // If the subtype is an array, and the supertype is not, then the
       // supertype must be top, or the abstract array base.
-      return ((superType == this.top) || (superType == this.arrayBaseTypeCode));
+      return ((superType == top) || (superType == arrayBaseTypeCode));
     }
     return this.subsumes.get(superType).get(type);
   }
@@ -1581,55 +1581,55 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   @Override
   public final int ll_getTypeClass(int typeCode) {
-    if (typeCode == this.booleanTypeCode) {
+    if (typeCode == booleanTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BOOLEAN;
     }
-    if (typeCode == this.byteTypeCode) {
+    if (typeCode == byteTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BYTE;
     }
-    if (typeCode == this.shortTypeCode) {
+    if (typeCode == shortTypeCode) {
       return LowLevelCAS.TYPE_CLASS_SHORT;
     }
-    if (typeCode == this.intTypeCode) {
+    if (typeCode == intTypeCode) {
       return LowLevelCAS.TYPE_CLASS_INT;
     }
-    if (typeCode == this.floatTypeCode) {
+    if (typeCode == floatTypeCode) {
       return LowLevelCAS.TYPE_CLASS_FLOAT;
     }
-    if (typeCode == this.longTypeCode) {
+    if (typeCode == longTypeCode) {
       return LowLevelCAS.TYPE_CLASS_LONG;
     }
-    if (typeCode == this.doubleTypeCode) {
+    if (typeCode == doubleTypeCode) {
       return LowLevelCAS.TYPE_CLASS_DOUBLE;
     }
     // false if string type code not yet set up (during initialization)
     //   need this to avoid NPE in subsumes
-    if ((this.stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
-          ll_subsumes(this.stringTypeCode, typeCode)) {
+    if ((stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
+          ll_subsumes(stringTypeCode, typeCode)) {
       return LowLevelCAS.TYPE_CLASS_STRING;
     }
-    if (typeCode == this.booleanArrayTypeCode) {
+    if (typeCode == booleanArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BOOLEANARRAY;
     }
-    if (typeCode == this.byteArrayTypeCode) {
+    if (typeCode == byteArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BYTEARRAY;
     }
-    if (typeCode == this.shortArrayTypeCode) {
+    if (typeCode == shortArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_SHORTARRAY;
     }
-    if (typeCode == this.intArrayTypeCode) {
+    if (typeCode == intArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_INTARRAY;
     }
-    if (typeCode == this.floatArrayTypeCode) {
+    if (typeCode == floatArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_FLOATARRAY;
     }
-    if (typeCode == this.longArrayTypeCode) {
+    if (typeCode == longArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_LONGARRAY;
     }
-    if (typeCode == this.doubleArrayTypeCode) {
+    if (typeCode == doubleArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_DOUBLEARRAY;
     }
-    if (typeCode == this.stringArrayTypeCode) {
+    if (typeCode == stringArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_STRINGARRAY;
     }
     if (ll_isArrayType(typeCode)) {
@@ -1680,10 +1680,10 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // array are all over the place. Would be nice to just remove it.
     // Add an edge to the tree.
     if (!isCommitted() && motherCode != fsArrayTypeCode ) {
-      final int arrayBaseTypeCodeBeforeCommitted = this.arrayBaseTypeCode;
+      final int arrayBaseTypeCodeBeforeCommitted = arrayBaseTypeCode;
       (this.tree.get(arrayBaseTypeCodeBeforeCommitted)).add(arrayTypeCode);
       // Update subsumption relation.
-      updateSubsumption(arrayTypeCode, this.arrayBaseTypeCode);
+      updateSubsumption(arrayTypeCode, arrayBaseTypeCode);
     }
     return arrayTypeCode;
   }

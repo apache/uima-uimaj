@@ -3380,8 +3380,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
       final CASImpl ci = cas;
       TypeSystemImpl tsi = ci.getTypeSystemImpl();
-      final int beginOffset = ci.getFeatureOffset(tsi.startFeatCode);
-      final int endOffset = ci.getFeatureOffset(tsi.endFeatCode);
+      final int beginOffset = ci.getFeatureOffset(TypeSystemImpl.startFeatCode);
+      final int endOffset = ci.getFeatureOffset(TypeSystemImpl.endFeatCode);
       final LinearTypeOrder typeOrder = getDefaultTypeOrder();
       
       return this.sii.annotationFsComparator = new Comparator<AnnotationFS>() {
@@ -3419,9 +3419,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (null == r) {
 
       final CASImpl ci = cas;
-      TypeSystemImpl tsi = ci.getTypeSystemImpl();
-      final int beginOffset = ci.getFeatureOffset(tsi.startFeatCode);
-      final int endOffset = ci.getFeatureOffset(tsi.endFeatCode);
+      final int beginOffset = ci.getFeatureOffset(TypeSystemImpl.startFeatCode);
+      final int endOffset = ci.getFeatureOffset(TypeSystemImpl.endFeatCode);
       final LinearTypeOrder typeOrder = getDefaultTypeOrder();
       
       return this.sii.annotationComparator = new IntComparator() {
