@@ -35,10 +35,12 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +72,8 @@ import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Misc;
 
+import com.strobel.assembler.metadata.Buffer;
+import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
 import com.strobel.decompiler.PlainTextOutput;
@@ -419,6 +423,42 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // load in built-in types
     CASImpl.setupTSDefault(this);
     initTypeVariables();
+    
+    // initialize the decompiler settings to have a defaultLoader setup to 
+    // be a classpath loader using the classpath in effect.
+    
+    if (IS_DECOMPILE_JCAS) {
+      ITypeLoader tl = new ITypeLoader() {
+  
+        @Override
+        public boolean tryLoadType(String internalName, Buffer buffer) {
+          ClassLoader cl = this.getClass().getClassLoader();
+          internalName = internalName.replace('.', '/') + ".class";
+          InputStream stream = cl.getResourceAsStream(internalName);
+          if (stream == null) {
+            return false;
+          }
+          ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 16);        
+          byte[] b = new byte[1024 * 16]; 
+          int numberRead;
+          try {
+            while (0 <= (numberRead = stream.read(b))){
+              baos.write(b, 0, numberRead);
+            }
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+  //          return false;
+          }
+          int length = baos.size();
+          b = baos.toByteArray();
+          buffer.reset(length);
+          System.arraycopy(b, 0, buffer.array(), 0, length);
+          
+          return true;
+        }      
+      };    
+      decompilerSettings.setTypeLoader(tl);
+    }
   }
 
   // only built-in types here; can be called before
@@ -1291,8 +1331,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     
     if(JCasImpl.builtInsWithAltNames.contains(name) )
       name = "org.apache.uima.jcas."+ name.substring(5 /* "uima.".length() */);
-        
-    String fn = "decompiled/" + name + ".java";
+    
+    String h = System.getProperty(DECOMPILE_JCAS);
+    String fn = h + "decompiled/" + name + ".java";
+    File file = new File(h + "decompiled");
+    file.mkdir();
  
     try { 
       final FileOutputStream stream = new FileOutputStream(fn);
@@ -1863,6 +1906,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     
     return m;
   }
+  
+//  public String convertRangeToJavaCode(int rangeTypeCode) {
+//    switch (rangeTypeCode) {
+//    case booleanTypeCode :
+//      break;
+//    }
+//  }
   
 //  /**
 //   * @param otherTs type system to compare to this one
