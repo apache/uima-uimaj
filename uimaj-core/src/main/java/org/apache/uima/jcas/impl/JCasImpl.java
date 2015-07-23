@@ -956,7 +956,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       if (!alreadyLoaded) {
         final TypeSystemImpl ts = casImpl.getTypeSystemImpl();
         fsGenerators[casType.getCode()] = new JCasFsGenerator<T>(typeIndex, cType,
-            jcasTypeInfo.isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
+            jcasTypeInfo.isSubtypeOfAnnotationBase, TypeSystemImpl.sofaNumFeatCode, TypeSystemImpl.annotSofaFeatCode);
         // this.casImpl.getFSClassRegistry().loadJCasGeneratorForType(typeIndex, cType, casType,
         // jcasTypeInfo.isSubtypeOfAnnotationBase);
       }

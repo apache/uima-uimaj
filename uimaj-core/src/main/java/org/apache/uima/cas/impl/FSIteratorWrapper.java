@@ -45,8 +45,8 @@ public class FSIteratorWrapper<T extends FeatureStructure> extends FSIteratorImp
     this.it = it;
     this.casImpl = casImpl;
     TypeSystemImpl tsi = casImpl.getTypeSystemImpl(); 
-    beginOffset = casImpl.getFeatureOffset(tsi.startFeatCode);
-    endOffset = casImpl.getFeatureOffset(tsi.endFeatCode);
+    beginOffset = casImpl.getFeatureOffset(TypeSystemImpl.startFeatCode);
+    endOffset = casImpl.getFeatureOffset(TypeSystemImpl.endFeatCode);
   }
 
   /**
