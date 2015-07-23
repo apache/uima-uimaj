@@ -620,7 +620,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public int ll_createFSAnnotCheck(int typeCode) {
     final int addr = ll_createFS(typeCode);
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
-    final boolean isAnnot = ts.subsumes(ts.annotBaseTypeCode, typeCode);
+    final boolean isAnnot = ts.subsumes(TypeSystemImpl.annotBaseTypeCode, typeCode);
     if (isAnnot && (this == this.getBaseCAS())) {
       CASRuntimeException e = new CASRuntimeException(
           CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS,
@@ -628,7 +628,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw e;
     }
     if (isAnnot) {
-      this.setFeatureValueNotJournaled(addr,  ts.annotSofaFeatCode, this.getSofaRef());
+      this.setFeatureValueNotJournaled(addr,  TypeSystemImpl.annotSofaFeatCode, this.getSofaRef());
     }
     return addr;
   }
@@ -640,25 +640,25 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public ArrayFS createArrayFS(int length) {
     checkArrayPreconditions(length);
-    final int addr = createTempArray(this.svd.casMetadata.ts.fsArrayTypeCode, length);
+    final int addr = createTempArray(TypeSystemImpl.fsArrayTypeCode, length);
     return (ArrayFS) createFS(addr);
   }
 
   public IntArrayFS createIntArrayFS(int length) {
     checkArrayPreconditions(length);
-    final int addr = createTempArray(this.svd.casMetadata.ts.intArrayTypeCode, length);
+    final int addr = createTempArray(TypeSystemImpl.intArrayTypeCode, length);
     return (IntArrayFS) createFS(addr);
   }
 
   public FloatArrayFS createFloatArrayFS(int length) {
     checkArrayPreconditions(length);
-    final int addr = createTempArray(this.svd.casMetadata.ts.floatArrayTypeCode, length);
+    final int addr = createTempArray(TypeSystemImpl.floatArrayTypeCode, length);
     return (FloatArrayFS) createFS(addr);
   }
 
   public StringArrayFS createStringArrayFS(int length) {
     checkArrayPreconditions(length);
-    final int addr = createTempArray(this.svd.casMetadata.ts.stringArrayTypeCode, length);
+    final int addr = createTempArray(TypeSystemImpl.stringArrayTypeCode, length);
     return (StringArrayFS) createFS(addr);
   }
 
@@ -679,25 +679,24 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (!this.svd.initialSofaCreated) {
       return false;
     }
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
     final int llsofa = this.getInitialView().getLowLevelCAS().ll_getSofa();
 
     // check for mime type exactly equal to "text"
-    String sofaMime = ll_getStringValue(llsofa, ts.sofaMimeFeatCode);
+    String sofaMime = ll_getStringValue(llsofa, TypeSystemImpl.sofaMimeFeatCode);
     if (!"text".equals(sofaMime)) {
       return false;
     }
     // check that sofaURI and sofaArray are not set
-    String sofaUri = ll_getStringValue(llsofa, ts.sofaUriFeatCode);
+    String sofaUri = ll_getStringValue(llsofa, TypeSystemImpl.sofaUriFeatCode);
     if (sofaUri != null) {
       return false;
     }
-    int sofaArray = ll_getRefValue(llsofa, ts.sofaArrayFeatCode);
+    int sofaArray = ll_getRefValue(llsofa, TypeSystemImpl.sofaArrayFeatCode);
     if (sofaArray != CASImpl.NULL) {
       return false;
     }
     // check that name is NAME_DEFAULT_SOFA
-    String sofaname = ll_getStringValue(llsofa, ts.sofaIdFeatCode);
+    String sofaname = ll_getStringValue(llsofa, TypeSystemImpl.sofaIdFeatCode);
     return NAME_DEFAULT_SOFA.equals(sofaname);
   }
 
@@ -735,18 +734,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   SofaFS createSofa(String sofaName, String mimeType) {
-    final int addr = ll_createFS(this.svd.casMetadata.ts.sofaTypeCode);
+    final int addr = ll_createFS(TypeSystemImpl.sofaTypeCode);
     final FeatureStructure sofa = ll_getFSForRef(addr);
     addSofa(sofa, sofaName, mimeType);
     return (SofaFS) sofa;
   }
 
   SofaFS createInitialSofa(String mimeType) {
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
-    final int addr = ll_createFS(ts.sofaTypeCode);
+    final int addr = ll_createFS(TypeSystemImpl.sofaTypeCode);
     final FeatureStructure sofa = ll_getFSForRef(addr);
     // final int llsofa = ll_getFSRef(sofa);
-    ll_setIntValue(/* llsofa */addr, ts.sofaNumFeatCode, 1);
+    ll_setIntValue(/* llsofa */addr, TypeSystemImpl.sofaNumFeatCode, 1);
     addSofa(sofa, CAS.NAME_DEFAULT_SOFA, mimeType);
     registerInitialSofa();
     this.mySofaRef = /* ((FeatureStructureImpl)sofa).getAddress() */addr;
@@ -768,13 +766,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           new String[] { sofaName });
       throw e;
     }
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
     final int llsofa = ll_getFSRef(sofa);
-    if (0 == ll_getIntValue(llsofa, ts.sofaNumFeatCode)) {
-      ll_setIntValue(llsofa, ts.sofaNumFeatCode, ++this.svd.viewCount);
+    if (0 == ll_getIntValue(llsofa, TypeSystemImpl.sofaNumFeatCode)) {
+      ll_setIntValue(llsofa, TypeSystemImpl.sofaNumFeatCode, ++this.svd.viewCount);
     }
-    ll_setStringValue(llsofa, ts.sofaIdFeatCode, sofaName);
-    ll_setStringValue(llsofa, ts.sofaMimeFeatCode, mimeType);
+    ll_setStringValue(llsofa, TypeSystemImpl.sofaIdFeatCode, sofaName);
+    ll_setStringValue(llsofa, TypeSystemImpl.sofaMimeFeatCode, mimeType);
     this.getBaseIndexRepository().addFS(sofa);
     this.svd.sofaNameSet.add(sofaName);
   }
@@ -793,7 +790,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     while (iterator.isValid()) {
       SofaFS sofa = iterator.get();
       if (sofaName.equals(getStringValue(((FeatureStructureImpl) sofa).getAddress(),
-          this.svd.casMetadata.ts.sofaIdFeatCode))) {
+          TypeSystemImpl.sofaIdFeatCode))) {
         return sofa;
       }
       iterator.moveToNext();
@@ -814,14 +811,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   
   public int ll_getSofaNum(int sofaRef) {
-    return ll_getIntValue(sofaRef, svd.casMetadata.ts.sofaNumFeatCode);
+    return ll_getIntValue(sofaRef, TypeSystemImpl.sofaNumFeatCode);
   }
   public String ll_getSofaID(int sofaRef) {
-    return ll_getStringValue(sofaRef, svd.casMetadata.ts.sofaIdFeatCode);
+    return ll_getStringValue(sofaRef, TypeSystemImpl.sofaIdFeatCode);
   }
   
   public String ll_getSofaDataString(int sofaAddr) {
-    return ll_getStringValue(sofaAddr, svd.casMetadata.ts.sofaStringFeatCode);
+    return ll_getStringValue(sofaAddr, TypeSystemImpl.sofaStringFeatCode);
   }
 
   public CASImpl getBaseCAS() {
@@ -837,12 +834,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // For internal use only
   public void setSofaFeat(int addr, int sofa) {
     // never an index key
-    setFeatureValueNoIndexCorruptionCheck(addr, this.svd.casMetadata.ts.annotSofaFeatCode, sofa);
+    setFeatureValueNoIndexCorruptionCheck(addr, TypeSystemImpl.annotSofaFeatCode, sofa);
   }
 
   // For internal use only
   public int getSofaFeat(int addr) {
-    return getFeatureValue(addr, this.svd.casMetadata.ts.annotSofaFeatCode);
+    return getFeatureValue(addr, TypeSystemImpl.annotSofaFeatCode);
   }
 
   // For internal use only
@@ -987,8 +984,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // After the type system has been committed, we can create the
     // index repository.
     createIndexRepository();
-    svd.annotFeatOffset_begin = getFeatureOffset(ts.startFeatCode);
-    svd.annotFeatOffset_end   = getFeatureOffset(ts.endFeatCode);
+    svd.annotFeatOffset_begin = getFeatureOffset(TypeSystemImpl.startFeatCode);
+    svd.annotFeatOffset_end   = getFeatureOffset(TypeSystemImpl.endFeatCode);
   }
 
   // internal use, public for cross class ref
@@ -1661,8 +1658,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //    if (tsi.ll_getTypeForCode(typeCode) == null) {
 //      System.out.println("debug, typeCode = "+ typeCode);
 //    }
-    final boolean isHeapStoredArray = (typeCode == tsi.intArrayTypeCode) || (typeCode == tsi.floatArrayTypeCode)
-        || (typeCode == tsi.fsArrayTypeCode) || (typeCode == tsi.stringArrayTypeCode)
+    final boolean isHeapStoredArray = (typeCode == TypeSystemImpl.intArrayTypeCode) || (typeCode == TypeSystemImpl.floatArrayTypeCode)
+        || (typeCode == TypeSystemImpl.fsArrayTypeCode) || (typeCode == TypeSystemImpl.stringArrayTypeCode)
         || (TypeSystemImpl.isArrayTypeNameButNotBuiltIn(type.getName()));
     if (isHeapStoredArray) {
       return fsAddr + 2 + getHeapValue(fsAddr + 1);
@@ -2051,26 +2048,25 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   void setArrayValueFromString(final int addr, final int index, final String value) {
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
     int arrayType = this.getHeap().heap[addr];
 
-    if (arrayType == ts.intArrayTypeCode) {
+    if (arrayType == TypeSystemImpl.intArrayTypeCode) {
       setArrayValue(addr, index, Integer.parseInt(value));
-    } else if (arrayType == ts.floatArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.floatArrayTypeCode) {
       setArrayValue(addr, index, CASImpl.float2int(Float.parseFloat(value)));
-    } else if (arrayType == ts.stringArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.stringArrayTypeCode) {
       setArrayValue(addr, index, addString(value));
-    } else if (arrayType == ts.booleanArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.booleanArrayTypeCode) {
       ll_setBooleanArrayValue(addr, index, Boolean.valueOf(value).booleanValue());
-    } else if (arrayType == ts.byteArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.byteArrayTypeCode) {
       ll_setByteArrayValue(addr, index, Byte.parseByte(value));
-    } else if (arrayType == ts.shortArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.shortArrayTypeCode) {
       ll_setShortArrayValue(addr, index, Short.parseShort(value));
-    } else if (arrayType == ts.longArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.longArrayTypeCode) {
       ll_setLongArrayValue(addr, index, Long.parseLong(value));
-    } else if (arrayType == ts.doubleArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.doubleArrayTypeCode) {
       ll_setDoubleArrayValue(addr, index, Double.parseDouble(value));
-    } else if (arrayType == ts.fsArrayTypeCode) {
+    } else if (arrayType == TypeSystemImpl.fsArrayTypeCode) {
       setArrayValue(addr, index, Integer.parseInt(value));
     }
   }
@@ -2330,21 +2326,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public String getFeatureValueAsString(int addr, int feat) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
     int typeCode = ts.range(feat);
-    if (typeCode == ts.intTypeCode) {
+    if (typeCode == TypeSystemImpl.intTypeCode) {
       return Integer.toString(this.ll_getIntValue(addr, feat));
-    } else if (typeCode == ts.floatTypeCode) {
+    } else if (typeCode == TypeSystemImpl.floatTypeCode) {
       return Float.toString(this.ll_getFloatValue(addr, feat));
-    } else if (ts.subsumes(ts.stringTypeCode, typeCode)) {
+    } else if (ts.subsumes(TypeSystemImpl.stringTypeCode, typeCode)) {
       return this.getStringValue(addr, feat);
-    } else if (typeCode == ts.booleanTypeCode) {
+    } else if (typeCode == TypeSystemImpl.booleanTypeCode) {
       return Boolean.toString(this.getBooleanValue(addr, feat));
-    } else if (typeCode == ts.byteTypeCode) {
+    } else if (typeCode == TypeSystemImpl.byteTypeCode) {
       return Byte.toString(this.getByteValue(addr, feat));
-    } else if (typeCode == ts.shortTypeCode) {
+    } else if (typeCode == TypeSystemImpl.shortTypeCode) {
       return Short.toString(this.getShortValue(addr, feat));
-    } else if (typeCode == ts.longTypeCode) {
+    } else if (typeCode == TypeSystemImpl.longTypeCode) {
       return Long.toString(this.getLongValue(addr, feat));
-    } else if (typeCode == ts.doubleTypeCode) {
+    } else if (typeCode == TypeSystemImpl.doubleTypeCode) {
       return Double.toString(this.getDoubleValue(addr, feat));
     } else {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE,
@@ -2358,21 +2354,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void setFeatureValueFromString(int fsref, int feat, String value) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
     int typeCode = (ts.range(feat));
-    if (typeCode == ts.intTypeCode) {
+    if (typeCode == TypeSystemImpl.intTypeCode) {
       this.ll_setIntValue(fsref, feat, Integer.parseInt(value));
-    } else if (typeCode == ts.floatTypeCode) {
+    } else if (typeCode == TypeSystemImpl.floatTypeCode) {
       this.setFloatValue(fsref, feat, Float.parseFloat(value));
-    } else if (ts.subsumes(ts.stringTypeCode, typeCode)) {
+    } else if (ts.subsumes(TypeSystemImpl.stringTypeCode, typeCode)) {
       this.setStringValue(fsref, feat, value);
-    } else if (typeCode == ts.booleanTypeCode) {
+    } else if (typeCode == TypeSystemImpl.booleanTypeCode) {
       this.setFeatureValue(fsref, feat, Boolean.valueOf(value).booleanValue());
-    } else if (typeCode == ts.byteTypeCode) {
+    } else if (typeCode == TypeSystemImpl.byteTypeCode) {
       this.setFeatureValue(fsref, feat, Byte.parseByte(value));
-    } else if (typeCode == ts.shortTypeCode) {
+    } else if (typeCode == TypeSystemImpl.shortTypeCode) {
       this.setFeatureValue(fsref, feat, Short.parseShort(value));
-    } else if (typeCode == ts.longTypeCode) {
+    } else if (typeCode == TypeSystemImpl.longTypeCode) {
       this.setFeatureValue(fsref, feat, Long.parseLong(value));
-    } else if (typeCode == ts.doubleTypeCode) {
+    } else if (typeCode == TypeSystemImpl.doubleTypeCode) {
       this.setFeatureValue(fsref, feat, Double.parseDouble(value));
     } else {
       CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE,
@@ -2503,7 +2499,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public boolean isStringType(int type) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
-    return ts.subsumes(ts.stringTypeCode, type);
+    return ts.subsumes(TypeSystemImpl.stringTypeCode, type);
   }
 
   public boolean isByteType(Type type) {
@@ -2527,7 +2523,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public boolean isAbstractArrayType(int type) {
-    return this.svd.casMetadata.ts.subsumes(this.svd.casMetadata.ts.arrayBaseTypeCode, type);
+    return this.svd.casMetadata.ts.subsumes(TypeSystemImpl.arrayBaseTypeCode, type);
   }
 
   public boolean isArrayType(int type) {
@@ -2536,67 +2532,67 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public boolean isIntArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.intArrayTypeCode);
+    return (type == TypeSystemImpl.intArrayTypeCode);
   }
 
   public boolean isFloatArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.floatArrayTypeCode);
+    return (type == TypeSystemImpl.floatArrayTypeCode);
   }
 
   public boolean isStringArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.stringArrayTypeCode);
+    return (type == TypeSystemImpl.stringArrayTypeCode);
   }
 
   public boolean isByteArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.byteArrayTypeCode);
+    return (type == TypeSystemImpl.byteArrayTypeCode);
   }
 
   public boolean isBooleanArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.booleanArrayTypeCode);
+    return (type == TypeSystemImpl.booleanArrayTypeCode);
   }
 
   public boolean isShortArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.shortArrayTypeCode);
+    return (type == TypeSystemImpl.shortArrayTypeCode);
   }
 
   public boolean isLongArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.longArrayTypeCode);
+    return (type == TypeSystemImpl.longArrayTypeCode);
   }
 
   public boolean isDoubleArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.doubleArrayTypeCode);
+    return (type == TypeSystemImpl.doubleArrayTypeCode);
   }
 
   public boolean isFSArrayType(int type) {
-    return (type == this.svd.casMetadata.ts.fsArrayTypeCode);
+    return (type == TypeSystemImpl.fsArrayTypeCode);
   }
 
   public boolean isIntType(int type) {
-    return (type == this.svd.casMetadata.ts.intTypeCode);
+    return (type == TypeSystemImpl.intTypeCode);
   }
 
   public boolean isFloatType(int type) {
-    return (type == this.svd.casMetadata.ts.floatTypeCode);
+    return (type == TypeSystemImpl.floatTypeCode);
   }
 
   public boolean isByteType(int type) {
-    return (type == this.svd.casMetadata.ts.byteTypeCode);
+    return (type == TypeSystemImpl.byteTypeCode);
   }
 
   public boolean isBooleanType(int type) {
-    return (type == this.svd.casMetadata.ts.booleanTypeCode);
+    return (type == TypeSystemImpl.booleanTypeCode);
   }
 
   public boolean isShortType(int type) {
-    return (type == this.svd.casMetadata.ts.shortTypeCode);
+    return (type == TypeSystemImpl.shortTypeCode);
   }
 
   public boolean isLongType(int type) {
-    return (type == this.svd.casMetadata.ts.longTypeCode);
+    return (type == TypeSystemImpl.longTypeCode);
   }
 
   public boolean isDoubleType(int type) {
-    return (type == this.svd.casMetadata.ts.doubleTypeCode);
+    return (type == TypeSystemImpl.doubleTypeCode);
   }
 
   public Heap getHeap() {
@@ -2662,33 +2658,33 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // Add basic data types.
       Type intT = ts.addType(CAS.TYPE_NAME_INTEGER, top);
       ts.intType = (TypeImpl) intT;
-      ts.intTypeCode = ts.intType.getCode();
+      if (TypeSystemImpl.intTypeCode != ts.intType.getCode()) throw new RuntimeException();
       
       Type floatT = ts.addType(CAS.TYPE_NAME_FLOAT, top);
       ts.floatType = (TypeImpl) floatT;
-      ts.floatTypeCode = ts.floatType.getCode();
+      if (TypeSystemImpl.floatTypeCode != ts.floatType.getCode()) throw new RuntimeException();
       
       Type stringT = ts.addType(CAS.TYPE_NAME_STRING, top);
       ts.stringType = (TypeImpl) stringT;
-      ts.stringTypeCode = ts.stringType.getCode();
+      if (TypeSystemImpl.stringTypeCode != ts.stringType.getCode()) throw new RuntimeException();
       
       
       // Add arrays.
       Type array = ts.addType(CAS.TYPE_NAME_ARRAY_BASE, top);
       ts.arrayBaseType = (TypeImpl) array; // do here - used in next
-      ts.arrayBaseTypeCode = ts.arrayBaseType.getCode();
+      if (TypeSystemImpl.arrayBaseTypeCode != ts.arrayBaseType.getCode()) throw new RuntimeException();
       
       TypeImpl fsArray = ts.fsArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_FS_ARRAY, array);
-      ts.fsArrayTypeCode = fsArray.getCode();
+      if (TypeSystemImpl.fsArrayTypeCode != fsArray.getCode()) throw new RuntimeException();
       
       TypeImpl floatArray = ts.floatArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_FLOAT_ARRAY, array);
-      ts.floatArrayTypeCode = floatArray.getCode();
+      if (TypeSystemImpl.floatArrayTypeCode != floatArray.getCode()) throw new RuntimeException();
       
       TypeImpl intArray = ts.intArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_INTEGER_ARRAY, array);
-      ts.intArrayTypeCode = intArray.getCode();
+      if (TypeSystemImpl.intArrayTypeCode != intArray.getCode()) throw new RuntimeException();
       
       TypeImpl stringArray = ts.stringArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_STRING_ARRAY, array);
-      ts.stringArrayTypeCode = stringArray.getCode();
+      if (TypeSystemImpl.stringArrayTypeCode != stringArray.getCode()) throw new RuntimeException();
       
       // Add lists.
       Type list = ts.addType(CAS.TYPE_NAME_LIST_BASE, top);
@@ -2723,44 +2719,44 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
       Type booleanT = ts.addType(CAS.TYPE_NAME_BOOLEAN, top);
       ts.booleanType = (TypeImpl) booleanT;
-      ts.booleanTypeCode = ts.booleanType.getCode();
+      if (TypeSystemImpl.booleanTypeCode != ts.booleanType.getCode()) throw new RuntimeException();
       
       Type byteT = ts.addType(CAS.TYPE_NAME_BYTE, top);
       ts.byteType = (TypeImpl) byteT;
-      ts.byteTypeCode = ts.byteType.getCode();
+      if (TypeSystemImpl.byteTypeCode != ts.byteType.getCode()) throw new RuntimeException();
       
       Type shortT = ts.addType(CAS.TYPE_NAME_SHORT, top);
       ts.shortType = (TypeImpl) shortT;
-      ts.shortTypeCode = ts.shortType.getCode();
+      if (TypeSystemImpl.shortTypeCode != ts.shortType.getCode()) throw new RuntimeException();
       
       Type longT = ts.addType(CAS.TYPE_NAME_LONG, top);
       ts.longType = (TypeImpl) longT;
-      ts.longTypeCode = ts.longType.getCode();
+      if (TypeSystemImpl.longTypeCode != ts.longType.getCode()) throw new RuntimeException();
       
       Type doubleT = ts.addType(CAS.TYPE_NAME_DOUBLE, top);
       ts.doubleType = (TypeImpl) doubleT;
-      ts.doubleTypeCode = ts.doubleType.getCode();
+      if (TypeSystemImpl.doubleTypeCode != ts.doubleType.getCode()) throw new RuntimeException();
   
       // array type initialization must follow the component type it's based on
       TypeImpl booleanArray = ts.booleanArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_BOOLEAN_ARRAY, array);
-      ts.booleanArrayTypeCode = booleanArray.getCode();
+      if (TypeSystemImpl.booleanArrayTypeCode != booleanArray.getCode()) throw new RuntimeException();
       
       TypeImpl byteArray = ts.byteArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_BYTE_ARRAY, array);
-      ts.byteArrayTypeCode = byteArray.getCode();
+      if (TypeSystemImpl.byteArrayTypeCode != byteArray.getCode()) throw new RuntimeException();
       
       TypeImpl shortArray = ts.shortArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_SHORT_ARRAY, array);
-      ts.shortArrayTypeCode = shortArray.getCode();
+      if (TypeSystemImpl.shortArrayTypeCode != shortArray.getCode()) throw new RuntimeException();
       
       TypeImpl longArray = ts.longArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_LONG_ARRAY, array);
-      ts.longArrayTypeCode = longArray.getCode();
+      if (TypeSystemImpl.longArrayTypeCode != longArray.getCode()) throw new RuntimeException();
       
       TypeImpl doubleArray = ts.doubleArrayType = (TypeImpl) ts.addType(CAS.TYPE_NAME_DOUBLE_ARRAY, array);
-      ts.doubleArrayTypeCode = doubleArray.getCode();
+      if (TypeSystemImpl.doubleArrayTypeCode != doubleArray.getCode()) throw new RuntimeException();
   
       // Sofa Stuff
       Type sofa = ts.addType(CAS.TYPE_NAME_SOFA, top);
       ts.sofaType = (TypeImpl) sofa;
-      ts.sofaTypeCode = ts.sofaType.getCode();
+      if (TypeSystemImpl.sofaTypeCode != ts.sofaType.getCode()) throw new RuntimeException();
       
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofa, intT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofa, stringT, false);
@@ -2774,13 +2770,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // Annotations
       Type annotBaseType = ts.addType(CAS.TYPE_NAME_ANNOTATION_BASE, top);
       ts.annotBaseType = (TypeImpl) annotBaseType;
-      ts.annotBaseTypeCode = ts.annotBaseType.getCode();
+      if (TypeSystemImpl.annotBaseTypeCode != ts.annotBaseType.getCode()) throw new RuntimeException();
       
       ts.addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofa, false);
       
       Type annotType = ts.addType(CAS.TYPE_NAME_ANNOTATION, annotBaseType);
       ts.annotType = (TypeImpl) annotType;
-      ts.annotTypeCode = ts.annotType.getCode();
+      if (TypeSystemImpl.annotTypeCode != ts.annotType.getCode()) throw new RuntimeException();
       
       ts.addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intT, false);
       ts.addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intT, false);
@@ -3208,11 +3204,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public final boolean ll_isRefType(int typeCode) {
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
-    if ((typeCode == ts.intTypeCode) || (typeCode == ts.floatTypeCode)
-        || (typeCode == ts.stringTypeCode) || (typeCode == ts.byteTypeCode)
-        || (typeCode == ts.booleanTypeCode) || (typeCode == ts.shortTypeCode)
-        || (typeCode == ts.longTypeCode) || (typeCode == ts.doubleTypeCode)) {
+    if ((typeCode == TypeSystemImpl.intTypeCode) || (typeCode == TypeSystemImpl.floatTypeCode)
+        || (typeCode == TypeSystemImpl.stringTypeCode) || (typeCode == TypeSystemImpl.byteTypeCode)
+        || (typeCode == TypeSystemImpl.booleanTypeCode) || (typeCode == TypeSystemImpl.shortTypeCode)
+        || (typeCode == TypeSystemImpl.longTypeCode) || (typeCode == TypeSystemImpl.doubleTypeCode)) {
       return false;
     }
     if (ll_getTypeSystem().ll_isStringSubtype(typeCode)) {
@@ -3223,55 +3218,55 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final int ll_getTypeClass(int typeCode) {
     final TypeSystemImpl ts = this.svd.casMetadata.ts;
-    if (typeCode == ts.intTypeCode) {
+    if (typeCode == TypeSystemImpl.intTypeCode) {
       return TYPE_CLASS_INT;
     }
-    if (typeCode == ts.floatTypeCode) {
+    if (typeCode == TypeSystemImpl.floatTypeCode) {
       return TYPE_CLASS_FLOAT;
     }
-    if (ts.subsumes(ts.stringTypeCode, typeCode)) {
+    if (ts.subsumes(TypeSystemImpl.stringTypeCode, typeCode)) {
       return TYPE_CLASS_STRING;
     }
-    if (typeCode == ts.intArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.intArrayTypeCode) {
       return TYPE_CLASS_INTARRAY;
     }
-    if (typeCode == ts.floatArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.floatArrayTypeCode) {
       return TYPE_CLASS_FLOATARRAY;
     }
-    if (typeCode == ts.stringArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.stringArrayTypeCode) {
       return TYPE_CLASS_STRINGARRAY;
     }
-    if (typeCode == ts.fsArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.fsArrayTypeCode) {
       return TYPE_CLASS_FSARRAY;
     }
-    if (typeCode == ts.booleanTypeCode) {
+    if (typeCode == TypeSystemImpl.booleanTypeCode) {
       return TYPE_CLASS_BOOLEAN;
     }
-    if (typeCode == ts.byteTypeCode) {
+    if (typeCode == TypeSystemImpl.byteTypeCode) {
       return TYPE_CLASS_BYTE;
     }
-    if (typeCode == ts.shortTypeCode) {
+    if (typeCode == TypeSystemImpl.shortTypeCode) {
       return TYPE_CLASS_SHORT;
     }
-    if (typeCode == ts.longTypeCode) {
+    if (typeCode == TypeSystemImpl.longTypeCode) {
       return TYPE_CLASS_LONG;
     }
-    if (typeCode == ts.doubleTypeCode) {
+    if (typeCode == TypeSystemImpl.doubleTypeCode) {
       return TYPE_CLASS_DOUBLE;
     }
-    if (typeCode == ts.booleanArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.booleanArrayTypeCode) {
       return TYPE_CLASS_BOOLEANARRAY;
     }
-    if (typeCode == ts.byteArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.byteArrayTypeCode) {
       return TYPE_CLASS_BYTEARRAY;
     }
-    if (typeCode == ts.shortArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.shortArrayTypeCode) {
       return TYPE_CLASS_SHORTARRAY;
     }
-    if (typeCode == ts.longArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.longArrayTypeCode) {
       return TYPE_CLASS_LONGARRAY;
     }
-    if (typeCode == ts.doubleArrayTypeCode) {
+    if (typeCode == TypeSystemImpl.doubleArrayTypeCode) {
       return TYPE_CLASS_DOUBLEARRAY;
     }
     if (isArrayType(typeCode)) {
@@ -3361,31 +3356,31 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public int ll_createByteArray(int arrayLength) {
-    final int addr = ll_createAuxArray(this.svd.casMetadata.ts.byteArrayTypeCode, arrayLength);
+    final int addr = ll_createAuxArray(TypeSystemImpl.byteArrayTypeCode, arrayLength);
     this.getHeap().heap[addr + arrayContentOffset] = this.getByteHeap().reserve(arrayLength);
     return addr;
   }
 
   public int ll_createBooleanArray(int arrayLength) {
-    final int addr = ll_createAuxArray(this.svd.casMetadata.ts.booleanArrayTypeCode, arrayLength);
+    final int addr = ll_createAuxArray(TypeSystemImpl.booleanArrayTypeCode, arrayLength);
     this.getHeap().heap[addr + arrayContentOffset] = this.getByteHeap().reserve(arrayLength);
     return addr;
   }
 
   public int ll_createShortArray(int arrayLength) {
-    final int addr = ll_createAuxArray(this.svd.casMetadata.ts.shortArrayTypeCode, arrayLength);
+    final int addr = ll_createAuxArray(TypeSystemImpl.shortArrayTypeCode, arrayLength);
     this.getHeap().heap[addr + arrayContentOffset] = this.getShortHeap().reserve(arrayLength);
     return addr;
   }
 
   public int ll_createLongArray(int arrayLength) {
-    final int addr = ll_createAuxArray(this.svd.casMetadata.ts.longArrayTypeCode, arrayLength);
+    final int addr = ll_createAuxArray(TypeSystemImpl.longArrayTypeCode, arrayLength);
     this.getHeap().heap[addr + arrayContentOffset] = this.getLongHeap().reserve(arrayLength);
     return addr;
   }
 
   public int ll_createDoubleArray(int arrayLength) {
-    final int addr = ll_createAuxArray(this.svd.casMetadata.ts.doubleArrayTypeCode, arrayLength);
+    final int addr = ll_createAuxArray(TypeSystemImpl.doubleArrayTypeCode, arrayLength);
     this.getHeap().heap[addr + arrayContentOffset] = this.getLongHeap().reserve(arrayLength);
     return addr;
   }
@@ -3511,7 +3506,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final int ll_getIntValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.intTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.intTypeCode, featureCode);
     }
     return ll_getIntValue(fsRef, featureCode);
   }
@@ -3524,7 +3519,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public final float ll_getFloatValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.floatTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.floatTypeCode, featureCode);
     }
     return ll_getFloatValue(fsRef, featureCode);
   }
@@ -3537,7 +3532,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public final String ll_getStringValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.stringTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.stringTypeCode, featureCode);
     }
     return ll_getStringValue(fsRef, featureCode);
   }
@@ -3813,21 +3808,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   public final void ll_setIntValue(int fsRef, int featureCode, int value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.intTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.intTypeCode, featureCode);
     }
     ll_setIntValue(fsRef, featureCode, value);
   }
 
   public final void ll_setFloatValue(int fsRef, int featureCode, float value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.floatTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.floatTypeCode, featureCode);
     }
     ll_setFloatValue(fsRef, featureCode, value);
   }
 
   public final void ll_setStringValue(int fsRef, int featureCode, String value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.stringTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.stringTypeCode, featureCode);
     }
     ll_setStringValue(fsRef, featureCode, value);
   }
@@ -3835,7 +3830,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final void ll_setCharBufferValue(int fsRef, int featureCode, char[] buffer, int start,
       int length, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.stringTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.stringTypeCode, featureCode);
     }
     ll_setCharBufferValue(fsRef, featureCode, buffer, start, length);
   }
@@ -3975,56 +3970,56 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public final int ll_getIntArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.intArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.intArrayTypeCode, position);
     }
     return ll_getIntArrayValue(fsRef, position);
   }
 
   public float ll_getFloatArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.floatArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.floatArrayTypeCode, position);
     }
     return ll_getFloatArrayValue(fsRef, position);
   }
 
   public String ll_getStringArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.stringArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.stringArrayTypeCode, position);
     }
     return ll_getStringArrayValue(fsRef, position);
   }
 
   public int ll_getRefArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.fsArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.fsArrayTypeCode, position);
     }
     return ll_getRefArrayValue(fsRef, position);
   }
 
   public void ll_setIntArrayValue(int fsRef, int position, int value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.intArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.intArrayTypeCode, position);
     }
     ll_setIntArrayValue(fsRef, position, value);
   }
 
   public void ll_setFloatArrayValue(int fsRef, int position, float value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.floatArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.floatArrayTypeCode, position);
     }
     ll_setFloatArrayValue(fsRef, position, value);
   }
 
   public void ll_setStringArrayValue(int fsRef, int position, String value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.stringArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.stringArrayTypeCode, position);
     }
     ll_setStringArrayValue(fsRef, position, value);
   }
 
   public void ll_setRefArrayValue(int fsRef, int position, int value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.fsArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.fsArrayTypeCode, position);
       checkFsRef(value);
     }
     ll_setRefArrayValue(fsRef, position, value);
@@ -4221,7 +4216,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public byte ll_getByteValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.byteTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.byteTypeCode, featureCode);
     }
     return ll_getByteValue(fsRef, featureCode);
   }
@@ -4232,7 +4227,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public boolean ll_getBooleanValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.booleanTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.booleanTypeCode, featureCode);
     }
     return ll_getBooleanValue(fsRef, featureCode);
   }
@@ -4243,7 +4238,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public short ll_getShortValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.shortTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.shortTypeCode, featureCode);
     }
     return ll_getShortValue(fsRef, featureCode);
   }
@@ -4266,7 +4261,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public long ll_getLongValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.longTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.longTypeCode, featureCode);
     }
     return ll_getLongValue(fsRef, featureCode);
   }
@@ -4286,7 +4281,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public double ll_getDoubleValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.doubleTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.doubleTypeCode, featureCode);
     }
     return ll_getDoubleValue(fsRef, featureCode);
   }
@@ -4297,7 +4292,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setBooleanValue(int fsRef, int featureCode, boolean value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.booleanTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.booleanTypeCode, featureCode);
     }
     ll_setBooleanValue(fsRef, featureCode, value);
   }
@@ -4308,7 +4303,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setByteValue(int fsRef, int featureCode, byte value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.byteTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.byteTypeCode, featureCode);
     }
     ll_setByteValue(fsRef, featureCode, value);
   }
@@ -4319,7 +4314,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setShortValue(int fsRef, int featureCode, short value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.booleanTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.booleanTypeCode, featureCode);
     }
     ll_setShortValue(fsRef, featureCode, value);
   }
@@ -4331,7 +4326,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setLongValue(int fsRef, int featureCode, long value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.longTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.longTypeCode, featureCode);
     }
     ll_setLongValue(fsRef, featureCode, value);
   }
@@ -4344,7 +4339,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setDoubleValue(int fsRef, int featureCode, double value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkNonArrayConditions(fsRef, this.svd.casMetadata.ts.doubleTypeCode, featureCode);
+      checkNonArrayConditions(fsRef, TypeSystemImpl.doubleTypeCode, featureCode);
     }
     ll_setDoubleValue(fsRef, featureCode, value);
   }
@@ -4356,7 +4351,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public byte ll_getByteArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.byteArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.byteArrayTypeCode, position);
     }
     return ll_getByteArrayValue(fsRef, position);
   }
@@ -4368,7 +4363,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public boolean ll_getBooleanArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.booleanArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.booleanArrayTypeCode, position);
     }
     return ll_getBooleanArrayValue(fsRef, position);
   }
@@ -4380,7 +4375,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public short ll_getShortArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.shortArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.shortArrayTypeCode, position);
     }
     return ll_getShortArrayValue(fsRef, position);
   }
@@ -4392,7 +4387,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public long ll_getLongArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.longArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.longArrayTypeCode, position);
     }
     return ll_getLongArrayValue(fsRef, position);
   }
@@ -4405,7 +4400,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public double ll_getDoubleArrayValue(int fsRef, int position, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.doubleArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.doubleArrayTypeCode, position);
     }
     return ll_getDoubleArrayValue(fsRef, position);
   }
@@ -4421,7 +4416,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void ll_setByteArrayValue(int fsRef, int position, byte value, boolean doTypeChecks) {
 
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.byteArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.byteArrayTypeCode, position);
     }
     ll_setByteArrayValue(fsRef, position, value);
   }
@@ -4437,7 +4432,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setBooleanArrayValue(int fsRef, int position, boolean value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.booleanArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.booleanArrayTypeCode, position);
     }
     ll_setBooleanArrayValue(fsRef, position, value);
   }
@@ -4452,7 +4447,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setShortArrayValue(int fsRef, int position, short value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.shortArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.shortArrayTypeCode, position);
     }
     ll_setShortArrayValue(fsRef, position, value);
   }
@@ -4467,7 +4462,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setLongArrayValue(int fsRef, int position, long value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.longArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.longArrayTypeCode, position);
     }
     ll_setLongArrayValue(fsRef, position, value);
   }
@@ -4484,7 +4479,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public void ll_setDoubleArrayValue(int fsRef, int position, double value, boolean doTypeChecks) {
     if (doTypeChecks) {
-      checkPrimitiveArrayConditions(fsRef, this.svd.casMetadata.ts.doubleArrayTypeCode, position);
+      checkPrimitiveArrayConditions(fsRef, TypeSystemImpl.doubleArrayTypeCode, position);
     }
     ll_setDoubleArrayValue(fsRef, position, value);
   }
@@ -4498,7 +4493,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return true if that type is subsumed by AnnotationBase type
    */
   public boolean isSubtypeOfAnnotationBaseType(int t) {
-    return this.svd.casMetadata.ts.subsumes(this.svd.casMetadata.ts.annotBaseTypeCode, t);
+    return this.svd.casMetadata.ts.subsumes(TypeSystemImpl.annotBaseTypeCode, t);
   }
 
   public AnnotationFS createAnnotation(Type type, int begin, int end) {
@@ -4508,23 +4503,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           new String[] { "createAnnotation(Type, int, int)" });
       throw e;
     }
-    final TypeSystemImpl ts = this.svd.casMetadata.ts;
     FeatureStructure fs = createFS(type);
     final int addr = ll_getFSRef(fs);
     // setSofaFeat(addr, this.mySofaRef); // already done by createFS
-    setFeatureValueNotJournaled(addr, ts.startFeatCode, begin); // because it's a create - not in index
+    setFeatureValueNotJournaled(addr, TypeSystemImpl.startFeatCode, begin); // because it's a create - not in index
     // setStartFeat(addr, begin);
-    setFeatureValueNotJournaled(addr, ts.endFeatCode, end); // because it's a create - not in index
+    setFeatureValueNotJournaled(addr, TypeSystemImpl.endFeatCode, end); // because it's a create - not in index
     // setEndFeat(addr, end);
     return (AnnotationFS) fs;
   }
   
   public int ll_createAnnotation(int typeCode, int begin, int end) {
     int addr = ll_createFSAnnotCheck(typeCode);
-    final TypeSystemImpl ts = svd.casMetadata.ts;
-    setFeatureValueNotJournaled(addr, ts.startFeatCode, begin); // because it's a create - not in index
+    setFeatureValueNotJournaled(addr, TypeSystemImpl.startFeatCode, begin); // because it's a create - not in index
     // setStartFeat(addr, begin);
-    setFeatureValueNotJournaled(addr, ts.endFeatCode, end); // because it's a create - not in index
+    setFeatureValueNotJournaled(addr, TypeSystemImpl.endFeatCode, end); // because it's a create - not in index
     return addr;
   }
   
@@ -4610,7 +4603,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       final int docAnnot = ll_getDocumentAnnotation();
       if (docAnnot != 0) {
         count = this.indexRepository.removeIfInCorrputableIndexInThisView(docAnnot);
-        setFeatureValueNoIndexCorruptionCheck(docAnnot, getTypeSystemImpl().endFeatCode, newDoc.length());
+        setFeatureValueNoIndexCorruptionCheck(docAnnot, TypeSystemImpl.endFeatCode, newDoc.length());
         if (count > 0) {
           ((FSIndexRepositoryImpl)ll_getIndexRepository()).ll_addback(docAnnot, count);
         }
@@ -4662,7 +4655,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return null;
     }
     final int docAnnotAddr = ll_getFSRef(getDocumentAnnotation());
-    return ll_getStringValue(docAnnotAddr, this.svd.casMetadata.ts.langFeatCode);
+    return ll_getStringValue(docAnnotAddr, TypeSystemImpl.langFeatCode);
   }
 
   public String getDocumentText() {
@@ -4686,7 +4679,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return null;
     }
     if (mySofaIsValid()) {
-      return ll_getFSForRef(ll_getRefValue(mySofaRef, getTypeSystemImpl().sofaArrayFeatCode));
+      return ll_getFSForRef(ll_getRefValue(mySofaRef, TypeSystemImpl.sofaArrayFeatCode));
 //      return this.getSofa(this.mySofaRef).getLocalFSData();
     }
     return null;
@@ -4769,7 +4762,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     LowLevelCAS llc = this;
     final int docAnnotAddr = llc.ll_getFSRef(getDocumentAnnotation());
     languageCode = Language.normalize(languageCode);
-    llc.ll_setStringValue(docAnnotAddr, this.svd.casMetadata.ts.langFeatCode, languageCode);
+    llc.ll_setStringValue(docAnnotAddr, TypeSystemImpl.langFeatCode, languageCode);
   }
 
   public void setDocumentText(String text) {
@@ -4794,7 +4787,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // try to put the document into the SofaString ...
     // ... will fail if previously set
     getSofa(this.mySofaRef).setLocalSofaData(text);
-    ll_setStringValue(this.mySofaRef, this.svd.casMetadata.ts.sofaMimeFeatCode,
+    ll_setStringValue(this.mySofaRef, TypeSystemImpl.sofaMimeFeatCode,
         mime);
   }
 
@@ -4810,7 +4803,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // try to put the document into the SofaString ...
     // ... will fail if previously set
     getSofa(this.mySofaRef).setLocalSofaData(array);
-    ll_setStringValue(this.mySofaRef, this.svd.casMetadata.ts.sofaMimeFeatCode,
+    ll_setStringValue(this.mySofaRef, TypeSystemImpl.sofaMimeFeatCode,
         mime);
   }
 
@@ -4826,7 +4819,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // try to put the document into the SofaString ...
     // ... will fail if previously set
     getSofa(this.mySofaRef).setRemoteSofaURI(uri);
-    ll_setStringValue(this.mySofaRef, this.svd.casMetadata.ts.sofaMimeFeatCode,
+    ll_setStringValue(this.mySofaRef, TypeSystemImpl.sofaMimeFeatCode,
         mime);
   }
 
