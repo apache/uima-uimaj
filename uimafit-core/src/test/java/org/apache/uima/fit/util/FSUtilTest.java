@@ -123,6 +123,13 @@ public class FSUtilTest {
     
     setFeature(fs, "AnnotationValue", cas.createAnnotation(annotationType, 0, 1));
 
+    setFeature(fs, "BooleanArrayValue", true);
+    assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
+
+    setFeature(fs, "BooleanArrayValue", true, false);
+    assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
+    assertEquals(false, getFeature(fs, "BooleanArrayValue", boolean[].class)[1]);
+    
     setFeature(fs, "BooleanArrayValue", new boolean[] { true, false });
     assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
     assertEquals(false, getFeature(fs, "BooleanArrayValue", boolean[].class)[1]);
