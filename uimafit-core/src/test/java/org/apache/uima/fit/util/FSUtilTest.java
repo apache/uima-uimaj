@@ -24,6 +24,7 @@ import static org.apache.uima.fit.util.FSUtil.setFeature;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
@@ -122,6 +123,15 @@ public class FSUtilTest {
     setFeature(fs, "TopValue", cas.createArrayFS(1));
     
     setFeature(fs, "AnnotationValue", cas.createAnnotation(annotationType, 0, 1));
+
+    setFeature(fs, "BooleanArrayValue", (boolean[]) null);
+    assertEquals(null, getFeature(fs, "BooleanArrayValue", boolean[].class));
+
+    setFeature(fs, "BooleanArrayValue", (Collection) null);
+    assertEquals(null, getFeature(fs, "BooleanArrayValue", boolean[].class));
+
+    setFeature(fs, "BooleanArrayValue", new boolean[0]);
+    assertEquals(0, getFeature(fs, "BooleanArrayValue", boolean[].class).length);
 
     setFeature(fs, "BooleanArrayValue", true);
     assertEquals(true, getFeature(fs, "BooleanArrayValue", boolean[].class)[0]);
