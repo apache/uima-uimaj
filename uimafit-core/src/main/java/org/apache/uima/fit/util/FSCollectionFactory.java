@@ -36,6 +36,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
@@ -50,10 +51,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.DoubleArray;
-import org.apache.uima.jcas.cas.EmptyFSList;
-import org.apache.uima.jcas.cas.EmptyFloatList;
-import org.apache.uima.jcas.cas.EmptyIntegerList;
-import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -531,87 +528,247 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
   }
 
   public static FSList createFSList(JCas aJCas, Collection<? extends TOP> aCollection) {
-    if (aCollection.isEmpty()) {
-      return new EmptyFSList(aJCas);
-    }
+    return createFSList(aJCas.getCas(), aCollection);
+  }
 
-    NonEmptyFSList head = new NonEmptyFSList(aJCas);
-    NonEmptyFSList list = head;
-    Iterator<? extends TOP> i = aCollection.iterator();
+  public static <T extends FeatureStructure> T createFSList(CAS aCas, FeatureStructure... aValues) {
+    return createFSList(aCas, asList(aValues));
+  }
+  
+  public static <T extends FeatureStructure> T createFSList(CAS aCas,
+          Collection<? extends FeatureStructure> aValues) {
+    if (aValues == null) {
+      return null;
+    }
+    
+    TypeSystem ts = aCas.getTypeSystem();
+
+    Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_FS_LIST);
+
+    if (aValues.size() == 0) {
+      return aCas.createFS(emptyType);
+    }
+    
+    Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
+    Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+
+    FeatureStructure head = aCas.createFS(nonEmptyType);
+    FeatureStructure list = head;
+    Iterator<? extends FeatureStructure> i = aValues.iterator();
     while (i.hasNext()) {
-      head.setHead(i.next());
+      head.setFeatureValue(headFeature, i.next());
       if (i.hasNext()) {
-        head.setTail(new NonEmptyFSList(aJCas));
-        head = (NonEmptyFSList) head.getTail();
+        FeatureStructure tail = aCas.createFS(nonEmptyType);
+        head.setFeatureValue(tailFeature, tail);
+        head = tail;
       } else {
-        head.setTail(new EmptyFSList(aJCas));
+        head.setFeatureValue(tailFeature, aCas.createFS(emptyType));
       }
     }
 
-    return list;
+    return (T) list;
+  }
+
+
+  public static FloatList createFloatList(JCas aJCas, float... aValues) {
+    return createFloatList(aJCas.getCas(), aValues);
+  }
+
+  public static <T extends FeatureStructure> T createFloatList(CAS aCas, float... aValues) {
+    if (aValues == null) {
+      return null;
+    }
+    
+    TypeSystem ts = aCas.getTypeSystem();
+
+    Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST);
+
+    if (aValues.length == 0) {
+      return aCas.createFS(emptyType);
+    }
+    
+    Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST);
+    Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+
+    FeatureStructure head = aCas.createFS(nonEmptyType);
+    FeatureStructure list = head;
+    int i = 0;
+    while (i < aValues.length) {
+      head.setFloatValue(headFeature, aValues[i]);
+      i++;
+      if (i < aValues.length) {
+        FeatureStructure tail = aCas.createFS(nonEmptyType);
+        head.setFeatureValue(tailFeature, tail);
+        head = tail;
+      } else {
+        head.setFeatureValue(tailFeature, aCas.createFS(emptyType));
+      }
+    }
+
+    return (T) list;
+  }
+
+  public static <T extends FeatureStructure> T createFloatList(CAS aCas, Collection<Float> aValues) {
+    if (aValues == null) {
+      return null;
+    }
+    
+    TypeSystem ts = aCas.getTypeSystem();
+
+    Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_FLOAT_LIST);
+
+    if (aValues.size() == 0) {
+      return aCas.createFS(emptyType);
+    }
+    
+    Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST);
+    Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+
+    FeatureStructure head = aCas.createFS(nonEmptyType);
+    FeatureStructure list = head;
+    Iterator<Float> i = aValues.iterator();
+    while (i.hasNext()) {
+      head.setFloatValue(headFeature, i.next());
+      if (i.hasNext()) {
+        FeatureStructure tail = aCas.createFS(nonEmptyType);
+        head.setFeatureValue(tailFeature, tail);
+        head = tail;
+      } else {
+        head.setFeatureValue(tailFeature, aCas.createFS(emptyType));
+      }
+    }
+
+    return (T) list;
   }
 
   public static FloatList createFloatList(JCas aJCas, Collection<Float> aCollection) {
-    if (aCollection.isEmpty()) {
-      return new EmptyFloatList(aJCas);
-    }
+    return createFloatList(aJCas.getCas(), aCollection);
+  }
 
-    NonEmptyFloatList head = new NonEmptyFloatList(aJCas);
-    NonEmptyFloatList list = head;
-    Iterator<Float> i = aCollection.iterator();
-    while (i.hasNext()) {
-      head.setHead(i.next());
-      if (i.hasNext()) {
-        head.setTail(new NonEmptyFloatList(aJCas));
-        head = (NonEmptyFloatList) head.getTail();
+  public static IntegerList createIntegerList(JCas aJCas, int... aValues) {
+    return createIntegerList(aJCas.getCas(), aValues);
+  }
+
+  public static <T extends FeatureStructure> T createIntegerList(CAS aCas, int... aValues) {
+    if (aValues == null) {
+      return null;
+    }
+    
+    TypeSystem ts = aCas.getTypeSystem();
+
+    Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST);
+
+    if (aValues.length == 0) {
+      return aCas.createFS(emptyType);
+    }
+    
+    Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
+    Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+
+    FeatureStructure head = aCas.createFS(nonEmptyType);
+    FeatureStructure list = head;
+    int i = 0;
+    while (i < aValues.length) {
+      head.setIntValue(headFeature, aValues[i]);
+      i++;
+      if (i < aValues.length) {
+        FeatureStructure tail = aCas.createFS(nonEmptyType);
+        head.setFeatureValue(tailFeature, tail);
+        head = tail;
       } else {
-        head.setTail(new EmptyFloatList(aJCas));
+        head.setFeatureValue(tailFeature, aCas.createFS(emptyType));
       }
     }
 
-    return list;
+    return (T) list;
+  }
+
+  public static <T extends FeatureStructure> T createIntegerList(CAS aCas, Collection<Integer> aValues) {
+    if (aValues == null) {
+      return null;
+    }
+    
+    TypeSystem ts = aCas.getTypeSystem();
+
+    Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_INTEGER_LIST);
+
+    if (aValues.size() == 0) {
+      return aCas.createFS(emptyType);
+    }
+    
+    Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
+    Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+
+    FeatureStructure head = aCas.createFS(nonEmptyType);
+    FeatureStructure list = head;
+    Iterator<Integer> i = aValues.iterator();
+    while (i.hasNext()) {
+      head.setIntValue(headFeature, i.next());
+      if (i.hasNext()) {
+        FeatureStructure tail = aCas.createFS(nonEmptyType);
+        head.setFeatureValue(tailFeature, tail);
+        head = tail;
+      } else {
+        head.setFeatureValue(tailFeature, aCas.createFS(emptyType));
+      }
+    }
+
+    return (T) list;
   }
 
   public static IntegerList createIntegerList(JCas aJCas, Collection<Integer> aCollection) {
-    if (aCollection.isEmpty()) {
-      return new EmptyIntegerList(aJCas);
-    }
+    return createIntegerList(aJCas.getCas(), aCollection);
+  }
 
-    NonEmptyIntegerList head = new NonEmptyIntegerList(aJCas);
-    NonEmptyIntegerList list = head;
-    Iterator<Integer> i = aCollection.iterator();
+  public static StringList createStringList(JCas aJCas, String... aValues) {
+    return createStringList(aJCas.getCas(), aValues);
+  }
+
+  public static <T extends FeatureStructure> T createStringList(CAS aCas, String... aValues) {
+    return createStringList(aCas, asList(aValues));
+  }
+  
+  public static <T extends FeatureStructure> T createStringList(CAS aCas, Collection<String> aValues) {
+    if (aValues == null) {
+      return null;
+    }
+    
+    TypeSystem ts = aCas.getTypeSystem();
+
+    Type emptyType = ts.getType(CAS.TYPE_NAME_EMPTY_STRING_LIST);
+
+    if (aValues.size() == 0) {
+      return aCas.createFS(emptyType);
+    }
+    
+    Type nonEmptyType = ts.getType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST);
+    Feature headFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD);
+    Feature tailFeature = nonEmptyType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL);
+
+    FeatureStructure head = aCas.createFS(nonEmptyType);
+    FeatureStructure list = head;
+    Iterator<String> i = aValues.iterator();
     while (i.hasNext()) {
-      head.setHead(i.next());
+      head.setStringValue(headFeature, i.next());
       if (i.hasNext()) {
-        head.setTail(new NonEmptyIntegerList(aJCas));
-        head = (NonEmptyIntegerList) head.getTail();
+        FeatureStructure tail = aCas.createFS(nonEmptyType);
+        head.setFeatureValue(tailFeature, tail);
+        head = tail;
       } else {
-        head.setTail(new EmptyIntegerList(aJCas));
+        head.setFeatureValue(tailFeature, aCas.createFS(emptyType));
       }
     }
 
-    return list;
+    return (T) list;
   }
 
   public static StringList createStringList(JCas aJCas, Collection<String> aCollection) {
-    if (aCollection.isEmpty()) {
-      return new EmptyStringList(aJCas);
-    }
-
-    NonEmptyStringList head = new NonEmptyStringList(aJCas);
-    NonEmptyStringList list = head;
-    Iterator<String> i = aCollection.iterator();
-    while (i.hasNext()) {
-      head.setHead(i.next());
-      if (i.hasNext()) {
-        head.setTail(new NonEmptyStringList(aJCas));
-        head = (NonEmptyStringList) head.getTail();
-      } else {
-        head.setTail(new EmptyStringList(aJCas));
-      }
-    }
-
-    return list;
+    return createStringList(aJCas.getCas(), aCollection);
   }
 
   private static class FSIteratorAdapter<T extends FeatureStructure> extends AbstractCollection<T> {
