@@ -92,6 +92,9 @@ public class FSUtil {
       requireSingleValue(feat, aValue);
       aFS.setBooleanValue(feat, aValue[0]);
     }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
     else {
       aFS.setFeatureValue(feat, createBooleanArray(aFS.getCAS(), aValue));
     }
@@ -102,6 +105,9 @@ public class FSUtil {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setByteValue(feat, aValue[0]);
+    }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
     }
     else {
       aFS.setFeatureValue(feat, createByteArray(aFS.getCAS(), aValue));
@@ -114,6 +120,9 @@ public class FSUtil {
       requireSingleValue(feat, aValue);
       aFS.setDoubleValue(feat, aValue[0]);
     }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
     else {
       aFS.setFeatureValue(feat, createDoubleArray(aFS.getCAS(), aValue));
     }
@@ -124,6 +133,9 @@ public class FSUtil {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setFloatValue(feat, aValue[0]);
+    }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
     }
     else if (feat.getRange().isArray()) {
       aFS.setFeatureValue(feat, createFloatArray(aFS.getCAS(), aValue));
@@ -139,6 +151,9 @@ public class FSUtil {
       requireSingleValue(feat, aValue);
       aFS.setIntValue(feat, aValue[0]);
     }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
     else if (feat.getRange().isArray()) {
       aFS.setFeatureValue(feat, createIntArray(aFS.getCAS(), aValue));
     }
@@ -153,6 +168,9 @@ public class FSUtil {
       requireSingleValue(feat, aValue);
       aFS.setLongValue(feat, aValue[0]);
     }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
     else {
       aFS.setFeatureValue(feat, createLongArray(aFS.getCAS(), aValue));
     }
@@ -164,6 +182,9 @@ public class FSUtil {
       requireSingleValue(feat, aValue);
       aFS.setShortValue(feat, aValue[0]);
     }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
     else {
       aFS.setFeatureValue(feat, createShortArray(aFS.getCAS(), aValue));
     }
@@ -174,6 +195,9 @@ public class FSUtil {
     if (feat.getRange().isPrimitive()) {
       requireSingleValue(feat, aValue);
       aFS.setStringValue(feat, aValue[0]);
+    }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
     }
     else if (feat.getRange().isArray()) {
       aFS.setFeatureValue(feat, createStringArray(aFS.getCAS(), aValue));
@@ -188,6 +212,9 @@ public class FSUtil {
     if (feat.getRange().isArray()) {
       aFS.setFeatureValue(feat, createArrayFS(aFS.getCAS(), aValue));
     }
+    else if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
     else if (isListType(aFS.getCAS().getTypeSystem(), feat.getRange())) {
       aFS.setFeatureValue(feat, createFSList(aFS.getCAS(), aValue));
     }
@@ -200,7 +227,10 @@ public class FSUtil {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void setFeature(FeatureStructure aFS, String aFeature, Collection aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
-    if (feat.getRange().isArray()) {
+    if (aValue == null) {
+      aFS.setFeatureValue(feat, null);
+    }
+    else if (feat.getRange().isArray()) {
       switch (feat.getRange().getName()) {
         case CAS.TYPE_NAME_BOOLEAN_ARRAY:
           aFS.setFeatureValue(feat, createBooleanArray(aFS.getCAS(), aValue));
@@ -276,6 +306,11 @@ public class FSUtil {
           throw new IllegalArgumentException("Unable to coerce value of feature [" + feat.getName()
                   + "] with type [" + feat.getRange().getName() + "] into [" + aClazz.getName() + "]");
       }
+    }
+    
+    // "null" case
+    if (aFS.getFeatureValue(feat) == null) {
+      return null;
     }
     
     // Here we store the values before we coerce them into the final target type
