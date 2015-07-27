@@ -169,8 +169,10 @@ public class FilteredIteratorTest extends TestCase {
 
     iterAndCount1(false);
     
-    expandBeyondFlatThreshold(6);  // enables flat iterator
-    iterAndCount1(true);
+    if (FSIndexFlat.enabled) {
+      expandBeyondFlatThreshold(6);  // enables flat iterator
+      iterAndCount1(true);
+    }
     
   }
   

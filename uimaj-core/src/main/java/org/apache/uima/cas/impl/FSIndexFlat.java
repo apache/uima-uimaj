@@ -92,6 +92,9 @@ import org.apache.uima.util.Misc;
  */
 
 public class FSIndexFlat<T extends FeatureStructure> {
+
+  //public for test case
+  public final static boolean enabled = false;  // disabled July 2015, too many edge cases, too little benefit
   
   final static boolean trace = false;  // causes tracing msgs to system.out
   private final static boolean smalltrace = false;
@@ -163,7 +166,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
         throw new NoSuchElementException();
       }
       final TI fs = (TI) ifsa[pos];
-      final int typeCode = ((FeatureStructureImpl)fs).getTypeCode();
+      final int typeCode = ((FeatureStructureImpl)fs).getavoidcollisionTypeCode();
       if (debugTypeCodeUnstable) {
         if ((fs instanceof TOP) &&  // insures jcas in use
             !iicp.subsumes(((TOP)fs).jcasType.casTypeCode, typeCode)) { 
@@ -257,7 +260,11 @@ public class FSIndexFlat<T extends FeatureStructure> {
 
     // for debug - used by double-check iterator
     public boolean isUpdateFreeSinceLastCounterReset() {
-      return iicp.isUpdateFreeSinceLastCounterReset();
+      if (! enabled) {
+        return false;
+      } else {
+        return iicp.isUpdateFreeSinceLastCounterReset();
+      }
     }
     
     // for debug - used by double-check iterator
@@ -594,6 +601,11 @@ public class FSIndexFlat<T extends FeatureStructure> {
   }
   
 /**
+ * As of July 2015, flattened indexes are disabled - too little benefit, too many edge cases:
+ *   edge cases to handle: going from non-JCas -> JCas requires existing flat indexes to be invalidated
+ *   edge case: entering a PEAR, may require different impl of flattened indexes while in the PEAR, 
+ *     plus restoration of previous versions upon PEAR exit
+ *     
  * This iterator either returns an iterator over the flattened index, or null.
  * As a side effect, if there is no flattened index, check the counts and if there's enough,
  * kick off a subtask to create the flattened one.
@@ -602,29 +614,37 @@ public class FSIndexFlat<T extends FeatureStructure> {
  * @return the iterator, or null if there's no flattened iterator (the caller will construct the appropriate iterator)
  */
   public FSIteratorFlat<T> iterator(FeatureStructure fs) {
-//    final boolean isUpdateFree = iicp.isUpdateFreeSinceLastCounterReset();
-    FSIteratorFlat<T> fi = tryFlatIterator(fs);
-    if (null != fi) {
-      return fi;
-    }
-    
-    // localFsa is null, unless a builder snuck in...
-    // restart counters if an update has occurred since last time counters started
-    if (!iicp.isUpdateFreeSinceLastCounterReset()) {
-      captureIndexUpdateCounts();  // does the counter reset too
-      return null;
-    }
-    // if no update has occurred, see if enough rattling has happened to warrant the creation of
-    // a flat index.  The threshold is adjusted upwards if the evidence is that this particular index
-    // has flattened and then discarded due to subsequent updates.
-    if (iteratorReorderingCount > (THRESHOLD_FOR_FLATTENING + numberDiscardedResetable * 2) && 
-        iteratorReorderingCount > iicp.guessedSize()) {
-      if (createFlattened()) {
-        return tryFlatIterator(fs);  // might return null 
+    if (! enabled) {
+      return null; // no flat iterators for now (7/2015)
+                   // edge cases to handle: going from non-JCas -> JCas requires existing flat indexes to be invalidated
+                   // edge case: entering a PEAR, may require different impl of flattened indexes while in the PEAR, 
+                   //   plus restoration of previous versions upon PEAR exit
+    } else {
+
+        //    final boolean isUpdateFree = iicp.isUpdateFreeSinceLastCounterReset();
+      FSIteratorFlat<T> fi = tryFlatIterator(fs);
+      if (null != fi) {
+        return fi;
+      }
+      
+      // localFsa is null, unless a builder snuck in...
+      // restart counters if an update has occurred since last time counters started
+      if (!iicp.isUpdateFreeSinceLastCounterReset()) {
+        captureIndexUpdateCounts();  // does the counter reset too
+        return null;
+      }
+      // if no update has occurred, see if enough rattling has happened to warrant the creation of
+      // a flat index.  The threshold is adjusted upwards if the evidence is that this particular index
+      // has flattened and then discarded due to subsequent updates.
+      if (iteratorReorderingCount > (THRESHOLD_FOR_FLATTENING + numberDiscardedResetable * 2) && 
+          iteratorReorderingCount > iicp.guessedSize()) {
+        if (createFlattened()) {
+          return tryFlatIterator(fs);  // might return null 
+        } 
+        return null; // failed to create flattened, continue with regular
       } 
-      return null; // failed to create flattened, continue with regular
-    } 
-    return null;   // not time to try creating flattened one yet    
+      return null;   // not time to try creating flattened one yet
+    }    
   }
     
   private FSIteratorFlat<T> tryFlatIterator(FeatureStructure fs) {
@@ -668,7 +688,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
    * @return true if fsa not null and the index hasn't been updated
    */
   boolean hasFlatIndex() {
-    return (fsa.get() != null && iicp.isUpdateFreeSinceLastCounterReset());
+    return enabled && (fsa.get() != null && iicp.isUpdateFreeSinceLastCounterReset());
   }
     
   private static final Thread dumpMeasurements = tune ? new Thread(new Runnable() {

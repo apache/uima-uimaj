@@ -331,7 +331,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         this.cachedSubFsLeafIndexes = tempSubIndexCache; 
         if (this.fsLeafIndex.getIndexingStrategy() == FSIndex.SORTED_INDEX) {
           Arrays.sort(sortedTypeCodes);
-          this.flatIndex = new FSIndexFlat<>(this); // must follow cachedSubFsLeafIndexes setup
+          this.flatIndex = FSIndexFlat.enabled ? new FSIndexFlat<>(this) : null; // must follow cachedSubFsLeafIndexes setup
         }
         // assign to "volatile" at end, after all initialization is complete
         this.isIteratorCacheSetup = true;
@@ -488,7 +488,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     // flatIndex is null except for sorted indexes
     private boolean hasFlatIndex() {
-      return isIteratorCacheSetup && (flatIndex != null) && flatIndex.hasFlatIndex();
+      if (! FSIndexFlat.enabled) {
+        return false;
+      } else {
+        return isIteratorCacheSetup && (flatIndex != null) && flatIndex.hasFlatIndex();
+      }
     }
     
   }  // end of class definition for IndexIteratorCachePair

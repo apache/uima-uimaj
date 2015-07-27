@@ -259,7 +259,8 @@ public class AnnotationIteratorTest extends TestCase {
     AnnotationIndex<AnnotationFS> annotIndex = this.cas.getAnnotationIndex();
     AnnotationIndex<AnnotationFS> sentIndex = this.cas.getAnnotationIndex(sentenceType);
     FSIterator<AnnotationFS> it = annotIndex.iterator(true);  // a normal "ambiguous" iterator
-    assertTrue((isSave) ? it instanceof FSIteratorWrapper : it instanceof FSIndexFlat.FSIteratorFlat);   
+    assertTrue((isSave) ? it instanceof FSIteratorWrapper : 
+      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
     assertCount("Normal ambiguous annot iterator", annotCount, it);
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
