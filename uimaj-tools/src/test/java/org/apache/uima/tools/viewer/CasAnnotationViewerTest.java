@@ -206,6 +206,11 @@ public class CasAnnotationViewerTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  
+  public void testAddAnnotationToTreeJCas() throws Exception {
+    this.cas.getJCas();
+    testAddAnnotationToTree();
+  }
 
   private void createExampleFS(CAS cas) throws Exception {
     // Set the document text
