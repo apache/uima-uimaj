@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.8.0 Release Notes</title>
+  <title>Apache UIMA v2.8.1 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.1 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -81,43 +81,26 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<h3>Iterating over sorted indexes performance improvement</h3>
-<p>Sorted index usage by iterators is monitored, and when it is determined that
-a particular index is no longer being updated and is experiencing poor performance due to
-merging of subindexes for the subtypes being iterated over, a one-time conversion
-of this index to a "flattened" version is done; the flattened form incurs the cost
-of merging subindexes once, and for subsequent uses, iteration speed is improved.
-Any update that affects this flattened index will cause it to be discarded and 
-not used for subsequent iterations.  Performance improvement should be seen for the
-perhaps common use case where one annotator creates and indexes instances of a type and its subtypes, 
-and subsequent annotators read and perhaps update these, 
-but don't add or remove entries of this type/subtypes from the index.
-Jira issue <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4357">UIMA-4357</a></p>
+<p>The flattened index support added in 2.8.0 has some edge cases where the
+flattened version needs to be invalidated.  In trading off complexity versus
+performance improvements, we decided to disable this feature for now. 
+<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4542">UIMA-4542</a>
+</p>
 
-<h3>Other major changes</h3> 
-<ul><li>The Document Analyzer's Java-based Cas Viewer was extended to support being
-able to select which annotations are highlighted, using a selection approach where you can
-specify a type plus a feature of that type plus one or more values of that feature.
- Jira issue <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-3374">UIMA-3374</a></li>
- 
- <li>Performance for iterators over UIMA Set Indexes was improved. 
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4345">UIMA-4345</a>.</li>
- </ul>
+<p>A few bugs were fixed in the CasAnnotationViewer
+<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4533">UIMA-4533</a>, a name-clash was
+fixed in an internal method, which could clash with a JCas-generated name
+if there was a feature that happened to be named "TypeCode" 
+<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4534">UIMA-4534</a>,
+and the CasCopier code was improved to cover an additional use case
+<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4541">UIMA-4541</a>
+</p>
  
  <h3>API changes</h3>
- <p>Note that we have moved to a more formal semantic versioning, following
- the ideas in <a target="_blank" href="http://semver.org/">http://semver.org/</a>.</p>
  <p> 
- There were no API changes that affect backward compatibility.  Some new APIs were added or extended.</p>
- <ul>
- <li>Add back the API <code>alreadyCopied</code> that was accidentally removed in the CasCopier class in version 2.7.0.
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4428">UIMA-4428</a>.</li>
+ There were no API changes that affect backward compatibility.
+ </p>
  
- <li>add new variants of <code>getAllIndexedFS, getIndex, and getAnnotationIndex</code> which take an additional argument
- that specifies the JCas class, and permits these to return the correct generically typed indexes. 
- Jira issue: <a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4299">UIMA-4299</a>.</li>
- </ul>
-
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
 issues fixed in this release.  
