@@ -208,6 +208,7 @@ under the License.
            <entry spanname="fullwidth"><emphasis role="bold">Measurement properties</emphasis></entry>
          </row>         
          <!-- ******************************************************************************* -->
+         <!--   DISABLED FOR NOW 
          <row>
            <entry><para>Measure index flattening optimization</para></entry>
            
@@ -222,7 +223,7 @@ under the License.
                         
            <entry><para>2.8.0</para></entry>
          </row>         
-         
+          -->
 
        </tbody>
      </tgroup>
