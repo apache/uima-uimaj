@@ -61,7 +61,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>2.8.0SDK</jiraVersion>   
+    <jiraVersion>2.8.1SDK</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
