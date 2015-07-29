@@ -84,20 +84,13 @@ import javax.swing.tree.TreePath;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.BooleanArrayFSImpl;
-import org.apache.uima.cas.impl.ByteArrayFSImpl;
-import org.apache.uima.cas.impl.DoubleArrayFSImpl;
-import org.apache.uima.cas.impl.FloatArrayFSImpl;
-import org.apache.uima.cas.impl.IntArrayFSImpl;
-import org.apache.uima.cas.impl.LongArrayFSImpl;
-import org.apache.uima.cas.impl.ShortArrayFSImpl;
-import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -1985,10 +1978,10 @@ public class CasAnnotationViewer extends JPanel {
     JCas jcas = null;
     try {
       jcas = this.cas.getJCas();
-	} catch (CASException e) {
-      e.printStackTrace();
-      return;
-	}
+  	} catch (CASException e) {
+        e.printStackTrace();
+        return;
+  	}
 
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
     root.removeAllChildren();
@@ -2196,51 +2189,9 @@ public class CasAnnotationViewer extends JPanel {
       return checkString(aFS.getFeatureValueAsString(feature), "null", 64);
     }
     if (rangeType.isArray()) {
-      String rangeTypeName = rangeType.getName();
-      String[] values = null;
-      if (CAS.TYPE_NAME_STRING_ARRAY.equals(rangeTypeName)) {
-        StringArrayFSImpl arrayFS = (StringArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toArray();
-        }
-      } else if (CAS.TYPE_NAME_INTEGER_ARRAY.equals(rangeTypeName)) {
-        IntArrayFSImpl arrayFS = (IntArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else if (CAS.TYPE_NAME_FLOAT_ARRAY.equals(rangeTypeName)) {
-        FloatArrayFSImpl arrayFS = (FloatArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else if (CAS.TYPE_NAME_BOOLEAN_ARRAY.equals(rangeTypeName)) {
-        BooleanArrayFSImpl arrayFS = (BooleanArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else if (CAS.TYPE_NAME_BYTE_ARRAY.equals(rangeTypeName)) {
-        ByteArrayFSImpl arrayFS = (ByteArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else if (CAS.TYPE_NAME_SHORT_ARRAY.equals(rangeTypeName)) {
-        ShortArrayFSImpl arrayFS = (ShortArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else if (CAS.TYPE_NAME_LONG_ARRAY.equals(rangeTypeName)) {
-        LongArrayFSImpl arrayFS = (LongArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else if (CAS.TYPE_NAME_DOUBLE_ARRAY.equals(rangeTypeName)) {
-        DoubleArrayFSImpl arrayFS = (DoubleArrayFSImpl) aFS.getFeatureValue(feature);
-        if (arrayFS != null) {
-          values = arrayFS.toStringArray();
-        }
-      } else {
-        // Unknown array type.
-      }
+//      String rangeTypeName = rangeType.getName();
+      CommonArrayFS arrayFS = (CommonArrayFS) aFS.getFeatureValue(feature);
+      String[] values = (arrayFS == null) ? null : arrayFS.toStringArray();
       if (values == null || values.length == 0) {
         return "null";
       }

@@ -69,7 +69,7 @@ public class DecompiledFilter {
     Files.list(decompiledFiles)
       .filter(p -> !p.toFile().isDirectory())  // skip directories
       .filter(p -> !isBuiltIn(p))            // skip if builtin
-      .forEach(p -> extractCustomization(p));  
+      .forEach(DecompiledFilter::extractCustomization);  
   }
   
   private static boolean isBuiltIn(Path p) {
@@ -84,7 +84,7 @@ public class DecompiledFilter {
    * @throws IOException 
    * @throws UnsupportedEncodingException 
    */
-  private boolean extractCustomization(Path filePath) {
+  private static boolean extractCustomization(Path filePath) {
     String content;
     try {
       content = new String(Files.readAllBytes(filePath), "UTF-8");
@@ -121,8 +121,7 @@ public class DecompiledFilter {
 //    if (m.isNextClauseCustomized()) {
 //    
 //    }
-    synchronized (this) {
-      if (m.isCustomized)
+    if (m.isCustomized) {
 //        System.out.println(filePath.toString());
       System.out.format("%s %s    %s%n", m.isCustomized ? "Cust   " : "notCust" , filePath.toString(), m.isCustomized ? m.msg : "");
     }

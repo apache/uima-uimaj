@@ -53,7 +53,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 				this.getCASImpl().getHeapValue(this.getAddress()));
 	}
 	
-	public int getTypeCode() {
+	public int getavoidcollisionTypeCode() {
 	  return this.getCASImpl().getHeapValue(this.getAddress());
 	}
 

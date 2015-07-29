@@ -180,6 +180,8 @@ public class AnalyzeContent {
   private Brna all(Brna ... inners) {
     return () -> { 
       int savedPos = pos;
+      
+      
       //debug
       if (null == inners) {
         System.out.println("debug");
@@ -189,7 +191,9 @@ public class AnalyzeContent {
           System.out.println("debug");
         }
       }
-      if (Arrays.stream(inners).sequential().allMatch(p -> p.match())) {
+      
+      
+      if (Arrays.stream(inners).sequential().allMatch(Brna::match)) {
         return true;
       }
       pos = savedPos;

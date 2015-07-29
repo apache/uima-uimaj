@@ -360,7 +360,6 @@ public class CasCopier {
     Iterator<CAS> viewIterator = aSrcCas.getViewIterator();
     while (viewIterator.hasNext()) {
       CAS view = viewIterator.next();
-      copier.srcCasDocumentAnnotation = 0;  // each view needs to get this once
       copier.copyCasView(view, aCopySofa); 
 
     }
@@ -494,6 +493,8 @@ public class CasCopier {
       throw new UIMARuntimeException(UIMARuntimeException.UNSUPPORTED_CAS_COPY_TO_OR_FROM_BASE_CAS, null);
     }
     
+    srcCasDocumentAnnotation = 0;  // each view needs to get this once
+    
 //    mLowLevelDestCas = aTgtCasView.getLowLevelCAS();
 //    mLowLevelSrcCas = aSrcCasView.getLowLevelCAS();
     
@@ -604,6 +605,8 @@ public class CasCopier {
       tgtCasViewImpl = originalTgtCasImpl;
     }
     
+    // safety - insure DocumentAnnotation is tested.
+    srcCasDocumentAnnotation = 0;  
     return copyFs2Fs(aFS);
   }
   
@@ -658,6 +661,7 @@ public class CasCopier {
     // same Sofa ID in the target CAS. If it does not exist it will be created.
     if (srcTypeCode == srcSofaTypeCode) {
       String destSofaId = getDestSofaId(srcCasViewImpl.ll_getSofaID(aFS));
+      // note: not put into the mFsMap, because each view needs a separate copy
       return ((CASImpl)getOrCreateView(originalTgtCas, destSofaId)).getSofaRef();
     }
 
@@ -689,6 +693,7 @@ public class CasCopier {
           }
         }
       }
+      // note note put into mFsMap, because each view needs a separate copy
       return destDocAnnot;
     }
 
