@@ -201,9 +201,14 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   private final List<BitSet> subsumes; // Collection of BitSets for subsumption relation
   
+  /**
+   * indexed by feature code, specifies the type code where the feature is introduced - its highest domain
+   */
   private final IntVector intro;
 
-  // Indicates which type introduces a feature (domain)
+  /**
+   * indexed by feature code, specifies the typecode for the range of the feature
+   */
   private final IntVector featRange; // Indicates range type of features
   
   /**
@@ -1085,7 +1090,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     // if (t == null) {
     // System.out.println("Type is null");
     // }
-    List<Type> typesLocal = getProperlySubsumedTypes(ll_getTypeForCode(domain));
+    TypeImpl domainType = (TypeImpl) ll_getTypeForCode(domain);
+    List<Type> typesLocal = getProperlySubsumedTypes(domainType);
     typesLocal.add(ll_getTypeForCode(domain));
     // For each type, check that the feature doesn't already exist.
     int max = typesLocal.size();
@@ -1118,7 +1124,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       this.featureMap.put((typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
           feat);
     }
-    this.intro.add(domain);
+    this.intro.add(domain);  
     this.featRange.add(range);
     max = this.typeNameST.size();
     for (int i = 1; i <= max; i++) {
@@ -1126,7 +1132,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
         (this.approp.get(i)).add(feat);
       }
     }
-    this.features.add(new FeatureImpl(feat, name, this, multiRefsAllowed));
+    FeatureImpl fi = new FeatureImpl(feat, name, this, multiRefsAllowed);
+    this.features.add(fi);
+    domainType.addIntroducedFeature(fi);
     return feat;
   }
 
@@ -1906,13 +1914,40 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     
     return m;
   }
+
+  private static final String PREFIX1 = "Lorg/apache/uima/jcas/cas/";
+  /**
+   * Converts range to Java- coded string
+   * @param rangeTypeCode
+   * @return Java Type Descriptor, e.g. "Z" or "Ljava/lang/String" or "[D", etc.
+   */
+  public String convertRangeToJavaCode(Type rangeType) {
+    TypeImpl rangeTi = (TypeImpl) rangeType;
+    // built-ins
+    final int typeCode = rangeTi.getCode();
+    switch (typeCode) {
+    case booleanTypeCode: return "Z";
+    case byteTypeCode: return "B";
+    case shortTypeCode: return "S";
+    case intTypeCode: return "I";
+    case floatTypeCode: return "F";
+    case longTypeCode: return "J";
+    case doubleTypeCode: return "D";
+    case booleanArrayTypeCode: return "[Z";
+    case byteArrayTypeCode: return "[B";
+    case shortArrayTypeCode: return "[S";
+    case intArrayTypeCode: return "[I";
+    case floatArrayTypeCode: return "[F";
+    case longArrayTypeCode: return "[J";
+    case doubleArrayTypeCode: return "[D";
+    case stringArrayTypeCode: return "[Ljava/lang/String;";
+    }
+    
+    if (ll_subsumes(stringTypeCode, typeCode)) return "Ljava/lang/String;";     
+    return (rangeType.isArray() ? "[" : "") +
+        "L" + rangeType.getName().replace('.',  '/') + ";";
+  }
   
-//  public String convertRangeToJavaCode(int rangeTypeCode) {
-//    switch (rangeTypeCode) {
-//    case booleanTypeCode :
-//      break;
-//    }
-//  }
   
 //  /**
 //   * @param otherTs type system to compare to this one

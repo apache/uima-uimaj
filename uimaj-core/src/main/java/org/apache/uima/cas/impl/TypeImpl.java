@@ -44,6 +44,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private boolean isFeatureFinal;
 
   private boolean isInheritanceFinal;
+  
+  private final List<FeatureImpl> mergedStaticFeaturesIntroducedByThisType = new ArrayList<FeatureImpl>(1);
 
   /**
    * Create a new type. This should only be done by a <code>TypeSystemImpl</code>.
@@ -228,4 +230,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return this.ts.ll_getTypeForCode(this.ts.ll_getComponentType(this.code));
   }
 
+  List<FeatureImpl> getMergedStaticFeaturesIntroducedByThisType() {
+    return mergedStaticFeaturesIntroducedByThisType;
+  }
+  
+  void addIntroducedFeature(FeatureImpl fi) {
+    mergedStaticFeaturesIntroducedByThisType.add(fi);
+  }
 }
