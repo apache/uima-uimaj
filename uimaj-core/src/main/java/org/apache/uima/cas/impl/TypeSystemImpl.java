@@ -1921,8 +1921,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @param rangeTypeCode
    * @return Java Type Descriptor, e.g. "Z" or "Ljava/lang/String" or "[D", etc.
    */
-  public String convertRangeToJavaCode(Type rangeType) {
-    TypeImpl rangeTi = (TypeImpl) rangeType;
+  public String convertTypeToJavaCode(Type type) {
+    TypeImpl rangeTi = (TypeImpl) type;
     // built-ins
     final int typeCode = rangeTi.getCode();
     switch (typeCode) {
@@ -1944,8 +1944,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     
     if (ll_subsumes(stringTypeCode, typeCode)) return "Ljava/lang/String;";     
-    return (rangeType.isArray() ? "[" : "") +
-        "L" + rangeType.getName().replace('.',  '/') + ";";
+    return (type.isArray() ? "[" : "") +
+        "L" + type.getName().replace('.',  '/') + ";";
   }
   
   

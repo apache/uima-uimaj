@@ -67,6 +67,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public String getName() {
     return this.name;
   }
+  
+  public String getNameAsJavaDescriptor() {
+    return ts.convertTypeToJavaCode(this);
+  }
 
   /**
    * Get the super type.

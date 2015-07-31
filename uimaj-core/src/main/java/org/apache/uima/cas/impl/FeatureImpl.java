@@ -38,12 +38,18 @@ public class FeatureImpl implements Feature {
   private final TypeSystemImpl ts;
 
   private final boolean isMultipleRefsAllowed;
+  
+  private final String shortName;
+  
+  private final String shortName1stLetterUpperCase;
 
   FeatureImpl(int code, String name, TypeSystemImpl ts, boolean isMultipleRefsAllowed) {
     this.code = code;
     this.name = name;
     this.ts = ts;
     this.isMultipleRefsAllowed = isMultipleRefsAllowed;
+    this.shortName = this.name.substring(this.name.indexOf(TypeSystem.FEATURE_SEPARATOR) + 1, this.name.length());
+    this.shortName1stLetterUpperCase = Character.toUpperCase(this.shortName.charAt(0)) + ((shortName.length() == 1) ? "" : this.shortName.substring(1));
   }
 
   /**
@@ -70,6 +76,15 @@ public class FeatureImpl implements Feature {
   public Type getRange() {
     return this.ts.ll_getTypeForCode(this.ts.range(this.code));
   }
+  
+  public String getRangeAsJavaDescriptor() {
+    return this.ts.convertTypeToJavaCode(getRange());
+  }
+  
+  public String getRangeArrayElementAsJavaDescriptor() {
+    TypeImpl arrayElementType = (TypeImpl) getRange().getComponentType();
+    return this.ts.convertTypeToJavaCode(arrayElementType);
+  }
 
   /**
    * Get the name for this feature.
@@ -85,8 +100,11 @@ public class FeatureImpl implements Feature {
   }
 
   public String getShortName() {
-    return this.name.substring(this.name.indexOf(TypeSystem.FEATURE_SEPARATOR) + 1, this.name
-            .length());
+    return this.shortName;
+  }
+  
+  public String getShortName1stLetterUpperCase() {
+    return this.shortName1stLetterUpperCase;
   }
 
   /**
