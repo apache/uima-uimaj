@@ -1314,6 +1314,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     private int fsStartAddr;
     private int fsEndAddr;
+    /**
+     * An array of all the starting indexes of the FSs on the old/prev heap
+     * (below the mark, for delta CAS, plus one last one (one beyond the end)
+     */
     private int[] fssAddrArray;
     private int fssIndex;
     private int lastRemovedFsAddr;
@@ -1638,7 +1642,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // item is higher
       result = Arrays.binarySearch(bds.fssAddrArray, bds.fssIndex + 1, bds.fssAddrArray.length, heapAddr);
     } else {
-      result = Arrays.binarySearch(bds.fssAddrArray,  0, bds.fssIndex - 2, heapAddr);
+      result = Arrays.binarySearch(bds.fssAddrArray,  0, bds.fssIndex - 1, heapAddr);
     }
     
     // result must be negative - should never modify a type code slot
@@ -1646,7 +1650,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     bds.fssIndex = (-result) - 2;
     bds.fsStartAddr = bds.fssAddrArray[bds.fssIndex];
     bds.fsEndAddr = bds.fssAddrArray[bds.fssIndex + 1];
-    bds.featCodes = getTypeSystemImpl().ll_getAppropriateFeatures(getTypeCode(bds.fsStartAddr));    
+    bds.featCodes = getTypeSystemImpl().ll_getAppropriateFeatures(getTypeCode(bds.fsStartAddr));  
     assert(bds.fsStartAddr < heapAddr && heapAddr < bds.fsEndAddr);
   }
   
