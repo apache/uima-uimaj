@@ -85,6 +85,24 @@ public class FSUtil {
   {
     return aTS.subsumes(aTS.getType(CAS.TYPE_NAME_LIST_BASE), aType);
   }
+
+  public static boolean hasFeature(FeatureStructure aFS, String aFeature) {
+    return aFS.getType().getFeatureByBaseName(aFeature) != null;
+  }
+
+  public static boolean isMultiValuedFeature(FeatureStructure aFS, String aFeature) {
+    Feature feat = aFS.getType().getFeatureByBaseName(aFeature);
+
+    return isMultiValuedFeature(aFS, feat);
+  }
+
+  public static boolean isMultiValuedFeature(FeatureStructure aFS, Feature feat) {
+    if (feat == null) {
+      return false;
+    }
+    
+    return feat.getRange().isArray() || isListType(aFS.getCAS().getTypeSystem(), feat.getRange());
+  }
   
   public static void setFeature(FeatureStructure aFS, String aFeature, boolean... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
@@ -279,37 +297,42 @@ public class FSUtil {
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <T> T getFeature(FeatureStructure aFS, String aFeature, Class<T> aClazz)
   {
     Feature feat = getMandatoryFeature(aFS, aFeature);
-    
-    if (feat.getRange().isPrimitive()) {
-      switch (feat.getRange().getName()) {
+
+    return getFeature(aFS, feat, aClazz);
+  }
+  
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public static <T> T getFeature(FeatureStructure aFS, Feature aFeature, Class<T> aClazz)
+  {
+    if (aFeature.getRange().isPrimitive()) {
+      switch (aFeature.getRange().getName()) {
         case CAS.TYPE_NAME_BOOLEAN:
-          return aClazz.cast(aFS.getBooleanValue(feat));
+          return aClazz.cast(aFS.getBooleanValue(aFeature));
         case CAS.TYPE_NAME_BYTE:
-          return aClazz.cast(aFS.getByteValue(feat));
+          return aClazz.cast(aFS.getByteValue(aFeature));
         case CAS.TYPE_NAME_DOUBLE:
-          return aClazz.cast(aFS.getDoubleValue(feat));
+          return aClazz.cast(aFS.getDoubleValue(aFeature));
         case CAS.TYPE_NAME_FLOAT:
-          return aClazz.cast(aFS.getFloatValue(feat));
+          return aClazz.cast(aFS.getFloatValue(aFeature));
         case CAS.TYPE_NAME_INTEGER:
-          return aClazz.cast(aFS.getIntValue(feat));
+          return aClazz.cast(aFS.getIntValue(aFeature));
         case CAS.TYPE_NAME_LONG:
-          return aClazz.cast(aFS.getLongValue(feat));
+          return aClazz.cast(aFS.getLongValue(aFeature));
         case CAS.TYPE_NAME_SHORT:
-          return aClazz.cast(aFS.getShortValue(feat));
+          return aClazz.cast(aFS.getShortValue(aFeature));
         case CAS.TYPE_NAME_STRING:
-          return aClazz.cast(aFS.getStringValue(feat));
+          return aClazz.cast(aFS.getStringValue(aFeature));
         default:
-          throw new IllegalArgumentException("Unable to coerce value of feature [" + feat.getName()
-                  + "] with type [" + feat.getRange().getName() + "] into [" + aClazz.getName() + "]");
+          throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
+                  + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
       }
     }
     
     // "null" case
-    if (aFS.getFeatureValue(feat) == null) {
+    if (aFS.getFeatureValue(aFeature) == null) {
       return null;
     }
     
@@ -319,10 +342,10 @@ public class FSUtil {
     int length;
     
     // Handle case where feature is an array
-    if (feat.getRange().isArray()) {
-      CommonArrayFS source = (CommonArrayFS) aFS.getFeatureValue(feat);
+    if (aFeature.getRange().isArray()) {
+      CommonArrayFS source = (CommonArrayFS) aFS.getFeatureValue(aFeature);
       length = source.size();
-      switch (feat.getRange().getComponentType().getName()) {
+      switch (aFeature.getRange().getComponentType().getName()) {
         case CAS.TYPE_NAME_BOOLEAN:
           target = new boolean[length];
           ((BooleanArrayFS) source).copyToArray(0, (boolean[]) target, 0, length);
@@ -367,11 +390,11 @@ public class FSUtil {
       }
     }
     // Handle case where feature is a list
-    else if (isListType(aFS.getCAS().getTypeSystem(), feat.getRange())) {
+    else if (isListType(aFS.getCAS().getTypeSystem(), aFeature.getRange())) {
       // Get length of list
       length = 0;
       {
-        FeatureStructure cur = aFS.getFeatureValue(feat);
+        FeatureStructure cur = aFS.getFeatureValue(aFeature);
         // We assume to by facing a non-empty element if it has a "head" feature
         while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
           length++;
@@ -379,11 +402,11 @@ public class FSUtil {
         }
       }
 
-      switch (feat.getRange().getName()) {
+      switch (aFeature.getRange().getName()) {
         case CAS.TYPE_NAME_FLOAT_LIST: {
           float[] floatTarget = new float[length];
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(feat);
+          FeatureStructure cur = aFS.getFeatureValue(aFeature);
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             floatTarget[i] = cur.getFloatValue(cur.getType().getFeatureByBaseName(
@@ -397,7 +420,7 @@ public class FSUtil {
         case CAS.TYPE_NAME_INTEGER_LIST: {
           int[] intTarget = new int[length];
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(feat);
+          FeatureStructure cur = aFS.getFeatureValue(aFeature);
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             intTarget[i] = cur.getIntValue(cur.getType().getFeatureByBaseName(
@@ -411,7 +434,7 @@ public class FSUtil {
         case CAS.TYPE_NAME_STRING_LIST: {
           String[] stringTarget = new String[length];
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(feat);
+          FeatureStructure cur = aFS.getFeatureValue(aFeature);
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             stringTarget[i] = cur.getStringValue(cur.getType().getFeatureByBaseName(
@@ -429,7 +452,7 @@ public class FSUtil {
             target = new FeatureStructure[length];
           }
           int i = 0;
-          FeatureStructure cur = aFS.getFeatureValue(feat);
+          FeatureStructure cur = aFS.getFeatureValue(aFeature);
           // We assume to by facing a non-empty element if it has a "head" feature
           while (cur.getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD) != null) {
             Array.set(target, i,
@@ -443,8 +466,8 @@ public class FSUtil {
         }
       }
     }    else {
-      throw new IllegalArgumentException("Unable to coerce value of feature [" + feat.getName()
-              + "] with type [" + feat.getRange().getName() + "] into [" + aClazz.getName() + "]");
+      throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
+              + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
     }
 
     // Handle case where return value is an array
@@ -465,8 +488,8 @@ public class FSUtil {
           targetCollection = new HashSet(length);
         }
         else {
-          throw new IllegalArgumentException("Unable to coerce value of feature [" + feat.getName()
-                  + "] with type [" + feat.getRange().getName() + "] into [" + aClazz.getName() + "]");
+          throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
+                  + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
         }
       }
       else {
@@ -474,8 +497,8 @@ public class FSUtil {
         try {
           targetCollection = (Collection) aClazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-          throw new IllegalArgumentException("Unable to coerce value of feature [" + feat.getName()
-                  + "] with type [" + feat.getRange().getName() + "] into [" + aClazz.getName() + "]", e);
+          throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
+                  + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]", e);
         }
       }
       for (int i = 0; i < length; i++) {
@@ -484,7 +507,7 @@ public class FSUtil {
       return aClazz.cast(targetCollection);
     }
     
-    throw new IllegalArgumentException("Unable to coerce value of feature [" + feat.getName()
-            + "] with type [" + feat.getRange().getName() + "] into [" + aClazz.getName() + "]");
+    throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
+            + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
   }
 }
