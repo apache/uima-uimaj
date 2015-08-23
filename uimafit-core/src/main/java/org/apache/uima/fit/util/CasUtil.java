@@ -122,6 +122,12 @@ public final class CasUtil {
     if (typeName.startsWith(UIMA_BUILTIN_JCAS_PREFIX)) {
       typeName = "uima." + typeName.substring(UIMA_BUILTIN_JCAS_PREFIX.length());
     }
+    else if (FeatureStructure.class.getName().equals(aTypename)) {
+      typeName = CAS.TYPE_NAME_TOP;
+    }
+    else if (AnnotationFS.class.getName().equals(aTypename)) {
+      typeName = CAS.TYPE_NAME_ANNOTATION;
+    }
     final Type type = aCas.getTypeSystem().getType(typeName);
     if (type == null) {
       throw new IllegalArgumentException("Undeclared type [" + aTypename + "]");
