@@ -121,8 +121,18 @@ public class FSUtilTest {
     assertEquals("set", getFeature(fs, "StringValue", String.class));
     
     setFeature(fs, "TopValue", cas.createArrayFS(1));
-    
+
     setFeature(fs, "AnnotationValue", cas.createAnnotation(annotationType, 0, 1));
+    if (aActivateJCas) {
+      assertEquals(Annotation.class.getName(),
+              getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
+    }
+    else {
+      assertEquals(AnnotationImpl.class.getName(),
+              getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
+    }
+    assertEquals(0, getFeature(fs, "AnnotationValue", AnnotationFS.class).getBegin());
+    assertEquals(1, getFeature(fs, "AnnotationValue", AnnotationFS.class).getEnd());
 
     setFeature(fs, "BooleanArrayValue", (boolean[]) null);
     assertEquals(null, getFeature(fs, "BooleanArrayValue", boolean[].class));

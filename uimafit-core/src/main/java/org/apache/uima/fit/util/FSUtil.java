@@ -465,7 +465,12 @@ public class FSUtil {
           break;
         }
       }
-    }    else {
+    }    
+    else if (aFS.getCAS().getTypeSystem()
+              .subsumes(CasUtil.getType(aFS.getCAS(), aClazz), aFeature.getRange())) {
+      return (T) aFS.getFeatureValue(aFeature);
+    }    
+    else {
       throw new IllegalArgumentException("Unable to coerce value of feature [" + aFeature.getName()
               + "] with type [" + aFeature.getRange().getName() + "] into [" + aClazz.getName() + "]");
     }
