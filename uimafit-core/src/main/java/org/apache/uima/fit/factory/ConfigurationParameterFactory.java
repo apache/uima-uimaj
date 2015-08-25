@@ -605,19 +605,25 @@ public final class ConfigurationParameterFactory {
     } else if (aSpec instanceof ResourceCreationSpecifier) {
       ResourceMetaData md = ((ResourceCreationSpecifier) aSpec).getMetaData();
 
-      if (md.getConfigurationParameterDeclarations().getConfigurationParameter(null, name) == null) {
+      ConfigurationParameter param = md.getConfigurationParameterDeclarations()
+              .getConfigurationParameter(null, name);
+      if (param == null) {
         throw new IllegalArgumentException("Cannot set undeclared parameter [" + name + "]");
       }
 
-      md.getConfigurationParameterSettings().setParameterValue(name, value);
+      md.getConfigurationParameterSettings().setParameterValue(name,
+              convertParameterValue(param, value));
     } else if (aSpec instanceof ConfigurableDataResourceSpecifier) {
       ResourceMetaData md = ((ConfigurableDataResourceSpecifier) aSpec).getMetaData();
 
-      if (md.getConfigurationParameterDeclarations().getConfigurationParameter(null, name) == null) {
+      ConfigurationParameter param = md.getConfigurationParameterDeclarations()
+              .getConfigurationParameter(null, name);
+      if (param == null) {
         throw new IllegalArgumentException("Cannot set undeclared parameter [" + name + "]");
       }
 
-      md.getConfigurationParameterSettings().setParameterValue(name, value);
+      md.getConfigurationParameterSettings().setParameterValue(name,
+              convertParameterValue(param, value));
     } else {
       throw new IllegalClassException("Unsupported resource specifier class [" + aSpec.getClass()
               + "]");
