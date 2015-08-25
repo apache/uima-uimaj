@@ -87,7 +87,7 @@ public class JetExpander {
 			try {
 				i = outputStart();
 				expand(i);
-				fileWriter.write("\n    return stringBuffer.toString();\n  }\n}");
+				fileWriter.write("\n    return stringBuilder.toString();\n  }\n}");
 				fileWriter.close();
 			} catch (IOException e2) {
 				e2.printStackTrace();
@@ -186,7 +186,7 @@ public class JetExpander {
     }
     fileWriter.write(" {\n\n");
     fileWriter.write("  public String generate(Object argument) {\n");
-    fileWriter.write("    StringBuffer stringBuffer = new StringBuffer();\n");
+    fileWriter.write("    StringBuilder stringBuilder = new StringBuilder();\n");
     
 		return in.indexOf('\n', nextQuotePos);
 	}
@@ -205,10 +205,10 @@ public class JetExpander {
       	
 //      	String [] lines = in.substring(i,trigger).split("\n",-1);
 //      	for (int j = 0; j < lines.length; j++) {
-//      		fileWriter.write("\n    stringBuffer.append(\"" + lines[j] + 
+//      		fileWriter.write("\n    stringBuilder.append(\"" + lines[j] + 
 //                            ((j < lines.length-1) ? "\\n" : "") + "\");");
 //      	}
-				fileWriter.write("\n    stringBuffer.append(\"" + fixupStr(i, trigger) + "\");");
+				fileWriter.write("\n    stringBuilder.append(\"" + fixupStr(i, trigger) + "\");");
                  
         if (in.charAt(trigger+2) == '@') {
         	i = doInclude(trigger+3);
@@ -230,7 +230,7 @@ public class JetExpander {
         continue;
       }
       else {
-      	fileWriter.write("\n    stringBuffer.append(\"" + fixupStr(i, in.length()) + "\");");
+      	fileWriter.write("\n    stringBuilder.append(\"" + fixupStr(i, in.length()) + "\");");
       	break;
       }
 		}		  
@@ -265,7 +265,7 @@ public class JetExpander {
 	
 	int doInsert(int i) throws IOException {
 		int insertEnd = in.indexOf("%>", i);
-		fileWriter.write("\n    stringBuffer.append(" + in.substring(i, insertEnd) + ");");
+		fileWriter.write("\n    stringBuilder.append(" + in.substring(i, insertEnd) + ");");
 		return insertEnd + 2;
 	}
 }
