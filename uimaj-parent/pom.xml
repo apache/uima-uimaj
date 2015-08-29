@@ -237,6 +237,8 @@
                         <excludes>
                           <exclude>**/impl/**/*</exclude>
                           <exclude>**/internal/**/*</exclude>
+                          <!-- UIMA-4565 Exclude CAS from check for 2.8.2 - after 2.8.2 release -->
+                          <exclude>org/apache/uima/cas/CAS</exclude>
                         </excludes>
                       </requireBackwardCompatibility>
                     </rules>
