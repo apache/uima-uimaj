@@ -155,10 +155,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.7</maven.compiler.target>
     <maven.compiler.source>1.7</maven.compiler.source>
-    <!-- 
-     No useable default properties here
-    -->
-    <javadocSourceLevel>7</javadocSourceLevel>
   </properties>
   
   <build>
@@ -167,6 +163,10 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
+          <configuration>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+          </configuration>
         </plugin>
      
         <plugin>
@@ -176,13 +176,13 @@
             <execution>
               <id>attach-javadocs</id>
               <configuration>
-                <source>${javadocSourceLevel}</source>
+                <source>${maven.compiler.source}</source>
               </configuration> 
             </execution>
             <execution>
               <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
               <configuration>
-                <source>${javadocSourceLevel}</source>
+                <source>${maven.compiler.source}</source>
               </configuration> 
             </execution>
           </executions>
