@@ -304,7 +304,7 @@ public class NetworkCasProcessorImpl implements CasDataProcessor {
 
   /**
    * Notifies Network AE that end-of-batch marker has been reached. The notification can be disabled
-   * in the Cpe descriptor by setting batch=0 in the <checkpoint> element.
+   * in the Cpe descriptor by setting batch=0 in the &lt;checkpoint&gt; element.
    * 
    * @see org.apache.uima.collection.base_cpm.CasProcessor#batchProcessComplete(org.apache.uima.util.ProcessTrace)
    */

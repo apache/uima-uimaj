@@ -602,7 +602,7 @@ public class FSIndexFlat<T extends FeatureStructure> {
   
 /**
  * As of July 2015, flattened indexes are disabled - too little benefit, too many edge cases:
- *   edge cases to handle: going from non-JCas -> JCas requires existing flat indexes to be invalidated
+ *   edge cases to handle: going from non-JCas -&gt; JCas requires existing flat indexes to be invalidated
  *   edge case: entering a PEAR, may require different impl of flattened indexes while in the PEAR, 
  *     plus restoration of previous versions upon PEAR exit
  *     

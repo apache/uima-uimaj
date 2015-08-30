@@ -253,7 +253,7 @@ public class RegExAnnotator extends CasAnnotator_ImplBase {
    * 
    * @param aCAS
    *          the CAS to process 
-   * @throws AnnotatorProcessException
+   * @throws AnalysisEngineProcessException
    *           if a failure occurs during processing.
    * 
    * @see CasAnnotator_ImplBase#process(CAS)

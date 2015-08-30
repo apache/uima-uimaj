@@ -21,7 +21,7 @@ package org.apache.vinci.transport;
 
 /**
  * Interface for implementing factories which instantiate Transportable objects, as required by
- * VinciServer & VinciClient classes. These base client/server classes allow "pluggable document
+ * VinciServer &amp; VinciClient classes. These base client/server classes allow "pluggable document
  * models" to support optimizing the trade-off of performance vs. document model expressiveness.
  * This is supported by allowing the programmer provide a factory to generate the desired document
  * type.

@@ -27,8 +27,6 @@ import org.apache.uima.util.XMLInputSource;
 /**
  * Command-line utility for validating a descriptor. Supports CollectionReader, CasInitializer,
  * AnalysisEngine, and CasConsumer descriptors.
- * 
- * @param args
  */
 public class ValidateDescriptor {
 

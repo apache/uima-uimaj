@@ -843,7 +843,7 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * @deprecated use the zero-argument constructor and call {@link #setEntityViewEnabled(boolean)}
+   * @deprecated use the zero-argument constructor
    */
   @Deprecated
   public CasAnnotationViewer(boolean aEntityViewEnabled) {
@@ -968,7 +968,6 @@ public class CasAnnotationViewer extends JPanel {
 
   /**
    * Sets the {@link EntityResolver} to use when the viewer is in entity mode.
-   * Entity mode must be turned on using the {@link #setEntityViewEnabled(boolean)} method.
    * @param aEntityResolver user-supplied class that can determine which annotations correspond
    *   to the same entity.
    */

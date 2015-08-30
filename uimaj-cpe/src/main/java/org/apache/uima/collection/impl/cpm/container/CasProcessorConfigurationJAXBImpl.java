@@ -491,11 +491,11 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Returns an action as String to identify an action to take in case of excessive Cas Processor
    * errors.
-   * <p>
+   * <ul>
    * <li>continue</li>
    * <li>terminate</li>
    * <li>disable</li>
-   * <p>
+   * </ul>
    * 
    * @return - action
    */
@@ -506,11 +506,11 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
   /**
    * Returns an action as String to identify an action to take in case of excessive Cas Processor
    * restarts.
-   * <p>
+   * <ul>
    * <li>continue</li>
    * <li>terminate</li>
    * <li>disable</li>
-   * <p>
+   * </ul>
    * 
    * @return - action
    */
@@ -582,10 +582,11 @@ public class CasProcessorConfigurationJAXBImpl implements CasProcessorConfigurat
 
   /**
    * Returns deployment type associated with this Cas Processor
-   * <p>
+   * <ul>
    * <li>integrated</li>
    * <li>local</li>
    * <li>remote</li>
+   * </ul>
    * 
    * @return - deployment type
    */

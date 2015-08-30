@@ -239,9 +239,8 @@ public class CPEFactory {
   /**
    * Creates an object representation from default cpe descriptor.
    * 
-   * @throws InstantiationException -
+   * @throws UIMARuntimeException wraps Exception
    */
-
   public void parse() {
     defaultConfig = true;
     InputStream defaultDescriptorStream = getClass().getResourceAsStream(DEFAULT_CONFIG_FILE);
@@ -278,9 +277,9 @@ public class CPEFactory {
    * creates and intializes the Cas Initializer if one is defined and associates it with the
    * CollectionReader.
    * 
-   * @return - CollectionReader instance
+   * @return CollectionReader instance
    * 
-   * @throws ConfigurationException -
+   * @throws ResourceConfigurationException
    */
   public BaseCollectionReader getCollectionReader() throws ResourceConfigurationException {
     checkForErrors();
@@ -1142,12 +1141,14 @@ public class CPEFactory {
 
   /**
    * Returns an object containing global CPE configuration including:
+   * <ul>
    * <li>Number of documents to process</li>
    * <li>Checkpoint configuration</li>
    * <li>id of the document begin processing</li>
+   * </ul>
    * 
-   * @return - Global CPE Configuration
-   * @throws InstantiationException -
+   * @return Global CPE Configuration
+   * @throws InstantiationException
    */
   public CpeConfiguration getCPEConfig() throws InstantiationException {
     try {

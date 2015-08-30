@@ -157,7 +157,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
 
   /**
    * Two modes: settingsDisplayMode - if true, shows groups one name at a time, and puts all
-   * <common> parms in other groups
+   * &lt;common&gt; parms in other groups
    */
   protected void clearAndRefillTree(boolean usingGroups) {
     cpd = getConfigurationParameterDeclarations();
@@ -280,7 +280,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * 
    * @param parms
    * @param group
-   *          <Not in any group> if not in a group, otherwise the group tree item
+   *          &lt;Not in any group&gt; if not in a group, otherwise the group tree item
    */
   protected void fill(ConfigurationParameter[] parms, TreeItem group) {
     if (parms == null)
@@ -400,8 +400,8 @@ public abstract class AbstractSectionParm extends AbstractSection {
    * 
    * @param newCP
    * @param group -
-   *          is never null. May be <Not in any group>, indicate no groups; may be the "<Common>"
-   *          group; or may be a regular group with a set of group names
+   *          is never null. May be &lt;Not in any group&gt;, indicate no groups; may be the 
+   *          "&lt;Common&gt;" group; or may be a regular group with a set of group names
    */
   protected void addNewConfigurationParameterToGUI(ConfigurationParameter newCP, TreeItem group) {
 
@@ -686,7 +686,7 @@ public abstract class AbstractSectionParm extends AbstractSection {
   /**
    * 
    * @param aCpd
-   * @return all named groups, excludes <Common> and <Not in any group>
+   * @return all named groups, excludes &lt;Common&gt; and &lt;Not in any group&gt;
    */
   protected String[] getAllGroupNames(ConfigurationParameterDeclarations aCpd) {
     ConfigurationGroup[] cgs = aCpd.getConfigurationGroups();

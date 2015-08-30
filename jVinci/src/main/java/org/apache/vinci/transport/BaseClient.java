@@ -569,8 +569,8 @@ public class BaseClient {
   }
 
   /**
-   * Convenience method for "one-shot" or "single-query" connections with socket timeout support &
-   * connect timeout support.
+   * Convenience method for "one-shot" or "single-query" connections with socket timeout support 
+   * &amp; connect timeout support.
    * 
    * @pre in != null
    * @pre host_name != null

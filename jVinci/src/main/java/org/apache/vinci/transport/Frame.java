@@ -28,7 +28,7 @@ import org.apache.vinci.debug.Debug;
 import org.apache.vinci.transport.util.XMLConverter;
 
 /**
- * Frame is an abstract class that is intended to be extended to implement a simple & lean
+ * Frame is an abstract class that is intended to be extended to implement a simple &amp; lean
  * (restricted) XML document model. A Frame is only capable of representing XML documents with no
  * attributes or processing instructions. Applications which require attributes should use the
  * org.apache.vinci.transport.document.AFrame document model instead.

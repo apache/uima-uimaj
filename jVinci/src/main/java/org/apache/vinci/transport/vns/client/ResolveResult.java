@@ -197,8 +197,8 @@ public class ResolveResult extends Frame {
    * 
    * @pre key != null
    * @pre val != null
-   * @pre ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val instanceof
-   *      FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))
+   * @pre {@code ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val
+   *      instanceof FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))}
    */
   public void add(String key, FrameComponent val) {
     if (key.equals(VNSConstants.SERVER_KEY)) {

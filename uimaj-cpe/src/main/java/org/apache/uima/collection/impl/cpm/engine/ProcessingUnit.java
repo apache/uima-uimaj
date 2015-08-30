@@ -677,8 +677,10 @@ public class ProcessingUnit extends Thread {
    * Processor in the pipeline. Conversions between different types of Cas Processors is done on the
    * fly. Two types of Cas Processors are currently supported:
    * 
+   * <ul>
    * <li> CasDataProcessor</li>
    * <li> CasObjectProcessor</li>
+   * </ul>
    * 
    * The first operates on instances of CasData the latter operates on instances of CAS. The results
    * produced by Cas Processors are added to the output queue.

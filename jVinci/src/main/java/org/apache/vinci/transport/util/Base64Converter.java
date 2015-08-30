@@ -20,7 +20,7 @@
 package org.apache.vinci.transport.util;
 
 /**
- * Provides utility methods for Binary <=> Base64 conversion.
+ * Provides utility methods for Binary &lt;=&gt; Base64 conversion.
  */
 public class Base64Converter {
 
