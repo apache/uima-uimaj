@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.uima.util.Misc;
+
 /**
  * UIMAClassLoader is used as extension ClassLoader for UIMA to load additional components like
  * annotators and resources. The classpath of the classloader is specified as string.
@@ -46,10 +48,10 @@ public class UIMAClassLoader extends URLClassLoader {
    * locks for loading more than 1 class at a time (on different threads)
    * no more than the total number of cores, rounded up to pwr of 2
    */
-  final private static int nbrLocks = Utilities.nextHigherPowerOf2(Runtime.getRuntime().availableProcessors());
+  final private static int nbrLocks = Misc.nextHigherPowerOf2(Runtime.getRuntime().availableProcessors());
   // not static
   final private Object[] syncLocks = new Object[nbrLocks];
-   
+
   /**
    * Transforms the string classpath to a URL array based classpath.
    * 
@@ -64,6 +66,7 @@ public class UIMAClassLoader extends URLClassLoader {
   public static URL[] transformClasspath(String classpath) throws MalformedURLException {
     // initialize StringTokenizer to separate the classpath
     StringTokenizer tok = new StringTokenizer(classpath, File.pathSeparator);
+    
     // pathList of the classpath entries
     List<String> pathList = new ArrayList<String>();
 
@@ -169,6 +172,7 @@ public class UIMAClassLoader extends URLClassLoader {
 
   /*
    * Try to load the class itself before delegate the class loading to its parent
+   * String is like x.y.Foo
    */
   protected Class<?> loadClass(String name, boolean resolve)
           throws ClassNotFoundException {
@@ -182,8 +186,8 @@ public class UIMAClassLoader extends URLClassLoader {
       Class<?> c = findLoadedClass(name);
       if (c == null) {
         try {
-          // try to load class
-          c = findClass(name);
+            // try to load class
+            c = findClass(name);
         } catch (ClassNotFoundException e) {
           // delegate class loading for this class-name
           c = super.loadClass(name, false);
@@ -193,7 +197,7 @@ public class UIMAClassLoader extends URLClassLoader {
         resolveClass(c);
       }
       return c;    
-
+  
     }
   }
   
