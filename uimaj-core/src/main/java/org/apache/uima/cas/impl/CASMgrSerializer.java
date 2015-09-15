@@ -107,7 +107,8 @@ public class CASMgrSerializer implements Serializable {
   // Type system encoding.
 
   /**
-   * A list of type names (symbol table). Note: numbering of types starts at <code>1</code>, and
+   * A list of type names (symbol table). fs-typed arrays have names XXXX[]. 
+   * Note: numbering of types starts at <code>1</code>, and
    * we index the names according to their internal code. That means that
    * <code>typeNames[0] == null</code>.
    */

@@ -38,6 +38,12 @@ import org.apache.uima.cas.Type;
 class CASMetadata {
   
   final TypeSystemImpl ts;
+  /**
+   * Holds generators to create Java objects, either JCas ones or plain ones
+   * No longer initialized from the XYZ_Type classes' generators, but initialized with 
+   * standard one from initFSClassRegistry(), and
+   * JCas ones from instantiateJCas_Types
+   */
   final FSClassRegistry fsClassRegistry;
   
 

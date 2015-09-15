@@ -1103,7 +1103,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     if (null != this.svd.casMetadata.fsClassRegistry) {
       // needed only if caching non-JCas Java cover objects
-      // NOTE: This code may not work - has not been maintained
+      // NOTE: This code doesn't work - impl commented outhas not been maintained
       this.svd.casMetadata.fsClassRegistry.flush();
     }
     if (this.jcas != null) {

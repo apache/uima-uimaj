@@ -521,14 +521,61 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return this.parents.get(typeCode);
   }
 
+  /**
+   * Given a component type, return the parent type of the corresponding array type,
+   * without needing the corresponding array type to exist (yet).
+   *    component type ->  (member of) array type  -> UIMA parent type of that array type.
+   *    
+   * The UIMA Type parent of an array is either
+   *   ArrayBase (for primitive arrays, plus String[] and TOP[] (see below) 
+   *   FsArray - for XYZ[] reference kinds of arrays
+   *   
+   * The UIMA parent chain goes like this:
+   *   primitive_array -> ArrayBase -> TOP (primitive: boolean, byte, short, int, long, float, double, String)
+   *   String[]        -> ArrayBase -> TOP
+   *   TOP[]           -> ArrayBase -> TOP
+   *    
+   *   XYZ[]           -> FSArray    -> TOP  where XYZ is not a primitive, not String[], not TOP[]
+   *     It excludes TOP builtin because the creation of the FSArray type requires
+   *       the creation of TOP[] type, which requires (unless this is done)
+   *       the recursive creation of FSArray type - which causes a null pointer exception
+   *     
+   *   Note that the UIMA super chain is not used very much (mainly for subsumption,
+   *   and for this there is special case code anyways), so this doesn't really matter. (2015 Sept)
+   *    
+   * Note: the super type chain of the Java impl classes varies from the UIMA super type chain.
+   *   It is used to factor out common behavior among classes of arrays.
+   *   
+   *   For non-JCas:
+   *     CommonArrayFSImpl  [ for arrays stored on the main heap ]
+   *       ArrayFSImpl  (for arrays of FS)
+   *       FloatArrayFSImpl
+   *       IntArrayFSImpl
+   *       StringArrayFSImpl
+   *     CommonAuxArrayFSImpl  [ for arrays stored in Aux heaps ]
+   *       BooleanArrayFSImpl
+   *       ByteArrayFSImpl
+   *       ShortArrayFSImpl
+   *       LongArrayFSImpl
+   *       DoubleArrayFSImpl
+   *   
+   *   For JCas: The corresponding types have only TOP as their supertypes
+   *     but they implement the nonJCas interfaces for each subtype.
+   *       Those interfaces implement CommonArrayFS interface
+   *          
+   * @param componentType
+   * @return the parent type of the corresponding array type 
+   */
   int ll_computeArrayParentFromComponentType(int componentType) {
     if (ll_isPrimitiveType(componentType) ||
     // note: not using top - until we can confirm this is set
         // in all cases
-        (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
+       (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
       return arrayBaseTypeCode;
     }
-    // is a subtype of FSArray.
+    // is an array of XYZ[] (except for TOP - see above logic).
+    // Note: These are put into the UIMA type system as subtypes of FSArray, 
+    //       even though other parts of the impl have marked FSArray as Type-Final.
     // note: not using this.fsArray - until we can confirm this is set in
     // all cases
     return fsArrayTypeCode;
