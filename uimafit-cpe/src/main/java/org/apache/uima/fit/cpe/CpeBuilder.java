@@ -24,14 +24,13 @@ import static org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory.
 import static org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory.produceCollectionReader;
 import static org.apache.uima.collection.impl.metadata.cpe.CpeDescriptorFactory.produceDescriptor;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
@@ -178,12 +177,8 @@ public class CpeBuilder {
     File tempDesc = File.createTempFile("desc", ".xml");
     tempDesc.deleteOnExit();
 
-    BufferedWriter out = null;
-    try {
-      out = new BufferedWriter(new FileWriter(tempDesc));
-      resource.toXML(out);
-    } finally {
-      IOUtils.closeQuietly(out);
+    try (OutputStream os = new FileOutputStream(tempDesc)) {
+      resource.toXML(os);
     }
 
     return tempDesc;
