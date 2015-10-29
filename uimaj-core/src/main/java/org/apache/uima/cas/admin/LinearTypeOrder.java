@@ -20,6 +20,7 @@
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
 
 /**
  * Linear order on types.
@@ -45,6 +46,14 @@ public interface LinearTypeOrder {
    * @return <code>true</code> iff <code>t1</code> is less than <code>t2</code> in this order.
    */
   boolean lessThan(int t1, int t2);
+  
+  /**
+   * Compare two Feature Structure's types
+   * @param fs1 first Feature Structure
+   * @param fs2 second Feature Structure
+   * @return same as compare functions: -1 if fs1's type < fs2's type, etc.
+   */
+  int compare(FeatureStructureImplC fs1, FeatureStructureImplC fs2);
 
   /**
    * @return The type order as array of type codes in ascending order.
