@@ -22,11 +22,20 @@ package org.apache.uima.cas;
 /**
  * Interface for feature structures.
  * 
- * <p>
- * Note that object identity is not meaningful for feature structures. You may ask the CAS for the
- * same feature structure two times in a row, and get different object references. Use
- * {@link #equals equals()} instead.
- * 
+ * This interface includes indirect getters and setters that use Feature object instances to specify the feature.
+ *   There are multiple versions of these, corresponding to the consolidated types of the feature range.
+ *   
+ *   Here are the types:
+ *     FeatureStructure - reference to another Feature structure
+ *     String
+ *     float
+ *     int
+ *     byte
+ *     boolean
+ *     short
+ *     long
+ *     double
+ *     JavaObject  
  * 
  */
 public interface FeatureStructure {
@@ -253,9 +262,33 @@ public interface FeatureStructure {
    *          The feature whose value we want to set.
    * @param i
    *          The double value we're setting the feature to.
+   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
    */
   void setDoubleValue(Feature feat, double i) throws CASRuntimeException;
 
+  /**
+   * Get the Java object value of a feature. This method will throw an exception if the feature is not
+   * double valued.
+   * 
+   * @param feat
+   *          The feature whose value we want to get.
+   * @return The Java object value of that feature
+   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
+   */
+  Object getJavaObjectValue(Feature feat) throws CASRuntimeException;
+
+  /**
+   * Set the java object value of a feature.
+   * 
+   * @param feat
+   *          The feature whose value we want to set.
+   * @param i
+   *          The Java object value we're setting the feature to.
+   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
+   */
+  void setJavaObjectValue(Feature feat, Object object) throws CASRuntimeException;
+    
+  
   /**
    * Get the value of the feature as a string if the type of the feature is one of the primitive
    * type.
@@ -293,9 +326,8 @@ public interface FeatureStructure {
   boolean equals(Object o) throws ClassCastException;
 
   /**
-   * Creates a copy of this feature structure. The returned feature structure is a new and separate
-   * object but all features of the feature structure which are not of builtin types (integer,
-   * float, string) will be shared between the clone and it's source FS.
+   * Creates a copy of this feature structure. The returned feature structure is shallow copy of the original 
+   * Feature Structure.  Updating the features of the clone will not affect the original.
    * 
    * @return a FeatureStructure that is the cloned copy of this FeatureStructure.
    * @throws CASRuntimeException passthru
@@ -317,4 +349,10 @@ public interface FeatureStructure {
    */
   CAS getCAS();
 
+  /**
+   * return the unique (to this CAS) id of this feature structure
+   */
+
+  int get_id();
+  
 }
