@@ -28,6 +28,7 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -126,6 +127,10 @@ public interface CAS extends AbstractCas {
   static final String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
 
   /**
+   * Java Object type
+   */
+  static final String TYPE_NAME_JAVA_OBJECT = UIMA_CAS_PREFIX + "JavaObject";
+  /**
    * ArrayBase type.
    */
   static final String TYPE_NAME_ARRAY_BASE = UIMA_CAS_PREFIX + "ArrayBase";
@@ -175,6 +180,11 @@ public interface CAS extends AbstractCas {
    */
   static final String TYPE_NAME_DOUBLE_ARRAY = UIMA_CAS_PREFIX + "DoubleArray";
 
+  /**
+   * JavaObject array type
+   */
+  static final String TYPE_NAME_JAVA_OBJECT_ARRAY = UIMA_CAS_PREFIX + "JavaObjectArray";
+  
   /**
    * Sofa type.
    */
@@ -405,17 +415,22 @@ public interface CAS extends AbstractCas {
   static final String NAME_SPACE_UIMA_TCAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "tcas";
 
   /**
+   * UIMA TCAS name space prefix to prepend to type names (adds an extra period to the name space
+   * proper.
+   */
+  static final String UIMA_TCAS_PREFIX = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR;
+
+  /**
    * Name of annotation type.
    */
-  static final String TYPE_NAME_ANNOTATION = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR
-          + "Annotation";
+  static final String TYPE_NAME_ANNOTATION = UIMA_TCAS_PREFIX + "Annotation";
 
   /**
    * Name of document annotation type.
    */
-  static final String TYPE_NAME_DOCUMENT_ANNOTATION = NAME_SPACE_UIMA_TCAS
-          + TypeSystem.NAMESPACE_SEPARATOR + "DocumentAnnotation";
+  static final String TYPE_NAME_DOCUMENT_ANNOTATION = UIMA_TCAS_PREFIX + "DocumentAnnotation";
 
+   
   /**
    * Sofa ID feature that is the handle to a text Sofa.
    */
@@ -475,7 +490,7 @@ public interface CAS extends AbstractCas {
    * @param <T> the Java cover class for the FS being created
    * @return The new FS.
    */
-  <T extends FeatureStructure> T createFS(Type type) throws CASRuntimeException;
+  <T extends TOP> T createFS(Type type) throws CASRuntimeException;
 
   /**
    * Create a new feature structure array.
