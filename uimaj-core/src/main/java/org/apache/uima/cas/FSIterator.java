@@ -124,10 +124,25 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * 
    * @param fs
    *          The feature structure the iterator that supplies the 
-   *          comparison information.  It must be of type T or a subtype of T.
+   *          comparison information.  It can be a supertype of T as long as it can supply the keys needed.
+   *          A typical example is a subtype of Annotation, and using an annotation instance to specify 
+   *          the begin / end.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
-  void moveTo(FeatureStructure fs);
+   void  moveTo(FeatureStructure fs);
+
+   /**
+    * A special version of moveTo for subtypes of AnnotationFS, which moves to a particular begin/end
+    * (no type priority). 
+    * 
+    * NOTE: This is not yet supported - it is intended for an additional kind of subiterator which doesn't use type priority
+    *
+    * @param begin the starting point (inclusive)
+    * @param end the ending point (inclusive)
+    */
+   default void moveTo(int begin, int end) {
+     throw new UnsupportedOperationException();
+   }
 
   /**
    * Copy this iterator.
@@ -135,5 +150,38 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * @return A copy of this iterator, pointing at the same element.
    */
   FSIterator<T> copy();
+
+  /*****************************************************
+   * DEFAULT implementations of Iterator interface
+   * in terms of FSIterator methods
+   *****************************************************/
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#hasNext()
+   */
+  default boolean hasNext() {
+    return isValid();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#next()
+   */
+  default T next() {
+    T result = get();
+    moveToNext();
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#remove()
+   */
+  default void remove() {
+    throw new UnsupportedOperationException();
+  } 
 
 }
