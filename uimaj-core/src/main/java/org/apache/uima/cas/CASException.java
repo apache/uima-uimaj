@@ -22,11 +22,11 @@ package org.apache.uima.cas;
 import org.apache.uima.UIMAException;
 
 /**
- * Exception class for package org.apache.uima.cas. Automatically generated from message catalog.
+ * Exception class for package org.apache.uima.cas.
  */
 public class CASException extends UIMAException {
 
-  private static final long serialVersionUID = 2990279532203726966L;
+  private static final long serialVersionUID = 1L;  // not intended for serialization
 
   /** The value of the feature {0} cannot be accessed as type {1}, because it is {2}. */
   public static final String INAPPROP_TYPE_EXCEPTION = "INAPPROP_TYPE_EXCEPTION";
@@ -84,7 +84,7 @@ public class CASException extends UIMAException {
     super(aMessageKey, aArguments, aCause);
   }
 
-  public CASException(String aMessageKey, Object[] aArguments) {
+  public CASException(String aMessageKey, Object ... aArguments) {
     super(aMessageKey, aArguments);
   }
 
