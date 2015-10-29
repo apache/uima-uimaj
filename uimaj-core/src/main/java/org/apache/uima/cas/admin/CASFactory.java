@@ -58,13 +58,9 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize) {
-    return createCAS(initialHeapSize, USE_JCAS_CACHE_DEFAULT);
+    return createCAS();
   }
   
-  public static CASMgr createCAS(int initialHeapSize, boolean useJcasCache) {
-    return new CASImpl(initialHeapSize, useJcasCache);
-  }
-
   /**
    * Create a new CASMgr object from a give type system.
    * 
@@ -84,7 +80,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts, initialHeapSize, useJcasCache);
+    return new CASImpl((TypeSystemImpl) ts);
   }
 
   /**
@@ -103,7 +99,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
+    return new CASImpl((TypeSystemImpl) ts);
   }
 
   /**
