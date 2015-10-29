@@ -22,14 +22,19 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.stream.Stream;
 
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 /**
  * The interface to the type system. Used to access information about existing
  * {@link org.apache.uima.cas.Type types} and {@link org.apache.uima.cas.Feature features} using
- * their String identifiers. This is a pure access interface. Types and features are defined using
- * Component Descriptors, written in XML.
+ * their String identifiers.</p> 
+ * 
+ * <p>This is almost a pure access interface.  Exception: the call to getArrayType
+ * actually will create a new Array Type if it doesn't already exist.</p>
+ *  
+ * <p>Types and features are defined using Component Descriptors, written in XML.</p>
  * 
  * <p>
  * Get the type system from a {@link CAS CAS} object with {@link CAS#getTypeSystem getTypeSystem()}.
@@ -38,7 +43,6 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * There are a few methods to list the existing types in a type system. Information about which
  * feature is appropriate for which type is available through the {@link Type Type} and
  * {@link Feature Feature} classes.
- * 
  * 
  */
 public interface TypeSystem {
@@ -65,12 +69,13 @@ public interface TypeSystem {
   Type getType(String typeName);
 
   /**
-   * Obtain an array type with component type <code>componentType</code>.
+   * Get or Create an array type with component type <code>componentType</code>.
    * 
    * @param componentType
    *          The type of the elements of the resulting array type. This can be any type, even
    *          another array type.
    * @return The array type with the corresponding component type.
+   *         If it doesn't exist, a new TypeImplArray is created for it.
    */
   Type getArrayType(Type componentType);
 
@@ -90,6 +95,13 @@ public interface TypeSystem {
    * @return The iterator.
    */
   Iterator<Type> getTypeIterator();
+
+  /**
+   * Get a Stream over all types, in no particular order.
+   * 
+   * @return The stream.
+   */
+  Stream<Type> types();
 
   /**
    * Get the top type, i.e., the root of the type system.
@@ -172,5 +184,6 @@ public interface TypeSystem {
    *         this type system.
    */
   LowLevelTypeSystem getLowLevelTypeSystem();
+
 
 }
