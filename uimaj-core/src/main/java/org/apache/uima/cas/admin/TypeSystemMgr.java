@@ -24,8 +24,13 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 
 /**
- * Writable version of type system.
+ * <p>Writable version of type system.</p>
  * 
+ * <p>Public API for the UIMA Type System during pipe-line startup, while
+ * type system is being constructed from merge of type specifications of components.</p>
+ * 
+ * <p>For use by applications, not for use by annotator components (because they work with 
+ * merged type system).</p>
  * 
  */
 public interface TypeSystemMgr extends TypeSystem {
@@ -63,6 +68,11 @@ public interface TypeSystemMgr extends TypeSystem {
 
   /**
    * Add an feature to the type system.
+   * Note: A subtype may define a feature that is also defined by a supertype. 
+   *   If the supertype definition is already present, then the subtype definition is 
+   *   "merged":  using the merging criteria: ranges must match.
+   *      Different isMultipleReferencesAllowed settings are OK;
+   *      The supertype's setting takes precedence.
    * 
    * @param featureName
    *          The name of the new feature.
