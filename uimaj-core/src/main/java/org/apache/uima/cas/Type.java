@@ -123,6 +123,13 @@ public interface Type {
   boolean isArray();
 
   /**
+   * Check if the type is a String subtype.
+   * 
+   * @return <code>true</code> iff the type is a String subtype type.
+   */
+  boolean isStringSubtype();
+
+  /**
    * For array types, returns the component type of the array type. For all other types, it will
    * return <code>null</code>.
    * 
