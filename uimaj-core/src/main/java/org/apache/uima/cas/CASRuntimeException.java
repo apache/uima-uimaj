@@ -26,9 +26,9 @@ import org.apache.uima.UIMARuntimeException;
  */
 public class CASRuntimeException extends UIMARuntimeException {
 
-	private static final long serialVersionUID = 2597111625069248081L;
+  private static final long serialVersionUID = 1L;
 
-	/** Can''t create FS of type "{0}" with this method. */
+  /** Can''t create FS of type "{0}" with this method. */
 	public static final String NON_CREATABLE_TYPE = "NON_CREATABLE_TYPE";
 
 	/** Array size must be &gt;= 0. */
@@ -39,11 +39,19 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	/** Feature "{0}" is not defined for type "{1}". */
 	public static final String INAPPROP_FEAT = "INAPPROP_FEAT";
+	
+	/** Feature is not defined for type. */
+	public static final String INAPPROP_FEAT_X = "INAPPROP_FEAT_X";
 
 	/**
    * Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".
    */
 	public static final String INAPPROP_RANGE = "INAPPROP_RANGE";
+	
+	/**
+	 * Setting a reference value "{0}" from a string is not supported.
+	 */
+	 public static final String SET_REF_FROM_STRING_NOT_SUPPORTED = "SET_REF_FROM_STRING_NOT_SUPPORTED";
 
 	/**
    * Trying to access value of feature "{0}" as feature structure, but is primitive type.
@@ -53,7 +61,13 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** Error accessing type system: the type system has not been committed. */
 	public static final String TYPESYSTEM_NOT_LOCKED = "TYPESYSTEM_NOT_LOCKED";
 
-	/**
+	/** Can't create FS of type "{0}" until the type system has been committed. */
+	public static final String CREATE_FS_BEFORE_TS_COMMITTED = "CREATE_FS_BEFORE_TS_COMMITTED";
+	
+  /** Cannot request the Java Class for a UIMA type before type system commit **/
+  public static final String GET_CLASS_FOR_TYPE_BEFORE_TS_COMMIT = "GET_CLASS_FOR_TYPE_BEFORE_TS_COMMIT";
+
+  /**
    * Error setting string value: string "{0}" is not valid for a value of type "{1}".
    */
 	public static final String ILLEGAL_STRING_VALUE = "ILLEGAL_STRING_VALUE";
@@ -69,6 +83,12 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** Error accessing child node in tree, index out of range. */
 	public static final String CHILD_INDEX_OOB = "CHILD_INDEX_OOB";
 
+	/** JCas Class "{0}" is missing required constructor; likely cause is wrong version (UIMA version 3 or later JCas required). */
+  public static final String JCAS_CAS_NOT_V3 = "JCAS_CAS_NOT_V3";
+	
+  /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
+  public static final String JCAS_MISSING_FIELD_ACCESSOR = "JCAS_MISSING_FIELD_ACCESSOR";
+  
 	/** CAS type system doesn''t match JCas Type definition for type "{0}". */
 	public static final String JCAS_CAS_MISMATCH = "JCAS_CAS_MISMATCH";
 
@@ -77,6 +97,7 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
 	public static final String JCAS_TYPE_NOT_IN_CAS = "JCAS_TYPE_NOT_IN_CAS";
 
+	
 	/**
    * Unknown JCas type used in Java code but was not declared or imported in the XML descriptor for
    * this component.
@@ -137,7 +158,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	/** The feature path does not end in a primitive valued feature. */
 	public static final String NO_PRIMITIVE_TAIL = "NO_PRIMITIVE_TAIL";
-
+	
 	/**
    * Error trying to do binary serialization of CAS data and write the BLOB to an output stream.
    */
@@ -205,21 +226,27 @@ public class CASRuntimeException extends UIMARuntimeException {
   
   /** While FS was in the index, illegal attempt to modify Feature "{0}" which is used as a key in one or more indexes; FS = "{1}" */
   public static final String ILLEGAL_FEAT_SET = "ILLEGAL_FEAT_SET";
-
+  
+  /** Sofa reference in AnnotationBase may not be modified **/
+  public static final String ILLEGAL_SOFAREF_MODIFICATION = "ILLEGAL_SOFAREF_MODIFICATION";
   
 	public CASRuntimeException() {
 		super();
 	}
 	
 	public CASRuntimeException(String messageKey) {
-		super(messageKey, null);
+		super(messageKey);
 	}
 
 	public CASRuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
 		super(aMessageKey, aArguments, aCause);
 	}
+	
+  public CASRuntimeException(Throwable aCause, String aMessageKey, Object ... aArguments) {
+    super(aCause, aMessageKey, aArguments);
+  }
 
-	public CASRuntimeException(String aMessageKey, Object[] aArguments) {
+	public CASRuntimeException(String aMessageKey, Object ... aArguments) {
 		super(aMessageKey, aArguments);
 	}
 
@@ -228,7 +255,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 		super(aResourceBundleName, aMessageKey, aArguments, aCause);
 	}
 
-	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
+	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object ... aArguments) {
 		super(aResourceBundleName, aMessageKey, aArguments);
 	}
 
