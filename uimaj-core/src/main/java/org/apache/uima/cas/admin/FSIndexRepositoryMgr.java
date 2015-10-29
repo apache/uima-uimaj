@@ -20,6 +20,7 @@
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.FSIndexRepository;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Repository of indexes. Indexes are defined via
@@ -34,7 +35,7 @@ public interface FSIndexRepositoryMgr extends FSIndexRepository {
    * 
    * @return A new comparator instance.
    */
-  public FSIndexComparator createComparator();
+  FSIndexComparator createComparator();
 
   /**
    * Create a new index. Note: if you creata a BAG_INDEX, the comparator will be ignored.
@@ -98,10 +99,10 @@ public interface FSIndexRepositoryMgr extends FSIndexRepository {
    */
   LinearTypeOrderBuilder createTypeSortOrder();
 
-  /**
-   * Create a new index comparator for creating an index.
-   * 
-   * @return A new index comparator.
-   */
+//  /**
+//   * Create a new index comparator for creating an index.
+//   * 
+//   * @return A new index comparator.
+//   */
   // FSIndexComparator createIndexComparator();
 }
