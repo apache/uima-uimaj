@@ -68,7 +68,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   
   protected void log(int fsAddr, FSIndexRepositoryImpl view, int count) {
     if (SHOW) {
-      log(view, fsAddr);
+      log(fsAddr, view);
       System.out.format(",  count = %d%n", count);
     }
   }
