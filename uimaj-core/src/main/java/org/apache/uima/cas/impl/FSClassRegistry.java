@@ -19,257 +19,397 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Collections;
+import static java.lang.invoke.MethodType.methodType;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.uima.cas.Type;
+import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.cas.BuiltinTypeKinds;
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.function.JCas_getter_boolean;
+import org.apache.uima.cas.function.JCas_getter_byte;
+import org.apache.uima.cas.function.JCas_getter_double;
+import org.apache.uima.cas.function.JCas_getter_float;
+import org.apache.uima.cas.function.JCas_getter_generic;
+import org.apache.uima.cas.function.JCas_getter_int;
+import org.apache.uima.cas.function.JCas_getter_long;
+import org.apache.uima.cas.function.JCas_getter_short;
+import org.apache.uima.cas.function.JCas_setter_boolean;
+import org.apache.uima.cas.function.JCas_setter_byte;
+import org.apache.uima.cas.function.JCas_setter_double;
+import org.apache.uima.cas.function.JCas_setter_float;
+import org.apache.uima.cas.function.JCas_setter_generic;
+import org.apache.uima.cas.function.JCas_setter_int;
+import org.apache.uima.cas.function.JCas_setter_long;
+import org.apache.uima.cas.function.JCas_setter_short;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.Misc;
 
 /*
- * There is one instance of this class per type system.
- * It is shared by multiple CASes (in a CAS pool, for instance,
- * when these CASes are sharing the same type system), and
- * it is shared by all views of that CAS.
+ * There is one instance of this class per type system impl instance.
+ *   - The type system impl instance points to this object
+ *   - It is constructed when the type system is committed
+ *   - Multiple simultaneous versions are possible with multiple type systems, but
+ *      -- supporting different JCas cover classes requires using different ClassLoaders for the type system.
+ * 
+ * It may be shared 
+ *   - by multiple CASes (in a CAS pool, for instance, when these CASes are sharing the same type system).
+ *   - by all views of those CASes.
+ *   - by multiple different pipelines, built using the same merged type system instance
  */
 
 /* Design:
- *   Goals: Suppport PEARs, which can switch class loaders for component
- *          code.  Different class loaders imply different instances of 
- *          JCas cover class definitions, potentially, needing different
- *          generators.
+ *   Goals: Support PEARs. PEARs can have different customizations for JCas classes
+ *          These are located via the PEAR's classloader.
  *          
- *          Keep the non-JCas path (relatively) uncluttered
- *   
- *   Concepts:
- *     Base-ClassLoader: there is one class loader that is considered the base.
- *       This is the one used for the "application code" (if it exists) driving
- *       the UIMA framework.  It is set when the CAS or CAS Pool is created,
- *       according to the resource manager used.  Components (annotators, flow controllers, etc.)
- *       run with this same class loader, unless they are contained within a PEAR;
- *       within PEAR components, the loader is switched (on a per-cas-view-collection basis)
- *       when entering the component, and switched back when the component "returns".
- *       
- *     base-generators - these are the generators associated with the Base-ClassLoader;
- *       there is one set per FSClassRegistry instance (and also, one per TypeSystem instance).
- *     cas-generators - generator set kept in the CAS svd - shared-view-data - 
- *       that are updated as needed during the processing of the CAS, switching
- *       these as needed for entering / exiting PEAR components  
- *
- *   Significant data structures:
- *     - static map in JCasImpl - keys: typeSystem instance and classLoader instance;
- *         value = a hashmap of LoadedJCasType instances for that combination, used to 
- *         make new instances of the _Type objects for views.
- *     - map in this class: key = class loader, value = generator-set to use for this
- *         class loader.  This is also per unique type system, since there's one instance of
- *         this class per type system instance. This is used to load the cas-generators.           
+ *          These must be found and merged into a common definition.  This 
+ *          merged common definition is created in a process done outside of the 
+ *          normal running of the UIMA pipeline. 
+ *            - during running, only one classpath is used to locate JCas cover classes, and
+ *              those must be the merged ones.
+ *            - the merge is only needed in these situations:
+ *              -- running with PEARs which have different definitions of JCas cover classes than their containing pipelines
+ *              -- running with multiple, different pipelines, under a single type system class loader
  *          
- *   Life cycle: Instances of this class are tied one-to-one with particular 
- *     TypeSystem instances.
+ *   At typeSystemCommit time, this data structure is created and initialized with default
+ *     (non-JCas) generators for all types. 
+ *     - The built-in JCas types are loaded; these override the standard default generator.
  *     
- *   At typeSystemCommit time, initGenerators is called; it loads the default
- *     (non-JCas) generator for all types, and then overrides the 
- *     built-in array types with particular generators for those.  
+ *     - The user-defined JCas classes are not loaded until the first call to create a JCas.
+ *       -- this permits running without any customized JCas classes, which may be advantageous in some
+ *          use cases, such as one where multiple different type systems are sequentially loaded 
+ *          (think of an application which deserializes a CAS does some "generic processing", and repeats.)
  *          
- *     *BUT* This is done only if the type system has not already been committed,
- *       so if the generators had (for some other CAS sharing this type system)
- *       already been updated to JCas generators, that is never "undone".
- *       
- *     The cas-generators are set from the base-generators (synch'd)
- *       
- *   When JCas is initialized for this CAS
- *     - it may have already been initialized for another CAS sharing this generator
- *     - it may be initializing for a non-Base-ClassLoader
- *     
- *     When JCas is initialized, if it is for the Base-ClassLoader, then the
- *       if this is the first time this happens for this class loader and type system,
- *       the base-generators are updated (synch'd) (otherwise, the base-generators have
- *       already been updated).
- *                    
- *       The cas-generators are set from the base-generators (synch'd).
- *       
- *       If it is *not* for the Base-ClassLoader, the same thing happens, except that
- *       the base-generators are not updated (so they can be switched-back-to when
- *       leaving the PEAR component class loader environment).  In this case, the
- *       cas-generators are set from the static map(ts, cl) in the jcasimpl.
- *       
- *   When new JCas classes are loaded due to switching to a new class loader for a PEAR,
- *     the static map(ts, cl) in JCasImpl is updated, and the map in this class for 
- *     generators for this class loader is updated, and the cas-generators are loaded
- *     from that. 
- *         
- *   When switching class loaders in component code, the cas-generators are loaded if
- *     a switch is needed from this class's map(cl).
- *     
- *   All refs to the base-generators are synchronized, since different CASes running on 
- *   different threads can update these (when switching to the JCas version for the
- *   Base-ClassLoader).      
+ *     - When the JCas is initialized, the type system set of types is used to attempt to locate
+ *       and load JCas class definitions.
+ *       -- User classes defined with the name of UIMA types, but which are not JCas definitions, are not used.
+ *       -- These classes, once loaded, remain loaded because of Java's design, unless the ClassLoader
+ *          used to load them is Garbage Collected.
+ *          --- The ClassLoader used is the same ClassLoader used for the type system, because
+ *              multiple sets of JCas classes per typesystem isn't supported.
+ *              
+ *   JCas definition merging 
+ *     - depends on multiple sources for JCas cover classes
+ *       -- represented by multiple classloaders, each one corresponding to a different PEAR or other classpath
+ *     - can be invoked for a set of classloaders
+ *     - is run manually, outside of normal UIMA pipeline operation, as a stand-alone utility
  *     
  */
 
 public class FSClassRegistry {
-
-  private static class DefaultFSGenerator implements FSGenerator<FeatureStructureImplC> {
-    private DefaultFSGenerator() {
-      super();
-    }
-
-    public FeatureStructureImplC createFS(int addr, CASImpl cas) {
-      return new FeatureStructureImplC(cas, addr);
-    }
-  }
-
-  private TypeSystemImpl ts;
-
-  private FSGenerator<?>[] generators; 
   
-  private static final FSGenerator<FeatureStructureImplC> defaultGenerator = new DefaultFSGenerator();
- 
-  /*
-   * Generators sometimes need to be changed while running
-   * 
-   *   An Annotator's process method is about to be called, but the class loader
-   *   used for loading the JCas classes differs from the one used to load the 
-   *   Annotator class.  This can happen when a PEAR with different class loader
-   *   is inserted into a pipeline.  
-   *   
-   *   To make this switch efficient, we keep the generators stored in a map
-   *   keyed by the class loader.
-   *   
-   *   JCas creation will, after all the generators are created, call the
-   *   saveGeneratorsForClassLoader to save a copy of the generators.
-   *   
-   *   Generators can be switched by calling loadGeneratorsForClassLoader
-   *   
-   */
-  // This map can be accessed on different threads at the same time
-  private final Map<ClassLoader, FSGenerator<?>[]> generatorsByClassLoader = 
-          Collections.synchronizedMap(new HashMap<ClassLoader, FSGenerator<?>[]>(4));
-
-  // private final RedBlackTree rbt;
-  // private final TreeMap map;
-//  private FeatureStructure[] fsArray;
-
-  FSClassRegistry(TypeSystemImpl ts) {
-    this.ts = ts;
-  }
+  private static final boolean GETTER = true;
+  private static final boolean SETTER = false;
   
-  synchronized void initGeneratorArray() {
-    this.generators = new FSGenerator[ts.getTypeArraySize()];
-    for (int i = ts.getSmallestType(); i < this.generators.length; i++) {
-      this.generators[i] = defaultGenerator;
-    }
-  }
+  private static final MethodHandles.Lookup lookup = MethodHandles.lookup();
   
+  private static final MethodType findConstructorJCasCoverType      = methodType(void.class, TypeImpl.class, CASImpl.class);
+  private static final MethodType findConstructorJCasCoverTypeArray = methodType(void.class, TypeImpl.class, CASImpl.class, int.class);
   /**
-   * adds generator for type and all its subtypes. Because of this, call this on supertypes first,
-   * then subtypes (otherwise subtypes will be overwritten by generators for the supertypes).
-   * 
-   * @param type
-   *          the CAS type
-   * @param fsFactory
-   *          the object having a createFS method in it for this type
+   * The callsite has the return type, followed by capture arguments
    */
-  synchronized void addClassForType(Type type, FSGenerator<?> fsFactory) {
-    Iterator<Type> it = this.ts.getTypeIterator();
-    TypeImpl sub;
-    while (it.hasNext()) {
-      sub = (TypeImpl) it.next();
-      if (this.ts.subsumes(type, sub)) {
-        this.generators[sub.getCode()] = fsFactory;
+  private static final MethodType callsiteFsGenerator      = methodType(FsGenerator.class);
+  private static final MethodType callsiteFsGeneratorArray = methodType(FsGeneratorArray.class);
+  
+  private static final MethodType fsGeneratorType      = methodType(FeatureStructureImplC.class, TypeImpl.class, CASImpl.class);
+  private static final MethodType fsGeneratorArrayType = methodType(FeatureStructureImplC.class, TypeImpl.class, CASImpl.class, int.class);
+  
+  public static class GetterSetter {
+    final Object getter;
+    final Object setter;
+    GetterSetter(Object getter, Object setter) {
+      this.getter = getter;
+      this.setter = setter;
+    }
+  }
+  
+  private static class JCasClassInfo {
+    final Object generator;
+    final Class<?> jcasClass;
+    /**
+     * map from the feature short name to the getter/setter Lambda
+     */
+    final Map<String, GetterSetter> gettersAndSetters = new HashMap<>(1);
+    
+    JCasClassInfo(Class<?> jcasClass, Object generator) {
+      this.generator = generator;
+      this.jcasClass = jcasClass;
+    }
+  }
+
+  /**
+   * precomputed generators for built-in types
+   */
+  private static final JCasClassInfo[] jcasClassesInfoForBuiltins;
+  static {
+    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
+    jcasClassesInfoForBuiltins = new JCasClassInfo[tsi.getTypeArraySize()]; 
+    ClassLoader cl = TypeSystemImpl.class.getClassLoader();
+    
+    for (String typeName : BuiltinTypeKinds.creatableBuiltinJCas) {
+      TypeImpl ti = tsi.getType(typeName);
+      Class<?> builtinClass = maybeLoadJCas(typeName, cl);
+      assert (builtinClass != null);  // builtin types must be present
+      
+      // copy down to subtypes, if needed, done later
+      jcasClassesInfoForBuiltins[ti.getCode()] = createJCasClassInfo(builtinClass, ti); 
+    }
+    /** special handling for Sofa, a non-creatable type */
+    TypeImpl ti = tsi.getType(CAS.TYPE_NAME_SOFA);
+    jcasClassesInfoForBuiltins[ti.getCode()] = createJCasClassInfo(Sofa.class, ti); 
+    
+  }
+  
+  // the loaded JCas cover classes, generators, setters, and getters.  index is typecode; value is JCas cover class which may belong to a supertype.
+  private final JCasClassInfo[] jcasClassesInfo; 
+   
+  //  
+  // 
+  /**
+   * install the default (non-JCas) generator for all types in the type system and the
+   * JCas style generators for the built-in types
+   * 
+   * Also, for all loaded JCas classes, set the javaClass field (including
+   *   in subtypes with no JCas class defined).
+   *   
+   * @param ts - the type system
+   * @param isDoUserJCasLoading a flag to skip loading the JCas classes
+   */
+  FSClassRegistry(TypeSystemImpl ts, boolean isDoUserJCasLoading) {
+    
+    jcasClassesInfo = new JCasClassInfo[ts.getTypeArraySize()];
+    
+    /**
+     * copy in built-ins
+     */
+    for (int i = 0; i < jcasClassesInfoForBuiltins.length; i++) {
+      
+      JCasClassInfo jci;
+      jcasClassesInfo[i] = jci = jcasClassesInfoForBuiltins[i];
+      if (jci != null) {
+        ts.setJCasRegisteredType(Misc.getStaticIntField(getJCasClass(i), "typeIndexID"), ts.getTypeForCode(i));
       }
     }
-  }
-
-  /**
-   * No longer used, but left in for backward compatibility with older JCasgen'd 
-   * classes
-   * @param type -
-   * @param fsFactory - 
-   */
-  public void addGeneratorForType(TypeImpl type, FSGenerator<?> fsFactory) {
-    //this.generators[type.getCode()] = fsFactory;
-  }
-
-//  // Internal use only
-//  public FSGenerator getGeneratorForType(TypeImpl type) {
-//    return this.generators[type.getCode()];
-//  }
-
-//  /**
-//   * copies a generator for a type into another type. Called by JCas after basic types are created
-//   * to change the generated types for things having no JCas Java model to the most specific
-//   * supertype JCas Java model (if one exists). This allows writinge iterators using JCas where some
-//   * of the returned items may be subtypes which have no JCas cover types.
-//   * 
-//   */
-//  public void copyGeneratorForType(TypeImpl targetType, TypeImpl sourceType) {
-//    this.generators[targetType.getCode()] = this.generators[sourceType.getCode()];
-//  }
-
-  /* only of interest when caching (not JCas caching) FSes which has never been finished or enabled */
-  void flush() {
-    // commented out to reduce FindBugs noise.  
-//    if (this.fsArray != null) {
-//      Arrays.fill(this.fsArray, null);
-//    }
-  }
-  
-  public void saveGeneratorsForClassLoader(ClassLoader cl, FSGenerator<?>[] newGenerators) {
-    generatorsByClassLoader.put(cl, newGenerators);
-  }
-  
-  public boolean swapInGeneratorsForClassLoader(ClassLoader cl, CASImpl casImpl) {
-    FSGenerator<?>[] cachedGenerators = generatorsByClassLoader.get(cl);
-    if (cachedGenerators != null) {
-      casImpl.setLocalFsGenerators(cachedGenerators);
-      return true;
+     
+    /**
+     * Add all user-defined JCas Types, in subsumption order
+     *   We add these now, in case JCas is turned on later - unless specifically
+     *   specified to run without user-defined JCas loading
+     */
+    
+    if (isDoUserJCasLoading) {
+      maybeLoadJCasAndSubtypes(ts, ts.topType, jcasClassesInfo[TypeSystemImpl.topTypeCode]);
     }
-    return false;
   }
 
+  private void maybeLoadJCasAndSubtypes(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo copyDownDefault_jcasClassInfo) {
+    final int typecode = ti.getCode();
+    Class<?> clazz;
+    boolean isBuiltin = BuiltinTypeKinds.creatableBuiltinJCas.contains(ti.getName());
 
-//  // assume addr is never 0 - caller must insure this
-//  FeatureStructure createFSusingGenerator(int addr, CASImpl cas) {
-//    return this.generators[cas.getHeap().heap[addr]].createFS(addr, cas);    
-//  }
+    JCasClassInfo jcasClassInfo = copyDownDefault_jcasClassInfo;  // initialize in case no JCas for this type
+    
+    if (!isBuiltin) {
+      clazz = maybeLoadJCas(ti.getName(), ti.getClass().getClassLoader()); 
+      if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
+        jcasClassInfo = createJCasClassInfo(clazz, ti);
+        ts.setJCasRegisteredType(Misc.getStaticIntField(clazz, "typeIndexID"), ti);
+      }
+      jcasClassesInfo[typecode] = jcasClassInfo;  // sets new one or default one
+    }
+      
+    for (TypeImpl subtype : ti.getDirectSubtypes()) {
+      maybeLoadJCasAndSubtypes(ts, subtype, jcasClassesInfo[typecode]);
+    }
+  }
+    
+  private static Class<?> maybeLoadJCas(String typeName, ClassLoader cl) {
+    Class<?> clazz = null;
+    String className = typeName2ClassName(typeName);
+    try {
+      clazz = Class.forName(className, true, cl);
+    } catch (ClassNotFoundException e) {
+      // This is normal, if there is no JCas for this class
+    }
+    return clazz;
+  }
   
-//  /*
-//   * Generators used are created with as much info as can be looked up once, ahead of time.
-//   * Things variable at run time include the cas instance, and the view.
-//   * 
-//   * In this design, generators are shared with all views for a particular CAS, but are different for 
-//   * different CAS Type Systems and Class Loaders (distinct from shared-views of the same CAS)
-//   * 
-//   * Internal use only - public only to give access to JCas routines in another package
-//   */
-//  public void loadJCasGeneratorForType (int type, Constructor c, TypeImpl casType, boolean isSubtypeOfAnnotationBase) {
-//    FSGenerator fsGenerator = new JCasFsGenerator(type, c, isSubtypeOfAnnotationBase, ts.sofaNumFeatCode, ts.annotSofaFeatCode);
-//    addGeneratorForTypeInternal(casType, fsGenerator);
-//  }
-   
-  /* 
-   * Internal Use only
-   * All callers must by synchronized
-   *   although may not be strictly necessary if you can prove that
-   *   no updates to the generators array could be occuring in 
-   *   another thread
+  private static String typeName2ClassName(String typeName) {
+    if (typeName.startsWith(CAS.UIMA_CAS_PREFIX)) {
+      return "org.apache.uima.jcas.cas." + typeName.substring(CAS.UIMA_CAS_PREFIX.length());
+    }
+    if (typeName.startsWith(CAS.UIMA_TCAS_PREFIX)) {
+      return "org.apache.uima.jcas.tcas." + typeName.substring(CAS.UIMA_TCAS_PREFIX.length());
+    }
+    return typeName;
+  }
+      
+  /**
+   * Return a Functional Interface for a generator for creating instances of a type.
+   *   Function takes a casImpl arg, and returning an instance of the JCas type.
+   * @param jcasClass the class of the JCas type to construct
+   * @param typeImpl the UIMA type
+   * @return a Functional Interface whose createFS method takes a casImpl 
+   *         and when subsequently invoked, returns a new instance of the class
    */
-  
-  public synchronized FSGenerator<?> [] getBaseGenerators() {
-    return this.generators;
+  private static Object createGenerator(Class<?> jcasClass, TypeImpl typeImpl) {
+    boolean isArray = typeImpl.isArray();
+    try {
+      MethodHandle mh = lookup.findConstructor(jcasClass, isArray ? findConstructorJCasCoverTypeArray 
+                                                                  : findConstructorJCasCoverType);
+      MethodType mtThisGenerator = isArray ? methodType(jcasClass, TypeImpl.class, CASImpl.class, int.class)
+                                           : methodType(jcasClass, TypeImpl.class, CASImpl.class);
+ 
+      CallSite callSite = LambdaMetafactory.metafactory(
+          lookup, // lookup context for the constructor 
+          "createFS", // name of the method in the Function Interface 
+          isArray ? callsiteFsGeneratorArray  // signature of callsite, return type is functional interface, args are captured args if any
+                  : callsiteFsGenerator,
+          isArray ? fsGeneratorArrayType 
+                  : fsGeneratorType,  // samMethodType signature and return type of method impl by function object 
+          mh,  // method handle to constructor 
+          mtThisGenerator);
+      return isArray ? (FsGeneratorArray) callSite.getTarget().invokeExact()
+                     : (FsGenerator) callSite.getTarget().invokeExact();
+    } catch (Throwable e) {
+      if (e instanceof NoSuchMethodException) {
+        throw new CASRuntimeException(e, CASRuntimeException.JCAS_CAS_NOT_V3, jcasClass.getName());
+      }
+      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
+    }
   }
   
-  // internal use, public only for cross package ref
-  public synchronized void setBaseGenerators(FSGenerator<?>[] generators) {
-    this.generators = generators;
-  }
-  
-  /*
-   * Internal Use Only
+  /**
+   * Return a Functional Interface for a getter for getting the value of a feature, 
+   * called by APIs using the non-JCas style of access via features, 
+   * but accessing the values via the JCas cover class getter methods.
+   * 
+   * The caller of these methods is the FeatureStructureImplC methods.  
+   * 
+   * There are these return values:
+   *   boolean, byte, short, int, long, float, double, String, FeatureStructure
+   *   
    */
-  
-  public synchronized FSGenerator<?>[] getNewFSGeneratorSet() {  
-      return this.generators.clone();   
+  private static Object createGetterOrSetter(Class<?> jcasClass, FeatureImpl fi, boolean isGetter) {
+    
+    TypeImpl range = fi.getRangeImpl();
+    
+    try {
+      /* get an early-bound getter    
+      /* find special invokes a specific method in a specific class, without looking at the 
+       * runtime class */
+      MethodHandle mh = lookup.findVirtual(
+          jcasClass,  // class having the method code for the getter 
+          fi.getGetterSetterName(isGetter), // the name of the method for the getter 
+          isGetter ? methodType(range.javaClass)
+                   : methodType(void.class, range.javaClass) // return value, e.g. int.class, xyz.class, FeatureStructureImplC.class
+          );
+      
+      // getter methodtype is return_type, FeatureStructure.class
+      //   return_type is int, byte, etc. primitive (except string/substring), or
+      //   object (to correspond with erasure)
+      // setter methodtype is void.class, FeatureStructure.class, javaclass
+      MethodType mhMt = isGetter ? methodType(range.getJavaPrimitiveClassOrObject(), FeatureStructureImplC.class)
+                                 : methodType(void.class, FeatureStructureImplC.class, range.getJavaPrimitiveClassOrObject());
+      MethodType iMt =  isGetter ? methodType(range.javaClass, jcasClass)
+                                 : methodType(void.class, jcasClass, range.javaClass);
+      
+//      System.out.format("mh method type for %s method %s is %s%n", 
+//          jcasClass.getSimpleName(), 
+//          fi.getGetterSetterName(isGetter),
+//          mhMt);
+          
+      CallSite callSite = LambdaMetafactory.metafactory(
+          lookup,     // lookup context for the getter
+          isGetter ? "get" : "set", // name of the method in the Function Interface                 
+          methodType(isGetter ? range.getter_funct_intfc_class : range.setter_funct_intfc_class),  // callsite signature = just the functional interface return value
+          mhMt,                      // samMethodType signature and return type of method impl by function object 
+          mh,  // method handle to constructor 
+          iMt);
+    
+      if (range.getJavaClass() == boolean.class) {
+        return isGetter ? (JCas_getter_boolean) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_boolean) callSite.getTarget().invokeExact();
+      } else if (range.getJavaClass() == byte.class) {
+        return isGetter ? (JCas_getter_byte) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_byte) callSite.getTarget().invokeExact();
+      } else if (range.getJavaClass() == short.class) {
+        return isGetter ? (JCas_getter_short) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_short) callSite.getTarget().invokeExact();
+      } else if (range.getJavaClass() == int.class) {
+        return isGetter ? (JCas_getter_int) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_int) callSite.getTarget().invokeExact();
+      } else if (range.getJavaClass() == long.class) {
+        return isGetter ? (JCas_getter_long) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_long) callSite.getTarget().invokeExact();
+      } else if (range.getJavaClass() == float.class) {
+        return isGetter ? (JCas_getter_float) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_float) callSite.getTarget().invokeExact();
+      } else if (range.getJavaClass() == double.class) {
+        return isGetter ? (JCas_getter_double) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_double) callSite.getTarget().invokeExact();
+      } else {
+        return isGetter ? (JCas_getter_generic) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_generic) callSite.getTarget().invokeExact();
+      }
+    } catch (NoSuchMethodException e) {
+      return null;
+    } catch (Throwable e) {
+      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
+    }
+
   }
+ 
+  
+  Object getGenerator(int typecode) {
+    return jcasClassesInfo[typecode].generator;
+  }
+  
+  GetterSetter getGetterSetter(int typecode, String featShortName) {
+    return jcasClassesInfo[typecode].gettersAndSetters.get(featShortName);
+  }
+  
+  Class<?> getJCasClass(int typecode) {
+    return jcasClassesInfo[typecode].jcasClass; 
+  }
+  
+  private static  JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti) {
+    JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, ti.getName().equals(CAS.TYPE_NAME_SOFA) ? null : createGenerator(jcasClass, ti));
+
+    for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+      if (!isFieldInClass(fi, jcasClass)) {
+        continue;
+      }
+      Object getter = createGetterOrSetter(jcasClass, fi, GETTER);
+      Object setter = createGetterOrSetter(jcasClass, fi, SETTER);
+      
+      GetterSetter prev = jcasClassInfo.gettersAndSetters.put(fi.getShortName(), new GetterSetter(getter, setter));
+      if (prev != null) {
+        throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
+      }
+    }    
+    return jcasClassInfo;
+  }
+  
+  static boolean isFieldInClass(Feature feat, Class<?> clazz) {
+    try {
+      return null != clazz.getDeclaredField("_F_" + feat.getShortName());
+    } catch (NoSuchFieldException e) {
+      return false;
+    }    
+  }
+  
+  
+  
 }
+  
