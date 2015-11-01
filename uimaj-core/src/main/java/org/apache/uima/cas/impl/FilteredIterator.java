@@ -30,7 +30,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 /**
  * Implements a filtered iterator.
  */
-class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T> {
+class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
 
   // The base iterator.
   private FSIterator<T> it;
@@ -116,12 +116,12 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
     adjustForConstraintForward();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
-   */
-  @Override
-  <TT extends AnnotationFS> void moveTo(int begin, int end) {
-    ((FSIteratorImplBase<T>)(this.it)).moveTo(begin, end);
-    adjustForConstraintForward();
-  }
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+//   */
+//  @Override
+//  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+//    ((FSIterator_concurrentmod<T>)(this.it)).moveTo(begin, end);
+//    adjustForConstraintForward();
+//  }
 }
