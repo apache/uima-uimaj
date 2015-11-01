@@ -2606,7 +2606,7 @@ public class BinaryCasSerDes4 {
           i++;
           TypeImpl slotType = (TypeImpl) feat.getRange();
           
-          if (slotType == ts.stringType || (slotType instanceof StringTypeImpl)) {
+          if (slotType == ts.stringType || (slotType instanceof TypeImplString)) {
             slots.add(Slot_StrRef);
             strRefsTemp.add(i); 
           } else if (slotType == ts.intType) {
