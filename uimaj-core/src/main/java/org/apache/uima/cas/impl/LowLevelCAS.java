@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Defines the low-level CAS APIs. The low-level CAS APIs provide no access to feature structure
@@ -251,7 +252,7 @@ public interface LowLevelCAS {
    * @param <T> the Java class for the Feature Structure
    * @return A FS object corresponding to the input reference.
    */
-  <T extends FeatureStructure> T ll_getFSForRef(int fsRef);
+  <T extends TOP> T ll_getFSForRef(int fsRef);
 
   /**
    * Get the value of an integer valued feature.
