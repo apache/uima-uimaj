@@ -170,7 +170,7 @@ public class CharacterUtils {
   public static void printAntlrLexRule(String name, ArrayList<CharRange> charRanges) {
     CharRange range;
     System.out.print(name + " : ");
-    StringBuffer spaceBuffer = new StringBuffer();
+    StringBuilder spaceBuffer = new StringBuilder();
     StringUtils.printSpaces(name.length(), spaceBuffer);
     String spaces = spaceBuffer.toString();
     for (int i = 0; i < charRanges.size(); i++) {
@@ -191,7 +191,7 @@ public class CharacterUtils {
   public static void printJavaCCLexRule(String name, ArrayList<CharRange> charRanges) {
     CharRange range;
     System.out.print(name + " = ");
-    StringBuffer spaceBuffer = new StringBuffer();
+    StringBuilder spaceBuffer = new StringBuilder();
     StringUtils.printSpaces(name.length(), spaceBuffer);
     String spaces = spaceBuffer.toString();
     for (int i = 0; i < charRanges.size(); i++) {
