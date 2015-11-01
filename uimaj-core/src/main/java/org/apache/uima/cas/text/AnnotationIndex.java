@@ -78,13 +78,15 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
   FSIterator<T> iterator(boolean ambiguous);
 
   /**
-   * Return a subiterator whose bounds are defined by the <code>annot</code>.
+   * Return a subiterator whose bounds are defined by the input annotation.
+   * 
    * <p>
    * The <code>annot</code> is used for 3 purposes:</p>
    * <ul><li>It is used to compute the position in the index where the iteration starts.</li>
    * <li>It is used to compute end point where the iterator stops when moving forward.</li>
    * <li>It is used to specify which annotations will be skipped while iterating.</li>
    * </ul>
+   * 
    * <p>The starting position is computed by first finding a position 
    * whose annotation compares equal with the <code>annot</code> (this might be one of several), and then
    * advancing until reaching a position where the annotation there is not equal to the 
@@ -104,24 +106,27 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * <p>While iterating, it operates like a <code>strict</code> iterator; 
    * annotations whose end positions are &gt; the end position of <code>annot</code> are skipped.
    * </p>
-   * 
-   * <p>This is equivalent to returning annotations <code>b</code> such that</p> 
+
+     * <p>This is equivalent to returning annotations <code>b</code> such that</p> 
    * <ul><li><code>annot &lt; b</code>, and</li>
    * <li><code>annot.getEnd() &gt;= b.getBegin()</code>, skipping <code>b's</code>
    * whose end position is &gt; annot.getEnd().</li>
    * </ul>
-   * <p>For annotations x and y, the relation <code>x &lt; y</code>
-   * here is interpreted as "x comes before y in the index", according to the rules defined in
+   * 
+   * <p>For annotations x, y, <code>x &lt; y</code>
+   * here is to be interpreted as "x comes before y in the index", according to the rules defined in
    * the description of {@link AnnotationIndex this class}.
    * </p>
+   * 
    * <p>
    * This definition implies that annotations <code>b</code> that have the same span as
-   * <code>annot</code> may or may not be returned by the subiterator, depending on type priorities; 
-   * the subiterator will only return such an annotation <code>b</code> if the
+   * <code>annot</code> may or may not be returned by the subiterator. This is determined by the
+   * type priorities; the subiterator will only return such an annotation <code>b</code> if the
    * type of <code>annot</code> precedes the type of <code>b</code> in the type priorities
    * definition. If you have not specified the priority, or if <code>annot</code> and
    * <code>b</code> are of the same type, then the behavior is undefined.
    * </p>
+   * <p>
    * <p>
    * For example, if you have an annotation <code>S</code> of type <code>Sentence</code> and an
    * annotation <code>P</code> of type <code>Paragraph</code> that have the same span, and you
@@ -131,6 +136,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * The intuition is that a Paragraph is conceptually larger than a Sentence, as defined by the
    * type priorities.
    * </p>
+   * 
    * <p>
    * Calling <code>subiterator(a)</code> is equivalent to calling
    * <code>subiterator(a, true, true).</code>. See
@@ -207,13 +213,13 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * The intuition is that a Paragraph is conceptually larger than a Sentence, as defined by the
    * type priorities.
    * </p>
-   * 
+    * 
    * @param annot
    *          Annotation setting boundary conditions for subiterator.
    * @param ambiguous
    *          If set to <code>false</code>, resulting iterator will be unambiguous.
    * @param strict
-   *          true means to exclude annotations that overlap annot on the right
+   *          Controls if annotations that overlap to the right are considered in or out.
    * @return A subiterator.
    */
   FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict);
