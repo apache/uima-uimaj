@@ -1064,7 +1064,7 @@ public class CasSerializerSupport {
 //              }
             final boolean isAnnot = tsi.subsumes(TypeSystemImpl.annotTypeCode, typeCode1);
             if (isAnnot) {
-              c = compareFeat(o1, o2, TypeSystemImpl.startFeatCode);
+              c = compareFeat(o1, o2, TypeSystemImpl.beginFeatCode);
               return (c != 0) ? c : compareFeat(o2, o1, TypeSystemImpl.endFeatCode);  // reverse order
             }
             // not sofa nor annotation
