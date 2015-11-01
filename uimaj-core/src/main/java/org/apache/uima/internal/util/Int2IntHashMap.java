@@ -22,7 +22,7 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.jcas.impl.JCasHashMap;
+import org.apache.uima.util.Misc;
 
 /**
  * A map&lt;int, int&gt;
@@ -322,7 +322,7 @@ public class Int2IntHashMap {
      throw new IllegalArgumentException("0 is an invalid key");
    }
    
-   final int hash = JCasHashMap.hashInt(key);
+   final int hash = Misc.hashInt(key);
 
    final int[] localKeys = keys;
    final int bitMask = localKeys.length - 1;
