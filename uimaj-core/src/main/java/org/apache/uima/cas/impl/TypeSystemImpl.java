@@ -19,8 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
+
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Boolean;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_BooleanRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ByteRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
@@ -33,28 +35,26 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 import java.util.WeakHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
@@ -62,204 +62,350 @@ import org.apache.uima.cas.TypeNameSpace;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.FSClassRegistry.GetterSetter;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
-import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.StringToIntMap;
-import org.apache.uima.internal.util.SymbolTable;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
-import org.apache.uima.internal.util.rb_trees.RedBlackTree;
-import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.cas.AnnotationBase;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyFloatList;
+import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.EmptyStringList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.JavaObjectArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.NonEmptyFloatList;
+import org.apache.uima.jcas.cas.NonEmptyIntegerList;
+import org.apache.uima.jcas.cas.NonEmptyStringList;
+import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Misc;
 
 import com.strobel.assembler.metadata.Buffer;
 import com.strobel.assembler.metadata.ITypeLoader;
-import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.PlainTextOutput;
+import com.strobel.decompiler.languages.java.ast.Annotation;
 
 /**
  * Type system implementation.
  * 
- * Threading:  An instance of this object should be thread safe after creation, because multiple threads
- *   are reading info from it.
- *  
- * During creation, only one thread is creating. 
+ * This class has static final (constant) values for built-in type codes, feature codes, feature offsets, and feature isInt.
+ *   - these are used  
+ *     -- for various type-specific internal use 
+ *     -- static final constants in the built-in JCas class definitions
+ *   - these are set by hand as final constants  
+ *    
+ * Threading:  An instance of this object needs to be thread safe after creation, because multiple threads
+ *     are reading info from it.
+ *   - During creation, only one thread is creating. 
  * 
+ * Association with Class Loaders, after type system is committed
+ *   Because JCas classes are generated from the merged type system, and then loaded under some class loader,
+ *   several use cases need to be accomodated.
+ *   
+ *     Multiple type systems committed in sequence within one UIMA application.
+ *       - Under one class loader
+ *         -- a problem unless the type systems are the same.  
+ *              If the type systems are different, this corresponds to reloading existing classes.  Disallow.
+ *       - a new UIMATypeSystemClassLoader is associated with each commit - this is OK
+ *       - a new 
  */
-public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
+public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem {  
   
   private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
   private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
+  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
   
   private final static int[] INT0 = new int[0];
   
-  private final static IntVector zeroLengthIntVector = new IntVector(1);  // capacity is 1; 0 makes length default to 16
-
-  private static class ListIterator<T> implements Iterator<T> {
-
-    private final List<T> list;
-
-    private final int len;
-
-    private int pos = 0;
-
-    private ListIterator(List<T> list, int max) {
-      this.list = list;
-      this.len = (max < list.size()) ? max : list.size();
-    }
-
-    @Override
-    public boolean hasNext() {
-      return this.pos < this.len;
-    }
-
-    @Override
-    public T next() {
-      if (!hasNext()) {
-        throw new NoSuchElementException();
-      }
-      T o = this.list.get(this.pos);
-      ++this.pos;
-      return o;
-    }
-
-    @Override
-    public void remove() {
-      throw new UnsupportedOperationException();
-    }
-  }
+  /**
+   * Type code that is returned on unknown type names.
+   */
+  static final int UNKNOWN_TYPE_CODE = 0;
 
   private static final int LEAST_TYPE_CODE = 1;
 
   // private static final int INVALID_TYPE_CODE = 0;
   private static final int LEAST_FEATURE_CODE = 1;
+  
+  private static final String ARRAY_TYPE_SUFFIX = "[]";
+  
+  /**
+   * HEAP_STORED_ARRAY flag is kept for ser/deserialization compatibility
+   */
+  private static final boolean HEAP_STORED_ARRAY = true;
+
+  /**
+   * For a given class loader, prevent redefinitions of the same type system from 
+   *   
+   */
+//  private static final Map<ClassLoader, Set<TypeSystemImpl>> committedTypeSystemsByClassLoader = 
+//          Collections.newSetFromMap(
+//              new WeakHashMap<TypeSystemImpl, Boolean>()));
+
+  /******************************************
+   * built-in type codes
+   ******************************************/
+  // Code of root of hierarchy (will be 1 with current implementation)
+         static final int topTypeCode = 1;
+  public static final int intTypeCode = 2;
+  public static final int floatTypeCode = 3;
+  public static final int stringTypeCode = 4;
+         static final int arrayBaseTypeCode = 5;
+  public static final int fsArrayTypeCode = 6;
+  public static final int floatArrayTypeCode = 7;
+  public static final int intArrayTypeCode = 8;
+  public static final int stringArrayTypeCode = 9;
+  // 10 list base
+  // 11           fs list
+  // 12 empty     fs list
+  // 13 non-empty fs list
+  // 14           float list
+  // 15 empty     float list
+  // 16 non-empty float list
+  // 17           integer list
+  // 18 empty     integer list
+  // 19 non-empty integer list
+  // 20           string list
+  // 21 empty     string list
+  // 22 non-empty string list
+
+  public static final int booleanTypeCode = 23;
+  public static final int byteTypeCode = 24;
+  public static final int shortTypeCode = 25;
+  public static final int longTypeCode = 26;
+  public static final int doubleTypeCode = 27;
+  public static final int booleanArrayTypeCode = 28;
+  public static final int byteArrayTypeCode = 29;
+  public static final int shortArrayTypeCode = 30;
+  public static final int longArrayTypeCode = 31;
+  public static final int doubleArrayTypeCode = 32;
+  public static final int sofaTypeCode = 33;
+  public static final int annotBaseTypeCode = 34;
+  public static final int annotTypeCode = 35;
+  public static final int docTypeCode = 36;  
+  public static final int javaObjectTypeCode = 37;
+  public static final int javaObjectArrayTypeCode = 38;
+    
+  private final static int INIT_SIZE_ARRAYS_BUILT_IN_TYPES = 64;  // approximate... used for array sizing only 
 
   // static maps ok for now - only built-in mappings stored here
   // which are the same for all type system instances
-  private final static Map<String, String> arrayComponentTypeNameMap = new HashMap<String, String>(9);
-
-  private final static Map<String, String> arrayTypeComponentNameMap = new HashMap<String, String>(9);
-
-  private static final String arrayTypeSuffix = "[]";
-
-  static {
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_TOP, CAS.TYPE_NAME_FS_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_BOOLEAN, CAS.TYPE_NAME_BOOLEAN_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_BYTE, CAS.TYPE_NAME_BYTE_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_SHORT, CAS.TYPE_NAME_SHORT_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_INTEGER, CAS.TYPE_NAME_INTEGER_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_FLOAT, CAS.TYPE_NAME_FLOAT_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_LONG, CAS.TYPE_NAME_LONG_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_DOUBLE, CAS.TYPE_NAME_DOUBLE_ARRAY);
-    arrayComponentTypeNameMap.put(CAS.TYPE_NAME_STRING, CAS.TYPE_NAME_STRING_ARRAY);
-  }
+  /**
+   * Map from component name to built-in array name
+   */
+  private final static Map<String, String> builtInArrayComponentName2ArrayTypeName = new HashMap<String, String>(9);
 
   static {
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_FS_ARRAY, CAS.TYPE_NAME_TOP);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_BOOLEAN_ARRAY, CAS.TYPE_NAME_BOOLEAN);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_BYTE_ARRAY, CAS.TYPE_NAME_BYTE);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_SHORT_ARRAY, CAS.TYPE_NAME_SHORT);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_INTEGER_ARRAY, CAS.TYPE_NAME_INTEGER);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_FLOAT_ARRAY, CAS.TYPE_NAME_FLOAT);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_LONG_ARRAY, CAS.TYPE_NAME_LONG);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_DOUBLE_ARRAY, CAS.TYPE_NAME_DOUBLE);
-    arrayTypeComponentNameMap.put(CAS.TYPE_NAME_STRING_ARRAY, CAS.TYPE_NAME_STRING);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_TOP, CAS.TYPE_NAME_FS_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_BOOLEAN, CAS.TYPE_NAME_BOOLEAN_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_BYTE, CAS.TYPE_NAME_BYTE_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_SHORT, CAS.TYPE_NAME_SHORT_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_INTEGER, CAS.TYPE_NAME_INTEGER_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_FLOAT, CAS.TYPE_NAME_FLOAT_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_LONG, CAS.TYPE_NAME_LONG_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_DOUBLE, CAS.TYPE_NAME_DOUBLE_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_STRING, CAS.TYPE_NAME_STRING_ARRAY);
+    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_JAVA_OBJECT, CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
+    
   }
 
-  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
+  private final static Map<String, SlotKind> slotKindsForNonArrays = new HashMap<>(9);
+  static {
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_STRING, Slot_StrRef);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_INTEGER, Slot_Int);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_BOOLEAN, Slot_Boolean);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_BYTE, Slot_Byte);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_SHORT, Slot_Short);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_FLOAT, Slot_Float);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_LONG, Slot_LongRef);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_DOUBLE, Slot_DoubleRef);
+  }
+  
 
   private static final Object GLOBAL_TYPESYS_LOCK = new Object();
-
-  // Current implementation has online update. Look-up could be made
-  // more efficient by computing some tables, but the assumption is
-  // that the type system will not be queried often enough to justify
-  // the effort.
-
-  private final SymbolTable typeNameST; // Symbol table of type names
-
-  // Symbol table of feature names, containing only one entry per feature,
-  // i.e.,
-  // its normal form.
-  private final SymbolTable featureNameST;
-
-  // A map from the full space of feature names to feature codes. A feature
-  // may
-  // be known by many different names (one for each subtype of the type the
-  // feature is declared on).
-  private final StringToIntMap featureMap;
-
-  /**
-   * List indexed by supertype code
-   * Value is an IntVector representing type codes for directly subsumed types (just one level below)
-   */
-  private final List<IntVector> tree; // Collection of IntVectors encoding type tree
-
-  /**
-   * List indexed by supertype code, 
-   * Value is bits set of subtypes of that code, including the type itself
-   */
-  private final List<BitSet> subsumes; // Collection of BitSets for subsumption relation
   
   /**
-   * indexed by feature code, specifies the type code where the feature is introduced - its highest domain
+   * Static final constants for built-in features
    */
-  private final IntVector intro;
+  public static final int sofaNumFeatCode = 9;  // ref from another pkg
+  public static final int sofaIdFeatCode = 10;
+  public static final int sofaStringFeatCode = 13;
+         static final int sofaMimeFeatCode = 11;
+         static final int sofaUriFeatCode = 14;
+         static final int sofaArrayFeatCode = 12;
+  public static final int annotSofaFeatCode = 15; // ref from another pkg
+  public static final int beginFeatCode = 16;
+  public static final int endFeatCode = 17;
+         static final int langFeatCode = 18;
+           
+  private static final Set<String> builtInsWithAltNames = new HashSet<String>();
+  static {Misc.addAll(builtInsWithAltNames, 
+           CAS.TYPE_NAME_TOP,
+           CAS.TYPE_NAME_STRING_ARRAY,
+           CAS.TYPE_NAME_BOOLEAN_ARRAY,
+           CAS.TYPE_NAME_BYTE_ARRAY,
+           CAS.TYPE_NAME_SHORT_ARRAY,
+           CAS.TYPE_NAME_INTEGER_ARRAY,
+           CAS.TYPE_NAME_LONG_ARRAY,
+           CAS.TYPE_NAME_FS_ARRAY,
+           CAS.TYPE_NAME_FLOAT_ARRAY,
+           CAS.TYPE_NAME_DOUBLE_ARRAY,
+           CAS.TYPE_NAME_EMPTY_FLOAT_LIST,
+           CAS.TYPE_NAME_EMPTY_FS_LIST,
+           CAS.TYPE_NAME_EMPTY_INTEGER_LIST,
+           CAS.TYPE_NAME_EMPTY_STRING_LIST,
+           CAS.TYPE_NAME_FLOAT_LIST,
+           CAS.TYPE_NAME_FS_LIST,
+           CAS.TYPE_NAME_INTEGER_LIST,
+           CAS.TYPE_NAME_STRING_LIST,
+           CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST,
+           CAS.TYPE_NAME_NON_EMPTY_FS_LIST,
+           CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST,
+           CAS.TYPE_NAME_NON_EMPTY_STRING_LIST,
+           CAS.TYPE_NAME_SOFA,
+           CAS.TYPE_NAME_ANNOTATION_BASE,
+           CAS.TYPE_NAME_ANNOTATION,
+           CAS.TYPE_NAME_DOCUMENT_ANNOTATION,
+           CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
+  }
+         
+         
+  public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
+    
+  /******************************************
+   *   I N S T A N C E   V A R I A B L E S  *
+   ******************************************/
+//    private final TypeImpl[] allTypesForByteCodeGen;
+//
+//    private FeatureStructureClassGen featureStructureClassGen = new FeatureStructureClassGen(); 
 
+  private FSClassRegistry fsClassRegistry; // set at type system commit time.
   /**
-   * indexed by feature code, specifies the typecode for the range of the feature
+   * Map from built-in array name to component Type
    */
-  private final IntVector featRange; // Indicates range type of features
+  private final Map<String, TypeImpl> arrayName2ComponentType = new HashMap<String, TypeImpl>(9);
+  
+  // not static in general because need different instances for each type system
+  // because instances have direct subtypes
+         final TypeImpl      topType;
+  public final TypeImpl      intType;
+  public final TypeImpl      stringType;
+  public final TypeImpl      floatType;
+         final TypeImpl      arrayBaseType;
+         final TypeImplArray intArrayType;
+         final TypeImplArray floatArrayType;
+         final TypeImplArray stringArrayType;
+         final TypeImplArray fsArrayType;
+         final TypeImplArray topArrayType;  // same as fsArrayType
+  public final TypeImpl      sofaType;   // public needed for CasCopier
+  public final TypeImpl      annotType;
+  public final TypeImpl      annotBaseType;
+  public final TypeImpl      docType;
+  public final TypeImpl      byteType;
+         final TypeImplArray byteArrayType;
+  public final TypeImpl      booleanType;
+         final TypeImplArray booleanArrayType;
+  public final TypeImpl      shortType;
+         final TypeImplArray shortArrayType;
+  public final TypeImpl      longType;
+         final TypeImplArray longArrayType;
+  public final TypeImpl      doubleType;
+         final TypeImplArray doubleArrayType;
+         
+         final TypeImplJavaObject javaObjectType;   // for Map, List, etc.
+         final TypeImplArray javaObjectArrayType;   // for arrays of these
+         final TypeImpl listBaseType;
+         final TypeImpl intListType;
+         final TypeImpl floatListType;
+         final TypeImpl stringListType;
+         final TypeImpl fsListType;
+         final TypeImpl intEListType;
+         final TypeImpl floatEListType;
+         final TypeImpl stringEListType;
+         final TypeImpl fsEListType;
+         final TypeImpl intNeListType;
+         final TypeImpl floatNeListType;
+         final TypeImpl stringNeListType;
+         final TypeImpl fsNeListType;          
+          
+//  /**
+//   * List indexed by typecode
+//   * Value is an List<TypeImpl> of the directly subsumed types (just one level below)
+//   */
+//  private final List<List<TypeImpl>> directSubtypes = new ArrayList<>(); // ordered collection of Lists of direct subtypes
+//  {directSubtypes.add(null);}  // 0th element skipped
+//  List<List<TypeImpl>> getDirectSubtypes() { return directSubtypes; }
+//  
+//  /**
+//   * @param typecode of type having subtypes
+//   * @return List of direct subtypes 
+//   */
+//  List<TypeImpl> getDirectSubtypes(int typecode) {
+//    if (typecode >= directSubtypes.size()) {
+//      List<TypeImpl> r = new ArrayList<>();
+//      directSubtypes.add(typecode, r);
+//      return r;
+//    }
+//    return directSubtypes.get(typecode);
+//  }
+          
+  /**
+   * Map from fully qualified type name to TypeImpl
+   */
+  final Map<String, TypeImpl> typeName2TypeImpl = new HashMap<>(64);
   
   /**
-   * For each type, an IntVector of appropriate feature codes
+   * Map from array component Type to the corresponding array type
    */
-  private final ArrayList<IntVector> approp; // For each type, an IntVector of appropriate features
-
-  // Code of root of hierarchy (will be 1 with current implementation)
-  private static final int top = 1;
+  private Map<Type, Type> arrayComponentTypeToArrayType = new IdentityHashMap<>();
 
   /**
    * An ArrayList, unsynchronized, indexed by typeCode, of Type objects
    */
-  private final List<Type> types;
-
-  // An ArrayList (unsynchronized) of FeatureImpl objects.
-  private final List<Feature> features;
+  final List<TypeImpl> types = new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES);
+  { types.add(null); }  // use up slot 0
 
   /**
-   * array of parent typeCodes indexed by typeCode
+   * used as a map, the key is the JCas loaded type id, set once when each JCas class is loaded.
+   * value is the corresponding TypeImpl
    */
-  private final IntVector parents;
+  final List<TypeImpl> jcasRegisteredTypes = new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES);
+  /**
+   * An ArrayList, unsynchronized, indexed by feature code, of FeatureImpl objects
+   */
+  final List<FeatureImpl> features = new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES);
+  { features.add(null); } // use up slot 0
+  
+//  // An ArrayList (unsynchronized) of FeatureImpl objects.
+//  private final List<Feature> features;
 
-  // String sets for string subtypes.
-  private final List<String[]> stringSets;
+//  /**
+//   * array of parent typeCodes indexed by typeCode
+//   */
+//  private final IntVector parents;
 
-  // This map contains an entry for every subtype of the string type. The value is a pointer into
-  // the stringSets array list.
-  private final IntRedBlackTree stringSetMap = new IntRedBlackTree();
+//  // String sets for string subtypes.
+//  private final List<String[]> stringSets;
 
-  // For each type, remember if an array of this component type has already
-  // been created.
-  private final IntRedBlackTree componentToArrayTypeMap = new IntRedBlackTree();
-
-  // A mapping from array types to their component types.
-  private final IntRedBlackTree arrayToComponentTypeMap = new IntRedBlackTree();
-
-  // A mapping from array type codes to array type objects.
-  private final RedBlackTree<TypeImpl> arrayCodeToTypeMap = new RedBlackTree<>();
+//  // This map contains an entry for every subtype of the string type. The value is a pointer into
+//  // the stringSets array list.
+//  private final IntRedBlackTree stringSetMap = new IntRedBlackTree();
 
   // Is the type system locked?
   private boolean locked = false;
 
-  private int numCommittedTypes = 0;
-
-  private int numTypeNames = 0;
-
-  private int numFeatureNames = 0;
-
-  final CASMetadata casMetadata; // needs to be visible in package
-  
+//  private int numTypeNames = 0;
+//
+//  private int numFeatureNames = 0;
+ 
   // map from type code to TypeInfo instance for that type code,
   // set up lazily
   TypeInfo[] typeInfoArray;
@@ -267,177 +413,141 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   // saw evidence that in some cases the setup is called on the same instance on two threads
   // must be volatile to force the right memory barriers
   volatile boolean areBuiltInTypesSetup = false;
-
-  private final DecompilerSettings decompilerSettings = (IS_DECOMPILE_JCAS) ? DecompilerSettings.javaDefaults() : null;
-
-  public TypeImpl intType;
-
-  public TypeImpl stringType;
-
-  public TypeImpl floatType;
-
-  TypeImpl arrayBaseType;
-
-  TypeImpl intArrayType;
-
-  TypeImpl floatArrayType;
-
-  TypeImpl stringArrayType;
-
-  TypeImpl fsArrayType;
-
-  // needed for CasCopier
-  public TypeImpl sofaType;
-
-  TypeImpl annotType;
-
-  TypeImpl annotBaseType;
-
-  TypeImpl docType;
-
-  FeatureImpl startFeat;
-
-  FeatureImpl endFeat;
-
-  FeatureImpl langFeat;
-
-  FeatureImpl sofaNum;
-
-  public TypeImpl byteType;
-
-  TypeImpl byteArrayType;
-
-  public TypeImpl booleanType;
-
-  TypeImpl booleanArrayType;
-
-  public TypeImpl shortType;
-
-  TypeImpl shortArrayType;
-
-  public TypeImpl longType;
-
-  TypeImpl longArrayType;
-
-  public TypeImpl doubleType;
-
-  TypeImpl doubleArrayType;
-
-  // int topTypeCode;
-  static final int intTypeCode = 2;
-
-  static final int stringTypeCode = 4;
-
-  static final int floatTypeCode = 3;
-
-  static final int arrayBaseTypeCode = 5;
-
-  public static final int intArrayTypeCode = 8;
-
-  public static final int floatArrayTypeCode = 7;
-
-  public static final int stringArrayTypeCode = 9;
-
-  public static final int fsArrayTypeCode = 6;
-
-  static final int sofaTypeCode = 33;
-
-  static final int annotTypeCode = 35;
-
-  static final int annotBaseTypeCode = 34;
-
-  static final int byteTypeCode = 24;
-
-  static final int booleanTypeCode = 23;
-
-  static final int shortTypeCode = 25;
-
-  static final int longTypeCode = 26;
-
-  static final int doubleTypeCode = 27;
-
-  public static final int byteArrayTypeCode = 29;
-
-  public static final int booleanArrayTypeCode = 28;
-
-  public static final int shortArrayTypeCode = 30;
-
-  public static final int longArrayTypeCode = 31;
-
-  public static final int doubleArrayTypeCode = 32;
-
-  public static final int sofaNumFeatCode = 9;  // ref from another pkg
-
-  public static final int sofaIdFeatCode = 10;
   
-  public static final int sofaStringFeatCode = 13;
+  private final DecompilerSettings decompilerSettings = (IS_DECOMPILE_JCAS) ? DecompilerSettings.javaDefaults() : null;
+  
+  FeatureImpl startFeat;
+  FeatureImpl endFeat;
+  FeatureImpl langFeat;
+  FeatureImpl sofaNum;
+  FeatureImpl sofaId;
+  FeatureImpl sofaMime;
+  FeatureImpl sofaArray;
+  FeatureImpl sofaString;
+  FeatureImpl sofaUri;
 
-  static final int sofaMimeFeatCode = 11;
 
-  static final int sofaUriFeatCode = 14;
-
-  static final int sofaArrayFeatCode = 12;
-
-  public static final int annotSofaFeatCode = 15; // ref from another pkg
-
-  public static final int startFeatCode = 16;
-
-  public static final int endFeatCode = 17;
-
-  static final int langFeatCode = 18;
-
-  /**
-   * Default constructor.
-   * 
-   * @deprecated Use 0 arg constructor. Type Systems are shared by many CASes, and can't point to
-   *             one. Change also your possible calls to ts.commit() - see comment on that method.
-   * @param cas -
-   */
-  @Deprecated
-  public TypeSystemImpl(CASImpl cas) {
-    this();
-  }
 
   public TypeSystemImpl() {
-    // Changed numbering to start at 1. Hope this doesn't break
-    // anything. If it does, I know who's fault it is...
-    this.typeNameST = new SymbolTable(1);
-    this.featureNameST = new SymbolTable(1);
-    this.featureMap = new StringToIntMap();
-    // In each Vector, add null as first element, since we start
-    // counting at 1.
-    this.tree = new ArrayList<IntVector>();
-    this.tree.add(null);
-    this.subsumes = new ArrayList<BitSet>();
-    this.subsumes.add(null);
-    this.intro = new IntVector();
-    this.intro.add(0);
-    this.featRange = new IntVector();
-    this.featRange.add(0);
-    this.approp = new ArrayList<IntVector>();
-    this.approp.add(null);
-    this.types = new ArrayList<Type>();
-    this.types.add(null);
-    this.features = new ArrayList<Feature>();
-    this.features.add(null);
-    this.stringSets = new ArrayList<String[]>();
-    this.parents = new IntVector();
-    this.parents.add(0);
 
-    this.casMetadata = new CASMetadata(this);
-    // load in built-in types
-    CASImpl.setupTSDefault(this);
-    initTypeVariables();
+    // set up meta info (TypeImpl) for built-in types
     
-    // initialize the decompiler settings to have a defaultLoader setup to 
-    // be a classpath loader using the classpath in effect.
+    /****************************************************************
+     *   D O   N O T   C H A N G E   T H I S   O R D E R I N G ! !  *
+     *   ---   -----   -----------   -------   -------------------
+     ****************************************************************/
+    
+    // Create top type.
+    topType = new TypeImpl(CAS.TYPE_NAME_TOP, this, null, TOP.class);   
+
+    // Add basic data types.
+    intType = new TypeImplPrimitive(CAS.TYPE_NAME_INTEGER, this, topType, int.class);
+    floatType = new TypeImplPrimitive(CAS.TYPE_NAME_FLOAT, this, topType, float.class);
+    stringType = new TypeImplPrimitive(CAS.TYPE_NAME_STRING, this, topType, String.class);
+    
+    // Add arrays.
+    arrayBaseType = new TypeImpl(CAS.TYPE_NAME_ARRAY_BASE, this, topType);
+    topArrayType = fsArrayType = addArrayType(topType, Slot_HeapRef, HEAP_STORED_ARRAY, FSArray.class);
+    floatArrayType = addArrayType(floatType, Slot_Float, HEAP_STORED_ARRAY, FloatArray.class);
+    intArrayType = addArrayType(intType, Slot_Int, HEAP_STORED_ARRAY, IntegerArray.class);
+    stringArrayType = addArrayType(stringType, Slot_StrRef, HEAP_STORED_ARRAY, StringArray.class);
+    
+    // Add lists
+    listBaseType = new TypeImpl(CAS.TYPE_NAME_LIST_BASE, this, topType);
+    
+    // FS list
+    fsListType = new TypeImpl(CAS.TYPE_NAME_FS_LIST, this, listBaseType);
+    fsEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_FS_LIST, this, fsListType, EmptyFSList.class);
+    fsNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, this, fsListType, NonEmptyFSList.class);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeListType, topType, true);
+    addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeListType, fsListType, true);
+    
+    // Float list
+    floatListType = new TypeImpl(CAS.TYPE_NAME_FLOAT_LIST, this, listBaseType);
+    floatEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, this, floatListType, EmptyFloatList.class);
+    floatNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, this, floatListType, NonEmptyFloatList.class);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeListType, floatType, false);
+    addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeListType, floatListType, true);
+    
+    // Integer list
+    intListType = new TypeImpl(CAS.TYPE_NAME_INTEGER_LIST, this, listBaseType);
+    intEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, this, intListType, EmptyIntegerList.class);
+    intNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, this, intListType, NonEmptyIntegerList.class);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeListType, intType, false);
+    addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeListType, intListType, true);
+    
+    // String list
+    stringListType = new TypeImpl(CAS.TYPE_NAME_STRING_LIST, this, listBaseType);
+    stringEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_STRING_LIST, this, stringListType, EmptyStringList.class);
+    stringNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, this, stringListType, NonEmptyStringList.class);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeListType, stringType, false);
+    addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeListType, stringListType, true);
+
+    booleanType = new TypeImplPrimitive(CAS.TYPE_NAME_BOOLEAN, this, topType, boolean.class);    
+    byteType = new TypeImplPrimitive(CAS.TYPE_NAME_BYTE, this, topType, byte.class);
+    shortType = new TypeImplPrimitive(CAS.TYPE_NAME_SHORT, this, topType, short.class);
+    longType = new TypeImplPrimitive(CAS.TYPE_NAME_LONG, this, topType, long.class);
+    doubleType = new TypeImplPrimitive(CAS.TYPE_NAME_DOUBLE, this, topType, double.class);
+
+    // array type initialization must follow the component type it's based on
+    booleanArrayType = addArrayType(booleanType, Slot_BooleanRef, !HEAP_STORED_ARRAY, BooleanArray.class);  // yes, byteref
+    byteArrayType = addArrayType(byteType, Slot_ByteRef, !HEAP_STORED_ARRAY, ByteArray.class);
+    shortArrayType = addArrayType(shortType, Slot_ShortRef, !HEAP_STORED_ARRAY, ShortArray.class);
+    longArrayType = addArrayType(longType, Slot_LongRef, !HEAP_STORED_ARRAY, LongArray.class);
+    doubleArrayType = addArrayType(doubleType, Slot_DoubleRef, !HEAP_STORED_ARRAY, DoubleArray.class);
+
+    // Sofa Stuff
+    sofaType = new TypeImpl(CAS.TYPE_NAME_SOFA, this, topType, Sofa.class);    
+    sofaNum = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFANUM, sofaType, intType, false);
+    sofaId = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFAID, sofaType, stringType, false);
+    sofaMime = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFAMIME, sofaType, stringType, false);
+    // Type localSofa = addType(CAS.TYPE_NAME_LOCALSOFA, sofa);
+    sofaArray = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFAARRAY, sofaType, topType, true);
+    sofaString = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFASTRING, sofaType, stringType, false);
+    // Type remoteSofa = addType(CAS.TYPE_NAME_REMOTESOFA, sofa);
+    sofaUri = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofaType, stringType, false);
+
+    // Annotations
+    annotBaseType = new TypeImplAnnotBase(CAS.TYPE_NAME_ANNOTATION_BASE, this, topType, AnnotationBase.class);
+    addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofaType, false);
+    
+    annotType = new TypeImplAnnot(CAS.TYPE_NAME_ANNOTATION, this, annotBaseType, Annotation.class);
+    startFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intType, false);
+    endFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intType, false);
+    
+    docType = new TypeImpl(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType);
+    langFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringType, false);
+    
+    javaObjectType = new TypeImplJavaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
+    javaObjectArrayType = addArrayType(javaObjectType, null, HEAP_STORED_ARRAY, JavaObjectArray.class);
+    
+    arrayName2ComponentType.put(CAS.TYPE_NAME_FS_ARRAY, topType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_BOOLEAN_ARRAY, booleanType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_BYTE_ARRAY, byteType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_SHORT_ARRAY, shortType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_INTEGER_ARRAY, intType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_FLOAT_ARRAY, floatType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_LONG_ARRAY, longType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_DOUBLE_ARRAY, doubleType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_STRING_ARRAY, stringType);
+    arrayName2ComponentType.put(CAS.TYPE_NAME_JAVA_OBJECT_ARRAY,  javaObjectType);
+
+    // initialize the decompiler settings to read the class definition
+    // from the classloader of this class.  Needs to be fixed to work with PEARs
+    // or custom UIMA class loaders.
     
     if (IS_DECOMPILE_JCAS) {
       ITypeLoader tl = new ITypeLoader() {
   
         @Override
         public boolean tryLoadType(String internalName, Buffer buffer) {
+          
+          // get the classloader to use to read the class as a resource
           ClassLoader cl = this.getClass().getClassLoader();
+          
+          // read the class as a resource, and put into temporary byte array output stream
+          // because we need to know the length
+          
           internalName = internalName.replace('.', '/') + ".class";
           InputStream stream = cl.getResourceAsStream(internalName);
           if (stream == null) {
@@ -452,8 +562,9 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
             }
           } catch (IOException e) {
             throw new RuntimeException(e);
-  //          return false;
           }
+          
+          // Copy result (based on length) into output buffer spot
           int length = baos.size();
           b = baos.toByteArray();
           buffer.reset(length);
@@ -464,95 +575,75 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
       };    
       decompilerSettings.setTypeLoader(tl);
     }
+    
+    // Lock individual types.
+    setTypeFinal(intType);
+    setTypeFinal(floatType);
+    setTypeFinal(stringType);
+    topType.setFeatureFinal();
+    setTypeFinal(arrayBaseType);
+    setTypeFinal(fsArrayType);
+    setTypeFinal(intArrayType);
+    setTypeFinal(floatArrayType);
+    setTypeFinal(stringArrayType);
+    setTypeFinal(sofaType);
+
+    setTypeFinal(byteType);
+    setTypeFinal(booleanType);
+    setTypeFinal(shortType);
+    setTypeFinal(longType);
+    setTypeFinal(doubleType);
+    setTypeFinal(booleanArrayType);
+    setTypeFinal(byteArrayType);
+    setTypeFinal(shortArrayType);
+    setTypeFinal(longArrayType);
+    setTypeFinal(doubleArrayType);
+    setTypeFinal(javaObjectArrayType);
+
+    listBaseType.setFeatureFinal();
+    fsListType.setFeatureFinal();
+    fsEListType.setFeatureFinal();
+    fsNeListType.setFeatureFinal();
+    floatListType.setFeatureFinal();
+    floatEListType.setFeatureFinal();
+    floatNeListType.setFeatureFinal();
+    intListType.setFeatureFinal();
+    intEListType.setFeatureFinal();
+    intNeListType.setFeatureFinal();
+    stringListType.setFeatureFinal();
+    stringEListType.setFeatureFinal();
+    stringNeListType.setFeatureFinal();
+    annotType.setFeatureFinal();
+    annotBaseType.setFeatureFinal();
+
+//    allTypesForByteCodeGen = new TypeImpl[] {
+//        booleanType, 
+//        byteType, 
+//        shortType, 
+//        intType, 
+//        floatType, 
+//        longType, 
+//        doubleType,
+//        
+//        stringType,
+//        topType,
+//        javaObjectType,
+//        
+//        booleanArrayType, 
+//        byteArrayType, 
+//        shortArrayType, 
+//        intArrayType, 
+//        floatArrayType, 
+//        longArrayType, 
+//        doubleArrayType,
+//        stringArrayType, 
+//        topArrayType,
+//        javaObjectArrayType};
+    
   }
 
-  // only built-in types here; can be called before
-  // type system is committed, as long as the built-in ones
-  // are defined.
-  final void initTypeVariables() {
-    // Type objects.
-    // this.ts.topType = (TypeImpl) this.ts.getTopType(); // never used
-//    this.intType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER);
-//    this.stringType = (TypeImpl) getType(CAS.TYPE_NAME_STRING);
-//    this.floatType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT);
-//    this.arrayBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ARRAY_BASE);
-//    this.intArrayType = (TypeImpl) getType(CAS.TYPE_NAME_INTEGER_ARRAY);
-//    this.floatArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FLOAT_ARRAY);
-//    this.stringArrayType = (TypeImpl) getType(CAS.TYPE_NAME_STRING_ARRAY);
-//    this.fsArrayType = (TypeImpl) getType(CAS.TYPE_NAME_FS_ARRAY);
-//    this.sofaType = (TypeImpl) getType(CAS.TYPE_NAME_SOFA);
-//    this.annotType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION);
-    this.sofaNum = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFANUM);
-    this.annotBaseType = (TypeImpl) getType(CAS.TYPE_NAME_ANNOTATION_BASE);
-    this.startFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_BEGIN);
-    this.endFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_END);
-    this.langFeat = (FeatureImpl) getFeatureByFullName(CAS.FEATURE_FULL_NAME_LANGUAGE);
-//    this.docType = (TypeImpl) getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
 
-//    this.byteType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE);
-//    this.byteArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BYTE_ARRAY);
-//    this.booleanType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN);
-//    this.booleanArrayType = (TypeImpl) getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
-//    this.shortType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT);
-//    this.shortArrayType = (TypeImpl) getType(CAS.TYPE_NAME_SHORT_ARRAY);
-//    this.longType = (TypeImpl) getType(CAS.TYPE_NAME_LONG);
-//    this.longArrayType = (TypeImpl) getType(CAS.TYPE_NAME_LONG_ARRAY);
-//    this.doubleType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE);
-//    this.doubleArrayType = (TypeImpl) getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
-
-    // Type codes.
-    initTypeCodeVars();
-  }
-
-  private final void initTypeCodeVars() {
-//    this.intTypeCode = this.intType.getCode();
-//    this.stringTypeCode = this.stringType.getCode();
-//    this.floatTypeCode = this.floatType.getCode();
-    // this.arrayBaseTypeCode = arrayBaseType.getCode();
-//    this.intArrayTypeCode = this.intArrayType.getCode();
-//    this.floatArrayTypeCode = this.floatArrayType.getCode();
-//    this.stringArrayTypeCode = this.stringArrayType.getCode();
-//    this.fsArrayTypeCode = this.fsArrayType.getCode();
-//    this.sofaTypeCode = this.sofaType.getCode();
-//    this.annotTypeCode = this.annotType.getCode();
-//    this.annotBaseTypeCode = this.annotBaseType.getCode();
-
-//    this.byteArrayTypeCode = this.byteArrayType.getCode();
-//    this.byteTypeCode = this.byteType.getCode();
-//    this.booleanTypeCode = this.booleanType.getCode();
-//    this.booleanArrayTypeCode = this.booleanArrayType.getCode();
-//    this.shortTypeCode = this.shortType.getCode();
-//    this.shortArrayTypeCode = this.shortArrayType.getCode();
-//    this.longTypeCode = this.longType.getCode();
-//    this.longArrayTypeCode = this.longArrayType.getCode();
-//    this.doubleTypeCode = this.doubleType.getCode();
-//    this.doubleArrayTypeCode = this.doubleArrayType.getCode();
-
-//    this.arrayBaseTypeCode = this.arrayBaseType.getCode();
-
-    final Type sofaT = this.sofaType;
-    if (sofaNumFeatCode != ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM))) throw new RuntimeException();
-    if (sofaIdFeatCode != ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAID))) throw new RuntimeException();
-    if (sofaMimeFeatCode != ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAMIME))) throw new RuntimeException();
-    if (sofaUriFeatCode != ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAURI))) throw new RuntimeException();
-    if (sofaArrayFeatCode != ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFAARRAY))) throw new RuntimeException();
-    if (annotSofaFeatCode != ll_getCodeForFeature(this.annotBaseType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA))) throw new RuntimeException();
-    if (startFeatCode != ll_getCodeForFeature(this.annotType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN))) throw new RuntimeException();
-    if (endFeatCode != ll_getCodeForFeature(this.annotType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END))) throw new RuntimeException();
-    if (langFeatCode != ll_getCodeForFeature(this.docType
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE))) throw new RuntimeException();
-    if (sofaStringFeatCode != ll_getCodeForFeature(sofaT
-        .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFASTRING))) throw new RuntimeException();
-  }
-
+ 
   // Some implementation helpers for users of the type system.
   final int getSmallestType() {
     return LEAST_TYPE_CODE;
@@ -585,41 +676,43 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return ((TypeImpl) t).getSuperType();
   }
 
-  @Override
-  public int ll_getParentType(int typeCode) {
-    return this.parents.get(typeCode);
-  }
 
-  int ll_computeArrayParentFromComponentType(int componentType) {
-    if (ll_isPrimitiveType(componentType) ||
-    // note: not using top - until we can confirm this is set
-        // in all cases
-        (ll_getTypeForCode(componentType).getName().equals(CAS.TYPE_NAME_TOP))) {
-      return arrayBaseTypeCode;
-    }
-    // is a subtype of FSArray.
-    // note: not using this.fsArray - until we can confirm this is set in
-    // all cases
-    return fsArrayTypeCode;
-    // return ll_getArrayType(ll_getParentType(componentType));
-  }
+//  int ll_computeArrayParentFromComponentType(int componentType) {
+//    if (ll_isPrimitiveType(componentType) ||
+//    // note: not using top - until we can confirm this is set
+//        // in all cases
+//        (ll_getTypeForCode(componentType).getName().equals(TypeSystem.TYPE_NAME_TOP))) {
+//      return arrayBaseTypeCode;
+//    }
+//    // is a subtype of FSArray.
+//    // note: not using this.fsArray - until we can confirm this is set in
+//    // all cases
+//    return fsArrayTypeCode;
+//    // return ll_getArrayType(ll_getParentType(componentType));
+//  }
 
-  /**
-   * Check if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
-   * @param type -
-   * @param feat -
-   * @return true if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
-   */
-  public boolean isApprop(int type, int feat) {
-    return subsumes(intro(feat), type);
-  }
+//  /**
+//   * Check if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
+//   * @param type -
+//   * @param feat -
+//   * @return true if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
+//   */
+//  public boolean isApprop(int type, int feat) {
+//    
+//    return subsumes(intro(feat), type);
+//  }
 
   public final int getLargestTypeCode() {
     return getNumberOfTypes();
   }
 
-  public boolean isType(int type) {
-    return ((type > 0) && (type <= getLargestTypeCode()));
+  /**
+   * 
+   * @param typecode to check if it's in the range of valid type codes
+   * @return true if it is
+   */
+  public boolean isType(int typecode) {
+    return ((typecode >= LEAST_TYPE_CODE) && (typecode <= getLargestTypeCode()));
   }
 
   /**
@@ -630,12 +723,8 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @return A type object, or <code>null</code> if no such type exists.
    */
   @Override
-  public Type getType(String typeName) {
-    final int typeCode = ll_getCodeForTypeName(typeName);
-    if (typeCode < LEAST_TYPE_CODE) {
-      return null;
-    }
-    return this.types.get(typeCode);
+  public TypeImpl getType(String typeName) {
+    return typeName2TypeImpl.get(typeName);
   }
 
   /**
@@ -658,24 +747,18 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public Feature getFeatureByFullName(String featureName) {
-    // if (!this.featureMap.containsKey(featureName)) {
-    // return null;
-    // }
-    // final int featCode = this.featureMap.get(featureName);
-    // return (Feature) this.features.get(featCode);
-    // will return null if feature not present because
-    // the featureMap.get will return 0, and
-    // getFeature returns null for code of 0
-    return ll_getFeatureForCode(this.featureMap.get(featureName));
+    int split = featureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
+    return getFeature(featureName.substring(0,  split), featureName.substring(split + 1));
   }
 
+  /**
+   * For component xyz, returns "xyz[]"
+   * @param componentType the component type
+   * @return the name of the component + []
+   */
   private static final String getArrayTypeName(String typeName) {
-    final String arrayTypeName = arrayComponentTypeNameMap.get(typeName);
-    return (null == arrayTypeName) ? typeName + arrayTypeSuffix : arrayTypeName;
-    // if (arrayComponentTypeNameMap.containsKey(typeName)) {
-    // return (String) arrayComponentTypeNameMap.get(typeName);
-    // }
-    // return typeName + arrayTypeSuffix;
+    final String arrayTypeName = builtInArrayComponentName2ArrayTypeName.get(typeName);
+    return (null == arrayTypeName) ? typeName + ARRAY_TYPE_SUFFIX : arrayTypeName;
   }
   
   static final String getArrayComponentName(String arrayTypeName) {
@@ -683,50 +766,39 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
   }
   
   static boolean isArrayTypeNameButNotBuiltIn(String typeName) {
-    return typeName.endsWith(arrayTypeSuffix);
+    return typeName.endsWith(ARRAY_TYPE_SUFFIX);
   }
 
-  private static final String getBuiltinArrayComponent(String typeName) {
-    // if typeName is not contained in the map, the "get" returns null
-    // if (arrayTypeComponentNameMap.containsKey(typeName)) {
-    return arrayTypeComponentNameMap.get(typeName);
+//  private final TypeImpl getBuiltinArrayComponent(String typeName) {
+//    // if typeName is not contained in the map, the "get" returns null
+//    // if (arrayName2ComponentType.containsKey(typeName)) {
+//    return arrayName2ComponentType.get(typeName);
+//    // }
+//    // return null;
     // }
-    // return null;
-  }
 
-  /**
-   * Add a new type to the type system.
-   * 
-   * @param typeName
-   *          The name of the new type.
-   * @param mother
-   *          The type node under which the new type should be attached.
-   * @return The new type, or <code>null</code> if <code>typeName</code> is already in use.
-   */
-  @Override
-  public Type addType(String typeName, Type mother) throws CASAdminException {
+  void newTypeChecks(String typeName, Type superType) {
+    if (typeName.endsWith(ARRAY_TYPE_SUFFIX)) {
+      checkTypeSyntax(typeName.substring(0, typeName.length() - 2)); 
+    } else {
+      if (this.locked) {
+        throw new CASAdminException(CASAdminException.TYPE_SYSTEM_LOCKED);
+      }
+      
+      if (superType != null && superType.isInheritanceFinal() ) {
+        throw new CASAdminException(CASAdminException.TYPE_IS_INH_FINAL, superType);
+      }
+      checkTypeSyntax(typeName);      
+    }
+  }
+  
+  void newTypeCheckNoInheritanceFinalCheck(String typeName, Type superType) {
     if (this.locked) {
       throw new CASAdminException(CASAdminException.TYPE_SYSTEM_LOCKED);
     }
-    if (mother.isInheritanceFinal()) {
-      CASAdminException e = new CASAdminException(CASAdminException.TYPE_IS_INH_FINAL);
-      e.addArgument(mother.getName());
-      throw e;
-    }
-    // Check type name syntax.
-    // Handle the built-in array types, like BooleanArray, FSArray, etc.
-    String componentTypeName = getBuiltinArrayComponent(typeName);
-    if (componentTypeName != null) {
-      return getArrayType(getType(componentTypeName));
-    }
     checkTypeSyntax(typeName);
-    final int typeCode = this.addType(typeName, ((TypeImpl) mother).getCode());
-    if (typeCode < this.typeNameST.getStart()) {
-      return null;
-    }
-    return this.types.get(typeCode);
   }
-
+  
   /**
    * Method checkTypeSyntax.
    * 
@@ -734,108 +806,93 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   private void checkTypeSyntax(String name) throws CASAdminException {
     if (!TypeSystemUtils.isTypeName(name)) {
-      CASAdminException e = new CASAdminException(CASAdminException.BAD_TYPE_SYNTAX);
-      e.addArgument(name);
-      throw e;
+      throw new CASAdminException(CASAdminException.BAD_TYPE_SYNTAX, name);
     }
   }
-
-  int addType(String name, int superType) {
-    return addType(name, superType, false);
-  }
-
+  
   /**
-   * Internal code for adding a new type. Warning: no syntax check on type name, must be done by
-   * caller. This method is not private because it's used by the serialization code.
-   */
-  int addType(String name, int superType, boolean isStringType) {
-    if (this.typeNameST.contains(name)) {
-      return -1;
+   * Add a new type to the type system.
+   * Called to add types for new (not built-in) types, 
+   *   except for:
+   *     arrays
+   *     string subtypes
+   *     primitives
+   *     JavaObjects
+   *   All of these have special addType methods
+   * @param typeName
+   *          The name of the new type.  
+   * @param superType
+   *          The type node under which the new type should be attached.
+   * @return The new type, or <code>null</code> if <code>typeName</code> is already in use.
+   */  
+  public TypeImpl addType(String typeName, Type superType) throws CASAdminException {
+
+    newTypeChecks(typeName, superType);
+            
+    if (null != typeName2TypeImpl.get(typeName)) {
+      return null;
     }
-    // assert (isType(superType)); //: "Supertype is not a known type:
-    // "+superType;
-    // Add the new type to the symbol table.
-    final int type = this.typeNameST.set(name);
-    // Create space for new type.
-    newType();
-    // Add an edge to the tree.
-    (this.tree.get(superType)).add(type);
-    // Update subsumption relation.
-    updateSubsumption(type, superType);
-    // Add inherited features.
-    final IntVector superApprop = this.approp.get(superType);
-    // superApprop.add(0);
-    final IntVector typeApprop = this.approp.get(type);
-    // typeApprop.add(0);
-    final int max = superApprop.size();
-    int featCode;
-    for (int i = 0; i < max; i++) {
-      featCode = superApprop.get(i);
-      typeApprop.add(featCode);
-      // Add inherited feature names.
-      String feat = name + TypeSystem.FEATURE_SEPARATOR + ll_getFeatureForCode(featCode).getShortName();
-      // System.out.println("Adding name: " + feat);
-      this.featureMap.put(feat, featCode);
-    }
-    TypeImpl t;
-    if (isStringType) {
-      final int stringSetCode = this.stringSets.size();
-      this.stringSetMap.put(type, stringSetCode);
-      t = new StringTypeImpl(name, type, this);
-    } else {
-      t = new TypeImpl(name, type, this);
-    }
-    this.types.add(t);
-    this.parents.add(superType);
-    this.numCommittedTypes = this.types.size();
-    return type;
+            
+    final TypeImpl supertypeimpl = (TypeImpl) superType;
+    TypeImpl ti = supertypeimpl.isAnnotationType() ? 
+                    new TypeImplAnnot    (typeName, this, supertypeimpl, Annotation.class) :
+                  supertypeimpl.isAnnotationBaseType() ?
+                    new TypeImplAnnotBase(typeName, this, supertypeimpl, AnnotationBase.class) :
+                    new TypeImpl         (typeName, this, supertypeimpl);         
+    return ti;
   }
 
+
+  public boolean isInInt(Type rangeType) {
+    return rangeType.isPrimitive() && !subsumes(stringType, rangeType);
+  }
+  
   @Override
   public Feature addFeature(String featureName, Type domainType, Type rangeType)
       throws CASAdminException {
     return addFeature(featureName, domainType, rangeType, true);
   }
-
+  
   /**
    * @see TypeSystemMgr#addFeature(String, Type, Type)
    */
   @Override
-  public Feature addFeature(String featureName, Type domainType, Type rangeType,
-      boolean multipleReferencesAllowed) throws CASAdminException {
-    // assert(featureName != null);
-    // assert(domainType != null);
-    // assert(rangeType != null);
+  public Feature addFeature(String shortFeatName, Type domainType, Type rangeType, boolean multipleReferencesAllowed) 
+      throws CASAdminException {
+
     if (this.locked) {
       throw new CASAdminException(CASAdminException.TYPE_SYSTEM_LOCKED);
     }
-    Feature f = domainType.getFeatureByBaseName(featureName);
-    if (f != null && f.getRange().equals(rangeType)) {
-      return f;
+    
+    FeatureImpl existingFeature = (FeatureImpl) getFeature(domainType, shortFeatName);
+    if (existingFeature != null) {
+      ((TypeImpl)domainType).checkExistingFeatureCompatible(existingFeature, rangeType);
+      if (subsumes(domainType, existingFeature.getHighestDefiningType())) {
+        existingFeature.setHighestDefiningType(domainType);
+      }
+      return existingFeature;
     }
+    
+    /** Can't add feature to type "{0}" since it is feature final. */
     if (domainType.isFeatureFinal()) {
-      CASAdminException e = new CASAdminException(CASAdminException.TYPE_IS_FEATURE_FINAL);
-      e.addArgument(domainType.getName());
-      throw e;
+      throw new CASAdminException(CASAdminException.TYPE_IS_FEATURE_FINAL, domainType.getName());
     }
-    checkFeatureNameSyntax(featureName);
-    final int featCode = this.addFeature(featureName, ((TypeImpl) domainType).getCode(),
-        ((TypeImpl) rangeType).getCode(), multipleReferencesAllowed);
-    if (featCode < this.featureNameST.getStart()) {
-      return null;
-    }
-    return this.features.get(featCode);
+    
+    if (!TypeSystemUtils.isIdentifier(shortFeatName)) {
+      throw new CASAdminException(CASAdminException.BAD_FEATURE_SYNTAX, shortFeatName);
+    }   
+    return new FeatureImpl(
+        (TypeImpl) domainType, 
+        shortFeatName, 
+        (TypeImpl) rangeType, 
+        this, 
+        multipleReferencesAllowed, 
+        getSlotKindFromType(rangeType));
   }
-
-  /**
-   * Method checkFeatureNameSyntax.
-   */
-  private void checkFeatureNameSyntax(String name) throws CASAdminException {
-    if (!TypeSystemUtils.isIdentifier(name)) {
-      CASAdminException e = new CASAdminException(CASAdminException.BAD_FEATURE_SYNTAX);
-      e.addArgument(name);
-      throw e;
-    }
+  
+  private static SlotKind getSlotKindFromType(Type rangeType) {
+    SlotKind slotKind = slotKindsForNonArrays.get(rangeType.getName());
+    return (null == slotKind) ? Slot_HeapRef : slotKind; 
   }
 
   /**
@@ -845,19 +902,28 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public Iterator<Type> getTypeIterator() {
-    Iterator<Type> it = new ListIterator<Type>(this.types, this.numCommittedTypes);
-    // The first element is null, so skip it.
+    // trick to convert List<TypeImpl> to List<Type> with some safety
+    Iterator<Type> it = Collections.<Type>unmodifiableList(types).iterator();
     it.next();
     return it;
+  }
+  
+  /**
+   * @see {@link TypeSystem#types}
+   * naming convention: http://stackoverflow.com/questions/28805077/naming-java-methods-that-return-streams
+   */
+  @Override
+  public Stream<Type> types() {
+    return Collections.<Type>unmodifiableList(types).stream().skip(1);
   }
 
-  @Override
-  public Iterator<Feature> getFeatures() {
-    Iterator<Feature> it = this.features.iterator();
-    // The first element is null, so skip it.
-    it.next();
-    return it;
-  }
+//  @Override
+//  public Iterator<Feature> getFeatures() {
+//    Iterator<Feature> it = this.features.iterator();
+//    // The first element is null, so skip it.
+//    it.next();
+//    return it;
+//  }
 
   /**
    * Get the top type, i.e., the root of the type system.
@@ -866,7 +932,11 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public Type getTopType() {
-    return this.types.get(top);
+    return this.topType;
+  }
+  
+  public TypeImpl getTopTypeImpl() {
+    return this.topType;
   }
 
   /**
@@ -879,16 +949,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public List<Type> getProperlySubsumedTypes(Type type) {
-    List<Type> subList = new ArrayList<Type>();
-    Iterator<Type> typeIt = getTypeIterator();
-    while (typeIt.hasNext()) {
-      Type t = typeIt.next();
-      if (type != t && subsumes(type, t)) {
-        subList.add(t);
-      }
-    }
-    
-    return subList;
+    return ((TypeImpl)type).getAllSubtypes().collect(Collectors.toList());
   }
 
   /**
@@ -905,82 +966,72 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 
   @Override
   public List<Type> getDirectSubtypes(Type type) {
-    if (type.isArray()) {
-      return new ArrayList<Type>();
-    }
-    IntVector sub = this.tree.get(((TypeImpl) type).getCode());
-    final int max = sub.size();
-    List<Type> list = new ArrayList<Type>(max);
-    
-    for (int i = 0; i < max; i++) {
-      list.add(this.types.get(sub.get(i)));
-    }
-    return list;
+    TypeImpl ti = (TypeImpl) type;
+    return Collections.<Type>unmodifiableList(ti.getDirectSubtypes());
   }
+//  
+//  /**
+//   * 
+//   * @param type whose direct instantiable subtypes to iterate over
+//   * @return an iterator over the direct instantiable subtypes
+//   */
+//  public Iterator<Type> getDirectSubtypesIterator(final Type type) {
+//       
+//    return new Iterator<Type>() {
+//
+//      private IntVector sub = (type.isArray()) ? zeroLengthIntVector :  TypeSystemImpl.this.tree.get(((TypeImpl) type).getCode());
+//      private int pos = 0; 
+//      
+//      private boolean isTop = (((TypeImpl)type).getCode() == top);
+//       
+//      {
+//        if (isTop) {
+//          skipOverNonCreatables();
+//        }
+//      }
+//
+//      @Override
+//      public boolean hasNext() {
+//        return pos < sub.size();
+//      }
+//
+//      @Override
+//      public Type next() {
+//        if (!hasNext()) {
+//          throw new NoSuchElementException();
+//        }
+//        Type result = TypeSystemImpl.this.types.get(sub.get(pos));
+//        pos++;
+//        if (isTop) {
+//          skipOverNonCreatables();
+//        }
+//        return result;
+//      }
+//
+//      @Override
+//      public void remove() {
+//        throw new UnsupportedOperationException();
+//      }
+//      
+//      private void skipOverNonCreatables() {
+//        if (!hasNext()) {
+//          return;
+//        }
+//        int typeCode = sub.get(pos);
+//        while (! ll_isPrimitiveArrayType(typeCode) &&
+//               ! casMetadata.creatableType[typeCode]) {
+//          pos++;
+//          if (!hasNext()) {
+//            break;
+//          }
+//          typeCode = sub.get(pos);
+//        }
+//      }
+//    };
+//  }
   
-  /**
-   * 
-   * @param type whose direct instantiable subtypes to iterate over
-   * @return an iterator over the direct instantiable subtypes
-   */
-  public Iterator<Type> getDirectSubtypesIterator(final Type type) {
-       
-    return new Iterator<Type>() {
-
-      private IntVector sub = (type.isArray()) ? zeroLengthIntVector :  TypeSystemImpl.this.tree.get(((TypeImpl) type).getCode());
-      private int pos = 0; 
-      
-      private boolean isTop = (((TypeImpl)type).getCode() == top);
-       
-      {
-        if (isTop) {
-          skipOverNonCreatables();
-        }
-      }
-
-      @Override
-      public boolean hasNext() {
-        return pos < sub.size();
-      }
-
-      @Override
-      public Type next() {
-        if (!hasNext()) {
-          throw new NoSuchElementException();
-        }
-        Type result = TypeSystemImpl.this.types.get(sub.get(pos));
-        pos++;
-        if (isTop) {
-          skipOverNonCreatables();
-        }
-        return result;
-      }
-
-      @Override
-      public void remove() {
-        throw new UnsupportedOperationException();
-      }
-      
-      private void skipOverNonCreatables() {
-        if (!hasNext()) {
-          return;
-        }
-        int typeCode = sub.get(pos);
-        while (! ll_isPrimitiveArrayType(typeCode) &&
-               ! casMetadata.creatableType[typeCode]) {
-          pos++;
-          if (!hasNext()) {
-            break;
-          }
-          typeCode = sub.get(pos);
-        }
-      }
-    };
-  }
-  
-  public boolean directlySubsumes(int t1, int t2) {
-    IntVector sub = this.tree.get(t1);
-    return sub.contains(t2);
+  public boolean directlySubsumes(TypeImpl t1, TypeImpl t2) {
+    return t1.getDirectSubtypes().contains(t2);
   }
 
   /**
@@ -994,70 +1045,96 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public boolean subsumes(Type superType, Type subType) {
-    // assert(superType != null);
-    // assert(subType != null);
-    return this.subsumes(((TypeImpl) superType).getCode(), ((TypeImpl) subType).getCode());
+    if (superType == subType) 
+      return true;
+
+    // Need special handling for arrays
+    
+    
+    // Yes, the code below is intentional. Until we actually support real arrays of some particular fs,
+    
+    // We have FSArray is the supertype of xxxx[] AND
+    //           xxx[] is the supertype of FSArray
+    // (this second relation because all we can generate are instances of FSArray
+    // and we must be able to assign them to xxx[] )
+    if (superType == fsArrayType) {
+      return subType.isArray();
+    }
+    
+    if (subType == fsArrayType) {
+      return superType == topType || 
+             superType == arrayBaseType ||
+             (superType.isArray());
+    }
+
+    // at this point, we could have arrays of other primitive types, or
+    // arrays of specific types: xxx[]
+
+    final boolean isSubArray = subType.isArray();
+    if (superType.isArray()) {
+      if (isSubArray) {
+        // If both types are arrays, simply compare the components.
+        return subsumes(
+            ((TypeImplArray)superType).getComponentType(), 
+            ((TypeImplArray)subType  ).getComponentType());
+      }
+      // An array can never subsume a non-array.
+      return false;
+    } else if (isSubArray) {
+      // If the subtype is an array, and the supertype is not, then the
+      // supertype must be top, or the abstract array base.
+      return ((superType == topType) || (superType == arrayBaseType));
+    }
+    
+    return ((TypeImpl)subType).hasSupertype((TypeImpl) superType);
   }
 
+
+//  /**
+//   * Get the overall number of features defined in the type system.
+//   * @return -
+//   */
+//  public int getNumberOfFeatures() {
+//    if (this.isCommitted()) {
+//      return this.numFeatureNames;
+//    }
+//    return this.featureNameST.size();
+//  }
+
   /**
-   * Get an array of the appropriate features for this type.
+   * Get the overall number of types defined in the type system.
+   * @return - the number of types defined in the type system. 
    */
-  @Override
-  public int[] ll_getAppropriateFeatures(int type) {
-    if (type < LEAST_TYPE_CODE || type > getNumberOfTypes()) {
-      return null;
-    }
-    // We have to copy the array since we don't have const.
-    return (this.approp.get(type)).toArrayCopy();
-  }
-  
-  /**
-   * @return An offset <code>&gt;0</code> if <code>feat</code> exists; <code>0</code>, else.
-   */
-  int getFeatureOffset(int feat) {
-    return (this.approp.get(this.intro.get(feat))).position(feat) + 1;
+  public int getNumberOfTypes() {
+    return types.size() - 1;     // because slot 0 is skipped
   }
 
   /**
    * Get the overall number of features defined in the type system.
-   * @return -
+   * @return - the number of features defined in the type system. 
    */
   public int getNumberOfFeatures() {
-    if (this.isCommitted()) {
-      return this.numFeatureNames;
-    }
-    return this.featureNameST.size();
+    return features.size() - 1;  // because slot 0 is skipped
   }
-
-  /**
-   * Get the overall number of types defined in the type system.
-   * @return -
-   */
-  public int getNumberOfTypes() {
-    if (this.isCommitted()) {
-      return this.numTypeNames;
-    }
-    return this.typeNameST.size();
-  }
-
-  /**
-   * 
-   * @param feat -
-   * @return the domain type for a feature.
-   */
-  public int intro(int feat) {
-    return this.intro.get(feat);
-  }
-
-  /**
-   * Get the range type for a feature.
-   * @param feat -
-   * @return -
-   */
-  public int range(int feat) {
-    return this.featRange.get(feat);
-  }
-
+  
+///**
+//* 
+//* @param feat -
+//* @return the domain type for a feature.
+//*/
+//public int intro(int feat) {
+// return this.intro.get(feat);
+//}
+//
+///**
+//* Get the range type for a feature.
+//* @param feat -
+//* @return -
+//*/
+//public int range(int feat) {
+// return this.featRange.get(feat);
+//}
+  
   // Unification is trivial, since we don't have multiple inheritance.
   public int unify(int t1, int t2) {
     if (this.subsumes(t1, t2)) {
@@ -1069,106 +1146,74 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
   }
 
-  int addFeature(String shortName, int domain, int range) {
-    return addFeature(shortName, domain, range, true);
-  }
-
-  /**
-   * Add a new feature to the type system.
-   * @param shortName -
-   * @param domain -
-   * @param range -
-   * @param multiRefsAllowed - 
-   * @return -
-   */
-  int addFeature(String shortName, int domain, int range, boolean multiRefsAllowed) {
-    // Since we just looked up the domain in the symbol table, we know it
-    // exists.
-    String name = this.typeNameST.getSymbol(domain) + TypeSystem.FEATURE_SEPARATOR + shortName;
-    // Create a list of the domain type and all its subtypes.
-    // Type t = getType(domain);
-    // if (t == null) {
-    // System.out.println("Type is null");
-    // }
-    TypeImpl domainType = (TypeImpl) ll_getTypeForCode(domain);
-    List<Type> typesLocal = getProperlySubsumedTypes(domainType);
-    typesLocal.add(ll_getTypeForCode(domain));
-    // For each type, check that the feature doesn't already exist.
-    int max = typesLocal.size();
-    for (int i = 0; i < max; i++) {
-      String featureName = (typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName;
-      if (this.featureMap.containsKey(featureName)) {
-        // We have already added this feature. If the range of the
-        // duplicate
-        // feature is identical, we don't do anything and just return.
-        // Else,
-        // we throw an exception.
-        Feature oldFeature = getFeatureByFullName(featureName);
-        Type oldDomain = oldFeature.getDomain();
-        Type oldRange = oldFeature.getRange();
-        if (range == ll_getCodeForType(oldRange)) {
-          return -1;
-        }
-        CASAdminException e = new CASAdminException(CASAdminException.DUPLICATE_FEATURE);
-        e.addArgument(shortName);
-        e.addArgument(ll_getTypeForCode(domain).getName());
-        e.addArgument(ll_getTypeForCode(range).getName());
-        e.addArgument(oldDomain.getName());
-        e.addArgument(oldRange.getName());
-        throw e;
-      }
-    } // Add name to symbol table.
-    int feat = this.featureNameST.set(name);
-    // Add entries for all subtypes.
-    for (int i = 0; i < max; i++) {
-      this.featureMap.put((typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
-          feat);
-    }
-    this.intro.add(domain);  
-    this.featRange.add(range);
-    max = this.typeNameST.size();
-    for (int i = 1; i <= max; i++) {
-      if (subsumes(domain, i)) {
-        (this.approp.get(i)).add(feat);
-      }
-    }
-    FeatureImpl fi = new FeatureImpl(feat, name, this, multiRefsAllowed);
-    this.features.add(fi);
-    domainType.addIntroducedFeature(fi);
-    return feat;
-  }
-
-  /**
-   * Add a top type to the (empty) type system.
-   * @param name -
-   * @return -
-   */
-  public Type addTopType(String name) {
-    final int code = this.addTopTypeInternal(name);
-    if (code < 1) {
-      return null;
-    }
-    return this.types.get(code);
-  }
-
-  private int addTopTypeInternal(String name) {
-    if (this.typeNameST.size() > 0) {
-      // System.out.println("Size of type table > 0.");
-      return 0;
-    } // Add name of top type to symbol table.
-    if (top != this.typeNameST.set(name)) throw new RuntimeException();
-    // System.out.println("Size of name table is: " + typeNameST.size());
-    // assert (typeNameST.size() == 1);
-    // System.out.println("Code of top type is: " + top);
-    // Create space for top type.
-    newType();
-    // Make top subsume itself.
-    addSubsubsumption(top, top);
-    this.types.add(new TypeImpl(name, top, this));
-    this.parents.add(LowLevelTypeSystem.UNKNOWN_TYPE_CODE);
-    this.numCommittedTypes = this.types.size();
-    return top;
-  }
+//  int addFeature(String shortName, int domain, int range) {
+//    return addFeature(shortName, domain, range, true);
+//  }
+//
+//  /**
+//   * Add a new feature to the type system.
+//   * @param shortName -
+//   * @param domain -
+//   * @param range -
+//   * @param multiRefsAllowed - 
+//   * @return -
+//   */
+//  int addFeature(String shortName, int domain, int range, boolean multiRefsAllowed) {
+//    // Since we just looked up the domain in the symbol table, we know it
+//    // exists.
+//    String name = this.typeNameST.getSymbol(domain) + TypeSystem.FEATURE_SEPARATOR + shortName;
+//    // Create a list of the domain type and all its subtypes.
+//    // Type t = getType(domain);
+//    // if (t == null) {
+//    // System.out.println("Type is null");
+//    // }
+//    TypeImpl domainType = (TypeImpl) ll_getTypeForCode(domain);
+//    List<Type> typesLocal = getProperlySubsumedTypes(domainType);
+//    typesLocal.add(ll_getTypeForCode(domain));
+//    // For each type, check that the feature doesn't already exist.
+//    int max = typesLocal.size();
+//    for (int i = 0; i < max; i++) {
+//      String featureName = (typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName;
+//      if (this.featureMap.containsKey(featureName)) {
+//        // We have already added this feature. If the range of the
+//        // duplicate
+//        // feature is identical, we don't do anything and just return.
+//        // Else,
+//        // we throw an exception.
+//        Feature oldFeature = getFeatureByFullName(featureName);
+//        Type oldDomain = oldFeature.getDomain();
+//        Type oldRange = oldFeature.getRange();
+//        if (range == ll_getCodeForType(oldRange)) {
+//          return -1;
+//        }
+//        CASAdminException e = new CASAdminException(CASAdminException.DUPLICATE_FEATURE);
+//        e.addArgument(shortName);
+//        e.addArgument(ll_getTypeForCode(domain).getName());
+//        e.addArgument(ll_getTypeForCode(range).getName());
+//        e.addArgument(oldDomain.getName());
+//        e.addArgument(oldRange.getName());
+//        throw e;
+//      }
+//    } // Add name to symbol table.
+//    int feat = this.featureNameST.set(name);
+//    // Add entries for all subtypes.
+//    for (int i = 0; i < max; i++) {
+//      this.featureMap.put((typesLocal.get(i)).getName() + FEATURE_SEPARATOR + shortName,
+//          feat);
+//    }
+//    this.intro.add(domain);  
+//    this.featRange.add(range);
+//    max = this.typeNameST.size();
+//    for (int i = 1; i <= max; i++) {
+//      if (subsumes(domain, i)) {
+//        (this.approp.get(i)).add(feat);
+//      }
+//    }
+//    FeatureImpl fi = new FeatureImpl(feat, name, this, multiRefsAllowed);
+//    this.features.add(fi);
+//    domainType.addIntroducedFeature(fi);
+//    return feat;
+//  }
 
   /**
    * Check if the first argument subsumes the second
@@ -1180,97 +1225,41 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return this.ll_subsumes(superType, type);
   }
 
-  private boolean ll_isPrimitiveArrayType(int type) {
-    return type == floatArrayTypeCode || type == intArrayTypeCode
-        || type == booleanArrayTypeCode || type == shortArrayTypeCode
-        || type == byteArrayTypeCode || type == longArrayTypeCode
-        || type == doubleArrayTypeCode || type == stringArrayTypeCode;
-  }
 
-  @Override
-  public boolean ll_subsumes(int superType, int type) {
-    // Add range check.
-    // assert (isType(superType));
-    // assert (isType(type));
-
-    // Need special handling for arrays, as they're generated on the fly and
-    // not added to the subsumption table.
-
-    // speedup code.
-    if (superType == type)
-      return true;
-
-    // Yes, the code below is intentional. Until we actually support real
-    // arrays of some
-    // particular fs,
-    // we have FSArray is the supertype of xxxx[] AND
-    // xxx[] is the supertype of FSArray
-    // (this second relation because all we can generate are instances of
-    // FSArray
-    // and we must be able to assign them to xxx[] )
-    if (superType == fsArrayTypeCode) {
-      return !ll_isPrimitiveArrayType(type) && ll_isArrayType(type);
-    }
-
-    if (type == fsArrayTypeCode) {
-      return superType == top || superType == arrayBaseTypeCode
-          || (!ll_isPrimitiveArrayType(superType) && ll_isArrayType(superType));
-    }
-
-    // at this point, we could have arrays of other primitive types, or
-    // arrays of specific types: xxx[]
-
-    final boolean isSuperArray = ll_isArrayType(superType);
-    final boolean isSubArray = ll_isArrayType(type);
-    if (isSuperArray) {
-      if (isSubArray) {
-        // If both types are arrays, simply compare the components.
-        return ll_subsumes(ll_getComponentType(superType), ll_getComponentType(type));
-      }
-      // An array can never subsume a non-array.
-      return false;
-    } else if (isSubArray) {
-      // If the subtype is an array, and the supertype is not, then the
-      // supertype must be top, or the abstract array base.
-      return ((superType == top) || (superType == arrayBaseTypeCode));
-    }
-    return this.subsumes.get(superType).get(type);
-  }
-
-  private void updateSubsumption(int type, int superType) {
-    final int max = this.typeNameST.size();
-    for (int i = 1; i <= max; i++) {
-      if (subsumes(i, superType)) {
-        addSubsubsumption(i, type);
-      }
-    }
-    addSubsubsumption(type, type);
-  }
-
-  private void addSubsubsumption(int superType, int type) {
-    (this.subsumes.get(superType)).set(type);
-  }
-
-  private void newType() {
-    // The assumption for the implementation is that new types will
-    // always be added at the end.
-    this.tree.add(new IntVector());
-    this.subsumes.add(new BitSet());
-    this.approp.add(new IntVector());
-  }
+//  private void updateSubsumption(int type, int superType) {
+//    final int max = this.typeNameST.size();
+//    for (int i = 1; i <= max; i++) {
+//      if (subsumes(i, superType)) {
+//        addSubsubsumption(i, type);
+//      }
+//    }
+//    addSubsubsumption(type, type);
+//  }
+//
+//  private void addSubsubsumption(int superType, int type) {
+//    (this.subsumes.get(superType)).set(type);
+//  }
+//
+//  private void newType() {
+//    // The assumption for the implementation is that new types will
+//    // always be added at the end.
+//    this.tree.add(new IntVector());
+//    this.subsumes.add(new BitSet());
+//    this.approp.add(new IntVector());
+//  }
 
   // Only used for serialization code.
-  SymbolTable getTypeNameST() {
-    return this.typeNameST;
-  }
-
-  private final String getTypeString(Type t) {
-    return t.getName() + " (" + ll_getCodeForType(t) + ")";
-  }
-
-  private final String getFeatureString(Feature f) {
-    return f.getName() + " (" + ll_getCodeForFeature(f) + ")";
-  }
+//  SymbolTable getTypeNameST() {
+//    return this.typeNameST;
+//  }
+//
+//  private final String getTypeString(Type t) {
+//    return t.getName() + " (" + ll_getCodeForType(t) + ")";
+//  }
+//
+//  private final String getFeatureString(Feature f) {
+//    return f.getName() + " (" + ll_getCodeForFeature(f) + ")";
+//  }
 
   /**
    * This writes out the type hierarchy in a human-readable form.
@@ -1278,27 +1267,13 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    */
   @Override
   public String toString() {
-    // This code is maximally readable, not maximally efficient.
-    StringBuffer buf = new StringBuffer();
-    // Print top type.
-    buf.append("~" + getTypeString(this.getTopType()) + ";\n");
-    // Iterate over types and print declarations.
-    final int numTypes = this.typeNameST.size();
-    Type t;
-    for (int i = 2; i <= numTypes; i++) {
-      t = this.ll_getTypeForCode(i);
-      buf.append(getTypeString(t) + " < " + getTypeString(this.getParent(t)) + ";\n");
-    } // Print feature declarations.
-    final int numFeats = this.featureNameST.size();
-    Feature f;
-    for (int i = 1; i <= numFeats; i++) {
-      f = this.ll_getFeatureForCode(i);
-      buf.append(getFeatureString(f) + ": " + getTypeString(f.getDomain()) + " > "
-          + getTypeString(f.getRange()) + ";\n");
-    }
-    return buf.toString();
+    StringBuilder sb = new StringBuilder();
+    sb.append("Type System<").append(System.identityHashCode(this)).append(">:\n");
+    int indent = 2;
+    topType.prettyPrintWithSubTypes(sb, indent);  
+    return sb.toString();
   }
-
+  
   /**
    * @see org.apache.uima.cas.admin.TypeSystemMgr#commit()
    */
@@ -1310,17 +1285,22 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     this.locked = true;
     // because subsumes depends on it
     // and generator initialization uses subsumes
-    this.numCommittedTypes = this.types.size(); // do before
-    this.numTypeNames = this.typeNameST.size();
-    this.numFeatureNames = this.featureNameST.size();
-    this.typeInfoArray = new TypeInfo[getTypeArraySize()];
+//    this.numCommittedTypes = this.getNumberOfTypes(); // do before
+//    this.numTypeNames = this.typeNameST.size();
+//    this.numFeatureNames = this.featureNameST.size();
+//    this.typeInfoArray = new TypeInfo[getTypeArraySize()];
     // cas.commitTypeSystem -
     // because it will call the type system iterator
-    this.casMetadata.setupFeaturesAndCreatableTypes();
+//    this.casMetadata.setupFeaturesAndCreatableTypes();
     // ts should never point to a CAS. Many CASes can share one ts.
     // if (this.cas != null) {
     // this.cas.commitTypeSystem();
     // }
+    
+    topType.computeDepthFirstCode(1);
+    
+    computeFeatureOffsets(topType, 0, 0);
+               
     if (IS_DECOMPILE_JCAS) {  
       synchronized(GLOBAL_TYPESYS_LOCK) {
         for(Type t : types) {
@@ -1329,52 +1309,76 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
         }
       }
     }
+    
+    // true = do user jcas class loading
+    fsClassRegistry = new FSClassRegistry(this, true);
+    
+    computeAdjustedFeatureOffsets(topType, 0, 0);
   }
   
+  
+  private void computeFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
+    int iFeat = nextI;
+    int rFeat = nextR;
+    
+    for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+      fi.setOffset(fi.isInInt ? (iFeat ++) : (rFeat ++));
+      if (((TypeImpl)fi.getRange()).isLongOrDouble) {
+        iFeat ++;
+      }
+    }
+        
+    ti.highestIntOffset = nextI;
+    ti.highestRefOffset = nextR;
+    
+    for (TypeImpl sub : ti.getDirectSubtypes()) {
+      computeFeatureOffsets(sub, iFeat, rFeat);
+    }  
+  }
+
+  private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
+    int iFeat = nextI;
+    int rFeat = nextR;
+    
+    Class<?>clazz = getFSClassRegistry().getJCasClass(ti.getCode());
+    
+    for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+      if ( ! FSClassRegistry.isFieldInClass(fi, clazz)) {
+
+        fi.setAdjustedOffset(fi.isInInt ? (iFeat ++) : (rFeat ++));
+        if (((TypeImpl)fi.getRange()).isLongOrDouble) {
+          iFeat ++;
+        }        
+      } else { // field is in the JCas cover object
+        GetterSetter gs = fsClassRegistry.getGetterSetter(ti.getCode(), fi.getShortName());
+        fi.jcasGetter = gs.getter;
+        fi.jcasSetter = gs.setter;
+      }
+    }
+    
+    ti.nbrOfUsedIntDataSlots = iFeat;
+    ti.nbrOfUsedRefDataSlots = rFeat;
+    
+    for (TypeImpl sub : ti.getDirectSubtypes()) {
+      computeAdjustedFeatureOffsets(sub, iFeat, rFeat);
+    }  
+  }
+    
   private void decompile(Type t) {
     String name = t.getName();  
-    if (name.endsWith(arrayTypeSuffix)) return;
+    if (name.endsWith(ARRAY_TYPE_SUFFIX)) return;
     if (decompiled.contains(name)) return;
     decompiled.add(name);
     
-    if(JCasImpl.builtInsWithAltNames.contains(name) )
+    if(builtInsWithAltNames.contains(name) )
       name = "org.apache.uima.jcas."+ name.substring(5 /* "uima.".length() */);
     
     String h = System.getProperty(DECOMPILE_JCAS);
-    String fn = h + "decompiled/" + name + ".java";
     File file = new File(h + "decompiled");
     file.mkdir();
  
-    try { 
-      final FileOutputStream stream = new FileOutputStream(fn);
-      final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(stream));
-      final PlainTextOutput plainTextOutput = new PlainTextOutput(writer);
-      
-      Decompiler.decompile(
-           name.replace('.', '/'),
-           plainTextOutput,
-           decompilerSettings
-       );
-       writer.close();
-       if (decompiledFailed(fn)) {
-         File f = new File(fn);
-         f.delete();
-       }
-    }
-    catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private boolean decompiledFailed(String fn) throws IOException {
-    BufferedReader rdr = null;
-    try {
-      rdr = new BufferedReader(new FileReader(fn));
-      String line = rdr.readLine();
-      return line != null && line.startsWith("!!! ERROR: Failed to load class");
-    } finally {
-      if (null != rdr) rdr.close();
-    }
+    UimaDecompiler ud = new UimaDecompiler(this.getClass().getClassLoader(), file);
+    ud.decompileToOutputDirectory(name.replace('.', '/'));
   }
   
   /**
@@ -1389,16 +1393,20 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    * @param typeCode for a type
    * @return true if type is AnnotationBase or a subtype of it
    */
-  public boolean isAnnotationBaseOrSubtype(int typeCode) {
-    return subsumes(annotBaseTypeCode, typeCode);
+  public boolean isAnnotationBaseOrSubtype(int typecode) {
+    return subsumes(annotBaseType, ll_getTypeForCode(typecode));
+  }
+
+  public boolean isAnnotationBaseOrSubtype(Type type) {
+    return subsumes(annotBaseType, type);
   }
   
   /**
    * @param typeCode for a type
    * @return true if type is Annotation or a subtype of it
    */
-  public boolean isAnnotationOrSubtype(int typeCode) {
-    return subsumes(annotTypeCode, typeCode);
+  public boolean isAnnotationOrSubtype(Type type) {
+    return subsumes(annotType, type);
   }  
 
   // dangerous, and not needed, not in any interface
@@ -1430,38 +1438,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     ((TypeImpl) type).setInheritanceFinal();
   }
 
-  /**
-   * @see org.apache.uima.cas.admin.TypeSystemMgr#addStringSubtype
-   */
-  @Override
-  public Type addStringSubtype(String typeName, String[] stringList) throws CASAdminException {
-    // final int stringSetCode = this.stringSets.size();
-    Type mother = this.stringType;
-    // Check type name syntax.
-    checkTypeSyntax(typeName);
-    // Create the type.
-    final int typeCode = this.addType(typeName, ((TypeImpl) mother).getCode(), true);
-    // If the type code is less than 1, it means that a type of that name
-    // already exists.
-    if (typeCode < this.typeNameST.getStart()) {
-      return null;
-    } // Get the created type.
-    StringTypeImpl type = (StringTypeImpl) this.types.get(typeCode);
-    type.setFeatureFinal();
-    type.setInheritanceFinal();
-    // Sort the String array.
-    Arrays.sort(stringList);
-    // Add the string array to the string sets.
-    this.stringSets.add(stringList);
-    return type;
-  }
-
-  // public for ref from JCas TOP type,
-  // impl FeatureStructureImpl
-  public String[] getStringSet(int i) {
-    return this.stringSets.get(i);
-  }
-
   /*
    * (non-Javadoc)
    * 
@@ -1475,266 +1451,125 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     return new TypeNameSpaceImpl(name, this);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.impl.LowLevelTypeSystem#ll_getCodeForTypeName(java.lang.String)
+  /**
+   * @see {@link TypeSystem#getArrayType(Type)}
+   * @param componentType
+   *          The type of the elements of the resulting array type. This can be any type, even
+   *          another array type.
+   * @return The array type with the corresponding component type.
+   *         If it doesn't exist, a new TypeImplArray is created for it.
    */
-  @Override
-  public int ll_getCodeForTypeName(String typeName) {
-    if (typeName == null) {
-      throw new NullPointerException();
-    }
-    return this.typeNameST.get(typeName);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.apache.uima.cas.impl.LowLevelTypeSystem#ll_getCodeForType(org.apache.uima.cas.Type)
-   */
-  @Override
-  public int ll_getCodeForType(Type type) {
-    return ((TypeImpl) type).getCode();
-  }
-
-  @Override
-  public int ll_getCodeForFeatureName(String featureName) {
-    if (featureName == null) {
-      throw new NullPointerException();
-    }
-    if (!this.featureMap.containsKey(featureName)) {
-      return UNKNOWN_FEATURE_CODE;
-    }
-    return this.featureMap.get(featureName);
-  }
-
-  @Override
-  public int ll_getCodeForFeature(Feature feature) {
-    return ((FeatureImpl) feature).getCode();
-  }
-
-  @Override
-  public Type ll_getTypeForCode(int typeCode) {
-    if (isType(typeCode)) {
-      return this.types.get(typeCode);
-    }
-    return null;
-  }
-
-  private final int getLargestFeatureCode() {
-    return this.getNumberOfFeatures();
-  }
-
-  final boolean isFeature(int featureCode) {
-    return ((featureCode > UNKNOWN_FEATURE_CODE) && (featureCode <= getLargestFeatureCode()));
-  }
-
-  @Override
-  public Feature ll_getFeatureForCode(int featureCode) {
-    if (isFeature(featureCode)) {
-      return this.features.get(featureCode);
-    }
-    return null;
-  }
-
-  @Override
-  public int ll_getDomainType(int featureCode) {
-    return intro(featureCode);
-  }
-
-  @Override
-  public int ll_getRangeType(int featureCode) {
-    return range(featureCode);
-  }
-
-  @Override
-  public LowLevelTypeSystem getLowLevelTypeSystem() {
-    return this;
-  }
-
-  @Override
-  public boolean ll_isStringSubtype(int type) {
-    return this.stringSetMap.containsKey(type);
-  }
-
-  @Override
-  public boolean ll_isRefType(int typeCode) {
-    final int typeClass = ll_getTypeClass(typeCode);
-    switch (typeClass) {
-    case LowLevelCAS.TYPE_CLASS_BOOLEAN:
-    case LowLevelCAS.TYPE_CLASS_BYTE:
-    case LowLevelCAS.TYPE_CLASS_SHORT:
-    case LowLevelCAS.TYPE_CLASS_INT:
-    case LowLevelCAS.TYPE_CLASS_FLOAT:
-    case LowLevelCAS.TYPE_CLASS_LONG:
-    case LowLevelCAS.TYPE_CLASS_DOUBLE:
-    case LowLevelCAS.TYPE_CLASS_STRING: {
-      return false;
-    }
-    default: {
-      return true;
-    }
-    }
-  }
-
   @Override
   public Type getArrayType(Type componentType) {
-    final int arrayTypeCode = ll_getArrayType(ll_getCodeForType(componentType));
-    if (arrayTypeCode == UNKNOWN_TYPE_CODE) {
-      return null;
+    TypeImpl ti = (TypeImpl) arrayComponentTypeToArrayType.get(componentType);
+    if (null == ti) { 
+      // This path only happens when 
+      //   a Feature is declared to be a non-built-in (and therefore non-primitive) array 
+      //     that is, an FsArray of another declared uima type.
+      ti = addArrayType(componentType, getSlotKindFromType(componentType), HEAP_STORED_ARRAY, FSArray.class);
     }
-    return this.types.get(arrayTypeCode);
+    return ti;
   }
 
+  /**
+   * @see org.apache.uima.cas.admin.TypeSystemMgr#addStringSubtype
+   */
   @Override
-  public final int ll_getTypeClass(int typeCode) {
-    if (typeCode == booleanTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_BOOLEAN;
+  public Type addStringSubtype(String typeName, String[] stringList) throws CASAdminException {
+    Set<String> allowedValues = new HashSet<>(Arrays.asList(stringList));
+    TypeImpl supertype = this.stringType;
+    // Check type name syntax.
+    checkTypeSyntax(typeName);
+
+    TypeImpl existingTi = getType(typeName);
+    if (existingTi != null) {
+      if (!(existingTi instanceof TypeImplStringSubtype)) {
+        throw new CASAdminException(CASAdminException.STRING_SUBTYPE_REDEFINE_NAME_CONFLICT,
+            typeName, existingTi.toString());
+      }
+      Set<String> existingAllowedValues = ((TypeImplStringSubtype) existingTi).getAllowedValues();
+      if (!existingAllowedValues.equals(allowedValues)) {
+        // this type is already defined with identical allowed values, return
+        // existing one
+        return existingTi;
+      }
+      throw new CASAdminException(CASAdminException.STRING_SUBTYPE_CONFLICTING_ALLOWED_VALUES,
+          typeName,
+          Misc.addElementsToStringBuilder(new StringBuilder(), existingAllowedValues).toString(),
+          Misc.addElementsToStringBuilder(new StringBuilder(), allowedValues).toString());
     }
-    if (typeCode == byteTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_BYTE;
-    }
-    if (typeCode == shortTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_SHORT;
-    }
-    if (typeCode == intTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_INT;
-    }
-    if (typeCode == floatTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_FLOAT;
-    }
-    if (typeCode == longTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_LONG;
-    }
-    if (typeCode == doubleTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_DOUBLE;
-    }
-    // false if string type code not yet set up (during initialization)
-    //   need this to avoid NPE in subsumes
-    if ((stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
-          ll_subsumes(stringTypeCode, typeCode)) {
-      return LowLevelCAS.TYPE_CLASS_STRING;
-    }
-    if (typeCode == booleanArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_BOOLEANARRAY;
-    }
-    if (typeCode == byteArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_BYTEARRAY;
-    }
-    if (typeCode == shortArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_SHORTARRAY;
-    }
-    if (typeCode == intArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_INTARRAY;
-    }
-    if (typeCode == floatArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_FLOATARRAY;
-    }
-    if (typeCode == longArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_LONGARRAY;
-    }
-    if (typeCode == doubleArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_DOUBLEARRAY;
-    }
-    if (typeCode == stringArrayTypeCode) {
-      return LowLevelCAS.TYPE_CLASS_STRINGARRAY;
-    }
-    if (ll_isArrayType(typeCode)) {
-      return LowLevelCAS.TYPE_CLASS_FSARRAY;
-    }
-    return LowLevelCAS.TYPE_CLASS_FS;
+
+    // Create the type.
+    TypeImplStringSubtype type = new TypeImplStringSubtype(typeName, this, supertype, allowedValues);
+    type.setFeatureFinal();
+    type.setInheritanceFinal();
+    return type;
   }
 
-  @Override
-  public int ll_getArrayType(int componentTypeCode) {
-    if (this.componentToArrayTypeMap.containsKey(componentTypeCode)) {
-      return this.componentToArrayTypeMap.get(componentTypeCode);
-    }
-    return addArrayType(ll_getTypeForCode(componentTypeCode),
-        ll_getTypeForCode(ll_computeArrayParentFromComponentType(componentTypeCode)));
-  }
-
-  int addArrayType(Type componentType, Type mother) {
-    return ll_addArrayType(ll_getCodeForType(componentType), ll_getCodeForType(mother));
-  }
-
-  int ll_addArrayType(int componentTypeCode, int motherCode) {
-
-    if (!ll_isValidTypeCode(componentTypeCode)) {
-      return UNKNOWN_TYPE_CODE;
-    }
-    // The array type is new and needs to be created.
-    String arrayTypeName = getArrayTypeName(ll_getTypeForCode(componentTypeCode).getName());
-    int arrayTypeCode = this.typeNameST.set(arrayTypeName);
-    this.componentToArrayTypeMap.put(componentTypeCode, arrayTypeCode);
-    this.arrayToComponentTypeMap.put(arrayTypeCode, componentTypeCode);
-    // Dummy call to keep the counts ok. Will never use these data
-    // structures for array types.
-    newType();
-    TypeImpl arrayType = new TypeImpl(arrayTypeName, arrayTypeCode, this);
-    this.types.add(arrayType);
-    this.parents.add(motherCode);
-    if (!isCommitted()) {
-      this.numCommittedTypes = this.types.size();
-    }
-//    if (null == this.arrayCodeToTypeMap.getReserve(arrayTypeCode)) {
-//      this.arrayCodeToTypeMap.put(arrayType);
-//    }
-    this.arrayCodeToTypeMap.put(arrayTypeCode, arrayType);
-//    System.out.println("*** adding to arrayCodeToTypeMap: " + arrayType.getName() + ", committed=" + isCommitted());
-    // For built-in arrays, we need to add the abstract base array as parent
-    // to the inheritance tree. This sucks. Assumptions about the base
-    // array are all over the place. Would be nice to just remove it.
-    // Add an edge to the tree.
-    if (!isCommitted() && motherCode != fsArrayTypeCode ) {
-      final int arrayBaseTypeCodeBeforeCommitted = arrayBaseTypeCode;
-      (this.tree.get(arrayBaseTypeCodeBeforeCommitted)).add(arrayTypeCode);
-      // Update subsumption relation.
-      updateSubsumption(arrayTypeCode, arrayBaseTypeCode);
-    }
-    return arrayTypeCode;
-  }
-
-  @Override
-  public boolean ll_isValidTypeCode(int typeCode) {
-    return (this.typeNameST.getSymbol(typeCode) != null)
-        || this.arrayToComponentTypeMap.containsKey(typeCode);
-  }
-
-  @Override
-  public boolean ll_isArrayType(int typeCode) {
-//    if (!ll_isValidTypeCode(typeCode)) {
-//      return false;
-//    }
-    return this.arrayCodeToTypeMap.containsKey(typeCode);
-  }
-
-  @Override
-  public int ll_getComponentType(int arrayTypeCode) {
-    if (ll_isArrayType(arrayTypeCode)) {
-      return this.arrayToComponentTypeMap.get(arrayTypeCode);
-    }
-    return UNKNOWN_TYPE_CODE;
-  }
-
-  /* note that subtypes of String are considered primitive */
-  @Override
-  public boolean ll_isPrimitiveType(int typeCode) {
-    return !ll_isRefType(typeCode);
-  }
-
-  @Override
-  public String[] ll_getStringSet(int typeCode) {
-//    if (!ll_isValidTypeCode(typeCode)) {
-//      return null;
-//    }
-    if (!ll_isStringSubtype(typeCode)) {
-      return null;
-    }
-    return this.stringSets.get(this.stringSetMap.get(typeCode));
+  /**
+   * Add an array type.  This is called for builtin array types, and when processing a Feature specification
+   * that represents an FSArray
+   * @param componentType the component type
+   * @return a TypeImplArray 
+   */
+  TypeImplArray addArrayType(Type componentType, SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
+    String arrayTypeName = getArrayTypeName(componentType.getName());
+    // either fsArray or TOP
+    TypeImpl supertype = computeArrayParentFromComponentType(componentType); 
+    TypeImplArray ti = new TypeImplArray(arrayTypeName, (TypeImpl) componentType, this, supertype, slotKind, isHeapStoredArray, javaClass);
+    this.arrayComponentTypeToArrayType.put(componentType, ti);
+    // the reverse - going from array type to component type is done via the getComponentType method of TypeImplArray
+    return ti;
   }
   
+//  TypeImplList addTypeList(TypeImpl elementType) {
+//    return new TypeImplList(CAS.TYPE_NAME_LIST, elementType, this, topType);
+//  }
+//  
+//  TypeImplMap addTypeMap(TypeImpl keyType, TypeImpl valueType) {
+//    return new TypeImplMap(CAS.TYPE_NAME_MAP, keyType, valueType, this, topType);
+//  }
+
+ 
+  /**
+   * Used to support generic access to static-compiled features.
+   * Return ordered-by-offset array of FeatureImpls of a particular range class
+   * @param valueType - one of booleanType, booleanArrayType, stringType, topType, fsArrayType, etc.
+   *                    see list in allTypes1 in TypeSystemImpl. 
+   * @return a stream of FeatureImpls having a range of the specified type
+   */
+  public Stream<FeatureImpl> getTypeFeaturesByRangeType(TypeImpl type, TypeImpl range) {
+    return type.getFeaturesAsStream().filter(fi -> ((TypeImpl) fi.getRange()).consolidateType(topType, fsArrayType) == range);
+  }
+
+  private static void setTypeFinal(Type type) {
+    TypeImpl t = (TypeImpl) type;
+    t.setFeatureFinal();
+    t.setInheritanceFinal();
+  }
+  
+  private Feature getFeature(String typeName, String featureShortName) {
+    return getFeature(getType(typeName), featureShortName);
+  }
+  
+  private Feature getFeature(Type type, String featureShortName) {
+    return type.getFeatureByBaseName(featureShortName);
+  }
+  
+  /**
+   * @param ti the type
+   * @param featureShortName the name of the feature
+   * @return the offset in the storage array for this feature
+   */
+  public int getFeatureOffset(TypeImpl ti, String featureShortName) {
+    FeatureImpl fi = (FeatureImpl) ti.getFeatureByBaseName(featureShortName);
+    return fi.getOffset();
+  }
+  
+//  public TypeImpl[] getAllTypesForByteCodeGen() {
+//    return allTypesForByteCodeGen;
+//  }
+
 
   /**
    * Each instance holds info needed in binary serialization
@@ -1808,7 +1643,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
           i++;
           TypeImpl slotType = (TypeImpl) feat.getRange();
 
-          if (slotType == stringType || (slotType instanceof StringTypeImpl)) {
+          if (slotType == stringType || (slotType instanceof TypeImplString)) {
             slots.add(Slot_StrRef);
             strRefsTemp.add(i + 1);  // first feature is offset 1 from fs addr
           } else if (slotType == intType) {
@@ -1895,7 +1730,7 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
    *********************************************************/
   public final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = 
       new WeakHashMap<TypeSystemImpl, CasTypeSystemMapper>();
-  
+   
   synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) throws ResourceInitializationException {
     if ((null == tgtTs) || (this == tgtTs)) {
       return null;  // conventions for no type mapping
@@ -1913,39 +1748,6 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
     }
     
     return m;
-  }
-
-  private static final String PREFIX1 = "Lorg/apache/uima/jcas/cas/";
-  /**
-   * Converts range to Java- coded string
-   * @param rangeTypeCode
-   * @return Java Type Descriptor, e.g. "Z" or "Ljava/lang/String" or "[D", etc.
-   */
-  public String convertTypeToJavaCode(Type type) {
-    TypeImpl rangeTi = (TypeImpl) type;
-    // built-ins
-    final int typeCode = rangeTi.getCode();
-    switch (typeCode) {
-    case booleanTypeCode: return "Z";
-    case byteTypeCode: return "B";
-    case shortTypeCode: return "S";
-    case intTypeCode: return "I";
-    case floatTypeCode: return "F";
-    case longTypeCode: return "J";
-    case doubleTypeCode: return "D";
-    case booleanArrayTypeCode: return "[Z";
-    case byteArrayTypeCode: return "[B";
-    case shortArrayTypeCode: return "[S";
-    case intArrayTypeCode: return "[I";
-    case floatArrayTypeCode: return "[F";
-    case longArrayTypeCode: return "[J";
-    case doubleArrayTypeCode: return "[D";
-    case stringArrayTypeCode: return "[Ljava/lang/String;";
-    }
-    
-    if (ll_subsumes(stringTypeCode, typeCode)) return "Ljava/lang/String;";     
-    return (type.isArray() ? "[" : "") +
-        "L" + type.getName().replace('.',  '/') + ";";
   }
   
   
@@ -1978,4 +1780,504 @@ public class TypeSystemImpl implements TypeSystemMgr, LowLevelTypeSystem {
 //    return false;
 //  }
 //  
+  
+  /****************************************************************
+   * Low Level APIs that use type codes and feature codes         *
+   * These are less efficient in V3, and should be replaced where *
+   * possible with standard non-low-level access                  *
+   * **************************************************************
+   */
+  
+  /**
+   * 
+   * @param typeCode of some type
+   * @return the type code of the parent type
+   */
+  @Override
+  public int ll_getParentType(int typeCode) {
+    return types.get(typeCode).getCode();
+  }
+  
+  /**
+   * Get an array of the appropriate features for this type.
+   */
+  @Override
+  public int[] ll_getAppropriateFeatures(int typecode) {
+    if (!isType(typecode)) {
+      return null;
+    }
+    return types.get(typecode).getFeaturesAsStream().mapToInt(FeatureImpl::getCode).toArray();
+  }
+
+  @Override
+  public boolean ll_subsumes(int superType, int type) {
+    return subsumes(types.get(superType), types.get(type));
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.LowLevelTypeSystem#ll_getCodeForTypeName(java.lang.String)
+   */
+  @Override
+  public int ll_getCodeForTypeName(String typeName) {
+    if (typeName == null) {
+      throw new NullPointerException();
+    }
+    TypeImpl ti = getType(typeName);
+    return (ti == null) ? LowLevelTypeSystem.UNKNOWN_TYPE_CODE : ti.getCode();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.cas.impl.LowLevelTypeSystem#ll_getCodeForType(org.apache.uima.cas.Type)
+   */
+  @Override
+  public int ll_getCodeForType(Type type) {
+    return ((TypeImpl) type).getCode();
+  }
+
+  @Override
+  public int ll_getCodeForFeatureName(String featureName) {
+    if (featureName == null) {
+      throw new NullPointerException();
+    }
+    FeatureImpl fi = (FeatureImpl) getFeatureByFullName(featureName);
+    if (fi != null) {
+      return fi.getCode();
+    }
+    return UNKNOWN_FEATURE_CODE;
+  }
+
+  @Override
+  public int ll_getCodeForFeature(Feature feature) {
+    return ((FeatureImpl) feature).getCode();
+  }
+
+  @Override
+  public Type ll_getTypeForCode(int typeCode) {
+    return getTypeForCode(typeCode);
+  }
+  
+  public TypeImpl getTypeForCode(int typeCode) {
+    if (isType(typeCode)) {
+      return this.types.get(typeCode);
+    }
+    return null;
+  }
+  
+  public TypeImpl getTypeForCode_checked(int typeCode) {
+    TypeImpl r = getTypeForCode(typeCode);
+    if (r == null) {
+      throw new LowLevelException(LowLevelException.INVALID_TYPECODE, typeCode);
+    }
+    return r;
+  }
+  
+  /**
+   * Check if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
+   * @param typecode -
+   * @param featcode -
+   * @return true if feature is appropriate for type (i.e., type is subsumed by domain type of feature).
+   */
+  public boolean isApprop(int typecode, int featcode) {
+    return ((TypeImpl) ll_getTypeForCode(typecode)).isAppropriateFeature(ll_getFeatureForCode(featcode));
+  }
+
+  /**
+   * Feature Code to Offset
+   * Offset has no clear meaning in V3
+   * @return An offset <code>&gt;0</code> if <code>feat</code> exists; <code>0</code>, else.
+   */
+  int getFeatureOffset(int feat) {
+    throw new UIMARuntimeException(UIMARuntimeException.NOT_SUPPORTED_NO_HEAP_IN_UIMA_V3);
+  }
+  
+  private final int getLargestFeatureCode() {
+    return this.features.size();
+  }
+
+  final boolean isFeature(int featureCode) {
+    return ((featureCode > UNKNOWN_FEATURE_CODE) && (featureCode <= getLargestFeatureCode()));
+  }
+
+  @Override
+  public Feature ll_getFeatureForCode(int featureCode) {
+    if (isFeature(featureCode)) {
+      return this.features.get(featureCode);
+    }
+    return null;
+  }
+  
+  FeatureImpl getFeatureForCode(int featureCode) {
+    return this.features.get(featureCode);
+  }
+  
+  FeatureImpl getFeatureForCode_checked(int featureCode) {
+    FeatureImpl f = getFeatureForCode(featureCode);
+    if (null == f) {
+      throw new LowLevelException(LowLevelException.INVALID_FEATURE_CODE, featureCode); 
+    }
+    return f;
+  }
+  
+  @Override
+  public int ll_getDomainType(int featureCode) {
+    return intro(featureCode);
+  }
+
+  @Override
+  public int ll_getRangeType(int featureCode) {
+    return range(featureCode);
+  }
+
+  @Override
+  public LowLevelTypeSystem getLowLevelTypeSystem() {
+    return this;
+  }
+
+  @Override
+  public boolean ll_isStringSubtype(int typecode) {
+    return types.get(typecode).isStringSubtype();
+  }
+
+  /**
+   * The range type of features may include 
+   *   special uima types that are not creatable, such as the primitive ones
+   *   like integer, or string, or subtypes of string.
+   * Other types are reference types
+   */
+  boolean classifyAsRefType(String name, TypeImpl superType) {
+    switch(name) {
+    case CAS.TYPE_NAME_BOOLEAN:
+    case CAS.TYPE_NAME_BYTE:
+    case CAS.TYPE_NAME_SHORT:
+    case CAS.TYPE_NAME_INTEGER:
+    case CAS.TYPE_NAME_LONG:
+    case CAS.TYPE_NAME_FLOAT:
+    case CAS.TYPE_NAME_DOUBLE:
+    case CAS.TYPE_NAME_STRING:
+    case CAS.TYPE_NAME_JAVA_OBJECT:
+//    case CAS.TYPE_NAME_MAP:
+//    case CAS.TYPE_NAME_LIST:
+      return false;
+    }
+    // superType is null for TOP, which is a Ref type
+    if (superType != null && superType.getName().equals(CAS.TYPE_NAME_STRING)) { // cant compare to stringType - may not be set yet
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * @param type the type to test
+   * @return true if it's a reference type - one that can be created as a FeatureStructure
+   */
+  public boolean isRefType(TypeImpl type) {
+    return type.isRefType;
+  }
+  
+  @Override
+  public boolean ll_isRefType(int typeCode) {
+    return isRefType(getTypeForCode(typeCode));
+  }
+    
+  @Override
+  public final int ll_getTypeClass(int typeCode) {
+    if (typeCode == booleanTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_BOOLEAN;
+    }
+    if (typeCode == byteTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_BYTE;
+    }
+    if (typeCode == shortTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_SHORT;
+    }
+    if (typeCode == intTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_INT;
+    }
+    if (typeCode == floatTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_FLOAT;
+    }
+    if (typeCode == longTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_LONG;
+    }
+    if (typeCode == doubleTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_DOUBLE;
+    }
+    // false if string type code not yet set up (during initialization)
+    //   need this to avoid NPE in subsumes
+    if ((stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
+          ll_subsumes(stringTypeCode, typeCode)) {
+      return LowLevelCAS.TYPE_CLASS_STRING;
+    }
+    if (typeCode == booleanArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_BOOLEANARRAY;
+    }
+    if (typeCode == byteArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_BYTEARRAY;
+    }
+    if (typeCode == shortArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_SHORTARRAY;
+    }
+    if (typeCode == intArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_INTARRAY;
+    }
+    if (typeCode == floatArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_FLOATARRAY;
+    }
+    if (typeCode == longArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_LONGARRAY;
+    }
+    if (typeCode == doubleArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_DOUBLEARRAY;
+    }
+    if (typeCode == stringArrayTypeCode) {
+      return LowLevelCAS.TYPE_CLASS_STRINGARRAY;
+    }
+    if (ll_isArrayType(typeCode)) {
+      return LowLevelCAS.TYPE_CLASS_FSARRAY;
+    }
+    return LowLevelCAS.TYPE_CLASS_FS;
+  }
+
+  /**
+   * @see {@link LowLevelTypeSystem#ll_getArrayType(int)}
+   * @param componentTypeCode the type code of the components of the array
+   * @return the type code of the requested Array type having components of componentTypeCode, or 0
+   *     if the componentTypeCode is invalid.
+   */
+  @Override
+  public int ll_getArrayType(int componentTypeCode) {
+    if (!ll_isValidTypeCode(componentTypeCode)) {
+      return 0;
+    }
+    
+    return ((TypeImpl)(getArrayType(types.get(componentTypeCode)))).getCode();
+  }
+  
+  /**
+   * @see {@link LowLevelTypeSystem#ll_isValidTypeCode(int)}
+   * @param typeCode to see if it's in range  
+   * @return if it is.  
+   */
+  @Override
+  public boolean ll_isValidTypeCode(int typeCode) {
+    return isType(typeCode);
+//    return (this.typeNameST.getSymbol(typeCode) != null)
+//        || this.arrayToComponentTypeMap.containsKey(typeCode);
+  }
+
+  @Override
+  public boolean ll_isArrayType(int typeCode) {
+    if (!ll_isValidTypeCode(typeCode)) {
+      return false;
+    }
+    return types.get(typeCode).isArray();
+  }
+
+  @Override
+  public int ll_getComponentType(int arrayTypeCode) {
+    final TypeImpl type = types.get(arrayTypeCode);
+    if (type.isArray()) {
+      return ((TypeImpl) ((TypeImplArray)type).getComponentType()).getCode();
+    }
+    return UNKNOWN_TYPE_CODE;
+  }
+
+  /* note that subtypes of String are considered primitive */
+  @Override
+  public boolean ll_isPrimitiveType(int typeCode) {
+    return !ll_isRefType(typeCode);
+  }
+
+  @Override
+  public String[] ll_getStringSet(int typeCode) {
+    TypeImpl ti = types.get(typeCode);
+    if (!ti.isStringSubtype()) {
+      return null;
+    }
+    Set<String> allowedValues = ((TypeImplStringSubtype)ti).getAllowedValues();
+    return allowedValues.stream().toArray(i -> new String[i]);
+  }
+
+  @Override
+  public Iterator<Feature> getFeatures() {
+    List<Feature> lf = Collections.unmodifiableList(this.features);
+    Iterator<Feature> it = lf.iterator();
+    // The first element is null, so skip it.
+    it.next();
+    return it;
+  }
+  
+  /**
+   * 
+   * @param feat -
+   * @return the domain type for a feature.
+   */
+  public int intro(int feat) {
+    return ((TypeImpl)(this.features.get(feat).getDomain())).getCode();
+  }
+
+  /**
+   * Get the range type for a feature.
+   * @param feat -
+   * @return -
+   */
+  public int range(int feat) {
+    return ((TypeImpl)(this.features.get(feat).getRange())).getCode();
+  }
+  
+  /**
+   * Given a component type, return the parent type of the corresponding array type,
+   * without needing the corresponding array type to exist (yet).
+   *    component type ->  (member of) array type  -> UIMA parent type of that array type.
+   *    
+   * The UIMA Type parent of an array is either
+   *   ArrayBase (for primitive arrays, plus String[] and TOP[] (see below) 
+   *   FsArray - for XYZ[] reference kinds of arrays
+   *   
+   * The UIMA Type parent chain goes like this:
+   *   primitive_array -> ArrayBase -> TOP (primitive: boolean, byte, short, int, long, float, double, String)
+   *   String[]        -> ArrayBase -> TOP
+   *   TOP[]           -> ArrayBase -> TOP
+   *    
+   *   XYZ[]           -> FSArray    -> TOP  where XYZ is not a primitive, not String[], not TOP[]
+   *   
+   *   Arrays of TOP are handled differently from XYZ[] because 
+   *     - the creation of the FSArray type requires
+   *       -- the creation of TOP[] type, which requires (unless this is done)
+   *       -- the recursive creation of FSArray type - which causes a null pointer exception
+   *     
+   *   Note that the UIMA super chain is not used very much (mainly for subsumption,
+   *   and for this there is special case code anyways), so this doesn't really matter. (2015 Sept)
+   *    
+   * Note: the super type chain of the Java impl classes varies from the UIMA super type chain.
+   *   It is used to factor out common behavior among classes of arrays.
+   *   
+   *   *********** NOTE: TBD update the rest of this comment for V3 **************
+   *   
+   *   For non-JCas (in V3, this is only the XYZ[] and TOP[] kinds of arrays)
+   *     
+   *     CommonArrayFSImpl  [ for arrays stored on the main heap ]
+   *       ArrayFSImpl  (for arrays of FS)
+   *       FloatArrayFSImpl
+   *       IntArrayFSImpl
+   *       StringArrayFSImpl
+   *     CommonAuxArrayFSImpl  [ for arrays stored in Aux heaps ]
+   *       BooleanArrayFSImpl
+   *       ByteArrayFSImpl
+   *       ShortArrayFSImpl
+   *       LongArrayFSImpl
+   *       DoubleArrayFSImpl
+   *   
+   *   For JCas: The corresponding types have only TOP as their supertypes
+   *     but they implement the nonJCas interfaces for each subtype.
+   *       Those interfaces implement CommonArrayFS interface
+   *          
+   * @param componentType the UIMA type of the component of the array
+   * @return the parent type of the corresponding array type 
+   */
+  private TypeImpl computeArrayParentFromComponentType(Type componentType) {
+    if (componentType.isPrimitive() || (componentType == topType)) {
+      return arrayBaseType;
+    }
+    return fsArrayType;
+  }
+  
+//  /**
+//   * Generate the class for the given name.  If it refers to super classes not yet loaded, then the act of 
+//   * defining the class will cause these to be loaded too.
+//   * 
+//   * Called from UIMATypeSystemClassLoader for lazy loading, or
+//   *        from commit via UIMATypeSystemClassLoaderInjector -> generateAndLoadClass, for batch loading
+//   *        
+//   * @param name the x.y.z.Foo style name of the class to generate
+//   * @return the generated Class
+//   */
+//  public byte[] jcasGenerate(String name) {
+//    TypeImpl type = getType(name);
+//    return featureStructureClassGen.createJCasCoverClass(type);
+//  }
+//
+//  /**
+//   * Generate the class for the given name.  If it refers to super classes not yet loaded, then the act of 
+//   * defining the class will cause these to be loaded too.
+//   * @param name the x.y.z.Foo style name of the class to generate
+//   * @return the generated Class
+//   */
+//  public byte[] jcas_TypeGenerate(String name) {
+//    TypeImpl type = getType(name);  // name doesn't have the _Type suffix
+//    return featureStructureClassGen.createJCas_TypeCoverClass(type);
+//  }
+  
+//  /**
+//   * 
+//   * @param name
+//   * @return true if name is a JCasGen name  (_Type suffix removed outside of this routine)  
+//   *   need to exclude those names that are built-in because otherwise, a sub class loader will regenerate them
+//   *   and the built-ins need to be shared and not generated
+//   */
+//  public boolean isJCasGenerateOnLoad(String name) {
+//    return !JCasImpl.builtInsWithAltNames.contains(name) && typeName2TypeImpl.containsKey(name);
+//  }
+  
+//  /**
+//   * FunctionalInterface for creating instances of a type.
+//   *   Acts like a Function, taking a JCas arg, and returning an instance of the JCas type.
+//   * @param jcasClass the class of the JCas type to construct
+//   * @return a Functional Interface whose apply method takes a JCas and returns a new instance of the class
+//   */
+//  private Function<JCas, TOP> getCreator(Class<?> jcasClass) {
+//    try {
+//      MethodHandle mh = lookup.findConstructor(jcasClass, MethodType.methodType(void.class, JCas.class));
+//      MethodType mtConstructor = MethodType.methodType(jcasClass, JCas.class);
+// 
+//      return (Function<JCas, TOP>)LambdaMetafactory.metafactory(
+//          lookup, // lookup context for the constructor 
+//          "apply", // name of the method in the Function Interface 
+//          MethodType.methodType(Function.class),  // signature of callsite, return type is functional interface, args are captured args if any 
+//          mtConstructor.generic(), // samMethodType signature and return type of method impl by function object 
+//          mh,  // method handle to constructor 
+//          mtConstructor).getTarget().invokeExact();
+//    } catch (Throwable e) {
+//      throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
+//    }
+//  }
+
+  /** 
+   * Convert between fixed JCas class int (set when it is loaded) and 
+   * this type system's TypeImpl.
+   * 
+   * @param i the index from the typeIndexId of the JCas cover class
+   * @return - the type impl associated with that JCas cover class
+   */
+  public TypeImpl getJCasRegisteredType(int i) {
+    return jcasRegisteredTypes.get(i);
+  }
+  
+  public FSClassRegistry getFSClassRegistry() {
+    return fsClassRegistry;
+  }
+  
+  void setJCasRegisteredType(int typeIndexID, TypeImpl ti) {
+    while (jcasRegisteredTypes.size() <= typeIndexID) {
+      jcasRegisteredTypes.add(null);
+    }
+    jcasRegisteredTypes.set(typeIndexID, ti);
+  }
+  
+  static {
+    new TypeSystemImpl();
+  }
+//  public void installTypeCreator(Class<?> jcasClass) {
+//    TypeImpl ti = typeName2TypeImpl.get(jcasClass.getName());
+//    assert (ti != null);
+//    ti.setCreator(getCreator(jcasClass), get_TypeCreator(jcasClass));
+//  }
+//  
+//  public void install_TypeCreator(Class<?> jcasClass) {
+//    Type
+//  }
 }
