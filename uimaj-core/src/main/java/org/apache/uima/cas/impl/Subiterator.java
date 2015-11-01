@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Subiterator implementation.
@@ -34,12 +35,12 @@ import org.apache.uima.cas.text.AnnotationFS;
  * There are two bounding styles and 2 underlying forms.
  * 
  * The 2nd form is produced lazily when needed, and 
- * is made by a one-time forward traversal to compute unambigious subsets and store them into a list.
+ * is made by a one-time forward traversal to compute unambiguous subsets and store them into a list.
  *   - The 2nd form is needed only for unambiguous style if backwards or moveto(fs) operation.
  * 
  * The 1st form uses the underlying iterator directly, and does skipping as needed, while iterating  
  *   - going forward: 
- *       skip if unambigious and start is within prev span
+ *       skip if unambiguous and start is within prev span
  *       skip if strict and end lies outside of scope span
  *     
  *   - going backward:
@@ -55,7 +56,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  *       skip if strict and end lies outside of scope span
  *     
  *   - going to last:
- *       unambigious - convert to 2nd form
+ *       unambiguous - convert to 2nd form
  *       skip backwards if strict and end lies outside of scope span
  *       
  * There are two styles of the bounding information.
@@ -64,13 +65,13 @@ import org.apache.uima.cas.text.AnnotationFS;
  *     type priority ordering
  *   - the 2nd style uses just a begin value and an end value, no type priority ordering.  
  */
-public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
+public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> {
 
   private ArrayList<T> list = null; // used for form 2, lazily initialized
 
   private int pos = 0;  // used for form 2
   
-  private final FSIteratorImplBase<T> it;
+  private final FSIterator<T> it;
 
   private final FSIndexRepositoryImpl fsIndexRepo;
   
@@ -84,6 +85,8 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
   private final boolean isBounded;
   private boolean isListForm = false;
   private final boolean isBeginEndCompare;
+  
+  private final int startId;
 
   
   /**
@@ -103,7 +106,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * @param ambiguous true means normal iteration, 
    *                  false means to skip annotations whose begin lies between previous begin (inclusive) and end (exclusive)
    * @param strict true means to skip annotations whose end is greater than the bounding end position (ignoring type priorities)
-   * @param isBounded false means its an unambiguous iterator with no bounds narrowing; ambiguous taken to be false
+   * @param isBounded false means it's an unambiguous iterator with no bounds narrowing; ambiguous taken to be false
    * @param fsIndexRepo the index repository for this iterator
    */
   Subiterator(
@@ -116,11 +119,11 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       boolean isBounded, 
       FSIndexRepositoryImpl fsIndexRepo
       ) {
-    super();
     this.isBounded = isBounded;
     // non bounded iterators don't use any begin/end compares
+    // begin end compares not yet implemented.  This next should be set to false.  10/2015
     this.isBeginEndCompare = this.isBounded ? (boundingAnnotation == null) : false;
-    this.it = (FSIteratorImplBase<T>) it;
+    this.it = it;
     this.boundingAnnotation = this.isBounded ? boundingAnnotation : null;
     this.boundingBegin = (boundingAnnotation == null) ? boundingBegin : boundingAnnotation.getBegin();
     this.boundingEnd = (boundingAnnotation == null) ? boundingEnd : boundingAnnotation.getEnd();
@@ -129,6 +132,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     this.fsIndexRepo = fsIndexRepo;
     
     moveToStart();
+    startId = isValid() ? get().get_id() : 0;
   }
     
   
@@ -140,10 +144,10 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * 
    */
   private void convertToListForm() {
-    moveToStart();  // moves to the start annotation, including moving past equals for annot style, and accomodating strict
+    moveToStart();  // moves to the start annotation, including moving past equals for annot style, and accommodating strict
     this.list = new ArrayList<T>();
     while (isValid()) {
-      prevEnd = it.getEnd();
+      prevEnd = it.get().getEnd();
       list.add(it.get());
       it.moveToNext();
       movePastPrevAnnotation();
@@ -152,10 +156,10 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     isListForm = true;  // do at end, so up to this point, iterator is not the list form style
   }
   
-  private void moveToExact(FeatureStructureImpl targetAnnotation) {
+  private void moveToExact(T targetAnnotation) {
     it.moveTo(targetAnnotation);  // move to left-most equal one
     while (it.isValid()) {         // advance to the exact equal one
-      if (targetAnnotation.getAddress() == ((FeatureStructureImpl)(it.get())).getAddress()) {
+      if (targetAnnotation.get_id() == it.get().get_id()) {
         break;
       }
       it.moveToNext();
@@ -183,7 +187,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
   
   private void setPrevEnd() {
     if (!ambiguous && it.isValid()) {
-      this.prevEnd = it.getEnd();
+      this.prevEnd = it.get().getEnd();
     }    
   }
 
@@ -208,11 +212,12 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * to eliminate the effect of the type order comparison before any adjustment for strict.
    * Move backwards while equal with begin/end iterator. 
    */
-  private void adjustAfterMoveToForBeginEndComparator(AnnotationFS fs) {
+  private void adjustAfterMoveToForBeginEndComparator(FeatureStructure aFs) {
+    final Annotation fs = (Annotation) aFs;
     final int begin = fs.getBegin();
     final int end = fs.getEnd();
     
-    while (it.isValid() && (it.getBegin() == begin) && (it.getEnd() == end)) {
+    while (it.isValid() && (it.get().getBegin() == begin) && (it.get().getEnd() == end)) {
       it.moveToPrevious();  
     }
     // are one position too far, move back one
@@ -228,7 +233,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    */
   private void adjustForStrictForward() {
     if (strict && isBounded) {
-      while (it.isValid() && (it.getEnd() > this.boundingEnd)) {
+      while (it.isValid() && (it.get().getEnd() > this.boundingEnd)) {
         it.moveToNext();
       }
     }
@@ -239,7 +244,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    */
   private void movePastPrevAnnotation() {
     if (!ambiguous) {
-      while (it.isValid() && (it.getBegin() < this.prevEnd)) {
+      while (it.isValid() && (it.get().getBegin() < this.prevEnd)) {
         it.moveToNext();
       }
     }
@@ -247,7 +252,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
   
   private void adjustForStrictBackward() {
     if (strict && isBounded) {
-      while (it.isValid() && (it.getEnd() > this.boundingEnd)) {
+      while (it.isValid() && (it.get().getEnd() > this.boundingEnd)) {
         it.moveToPrevious();
       }
     }
@@ -264,7 +269,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
           
         // assume that it position is adjusted for strict and unambiguous already
         (it.isValid() && 
-            ( isBounded? (it.getBegin() <= this.boundingEnd) : 
+            ( isBounded? (it.get().getBegin() <= this.boundingEnd) : 
               true));
   }
 
@@ -305,7 +310,12 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     }
 
     adjustForStrictForward();
-    setPrevEnd();
+    if (it.isValid() && (it.get().getBegin() > boundingEnd)) {
+      it.moveToLast();
+      it.moveToNext();  // mark invalid
+    } else {
+      setPrevEnd();
+    }
   }
 
   /*
@@ -321,15 +331,20 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 
     if (!ambiguous) {
       // Convert to list form
-      FeatureStructureImpl currentAnnotation = (FeatureStructureImpl) it.get();  // save to restore position
+      T currentAnnotation = it.get();  // save to restore position
       convertToListForm();
       moveToExact(currentAnnotation);
       --this.pos;
       return;
     }
     
-    it.moveToPrevious();
-    adjustForStrictBackward();
+    if (isValid() && it.get().get_id() == startId) {
+      it.moveToFirst();
+      it.moveToPrevious();  // make it invalid
+    } else {
+      it.moveToPrevious();
+      adjustForStrictBackward();
+    }
   }
 
   /*
@@ -392,22 +407,22 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * 
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
+  @Override
   public void moveTo(FeatureStructure fs) {
-    AnnotationFS fsa = (AnnotationFS) fs;
     if (!ambiguous && !isListForm) {  // unambiguous must be in list form
       convertToListForm();
     }
-    if (isListForm) {
+     if (isListForm) {
       Comparator<AnnotationFS> annotationComparator = getAnnotationComparator();
       pos = Collections.binarySearch(this.list, (AnnotationFS) fs, annotationComparator);
       if (pos >= 0) {
         if (!isValid()) {
           return;
         }
-        T foundFs = get();
+         T foundFs = get();
         // Go back until we find a FS that is really smaller
         if (isBeginEndCompare) {
-          adjustAfterMoveToForBeginEndComparator(fsa);
+          adjustAfterMoveToForBeginEndComparator(fs);
         } else {
           while (true) {
             moveToPrevious();
@@ -429,27 +444,27 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
         pos = (-pos) - 1;
         if (isBeginEndCompare) {
           pos-- ;  // check to see if previous element, unequal with annotation compare, might be equal with begin-end compare
-          adjustAfterMoveToForBeginEndComparator(fsa);
+          adjustAfterMoveToForBeginEndComparator(fs);
         }
       }
     } else {
       // is ambiguous, may be strict, always bounded (either by annotation or begin / end
       it.moveTo(fs);
       if (isBeginEndCompare) {
-        it.moveTo(fs);
-        adjustAfterMoveToForBeginEndComparator(fsa);
-      } else {  // is begin/end bounding
-        it.moveTo(fs);
+        adjustAfterMoveToForBeginEndComparator(fs);
       }
       adjustForStrictForward();
     }
   }
   
-  /* 
-   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+  /**
+   * A special version of moveTo for subtypes of Annotation, which moves to a particular begin/end
+   * (no type priority). 
+   * @param begin the starting point (inclusive)
+   * @param end the ending point (inclusive)
    */
   @Override
-  <TT extends AnnotationFS> void moveTo(final int begin, final int end) {
+  public void moveTo(final int begin, final int end) {
     if (!ambiguous && !isListForm) {  // unambiguous must be in list form
       convertToListForm();
     }
@@ -461,7 +476,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
         }
         
         // Go back to leftmost 
-        while (it.isValid() && (it.getBegin() == begin) && (it.getEnd() == end)) {
+        while (it.isValid() && (it.get().getBegin() == begin) && (it.get().getEnd() == end)) {
           it.moveToPrevious();  
         }
         // are one position too far, move back one
@@ -480,7 +495,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       // is ambiguous, may be strict, always bounded (either by annotation or begin / end
       it.moveTo(begin, end);
       // Go back to leftmost 
-      while (isValid() && (it.getBegin() == begin) && (it.getEnd() == end)) {
+      while (isValid() && (it.get().getBegin() == begin) && (it.get().getEnd() == end)) {
         it.moveToPrevious();  
       }
       adjustForStrictForward();
@@ -498,10 +513,21 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    */
   public FSIterator<T> copy() {
     Subiterator<T> copy = new Subiterator<T>(
-        this.it, this.boundingAnnotation, this.boundingBegin, this.boundingEnd, this.ambiguous, this.strict, this.isBounded, this.fsIndexRepo);
+        this.it.copy(), this.boundingAnnotation, this.boundingBegin, this.boundingEnd, this.ambiguous, this.strict, this.isBounded, this.fsIndexRepo);
     copy.list = this.list;  // non-final things
     copy.pos  = this.pos;
     return copy;
+  }
+
+  @Override
+  public int ll_indexSize() {
+    throw new UnsupportedOperationException();
+  }
+
+
+  @Override
+  public LowLevelIndex<T> ll_getIndex() {
+    throw new UnsupportedOperationException();
   }
 
 
@@ -525,7 +551,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
 //    }
 //    // Skip annotations whose start is before the start parameter.
 //    // should never have any???
-//    while (it.isValid() && it.getBegin() < start) {
+//    while (it.isValid() && it.get().getBegin() < start) {
 //      it.moveToNext();
 //    }
 //    T current;
