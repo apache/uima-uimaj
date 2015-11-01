@@ -19,42 +19,44 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
-import org.apache.uima.internal.util.IntVector;
 
+/**
+ * Specifies the comparison to be used for an index, in terms of
+ *   - the keys and the typeorder, in an order
+ *   - the standard/reverse ordering
+ *
+ *   
+ */
 public class FSIndexComparatorImpl implements FSIndexComparator {
 
   private Type type;
 
-  private Vector<Object> keyVector;
+  // the Feature or Linear Type Order, as an ordered collection, one per key
+  private final List<Object> keySpecs = new ArrayList<Object>();  // Feature or LinearTypeOrder
 
-  private IntVector compVector;
+  // Standard or Reverse
+  private final List<Integer> directions = new ArrayList<Integer>();
 
-  private IntVector keyTypeVector;
+//  // FEATURE_KEY or TYPE_ORDER_KEY
+//  private IntVector keyTypeVector;
 
-  private TypeSystem ts;
-
-  private CASImpl cas;
+  private final CASImpl cas;
 
   @SuppressWarnings("unused")
   private FSIndexComparatorImpl() {
-    super();
+    this.cas = null;
   }
 
   // Public only for testing purposes.
   public FSIndexComparatorImpl(CASImpl cas) {
-    super();
-    this.keyVector = new Vector<Object>();
-    this.compVector = new IntVector();
-    this.keyTypeVector = new IntVector();
     this.type = null;
-    this.ts = cas.getTypeSystem();
     this.cas = cas;
   }
 
@@ -78,45 +80,45 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     if (!checkType(feat.getRange())) {
       return -1;
     }
-    final int rc = this.keyVector.size();
-    this.keyVector.add(feat);
-    this.compVector.add(compareKey);
-    this.keyTypeVector.add(FEATURE_KEY);
+    final int rc = this.keySpecs.size();
+    this.keySpecs.add(feat);
+    this.directions.add(compareKey);
     return rc;
   }
 
   public int addKey(LinearTypeOrder typeOrder, int compareKey) {
-    final int rc = this.keyVector.size();
-    this.compVector.add(compareKey);
-    this.keyVector.add(typeOrder);
-    this.keyTypeVector.add(TYPE_ORDER_KEY);
+    final int rc = this.keySpecs.size();
+    this.keySpecs.add(typeOrder);
+    this.directions.add(compareKey);
     return rc;
   }
 
   public int getKeyType(int key) {
-    return this.keyTypeVector.get(key);
+    return (this.keySpecs.get(key) instanceof Feature) 
+        ? FEATURE_KEY 
+        : TYPE_ORDER_KEY;
   }
 
   public int getNumberOfKeys() {
-    return this.keyVector.size();
+    return this.keySpecs.size();
   }
 
-  public Feature getKeyFeature(int key) {
-    if (this.keyTypeVector.get(key) == FEATURE_KEY) {
-      return (Feature) this.keyVector.get(key);
+  public FeatureImpl getKeyFeature(int key) {
+    if (getKeyType(key) == FEATURE_KEY) {
+      return (FeatureImpl) this.keySpecs.get(key);
     }
     return null;
   }
 
   public LinearTypeOrder getKeyTypeOrder(int key) {
-    if (this.keyTypeVector.get(key) == TYPE_ORDER_KEY) {
-      return (LinearTypeOrder) this.keyVector.get(key);
+    if (getKeyType(key)  == TYPE_ORDER_KEY) {
+      return (LinearTypeOrder) this.keySpecs.get(key);
     }
     return null;
   }
 
   public int getKeyComparator(int key) {
-    return this.compVector.get(key);
+    return this.directions.get(key);
   }
 
   public boolean equals(Object o) {
@@ -164,14 +166,14 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     final int max = this.getNumberOfKeys();
     Feature feat;
     for (int i = 0; i < max; i++) {
-      if (this.keyTypeVector.get(i) != FEATURE_KEY) {
+      if (getKeyType(i) != FEATURE_KEY) {
         continue;
       }
-      feat = (Feature) this.keyVector.get(i);
+      feat = (Feature) this.keySpecs.get(i);
       // if (feat.getTypeSystem() != ts) {
       // return false;
       // }
-      if (!this.ts.subsumes(feat.getDomain(), this.type)) {
+      if (!((TypeImpl) feat.getDomain()).subsumes((TypeImpl) this.type)) {
         return false;
       }
     }
@@ -182,14 +184,8 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   synchronized FSIndexComparatorImpl copy() {
     FSIndexComparatorImpl copy = new FSIndexComparatorImpl(this.cas);
     copy.type = this.type;
-    final int max = this.getNumberOfKeys();
-    copy.compVector.add(this.compVector.getArray(), 0, this.compVector.size());
-    copy.keyTypeVector.add(this.keyTypeVector.getArray(), 0, this.keyTypeVector.size());
-    for (int i = 0; i < max; i++) {
-      copy.keyVector.add(this.keyVector.get(i));
-//      copy.compVector.add(this.compVector.get(i));
-//      copy.keyTypeVector.add(this.keyTypeVector.get(i));
-    }
+    copy.directions.addAll(this.directions);
+    copy.keySpecs.addAll(this.keySpecs);
     return copy;
   }
 
@@ -230,5 +226,6 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     // They're equal.
     return 0;
   }
+
 
 }
