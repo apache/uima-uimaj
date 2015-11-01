@@ -230,6 +230,12 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Sofa reference in AnnotationBase may not be modified **/
   public static final String ILLEGAL_SOFAREF_MODIFICATION = "ILLEGAL_SOFAREF_MODIFICATION";
   
+  /** The Feature Structure ID {0} is invalid.*/
+  public static final String INVALID_FS_ID = "INVALID_FS_ID";
+
+  /** The CAS doesn't have a Feature Structure whose ID is {0}; it may have been garbage collected.*/
+  public static final String CAS_MISSING_FS = "CAS_MISSING_FS";
+  
 	public CASRuntimeException() {
 		super();
 	}
