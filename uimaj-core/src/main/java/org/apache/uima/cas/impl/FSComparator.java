@@ -22,10 +22,9 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
+ * Delete  REplace with Comparator<FeatureStructure> or the like.
  * Interface to compare two feature structures.
  * 
- * 
- * @version $Revision: 1.1 $
  */
 public interface FSComparator {
 
