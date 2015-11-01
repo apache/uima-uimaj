@@ -801,7 +801,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 	}
 
 	public String toString() {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		if (this.typeNameInSnippet != null) {
 			result.append(this.typeNameInSnippet);
 			result.append(TypeSystem.FEATURE_SEPARATOR);
