@@ -69,7 +69,7 @@ public class RsLangs {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder();
-    builder.append("RsLangs [languages=");
+    builder.append(this.getClass().getSimpleName() + " [languages=");
     if (languages != null) {
       for (String l : languages) {
         builder.append(l).append(',');

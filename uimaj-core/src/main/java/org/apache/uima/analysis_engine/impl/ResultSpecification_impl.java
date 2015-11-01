@@ -550,7 +550,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
   @SuppressWarnings("unchecked")
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("org.apache.uima.analysis_engine.impl.ResultSpecification_impl:\n");
+    sb.append(this.getClass().getSimpleName() + ":\n");
     sb.append("  needsCompilation = ").append(needsCompilation).append('\n');
 //    sb.append("lang2int = ").append(lang2int).append("\n");
 //    sb.append("name2tof_langs = ").append(name2tof_langs).append("\n");
