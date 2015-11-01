@@ -41,7 +41,7 @@ import org.apache.uima.internal.util.GraphNode;
 
 public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
-  /**
+        /**
          * An implementation of the {@link LinearTypeOrder LinearTypeOrder}
          * interface.
          * 
@@ -68,9 +68,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       for (int i = 0; i < a.length; i++) {
         int t = llts.ll_getCodeForTypeName(typeList[i]);
         if (t == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
-          CASException e = new CASException(CASException.TYPEORDER_UNKNOWN_TYPE,
-              new String[] { typeList[i] });
-          throw e;
+          throw new CASException(CASException.TYPEORDER_UNKNOWN_TYPE, typeList[i]);
         }
         a[i] = t;
       }
@@ -88,19 +86,40 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       }
     }
 
+    
+   
+    /* (non-Javadoc)
+     * @see org.apache.uima.cas.admin.LinearTypeOrder#compare(org.apache.uima.cas.impl.FeatureStructureImplC, org.apache.uima.cas.impl.FeatureStructureImplC)
+     */
+    @Override
+    public int compare(FeatureStructureImplC fs1, FeatureStructureImplC fs2) {
+      if (fs1 == fs2) return 0;
+ 
+      final int tc1 = fs1._getTypeCode();
+      final int tc2 = fs2._getTypeCode();
+      
+      return (tc1 == tc2) 
+          ? 0 
+          : Integer.compare(typeCodeToOrder[tc1],
+                            typeCodeToOrder[tc2]);
+    }
+
     // Look-up.
+    @Override
     public boolean lessThan(Type t1, Type t2) {
       return lessThan(((TypeImpl) t1).getCode(), ((TypeImpl) t2).getCode());
       // return this.lt[((TypeImpl) t1).getCode()].get(((TypeImpl) t2)
       // .getCode());
     }
 
+    @Override
     public boolean lessThan(int t1, int t2) {
       return this.typeCodeToOrder[t1] < this.typeCodeToOrder[t2];
 
       // return this.lt[t1].get(t2);
     }
 
+    @Override
     public int[] getOrder() {
       return this.order;
     }
@@ -165,10 +184,12 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       }
     }
 
+    @Override
     public boolean equals(Object o) {
       return (this == o);
     }
 
+    @Override
     public int hashCode() {
       return super.hashCode();
     }
@@ -289,15 +310,14 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     return new TotalTypeOrder(typeList, ts);
   }
 
+  @Override
   public void add(String[] types) throws CASException {
     final int max = types.length - 1;
     boolean rc;
     for (int i = 0; i < max; i++) {
       rc = add(types[i], types[i + 1]);
       if (!rc) {
-	CASException e = new CASException(CASException.CYCLE_IN_TYPE_ORDER, new String[] {
-	    types[i], types[i + 1] });
-	throw e;
+	      throw new CASException(CASException.CYCLE_IN_TYPE_ORDER, types[i], types[i + 1]);
       }
     }
   }
@@ -327,22 +347,22 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       typesToModify.clear();
 
       while (true) {
-	String typeName = type.getName();
-	final Node n = this.order.getNode(typeName);
-	if ((nIn == null) && (n.inRank() != 0)) {
-	  nIn = n;
-	}
-	if ((nOut == null) && (n.outRank() != 0)) {
-	  nOut = n;
-	}
-	if ((nIn != null) && (nOut != null)) {
-	  break;
-	}
-	if (typeName.equals(CAS.TYPE_NAME_TOP)) {
-	  break;
-	}
-	typesToModify.add(type);
-	type = this.ts.getParent(type);
+      	String typeName = type.getName();
+      	final Node n = this.order.getNode(typeName);
+      	if ((nIn == null) && (n.inRank() != 0)) {
+      	  nIn = n;
+      	}
+      	if ((nOut == null) && (n.outRank() != 0)) {
+      	  nOut = n;
+      	}
+      	if ((nIn != null) && (nOut != null)) {
+      	  break;
+      	}
+      	if (typeName.equals(CAS.TYPE_NAME_TOP)) {
+      	  break;
+      	}
+      	typesToModify.add(type);
+      	type = this.ts.getParent(type);
       }
       boolean doIn = true;
       boolean doOut = true;
@@ -369,6 +389,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     } // for all types
   }
 
+  @Override
   public LinearTypeOrder getOrder() throws CASException {
     addInheritanceTypes();
     Node inRank0Nodes = new Node("");
