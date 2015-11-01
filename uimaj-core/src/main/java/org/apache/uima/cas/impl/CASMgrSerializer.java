@@ -261,7 +261,7 @@ public class CASMgrSerializer implements Serializable {
       // array.
       this.comparatorIndex[i] = compPos;
       // Get the comparator.
-      comp = ((FSIndexImpl) indexVector.get(i)).getComparator();
+      comp = ((FSIndex_Impl) indexVector.get(i)).getComparatorForIndexSpecs();
       // Encode the type of the comparator.
       comps.add(((TypeImpl) comp.getType()).getCode());
       // How many keys in the comparator?
@@ -293,7 +293,9 @@ public class CASMgrSerializer implements Serializable {
   }
 
   public void addTypeSystem(TypeSystemImpl ts) {
-    this.typeNames = symbolTable2StringArray(ts.getTypeNameST());
+    this.typeNames = ts.types()
+                       .map(type -> type.getName())
+                       .toArray(String[]::new);
     encodeTypeInheritance(ts);
     encodeFeatureDecls(ts);
     encodeStringSubtypes(ts);
@@ -305,11 +307,11 @@ public class CASMgrSerializer implements Serializable {
     this.stringSubtypes = new int[size];
     this.stringSubtypeValuePos = new int[size];
     List<String> strVals = new ArrayList<String>();
-    StringTypeImpl type;
+    TypeImplString type;
     int pos = 0, typeCode;
     String[] stringSet;
     for (int i = 0; i < size; i++) {
-      type = (StringTypeImpl) list.get(i);
+      type = (TypeImplString) list.get(i);
       typeCode = type.getCode();
       this.stringSubtypes[i] = typeCode;
       this.stringSubtypeValuePos[i] = pos;
@@ -438,7 +440,7 @@ public class CASMgrSerializer implements Serializable {
         } else if (TypeSystemImpl.isArrayTypeNameButNotBuiltIn(name)) {
         	  ts.getArrayType(ts.getType(TypeSystemImpl.getArrayComponentName(name)));
         } else {
-            ts.addType(name, this.typeInheritance[i]);
+            ts.addType(name, ts.ll_getTypeForCode(this.typeInheritance[i]));
         }
       }
 //    }
@@ -451,7 +453,9 @@ public class CASMgrSerializer implements Serializable {
 //      } else {
         name = this.featureNames[i];
 //      }
-      ts.addFeature(name, this.featDecls[i * 3], this.featDecls[(i * 3) + 1],
+      ts.addFeature(name, 
+                    ts.ll_getTypeForCode(this.featDecls[i * 3]), 
+                    ts.ll_getTypeForCode(this.featDecls[(i * 3) + 1]),
                     this.featDecls[(i * 3) + 2] == 1);
     }
     return ts;
