@@ -56,6 +56,8 @@ import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
+import org.apache.uima.jcas.cas.CommonList;
+import org.apache.uima.jcas.cas.EmptyStringList;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -1138,12 +1140,12 @@ public class XmiCasDeserializer {
           break;
         }
         case CasSerializerSupport.TYPE_CLASS_STRINGLIST: {
-          int listFS = casBeingFilled.getFeatureValue(addr, featCode);
-          if (listFS == 0) {
-            listFS = listUtils.createStringList(featVals);
+          CommonList listFS = casBeingFilled.getFeatureValue(addr, featCode);
+          if (listFS == null) {
+            listFS = listUtils.createListFromStringValues(featVals, EmptyStringList.getSingleton());
             casBeingFilled.setFeatureValue(addr, featCode, listFS);
           } else {
-        	listUtils.updateStringList(listFS, featVals);
+        	listUtils.updateCommonList(listFS, featVals);
           }
           //add to nonshared fs to encompassing FS map
           if (!ts.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed()) {
