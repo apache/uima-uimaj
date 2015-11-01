@@ -157,9 +157,9 @@ public class TypeSystem2Xml {
       typeDesc.setFeatures(featDescArr);
 
       // check for string subtypes
-      if (type instanceof StringTypeImpl) {
-	LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
-	final int typeCode = lts.ll_getCodeForType(type);
+      if (type instanceof TypeImplString) {
+        LowLevelTypeSystem lts = aTypeSystem.getLowLevelTypeSystem();
+        final int typeCode = lts.ll_getCodeForType(type);
         String[] strings = lts.ll_getStringSet(typeCode);
         AllowedValue[] allowedVals = new AllowedValue[strings.length];
         for (int i = 0; i < strings.length; i++) {
