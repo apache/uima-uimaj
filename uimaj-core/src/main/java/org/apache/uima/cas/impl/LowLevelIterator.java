@@ -21,31 +21,18 @@ package org.apache.uima.cas.impl;
 
 import java.util.NoSuchElementException;
 
+import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
+
 /**
  * Low-level FS iterator. Returns FS references, instead of FS objects.
  * 
  * @see org.apache.uima.cas.FSIterator
  * 
  */
-public interface LowLevelIterator {
-  /**
-   * Move iterator to first FS in index. A subsequent call to <code>isValid()</code> will succeed
-   * iff the index is non-empty.
-   */
-  void moveToFirst();
-
-  /**
-   * Move iterator to last FS in index. A subsequent call to <code>isValid()</code> will succeed
-   * iff the index is non-empty.
-   */
-  void moveToLast();
-
-  /**
-   * Check if the iterator is currently valid.
-   * 
-   * @return <code>true</code> iff the iterator is valid.
-   */
-  boolean isValid();
+public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator<T> {
 
   /**
    * Return the current FS reference.
@@ -54,17 +41,9 @@ public interface LowLevelIterator {
    * @exception NoSuchElementException
    *              Iff the iterator is not valid.
    */
-  int ll_get() throws NoSuchElementException;
-
-  /**
-   * Advance the iterator. This may invalidate the iterator.
-   */
-  void moveToNext();
-
-  /**
-   * Move the iterator back one position. This may invalidate the iterator.
-   */
-  void moveToPrevious();
+  default int ll_get() throws NoSuchElementException {
+    return get().get_id();
+  };
 
   /**
    * Try to position the iterator so that the current element is greater than or equal to
@@ -75,15 +54,10 @@ public interface LowLevelIterator {
    * @param fsRef
    *          The FS reference the iterator should be set to.
    */
-  void moveTo(int fsRef);
-
-  /**
-   * Create a copy of this iterator. The copy will point at the same element that this iterator is
-   * currently pointing at.
-   * 
-   * @return A copy of this iterator.
-   */
-  Object copy();
+  default void moveTo(int fsRef) {
+    moveTo(ll_getIndex().getCasImpl().ll_getFSForRef(fsRef));
+  }
+  
 
   /**
    * Return the size of the underlying index.
@@ -97,5 +71,33 @@ public interface LowLevelIterator {
    * 
    * @return The index.
    */
-  LowLevelIndex ll_getIndex();
+  LowLevelIndex<T> ll_getIndex();
+  
+  /**
+   * an empty iterator
+   */
+  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator<FeatureStructure> () {
+    @Override
+    public boolean isValid() { return false; }
+    @Override
+    public FeatureStructure get() throws NoSuchElementException { throw new NoSuchElementException(); }
+    @Override
+    public void moveTo(int i) {}
+    @Override
+    public void moveToFirst() {}
+    @Override
+    public void moveToLast() {}
+    @Override
+    public LowLevelIterator<FeatureStructure> copy() { return this; }
+    @Override
+    public void moveToNext() {}
+    @Override
+    public void moveToPrevious() {}
+    @Override
+    public void moveTo(FeatureStructure fs) {}
+    @Override
+    public int ll_indexSize() { return 0; }
+    @Override
+    public LowLevelIndex<FeatureStructure> ll_getIndex() { return null; }    
+  };
 }
