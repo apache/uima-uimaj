@@ -248,7 +248,7 @@ public abstract class TypeSystemUtils {
       return false;
     }
     final int len = s.length();
-    if (s == null || len == 0) {
+    if (len == 0) {
       return false;
     }
     int pos = 0;
@@ -385,7 +385,7 @@ public abstract class TypeSystemUtils {
   // Find subtypes that define the feature.  Add subtypes to list.
   private static final void getFeatureDefiningSubtypes(Type type, String fName, List<Type> types) {
     TypeSystem ts = ((TypeImpl) type).getTypeSystem();
-    List<?> subtypes = ts.getDirectSubtypes(type);
+    List<Type> subtypes = ts.getDirectSubtypes(type);
     for (int i = 0; i < subtypes.size(); i++) {
       Type subtype = (Type) subtypes.get(i);
       if (subtype.getFeatureByBaseName(fName) != null) {
