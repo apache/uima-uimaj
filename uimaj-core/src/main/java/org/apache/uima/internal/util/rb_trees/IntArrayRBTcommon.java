@@ -770,12 +770,12 @@ public class IntArrayRBTcommon {
       System.out.println("Tree is empty.");
       return;
     }
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     printKeys(this.root, 0, buf);
     System.out.println(buf);
   }
 
-  protected final void printKeys(int node, int offset, StringBuffer buf) {
+  protected final void printKeys(int node, int offset, StringBuilder buf) {
     if (node == NIL) {
       // StringUtils.printSpaces(offset, buf);
       // buf.append("NIL\n");
