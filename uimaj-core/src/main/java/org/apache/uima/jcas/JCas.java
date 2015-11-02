@@ -118,20 +118,20 @@ public interface JCas extends AbstractCas {
    */
   public abstract Feature getRequiredFeature(Type t, String s) throws CASException;
 
-  /*
-   * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
-   * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
-   * 
-   * DE suffix means "Deferred Exception"
-   */
+//  /*
+//   * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
+//   * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
+//   * 
+//   * DE suffix means "Deferred Exception"
+//   */
+//
+//  public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
 
-  public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
-
-  /*
-   * Internal Use. 
-   */
-  public abstract void checkArrayBounds(int fsRef, int pos);
-
+//  /*
+//   * Internal Use. 
+//   */
+//  public abstract void checkArrayBounds(int fsRef, int pos);
+//
 //  /*
 //   * Internal Use - throw missing feature exception at runtime.
 //   */
