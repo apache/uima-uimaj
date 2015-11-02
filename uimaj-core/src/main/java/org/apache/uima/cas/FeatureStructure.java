@@ -353,6 +353,6 @@ public interface FeatureStructure {
    * return the unique (to this CAS) id of this feature structure
    */
 
-  int id()();
+  int id();
   
 }

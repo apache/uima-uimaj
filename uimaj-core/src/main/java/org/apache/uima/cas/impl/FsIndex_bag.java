@@ -83,7 +83,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    * For bag indexes, compare equal only if identical addresses
    */
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return (fs1 == fs2) ? 0 : (fs1.id()() < fs2.id()()) ? -1 : 1;
+    return (fs1 == fs2) ? 0 : (fs1.id() < fs2.id()) ? -1 : 1;
   }
 
   /*

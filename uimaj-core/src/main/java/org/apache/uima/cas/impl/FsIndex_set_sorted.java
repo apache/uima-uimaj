@@ -60,7 +60,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
                             (FeatureStructure o1, FeatureStructure o2) -> {
                               final int c = compare(o1,  o2); 
                               // augment normal comparator with one that compares IDs if everything else equal
-                              return (c == 0) ? (Integer.compare(o1.id()(), o2.id()())) : c;})
+                              return (c == 0) ? (Integer.compare(o1.id(), o2.id())) : c;})
                         : new TreeSet<FeatureStructure>( (FeatureStructure o1, FeatureStructure o2) -> compare(o1,  o2));     
   }
 
@@ -188,7 +188,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   
   @Override
   protected void bulkAddTo(IntVector v) {
-    this.indexedFSs.stream().mapToInt(fs -> ((FeatureStructureImplC)fs).id()()).forEach(v::add);
+    this.indexedFSs.stream().mapToInt(fs -> ((FeatureStructureImplC)fs).id()).forEach(v::add);
   }
   
   NavigableSet<FeatureStructure> getNavigableSet() { //used by FsIterator_sorted to compute various derivitive nav sets

@@ -42,7 +42,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    *              Iff the iterator is not valid.
    */
   default int ll_get() throws NoSuchElementException {
-    return get().id()();
+    return get().id();
   };
 
   /**

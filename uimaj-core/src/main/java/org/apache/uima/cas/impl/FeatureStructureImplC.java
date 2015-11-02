@@ -224,7 +224,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public final int getAddress() { return _id; };
 
   @Override
-  public final int id()() {return _id; };
+  public final int id() {return _id; };
   
   // backwards compatibility
   @Override
