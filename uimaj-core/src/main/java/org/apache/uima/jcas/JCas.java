@@ -50,7 +50,6 @@ import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -98,15 +97,6 @@ public interface JCas extends AbstractCas {
   public abstract LowLevelCAS getLowLevelCas();
 
   /**
-   * get the JCas _Type instance for a particular CAS type constant
-   * 
-   * @param i
-   *          the CAS type constant, written as Foo.type
-   * @return the instance of the JCas xxx_Type object for the specified type
-   */
-  public abstract TOP_Type getType(int i);
-
-  /**
    * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which
    * require a CAS Type, for instance iterator creation.
    * 
@@ -115,16 +105,6 @@ public interface JCas extends AbstractCas {
    * @return the CAS Java Type object for this CAS Type.
    */
   public abstract Type getCasType(int i);
-
-  /**
-   * get the JCas x_Type instance for a particular Java instance of a type
-   * 
-   * @param instance instance
-   * @return the associated xxx_Type instance
-   * @deprecated use instance.jcasType instead - faster
-   */
-  @Deprecated
-  public abstract TOP_Type getType(TOP instance);
 
   /*
    * Internal use - looks up a type-name-string in the CAS type system and returns the Cas Type
@@ -141,30 +121,22 @@ public interface JCas extends AbstractCas {
   /*
    * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
    * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
+   * 
+   * DE suffix means "Deferred Exception"
    */
 
   public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
-
-  /*
-   * Internal Use - sets the corresponding Java instance for a Cas instance
-   */
-  public abstract void putJfsFromCaddr(int casAddr, FeatureStructure fs);
-
-  /*
-   * Internal Use - sets the corresponding Java instance for a Cas instance
-   */
-  public abstract <T extends TOP> T getJfsFromCaddr(int casAddr);
 
   /*
    * Internal Use. 
    */
   public abstract void checkArrayBounds(int fsRef, int pos);
 
-  /*
-   * Internal Use - throw missing feature exception at runtime.
-   */
-  public void throwFeatMissing(String feat, String type);
-  
+//  /*
+//   * Internal Use - throw missing feature exception at runtime.
+//   */
+//  public void throwFeatMissing(String feat, String type);
+//  
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
