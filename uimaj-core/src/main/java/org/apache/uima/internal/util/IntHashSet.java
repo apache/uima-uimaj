@@ -22,7 +22,7 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.jcas.impl.JCasHashMap;
+import org.apache.uima.util.Misc;
 
 /**
  * A set of non-zero ints. 
@@ -55,6 +55,10 @@ public class IntHashSet implements PositiveIntSet {
   
   public static final int SIZE_NEEDING_4_BYTES = 256 * 256 - 2;  
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
+  
+  private static final int REMOVED4 = Integer.MIN_VALUE;
+  private static final int REMOVED2 = Short.MIN_VALUE;
+  
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
   private static final boolean TUNE = false;
@@ -78,6 +82,8 @@ public class IntHashSet implements PositiveIntSet {
   private int sizeWhichTriggersExpansion;
   private int size; // number of elements in the table
   private int nbrRemoved; // number of removed elements (coded as removed)
+  
+  private int removedPositionToUse = -1;
   
   // offset only used with keys2.  values stored are key - offset
   //   intent is to have them fit into short data type.
@@ -227,7 +233,7 @@ public class IntHashSet implements PositiveIntSet {
         // switch to 4
         if (TUNE) {System.out.println("Switching to 4 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
         for (short adjKey : oldKeys) {
-          if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
+          if (adjKey != 0 && adjKey != REMOVED2) {
             addInner4(getRawFromAdjKey(adjKey));
           }
         }
@@ -235,7 +241,7 @@ public class IntHashSet implements PositiveIntSet {
       } else {
         if (TUNE) {System.out.println("Keeping 2 byte keys, Capacity increasing from " + oldCapacity + " to " + newCapacity);}
         for (short adjKey : oldKeys) {
-          if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
+          if (adjKey != 0 && adjKey != REMOVED2) {
             addInner2(adjKey);
           }
         }
@@ -246,7 +252,7 @@ public class IntHashSet implements PositiveIntSet {
       if (TUNE) {System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);}
       newTableKeepSize(newCapacity, true);
       for (int key : oldKeys) {
-        if (key != 0 && key != Integer.MIN_VALUE) {
+        if (key != 0 && key != REMOVED4) {
           addInner4(key);
         }
       }
@@ -321,25 +327,35 @@ public class IntHashSet implements PositiveIntSet {
   * @return the probeAddr in keys array - might have a 0 value, or the key value if found
   */
   private int findPosition(final int adjKey) {
+    return findPosition(adjKey, false);
+  } 
+  
+  private int findPosition(final int adjKey, final boolean includeRemoved) {
     if (adjKey == 0) {
       throw new IllegalArgumentException("0 is an invalid key");
     }
 
-    final int hash = JCasHashMap.hashInt(adjKey);
+    final int hash = Misc.hashInt(adjKey);
     int nbrProbes = 1;
     int probeDelta = 1;
     int probeAddr;
+    removedPositionToUse = -1;
     
     if (keys4 == null) {
       final short[] localKeys2 = keys2;
       final int bitMask = localKeys2.length - 1;
       probeAddr = hash & bitMask;
-      while (true) {
+
+       while (true) {
         final int testKey = localKeys2[probeAddr];
-        if (testKey == 0 || testKey == adjKey) {
-          break;
+        if (includeRemoved && (removedPositionToUse == -1) && (testKey == REMOVED2)) {
+          nbrRemoved --;  // because caller will use this as a slot for adding
+          removedPositionToUse = probeAddr;
         }
-        nbrProbes++;
+        if (testKey == 0 || testKey == adjKey) {
+           break;
+        }
+        nbrProbes++; 
         probeAddr = bitMask & (probeAddr + (probeDelta++));
       }
     } else {
@@ -348,6 +364,10 @@ public class IntHashSet implements PositiveIntSet {
       probeAddr = hash & bitMask;
       while (true) {
         final int testKey = localKeys4[probeAddr];
+        if (includeRemoved && (removedPositionToUse == -1) && (testKey == REMOVED4)) {
+          nbrRemoved --;  // because caller will use this as a slot for adding
+          removedPositionToUse = probeAddr;
+        }
         if (testKey == 0 || testKey == adjKey) {
           break;
         }
@@ -430,7 +450,7 @@ public class IntHashSet implements PositiveIntSet {
     final short[] oldKeys = keys2;
     newTableKeepSize(getCapacity(), true);  // make a 4 table. same size
     for (short adjKey : oldKeys) {
-      if (adjKey != 0 && adjKey != Short.MIN_VALUE) {
+      if (adjKey != 0 && adjKey != REMOVED2) {
         addInner4(getRawFromAdjKey(adjKey));
       }
     } 
@@ -459,34 +479,36 @@ public class IntHashSet implements PositiveIntSet {
     }
     
     if (keys4 != null) {
-      return find4(rawKey);
+      return find4AndAddIfMissing(rawKey);
       
       // short keys
     } else {
       int adjKey = getAdjKey(rawKey);
       if (isAdjKeyOutOfRange(adjKey)) {
         switchTo4byte();
-        return find4(rawKey);
+        return find4AndAddIfMissing(rawKey);
         
         // key in range
       } else {
-        final int i = findPosition(adjKey);
+        final int i = findPosition(adjKey, true);  // reuse removed slots
         if (keys2[i] == adjKey) {
           return false;
         }
-        keys2[i] = (short) adjKey;
+        
+        keys2[ (removedPositionToUse != -1) ? removedPositionToUse : i ] = (short) adjKey;
         incrementSize();
         return true;
       }
     }
   }
   
-  private boolean find4(int rawKey) {
-    final int i = findPosition(rawKey);
+  private boolean find4AndAddIfMissing(int rawKey) {
+    removedPositionToUse = -1;
+    final int i = findPosition(rawKey, true);
     if (keys4[i] == rawKey) {
       return false;
     }
-    keys4[i] = rawKey;
+    keys4[ (removedPositionToUse == -1) ? i : removedPositionToUse] = rawKey;
     incrementSize();
     return true;
   }
@@ -552,9 +574,9 @@ public class IntHashSet implements PositiveIntSet {
     }
     
     if (keys4 == null) {
-      keys2[pos] = Short.MIN_VALUE;
+      keys2[pos] = REMOVED2;
     } else {
-      keys4[pos] = Integer.MIN_VALUE;
+      keys4[pos] = REMOVED4;
     }
     
     size--;
@@ -633,13 +655,13 @@ public class IntHashSet implements PositiveIntSet {
     final int adjKey;
     if (keys4 == null) {
       adjKey = keys2[index];
-      if (adjKey == 0 || adjKey == Short.MIN_VALUE) {
+      if (adjKey == 0 || adjKey == REMOVED2) {
         return 0;  // null, not present
       }
       return getRawFromAdjKey(adjKey);
     } else {
       adjKey = keys4[index];
-      if (adjKey == 0 || adjKey == Integer.MIN_VALUE) {
+      if (adjKey == 0 || adjKey == REMOVED4) {
         return 0;  // null, not present
       }
       return adjKey;
@@ -663,7 +685,7 @@ public class IntHashSet implements PositiveIntSet {
           return pos;
         }
         int v = get(pos);
-        if (v != 0 && v != Short.MIN_VALUE) {
+        if (v != 0 && v != REMOVED2) {
           return pos;
         }
         pos++;
@@ -675,7 +697,7 @@ public class IntHashSet implements PositiveIntSet {
           return pos;
         }
         int v = get(pos);
-        if (v != 0 && v != Integer.MIN_VALUE) {
+        if (v != 0 && v != REMOVED4) {
           return pos;
         }
         pos ++;
@@ -699,7 +721,7 @@ public class IntHashSet implements PositiveIntSet {
         return pos;
       }
       int v = get(pos);
-      if (v != 0 && v != ( (keys4 == null) ? Short.MIN_VALUE : Integer.MIN_VALUE)) {
+      if (v != 0 && v != ( (keys4 == null) ? REMOVED2 : REMOVED4)) {
         return pos;
       }
       pos --;
@@ -801,13 +823,13 @@ public class IntHashSet implements PositiveIntSet {
   public void bulkAddTo(IntVector v) {
     if (null == keys4) {
       for (int k : keys2) {
-        if (k != 0 && k != Short.MIN_VALUE) {
+        if (k != 0 && k != REMOVED2) {
           v.add(getRawFromAdjKey(k));
         }
       }
     } else {
       for (int k : keys4) {
-        if (k != 0 && k != Integer.MIN_VALUE) {
+        if (k != 0 && k != REMOVED4) {
           v.add(k);
         }
       }

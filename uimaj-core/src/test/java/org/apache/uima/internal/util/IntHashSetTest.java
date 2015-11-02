@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import junit.framework.TestCase;
 
@@ -124,7 +125,62 @@ public class IntHashSetTest extends TestCase {
     }
   }
   
+  public void testAddIntoRemovedSlot() {
+    for (int i = 1; i < 100; i++) {
+      ihs.add(i);
+    }
+    
+    /** Test with 2 byte numbers */
+    checkRemovedReuse(true);
+    
+    ihs = new IntHashSet();
+    for (int i = 1; i < 99; i++) {
+      ihs.add(i);
+    }
+    ihs.add(100000);  // force 4 byte
+    checkRemovedReuse(false);
+  }
   
+  private void checkRemovedReuse(boolean is2) {
+    Random r = new Random();
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 128 : 256));
+    for (int i = 0; i < 100000; i++) {
+      int v = 1 + r.nextInt(100 + (i % 30000));
+      ihs.remove(v);
+      assertTrue(!(ihs.contains(v)));
+      v = 1 + r.nextInt(100 + (i % 30000));
+      ihs.add(v);
+      assertTrue(ihs.contains(v));
+    }
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 16384 : 32768) );
+    
+    for (int i = ((is2) ? 16384 : 32768); i > 128; i = i / 2) {
+      ihs.clear();
+      assertTrue(ihs.getSpaceUsedInWords() == ((is2 || i == 32768) ? i : i/2));
+      ihs.clear();
+      assertTrue(ihs.getSpaceUsedInWords() == ((is2 || i == 32768) ? i : i/2));
+    }
+    ihs.clear();
+    
+    assertTrue(ihs.getSpaceUsedInWords() == (is2 ? 128 : 64));
+    for (int i = 1; i < ((is2) ? 100 : 99); i++) {
+      ihs.add(i);
+    }
+    if (!is2) {
+      ihs.add(100000);
+    }
+    
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 128 : 256));
+    for (int i = 0; i < 1000; i++) {
+      int v = 1 + r.nextInt(100);
+      ihs.remove(v);
+      assertTrue(!(ihs.contains(v)));
+      ihs.add(v);
+      assertTrue(ihs.contains(v));
+    }
+    assertTrue(ihs.getSpaceUsedInWords() == ((is2) ? 128 : 256));
+    
+  }
  
   
 }
