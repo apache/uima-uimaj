@@ -127,7 +127,6 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * <code>b</code> are of the same type, then the behavior is undefined.
    * </p>
    * <p>
-   * <p>
    * For example, if you have an annotation <code>S</code> of type <code>Sentence</code> and an
    * annotation <code>P</code> of type <code>Paragraph</code> that have the same span, and you
    * have defined <code>Paragraph</code> before <code>Sentence</code> in your type priorities,
@@ -168,18 +167,18 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * which is greater than the <code>annot</code>, or
    * if there are no annotations greater than the <code>annot</code>, the iterator is marked invalid.
    * </p>
-   * <p>The iterator will stop (become invalid) when
+   * <p>The iterator will stop (become invalid) when</p>
    * <ul><li>it runs out of items in the index going forward or backwards, or</li>
    * <li>while moving forward, it reaches a point where the annotation at that position has a 
    * start is beyond the <code>annot's</code> end position, or</li>
    * <li>while moving backwards, it reaches a position in front of its original starting position</li>
    * </ul>
-   * </p>
+   * 
    * <p>Ignoring <code>strict</code> and <code>ambiguous</code> for a moment, 
    * this is equivalent  to returning annotations <code>b</code> such that</p> 
    * <ul><li><code>annot &lt; b</code> using the standard annotation comparator, and</li>
    * <li><code>annot.getEnd() &gt;= b.getBegin()</code>, and also bounded by the index itself.</li>
-   * </ul></p>
+   * </ul>
    * <p>
    * A <code>strict</code> subiterator skips annotations where 
    * <code>annot.getEnd() &lt; b.getEnd()</code>.
