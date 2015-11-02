@@ -52,7 +52,7 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
     if (comparator != null) {
       return comparator.compare(this.get(), o.get());
     } 
-    return Integer.compare(this.get().get_id(), o.get().get_id());
+    return Integer.compare(this.get().id()(), o.get().id()());
   }
    
   @Override

@@ -240,7 +240,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // addresses. We need to do this in order to be able to ensure that a
     // reverse iterator produces the reverse order of the forward iterator.
     if (d == 0) {
-      d = fsLeft.get_id() - fsRight.get_id();
+      d = fsLeft.id()() - fsRight.id()();
     }
     return d * dir < 0;
   }

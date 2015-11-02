@@ -23,9 +23,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.internal.util.MultiThreadUtils;
-import org.apache.uima.internal.util.Utilities;
+import org.apache.uima.util.Misc;
 
 import junit.framework.TestCase;
 
@@ -39,7 +38,7 @@ public class AnalysisEngineManagementImplTest extends TestCase {
     // Try multi-threaded
     final Random random = new Random();
     final Set<String> s = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-    int numberOfThreads = Math.min(50, Utilities.numberOfCores * 5); 
+    int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
 
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
 

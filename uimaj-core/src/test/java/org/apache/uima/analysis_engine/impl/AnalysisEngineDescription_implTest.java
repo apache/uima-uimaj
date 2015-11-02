@@ -28,9 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.Constants;
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
@@ -47,7 +44,6 @@ import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.SerializationUtils;
-import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -87,8 +83,12 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.Misc;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
  * Test the AnalysisEngineDescription_impl class.
@@ -312,7 +312,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER,  UIMAFramework.newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
-    int numberOfThreads = Math.min(50, Utilities.numberOfCores * 5); 
+    int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n",
         numberOfThreads);

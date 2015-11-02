@@ -132,7 +132,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     this.fsIndexRepo = fsIndexRepo;
     
     moveToStart();
-    startId = isValid() ? get().get_id() : 0;
+    startId = isValid() ? get().id()() : 0;
   }
     
   
@@ -159,7 +159,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private void moveToExact(T targetAnnotation) {
     it.moveTo(targetAnnotation);  // move to left-most equal one
     while (it.isValid()) {         // advance to the exact equal one
-      if (targetAnnotation.get_id() == it.get().get_id()) {
+      if (targetAnnotation.id()() == it.get().id()()) {
         break;
       }
       it.moveToNext();
@@ -338,7 +338,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       return;
     }
     
-    if (isValid() && it.get().get_id() == startId) {
+    if (isValid() && it.get().id()() == startId) {
       it.moveToFirst();
       it.moveToPrevious();  // make it invalid
     } else {
