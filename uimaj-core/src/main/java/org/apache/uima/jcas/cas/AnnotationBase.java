@@ -21,7 +21,9 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -43,7 +45,7 @@ import org.apache.uima.jcas.JCasRegistry;
  * (which is view-specific),
  * it should be a subtype of this base type.
  */
-public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements AnnotationBaseFS {
+public class AnnotationBase extends TOP implements AnnotationBaseFS {
 
   public final static int typeIndexID = JCasRegistry.register(AnnotationBase.class);
 
@@ -53,17 +55,41 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
     return typeIndexID;
   }
 
+  /* local data */
+  
+  private final Sofa _F_sofa;
+  
   // Never called. Disable default constructor
   protected AnnotationBase() {
+    _F_sofa = null;
   }
 
- /* Internal - Constructor used by generator */
-  public AnnotationBase(int addr, TOP_Type type) {
-    super(addr, type);
-  }
+// /* Internal - Constructor used by generator */
+//  public AnnotationBase(int addr, TOP_Type type) {
+//    super(addr, type);
+//  }
 
   public AnnotationBase(JCas jcas) {
     super(jcas);
+    if (_casView.isBaseCas()) {
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
+    }
+    _F_sofa = _casView.getSofa();
+  }
+
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public AnnotationBase(TypeImpl t, CASImpl c) {
+    super(t, c);
+    if (_casView.isBaseCas()) {
+      throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
+    }
+    _F_sofa = _casView.getSofa();
   }
 
   // *------------------*
@@ -72,17 +98,13 @@ public class AnnotationBase extends org.apache.uima.jcas.cas.TOP implements Anno
   /*
    * getter for sofa - gets Sofaref for annotation
    */
-  public SofaFS getSofa() {
-    if (AnnotationBase_Type.featOkTst && ((AnnotationBase_Type) jcasType).casFeat_sofa == null) {
-      // https://issues.apache.org/jira/browse/UIMA-2384
-      this.jcasType.jcas.throwFeatMissing("sofa", this.getClass().getName());
-    }
-    return (SofaFS) jcasType.ll_cas.ll_getFSForRef(
-            jcasType.ll_cas.ll_getRefValue(addr, ((AnnotationBase_Type)jcasType).casFeatCode_sofa));
-  }
-
+  public Sofa getSofa() { return _F_sofa; }
+  
+  // There is no setter for this
+  //   The value is set and is fixed when this is created
+    
   public CAS getView() {
-    return this.jcasType.casImpl.ll_getSofaCasView(addr);
+    return _casView.getSofaCasView(this);
   }
-
+   
 }
