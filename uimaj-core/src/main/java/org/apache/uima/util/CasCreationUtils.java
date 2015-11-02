@@ -561,13 +561,6 @@ public class CasCreationUtils {
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
-
-    // get initial heap size
-    String initialHeapSizeStr = null;
-    if (aPerformanceTuningSettings != null) {
-      initialHeapSizeStr = aPerformanceTuningSettings
-          .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
-    }
     
     // Check Jcas cache performance setting.  Defaults to true.
     boolean useJcasCache = true;
@@ -582,18 +575,11 @@ public class CasCreationUtils {
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
-      if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), aTypeSystem, useJcasCache);
-      } else {
-        casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
-      }
+      casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
     } else // no TypeSystem to reuse - create a new one
     {
-      if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), useJcasCache);
-      } else {
-        casMgr = CASFactory.createCAS(CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
-      }
+      casMgr = CASFactory.createCAS();
+ 
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
       // Commit the type system
@@ -1784,7 +1770,7 @@ public class CasCreationUtils {
 
     @Override
     public String toString() {
-      return "MetaDataCacheKey [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
+      return this.getClass().getSimpleName() + " [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
           + rmClassLoader + ", rmDataPath=" + rmDataPath + "]";
     }
   }
