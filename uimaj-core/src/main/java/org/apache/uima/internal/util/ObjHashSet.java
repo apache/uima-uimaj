@@ -46,7 +46,7 @@ public class ObjHashSet<T> implements Collection<T>{
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
-  private static final boolean TUNE = true;
+  private static final boolean TUNE = false;
 
   private final static FeatureStructureImplC REMOVED = new FeatureStructureImplC();
 
