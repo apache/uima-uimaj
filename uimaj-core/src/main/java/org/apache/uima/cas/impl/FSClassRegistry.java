@@ -52,6 +52,7 @@ import org.apache.uima.cas.function.JCas_setter_generic;
 import org.apache.uima.cas.function.JCas_setter_int;
 import org.apache.uima.cas.function.JCas_setter_long;
 import org.apache.uima.cas.function.JCas_setter_short;
+import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.Misc;
@@ -124,7 +125,10 @@ public class FSClassRegistry {
   
   private static final MethodType fsGeneratorType      = methodType(FeatureStructureImplC.class, TypeImpl.class, CASImpl.class);
   private static final MethodType fsGeneratorArrayType = methodType(FeatureStructureImplC.class, TypeImpl.class, CASImpl.class, int.class);
-  
+
+  // must preceed first (static) use
+  static private ThreadLocal<ArrayList<Exception>> errorSet = new ThreadLocal<ArrayList<Exception>>();
+
   public static class GetterSetter {
     final Object getter;
     final Object setter;
@@ -171,8 +175,6 @@ public class FSClassRegistry {
     
     reportErrors();
   }
-
-  static private ThreadLocal<ArrayList<Exception>> errorSet = new ThreadLocal<ArrayList<Exception>>();
   
   // the loaded JCas cover classes, generators, setters, and getters.  index is typecode; value is JCas cover class which may belong to a supertype.
   private final JCasClassInfo[] jcasClassesInfo; 
@@ -367,7 +369,10 @@ public class FSClassRegistry {
                         : (JCas_setter_generic<?>) callSite.getTarget().invokeExact();
       }
     } catch (NoSuchMethodException e) {
-      if (jcasClass == Sofa.class && !isGetter) {return null;}  // this one case is ok, setters blocked for sofa
+      if ((jcasClass == Sofa.class && !isGetter) ||
+          (jcasClass == AnnotationBase.class && !isGetter)) {
+        return null;
+      }  
       // report missing setter or getter
       CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, 
           jcasClass.getName(), 
