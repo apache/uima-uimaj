@@ -16,64 +16,76 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+   
+/* Apache UIMA v3 - First created by JCasGen Wed Oct 28 11:17:08 EDT 2015 */
 
-
-
-/* First created by JCasGen Thu Jun 21 11:28:13 MDT 2007 */
 package org.apache.uima.cas.test;
 
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
+
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Jun 21 12:00:34 MDT 2007
- * XML source: C:/Documents and Settings/Philip/My Documents/CSLR/workspace/UIMA-464/desc/TokensAndSentences.xml
+ * Updated by JCasGen Wed Oct 28 11:17:08 EDT 2015
+ * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Sentence extends Annotation {
   /** @generated
    * @ordered 
    */
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(Sentence.class);
   /** @generated
    * @ordered 
    */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-  /** @generated  */
+  /** @generated
+   * @return index of the type  
+   */
+  @Override
   public              int getTypeIndexID() {return typeIndexID;}
+ 
+
+  /* *****************
+   *    Local Data   *
+   * *****************/ 
+ 
  
   /** Never called.  Disable default constructor
    * @generated */
-  protected Sentence() {}
+  protected Sentence() {/* intentionally empty block */}
     
   /** Internal - constructor used by generator 
-   * @generated */
-  public Sentence(int addr, TOP_Type type) {
-    super(addr, type);
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public Sentence(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
   
-  /** @generated */
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public Sentence(JCas jcas) {
     super(jcas);
     readObject();   
   } 
 
-  /** @generated */  
-  public Sentence(JCas jcas, int begin, int end) {
-    super(jcas);
-    setBegin(begin);
-    setEnd(end);
-    readObject();
-  }   
-
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
+   */
+  private void readObject() {/*default - does nothing empty block */}
      
 }
 
