@@ -26,15 +26,16 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.function.JCas_getter_boolean;
 import org.apache.uima.cas.function.JCas_getter_byte;
 import org.apache.uima.cas.function.JCas_getter_double;
@@ -168,13 +169,14 @@ public class FSClassRegistry {
     TypeImpl ti = tsi.getType(CAS.TYPE_NAME_SOFA);
     jcasClassesInfoForBuiltins[ti.getCode()] = createJCasClassInfo(Sofa.class, ti); 
     
+    reportErrors();
   }
+
+  static private ThreadLocal<ArrayList<Exception>> errorSet = new ThreadLocal<ArrayList<Exception>>();
   
   // the loaded JCas cover classes, generators, setters, and getters.  index is typecode; value is JCas cover class which may belong to a supertype.
   private final JCasClassInfo[] jcasClassesInfo; 
-   
-  //  
-  // 
+
   /**
    * install the default (non-JCas) generator for all types in the type system and the
    * JCas style generators for the built-in types
@@ -210,6 +212,8 @@ public class FSClassRegistry {
     if (isDoUserJCasLoading) {
       maybeLoadJCasAndSubtypes(ts, ts.topType, jcasClassesInfo[TypeSystemImpl.topTypeCode]);
     }
+    
+    reportErrors();
   }
 
   private void maybeLoadJCasAndSubtypes(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo copyDownDefault_jcasClassInfo) {
@@ -222,7 +226,7 @@ public class FSClassRegistry {
     if (!isBuiltin) {
       clazz = maybeLoadJCas(ti.getName(), ti.getClass().getClassLoader()); 
       if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
-        jcasClassInfo = createJCasClassInfo(clazz, ti);
+        jcasClassInfo = createJCasClassInfo(clazz, ti);  // side effect - creates method handles for getters/setters
         ts.setJCasRegisteredType(Misc.getStaticIntField(clazz, "typeIndexID"), ti);
       }
       jcasClassesInfo[typecode] = jcasClassInfo;  // sets new one or default one
@@ -300,20 +304,20 @@ public class FSClassRegistry {
    *   boolean, byte, short, int, long, float, double, String, FeatureStructure
    *   
    */
+  // static for setting up builtin values
   private static Object createGetterOrSetter(Class<?> jcasClass, FeatureImpl fi, boolean isGetter) {
     
     TypeImpl range = fi.getRangeImpl();
     
     try {
       /* get an early-bound getter    
-      /* find special invokes a specific method in a specific class, without looking at the 
-       * runtime class */
+      /* Instead of findSpecial, we use findVirtual, in case the method is overridden by a subtype loaded later */
       MethodHandle mh = lookup.findVirtual(
           jcasClass,  // class having the method code for the getter 
           fi.getGetterSetterName(isGetter), // the name of the method for the getter 
           isGetter ? methodType(range.javaClass)
                    : methodType(void.class, range.javaClass) // return value, e.g. int.class, xyz.class, FeatureStructureImplC.class
-          );
+        );
       
       // getter methodtype is return_type, FeatureStructure.class
       //   return_type is int, byte, etc. primitive (except string/substring), or
@@ -359,15 +363,25 @@ public class FSClassRegistry {
         return isGetter ? (JCas_getter_double) callSite.getTarget().invokeExact() 
                         : (JCas_setter_double) callSite.getTarget().invokeExact();
       } else {
-        return isGetter ? (JCas_getter_generic) callSite.getTarget().invokeExact() 
-                        : (JCas_setter_generic) callSite.getTarget().invokeExact();
+        return isGetter ? (JCas_getter_generic<?>) callSite.getTarget().invokeExact() 
+                        : (JCas_setter_generic<?>) callSite.getTarget().invokeExact();
       }
     } catch (NoSuchMethodException e) {
+      if (jcasClass == Sofa.class && !isGetter) {return null;}  // this one case is ok, setters blocked for sofa
+      // report missing setter or getter
+      CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, 
+          jcasClass.getName(), 
+          fi.getGetterSetterName(isGetter));
+      ArrayList<Exception> es = errorSet.get();
+      if (es == null) {
+        es = new ArrayList<Exception>();
+        errorSet.set(es);
+      }
+      es.add(casEx);
       return null;
     } catch (Throwable e) {
       throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
     }
-
   }
  
   
@@ -383,7 +397,8 @@ public class FSClassRegistry {
     return jcasClassesInfo[typecode].jcasClass; 
   }
   
-  private static  JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti) {
+  // static for setting up static builtin values
+  private static JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti) {
     JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, ti.getName().equals(CAS.TYPE_NAME_SOFA) ? null : createGenerator(jcasClass, ti));
 
     for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
@@ -409,7 +424,18 @@ public class FSClassRegistry {
     }    
   }
   
-  
+  static void reportErrors() {
+    ArrayList<Exception> es = errorSet.get();
+    if (es != null) {
+      StringBuilder msg = new StringBuilder(100);
+      for (Exception f : es) {
+        msg.append(f.getMessage());
+        msg.append('\n');
+      }
+      errorSet.set(null); // reset after reporting
+      throw new CASRuntimeException(CASException.JCAS_INIT_ERROR, msg);
+    }
+  }
   
 }
   
