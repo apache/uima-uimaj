@@ -19,8 +19,24 @@
 
 package org.apache.uima.util;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.function.Consumer;
+
+import org.apache.uima.cas.impl.TypeImpl;
+
 public class Misc {
 
+  public final static MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
+  
   /**
    * 
    * @param name of property
@@ -31,7 +47,202 @@ public class Misc {
   public static boolean getNoValueSystemProperty(String name) {
     return !System.getProperty(name, "false").equals("false");
   }
+  /**
+   * For standardized prettyprinting, to string.
+   * Adds a collection of things (toString) separated by , and surrounded by [  ], to a StringBuilder
+   * @param sb where the formatted collection results are appended to 
+   * @param c the collection
+   * @return the StringBuilder for chaining
+   */
+  public static <T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c){
+    sb.append('[');
+    String[] prefix = new String[] {""};
+    c.stream().forEachOrdered(item -> {
+       sb.append(prefix[0]);
+       sb.append(item.toString());
+       prefix[0] = ", ";
+    });
+    sb.append(']');
+    return sb;
+  }
   
+  /**
+   * For standardized prettyprinting, to string
+   * Adds a collection of things (running an appender to append the result to the same sb) separated by , and surrounded by [  ], to a StringBuilder
+   * @param sb where the formatted collection results are appended to 
+   * @param c the collection
+   * @return the StringBuilder for chaining
+   */
+  public static<T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c, Consumer<T> appender){
+    sb.append('[');
+    String[] prefix = new String[] {""};
+    c.stream().forEachOrdered(item -> {
+       sb.append(prefix[0]);
+       appender.accept(item);
+       prefix[0] = ", ";
+    });
+    sb.append(']');
+    return sb;
+  }  
+  
+  /**
+   * Writes a byte array output stream to a file
+   * @param baos the array to write
+   * @param name the name of the file
+   */
+  public static void toFile(ByteArrayOutputStream baos, String name) {
+    try (FileOutputStream fos = new FileOutputStream(name)) {
+      baos.writeTo(fos);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Writes a byte array output stream to a file
+   * @param baos the array to write
+   * @param name the file
+   */
+  public static void toFile(ByteArrayOutputStream baos, File file) {
+    try (FileOutputStream fos = new FileOutputStream(file)) {
+      baos.writeTo(fos);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  /**
+   * For multi-core machine "tuning" - the number of cores
+   */
+  public static final int numberOfCores = Runtime.getRuntime().availableProcessors();
+  
+  /**
+   * Convert an int argument to the next higher power of 2 if not already a power of 2
+   * @param i the value to convert 
+   * @return the next higher power of 2, or i if it is already a power of 2
+   */
+  static public int nextHigherPowerOf2(int i) {
+    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
+  }
+  
+  /**
+   * Given a class, a lookup context, and a protected method and its arg classes,
+   * return the method handle for that method.
+   * 
+   * Using that method handle is slow, but converting it to a lambda makes for
+   * JIT-able fast access.
+   * 
+   * @param clazz
+   * @param methodHandleAccessContext
+   * @param protectedMethod
+   * @param args
+   * @return
+   */
+  static public MethodHandle getProtectedMethodHandle(Class<?> clazz, Lookup methodHandleAccessContext, String protectedMethod, Class<?> ... args) {
+    try {
+      Method m = clazz.getDeclaredMethod(protectedMethod, args);
+      m.setAccessible(true);    
+      return methodHandleAccessContext.unreflect(m);
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }   
+  }
+  
+  /**
+   * Given a class, and a protected method and its arg classes,
+   * return the method handle for that method.
+   * 
+   * Note: uses the UIMA context as the lookup context
+   * 
+   * Using that method handle is slow, but converting it to a lambda makes for
+   * JIT-able fast access.
+   * @param clazz
+   * @param protectedMethod
+   * @param args
+   * @return
+   */
+  static public MethodHandle getProtectedMethodHandle(Class<?> clazz, String protectedMethod, Class<?> ... args) {
+    return getProtectedMethodHandle(clazz, UIMAlookup, protectedMethod, args);
+  }
+  
+  static public MethodHandle getProtectedFieldGetter(Class<?> clazz, String protectedField) {
+    try {
+      Field f = clazz.getDeclaredField(protectedField);
+      f.setAccessible(true);
+      return UIMAlookup.unreflectGetter(f);
+    } catch (NoSuchFieldException | SecurityException | IllegalAccessException e) {
+      throw new RuntimeException(e);
+    }  
+  }
+  
+  static public int getStaticIntField(Class<?> clazz, String fieldName) {
+    try {
+      Field f;
+     
+       f = clazz.getField(fieldName);
+       return f.getInt(null);
+     } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        throw new RuntimeException(e);
+     } 
+  }
+  
+  static public void addAll(Collection<String> c, String ... v) {
+    for (String s : v) {
+      c.add(s);
+    }
+  }
+  
+  public static void debug(Object o) {
+    System.err.println("Debug: " + o);
+    
+  }
+  
+  // The hash function is derived from murmurhash3 32 bit, which
+  // carries this statement:
+  
+  //  MurmurHash3 was written by Austin Appleby, and is placed in the public
+  //  domain. The author hereby disclaims copyright to this source code.  
+  
+  // See also MurmurHash3 in wikipedia
+  
+  private static final int C1 = 0xcc9e2d51;
+  private static final int C2 = 0x1b873593;
+  private static final int seed = 0x39c2ab57;  // arbitrary bunch of bits
+
+  public static int hashInt(int k1) {
+    k1 *= C1;
+    k1 = Integer.rotateLeft(k1, 15);
+    k1 *= C2;
+    
+    int h1 = seed ^ k1;
+    h1 = Integer.rotateLeft(h1, 13);
+    h1 = h1 * 5 + 0xe6546b64;
+    
+    h1 ^= h1 >>> 16;  // unsigned right shift
+    h1 *= 0x85ebca6b;
+    h1 ^= h1 >>> 13;
+    h1 *= 0xc2b2ae35;
+    h1 ^= h1 >>> 16;
+    return h1;
+  }
+
+  
+//private static final Function<String, Class> uimaSystemFindLoadedClass;
+//static {
+//  try {
+//    MethodHandle mh = Misc.getProtectedMethodHandle(JCasImpl.class.getClassLoader().getClass(), "findLoadedClass", String.class);
+//    uimaSystemFindLoadedClass = (Function<String, Class>)LambdaMetafactory.metafactory(
+//        lookup, // lookup context for the constructor 
+//        "apply", // name of the method in the Function Interface 
+//        methodType(Function.class),    // signature of callsite, return type is functional interface, args are captured args if any 
+//        MethodType.genericMethodType(1), // samMethodType signature and return type of method impl by function object 
+//        mh,  // method handle to call
+//        methodType(Class.class, String.class)).getTarget().invokeExact();
+//  } catch (Throwable e) {
+//    throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR, e);
+//  }
+//}
+
 //  public static void main(String[] args) {
 //    System.out.println("should be false - not defined: " + getNoValueSystemProperty("foo"));
 //    System.setProperty("foo", "");
