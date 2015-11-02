@@ -88,10 +88,14 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
   public StringList getTail() { return _F_tail; }
 
   /* setter for tail * */
-  public void setTail(CommonList v) {
-    _F_tail = (StringList) v;
+  public void setTail(StringList v) {
+    _F_tail = v;
     // no corruption check - can't be a key
     _casView.maybeLogUpdate(this, tail_featCode);
+  }
+  
+  public void setTail(CommonList v) {
+    setTail((StringList)v);
   }
 
 }

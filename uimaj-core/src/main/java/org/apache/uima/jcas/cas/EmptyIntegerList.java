@@ -54,5 +54,5 @@ public class EmptyIntegerList extends IntegerList implements EmptyList {
   public EmptyIntegerList(TypeImpl t, CASImpl c) {
     super(t, c);
   }
-
+  
 }

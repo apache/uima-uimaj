@@ -92,11 +92,13 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   public FloatList getTail() { return _F_tail; }
 
   /* setter for tail * */
-  @Override
-  public void setTail(CommonList v) {
-    _F_tail = (FloatList) v;
+  public void setTail(FloatList v) {
+    _F_tail = v;
     // no corruption check - can't be a key
     _casView.maybeLogUpdate(this, tail_featCode);
   }
-  
+
+  public void setTail(CommonList v) {
+    setTail((FloatList) v);
+  }
 }

@@ -24,7 +24,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
-public abstract class FSList extends CommonList {
+public abstract class FSList extends TOP implements CommonList {
 
 	// Never called.
 	protected FSList() {// Disable default constructor
@@ -70,20 +70,5 @@ public abstract class FSList extends CommonList {
 //    return ((NonEmptyFSList)this).getHead().toString();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getTail()
-   */
-  @Override
-  public CommonList getTail() {
-    return ((NonEmptyFSList)this).getTail();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
-   */
-  @Override
-  public void setTail(CommonList v) {
-    ((NonEmptyFSList)this).setTail(v);
-  }
   
 }

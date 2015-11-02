@@ -23,7 +23,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
-public abstract class StringList extends CommonList {
+public abstract class StringList extends TOP implements CommonList {
 
 	// Never called.
 	protected StringList() { // Disable default constructor

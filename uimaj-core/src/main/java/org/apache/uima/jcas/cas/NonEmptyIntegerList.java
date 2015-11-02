@@ -95,11 +95,14 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   public IntegerList getTail() { return _F_tail; }
 
   /* setter for tail * */
-  public void setTail(CommonList v) {
-    assert(v instanceof IntegerList);
-    _F_tail = (IntegerList) v;
+  public void setTail(IntegerList v) {
+    _F_tail = v;
     // no corruption check - can't be a key
     _casView.maybeLogUpdate(this, tail_featCode);
+  }
+  
+  public void setTail(CommonList v) {
+    setTail((IntegerList)v);
   }
   
   public void setHead(List<String> stringValues, int i) {

@@ -92,10 +92,14 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public FSList getTail() { return _F_tail; }
 
   /* setter for tail * */
-  public void setTail(CommonList v) {
-    _F_tail = (FSList) v;
+  public void setTail(FSList v) {
+    _F_tail = v;
     // no corruption check - can't be a key
     _casView.maybeLogUpdate(this, tail_featCode);
+  }
+  
+  public void setTail(CommonList v) {
+    setTail((FSList) v);
   }
   
   public TOP getNthElement(int i) {

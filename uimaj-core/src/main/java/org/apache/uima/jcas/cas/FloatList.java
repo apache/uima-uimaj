@@ -23,7 +23,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
-public abstract class FloatList extends CommonList {
+public abstract class FloatList extends TOP implements CommonList {
 
 	// Never called.
 	protected FloatList() {// Disable default constructor
@@ -70,23 +70,6 @@ public abstract class FloatList extends CommonList {
   @Override
   public String get_headAsString() {
     return Float.toString(((NonEmptyFloatList)this).getHead());
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getTail()
-   */
-  @Override
-  public CommonList getTail() {
-    return ((NonEmptyFloatList)this).getTail();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
-   */
-  @Override
-  public void setTail(CommonList v) {
-    ((NonEmptyFloatList)this).setTail(v);  // value cast is for checking
-    
   }
   
 }

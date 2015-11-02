@@ -55,5 +55,4 @@ public class EmptyFSList extends FSList implements EmptyList {
     super(t, c);
   }
 
-
 }

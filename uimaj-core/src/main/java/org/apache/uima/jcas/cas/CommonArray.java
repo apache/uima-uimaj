@@ -31,4 +31,6 @@ public interface CommonArray {
   int size();
   
   void copyValuesFrom(CommonArray v);
+  
+  int get_id();
 }

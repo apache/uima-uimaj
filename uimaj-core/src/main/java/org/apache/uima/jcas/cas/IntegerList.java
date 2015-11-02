@@ -23,7 +23,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
-public abstract class IntegerList extends CommonList {
+public abstract class IntegerList extends TOP implements CommonList {
 
 	// Never called.
 	protected IntegerList() { // Disable default constructor
@@ -70,23 +70,6 @@ public abstract class IntegerList extends CommonList {
   @Override
   public String get_headAsString() {
     return Integer.toString(((NonEmptyIntegerList)this).getHead());
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getTail()
-   */
-  @Override
-  public CommonList getTail() {
-    return ((NonEmptyIntegerList)this).getTail();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
-   */
-  @Override
-  public void setTail(CommonList v) {
-    ((NonEmptyIntegerList)this).setTail(v);
-  }
-  
+  }  
   
 }
