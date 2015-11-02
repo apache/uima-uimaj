@@ -168,7 +168,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   
   @Override
   protected void bulkAddTo(IntVector v) {
-    Arrays.stream(indexedFSs).mapToInt(FeatureStructureImplC::id()).forEach(v::add);
+    Arrays.stream(indexedFSs).mapToInt(FeatureStructureImplC::id).forEach(v::add);
   }
   
   /**

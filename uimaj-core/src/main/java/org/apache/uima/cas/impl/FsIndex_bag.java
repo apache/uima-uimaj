@@ -183,7 +183,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @Override
   protected void bulkAddTo(IntVector fss) {
-    this.index.stream().mapToInt(FeatureStructureImplC::id()).forEach(fss::add);
+    this.index.stream().mapToInt(FeatureStructureImplC::id).forEach(fss::add);
   }
   
   /* (non-Javadoc)
