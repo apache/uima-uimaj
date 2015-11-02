@@ -644,7 +644,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       CommonArray original = (CommonArray) this;
       CommonArray copy = _casView.createArray(_typeImpl.getCode(), original.size());
       copy.copyValuesFrom(original);      
-      return copy;
+      return (FeatureStructureImplC) copy;
     }
     
     FeatureStructureImplC fs = _casView.createFS(_typeImpl);

@@ -73,8 +73,11 @@ import org.apache.uima.jcas.cas.EmptyFloatList;
 import org.apache.uima.jcas.cas.EmptyIntegerList;
 import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.FloatList;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.JavaObjectArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
@@ -84,14 +87,15 @@ import org.apache.uima.jcas.cas.NonEmptyStringList;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Misc;
 
 import com.strobel.assembler.metadata.Buffer;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.decompiler.DecompilerSettings;
-import com.strobel.decompiler.languages.java.ast.Annotation;
 
 /**
  * Type system implementation.
@@ -456,28 +460,28 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     listBaseType = new TypeImpl(CAS.TYPE_NAME_LIST_BASE, this, topType);
     
     // FS list
-    fsListType = new TypeImpl(CAS.TYPE_NAME_FS_LIST, this, listBaseType);
+    fsListType = new TypeImpl(CAS.TYPE_NAME_FS_LIST, this, listBaseType, FSList.class);
     fsEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_FS_LIST, this, fsListType, EmptyFSList.class);
     fsNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, this, fsListType, NonEmptyFSList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeListType, topType, true);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeListType, fsListType, true);
     
     // Float list
-    floatListType = new TypeImpl(CAS.TYPE_NAME_FLOAT_LIST, this, listBaseType);
+    floatListType = new TypeImpl(CAS.TYPE_NAME_FLOAT_LIST, this, listBaseType, FloatList.class);
     floatEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, this, floatListType, EmptyFloatList.class);
     floatNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, this, floatListType, NonEmptyFloatList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeListType, floatType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeListType, floatListType, true);
     
     // Integer list
-    intListType = new TypeImpl(CAS.TYPE_NAME_INTEGER_LIST, this, listBaseType);
+    intListType = new TypeImpl(CAS.TYPE_NAME_INTEGER_LIST, this, listBaseType, IntegerList.class);
     intEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, this, intListType, EmptyIntegerList.class);
     intNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, this, intListType, NonEmptyIntegerList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeListType, intType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeListType, intListType, true);
     
     // String list
-    stringListType = new TypeImpl(CAS.TYPE_NAME_STRING_LIST, this, listBaseType);
+    stringListType = new TypeImpl(CAS.TYPE_NAME_STRING_LIST, this, listBaseType, StringList.class);
     stringEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_STRING_LIST, this, stringListType, EmptyStringList.class);
     stringNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, this, stringListType, NonEmptyStringList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeListType, stringType, false);
