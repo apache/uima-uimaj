@@ -19,16 +19,19 @@
 
 package org.apache.uima;
 
+import java.util.Locale;
+
 /**
- * This is the superclass for all runtime exceptions in UIMA. Runtime exceptions do not need to be
- * declared in the throws clause of methods.
+ * This is the superclass for all checked exceptions in UIMA.
+ * 
+ * It adds use of a "standard" bundle resource, if the subclasses don't define this.
+ * 
  * <p>
- * <code>UIMARuntimeException</code> extends {@link InternationalizedRuntimeException} for
- * internationalization support. Since UIMA Runtime Exceptions are internationalized, the thrower
- * does not supply a hardcoded message. Instead, the thrower specifies a key that identifies the
- * message. That key is then looked up in a locale-specific
- * {@link java.util.ResourceBundle ResourceBundle} to find the actual message associated with this
- * exception.
+ * <code>UIMAException</code> extends {@link InternationalizedException} for internationalization
+ * support. Since UIMA Exceptions are internationalized, the thrower does not supply a hardcoded
+ * message. Instead, the thrower specifies a key that identifies the message. That key is then
+ * looked up in a locale-specific {@link java.util.ResourceBundle ResourceBundle} to find the actual
+ * message associated with this exception.
  * <p>
  * The thrower may specify the name of the <code>ResourceBundle</code> in which to find the
  * exception message. Any name may be used. If the name is omitted, the resource bundle identified
@@ -37,16 +40,16 @@ package org.apache.uima;
  * 
  * 
  */
-public class UIMARuntimeException extends InternationalizedRuntimeException {
+public class UIMARuntimeException extends RuntimeException implements I18nExceptionI {
 
-  private static final long serialVersionUID = 6738051692628592989L;
+  private static final long serialVersionUID = 1L;
 
   /**
    * The name of the {@link java.util.ResourceBundle ResourceBundle} containing the standard UIMA
    * Exception messages.
    */
-  public static final String STANDARD_MESSAGE_CATALOG = "org.apache.uima.UIMAException_Messages";
-
+  public static final String resource_file = "org.apache.uima.UIMAException_Messages";
+  
   /**
    * Message key for a standard UIMA exception message: CasManager.releaseCas(CAS) was called with a
    * CAS that does not belong to this CasManager.
@@ -155,6 +158,29 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
    */
   public static final String ILLEGAL_FS_FEAT_UPDATE = "illegal_update_indexed_fs";
   
+  /** This method depends on having a CAS Heap design, and is not support in UIMA Version 3 and later **/
+  public static final String NOT_SUPPORTED_NO_HEAP_IN_UIMA_V3 = "NOT_SUPPORTED_NO_HEAP_IN_UIMA_V3";
+
+  /** Internal Error - should never happen. Nested exception if present: {0}*/
+  public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
+
+  /**
+   * An identifier that maps to the message for this exception.
+   */
+  private String mMessageKey;
+
+  /**
+   * The arguments to this exception's message, if any. This allows an
+   * <code>InternationalizedRuntimeException</code> to have a compound message, made up of
+   * multiple parts that are concatenated in a language-neutral way.
+   */
+  private Object[] mArguments;
+
+  /**
+   * The exception that caused this exception to occur.
+   */
+  private Throwable mCause;
+
   /**
    * Creates a new exception with a null message.
    */
@@ -173,45 +199,6 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
   }
 
   /**
-   * Creates a new exception with a the specified message.
-   * 
-   * @param aResourceBundleName
-   *          the base name of the resource bundle in which the message for this exception is
-   *          located.
-   * @param aMessageKey
-   *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
-   * @param aArguments
-   *          The arguments to the message. <code>null</code> may be used if the message has no
-   *          arguments.
-   */
-  public UIMARuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
-    super(aResourceBundleName, aMessageKey, aArguments);
-  }
-
-  /**
-   * Creates a new exception with the specified message and cause.
-   * 
-   * @param aResourceBundleName
-   *          the base name of the resource bundle in which the message for this exception is
-   *          located.
-   * @param aMessageKey
-   *          an identifier that maps to the message for this exception. The message may contain
-   *          placeholders for arguments as defined by the
-   *          {@link java.text.MessageFormat MessageFormat} class.
-   * @param aArguments
-   *          The arguments to the message. <code>null</code> may be used if the message has no
-   *          arguments.
-   * @param aCause
-   *          the original exception that caused this exception to be thrown, if any
-   */
-  public UIMARuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
-          Throwable aCause) {
-    super(aResourceBundleName, aMessageKey, aArguments, aCause);
-  }
-
-  /**
    * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
    * 
    * @param aMessageKey
@@ -222,13 +209,12 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
    *          The arguments to the message. <code>null</code> may be used if the message has no
    *          arguments.
    */
-  public UIMARuntimeException(String aMessageKey, Object[] aArguments) {
-    super(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments);
+  public UIMARuntimeException(String aMessageKey, Object ... aArguments) {
+    this(null, aMessageKey, aArguments);
   }
 
   /**
-   * Creates a new exception with the specified cause and a message from the
-   * {@link #STANDARD_MESSAGE_CATALOG}.
+   * Creates a new exception with the specified message and cause.
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain
@@ -240,7 +226,93 @@ public class UIMARuntimeException extends InternationalizedRuntimeException {
    * @param aCause
    *          the original exception that caused this exception to be thrown, if any
    */
-  public UIMARuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
-    super(STANDARD_MESSAGE_CATALOG, aMessageKey, aArguments, aCause);
+  public UIMARuntimeException(Throwable aCause, String aMessageKey, Object ... aArguments) {
+    super();
+    mCause = aCause;
+    mMessageKey = aMessageKey;
+    mArguments = aArguments;
+    // if null message and mCause is UIMAException (e.g. a checked exception that is wrapped), "promote" message
+    if (mMessageKey == null) {
+      if (mCause instanceof I18nExceptionI) {
+        I18nExceptionI cause = (I18nExceptionI)mCause;
+        mMessageKey = cause.getMessageKey();
+        mArguments  = cause.getArguments();
+      }
+    }
+  }
+
+
+  /**
+   * Gets the base name of the resource bundle in which the message for this exception is located.
+   * 
+   * @return the resource bundle base name. May return <code>null</code> if this exception has no
+   *         message.
+   */
+  @Override
+  public String getResourceBundleName() {
+    return resource_file;
+  }
+  
+  /**
+   * Gets the identifier for this exception's message. This identifier can be looked up in this
+   * exception's {@link java.util.ResourceBundle ResourceBundle} to get the locale-specific message
+   * for this exception.
+   * 
+   * @return the resource identifier for this exception's message. May return <code>null</code> if
+   *         this exception has no message.
+   */
+  @Override
+  public String getMessageKey() {
+    return mMessageKey;
+  }
+  
+  /**
+   * Gets the arguments to this exception's message. Arguments allow a
+   * <code>InternationalizedRuntimeException</code> to have a compound message, made up of
+   * multiple parts that are concatenated in a language-neutral way.
+   * 
+   * @return the arguments to this exception's message.
+   */
+  @Override
+  public Object[] getArguments() {
+    if (mArguments == null)
+      return new Object[0];
+    return mArguments.clone();
+  }
+
+  /**
+   * Gets the cause of this Exception.
+   * 
+   * @return the Throwable that caused this Exception to occur, if any. Returns <code>null</code>
+   *         if there is no such cause.
+   */
+  @Override
+  public Throwable getCause() {
+    return mCause;
+  }
+
+  @Override
+  public synchronized Throwable initCause(Throwable cause) {
+    mCause = cause;
+    return this;
+  }
+  
+  /**
+   * @return The message of the exception. Useful for including the text in
+   *         another exception.
+   */
+  public String getMessage() {
+    return getLocalizedMessage(Locale.ENGLISH);
+  }
+
+  /**
+   * Gets the localized detail message for this exception. This uses the default
+   * Locale for this JVM. A Locale may be specified using
+   * {@link #getLocalizedMessage(Locale)}.
+   * 
+   * @return this exception's detail message, localized for the default Locale.
+   */
+  public String getLocalizedMessage() {
+    return getLocalizedMessage(Locale.getDefault());
   }
 }
