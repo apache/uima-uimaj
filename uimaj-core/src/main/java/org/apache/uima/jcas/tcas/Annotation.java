@@ -20,11 +20,13 @@
 package org.apache.uima.jcas.tcas;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
-import org.apache.uima.jcas.cas.TOP_Type;
 
 /**
  * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features
@@ -40,19 +42,41 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   public int getTypeIndexID() {
     return typeIndexID;
   }
+  
+  // static values OK for built-ins
+  private final static int begin_featCode;
+  private final static int end_featCode;
+    
+  static {
+    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
+    TypeImpl annotType = tsi.annotType;
+    begin_featCode = annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN).getCode();
+    end_featCode   = annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END  ).getCode();
+  }
+
+  /* local data */
+  private int _F_begin;
+  private int _F_end;
 
   // Never called. Disable default constructor
   protected Annotation() {
   }
 
- /* Internal - Constructor used by generator */
-  public Annotation(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
   public Annotation(JCas jcas) {
     super(jcas);
   }
+  
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public Annotation(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
 
   // *------------------*
   // * Feature: begin
@@ -60,22 +84,13 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * getter for begin - gets beginning of span of annotation
    */
-  public int getBegin() {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-//      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-    return ((Annotation_Type)jcasType).getBegin(addr);
-//    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin);
-  }
+  public int getBegin() { return _F_begin; }
 
   /*
    * setter for begin - sets beginning of span of annotation
    */
-  public void setBegin(int v) {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-//      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin, v);
+  public void setBegin(int v) { 
+    _casView.setWithCheckAndJournal(this, begin_featCode, () -> _F_begin = v);
   }
 
   // *------------------*
@@ -85,22 +100,13 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * getter for end - gets ending of span of annotation
    */
-  public int getEnd() {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-//      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-    return ((Annotation_Type)jcasType).getEnd(addr);
-//    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end);
-  }
+  public int getEnd() { return _F_end; }
 
   /*
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-//      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end, v);
+    _casView.setWithCheckAndJournal(this,  end_featCode,  () -> _F_end = v);
   }
 
   /**
@@ -120,8 +126,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    */
   public String getCoveredText() {
 
-    final CAS casView = this.getView();
-    final String text = casView.getDocumentText();
+    final String text = _casView.getDocumentText();
     if (text == null) {
       return null;
     }
@@ -137,5 +142,5 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   public int getStart() {
     return getBegin();
   }
-
+  
 }
