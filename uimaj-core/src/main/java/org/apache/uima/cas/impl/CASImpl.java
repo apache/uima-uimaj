@@ -351,8 +351,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // unique ID for a created CAS view, not updated if CAS is reset and reused
     private final int casId = casIdProvider.incrementAndGet();
     
-    private SharedViewData(CASImpl baseCAS) {
+    private SharedViewData(CASImpl baseCAS, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
+      this.tsi = tsi;
     }
   }
   
@@ -469,7 +470,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // FSClassRegistry instances
     }
 
-    this.svd = new SharedViewData(this);
+    this.svd = new SharedViewData(this, ts);
 //    this.svd.baseCAS = this;
 
 //    this.svd.heap = new Heap(initialHeapSize);
