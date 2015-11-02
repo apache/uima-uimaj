@@ -20,55 +20,70 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
 
-public class FSList extends org.apache.uima.jcas.cas.TOP {
-
-	public final static int typeIndexID = JCasRegistry.register(FSList.class);
-
-	public final static int type = typeIndexID;
-
-	public int getTypeIndexID() {
-		return typeIndexID;
-	}
+public abstract class FSList extends CommonList {
 
 	// Never called.
 	protected FSList() {// Disable default constructor
-	}
-
-	/* Internal - Constructor used by generator */
-	public FSList(int addr, TOP_Type type) {
-		super(addr, type);
 	}
 
 	public FSList(JCas jcas) {
 		super(jcas);
 	}
 
-	public TOP getNthElement(int i) {
-		if (this instanceof EmptyFSList) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyFSList" });
-			throw casEx;
-		}
-		if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] { Integer.toString(i) });
-			throw casEx;
-		}
-		int originali = i;
-		FSList cg = this;
-		for (;; i--) {
-			if (cg instanceof EmptyFSList) {
-				CASRuntimeException casEx = new CASRuntimeException(
-						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] { Integer.toString(originali) });
-				throw casEx;
-			}
-			NonEmptyFSList c = (NonEmptyFSList) cg;
-			if (i == 0)
-				return c.getHead();
-			cg = c.getTail();
-		}
-	}
+  /**
+  * used by generator
+  * Make a new AnnotationBase
+  * @param c -
+  * @param t -
+  */
+
+   public FSList(TypeImpl t, CASImpl c) {
+     super(t, c);
+   }
+	
+  public NonEmptyFSList createNonEmptyNode(CommonList tail) {
+    NonEmptyFSList node = new NonEmptyFSList(this._typeImpl, this._casView);
+    node.setTail((FSList) tail);
+    return node;
+  }
+  
+  public NonEmptyFSList createNonEmptyNode() { return createNonEmptyNode(null); }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
+   */
+  @Override
+  public EmptyFSList getEmptyNode() {
+    return EmptyFSList.singleton;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    throw new CASRuntimeException(); // not yet impl
+//    return ((NonEmptyFSList)this).getHead().toString();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#getTail()
+   */
+  @Override
+  public CommonList getTail() {
+    return ((NonEmptyFSList)this).getTail();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
+   */
+  @Override
+  public void setTail(CommonList v) {
+    ((NonEmptyFSList)this).setTail(v);
+  }
+  
 }

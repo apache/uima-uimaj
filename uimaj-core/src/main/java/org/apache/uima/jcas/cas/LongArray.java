@@ -20,11 +20,13 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.LongArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements LongArrayFS {
+public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFS {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -43,13 +45,11 @@ public final class LongArray extends TOP implements LongArrayFS {
     return typeIndexID;
   }
 
+  private final long[] theArray;
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private LongArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public LongArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -58,79 +58,80 @@ public final class LongArray extends TOP implements LongArrayFS {
    * @param length The number of elements in the new array
    */
   public LongArray(JCas jcas, int length) {
-    this(jcas.getLowLevelCas().ll_createLongArray(length), jcas.getType(typeIndexID));
+    super(jcas);
+    theArray = new long[length];
   }
 
+  /**
+   * used by generator
+   * Make a new LongArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array in bytes
+   */
+  public LongArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new long[length];
+  }
+  
   /**
    * @see org.apache.uima.cas.LongArrayFS#get(int)
    */
   public long get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getLongArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#set(int , long)
    */
   public void set(int i, long v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setLongArrayValue(addr, i, v);
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyFromArray(long[], int, int, int)
    */
-  public void copyFromArray(long[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setLongArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(long[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyToArray(int, long[], int, int)
    */
-  public void copyToArray(int srcOffset, long[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getLongArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, long[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#toArray()
    */
   public long[] toArray() {
-    final int size = size();
-    long[] outArray = new long[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return theArray.clone();
   }
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyToArray(int, String[], int, int)
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = Long.toString(jcasType.ll_cas
-              .ll_getLongArrayValue(addr, i + srcOffset));
+      dest[i + destPos] = Long.toString(theArray[i + srcPos]);
     }
   }
 
   /**
    * @see org.apache.uima.cas.LongArrayFS#copyFromArray(String[], int, int, int)
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {
-      jcasType.ll_cas
-              .ll_setLongArrayValue(addr, i + destOffset, Long.parseLong(src[i + srcOffset]));
+      theArray[i + destPos] = Long.parseLong(src[i + srcPos]);
     }
   }
 
@@ -140,4 +141,19 @@ public final class LongArray extends TOP implements LongArrayFS {
     copyToArray(0, strArray, 0, size);
     return strArray;
   }
+  
+  // internal use
+  public long[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArray v) {
+    LongArray bv = (LongArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+  }
+
 }

@@ -19,10 +19,12 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class EmptyFSList extends FSList {
+public class EmptyFSList extends FSList implements EmptyList {
 
   public final static int typeIndexID = JCasRegistry.register(EmptyFSList.class);
 
@@ -32,17 +34,26 @@ public class EmptyFSList extends FSList {
     return typeIndexID;
   }
 
+  public final static EmptyFSList singleton = new EmptyFSList();
+
   // Never called. Disable default constructor
   protected EmptyFSList() {
-  }
-
- /* Internal - Constructor used by generator */
-  public EmptyFSList(int addr, TOP_Type type) {
-    super(addr, type);
   }
 
   public EmptyFSList(JCas jcas) {
     super(jcas);
   }
+  
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public EmptyFSList(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
 
 }

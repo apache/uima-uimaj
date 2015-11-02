@@ -20,11 +20,13 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.StringArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
-public final class StringArray extends TOP implements StringArrayFS {
+public final class StringArray extends TOP implements CommonPrimitiveArray, StringArrayFS {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -43,13 +45,11 @@ public final class StringArray extends TOP implements StringArrayFS {
     return typeIndexID;
   }
 
+  private final String[] theArray;
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private StringArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public StringArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -58,61 +58,60 @@ public final class StringArray extends TOP implements StringArrayFS {
    * @param length The number of elements in the new array
    */
   public StringArray(JCas jcas, int length) {
-    this(
-    /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length,
-            true),
-    /* type */jcas.getType(typeIndexID));
+    super(jcas);
+    theArray = new String[length];
+  }
+
+  /**
+   * used by generator
+   * Make a new StringArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array in bytes
+   */
+  public StringArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new String[length];
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#get(int)
    */
   public String get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getStringArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#set(int, String)
    */
   public void set(int i, String v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setStringArrayValue(addr, i, v);
+    theArray[i] = v;
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyFromArray(String[], int, int, int)
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setStringArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#copyToArray(int, String[], int, int)
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getStringArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.StringArrayFS#toArray()
    */
   public String[] toArray() {
-    final int size = size();
-    String[] outArray = new String[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return theArray.clone();
   }
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   public String[] toStringArray() {
@@ -121,4 +120,19 @@ public final class StringArray extends TOP implements StringArrayFS {
     copyToArray(0, strArray, 0, size);
     return strArray;
   }
+  
+  // internal use
+  public String[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArray v) {
+    StringArray bv = (StringArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+  }
+
 }

@@ -19,57 +19,74 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
 
-public class FloatList extends org.apache.uima.jcas.cas.TOP {
-
-	public final static int typeIndexID = JCasRegistry.register(FloatList.class);
-
-	public final static int type = typeIndexID;
-
-	public int getTypeIndexID() {
-		return typeIndexID;
-	}
+public abstract class FloatList extends CommonList {
 
 	// Never called.
 	protected FloatList() {// Disable default constructor
-	}
-
-	/* Internal - Constructor used by generator */
-	public FloatList(int addr, TOP_Type type) {
-		super(addr, type);
 	}
 
 	public FloatList(JCas jcas) {
 		super(jcas);
 	}
 
-	public float getNthElement(int i) {
-		if (this instanceof EmptyFloatList) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyFloatList" });
-			throw casEx;
-		}
-		if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] {Integer.toString(i)});
-			throw casEx;
-		}
-		int originali = i;
+  /**
+  * used by generator
+  * Make a new AnnotationBase
+  * @param c -
+  * @param t -
+  */
 
-		FloatList cg = this;
-		for (;; i--) {
-			if (cg instanceof EmptyFloatList) {
-				CASRuntimeException casEx = new CASRuntimeException(
-						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] {Integer.toString(originali)});
-				throw casEx;
-			}
-			NonEmptyFloatList c = (NonEmptyFloatList) cg;
-			if (i == 0)
-				return c.getHead();
-			cg = c.getTail();
-		}
-	}
+   public FloatList(TypeImpl t, CASImpl c) {
+     super(t, c);
+   }
+   
+  public float getNthElement(int i) {
+    return ((NonEmptyFloatList) getNonEmptyNthNode(i)).getHead();
+  }
+  
+  public NonEmptyFloatList createNonEmptyNode(CommonList tail) {
+    NonEmptyFloatList node = new NonEmptyFloatList(this._typeImpl, this._casView);
+    node.setTail((FloatList) tail);
+    return node;
+  }
+  
+  public NonEmptyFloatList createNonEmptyNode() { return createNonEmptyNode(null); }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
+   */
+  @Override
+  public EmptyFloatList getEmptyNode() {
+    return EmptyFloatList.singleton;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    return Float.toString(((NonEmptyFloatList)this).getHead());
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#getTail()
+   */
+  @Override
+  public CommonList getTail() {
+    return ((NonEmptyFloatList)this).getTail();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
+   */
+  @Override
+  public void setTail(CommonList v) {
+    ((NonEmptyFloatList)this).setTail(v);  // value cast is for checking
+    
+  }
+  
 }

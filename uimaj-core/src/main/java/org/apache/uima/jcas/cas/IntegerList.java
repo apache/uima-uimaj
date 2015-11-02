@@ -19,56 +19,74 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
 
-public class IntegerList extends org.apache.uima.jcas.cas.TOP {
-
-	public final static int typeIndexID = JCasRegistry.register(IntegerList.class);
-
-	public final static int type = typeIndexID;
-
-	public int getTypeIndexID() {
-		return typeIndexID;
-	}
+public abstract class IntegerList extends CommonList {
 
 	// Never called.
 	protected IntegerList() { // Disable default constructor
-	}
-
-	/* Internal - Constructor used by generator */
-	public IntegerList(int addr, TOP_Type type) {
-		super(addr, type);
 	}
 
 	public IntegerList(JCas jcas) {
 		super(jcas);
 	}
 
+	 /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public IntegerList(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
 	public int getNthElement(int i) {
-		if (this instanceof EmptyIntegerList) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyIntegerList" });
-			throw casEx;
-		}
-		if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] { Integer.toString(i) });
-			throw casEx;
-		}
-		int originali = i;
-		IntegerList cg = this;
-		for (;; i--) {
-			if (cg instanceof EmptyIntegerList) {
-				CASRuntimeException casEx = new CASRuntimeException(
-						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] { Integer.toString(originali) });
-				throw casEx;
-			}
-			NonEmptyIntegerList c = (NonEmptyIntegerList) cg;
-			if (i == 0)
-				return c.getHead();
-			cg = c.getTail();
-		}
+		return ((NonEmptyIntegerList) getNonEmptyNthNode(i)).getHead();
 	}
+	
+  public NonEmptyIntegerList createNonEmptyNode(CommonList tail) {
+    NonEmptyIntegerList node = new NonEmptyIntegerList(this._typeImpl, this._casView);
+    node.setTail((IntegerList) tail);
+    return node;
+  }
+  
+  public NonEmptyIntegerList createNonEmptyNode() { return createNonEmptyNode(null); }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
+   */
+  @Override
+  public EmptyIntegerList getEmptyNode() {
+    return EmptyIntegerList.singleton;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    return Integer.toString(((NonEmptyIntegerList)this).getHead());
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#getTail()
+   */
+  @Override
+  public CommonList getTail() {
+    return ((NonEmptyIntegerList)this).getTail();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
+   */
+  @Override
+  public void setTail(CommonList v) {
+    ((NonEmptyIntegerList)this).setTail(v);
+  }
+  
+  
 }

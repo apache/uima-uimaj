@@ -22,12 +22,13 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.LowLevelCAS;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements ArrayFS {
+public final class FSArray extends TOP implements CommonArray, ArrayFS {
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -47,13 +48,12 @@ public final class FSArray extends TOP implements ArrayFS {
     return typeIndexID;
   }
 
+  private final FeatureStructureImplC[] theArray;
+  
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private FSArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public FSArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -62,106 +62,90 @@ public final class FSArray extends TOP implements ArrayFS {
    * @param length The number of elements in the new array
    */
   public FSArray(JCas jcas, int length) {
-    this(
-    /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length),
-    /* type */jcas.getType(typeIndexID));
-
-    // at this point we can use the jcasType value, as it is set
-    // can't do this earlier as the very first statement is required by
-    // JAVA to be the super or alternate constructor call
-    jcasType.casImpl.checkArrayPreconditions(length);
+    super(jcas);
+    _casView.validateArraySize(length);
+    theArray = new FeatureStructureImplC[length];
+  }
+  
+  /**
+   * used by generator
+   * Make a new FSArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array
+   */
+  public FSArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    _casView.validateArraySize(length);
+    theArray = new FeatureStructureImplC[length];
   }
 
-  // /** create a new FSArray of a given size.
-  // *
-  // * @param jcas
-  // * @param length
-  // */
-  //  
-  // public FSArray create(JCas jcas, int length){
-  // return new FSArray(jcas, length);
-  // }
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
   public FeatureStructure get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    final LowLevelCAS ll_cas = jcasType.ll_cas;
-    return ll_cas.ll_getFSForRef(ll_cas.ll_getRefArrayValue(addr, i));
+    return theArray[i];
   }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setRefArrayValue(addr, i, jcasType.ll_cas.ll_getFSRef(v));
+    theArray[i] = (FeatureStructureImplC) v;
   }
 
   /** return the size of the array. */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
-  public void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setRefArrayValue(addr, i + destOffset, jcasType.ll_cas.ll_getFSRef(src[i
-              + srcOffset]));
-    }
+  public void copyFromArray(FeatureStructure[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
-  public void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(
-              addr, i + srcOffset));
-    }
+  public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   public FeatureStructure[] toArray() {
-    final int size = size();
-    FeatureStructure[] outArray = new FeatureStructure[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return theArray.clone();
   }
 
   /**
    * Not supported, will throw UnsupportedOperationException
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
   }
     
   /**
    * Copies an array of Feature Structures to an Array of Strings.
    * The strings are the "toString()" representation of the feature structures, 
-   * which are probably something that looks like FeatureStructure@123456
    * 
-   * @param srcOffset
+   * @param srcPos
    *                The index of the first element to copy.
    * @param dest
    *                The array to copy to.
-   * @param destOffset
+   * @param destPos
    *                Where to start copying into <code>dest</code>.
    * @param length
    *                The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *                    If <code>srcOffset &lt; 0</code> or
+   *                    If <code>srcPos &lt; 0</code> or
    *                    <code>length &gt; size()</code> or
-   *                    <code>destOffset + length &gt; destArray.length</code>.
+   *                    <code>destPos + length &gt; destArray.length</code>.
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    CASImpl ll = jcasType.casImpl;
-    ll.checkArrayBounds(addr, srcOffset, length);
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = ll.ll_getFSForRef(ll.ll_getRefArrayValue(this.addr, i + srcOffset)).toString();
+      FeatureStructureImplC fs = theArray[i + srcPos];
+      dest[i + destPos] = (fs == null) ? null : fs.toString();
     }
   }
 
@@ -170,6 +154,20 @@ public final class FSArray extends TOP implements ArrayFS {
     String[] strArray = new String[size];
     copyToArray(0, strArray, 0, size);
     return strArray;
+  }
+
+  // internal use
+  public FeatureStructureImplC[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArray v) {
+    FSArray bv = (FSArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
 
 }

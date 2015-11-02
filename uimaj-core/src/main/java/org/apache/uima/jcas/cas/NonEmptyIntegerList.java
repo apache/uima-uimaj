@@ -19,10 +19,16 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.List;
+
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyIntegerList extends IntegerList {
+public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyIntegerList.class);
 
@@ -31,56 +37,73 @@ public class NonEmptyIntegerList extends IntegerList {
   public int getTypeIndexID() {
     return typeIndexID;
   }
-
-  // Never called. Disable default constructor
-  protected NonEmptyIntegerList() {
+  
+  // Offsets to use in accessing features
+  //   For built-ins, these are static constants
+  
+  private final static int head_featCode;
+  private final static int tail_featCode;
+  
+  static {
+    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
+    TypeImpl listType = tsi.getType(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST);
+    
+    // makes assumption that all uima lists have the same head/tail offsets
+    head_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD).getCode();
+    tail_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL).getCode();
   }
 
- /* Internal - Constructor used by generator */
-  public NonEmptyIntegerList(int addr, TOP_Type type) {
-    super(addr, type);
+  /* local data */
+  private int _F_head;
+  private IntegerList _F_tail;
+  
+  // Never called. Disable default constructor
+  protected NonEmptyIntegerList() {
   }
 
   public NonEmptyIntegerList(JCas jcas) {
     super(jcas);
   }
+  
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public NonEmptyIntegerList(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
 
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public int getHead() {
-    if (NonEmptyIntegerList_Type.featOkTst
-            && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
-      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
-    return jcasType.ll_cas.ll_getIntValue(addr,
-            ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head);
-  }
+  public int getHead() { return _F_head; }
 
   /* setter for head * */
   public void setHead(int v) {
-    if (NonEmptyIntegerList_Type.featOkTst
-            && ((NonEmptyIntegerList_Type) jcasType).casFeat_head == null)
-      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyIntegerList");
-    jcasType.ll_cas.ll_setIntValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_head, v);
+    _F_head = v;  
+    // no corruption check - can't be a key
+    _casView.maybeLogUpdate(this, head_featCode);
   }
-
+  
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public IntegerList getTail() {
-    if (NonEmptyIntegerList_Type.featOkTst
-            && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
-      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
-    return (IntegerList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail)));
-  }
+  public IntegerList getTail() { return _F_tail; }
 
   /* setter for tail * */
-  public void setTail(IntegerList v) {
-    if (NonEmptyIntegerList_Type.featOkTst
-            && ((NonEmptyIntegerList_Type) jcasType).casFeat_tail == null)
-      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyIntegerList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail,
-            jcasType.ll_cas.ll_getFSRef(v));
+  public void setTail(CommonList v) {
+    assert(v instanceof IntegerList);
+    _F_tail = (IntegerList) v;
+    // no corruption check - can't be a key
+    _casView.maybeLogUpdate(this, tail_featCode);
   }
+  
+  public void setHead(List<String> stringValues, int i) {
+    setHead(Integer.parseInt(stringValues.get(i)));
+  }
+
 }

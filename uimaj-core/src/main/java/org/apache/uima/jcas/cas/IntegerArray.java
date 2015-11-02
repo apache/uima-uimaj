@@ -20,11 +20,13 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
-public final class IntegerArray extends TOP implements IntArrayFS {
+public final class IntegerArray extends TOP implements CommonPrimitiveArray, IntArrayFS {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -42,13 +44,12 @@ public final class IntegerArray extends TOP implements IntArrayFS {
   public int getTypeIndexID() {
     return typeIndexID;
   }
+  
+  private final int[] theArray;
 
+  @SuppressWarnings("unused")
   private IntegerArray() { // never called. Here to disable default constructor
-  }
-
- /* Internal - Constructor used by generator */
-  public IntegerArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -57,86 +58,71 @@ public final class IntegerArray extends TOP implements IntArrayFS {
    * @param length The number of elements in the new array
    */  
   public IntegerArray(JCas jcas, int length) {
-    this(
-    /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length),
-    /* type */jcas.getType(typeIndexID));
-    // at this point we can use the jcasType value, as it is set
-    // can't do this earlier as the very first statement is required by
-    // JAVA to be the super or alternate constructor call
-    jcasType.casImpl.checkArrayPreconditions(length);
+    super(jcas);
+    theArray = new int[length];
   }
 
-  // /**
-  // * create a new IntegerArray of a given size.
-  // *
-  // * @param jcas
-  // * @param length
-  // */
-  //
-  // public IntegerArray create(JCas jcas, int length) {
-  // return new IntegerArray(jcas, length);
-  // }
+  /**
+   * used by generator
+   * Make a new IntegerArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array in bytes
+   */
+  public IntegerArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new int[length];
+  }
 
   /**
    * return the indexed value from the corresponding Cas IntegerArray_JCasImpl as an int.
    */
   public int get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getIntArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * update the Cas, setting the indexed value to the passed in Java int value.
    */
   public void set(int i, int v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setIntArrayValue(addr, i, v);
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyFromArray(int[], int, int, int)
    * 
    */
-  public void copyFromArray(int[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setIntArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyToArray(int, int[], int, int)
    */
-  public void copyToArray(int srcOffset, int[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getIntArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#toArray()
    */
   public int[] toArray() {
-    final int size = size();
-    int[] outArray = new int[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return theArray.clone();
   }
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.IntArrayFS#copyToArray(int, String[], int, int)
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
+    _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = Integer.toString(jcasType.ll_cas.ll_getIntArrayValue(addr, i
-              + srcOffset));
+      dest[i + destOffset] = Integer.toString(theArray[i + srcOffset]);
     }
   }
 
@@ -144,10 +130,9 @@ public final class IntegerArray extends TOP implements IntArrayFS {
    * @see org.apache.uima.cas.IntArrayFS#copyFromArray(String[], int, int, int)
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
+    _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setIntArrayValue(addr, i + destOffset, Integer
-              .parseInt(src[i + srcOffset]));
+      theArray[i + destOffset] = Integer.parseInt(src[i + srcOffset]);
     }
   }
 
@@ -160,4 +145,19 @@ public final class IntegerArray extends TOP implements IntArrayFS {
     copyToArray(0, strArray, 0, size);
     return strArray;
   }
+  
+  // internal use only
+  public int[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArray v) {
+    IntegerArray bv = (IntegerArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+  }
+
 }

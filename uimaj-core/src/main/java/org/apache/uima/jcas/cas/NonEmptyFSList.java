@@ -19,10 +19,14 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyFSList extends FSList {
+public class NonEmptyFSList extends FSList implements NonEmptyList {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFSList.class);
 
@@ -32,52 +36,69 @@ public class NonEmptyFSList extends FSList {
     return typeIndexID;
   }
 
-  // Never called. Disable default constructor
-  protected NonEmptyFSList() {
+  // Offsets to use in accessing features
+  //   For built-ins, these are static constants
+  
+  private final static int head_featCode;
+  private final static int tail_featCode;
+  
+  static {
+    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
+    TypeImpl listType = tsi.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
+    
+    // makes assumption that all uima lists have the same head/tail offsets
+    head_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD).getCode();
+    tail_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL).getCode();
   }
 
- /* Internal - Constructor used by generator */
-  public NonEmptyFSList(int addr, TOP_Type type) {
-    super(addr, type);
+  /* local data */
+  private TOP _F_head;
+  private FSList _F_tail;
+  
+  // Never called. Disable default constructor
+  protected NonEmptyFSList() {
   }
 
   public NonEmptyFSList(JCas jcas) {
     super(jcas);
   }
 
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public NonEmptyFSList(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public org.apache.uima.jcas.cas.TOP getHead() {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_head == null)
-      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
-    return (org.apache.uima.jcas.cas.TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas
-            .ll_getRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_head)));
-  }
+  public TOP getHead() { return _F_head; }
 
   /* setter for head * */
-  public void setHead(org.apache.uima.jcas.cas.TOP v) {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_head == null)
-      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFSList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_head,
-            jcasType.ll_cas.ll_getFSRef(v));
+  public void setHead(TOP v) {
+    _F_head = v;  
+    // no corruption check - can't be a key
+    _casView.maybeLogUpdate(this, head_featCode);
   }
 
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FSList getTail() {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_tail == null)
-      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
-    return (FSList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((NonEmptyFSList_Type) jcasType).casFeatCode_tail)));
-  }
+  public FSList getTail() { return _F_tail; }
 
   /* setter for tail * */
-  public void setTail(FSList v) {
-    if (NonEmptyFSList_Type.featOkTst && ((NonEmptyFSList_Type) jcasType).casFeat_tail == null)
-      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_tail,
-            jcasType.ll_cas.ll_getFSRef(v));
+  public void setTail(CommonList v) {
+    _F_tail = (FSList) v;
+    // no corruption check - can't be a key
+    _casView.maybeLogUpdate(this, tail_featCode);
+  }
+  
+  public TOP getNthElement(int i) {
+    return ((NonEmptyFSList)getNonEmptyNthNode(i)).getHead();
   }
 }

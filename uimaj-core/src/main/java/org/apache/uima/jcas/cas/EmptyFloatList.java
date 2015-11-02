@@ -19,10 +19,12 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class EmptyFloatList extends FloatList {
+public class EmptyFloatList extends FloatList implements EmptyList {
 
   public final static int typeIndexID = JCasRegistry.register(EmptyFloatList.class);
 
@@ -32,17 +34,25 @@ public class EmptyFloatList extends FloatList {
     return typeIndexID;
   }
 
+  public final static EmptyFloatList singleton = new EmptyFloatList();
+
   // Never called. Disable default constructor
   protected EmptyFloatList() {
   }
 
- /* Internal - Constructor used by generator */
-  public EmptyFloatList(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
   public EmptyFloatList(JCas jcas) {
     super(jcas);
+  }
+
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public EmptyFloatList(TypeImpl t, CASImpl c) {
+    super(t, c);
   }
 
 }

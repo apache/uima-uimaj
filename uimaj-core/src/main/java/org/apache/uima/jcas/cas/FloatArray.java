@@ -20,11 +20,13 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.FloatArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Cas model for Cas FloatArray. */
-public final class FloatArray extends TOP implements FloatArrayFS {
+public final class FloatArray extends TOP implements CommonPrimitiveArray, FloatArrayFS {
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
@@ -43,17 +45,11 @@ public final class FloatArray extends TOP implements FloatArrayFS {
   public int getTypeIndexID() {
     return typeIndexID;
   }
+  
+  private final float[] theArray;
 
   private FloatArray() { // never called. Here to disable default constructor
-  }
-
-  // * There are n creation actions
-  // * 1 - create via factory.create() a new one
-  // * 2 - iterator or dereferencing calling generator to create
-
- /* Internal - Constructor used by generator */
-  public FloatArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -62,17 +58,22 @@ public final class FloatArray extends TOP implements FloatArrayFS {
    * @param length the size of the array
    */
   public FloatArray(JCas jcas, int length) {
-    this(
-    /* addr */
-    jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length),
-    /* type */
-    jcas.getType(typeIndexID));
-
-    // at this point we can use the jcasType value, as it is set
-    // can't do this earlier as the very first statement is required by
-    // JAVA to be the super or alternate constructor call
-    jcasType.casImpl.checkArrayPreconditions(length);
+    super(jcas);
+    theArray = new float[length];
   }
+  
+  /**
+   * used by generator
+   * Make a new FloatArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array in bytes
+   */
+  public FloatArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    theArray = new float[length];
+  }
+
 
   // /**
   // * create a new FloatArray of a given size.
@@ -89,8 +90,7 @@ public final class FloatArray extends TOP implements FloatArrayFS {
    * return the indexed value from the corresponding Cas FloatArray as a float,
    */
   public float get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getFloatArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
@@ -102,38 +102,28 @@ public final class FloatArray extends TOP implements FloatArrayFS {
    *          value to set
    */
   public void set(int i, float v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setFloatArrayValue(addr, i, v);
+    theArray[i] = v;
   }
 
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyFromArray(float[], int, int, int)
    */
-  public void copyFromArray(float[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setFloatArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(float[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyToArray(int, float[], int, int)
    */
-  public void copyToArray(int srcOffset, float[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getFloatArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, float[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   public float[] toArray() {
-    final int size = size();
-    float[] outArray = new float[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return theArray.clone();
   }
 
   /**
@@ -143,17 +133,16 @@ public final class FloatArray extends TOP implements FloatArrayFS {
    */
 
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.FloatArrayFS#copyToArray(int, String[], int, int)
    */
   public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
+    _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = Float.toString(jcasType.ll_cas.ll_getFloatArrayValue(addr, i
-              + srcOffset));
+      dest[i + destOffset] = Float.toString(theArray[i + srcOffset]);
     }
   }
 
@@ -161,10 +150,9 @@ public final class FloatArray extends TOP implements FloatArrayFS {
    * @see org.apache.uima.cas.FloatArrayFS#copyFromArray(String[], int, int, int)
    */
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
+    _casView.checkArrayBounds(theArray.length, destOffset, length);
     for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setFloatArrayValue(addr, i + destOffset, Float.parseFloat(src[i
-              + srcOffset]));
+      theArray[i + destOffset] = Float.parseFloat(src[i + srcOffset]);
     }
   }
 
@@ -177,4 +165,19 @@ public final class FloatArray extends TOP implements FloatArrayFS {
     copyToArray(0, strArray, 0, size);
     return strArray;
   }
+  
+  // internal use only
+  public float[] _getTheArray() {
+    return theArray;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArray v) {
+    FloatArray bv = (FloatArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+  }
+
 }

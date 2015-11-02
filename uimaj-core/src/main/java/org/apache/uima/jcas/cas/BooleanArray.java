@@ -20,11 +20,13 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.BooleanArrayFS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for BooleanArray */
-public final class BooleanArray extends TOP implements BooleanArrayFS {
+public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFS {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -43,13 +45,14 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
     return typeIndexID;
   }
 
-  // never called. Here to disable default constructor
-  private BooleanArray() {
-  }
+  /* local data */
+  private final boolean[] theArray;
 
- /* Internal - Constructor used by generator */
-  public BooleanArray(int addr, TOP_Type type) {
-    super(addr, type);
+ 
+  // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
+  private BooleanArray() {
+    theArray = null;
   }
 
   /**
@@ -58,79 +61,79 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
    * @param length of array
    */
   public BooleanArray(JCas jcas, int length) {
-    this(jcas.getLowLevelCas().ll_createBooleanArray(length), jcas.getType(typeIndexID));
+    super(jcas);
+    theArray = new boolean[length];
+  }
+  
+  /**
+   * Called by generator 
+   * @param c -
+   * @param t -
+   * @param l -
+   */
+  public BooleanArray(TypeImpl t, CASImpl c, int l) {
+    super(t, c);
+    theArray = new boolean[l];
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#get(int)
    */
   public boolean get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    return jcasType.ll_cas.ll_getBooleanArrayValue(addr, i);
+    return theArray[i];
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#set(int , boolean)
    */
   public void set(int i, boolean v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setBooleanArrayValue(addr, i, v);
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyFromArray(boolean[], int, int, int)
    */
-  public void copyFromArray(boolean[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setBooleanArrayValue(addr, i + destOffset, src[i + srcOffset]);
-    }
+  public void copyFromArray(boolean[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, theArray, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyToArray(int, boolean[], int, int)
    */
-  public void copyToArray(int srcOffset, boolean[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getBooleanArrayValue(addr, i + srcOffset);
-    }
+  public void copyToArray(int srcPos, boolean[] dest, int destPos, int length) {
+    System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#toArray()
    */
   public boolean[] toArray() {
-    final int size = size();
-    boolean[] outArray = new boolean[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    return theArray.clone();
   }
 
   /** return the size of the array */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyToArray(int, String[], int, int)
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = Boolean.toString(jcasType.ll_cas.ll_getBooleanArrayValue(addr, i
-              + srcOffset));
+      dest[i + destPos] = Boolean.toString(theArray[i + srcPos]);
     }
   }
 
   /**
    * @see org.apache.uima.cas.BooleanArrayFS#copyFromArray(String[], int, int, int)
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setBooleanArrayValue(addr, i + destOffset, "true".equalsIgnoreCase(src[i
-              + srcOffset]));
+      theArray[i + destPos] = Boolean.parseBoolean(src[i + srcPos]);
     }
   }
 
@@ -140,4 +143,14 @@ public final class BooleanArray extends TOP implements BooleanArrayFS {
     copyToArray(0, strArray, 0, size);
     return strArray;
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   */
+  @Override
+  public void copyValuesFrom(CommonArray v) {
+    BooleanArray bv = (BooleanArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+  }
+  
 }
