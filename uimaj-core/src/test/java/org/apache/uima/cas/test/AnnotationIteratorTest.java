@@ -22,8 +22,6 @@ package org.apache.uima.cas.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndexRepository;
@@ -31,11 +29,10 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.FSIndexFlat;
-import org.apache.uima.cas.impl.FSIteratorWrapper;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
-import org.apache.uima.jcas.tcas.Annotation;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
@@ -259,8 +256,8 @@ public class AnnotationIteratorTest extends TestCase {
     AnnotationIndex<AnnotationFS> annotIndex = this.cas.getAnnotationIndex();
     AnnotationIndex<AnnotationFS> sentIndex = this.cas.getAnnotationIndex(sentenceType);
     FSIterator<AnnotationFS> it = annotIndex.iterator(true);  // a normal "ambiguous" iterator
-    assertTrue((isSave) ? it instanceof FSIteratorWrapper : 
-      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
+//    assertTrue((isSave) ? it instanceof FSIteratorWrapper : 
+//      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
     assertCount("Normal ambiguous annot iterator", annotCount, it);
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
@@ -323,8 +320,10 @@ public class AnnotationIteratorTest extends TestCase {
     if (count > 0) {
       // test moveTo(fs) in middle, first, and last
       AnnotationFS posFs = fss.get(fssStart + (count >> 1));
-      it.moveTo(posFs);
-      assertEquals(msg, it.get().hashCode(), posFs.hashCode());
+//      //debug
+//      System.out.println(posFs.toString());
+       it.moveTo(posFs);
+       assertEquals(msg, it.get().hashCode(), posFs.hashCode());
       
       posFs = fss.get(fssStart);
       it.moveTo(posFs);

@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.cas.CAS;
@@ -43,12 +41,13 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureStructureImpl;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.LowLevelIndex;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.LowLevelIterator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas_data.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.jcas.JCas;
@@ -59,6 +58,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for IteratorTest.java goes here.
@@ -357,13 +358,13 @@ public class IteratorTest extends TestCase {
   
 
   private void createFSs(int i) {
-    FeatureStructureImpl fsi;
+    FeatureStructureImplC fsi;
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.annotationType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.sentenceType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
-        fsi = (FeatureStructureImpl) this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
+        fsi = (FeatureStructureImplC) this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
         this.cas.createAnnotation(this.tokenType, i * 2, (i * 2) + 1));
     this.cas.getIndexRepository().addFS(
@@ -450,7 +451,7 @@ public class IteratorTest extends TestCase {
   }
   
   public void testIterator() {
-    setupFSs();
+    setupFSs();  
     
     setupindexes();
     
@@ -473,8 +474,7 @@ public class IteratorTest extends TestCase {
     
 //    debugls();  //debug
     
-    basicRemoveAdd(bagIndex, 20, 21);
-    basicRemoveAdd(ssBagIndex, 20, 21);
+    basicRemoveAdd(bagIndex);
     basicRemoveAdd(sortedIndex, 38, 39);
 //    debugls();  //debug
     basicRemoveAdd(ssSortedIndex, 38, 39);
@@ -509,20 +509,45 @@ public class IteratorTest extends TestCase {
     
 
     // moved IntArrayRBTtest for pointer iterators here
+    FSIndexRepository iri = cas.getIndexRepository();
+    FSIndex<FeatureStructure> setIndexOverTokens = iri.getIndex(CASTestSetup.ANNOT_SET_INDEX, tokenType);
+    int [] expected = new int[setIndexOverTokens.size()];
+    assertEquals(setIndexOverTokens.size(), 20);
+    int i = 0;
+    for (FeatureStructure fs : setIndexOverTokens) {
+      expected[i++] = fs.get_id();
+    }
+    
     LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
     LowLevelIndex setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
-    int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+//    int[] expected = {17, 53, 89, 125, 161, 197, 233, 269, 305, 341, 701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+    setIndexIterchk(setIndexForType, expected);
+
+    FSIndex<FeatureStructure> setIndexOverSentences = iri.getIndex(CASTestSetup.ANNOT_SET_INDEX, sentenceType);
+    expected = new int[setIndexOverSentences.size()];
+    assertEquals(setIndexOverSentences.size(), 20);
+    i = 0;
+    for (FeatureStructure fs : setIndexOverSentences) {
+      expected[i++] = fs.get_id();
+    }
+
+    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)sentenceType).getCode());
+//    expected = new int[] {12, 48, 84, 120, 156, 192, 228, 264, 300, 336, 696, 660, 624, 588, 552, 516, 480, 444, 408, 372};
     setIndexIterchk(setIndexForType, expected);
     
-    setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)sentenceType).getCode());
-    expected = new int[] {12, 48, 84, 120, 156, 192, 228, 264, 300, 336, 696, 660, 624, 588, 552, 516, 480, 444, 408, 372};
-    setIndexIterchk(setIndexForType, expected);
+    expected = new int[setIndex.size()];
+    assertEquals(setIndex.size(), 60);
+    i = 0;
+    for (FeatureStructure fs : setIndex) {
+      expected[i++] = fs.get_id();
+    }
+    
     
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    expected = new int[] {
-        1,   44,  80,  116, 152, 188, 224, 260, 296, 332,         692, 656, 620, 584, 548, 512, 476, 440, 404, 368, 
-        12,  48,  84,  120, 156, 192, 228, 264, 300, 336,         696, 660, 624, 588, 552, 516, 480, 444, 408, 372, 
-        17,  53,  89,  125, 161, 197, 233, 269, 305, 341,         701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
+//    expected = new int[] {
+//        1,   44,  80,  116, 152, 188, 224, 260, 296, 332,         692, 656, 620, 584, 548, 512, 476, 440, 404, 368, 
+//        12,  48,  84,  120, 156, 192, 228, 264, 300, 336,         696, 660, 624, 588, 552, 516, 480, 444, 408, 372, 
+//        17,  53,  89,  125, 161, 197, 233, 269, 305, 341,         701, 665, 629, 593, 557, 521, 485, 449, 413, 377};
     setIndexIterchk(setIndexForType, expected);
     
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)tokenType).getCode());
@@ -651,6 +676,14 @@ public class IteratorTest extends TestCase {
     findTestJCas(jcasIndex);
   }
   
+  // called for bag indexes - can't know the begin/end for these - they're hash sets
+  private void basicRemoveAdd(FSIndex<FeatureStructure> index) { 
+    FSIterator<FeatureStructure> it = index.iterator();
+    it.moveToLast();
+    Annotation a = (Annotation) it.get();
+    basicRemoveAdd(index, a.getBegin(), a.getEnd() );
+  }
+  
   private void basicRemoveAdd(FSIndex<FeatureStructure> index, int begin, int end) {
     FSIterator<FeatureStructure> it = index.iterator();
     it.moveToLast();
@@ -737,6 +770,9 @@ public class IteratorTest extends TestCase {
   
   private void findTestCas(FSIndex<FeatureStructure> index) {
     AnnotationFS annot = (AnnotationFS) index.iterator().get();  // first element
+    if (null == index.find(annot)) {
+      System.out.println("debug");
+    }
     assertNotNull(index.find(annot));
     assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
   }

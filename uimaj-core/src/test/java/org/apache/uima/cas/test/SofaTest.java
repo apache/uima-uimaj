@@ -32,8 +32,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -41,6 +44,7 @@ import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -73,7 +77,6 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
-
 
 public class SofaTest extends TestCase {
 
@@ -677,22 +680,25 @@ public class SofaTest extends TestCase {
     assertTrue( newView.getViewName().equals("TestView"));
   }
   
+  private void checkViewsExist(Iterator it, AbstractCas ... cas_s) {
+    List<AbstractCas> casList = Arrays.asList(cas_s);
+    int i = 0;
+    while (it.hasNext()) {
+      assertTrue(casList.contains(it.next()));
+      i++;
+    }
+    assertEquals(i, cas_s.length);
+  }
+  
   public void testGetViewIterator() throws Exception {
     this.cas.reset();
     CAS view1 = this.cas.createView("View1");
     CAS view2 = this.cas.createView("View2");
-    Iterator<CAS> iter = this.cas.getViewIterator();
-    assertEquals(this.cas, iter.next());
-    assertEquals(view1, iter.next());
-    assertEquals(view2, iter.next());
-    assertFalse(iter.hasNext());
+    checkViewsExist(this.cas.getViewIterator(), cas, view1, view2);
     
     CAS viewE1 = this.cas.createView("EnglishDocument");
     CAS viewE2 = this.cas.createView("EnglishDocument.2");
-    iter = this.cas.getViewIterator("EnglishDocument");
-    assertEquals(viewE1, iter.next());
-    assertEquals(viewE2, iter.next());
-    assertFalse(iter.hasNext());
+    checkViewsExist(this.cas.getViewIterator("EnglishDocument"), viewE1, viewE2);
     
     //try with Sofa mappings
     UimaContextAdmin rootCtxt = UIMAFramework.newUimaContext(
@@ -702,10 +708,8 @@ public class SofaTest extends TestCase {
     sofamap.put("SourceDocument","EnglishDocument");
     UimaContextAdmin childCtxt = rootCtxt.createChild("test", sofamap);
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
-    iter = this.cas.getViewIterator("SourceDocument");
-    assertEquals(viewE1, iter.next());
-    assertEquals(viewE2, iter.next());
-    assertFalse(iter.hasNext());  
+    checkViewsExist(this.cas.getViewIterator("SourceDocument"), viewE1, viewE2);
+      
     this.cas.setCurrentComponentInfo(null);
     
     //repeat with JCas
@@ -713,26 +717,15 @@ public class SofaTest extends TestCase {
     JCas jcas = this.cas.getJCas();
     JCas jview1 = jcas.createView("View1");
     JCas jview2 = jcas.createView("View2");
-    Iterator<JCas> jCasIter = jcas.getViewIterator();
-    assertEquals(jcas, jCasIter.next());
-    assertEquals(jview1, jCasIter.next());
-    assertEquals(jview2, jCasIter.next());
-    assertFalse(jCasIter.hasNext());
-    
+    checkViewsExist(jcas.getViewIterator(), jcas, jview1, jview2);
+        
     JCas jviewE1 = jcas.createView("EnglishDocument");
     JCas jviewE2 = jcas.createView("EnglishDocument.2");
-    jCasIter = jcas.getViewIterator("EnglishDocument");
-    assertEquals(jviewE1, jCasIter.next());
-    assertEquals(jviewE2, jCasIter.next());
-    assertFalse(jCasIter.hasNext());
+    checkViewsExist(jcas.getViewIterator("EnglishDocument"), jviewE1, jviewE2);
     
     //try with Sofa mappings
     cas.setCurrentComponentInfo(childCtxt.getComponentInfo());
-    jCasIter = jcas.getViewIterator("SourceDocument");
-    assertEquals(jviewE1, jCasIter.next());
-    assertEquals(jviewE2, jCasIter.next());
-    assertFalse(jCasIter.hasNext());  
-    this.cas.setCurrentComponentInfo(null);
+    checkViewsExist(jcas.getViewIterator("SourceDocument"), jviewE1, jviewE2);
   }
   
   public static void main(String[] args) {

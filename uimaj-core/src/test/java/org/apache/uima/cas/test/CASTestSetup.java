@@ -166,7 +166,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
@@ -174,7 +174,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
     try {
       tsm.addFeature("some.new.Name", group1, stringType);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);

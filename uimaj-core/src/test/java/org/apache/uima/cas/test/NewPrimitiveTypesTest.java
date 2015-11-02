@@ -40,6 +40,7 @@ import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
@@ -219,7 +220,7 @@ public class NewPrimitiveTypesTest extends TestCase {
   public void testCreateFS() throws Exception {
 
     // create FS
-    createExampleFS(cas);
+    FeatureStructure fs = createExampleFS(cas);
     // check values
     validateFSData(cas);
   }
@@ -335,7 +336,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     // the exampleType fs
     fs = (AnnotationFS) iter.get();
     FeatureStructureImplC fsImpl = (FeatureStructureImplC) fs;
-    StringBuffer sb = new StringBuffer(1024);
+    StringBuilder sb = new StringBuilder(1024);
     fsImpl.prettyPrint(2, 1, sb, true);
     // System.out.println(sb.toString());
   }
@@ -368,6 +369,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setShortValue(shortFeature, (short) -1);
     fs.setLongValue(longFeature, -1);
     fs.setDoubleValue(doubleFeature, -1);
+    fs.setBegin(clone.getBegin() + 1);  // to be sure that fs is beyond the original
     englishView.addFsToIndexes(fs);
     validateFSData(cas);
   }
@@ -456,7 +458,7 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   }
 
-  private void createExampleFS(CAS parmCas) throws Exception {
+  private FeatureStructure createExampleFS(CAS parmCas) throws Exception {
     // Create a view
     CAS englishView = parmCas.createView("EnglishDocument");
     // Set the document text
@@ -542,6 +544,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setFeatureValue(doubleArrayFeature, doubleArrayFS);
     
     englishView.getIndexRepository().addFS(fs);
+    return fs;
   }
 
   public void testNewPrimitiveTypeKeys() throws Exception {

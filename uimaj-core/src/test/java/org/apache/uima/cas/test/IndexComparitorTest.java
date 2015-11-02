@@ -104,6 +104,11 @@ public class IndexComparitorTest extends TestCase {
 
   FSIndexRepository ir;
 
+  /**
+   * first  index: 0 = Type1, 1 = Type1Sub1, 2 = Type1Sub2
+   * second index: value of f1 = 0 or 1
+   * thrid  index: value of f2 = 0 or 1
+   */
   FeatureStructure fss[][][];
 
   FSIndex<FeatureStructure> sortedType1;
@@ -330,7 +335,7 @@ public class IndexComparitorTest extends TestCase {
     ir.addFS(createFs(type1Sub1, 1, 1));
     FeatureStructure testprobe = createFs(type1Sub1, 1, 1);  // not in index, used only for key values
     
-    https://issues.apache.org/jira/browse/UIMA-4352
+    //  https://issues.apache.org/jira/browse/UIMA-4352
     assertTrue(sortedType1.contains(testprobe));  
     
     assertTrue(sortedType1Sub1.contains(testprobe));

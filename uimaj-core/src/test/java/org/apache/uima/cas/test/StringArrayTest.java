@@ -197,7 +197,7 @@ public class StringArrayTest extends TestCase {
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(0) == "1");
      assertTrue(((StringArrayFS) token.getFeatureValue(lemmaList)).get(1) == null);
      LowLevelCAS llc = casArray.getCAS().getLowLevelCAS();
-     assertTrue(llc.ll_getIntArrayValue(llc.ll_getFSRef(casArray), 1) == LowLevelCAS.NULL_FS_REF);
+     assertTrue(llc.ll_getStringArrayValue(llc.ll_getFSRef(casArray), 1) == null);
   }
 
 }

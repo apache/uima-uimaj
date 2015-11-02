@@ -73,7 +73,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("TestWithADash-", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -81,7 +81,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test.with.a.slash/", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -92,7 +92,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test.empty.identifier.", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -100,7 +100,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType(".test.empty.identifier", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -108,7 +108,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test.empty..identifier", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -118,7 +118,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test._leading.Underscore", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertTrue(exc);
@@ -126,7 +126,7 @@ public class TypeSystemTest extends TestCase {
       try {
         tsm.addType("test_embedded.Under__Score", annot);
       } catch (CASAdminException e) {
-        assertTrue(e.getError() == CASAdminException.BAD_TYPE_SYNTAX);
+        assertTrue(e.getMessageKey().equals(CASAdminException.BAD_TYPE_SYNTAX));
         exc = true;
       }
       assertFalse(exc);
@@ -199,8 +199,8 @@ public class TypeSystemTest extends TestCase {
       }
       assertTrue(feat != null);
 
-      // Check that a feature of the same name can not be created on a
-      // supertype.
+      // Check that a feature of the same name can be created on a
+      // supertype if it has the same range
       Feature feat2 = null;
       try {
         feat2 = tsm.addFeature(featName, annot1, annot);
@@ -208,7 +208,7 @@ public class TypeSystemTest extends TestCase {
         e.printStackTrace();
         assertTrue(false);
       }
-      assertTrue(feat2 == null);
+      assertTrue(feat2 != null);
       // Check that a feature of the same name can not be created on a
       // subtype.
       /*
@@ -224,7 +224,7 @@ public class TypeSystemTest extends TestCase {
         feat2 = tsm.addFeature(featName, annot2, annot2);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.DUPLICATE_FEATURE);
+        assertTrue(e.getMessageKey().equals(CASAdminException.DUPLICATE_FEATURE));
       }
       assertTrue(exc);
       // Check that a feature of the same name _can_ be created on a
@@ -245,7 +245,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addFeature("testFeature", top, intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
       }
       assertTrue(exc);
       exc = false;
@@ -253,7 +253,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addFeature("testFeature", intT, intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_FEATURE_FINAL));
       }
       assertTrue(exc);
       exc = false;
@@ -261,7 +261,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addType("newType", intT);
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
       }
       assertTrue(exc);
       exc = false;
@@ -269,7 +269,7 @@ public class TypeSystemTest extends TestCase {
         tsm.addType("newType", tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY));
       } catch (CASAdminException e) {
         exc = true;
-        assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+        assertTrue(e.getMessageKey().equals(CASAdminException.TYPE_IS_INH_FINAL));
       }
       assertTrue(exc);
     }
