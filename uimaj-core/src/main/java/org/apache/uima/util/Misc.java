@@ -29,9 +29,8 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
-
-import org.apache.uima.cas.impl.TypeImpl;
 
 public class Misc {
 
@@ -175,15 +174,22 @@ public class Misc {
     }  
   }
   
+  /**
+   * Gets an int from a named field.
+   * If the field isn't present, returns Integer.MIN_VALUE;
+   * @param clazz the class where the field is
+   * @param fieldName the name of the field
+   * @return the value or Integer.MIN_VALUE if not present
+   */
   static public int getStaticIntField(Class<?> clazz, String fieldName) {
     try {
-      Field f;
-     
-       f = clazz.getField(fieldName);
-       return f.getInt(null);
-     } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+      Field f = clazz.getField(fieldName);
+      return f.getInt(null);
+    } catch (NoSuchFieldException e) {
+      return Integer.MIN_VALUE;
+    } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
         throw new RuntimeException(e);
-     } 
+    } 
   }
   
   static public void addAll(Collection<String> c, String ... v) {
@@ -226,6 +232,12 @@ public class Misc {
     return h1;
   }
 
+  public static <T> void setWithExpand(List<T> a, int i, T value) {
+    while (i >= a.size()) {
+      a.add(null);
+    }
+    a.set(i, value);
+  }
   
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
