@@ -1,21 +1,7 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
 
 package org.apache.uima.cas.test;
 
@@ -28,7 +14,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Nov 02 14:34:51 EST 2015
+ * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class CrossAnnotation extends Annotation {
@@ -52,6 +38,11 @@ public class CrossAnnotation extends Annotation {
   /* *****************
    *    Local Data   *
    * *****************/ 
+   
+  /* Register Features */
+  public final static int _FI_otherAnnotation = JCasRegistry.registerFeature(typeIndexID);
+
+   
   private Annotation _F_otherAnnotation;  // 
  
   /** Never called.  Disable default constructor
@@ -102,7 +93,7 @@ public class CrossAnnotation extends Annotation {
    */
   public void setOtherAnnotation(Annotation v) {
          
-      _casView.setWithJournal(this, _typeImpl.getFeatureByBaseName("otherAnnotation"), () -> _F_otherAnnotation = v);
+      _casView.setWithJournalJFRI(this, _FI_otherAnnotation, () -> _F_otherAnnotation = v);
       }    
   }
 

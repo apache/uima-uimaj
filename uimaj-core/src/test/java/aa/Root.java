@@ -1,433 +1,312 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+
+
+   
+/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 16:59:33 EST 2015 */
 
 package aa;
 
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCasRegistry;
+
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
-import org.apache.uima.jcas.cas.IntegerArray;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.TOP_Type;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.IntegerArray;
 
-/**
- * Updated by JCasGen Tue Feb 21 14:56:04 EST 2006 XML source:
- * C:/a/Eclipse/3.1/j4/jedii_jcas_tests/testTypes.xml
- * 
- * @generated
- */
+
+/** 
+ * Updated by JCasGen Tue Nov 03 16:59:33 EST 2015
+ * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * @generated */
 public class Root extends TOP {
-  /**
-   * @generated
-   * @ordered
+  /** @generated
+   * @ordered 
    */
-  public final static int typeIndexID = org.apache.uima.jcas.JCasRegistry.register(Root.class);
-
-  /**
-   * @generated
-   * @ordered
+  @SuppressWarnings ("hiding")
+  public final static int typeIndexID = JCasRegistry.register(Root.class);
+  /** @generated
+   * @ordered 
    */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-
-  /** @generated */
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
-  /**
-   * Never called. Disable default constructor
-   * 
-   * @generated
+  /** @generated
+   * @return index of the type  
    */
-  protected Root() {
-  }
+  @Override
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
+ 
+  /* *****************
+   *    Local Data   *
+   * *****************/ 
+   
+  /* Register Features */
+  private final static int _FI_arrayInt = JCasRegistry.registerFeature();
+  private final static int _FI_arrayRef = JCasRegistry.registerFeature();
+  private final static int _FI_arrayFloat = JCasRegistry.registerFeature();
+  private final static int _FI_arrayString = JCasRegistry.registerFeature();
+  private final static int _FI_plainInt = JCasRegistry.registerFeature();
+  private final static int _FI_plainFloat = JCasRegistry.registerFeature();
+  private final static int _FI_plainString = JCasRegistry.registerFeature();
+  private final static int _FI_plainRef = JCasRegistry.registerFeature();
 
-  /**
-   * Internal - constructor used by generator
-   * 
+   
+  private IntegerArray _F_arrayInt;  // 
+  private FSArray _F_arrayRef;  // 
+  private FloatArray _F_arrayFloat;  // 
+  private StringArray _F_arrayString;  // 
+  private int _F_plainInt;  // 
+  private float _F_plainFloat;  // 
+  private String _F_plainString;  // 
+  private Root _F_plainRef;  // TokenType testMissingImport;
+ 
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected Root() {/* intentionally empty block */}
+    
+  /** Internal - constructor used by generator 
    * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
    */
-  public Root(int addr, TOP_Type type) {
-    super(addr, type);
+  public Root(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
-
-  /** @generated */
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
+   */
   public Root(JCas jcas) {
     super(jcas);
-    readObject();
-  }
+    readObject();   
+  } 
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
+  /** 
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable 
    */
-  private void readObject() {
-  }
+  private void readObject() {/*default - does nothing empty block */}
+     
+ 
+    
+  //*--------------*
+  //* Feature: arrayInt
 
-  // *--------------*
-  // * Feature: arrayInt
-
-  /**
-   * getter for arrayInt - gets
-   * 
+  /** getter for arrayInt - gets 
    * @generated
+   * @return value of the feature 
    */
-  public IntegerArray getArrayInt() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
-      this.jcasType.jcas.throwFeatMissing("arrayInt", "aa.Root");
-    return (IntegerArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayInt)));
-  }
-
-  /**
-   * setter for arrayInt - sets
-   * 
+  public IntegerArray getArrayInt() { return _F_arrayInt;}
+    
+  /** setter for arrayInt - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setArrayInt(IntegerArray v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
-      this.jcasType.jcas.throwFeatMissing("arrayInt", "aa.Root");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayInt,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  /**
-   * indexed getter for arrayInt - gets an indexed value -
-   * 
+         
+      _casView.setWithJournalJFRI(this, _FI_arrayInt, () -> _F_arrayInt = v);
+      }    
+    
+  /** indexed getter for arrayInt - gets an indexed value - 
    * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
    */
   public int getArrayInt(int i) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
-      this.jcasType.jcas.throwFeatMissing("arrayInt", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayInt), i);
-    return jcasType.ll_cas.ll_getIntArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayInt), i);
-  }
+     return getArrayInt().get(i);} 
 
-  /**
-   * indexed setter for arrayInt - sets an indexed value -
-   * 
+  /** indexed setter for arrayInt - sets an indexed value - 
    * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
    */
   public void setArrayInt(int i, int v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayInt == null)
-      this.jcasType.jcas.throwFeatMissing("arrayInt", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayInt), i);
-    jcasType.ll_cas.ll_setIntArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayInt), i, v);
-  }
+    getArrayInt().set(i, v);}  
+   
+    
+  //*--------------*
+  //* Feature: arrayRef
 
-  // *--------------*
-  // * Feature: arrayRef
-
-  /**
-   * getter for arrayRef - gets
-   * 
+  /** getter for arrayRef - gets 
    * @generated
+   * @return value of the feature 
    */
-  public FSArray getArrayRef() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
-      this.jcasType.jcas.throwFeatMissing("arrayRef", "aa.Root");
-    return (FSArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayRef)));
-  }
-
-  /**
-   * setter for arrayRef - sets
-   * 
+  public FSArray getArrayRef() { return _F_arrayRef;}
+    
+  /** setter for arrayRef - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setArrayRef(FSArray v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
-      this.jcasType.jcas.throwFeatMissing("arrayRef", "aa.Root");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayRef,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  /**
-   * indexed getter for arrayRef - gets an indexed value -
-   * 
+         
+      _casView.setWithJournalJFRI(this, _FI_arrayRef, () -> _F_arrayRef = v);
+      }    
+    
+  /** indexed getter for arrayRef - gets an indexed value - 
    * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
    */
   public TOP getArrayRef(int i) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
-      this.jcasType.jcas.throwFeatMissing("arrayRef", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayRef), i);
-    return (TOP) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(
-            jcasType.ll_cas.ll_getRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayRef), i)));
-  }
+     return getArrayRef().get(i);} 
 
-  /**
-   * indexed setter for arrayRef - sets an indexed value -
-   * 
+  /** indexed setter for arrayRef - sets an indexed value - 
    * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
    */
   public void setArrayRef(int i, TOP v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayRef == null)
-      this.jcasType.jcas.throwFeatMissing("arrayRef", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayRef), i);
-    jcasType.ll_cas.ll_setRefArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayRef), i, jcasType.ll_cas.ll_getFSRef(v));
-  }
+    getArrayRef().set(i, v);}  
+   
+    
+  //*--------------*
+  //* Feature: arrayFloat
 
-  // *--------------*
-  // * Feature: arrayFloat
-
-  /**
-   * getter for arrayFloat - gets
-   * 
+  /** getter for arrayFloat - gets 
    * @generated
+   * @return value of the feature 
    */
-  public FloatArray getArrayFloat() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
-      this.jcasType.jcas.throwFeatMissing("arrayFloat", "aa.Root");
-    return (FloatArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayFloat)));
-  }
-
-  /**
-   * setter for arrayFloat - sets
-   * 
+  public FloatArray getArrayFloat() { return _F_arrayFloat;}
+    
+  /** setter for arrayFloat - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setArrayFloat(FloatArray v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
-      this.jcasType.jcas.throwFeatMissing("arrayFloat", "aa.Root");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayFloat,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  /**
-   * indexed getter for arrayFloat - gets an indexed value -
-   * 
+         
+      _casView.setWithJournalJFRI(this, _FI_arrayFloat, () -> _F_arrayFloat = v);
+      }    
+    
+  /** indexed getter for arrayFloat - gets an indexed value - 
    * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
    */
   public float getArrayFloat(int i) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
-      this.jcasType.jcas.throwFeatMissing("arrayFloat", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
-    return jcasType.ll_cas.ll_getFloatArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
-  }
+     return getArrayFloat().get(i);} 
 
-  /**
-   * indexed setter for arrayFloat - sets an indexed value -
-   * 
+  /** indexed setter for arrayFloat - sets an indexed value - 
    * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
    */
   public void setArrayFloat(int i, float v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayFloat == null)
-      this.jcasType.jcas.throwFeatMissing("arrayFloat", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayFloat), i);
-    jcasType.ll_cas.ll_setFloatArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayFloat), i, v);
-  }
+    getArrayFloat().set(i, v);}  
+   
+    
+  //*--------------*
+  //* Feature: arrayString
 
-  // *--------------*
-  // * Feature: arrayString
-
-  /**
-   * getter for arrayString - gets
-   * 
+  /** getter for arrayString - gets 
    * @generated
+   * @return value of the feature 
    */
-  public StringArray getArrayString() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
-      this.jcasType.jcas.throwFeatMissing("arrayString", "aa.Root");
-    return (StringArray) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayString)));
-  }
-
-  /**
-   * setter for arrayString - sets
-   * 
+  public StringArray getArrayString() { return _F_arrayString;}
+    
+  /** setter for arrayString - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setArrayString(StringArray v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
-      this.jcasType.jcas.throwFeatMissing("arrayString", "aa.Root");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_arrayString,
-            jcasType.ll_cas.ll_getFSRef(v));
-  }
-
-  /**
-   * indexed getter for arrayString - gets an indexed value -
-   * 
+         
+      _casView.setWithJournalJFRI(this, _FI_arrayString, () -> _F_arrayString = v);
+      }    
+    
+  /** indexed getter for arrayString - gets an indexed value - 
    * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
    */
   public String getArrayString(int i) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
-      this.jcasType.jcas.throwFeatMissing("arrayString", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayString), i);
-    return jcasType.ll_cas.ll_getStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayString), i);
-  }
+     return getArrayString().get(i);} 
 
-  /**
-   * indexed setter for arrayString - sets an indexed value -
-   * 
+  /** indexed setter for arrayString - sets an indexed value - 
    * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
    */
   public void setArrayString(int i, String v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_arrayString == null)
-      this.jcasType.jcas.throwFeatMissing("arrayString", "aa.Root");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayString), i);
-    jcasType.ll_cas.ll_setStringArrayValue(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_arrayString), i, v);
-  }
+    getArrayString().set(i, v);}  
+   
+    
+  //*--------------*
+  //* Feature: plainInt
 
-  // *--------------*
-  // * Feature: plainInt
-
-  /**
-   * getter for plainInt - gets
-   * 
+  /** getter for plainInt - gets 
    * @generated
+   * @return value of the feature 
    */
-  public int getPlainInt() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainInt == null)
-      this.jcasType.jcas.throwFeatMissing("plainInt", "aa.Root");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Root_Type) jcasType).casFeatCode_plainInt);
-  }
-
-  /**
-   * setter for plainInt - sets
-   * 
+  public int getPlainInt() { return _F_plainInt;}
+    
+  /** setter for plainInt - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setPlainInt(int v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainInt == null)
-      this.jcasType.jcas.throwFeatMissing("plainInt", "aa.Root");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Root_Type) jcasType).casFeatCode_plainInt, v);
-  }
+              _casView.setWithCheckAndJournalJFRI(this, _FI_plainInt, () -> _F_plainInt = v);
+      }    
+   
+    
+  //*--------------*
+  //* Feature: plainFloat
 
-  // *--------------*
-  // * Feature: plainFloat
-
-  /**
-   * getter for plainFloat - gets
-   * 
+  /** getter for plainFloat - gets 
    * @generated
+   * @return value of the feature 
    */
-  public float getPlainFloat() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainFloat == null)
-      this.jcasType.jcas.throwFeatMissing("plainFloat", "aa.Root");
-    return jcasType.ll_cas.ll_getFloatValue(addr, ((Root_Type) jcasType).casFeatCode_plainFloat);
-  }
-
-  /**
-   * setter for plainFloat - sets
-   * 
+  public float getPlainFloat() { return _F_plainFloat;}
+    
+  /** setter for plainFloat - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setPlainFloat(float v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainFloat == null)
-      this.jcasType.jcas.throwFeatMissing("plainFloat", "aa.Root");
-    jcasType.ll_cas.ll_setFloatValue(addr, ((Root_Type) jcasType).casFeatCode_plainFloat, v);
-  }
+              _casView.setWithCheckAndJournalJFRI(this, _FI_plainFloat, () -> _F_plainFloat = v);
+      }    
+   
+    
+  //*--------------*
+  //* Feature: plainString
 
-  // *--------------*
-  // * Feature: plainString
-
-  /**
-   * getter for plainString - gets
-   * 
+  /** getter for plainString - gets 
    * @generated
+   * @return value of the feature 
    */
-  public String getPlainString() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainString == null)
-      this.jcasType.jcas.throwFeatMissing("plainString", "aa.Root");
-    return jcasType.ll_cas.ll_getStringValue(addr, ((Root_Type) jcasType).casFeatCode_plainString);
-  }
-
-  /**
-   * setter for plainString - sets
-   * 
+  public String getPlainString() { return _F_plainString;}
+    
+  /** setter for plainString - sets  
    * @generated
+   * @param v value to set into the feature 
    */
   public void setPlainString(String v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainString == null)
-      this.jcasType.jcas.throwFeatMissing("plainString", "aa.Root");
-    jcasType.ll_cas.ll_setStringValue(addr, ((Root_Type) jcasType).casFeatCode_plainString, v);
-  }
+              _casView.setWithCheckAndJournalJFRI(this, _FI_plainString, () -> _F_plainString = v);
+      }    
+   
+    
+  //*--------------*
+  //* Feature: plainRef
 
-  // *--------------*
-  // * Feature: plainRef
-
-  /**
-   * getter for plainRef - gets
-   * 
+  /** getter for plainRef - gets TokenType testMissingImport;
    * @generated
+   * @return value of the feature 
    */
-  public Root getPlainRef() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainRef == null)
-      this.jcasType.jcas.throwFeatMissing("plainRef", "aa.Root");
-    return (Root) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((Root_Type) jcasType).casFeatCode_plainRef)));
-  }
-
-  /**
-   * setter for plainRef - sets
-   * 
+  public Root getPlainRef() { return _F_plainRef;}
+    
+  /** setter for plainRef - sets TokenType testMissingImport; 
    * @generated
+   * @param v value to set into the feature 
    */
   public void setPlainRef(Root v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_plainRef == null)
-      this.jcasType.jcas.throwFeatMissing("plainRef", "aa.Root");
-    jcasType.ll_cas.ll_setRefValue(addr, ((Root_Type) jcasType).casFeatCode_plainRef,
-            jcasType.ll_cas.ll_getFSRef(v));
+         
+      _casView.setWithJournalJFRI(this, _FI_plainRef, () -> _F_plainRef = v);
+      }    
   }
 
-  // *--------------*
-  // * Feature: concreteString
-
-  /**
-   * getter for concreteString - gets
-   * 
-   * @generated
-   */
-  public String getConcreteString() {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_concreteString == null)
-      this.jcasType.jcas.throwFeatMissing("concreteString", "aa.Root");
-    return jcasType.ll_cas.ll_getStringValue(addr,
-            ((Root_Type) jcasType).casFeatCode_concreteString);
-  }
-
-  /**
-   * setter for concreteString - sets
-   * 
-   * @generated
-   */
-  public void setConcreteString(String v) {
-    if (Root_Type.featOkTst && ((Root_Type) jcasType).casFeat_concreteString == null)
-      this.jcasType.jcas.throwFeatMissing("concreteString", "aa.Root");
-    jcasType.ll_cas.ll_setStringValue(addr, ((Root_Type) jcasType).casFeatCode_concreteString, v);
-  }
-}
+    

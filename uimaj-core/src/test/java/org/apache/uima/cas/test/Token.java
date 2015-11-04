@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Oct 28 11:25:30 EDT 2015 */
+/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
 
 package org.apache.uima.cas.test;
 
@@ -14,7 +14,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Oct 28 11:25:30 EDT 2015
+ * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Token extends Annotation {
@@ -34,11 +34,14 @@ public class Token extends Annotation {
   @Override
   public              int getTypeIndexID() {return typeIndexID;}
  
-
+ 
   /* *****************
    *    Local Data   *
    * *****************/ 
- 
+   
+  /* Register Features */
+
+   
  
   /** Never called.  Disable default constructor
    * @generated */
