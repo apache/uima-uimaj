@@ -48,8 +48,7 @@ public class Id2FSTest extends TestCase {
     }
   }
 
-  public void testStuff() throws InterruptedException {
-    // the normal cas APIs use the gc mode
+  public void testId2fs() throws InterruptedException {
     
     TOP fs1 = new TOP(jcas);
 
@@ -77,24 +76,28 @@ public class Id2FSTest extends TestCase {
     assertTrue(fsh == cas.getFsFromId(2));
     
     for (int i = 1; i < 20; i++) {
+      TOP fs = null; // for debugging
       boolean caught = false;
       try {
-        TOP fs = cas.getFsFromId(i + 2);
-      } catch (CASRuntimeException e) {
+        fs = cas.getFsFromId_checked(i + 2);
+      } catch (LowLevelException e) {
         caught = true;
+      }
+      if (!caught) {
+        System.out.println("debug " + fs);
       }
       assertTrue(caught);
       
       caught = false;
       try {
-        TOP fs = cas.getFsFromId_checked(i + 2);
-      } catch (CASRuntimeException e) {
+        fs = cas.getFsFromId_checked(i + 2);
+      } catch (LowLevelException e) {
         caught = true;
       }
       assertTrue(caught);
     }
     
-    Id2FS id2fs = new Id2FS(false);  // non gc mode
+    Id2FS id2fs = new Id2FS(); 
     cas.reset();
     fs1 = new TOP(jcas);
     
@@ -116,7 +119,7 @@ public class Id2FSTest extends TestCase {
     Thread.sleep(10);  // in case gc needs time to finish 
     for (int i = 0; i < 20; i++) {
       TOP fs = id2fs.get(i + 2);
-      assertEquals(fs._id, i + 2);
+      assertNull(fs);
     }    
   }
 

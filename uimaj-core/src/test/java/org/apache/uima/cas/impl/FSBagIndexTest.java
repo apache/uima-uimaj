@@ -22,8 +22,6 @@ package org.apache.uima.cas.impl;
 import java.io.File;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.TypeSystem;
@@ -34,6 +32,8 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class FSBagIndexTest extends TestCase {
 
@@ -49,7 +49,7 @@ public class FSBagIndexTest extends TestCase {
   File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
 
   
-  FSBagIndex bi;
+  FsIndex_bag bi;
   
   
   protected void setUp() throws Exception {
@@ -63,8 +63,8 @@ public class FSBagIndexTest extends TestCase {
     bi = cbi();
   }
   
-  private FSBagIndex cbi() {
-    return new FSBagIndex(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX);
+  private FsIndex_bag cbi() {
+    return new FsIndex_bag(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX);
   }
 
   protected void tearDown() throws Exception {
