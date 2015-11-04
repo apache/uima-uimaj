@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,8 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -258,7 +257,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     private FeatureStructure cache_not_in_index = null; // a one item cache of a FS guaranteed to not be in any index
     
-    private final PositiveIntSet_impl featureCodesInIndexKeys = new PositiveIntSet_impl(); 
+    /**
+     * These fields are here, not in TypeSystemImpl, because different CASes may have different indexes but share the same type system
+     * They hold the same data (constant per CAS) but are accessed with different indexes
+     */
+    private final BitSet featureCodesInIndexKeys = new BitSet(1024); // 128 bytes
+    private final BitSet featureJiInIndexKeys = new BitSet(1024);  // indexed by JCas Feature Index, not feature code.
     
     // A map from Sofas to IndexRepositories.
     private Map<Integer, FSIndexRepository> sofa2indexMap;
@@ -286,8 +290,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // FS cover classes for this CAS. Defaults to the ClassLoader used
     // to load the CASImpl class.
     private ClassLoader jcasClassLoader = this.getClass().getClassLoader();
-
-    private ClassLoader previousJCasClassLoader = this.jcasClassLoader;
 
     // If this CAS can be flushed (reset) or not.
     // often, the framework disables this before calling users code
@@ -386,8 +388,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.fsTobeAddedbackSingle;
   }
   
-  void featureCodesInIndexKeysAdd(int featCode) {
-    svd.featureCodesInIndexKeys.add(featCode);
+  void featureCodes_inIndexKeysAdd(int featCode, int registryIndex) {
+    svd.featureCodesInIndexKeys.set(featCode);
+    // skip adding if no JCas registry entry for this feature
+    if (registryIndex >= 0) {
+      svd.featureJiInIndexKeys.set(registryIndex);
+    }
   }
   
   void maybeClearCacheNotInIndex(FeatureStructure fs) {
@@ -813,7 +819,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.baseCAS;
   }
 
-  @SuppressWarnings("unchecked")
   public FSIterator<SofaFS> getSofaIterator() {
     FSIndex<SofaFS> sofaIndex = this.svd.baseCAS.indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
     return sofaIndex.iterator();
@@ -1018,6 +1023,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void resetNoQuestions() {
     svd.casResets.incrementAndGet();
     svd.fsIdGenerator.set(0);
+    svd.id2fs.clear();
     if (trace) {
       System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
           " for CasId = " + getCasId() + ", new reset count = " + svd.casResets.get());
@@ -1209,7 +1215,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       
   /*
    * Support code for JCas setters
+   * Only called from JCasGen'd code
+   * 
    */
+  public void setWithCheckAndJournalJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex, Runnable setter) {
+    boolean wasRemoved = checkForInvalidFeatureSettingJFRI(fs, jcasFieldRegistryIndex);
+    setter.run();
+    if (wasRemoved) {
+      maybeAddback(fs);
+    }
+    maybeLogUpdateJFRI(fs, jcasFieldRegistryIndex);
+  }
+  
   public void setWithCheckAndJournal(FeatureStructureImplC fs, int featCode, Runnable setter) {
     boolean wasRemoved = checkForInvalidFeatureSetting(fs, featCode);
     setter.run();
@@ -1218,23 +1235,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     maybeLogUpdate(fs, featCode);
   }
-  
-  /**
-   * This method called by setters in JCas gen'd classes when 
-   * the setter must check for journaling and index corruption
-   * @param fs
-   * @param featCode
-   * @param setter
-   */
-  public void setWithCheckAndJournal(FeatureStructureImplC fs, IntSupplier featCodeSupplier, Runnable setter) {
-    boolean wasRemoved = checkForInvalidFeatureSetting(fs, featCodeSupplier);
-    setter.run();
-    if (wasRemoved) {
-      maybeAddback(fs);
-    }
-    maybeLogUpdate(fs, featCodeSupplier.getAsInt());
-  }
-  
+
+    
 //  public void setWithCheck(FeatureStructureImplC fs, FeatureImpl feat, Runnable setter) {
 //    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat);
 //    setter.run();
@@ -1255,11 +1257,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     maybeLogUpdate(fs, fi);
   }
 
-  public void setWithJournal(FeatureStructureImplC fs, Supplier<FeatureImpl> fiSupplier, Runnable setter) {
+  public void setWithJournalJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex, Runnable setter) {
     setter.run();
-    maybeLogUpdate(fs, fiSupplier);
+    maybeLogUpdateJFRI(fs, jcasFieldRegistryIndex);
   }
 
+  
+  
   /**
    * 
    * @param fs the Feature Structure being updated
@@ -1278,9 +1282,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
   
-  public void maybeLogUpdate(FeatureStructureImplC fs, Supplier<FeatureImpl> featSupplier) {
+  public void maybeLogUpdateJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex) {
     if (this.svd.trackingMark != null) {
-      this.logFSUpdate(fs, featSupplier.get());
+      this.logFSUpdate(fs, getFeatFromJCasFieldRegistryIndex(jcasFieldRegistryIndex));
     }
   }
 
@@ -1298,7 +1302,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   /**
-   * This is the common point where all operations to set features come through
+   * This is the common point where low-level operations to set features come through
    * It implements the check for invalid feature setting and potentially the addback.
    *  
    * @param fs      the feature structure
@@ -2049,7 +2053,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return ((FeatureStructureImplC)fs).id();
   }
 
-  @SuppressWarnings("unchecked")
   public <T extends TOP> T ll_getFSForRef(int id) {
     return getFsFromId_checked(id);
   }
@@ -2172,11 +2175,30 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (IS_DISABLED_PROTECT_INDEXES && ssz == 0) {
       return false;
     }
+    
+    if (!svd.featureCodesInIndexKeys.get(featCode)) {
+      return false;
+    }
 
-    return checkForInvalidFeatureSettingCommon(fs, featCode, ssz);
+    // next method skips if the fsRef is not in the index (cache)
+    final boolean wasRemoved = removeFromCorruptableIndexAnyView(
+        fs, 
+        (ssz > 0) ? svd.fssTobeAddedback.get(ssz - 1) : 
+                    svd.fsTobeAddedbackSingle 
+        );            
+ 
+    svd.cache_not_in_index = fs; // speed up adds before add back
+    
+    // skip message if wasn't removed
+    // skip message if protected in explicit block
+    if (wasRemoved && IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && ssz == 0) {
+      featModWhileInIndexReport(fs, featCode);
+    }  
+    return wasRemoved;
   }
-  
-  private boolean checkForInvalidFeatureSetting(FeatureStructureImplC fs, IntSupplier featCodeSupplier) {
+
+  // version of above, but using jcasFieldRegistryIndex
+  private boolean checkForInvalidFeatureSettingJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex) {
     if (fs == svd.cache_not_in_index) {
       return false;
     }
@@ -2186,30 +2208,39 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (IS_DISABLED_PROTECT_INDEXES && ssz == 0) {
       return false;
     }
-       
-    return checkForInvalidFeatureSettingCommon(fs, featCodeSupplier.getAsInt(), ssz);
-  }
+    
+    if (!svd.featureJiInIndexKeys.get(jcasFieldRegistryIndex)) {
+      return false;
+    }
 
-  private boolean checkForInvalidFeatureSettingCommon(FeatureStructureImplC fs, int featCode, int ssz) {
     // next method skips if the fsRef is not in the index (cache)
     final boolean wasRemoved = removeFromCorruptableIndexAnyView(
         fs, 
         (ssz > 0) ? svd.fssTobeAddedback.get(ssz - 1) : 
-                    svd.fsTobeAddedbackSingle, 
-        featCode);            
+                    svd.fsTobeAddedbackSingle 
+        );            
+ 
+    svd.cache_not_in_index = fs; // speed up adds before add back
     
     // skip message if wasn't removed
     // skip message if protected in explicit block
     if (wasRemoved && IS_REPORT_FS_UPDATE_CORRUPTS_INDEX && ssz == 0) {
-      featModWhileInIndexReport(fs, featCode);
+      featModWhileInIndexReport(fs, getFeatFromJCasFieldRegistryIndex(jcasFieldRegistryIndex));
     }  
     return wasRemoved;
   }
   
+  private FeatureImpl getFeatFromJCasFieldRegistryIndex(int jcasFieldRegistryIndex) {
+    return getFSClassRegistry().featuresFromJFRI[jcasFieldRegistryIndex];
+  }
+
   private void featModWhileInIndexReport(FeatureStructure fs, int featCode) {
+    featModWhileInIndexReport(fs, getTypeSystemImpl().getFeatureForCode(featCode));
+  }
+  
+  private void featModWhileInIndexReport(FeatureStructure fs, FeatureImpl fi) {
     // prepare a message which includes the feature which is a key, the fs, and
     // the call stack.
-    Feature fi = getTypeSystemImpl().getFeatureForCode(featCode);
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     new Throwable().printStackTrace(pw);
@@ -2296,7 +2327,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   boolean removeFromCorruptableIndexAnyView(final FeatureStructureImplC fs, FSsTobeAddedback toBeAdded, int featCode) {
-    if (fs != svd.cache_not_in_index && svd.featureCodesInIndexKeys.contains(featCode)) {
+    if (fs != svd.cache_not_in_index && svd.featureCodesInIndexKeys.get(featCode)) {
       boolean wasRemoved = removeFromCorruptableIndexAnyView(fs, toBeAdded);
       svd.cache_not_in_index = fs; // because will remove it if its in the index.
       return wasRemoved;
@@ -2332,15 +2363,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return wasRemoved;
   }
-  
-  boolean removeFromCorruptableIndexAnyViewSetCache(final FeatureStructureImplC fs, FSsTobeAddedback toBeAdded) {
-    if (fs != svd.cache_not_in_index) {
-      svd.cache_not_in_index = fs;
-      return removeFromCorruptableIndexAnyView(fs, toBeAdded);
-    }
-    return false;
-  }
- 
+   
   /**
    * remove a FS from corruptable indexes in this view
    * @param fs the fs to be removed
@@ -2683,7 +2706,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @see org.apache.uima.cas.admin.CASMgr#setJCasClassLoader(java.lang.ClassLoader)
    */
   public void setJCasClassLoader(ClassLoader classLoader) {
-    this.svd.previousJCasClassLoader = classLoader;
     this.svd.jcasClassLoader = classLoader;
   }
 
@@ -3566,9 +3588,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   public int setId2fs(FeatureStructureImplC fs) {
     svd.id2fs.add(fs);
-    assert(!svd.id2fs.is_gc
-           ? svd.id2fs.size() == (1 + svd.fsIdGenerator.get())
-           : true);        
+    if (svd.id2fs.size() != (2 + svd.fsIdGenerator.get())) {
+      System.out.println("debug");
+    }
+    assert(svd.id2fs.size() == (2 + svd.fsIdGenerator.get()));
     return getNextFsId();
   }
   

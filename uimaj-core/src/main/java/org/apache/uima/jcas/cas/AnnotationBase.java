@@ -54,8 +54,11 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
   public int getTypeIndexID() {
     return typeIndexID;
   }
+  
+  // private final static int _FI_sofa = JCasRegistry.registerFeature();  // only for journal-able or corruptable feature slots
 
   /* local data */
+  public final static int _FI_sofa = JCasRegistry.registerFeature(typeIndexID);
   
   private final Sofa _F_sofa;
   

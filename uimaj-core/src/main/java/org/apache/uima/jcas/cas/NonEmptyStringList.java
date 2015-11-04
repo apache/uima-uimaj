@@ -36,17 +36,9 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
     return typeIndexID;
   }
 
-  private final static int head_featCode;
-  private final static int tail_featCode;
+  public static final int _FI_head = JCasRegistry.registerFeature(typeIndexID);
+  public static final int _FI_tail = JCasRegistry.registerFeature(typeIndexID);
   
-  static {
-    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
-    TypeImpl listType = tsi.getType(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST);
-    
-    head_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD).getCode();
-    tail_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL).getCode();
-  }
-
   /* local data */
   private String _F_head;
   private StringList _F_tail;
@@ -79,7 +71,7 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
   public void setHead(String v) {
     _F_head = v;  
     // no corruption check - can't be a key
-    _casView.maybeLogUpdate(this, head_featCode);
+    _casView.maybeLogUpdateJFRI(this, _FI_head);
   }
 
   // *------------------*
@@ -91,7 +83,7 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
   public void setTail(StringList v) {
     _F_tail = v;
     // no corruption check - can't be a key
-    _casView.maybeLogUpdate(this, tail_featCode);
+    _casView.maybeLogUpdateJFRI(this, _FI_tail);
   }
   
   public void setTail(CommonList v) {

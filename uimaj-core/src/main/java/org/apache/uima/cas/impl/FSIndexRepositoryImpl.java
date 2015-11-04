@@ -476,7 +476,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (!sii.isSetUpFromBaseCAS) {        
         for (int i = 0, nKeys = comp.getNumberOfKeys(); i < nKeys; i++) {
           if (comp.getKeyType(i) == FSIndexComparator.FEATURE_KEY) {
-            cas.featureCodesInIndexKeysAdd(comp.getKeyFeature(i).getCode());
+            FeatureImpl fi = comp.getKeyFeature(i);
+            cas.featureCodes_inIndexKeysAdd(fi.getCode(), fi.registryIndex);
           }
         }
       }

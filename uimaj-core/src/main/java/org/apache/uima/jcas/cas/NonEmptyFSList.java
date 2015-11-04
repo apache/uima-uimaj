@@ -19,10 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -36,20 +34,8 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
     return typeIndexID;
   }
 
-  // Offsets to use in accessing features
-  //   For built-ins, these are static constants
-  
-  private final static int head_featCode;
-  private final static int tail_featCode;
-  
-  static {
-    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
-    TypeImpl listType = tsi.getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
-    
-    // makes assumption that all uima lists have the same head/tail offsets
-    head_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_HEAD).getCode();
-    tail_featCode = listType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_TAIL).getCode();
-  }
+  public static final int _FI_head = JCasRegistry.registerFeature(typeIndexID);
+  public static final int _FI_tail = JCasRegistry.registerFeature(typeIndexID);
 
   /* local data */
   private TOP _F_head;
@@ -83,7 +69,7 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public void setHead(TOP v) {
     _F_head = v;  
     // no corruption check - can't be a key
-    _casView.maybeLogUpdate(this, head_featCode);
+    _casView.maybeLogUpdateJFRI(this, _FI_head);
   }
 
   // *------------------*
@@ -95,7 +81,7 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public void setTail(FSList v) {
     _F_tail = v;
     // no corruption check - can't be a key
-    _casView.maybeLogUpdate(this, tail_featCode);
+    _casView.maybeLogUpdateJFRI(this, _FI_tail);
   }
   
   public void setTail(CommonList v) {

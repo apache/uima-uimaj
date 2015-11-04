@@ -43,17 +43,9 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
     return typeIndexID;
   }
   
-  // static values OK for built-ins
-  private final static int begin_featCode;
-  private final static int end_featCode;
-    
-  static {
-    TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
-    TypeImpl annotType = tsi.annotType;
-    begin_featCode = annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_BEGIN).getCode();
-    end_featCode   = annotType.getFeatureByBaseName(CAS.FEATURE_BASE_NAME_END  ).getCode();
-  }
-
+  public final static int _FI_begin = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_end = JCasRegistry.registerFeature(typeIndexID);
+  
   /* local data */
   private int _F_begin;
   private int _F_end;
@@ -90,7 +82,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * setter for begin - sets beginning of span of annotation
    */
   public void setBegin(int v) { 
-    _casView.setWithCheckAndJournal(this, begin_featCode, () -> _F_begin = v);
+    _casView.setWithCheckAndJournalJFRI(this, _FI_begin , () -> _F_begin = v);
   }
 
   // *------------------*
@@ -106,7 +98,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {
-    _casView.setWithCheckAndJournal(this,  end_featCode,  () -> _F_end = v);
+    _casView.setWithCheckAndJournalJFRI(this,  _FI_end,  () -> _F_end = v);
   }
 
   /**

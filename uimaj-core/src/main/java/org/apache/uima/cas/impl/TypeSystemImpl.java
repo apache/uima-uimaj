@@ -292,6 +292,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    private FeatureStructureClassGen featureStructureClassGen = new FeatureStructureClassGen(); 
 
   private FSClassRegistry fsClassRegistry; // set at type system commit time.
+  
   /**
    * Map from built-in array name to component Type
    */
@@ -1320,26 +1321,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     computeAdjustedFeatureOffsets(topType, 0, 0);
   }
   
-  
-  private void computeFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
-    int iFeat = nextI;
-    int rFeat = nextR;
-    
-    for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      fi.setOffset(fi.isInInt ? (iFeat ++) : (rFeat ++));
-      if (((TypeImpl)fi.getRange()).isLongOrDouble) {
-        iFeat ++;
-      }
-    }
-        
-    ti.highestIntOffset = nextI;
-    ti.highestRefOffset = nextR;
-    
-    for (TypeImpl sub : ti.getDirectSubtypes()) {
-      computeFeatureOffsets(sub, iFeat, rFeat);
-    }  
-  }
-
+  /**
+   * This is the actual offset for the feature, only if it is not in the JCas class as a field
+   * Also sets the getter and setter items from the FSClassRegistry. 
+   * @param ti - the type
+   * @param nextI - the next available slot to use - for int style items
+   * @param nextR - the next available slot to use - for ref style items
+   */
   private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
     int iFeat = nextI;
     int rFeat = nextR;
@@ -1368,6 +1356,31 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }  
   }
     
+  /**
+   * Feature "ids" - offsets without adjusting for whether or not they're in the class itself
+   * @param ti a type to compute these for
+   * @param nextI - the next available int offset
+   * @param nextR - the next available ref offset
+   */
+  private void computeFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
+    int iFeat = nextI;
+    int rFeat = nextR;
+    
+    for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+      fi.setOffset(fi.isInInt ? (iFeat ++) : (rFeat ++));
+      if (((TypeImpl)fi.getRange()).isLongOrDouble) {
+        iFeat ++;
+      }
+    }
+        
+    ti.highestIntOffset = nextI;
+    ti.highestRefOffset = nextR;
+    
+    for (TypeImpl sub : ti.getDirectSubtypes()) {
+      computeFeatureOffsets(sub, iFeat, rFeat);
+    }  
+  }
+
   private void decompile(Type t) {
     String name = t.getName();  
     if (name.endsWith(ARRAY_TYPE_SUFFIX)) return;
@@ -1968,7 +1981,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       return false;
     }
     // superType is null for TOP, which is a Ref type
-    if (superType != null && superType.getName().equals(CAS.TYPE_NAME_STRING)) { // cant compare to stringType - may not be set yet
+    if (superType != null && superType.getName().equals(CAS.TYPE_NAME_STRING)) { // can't compare to stringType - may not be set yet
       return false;
     }
     return true;

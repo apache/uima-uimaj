@@ -179,6 +179,8 @@ public class FSClassRegistry {
   // the loaded JCas cover classes, generators, setters, and getters.  index is typecode; value is JCas cover class which may belong to a supertype.
   private final JCasClassInfo[] jcasClassesInfo; 
 
+  final FeatureImpl[] featuresFromJFRI;
+  
   /**
    * install the default (non-JCas) generator for all types in the type system and the
    * JCas style generators for the built-in types
@@ -215,8 +217,44 @@ public class FSClassRegistry {
       maybeLoadJCasAndSubtypes(ts, ts.topType, jcasClassesInfo[TypeSystemImpl.topTypeCode]);
     }
     
+    // walk the type system and extract all the registry indexes
+    // While walking, update the FeatureImpl with the registry index
+    ArrayList<FeatureImpl> ffjfri = getFeatureFromJFRI(ts, ts.topType, new ArrayList<FeatureImpl>());
+    
+    featuresFromJFRI = new FeatureImpl[ffjfri.size()];
+    ffjfri.toArray(featuresFromJFRI);
+    
     reportErrors();
   }
+
+  /**
+   * Walk type system from TOP, depth first
+   *   - for each type, for all the features introduced, 
+   *     -- collect if exists the field registry # and also save in the FeatureImpl
+   * @param ts
+   * @param ti
+   * @param collector
+   * @return
+   */
+  private ArrayList<FeatureImpl> getFeatureFromJFRI(TypeSystemImpl ts, TypeImpl ti, ArrayList<FeatureImpl> collector) {
+    Class<?> clazz = getJCasClass(ti.getCode());
+    for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+      int indexJFRI = Misc.getStaticIntField(clazz, "_FI_" + fi.getShortName());
+      if (indexJFRI != Integer.MIN_VALUE) {  // that value is code for not found
+        fi.registryIndex = indexJFRI;
+        Misc.setWithExpand(collector, indexJFRI, fi);
+//      } else {
+//        System.out.println("debug: not found " + clazz.getName() + ", feature = " + fi.getShortName());
+      }
+    }
+    
+    for (TypeImpl subtype : ti.getDirectSubtypes()) {
+      getFeatureFromJFRI(ts, subtype, collector);
+    }
+    return collector;
+  }
+  
+  
 
   private void maybeLoadJCasAndSubtypes(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo copyDownDefault_jcasClassInfo) {
     final int typecode = ti.getCode();
@@ -238,7 +276,7 @@ public class FSClassRegistry {
       maybeLoadJCasAndSubtypes(ts, subtype, jcasClassesInfo[typecode]);
     }
   }
-    
+   
   private static Class<?> maybeLoadJCas(String typeName, ClassLoader cl) {
     Class<?> clazz = null;
     String className = typeName2ClassName(typeName);

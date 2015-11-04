@@ -36,6 +36,9 @@ public class FeatureImpl implements Feature {
   private final int featureCode;        // unique id for this feature, in this type system
   private       int featureOffset = -1; // the offset in the storage array for this feature without regard to JCas implemented features; set at commit time
   private       int adjustedFeatureOffset = -1; // the offset in the storage array for this feature, adjusted to exclude JCas implemented features; set at commit time
+  
+                int registryIndex = -1; // set from JCas classes feature registry
+                                        // used to setup index corruption bitset                
           final boolean isInInt;        // specifies which array the data is in
 
   private TypeImpl highestDefiningType;  // not final, could change
@@ -47,13 +50,10 @@ public class FeatureImpl implements Feature {
   private final boolean isMultipleRefsAllowed;
   
   private final String shortName;     //         feat
-  
-  private final String getterName;   // getFoo where "foo" is shortName
-  private final String setterName;   // setFoo where "foo" is shortName 
-  
+    
   protected Object jcasGetter;  // null or the functional interface to call to get this feature
   protected Object jcasSetter;  // null or the functional interface to call to set this feature
-  
+    
   private final SlotKind slotKind;
     
 
@@ -67,9 +67,6 @@ public class FeatureImpl implements Feature {
   this.slotKind = slotKind;
   this.shortName = shortName;
   this.isMultipleRefsAllowed = isMultipleRefsAllowed;
-  String shortName1stLetterUpperCase = Character.toUpperCase(this.shortName.charAt(0)) + ((shortName.length() == 1) ? "" : this.shortName.substring(1));
-  this.getterName = "get" + shortName1stLetterUpperCase;
-  this.setterName = "set" + shortName1stLetterUpperCase;
   this.isInInt = tsi.isInInt(rangeType);
   typeImpl.addFeature(this);  // might throw if existing feature with different range
   feats.add(this);
@@ -128,22 +125,12 @@ public class FeatureImpl implements Feature {
   }
 
   public String getGetterSetterName(boolean isGet) {
-    return isGet ? this.getterName : this.setterName;
+    String shortName1stLetterUpperCase = Character.toUpperCase(this.shortName.charAt(0)) + 
+        ((shortName.length() == 1) ? "" : this.shortName.substring(1));
+
+    return (isGet ? "get" : "set")  + shortName1stLetterUpperCase;
   }
   
-  public String getSetterName() {
-    return this.setterName;
-  }
-
-//  /**
-//   * Get the type system that this feature belongs to.
-//   * 
-//   * @return The type system.
-//   */
-//  public TypeSystem getTypeSystem() {
-//    return this.ts;
-//  }
-
   /**
    * Note: you can only compare features from the same type system. If you compare features from
    * different type systems, the result is undefined.

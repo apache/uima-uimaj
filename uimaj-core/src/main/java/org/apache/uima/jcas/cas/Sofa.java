@@ -41,6 +41,13 @@ public class Sofa extends TOP implements SofaFS {
   
   /* local data */
   
+  public final static int _FI_sofaNum = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_sofaID = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_mimeType = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_sofaArray = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_sofaString = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_sofaURI = JCasRegistry.registerFeature(typeIndexID);
+  
   private final int _F_sofaNum;
   private final String _F_sofaID;  // view name or _InitialView
   private String _F_mimeType;      // may be changed
