@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 16:59:32 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
 
 package aa;
 
@@ -14,7 +14,7 @@ import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 16:59:32 EST 2015
+ * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class MissingFeatureInCas extends TOP {
@@ -40,9 +40,9 @@ public class MissingFeatureInCas extends TOP {
    * *****************/ 
    
   /* Register Features */
-  private final static int _FI_haveThisOne = JCasRegistry.registerFeature();
-  private final static int _FI_missingThisOne = JCasRegistry.registerFeature();
-  private final static int _FI_changedFType = JCasRegistry.registerFeature();
+  public final static int _FI_haveThisOne = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_missingThisOne = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_changedFType = JCasRegistry.registerFeature(typeIndexID);
 
    
   private int _F_haveThisOne;  // 

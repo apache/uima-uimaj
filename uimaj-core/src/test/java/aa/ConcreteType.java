@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 16:59:32 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
 
 package aa;
 
@@ -13,7 +13,7 @@ import org.apache.uima.jcas.JCasRegistry;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 16:59:32 EST 2015
+ * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class ConcreteType extends AbstractType {
@@ -39,7 +39,7 @@ public class ConcreteType extends AbstractType {
    * *****************/ 
    
   /* Register Features */
-  private final static int _FI_concreteString = JCasRegistry.registerFeature();
+  public final static int _FI_concreteString = JCasRegistry.registerFeature(typeIndexID);
 
    
   private String _F_concreteString;  // 

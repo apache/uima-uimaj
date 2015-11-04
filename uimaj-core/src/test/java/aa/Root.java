@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 16:59:33 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
 
 package aa;
 
@@ -18,7 +18,7 @@ import org.apache.uima.jcas.cas.IntegerArray;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 16:59:33 EST 2015
+ * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Root extends TOP {
@@ -44,14 +44,14 @@ public class Root extends TOP {
    * *****************/ 
    
   /* Register Features */
-  private final static int _FI_arrayInt = JCasRegistry.registerFeature();
-  private final static int _FI_arrayRef = JCasRegistry.registerFeature();
-  private final static int _FI_arrayFloat = JCasRegistry.registerFeature();
-  private final static int _FI_arrayString = JCasRegistry.registerFeature();
-  private final static int _FI_plainInt = JCasRegistry.registerFeature();
-  private final static int _FI_plainFloat = JCasRegistry.registerFeature();
-  private final static int _FI_plainString = JCasRegistry.registerFeature();
-  private final static int _FI_plainRef = JCasRegistry.registerFeature();
+  public final static int _FI_arrayInt = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_arrayRef = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_arrayFloat = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_arrayString = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_plainInt = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_plainFloat = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_plainString = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_plainRef = JCasRegistry.registerFeature(typeIndexID);
 
    
   private IntegerArray _F_arrayInt;  // 
