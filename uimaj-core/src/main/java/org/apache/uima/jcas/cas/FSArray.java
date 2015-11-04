@@ -48,7 +48,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     return typeIndexID;
   }
 
-  private final FeatureStructure[] theArray;
+  private final TOP[] theArray;
   
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
@@ -64,7 +64,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   public FSArray(JCas jcas, int length) {
     super(jcas);
     _casView.validateArraySize(length);
-    theArray = new FeatureStructureImplC[length];
+    theArray = new TOP[length];
   }
   
   /**
@@ -77,18 +77,18 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   public FSArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     _casView.validateArraySize(length);
-    theArray = new FeatureStructureImplC[length];
+    theArray = new TOP[length];
   }
 
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
-  public FeatureStructure get(int i) {
+  public TOP get(int i) {
     return theArray[i];
   }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
-    theArray[i] = (FeatureStructureImplC) v;
+    theArray[i] = (TOP) v;
   }
 
   /** return the size of the array. */
