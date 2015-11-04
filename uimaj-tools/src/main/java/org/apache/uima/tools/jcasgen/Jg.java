@@ -52,11 +52,14 @@ import javax.swing.UIManager;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FeatureDescription;
@@ -791,9 +794,9 @@ public class Jg {
     simpleClassName = removePkg(getJavaName(td));
     generateClass(progressMonitor, outputDirectory, td, jcasTypeInstance.generate(new Object[] {
         this, td }), getJavaName(td), merger);
-    simpleClassName = removePkg(getJavaName_Type(td));
-    generateClass(progressMonitor, outputDirectory, td, jcas_TypeInstance.generate(new Object[] {
-        this, td }), getJavaName_Type(td), merger);
+//    simpleClassName = removePkg(getJavaName_Type(td));
+//    generateClass(progressMonitor, outputDirectory, td, jcas_TypeInstance.generate(new Object[] {
+//        this, td }), getJavaName_Type(td), merger);
   }
 
   String getPkg(TypeDescription td) {
@@ -1001,6 +1004,24 @@ public class Jg {
       return false;
     return bi.isArray;
   }
+  
+  boolean isPossibleIndexKey(FeatureDescription fd) {
+    String rangeTypeName = fd.getRangeTypeName();
+    // keys are primitives + string + string subtypes
+    TypeImpl rangeType = (null == typeSystem) ? null : (TypeImpl) typeSystem.getType(rangeTypeName);
+    return (null == typeSystem) ||          // default is to do checking
+           rangeType.isStringSubtype() ||   
+           BuiltinTypeKinds.primitiveTypeNames_contains(rangeTypeName);  // includes String
+  }
+  
+  boolean isStringSubtype(FeatureDescription fd) {
+    if (null != typeSystem) {
+      String rangeTypeName = fd.getRangeTypeName();
+      TypeImpl rangeType = (TypeImpl) typeSystem.getType(rangeTypeName);
+      return rangeType.getSuperType() == ((TypeSystemImpl)typeSystem).stringType;
+    }
+    return false;
+  }
 
   String getJavaRangeArrayElementType(FeatureDescription fd) {
     String arrayElementCasNameWithNameSpace = fd.getElementType();
@@ -1050,6 +1071,8 @@ public class Jg {
   }
 
   String simpleCore(String get_set, String range, String fname, String tname_Type) {
+    
+    
     String v = ", v";
     if (get_set.equals("set") && range.equals("Ref"))
       v = ", jcasType.ll_cas.ll_getFSRef(v)";
