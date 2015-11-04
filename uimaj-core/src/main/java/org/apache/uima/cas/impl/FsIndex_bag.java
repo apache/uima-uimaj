@@ -75,7 +75,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @SuppressWarnings("unchecked")
   public final boolean insert(int fs) {
-    return insert((T) casImpl.getFsFromId(fs)); 
+    return insert((T) casImpl.getFsFromId_checked(fs)); 
   }
     
   /**
@@ -134,7 +134,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   }
   
   boolean ll_contains(int fsAddr) {
-    return contains(casImpl.getFsFromId(fsAddr));
+    return contains(casImpl.getFsFromId_checked(fsAddr));
   }
 
   /**
@@ -169,7 +169,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   
   @Override
   public boolean remove(int fsRef) {    
-    return deleteFS(casImpl.getFsFromId(fsRef));
+    return deleteFS(casImpl.getFsFromId_checked(fsRef));
   }
 
   public int hashCode() {

@@ -167,8 +167,11 @@ public class FSClassRegistry {
       assert (builtinClass != null);  // builtin types must be present
       
       // copy down to subtypes, if needed, done later
-      jcasClassesInfoForBuiltins[ti.getCode()] = createJCasClassInfo(builtinClass, ti); 
+      JCasClassInfo jcasClassInfo = createJCasClassInfo(builtinClass, ti); 
+      jcasClassesInfoForBuiltins[ti.getCode()] = jcasClassInfo; 
+      setupGetterSetter(ti, jcasClassInfo);
     }
+    
     /** special handling for Sofa, a non-creatable type */
     TypeImpl ti = tsi.getType(CAS.TYPE_NAME_SOFA);
     jcasClassesInfoForBuiltins[ti.getCode()] = createJCasClassInfo(Sofa.class, ti); 
@@ -214,7 +217,14 @@ public class FSClassRegistry {
      */
     
     if (isDoUserJCasLoading) {
+      /**
+       * Two pass loading is needed.  
+       *   - The first one loads the JCas Cover Classes initializes everything except the getters and setters
+       *   - The second pass updates the JCasClassInfo for the getters, and setters, which depend on 
+       *     having the TypeImpl' javaClass field be accurate (reflect any loaded JCas types)
+       */
       maybeLoadJCasAndSubtypes(ts, ts.topType, jcasClassesInfo[TypeSystemImpl.topTypeCode]);
+      setupGettersSetters(ts, ts.topType, jcasClassesInfo);
     }
     
     // walk the type system and extract all the registry indexes
@@ -266,7 +276,7 @@ public class FSClassRegistry {
     if (!isBuiltin) {
       clazz = maybeLoadJCas(ti.getName(), ti.getClass().getClassLoader()); 
       if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
-        jcasClassInfo = createJCasClassInfo(clazz, ti);  // side effect - creates method handles for getters/setters
+        jcasClassInfo = createJCasClassInfo(clazz, ti); 
         ts.setJCasRegisteredType(Misc.getStaticIntField(clazz, "typeIndexID"), ti);
       }
       jcasClassesInfo[typecode] = jcasClassInfo;  // sets new one or default one
@@ -275,6 +285,38 @@ public class FSClassRegistry {
     for (TypeImpl subtype : ti.getDirectSubtypes()) {
       maybeLoadJCasAndSubtypes(ts, subtype, jcasClassesInfo[typecode]);
     }
+  }
+  
+  private static void setupGettersSetters(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo[] jci) {
+    boolean isBuiltin = BuiltinTypeKinds.creatableBuiltinJCas.contains(ti.getName());
+
+    if (!isBuiltin) {
+      setupGetterSetter(ti, jci[ti.getCode()]);
+    }
+    
+    for (TypeImpl subtype : ti.getDirectSubtypes()) {
+      setupGettersSetters(ts, subtype, jci);
+    }
+  }
+  
+  private static void setupGetterSetter(TypeImpl ti, JCasClassInfo jcasClassInfo) {
+
+      final Class<?> jcasClass = jcasClassInfo.jcasClass;
+
+      if (jcasClass.getName().equals(typeName2ClassName(ti.getName()))) {  // skip if this type is using a superclass JCas class
+        for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
+          if (!isFieldInClass(fi, jcasClass)) {
+            continue;
+          }
+          Object getter = createGetterOrSetter(jcasClass, fi, GETTER);
+          Object setter = createGetterOrSetter(jcasClass, fi, SETTER);
+          
+          GetterSetter prev = jcasClassInfo.gettersAndSetters.put(fi.getShortName(), new GetterSetter(getter, setter));
+          if (prev != null) {
+            throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
+          }
+        }            
+      }
   }
    
   private static Class<?> maybeLoadJCas(String typeName, ClassLoader cl) {
@@ -412,9 +454,13 @@ public class FSClassRegistry {
         return null;
       }  
       // report missing setter or getter
-      CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, 
-          jcasClass.getName(), 
-          fi.getGetterSetterName(isGetter));
+      /* Unable to find required {0} method for JCAS type {1} with {2} type of {3}. */
+      CASException casEx = new CASException(CASException.JCAS_GETTER_SETTER_MISSING, 
+          fi.getGetterSetterName(isGetter),
+          jcasClass.getName(),
+          isGetter ? "return" : "argument",
+          range.javaClass.getName()     
+          );
       ArrayList<Exception> es = errorSet.get();
       if (es == null) {
         es = new ArrayList<Exception>();
@@ -442,20 +488,9 @@ public class FSClassRegistry {
   
   // static for setting up static builtin values
   private static JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti) {
+    ti.setJavaClass(jcasClass);
     JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, ti.getName().equals(CAS.TYPE_NAME_SOFA) ? null : createGenerator(jcasClass, ti));
-
-    for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      if (!isFieldInClass(fi, jcasClass)) {
-        continue;
-      }
-      Object getter = createGetterOrSetter(jcasClass, fi, GETTER);
-      Object setter = createGetterOrSetter(jcasClass, fi, SETTER);
-      
-      GetterSetter prev = jcasClassInfo.gettersAndSetters.put(fi.getShortName(), new GetterSetter(getter, setter));
-      if (prev != null) {
-        throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
-      }
-    }    
+    
     return jcasClassInfo;
   }
   
@@ -471,6 +506,7 @@ public class FSClassRegistry {
     ArrayList<Exception> es = errorSet.get();
     if (es != null) {
       StringBuilder msg = new StringBuilder(100);
+      msg.append('\n');
       for (Exception f : es) {
         msg.append(f.getMessage());
         msg.append('\n');

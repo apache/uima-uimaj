@@ -31,7 +31,7 @@ public class LowLevelException extends UIMARuntimeException {
 
   private static final String resource_file = "org.apache.uima.cas.impl.ll_runtimeException";
 
-  /** Error in low-level CAS APIs: attempted heap access with invalid FS reference: {0}. */
+  /** Error in low-level CAS APIs: accessing FS with id {0}, but no such FS exists in this CAS. */
   public static final String INVALID_FS_REF = "INVALID_FS_REF";
   
   /**

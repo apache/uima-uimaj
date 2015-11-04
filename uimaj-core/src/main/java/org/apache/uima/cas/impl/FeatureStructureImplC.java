@@ -461,6 +461,25 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     }
   }
 
+  public void setFeatureValueNoIndexCorruptionCheck(Feature feat, Object v) {
+    FeatureImpl fi = (FeatureImpl) feat;
+ 
+    if (fi.isInInt) {
+      /** Trying to access value of feature "{0}" as feature structure, but is primitive type. */
+      throw new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT, feat.getName());
+    }
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
+ 
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_generic<Object>)setter).set(this, v);
+    } else {
+      _refData[fi.getAdjustedOffset()] = v;
+      _casView.maybeLogUpdate(this, fi.getCode());
+    }
+  }
+
   @Override
   public void setJavaObjectValue(Feature feat, Object v) { 
     if (v instanceof String) {
@@ -612,7 +631,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     return this._casView;
   }
 
-  protected CASImpl _casView() { // was package private 9-03
+  public CASImpl getCASImpl() { // was package private 9-03
     return this._casView;
   }
   

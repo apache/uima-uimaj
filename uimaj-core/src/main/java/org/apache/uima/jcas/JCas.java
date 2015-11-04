@@ -81,20 +81,20 @@ public interface JCas extends AbstractCas {
   /**
    * @return the FSIndexRepository object for this Cas
    */
-  public abstract FSIndexRepository getFSIndexRepository();
+  FSIndexRepository getFSIndexRepository();
 
-  public abstract LowLevelIndexRepository getLowLevelIndexRepository();
+  LowLevelIndexRepository getLowLevelIndexRepository();
 
   /** 
    * @return the CAS object for this JCas instantiation 
    */
-  public abstract CAS getCas();
+  CAS getCas();
 
   /* internal use */
-  public abstract CASImpl getCasImpl();
+  CASImpl getCasImpl();
 
   /* internal use */
-  public abstract LowLevelCAS getLowLevelCas();
+  LowLevelCAS getLowLevelCas();
 
   /**
    * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which
@@ -104,19 +104,19 @@ public interface JCas extends AbstractCas {
    *          index returned by Foo.type
    * @return the CAS Java Type object for this CAS Type.
    */
-  public abstract Type getCasType(int i);
+  Type getCasType(int i);
 
   /*
    * Internal use - looks up a type-name-string in the CAS type system and returns the Cas Type
    * object. Throws CASException if the type isn't found
    */
-  public abstract Type getRequiredType(String s) throws CASException;
+  Type getRequiredType(String s) throws CASException;
 
   /*
    * Internal use - look up a feature-name-string in the CAS type system and returns the Cas Feature
    * object. Throws CASException if the feature isn't found
    */
-  public abstract Feature getRequiredFeature(Type t, String s) throws CASException;
+  Feature getRequiredFeature(Type t, String s) throws CASException;
 
 //  /*
 //   * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
@@ -125,17 +125,17 @@ public interface JCas extends AbstractCas {
 //   * DE suffix means "Deferred Exception"
 //   */
 //
-//  public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
+//  Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
 
 //  /*
 //   * Internal Use. 
 //   */
-//  public abstract void checkArrayBounds(int fsRef, int pos);
+//  void checkArrayBounds(int fsRef, int pos);
 //
 //  /*
 //   * Internal Use - throw missing feature exception at runtime.
 //   */
-//  public void throwFeatMissing(String feat, String type);
+//  void throwFeatMissing(String feat, String type);
 //  
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
@@ -144,14 +144,14 @@ public interface JCas extends AbstractCas {
    * @return the Sofa
    */
   @Deprecated
-  public abstract Sofa getSofa(SofaID sofaID);
+  Sofa getSofa(SofaID sofaID);
 
   /**
    * Get the Sofa feature structure associated with this JCas view.
    * 
    * @return The SofaFS associated with this JCas view.
    */  
-  public abstract Sofa getSofa();
+  Sofa getSofa();
 
   /**
    * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
@@ -171,7 +171,7 @@ public interface JCas extends AbstractCas {
    * @throws CASException -
    *           if a View with this name already exists in this CAS
    */
-  public abstract JCas createView(String sofaID) throws CASException;
+  JCas createView(String sofaID) throws CASException;
 
   /**
    * Create a JCas view for a Sofa. 
@@ -182,7 +182,7 @@ public interface JCas extends AbstractCas {
    * @return The JCas view for the given Sofa.
    * @throws CASException -
    */  
-  public abstract JCas getJCas(Sofa sofa) throws CASException;
+  JCas getJCas(Sofa sofa) throws CASException;
 
   /**
    * Gets the JCas-based interface to the Index Repository. Provides the same functionality
@@ -191,7 +191,7 @@ public interface JCas extends AbstractCas {
    *
    * @return the JCas-based interface to the index repository
    */
-  public abstract JFSIndexRepository getJFSIndexRepository();
+  JFSIndexRepository getJFSIndexRepository();
 
   /**
    * Gets the document annotation. The object returned from this method can be typecast to
@@ -205,7 +205,7 @@ public interface JCas extends AbstractCas {
    * @return The one instance of the DocumentAnnotation annotation.
    * @see org.apache.uima.cas.CAS#getDocumentAnnotation
    */
-  public abstract TOP getDocumentAnnotationFs();
+  TOP getDocumentAnnotationFs();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -215,7 +215,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a StringArray
    */
 
-  public abstract StringArray getStringArray0L();
+  StringArray getStringArray0L();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -224,7 +224,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
    */
-  public abstract IntegerArray getIntegerArray0L();
+  IntegerArray getIntegerArray0L();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -232,7 +232,7 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
-  public abstract FloatArray getFloatArray0L();
+  FloatArray getFloatArray0L();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -241,7 +241,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a FSArray
    */
-  public abstract FSArray getFSArray0L();
+  FSArray getFSArray0L();
 
   /**
    * initialize the JCas for new Cas content. Not used, does nothing.
@@ -249,7 +249,7 @@ public interface JCas extends AbstractCas {
    * @deprecated not required, does nothing
    */
   @Deprecated
-  public abstract void processInit();
+  void processInit();
 
   /**
    * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and

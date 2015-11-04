@@ -63,6 +63,9 @@ public class CASException extends UIMAException {
    * feature {1}.
    */
   public static final String JCAS_FEATURENOTFOUND_ERROR = "JCAS_FEATURENOTFOUND_ERROR";
+  
+  /* Unable to find required {0} method for JCAS type {1} with {2} type of {3}. */
+  public static final String JCAS_GETTER_SETTER_MISSING = "JCAS_GETTER_SETTER_MISSING";
 
   /**
    * The JCAS range type {2} for feature {1} of type {0} does not match the CAS range type {3} for
@@ -75,6 +78,8 @@ public class CASException extends UIMAException {
 
   /** Type system has not been committed; cannot create base index. */
   public static final String MUST_COMMIT_TYPE_SYSTEM = "MUST_COMMIT_TYPE_SYSTEM";
+  
+  
 
   public CASException() {
     super();

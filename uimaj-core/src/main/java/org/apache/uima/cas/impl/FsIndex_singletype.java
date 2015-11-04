@@ -111,7 +111,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * @return true if something was removed, false if not found
    */
   boolean remove(int fs) {
-    return deleteFS(getCasImpl().getFsFromId(fs));
+    return deleteFS((T) getCasImpl().getFsFromId_checked(fs));
   }
    
   /**
@@ -196,7 +196,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * @return 0 if equal, &lt; 0 if fs1 &lt; fs2, &gt; 0 if fs1 &gt; fs2
    */
   public int compare(int fs1, int fs2) {
-    return compare(casImpl.getFsFromId(fs1), casImpl.getFsFromId(fs2));
+    return compare(casImpl.getFsFromId_checked(fs1), casImpl.getFsFromId_checked(fs2));
   }
   
   /**

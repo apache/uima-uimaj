@@ -25,7 +25,6 @@ package org.apache.uima.jcas.impl;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -51,7 +50,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
-import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
@@ -1179,4 +1177,5 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     return getFSIndexRepository().getIndex(label, getCasType(clazz));
   }
 
+  
 }

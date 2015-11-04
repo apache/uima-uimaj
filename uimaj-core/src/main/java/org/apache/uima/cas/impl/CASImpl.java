@@ -1151,34 +1151,33 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param nbrOfConsecutive
    */
   private void logFSUpdate(FeatureStructureImplC fs, FeatureImpl fi, int arrayIndexStart, int nbrOfConsecutive) {
-    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs.id())) {
-      //log the FS
-      
-      //create or use last FsChange element
-      FsChange change = null;
+   
+    //log the FS
+    
+    //create or use last FsChange element
+    FsChange change = null;
 
-      final List<FsChange> changes = this.svd.modifiedPreexistingFSs;
-      final int nbrOfChanges = changes.size(); 
-      if (nbrOfChanges > 0) {
-        change =  changes.get(nbrOfChanges - 1); // get last element
-      }
+    final List<FsChange> changes = this.svd.modifiedPreexistingFSs;
+    final int nbrOfChanges = changes.size(); 
+    if (nbrOfChanges > 0) {
+      change =  changes.get(nbrOfChanges - 1); // get last element
+    }
 
-      // only create a new FsChange element if needed
-      if (change.fs != fs) {
-        this.svd.modifiedPreexistingFSs.add(change = new FsChange(fs));
+    // only create a new FsChange element if needed
+    if (change.fs != fs) {
+      this.svd.modifiedPreexistingFSs.add(change = new FsChange(fs));
+    }
+          
+    if (fi == null) {
+      if (arrayIndexStart < 0) {
+        throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
       }
-            
-      if (fi == null) {
-        if (arrayIndexStart < 0) {
-          throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
-        }
-        change.addArrayData(arrayIndexStart, nbrOfConsecutive);
+      change.addArrayData(arrayIndexStart, nbrOfConsecutive);
+    } else {
+      if (fi.isInInt) {
+        change.addIntData(fi.getOffset());  
       } else {
-        if (fi.isInInt) {
-          change.addIntData(fi.getOffset());  
-        } else {
-          change.addRefData(fi.getOffset());
-        }
+        change.addRefData(fi.getOffset());
       }
     }
   }
@@ -1271,26 +1270,26 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param i the index being updated
    */
   public void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
-    if (this.svd.trackingMark != null) {
+    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs.id())) {
       this.logFSUpdate(fs, feat, 1, 1);
     }    
   }
   
   public void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
-    if (this.svd.trackingMark != null) {
+    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs.id())) {
       this.logFSUpdate(fs, feat);
     }
   }
   
   public void maybeLogUpdateJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex) {
-    if (this.svd.trackingMark != null) {
+    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs.id())) {
       this.logFSUpdate(fs, getFeatFromJCasFieldRegistryIndex(jcasFieldRegistryIndex));
     }
   }
 
 
   public void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
-    if (this.svd.trackingMark != null) {
+    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs.id())) {
       this.logFSUpdate(fs, getTypeSystemImpl().getFeatureForCode(featCode));
     }
   }
@@ -1302,8 +1301,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   /**
-   * This is the common point where low-level operations to set features come through
-   * It implements the check for invalid feature setting and potentially the addback.
+   * low level setter 
    *  
    * @param fs      the feature structure
    * @param feat    the feature to set
@@ -1311,16 +1309,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   public void setFeatureValue(FeatureStructureImplC fs, FeatureImpl feat, int value) {
-    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
-    fs._intData[feat.getAdjustedOffset()] = value;
-    if (wasRemoved) {
-      maybeAddback(fs);
-    }
-    maybeLogUpdate(fs, feat);
+    fs.setIntValue(feat, value);
+//    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
+//    fs._intData[feat.getAdjustedOffset()] = value;
+//    if (wasRemoved) {
+//      maybeAddback(fs);
+//    }
+//    maybeLogUpdate(fs, feat);
   }
 
   /**
    * version for longs, uses two slots
+   * Only called from FeatureStructureImplC after determining 
+   *   there is no local field to use
+   * Is here because of of 3 calls to things in this class
    * @param fs      the feature structure
    * @param feat    the feature to set
    * @param value -
@@ -1337,7 +1339,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * This is the common point where all operations to set features come through
+   * This is the common point where all low-level operations to set features come through
    * It implements the check for invalid feature setting and potentially the addback.
    *   (String objects may be in keys) 
    * @param fs      the feature structure
@@ -1346,27 +1348,28 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   public void setFeatureValue(FeatureStructureImplC fs, FeatureImpl feat, Object value) {
-    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
-    fs._refData[feat.getAdjustedOffset()] = value;
-    if (wasRemoved) {
-      maybeAddback(fs);
-    }
-    maybeLogUpdate(fs, feat);
+    fs.setRefValueCJ(feat, value);
+//    boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
+//    fs._refData[feat.getAdjustedOffset()] = value;
+//    if (wasRemoved) {
+//      maybeAddback(fs);
+//    }
+//    maybeLogUpdate(fs, feat);
   }
 
-  /**
-   * Set the value of a feature of a FS without checking for index corruption
-   * (typically because the feature isn't one that can be used as a key, or
-   * the context is one where the FS is being created, and is guaranteed not to be in any index (yet))
-   * 
-   * @param fs      The FS.
-   * @param feat    The feature.
-   * @param value     The new value for the feature.
-   */
-  void setFeatureValueNoIndexCorruptionCheck(FeatureStructureImplC fs, FeatureImpl feat, int value) {
-    fs._intData[feat.getAdjustedOffset()] = value;   
-    maybeLogUpdate(fs, feat);
-  }
+//  /**
+//   * Set the value of a feature of a FS without checking for index corruption
+//   * (typically because the feature isn't one that can be used as a key, or
+//   * the context is one where the FS is being created, and is guaranteed not to be in any index (yet))
+//   * 
+//   * @param fs      The FS.
+//   * @param feat    The feature.
+//   * @param value     The new value for the feature.
+//   */
+//  void setFeatureValueNoIndexCorruptionCheck(FeatureStructureImplC fs, FeatureImpl feat, int value) {
+//    fs._intData[feat.getAdjustedOffset()] = value;   
+//    maybeLogUpdate(fs, feat);
+//  }
 
   /**
    * Set the value of a feature of a FS without checking for index corruption
@@ -1378,31 +1381,32 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param value     The new value for the feature.
    */
   void setFeatureValueNoIndexCorruptionCheck(FeatureStructureImplC fs, FeatureImpl feat, Object value) {
-    fs._refData[feat.getAdjustedOffset()] = value;   
-    maybeLogUpdate(fs, feat);
+    fs.setFeatureValueNoIndexCorruptionCheck(feat, value);
+//    fs._refData[feat.getAdjustedOffset()] = value;   
+//    maybeLogUpdate(fs, feat);
   }  
 
-  /**
-   * Set the value of a feature in the FS without journaling
-   *   (because it's for a new FS above the mark)
-   * @param fs      The Feature Structure.
-   * @param featOffset The offset
-   * @param value     The new value for the feature.
-   */
-  void setFeatureValueNotJournaled(FeatureStructureImplC fs, int featOffset, int value) {
-    fs._intData[featOffset] = value;
-  }
+//  /**
+//   * Set the value of a feature in the FS without journaling
+//   *   (because it's for a new FS above the mark)
+//   * @param fs      The Feature Structure.
+//   * @param featOffset The offset
+//   * @param value     The new value for the feature.
+//   */
+//  void setFeatureValueNotJournaled(FeatureStructureImplC fs, int featOffset, int value) {
+//    fs._intData[featOffset] = value;
+//  }
 
-  /**
-   * Set the value of a feature in the FS without journaling
-   *   (because it's for a new FS above the mark)
-   * @param fs      The Feature Structure.
-   * @param featOffset The offset
-   * @param value     The new value for the feature.
-   */
-  void setFeatureValueNotJournaled(FeatureStructureImplC fs, int featOffset, Object value) {
-    fs._refData[featOffset] = value;
-  }
+//  /**
+//   * Set the value of a feature in the FS without journaling
+//   *   (because it's for a new FS above the mark)
+//   * @param fs      The Feature Structure.
+//   * @param featOffset The offset
+//   * @param value     The new value for the feature.
+//   */
+//  void setFeatureValueNotJournaled(FeatureStructureImplC fs, int featOffset, Object value) {
+//    fs._refData[featOffset] = value;
+//  }
 
   public void setFeatureValue(int fsRef, int featureCode, int value) {
     setFeatureValue(getFsFromId_checked(fsRef), getTypeSystemImpl().getFeatureForCode(featureCode), value);
@@ -2061,9 +2065,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getFsFromId_checked(fsRef).getIntValue(getTypeSystemImpl().getFeatureForCode_checked(featureCode));
   }
 
-  public final int ll_getIntValueFeatOffset(int fsRef, int featureOffset) {
-    return ll_getFSForRef(fsRef)._intData[featureOffset];
-  }
+//  public final int ll_getIntValueFeatOffset(int fsRef, int featureOffset) {
+//    return ll_getFSForRef(fsRef)._intData[featureOffset];
+//  }
 
   public final float ll_getFloatValue(int fsRef, int featureCode) {
     return getFsFromId_checked(fsRef).getFloatValue(getTypeSystemImpl().getFeatureForCode_checked(featureCode));
@@ -2073,17 +2077,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getFsFromId_checked(fsRef).getStringValue(getTypeSystemImpl().getFeatureForCode_checked(featureCode));
   }
   
-  public final String ll_getStringValueFeatOffset(int fsRef, int featureOffset) {
-    return (String) getFsFromId_checked(fsRef)._refData[featureOffset];
-  }
+//  public final String ll_getStringValueFeatOffset(int fsRef, int featureOffset) {
+//    return (String) getFsFromId_checked(fsRef)._refData[featureOffset];
+//  }
 
   public final int ll_getRefValue(int fsRef, int featureCode) {
     return getFsFromId_checked(fsRef).getFeatureValue(getTypeSystemImpl().getFeatureForCode_checked(featureCode)).id();
   }
 
-  public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
-    return ((FeatureStructureImplC)getFsFromId_checked(fsRef)._refData[featureOffset]).id();
-  }
+//  public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
+//    return ((FeatureStructureImplC)getFsFromId_checked(fsRef)._refData[featureOffset]).id();
+//  }
 
   public final int ll_getIntValue(int fsRef, int featureCode, boolean doTypeChecks) {
     if (doTypeChecks) {
