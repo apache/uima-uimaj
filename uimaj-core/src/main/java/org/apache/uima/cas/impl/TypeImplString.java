@@ -19,17 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.uima.cas.CASRuntimeException;
-
 public class TypeImplString extends TypeImplPrimitive {  // string considered a primitive e.g. in index comparators
   
   public TypeImplString(String name, TypeSystemImpl tsi, TypeImpl supertype) {
     super(name, tsi, supertype, String.class);
+  }
+  
+  public TypeImplString(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaType) {
+    super(name, tsi, supertype, javaType);
   }
   
 }
