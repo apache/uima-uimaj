@@ -273,7 +273,7 @@ public class SerializationReinitTest extends TestCase {
     try {
       cas.reset();
     } catch (CASAdminException e) {
-      assertTrue(e.getError() == CASAdminException.FLUSH_DISABLED);
+      assertTrue(e.getMessageKey() == CASAdminException.FLUSH_DISABLED);
       exc = true;
     }
     assertTrue(exc);
