@@ -25,6 +25,8 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Aggregate several FS iterators.  Simply iterates over one after the other
@@ -50,7 +52,11 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
   
   FsIterator_aggregation_common(FSIterator<T>[] iterators, FSIndex<T> index) {
     this.iterators = iterators;
+    for (int i = iterators.length - 1; i >=0; i--) {
+      this.iterators[i] = iterators[i].copy();
+    }
     this.index = index;
+    moveToFirst();
   }
   
   public T get() throws NoSuchElementException {
@@ -115,7 +121,8 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
       return;
     }
     
-    for (int i = lastValidIndex + 1, nbrIt = iterators.length; i < nbrIt; i++) {
+    final int nbrIt = iterators.length;
+    for (int i = lastValidIndex + 1; i < nbrIt; i++) {
       it = iterators[i];
       it.moveToFirst();
       if (it.isValid()) {
@@ -175,7 +182,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
       it.moveToPrevious();  // make it also invalid
     } else {
       T targetFs = get();
-      it.moveTo(get());  // moves to left-most match
+      it.moveTo(targetFs);  // moves to left-most match
       while (targetFs != it.get()) {
         it.moveToNext();
       }
@@ -188,4 +195,14 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
   public LowLevelIndex<T> ll_getIndex() {
     return (LowLevelIndex<T>) index;
   }  
+  
+  @Override
+  public String toString() {
+    Type type = this.ll_getIndex().getType();
+    StringBuilder sb = new StringBuilder(this.getClass().getSimpleName()).append(":").append(System.identityHashCode(this));
+    sb.append(" over Type: ").append(type.getName()).append(":").append(((TypeImpl)type).getCode());
+    sb.append(", size: ").append(this.ll_indexSize());
+    return sb.toString();
+  }
+
 }
