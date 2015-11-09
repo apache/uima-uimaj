@@ -448,7 +448,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // Add basic data types.
     intType = new TypeImplPrimitive(CAS.TYPE_NAME_INTEGER, this, topType, int.class);
     floatType = new TypeImplPrimitive(CAS.TYPE_NAME_FLOAT, this, topType, float.class);
-    stringType = new TypeImplPrimitive(CAS.TYPE_NAME_STRING, this, topType, String.class);
+    stringType = new TypeImplString(CAS.TYPE_NAME_STRING, this, topType, String.class);
     
     // Add arrays.
     arrayBaseType = new TypeImpl(CAS.TYPE_NAME_ARRAY_BASE, this, topType);
@@ -520,7 +520,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     startFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intType, false);
     endFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intType, false);
     
-    docType = new TypeImpl(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType);
+    docType = new TypeImplAnnot(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType, Annotation.class);
     langFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringType, false);
     
     javaObjectType = new TypeImplJavaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
