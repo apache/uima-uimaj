@@ -261,7 +261,7 @@ public class CASMgrSerializer implements Serializable {
       // array.
       this.comparatorIndex[i] = compPos;
       // Get the comparator.
-      comp = ((FSIndex_Impl) indexVector.get(i)).getComparatorForIndexSpecs();
+      comp = ((LowLevelIndex<FeatureStructure>) indexVector.get(i)).getComparatorForIndexSpecs();
       // Encode the type of the comparator.
       comps.add(((TypeImpl) comp.getType()).getCode());
       // How many keys in the comparator?

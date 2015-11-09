@@ -9,6 +9,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * FsIndex_iicp (iicp)
@@ -27,11 +28,10 @@ import org.apache.uima.cas.admin.FSIndexComparator;
  * This class is package private to share with FSIndexFlat
  * For Internal Use
  */  
-class FsIndex_iicp<T extends FeatureStructure> 
-          implements Comparable<FsIndex_iicp<? extends FeatureStructure>>,
+class FsIndex_iicp<T extends TOP> 
+          implements Comparable<FsIndex_iicp<? extends TOP>>,
                      Comparator<T>,
-                     LowLevelIndex<T>
-                      {
+                     LowLevelIndex<T> {
 
 //  private final static boolean DEBUG = false;
 
@@ -49,7 +49,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * 
    * This is set up lazily on first need, to avoid extra work when won't be accessed
    */
-  ArrayList<FsIndex_singletype<FeatureStructure>> cachedSubFsLeafIndexes = null;
+  ArrayList<FsIndex_singletype<TOP>> cachedSubFsLeafIndexes = null;
   
   // VOLATILE to permit double-checked locking technique
   private volatile boolean isIteratorCacheSetup = false;
@@ -74,7 +74,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     } else {  
       int len = Math.min(3,  cachedSubFsLeafIndexes.size());
       for (int i = 0; i < len; i++) {
-        FsIndex_singletype<FeatureStructure> lii = cachedSubFsLeafIndexes.get(i); 
+        FsIndex_singletype<TOP> lii = cachedSubFsLeafIndexes.get(i); 
         sb.append("  cache ").append(i++);
         sb.append("  ").append(lii).append('\n');
       }
@@ -136,7 +136,7 @@ class FsIndex_iicp<T extends FeatureStructure>
       final int indexKind = this.getIndexingStrategy();
       int size = (indexKind == FSIndex.DEFAULT_BAG_INDEX) ? 1 : 1 + (int) rootType.getAllSubtypes().count();
 
-      final ArrayList<FsIndex_singletype<FeatureStructure>> tempSubIndexCache = new ArrayList<FsIndex_singletype<FeatureStructure>>();
+      final ArrayList<FsIndex_singletype<TOP>> tempSubIndexCache = new ArrayList<FsIndex_singletype<TOP>>();
       sortedTypeCodes = (indexKind == FSIndex.SORTED_INDEX) ? new int[size] : null;
 
       initOneType(rootType, tempSubIndexCache, indexKind);
@@ -170,11 +170,11 @@ class FsIndex_iicp<T extends FeatureStructure>
     }  // end of synchronized block
   }
   
-  private void initOneType(TypeImpl ti, ArrayList<FsIndex_singletype<FeatureStructure>> cache, int indexKind) {
-    ArrayList<FsIndex_iicp<FeatureStructure>> ift = 
+  private void initOneType(TypeImpl ti, ArrayList<FsIndex_singletype<TOP>> cache, int indexKind) {
+    ArrayList<FsIndex_iicp<TOP>> ift = 
         fsIndexRepositoryImpl.getIndexesForType(ti.getCode()).indexesForType;
     
-    FsIndex_singletype<FeatureStructure> singleIndex = ift.get(ift.indexOf(this)).fsIndex_singletype;
+    FsIndex_singletype<TOP> singleIndex = ift.get(ift.indexOf(this)).fsIndex_singletype;
     
     if (indexKind == FSIndex.SORTED_INDEX) {
       sortedTypeCodes[cache.size()] = singleIndex.getTypeCode();
@@ -198,7 +198,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * @see java.lang.Comparable#compareTo(Object)
    * 
    */
-  public int compareTo(FsIndex_iicp<? extends FeatureStructure> cp) {
+  public int compareTo(FsIndex_iicp<? extends TOP> cp) {
     final int typeCode1 = ((TypeImpl) this.fsIndex_singletype.getType()).getCode();
     final int typeCode2 = ((TypeImpl) cp.fsIndex_singletype.getType()).getCode();
     if (typeCode1 < typeCode2) {
@@ -220,9 +220,19 @@ class FsIndex_iicp<T extends FeatureStructure>
     return cachedSubFsLeafIndexes.stream().mapToInt(iicp -> iicp.size()).sum();
   }
   
+  public boolean isEmpty() {
+    createIndexIteratorCache();  
+    for (FsIndex_singletype<TOP> index : cachedSubFsLeafIndexes) {
+      if (index.size() > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
   boolean has1OrMoreEntries() {
     createIndexIteratorCache();  // does nothing if already created
-    final ArrayList<FsIndex_singletype<FeatureStructure>> localIc = this.cachedSubFsLeafIndexes;
+    final ArrayList<FsIndex_singletype<TOP>> localIc = this.cachedSubFsLeafIndexes;
     final int len = localIc.size();
     for (int i = 0; i < len; i++) {
       if (localIc.get(i).size() > 0) {
@@ -242,7 +252,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * @return a guess at the size, done quickly
    */
   int guessedSize() {
-    final ArrayList<FsIndex_singletype<FeatureStructure>> localIc = this.cachedSubFsLeafIndexes;
+    final ArrayList<FsIndex_singletype<TOP>> localIc = this.cachedSubFsLeafIndexes;
     final int len = localIc.size();
     final int lim = Math.min(3, len);
     int size = 0;
@@ -310,9 +320,9 @@ class FsIndex_iicp<T extends FeatureStructure>
 //      }
 //    }
   
-  FsIndex_singletype<FeatureStructure> getNoSubtypeIndexForType(Type type) {
+  FsIndex_singletype<TOP> getNoSubtypeIndexForType(Type type) {
     createIndexIteratorCache();
-    for (FsIndex_singletype<FeatureStructure> noSubtypeIndex : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> noSubtypeIndex : cachedSubFsLeafIndexes) {
       if (noSubtypeIndex.getType() == type) {
         return noSubtypeIndex;
       }
@@ -355,7 +365,12 @@ class FsIndex_iicp<T extends FeatureStructure>
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
     return fsIndex_singletype.compare(fs1,  fs2);
   }
-
+  
+  @Override
+  public int compare(TOP fs1, TOP fs2) {
+    return fsIndex_singletype.compare(fs1,  fs2);
+  }
+  
   @Override
   public boolean contains(FeatureStructure fs) {
     return find(fs) != null;
@@ -365,7 +380,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   public T find(FeatureStructure fs) {
     createIndexIteratorCache();  // does nothing if already created
     
-    for (FsIndex_singletype<FeatureStructure> idx : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> idx : cachedSubFsLeafIndexes) {
      FeatureStructure result = idx.find(fs);
       if (result != null) {
         return (T) result;

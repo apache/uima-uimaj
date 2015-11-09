@@ -28,7 +28,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
-import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding subtypes)
@@ -37,7 +37,7 @@ import org.apache.uima.internal.util.IntVector;
  * 
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
-public abstract class FsIndex_singletype<T extends FeatureStructure> implements Comparator<FeatureStructure>, LowLevelIndex<T> {
+public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TOP>, LowLevelIndex<T> {
 
   private final static String[] indexTypes = new String[] {"Sorted", "Set", "Bag", "DefaultBag"}; 
 
@@ -129,7 +129,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     fsIt.moveTo(initialPositionFs);
     return fsIt;
   }
-  
+    
   @Override
   public FSIndexComparator getComparatorForIndexSpecs() {
     return this.comparatorForIndexSpecs;
@@ -199,23 +199,26 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     return compare(casImpl.getFsFromId_checked(fs1), casImpl.getFsFromId_checked(fs2));
   }
   
+  @Override
+  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+    return compare((TOP) fs1, (TOP) fs2);
+  }
+  
   /**
    * @see org.apache.uima.cas.FSIndex#compare(T, T)
    */    
   @Override
-  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+  public int compare(TOP fs1, TOP fs2) {
   
     if (fs1 == fs2) {
       return 0;
     }
-    final FeatureStructureImplC fsc1 = (FeatureStructureImplC) fs1;
-    final FeatureStructureImplC fsc2 = (FeatureStructureImplC) fs2;
-        
+    
     /**
      * for each key:
      *   if Feature:
      *     Switch by type:  float, 
-     *       get the value:  fsc1.getXXX, compare
+     *       get the value:  fs1.getXXX, compare
      */
     int i = -1;
     for (Object key : keys) {
@@ -225,30 +228,30 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
         FeatureImpl fi = (FeatureImpl) key;
         switch (keyTypeCodes[i]) {
         case TypeSystemImpl.booleanTypeCode:
-          result = Integer.compare(fsc1.getBooleanValue(fi) ? 1 : 0,
-                                   fsc2.getBooleanValue(fi) ? 1 : 0);
+          result = Integer.compare(fs1.getBooleanValue(fi) ? 1 : 0,
+                                   fs2.getBooleanValue(fi) ? 1 : 0);
           break;
         case TypeSystemImpl.byteTypeCode:
-          result = Integer.compare(fsc1.getByteValue(fi), fsc2.getByteValue(fi));
+          result = Integer.compare(fs1.getByteValue(fi), fs2.getByteValue(fi));
           break;
         case TypeSystemImpl.shortTypeCode:
-          result = Integer.compare(fsc1.getShortValue(fi), fsc2.getShortValue(fi));
+          result = Integer.compare(fs1.getShortValue(fi), fs2.getShortValue(fi));
           break;
         case TypeSystemImpl.intTypeCode:
-          result = Integer.compare(fsc1.getIntValue(fi), fsc2.getIntValue(fi));
+          result = Integer.compare(fs1.getIntValue(fi), fs2.getIntValue(fi));
           break;
         case TypeSystemImpl.longTypeCode:
-          result = Long.compare(fsc1.getLongValue(fi), fsc2.getLongValue(fi));
+          result = Long.compare(fs1.getLongValue(fi), fs2.getLongValue(fi));
           break;
         case TypeSystemImpl.floatTypeCode:
-          result = Float.compare(fsc1.getFloatValue(fi), fsc2.getFloatValue(fi));
+          result = Float.compare(fs1.getFloatValue(fi), fs2.getFloatValue(fi));
           break;
         case TypeSystemImpl.doubleTypeCode:
-          result = Double.compare(fsc1.getDoubleValue(fi), fsc2.getDoubleValue(fi));
+          result = Double.compare(fs1.getDoubleValue(fi), fs2.getDoubleValue(fi));
           break;
         case TypeSystemImpl.stringTypeCode:
-          String s1 = fsc1.getStringValue(fi);
-          String s2 = fsc1.getStringValue(fi);
+          String s1 = fs1.getStringValue(fi);
+          String s2 = fs1.getStringValue(fi);
           result = (s1 == null)
                    ? ((s2 == null) ? 0 : -1)   // s1 null is lessthan a non-null s2
                    : ( (s2 == null)            
@@ -257,7 +260,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
           break;         
         }
       } else {  // is type order compare    
-        result = ((LinearTypeOrder) key).compare(fsc1, fsc2);
+        result = ((LinearTypeOrder) key).compare(fs1, fs2);
       }
         
       if (result == 0) {
@@ -316,9 +319,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * For serialization: get all the items in this index and bulk add to an List<T>
    * @param v the set of items to add
    */
-  protected abstract void bulkAddTo(List<FeatureStructure> v);
-  
-  protected abstract void bulkAddTo(IntVector v);
+  protected abstract void bulkAddTo(List<TOP> v);
   
   @Override
   public LowLevelIterator<T> ll_iterator(boolean ambiguous) {

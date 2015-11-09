@@ -26,8 +26,9 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
-public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements LowLevelIterator<T>, Comparator<T> {
+public class FsIterator_subtypes_snapshot<T extends TOP> implements LowLevelIterator<T>, Comparator<T> {
   
 //  final private FsIndex_flat<T> flatIndex;  // a newly created one, just for this iterator
   final private T[] snapshot;  // local for ref speed
@@ -161,7 +162,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     return indexForComparator;
   }
   
-  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+  public int compare(TOP fs1, TOP fs2) {
     return this.indexForComparator.compare(fs1, fs2);
   }
 }

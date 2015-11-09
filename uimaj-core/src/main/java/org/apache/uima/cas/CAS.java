@@ -29,6 +29,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -760,7 +761,7 @@ public interface CAS extends AbstractCas {
    * @return The document annotation, or <code>null</code> if there is none.  The return value is the
    *         JCas cover class or the plain Java cover class for FeatureStructures if JCas is not in use.
    */
-  <T extends AnnotationFS> T getDocumentAnnotation();
+  <T extends Annotation> T getDocumentAnnotation();
 
   /**
    * Informs the CAS of relevant information about the component that is currently processing it.

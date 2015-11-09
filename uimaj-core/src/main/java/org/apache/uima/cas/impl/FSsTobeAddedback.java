@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.cas.FSIndexRepository;
+import org.apache.uima.jcas.cas.TOP;
 
 
 /**
@@ -94,8 +95,8 @@ abstract class FSsTobeAddedback implements AutoCloseable {
       throw new UnsupportedOperationException();
     }
   }
-  void recordRemove(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
-  void recordRemove(FeatureStructureImplC fs, FSIndexRepositoryImpl view, int count) {
+  void recordRemove(TOP fs, FSIndexRepositoryImpl view) {throw new UnsupportedOperationException();}
+  void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
     if (count == 1) {
       recordRemove(fs, view);
     } else { 
@@ -104,7 +105,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   }
   
   void addback()                         {throw new UnsupportedOperationException();}
-  void addback(FeatureStructureImplC fs) {throw new UnsupportedOperationException();}
+  void addback(TOP fs) {throw new UnsupportedOperationException();}
   abstract void clear();
 
   static class FSsTobeAddedbackSingle extends FSsTobeAddedback {
@@ -117,12 +118,12 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
     
     @Override
-    void recordRemove(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
+    void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       recordRemove(view);
     }
     
     @Override
-    void recordRemove(FeatureStructureImplC fs, FSIndexRepositoryImpl view, int count) {
+    void recordRemove(TOP fs, FSIndexRepositoryImpl view, int count) {
       if (count != 1) {
         throw new RuntimeException("internal error");
       }
@@ -130,7 +131,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
           
     @Override
-    void addback(FeatureStructureImplC fs) {
+    void addback(TOP fs) {
       for (FSIndexRepositoryImpl ir : views) {
         ir.addback(fs);
       }
@@ -146,7 +147,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   
   static class FSsTobeAddedbackMultiple extends FSsTobeAddedback {
   
-    final Map<FeatureStructureImplC, List<?>> fss2views = new HashMap<FeatureStructureImplC, List<?>>();
+    final Map<TOP, List<?>> fss2views = new HashMap<TOP, List<?>>();
     
     final CASImpl cas;
     
@@ -155,7 +156,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
     
     @Override
-    void recordRemove(FeatureStructureImplC fs, FSIndexRepositoryImpl view) {
+    void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       log(fs, view);
       @SuppressWarnings("unchecked")
       List<FSIndexRepositoryImpl> irList = (List<FSIndexRepositoryImpl>) fss2views.get(fs);
@@ -167,8 +168,8 @@ abstract class FSsTobeAddedback implements AutoCloseable {
           
     @Override
     void addback() {
-      for (Entry<FeatureStructureImplC, List<?>> e : fss2views.entrySet()) {
-        final FeatureStructureImplC fs = e.getKey();
+      for (Entry<TOP, List<?>> e : fss2views.entrySet()) {
+        final TOP fs = e.getKey();
         @SuppressWarnings("unchecked")
         final List<FSIndexRepositoryImpl> views = (List<FSIndexRepositoryImpl>) e.getValue();
         for (FSIndexRepositoryImpl ir : views) {

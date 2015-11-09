@@ -23,13 +23,14 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * This class has an instance created temporarily to reuse the 
  * computation of the iterator array, for use by the FsIterator_aggregation_common.
  * @param <T> the type of the iterator
  */
-public class FsIterator_subtypes_unordered<T extends FeatureStructure> extends FsIterator_subtypes_list<T> {
+public class FsIterator_subtypes_unordered<T extends TOP> extends FsIterator_subtypes_list<T> {
  
   public FsIterator_subtypes_unordered(FsIndex_iicp<T> iicp) {
     super(iicp);

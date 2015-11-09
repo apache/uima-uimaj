@@ -355,9 +355,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // unique ID for a created CAS view, not updated if CAS is reset and reused
     private final int casId = casIdProvider.incrementAndGet();
     
+//    private final BinaryCasSerDes bcsd;
+    
     private SharedViewData(CASImpl baseCAS, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
       this.tsi = tsi;
+//      bcsd = new BinaryCasSerDes(this);
     }
   }
   
@@ -371,7 +374,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // ----------------------------------------
   //   accessors for data in SharedViewData
   // ----------------------------------------
-  void addbackSingle(FeatureStructureImplC fs) {
+  void addbackSingle(TOP fs) {
     svd.fsTobeAddedbackSingle.addback(fs);
     svd.fsTobeAddedbackSingleInUse = false;
   }
@@ -623,11 +626,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return createFSAnnotCheck(ti);
   }
   
-  
   private <T extends FeatureStructureImplC> T createFSAnnotCheck(TypeImpl ti) {
     if (ti.isAnnotationBaseType() && this.isBaseCas()) {    
         throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, ti.getName());
     }
+
     T fs = (T) (((FsGenerator)getFsGenerator(ti.getCode())).createFS(ti, this));
     svd.cache_not_in_index = fs;
     return fs;
@@ -1086,7 +1089,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return null;
   }
-
+  
+  FSIndexRepositoryImpl getBaseIndexRepositoryImpl() {
+    return this.svd.baseCAS.indexRepository;
+  }
+  
   void addSofaFsToIndex(SofaFS sofa) {
     this.svd.baseCAS.getBaseIndexRepository().addFS(sofa);
   }
@@ -1217,7 +1224,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * Only called from JCasGen'd code
    * 
    */
-  public void setWithCheckAndJournalJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex, Runnable setter) {
+  public void setWithCheckAndJournalJFRI(TOP fs, int jcasFieldRegistryIndex, Runnable setter) {
     boolean wasRemoved = checkForInvalidFeatureSettingJFRI(fs, jcasFieldRegistryIndex);
     setter.run();
     if (wasRemoved) {
@@ -1226,7 +1233,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     maybeLogUpdateJFRI(fs, jcasFieldRegistryIndex);
   }
   
-  public void setWithCheckAndJournal(FeatureStructureImplC fs, int featCode, Runnable setter) {
+  public void setWithCheckAndJournal(TOP fs, int featCode, Runnable setter) {
     boolean wasRemoved = checkForInvalidFeatureSetting(fs, featCode);
     setter.run();
     if (wasRemoved) {
@@ -1327,7 +1334,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param feat    the feature to set
    * @param value -
    */
-  public void setFeatureValue(FeatureStructureImplC fs, FeatureImpl feat, int v1, int v2) {
+  public void setFeatureValue(FeatureStructureImplC fsIn, FeatureImpl feat, int v1, int v2) {
+    TOP fs = (TOP) fsIn;
     boolean wasRemoved = checkForInvalidFeatureSetting(fs, feat.getCode());
     int offset = feat.getAdjustedOffset();
     fs._intData[offset] = v1;
@@ -1426,8 +1434,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   
   public String getFeatureValueAsString(FeatureStructureImplC fs, FeatureImpl feat) {
+    TypeImpl range = feat.getRangeImpl();
     if (feat.isInInt) {
-      switch (feat.getCode()) {
+      switch (range.getCode()) {
       case TypeSystemImpl.floatTypeCode :
         return Float.toString(fs.getFloatValue(feat));
       case TypeSystemImpl.booleanTypeCode :
@@ -1437,33 +1446,70 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       case TypeSystemImpl.doubleTypeCode :
         return Double.toString(fs.getDoubleValue(feat));
       default: 
-        return Double.toString(fs.getIntValue(feat));
+        return Integer.toString(fs.getIntValue(feat));
       }
     }
     
-    return fs.getFeatureValue(feat).toString();
+    if (range instanceof TypeImplString) {
+      return fs.getStringValue(feat);
+    }
+    
+    if (range.getCode() == TypeSystemImpl.javaObjectTypeCode) {
+      return serializeJavaObject(fs.getJavaObjectValue(feat));
+    }
+    
+    if (range.isRefType) {
+      return fs.getFeatureValue(feat).toString();
+    }
+    
+    throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
   }
 
   public void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat, String s) {
-    if (feat.isInInt) {
+    final TypeImpl range = feat.getRangeImpl();
+    if (fs instanceof Sofa) {
+      // sofa has special setters
+      Sofa sofa = (Sofa) fs;
       switch (feat.getCode()) {
-      case TypeSystemImpl.floatTypeCode :
-        fs.setFloatValue(feat, Float.parseFloat(s));
-      case TypeSystemImpl.booleanTypeCode :
-        fs.setBooleanValue(feat, Boolean.parseBoolean(s));
-      case TypeSystemImpl.longTypeCode :
-        fs.setLongValue(feat,  Long.parseLong(s));
-      case TypeSystemImpl.doubleTypeCode :
-        fs.setDoubleValue(feat, Double.parseDouble(s));
-      default: 
-        fs.setIntValue(feat, Integer.parseInt(s));
+      case TypeSystemImpl.sofaMimeFeatCode : sofa.setMimeType(s); break;
+      case TypeSystemImpl.sofaStringFeatCode: sofa.setLocalSofaData(s); break;
+      case TypeSystemImpl.sofaUriFeatCode: sofa.setRemoteSofaURI(s); break;
+      default: // left empty - ignore trying to set final fields
       }
+      return;
     }
-    // Setting a reference value "{0}" from a string is not supported. 
-    throw new CASRuntimeException(CASRuntimeException.SET_REF_FROM_STRING_NOT_SUPPORTED, feat.getName());
+    
+    if (feat.isInInt) {
+      switch (range.getCode()) {
+      case TypeSystemImpl.floatTypeCode :   fs.setFloatValue(feat, Float.parseFloat(s)); break;
+      case TypeSystemImpl.booleanTypeCode : fs.setBooleanValue(feat, Boolean.parseBoolean(s)); break;
+      case TypeSystemImpl.longTypeCode :    fs.setLongValue(feat,  Long.parseLong(s)); break;
+      case TypeSystemImpl.doubleTypeCode :  fs.setDoubleValue(feat, Double.parseDouble(s)); break;
+      case TypeSystemImpl.byteTypeCode :  fs.setByteValue(feat, Byte.parseByte(s)); break;
+      case TypeSystemImpl.shortTypeCode :  fs.setShortValue(feat, Short.parseShort(s)); break;
+      case TypeSystemImpl.intTypeCode :  fs.setIntValue(feat, Integer.parseInt(s)); break;
+      default:                              fs.setIntValue(feat, Integer.parseInt(s));
+      }
+    } else if (range.isRefType) {
+      // Setting a reference value "{0}" from a string is not supported. 
+      throw new CASRuntimeException(CASRuntimeException.SET_REF_FROM_STRING_NOT_SUPPORTED, feat.getName());
+    } else if (range instanceof TypeImplString) {  // includes TypeImplSubString
+      // is String or Substring
+      fs.setStringValue(feat, s);
+    } else if (range == tsi.javaObjectType) {
+      fs.setJavaObjectValue(feat, deserializeJavaObject(s));
+    } else {
+      throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
+    }
   }
 
-   
+  private Object deserializeJavaObject(String s) {
+    throw new UnsupportedOperationException("Deserializing JavaObjects not yet implemented");
+  }
+
+  private String serializeJavaObject(Object s) {
+    throw new UnsupportedOperationException("Serializing JavaObjects not yet implemented");
+  }
 
   /*
    * This should be the only place where the encoding of floats and doubles in terms of ints is specified
@@ -1487,9 +1533,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // Type access methods.
   public boolean isStringType(Type type) {
-    final TypeImpl ti = (TypeImpl) type;
-    final int typecode = ti.getCode();
-    return typecode == TypeSystemImpl.stringTypeCode || ti.isStringSubtype();
+    return type instanceof TypeImplString;
   }
 
   public boolean isArrayOfFsType(Type type) {
@@ -1814,11 +1858,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // String id =
       // ll_getStringValue(((FeatureStructureImpl)aSofa).getAddress(),
       // ((FeatureImpl) idFeat).getCode());
-      if (this.svd.sofaNameSet.contains(id)) {
-        throw new CASRuntimeException(
-            CASRuntimeException.SOFANAME_ALREADY_EXISTS, id);
+      if (!this.svd.sofaNameSet.contains(id)) {
+        throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
+//            CASRuntimeException.SOFANAME_ALREADY_EXISTS, id);
       }
-      this.svd.sofaNameSet.add(id);
+//      this.svd.sofaNameSet.add(id);
     }
   }
 
@@ -2169,7 +2213,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param featCode - the feature being tested
    * @return true if something may need to be added back
    */  
-  private boolean checkForInvalidFeatureSetting(FeatureStructureImplC fs, int featCode) {
+  private boolean checkForInvalidFeatureSetting(TOP fs, int featCode) {
     if (fs == svd.cache_not_in_index) {
       return false;
     }
@@ -2202,7 +2246,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   // version of above, but using jcasFieldRegistryIndex
-  private boolean checkForInvalidFeatureSettingJFRI(FeatureStructureImplC fs, int jcasFieldRegistryIndex) {
+  private boolean checkForInvalidFeatureSettingJFRI(TOP fs, int jcasFieldRegistryIndex) {
     if (fs == svd.cache_not_in_index) {
       return false;
     }
@@ -2273,7 +2317,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   
    * @param fsRef the fs to add back
    */
-  public void maybeAddback(FeatureStructureImplC fs) {
+  public void maybeAddback(TOP fs) {
     if (!svd.fsTobeAddedbackSingleInUse && (!IS_DISABLED_PROTECT_INDEXES) && svd.fssTobeAddedback.size() == 0) {
       svd.fsTobeAddedbackSingle.addback(fs);
     }
@@ -2330,7 +2374,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return true if the fs was removed
    */
   
-  boolean removeFromCorruptableIndexAnyView(final FeatureStructureImplC fs, FSsTobeAddedback toBeAdded, int featCode) {
+  boolean removeFromCorruptableIndexAnyView(final TOP fs, FSsTobeAddedback toBeAdded, int featCode) {
     if (fs != svd.cache_not_in_index && svd.featureCodesInIndexKeys.get(featCode)) {
       boolean wasRemoved = removeFromCorruptableIndexAnyView(fs, toBeAdded);
       svd.cache_not_in_index = fs; // because will remove it if its in the index.
@@ -2339,7 +2383,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return false;
   }
     
-  boolean removeFromCorruptableIndexAnyView(final FeatureStructureImplC fs, FSsTobeAddedback toBeAdded) {
+  boolean removeFromCorruptableIndexAnyView(final TOP fs, FSsTobeAddedback toBeAdded) {
     final TypeImpl ti = ((FeatureStructureImplC)fs)._typeImpl;
     if (ti.isAnnotationBaseType()) {
       final AnnotationBase ab = (AnnotationBase) fs;
@@ -2375,7 +2419,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param toBeAdded the place to record how many times it was in the index, per view
    * @return true if it was removed, false if it wasn't in any corruptable index.
    */
-  private boolean removeAndRecord(FeatureStructureImplC fs, FSIndexRepositoryImpl ir, FSsTobeAddedback toBeAdded) {
+  private boolean removeAndRecord(TOP fs, FSIndexRepositoryImpl ir, FSsTobeAddedback toBeAdded) {
     boolean wasRemoved = ir.removeIfInCorrputableIndexInThisView(fs);
     if (wasRemoved) {
       ((FSsTobeAddedback) toBeAdded).recordRemove(fs, ir, 1);
@@ -3062,14 +3106,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public AnnotationFS createAnnotation(Type type, int begin, int end) {
-    if (this.isBaseCas()) {
-      // Can't create annotation on base CAS
-      throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, "createAnnotation(Type, int, int)");
-    }
+    // duplicates a later check
+//    if (this.isBaseCas()) {
+//      // Can't create annotation on base CAS
+//      throw new CASRuntimeException(CASRuntimeException.INVALID_BASE_CAS_METHOD, "createAnnotation(Type, int, int)");
+//    }
     Annotation fs = createFS(type);
     fs.setBegin(begin);
     fs.setEnd(end);
-    return (AnnotationFS) fs;
+    return fs;
   }
   
   public int ll_createAnnotation(int typeCode, int begin, int end) {
@@ -3082,15 +3127,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param <T> the Java class associated with the annotation index
    * @return the annotation index
    */
+  @Override
   public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex() {
-    return indexRepository.getAnnotationIndex(getTypeSystemImpl().annotType);
+    return (AnnotationIndex<T>) indexRepository.getAnnotationIndex(getTypeSystemImpl().annotType);
   }
+  
+  
 
-  /**
-   * @see org.apache.uima.cas.CAS#getAnnotationIndex(Type)
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.CAS#getAnnotationIndex(org.apache.uima.cas.Type)
    */
-  public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type) {
-    return indexRepository.<T>getAnnotationIndex((TypeImpl) type);
+  @Override
+  public <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type)
+      throws CASRuntimeException {
+    return (AnnotationIndex<T>) indexRepository.getAnnotationIndex((TypeImpl) type);
   }
 
   /**
@@ -3114,7 +3164,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getTypeSystemImpl().startFeat;
   }
 
-  private <T extends AnnotationFS> T createDocumentAnnotation(int length) {
+  private <T extends Annotation> T createDocumentAnnotation(int length) {
     final TypeSystemImpl ts = getTypeSystemImpl();
     // Remove any existing document annotations.
     FSIterator<T> it = this.<T>getAnnotationIndex(ts.docType).iterator();
@@ -3126,10 +3176,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     for (int i = 0; i < list.size(); i++) {
       getIndexRepository().removeFS(list.get(i));
     }
+    
     AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
     docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
     addFsToIndexes(docAnnot);
     return (T) docAnnot;
+  }
+  
+  private <T extends Annotation> T createDocumentAnnotationNoRemove(int length) {
+    final TypeSystemImpl ts = getTypeSystemImpl();
+    AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
+    docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
+    addFsToIndexes(docAnnot);
+    return (T) docAnnot;    
   }
   
   
@@ -3148,13 +3207,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For the "built-in" instance of Document Annotation, set the
   // "end" feature to be the length of the sofa string
-  public void updateDocumentAnnotation() {
+  /**
+   * updates the document annotation setting the end feature to be the length of the sofa string, if any.
+   * creates the document annotation if not present
+   * only works if not in the base cas
+   * @return the document annotation
+   */
+  public Annotation updateDocumentAnnotation() {
     if (!mySofaIsValid() || this == this.svd.baseCAS) {
-      return;
+      return null;
     }
     String newDoc = this.mySofaRef.getLocalStringData();
+    final Annotation docAnnot = getDocumentAnnotation();
     if (null != newDoc) {
-      final Annotation docAnnot = getDocumentAnnotation();
       if (docAnnot != null) {
         boolean wasRemoved = this.indexRepository.removeIfInCorrputableIndexInThisView(docAnnot);
         docAnnot.setIntValue(getTypeSystemImpl().endFeat, newDoc.length());
@@ -3163,9 +3228,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         }
       } else {
         // not in the index (yet)
-        createDocumentAnnotation(newDoc.length());
+        return createDocumentAnnotation(newDoc.length());
       }
     }
+    return docAnnot;
   }
   
   /**
@@ -3173,7 +3239,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   DocumentAnnotation or an instance of Annotation - the Java cover class used for 
    *   annotations when JCas is not being used.
    */
-  public <T extends AnnotationFS> T getDocumentAnnotation() {
+  public <T extends Annotation> T getDocumentAnnotation() {
     if (this == this.svd.baseCAS) {
       // base CAS has no document
       return null;
@@ -3182,7 +3248,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (it.isValid()) {
       return it.get();
     }
-    return createDocumentAnnotation(0);
+    return (T) createDocumentAnnotationNoRemove(0);
   }
   
   /**
@@ -3576,10 +3642,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   @Override
   public String toString() {
-    String sofa =  (mySofaRef == null) ? "_InitialView or no Sofa" :
+    String sofa =  (mySofaRef == null) ? (isBaseCas() ? "Base CAS" : "_InitialView or no Sofa") :
 //                 (mySofaRef == 0) ? "no Sofa" :
                    mySofaRef.getSofaID();
-    return this.getClass().getSimpleName() + " [view: " + sofa + "]";
+    return this.getClass().getSimpleName() + ":" + getCasId() + "[view: " + sofa + "]";
   }
     
   int getCasResets() {
@@ -3591,9 +3657,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   public int setId2fs(FeatureStructureImplC fs) {
+    if (svd.id2fs.size() == 3761) {
+      System.out.println("debug");
+    }
     svd.id2fs.add(fs);
     if (svd.id2fs.size() != (2 + svd.fsIdGenerator.get())) {
-      System.out.println("debug");
+      System.out.println("debug out of sync id generator and id2fs size");
     }
     assert(svd.id2fs.size() == (2 + svd.fsIdGenerator.get()));
     return getNextFsId();

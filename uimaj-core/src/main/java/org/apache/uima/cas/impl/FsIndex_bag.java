@@ -25,8 +25,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.ObjHashSet;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Used for UIMA FS Bag Indexes
@@ -34,17 +34,17 @@ import org.apache.uima.internal.util.ObjHashSet;
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  * NOTE: V3 doesn't support ALLOW_DUP_ADD_TO_INDEXES
  */
-public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<T> {
+public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
   
 //  // package private
 //  final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;
 
   // The index
-  final private ObjHashSet<FeatureStructureImplC> index;
+  final private ObjHashSet<TOP> index;
   
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType) {
     super(cas, type, indexType);
-    this.index = new ObjHashSet<FeatureStructureImplC>(initialSize, FeatureStructureImplC.class);
+    this.index = new ObjHashSet<TOP>(initialSize, TOP.class);
   }
 
   /**
@@ -70,7 +70,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   @Override
   public final boolean insert(T fs) {
-    return index.add((FeatureStructureImplC) fs);
+    return index.add((TOP) fs);
   }
 
   @SuppressWarnings("unchecked")
@@ -82,7 +82,8 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    * Override the super impl which uses comparators.
    * For bag indexes, compare equal only if identical addresses
    */
-  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+  @Override
+  public int compare(TOP fs1, TOP fs2) {
     return (fs1 == fs2) ? 0 : (fs1.id() < fs2.id()) ? -1 : 1;
   }
 
@@ -144,7 +145,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public T find(FeatureStructure fs) {
-    final int resultAddr =  this.index.find((FeatureStructureImplC) fs);
+    final int resultAddr =  this.index.find((TOP) fs);
     if (resultAddr >= 0) {
       return (T) fs;
     }
@@ -163,7 +164,8 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    * only for backwards compatibility
    * 
    */
-  public boolean deleteFS(FeatureStructure fs) {
+  @Override
+  public boolean deleteFS(T fs) {
     return this.index.remove(fs);
   }
   
@@ -177,13 +179,8 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   }
 
   @Override
-  protected void bulkAddTo(List<FeatureStructure> fss) {
+  protected void bulkAddTo(List<TOP> fss) {
     fss.addAll(this.index);
-  }
-
-  @Override
-  protected void bulkAddTo(IntVector fss) {
-    this.index.stream().mapToInt(FeatureStructureImplC::id).forEach(fss::add);
   }
   
   /* (non-Javadoc)
@@ -221,7 +218,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return (T) index.get(itPos);
   }
   
-  ObjHashSet<FeatureStructureImplC> getObjHashSet() {
+  ObjHashSet<TOP> getObjHashSet() {
     return index;
   }
   

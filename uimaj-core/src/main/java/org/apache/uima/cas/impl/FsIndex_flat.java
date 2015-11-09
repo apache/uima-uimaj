@@ -28,6 +28,7 @@ import java.util.List;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Common part of flattened indexes, used for both snapshot iterators and 
@@ -35,14 +36,14 @@ import org.apache.uima.internal.util.IntVector;
  *  
  * @param <T> the Java class type for this index
  */
-public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> {
+public class FsIndex_flat<T extends TOP> extends FsIndex_singletype<T> {
 
   // The index, an array.
-  final private FeatureStructureImplC[] indexedFSs;
+  final private TOP[] indexedFSs;
   
   final private FsIndex_iicp<T> iicp;
   
-  final private Comparator<FeatureStructure> comparator;
+  final private Comparator<TOP> comparator;
     
   FsIndex_flat(FsIndex_iicp<T> iicp) {
     super(iicp.getCASImpl(), iicp.fsIndex_singletype.getType(), iicp.fsIndex_singletype.getIndexingStrategy());
@@ -55,14 +56,14 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    * Flat array filled, ordered
    * @param flatArray the array to fill
    */
-  private FeatureStructureImplC[] fillFlatArray() {
+  private TOP[] fillFlatArray() {
     
-    FeatureStructureImplC[] a =  (FeatureStructureImplC[]) Array.newInstance(FeatureStructureImplC.class, iicp.size());
+    TOP[] a =  (TOP[]) Array.newInstance(TOP.class, iicp.size());
     
     FSIterator<T> it = iicp.iterator();
     int i = 0;
     while (it.hasNext()) {
-      a[i++] = (FeatureStructureImplC) it.next();
+      a[i++] = it.next();
     }
     
     if (i != a.length) {
@@ -111,8 +112,8 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   @Override
   public T find(FeatureStructure fs) {
     if (isSorted()) {
-      for (FeatureStructureImplC item : indexedFSs) {
-        if (comparator.compare(item,  fs) == 0) {
+      for (TOP item : indexedFSs) {
+        if (comparator.compare(item,  (TOP)fs) == 0) {
           return (T) item;
         }
       }
@@ -121,7 +122,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
 
     // ordered case
     // r is index if found, otherwise, (-(insertion point) - 1). 
-    int r = Arrays.binarySearch(indexedFSs,  fs, comparator);
+    int r = Arrays.binarySearch(indexedFSs,  (TOP)fs, comparator);
     return (r >= 0) ? (T) indexedFSs[r] : null;
   }
 
@@ -162,11 +163,11 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    * @see org.apache.uima.cas.impl.FsIndex_singletype#bulkAddTo(java.util.List)
    */
   @Override
-  protected void bulkAddTo(List<FeatureStructure> v) {
+  protected void bulkAddTo(List<TOP> v) {
     v.addAll(Arrays.asList(indexedFSs));
   }
   
-  @Override
+  // maybe needed for backwards compatibility for now
   protected void bulkAddTo(IntVector v) {
     Arrays.stream(indexedFSs).mapToInt(FeatureStructureImplC::id).forEach(v::add);
   }
@@ -176,7 +177,12 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    */    
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return comparator.compare(fs1,  fs2);
+    return comparator.compare((TOP)fs1,  (TOP)fs2);
+  }
+  
+  @Override
+  public int compare(TOP fs1, TOP fs2) {
+    return comparator.compare(fs1, fs2);
   }
 
 

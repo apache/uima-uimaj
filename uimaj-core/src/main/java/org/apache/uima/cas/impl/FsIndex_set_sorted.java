@@ -27,7 +27,7 @@ import java.util.TreeSet;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Common index impl for set and sorted indexes.
@@ -47,21 +47,21 @@ import org.apache.uima.internal.util.IntVector;
  * 
  * @param <T> the Java class type for this index
  */
-public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
+public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
 
   // The index, a NavigableSet. 
   // Should be over T, but has to be over FeatureStructure in order to have the comparator take FeatureStructures
-  final private NavigableSet<FeatureStructure> indexedFSs;
+  final private NavigableSet<TOP> indexedFSs;
    
   FsIndex_set_sorted(CASImpl cas, Type type, int indexType, boolean useSorted) {
     super(cas, type, indexType);
     this.indexedFSs = useSorted 
-                        ?  new TreeSet<FeatureStructure>(
-                            (FeatureStructure o1, FeatureStructure o2) -> {
+                        ?  new TreeSet<TOP>(
+                            (TOP o1, TOP o2) -> {
                               final int c = compare(o1,  o2); 
                               // augment normal comparator with one that compares IDs if everything else equal
                               return (c == 0) ? (Integer.compare(o1.id(), o2.id())) : c;})
-                        : new TreeSet<FeatureStructure>( (FeatureStructure o1, FeatureStructure o2) -> compare(o1,  o2));     
+                        : new TreeSet<TOP>( (TOP o1, TOP o2) -> compare(o1,  o2));     
   }
 
   @Override
@@ -94,7 +94,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    */
   @Override
   boolean insert(T fs) {
-    return this.indexedFSs.add(fs);
+    return this.indexedFSs.add((TOP)fs);
   }
 
   /**
@@ -116,12 +116,13 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    * @return an arbitrary fs that matches 
    */
   @Override
-  public T find(FeatureStructure templateKey) {
+  public T find(FeatureStructure templateKeyIn) {
+    TOP templateKey = (TOP) templateKeyIn;
     if (null == templateKey || this.indexedFSs.size() == 0) {
       return null;
     }
     T found;
-    FeatureStructure fs1GEfs = this.indexedFSs.ceiling(templateKey);
+    TOP fs1GEfs = this.indexedFSs.ceiling(templateKey);
     
     if (fs1GEfs == null) {  // then all elements are less-that the templateKey
       found = (T) indexedFSs.lower(templateKey);  //highest of elements less-than the template key
@@ -140,7 +141,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
     return (found == null) ? null : (compare(found, templateKey) == 0) ? found : null;
   }
 
-  public T findLeftmost(FeatureStructure templateKey) {
+  public T findLeftmost(TOP templateKey) {
     // descending iterator over elements LessThan templateKey
     Iterator<T> it = (Iterator<T>) indexedFSs.headSet(templateKey, false).descendingIterator();
   
@@ -182,16 +183,16 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   }
   
   @Override
-  protected void bulkAddTo(List<FeatureStructure> v) {
+  protected void bulkAddTo(List<TOP> v) {
     v.addAll(indexedFSs);
   }
   
-  @Override
-  protected void bulkAddTo(IntVector v) {
-    this.indexedFSs.stream().mapToInt(fs -> ((FeatureStructureImplC)fs).id()).forEach(v::add);
-  }
+//  @Override
+//  protected void bulkAddTo(IntVector v) {
+//    this.indexedFSs.stream().mapToInt(fs -> ((FeatureStructureImplC)fs).id()).forEach(v::add);
+//  }
   
-  NavigableSet<FeatureStructure> getNavigableSet() { //used by FsIterator_sorted to compute various derivitive nav sets
+  NavigableSet<TOP> getNavigableSet() { //used by FsIterator_sorted to compute various derivitive nav sets
     return indexedFSs;
   }
    

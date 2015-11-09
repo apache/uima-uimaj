@@ -24,13 +24,14 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationTree;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Implementation of annotation indexes.
  * Implements AnnotationIndex
  * replaces AnnotationIndexImpl in v2
  */
-public class FsIndex_annotation <T extends AnnotationFS> 
+public class FsIndex_annotation <T extends Annotation> 
                  extends FsIndex_iicp<T> 
                  implements AnnotationIndex<T> {
   

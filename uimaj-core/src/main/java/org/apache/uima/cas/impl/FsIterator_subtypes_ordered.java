@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Performs an ordered iteration among a set of iterators, each one corresponding to
@@ -35,7 +36,7 @@ import org.apache.uima.cas.FeatureStructure;
  *
  * @param <T>
  */
-public class FsIterator_subtypes_ordered<T extends FeatureStructure> 
+public class FsIterator_subtypes_ordered<T extends TOP> 
                     extends FsIterator_subtypes_list<T> {
  
   /**
@@ -46,7 +47,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   private boolean wentForward = true;
   
-  final private Comparator<FeatureStructure> comparator; 
+  final private Comparator<TOP> comparator; 
 
   public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp) {
     super(iicp);

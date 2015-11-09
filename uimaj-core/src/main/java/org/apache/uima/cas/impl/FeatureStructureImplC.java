@@ -19,9 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -30,7 +27,6 @@ import java.util.function.IntFunction;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
@@ -59,6 +55,7 @@ import org.apache.uima.jcas.cas.JavaObjectArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.util.Misc;
 
@@ -165,7 +162,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     c = _typeImpl.nbrOfUsedRefDataSlots;
     _refData = (c == 0) ? null : new Object[c];
     
-    _id = _casView.setId2fs(this);    
+    _id = _casView.setId2fs(this);   
   }
   
   
@@ -342,11 +339,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int", fi.getRange().getName());
     }
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
-    _casView.setWithCheckAndJournal(this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
   }
 
   protected void setRefValueCJ(FeatureImpl feat, Object v) {
-    _casView.setWithCheckAndJournal(this, feat.getCode(), () -> _refData[feat.getAdjustedOffset()] = v); 
+    _casView.setWithCheckAndJournal((TOP)this, feat.getCode(), () -> _refData[feat.getAdjustedOffset()] = v); 
   }
 
   @Override
@@ -592,11 +589,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   }
 
   @Override
-  public FeatureStructure getFeatureValue(Feature feat) {
+  public TOP getFeatureValue(Feature feat) {
     FeatureImpl fi = (FeatureImpl) feat;
-    Object getter =  fi.getJCasSetter();
-    return (getter != null) ? ((JCas_getter_generic<FeatureStructure>)getter).get(this)
-                            : (FeatureStructure) getJavaObjectValue(feat);
+    Object getter =  fi.getJCasGetter();
+    return (getter != null) ? ((JCas_getter_generic<TOP>)getter).get(this)
+                            : (TOP) getJavaObjectValue(feat);
   }
 
   @Override
