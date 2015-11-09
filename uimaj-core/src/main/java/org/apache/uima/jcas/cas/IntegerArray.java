@@ -160,4 +160,13 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+    set(i, Integer.parseInt(v));
+  }
+
+  
 }

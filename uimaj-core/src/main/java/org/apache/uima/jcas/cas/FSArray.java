@@ -157,7 +157,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   }
 
   // internal use
-  public FeatureStructure[] _getTheArray() {
+  public TOP[] _getTheArray() {
     return theArray;
   }
   

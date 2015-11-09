@@ -28,4 +28,5 @@ import org.apache.uima.jcas.JCas;
  *   boolean, byte, short, int, long, float, double, String, JavaObject
  */
 public interface CommonPrimitiveArray extends CommonArray {
+  void setArrayValueFromString(int i, String v);
 }

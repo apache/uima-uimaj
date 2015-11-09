@@ -135,4 +135,12 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+    set(i, v);    
+  }
+
 }

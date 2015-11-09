@@ -247,4 +247,9 @@ public class Sofa extends TOP implements SofaFS {
 	  throw new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET, msg);
 	}
 
+	public void setMimeType(String v) {
+    _F_mimeType = v;  
+    // no corruption check - sofa's aren't in any index except base view bag
+    _casView.maybeLogUpdateJFRI(this, _FI_mimeType);
+	}
 }

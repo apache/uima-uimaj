@@ -236,14 +236,22 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** The CAS doesn't have a Feature Structure whose ID is {0}; it may have been garbage collected.*/
   public static final String CAS_MISSING_FS = "CAS_MISSING_FS";
   
+  /**
+   * The constructors are organized
+   * 
+   *   0 args - an exception, no message
+   *   1 to n args, first arg is String:
+   *     - the message key, array of args, Throwable   (backwards compatibility)
+   *     - the resource bundle name, message key, array of args 
+   *     - the message key, followed by 0 or more Object args (variable arity)
+   *   2 to n args, first is Throwable cause, 2nd is message key, rest are args
+   *   1 arg - throwable cause 
+   *     
+   */
 	public CASRuntimeException() {
 		super();
 	}
 	
-	public CASRuntimeException(String messageKey) {
-		super(messageKey);
-	}
-
 	public CASRuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
 		super(aMessageKey, aArguments, aCause);
 	}
@@ -261,7 +269,13 @@ public class CASRuntimeException extends UIMARuntimeException {
 		super(aResourceBundleName, aMessageKey, aArguments, aCause);
 	}
 
-	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object ... aArguments) {
+	/**
+	 * This method cannot have variable arity, else, it gets called for args (String msgkey, Object ... args)
+	 * @param aResourceBundleName the bundle name to use
+	 * @param aMessageKey the message key
+	 * @param aArguments arguments
+	 */
+	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
 		super(aResourceBundleName, aMessageKey, aArguments);
 	}
 

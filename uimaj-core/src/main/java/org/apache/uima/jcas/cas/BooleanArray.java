@@ -152,5 +152,13 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     BooleanArray bv = (BooleanArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+    set(i, Boolean.parseBoolean(v));
+  }
   
 }

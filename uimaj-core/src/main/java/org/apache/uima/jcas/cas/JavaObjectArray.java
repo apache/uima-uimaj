@@ -166,4 +166,15 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+//    set(i, -- insert code for general string -> java object here
+//              for use by XCAS, XMI);
+    throw new UnsupportedOperationException("Java Object deserialization not yet supported");                  
+  }
+
+  
 }

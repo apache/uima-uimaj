@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
@@ -26,11 +27,10 @@ import org.apache.uima.jcas.JCas;
 /**
  * This class is the super class of arrays of Feature Structures
  */
-public interface CommonArray {
+public interface CommonArray extends FeatureStructure {
   
   int size();
   
   void copyValuesFrom(CommonArray v);
   
-  int id();
 }

@@ -156,4 +156,8 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
 
+  // used by deserializers
+  public void setArrayValueFromString(int i, String v) {
+    set(i, Short.parseShort(v));
+  }
 }

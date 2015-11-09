@@ -156,4 +156,12 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonPrimitiveArray#setArrayValueFromString(int, java.lang.String)
+   */
+  @Override
+  public void setArrayValueFromString(int i, String v) {
+    set(i, Byte.parseByte(v));    
+  }
+
 }

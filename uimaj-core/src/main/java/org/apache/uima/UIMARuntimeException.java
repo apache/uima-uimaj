@@ -182,6 +182,14 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   private Throwable mCause;
 
   /**
+   * Categories of constructor 
+   *   0 args
+   *   1 arg: throwable cause
+   *   1 - n args: First String message key, rest Object arguments
+   *   2 - n args: First is throwable, 2nd is String message key, rest Object arguments
+   *   
+   */
+  /**
    * Creates a new exception with a null message.
    */
   public UIMARuntimeException() {
