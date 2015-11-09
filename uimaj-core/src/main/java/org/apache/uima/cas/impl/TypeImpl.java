@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -98,6 +99,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   protected final boolean isCreatableAndNotBuiltinArray;
   
+  /**
+   * false for primitives, strings, string subtypes, and JavaObjects
+   */
   protected final boolean isRefType;  // not a primitive, can be a FeatureStructure in the CAS, added to indexes etc.
   
   
@@ -130,7 +134,6 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   TypeImpl(String name, TypeSystemImpl tsi, final TypeImpl supertype, Class<?> javaClass) {
-        
     if (isStringSubtype() && supertype == tsi.stringType) {
       tsi.newTypeCheckNoInheritanceFinalCheck(name, supertype);  
     } else {
@@ -273,7 +276,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * particular order.
    * 
    * @return The vector.
-   * @deprecated
+   * @deprecated use getFeatures()
    */
   @Override
   @Deprecated
@@ -401,6 +404,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   @Override
   public List<Feature> getFeatures() {
     return new ArrayList<>(staticMergedFeatures.values());
+  }
+  
+  Collection<FeatureImpl> getFeatureImpls() {
+    return staticMergedFeatures.values();
   }
   
   Stream<FeatureImpl> getFeaturesAsStream() {
