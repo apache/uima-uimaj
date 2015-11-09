@@ -109,11 +109,14 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
    *  defined.
    */
   public static final int UNKNOWN_ID = 12;
+  
+  /** Error parsing XCAS or XMI-CAS from source {0} at line {1}, column {2}: in subtype of AnnotationBase, sofa reference is missing. */
+  public static final int SOFA_REF_MISSING = 13;
 
   private static final String[] identifiers = { "WRONG_ROOT_TAG", "TEXT_EXPECTED",
       "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE",
       "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", "FLOAT_EXPECTED",
-      "EXCESS_ARRAY_ELE", "UNKNOWN_ID" };
+      "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING"};
 
   private int error;
 
