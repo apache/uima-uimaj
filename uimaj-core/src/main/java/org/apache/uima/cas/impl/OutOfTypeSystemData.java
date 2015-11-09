@@ -21,9 +21,12 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * This class is used by the XCASDeserializer to store feature structures that do not fit into the
@@ -40,13 +43,13 @@ public class OutOfTypeSystemData {
   List<FSData> fsList = new ArrayList<FSData>();
 
   /**
-   * Map from Integer (CAS address) to List of String arrays holding feature names and values for
+   * Map from Feature Structure to List of String arrays holding feature names and values for
    * out-of-typesystem features on in-typesystem FSs.
    */
-  Map<Integer, List<String[]>> extraFeatureValues = new HashMap<Integer, List<String[]>>();
+  Map<TOP, List<String[]>> extraFeatureValues = new IdentityHashMap<TOP, List<String[]>>();
 
   /**
-   * Map from Integer (CAS address of an FSArray) to List of ArrayElement objects, each of which
+   * Map from FSArray instances to List of ArrayElement objects, each of which
    * holds an array index and value (as a string).
    */
   Map<Integer, List<ArrayElement>> arrayElements = new HashMap<Integer, List<ArrayElement>>();
@@ -68,9 +71,9 @@ public class OutOfTypeSystemData {
       buf.append(fs.toString()).append('\n');
     }
     buf.append("\nFeatures\n-----------------\n");
-    for (Map.Entry<Integer, List<String[]>> entry : extraFeatureValues.entrySet()) {
-      Integer id = entry.getKey();
-      buf.append(id).append(": ");
+    for (Map.Entry<TOP, List<String[]>> entry : extraFeatureValues.entrySet()) {
+      TOP id = entry.getKey();
+      buf.append(id._id).append(": ");
       for (String[] attr : entry.getValue()) {
         buf.append(attr[0]).append('=').append(attr[1]).append('\n');
       }
