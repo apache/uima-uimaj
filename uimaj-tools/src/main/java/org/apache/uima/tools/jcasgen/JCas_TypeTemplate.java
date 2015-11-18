@@ -42,7 +42,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(jg.packageName);
     stringBuffer.append(";\n");
    } 
-    stringBuffer.append("\nimport org.apache.uima.jcas.JCas;\nimport org.apache.uima.jcas.JCasRegistry;\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.FSGenerator;\nimport org.apache.uima.cas.FeatureStructure;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.Type;\n");
+    stringBuffer.append("\nimport org.apache.uima.jcas.JCas;\nimport org.apache.uima.jcas.JCasRegistry;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.Type;\n");
    if (td.getFeatures().length > 0) {
     stringBuffer.append("import org.apache.uima.cas.impl.FeatureImpl;\nimport org.apache.uima.cas.Feature;\n");
    } 
@@ -65,21 +65,7 @@ public class JCas_TypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuffer.append(typeName_Type);
     stringBuffer.append(" extends ");
     stringBuffer.append(jg.getJavaName(td.getSupertypeName()) + "_Type");
-    stringBuffer.append(" {\n  /** @generated \n   * @return the generator for this type\n   */\n  @Override\n  protected FSGenerator getFSGenerator() {return fsGenerator;}\n  /** @generated */\n  private final FSGenerator fsGenerator = \n    new FSGenerator() {\n      public FeatureStructure createFS(int addr, CASImpl cas) {\n  			 if (");
-    stringBuffer.append(typeName_Type);
-    stringBuffer.append(".this.useExistingInstance) {\n  			   // Return eq fs instance if already created\n  		     FeatureStructure fs = ");
-    stringBuffer.append(typeName_Type);
-    stringBuffer.append(".this.jcas.getJfsFromCaddr(addr);\n  		     if (null == fs) {\n  		       fs = new ");
-    stringBuffer.append(typeName);
-    stringBuffer.append("(addr, ");
-    stringBuffer.append(typeName_Type);
-    stringBuffer.append(".this);\n  			   ");
-    stringBuffer.append(typeName_Type);
-    stringBuffer.append(".this.jcas.putJfsFromCaddr(addr, fs);\n  			   return fs;\n  		     }\n  		     return fs;\n        } else return new ");
-    stringBuffer.append(typeName);
-    stringBuffer.append("(addr, ");
-    stringBuffer.append(typeName_Type);
-    stringBuffer.append(".this);\n  	  }\n    };\n  /** @generated */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = ");
+    stringBuffer.append(" {\n  /** @generated */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = ");
     stringBuffer.append(typeName);
     stringBuffer.append(".typeIndexID;\n  /** @generated \n     @modifiable */\n  @SuppressWarnings (\"hiding\")\n  public final static boolean featOkTst = JCasRegistry.getFeatOkTst(\"");
     stringBuffer.append(td.getName());
