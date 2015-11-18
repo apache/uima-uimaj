@@ -165,7 +165,7 @@ public class JetExpander {
 
 		String outFileName = null;
 		try {
-			outFileName = outDir + File.separator + pkg.replaceAll("\\.","\\\\") + File.separator + className + ".java";
+			outFileName = outDir + File.separator + pkg.replaceAll("\\.", File.separator) + File.separator + className + ".java";
 			(new File(pathOnly(outFileName))).mkdirs();			
 			fileWriter = new FileWriter(outFileName);
 		} catch (IOException e1) {
