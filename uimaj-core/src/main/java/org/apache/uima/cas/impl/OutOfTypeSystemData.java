@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -37,6 +38,7 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  */
 public class OutOfTypeSystemData {
+  
   /**
    * List of FSData objects for out-of-typesystem FSs.
    */
@@ -46,13 +48,14 @@ public class OutOfTypeSystemData {
    * Map from Feature Structure to List of String arrays holding feature names and values for
    * out-of-typesystem features on in-typesystem FSs.
    */
-  Map<TOP, List<String[]>> extraFeatureValues = new IdentityHashMap<TOP, List<String[]>>();
+  Map<TOP, List<String[]>> extraFeatureValues = new IdentityHashMap<>();
 
   /**
    * Map from FSArray instances to List of ArrayElement objects, each of which
    * holds an array index and value (as a string).
+   *   key: FSArray instance represented as an xmiId
    */
-  Map<Integer, List<ArrayElement>> arrayElements = new HashMap<Integer, List<ArrayElement>>();
+  Map<TOP, List<ArrayElement>> arrayElements = new IdentityHashMap<>();
 
   /**
    * Map used during re-serialization. Stores mapping from out-of-typesystem FS IDs to the actual
