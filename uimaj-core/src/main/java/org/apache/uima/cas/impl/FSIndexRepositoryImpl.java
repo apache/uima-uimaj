@@ -29,6 +29,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.uima.UIMARuntimeException;
@@ -187,9 +188,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    *  only used when processing updates in batch mode
    */
   private static class ProcessedIndexInfo {
-    final private ObjHashSet<FeatureStructureImplC> fsAddedToIndex     = new ObjHashSet<>(FeatureStructureImplC.class);
-    final private ObjHashSet<FeatureStructureImplC> fsDeletedFromIndex = new ObjHashSet<>(FeatureStructureImplC.class); 
-    final private ObjHashSet<FeatureStructureImplC> fsReindexed        = new ObjHashSet<>(FeatureStructureImplC.class);
+    final private Set<TOP> fsAddedToIndex     = new ObjHashSet<TOP>(TOP.class, TOP.singleton);
+    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<TOP>(TOP.class, TOP.singleton); 
+    final private Set<TOP> fsReindexed        = new ObjHashSet<TOP>(TOP.class, TOP.singleton);
   }
   
   /**
@@ -282,7 +283,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       new IdentityHashMap<TypeImpl, FsIndex_annotation<Annotation>>();
 
   // the next are for journaling updates to indexes
-  final private List<FeatureStructure> indexUpdates;
+  final private List<TOP> indexUpdates;
 
   final private BitSet indexUpdateOperation;
 
@@ -979,7 +980,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * The order in which FSs occur in the array does not reflect the order in which they
    * were added to the repository. 
    * 
-   * @return a stream all FSs in any defined index, in this view.
+   * @return a List of all FSs in any defined index, in this view.
    */
   public List<TOP> getIndexedFSs() {
     
@@ -1388,7 +1389,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return (FsIndex_annotation<T>) r;
   }
   
-  private <T extends FeatureStructure> void logIndexOperation(T fs, boolean added) {
+  private <T extends TOP> void logIndexOperation(T fs, boolean added) {
     this.indexUpdates.add(fs);
     if (added) {
       this.indexUpdateOperation.set(this.indexUpdates.size() - 1, added);  // operation was "add"
@@ -1423,7 +1424,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
        
     final int len = this.indexUpdates.size();
     for (int i = 0; i < len; i++) {
-      final FeatureStructureImplC fs = (FeatureStructureImplC) this.indexUpdates.get(i);
+      final TOP fs =  this.indexUpdates.get(i);
       final boolean added = this.indexUpdateOperation.get(i);
       if (added) {
         boolean wasRemoved = pii.fsDeletedFromIndex.remove(fs);
@@ -1448,22 +1449,22 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.indexUpdateOperation.clear();
   }
   
-  public ObjHashSet<FeatureStructureImplC> getUpdatedFSs(ObjHashSet<FeatureStructureImplC> items) {
+  public Set<TOP> getUpdatedFSs(Set<TOP> items) {
     if (!this.logProcessed) {
       processIndexUpdates();
     }
     return items;    
   }
   
-  public ObjHashSet<FeatureStructureImplC> getAddedFSs() {
+  public Set<TOP> getAddedFSs() {
     return getUpdatedFSs(mPii.fsAddedToIndex);
   }
 
-  public ObjHashSet<FeatureStructureImplC> getDeletedFSs() {
+  public Set<TOP> getDeletedFSs() {
     return getUpdatedFSs(mPii.fsDeletedFromIndex);
   }
 
-  public ObjHashSet<FeatureStructureImplC> getReindexedFSs() {
+  public Set<TOP> getReindexedFSs() {
     return getUpdatedFSs(mPii.fsReindexed);
   }
 
