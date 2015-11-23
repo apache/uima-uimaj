@@ -396,18 +396,4 @@ public abstract class TypeSystemUtils {
     }
   }
 
-  /**
-   * Classify types into FS type, array type etc. For the full list of return types, see the
-   * <code>LowLevelCAS.TYPE_CLASS*</code> constants, as well as the documentation for
-   * {@link LowLevelCAS#ll_getTypeClass(int) LowLevelCAS.ll_getTypeClass(int)}.
-   * 
-   * @param type
-   *                The type to classify.
-   * @return An integer encoding the the type class. See above.
-   */
-  public static final int classifyType(Type type) {
-    LowLevelTypeSystem llts = ((TypeImpl) type).getTypeSystem().getLowLevelTypeSystem();
-    return llts.ll_getTypeClass(llts.ll_getCodeForType(type));
-  }
-
 }
