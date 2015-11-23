@@ -71,6 +71,7 @@ import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
 import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
@@ -168,18 +169,18 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static final int intArrayTypeCode = 8;
   public static final int stringArrayTypeCode = 9;
   // 10 list base
-  // 11           fs list
-  // 12 empty     fs list
-  // 13 non-empty fs list
-  // 14           float list
-  // 15 empty     float list
-  // 16 non-empty float list
-  // 17           integer list
-  // 18 empty     integer list
-  // 19 non-empty integer list
-  // 20           string list
-  // 21 empty     string list
-  // 22 non-empty string list
+  public static final int fsListTypeCode = 11; // 11           fs list
+  public static final int fsEListTypeCode = 12;// 12 empty     fs list
+  public static final int fsNeListTypeCode = 13;// 13 non-empty fs list
+  public static final int floatListTypeCode = 14; // 14           float list
+  public static final int floatEListTypeCode = 15;// 15 empty     float list
+  public static final int floatNeListTypeCode = 16;  // 16 non-empty float list
+  public static final int intListTypeCode = 17; // 17           integer list
+  public static final int intEListTypeCode = 18;  // 18 empty     integer list
+  public static final int intNeListTypeCode = 19; // 19 non-empty integer list
+  public static final int stringListTypeCode = 20;  // 20           string list
+  public static final int stringEListTypeCode = 21;  // 21 empty     string list
+  public static final int stringNeListTypeCode = 22;  // 22 non-empty string list
 
   public static final int booleanTypeCode = 23;
   public static final int byteTypeCode = 24;
@@ -194,7 +195,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static final int sofaTypeCode = 33;
   public static final int annotBaseTypeCode = 34;
   public static final int annotTypeCode = 35;
-  public static final int docTypeCode = 36;  
+  public static final int docTypeCode = 36;  // DocumentAnnotation
   public static final int javaObjectTypeCode = 37;
   public static final int javaObjectArrayTypeCode = 38;
     
@@ -245,7 +246,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
          static final int sofaMimeFeatCode = 11;
          static final int sofaUriFeatCode = 14;
          static final int sofaArrayFeatCode = 12;
-  public static final int annotSofaFeatCode = 15; // ref from another pkg
+  public static final int annotBaseSofaFeatCode = 15; // ref from another pkg
   public static final int beginFeatCode = 16;
   public static final int endFeatCode = 17;
          static final int langFeatCode = 18;
@@ -280,10 +281,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
            CAS.TYPE_NAME_DOCUMENT_ANNOTATION,
            CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
   }
-         
-         
-  public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
-    
+             
   /******************************************
    *   I N S T A N C E   V A R I A B L E S  *
    ******************************************/
@@ -305,41 +303,41 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public final TypeImpl      stringType;
   public final TypeImpl      floatType;
          final TypeImpl      arrayBaseType;
-         final TypeImplArray intArrayType;
-         final TypeImplArray floatArrayType;
-         final TypeImplArray stringArrayType;
-         final TypeImplArray fsArrayType;
-         final TypeImplArray topArrayType;  // same as fsArrayType
+         final TypeImpl_array intArrayType;
+         final TypeImpl_array floatArrayType;
+         final TypeImpl_array stringArrayType;
+         final TypeImpl_array fsArrayType;
+         final TypeImpl_array topArrayType;  // same as fsArrayType
   public final TypeImpl      sofaType;   // public needed for CasCopier
   public final TypeImpl      annotType;
   public final TypeImpl      annotBaseType;
   public final TypeImpl      docType;
   public final TypeImpl      byteType;
-         final TypeImplArray byteArrayType;
+         final TypeImpl_array byteArrayType;
   public final TypeImpl      booleanType;
-         final TypeImplArray booleanArrayType;
+         final TypeImpl_array booleanArrayType;
   public final TypeImpl      shortType;
-         final TypeImplArray shortArrayType;
+         final TypeImpl_array shortArrayType;
   public final TypeImpl      longType;
-         final TypeImplArray longArrayType;
+         final TypeImpl_array longArrayType;
   public final TypeImpl      doubleType;
-         final TypeImplArray doubleArrayType;
+         final TypeImpl_array doubleArrayType;
          
-         final TypeImplJavaObject javaObjectType;   // for Map, List, etc.
-         final TypeImplArray javaObjectArrayType;   // for arrays of these
+         final TypeImpl_javaObject javaObjectType;   // for Map, List, etc.
+         final TypeImpl_array javaObjectArrayType;   // for arrays of these
          final TypeImpl listBaseType;
-         final TypeImpl intListType;
-         final TypeImpl floatListType;
-         final TypeImpl stringListType;
-         final TypeImpl fsListType;
-         final TypeImpl intEListType;
-         final TypeImpl floatEListType;
-         final TypeImpl stringEListType;
-         final TypeImpl fsEListType;
-         final TypeImpl intNeListType;
-         final TypeImpl floatNeListType;
-         final TypeImpl stringNeListType;
-         final TypeImpl fsNeListType;          
+  public final TypeImpl_list intListType;
+  public final TypeImpl_list floatListType;
+  public final TypeImpl_list stringListType;
+  public final TypeImpl_list fsListType;
+  public final TypeImpl_list intEListType;
+  public final TypeImpl_list floatEListType;
+  public final TypeImpl_list stringEListType;
+  public final TypeImpl_list fsEListType;
+  public final TypeImpl_list intNeListType;
+  public final TypeImpl_list floatNeListType;
+  public final TypeImpl_list stringNeListType;
+  public final TypeImpl_list fsNeListType;          
           
 //  /**
 //   * List indexed by typecode
@@ -446,9 +444,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     topType = new TypeImpl(CAS.TYPE_NAME_TOP, this, null, TOP.class);   
 
     // Add basic data types.
-    intType = new TypeImplPrimitive(CAS.TYPE_NAME_INTEGER, this, topType, int.class);
-    floatType = new TypeImplPrimitive(CAS.TYPE_NAME_FLOAT, this, topType, float.class);
-    stringType = new TypeImplString(CAS.TYPE_NAME_STRING, this, topType, String.class);
+    intType = new TypeImpl_primitive(CAS.TYPE_NAME_INTEGER, this, topType, int.class);
+    floatType = new TypeImpl_primitive(CAS.TYPE_NAME_FLOAT, this, topType, float.class);
+    stringType = new TypeImpl_string(CAS.TYPE_NAME_STRING, this, topType, String.class);
     
     // Add arrays.
     arrayBaseType = new TypeImpl(CAS.TYPE_NAME_ARRAY_BASE, this, topType);
@@ -461,38 +459,38 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     listBaseType = new TypeImpl(CAS.TYPE_NAME_LIST_BASE, this, topType);
     
     // FS list
-    fsListType = new TypeImpl(CAS.TYPE_NAME_FS_LIST, this, listBaseType, FSList.class);
-    fsEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_FS_LIST, this, fsListType, EmptyFSList.class);
-    fsNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, this, fsListType, NonEmptyFSList.class);
+    fsListType = new TypeImpl_list(CAS.TYPE_NAME_FS_LIST, topType, this, listBaseType, FSList.class);
+    fsEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_FS_LIST, topType, this, fsListType, EmptyFSList.class);
+    fsNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, topType, this, fsListType, NonEmptyFSList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeListType, topType, true);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeListType, fsListType, true);
     
     // Float list
-    floatListType = new TypeImpl(CAS.TYPE_NAME_FLOAT_LIST, this, listBaseType, FloatList.class);
-    floatEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, this, floatListType, EmptyFloatList.class);
-    floatNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, this, floatListType, NonEmptyFloatList.class);
+    floatListType = new TypeImpl_list(CAS.TYPE_NAME_FLOAT_LIST, floatType, this, listBaseType, FloatList.class);
+    floatEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, floatType, this, floatListType, EmptyFloatList.class);
+    floatNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, floatType, this, floatListType, NonEmptyFloatList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeListType, floatType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeListType, floatListType, true);
     
     // Integer list
-    intListType = new TypeImpl(CAS.TYPE_NAME_INTEGER_LIST, this, listBaseType, IntegerList.class);
-    intEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, this, intListType, EmptyIntegerList.class);
-    intNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, this, intListType, NonEmptyIntegerList.class);
+    intListType = new TypeImpl_list(CAS.TYPE_NAME_INTEGER_LIST, intType, this, listBaseType, IntegerList.class);
+    intEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, intType, this, intListType, EmptyIntegerList.class);
+    intNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, intType, this, intListType, NonEmptyIntegerList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeListType, intType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeListType, intListType, true);
     
     // String list
-    stringListType = new TypeImpl(CAS.TYPE_NAME_STRING_LIST, this, listBaseType, StringList.class);
-    stringEListType = new TypeImpl(CAS.TYPE_NAME_EMPTY_STRING_LIST, this, stringListType, EmptyStringList.class);
-    stringNeListType = new TypeImpl(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, this, stringListType, NonEmptyStringList.class);
+    stringListType = new TypeImpl_list(CAS.TYPE_NAME_STRING_LIST, stringType, this, listBaseType, StringList.class);
+    stringEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_STRING_LIST, stringType, this, stringListType, EmptyStringList.class);
+    stringNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, stringType, this, stringListType, NonEmptyStringList.class);
     addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeListType, stringType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeListType, stringListType, true);
-
-    booleanType = new TypeImplPrimitive(CAS.TYPE_NAME_BOOLEAN, this, topType, boolean.class);    
-    byteType = new TypeImplPrimitive(CAS.TYPE_NAME_BYTE, this, topType, byte.class);
-    shortType = new TypeImplPrimitive(CAS.TYPE_NAME_SHORT, this, topType, short.class);
-    longType = new TypeImplPrimitive(CAS.TYPE_NAME_LONG, this, topType, long.class);
-    doubleType = new TypeImplPrimitive(CAS.TYPE_NAME_DOUBLE, this, topType, double.class);
+    
+    booleanType = new TypeImpl_primitive(CAS.TYPE_NAME_BOOLEAN, this, topType, boolean.class);    
+    byteType = new TypeImpl_primitive(CAS.TYPE_NAME_BYTE, this, topType, byte.class);
+    shortType = new TypeImpl_primitive(CAS.TYPE_NAME_SHORT, this, topType, short.class);
+    longType = new TypeImpl_primitive(CAS.TYPE_NAME_LONG, this, topType, long.class);
+    doubleType = new TypeImpl_primitive(CAS.TYPE_NAME_DOUBLE, this, topType, double.class);
 
     // array type initialization must follow the component type it's based on
     booleanArrayType = addArrayType(booleanType, Slot_BooleanRef, !HEAP_STORED_ARRAY, BooleanArray.class);  // yes, byteref
@@ -513,17 +511,17 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     sofaUri = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFAURI, sofaType, stringType, false);
 
     // Annotations
-    annotBaseType = new TypeImplAnnotBase(CAS.TYPE_NAME_ANNOTATION_BASE, this, topType, AnnotationBase.class);
+    annotBaseType = new TypeImpl_annotBase(CAS.TYPE_NAME_ANNOTATION_BASE, this, topType, AnnotationBase.class);
     addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofaType, false);
     
-    annotType = new TypeImplAnnot(CAS.TYPE_NAME_ANNOTATION, this, annotBaseType, Annotation.class);
+    annotType = new TypeImpl_annot(CAS.TYPE_NAME_ANNOTATION, this, annotBaseType, Annotation.class);
     startFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intType, false);
     endFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_END, annotType, intType, false);
     
-    docType = new TypeImplAnnot(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType, Annotation.class);
+    docType = new TypeImpl_annot(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType, Annotation.class);
     langFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringType, false);
     
-    javaObjectType = new TypeImplJavaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
+    javaObjectType = new TypeImpl_javaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
     javaObjectArrayType = addArrayType(javaObjectType, null, HEAP_STORED_ARRAY, JavaObjectArray.class);
     
     arrayName2ComponentType.put(CAS.TYPE_NAME_FS_ARRAY, topType);
@@ -604,6 +602,20 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     setTypeFinal(longArrayType);
     setTypeFinal(doubleArrayType);
     setTypeFinal(javaObjectArrayType);
+    
+    setTypeFinal(fsListType);
+    setTypeFinal(floatListType);
+    setTypeFinal(stringListType);
+    setTypeFinal(intListType);
+    setTypeFinal(fsEListType);
+    setTypeFinal(floatEListType);
+    setTypeFinal(stringEListType);
+    setTypeFinal(intEListType);
+    setTypeFinal(fsNeListType);
+    setTypeFinal(floatNeListType);
+    setTypeFinal(stringNeListType);
+    setTypeFinal(intNeListType);
+    
 
     listBaseType.setFeatureFinal();
     fsListType.setFeatureFinal();
@@ -840,9 +852,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
             
     final TypeImpl supertypeimpl = (TypeImpl) superType;
     TypeImpl ti = supertypeimpl.isAnnotationType() ? 
-                    new TypeImplAnnot    (typeName, this, supertypeimpl, Annotation.class) :
+                    new TypeImpl_annot    (typeName, this, supertypeimpl, Annotation.class) :
                   supertypeimpl.isAnnotationBaseType() ?
-                    new TypeImplAnnotBase(typeName, this, supertypeimpl, AnnotationBase.class) :
+                    new TypeImpl_annotBase(typeName, this, supertypeimpl, AnnotationBase.class) :
                     new TypeImpl         (typeName, this, supertypeimpl);         
     return ti;
   }
@@ -1080,8 +1092,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (isSubArray) {
         // If both types are arrays, simply compare the components.
         return subsumes(
-            ((TypeImplArray)superType).getComponentType(), 
-            ((TypeImplArray)subType  ).getComponentType());
+            ((TypeImpl_array)superType).getComponentType(), 
+            ((TypeImpl_array)subType  ).getComponentType());
       }
       // An array can never subsume a non-array.
       return false;
@@ -1319,6 +1331,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     fsClassRegistry = new FSClassRegistry(this, true);
     
     computeAdjustedFeatureOffsets(topType, 0, 0);
+    
   }
   
   /**
@@ -1329,17 +1342,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param nextR - the next available slot to use - for ref style items
    */
   private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
-    int iFeat = nextI;
-    int rFeat = nextR;
     
     Class<?>clazz = getFSClassRegistry().getJCasClass(ti.getCode());
     
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
       if ( ! FSClassRegistry.isFieldInClass(fi, clazz)) {
 
-        fi.setAdjustedOffset(fi.isInInt ? (iFeat ++) : (rFeat ++));
+        fi.setAdjustedOffset(fi.isInInt ? (nextI ++) : (nextR ++));
         if (((TypeImpl)fi.getRange()).isLongOrDouble) {
-          iFeat ++;
+          nextI ++;
         }        
       } else { // field is in the JCas cover object
         GetterSetter gs = fsClassRegistry.getGetterSetter(ti.getCode(), fi.getShortName());
@@ -1348,11 +1359,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       }
     }
     
-    ti.nbrOfUsedIntDataSlots = iFeat;
-    ti.nbrOfUsedRefDataSlots = rFeat;
+    ti.nbrOfUsedIntDataSlots = nextI;
+    ti.nbrOfUsedRefDataSlots = nextR;
     
     for (TypeImpl sub : ti.getDirectSubtypes()) {
-      computeAdjustedFeatureOffsets(sub, iFeat, rFeat);
+      computeAdjustedFeatureOffsets(sub, nextI, nextR);
     }  
   }
     
@@ -1363,21 +1374,22 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param nextR - the next available ref offset
    */
   private void computeFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
-    int iFeat = nextI;
-    int rFeat = nextR;
     
+    if (ti.getCode() == docTypeCode) {
+      System.out.println("debug");
+    }
     for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      fi.setOffset(fi.isInInt ? (iFeat ++) : (rFeat ++));
+      fi.setOffset(fi.isInInt ? (nextI ++) : (nextR ++));
       if (((TypeImpl)fi.getRange()).isLongOrDouble) {
-        iFeat ++;
+        nextI ++;
       }
     }
         
-    ti.highestIntOffset = nextI;
-    ti.highestRefOffset = nextR;
+    ti.highestIntOffset = nextI - 1;  // highest index value, 0 based index
+    ti.highestRefOffset = nextR - 1;
     
     for (TypeImpl sub : ti.getDirectSubtypes()) {
-      computeFeatureOffsets(sub, iFeat, rFeat);
+      computeFeatureOffsets(sub, nextI, nextR);
     }  
   }
 
@@ -1500,11 +1512,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     TypeImpl existingTi = getType(typeName);
     if (existingTi != null) {
-      if (!(existingTi instanceof TypeImplStringSubtype)) {
+      if (!(existingTi instanceof TypeImpl_stringSubtype)) {
         throw new CASAdminException(CASAdminException.STRING_SUBTYPE_REDEFINE_NAME_CONFLICT,
             typeName, existingTi.toString());
       }
-      Set<String> existingAllowedValues = ((TypeImplStringSubtype) existingTi).getAllowedValues();
+      Set<String> existingAllowedValues = ((TypeImpl_stringSubtype) existingTi).getAllowedValues();
       if (!existingAllowedValues.equals(allowedValues)) {
         // this type is already defined with identical allowed values, return
         // existing one
@@ -1517,7 +1529,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }
 
     // Create the type.
-    TypeImplStringSubtype type = new TypeImplStringSubtype(typeName, this, supertype, allowedValues);
+    TypeImpl_stringSubtype type = new TypeImpl_stringSubtype(typeName, this, supertype, allowedValues);
     type.setFeatureFinal();
     type.setInheritanceFinal();
     return type;
@@ -1529,11 +1541,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param componentType the component type
    * @return a TypeImplArray 
    */
-  TypeImplArray addArrayType(Type componentType, SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
+  TypeImpl_array addArrayType(Type componentType, SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
     String arrayTypeName = getArrayTypeName(componentType.getName());
     // either fsArray or TOP
     TypeImpl supertype = computeArrayParentFromComponentType(componentType); 
-    TypeImplArray ti = new TypeImplArray(arrayTypeName, (TypeImpl) componentType, this, supertype, slotKind, isHeapStoredArray, javaClass);
+    TypeImpl_array ti = new TypeImpl_array(arrayTypeName, (TypeImpl) componentType, this, supertype, slotKind, isHeapStoredArray, javaClass);
     this.arrayComponentTypeToArrayType.put(componentType, ti);
     // the reverse - going from array type to component type is done via the getComponentType method of TypeImplArray
     return ti;
@@ -1660,7 +1672,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           i++;
           TypeImpl slotType = (TypeImpl) feat.getRange();
 
-          if (slotType == stringType || (slotType instanceof TypeImplString)) {
+          if (slotType == stringType || (slotType instanceof TypeImpl_string)) {
             slots.add(Slot_StrRef);
             strRefsTemp.add(i + 1);  // first feature is offset 1 from fs addr
           } else if (slotType == intType) {
@@ -2098,7 +2110,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public int ll_getComponentType(int arrayTypeCode) {
     final TypeImpl type = types.get(arrayTypeCode);
     if (type.isArray()) {
-      return ((TypeImpl) ((TypeImplArray)type).getComponentType()).getCode();
+      return ((TypeImpl) ((TypeImpl_array)type).getComponentType()).getCode();
     }
     return UNKNOWN_TYPE_CODE;
   }
@@ -2115,7 +2127,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (!ti.isStringSubtype()) {
       return null;
     }
-    Set<String> allowedValues = ((TypeImplStringSubtype)ti).getAllowedValues();
+    Set<String> allowedValues = ((TypeImpl_stringSubtype)ti).getAllowedValues();
     return allowedValues.stream().toArray(i -> new String[i]);
   }
 
@@ -2126,6 +2138,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // The first element is null, so skip it.
     it.next();
     return it;
+  }
+  
+  public List<FeatureImpl> getFeatureImpls() {
+    return this.features;
   }
   
   /**
@@ -2285,9 +2301,36 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     jcasRegisteredTypes.set(typeIndexID, ti);
   }
   
-  static {
-    new TypeSystemImpl();
+  public static final int getTypeClass(TypeImpl ti) { 
+    switch (ti.getCode()) {
+    case TypeSystemImpl.intTypeCode: return CASImpl.TYPE_CLASS_INT;
+    case TypeSystemImpl.floatTypeCode: return CASImpl.TYPE_CLASS_FLOAT;
+    case TypeSystemImpl.stringTypeCode: return CASImpl.TYPE_CLASS_STRING;
+    case TypeSystemImpl.intArrayTypeCode: return CASImpl.TYPE_CLASS_INTARRAY;
+    case TypeSystemImpl.floatArrayTypeCode: return CASImpl.TYPE_CLASS_FLOATARRAY;
+    case TypeSystemImpl.stringArrayTypeCode: return CASImpl.TYPE_CLASS_STRINGARRAY;
+    case TypeSystemImpl.fsArrayTypeCode: return CASImpl.TYPE_CLASS_FSARRAY;
+    case TypeSystemImpl.booleanTypeCode: return CASImpl.TYPE_CLASS_BOOLEAN;
+    case TypeSystemImpl.byteTypeCode: return CASImpl.TYPE_CLASS_BYTE;
+    case TypeSystemImpl.shortTypeCode: return CASImpl.TYPE_CLASS_SHORT;
+    case TypeSystemImpl.longTypeCode: return CASImpl.TYPE_CLASS_LONG;
+    case TypeSystemImpl.doubleTypeCode: return CASImpl.TYPE_CLASS_DOUBLE;
+    case TypeSystemImpl.booleanArrayTypeCode: return CASImpl.TYPE_CLASS_BOOLEANARRAY;
+    case TypeSystemImpl.byteArrayTypeCode: return CASImpl.TYPE_CLASS_BYTEARRAY;
+    case TypeSystemImpl.shortArrayTypeCode: return CASImpl.TYPE_CLASS_SHORTARRAY;
+    case TypeSystemImpl.longArrayTypeCode: return CASImpl.TYPE_CLASS_LONGARRAY;
+    case TypeSystemImpl.doubleArrayTypeCode: return CASImpl.TYPE_CLASS_DOUBLEARRAY;
+    }
+        
+    if (ti.isArray()) {
+      return CASImpl.TYPE_CLASS_FSARRAY;
+    }
+
+    return CASImpl.TYPE_CLASS_FS;
   }
+
+  public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
+    
 //  public void installTypeCreator(Class<?> jcasClass) {
 //    TypeImpl ti = typeName2TypeImpl.get(jcasClass.getName());
 //    assert (ti != null);

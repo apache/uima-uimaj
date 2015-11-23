@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
-public class TypeImplArray extends TypeImpl {
+public class TypeImpl_array extends TypeImpl {
   
   private final TypeImpl componentType;
   
@@ -30,7 +30,7 @@ public class TypeImplArray extends TypeImpl {
   
   private final SlotKind slotKind;
   
-  public TypeImplArray(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, 
+  public TypeImpl_array(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, 
       SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
     this.isInheritanceFinal = true;
@@ -45,7 +45,7 @@ public class TypeImplArray extends TypeImpl {
   }
   
   TypeImpl consolidateType(TypeImpl topType, TypeImpl fsArrayType) {
-    if (!(componentType instanceof TypeImplPrimitive)) {
+    if (!(componentType instanceof TypeImpl_primitive)) {
         return fsArrayType;  // booleanArrayType, stringArrayType etc.
     }
     // is a primitive array

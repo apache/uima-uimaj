@@ -20,17 +20,17 @@
 package org.apache.uima.cas.impl;
 
 /**
- * A version of TypeImpl for the AnnotationBase type and its subtypes
+ * A version of TypeImpl for Annotations and subtypes of Annotations
+ *
  */
-
-public class TypeImplAnnotBase extends TypeImpl {
-  
-  public TypeImplAnnotBase(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
+public class TypeImpl_annot extends TypeImpl_annotBase {
+    
+  public TypeImpl_annot(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
   }
   
   @Override
-  public boolean isAnnotationBaseType() {
+  public boolean isAnnotationType() {
     return true;
   }
  

@@ -25,9 +25,9 @@ package org.apache.uima.cas.impl;
  * values of Feature slots.
  *
  */
-public class TypeImplJavaObject extends TypeImplPrimitive {
+public class TypeImpl_javaObject extends TypeImpl_primitive {
   
-  public TypeImplJavaObject(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
+  public TypeImpl_javaObject(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
   }
   

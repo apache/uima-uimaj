@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.ArrayList;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -31,7 +32,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *
  * @param <T> the type this iterator is over (including subtypes)
  */
-public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIterator_subtypes_snapshot<T> {
+public class LLUnambiguousIteratorImpl<T extends TOP> extends FsIterator_subtypes_snapshot<T> {
 
   public LLUnambiguousIteratorImpl(LowLevelIterator<FeatureStructure> it) {
     super((T[]) createItemsArray(it), it.ll_getIndex(), false);

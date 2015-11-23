@@ -55,6 +55,8 @@ public class FeatureImpl implements Feature {
   protected Object jcasSetter;  // null or the functional interface to call to set this feature
     
   private final SlotKind slotKind;
+  /** type class of the range, including CasSerializer List constants */
+  public  final int rangeTypeClass; // set from CasSerializerSupport.classifyType
     
 
   FeatureImpl(TypeImpl typeImpl, String shortName, TypeImpl rangeType, TypeSystemImpl tsi, boolean isMultipleRefsAllowed, SlotKind slotKind) {
@@ -68,6 +70,7 @@ public class FeatureImpl implements Feature {
   this.shortName = shortName;
   this.isMultipleRefsAllowed = isMultipleRefsAllowed;
   this.isInInt = tsi.isInInt(rangeType);
+  this.rangeTypeClass = CasSerializerSupport.classifyType(rangeType);
   typeImpl.addFeature(this);  // might throw if existing feature with different range
   feats.add(this);
 }
@@ -105,7 +108,8 @@ public class FeatureImpl implements Feature {
   }
 
   /**
-   * Get the name for this feature.
+   * Get the fully qualified name for this feature.
+   * The Feature qualifier is that of the highest defining type.
    * 
    * @return The name. This can not be <code>null</code>.
    */
@@ -215,7 +219,7 @@ public class FeatureImpl implements Feature {
    * @param v the value to check
    */
   public void validateIsInAllowedValue(String v) {
-    TypeImplStringSubtype ti = (TypeImplStringSubtype) getRangeImpl();
+    TypeImpl_stringSubtype ti = (TypeImpl_stringSubtype) getRangeImpl();
     ti.validateIsInAllowedValues(v);
   }
 }

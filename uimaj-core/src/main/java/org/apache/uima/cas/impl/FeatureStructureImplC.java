@@ -232,6 +232,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public int _getTypeCode() {
     return _typeImpl.getCode();
   }
+  
+  public CASImpl _getView() {
+    return _casView;
+  }
 
   /* *********************************************************
    * Get and Set features indirectly, via Feature objects
@@ -422,7 +426,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     TypeImpl range = (TypeImpl) feat.getRange();
     if (range.isStringSubtype()) {
       if (v != null) {
-        TypeImplStringSubtype tiSubtype = (TypeImplStringSubtype) range;
+        TypeImpl_stringSubtype tiSubtype = (TypeImpl_stringSubtype) range;
         tiSubtype.validateIsInAllowedValues(v);
       }
     } else if (range.getCode() != TypeSystemImpl.stringTypeCode) {
@@ -658,14 +662,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
         
     if (_typeImpl.isArray()) {
       CommonArray original = (CommonArray) this;
-      CommonArray copy = _casView.createArray(_typeImpl.getCode(), original.size());
+      CommonArray copy = (CommonArray) _casView.createArray(_typeImpl, original.size());
       copy.copyValuesFrom(original);      
       return (FeatureStructureImplC) copy;
     }
     
     FeatureStructureImplC fs = _casView.createFS(_typeImpl);
     
-    final int sofaFeatCode = TypeSystemImpl.annotSofaFeatCode;
+    final int sofaFeatCode = TypeSystemImpl.annotBaseSofaFeatCode;
 
     /* copy all the feature values except the sofa ref which is already set as part of creation */
     for (Feature feat : _typeImpl.getFeatures()) {
@@ -770,11 +774,13 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     }
     
     final TypeImpl ti = this._typeImpl;
-    ti.getFeaturesAsStream()
-        .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
-        .map(fi -> this.getFeatureValue(fi)) // get the feature value
-        .filter(refFs -> refFs != null)            // skip null ones
-        .forEachOrdered(refFs -> getPrintRefs(printRefs, refFs));
+    if (ti != null) { // null for REMOVED marker
+      ti.getFeaturesAsStream()
+          .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
+          .map(fi -> this.getFeatureValue(fi)) // get the feature value
+          .filter(refFs -> refFs != null)            // skip null ones
+          .forEachOrdered(refFs -> getPrintRefs(printRefs, refFs));
+    }
   }
 
   @Override
@@ -805,7 +811,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       boolean useShortNames, 
       String s, 
       PrintReferences printRefs) {
+    try {
     indent += incr;
+    if (indent > 20) {
+      buf.append(" ... past indent 20 ... ");
+      return;
+    }
     final int printInfo = printRefs.printInfo(this);
     if (printInfo != PrintReferences.NO_LABEL) {
       String label = printRefs.getLabel(this);
@@ -818,20 +829,26 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       }
       buf.append(' ');
     }
-    if (useShortNames) {
-      buf.append(getType().getShortName());
+    if (_typeImpl == null) {
+      buf.append(" Special REMOVED marker ");
     } else {
-      buf.append(getType().getName());
-    }
-    buf.append(':').append(_id);
-    if (s != null) {
-      buf.append(" \"" + s + "\"");
+      if (useShortNames) {
+        buf.append(getType().getShortName());
+      } else {
+        buf.append(getType().getName());
+      }
+      buf.append(':').append(_id);
+      if (s != null) {
+        buf.append(" \"" + s + "\"");
+      }
     }
     buf.append('\n');
 
 //    final int typeClass = this._casView.ll_getTypeClass(this.getType());
     
-    
+    if (_typeImpl == null) {  // happens for special version which is REMOVED marker
+      return;
+    }
     switch (_getTypeCode()) {
     case TypeSystemImpl.stringArrayTypeCode: {
       StringArray a = (StringArray) this;
@@ -912,6 +929,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
         buf.append(this.getFeatureValueAsString(feat) + "\n");
       }
     }
+    } catch (Exception e) {
+      buf.append("**Caught exception: ").append(e);
+//      StringWriter sw = new StringWriter();
+//      e.printStackTrace(new PrintWriter(sw, true));
+//      buf.append(sw.toString());
+    }    
   }
 
   private void printArrayElements(int arrayLen, IntFunction<String> f, int indent, StringBuilder buf) {

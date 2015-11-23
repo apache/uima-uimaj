@@ -19,14 +19,19 @@
 
 package org.apache.uima.cas.impl;
 
-public class TypeImplString extends TypeImplPrimitive {  // string considered a primitive e.g. in index comparators
+import org.apache.uima.cas.Type;
+
+public class TypeImpl_list extends TypeImpl {
   
-  public TypeImplString(String name, TypeSystemImpl tsi, TypeImpl supertype) {
-    super(name, tsi, supertype, String.class);
-  }
+  TypeImpl componentType;
+      
+  public TypeImpl_list(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaClass) {
+    super(name, tsi, supertype, javaClass);
+    this.componentType = componentType;
+    }
   
-  public TypeImplString(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaType) {
-    super(name, tsi, supertype, javaType);
-  }
+  public Type getCompoentType() {
+    return componentType;
+  }    
   
 }
