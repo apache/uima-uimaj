@@ -70,6 +70,9 @@ public class JCasRegistry {
   
   
   private static int nextFeatureIndex = 0;
+  /**
+   * accessed under class lock
+   */
   final private static Deque<Integer> availableFeatureIndexes = new ArrayDeque<>();  
   /**
    * Registers a JCas cover class with this registry.  The registry will assign
