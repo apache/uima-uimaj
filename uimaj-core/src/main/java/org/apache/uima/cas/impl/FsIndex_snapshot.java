@@ -23,12 +23,13 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Implementation of light-weight wrapper of normal indexes, which support special kinds of iterators
  *   base on the setting of IteratorExtraFunction
  */
-public class FsIndex_snapshot <T extends FeatureStructure> implements FSIndex<T> {
+public class FsIndex_snapshot <T extends TOP> implements FSIndex<T> {
   
   static final boolean ORDERED = false;
   static final boolean UNORDERED = true;

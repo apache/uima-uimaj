@@ -44,7 +44,7 @@ public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
   
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType) {
     super(cas, type, indexType);
-    this.index = new ObjHashSet<TOP>(initialSize, TOP.class);
+    this.index = new ObjHashSet<TOP>(initialSize, TOP.class, TOP.singleton);
   }
 
   /**
