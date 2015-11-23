@@ -461,7 +461,7 @@ public interface CAS extends AbstractCas {
   /**
    * Fully qualified name of annotation sofa feature.
    */
-  static final String FEATURE_FULL_NAME_SOFA = TYPE_NAME_ANNOTATION + TypeSystem.FEATURE_SEPARATOR
+  static final String FEATURE_FULL_NAME_SOFA = TYPE_NAME_ANNOTATION_BASE + TypeSystem.FEATURE_SEPARATOR
           + FEATURE_BASE_NAME_SOFA;
 
   /**
