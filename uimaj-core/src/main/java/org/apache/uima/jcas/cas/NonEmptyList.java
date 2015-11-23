@@ -22,6 +22,6 @@ package org.apache.uima.jcas.cas;
 /**
  * a marker interface for nonempty lists
  */
-public interface NonEmptyList {
+public interface NonEmptyList extends CommonList {
   CommonList getTail();
 }

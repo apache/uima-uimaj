@@ -95,4 +95,21 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
     setHead(Integer.parseInt(stringValues.get(i)));
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    return Integer.toString(((NonEmptyIntegerList)this).getHead());
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#set_headFromString(java.lang.String)
+   */
+  @Override
+  public void set_headFromString(String v) {
+    setHead(Integer.parseInt(v));
+  }  
+
+  
 }

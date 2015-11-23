@@ -19,13 +19,13 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCasRegistry;
 
 public abstract class FSList extends TOP implements CommonList {
-
+ 
 	// Never called.
 	protected FSList() {// Disable default constructor
 	}
@@ -45,30 +45,9 @@ public abstract class FSList extends TOP implements CommonList {
      super(t, c);
    }
 	
-  public NonEmptyFSList createNonEmptyNode(CommonList tail) {
-    NonEmptyFSList node = new NonEmptyFSList(this._typeImpl, this._casView);
-    node.setTail((FSList) tail);
+  public NonEmptyFSList createNonEmptyNode() {
+    NonEmptyFSList node = new NonEmptyFSList(this._casView.getTypeSystemImpl().fsNeListType, this._casView);
     return node;
   }
-  
-  public NonEmptyFSList createNonEmptyNode() { return createNonEmptyNode(null); }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
-   */
-  @Override
-  public EmptyFSList getEmptyNode() {
-    return EmptyFSList.singleton;
-  }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
-   */
-  @Override
-  public String get_headAsString() {
-    throw new CASRuntimeException(); // not yet impl
-//    return ((NonEmptyFSList)this).getHead().toString();
-  }
-
-  
+       
 }

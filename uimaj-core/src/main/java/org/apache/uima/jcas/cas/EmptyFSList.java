@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeImpl_list;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -33,13 +34,16 @@ public class EmptyFSList extends FSList implements EmptyList {
   public int getTypeIndexID() {
     return typeIndexID;
   }
-
-  public final static EmptyFSList singleton = new EmptyFSList();
-
+  
   // Never called. Disable default constructor
   protected EmptyFSList() {
   }
 
+  /* used by type system impl to initialize empty singleton in typeImpl */
+  public EmptyFSList(TypeImpl_list ti) {
+    super(ti, null);
+  }
+  
   public EmptyFSList(JCas jcas) {
     super(jcas);
   }

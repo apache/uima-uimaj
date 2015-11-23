@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeImpl_list;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -34,12 +35,14 @@ public class EmptyFloatList extends FloatList implements EmptyList {
     return typeIndexID;
   }
 
-  public final static EmptyFloatList singleton = new EmptyFloatList();
-
   // Never called. Disable default constructor
   protected EmptyFloatList() {
   }
 
+  public EmptyFloatList(TypeImpl_list ti) {
+    super(ti, null);
+  }
+  
   public EmptyFloatList(JCas jcas) {
     super(jcas);
   }
@@ -54,5 +57,7 @@ public class EmptyFloatList extends FloatList implements EmptyList {
   public EmptyFloatList(TypeImpl t, CASImpl c) {
     super(t, c);
   }
+  
+  
   
  }

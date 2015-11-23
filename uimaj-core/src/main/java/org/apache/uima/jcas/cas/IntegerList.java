@@ -48,28 +48,9 @@ public abstract class IntegerList extends TOP implements CommonList {
 		return ((NonEmptyIntegerList) getNonEmptyNthNode(i)).getHead();
 	}
 	
-  public NonEmptyIntegerList createNonEmptyNode(CommonList tail) {
-    NonEmptyIntegerList node = new NonEmptyIntegerList(this._typeImpl, this._casView);
-    node.setTail((IntegerList) tail);
+  public NonEmptyIntegerList createNonEmptyNode() {
+    NonEmptyIntegerList node = new NonEmptyIntegerList(this._casView.getTypeSystemImpl().intNeListType, this._casView);
     return node;
   }
-  
-  public NonEmptyIntegerList createNonEmptyNode() { return createNonEmptyNode(null); }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
-   */
-  @Override
-  public EmptyIntegerList getEmptyNode() {
-    return EmptyIntegerList.singleton;
-  }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
-   */
-  @Override
-  public String get_headAsString() {
-    return Integer.toString(((NonEmptyIntegerList)this).getHead());
-  }  
   
 }

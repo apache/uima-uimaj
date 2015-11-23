@@ -87,4 +87,21 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   public void setTail(CommonList v) {
     setTail((FloatList) v);
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    return Float.toString(((NonEmptyFloatList)this).getHead());
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#set_headAsString(java.lang.String)
+   */
+  @Override
+  public void set_headFromString(String v) {
+    setHead(Float.parseFloat(v));
+  }
+    
 }

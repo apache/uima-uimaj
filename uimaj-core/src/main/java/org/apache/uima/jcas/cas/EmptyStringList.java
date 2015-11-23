@@ -21,6 +21,8 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeImpl_list;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -34,12 +36,14 @@ public class EmptyStringList extends StringList implements EmptyList {
     return typeIndexID;
   }
   
-  public final static EmptyStringList singleton = new EmptyStringList();
-
   // Never called. Disable default constructor
   protected EmptyStringList() {
   }
 
+  public EmptyStringList(TypeImpl_list ti) {
+    super(ti, null);
+  }
+  
   public EmptyStringList(JCas jcas) {
     super(jcas);
   }

@@ -48,46 +48,9 @@ public abstract class StringList extends TOP implements CommonList {
     return ((NonEmptyStringList) getNonEmptyNthNode(i)).getHead();
   }
    
-  public NonEmptyStringList createNonEmptyNode(CommonList tail) {
-    NonEmptyStringList node = new NonEmptyStringList(this._typeImpl, this._casView);
-    node.setTail((StringList) tail);
+  public NonEmptyStringList createNonEmptyNode() {
+    NonEmptyStringList node = new NonEmptyStringList(this._casView.getTypeSystemImpl().stringNeListType, this._casView);
     return node;
-  }
-  
-  public NonEmptyStringList createNonEmptyNode() { return createNonEmptyNode(null); }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
-   */
-  @Override
-  public EmptyStringList getEmptyNode() {
-    return EmptyStringList.singleton;
-  }
-  
- 
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
-   */
-  @Override
-  public String get_headAsString() {
-    return ((NonEmptyStringList)this).getHead();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getTail()
-   */
-  @Override
-  public CommonList getTail() {
-    return ((NonEmptyStringList)this).getTail();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#setTail(org.apache.uima.jcas.cas.CommonList)
-   */
-  @Override
-  public void setTail(CommonList v) {
-    ((NonEmptyStringList)this).setTail(v);
-  }
-  
+  }  
 
 }

@@ -19,15 +19,31 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.function.Consumer_withSaxException;
+import org.apache.uima.cas.impl.CasSerializerSupport;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
+import org.apache.uima.cas.impl.XmiSerializationSharedData;
+import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
+import org.apache.uima.internal.util.XmlAttribute;
+import org.xml.sax.SAXException;
 
 /**
  * This class is the super class of list nodes (both empty and non empty)
+ * 
  */
-public interface CommonList {
+public interface CommonList extends FeatureStructure {
+
+  static final List<String> EMPTY_LIST_STRING = Collections.emptyList();
 
   /**
    * Get the nth node.
@@ -70,31 +86,52 @@ public interface CommonList {
 	 * @return the number of items in the list
 	 */
 	default int getLength() {
-	  // detect loops
-	  final Set<CommonList> visited = new IdentityHashMap<CommonList, Boolean>().keySet();
-	  
-	  int length = 0;
+	  final int[] length = {0};
+	  try {
+      walkList( n -> length[0]++, () -> {});
+    } catch (SAXException e) {
+      // never happen
+    }
+	  return length[0];
+	}
+	
+	default void walkList(Consumer_withSaxException<NonEmptyList> consumer, Runnable foundLoop) throws SAXException {
+	  final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
 	  CommonList node = this;
 	  while (node instanceof NonEmptyList) {
-	    length ++;
-	    visited.add(node);
+	    consumer.accept((NonEmptyList) node);
 	    node = node.getTail();
-	    if (visited.contains(node)) {
+	    if (node == null) {
 	      break;
 	    }
+	    if (visited.contains(node) && foundLoop != null) {
+	      foundLoop.run();
+	    }
 	  }
-	  return length;
 	}
-	 
-	static void setNewValueInExistingNode(CommonList node, String v) {
-//	  node.setHead(null);
-    throw new CASRuntimeException(); // not yet impl
-	}
-
+	
 	CommonList createNonEmptyNode();
-	CommonList createNonEmptyNode(CommonList tail);
-	CommonList getEmptyNode();   // returns a shared constant empty node
-	String get_headAsString();
+	
+	/**
+   * overridden in nonempty nodes
+	 * Return the head value of a list as a string suitable for serialization.
+	 * 
+	 * For FeatureStructure values, return the _id.
+	 * @return value suitable for serialization
+	 */
+	default String get_headAsString() {
+	  throw new UnsupportedOperationException();
+	};
+	
+	/**
+   * overridden in nonempty nodes
+   * used when deserializing
+   * @param v value to set, as a string
+   */
+  default void set_headFromString(String v) {
+    throw new UnsupportedOperationException();
+  }
+  
 	/**
 	 * insert a new nonempty node following this node
 	 * @return the new node
@@ -114,6 +151,87 @@ public interface CommonList {
 
   default void setTail(CommonList v) {
     throw new UnsupportedOperationException();
+  }
+
+  /**
+   * List to String for XMI and JSON serialization, for the special format where
+   *   all the list elements are in one serialized item
+   * 
+   * Go thru a list, calling the ListOutput append method to append strings (to arrays, or string buffers)
+   * Stop at the end node, or a null, or a loop (no error reported here)
+   * @param curNode - the current node in the list
+   * @param sharedData - 
+   * @param cds - 
+   * @param out - a Consumer of strings
+   */
+  default void anyListToOutput(XmiSerializationSharedData sharedData, CasSerializerSupport.CasDocSerializer cds, Consumer<String> out) {
+
+//    final int type = cas.getHeapValue(curNode);
+//    final int headFeat = getHeadFeatCode(type);
+//    final int tailFeat = getTailFeatCode(type);
+//    final int neListType = getNeListType(type);
+    final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+
+    CommonList curNode = this;
+    while (curNode != null) {      
+      if (curNode instanceof EmptyList) { 
+        break;  // would be the end element.  
+      }
+      
+      if (!visited.add(curNode)) {
+        break;  // hit loop
+      }
+      
+//      out.accept(curNode.get_headAsString());
+      
+      if (curNode instanceof NonEmptyFSList) {
+        TOP val = ((NonEmptyFSList)curNode).getHead();
+        if (val == null) {
+          if (sharedData != null) {
+            OotsElementData oed = sharedData.getOutOfTypeSystemFeatures((TOP)curNode);
+            if (oed != null) {
+              assert oed.attributes.size() == 1; //only the head feature can possibly be here
+              XmlAttribute attr = oed.attributes.get(0);
+              assert CAS.FEATURE_BASE_NAME_HEAD.equals(attr.name);
+              out.accept(attr.value);
+            } else {
+              out.accept("0");
+            }
+          } else {
+            out.accept("0");
+          }
+        } else {
+          out.accept(cds.getXmiId(val));
+        }
+        
+      } else {
+        // is instance of float, integer, or string list
+        out.accept(curNode.get_headAsString());
+      }
+      
+
+      
+      curNode = curNode.getTail();
+    } // end of while loop
+  } 
+  
+  default List<String> anyListToStringList(XmiSerializationSharedData sharedData, CasSerializerSupport.CasDocSerializer cds) {
+    final List<String> list = new ArrayList<String>();
+    anyListToOutput(sharedData, cds, s -> list.add(s)); 
+    return list;
+  }
+    
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FeatureStructure#id()
+   */
+  @Override
+  default int id() {
+    return ((FeatureStructureImplC)this).id();
+  }
+  
+  default CommonList getEmptyList() {
+    TOP node = (TOP) this;
+    return (CommonList) node._getView().getEmptyList(node._getTypeCode());
   }
 
 }

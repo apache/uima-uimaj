@@ -19,10 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -89,5 +87,21 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
   public void setTail(CommonList v) {
     setTail((StringList)v);
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    return ((NonEmptyStringList)this).getHead();
+  }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#set_headFromString(java.lang.String)
+   */
+  @Override
+  public void set_headFromString(String v) {
+    setHead(v);
+  }
+  
 }

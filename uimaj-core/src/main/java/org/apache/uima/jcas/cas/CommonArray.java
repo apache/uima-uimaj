@@ -33,4 +33,10 @@ public interface CommonArray extends FeatureStructure {
   
   void copyValuesFrom(CommonArray v);
   
+  /**
+   * Creates a new string array and copies this array's values into it.
+   * 
+   * @return A Java array copy of this array.
+   */
+  String[] toStringArray();
 }

@@ -48,28 +48,10 @@ public abstract class FloatList extends TOP implements CommonList {
     return ((NonEmptyFloatList) getNonEmptyNthNode(i)).getHead();
   }
   
-  public NonEmptyFloatList createNonEmptyNode(CommonList tail) {
-    NonEmptyFloatList node = new NonEmptyFloatList(this._typeImpl, this._casView);
-    node.setTail((FloatList) tail);
+  
+  @Override
+  public NonEmptyFloatList createNonEmptyNode() {
+    NonEmptyFloatList node = new NonEmptyFloatList(this._casView.getTypeSystemImpl().floatNeListType, this._casView);
     return node;
   }
-  
-  public NonEmptyFloatList createNonEmptyNode() { return createNonEmptyNode(null); }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#getEmptyNode()
-   */
-  @Override
-  public EmptyFloatList getEmptyNode() {
-    return EmptyFloatList.singleton;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
-   */
-  @Override
-  public String get_headAsString() {
-    return Float.toString(((NonEmptyFloatList)this).getHead());
-  }
-  
 }

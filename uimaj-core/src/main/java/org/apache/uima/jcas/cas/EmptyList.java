@@ -19,8 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.FeatureStructure;
+
 /**
  * a marker interface for empty lists
  */
-public interface EmptyList {
-}
+public interface EmptyList extends FeatureStructure {}
