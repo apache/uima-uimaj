@@ -123,8 +123,8 @@ public class FSClassRegistry {
   private static final MethodType callsiteFsGenerator      = methodType(FsGenerator.class);
   private static final MethodType callsiteFsGeneratorArray = methodType(FsGeneratorArray.class);
   
-  private static final MethodType fsGeneratorType      = methodType(FeatureStructureImplC.class, TypeImpl.class, CASImpl.class);
-  private static final MethodType fsGeneratorArrayType = methodType(FeatureStructureImplC.class, TypeImpl.class, CASImpl.class, int.class);
+  private static final MethodType fsGeneratorType      = methodType(TOP.class, TypeImpl.class, CASImpl.class);
+  private static final MethodType fsGeneratorArrayType = methodType(TOP.class, TypeImpl.class, CASImpl.class, int.class);
 
   // must preceed first (static) use
   static private ThreadLocal<ArrayList<Exception>> errorSet = new ThreadLocal<ArrayList<Exception>>();
@@ -165,7 +165,6 @@ public class FSClassRegistry {
       TypeImpl ti = tsi.getType(typeName);
       Class<?> builtinClass = maybeLoadJCas(typeName, cl);
       assert (builtinClass != null);  // builtin types must be present
-      
       // copy down to subtypes, if needed, done later
       JCasClassInfo jcasClassInfo = createJCasClassInfo(builtinClass, ti); 
       jcasClassesInfoForBuiltins[ti.getCode()] = jcasClassInfo; 

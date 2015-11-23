@@ -307,11 +307,11 @@ public class CASMgrSerializer implements Serializable {
     this.stringSubtypes = new int[size];
     this.stringSubtypeValuePos = new int[size];
     List<String> strVals = new ArrayList<String>();
-    TypeImplString type;
+    TypeImpl_string type;
     int pos = 0, typeCode;
     String[] stringSet;
     for (int i = 0; i < size; i++) {
-      type = (TypeImplString) list.get(i);
+      type = (TypeImpl_string) list.get(i);
       typeCode = type.getCode();
       this.stringSubtypes[i] = typeCode;
       this.stringSubtypeValuePos[i] = pos;
