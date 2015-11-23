@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * A MarkerImpl holds a high-water "mark" in the CAS,
@@ -42,32 +43,30 @@ public class MarkerImpl implements Marker {
   
   CASImpl cas;
 
-  MarkerImpl(int nextFSAddr, CASImpl cas) {
-    this.nextFSId = nextFSAddr;
+  MarkerImpl(int nextFSId, CASImpl cas) {
+    this.nextFSId = nextFSId;
     this.cas = cas;
     this.isValid = true;
   }
 
   
   
-  public boolean isNew(FeatureStructure aFs) {
+  public boolean isNew(FeatureStructure fs) {
   	//check if same CAS instance
   	//TODO: define a CASRuntimeException
-    FeatureStructureImplC fs = (FeatureStructureImplC) aFs;
   	if (!isValid || !cas.isInCAS(fs)) {
   		throw new CASRuntimeException(CASRuntimeException.CAS_MISMATCH, "FS and Marker are not from the same CAS.");
   	}
   	return isNew(fs.id());
   }
 
-  public boolean isModified(FeatureStructure aFs) {
-    FeatureStructureImplC fs = (FeatureStructureImplC) aFs;
-	  if (!isValid || !cas.isInCAS(fs)) {
-	   	throw new CASRuntimeException(CASRuntimeException.CAS_MISMATCH, "FS and Marker are not from the same CAS.");
+  public boolean isModified(FeatureStructure fs) {
+	  if (isNew(fs)) {
+	    return false;  // new fs's are not modified ones
 	  }
-  return isModified(fs);
+    return this.cas.getModifiedFSList(fs) != null;
   }
-  
+    
   boolean isNew(int id) {
 	  return (id >= nextFSId);
   }
