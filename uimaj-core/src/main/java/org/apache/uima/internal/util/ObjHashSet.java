@@ -24,7 +24,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.util.Misc;
@@ -41,14 +43,14 @@ import org.apache.uima.util.Misc;
  * so find operations continue to work (they can't stop upon finding this object).
  *
  */
-public class ObjHashSet<T> implements Collection<T>{
+public class ObjHashSet<T> implements Set<T>{
   
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
   private static final boolean TUNE = false;
 
-  private final static FeatureStructureImplC REMOVED = new FeatureStructureImplC();
+  private final T removedMarker;
 
   private final Class<T> clazz;  // for rieifying the T type
    
@@ -68,14 +70,16 @@ public class ObjHashSet<T> implements Collection<T>{
 
   private boolean secondTimeShrinkable = false;
   
-  public ObjHashSet(Class<T> clazz) {
-    this(12, clazz);  // default initial size
+  public ObjHashSet(Class<T> clazz, T removedMarker) {
+    this(12, clazz, removedMarker);  // default initial size
   }
     
   /**
    * @param initialCapacity - you can add this many before expansion
+   * @param clazz - a superclass of the stored items
+   * @param removedMarker - a unique value never stored in the table, used to mark removed items
    */
-  public ObjHashSet(int initialCapacity, Class<T> clazz) {
+  public ObjHashSet(int initialCapacity, Class<T> clazz, T removedMarker) {
     this.clazz = clazz;
     this.initialCapacity = initialCapacity;
     newTableKeepSize(initialCapacity);
@@ -85,6 +89,7 @@ public class ObjHashSet<T> implements Collection<T>{
       Arrays.fill(histogram, 0);
       maxProbe = 0;
     }
+    this.removedMarker = removedMarker;
   }
   
   private void newTableKeepSize(int capacity) {
@@ -127,7 +132,7 @@ public class ObjHashSet<T> implements Collection<T>{
     if (TUNE) {System.out.println("Capacity increasing from " + oldCapacity + " to " + newCapacity);}
     newTableKeepSize(newCapacity);
     for (T key : oldKeys) {
-      if (key != null && key != REMOVED) {
+      if (key != null && key != removedMarker) {
         addInner(key);
       }
     }
@@ -212,7 +217,7 @@ public class ObjHashSet<T> implements Collection<T>{
     probeAddr = hash & bitMask;
     while (true) {
       final T testKey = localKeys[probeAddr];
-      if (testKey == null || testKey.equals(obj) || (includeRemoved && testKey == REMOVED)) { 
+      if (testKey == null || testKey.equals(obj) || (includeRemoved && testKey == removedMarker)) { 
         break;
       }
       
@@ -247,7 +252,7 @@ public class ObjHashSet<T> implements Collection<T>{
     }
     
     final int pos = findPosition(obj);
-    return (keys[pos] == obj) ? pos : -1;
+    return obj.equals(keys[pos]) ? pos : -1;  // keys[pos] can be null
   }
       
   /**
@@ -262,10 +267,10 @@ public class ObjHashSet<T> implements Collection<T>{
     }
            
     final int i = findPosition(obj, true);  // include REMOVED
-    if (keys[i] == obj) {
+    if (obj.equals(keys[i])) {  // keys[i] may be null  
       return false;  // false if already present
     }
-    if (keys[i] == REMOVED) {
+    if (keys[i] == removedMarker) {
       nbrRemoved --;
       assert (nbrRemoved >= 0);
     }
@@ -302,9 +307,9 @@ public class ObjHashSet<T> implements Collection<T>{
     return (obj.equals(keys[pos])) ? removeAtPosition(pos) : false;
   } 
   
-  private boolean removeAtPosition(int pos) {   
+  private boolean removeAtPosition(int pos) {
     // found, remove it
-    keys[pos] = (T) REMOVED;  // at runtime, this cast is a no-op    
+    keys[pos] = (T) removedMarker;  // at runtime, this cast is a no-op    
     size--;
     nbrRemoved ++;
     return true;
@@ -349,7 +354,7 @@ public class ObjHashSet<T> implements Collection<T>{
    */
   public T get(int index) {
     T obj = keys[index];
-    if (obj == null || obj == REMOVED) {
+    if (obj == null || obj == removedMarker) {
       return null;  // null, not present
     }
     return obj;
@@ -370,8 +375,8 @@ public class ObjHashSet<T> implements Collection<T>{
       if (pos >= max) {
         return pos;
       }
-      T v = get(pos);
-      if (v != null && v != REMOVED) {
+      T v = keys[pos];
+      if (v != null && v != removedMarker) {
         return pos;
       }
       pos ++;
@@ -393,8 +398,8 @@ public class ObjHashSet<T> implements Collection<T>{
       if (pos < 0) {
         return pos;
       }
-      T v = get(pos);
-      if (v != null && v != REMOVED) {
+      T v = keys[pos];
+      if (v != null && v != removedMarker) {
         return pos;
       }
       pos --;
@@ -406,7 +411,7 @@ public class ObjHashSet<T> implements Collection<T>{
     protected int curPosition;
 
     private ObjHashSetIterator() {
-      this.curPosition = 0;
+      this.curPosition = moveToNextFilled(0);
     }
 
     @Override
@@ -425,7 +430,10 @@ public class ObjHashSet<T> implements Collection<T>{
 
     @Override
     public void remove() {
-      removeAtPosition(curPosition - 1);  // only valid following a hasNext()
+      int pos = moveToPrevious(curPosition - 1);
+      if (pos >= 0) {
+        removeAtPosition(pos);
+      }
     }   
   }
   
@@ -512,8 +520,8 @@ public class ObjHashSet<T> implements Collection<T>{
   public String toString() {
     return String
         .format(
-            "ObjHashSet [loadFactor=%s, initialCapacity=%s, sizeWhichTriggersExpansion=%s, size=%s, secondTimeShrinkable=%s%n keys=%s]",
-            loadFactor, initialCapacity, sizeWhichTriggersExpansion, size, secondTimeShrinkable, 
+            "%s [loadFactor=%s, initialCapacity=%s, sizeWhichTriggersExpansion=%s, size=%s, secondTimeShrinkable=%s%n keys=%s]",
+            this.getClass().getName(), loadFactor, initialCapacity, sizeWhichTriggersExpansion, size, secondTimeShrinkable, 
             Arrays.toString(keys));
   }
 
