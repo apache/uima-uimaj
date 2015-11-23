@@ -96,7 +96,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
    * Error parsing XCAS from source {0} at line {1}, column {2}: expected float value, but found:
    * {3}.
    */
-  public static final int FLOAT_EXPECTED = 10;
+  public static final int NUMBER_EXPECTED = 10;
 
   /**
    * Error parsing XCAS from source {0} at line {1}, column {2}: number of array elements exceeds
@@ -112,11 +112,14 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   
   /** Error parsing XCAS or XMI-CAS from source {0} at line {1}, column {2}: in subtype of AnnotationBase, sofa reference is missing. */
   public static final int SOFA_REF_MISSING = 13;
-
+    
+  /** Error parsing XMI-CAS from source {0} at line {1}, column {2}: A byte array value must have an even number of hex characters.*/
+  public static final int BYTE_ARRAY_LENGTH_NOT_EVEN = 14;
+  
   private static final String[] identifiers = { "WRONG_ROOT_TAG", "TEXT_EXPECTED",
-      "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE",
-      "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", "FLOAT_EXPECTED",
-      "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING"};
+      "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", 
+      "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE", "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", 
+      "NUMBER_EXPECTED", "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING", "BYTE_ARRAY_LENGTH_NOT_EVEN"};
 
   private int error;
 
