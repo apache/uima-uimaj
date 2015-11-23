@@ -20,18 +20,22 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.internal.util.Int2IntHashMap;
-import org.apache.uima.internal.util.IntListIterator;
+import org.apache.uima.internal.util.Int2ObjHashMap;
+import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.TOP;
+import org.xml.sax.Attributes;
 
 /**
  * A container for data that is shared between the {@link XmiCasSerializer} and the {@link XmiCasDeserializer}.
@@ -51,25 +55,33 @@ import org.apache.uima.internal.util.XmlElementNameAndContents;
  *   <li>After calling the XmiCasSerializer and passing an <code>XmiSerializationSharedData</code>, you can call the
  *       {@link #getMaxXmiId()} method to get the maximum xmi:id value in the serialized CAS.  This feature, along with the consistency of
  *       xmi:id values, allows merging multiple XMI documents into a single CAS.  See TODO.</li>
- * </ul>       
+ * </ul>  
+ * 
+ * <p>Inner classes are used to hold information about Feature Structure elements, both for out-of-typesystem data, and also
+ * when deserializing pre V3 xmi serializations where the Sofa FS are not guaranteed to come before other Feature Structures that
+ * depend on them.</p>
  * 
  */
 public class XmiSerializationSharedData {
   /**
+   * V3: FSs have an id - use that.  (Assumes id's are internal ones)
+   * 
    * A map from FeatureStructure address to xmi:id. This is populated whenever
    * an XMI element is serialized or deserialized.  It is used by the
    * getXmiId() method, which is done to ensure a consistent ID for each FS 
    * address across multiple serializations.
    */
-  private Int2IntHashMap fsAddrToXmiIdMap = new Int2IntHashMap();
+  private Obj2IntIdentityHashMap<TOP> fsToXmiId = new Obj2IntIdentityHashMap<>(TOP.class, TOP.singleton);
   
-  /** 
+  /**
+   * V3: use the cas's getFsFromId   (Assumes id's are internal ones)
+   *  
    * A map from xmi:id to FeatureStructure address.  This is populated whenever
    * an XMI element is serialized or deserialized.  It is used by the
    * getFsAddrForXmiId() method, necessary to support merging multiple XMI
    * CASes into the same CAS object.
    **/
-  private Int2IntHashMap xmiIdToFsAddrMap = new Int2IntHashMap();
+  private Int2ObjHashMap<TOP> xmiIdToFs = new Int2ObjHashMap<>(TOP.class);
   
   /**
    * List of OotsElementData objects, each of which captures information about
@@ -78,23 +90,25 @@ public class XmiSerializationSharedData {
   private List<OotsElementData> ootsFs = new ArrayList<OotsElementData>();
   
   /**
-   * Map that from the xmi:id (String) of a Sofa to a List of xmi:id's (Strings) for
+   * Map from the xmi:id (String) of a Sofa to a List of xmi:id's (Strings) for
    * the out-of-typesystem FSs that are members of that Sofa's view.
    */
   private Map<String, List<String>> ootsViewMembers = new HashMap<String, List<String>>();
 
-  /** Map from Feature Structure address (Integer) to OotsElementData object, capturing information 
+  /** Map from Feature Structures to OotsElementData object, capturing information 
    * about out-of-typesystem features that were part of an in-typesystem FS.  These include both
    * features not defined in the typesystem and features that are references to out-of-typesystem
    * elements.  This information needs to be included when the FS is subsequently serialized.
    */
-  private Map<Integer, OotsElementData> ootsFeatures = new HashMap<Integer, OotsElementData>();
+  private Map<TOP, OotsElementData> ootsFeatures = new IdentityHashMap<>();
   
-  /** Map from Feature Structure address (Integer) of an FSArray to a list of 
+  /** 
+   * V3: Key is FSArray
+   * Map from an FSArray to a list of 
    * {@link XmiArrayElement} objects, each of which holds an index and an xmi:id
    * for an out-of-typesystem array element.
    */
-  private Map<Integer, List<XmiArrayElement>> ootsArrayElements = new HashMap<Integer, List<XmiArrayElement>>();
+  private Map<FSArray, List<XmiArrayElement>> ootsArrayElements = new HashMap<>();
   
   /**
    * The maximum XMI ID used in the serialization. Used to generate unique IDs if needed.
@@ -103,31 +117,46 @@ public class XmiSerializationSharedData {
   
   
   /**
+   * V3: key is TOP, value is TOP
+   * 
    * Map from FS address of a non-shared multi-valued (Array/List) FS to the 
    * FS address of the encompassing FS which has a feature whose value is this multi-valued FS.
    * Used when deserializing a Delta CAS to find and serialize the encompassing FS when 
    * the non-shared array/list FS is modified. 
    */
-  Int2IntHashMap nonsharedfeatureIdToFSId = new Int2IntHashMap();
+  Map<TOP, TOP> nonsharedfeatureIdToFSId = new IdentityHashMap<>();
+//  Int2IntHashMap nonsharedfeatureIdToFSId = new Int2IntHashMap();
 
-  void addIdMapping(int fsAddr, int xmiId) {
-    fsAddrToXmiIdMap.put(fsAddr, xmiId);
-    xmiIdToFsAddrMap.put(xmiId, fsAddr);
+  void addIdMapping(TOP fs, int xmiId) {
+    fsToXmiId.put(fs, xmiId);
+    xmiIdToFs.put(xmiId, fs);
     if (xmiId > maxXmiId)
       maxXmiId = xmiId;
   }
 
-  String getXmiId(int fsAddr) {
-    return Integer.toString(getXmiIdAsInt(fsAddr));
+  public String getXmiId(TOP fs) {
+    return Integer.toString(getXmiIdAsInt(fs));
   }
 
-  int getXmiIdAsInt(int fsAddr) {
+  /**
+   * Gets the FS address that corresponds to the given xmi:id, in the most
+   * recent serialization or deserialization.
+   *   
+   * @param xmiId an xmi:id from the most recent XMI CAS that was serialized
+   *   or deserialized.
+   * @return the FeatureStructure corresponding to that xmi:id, null if none.
+   */
+  public TOP getFsForXmiId(int xmiId) {
+    return (TOP) xmiIdToFs.get(xmiId);
+  }
+
+  int getXmiIdAsInt(TOP fs) {
     // see if we already have a mapping
-    int xmiId = fsAddrToXmiIdMap.get(fsAddr);
+    int xmiId = fsToXmiId.get(fs);
     if (xmiId == 0) {
       // to be sure we get a unique Id, increment maxXmiId and use that
       xmiId = ++maxXmiId;
-      addIdMapping(fsAddr, xmiId);
+      addIdMapping(fs, xmiId);
     }
     return xmiId;
   }
@@ -140,19 +169,19 @@ public class XmiSerializationSharedData {
     return maxXmiId;
   }
   
-  /**
-   * Gets the FS address that corresponds to the given xmi:id, in the most
-   * recent serialization or deserialization.
-   *   
-   * @param xmiId an xmi:id from the most recent XMI CAS that was serialized
-   *   or deserialized.
-   * @return the FS address of the FeatureStructure corresponding to that
-   *   xmi:id, -1 if none.
-   */
-  public int getFsAddrForXmiId(int xmiId) {
-    final int addr = xmiIdToFsAddrMap.get(xmiId);
-    return addr == 0 ? -1 : addr;
-  }
+//  /**
+//   * Gets the FS address that corresponds to the given xmi:id, in the most
+//   * recent serialization or deserialization.
+//   *   
+//   * @param xmiId an xmi:id from the most recent XMI CAS that was serialized
+//   *   or deserialized.
+//   * @return the FS address of the FeatureStructure corresponding to that
+//   *   xmi:id, -1 if none.
+//   */
+//  public int getFsAddrForXmiId(int xmiId) {
+//    final int addr = xmiIdToFs.get(xmiId);
+//    return addr == 0 ? -1 : addr;
+//  }
   
   /** 
    * Clears the ID mapping information that was populated in
@@ -160,8 +189,8 @@ public class XmiSerializationSharedData {
    * TODO: maybe a more general reset that resets other things?
    */
   public void clearIdMap() {
-    fsAddrToXmiIdMap.clear();
-    xmiIdToFsAddrMap.clear();
+    fsToXmiId.clear();
+    xmiIdToFs.clear();
     nonsharedfeatureIdToFSId.clear();
     maxXmiId = 0;
   }
@@ -221,12 +250,11 @@ public class XmiSerializationSharedData {
    * @param featName name of the feature
    * @param featVal value of the feature, as a string
    */
-  public void addOutOfTypeSystemAttribute(int addr, String featName, String featVal) {
-    Integer key = Integer.valueOf(addr);
-    OotsElementData oed = this.ootsFeatures.get(key);
+  public void addOutOfTypeSystemAttribute(TOP fs, String featName, String featVal) {
+    OotsElementData oed = this.ootsFeatures.get(fs);
     if (oed == null) {
-      oed = new OotsElementData();
-      this.ootsFeatures.put(key, oed);
+      oed = new OotsElementData(null, null, -1, -1);
+      this.ootsFeatures.put(fs, oed);
     }
     oed.attributes.add(new XmlAttribute(featName, featVal));
   }  
@@ -238,12 +266,11 @@ public class XmiSerializationSharedData {
    * @param featName name of the feature (element tag name)
    * @param featVals values of the feature, as a List of strings
    */
-  public void addOutOfTypeSystemChildElements(int addr, String featName, List<String> featVals) {
-    Integer key = Integer.valueOf(addr);
-    OotsElementData oed = this.ootsFeatures.get(key);
+  public void addOutOfTypeSystemChildElements(TOP fs, String featName, List<String> featVals) {
+    OotsElementData oed = this.ootsFeatures.get(fs);
     if (oed == null) {
-      oed = new OotsElementData();
-      this.ootsFeatures.put(key, oed);
+      oed = new OotsElementData(null, null, -1, -1);
+      this.ootsFeatures.put(fs, oed);
     }
     Iterator<String> iter = featVals.iterator();
     XmlElementName elemName = new XmlElementName(null,featName,featName);
@@ -259,17 +286,18 @@ public class XmiSerializationSharedData {
    * @return object containing information about out-of-typesystem features
    *   (both attributes and child elements)
    */
-  public OotsElementData getOutOfTypeSystemFeatures(int addr) {
-    Integer key = Integer.valueOf(addr);
-    return this.ootsFeatures.get(key);
+  public OotsElementData getOutOfTypeSystemFeatures(TOP fs) {
+    return this.ootsFeatures.get(fs);
   }
   
   /**
    * Get all FS Addresses that have been added to the id map.
    * @return an array containing all the FS addresses
    */
-  public int[] getAllFsAddressesInIdMap() {
-    return fsAddrToXmiIdMap.getSortedKeys();
+  public TOP[] getAndSortByIdAllFSsInIdMap() {
+    TOP[] keys= fsToXmiId.getKeys();
+    Arrays.sort(keys, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
+    return keys;
   }  
   
   /**
@@ -279,8 +307,8 @@ public class XmiSerializationSharedData {
    *   holds the index and xmi:id of an array element that is a
    *   reference to an out-of-typesystem FS.
    */
-  public List<XmiArrayElement> getOutOfTypeSystemArrayElements(int addr) {
-    return this.ootsArrayElements.get(Integer.valueOf(addr));
+  public List<XmiArrayElement> getOutOfTypeSystemArrayElements(FSArray fsarray) {
+    return this.ootsArrayElements.get(fsarray);
   }
   
   public boolean hasOutOfTypeSystemArrayElements() {
@@ -294,12 +322,11 @@ public class XmiSerializationSharedData {
    * @param index index into array 
    * @param xmiId xmi:id of the out-of-typesystem element that is the value at the given index
    */
-  public void addOutOfTypeSystemArrayElement(int addr, int index, int xmiId) {
-    Integer key = Integer.valueOf(addr);
-    List<XmiArrayElement> list = this.ootsArrayElements.get(key);
+  public void addOutOfTypeSystemArrayElement(FSArray fsarray, int index, int xmiId) {
+    List<XmiArrayElement> list = this.ootsArrayElements.get(fsarray);
     if (list == null) {
       list = new ArrayList<XmiArrayElement>();
-      this.ootsArrayElements.put(key, list);
+      this.ootsArrayElements.put(fsarray, list);
     }
     list.add(new XmiArrayElement(index, Integer.toString(xmiId)));
   }
@@ -311,81 +338,164 @@ public class XmiSerializationSharedData {
    * @param nonsharedFSAddr - fs address of non-shared multi-valued feature value
    * @param fsAddr - fs address of encompassing featurestructure
    */
-  public void addNonsharedRefToFSMapping(int nonsharedFSAddr, int fsAddr) {
-	this.nonsharedfeatureIdToFSId.put(nonsharedFSAddr, fsAddr);
+  public void addNonsharedRefToFSMapping(TOP nonsharedFS, TOP fs) {
+	this.nonsharedfeatureIdToFSId.put(nonsharedFS, fs);
   }
   
   /**
    * 
    * @return the non-shared featureId to FS Id key set
    */
-  public int[] getNonsharedMulitValuedFSs() {
-    return this.nonsharedfeatureIdToFSId.getSortedKeys();
+  public TOP[] getNonsharedMulitValuedFSs() {
+    return getSortedKeys(this.nonsharedfeatureIdToFSId);
+  }
+  
+  private TOP[] getSortedKeys(Map<TOP, ?> map) {
+    TOP[] keys = map.keySet().toArray(new TOP[map.size()]);
+    Arrays.sort(keys, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
+    return keys;
   }
   
   /**
    * 
-   * @param nonsharedFS an id of a nonsharedFS
-   * @return the int handle to the encompassing FS or -1 if not found
+   * @param nonsharedFS a nonsharedFS
+   * @return the encompassing FS or null if not found
    */
-  public int getEncompassingFS(int nonsharedFS) {
-	int addr = nonsharedfeatureIdToFSId.get(nonsharedFS);
-	return addr == 0 ? -1 : addr;
+  public TOP getEncompassingFS(TOP nonsharedFS) {
+	return  nonsharedfeatureIdToFSId.get(nonsharedFS);
   }
   
   /**
    * For debugging purposes only.
    */
-  void checkForDups() {
-    BitSet ids = new BitSet();
-    IntListIterator iter = fsAddrToXmiIdMap.keyIterator();
-    while (iter.hasNext()) {
-      int xmiId = iter.next();
-      if (ids.get(xmiId)) {
-        throw new RuntimeException("Duplicate ID " + xmiId + "!");
-      }
-      ids.set(xmiId);
-    }
-  }
+//  void checkForDups() {
+//    BitSet ids = new BitSet();
+//    IntListIterator iter = fsToXmiId.keyIterator();
+//    while (iter.hasNext()) {
+//      int xmiId = iter.next();
+//      if (ids.get(xmiId)) {
+//        throw new RuntimeException("Duplicate ID " + xmiId + "!");
+//      }
+//      ids.set(xmiId);
+//    }
+//  }
 
   /**
    * For debugging purposes only.
    */
   public String toString() {
-    StringBuffer buf = new StringBuffer();
-    int[] keys = fsAddrToXmiIdMap.getSortedKeys();
-    for (int i = 0; i < keys.length; i++) {
-      buf.append(keys[i]).append(": ").append(fsAddrToXmiIdMap.get(keys[i])).append('\n');
+    StringBuilder buf = new StringBuilder();
+    TOP[] keys = getAndSortByIdAllFSsInIdMap();
+    for (TOP fs : keys) {
+      buf.append(fs.id()).append(": ").append(fsToXmiId.get(fs)).append('\n');
     }
     return buf.toString();
   }
 
   /**
-   * Data structure holding all information about an XMI element
-   * containing an out-of-typesystem FS.
+   * <p>Data structure holding all information about an XMI element
+   * containing an out-of-typesystem FS.</p>
+   * 
+   * <p>Also used to hold information for deferring deserialization of subtypes of AnnotationBase when the sofa
+   * is not yet known</p>
+   * 
    */
-  static class OotsElementData {
+  public static class OotsElementData {
     /**
      * xmi:id of the element
      */
-    String xmiId;
+    final String xmiId;
 
     /**
      * Name of the element, including XML namespace.
      */
-    XmlElementName elementName;
+    final XmlElementName elementName;
 
     /**
      * List of XmlAttribute objects each holding name and value of an attribute.
      */
-    List<XmlAttribute> attributes = new ArrayList<XmlAttribute>();
+    final public List<XmlAttribute> attributes = new ArrayList<XmlAttribute>();
     
     /**
      * List of XmlElementNameAndContents objects each describing one of the
      * child elements representing features of this out-of-typesystem element.
      */
-    List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
+    final List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
+    
+    final int lineNumber;
+    
+    final int colNumber;
+    
+    public OotsElementData(String xmiId, XmlElementName elementName) {
+      this(xmiId, elementName, -1, -1);
+    }
+    
+    public OotsElementData(String xmiId, XmlElementName elementName, int lineNumber, int colNumber) {
+      this.xmiId = xmiId;
+      this.elementName = elementName;
+      this.lineNumber = lineNumber;
+      this.colNumber = colNumber;
+    }
+    
+    public Attributes getAttributes() {
+      return new Attributes() {
+
+        @Override
+        public int getLength() { return attributes.size(); }
+
+        @Override
+        public String getURI(int index) { throw new UnsupportedOperationException(); }
+
+        @Override
+        public String getLocalName(int index) { throw new UnsupportedOperationException(); }
+
+        @Override
+        public String getQName(int index) { return attributes.get(index).name; }
+
+
+        @Override
+        public String getType(int index) { throw new UnsupportedOperationException(); }
+ 
+        @Override
+        public String getValue(int index) { return attributes.get(index).value; }
+
+        @Override
+        public int getIndex(String uri, String localName) { throw new UnsupportedOperationException(); } 
+
+        @Override
+        public int getIndex(String qName) {
+          int i = 0;
+          for (XmlAttribute attr : attributes) {
+            if (attr.name.equals(qName)) {
+              return i;
+            }
+            i++;
+          }
+          return -1;
+        }
+
+        @Override
+        public String getType(String uri, String localName) { throw new UnsupportedOperationException(); } 
+
+        @Override
+        public String getType(String qName) { throw new UnsupportedOperationException(); }
+
+        @Override
+        public String getValue(String uri, String localName) { throw new UnsupportedOperationException(); }
+
+        @Override
+        public String getValue(String qName) {
+          for (XmlAttribute attr : attributes) {
+            if (attr.name.equals(qName)) {
+              return attr.value;
+            }
+          }
+          return null;
+        }
+      };
+    }
   }
+  
   
   /** 
    * Data structure holding the index and the xmi:id of an array or list element that
