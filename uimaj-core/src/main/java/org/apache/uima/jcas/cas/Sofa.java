@@ -193,7 +193,7 @@ public class Sofa extends TOP implements SofaFS {
     _F_mimeType = mimeType;
 	}
 
-	private boolean isSofaDataSet() {
+	public boolean isSofaDataSet() {
 	  return getLocalStringData() != null || // string data
 	         getLocalFSData()     != null || // array data 
 	         getSofaURI()         != null;   // remote data

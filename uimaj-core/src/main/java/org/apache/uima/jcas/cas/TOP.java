@@ -53,8 +53,8 @@ public class TOP extends FeatureStructureImplC {
 		return typeIndexID;
 	}
 
-  // never called. Here to disable default constructor
-  protected TOP() {
+  // maybe called to create unique removed marker, but not otherwise used
+  public TOP() {
   }
 
   /**
@@ -77,4 +77,5 @@ public class TOP extends FeatureStructureImplC {
 	}
 
 
+	final public static TOP singleton = new TOP();
 }
