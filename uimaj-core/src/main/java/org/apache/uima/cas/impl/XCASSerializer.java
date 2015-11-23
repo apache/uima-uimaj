@@ -25,23 +25,17 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.IntStack;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.StringUtils;
-import org.apache.uima.internal.util.rb_trees.IntRedBlackTree;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.DoubleArray;
@@ -86,7 +80,7 @@ public class XCASSerializer {
     private CASImpl cas;
 
     // Any FS reference we've touched goes in here.
-    final private Map<TOP, Integer> queued = new IdentityHashMap<TOP, Integer>();
+    final private Map<TOP, Integer> queued = new IdentityHashMap<>();
 
     private static final int NOT_INDEXED = -1;
 
@@ -148,7 +142,7 @@ public class XCASSerializer {
       // at this point we don't know if this FS is indexed
       queued.put(fs, NOT_INDEXED);
       queue.push(fs);
-      final int typeClass = classifyType(typeCode);
+      final int typeClass = classifyType(fs._typeImpl);
       if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
         if (mOutOfTypeSystemData != null) {
           enqueueOutOfTypeSystemFeatures(fs);
@@ -202,23 +196,23 @@ public class XCASSerializer {
       return;
     }
 
-    /**
-     * Bad name; check if we've seen this (address, value) before.
-     * 
-     * @param fs_id
-     *          The address.
-     * @param value
-     *          The index repository
-     * @return KEY_AND_VALUE_MATCH iff we've seen (address, value) before. KEY_NOT_FOUND iff the
-     *         address has not been seen before. KEY_ONLY_MATCH iff the address has been seen before
-     *         with a different value.
-     */
     private static final int KEY_AND_VALUE_MATCH = 1;
 
     private static final int KEY_ONLY_MATCH = -1;
 
     private static final int KEY_NOT_FOUND = 0;
 
+    /**
+     * Bad name; check if we've seen this (address, value) before.
+     * 
+     * @param fs 
+     *          The Feature Structure.
+     * @param value
+     *          The index repository
+     * @return KEY_AND_VALUE_MATCH iff we've seen (address, value) before. KEY_NOT_FOUND iff the
+     *         address has not been seen before. KEY_ONLY_MATCH iff the address has been seen before
+     *         with a different value.
+     */
     private int isQueued(TOP fs, int value) {
       Integer v = this.queued.get(fs);
       return (null == v) ? KEY_NOT_FOUND : (value == v.intValue()) ? KEY_AND_VALUE_MATCH : KEY_ONLY_MATCH;
@@ -239,7 +233,7 @@ public class XCASSerializer {
       enqueueFeaturesOfIndexed();
       if (outOfTypeSystemData != null) {
         // Queues out of type system data.
-        int nextId = cas.getNextFsIdNoIncrement() + 1;
+        int nextId = cas.getLastUsedFsId() + 1;
         Iterator<FSData> it = outOfTypeSystemData.fsList.iterator();
         while (it.hasNext()) {
           FSData fs = it.next();
@@ -369,7 +363,7 @@ public class XCASSerializer {
       for (int i = 0; i < max; i++) {
         TOP fs = indexedFSs.get(i);
         int typeCode = fs._getTypeCode();
-        final int typeClass = classifyType(typeCode);
+        final int typeClass = classifyType(fs._typeImpl);
         if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
           if (mOutOfTypeSystemData != null) {
             enqueueOutOfTypeSystemFeatures(fs);
@@ -435,7 +429,7 @@ public class XCASSerializer {
       // actually referenced.
       // xmlStack.addAttribute(ID_ATTR_NAME, Integer.toString(fs_id));
       addAttribute(workAttrs, ID_ATTR_NAME, Integer.toString(fs._id));
-      final int typeClass = classifyType(fs._getTypeCode());
+      final int typeClass = classifyType(fs._typeImpl);
       // Call special code according to the type of the FS (special
       // treatment
       // for arrays).
@@ -528,6 +522,7 @@ public class XCASSerializer {
         TOP element = fs.get(i);
         if (null == element && mOutOfTypeSystemData != null) {
           // This array element may have been a reference to an OOTS FS.
+          
           List<ArrayElement> ootsElems = mOutOfTypeSystemData.arrayElements.get(fs);
           if (ootsElems != null) {
             Iterator<ArrayElement> iter = ootsElems.iterator();
@@ -608,7 +603,7 @@ public class XCASSerializer {
       if (attrList != null) {
         for (String[] attr : attrList) {
           // remap ID if necessary
-          if (attr[0].startsWith("_ref_")) {
+          if (attr[0].startsWith(REF_PREFIX)) {
             if (attr[1].startsWith("a")) { // reference to OOTS FS
               // - remap
               attr[1] = mOutOfTypeSystemData.idMap.get(attr[1]);
@@ -629,7 +624,7 @@ public class XCASSerializer {
         while (it.hasNext()) {
           String[] attr = it.next();
           // remap ID if necessary
-          if (attr[0].startsWith("_ref_")) {
+          if (attr[0].startsWith(REF_PREFIX)) {
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
@@ -645,8 +640,13 @@ public class XCASSerializer {
       return fs.getType().getName();
     }
 
-    private final int classifyType(int type) {
-      return cas.ll_getTypeClass(type);
+    /**
+     * classify the type, without distinguishng list types 
+     * @param ti the type
+     * @return the classification
+     */
+    private final int classifyType(TypeImpl ti) {
+      return TypeSystemImpl.getTypeClass(ti);
     }
 
     /*
@@ -656,7 +656,7 @@ public class XCASSerializer {
       for (FSData fs : aData.fsList) {
         for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
-          if (attrName.startsWith("_ref_")) {
+          if (attrName.startsWith(REF_PREFIX)) {
             String attrVal = entry.getValue();
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
@@ -684,7 +684,7 @@ public class XCASSerializer {
         for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
           String attrVal = entry.getValue();
-          if (attrName.startsWith("_ref_")) {
+          if (attrName.startsWith(REF_PREFIX)) {
             if (attrVal.startsWith("a")) {
               // "a" prefix indicates a reference from one OOTS FS
               // to another OOTS FS;
@@ -749,8 +749,6 @@ public class XCASSerializer {
   
   private TypeSystemImpl ts;
 
-  private UimaContext uimaContext;
-
   // Create own cache of feature names because of _ref_ prefixes.
   private String[] featureNames;
 
@@ -764,7 +762,6 @@ public class XCASSerializer {
     super();
     // System.out.println("Creating serializer for type system.");
     this.ts = (TypeSystemImpl) ts;
-    this.uimaContext = uimaContext;
     // Create feature name cache.
     final int featArraySize = this.ts.getNumberOfFeatures() + 1;
     this.featureNames = new String[featArraySize];

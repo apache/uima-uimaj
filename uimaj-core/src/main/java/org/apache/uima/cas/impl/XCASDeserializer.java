@@ -167,9 +167,6 @@ public class XCASDeserializer {
     private FSData currentOotsFs;
 
 
-    // AnnotationBase type
-    final private Type annotBaseType;
-
     /** map from index -> indexRepository, [0] = base view, [1] initial view, [2 +] other views */
     final private List<FSIndexRepository> indexRepositories;
 
@@ -205,7 +202,6 @@ public class XCASDeserializer {
       indexRepositories.add(this.cas.getBaseIndexRepository());
       // There should always be another index for the Initial View
       indexRepositories.add(this.cas.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
-      this.annotBaseType = this.cas.getAnnotationType();
       this.sofaRefMap = new IntVector();
       this.indexMap = new IntVector();
       // add entry for baseCAS ... point non-compliant annotations at first Sofa
@@ -436,15 +432,18 @@ public class XCASDeserializer {
             }
             casView = cas.getView((Sofa) (fsTree.get(Integer.parseInt(extSofaRefString)).fs));
           }
-          fs = (ts.docType.subsumes(type)) 
-               ? casView.getDocumentAnnotation() 
-               : casView.createFS(type);
+          if (ts.docType.subsumes(type)) {
+            fs = casView.getDocumentAnnotation();
+            cas.setCacheNotInIndex(fs);
+          } else {
+            fs = casView.createFS(type);
+          }
         } else {
           fs = cas.createFS(type);
         }
       }
       
-      // Hang on address for setting content feature
+      // Hang on to FS for setting content feature (things coded as child xml elements)
       this.currentFs = fs;
       int extId = -1;
       IntVector indexRep = new IntVector(1); // empty means not indexed
@@ -560,27 +559,8 @@ public class XCASDeserializer {
           throw createException(XCASParsingException.ILLEGAL_ARRAY_ATTR, attrName);
         }
       }
-      TOP fs;
-      if (cas.isIntArrayType(type)) {
-        fs = (TOP) cas.createIntArrayFS(size);        
-      } else if (cas.isFloatArrayType(type)) {
-        fs = (TOP) cas.createFloatArrayFS(size);                
-      } else if (cas.isStringArrayType(type)) {
-        fs = (TOP) cas.createStringArrayFS(size);                
-      } else if (cas.isBooleanArrayType(type)) {
-        fs = (TOP) cas.createBooleanArrayFS(size);
-      } else if (cas.isByteArrayType(type)) {
-        fs = (TOP) cas.createByteArrayFS(size);
-      } else if (cas.isShortArrayType(type)) {
-        fs = (TOP) cas.createShortArrayFS(size);
-      } else if (cas.isLongArrayType(type)) {
-        fs = (TOP) cas.createLongArrayFS(size);
-      } else if (cas.isDoubleArrayType(type)) {
-        fs = (TOP) cas.createDoubleArrayFS(size);
-      } else {
-        fs = (TOP) cas.createArrayFS(size);
-      }
-
+      TOP fs = (TOP) cas.createArray(type, size);
+      
       FSInfo fsInfo = new FSInfo(fs, indexRep);
       if (id >= 0) {
         fsTree.put(id, fsInfo);
@@ -891,7 +871,7 @@ public class XCASDeserializer {
         fs.setFeatureValue(fi, null);
       } else {
         // the sofa ref in annotationBase is set when the fs is created, not here
-        if (fi.getCode() != TypeSystemImpl.annotSofaFeatCode) { 
+        if (fi.getCode() != TypeSystemImpl.annotBaseSofaFeatCode) { 
           if (fs instanceof Sofa) {
             // special setters for sofa values
             Sofa sofa = (Sofa) fs;
@@ -922,10 +902,10 @@ public class XCASDeserializer {
         // this element may be a ref to an out-of-typesystem FS.
         // add it to the Out-of-typesystem array elements list (APL)
         if (extId != 0 && outOfTypeSystemData != null) {
-          List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.get(extId);
+          List<ArrayElement> ootsElements = outOfTypeSystemData.arrayElements.get(fs);
           if (ootsElements == null) {
             ootsElements = new ArrayList<ArrayElement>();
-            outOfTypeSystemData.arrayElements.put(extId, ootsElements);
+            outOfTypeSystemData.arrayElements.put(fs, ootsElements);
           }
           // the "value" of the reference is the ID, but we prefix with a letter to indicate
           // that this ID refers to an array OOTS FS
@@ -1158,8 +1138,6 @@ public class XCASDeserializer {
 
   final private TypeSystemImpl ts;
 
-  final private UimaContext uimaContext;
-
   // private HashMap featureMap; -APL
   // ///private int[] featureType;
 
@@ -1177,7 +1155,6 @@ public class XCASDeserializer {
   public XCASDeserializer(TypeSystem ts, UimaContext uimaContext) {
     super();
     this.ts = (TypeSystemImpl) ts;
-    this.uimaContext = uimaContext;
     // this.featureMap = new HashMap(); - APL
   }
 
