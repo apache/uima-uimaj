@@ -61,6 +61,8 @@ import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -219,21 +221,21 @@ public class XmiCasDeserializerTest extends TestCase {
       ir1.removeFS(anAnnot1);
       ir1.addFS(anAnnot1);
       
-      assertTrue(ir1.getAddedFSs().length == 1);
-      assertTrue(ir1.getDeletedFSs().length == 0);
-      assertTrue(ir1.getReindexedFSs().length == 0);
+      assertTrue(ir1.getAddedFSs().size() == 1);
+      assertTrue(ir1.getDeletedFSs().size() == 0);
+      assertTrue(ir1.getReindexedFSs().size() == 0);
       
       ir1.removeFS(anAnnotBefore);
       ir1.addFS(anAnnotBefore);
       
-      assertTrue(ir1.getAddedFSs().length == 1);
-      assertTrue(ir1.getDeletedFSs().length == 0);
-      assertTrue(ir1.getReindexedFSs().length == 1);      
+      assertTrue(ir1.getAddedFSs().size() == 1);
+      assertTrue(ir1.getDeletedFSs().size() == 0);
+      assertTrue(ir1.getReindexedFSs().size() == 1);      
       
       ir1.removeFS(anAnnotBefore);
-      assertTrue(ir1.getAddedFSs().length == 1);
-      assertTrue(ir1.getDeletedFSs().length == 1);
-      assertTrue(ir1.getReindexedFSs().length == 0);      
+      assertTrue(ir1.getAddedFSs().size() == 1);
+      assertTrue(ir1.getDeletedFSs().size() == 1);
+      assertTrue(ir1.getReindexedFSs().size() == 0);      
 
       
     } catch (Exception e) {
@@ -668,8 +670,9 @@ public class XmiCasDeserializerTest extends TestCase {
   public void testv1FormatXcas() throws Exception {
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
             new FsIndexDescription[0]);
-    CAS v1cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-            new FsIndexDescription[0]);
+    TypeSystem ts = cas.getTypeSystem();
+    CAS v1cas = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+            new FsIndexDescription[0], null);
 
     // get a complex CAS
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
@@ -780,6 +783,7 @@ public class XmiCasDeserializerTest extends TestCase {
   private void testMerging(boolean useDeltas) throws Exception {
     // deserialize a complex CAS from XCAS
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    TypeSystem ts = cas.getTypeSystem();
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer.deserialize(serCasStream, cas);
     serCasStream.close();
@@ -799,11 +803,11 @@ public class XmiCasDeserializerTest extends TestCase {
         
     // deserialize into two new CASes, each with its own instance of XmiSerializationSharedData 
     // so we can get consistent IDs later when serializing back.
-    CAS newCas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CAS newCas1 = CasCreationUtils.createCas(ts, new TypePriorities_impl(), indexes, null);
     XmiSerializationSharedData deserSharedData1 = new XmiSerializationSharedData();
     deserialize(xmiStr, newCas1, deserSharedData1, false, -1);
     
-    CAS newCas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CAS newCas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(), indexes, null);
     XmiSerializationSharedData deserSharedData2 = new XmiSerializationSharedData();
     deserialize(xmiStr, newCas2, deserSharedData2, false, -1);
 
@@ -958,8 +962,9 @@ public class XmiCasDeserializerTest extends TestCase {
    try {
 	  CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	          indexes);
-	  CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-	          indexes);
+    TypeSystem ts = cas1.getTypeSystem();
+	  CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+	          indexes, null);
 	  cas1.setDocumentText("This is a test document in the initial view");
 	  AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
 	  cas1.getIndexRepository().addFS(anAnnot1);
@@ -996,8 +1001,8 @@ public class XmiCasDeserializerTest extends TestCase {
 	  assertTrue(cas2.getAnnotationIndex().size() == 3);
 	  
 	  //modify language feature
-	  Feature languageF = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
-	  docAnnot.setStringValue(languageF, "en");
+	  Feature languageF2 = cas2.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+	  docAnnot.setStringValue(languageF2, "en");
 	  // serialize cas2 in delta format 
 	  String deltaxml1 = serialize(cas2, sharedData2, marker);
 	  //System.out.println("delta cas");
@@ -1008,7 +1013,9 @@ public class XmiCasDeserializerTest extends TestCase {
 	  
 	  //check language feature of doc annot is not changed.
 	  //System.out.println(cas1.getDocumentAnnotation().getStringValue(languageF));
-	  assertTrue( cas1.getAnnotationIndex().iterator().next().getStringValue(languageF).equals("x-unspecified"));
+    Feature languageF1 = cas1.getDocumentAnnotation().getType().getFeatureByBaseName(CAS.FEATURE_BASE_NAME_LANGUAGE);
+
+	  assertTrue( cas1.getAnnotationIndex().iterator().next().getStringValue(languageF1).equals("x-unspecified"));
 	  //check new annotation exists and preexisting is not deleted
 	  assertTrue(cas1.getAnnotationIndex().size()==4);
    } catch (Exception e) {
@@ -1020,8 +1027,9 @@ public class XmiCasDeserializerTest extends TestCase {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
-      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
+      TypeSystem ts = cas1.getTypeSystem();
+      CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+              indexes, null);
       cas1.setDocumentText("This is a test document in the initial view");
       AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
       cas1.getIndexRepository().addFS(anAnnot1);
@@ -1060,12 +1068,15 @@ public class XmiCasDeserializerTest extends TestCase {
       //System.out.println(deltaxml1);
       
       //deserialize delta xmi into cas1
+      boolean threw = false;
       try {
         this.deserialize(deltaxml1, cas1, sharedData, true, maxOutgoingXmiId, AllowPreexistingFS.disallow);
       } catch (CASRuntimeException e) {
     	assertTrue(e.getMessageKey() == CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED);
+    	threw = true;
       }
-    	 
+    	assertTrue(threw);
+    	
       //check language feature of doc annot is not changed.
       //System.out.println(cas1.getDocumentAnnotation().getStringValue(languageF));
       assertTrue( cas1.getAnnotationIndex().iterator().next().getStringValue(languageF).equals("x-unspecified"));
@@ -1081,8 +1092,10 @@ public class XmiCasDeserializerTest extends TestCase {
 	  try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
-      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
+      TypeSystem ts = cas1.getTypeSystem();
+
+      CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+              indexes, null);
 
       //serialize complete  
       XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
@@ -1133,8 +1146,9 @@ public class XmiCasDeserializerTest extends TestCase {
 	    try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	              indexes);
-	      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-	              indexes);
+	      TypeSystem ts = cas1.getTypeSystem();
+	      CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+	              indexes, null);
 
 	      //serialize complete  
 	      XmiSerializationSharedData sharedData = new XmiSerializationSharedData();
@@ -1172,8 +1186,9 @@ public class XmiCasDeserializerTest extends TestCase {
     try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
-      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
+      TypeSystem ts = cas1.getTypeSystem();
+      CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+              indexes, null);
       cas1.setDocumentText("This is a test document in the initial view");
       AnnotationFS anAnnot1 = cas1.createAnnotation(cas1.getAnnotationType(), 0, 4);
       cas1.getIndexRepository().addFS(anAnnot1);
@@ -1227,15 +1242,81 @@ public class XmiCasDeserializerTest extends TestCase {
 	  JUnitExtension.handleException(e);
     }
   }
-  
+  /**
+   * This test looks at delta cas serialization and deserialization.
+   * 
+   * First it makes 3 CASs cas1, cas2, cas3, with shared typesystem.
+   * Sets up types and features:
+   *    Person  { componentId, confidence }  super is EntityAnnotation
+   *    Organization
+   *    Owner            { relationArgs
+   *    EntityAnnotation { mentionType
+   *    BinaryRelationArgs { domainValue, rangeValue }
+   *    Entity             { classes, links, canonicalForm
+   *    
+   *    NonEmptyFSList     { head, tail
+   *    EmptyFSList
+   *    
+   * cas1:
+   *     _InitialView: docText = "This is a test document in the initial view"
+   *       annot1 = Annotation  0,  4, -> index
+   *       annot2 = Annotation  5,  6  -> index
+   *       annot3 = Annotation  8, 13  -> index
+   *       annot4 = Annotation 15, 30  -> index
+   *       
+   *       Entity  classes={"class1"}           -> index
+   *               links= FsList: {annot1, annot2} 
+   *     View1:
+   *     
+   *     preexistingView: docText = "John Smith blah blah blah"
+   *       person1Annot = Person 0, 10, componentId: "deltacas1" -> index
+   *       person2Annot = Person 0, 5                            -> index
+   *       orgAnnot     = Organization 16, 24                    -> index
+   *       ownerAnnot   = Owner 0, 24 relationArgs:              -> index 
+   *                                    BinaryRelArg 
+   *                                      domain: person1Annot
+   * -------------------------------------------------------------------------- 
+   * serialize cas1 (sharedData initially empty) -> xml  
+   * deser  xml -> cas2, using sharedData2, compare.
+   * ----------------------------
+   * In cas2:
+   *   create Marker.   
+   *     _InitialView: 
+   *       annot5 = Annotation  6,  8, -> index
+   *     View1: docText = "This is the View1 document." 
+   *       c2v1Annot = Annotation 1, 5                          -> index
+   * ----------------------------      
+   * modify existing annotation:
+   *     _InitialView:
+   *       documentAnnotation - modify language to "en"
+   *       remove annot1 from index, mod annot1 end to 4 (was 4), add back to index
+   *       remove annot2 from index
+   *     _PreexistingView
+   *       person1Annot: confidence = 99.99
+   *       person2Annot: mentionType = "FIRSTNAME"
+   *       orgAnnot:     mentionType = "ORGNAME"
+   *       ownerAnnot:   args: rangeFeat: orgAnnot
+   * ----------------------------------------------
+   *    _InitialView:
+   *      entityFS: classes: set string array 1-4: class2, 3, 4, 5
+   *                links: add a 3rd node to the list, head: annot5
+   * ----------------------------------------------
+   * serialize cas2 -> deltaxml1 using sharedData2, marker
+   * deserialize -> cas1 using it's sharedData  
+   * 
+   *         
+   * @throws Exception
+   */
   public void testDeltaCasAllowPreexistingFS() throws Exception {
    try {
+          
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
               indexes);
-      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
-      CAS cas3 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-              indexes);
+      TypeSystem sharedTS = cas1.getTypeSystem();
+      CAS cas2 = CasCreationUtils.createCas(sharedTS, new TypePriorities_impl(),
+              indexes, null);
+      CAS cas3 = CasCreationUtils.createCas(sharedTS, new TypePriorities_impl(),
+              indexes, null);
       
       Type personType = cas1.getTypeSystem().getType(
       		"org.apache.uima.testTypeSystem.Person");
@@ -1443,10 +1524,11 @@ public class XmiCasDeserializerTest extends TestCase {
 	   try {
 	      CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
 	              indexes);
-	      CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-	              indexes);
-	      CAS cas3 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
-	              indexes);
+	      TypeSystem ts = cas1.getTypeSystem();
+	      CAS cas2 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+	              indexes, null);
+	      CAS cas3 = CasCreationUtils.createCas(ts, new TypePriorities_impl(),
+	              indexes, null);
 	      
 	      Type entityType = cas1.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
 	      Feature classesFeat = entityType.getFeatureByBaseName("classes");
@@ -1581,8 +1663,9 @@ public class XmiCasDeserializerTest extends TestCase {
     
     //deserialize both original and new XMI into CASes that do have the full typesystem
     CAS newCas1 = CasCreationUtils.createCas(typeSystem, null, indexes);
+    TypeSystem ts = newCas1.getTypeSystem();
     deserialize(xmiStr, newCas1, null, false, -1);
-    CAS newCas2 = CasCreationUtils.createCas(typeSystem, null, indexes);
+    CAS newCas2 = CasCreationUtils.createCas(ts, null, indexes, null);
     deserialize(xmiStr2, newCas2, null, false, -1);
     CasComparer.assertEquals(newCas1, newCas2);  
     
@@ -1596,23 +1679,23 @@ public class XmiCasDeserializerTest extends TestCase {
     deserialize(xmiStr, partialTsCas, sharedData2, true, -1);
     
     assertEquals(1,sharedData2.getOutOfTypeSystemElements().size());
-    OotsElementData ootsFeats3 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsAddrForXmiId(3));
+    OotsElementData ootsFeats3 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(3));
     assertEquals(1, ootsFeats3.attributes.size());
     XmlAttribute ootsAttr = ootsFeats3.attributes.get(0);
     assertEquals("mentionType", ootsAttr.name);
     assertEquals("NAME", ootsAttr.value);
-    OotsElementData ootsFeats5 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsAddrForXmiId(5));
+    OotsElementData ootsFeats5 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(5));
     assertEquals(0, ootsFeats5.attributes.size());
     assertEquals(1, ootsFeats5.childElements.size());
     XmlElementNameAndContents ootsChildElem = ootsFeats5.childElements.get(0);
     assertEquals("mentionType", ootsChildElem.name.qName);
     assertEquals("NAME", ootsChildElem.contents);
     
-    OotsElementData ootsFeats8 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsAddrForXmiId(8));
+    OotsElementData ootsFeats8 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(8));
     assertEquals(1, ootsFeats8.attributes.size());
-    OotsElementData ootsFeats10 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsAddrForXmiId(10));
+    OotsElementData ootsFeats10 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(10));
     assertEquals(1, ootsFeats10.attributes.size());
-    OotsElementData ootsFeats11 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsAddrForXmiId(11));
+    OotsElementData ootsFeats11 = sharedData2.getOutOfTypeSystemFeatures(sharedData2.getFsForXmiId(11));
     assertEquals(4, ootsFeats11.childElements.size());
     
     String xmiStr3 = serialize(partialTsCas, sharedData2);
@@ -1662,7 +1745,7 @@ public class XmiCasDeserializerTest extends TestCase {
     FeatureStructure arrayFs2 = testAnnot2.getFeatureValue(arrayFeat2);
     List ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
-    List ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements(arrayFs2.hashCode());
+    List ootsArrayElems = sharedData.getOutOfTypeSystemArrayElements((FSArray) arrayFs2);
     assertEquals(2, ootsArrayElems.size());
     for (int i = 0; i < 2; i++) {
       OotsElementData oed = (OotsElementData)ootsElems.get(i);
@@ -1684,25 +1767,30 @@ public class XmiCasDeserializerTest extends TestCase {
     //add to type system an annotation type that has an FSList feature
     TypeDescription testAnnotTypeDesc = typeSystem.addType("org.apache.uima.testTypeSystem.TestAnnotation", "", "uima.tcas.Annotation");
     testAnnotTypeDesc.addFeature("listFeat", "", "uima.cas.FSList");
+    
     //populate a CAS with such an list
     CAS cas = CasCreationUtils.createCas(typeSystem, null, null);
     Type testAnnotType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.TestAnnotation");
-    Type orgType = cas.getTypeSystem().getType(
-      "org.apache.uima.testTypeSystem.Organization");
+    Type orgType       = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Organization");
+    
     AnnotationFS orgAnnot1 = cas.createAnnotation(orgType, 0, 10);
-    cas.addFsToIndexes(orgAnnot1);
+                             cas.addFsToIndexes(orgAnnot1);
     AnnotationFS orgAnnot2 = cas.createAnnotation(orgType, 10, 20);
-    cas.addFsToIndexes(orgAnnot2);
+                             cas.addFsToIndexes(orgAnnot2);
     AnnotationFS testAnnot = cas.createAnnotation(testAnnotType, 0, 20);
-    cas.addFsToIndexes(testAnnot);
+                             cas.addFsToIndexes(testAnnot);
+                             
     Type nonEmptyFsListType = cas.getTypeSystem().getType(CAS.TYPE_NAME_NON_EMPTY_FS_LIST);
-    Type emptyFsListType = cas.getTypeSystem().getType(CAS.TYPE_NAME_EMPTY_FS_LIST);
+    Type emptyFsListType    = cas.getTypeSystem().getType(CAS.TYPE_NAME_EMPTY_FS_LIST);
     Feature headFeat = nonEmptyFsListType.getFeatureByBaseName("head");
     Feature tailFeat = nonEmptyFsListType.getFeatureByBaseName("tail");
-    FeatureStructure emptyNode = cas.createFS(emptyFsListType);
+    
+    FeatureStructure emptyNode  = cas.createFS(emptyFsListType);
+    
     FeatureStructure secondNode = cas.createFS(nonEmptyFsListType);
     secondNode.setFeatureValue(headFeat, orgAnnot2);
     secondNode.setFeatureValue(tailFeat, emptyNode);
+    
     FeatureStructure firstNode = cas.createFS(nonEmptyFsListType);
     firstNode.setFeatureValue(headFeat, orgAnnot1);
     firstNode.setFeatureValue(tailFeat, secondNode);
@@ -1731,7 +1819,8 @@ public class XmiCasDeserializerTest extends TestCase {
     FeatureStructure listFs = testAnnot2.getFeatureValue(listFeat2);
     List ootsElems = sharedData.getOutOfTypeSystemElements();
     assertEquals(2, ootsElems.size());
-    OotsElementData oed = sharedData.getOutOfTypeSystemFeatures(listFs.hashCode());
+    
+    OotsElementData oed = sharedData.getOutOfTypeSystemFeatures((TOP) listFs);
     XmlAttribute attr = oed.attributes.get(0);
     assertNotNull(attr);
     assertEquals(CAS.FEATURE_BASE_NAME_HEAD, attr.name);
