@@ -30,6 +30,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
@@ -336,13 +337,22 @@ public class CasCopierTest extends TestCase {
     CasComparer.assertEquals(arrFS, copyArrFS);
     
     // test with using base cas
+    
+    // Note that in v3, you cannot create subtypes of AnnotationBase in the base CAS
     destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     destCas.setDocumentText(srcCas.getDocumentText());
     copier = new CasCopier(((CASImpl)srcCas).getBaseCAS(), ((CASImpl)destCas).getBaseCAS());
 
     annotIter = srcCas.getAnnotationIndex().iterator();
     annot = annotIter.next();
-    copy = copier.copyFs(annot);
+    boolean wascaught = false;
+    try {
+      copy = copier.copyFs(annot);
+    } catch (CASRuntimeException e) {
+      wascaught = true;
+      assertEquals(e.getMessageKey(), CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS);
+    }
+    assertTrue(wascaught);
     // verify copy
     CasComparer.assertEquals(annot, copy);
   }
