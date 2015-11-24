@@ -19,14 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Aggregate several FS iterators.  Simply iterates over one after the other

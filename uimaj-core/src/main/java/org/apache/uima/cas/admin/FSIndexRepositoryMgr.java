@@ -20,7 +20,6 @@
 package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.FSIndexRepository;
-import org.apache.uima.cas.FeatureStructure;
 
 /**
  * Repository of indexes. Indexes are defined via

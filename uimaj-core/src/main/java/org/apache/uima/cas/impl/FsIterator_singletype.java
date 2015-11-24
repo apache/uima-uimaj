@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.cas.TOP;
 

@@ -20,9 +20,6 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas;
 
 /**
  * This class is the super class of arrays of Feature Structures

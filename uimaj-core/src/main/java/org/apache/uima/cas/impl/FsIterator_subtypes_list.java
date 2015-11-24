@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
 public abstract class FsIterator_subtypes_list <T extends TOP>  extends FsIterator_subtypes<T> {

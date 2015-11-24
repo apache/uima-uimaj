@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * A MarkerImpl holds a high-water "mark" in the CAS,

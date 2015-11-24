@@ -19,10 +19,6 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas;
-
 /**
  * This interface is implemented by arrays of non-FeatureStructure components 
  *   boolean, byte, short, int, long, float, double, String, JavaObject

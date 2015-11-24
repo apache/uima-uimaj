@@ -20,8 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.cas.CASRuntimeException;

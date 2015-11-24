@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.List;
-
 public class TypeImpl_primitive extends TypeImpl {
 
   public TypeImpl_primitive(String name, TypeSystemImpl tsi, TypeImpl supertype, Class<?> javaType) {

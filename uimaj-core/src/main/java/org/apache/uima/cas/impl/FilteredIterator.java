@@ -19,13 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Implements a filtered iterator.

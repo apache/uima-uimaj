@@ -19,13 +19,9 @@
 
 package org.apache.uima.cas.admin;
 
-import java.util.Comparator;
-
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * This interface describes objects which specify the comparison used in indexes for keys. 

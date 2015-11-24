@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.jcas.cas.TOP;
 
 /**

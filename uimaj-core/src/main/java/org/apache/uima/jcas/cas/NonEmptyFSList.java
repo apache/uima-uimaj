@@ -19,7 +19,6 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;

@@ -22,7 +22,6 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;

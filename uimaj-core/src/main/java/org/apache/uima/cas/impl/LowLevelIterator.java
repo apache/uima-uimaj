@@ -23,8 +23,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Low-level FS iterator. Returns FS references, instead of FS objects.

@@ -21,7 +21,6 @@ package org.apache.uima.internal.util;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Interface for a comparable FSIterator. 

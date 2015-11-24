@@ -21,11 +21,9 @@ package org.apache.uima.cas.impl;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.util.Misc;
 
 /**
  * A map from ints representing FS id's (or "addresses") to those FSs

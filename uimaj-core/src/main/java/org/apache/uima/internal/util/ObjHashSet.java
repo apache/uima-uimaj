@@ -26,9 +26,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.util.Misc;
 
 /**
