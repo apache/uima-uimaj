@@ -226,40 +226,50 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
       i++;
       if (key instanceof FeatureImpl) {
         FeatureImpl fi = (FeatureImpl) key;
-        switch (keyTypeCodes[i]) {
-        case TypeSystemImpl.booleanTypeCode:
-          result = Integer.compare(fs1.getBooleanValue(fi) ? 1 : 0,
-                                   fs2.getBooleanValue(fi) ? 1 : 0);
-          break;
-        case TypeSystemImpl.byteTypeCode:
-          result = Integer.compare(fs1.getByteValue(fi), fs2.getByteValue(fi));
-          break;
-        case TypeSystemImpl.shortTypeCode:
-          result = Integer.compare(fs1.getShortValue(fi), fs2.getShortValue(fi));
-          break;
-        case TypeSystemImpl.intTypeCode:
-          result = Integer.compare(fs1.getIntValue(fi), fs2.getIntValue(fi));
-          break;
-        case TypeSystemImpl.longTypeCode:
-          result = Long.compare(fs1.getLongValue(fi), fs2.getLongValue(fi));
-          break;
-        case TypeSystemImpl.floatTypeCode:
-          result = Float.compare(fs1.getFloatValue(fi), fs2.getFloatValue(fi));
-          break;
-        case TypeSystemImpl.doubleTypeCode:
-          result = Double.compare(fs1.getDoubleValue(fi), fs2.getDoubleValue(fi));
-          break;
-        case TypeSystemImpl.stringTypeCode:
+        if (fi.getRange() instanceof TypeImpl_string) { // string and string subtypes
           String s1 = fs1.getStringValue(fi);
-          String s2 = fs1.getStringValue(fi);
+          String s2 = fs2.getStringValue(fi);
           result = (s1 == null)
                    ? ((s2 == null) ? 0 : -1)   // s1 null is lessthan a non-null s2
                    : ( (s2 == null)            
                        ? 1                     // s1 not null is greaterthan a null s2
                        : s1.compareTo(s2) );   // if both not null, do compare
-          break;         
+        } else {
+          switch (keyTypeCodes[i]) {
+          case TypeSystemImpl.booleanTypeCode:
+            result = Integer.compare(fs1.getBooleanValue(fi) ? 1 : 0,
+                                     fs2.getBooleanValue(fi) ? 1 : 0);
+            break;
+          case TypeSystemImpl.byteTypeCode:
+            result = Integer.compare(fs1.getByteValue(fi), fs2.getByteValue(fi));
+            break;
+          case TypeSystemImpl.shortTypeCode:
+            result = Integer.compare(fs1.getShortValue(fi), fs2.getShortValue(fi));
+            break;
+          case TypeSystemImpl.intTypeCode:
+            result = Integer.compare(fs1.getIntValue(fi), fs2.getIntValue(fi));
+            break;
+          case TypeSystemImpl.longTypeCode:
+            result = Long.compare(fs1.getLongValue(fi), fs2.getLongValue(fi));
+            break;
+          case TypeSystemImpl.floatTypeCode:
+            result = Float.compare(fs1.getFloatValue(fi), fs2.getFloatValue(fi));
+            break;
+          case TypeSystemImpl.doubleTypeCode:
+            result = Double.compare(fs1.getDoubleValue(fi), fs2.getDoubleValue(fi));
+            break;
+          case TypeSystemImpl.stringTypeCode:
+            String s1 = fs1.getStringValue(fi);
+            String s2 = fs1.getStringValue(fi);
+            result = (s1 == null)
+                     ? ((s2 == null) ? 0 : -1)   // s1 null is lessthan a non-null s2
+                     : ( (s2 == null)            
+                         ? 1                     // s1 not null is greaterthan a null s2
+                         : s1.compareTo(s2) );   // if both not null, do compare
+            break;         
+          } // end of switch
         }
-      } else {  // is type order compare    
+      } else { // is type order compare    
         result = ((LinearTypeOrder) key).compare(fs1, fs2);
       }
         
