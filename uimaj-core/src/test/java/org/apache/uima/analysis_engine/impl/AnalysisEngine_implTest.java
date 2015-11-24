@@ -125,7 +125,7 @@ public class AnalysisEngine_implTest extends TestCase {
 
       // try to initialize with the wrong kind of specifier - should return false
       boolean result = ae1.initialize(new URISpecifier_impl(), null);
-      Assert.assertFalse(result);
+      assertFalse(result);
 
       // try to initialize with an empty TaeDescription - should throw exception
       Exception ex = null;
@@ -136,7 +136,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (ResourceInitializationException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
 
       // initialize simple primitive TextAnalysisEngine
       ae1 = new PrimitiveAnalysisEngine_impl();
@@ -146,7 +146,7 @@ public class AnalysisEngine_implTest extends TestCase {
       primitiveDesc
               .setAnnotatorImplementationName("org.apache.uima.analysis_engine.impl.TestAnnotator");
       result = ae1.initialize(primitiveDesc, null);
-      Assert.assertTrue(result);
+      assertTrue(result);
 
       // initialize again - should fail
       ex = null;
@@ -155,7 +155,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (UIMA_IllegalStateException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
 
       // initialize simple aggregate TextAnalysisEngine (also pass TextAnalysisEngineProcessData as
       // parameter)
@@ -168,7 +168,7 @@ public class AnalysisEngine_implTest extends TestCase {
       aggDesc.getAnalysisEngineMetaData().setFlowConstraints(flow);
       AggregateAnalysisEngine_impl ae2 = new AggregateAnalysisEngine_impl();
       result = ae2.initialize(aggDesc, null);
-      Assert.assertTrue(result);
+      assertTrue(result);
 
       // try some descriptors that are invalid due to config. param problems
       for (int i = 1; i <= 14; i++) {
@@ -192,33 +192,33 @@ public class AnalysisEngine_implTest extends TestCase {
               .getFlowControllerContainer();
       String strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringParam");
-      Assert.assertEquals("override", strVal1);
+      assertEquals("override", strVal1);
       String strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringParam");
-      Assert.assertEquals("en", strVal2);
+      assertEquals("en", strVal2);
       String strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("en",
               "StringParam");
-      Assert.assertEquals("en", strVal3);
+      assertEquals("en", strVal3);
 
       Integer intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
-      Assert.assertEquals(100, intVal1.intValue());
+      assertEquals(100, intVal1.intValue());
       Integer intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
-      Assert.assertEquals(100, intVal2.intValue());
+      assertEquals(100, intVal2.intValue());
       Integer intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("en",
               "IntegerParam");
-      Assert.assertEquals(100, intVal3.intValue());
+      assertEquals(100, intVal3.intValue());
 
       String[] strArrVal1 = (String[]) delegate1.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       String[] strArrVal2 = (String[]) delegate2.getUimaContext().getConfigParameterValue("en",
               "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
       String[] strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue(
               "en", "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
 
       // anotherdescriptor with configuration parameter overrides (this time no groups)
       in = new XMLInputSource(JUnitExtension
@@ -235,28 +235,28 @@ public class AnalysisEngine_implTest extends TestCase {
       flowController = ((ASB_impl) ae._getASB()).getFlowControllerContainer();
 
       strVal1 = (String) delegate1.getUimaContext().getConfigParameterValue("StringParam");
-      Assert.assertEquals("override", strVal1);
+      assertEquals("override", strVal1);
       strVal2 = (String) delegate2.getUimaContext().getConfigParameterValue("StringParam");
-      Assert.assertEquals("myString", strVal2);
+      assertEquals("myString", strVal2);
       strVal3 = (String) flowController.getUimaContext().getConfigParameterValue("StringParam");
-      Assert.assertEquals("myString", strVal3);
+      assertEquals("myString", strVal3);
 
       intVal1 = (Integer) delegate1.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(100, intVal1.intValue());
+      assertEquals(100, intVal1.intValue());
       intVal2 = (Integer) delegate2.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(100, intVal2.intValue());
+      assertEquals(100, intVal2.intValue());
       intVal3 = (Integer) flowController.getUimaContext().getConfigParameterValue("IntegerParam");
-      Assert.assertEquals(100, intVal3.intValue());
+      assertEquals(100, intVal3.intValue());
 
       strArrVal1 = (String[]) delegate1.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal1));
       strArrVal2 = (String[]) delegate2.getUimaContext()
               .getConfigParameterValue("StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal2));
       strArrVal3 = (String[]) flowController.getUimaContext().getConfigParameterValue(
               "StringArrayParam");
-      Assert.assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
+      assertEquals(Arrays.asList(new String[] { "override" }), Arrays.asList(strArrVal3));
 
       // try a descriptor that's invalid due to an unsatisfied resource dependency
       _testInvalidDescriptor(JUnitExtension
@@ -310,13 +310,13 @@ public class AnalysisEngine_implTest extends TestCase {
               "Annotator2");
       String commonParamA = (String) delegate1.getUimaContext().getConfigParameterValue("a",
               "CommonParam");
-      Assert.assertEquals("AggregateParam1a", commonParamA);
+      assertEquals("AggregateParam1a", commonParamA);
       String ann1_groupBParamBC = (String) delegate1.getUimaContext().getConfigParameterValue("b",
               "BCParam");
-      Assert.assertEquals("AggregateParam2b", ann1_groupBParamBC);
+      assertEquals("AggregateParam2b", ann1_groupBParamBC);
       String ann2_groupBParamBC = (String) delegate2.getUimaContext().getConfigParameterValue("b",
               "BCParam");
-      Assert.assertEquals("AggregateParam3b", ann2_groupBParamBC);
+      assertEquals("AggregateParam3b", ann2_groupBParamBC);
 
       ae.destroy();
 
@@ -329,14 +329,14 @@ public class AnalysisEngine_implTest extends TestCase {
       ae1 = new PrimitiveAnalysisEngine_impl();
       ae1.initialize(desc, null);
       String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
-      Assert.assertNotNull(arrayParam);
-      Assert.assertEquals(5, arrayParam.length);
+      assertNotNull(arrayParam);
+      assertEquals(5, arrayParam.length);
       String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
-      Assert.assertTrue(Arrays.equals(expect, arrayParam));
+      assertTrue(Arrays.equals(expect, arrayParam));
       Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(4, intArr.length);
+      assertEquals(4, intArr.length);
       Float[] floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
-      Assert.assertTrue(floats != null && floats.length == 0);       // Should be an empty array
+      assertTrue(floats != null && floats.length == 0);       // Should be an empty array
       System.clearProperty("UimaExternalOverrides");
       
       ae1.destroy();
@@ -388,9 +388,9 @@ public class AnalysisEngine_implTest extends TestCase {
       // e.printStackTrace();
       ex = e;
     }
-    Assert.assertNotNull(ex);
-    Assert.assertNotNull(ex.getMessage());
-    Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
+    assertNotNull(ex);
+    assertNotNull(ex.getMessage());
+    assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
 
   public void testParameterGroups() throws Exception {
@@ -408,9 +408,9 @@ public class AnalysisEngine_implTest extends TestCase {
     // For now parse should always work ... in a later release will fail unless special environment variable set
     boolean support240bug = true; // System.getenv("UIMA_Jira3123") != null;
     if (support240bug) {
-      Assert.assertNotNull(desc);
+      assertNotNull(desc);
     } else {
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
     }
   }
 
@@ -707,59 +707,60 @@ public class AnalysisEngine_implTest extends TestCase {
       CAS cas = ae.newCAS();
       TypeSystem ts = cas.getTypeSystem();
       Type t1 = ts.getType("Type1");
-      Assert.assertEquals("Type1", t1.getName());
+      assertEquals("Type1", t1.getName());
       Feature f1 = t1.getFeatureByBaseName("Feature1");
       Feature f1a = ts.getFeatureByFullName("Type1:Feature1");
-      Assert.assertEquals(f1, f1a);
-      Assert.assertEquals("Feature1", f1.getShortName());
-      Assert.assertEquals(t1, f1.getDomain());
+      assertEquals(f1, f1a);
+      assertEquals("Feature1", f1.getShortName());
+      assertEquals(t1, f1.getDomain());
 
       Type t2 = ts.getType("Type2");
-      Assert.assertEquals("Type2", t2.getName());
+      assertEquals("Type2", t2.getName());
       Feature f2 = t2.getFeatureByBaseName("Feature2");
       Feature f2a = ts.getFeatureByFullName("Type2:Feature2");
-      Assert.assertEquals(f2, f2a);
-      Assert.assertEquals("Feature2", f2.getShortName());
-      Assert.assertEquals(t2, f2.getDomain());
+      assertEquals(f2, f2a);
+      assertEquals("Feature2", f2.getShortName());
+      assertEquals(t2, f2.getDomain());
 
       Type et = ts.getType("EnumType");
-      Assert.assertEquals("EnumType", et.getName());
-      Assert.assertEquals(et, f2.getRange());
+      assertEquals("EnumType", et.getName());
+      assertEquals(et, f2.getRange());
 
       // indexes
       FSIndexRepository irep = cas.getIndexRepository();
       FSIndex ind = irep.getIndex("Index1");
-      Assert.assertNotNull(ind);
-      Assert.assertEquals("Type1", ind.getType().getName());
-      Assert.assertEquals(FSIndex.SORTED_INDEX, ind.getIndexingStrategy());
+      assertNotNull(ind);
+      assertEquals("Type1", ind.getType().getName());
+      assertEquals(FSIndex.SORTED_INDEX, ind.getIndexingStrategy());
 
       FeatureStructure fs1 = cas.createFS(t1);
       fs1.setIntValue(f1, 0);
       FeatureStructure fs2 = cas.createFS(t1);
       fs2.setIntValue(f1, 1);
-      Assert.assertTrue(ind.compare(fs1, fs2) < 0);
+      assertTrue(ind.compare(fs1, fs2) < 0);
 
       FSIndex ind2 = irep.getIndex("Index2");
-      Assert.assertNotNull(ind2);
-      Assert.assertEquals("Type2", ind2.getType().getName());
-      Assert.assertEquals(FSIndex.SET_INDEX, ind2.getIndexingStrategy());
+      assertNotNull(ind2);
+      assertEquals("Type2", ind2.getType().getName());
+      assertEquals(FSIndex.SET_INDEX, ind2.getIndexingStrategy());
 
       FeatureStructure fs3 = cas.createFS(t2);
       fs3.setStringValue(f2, "One");
       FeatureStructure fs4 = cas.createFS(t2);
       fs4.setStringValue(f2, "Two");
-      Assert.assertTrue(ind2.compare(fs3, fs4) > 0);
+      System.out.println("debug" + fs3.toString());
+      assertTrue(ind2.compare(fs3, fs4) > 0);
 
       FSIndex ind3 = irep.getIndex("Index3");
-      Assert.assertNotNull(ind3);
-      Assert.assertEquals("uima.tcas.Annotation", ind3.getType().getName());
-      Assert.assertEquals(FSIndex.SORTED_INDEX, ind3.getIndexingStrategy());
+      assertNotNull(ind3);
+      assertEquals("uima.tcas.Annotation", ind3.getType().getName());
+      assertEquals(FSIndex.SORTED_INDEX, ind3.getIndexingStrategy());
 
       AnnotationFS fs5 = cas.createAnnotation(t1, 0, 0);
       AnnotationFS fs6 = cas.createAnnotation(t2, 0, 0);
       AnnotationFS fs7 = cas.createAnnotation(t1, 0, 0);
-      Assert.assertTrue(ind3.compare(fs5, fs6) < 0);
-      Assert.assertTrue(ind3.compare(fs6, fs7) > 0);
+      assertTrue(ind3.compare(fs5, fs6) < 0);
+      assertTrue(ind3.compare(fs6, fs7) > 0);
 
       // only way to check if allowed values is correct is to try to set an
       // invalid value?
@@ -769,7 +770,7 @@ public class AnalysisEngine_implTest extends TestCase {
       } catch (CASRuntimeException e) {
         ex = e;
       }
-      Assert.assertNotNull(ex);
+      assertNotNull(ex);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -789,73 +790,73 @@ public class AnalysisEngine_implTest extends TestCase {
       // test results of merge
       // TypeSystem
       TypeSystemDescription typeSys = ae.getAnalysisEngineMetaData().getTypeSystem();
-      Assert.assertEquals(8, typeSys.getTypes().length);
+      assertEquals(8, typeSys.getTypes().length);
 
       TypeDescription type0 = typeSys.getType("NamedEntity");
-      Assert.assertNotNull(type0);
-      Assert.assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
-      Assert.assertEquals(1, type0.getFeatures().length);
+      assertNotNull(type0);
+      assertEquals("uima.tcas.Annotation", type0.getSupertypeName());
+      assertEquals(1, type0.getFeatures().length);
 
       TypeDescription type1 = typeSys.getType("Person");
-      Assert.assertNotNull(type1);
-      Assert.assertEquals("NamedEntity", type1.getSupertypeName());
-      Assert.assertEquals(1, type1.getFeatures().length);
+      assertNotNull(type1);
+      assertEquals("NamedEntity", type1.getSupertypeName());
+      assertEquals(1, type1.getFeatures().length);
 
       TypeDescription type2 = typeSys.getType("Place");
-      Assert.assertNotNull(type2);
-      Assert.assertEquals("NamedEntity", type2.getSupertypeName());
-      Assert.assertEquals(3, type2.getFeatures().length);
+      assertNotNull(type2);
+      assertEquals("NamedEntity", type2.getSupertypeName());
+      assertEquals(3, type2.getFeatures().length);
 
       TypeDescription type3 = typeSys.getType("Org");
-      Assert.assertNotNull(type3);
-      Assert.assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
-      Assert.assertEquals(0, type3.getFeatures().length);
+      assertNotNull(type3);
+      assertEquals("uima.tcas.Annotation", type3.getSupertypeName());
+      assertEquals(0, type3.getFeatures().length);
 
       TypeDescription type4 = typeSys.getType("DocumentStructure");
-      Assert.assertNotNull(type4);
-      Assert.assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
-      Assert.assertEquals(0, type4.getFeatures().length);
+      assertNotNull(type4);
+      assertEquals("uima.tcas.Annotation", type4.getSupertypeName());
+      assertEquals(0, type4.getFeatures().length);
 
       TypeDescription type5 = typeSys.getType("Paragraph");
-      Assert.assertNotNull(type5);
-      Assert.assertEquals("DocumentStructure", type5.getSupertypeName());
-      Assert.assertEquals(0, type5.getFeatures().length);
+      assertNotNull(type5);
+      assertEquals("DocumentStructure", type5.getSupertypeName());
+      assertEquals(0, type5.getFeatures().length);
 
       TypeDescription type6 = typeSys.getType("Sentence");
-      Assert.assertNotNull(type6);
-      Assert.assertEquals("DocumentStructure", type6.getSupertypeName());
-      Assert.assertEquals(0, type6.getFeatures().length);
+      assertNotNull(type6);
+      assertEquals("DocumentStructure", type6.getSupertypeName());
+      assertEquals(0, type6.getFeatures().length);
 
       TypeDescription type7 = typeSys.getType("test.flowController.Test");
-      Assert.assertNotNull(type7);
-      Assert.assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
-      Assert.assertEquals(1, type7.getFeatures().length);
+      assertNotNull(type7);
+      assertEquals("uima.tcas.Annotation", type7.getSupertypeName());
+      assertEquals(1, type7.getFeatures().length);
 
       // TypePriorities
       TypePriorities pri = ae.getAnalysisEngineMetaData().getTypePriorities();
-      Assert.assertNotNull(pri);
+      assertNotNull(pri);
       TypePriorityList[] priLists = pri.getPriorityLists();
-      Assert.assertEquals(3, priLists.length);
+      assertEquals(3, priLists.length);
       String[] list0 = priLists[0].getTypes();
       String[] list1 = priLists[1].getTypes();
       String[] list2 = priLists[2].getTypes();
       // order of the three lists is not defined
-      Assert.assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
+      assertTrue((list0.length == 2 && list1.length == 2 && list2.length == 3)
               || (list0.length == 2 && list1.length == 3 && list2.length == 2)
               || (list0.length == 3 && list1.length == 2 && list2.length == 2));
 
       // Indexes
       FsIndexDescription[] indexes = ae.getAnalysisEngineMetaData().getFsIndexes();
-      Assert.assertEquals(3, indexes.length);
+      assertEquals(3, indexes.length);
       // order of indexes is not defined
       String label0 = indexes[0].getLabel();
       String label1 = indexes[1].getLabel();
       String label2 = indexes[2].getLabel();
-      Assert.assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
+      assertTrue(label0.equals("DocStructIndex") || label1.equals("DocStructIndex")
               || label2.equals("DocStructIndex"));
-      Assert.assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
+      assertTrue(label0.equals("PlaceIndex") || label1.equals("PlaceIndex")
               || label2.equals("PlaceIndex"));
-      Assert.assertTrue(label0.equals("FlowControllerTestIndex")
+      assertTrue(label0.equals("FlowControllerTestIndex")
               || label1.equals("FlowControllerTestIndex")
               || label2.equals("FlowControllerTestIndex"));
 
