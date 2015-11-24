@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import java.util.List;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -48,7 +49,10 @@ public class FeatureImpl implements Feature {
 //  private final TypeSystemImpl ts;
 
   private final boolean isMultipleRefsAllowed;
-  
+  /**
+   * true for the feature which is the AnnotationBase sofa reference.
+   */
+  public final boolean isAnnotBaseSofaRef;
   private final String shortName;     //         feat
     
   protected Object jcasGetter;  // null or the functional interface to call to get this feature
@@ -57,7 +61,17 @@ public class FeatureImpl implements Feature {
   private final SlotKind slotKind;
   /** type class of the range, including CasSerializer List constants */
   public  final int rangeTypeClass; // set from CasSerializerSupport.classifyType
-    
+
+  private FeatureImpl() {
+    featureCode = 0;
+    isInInt = false;
+    rangeType = null;
+    isMultipleRefsAllowed = false;
+    isAnnotBaseSofaRef = false;
+    shortName = null;
+    slotKind = null;
+    rangeTypeClass = 0;
+  }
 
   FeatureImpl(TypeImpl typeImpl, String shortName, TypeImpl rangeType, TypeSystemImpl tsi, boolean isMultipleRefsAllowed, SlotKind slotKind) {
 //  this.code = code;
@@ -69,6 +83,7 @@ public class FeatureImpl implements Feature {
   this.slotKind = slotKind;
   this.shortName = shortName;
   this.isMultipleRefsAllowed = isMultipleRefsAllowed;
+  this.isAnnotBaseSofaRef = (highestDefiningType.getCode() == TypeSystemImpl.annotBaseTypeCode) && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA);
   this.isInInt = tsi.isInInt(rangeType);
   this.rangeTypeClass = CasSerializerSupport.classifyType(rangeType);
   typeImpl.addFeature(this);  // might throw if existing feature with different range
@@ -222,4 +237,6 @@ public class FeatureImpl implements Feature {
     TypeImpl_stringSubtype ti = (TypeImpl_stringSubtype) getRangeImpl();
     ti.validateIsInAllowedValues(v);
   }
+  
+  public final static FeatureImpl singleton = new FeatureImpl();
 }

@@ -86,6 +86,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
@@ -3195,6 +3196,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (T) docAnnot;    
   }
   
+  public <T extends Annotation> T createDocumentAnnotationNoRemoveNoIndex(int length) {
+    final TypeSystemImpl ts = getTypeSystemImpl();
+    AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
+    docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
+    addFsToIndexes(docAnnot);
+    return (T) docAnnot;    
+  }
+  
   
   public int ll_createDocumentAnnotation(int length) {
     final int fsRef = ll_createDocumentAnnotationNoIndex(0, length);
@@ -3252,7 +3261,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
   
-  private <T extends Annotation> T getDocumentAnnotationNoCreate() {
+  public <T extends Annotation> T getDocumentAnnotationNoCreate() {
     if (this == this.svd.baseCAS) {
       // base CAS has no document
       return null;
@@ -3337,7 +3346,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public Sofa getSofa() {
-    return (Sofa) mySofaRef;
+    return mySofaRef;
   }
   
   /**
@@ -3772,7 +3781,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
            (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? getEmptyStringList() :
                                                                        getEmptyFSList();
   }
-    
+  
   /**
    * Get an empty list from the type code of a list
    * @param rangeCode
@@ -3798,5 +3807,56 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public TypeImpl getTypeImplFromJCasTypeIndex(int typeIndexID) {
     return getTypeSystemImpl().getJCasRegisteredType(typeIndexID);
+  }
+  
+  /**
+   * Copies a feature, from one fs to another
+   *   FSs may belong to different CASes, but must have the same type system
+   *   Features must have compatible ranges
+   * @param fsSrc source FS
+   * @param fi Feature to copy
+   * @param fsTgt target FS
+   */
+  public static void copyFeature(TOP fsSrc, FeatureImpl fi, TOP fsTgt) {
+    if (!copyFeatureExceptFsRef(fsSrc, fi, fsTgt, fi)) {
+      if (!fi.isAnnotBaseSofaRef) {
+        fsTgt.setFeatureValue(fi, fsSrc.getFeatureValue(fi));
+      }
+    }
+  }
+  
+  /**
+   * Copies a feature from one fs to another
+   * FSs may be in different type systems 
+   *   Doesn't copy a feature ref, but instead returns false.  
+   *     This is because feature refs can't cross CASes
+   * @param fsSrc source FS
+   * @param fiSrc feature in source to copy
+   * @param fsTgt target FS
+   * @param fiTgt feature in target to set
+   * @return false if feature is an fsRef
+   */
+  public static boolean copyFeatureExceptFsRef(TOP fsSrc, FeatureImpl fiSrc, TOP fsTgt, FeatureImpl fiTgt) {
+    switch (fiSrc.getRangeImpl().getCode()) {
+    case TypeSystemImpl.booleanTypeCode    : fsTgt.setBooleanValue(   fiTgt, fsSrc.getBooleanValue(   fiSrc)); break;
+    case TypeSystemImpl.byteTypeCode       : fsTgt.setByteValue(      fiTgt, fsSrc.getByteValue(      fiSrc)); break;
+    case TypeSystemImpl.shortTypeCode      : fsTgt.setShortValue(     fiTgt, fsSrc.getShortValue(     fiSrc)); break;
+    case TypeSystemImpl.intTypeCode        : fsTgt.setIntValue(       fiTgt, fsSrc.getIntValue(       fiSrc)); break;
+    case TypeSystemImpl.longTypeCode       : fsTgt.setLongValue(      fiTgt, fsSrc.getLongValue(      fiSrc)); break;
+    case TypeSystemImpl.floatTypeCode      : fsTgt.setFloatValue(     fiTgt, fsSrc.getFloatValue(     fiSrc)); break;
+    case TypeSystemImpl.doubleTypeCode     : fsTgt.setDoubleValue(    fiTgt, fsSrc.getDoubleValue(    fiSrc)); break;
+    case TypeSystemImpl.stringTypeCode     : fsTgt.setStringValue(    fiTgt, fsSrc.getStringValue(    fiSrc)); break;
+    case TypeSystemImpl.javaObjectTypeCode : fsTgt.setJavaObjectValue(fiTgt, fsSrc.getJavaObjectValue(fiSrc)); break;
+               // skip setting sofaRef - it's final and can't be set
+    default: return false;
+    } // end of switch
+    return true;
+  }
+
+  public static CommonArray copyArray(TOP srcArray) {
+    CommonArray srcCA = (CommonArray) srcArray;
+    CommonArray copy = (CommonArray) srcArray._casView.createArray(srcArray._typeImpl, srcCA.size());
+    copy.copyValuesFrom(srcCA); 
+    return copy;
   }
 }

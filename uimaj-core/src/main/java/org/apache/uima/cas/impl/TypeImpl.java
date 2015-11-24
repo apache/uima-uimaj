@@ -102,7 +102,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   /**
    * false for primitives, strings, string subtypes, and JavaObjects
    */
-  protected final boolean isRefType;  // not a primitive, can be a FeatureStructure in the CAS, added to indexes etc.
+  public final boolean isRefType;  // not a primitive, can be a FeatureStructure in the CAS, added to indexes etc.
   
   
   /* ***************** type hierarchy *****************/
@@ -125,6 +125,24 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   // for journalling allocation: as above, but excluding the adjustment for fields in the JCas cover class
   int highestIntOffset = -1;  
   int highestRefOffset = -1;  
+  
+  private TypeImpl() {
+    this.name = null;
+    this.shortName = null;
+    this.superType = null;
+    
+    this.isInheritanceFinal = false;
+    this.isFeatureFinal = false;
+    this.isLongOrDouble = false;
+    this.isCreatableAndNotBuiltinArray = false;
+    this.tsi = null;
+    this.typeCode = 0; 
+    
+    this.isRefType = false;
+    this.javaClass = null;
+    getter_funct_intfc_class = null;
+    setter_funct_intfc_class = null;
+  }
   
   /**
    * Create a new type. This should only be done by a <code>TypeSystemImpl</code>.
@@ -406,7 +424,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return new ArrayList<>(staticMergedFeatures.values());
   }
   
-  Collection<FeatureImpl> getFeatureImpls() {
+  public Collection<FeatureImpl> getFeatureImpls() {
     return staticMergedFeatures.values();
   }
   
@@ -680,5 +698,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   void setJavaClass(Class<?> javaClass) {
     this.javaClass = javaClass;
   }
+  
+  public final static TypeImpl singleton = new TypeImpl();
   
 }

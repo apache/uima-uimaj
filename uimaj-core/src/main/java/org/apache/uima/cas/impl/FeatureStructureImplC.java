@@ -111,7 +111,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
    */
   protected final CASImpl _casView;  
   
-  protected final TypeImpl _typeImpl;
+  public final TypeImpl _typeImpl;
   
   // Called only to generate a dummy value for the REMOVED flag in bag indexes
 
@@ -223,12 +223,21 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   @Override
   public final int id() {return _id; };
   
-  // backwards compatibility
+  /**
+   * Returns the UIMA TypeImpl value
+   */
   @Override
   public Type getType() {
     return _typeImpl;
   }
   
+  public TypeImpl getTypeImpl() {
+    return _typeImpl;
+  }
+  
+  /**
+   * @return the UIMA TypeImpl for this Feature Structure
+   */
   public int _getTypeCode() {
     return _typeImpl.getCode();
   }
@@ -667,31 +676,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       return (FeatureStructureImplC) copy;
     }
     
-    FeatureStructureImplC fs = _casView.createFS(_typeImpl);
+    TOP fs = _casView.createFS(_typeImpl);
+    TOP srcFs = (TOP) this;
     
     final int sofaFeatCode = TypeSystemImpl.annotBaseSofaFeatCode;
 
     /* copy all the feature values except the sofa ref which is already set as part of creation */
     for (Feature feat : _typeImpl.getFeatures()) {
-      final FeatureImpl fi = (FeatureImpl) feat;
-      if (fi.getCode() == sofaFeatCode) continue;
-        
-      switch (fi.getRangeImpl().getCode()) {
-      case TypeSystemImpl.booleanTypeCode : fs.setBooleanValue(feat, getBooleanValue(feat)); break;
-      case TypeSystemImpl.byteTypeCode : fs.setByteValue(feat, getByteValue(feat)); break;
-      case TypeSystemImpl.shortTypeCode : fs.setShortValue(feat, getShortValue(feat)); break;
-      case TypeSystemImpl.intTypeCode : fs.setIntValue(feat, getIntValue(feat)); break;
-      case TypeSystemImpl.longTypeCode : fs.setLongValue(feat, getLongValue(feat)); break;
-      case TypeSystemImpl.floatTypeCode : fs.setFloatValue(feat, getFloatValue(feat)); break;
-      case TypeSystemImpl.doubleTypeCode : fs.setDoubleValue(feat, getDoubleValue(feat)); break;
-      case TypeSystemImpl.stringTypeCode : fs.setStringValue(feat, getStringValue(feat)); break;
-      default:  // for javaObject and fs ref
-        if (fi.getRangeImpl().isRefType) {
-          fs.setFeatureValue(feat, getFeatureValue(feat));
-        } else {
-          fs.setJavaObjectValue(feat, getJavaObjectValue(feat));
-        }
-      } // end of switch
+      _casView.copyFeature(srcFs, feat, fs, feat);
     }   // end of for loop
     return fs;
   }
