@@ -21,8 +21,6 @@ package org.apache.uima.cas.test;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -35,6 +33,8 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+
+import junit.framework.TestCase;
 
 /**
  * tests of type priorities

@@ -22,8 +22,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -36,6 +34,8 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.testTypeSystem_arrays.OfShorts;
 import org.apache.uima.testTypeSystem_arrays.OfStrings;
+
+import junit.framework.TestCase;
 
 
 public class CasToInlineXmlTest extends TestCase {

@@ -31,8 +31,6 @@ import java.io.StringWriter;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
@@ -68,6 +66,8 @@ import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
+
+import junit.framework.TestCase;
 
 
 public class NewPrimitiveTypesTest extends TestCase {

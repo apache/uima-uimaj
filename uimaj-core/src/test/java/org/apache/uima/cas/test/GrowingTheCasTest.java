@@ -23,8 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -44,6 +42,8 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for IteratorTest.java goes here.

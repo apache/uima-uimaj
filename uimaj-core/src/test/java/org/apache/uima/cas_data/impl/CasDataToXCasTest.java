@@ -19,15 +19,15 @@
 
 package org.apache.uima.cas_data.impl;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 
 public class CasDataToXCasTest extends TestCase {

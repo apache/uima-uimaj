@@ -24,11 +24,11 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
-import junit.framework.TestCase;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
+
+import junit.framework.TestCase;
 
 public class XMLSerializerTest extends TestCase {
 

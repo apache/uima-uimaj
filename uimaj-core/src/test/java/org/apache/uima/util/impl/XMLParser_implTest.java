@@ -24,9 +24,6 @@ import java.io.File;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.flow.FlowControllerDescription;
@@ -39,6 +36,9 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.xml.sax.XMLReader;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 public class XMLParser_implTest extends TestCase {
 

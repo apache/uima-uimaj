@@ -29,9 +29,6 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
@@ -42,6 +39,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
  * Tests the MetaDataObject_impl class.

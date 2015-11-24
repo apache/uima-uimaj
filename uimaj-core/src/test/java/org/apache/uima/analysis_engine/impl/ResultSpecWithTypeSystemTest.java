@@ -18,14 +18,14 @@
  */
 package org.apache.uima.analysis_engine.impl;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+
+import junit.framework.TestCase;
 
 /**
  * Test various kinds of inheritance issues 

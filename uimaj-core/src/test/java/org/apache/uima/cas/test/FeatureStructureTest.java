@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -31,6 +29,8 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
+
+import junit.framework.TestCase;
 
 /**
  * Class comment for FeatureStructureTest.java goes here.

@@ -24,10 +24,10 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.internal.util.IntKeyValueIterator;
 import org.apache.uima.internal.util.IntListIterator;
+
+import junit.framework.TestCase;
 
 public class Int2IntRBTtest extends TestCase {
   

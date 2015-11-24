@@ -28,7 +28,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Misc;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /*

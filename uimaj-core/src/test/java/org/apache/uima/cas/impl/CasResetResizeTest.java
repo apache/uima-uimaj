@@ -22,9 +22,6 @@ package org.apache.uima.cas.impl;
 import java.util.Collections;
 import java.util.Properties;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.TaeDescription;
 import org.apache.uima.analysis_engine.TextAnalysisEngine;
@@ -33,6 +30,9 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 
 public class CasResetResizeTest extends TestCase {

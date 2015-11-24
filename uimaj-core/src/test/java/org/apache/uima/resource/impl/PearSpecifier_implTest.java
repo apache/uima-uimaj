@@ -23,14 +23,14 @@ import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_imp
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
  * PearSpecifier creation and Xmlization test

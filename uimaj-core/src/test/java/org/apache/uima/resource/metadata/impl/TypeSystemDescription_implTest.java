@@ -22,8 +22,6 @@ package org.apache.uima.resource.metadata.impl;
 import java.io.File;
 import java.net.URL;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -35,6 +33,8 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 
 public class TypeSystemDescription_implTest extends TestCase {

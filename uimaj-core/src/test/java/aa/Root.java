@@ -7,14 +7,13 @@ package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
 
 
 /** 

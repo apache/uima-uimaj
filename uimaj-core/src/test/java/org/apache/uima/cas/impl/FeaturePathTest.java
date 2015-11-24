@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -43,6 +41,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class FeaturePathTest extends TestCase {
 

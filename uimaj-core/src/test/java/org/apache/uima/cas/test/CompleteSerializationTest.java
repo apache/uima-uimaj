@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
@@ -29,6 +27,8 @@ import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
+
+import junit.framework.TestCase;
 
 /**
  * CAS complete serialization test class

@@ -31,8 +31,6 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
@@ -68,6 +66,8 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
+
+import junit.framework.TestCase;
 
 
 public class JcasSofaTest extends TestCase {

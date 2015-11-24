@@ -20,8 +20,6 @@ package org.apache.uima.cas.impl;
 
 import java.util.BitSet;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
@@ -31,6 +29,8 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.resource.ResourceInitializationException;
+
+import junit.framework.TestCase;
 
 public class CasTypeSystemMapperTst extends TestCase {
   

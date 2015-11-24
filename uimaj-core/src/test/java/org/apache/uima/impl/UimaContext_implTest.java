@@ -25,9 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -45,6 +42,9 @@ import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 
 public class UimaContext_implTest extends TestCase {

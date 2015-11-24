@@ -34,9 +34,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
@@ -97,6 +94,9 @@ import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.apache.uima.util.impl.Settings_impl;
 import org.xml.sax.ContentHandler;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
  * Tests the TextAnalysisEngine_impl class.

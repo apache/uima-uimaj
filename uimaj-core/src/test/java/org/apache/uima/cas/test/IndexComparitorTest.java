@@ -19,8 +19,6 @@
 
 package org.apache.uima.cas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FSIndex;
@@ -38,6 +36,8 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import junit.framework.TestCase;
 
 /**
  * Test the variations possible for index compare functions

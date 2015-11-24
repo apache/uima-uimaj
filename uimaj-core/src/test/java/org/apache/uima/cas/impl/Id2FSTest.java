@@ -18,11 +18,6 @@
  */
 package org.apache.uima.cas.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.cas.test.CASTestSetup;

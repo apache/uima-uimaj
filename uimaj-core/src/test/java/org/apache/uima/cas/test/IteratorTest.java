@@ -47,7 +47,6 @@ import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.LowLevelIterator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.cas_data.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.jcas.JCas;

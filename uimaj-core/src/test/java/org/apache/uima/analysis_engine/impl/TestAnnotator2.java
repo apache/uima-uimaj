@@ -22,8 +22,6 @@ package org.apache.uima.analysis_engine.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import junit.framework.Assert;
-
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.ResultSpecification;
@@ -34,6 +32,8 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.impl.Settings_impl;
+
+import junit.framework.Assert;
 
 /**
  * Annotator class used for testing.

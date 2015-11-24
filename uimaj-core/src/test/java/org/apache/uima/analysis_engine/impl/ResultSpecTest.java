@@ -22,8 +22,6 @@ package org.apache.uima.analysis_engine.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -36,6 +34,8 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class ResultSpecTest extends TestCase {
 

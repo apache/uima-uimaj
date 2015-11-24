@@ -24,8 +24,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.ArrayFS;
@@ -47,6 +45,8 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import junit.framework.TestCase;
 
 
 public class CasCopierTest extends TestCase {

@@ -5,15 +5,10 @@
 
 package org.apache.lang;
 
-import java.util.List;
-
-import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
 import org.apache.uima.jcas.cas.TOP;
 
 

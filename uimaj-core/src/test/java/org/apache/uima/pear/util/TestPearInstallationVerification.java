@@ -21,14 +21,14 @@ package org.apache.uima.pear.util;
 
 import java.io.File;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.pear.tools.InstallationController.TestStatus;
 import org.apache.uima.pear.tools.InstallationTester;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
  * Test the pear installation verification

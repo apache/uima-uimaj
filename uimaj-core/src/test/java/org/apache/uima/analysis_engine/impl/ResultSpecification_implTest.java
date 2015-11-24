@@ -28,9 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.analysis_engine.TypeOrFeature;
@@ -42,6 +39,9 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.impl.Capability_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 
 public class ResultSpecification_implTest extends TestCase {

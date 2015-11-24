@@ -21,13 +21,13 @@ package org.apache.uima.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Parameter;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
+
+import junit.framework.Assert;
 
 
 public class SomeCustomResource extends Resource_ImplBase {
