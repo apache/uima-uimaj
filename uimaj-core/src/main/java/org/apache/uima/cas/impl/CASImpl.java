@@ -702,24 +702,25 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (!this.svd.initialSofaCreated) {
       return false;
     }
-    final int llsofa = this.getInitialView().getLowLevelCAS().ll_getSofa();
+    
+    Sofa sofa = (Sofa) this.getInitialView().getSofa();
 
     // check for mime type exactly equal to "text"
-    String sofaMime = ll_getStringValue(llsofa, TypeSystemImpl.sofaMimeFeatCode);
+    String sofaMime = sofa.getMimeType();
     if (!"text".equals(sofaMime)) {
       return false;
     }
     // check that sofaURI and sofaArray are not set
-    String sofaUri = ll_getStringValue(llsofa, TypeSystemImpl.sofaUriFeatCode);
+    String sofaUri = sofa.getSofaURI();
     if (sofaUri != null) {
       return false;
     }
-    int sofaArray = ll_getRefValue(llsofa, TypeSystemImpl.sofaArrayFeatCode);
-    if (sofaArray != CASImpl.NULL) {
+    TOP sofaArray = sofa.getSofaArray();
+    if (sofaArray != null) {
       return false;
     }
     // check that name is NAME_DEFAULT_SOFA
-    String sofaname = ll_getStringValue(llsofa, TypeSystemImpl.sofaIdFeatCode);
+    String sofaname = sofa.getSofaID();
     return NAME_DEFAULT_SOFA.equals(sofaname);
   }
 

@@ -116,8 +116,8 @@ public class JCasTest extends TestCase {
 	}
 
 	public void checkExpectedBadCASError(Exception e1, String err) {
-		if (e1 instanceof CASException) {
-			CASException e = (CASException) e1;
+		if (e1 instanceof CASRuntimeException) {
+			CASRuntimeException e = (CASRuntimeException) e1;
 			System.out.print("\nCaught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
@@ -167,16 +167,16 @@ public class JCasTest extends TestCase {
 			boolean errFound = false;
 			try {
 				localCas = CASInitializer.initCas(new CASTestSetup(testId));
-				ts = this.cas.getTypeSystem();
-				try {
-					localJcas = localCas.getJCas();
-				} catch (Exception e1) {
-					checkExpectedBadCASError(e1, expectedErr);
-					errFound = true;
-				}
+//				ts = this.cas.getTypeSystem();
+//				try {
+//					localJcas = localCas.getJCas();
+//				} catch (Exception e1) {
+//					checkExpectedBadCASError(e1, expectedErr);
+//					errFound = true;
+//				}
 			} catch (Exception e) {
-				System.out.println("\n" + e.toString());
-				assertTrue(false);
+		    checkExpectedBadCASError(e, expectedErr);
+		    errFound = true;
 			}
 			assertTrue(errFound);
 		} catch (Exception e) {
@@ -729,6 +729,7 @@ public class JCasTest extends TestCase {
       jcas.getCasType(Sentence.type);
       fail(); 
     } catch(CASRuntimeException e) {
+      assertEquals(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, e.getMessageKey());
     }
     //check that this does not leave JCAS in an inconsistent state
     //(a check for bug UIMA-738)

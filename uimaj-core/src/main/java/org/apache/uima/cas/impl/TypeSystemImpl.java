@@ -56,6 +56,7 @@ import java.util.stream.Stream;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeNameSpace;
@@ -64,6 +65,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.FSClassRegistry.GetterSetter;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -2286,6 +2288,24 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return - the type impl associated with that JCas cover class
    */
   public TypeImpl getJCasRegisteredType(int i) {
+    if (i >= jcasRegisteredTypes.size()) {
+      Class<? extends TOP> cls = JCasRegistry.getClassForIndex(i);
+      if (cls != null) {
+        String typeName = cls.getName();
+        // is type in type system
+        if (getType(typeName) == null) {
+          // no - report error that JCAS type was not defined in XML
+          // descriptor
+          throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, typeName);
+        } else {
+          // yes - there was some problem loading the _Type object
+          throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_COVERCLASS, typeName);
+        }
+
+      } else {
+        throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
+      }
+    }  
     return jcasRegisteredTypes.get(i);
   }
   
