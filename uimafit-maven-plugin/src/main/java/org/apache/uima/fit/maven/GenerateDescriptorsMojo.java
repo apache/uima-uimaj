@@ -75,6 +75,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
   private String encoding;
 
+  @Override
   public void execute() throws MojoExecutionException {
     // add the generated sources to the build
     if (!outputDirectory.exists()) {
@@ -119,6 +120,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
           File out = new File(outputDirectory, clazzPath+".xml");
           out.getParentFile().mkdirs();
           toXML(desc, out.getPath());
+          countGenerated++;
           
           // Remember component
           componentsManifest.append("classpath*:").append(clazzPath+".xml").append('\n');
