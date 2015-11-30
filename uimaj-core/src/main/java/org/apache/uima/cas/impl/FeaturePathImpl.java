@@ -376,7 +376,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Type getType(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : targetFeature.getRange();
+    return (targetFeature == null) ? null : targetFeature.getRange();
   }    
     
   /*
@@ -388,7 +388,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public TypeClass getTypeClass(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) 
+    return targetFeature == null 
         ? null 
         : TypeClass.values()[TypeSystemImpl.getTypeClass(targetFeature.getRangeImpl())];
   }    
