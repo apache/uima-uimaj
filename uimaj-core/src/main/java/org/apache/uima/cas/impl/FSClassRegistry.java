@@ -201,11 +201,15 @@ public class FSClassRegistry {
      * copy in built-ins
      */
     for (int i = 0; i < jcasClassesInfoForBuiltins.length; i++) {
-      
-      JCasClassInfo jci;
-      jcasClassesInfo[i] = jci = jcasClassesInfoForBuiltins[i];
+  
+      JCasClassInfo jci = jcasClassesInfoForBuiltins[i];
+      jcasClassesInfo[i] = jci;
       if (jci != null) {
-        ts.setJCasRegisteredType(Misc.getStaticIntField(getJCasClass(i), "typeIndexID"), ts.getTypeForCode(i));
+        int v = Misc.getStaticIntField(getJCasClass(i), "typeIndexID");
+        // v is negative if not found, which is the case for types like FloatList (these can't be instantiated)
+        if (v >= 0) {
+          ts.setJCasRegisteredType(v, ts.getTypeForCode(i));
+        }
       }
     }
      
@@ -248,7 +252,7 @@ public class FSClassRegistry {
   private ArrayList<FeatureImpl> getFeatureFromJFRI(TypeSystemImpl ts, TypeImpl ti, ArrayList<FeatureImpl> collector) {
     Class<?> clazz = getJCasClass(ti.getCode());
     for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      int indexJFRI = Misc.getStaticIntField(clazz, "_FI_" + fi.getShortName());
+      int indexJFRI = Misc.getStaticIntFieldNoInherit(clazz, "_FI_" + fi.getShortName());
       if (indexJFRI != Integer.MIN_VALUE) {  // that value is code for not found
         fi.registryIndex = indexJFRI;
         Misc.setWithExpand(collector, indexJFRI, fi);
@@ -276,7 +280,10 @@ public class FSClassRegistry {
       clazz = maybeLoadJCas(ti.getName(), ti.getClass().getClassLoader()); 
       if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
         jcasClassInfo = createJCasClassInfo(clazz, ti); 
-        ts.setJCasRegisteredType(Misc.getStaticIntField(clazz, "typeIndexID"), ti);
+        int i = Misc.getStaticIntFieldNoInherit(clazz, "typeIndexID");
+        if (i >= 0) {
+          ts.setJCasRegisteredType(i, ti);
+        }
       }
       jcasClassesInfo[typecode] = jcasClassInfo;  // sets new one or default one
     }
