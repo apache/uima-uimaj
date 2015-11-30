@@ -1991,6 +1991,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   final <T extends TOP> T getFsFromId_checked(int fsRef) {
     T r = getFsFromId(fsRef);
     if (r == null) {
+      if (fsRef == 0) {
+        return null;
+      }
       throw new LowLevelException(LowLevelException.INVALID_FS_REF, fsRef);
     }
     return r;
@@ -2179,17 +2182,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (doTypeChecks) {
       checkFsRefConditions(fsRef, featureCode);
     }
-    return ll_getIntValue(fsRef, featureCode);
+    return getFsFromId_checked(fsRef).getFeatureValue(getTypeSystemImpl().getFeatureForCode_checked(featureCode))._id;
   }
   
-  public int ll_getAnnotBegin(int fsRef) {
-    return ((Annotation)ll_getFSForRef(fsRef)).getBegin();
-  }
-  
-  public int ll_getAnnotEnd(int fsRef) {
-    return ((Annotation)ll_getFSForRef(fsRef)).getEnd();
-  }
-
   /**
    * This is the method all normal FS feature "setters" call before doing the set operation.
    * <p style="margin-left:2em">
@@ -3201,7 +3196,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final TypeSystemImpl ts = getTypeSystemImpl();
     AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
     docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
-    addFsToIndexes(docAnnot);
     return (T) docAnnot;    
   }
   
@@ -3689,13 +3683,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   public int setId2fs(FeatureStructureImplC fs) {
-//    if (svd.id2fs.size() == 3668) {
-//      System.out.println("debug setId2fs");
-//    }
     svd.id2fs.add(fs);
-    if (svd.id2fs.size() != (2 + svd.fsIdGenerator.get())) {
-      System.out.println("debug out of sync id generator and id2fs size");
-    }
+//    if (svd.id2fs.size() != (2 + svd.fsIdGenerator.get())) {
+//      System.out.println("debug out of sync id generator and id2fs size");
+//    }
     assert(svd.id2fs.size() == (2 + svd.fsIdGenerator.get()));
     return getNextFsId();
   }
