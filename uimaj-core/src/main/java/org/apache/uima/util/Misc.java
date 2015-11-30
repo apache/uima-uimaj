@@ -192,6 +192,17 @@ public class Misc {
     } 
   }
   
+  static public int getStaticIntFieldNoInherit(Class<?> clazz, String fieldName) {
+    try {
+      Field f = clazz.getDeclaredField(fieldName);
+      return f.getInt(null);
+    } catch (NoSuchFieldException e) {
+      return Integer.MIN_VALUE;
+    } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        throw new RuntimeException(e);
+    } 
+  }
+  
   static public void addAll(Collection<String> c, String ... v) {
     for (String s : v) {
       c.add(s);
