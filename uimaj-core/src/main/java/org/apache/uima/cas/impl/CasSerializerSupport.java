@@ -690,10 +690,6 @@ public class CasSerializerSupport {
       //   an embedded feature value (array or list) is modified, which requires we serialize out this
       //   fs as if it was modified.
 
-      if (fs.id() == 65) {
-        System.out.println("debug, visited_not_yet_written is: " + visited_not_yet_written.contains(fs));
-      }
-
       if (!visited_not_yet_written.add(fs)) {
         // was already visited; means this FS has multiple references, either from FS feature(s) or indexes or both
         if (null != multiRefFSs) {
@@ -773,9 +769,6 @@ public class CasSerializerSupport {
       boolean foundCycle = false;
       CommonList curNode = (CommonList) listNode;
       while (curNode instanceof NonEmptyList) {  // stop on end or 0
-        if (curNode.id() == 2013) {
-          System.out.println("debug, visited_not_yet_written is: " + visited_not_yet_written.contains(curNode));
-        }
         if (!visited_not_yet_written.add((TOP) curNode)) {
           foundCycle = true;
           break;
@@ -827,9 +820,9 @@ public class CasSerializerSupport {
      *          true iff the enclosing FS (addr) is a list type
      */
     private void enqueueFeatures(TOP fs) throws SAXException {
-    if (fs.id() == 65) {
-      System.out.println("debug 356");
-    }
+//    if (fs.id() == 65) {
+//      System.out.println("debug 356");
+//    }
 
       /**
        * Handle FSArrays
@@ -937,9 +930,6 @@ public class CasSerializerSupport {
     private void enqueueFSArrayElements(FSArray fsArray) throws SAXException {
        for (TOP elem : fsArray._getTheArray()) {
         if (elem != null) {
-        if (elem.id() == 3668) {
-          System.out.println("debug ");
-        }          
           enqueue(elem);
         }
       }
@@ -975,9 +965,6 @@ public class CasSerializerSupport {
     
     private void encodeFSs(final List<TOP> fss) throws Exception {
       for (TOP fs : fss) {
-        if (fs._id == 65) {
-          System.out.println("debug");
-        }
         encodeFS(fs);
       }
     }
@@ -1098,9 +1085,6 @@ public class CasSerializerSupport {
         csss.writeFsRef(fs);        
       } else {
         visited_not_yet_written.remove(fs);  // mark as written
-        if (fs._id == 65) {
-          System.out.println("debug");
-        }
         switch (typeClass) {
           case LowLevelCAS.TYPE_CLASS_FS: 
             csss.writeFs(fs, typeCode);
