@@ -71,7 +71,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("TestString", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(stringFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -91,7 +91,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_SHORT, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_SHORT, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(shortFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -111,7 +111,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("1.12", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_FLOAT, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_FLOAT, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(floatFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -131,7 +131,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("100.5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_DOUBLE, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_DOUBLE, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(doubleFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -151,7 +151,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("2000", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_LONG, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_LONG, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(longFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -171,7 +171,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("5", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_INT, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_INT, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(intFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -191,7 +191,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("true", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_BOOLEAN, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_BOOLEAN, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(boolFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -211,7 +211,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("127", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_BYTE, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_BYTE, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(byteFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -238,7 +238,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(cas.getDocumentAnnotation().getType(), featurePath
             .getType(cas.getDocumentAnnotation()));
@@ -254,7 +254,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(null, featurePath.getTypClass(cas.getDocumentAnnotation()));
+      assertEquals(null, featurePath.getTypeClass(cas.getDocumentAnnotation()));
       assertEquals(null, featurePath.getType(cas.getDocumentAnnotation()));
       assertEquals(null, featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
@@ -273,7 +273,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(stringFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -288,7 +288,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_STRING, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(stringFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -299,7 +299,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize(path);
       assertEquals(path, featurePath.getFeaturePath());
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
-      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(cas.getDocumentAnnotation().getType(), featurePath
             .getType(cas.getDocumentAnnotation()));
@@ -427,7 +427,7 @@ public class FeaturePathTest extends TestCase {
       assertEquals(cas.getDocumentText(), featurePath.ll_getValueAsString(cas.getLowLevelCAS().ll_getFSRef(
             cas.getDocumentAnnotation()), cas.getLowLevelCAS()));
       assertEquals(cas.getDocumentAnnotation().getType(), featurePath.getType(cas.getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypClass(cas.getDocumentAnnotation()));
+      assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypeClass(cas.getDocumentAnnotation()));
 
       // test fsId() on root
       path = "/:fsId()";
@@ -586,7 +586,7 @@ public class FeaturePathTest extends TestCase {
       featurePath.initialize("/refFeature:coveredText()");
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals(null, featurePath.getValueAsString(null));
-      assertEquals(null, featurePath.getTypClass(null));
+      assertEquals(null, featurePath.getTypeClass(null));
       assertEquals(null, featurePath.getType(null));
    }
 
@@ -713,7 +713,7 @@ public class FeaturePathTest extends TestCase {
       assertEquals("Test0,Test1,Test2,null", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_STRINGARRAY, featurePath
-            .getTypClass(cas.getDocumentAnnotation()));
+            .getTypeClass(cas.getDocumentAnnotation()));
       assertEquals(stringArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
 
@@ -733,7 +733,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("0,2,54", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_SHORTARRAY, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_SHORTARRAY, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(shortArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -754,7 +754,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("1.4,0.0,3434.34", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_FLOATARRAY, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_FLOATARRAY, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(floatArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -777,7 +777,7 @@ public class FeaturePathTest extends TestCase {
       assertEquals("1.4,0.0,3434.34", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_DOUBLEARRAY, featurePath
-            .getTypClass(cas.getDocumentAnnotation()));
+            .getTypeClass(cas.getDocumentAnnotation()));
       assertEquals(doubleArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
 
@@ -797,7 +797,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("14,0,343434", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_LONGARRAY, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_LONGARRAY, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(longArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -818,7 +818,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("14,0,343", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_INTARRAY, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_INTARRAY, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(intArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -841,7 +841,7 @@ public class FeaturePathTest extends TestCase {
       assertEquals("true,false,true", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_BOOLEANARRAY, featurePath
-            .getTypClass(cas.getDocumentAnnotation()));
+            .getTypeClass(cas.getDocumentAnnotation()));
       assertEquals(booleanArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
 
@@ -861,7 +861,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertEquals("23,47,11", featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(TypeClass.TYPE_CLASS_BYTEARRAY, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_BYTEARRAY, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(byteArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));
@@ -882,7 +882,7 @@ public class FeaturePathTest extends TestCase {
             .getDocumentAnnotation()));
       assertTrue(featurePath.getValueAsString(cas.getDocumentAnnotation())
             .indexOf("11") > 0);
-      assertEquals(TypeClass.TYPE_CLASS_FSARRAY, featurePath.getTypClass(cas
+      assertEquals(TypeClass.TYPE_CLASS_FSARRAY, featurePath.getTypeClass(cas
             .getDocumentAnnotation()));
       assertEquals(fsArrayFeat.getRange(), featurePath.getType(cas
             .getDocumentAnnotation()));

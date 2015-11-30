@@ -748,7 +748,6 @@ public class AnalysisEngine_implTest extends TestCase {
       fs3.setStringValue(f2, "One");
       FeatureStructure fs4 = cas.createFS(t2);
       fs4.setStringValue(f2, "Two");
-      System.out.println("debug" + fs3.toString());
       assertTrue(ind2.compare(fs3, fs4) > 0);
 
       FSIndex ind3 = irep.getIndex("Index3");

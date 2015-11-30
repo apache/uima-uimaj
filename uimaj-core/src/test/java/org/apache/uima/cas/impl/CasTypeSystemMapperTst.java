@@ -92,8 +92,8 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(1, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, 37);
-    assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
+    chkbase(m, 39);
+    assertEquals(0, m.mapTypeCodeSrc2Tgt(40));
     assertFalse(m.isEqual());
   }
 
@@ -101,11 +101,11 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(2, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, 36);
-    assertEquals( 0, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(37, m.mapTypeCodeSrc2Tgt(38));
-    assertEquals(38, m.mapTypeCodeTgt2Src(37));
-    chkfeats(m, 38);
+    chkbase(m, 38);
+    assertEquals( 0, m.mapTypeCodeSrc2Tgt(39));
+    assertEquals(39, m.mapTypeCodeSrc2Tgt(40));
+    assertEquals(40, m.mapTypeCodeTgt2Src(39));
+    chkfeats(m, 40);
     assertFalse(m.isEqual());
   }
   
@@ -113,8 +113,8 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeSystemImpl ts1 = createTs(1, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, 37);
-    assertEquals(0, m.mapTypeCodeTgt2Src(38));
+    chkbase(m, 39);
+    assertEquals(0, m.mapTypeCodeTgt2Src(40));
     assertFalse(m.isEqual());
   }
   
@@ -122,11 +122,11 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeSystemImpl ts1 = createTs(2, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, 36);
-    assertEquals(38, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(37, m.mapTypeCodeTgt2Src(38));
-    assertEquals(0, m.mapTypeCodeTgt2Src(37));
-    chkfeats(m, 37);
+    chkbase(m, 38);
+    assertEquals(40, m.mapTypeCodeSrc2Tgt(39));
+    assertEquals(39, m.mapTypeCodeTgt2Src(40));
+    assertEquals(0, m.mapTypeCodeTgt2Src(39));
+    chkfeats(m, 39);
     assertFalse(m.isEqual());
   }
   
@@ -134,9 +134,9 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeSystemImpl ts1 = createTs(3, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(0, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, 36);
-    assertEquals( 0, m.mapTypeCodeSrc2Tgt(37));
-    assertEquals(0, m.mapTypeCodeSrc2Tgt(38));
+    chkbase(m, 38);
+    assertEquals( 0, m.mapTypeCodeSrc2Tgt(39));
+    assertEquals(0, m.mapTypeCodeSrc2Tgt(40));
     assertFalse(m.isEqual());
   }
 
@@ -144,9 +144,9 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeSystemImpl ts1 = createTs(0, 0x1ffff, 0x1ffff);
     TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff); 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
-    chkbase(m, 36);
-    assertEquals( 0, m.mapTypeCodeTgt2Src(37));
-    assertEquals(0, m.mapTypeCodeTgt2Src(38));
+    chkbase(m, 38);
+    assertEquals( 0, m.mapTypeCodeTgt2Src(39));
+    assertEquals(0, m.mapTypeCodeTgt2Src(40));
     assertFalse(m.isEqual());
   }
 
@@ -157,12 +157,12 @@ public class CasTypeSystemMapperTst extends TestCase {
       TypeSystemImpl ts2 = createTs(3, 0x1ffff - mf, 0x1ffff);  
       CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
-      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
-      assertEquals(37, m.mapTypeCodeTgt2Src(37));
-      assertEquals(38, m.mapTypeCodeTgt2Src(38));
-      chkfeats(m, 38);
-      chkMissingFeats1(m, 37, mf);    
+      assertEquals(39, m.mapTypeCodeSrc2Tgt(39));
+      assertEquals(40, m.mapTypeCodeSrc2Tgt(40));
+      assertEquals(39, m.mapTypeCodeTgt2Src(39));
+      assertEquals(40, m.mapTypeCodeTgt2Src(40));
+      chkfeats(m, 40);
+      chkMissingFeats1(m, 39, mf);    
       assertFalse(m.isEqual());
    } 
   }
@@ -173,12 +173,12 @@ public class CasTypeSystemMapperTst extends TestCase {
       TypeSystemImpl ts2 = createTs(3, 0x1ffff, 0x1ffff - mf);  
       CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
-      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
-      assertEquals(37, m.mapTypeCodeTgt2Src(37));
-      assertEquals(38, m.mapTypeCodeTgt2Src(38));
-      chkfeats(m, 37);
-      chkMissingFeats1(m, 38, mf);      
+      assertEquals(39, m.mapTypeCodeSrc2Tgt(39));
+      assertEquals(40, m.mapTypeCodeSrc2Tgt(40));
+      assertEquals(39, m.mapTypeCodeTgt2Src(39));
+      assertEquals(40, m.mapTypeCodeTgt2Src(40));
+      chkfeats(m, 39);
+      chkMissingFeats1(m, 40, mf);      
       assertFalse(m.isEqual());
     }
   }
@@ -189,12 +189,12 @@ public class CasTypeSystemMapperTst extends TestCase {
       TypeSystemImpl ts1 = createTs(3, 0x1ffff - mf, 0x1ffff); // feat 8
       CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);
       chkbase(m);
-      assertEquals(37, m.mapTypeCodeSrc2Tgt(37));
-      assertEquals(38, m.mapTypeCodeSrc2Tgt(38));
-      assertEquals(37, m.mapTypeCodeTgt2Src(37));
-      assertEquals(38, m.mapTypeCodeTgt2Src(38));
-      chkfeats(m, 38);
-      chkMissingFeats2(m, 37, mf);
+      assertEquals(39, m.mapTypeCodeSrc2Tgt(39));
+      assertEquals(40, m.mapTypeCodeSrc2Tgt(40));
+      assertEquals(39, m.mapTypeCodeTgt2Src(39));
+      assertEquals(40, m.mapTypeCodeTgt2Src(40));
+      chkfeats(m, 40);
+      chkMissingFeats2(m, 39, mf);
       assertFalse(m.isEqual());
     }
   }

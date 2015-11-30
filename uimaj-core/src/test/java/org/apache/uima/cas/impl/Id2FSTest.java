@@ -70,22 +70,11 @@ public class Id2FSTest extends TestCase {
     Thread.sleep(10);  // in case gc needs time to finish
     assertTrue(fsh == cas.getFsFromId(2));
     
-    for (int i = 1; i < 20; i++) {
+    for (int i = 3; i < 21; i++) {  //TOP:21 is held onto by the cas svd cache; might change if we don't cache non corruptable FSs 
       TOP fs = null; // for debugging
       boolean caught = false;
       try {
-        fs = cas.getFsFromId_checked(i + 2);
-      } catch (LowLevelException e) {
-        caught = true;
-      }
-      if (!caught) {
-        System.out.println("debug " + fs);
-      }
-      assertTrue(caught);
-      
-      caught = false;
-      try {
-        fs = cas.getFsFromId_checked(i + 2);
+        fs = cas.getFsFromId_checked(i);
       } catch (LowLevelException e) {
         caught = true;
       }
@@ -112,7 +101,7 @@ public class Id2FSTest extends TestCase {
     // remove 20 of them
     System.gc();
     Thread.sleep(10);  // in case gc needs time to finish 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 19; i++) { // last TOP is held by cas.svd.cache_not_in_index
       TOP fs = id2fs.get(i + 2);
       assertNull(fs);
     }    
