@@ -36,4 +36,21 @@ public interface CommonArray extends FeatureStructure {
    * @return A Java array copy of this array.
    */
   String[] toStringArray();
+  
+  /**
+   * @return a comma-separated string of the string values of the elements of the array
+   */
+  default String getValuesAsCommaSeparatedString() { 
+    String [] sa = toStringArray();
+    StringBuilder sb = new StringBuilder();
+    boolean isFirst = true;
+    for (String s : sa) {
+      if (!isFirst) {
+        sb.append(',');
+      }
+      isFirst = false;
+      sb.append(s);
+    }
+    return sb.toString();
+  }
 }
