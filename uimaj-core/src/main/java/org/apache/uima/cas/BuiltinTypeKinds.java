@@ -10,9 +10,7 @@ public class BuiltinTypeKinds {
   private static final Set<String> primitiveTypeNames = new HashSet<String>();
 
   public static final Set<String> creatableArrays = new HashSet<String>();
-  
-  public static final Set<String> builtinLists = new HashSet<String>();
-  
+   
   public static final Set<String> nonCreatablePrimitives = new HashSet<String>();
 
   /**
@@ -55,15 +53,11 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_JAVA_OBJECT_ARRAY
         );
         
-    Misc.addAll(builtinLists, 
+    Misc.addAll(creatableBuiltinJCas, 
         CAS.TYPE_NAME_EMPTY_FLOAT_LIST,
         CAS.TYPE_NAME_EMPTY_FS_LIST,
         CAS.TYPE_NAME_EMPTY_INTEGER_LIST,
         CAS.TYPE_NAME_EMPTY_STRING_LIST,
-        CAS.TYPE_NAME_FLOAT_LIST,
-        CAS.TYPE_NAME_FS_LIST,
-        CAS.TYPE_NAME_INTEGER_LIST,
-        CAS.TYPE_NAME_STRING_LIST,
         CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST,
         CAS.TYPE_NAME_NON_EMPTY_FS_LIST,
         CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST,
@@ -87,7 +81,6 @@ public class BuiltinTypeKinds {
     Misc.addAll(nonCreatableTypesAndBuiltinArrays, CAS.TYPE_NAME_SOFA);
     
     creatableBuiltinJCas.addAll(creatableArrays);
-    creatableBuiltinJCas.addAll(builtinLists);
     Misc.addAll(creatableBuiltinJCas, 
         CAS.TYPE_NAME_TOP,
         CAS.TYPE_NAME_ANNOTATION_BASE,
