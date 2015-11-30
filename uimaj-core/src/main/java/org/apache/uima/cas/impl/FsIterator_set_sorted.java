@@ -29,7 +29,7 @@ import org.apache.uima.jcas.cas.TOP;
 
 class FsIterator_set_sorted<T extends TOP> extends FsIterator_singletype<T> {
 
-  // We use FeatureStructure instead of T because the 
+  // We use TOP instead of T because the 
   // signature of getting a "matching" element limits the type to the declared type, and 
   // in UIMA we can use, say an Annotation instance as a moveTo arg, for a navSet of some subtype of Annotation.
   final private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
