@@ -162,7 +162,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     c = _typeImpl.nbrOfUsedRefDataSlots;
     _refData = (c == 0) ? null : new Object[c];
     
-    _id = _casView.setId2fs(this);   
+    _id = _casView.setId2fs(this); 
+    _casView.setCacheNotInIndex(this);
   }
   
   
@@ -334,7 +335,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     // this case will only happen if we can create non FSArrays
     //   of particular types
 
-    System.out.println("Debug - should never hit this");
+    assert(false);  //System.out.println("Debug - should never hit this");
     return false;
     
 //    return (range.getComponentType() == ((TypeImpl)(vc._typeImpl)).getComponentType());
@@ -679,11 +680,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     TOP fs = _casView.createFS(_typeImpl);
     TOP srcFs = (TOP) this;
     
-    final int sofaFeatCode = TypeSystemImpl.annotBaseSofaFeatCode;
-
     /* copy all the feature values except the sofa ref which is already set as part of creation */
-    for (Feature feat : _typeImpl.getFeatures()) {
-      _casView.copyFeature(srcFs, feat, fs, feat);
+    for (FeatureImpl feat : _typeImpl.getFeatureImpls()) {
+      CASImpl.copyFeature(srcFs, feat, fs);
     }   // end of for loop
     return fs;
   }
