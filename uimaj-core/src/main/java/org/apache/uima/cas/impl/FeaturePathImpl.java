@@ -52,15 +52,19 @@ class FeaturePathImpl implements FeaturePath {
   private static final String FUNCTION_NAME_COVERED_TEXT  = "coveredtext()";
   private static final String FUNCTION_NAME_ID            = "fsid()";
   private static final String FUNCTION_NAME_TYPE_NAME     = "typename()";
+  
+  private static final TOP FEATURE_PATH_FAILED = new TOP();
 
   /**
    * The path's builtInFunction, or 0
    */
   private byte                builtInFunction             = 0;
+  private String originalBuiltInName = null;
 
   // featurePath element names
   final private ArrayList<String> featurePathElementNames = new ArrayList<String>();
   
+  private boolean pathStartsWithSlash = true;
   /**
    * FeatureImpl array corresponding to feature path names.
    * This can change for each evaluation of this FeaturePath instance against a
@@ -72,6 +76,7 @@ class FeaturePathImpl implements FeaturePath {
   final private ArrayList<FeatureImpl>  boundFeatures = new ArrayList<FeatureImpl>();
   
   private FeatureImpl targetFeature;  // set to the last value of boundFeatures
+  private TypeImpl    targetType;     // set to type of range of last found feature, works when there are no features
 
   /**
    * The Type used as the starting type for path validation
@@ -137,6 +142,7 @@ class FeaturePathImpl implements FeaturePath {
   public void initialize(String featurePath) throws CASException {
 
     this.builtInFunction = NO_BUILT_IN_FUNCTION;
+    this.originalBuiltInName = null;
 
     // throw exception if featurePath is null
     if (featurePath == null) {
@@ -144,6 +150,8 @@ class FeaturePathImpl implements FeaturePath {
           new Object[] { featurePath, "null for a feature path" });
     }
 
+    pathStartsWithSlash = featurePath.startsWith("/"); // v2 compatibility 
+    
     // check featurePath for invalid character sequences
     if (featurePath.indexOf("//") > -1) { // two forward slashes in a
                                                      // row is invalid
@@ -167,10 +175,13 @@ class FeaturePathImpl implements FeaturePath {
         if ((index = token.indexOf(BUILT_IN_FUNCTION_SEPARATOR)) != -1) {
           if (index > 0) {
             // we have a built-in function that is separated with a ":"
-            this.featurePathElementNames.add(token.substring(0, index));
+            if (index > 0) {
+              this.featurePathElementNames.add(token.substring(0, index));
+            }
           }
           // get built-in function
-          String builtInFunctionName = token.substring(index + 1).toLowerCase();
+          originalBuiltInName = token.substring(index + 1);
+          String builtInFunctionName = originalBuiltInName.toLowerCase();
           if (builtInFunctionName.equals(FUNCTION_NAME_COVERED_TEXT)) {
             this.builtInFunction = FUNCTION_COVERED_TEXT;
           } else if (builtInFunctionName.equals(FUNCTION_NAME_ID)) {
@@ -255,7 +266,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Boolean getBooleanValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getBooleanValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getBooleanValue(targetFeature);
   }
     
   /*
@@ -267,7 +278,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Byte getByteValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getByteValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getByteValue(targetFeature);
   }    
 
   /*
@@ -279,7 +290,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Double getDoubleValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getDoubleValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getDoubleValue(targetFeature);
   }    
 
   /*
@@ -291,7 +302,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Float getFloatValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getFloatValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getFloatValue(targetFeature);
   }    
 
   /*
@@ -303,7 +314,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public FeatureStructure getFSValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null) ? null : tgtFs;
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs;
   }    
   
   /*
@@ -315,7 +326,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Integer getIntValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getIntValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getIntValue(targetFeature);
   }    
   
   /*
@@ -327,7 +338,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Long getLongValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getLongValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getLongValue(targetFeature);
   }    
 
   /*
@@ -339,7 +350,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Short getShortValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getShortValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getShortValue(targetFeature);
   }    
 
   /*
@@ -351,7 +362,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public String getStringValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getStringValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getStringValue(targetFeature);
   }    
 
   /*
@@ -364,7 +375,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Object getJavaObjectValue(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == null || targetFeature == null) ? null : tgtFs.getJavaObjectValue(targetFeature);
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getJavaObjectValue(targetFeature);
   }    
 
   /*
@@ -376,7 +387,7 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public Type getType(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs); 
-    return (targetFeature == null) ? null : targetFeature.getRange();
+    return (tgtFs == FEATURE_PATH_FAILED) ? null : targetType;
   }    
     
   /*
@@ -387,10 +398,8 @@ class FeaturePathImpl implements FeaturePath {
    */
   @Override
   public TypeClass getTypeClass(FeatureStructure fs) {
-    TOP tgtFs = getTargetFs((TOP) fs); 
-    return targetFeature == null 
-        ? null 
-        : TypeClass.values()[TypeSystemImpl.getTypeClass(targetFeature.getRangeImpl())];
+    TypeImpl type = (TypeImpl) getType(fs); 
+    return (type == null) ? null : TypeClass.values()[TypeSystemImpl.getTypeClass(type)];
   }    
 
   /*
@@ -414,50 +423,53 @@ class FeaturePathImpl implements FeaturePath {
   @Override
   public String getValueAsString(FeatureStructure fs) {
     TOP tgtFs = getTargetFs((TOP) fs);
-    if (tgtFs == null) {
+    if (tgtFs == FEATURE_PATH_FAILED) {
       return null;
     }
     
-    if (targetFeature != null) {
-      TypeImpl targetRange = targetFeature.getRangeImpl();
-      switch (TypeSystemImpl.getTypeClass(targetRange)) {
-      case LowLevelCAS.TYPE_CLASS_INVALID:
-        return null;
-        
-      case LowLevelCAS.TYPE_CLASS_STRING:
-      case LowLevelCAS.TYPE_CLASS_BOOLEAN:
-      case LowLevelCAS.TYPE_CLASS_BYTE:
-      case LowLevelCAS.TYPE_CLASS_SHORT:
-      case LowLevelCAS.TYPE_CLASS_INT:
-      case LowLevelCAS.TYPE_CLASS_LONG:
-      case LowLevelCAS.TYPE_CLASS_FLOAT:
-      case LowLevelCAS.TYPE_CLASS_DOUBLE:
-      case LowLevelCAS.TYPE_CLASS_JAVAOBJECT:
-        verifyNoBuiltInFunction();
-        return tgtFs.getFeatureValueAsString(targetFeature);
-          
-      case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY:
-      case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
-      case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
-      case LowLevelCAS.TYPE_CLASS_INTARRAY:
-      case LowLevelCAS.TYPE_CLASS_LONGARRAY:
-      case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
-      case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
-      case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
-      case LowLevelCAS.TYPE_CLASS_JAVAOBJECTARRAY:
-      case LowLevelCAS.TYPE_CLASS_FSARRAY:
-        if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
-          return evaluateBuiltInFunction(tgtFs);
-        }
-        return ((CommonArray)tgtFs).getValuesAsCommaSeparatedString();
-      
-      case LowLevelCAS.TYPE_CLASS_FS: 
-        if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
-          return evaluateBuiltInFunction(tgtFs);
-        }
-        return tgtFs.toString();
-      } // end of switch
+    if (targetType == null) {
+      return null;
     }
+    switch (TypeSystemImpl.getTypeClass(targetType)) {
+    case LowLevelCAS.TYPE_CLASS_INVALID:
+      return null;
+      
+    case LowLevelCAS.TYPE_CLASS_STRING:
+    case LowLevelCAS.TYPE_CLASS_BOOLEAN:
+    case LowLevelCAS.TYPE_CLASS_BYTE:
+    case LowLevelCAS.TYPE_CLASS_SHORT:
+    case LowLevelCAS.TYPE_CLASS_INT:
+    case LowLevelCAS.TYPE_CLASS_LONG:
+    case LowLevelCAS.TYPE_CLASS_FLOAT:
+    case LowLevelCAS.TYPE_CLASS_DOUBLE:
+    case LowLevelCAS.TYPE_CLASS_JAVAOBJECT:
+      verifyNoBuiltInFunction();
+      return tgtFs.getFeatureValueAsString(targetFeature);
+        
+    case LowLevelCAS.TYPE_CLASS_BOOLEANARRAY:
+    case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
+    case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
+    case LowLevelCAS.TYPE_CLASS_INTARRAY:
+    case LowLevelCAS.TYPE_CLASS_LONGARRAY:
+    case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
+    case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
+    case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
+    case LowLevelCAS.TYPE_CLASS_JAVAOBJECTARRAY:
+    case LowLevelCAS.TYPE_CLASS_FSARRAY:
+      if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
+        return evaluateBuiltInFunction(tgtFs);
+      }
+      return ((CommonArray)tgtFs).getValuesAsCommaSeparatedString();
+    
+    case LowLevelCAS.TYPE_CLASS_FS: 
+      if (tgtFs == null) {
+        return null;
+      }
+      if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
+        return evaluateBuiltInFunction(tgtFs);
+      }
+      return tgtFs.toString();
+    } // end of switch
     return null;
   }
 
@@ -529,11 +541,13 @@ class FeaturePathImpl implements FeaturePath {
    *         
    */
   private TOP getTargetFs(TOP fs) {
-
-    if (fs == null) {
-      return null;
+ 
+    if (null == fs) {
+      return FEATURE_PATH_FAILED;
     }
-    if (this.featurePathElementNames.size() == 0) {
+    
+    if (this.featurePathElementNames.size() == 0) { 
+      targetType = fs._typeImpl;
       return fs;
     }
     
@@ -552,21 +566,29 @@ class FeaturePathImpl implements FeaturePath {
 
     // resolve feature path value
     for (int i = 0; i < this.featurePathElementNames.size(); i++) {
+      if (currentFs == null) {
+        return FEATURE_PATH_FAILED;
+      }
       
       if (i < this.boundFeatures.size()) {
-        targetFeature = this.boundFeatures.get(i);  
-      } else {
-        targetFeature = currentFs._typeImpl.getFeatureByBaseName(featurePathElementNames.get(i));
-        if (targetFeature == null) {
-          throw new CASRuntimeException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_FEATURE_NOT_DEFINED", 
-              new Object[] { getFeaturePathString(), currentFs._typeImpl.getName(), this.featurePathElementNames.get(i) });
+        targetFeature = this.boundFeatures.get(i);
+        /*
+         * It is possible that the previously bound feature isn't valid for this FS.  
+         * This can happen if a type hierarchy defines 2 different features for two different subtypes of type Tt
+         * with the same feature name. 
+         * 
+         * So we check if this bound feature is appropriate for the current FS
+         */
+        if ( ! ((TypeImpl)targetFeature.getDomain()).subsumes(currentFs._typeImpl)) {
+          setTargetFeature(currentFs, i);
         }
-        boundFeatures.add(targetFeature);  // cache for future use
+      } else {
+        setTargetFeature(currentFs, i);
       }
             
       // switch feature type class
 //        currentRangeTypeCode = llCas.ll_getTypeSystem().ll_getRangeType(targetFeatureCode);
-      rangeType = targetFeature.getRangeImpl();
+      targetType = rangeType = targetFeature.getRangeImpl();
       rangeTypeClass = TypeSystemImpl.getTypeClass(rangeType);
      
       switch (rangeTypeClass) {
@@ -597,6 +619,20 @@ class FeaturePathImpl implements FeaturePath {
       case LowLevelCAS.TYPE_CLASS_FS:
         currentFs = currentFs.getFeatureValue(targetFeature);
         if (currentFs == null) {
+          if (i == (this.featurePathElementNames.size() - 1)) {
+            // at the last element, keep targetType == to the range type
+          } else {
+            /*
+             * not at the last element, so terminating the feature path prematurely.
+             * There are 2 cases:
+             *   - the PathValid is POSSIBLE 
+             *   - the PathValid is ALWAYS 
+             */
+            PathValid pathValid = TypeSystemUtils.isPathValid(this.boundBaseType, this.featurePathElementNames);
+            if (pathValid == PathValid.POSSIBLE) {
+              targetType = null;   // following v2 design here
+            }
+          }
           return null;
         }  
         break;
@@ -607,6 +643,15 @@ class FeaturePathImpl implements FeaturePath {
     return currentFs;
   }
 
+  private void setTargetFeature(TOP currentFs, int i) {
+    targetFeature = currentFs._typeImpl.getFeatureByBaseName(featurePathElementNames.get(i));
+    if (targetFeature == null) {
+      throw new CASRuntimeException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_FEATURE_NOT_DEFINED", 
+          new Object[] { getFeaturePathString(), currentFs._typeImpl.getName(), this.featurePathElementNames.get(i) });
+    }
+    boundFeatures.add(targetFeature);  // cache for future use
+  }
+  
   private void verifyNoBuiltInFunction() {
     if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
       throwBuiltInFunctionException(targetFeature.getRangeImpl().getName());
@@ -615,18 +660,22 @@ class FeaturePathImpl implements FeaturePath {
   
   private String getFeaturePathString() {
     StringBuilder sb = new StringBuilder();
-    for (String s : featurePathElementNames) {
-      sb.append('/').append(s);
-    }
-    if (this.builtInFunction > 0) {
-      sb.append(':');
-      switch (this.builtInFunction) {
-      case FUNCTION_COVERED_TEXT: sb.append(FUNCTION_NAME_COVERED_TEXT); break;
-      case FUNCTION_ID          : sb.append(FUNCTION_NAME_ID          ); break;
-      case FUNCTION_TYPE_NAME   : sb.append(FUNCTION_NAME_TYPE_NAME   ); break;
-      default: assert(false);
+    if (featurePathElementNames.size() == 0) {
+      if (pathStartsWithSlash) {
+        sb.append('/');
+      }
+    } else {    
+      for (String s : featurePathElementNames) {
+        sb.append('/').append(s);
       }
     }
+    appendBuiltInFunction(sb);
     return sb.toString();
+  }
+  
+  private void appendBuiltInFunction(StringBuilder sb) {
+    if (this.builtInFunction > 0) {
+      sb.append(':').append(originalBuiltInName);  // because capitalization could be different
+    }    
   }
 }
