@@ -45,6 +45,7 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.function.Runnable_withSaxException;
+import org.apache.uima.cas.impl.XmiSerializationSharedData.NameMultiValue;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
@@ -596,9 +597,6 @@ public class XmiCasDeserializer {
       		    fs = casBeingFilled.createFS(currentType);
             }
           }  // not array
-          if (xmiId == 65) {
-            System.out.println("debug");
-          }
           readFS(fs, attrs, IS_NEW_FS);
       	} else {  //preexisting
       		if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
@@ -853,7 +851,7 @@ public class XmiCasDeserializer {
       // before looping over all features for this FS, remove this FS if in any index.
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
-      if (!isNewFs) {   
+      if (!isNewFs || fs._getTypeCode() == TypeSystemImpl.docTypeCode) {   
         casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(fs, casBeingFilled.getAddbackSingle());
         // else clause not needed because caller does ll_createFS which sets this anyways
 //      } else {  
@@ -886,7 +884,7 @@ public class XmiCasDeserializer {
           continue;
         }
 
-        int featCode = handleFeature(type, fs, attrName, attrValue, isNewFs);
+        int featCode = handleFeatureFromName(type, fs, attrName, attrValue, isNewFs);
         //if processing delta cas preexisting FS, keep track of features that have
         //been deserialized.
         if (this.featsSeen != null && featCode != -1) {
@@ -894,7 +892,7 @@ public class XmiCasDeserializer {
         }
       }  // end of all features loop
       
-      if (!isNewFs) {
+      if (!isNewFs || fs._getTypeCode() == TypeSystemImpl.docTypeCode) {
         casBeingFilled.addbackSingle(fs);
       }
       
@@ -933,7 +931,7 @@ public class XmiCasDeserializer {
      * @return feature code or -1 if no feature in this type system
      * @throws SAXException if Type doesn't have the feature, and we're not in lenient mode
      */
-    private int handleFeature(final TypeImpl type, TOP fs, String featName, String featVal, final boolean isNewFS) throws SAXException {
+    private int handleFeatureFromName(final TypeImpl type, TOP fs, String featName, String featVal, final boolean isNewFS) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!this.lenient) {
@@ -962,12 +960,8 @@ public class XmiCasDeserializer {
       	  return feat.getCode();
       	}
       }
-      if ((fs instanceof AnnotationBase) && 
-          (feat.getCode() == TypeSystemImpl.annotBaseSofaFeatCode)) {
-        // the sofa feature is set when the FS is created, can't be set separately
-        return feat.getCode();
-      }
-      handleFeature(fs, feat, featVal);
+
+      handleFeatSingleValue(fs, feat, featVal);
       return feat.getCode();
     }
 
@@ -981,7 +975,7 @@ public class XmiCasDeserializer {
      * @return the feature code of the featName arg, or -1 if feature not found (oots) and lenient
      * @throws SAXException
      */
-    private int handleFeature(final Type type, TOP fs, String featName, List<String> featVals) throws SAXException {
+    private int handleFeatMultiValueFromName(final Type type, TOP fs, String featName, List<String> featVals) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!this.lenient) {
@@ -992,7 +986,7 @@ public class XmiCasDeserializer {
         }
         return -1;
       }
-      handleFeature(fs, feat, featVals);
+      handleFeatMultiValue(fs, feat, featVals);
       return feat.getCode();
     }
 
@@ -1008,7 +1002,12 @@ public class XmiCasDeserializer {
      *          string representation of the feature value
      * @throws SAXException - 
      */
-    private void handleFeature(TOP fs, FeatureImpl fi, String featVal) throws SAXException {
+    private void handleFeatSingleValue(TOP fs, FeatureImpl fi, String featVal) throws SAXException {
+      if ((fs instanceof AnnotationBase) && (fi.getCode() == TypeSystemImpl.annotBaseSofaFeatCode)) {
+        // the sofa feature is set when the FS is created, can't be set separately
+        return;
+      }
+      
       final int rangeClass = fi.rangeTypeClass;  
     
       switch (rangeClass) {
@@ -1056,7 +1055,7 @@ public class XmiCasDeserializer {
             }
           } else {  // not ByteArray, but encoded locally
             String[] arrayVals = parseArray(featVal);
-            handleFeature(fs, fi, Arrays.asList(arrayVals));
+            handleFeatMultiValue(fs, fi, Arrays.asList(arrayVals));
           }
           break;
         }
@@ -1071,7 +1070,7 @@ public class XmiCasDeserializer {
             deserializeFsRef(featVal, fi, fs);
           } else { // do the multivalued property deserialization, like arrays
             String[] arrayVals = parseArray(featVal);
-            handleFeature(fs, fi, Arrays.asList(arrayVals));
+            handleFeatMultiValue(fs, fi, Arrays.asList(arrayVals));
           }
           break;
         }
@@ -1126,7 +1125,7 @@ public class XmiCasDeserializer {
      *          List of Strings, each String representing one value for the feature
      * @throws SAXException - 
      */
-    private void handleFeature(TOP fs, FeatureImpl fi, List<String> featVals) throws SAXException {
+    private void handleFeatMultiValue(TOP fs, FeatureImpl fi, List<String> featVals) throws SAXException {
       final int rangeCode = fi.rangeTypeClass; 
       switch (rangeCode) {
         case LowLevelCAS.TYPE_CLASS_INT:
@@ -1144,7 +1143,7 @@ public class XmiCasDeserializer {
                     "multiple_values_unexpected",
                     new Object[] { fi.getName() }), locator);
           } else {
-            handleFeature(fs, fi, featVals.get(0));
+            handleFeatSingleValue(fs, fi, featVals.get(0));
           }
           break;
         case LowLevelCAS.TYPE_CLASS_INTARRAY:
@@ -1217,6 +1216,10 @@ public class XmiCasDeserializer {
     
     /**
      * Create or update an array in the CAS
+     * 
+     * If the array is an FSArray, and the elements are not yet deserialized, 
+     *   a lambda expression is put on a "todo" list to be executed after all the FSs are deserialized,
+     *   to set the value later.
      * 
      * @param arrayType CAS type for the array
      * @param values List of strings, each representing an element in the array
@@ -1626,7 +1629,10 @@ public class XmiCasDeserializer {
               for (Map.Entry<String, List<String>> entry : this.multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
                 List<String> featVals = entry.getValue();
-                addOutOfTypeSystemFeature((outOfTypeSystemElement == null)? deferredFsElement : outOfTypeSystemElement, featName, featVals);
+                XmiSerializationSharedData.addOutOfTypeSystemFeature(
+                    (outOfTypeSystemElement == null) ? deferredFsElement : outOfTypeSystemElement, 
+                    featName, 
+                    featVals);
               }
             }
             this.outOfTypeSystemElement = this.deferredFsElement = null;
@@ -1652,7 +1658,7 @@ public class XmiCasDeserializer {
               for (Map.Entry<String, List<String>> entry : this.multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
                 List<String> featVals = entry.getValue();
-                int featcode = handleFeature(currentType, currentFs, featName, featVals);
+                int featcode = handleFeatMultiValueFromName(currentType, currentFs, featName, featVals);
                 if (featcode != -1 && this.featsSeen != null ) {
                 	this.featsSeen.add(featcode);
                 }
@@ -1979,12 +1985,9 @@ public class XmiCasDeserializer {
                deferredFs.elementName.qName,
                deferredFs.getAttributes());
         try {
-          isDoingDeferredChildElements = true;
-        
-          for (XmlElementNameAndContents childElement : deferredFs.childElements) {
-             // true arg says is new FS, which it must be (otherwise the xmiId would have been found earlier and this
-             // item not deferred
-            int featcode = handleFeature(currentType, currentFs, childElement.name.qName, childElement.contents, true);
+          isDoingDeferredChildElements = true;        
+          for (NameMultiValue nmv : deferredFs.multiValuedFeatures) {
+            int featcode = handleFeatMultiValueFromName(currentType, currentFs, nmv.name, nmv.values);            
             if (featcode != -1 && this.featsSeen != null ) {
               this.featsSeen.add(featcode);
             }
@@ -2342,18 +2345,6 @@ public class XmiCasDeserializer {
     return uimaNamespace + localName;
   }
   
-  /*
-   * Adds a feature to the out-of-typesystem features list.
-   * @param ootsElem object to which to add the feature
-   * @param featName name of feature
-   * @param featVals feature values, as a list of strings
-   */
-  private static void addOutOfTypeSystemFeature(OotsElementData ootsElem, String featName, List<String> featVals) {
-    XmlElementName elemName = new XmlElementName(null,featName,featName);
-    for (String val : featVals) {
-      ootsElem.childElements.add(new XmlElementNameAndContents(elemName, val));
-    }
-  } 
   
   /*
    * Adds a feature sturcture to the out-of-typesystem data.  Also sets the

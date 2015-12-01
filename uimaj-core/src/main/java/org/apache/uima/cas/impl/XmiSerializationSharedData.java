@@ -272,12 +272,16 @@ public class XmiSerializationSharedData {
       oed = new OotsElementData(null, null, -1, -1);
       this.ootsFeatures.put(fs, oed);
     }
-    Iterator<String> iter = featVals.iterator();
+    addOutOfTypeSystemFeature(oed, featName, featVals);
+  }
+  
+  public static void addOutOfTypeSystemFeature(OotsElementData oed, String featName, List<String> featVals) {
+    oed.multiValuedFeatures.add(new NameMultiValue(featName, featVals));
     XmlElementName elemName = new XmlElementName(null,featName,featName);
-    while (iter.hasNext()) {
-      oed.childElements.add(new XmlElementNameAndContents(elemName, iter.next()));
-    }
-  }  
+    for (String val : featVals) {
+      oed.childElements.add(new XmlElementNameAndContents(elemName, val));
+    }    
+  }
   
   /**
    * Gets information about out-of-typesystem features that belong to an
@@ -420,7 +424,9 @@ public class XmiSerializationSharedData {
      * List of XmlElementNameAndContents objects each describing one of the
      * child elements representing features of this out-of-typesystem element.
      */
-    final List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
+    final List<XmlElementNameAndContents> childElements = new ArrayList<>();
+    
+    final List<NameMultiValue> multiValuedFeatures = new ArrayList<>();
     
     final int lineNumber;
     
@@ -509,6 +515,15 @@ public class XmiSerializationSharedData {
     XmiArrayElement(int index, String xmiId) {
       this.index = index;
       this.xmiId = xmiId;
+    }
+  }
+  
+  public static class NameMultiValue {
+    public final String name;
+    public final List<String> values;
+    NameMultiValue(String name, List<String> values) {
+      this.name = name;
+      this.values = values;
     }
   }
 }
