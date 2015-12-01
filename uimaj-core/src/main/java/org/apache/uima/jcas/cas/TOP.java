@@ -39,7 +39,7 @@ public class TOP extends FeatureStructureImplC {
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
    */
-	public final static int typeIndexID = JCasRegistry.register(AnnotationBase.class);  
+	public final static int typeIndexID = JCasRegistry.register(TOP.class);  
 
 	public final static int type = typeIndexID;
 
