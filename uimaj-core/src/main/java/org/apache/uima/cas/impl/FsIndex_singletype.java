@@ -46,19 +46,17 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
   // A reference to the low-level CAS.
   final protected CASImpl casImpl;
   
-  private FSIndexComparatorImpl comparatorForIndexSpecs;
-
-  private boolean isInitialized = false;
+  final private FSIndexComparatorImpl comparatorForIndexSpecs;
 
   /***********  Info about Index Comparator (not used for bag ***********
    * Index into these arrays is the key number (indexes can have multiple keys)
    */
   // For each key, the int code of the type of that key.
-  private Object[] keys;   // either a FeatImpl or a LinearTypeOrder;
+  final private Object[] keys;   // either a FeatImpl or a LinearTypeOrder;
 
-  private int[] keyTypeCodes;
+  final private int[] keyTypeCodes;
   // For each key, the comparison to use.
-  private boolean[] isReverse;    // true = reverse, false = standard
+  final private boolean[] isReverse;    // true = reverse, false = standard
 
   final private TypeImpl type; // The type of this
   
@@ -79,6 +77,10 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
     this.casImpl = null;
     this.type = null;
     this.typeCode = 0;
+    comparatorForIndexSpecs = null;
+    keys = null;
+    keyTypeCodes = null;
+    isReverse = null;
   }
 
   /**
@@ -87,12 +89,36 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
    * @param type -
    * @param indexType -
    */
-  protected FsIndex_singletype(CASImpl cas, Type type, int indexType) {
+  protected FsIndex_singletype(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super();
     this.indexType = indexType;
     this.casImpl = cas;
     this.type = (TypeImpl) type;
     this.typeCode = ((TypeImpl)type).getCode();
+    FSIndexComparatorImpl compForIndexSpecs = (FSIndexComparatorImpl) comparatorForIndexSpecs;
+    this.comparatorForIndexSpecs = compForIndexSpecs.copy();
+    
+    // Initialize the comparator info.
+    final int nKeys = this.comparatorForIndexSpecs.getNumberOfKeys();
+    this.keys = new Object[nKeys];
+    this.keyTypeCodes = new int[nKeys];
+    this.isReverse = new boolean[nKeys];
+    
+    if (!this.comparatorForIndexSpecs.isValid()) {
+      return;
+    }
+
+    for (int i = 0; i < nKeys; i++) {
+      
+      final Object k =  (comparatorForIndexSpecs.getKeyType(i) == FSIndexComparator.FEATURE_KEY)
+                     ? (FeatureImpl) this.comparatorForIndexSpecs.getKeyFeature(i)
+                     : this.comparatorForIndexSpecs.getKeyTypeOrder(i);
+      keys[i] = k; 
+      if (k instanceof FeatureImpl) {
+        keyTypeCodes[i] = ((TypeImpl)((FeatureImpl)k).getRange()).getCode();
+      }
+      isReverse[i] = this.comparatorForIndexSpecs.getKeyComparator(i) == FSIndexComparator.REVERSE_STANDARD_COMPARE;
+    }
   }
   
   /**
@@ -142,42 +168,6 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
 
   public int[] getDetectIllegalIndexUpdates() {
     return this.casImpl.indexRepository.detectIllegalIndexUpdates;
-  }
-  /**
-   * Comparators - 
-   *   These are converted to use fs instances
-   * @param comp
-   * @return
-   */
-  boolean init(FSIndexComparator comp) {
-    if (this.isInitialized) {
-      return false;
-    }
-    FSIndexComparatorImpl compForIndexSpecs = (FSIndexComparatorImpl) comp;
-    this.comparatorForIndexSpecs = compForIndexSpecs.copy();
-    if (!this.comparatorForIndexSpecs.isValid()) {
-      return false;
-    }
-    
-    // Initialize the comparator info.
-    final int nKeys = this.comparatorForIndexSpecs.getNumberOfKeys();
-    this.keys = new Object[nKeys];
-    this.keyTypeCodes = new int[nKeys];
-    this.isReverse = new boolean[nKeys];
-
-    for (int i = 0; i < nKeys; i++) {
-      
-      final Object k =  (comp.getKeyType(i) == FSIndexComparator.FEATURE_KEY)
-                     ? (FeatureImpl) this.comparatorForIndexSpecs.getKeyFeature(i)
-                     : this.comparatorForIndexSpecs.getKeyTypeOrder(i);
-      keys[i] = k; 
-      if (k instanceof FeatureImpl) {
-        keyTypeCodes[i] = ((TypeImpl)((FeatureImpl)k).getRange()).getCode();
-      }
-      isReverse[i] = this.comparatorForIndexSpecs.getKeyComparator(i) == FSIndexComparator.REVERSE_STANDARD_COMPARE;
-    }
-    this.isInitialized = true;
-    return true;
   }
 
   /**

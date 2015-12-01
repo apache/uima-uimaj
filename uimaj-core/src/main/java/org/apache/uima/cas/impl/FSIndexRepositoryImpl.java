@@ -45,7 +45,6 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.ObjHashSet;
 import org.apache.uima.jcas.cas.AnnotationBase;
@@ -169,7 +168,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     /**
      * lazily created comparator using the built-in annotation index
      */
-    private Comparator<AnnotationFS> annotationFsComparator = null;
+    private Comparator<TOP> annotationFsComparator = null;
+    
+    private Comparator<TOP> annotationFsComparatorWithId = null;
     
     /**
      * optimization only - bypasses some shared (among views) initialization if already done
@@ -605,7 +606,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return iicp;
   }
   
-  private boolean isAnnotationIndex(FSIndexComparator c, int indexKind) {
+  boolean isAnnotationIndex(FSIndexComparator c, int indexKind) {
     TypeSystemImpl tsi = getTypeSystemImpl();
     return indexKind == FSIndex.SORTED_INDEX &&
            getTypeSystemImpl().annotType.subsumes((TypeImpl) c.getType()) &&
@@ -638,7 +639,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     switch (indexType) {
     
     case FSIndex.SET_INDEX: 
-      ind = new FsIndex_set_sorted<T>(this.cas, type, indexType, false); // false = is set
+      ind = new FsIndex_set_sorted<T>(this.cas, type, indexType, comparatorForIndexSpecs, false); // false = is set
       break;
     
 //    case FSIndex.FLAT_INDEX: 
@@ -647,16 +648,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     case FSIndex.BAG_INDEX:
     case FSIndex.DEFAULT_BAG_INDEX: 
-      ind = new FsIndex_bag<T>(this.cas, type, initialSize, indexType);
+      ind = new FsIndex_bag<T>(this.cas, type, initialSize, indexType, comparatorForIndexSpecs);
       break;
     
     default: 
       // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just create a sorted index.
-      ind = new FsIndex_set_sorted<T>(this.cas, type, FSIndex.SORTED_INDEX, true); // true = is sorted
+      ind = new FsIndex_set_sorted<T>(this.cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs, true); // true = is sorted
       break;
  
     }
-    ind.init(comparatorForIndexSpecs);
     return ind;
   }
   
@@ -1492,8 +1492,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    return this.sii.annotationComparator;
 //  }
   
-  Comparator<AnnotationFS> getAnnotationFsComparator() {
-    Comparator<AnnotationFS> r = this.sii.annotationFsComparator;
+  Comparator<TOP> getAnnotationFsComparator() {
+    Comparator<TOP> r = this.sii.annotationFsComparator;
     // lazy creation
     if (null != r) {
       return r;
@@ -1502,30 +1502,60 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return createAnnotationFsComparator();
   }
   
+  Comparator<TOP> getAnnotationFsComparatorWithId() {
+    Comparator<TOP> r = this.sii.annotationFsComparatorWithId;
+    // lazy creation
+    if (null != r) {
+      return r;
+    }
+    
+    return createAnnotationFsComparatorWithId();    
+  }
   
-  private Comparator<AnnotationFS> createAnnotationFsComparator() {
+  private Comparator<TOP> createAnnotationFsComparator() {
 
     final LinearTypeOrder typeOrder = getDefaultTypeOrder();
     
-    return this.sii.annotationFsComparator = new Comparator<AnnotationFS>() {
+    return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
+      Annotation fs1 = (Annotation) fsx1;
+      Annotation fs2 = (Annotation) fsx2;
+      
+      if (fs1 == fs2) return 0;
 
-      @Override
-      public int compare(AnnotationFS fsx1, AnnotationFS fsx2) {
-        Annotation fs1 = (Annotation) fsx1;
-        Annotation fs2 = (Annotation) fsx2;
-        
-        if (fs1 == fs2) return 0;
+      int result =  Integer.compare(fs1.getBegin(), fs2.getBegin());
+      if (result != 0) return result;
 
-        int result =  Integer.compare(fs1.getBegin(), fs2.getBegin());
-        if (result != 0) return result;
-
-        result = Integer.compare(fs1.getEnd(), fs2.getEnd());
-        if (result != 0) return -result;  // reverse compare
-        
-        return typeOrder.compare(fs1, fs2);          
-      }
+      result = Integer.compare(fs1.getEnd(), fs2.getEnd());
+      if (result != 0) return -result;  // reverse compare
+      
+      return typeOrder.compare(fs1, fs2);          
     };
   }
+  
+  //unrolled because of high frequency use
+  private Comparator<TOP> createAnnotationFsComparatorWithId() {
+
+    final LinearTypeOrder typeOrder = getDefaultTypeOrder();    
+    
+    this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
+      if (fsx1 == fsx2) return 0;
+
+      final Annotation fs1 = (Annotation) fsx1;
+      final Annotation fs2 = (Annotation) fsx2;
+      
+      final int r1, r2, r3;
+      if ((r1 = Integer.compare(fs1.getBegin(), fs2.getBegin())) != 0) return r1;
+
+      if ((r2 = Integer.compare(fs1.getEnd(), fs2.getEnd())) != 0) return -r2;  // reverse compare
+      
+      if ((r3 = typeOrder.compare(fs1, fs2)) != 0) return r3;
+
+      return Integer.compare(fs1._id,  fs2._id);
+    };
+    
+    return this.sii.annotationFsComparatorWithId;
+  }
+
   
   public TypeSystemImpl getTypeSystemImpl() {
     return sii.tsi;

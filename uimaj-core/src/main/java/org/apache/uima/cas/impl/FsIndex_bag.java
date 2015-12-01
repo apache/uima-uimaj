@@ -42,8 +42,8 @@ public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
   // The index
   final private ObjHashSet<TOP> index;
   
-  FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType) {
-    super(cas, type, indexType);
+  FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType, FSIndexComparator comparatorForIndexSpecs) {
+    super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
     this.index = new ObjHashSet<TOP>(initialSize, TOP.class, TOP.singleton);
   }
 
@@ -51,7 +51,7 @@ public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
    * Substitutes an empty comparator if one is specified - may not be needed
    * @see org.apache.uima.cas.impl.FSLeafIndexImpl#init(org.apache.uima.cas.admin.FSIndexComparator)
    */
-  boolean init(FSIndexComparator comp) {
+  private static FSIndexComparator cleanUpComparator(FSIndexComparator comp, CASImpl casImpl) {
     // The comparator for a bag index must be empty, except for the type. If
     // it isn't, we create an empty one.
     FSIndexComparator newComp;
@@ -61,7 +61,7 @@ public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
     } else {
       newComp = comp;
     }
-    return super.init(newComp);
+    return newComp;
   }
 
   public void flush() {

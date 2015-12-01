@@ -19,14 +19,19 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -48,25 +53,82 @@ import org.apache.uima.jcas.cas.TOP;
  * @param <T> the Java class type for this index
  */
 public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
+  
+  final private SortedSet<TOP> ss = new SortedSet<TOP>() {
+    
+    @Override
+    public int size() { return itemsToBeAdded.size(); }
+    @Override
+    public boolean isEmpty() { return false; }
+    @Override
+    public boolean contains(Object o) { throw new UnsupportedOperationException(); }
+    @Override
+    public Iterator<TOP> iterator() { return itemsToBeAdded.iterator(); }
+    @Override
+    public Object[] toArray() { throw new UnsupportedOperationException(); }
+    @Override
+    public <U> U[] toArray(U[] a) { throw new UnsupportedOperationException(); }
+    @Override
+    public boolean add(TOP e) { throw new UnsupportedOperationException(); }
+    @Override
+    public boolean remove(Object o) { throw new UnsupportedOperationException(); }
+    @Override
+    public boolean containsAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+    @Override
+    public boolean addAll(Collection<? extends TOP> c) { throw new UnsupportedOperationException(); }
+    @Override
+    public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+    @Override
+    public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
+    @Override
+    public void clear() { throw new UnsupportedOperationException(); }
+    @Override
+    public Comparator<TOP> comparator() { return comparator; }
+    @Override
+    public SortedSet<TOP> subSet(TOP fromElement, TOP toElement) { throw new UnsupportedOperationException(); }
+    @Override
+    public SortedSet<TOP> headSet(TOP toElement) { throw new UnsupportedOperationException(); }
+    @Override
+    public SortedSet<TOP> tailSet(TOP fromElement) { throw new UnsupportedOperationException(); }
+    @Override
+    public TOP first() { throw new UnsupportedOperationException(); }
+    @Override
+    public TOP last() { throw new UnsupportedOperationException(); }     
+  };
+
 
   // The index, a NavigableSet. 
-  // Should be over T, but has to be over FeatureStructure in order to have the comparator take FeatureStructures
-  final private NavigableSet<TOP> indexedFSs;
+  final private TreeSet<TOP> indexedFSs;
+  
+  final private Comparator<TOP> comparator;
+  
+  final private ArrayList<TOP> itemsToBeAdded = new ArrayList<>();  // to batch the adds
+  
+  private TOP largestItem = null;
    
-  FsIndex_set_sorted(CASImpl cas, Type type, int indexType, boolean useSorted) {
-    super(cas, type, indexType);
-    this.indexedFSs = useSorted 
-                        ?  new TreeSet<TOP>(
-                            (TOP o1, TOP o2) -> {
-                              final int c = compare(o1,  o2); 
-                              // augment normal comparator with one that compares IDs if everything else equal
-                              return (c == 0) ? (Integer.compare(o1.id(), o2.id())) : c;})
-                        : new TreeSet<TOP>( (TOP o1, TOP o2) -> compare(o1,  o2));     
+  FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs, boolean useSorted) {
+    super(cas, type, indexType, comparatorForIndexSpecs);
+    FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
+    
+    if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
+      comparator = ir.getAnnotationFsComparatorWithId();   
+    } else {
+      comparator = useSorted   
+          ? (o1, o2) -> {
+              final int c = compare(o1,  o2); 
+              // augment normal comparator with one that compares IDs if everything else equal
+              return (c == 0) ? (Integer.compare(o1.id(), o2.id())) : c;} 
+          : (o1, o2) -> compare(o1,  o2);
+    }          
+    this.indexedFSs = new TreeSet<TOP>(comparator);
   }
 
   @Override
   public void flush() {
     this.indexedFSs.clear();
+    this.itemsToBeAdded.clear();
+    this.itemsToBeAdded.trimToSize();
+    this.largestItem = null;
   }
 
   /**
@@ -86,6 +148,7 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
    */
   @Override
   public boolean containsEq(FeatureStructureImplC fs) {
+    maybeProcessBulkAdds();
     return CASImpl.isSameCAS(casImpl, fs.getCAS()) && indexedFSs.contains(fs);
   }
   
@@ -94,7 +157,29 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
    */
   @Override
   boolean insert(T fs) {
-    return this.indexedFSs.add((TOP)fs);
+    // measured - not efficient.
+//    if (indexedFSs.size() > 1024) {
+//      // optimize for insert at end
+//      TOP last = indexedFSs.last();
+//      if (indexedFSs.comparator().compare(last, fs) <= 0) {
+//        // insert at end fast path maybe
+//        return indexedFSs.tailSet(last, true).add(fs);
+//      }
+//    }
+    if (largestItem != null && comparator.compare(fs,  largestItem) > 0) {
+      itemsToBeAdded.add(fs);
+      largestItem = fs;
+      return true;
+    } else {
+      if (largestItem == null) {
+        largestItem = fs;
+        itemsToBeAdded.add(fs);
+        return true;
+      }
+      
+      maybeProcessBulkAdds(); // we do this so the return value from add is accurate
+      return this.indexedFSs.add((TOP)fs);
+    }
   }
 
   /**
@@ -117,6 +202,7 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
    */
   @Override
   public T find(FeatureStructure templateKeyIn) {
+    maybeProcessBulkAdds();
     TOP templateKey = (TOP) templateKeyIn;
     if (null == templateKey || this.indexedFSs.size() == 0) {
       return null;
@@ -142,6 +228,7 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
   }
 
   public T findLeftmost(TOP templateKey) {
+    maybeProcessBulkAdds();
     // descending iterator over elements LessThan templateKey
     Iterator<T> it = (Iterator<T>) indexedFSs.headSet(templateKey, false).descendingIterator();
   
@@ -163,7 +250,7 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
    */
   @Override
   public int size() {
-    return this.indexedFSs.size();
+    return this.indexedFSs.size() + itemsToBeAdded.size();
   }
 
   /**
@@ -179,11 +266,13 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
    */
   @Override
   public boolean deleteFS(T fs) {
+    maybeProcessBulkAdds();
     return this.indexedFSs.remove(fs);
   }
   
   @Override
   protected void bulkAddTo(List<TOP> v) {
+    maybeProcessBulkAdds();
     v.addAll(indexedFSs);
   }
   
@@ -193,11 +282,33 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
 //  }
   
   NavigableSet<TOP> getNavigableSet() { //used by FsIterator_sorted to compute various derivitive nav sets
+    maybeProcessBulkAdds();
     return indexedFSs;
   }
    
   @Override
   public FSIterator<T> iterator() {
+    maybeProcessBulkAdds();
     return new FsIterator_set_sorted<T>(this, getDetectIllegalIndexUpdates(), getTypeCode(), this);
+  }
+    
+  private synchronized void maybeProcessBulkAdds() {
+    final int sz = itemsToBeAdded.size();
+    if (sz > 0) {
+      
+      // debug
+  //    if (sz > 1) {
+  //      TOP prev = itemsToBeAdded.get(0);
+  //      for (int i = 1; i < sz; i++) {
+  //        TOP next = itemsToBeAdded.get(i);
+  //        if (comparator.compare(next,  prev) <= 0) {
+  //          System.out.println("debug");
+  //        }
+  //        prev = next;
+  //      }
+  //    }
+      indexedFSs.addAll(ss); 
+      itemsToBeAdded.clear();
+    }
   }
 }

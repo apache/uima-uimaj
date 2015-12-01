@@ -46,7 +46,8 @@ public class FsIndex_flat<T extends TOP> extends FsIndex_singletype<T> {
   final private Comparator<TOP> comparator;
     
   FsIndex_flat(FsIndex_iicp<T> iicp) {
-    super(iicp.getCASImpl(), iicp.fsIndex_singletype.getType(), iicp.fsIndex_singletype.getIndexingStrategy());
+    super(iicp.getCASImpl(), iicp.fsIndex_singletype.getType(), iicp.fsIndex_singletype.getIndexingStrategy(),
+        iicp.fsIndex_singletype.getComparatorForIndexSpecs());
     this.iicp = iicp;
     indexedFSs = fillFlatArray();
     comparator = iicp.fsIndex_singletype;
