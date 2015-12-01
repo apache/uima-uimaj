@@ -19,95 +19,120 @@
 
 
 /* First created by JCasGen Wed May 23 14:54:19 EDT 2012 */
+
+
+
+/* Apache UIMA v3 - First created by JCasGen Tue Dec 01 15:07:57 EST 2015 */
+
 package org.apache.uima.testTypeSystem_arrays;
 
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
+
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
-/** 
- * Updated by JCasGen Wed May 23 14:55:00 EDT 2012
- * XML source: C:/au/svnCheckouts/trunks/uimaj/uimaj-core/src/test/resources/ExampleCas/testTypeSystem_arrays.xml
+/**
+ * Updated by JCasGen Tue Dec 01 15:07:57 EST 2015
+ * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/resources/ExampleCas/testTypeSystem_arrays.xml
  * @generated */
 public class OfShorts extends Annotation {
   /** @generated
-   * @ordered 
+   * @ordered
    */
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(OfShorts.class);
   /** @generated
-   * @ordered 
+   * @ordered
    */
+  @SuppressWarnings ("hiding")
   public final static int type = typeIndexID;
-  /** @generated  */
+  /** @generated
+   * @return index of the type
+   */
+  @Override
   public              int getTypeIndexID() {return typeIndexID;}
- 
+
+
+  /* *****************
+   *    Local Data   *
+   * *****************/
+
+  /* Register Features */
+  public final static int _FI_f1Shorts = JCasRegistry.registerFeature(typeIndexID);
+
+
+  private ShortArray _F_f1Shorts;  //
+
   /** Never called.  Disable default constructor
    * @generated */
-  protected OfShorts() {}
-    
-  /** Internal - constructor used by generator 
-   * @generated */
-  public OfShorts(int addr, TOP_Type type) {
-    super(addr, type);
+  protected OfShorts() {/* intentionally empty block */}
+
+  /** Internal - constructor used by generator
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure
+   */
+  public OfShorts(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
     readObject();
   }
-  
-  /** @generated */
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   */
   public OfShorts(JCas jcas) {
     super(jcas);
-    readObject();   
-  } 
-
-  /** @generated */  
-  public OfShorts(JCas jcas, int begin, int end) {
-    super(jcas);
-    setBegin(begin);
-    setEnd(end);
     readObject();
-  }   
+  }
 
-  /** <!-- begin-user-doc -->
-    * Write your own initialization here
-    * <!-- end-user-doc -->
-  @generated modifiable */
-  private void readObject() {}
-     
- 
-    
+  /**
+   * <!-- begin-user-doc -->
+   * Write your own initialization here
+   * <!-- end-user-doc -->
+   *
+   * @generated modifiable
+   */
+  private void readObject() {/*default - does nothing empty block */}
+
+
+
   //*--------------*
   //* Feature: f1Shorts
 
-  /** getter for f1Shorts - gets 
-   * @generated */
-  public ShortArray getF1Shorts() {
-    if (OfShorts_Type.featOkTst && ((OfShorts_Type)jcasType).casFeat_f1Shorts == null)
-      jcasType.jcas.throwFeatMissing("f1Shorts", "org.apache.uima.testTypeSystem_arrays.OfShorts");
-    return (ShortArray)(jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts)));}
-    
-  /** setter for f1Shorts - sets  
-   * @generated */
-  public void setF1Shorts(ShortArray v) {
-    if (OfShorts_Type.featOkTst && ((OfShorts_Type)jcasType).casFeat_f1Shorts == null)
-      jcasType.jcas.throwFeatMissing("f1Shorts", "org.apache.uima.testTypeSystem_arrays.OfShorts");
-    jcasType.ll_cas.ll_setRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts, jcasType.ll_cas.ll_getFSRef(v));}    
-    
-  /** indexed getter for f1Shorts - gets an indexed value - 
-   * @generated */
-  public short getF1Shorts(int i) {
-    if (OfShorts_Type.featOkTst && ((OfShorts_Type)jcasType).casFeat_f1Shorts == null)
-      jcasType.jcas.throwFeatMissing("f1Shorts", "org.apache.uima.testTypeSystem_arrays.OfShorts");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts), i);
-    return jcasType.ll_cas.ll_getShortArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts), i);}
+  /** getter for f1Shorts - gets
+   * @generated
+   * @return value of the feature
+   */
+  public ShortArray getF1Shorts() { return _F_f1Shorts;}
 
-  /** indexed setter for f1Shorts - sets an indexed value - 
-   * @generated */
-  public void setF1Shorts(int i, short v) { 
-    if (OfShorts_Type.featOkTst && ((OfShorts_Type)jcasType).casFeat_f1Shorts == null)
-      jcasType.jcas.throwFeatMissing("f1Shorts", "org.apache.uima.testTypeSystem_arrays.OfShorts");
-    jcasType.jcas.checkArrayBounds(jcasType.ll_cas.ll_getRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts), i);
-    jcasType.ll_cas.ll_setShortArrayValue(jcasType.ll_cas.ll_getRefValue(addr, ((OfShorts_Type)jcasType).casFeatCode_f1Shorts), i, v);}
+  /** setter for f1Shorts - sets
+   * @generated
+   * @param v value to set into the feature
+   */
+  public void setF1Shorts(ShortArray v) {
+
+      _casView.setWithJournalJFRI(this, _FI_f1Shorts, () -> _F_f1Shorts = v);
+      }
+
+  /** indexed getter for f1Shorts - gets an indexed value -
+   * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i
+   */
+  public short getF1Shorts(int i) {
+     return getF1Shorts().get(i);}
+
+  /** indexed setter for f1Shorts - sets an indexed value -
+   * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array
+   */
+  public void setF1Shorts(int i, short v) {
+    getF1Shorts().set(i, v);}
   }
 
-    
+
