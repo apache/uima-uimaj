@@ -2374,17 +2374,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final TypeImpl ti = ((FeatureStructureImplC)fs)._typeImpl;
     if (ti.isAnnotationBaseType()) {
       final AnnotationBase ab = (AnnotationBase) fs;
-      // only need to check one view
-      // get that view carefully, in case things are not yet properly initialized
-      Sofa sofa = ab.getSofa();
-      if (null == sofa) {
-        return false;
-      }
-      CAS view = (sofa == this.getSofa()) ? this : getViewFromSofaNbr(sofa.getSofaNum());
-      if (null == view) {
-        return false;
-      }
-      return removeAndRecord(fs, (FSIndexRepositoryImpl) view.getIndexRepository(), toBeAdded);
+      
+      // in v3, the fs points to the view
+      
+//      // only need to check one view
+//      // get that view carefully, in case things are not yet properly initialized
+//      Sofa sofa = ab.getSofa();
+//      if (null == sofa) {
+//        return false;
+//      }
+//      CAS view = (sofa == this.getSofa()) ? this : getViewFromSofaNbr(sofa.getSofaNum());
+//      if (null == view) {
+//        return false;
+//      }
+      return removeAndRecord(fs, (FSIndexRepositoryImpl) fs._casView.getIndexRepository(), toBeAdded);
     }
     
     // not a subtype of AnnotationBase, need to check all views (except base)
@@ -3438,16 +3441,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return the view associated with this FS where it could be indexed
    */
   public CASImpl getSofaCasView(AnnotationBase fs) {
-    
-    Sofa sofa = fs.getSofa();
-    
-    if (null != sofa && sofa != this.getSofa()) {
-      return (CASImpl) this.getView(sofa.getSofaNum());
-    }
-    
-    /* Note: sofa == null means annotation created from low-level APIs, without setting sofa feature
-     * Ignore this for backwards compatibility */
-    return this;
+    return fs._casView;
+//    Sofa sofa = fs.getSofa();
+//    
+//    if (null != sofa && sofa != this.getSofa()) {
+//      return (CASImpl) this.getView(sofa.getSofaNum());
+//    }
+//    
+//    /* Note: sofa == null means annotation created from low-level APIs, without setting sofa feature
+//     * Ignore this for backwards compatibility */
+//    return this;
   }
 
   public CASImpl ll_getSofaCasView(int id) {

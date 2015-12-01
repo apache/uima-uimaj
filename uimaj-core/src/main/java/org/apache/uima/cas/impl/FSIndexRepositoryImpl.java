@@ -1087,13 +1087,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (!isAddback && (!IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK) && ti.isAnnotationBaseType()) {
       
       // Check that the annotationBase FS is being added to the proper Cas View
-      AnnotationBase fsAnnotBase = (AnnotationBase) fs;
-      final Sofa sofa = fsAnnotBase.getSofa();   
-      if (cas.getSofa() != sofa) { 
+      CASImpl indexView = fs._getView();
+      if (indexView.getIndexRepository() != this) {  
         /*  Error - the Annotation "{0}" is over view "{1}" and cannot be added to indexes associated with
          * the different view "{2}" */
         throw new CASRuntimeException(CASRuntimeException.ANNOTATION_IN_WRONG_INDEX,  
-                fsAnnotBase.toString(), sofa.getSofaID(), cas.getSofa().getSofaID());
+                fs.toString(), indexView.getViewName(), cas.getViewName()); 
       }
     }
    

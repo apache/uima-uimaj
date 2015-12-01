@@ -107,7 +107,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
   //   The value is set and is fixed when this is created
     
   public CAS getView() {
-    return _casView.getSofaCasView(this);
+    return _casView;
   }
    
 }
