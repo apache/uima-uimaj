@@ -88,6 +88,11 @@ public class UIMAException extends Exception implements I18nExceptionI {
    */
   public UIMAException(Throwable aCause) {
     super(aCause);
+    if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
+      I18nExceptionI cause = (I18nExceptionI)aCause;
+      mMessageKey = cause.getMessageKey();
+      mArguments  = cause.getArguments();
+    }
   }
 
   /**
