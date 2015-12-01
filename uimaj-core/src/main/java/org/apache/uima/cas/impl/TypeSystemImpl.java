@@ -1376,9 +1376,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   private void computeFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
     
-    if (ti.getCode() == docTypeCode) {
-      System.out.println("debug");
-    }
     for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
       fi.setOffset(fi.isInInt ? (nextI ++) : (nextR ++));
       if (((TypeImpl)fi.getRange()).isLongOrDouble) {
@@ -2314,10 +2311,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   void setJCasRegisteredType(int typeIndexID, TypeImpl ti) {
-    while (jcasRegisteredTypes.size() <= typeIndexID) {
-      jcasRegisteredTypes.add(null);
-    }
-    jcasRegisteredTypes.set(typeIndexID, ti);
+//    if (typeIndexID == 0 && !ti.getShortName().equals("TOP")) {
+//      System.out.println("debug");
+//    }
+    Misc.setWithExpand(jcasRegisteredTypes, typeIndexID, ti);
   }
   
   public static final int getTypeClass(TypeImpl ti) { 
