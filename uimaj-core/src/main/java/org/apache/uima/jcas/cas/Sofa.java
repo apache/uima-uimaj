@@ -40,7 +40,7 @@ public class Sofa extends TOP implements SofaFS {
   }
   
   /* local data */
-  
+  // these static ints are for fast index corruption checking
   public final static int _FI_sofaNum = JCasRegistry.registerFeature(typeIndexID);
   public final static int _FI_sofaID = JCasRegistry.registerFeature(typeIndexID);
   public final static int _FI_mimeType = JCasRegistry.registerFeature(typeIndexID);
