@@ -53,6 +53,7 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.PrimitiveValue;
@@ -576,10 +577,20 @@ public class CasCreationUtils {
     CASMgr casMgr;
     if (aTypeSystem != null) {
       casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
+      
+      // Set JCas ClassLoader - before setupTypeSystem
+      if (aResourceManager.getExtensionClassLoader() != null) {
+        casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
+      }
+
     } else // no TypeSystem to reuse - create a new one
     {
       casMgr = CASFactory.createCAS();
  
+      if (aResourceManager.getExtensionClassLoader() != null) {
+        casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
+      }
+
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
       // Commit the type system
@@ -602,16 +613,15 @@ public class CasCreationUtils {
     // Commit the index repository
     casMgr.getIndexRepositoryMgr().commit();
 
-    // Set JCas ClassLoader
-    if (aResourceManager.getExtensionClassLoader() != null) {
-      casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
-    }
 
     return casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
   }
 
   /**
    * Create a CAS from a CAS Definition.
+   * 
+   * In V3, creating the type system is expensive (due to loading and setting up of JCas classes), so
+   * we do the type system creation once per CasDefinition and store it with the CAS definition
    * 
    * @param casDef
    *                completely describes the CAS to be created
@@ -626,8 +636,21 @@ public class CasCreationUtils {
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings)
       throws ResourceInitializationException {
-    return createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), casDef
-        .getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
+    TypeSystemImpl tsi = casDef.getTypeSystemImpl();
+    CAS cas;
+    if (null == tsi) {
+      synchronized (casDef) {
+        if (null == tsi) { // retest under sync lock
+          cas = createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), 
+              casDef.getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
+          casDef.setTypeSystemImpl((TypeSystemImpl) cas.getTypeSystem());
+          return cas;
+        }  
+      }
+    } 
+    
+    return doCreateCas(tsi, casDef.getTypeSystemDescription(), casDef.getTypePriorities(), 
+            casDef.getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
   }
 
   /**
