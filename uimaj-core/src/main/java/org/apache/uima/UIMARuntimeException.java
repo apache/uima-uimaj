@@ -165,6 +165,10 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   public static final String INTERNAL_ERROR = "INTERNAL_ERROR";
 
   /**
+   * the message bundle to use for this exception
+   */
+  private String mMessageBundle = resource_file; 
+  /**
    * An identifier that maps to the message for this exception.
    */
   private String mMessageKey;
@@ -204,6 +208,11 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    */
   public UIMARuntimeException(Throwable aCause) {
     super(aCause);
+    if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
+      I18nExceptionI cause = (I18nExceptionI)aCause;
+      mMessageKey = cause.getMessageKey();
+      mArguments  = cause.getArguments();
+    }
   }
 
   /**
@@ -218,9 +227,14 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    *          arguments.
    */
   public UIMARuntimeException(String aMessageKey, Object ... aArguments) {
-    this(null, aMessageKey, aArguments);
+    this((Throwable)null, aMessageKey, aArguments);
   }
 
+  public UIMARuntimeException(String messageBundle, String messageKey, Object[] arguments) {
+    this(messageKey, arguments);
+    mMessageBundle = messageBundle;
+  }
+  
   /**
    * Creates a new exception with the specified message and cause.
    * 
@@ -258,7 +272,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    */
   @Override
   public String getResourceBundleName() {
-    return resource_file;
+    return mMessageBundle;
   }
   
   /**
