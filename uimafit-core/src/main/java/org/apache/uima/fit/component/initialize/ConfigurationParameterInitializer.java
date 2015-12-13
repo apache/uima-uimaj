@@ -31,6 +31,7 @@ import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.factory.ConfigurationParameterFactory;
 import org.apache.uima.fit.internal.ReflectionUtil;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.internal.propertyeditors.PropertyEditorUtil;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.CustomResourceSpecifier;
@@ -193,7 +194,7 @@ public final class ConfigurationParameterInitializer {
   public static void initialize(final Object component, final Map<String, Object> map)
           throws ResourceInitializationException {
     UimaContextAdmin context = UIMAFramework.newUimaContext(UIMAFramework.getLogger(),
-            UIMAFramework.newDefaultResourceManager(), UIMAFramework.newConfigurationManager());
+            ResourceManagerFactory.newResourceManager(), UIMAFramework.newConfigurationManager());
     ConfigurationManager cfgMgr = context.getConfigurationManager();
     cfgMgr.setSession(context.getSession());
     for (Entry<String, Object> e : map.entrySet()) {

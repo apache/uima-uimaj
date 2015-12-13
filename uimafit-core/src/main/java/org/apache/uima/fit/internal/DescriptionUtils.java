@@ -57,7 +57,7 @@ public final class DescriptionUtils {
     // First we clone, because we perform changes within the descriptor.
     AnalysisEngineDescription desc = (AnalysisEngineDescription) aDesc.clone();
 
-    consolidateAggregate(desc, UIMAFramework.newDefaultResourceManager());
+    consolidateAggregate(desc, ResourceManagerFactory.newResourceManager());
 
     return desc;
   }

@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.fit.internal.MetaDataType;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -114,7 +114,7 @@ public final class TypePrioritiesFactory {
       }
     }
 
-    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     TypePriorities aggTypePriorities = CasCreationUtils.mergeTypePriorities(typePrioritiesList,
             resMgr);
 

@@ -164,7 +164,7 @@ public final class CollectionReaderFactory {
           Object... configurationData) throws UIMAException, IOException {
     Import imp = UIMAFramework.getResourceSpecifierFactory().createImport();
     imp.setName(descriptorName);
-    URL url = imp.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
+    URL url = imp.findAbsoluteUrl(ResourceManagerFactory.newResourceManager());
     ResourceSpecifier specifier = createResourceCreationSpecifier(url, configurationData);
     return UIMAFramework.produceCollectionReader(specifier,
             ResourceManagerFactory.newResourceManager(), null);

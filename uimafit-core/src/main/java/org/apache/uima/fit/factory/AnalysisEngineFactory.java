@@ -870,7 +870,18 @@ public final class AnalysisEngineFactory {
           Object... configurationData) throws InvalidXMLException, IOException {
     Import_impl imprt = new Import_impl();
     imprt.setName(descriptorName);
-    URL url = imprt.findAbsoluteUrl(UIMAFramework.newDefaultResourceManager());
+    URL url;
+    try {
+      url = imprt.findAbsoluteUrl(ResourceManagerFactory.newResourceManager());
+    }
+    catch (ResourceInitializationException e) {
+      if (e.getCause() instanceof IOException) {
+        throw (IOException) e.getCause();
+      }
+      else {
+        throw new IOException(e);
+      }
+    }
     ResourceSpecifier specifier = ResourceCreationSpecifierFactory.createResourceCreationSpecifier(
             url, configurationData);
     return (AnalysisEngineDescription) specifier;
@@ -1291,7 +1302,7 @@ public final class AnalysisEngineFactory {
     }
     fsIndexes.add(FsIndexFactory.createFsIndexCollection(componentClass));
     FsIndexCollection aggIndexColl = CasCreationUtils.mergeFsIndexes(fsIndexes,
-            UIMAFramework.newDefaultResourceManager());
+            ResourceManagerFactory.newResourceManager());
     desc.getAnalysisEngineMetaData().setFsIndexCollection(aggIndexColl);
 
     // set capabilities from the argument to this call or from the annotation present in the

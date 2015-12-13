@@ -31,7 +31,6 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.Map;
 
-import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.collection.CollectionProcessingEngine;
@@ -44,6 +43,7 @@ import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeInclude;
 import org.apache.uima.collection.metadata.CpeIntegratedCasProcessor;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -151,7 +151,7 @@ public class CpeBuilder {
 
   public CollectionProcessingEngine createCpe(StatusCallbackListener aListener)
           throws ResourceInitializationException, CpeDescriptorException {
-    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     if (maxProcessingUnitThreadCount == 0) {
       cpeDesc.getCpeCasProcessors().setPoolSize(3);
     } else {

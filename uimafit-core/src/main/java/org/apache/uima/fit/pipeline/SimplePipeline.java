@@ -21,11 +21,7 @@ package org.apache.uima.fit.pipeline;
 import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
-import static org.apache.uima.fit.util.LifeCycleUtil.close;
 import static org.apache.uima.fit.util.LifeCycleUtil.collectionProcessComplete;
-import static org.apache.uima.fit.util.LifeCycleUtil.destroy;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +34,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -128,7 +125,7 @@ public final class SimplePipeline {
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
           final AnalysisEngineDescription... descs) throws UIMAException, IOException {
-    ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     
     // Create the components
     final CollectionReader reader = UIMAFramework.produceCollectionReader(readerDesc, resMgr, null);

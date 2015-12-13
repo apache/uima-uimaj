@@ -26,6 +26,7 @@ import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceManager;
 
@@ -64,7 +65,7 @@ public class JCasIterable implements Iterable<JCas> {
 
   public JCasIterator iterator() {
     try {
-      ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
       
       // Create the components
       CollectionReader readerInst = UIMAFramework.produceCollectionReader(reader, resMgr, null);

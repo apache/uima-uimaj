@@ -57,6 +57,7 @@ import org.apache.uima.fit.component.initialize.ConfigurationParameterInitialize
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.descriptor.ExternalResource;
 import org.apache.uima.fit.factory.locator.JndiResourceLocator;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.SimpleNamedResourceManager;
 import org.apache.uima.jcas.JCas;
@@ -115,7 +116,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     outer.toXML(outerXml);
     
     // Resolving the imports removes the inner AE description
-    outer.resolveImports(UIMAFramework.newDefaultResourceManager());
+    outer.resolveImports(ResourceManagerFactory.newResourceManager());
     
     StringWriter outerXml2 = new StringWriter();
     outer.toXML(outerXml2);
