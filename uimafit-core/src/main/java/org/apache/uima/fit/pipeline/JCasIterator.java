@@ -31,10 +31,12 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.component.NoOpAnnotator;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.util.LifeCycleUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -84,7 +86,8 @@ public class JCasIterator implements Iterator<JCas> {
       metaData.add(ae.getProcessingResourceMetaData());
     }
 
-    jCas = CasCreationUtils.createCas(metaData).getJCas();
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+    jCas = CasCreationUtils.createCas(metaData, null, resMgr).getJCas();
   }
 
   /**

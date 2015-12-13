@@ -27,9 +27,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.uima.UIMAException;
-import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -92,7 +93,8 @@ public final class JCasFactory {
     TypeSystemDescription tsd = createTypeSystemDescription();
     TypePriorities tp = createTypePriorities();
     FsIndexCollection indexes = createFsIndexCollection();
-    return CasCreationUtils.createCas(tsd, tp, indexes.getFsIndexes()).getJCas();
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+    return CasCreationUtils.createCas(tsd, tp, indexes.getFsIndexes(), null, resMgr).getJCas();
   }
 
   /**

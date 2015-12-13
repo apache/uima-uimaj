@@ -82,7 +82,9 @@ public final class SimplePipeline {
     final AnalysisEngine aae = createEngine(aaeDesc);
 
     // Create CAS from merged metadata
-    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()), 
+            null, resMgr);
     reader.typeSystemInit(cas.getTypeSystem());
 
     try {
@@ -137,7 +139,8 @@ public final class SimplePipeline {
     final AnalysisEngine aae = UIMAFramework.produceAnalysisEngine(aaeDesc, resMgr, null);
 
     // Create CAS from merged metadata
-    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()));
+    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()),
+            null, resMgr);
     reader.typeSystemInit(cas.getTypeSystem());
 
     try {
@@ -184,7 +187,8 @@ public final class SimplePipeline {
       metaData.add(engine.getMetaData());
     }
 
-    final CAS cas = CasCreationUtils.createCas(metaData);
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+    final CAS cas = CasCreationUtils.createCas(metaData, null, resMgr);
     reader.typeSystemInit(cas.getTypeSystem());
 
     while (reader.hasNext()) {
