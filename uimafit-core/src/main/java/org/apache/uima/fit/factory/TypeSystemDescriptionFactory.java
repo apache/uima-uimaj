@@ -28,7 +28,9 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.uima.fit.internal.MetaDataType;
+import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.Import_impl;
@@ -113,7 +115,8 @@ public final class TypeSystemDescriptionFactory {
       }
     }
 
-    return mergeTypeSystems(tsdList);
+    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+    return mergeTypeSystems(tsdList, resMgr);
   }
 
   /**
