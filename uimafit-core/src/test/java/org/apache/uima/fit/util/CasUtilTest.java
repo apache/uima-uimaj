@@ -33,7 +33,6 @@ import static org.junit.Assert.assertNull;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
@@ -61,8 +60,10 @@ public class CasUtilTest extends ComponentTestBase {
     assertEquals(Token.class.getName(), getType(cas, Token.class).getName());
     assertEquals(Token.class.getName(), getAnnotationType(cas, Token.class.getName()).getName());
     assertEquals(Token.class.getName(), getAnnotationType(cas, Token.class).getName());
+    assertEquals("uima.cas.TOP", getType(cas, FeatureStructure.class).getName());
     assertEquals("uima.cas.TOP", getType(cas, TOP.class).getName());
     assertEquals("uima.cas.TOP", getType(cas, TOP.class.getName()).getName());
+    assertEquals("uima.tcas.Annotation", getType(cas, AnnotationFS.class).getName());
     assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class).getName());
     assertEquals("uima.tcas.Annotation", getType(cas, Annotation.class.getName()).getName());
     assertEquals("uima.tcas.Annotation", getAnnotationType(cas, Annotation.class).getName());
