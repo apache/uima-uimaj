@@ -259,7 +259,76 @@ public final class CasUtil {
     }
     return (Collection) FSCollectionFactory.create(cas.getAnnotationIndex(type));
   }
+  
+  /**
+   * Get all annotations of the given type at the specified offsets.
+   * 
+   * @param aCas
+   *          the CAS containing the annotations.
+   * @param aType
+   *          the type of annotations to fetch.
+   * @param aBegin
+   *          the begin offset.
+   * @param aEnd
+   *          the end offset.
+   * @return the annotations at the specified offsets.
+   */
+  public static List<AnnotationFS> selectAt(final CAS aCas, final Type aType, int aBegin, int aEnd) {
+    List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    FSIterator<AnnotationFS> it = aCas.getAnnotationIndex(aType).iterator();
 
+    // Skip annotations whose start is before the start parameter.
+    while (it.isValid() && (it.get()).getBegin() < aBegin) {
+      it.moveToNext();
+    }
+
+    // Skip annotations whose end is after the end parameter.
+    while (it.isValid() && (it.get()).getEnd() > aEnd) {
+      it.moveToNext();
+    }
+    
+    while (it.isValid()) {
+      AnnotationFS a = it.get();
+      // If the offsets do not match the specified offets, we're done
+      if (a.getBegin() != aBegin && a.getEnd() != aEnd) {
+        break;
+      }
+      it.moveToNext();
+      list.add(a);
+    }
+    
+    return list;
+  }
+
+  /**
+   * Get the single instance of the specified type from the CAS at the given offsets.
+   * 
+   * @param aCas
+   *          the CAS containing the annotations.
+   * @param aType
+   *          the type of annotations to fetch.
+   * @param aBegin
+   *          the begin offset.
+   * @param aEnd
+   *          the end offset.
+   * @return the single annotation at the specified offsets.
+   */
+  public static AnnotationFS selectSingleAt(final CAS aCas, final Type aType, int aBegin, int aEnd) {
+    List<AnnotationFS> list = selectAt(aCas, aType, aBegin, aEnd);
+
+    if (list.isEmpty()) {
+      throw new IllegalArgumentException("CAS does not contain any [" + aType.getName() + "] at ["
+              + aBegin + "," + aEnd + "]");
+    }
+    
+    if (list.size() > 1) {
+      throw new IllegalArgumentException("CAS contains more than one [" + aType.getName()
+              + "] at [" + aBegin + "," + aEnd + "]");
+    }
+
+    return list.get(0);
+  }
+  
   /**
    * Get a list of annotations of the given annotation type located between two annotations. Does
    * not use subiterators and does not respect type priorities. Zero-width annotations what lie on

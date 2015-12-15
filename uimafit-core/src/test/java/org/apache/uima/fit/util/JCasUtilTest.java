@@ -31,12 +31,14 @@ import static org.apache.uima.fit.util.JCasUtil.getView;
 import static org.apache.uima.fit.util.JCasUtil.indexCovered;
 import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
+import static org.apache.uima.fit.util.JCasUtil.selectAt;
 import static org.apache.uima.fit.util.JCasUtil.selectBetween;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import static org.apache.uima.fit.util.JCasUtil.selectCovering;
 import static org.apache.uima.fit.util.JCasUtil.selectFollowing;
 import static org.apache.uima.fit.util.JCasUtil.selectPreceding;
 import static org.apache.uima.fit.util.JCasUtil.selectSingle;
+import static org.apache.uima.fit.util.JCasUtil.selectSingleAt;
 import static org.apache.uima.fit.util.JCasUtil.selectSingleRelative;
 import static org.apache.uima.fit.util.JCasUtil.toText;
 import static org.junit.Assert.assertEquals;
@@ -689,5 +691,66 @@ public class JCasUtilTest extends ComponentTestBase {
     index = indexCovering(jCas, Token.class, Sentence.class);
     // Check the first token is not contained in any sentence
     assertFalse(!index.get(tokens.get(0)).isEmpty());
+  }
+  
+  @Test
+  public void testSelectAt() throws Exception {
+    this.jCas.setDocumentText("A B C D E");
+    Token a = new Token(this.jCas, 0, 1);
+    Token b = new Token(this.jCas, 2, 3);
+    Token bc = new Token(this.jCas, 2, 5);
+    Token c = new Token(this.jCas, 4, 5);
+    Token c1 = new Token(this.jCas, 4, 5);
+    Token d = new Token(this.jCas, 4, 7);
+    Token cd = new Token(this.jCas, 6, 7);
+    Token e = new Token(this.jCas, 8, 9);
+    for (Token token : Arrays.asList(a, b, bc, c, c1, d, cd, e)) {
+      token.addToIndexes();
+    }
+
+    List<Token> tokensAt = selectAt(jCas, Token.class, c.getBegin(), c.getEnd());
+    
+    assertEquals(2, tokensAt.size());
+    assertEquals(c.getBegin(), tokensAt.get(0).getBegin());
+    assertEquals(c.getEnd(), tokensAt.get(0).getEnd());
+    assertEquals(c.getBegin(), tokensAt.get(1).getBegin());
+    assertEquals(c.getEnd(), tokensAt.get(1).getEnd());
+  }
+
+  @Test
+  public void testSelectSingleAt() throws Exception {
+    this.jCas.setDocumentText("A B C D E");
+    Token a = new Token(this.jCas, 0, 1);
+    Token b = new Token(this.jCas, 2, 3);
+    Token bc = new Token(this.jCas, 2, 5);
+    Token c = new Token(this.jCas, 4, 5);
+    Token c1 = new Token(this.jCas, 4, 5);
+    Token d = new Token(this.jCas, 4, 7);
+    Token cd = new Token(this.jCas, 6, 7);
+    Token e = new Token(this.jCas, 8, 9);
+    for (Token token : Arrays.asList(a, b, bc, c, c1, d, cd, e)) {
+      token.addToIndexes();
+    }
+
+    try {
+      selectSingleAt(jCas, Token.class, c.getBegin(), c.getEnd());
+      fail("Expected exception not thrown");
+    }
+    catch (IllegalArgumentException ex) {
+      // Ignore.
+    }
+
+    try {
+      selectSingleAt(jCas, Token.class, 1, 4);
+      fail("Expected exception not thrown");
+    }
+    catch (IllegalArgumentException ex) {
+      // Ignore.
+    }
+
+    Token tokenAt = selectSingleAt(jCas, Token.class, b.getBegin(), b.getEnd());
+  
+    assertEquals(b.getBegin(), tokenAt.getBegin());
+    assertEquals(b.getEnd(), tokenAt.getEnd());
   }
 }

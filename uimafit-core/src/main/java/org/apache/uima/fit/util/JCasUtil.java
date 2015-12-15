@@ -190,6 +190,43 @@ public final class JCasUtil {
   }
 
   /**
+   * Get all annotations of the given type at the specified offsets.
+   * 
+   * @param jCas
+   *          the CAS containing the annotations.
+   * @param type
+   *          the type of annotations to fetch.
+   * @param aBegin
+   *          the begin offset.
+   * @param aEnd
+   *          the end offset.
+   * @return the annotations at the specified offsets.
+   */
+  public static <T extends Annotation> List<T> selectAt(final JCas jCas, final Class<T> type,
+          int aBegin, int aEnd) {
+    return cast(CasUtil.selectAt(jCas.getCas(), getType(jCas, type), aBegin, aEnd));
+  }
+  
+  /**
+   * Get a single annotations of the given type at the specified offsets.
+   * 
+   * @param jCas
+   *          the CAS containing the annotations.
+   * @param type
+   *          the type of annotations to fetch.
+   * @param aBegin
+   *          the begin offset.
+   * @param aEnd
+   *          the end offset.
+   * @return the annotation at the specified offsets.
+   */
+  @SuppressWarnings("unchecked")
+  public static <T extends Annotation> T selectSingleAt(final JCas jCas, final Class<T> type,
+          int aBegin, int aEnd) {
+    return (T) CasUtil.selectSingleAt(jCas.getCas(), getType(jCas, type), aBegin, aEnd);
+  }
+
+  /**
    * Convenience method to iterator over all features structures.
    * 
    * @param jCas
