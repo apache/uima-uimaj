@@ -142,5 +142,45 @@
 &lt;/dependency></programlisting>
     <para>uimaFIT <?eval ${project.version}?> automatically detects the presence of the legacy module and uses it - no
       additional configuration is necessary.</para>
+    <para>The following bash script may help to partially automatize the source code migration process.
+      Please observe that it does not cover all of the necessary changes!</para>
+    <note>
+      <para>The script recursively changes all files under the current working directory! Make
+      sure you are in the right directory before running it! <emphasis>Use the script at your own 
+      risk!</emphasis></para>
+    </note>
+    <programlisting>#!/bin/sh
+
+############################################
+# MAKE SURE TO BACKUP YOUR FILES FIRST!
+# SCRIPT RECURSIVELY CHANGES ALL JAVA FILES!
+# USE AT YOUR OWN RISK!
+############################################
+
+# Change of package names
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/org.uimafit/org.apache.uima.fit/g'
+
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/org.uimafit.component.xwriter.CASDumpWriter/\
+org.apache.uima.fit.component.CasDumpWriter/g'
+
+# AnalysisEngineFactory
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/createAggregate/createEngine/g'
+
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/createPrimitive/createEngine/g'
+
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/createAnalysisEngine/createEngine/g'
+
+# Readers
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/createDescription/createReaderDescription/g'
+
+find . -name '*.java' -print | 
+xargs perl -p -i -e 's/createCollectionReader/createReader/g'
+</programlisting>    
   </section>
 </chapter>
