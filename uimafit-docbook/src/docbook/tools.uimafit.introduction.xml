@@ -80,18 +80,17 @@
       <para>Here's a simple snippet of Java code that illustrates <quote>tagging some text</quote>
         with uimaFIT:</para>
       <programlisting>import static org.apache.uima.fit.factory.JCasFactory.createJCas;
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
+import static 
+ org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
       
 JCas jCas = createJCas();
 
 jCas.setDocumentText("some text");
 
-AnalysisEngineDescription tokenizer = createEngineDescription(MyTokenizer.class);
-
-AnalysisEngineDescription tagger = createEngineDescription(MyTagger.class);
-
-runPipeline(jCas, tokenizer, tagger);
+runPipeline(jCas, 
+    createEngineDescription(MyTokenizer.class), 
+    createEngineDescription(MyTagger.class));
 
 for(Token token : iterate(jCas, Token.class)){
     System.out.println(token.getTag());
