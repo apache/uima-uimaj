@@ -79,21 +79,24 @@
         literally eliminate all of these steps. </para>
       <para>Here's a simple snippet of Java code that illustrates <quote>tagging some text</quote>
         with uimaFIT:</para>
-      <programlisting>JCas jCas = JCasFactory.createJCas();
+      <programlisting>import static org.apache.uima.fit.factory.JCasFactory.createJCas;
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
+      
+JCas jCas = createJCas();
 
 jCas.setDocumentText("some text");
 
-AnalysisEngine tokenizer = createEngine(MyTokenizer.class);
+AnalysisEngineDescription tokenizer = createEngineDescription(MyTokenizer.class);
 
-AnalysisEngine tagger = createEngine(MyTagger.class);
+AnalysisEngineDescription tagger = createEngineDescription(MyTagger.class);
 
 runPipeline(jCas, tokenizer, tagger);
 
 for(Token token : iterate(jCas, Token.class)){
     System.out.println(token.getTag());
 }</programlisting>
-      <para>This code assumes several static method imports (e.g.
-          <methodname>createEngine()</methodname>) provided by uimaFIT for brevity. And while the
+      <para>This code uses several static method imports for brevity. And while the
         terseness of this code won't make a Python programmer blush - it is certainly much easier
         than the seven steps outlined above! </para>
     </section>
@@ -103,12 +106,12 @@ for(Token token : iterate(jCas, Token.class)){
         or without descriptor files. For example, if you have a descriptor file for your analysis
         engine defined by <classname>MyTagger</classname> (as shown above), then you can instead
         instantiate the analysis engine with:</para>
-      <programlisting>AnalysisEngine tagger = createEngine("mypackage.MyTagger");</programlisting>
-      <para>This will find the descriptor file <filename>mypackage/!MyTagger.xml</filename> by name.
+      <programlisting>AnalysisEngineDescription tagger = createEngineDescription("mypackage.MyTagger");</programlisting>
+      <para>This will find the descriptor file <filename>mypackage/MyTagger.xml</filename> by name.
         Similarly, you can find a descriptor file by location with
-          <methodname>createEngineFromPath()</methodname>. However, if you want to dispense
+          <methodname>createEngineDescriptionFromPath()</methodname>. However, if you want to dispense
         with XML descriptor files altogether (and you probably do), you can use the method
-          <methodname>createEngine()</methodname> as shown above. One of the driving motivations
+          <methodname>createEngineDescription()</methodname> as shown above. One of the driving motivations
         for creating the second side of uimaFIT is our frustration with descriptor files and our
         desire to eliminate them. Descriptor files are difficult to maintain because they are
         generally tightly coupled with java code, they decay without warning, they are wearisome to
@@ -122,13 +125,12 @@ for(Token token : iterate(jCas, Token.class)){
       creating UIMA components and systems that are incompatible with the traditional UIMA approach?
       The answer to this question is <emphasis>no</emphasis>. For starters, uimaFIT does not skirt
       the UIMA mechanism of describing components - it only skips the XML part of it. For example,
-      when the method <methodname>createEngine()</methodname> is called (as shown above) an
+      when the method <methodname>createEngineDescription()</methodname> is called (as shown above) an
         <interfacename>AnalysisEngineDescription</interfacename> is created for the analysis engine.
       This is the same object type that is instantiated when a descriptor file is used. So, instead
       of parsing XML to instantiate an analysis engine description from XML, uimaFIT uses a factory
       method to instantiate it from method parameters. One of the happy benefits of this approach is
-      that for a given <interfacename>AnalysisEnginedDescription</interfacename> (which can be
-      obtained directly with <methodname>createEngineDescription()</methodname>) you can generate
+      that for a given <interfacename>AnalysisEnginedDescription</interfacename> you can generate
       an XML descriptor file using <methodname>AnalysisEngineDescription.toXML()</methodname>. So,
       uimaFIT actually provides a very simple and direct path for <emphasis>generating</emphasis>
       XML descriptor files rather than manually creating and maintaining them! </para>
@@ -142,8 +144,8 @@ for(Token token : iterate(jCas, Token.class)){
       whether you instantiate your analysis engine in the <emphasis>UIMA way</emphasis> or use one
       of uimaFIT's factory methods. Similarly, a UIMA component does not need to be annotated with
         <classname>@ConfiguratioParameter</classname> for you to make use of the
-        <methodname>createEngine()</methodname> method. This is because when you pass
-      configuration parameter values in to the <methodname>createEngine()</methodname> method,
+        <methodname>createEngineDescription()</methodname> method. This is because when you pass
+      configuration parameter values in to the <methodname>createEngineDescription()</methodname> method,
       they are added to an <interfacename>AnalysisEngineDescription</interfacename> which is used by
       UIMA to populate a <interfacename>UimaContext</interfacename> - just as it would if you used a
       descriptor file. </para>
