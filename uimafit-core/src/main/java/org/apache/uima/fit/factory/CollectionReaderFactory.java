@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.Constants;
+import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
@@ -50,7 +51,6 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
-import org.apache.uima.util.InvalidXMLException;
 
 /**
  */
@@ -69,16 +69,13 @@ public final class CollectionReaderFactory {
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
    * @return The CollectionReader created from the XML descriptor and the configuration parameters.
-   * @throws InvalidXMLException
-   *           if the descriptor could not be created
-   * @throws ResourceInitializationException
-   *           if the component could not be instantiated
+   * @throws UIMAException
+   *           if the descriptor could not be created or if the component could not be instantiated
    * @throws IOException
    *           if the descriptor could not be read
    */
   public static CollectionReader createReaderFromPath(String descriptorPath,
-          Object... configurationData) throws InvalidXMLException, ResourceInitializationException, 
-          IOException {
+          Object... configurationData) throws UIMAException, IOException {
     CollectionReaderDescription desc = createReaderDescriptionFromPath(descriptorPath,
             configurationData);
     return UIMAFramework.produceCollectionReader(desc, ResourceManagerFactory.newResourceManager(),
@@ -95,17 +92,14 @@ public final class CollectionReaderFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The CollectionReader created from the XML descriptor and the configuration parameters.
    * @deprecated use {@link #createReaderFromPath(String, Object...)}
-   * @throws InvalidXMLException
-   *           if the descriptor could not be created
-   * @throws ResourceInitializationException
-   *           if the component could not be instantiated
+   * @throws UIMAException
+   *           if the descriptor could not be created or if the component could not be instantiated
    * @throws IOException
    *           if the descriptor could not be read
    */
   @Deprecated
   public static CollectionReader createCollectionReaderFromPath(String descriptorPath,
-          Object... configurationData) throws InvalidXMLException, ResourceInitializationException, 
-          IOException {
+          Object... configurationData) throws UIMAException, IOException {
     return createReaderFromPath(descriptorPath, configurationData);
   }
 
@@ -118,13 +112,13 @@ public final class CollectionReaderFactory {
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
    * @return the description created from the XML descriptor and the configuration parameters.
-   * @throws InvalidXMLException
+   * @throws UIMAException
    *           if the descriptor could not be created or if the component could not be instantiated
    * @throws IOException
    *           if the descriptor could not be read
    */
   public static CollectionReaderDescription createReaderDescriptionFromPath(String descriptorPath,
-          Object... configurationData) throws InvalidXMLException, IOException {
+          Object... configurationData) throws UIMAException, IOException {
     ResourceCreationSpecifier specifier = createResourceCreationSpecifier(descriptorPath,
             configurationData);
     return (CollectionReaderDescription) specifier;
@@ -140,17 +134,14 @@ public final class CollectionReaderFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The CollectionReader created from the XML descriptor and the configuration parameters.
    * @deprecated use {@link #createReaderDescriptionFromPath(String, Object...)}
-   * @throws InvalidXMLException
-   *           if the descriptor could not be created
-   * @throws ResourceInitializationException
-   *           if the component could not be instantiated
+   * @throws UIMAException
+   *           if the descriptor could not be created or if the component could not be instantiated
    * @throws IOException
    *           if the descriptor could not be read
    */
   @Deprecated
   public static CollectionReaderDescription createCollectionReaderDescriptionFromPath(
-          String descriptorPath, Object... configurationData) throws InvalidXMLException,
-          ResourceInitializationException, IOException {
+          String descriptorPath, Object... configurationData) throws UIMAException, IOException {
     return createReaderDescriptionFromPath(descriptorPath, configurationData);
   }
 
@@ -164,15 +155,13 @@ public final class CollectionReaderFactory {
    *          Any additional configuration parameters to be set. These should be supplied as (name,
    *          value) pairs, so there should always be an even number of parameters.
    * @return The AnalysisEngine created from the XML descriptor and the configuration parameters.
-   * @throws InvalidXMLException
-   *           if the descriptor could not be created
-   * @throws ResourceInitializationException
-   *           if the component could not be instantiated
+   * @throws UIMAException
+   *           if the descriptor could not be created or if the component could not be instantiated
    * @throws IOException
    *           if the descriptor could not be read
    */
-  public static CollectionReader createReader(String descriptorName, Object... configurationData)
-          throws InvalidXMLException, ResourceInitializationException, IOException {
+  public static CollectionReader createReader(String descriptorName,
+          Object... configurationData) throws UIMAException, IOException {
     Import imp = UIMAFramework.getResourceSpecifierFactory().createImport();
     imp.setName(descriptorName);
     URL url = imp.findAbsoluteUrl(ResourceManagerFactory.newResourceManager());
@@ -192,17 +181,14 @@ public final class CollectionReaderFactory {
    *          value) pairs, so there should always be an even number of parameters.
    * @return The AnalysisEngine created from the XML descriptor and the configuration parameters.
    * @deprecated use {@link #createReader(String, Object...)}
-   * @throws InvalidXMLException
-   *           if the descriptor could not be created
-   * @throws ResourceInitializationException
-   *           if the component could not be instantiated
+   * @throws UIMAException
+   *           if the descriptor could not be created or if the component could not be instantiated
    * @throws IOException
    *           if the descriptor could not be read
    */
   @Deprecated
   public static CollectionReader createCollectionReader(String descriptorName,
-          Object... configurationData) throws ResourceInitializationException, InvalidXMLException,
-          IOException {
+          Object... configurationData) throws UIMAException, IOException {
     return createReader(descriptorName, configurationData);
   }
 

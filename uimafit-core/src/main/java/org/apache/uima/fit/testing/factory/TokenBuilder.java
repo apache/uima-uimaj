@@ -21,6 +21,7 @@ package org.apache.uima.fit.testing.factory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.fit.factory.AnnotationFactory;
 import org.apache.uima.jcas.JCas;

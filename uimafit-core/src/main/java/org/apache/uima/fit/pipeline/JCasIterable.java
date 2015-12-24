@@ -20,15 +20,14 @@ package org.apache.uima.fit.pipeline;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 
 /**
@@ -81,7 +80,7 @@ public class JCasIterable implements Iterable<JCas> {
       i.setSelfComplete(true);
       i.setSelfDestroy(true);
       return i;
-    } catch (CASException | ResourceInitializationException e) {
+    } catch (UIMAException e) {
       throw new IllegalStateException(e);
     }
   }
