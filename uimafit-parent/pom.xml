@@ -192,6 +192,24 @@
                         <!--encoding>UTF-8</encoding this inherited from apache pom 7 -->
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId> 
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <configuration>
+                                <source>${maven.compiler.source}</source>
+                            </configuration> 
+                        </execution>
+                        <execution>
+                            <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
+                            <configuration>
+                                <source>${maven.compiler.source}</source>
+                            </configuration> 
+                        </execution>
+                    </executions>
+                </plugin>
 				<plugin>
 					<groupId>org.apache.uima</groupId>
 					<artifactId>jcasgen-maven-plugin</artifactId>
