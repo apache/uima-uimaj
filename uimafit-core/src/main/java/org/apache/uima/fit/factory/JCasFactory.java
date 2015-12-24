@@ -26,10 +26,11 @@ import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.uima.UIMAException;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.util.CasIOUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -51,10 +52,12 @@ public final class JCasFactory {
    * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    */
-  public static JCas createText(String aText) throws UIMAException {
+  public static JCas createText(String aText) throws ResourceInitializationException, CASException {
     return createText(aText, null);
   }
 
@@ -65,10 +68,13 @@ public final class JCasFactory {
    * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    */
-  public static JCas createText(String aText, String aLanguage) throws UIMAException {
+  public static JCas createText(String aText, String aLanguage)
+          throws ResourceInitializationException, CASException {
     JCas jcas = createJCas();
     if (aText != null) {
       jcas.setDocumentText(aText);
@@ -86,10 +92,12 @@ public final class JCasFactory {
    * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    */
-  public static JCas createJCas() throws UIMAException {
+  public static JCas createJCas() throws ResourceInitializationException, CASException {
     TypeSystemDescription tsd = createTypeSystemDescription();
     TypePriorities tp = createTypePriorities();
     FsIndexCollection indexes = createFsIndexCollection();
@@ -105,10 +113,13 @@ public final class JCasFactory {
    *          names of the type system descriptors on the classpath used to initialize the JCas (in
    *          Java notation, e.g. "my.package.TypeSystem" without the ".xml" extension)
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    */
-  public static JCas createJCas(String... typeSystemDescriptorNames) throws UIMAException {
+  public static JCas createJCas(String... typeSystemDescriptorNames) throws CASException,
+          ResourceInitializationException {
     return CasCreationUtils.createCas(createTypeSystemDescription(typeSystemDescriptorNames), null,
             null).getJCas();
   }
@@ -120,10 +131,13 @@ public final class JCasFactory {
    * @param typeSystemDescriptorPaths
    *          paths to type system descriptor files
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    */
-  public static JCas createJCasFromPath(String... typeSystemDescriptorPaths) throws UIMAException {
+  public static JCas createJCasFromPath(String... typeSystemDescriptorPaths) throws CASException,
+          ResourceInitializationException {
     return createJCas(createTypeSystemDescriptionFromPath(typeSystemDescriptorPaths));
   }
 
@@ -134,10 +148,13 @@ public final class JCasFactory {
    * @param typeSystemDescription
    *          a type system description to initialize the JCas
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    */
-  public static JCas createJCas(TypeSystemDescription typeSystemDescription) throws UIMAException {
+  public static JCas createJCas(TypeSystemDescription typeSystemDescription) throws CASException,
+          ResourceInitializationException {
     return CasCreationUtils.createCas(typeSystemDescription, null, null).getJCas();
   }
 
@@ -149,13 +166,15 @@ public final class JCasFactory {
    * @param typeSystemDescription
    *          a type system description to initialize the JCas
    * @return a new JCas
-   * @throws UIMAException
+   * @throws ResourceInitializationException
+   *           if the CAS configuration could not be assembled
+   * @throws CASException 
    *           if the JCas could not be initialized
    * @throws IOException
    *           if there is a problem reading the file
    */
   public static JCas createJCas(String fileName, TypeSystemDescription typeSystemDescription)
-          throws UIMAException, IOException {
+          throws IOException, CASException, ResourceInitializationException {
     JCas jCas = createJCas(typeSystemDescription);
     CasIOUtil.readJCas(jCas, new File(fileName));
     return jCas;

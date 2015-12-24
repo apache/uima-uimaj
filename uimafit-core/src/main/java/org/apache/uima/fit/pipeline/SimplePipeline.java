@@ -22,16 +22,18 @@ import static java.util.Arrays.asList;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.util.LifeCycleUtil.collectionProcessComplete;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.collection.CollectionException;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
@@ -68,13 +70,21 @@ public final class SimplePipeline {
    *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
    *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
    *          and call the other runPipeline method.
-   * @throws UIMAException
-   *           if there is a problem initializing or running the CPE.
+   * @throws ResourceInitializationException
+   *          if there is a problem initializing the pipeline.
    * @throws IOException
-   *           if there is an I/O problem in the reader
+   *           if there is an I/O problem in the reader.
+   * @throws CASAdminException 
+   *           if there is a problem resetting the CAS.
+   * @throws CollectionException 
+   *           if there is a problem running the pipeline.
+   * @throws AnalysisEngineProcessException 
+   *           if there is a problem running the pipeline.
    */
   public static void runPipeline(final CollectionReader reader,
-          final AnalysisEngineDescription... descs) throws UIMAException, IOException {
+          final AnalysisEngineDescription... descs) throws IOException,
+          ResourceInitializationException, AnalysisEngineProcessException, CollectionException,
+          CASAdminException {
     // Create AAE
     final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
 
@@ -120,13 +130,19 @@ public final class SimplePipeline {
    *          Primitive AnalysisEngineDescriptions that process the CAS, in order. If you have a mix
    *          of primitive and aggregate engines, then please create the AnalysisEngines yourself
    *          and call the other runPipeline method.
-   * @throws UIMAException
-   *           if there is a problem initializing or running the CPE.
+   * @throws ResourceInitializationException
+   *          if there is a problem initializing the pipeline.
    * @throws IOException
-   *           if there is an I/O problem in the reader
+   *           if there is an I/O problem in the reader.
+   * @throws CASAdminException 
+   *           if there is a problem resetting the CAS.
+   * @throws CollectionException 
+   *           if there is a problem running the pipeline.
+   * @throws AnalysisEngineProcessException 
+   *           if there is a problem running the pipeline.
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
-          final AnalysisEngineDescription... descs) throws UIMAException, IOException {
+          final AnalysisEngineDescription... descs) throws IOException, ResourceInitializationException, AnalysisEngineProcessException, CollectionException, CASAdminException {
     ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     
     // Create the components
@@ -174,13 +190,20 @@ public final class SimplePipeline {
    *          a collection reader
    * @param engines
    *          a sequence of analysis engines
-   * @throws UIMAException
-   *           if there is a problem initializing or running the CPE.
+   * @throws ResourceInitializationException
+   *          if there is a problem initializing the pipeline.
    * @throws IOException
-   *           if there is an I/O problem in the reader
+   *           if there is an I/O problem in the reader.
+   * @throws CASAdminException 
+   *           if there is a problem resetting the CAS.
+   * @throws CollectionException 
+   *           if there is a problem running the pipeline.
+   * @throws AnalysisEngineProcessException 
+   *           if there is a problem running the pipeline.
    */
   public static void runPipeline(final CollectionReader reader, final AnalysisEngine... engines)
-          throws UIMAException, IOException {
+          throws IOException, ResourceInitializationException, AnalysisEngineProcessException,
+          CollectionException, CASAdminException {
     final List<ResourceMetaData> metaData = new ArrayList<ResourceMetaData>();
     metaData.add(reader.getMetaData());
     for (AnalysisEngine engine : engines) {
