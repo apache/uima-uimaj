@@ -818,7 +818,7 @@ public abstract class FSCollectionFactory<T extends FeatureStructure> {
 
     @Override
     public Iterator<T> iterator() {
-      return index.iterator();
+      return index.withSnapshotIterators().iterator();
     }
 
     @Override

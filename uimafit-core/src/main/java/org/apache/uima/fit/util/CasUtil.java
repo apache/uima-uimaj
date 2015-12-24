@@ -92,7 +92,7 @@ public final class CasUtil {
    */
   @SuppressWarnings("unchecked")
   public static <T extends AnnotationFS> Iterator<T> iterator(CAS cas, Type type) {
-    return ((AnnotationIndex<T>) cas.getAnnotationIndex(type)).iterator();
+    return ((AnnotationIndex<T>) cas.getAnnotationIndex(type)).withSnapshotIterators().iterator();
   }
 
   /**
@@ -275,6 +275,8 @@ public final class CasUtil {
    */
   public static List<AnnotationFS> selectAt(final CAS aCas, final Type aType, int aBegin, int aEnd) {
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = aCas.getAnnotationIndex(aType).iterator();
 
     // Skip annotations whose start is before the start parameter.
@@ -388,6 +390,8 @@ public final class CasUtil {
     int end = right.getBegin();
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type).iterator();
 
     // Try to seek the insertion point.
@@ -495,6 +499,8 @@ public final class CasUtil {
     int end = coveringAnnotation.getEnd();
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type).iterator();
 
     // Try to seek the insertion point.
@@ -583,6 +589,8 @@ public final class CasUtil {
   public static List<AnnotationFS> selectCovered(CAS cas, Type type, int begin, int end) {
 
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> it = cas.getAnnotationIndex(type).iterator();
 
     // Skip annotations whose start is before the start parameter.
@@ -679,7 +687,10 @@ public final class CasUtil {
 
     TypeSystem ts = cas.getTypeSystem();
     List<AnnotationFS> list = new ArrayList<AnnotationFS>();
+    
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> iter = cas.getAnnotationIndex().iterator();
+    
     while (iter.hasNext()) {
       AnnotationFS a = iter.next();
       if ((a.getBegin() <= begin) && (a.getEnd() >= end)
@@ -792,6 +803,7 @@ public final class CasUtil {
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
+    // withSnapshotIterators() not needed here since we return only one result   
     FSIterator<AnnotationFS> i = cas.getAnnotationIndex(type).iterator();
     int n = index;
     i.moveToFirst();
@@ -962,6 +974,7 @@ public final class CasUtil {
     List<AnnotationFS> precedingAnnotations = new LinkedList<AnnotationFS>();
 
     // Seek annotation in index
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
     itr.moveTo(annotation);
     
@@ -1013,6 +1026,7 @@ public final class CasUtil {
     }
 
     // Seek annotation in index
+    // withSnapshotIterators() not needed here since we copy the FSes to a list anyway    
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
     itr.moveTo(annotation);
 
