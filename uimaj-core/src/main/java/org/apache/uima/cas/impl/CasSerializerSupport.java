@@ -40,7 +40,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -436,7 +435,7 @@ public class CasSerializerSupport {
       }
       iElementCount += queue.size();
 
-      FSIndex<FeatureStructure> sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
+      FSIndex<TOP> sofaIndex = cas.getBaseCAS().indexRepository.getIndex(CAS.SOFA_INDEX_NAME);
       if (!isDelta) {
       	iElementCount += (sofaIndex.size()); // one View element per sofa
       	iElementCount += getElementCountForSharedData();
