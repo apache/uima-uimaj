@@ -120,8 +120,12 @@ public interface TypeSystemMgr extends TypeSystem {
    * Commit the type system. The type system will be locked and no longer writable. WARNING: Users
    * should not call this, but instead call ((CASImpl) theAssociatedCAS).commitTypeSystem() in order
    * to set up the parts of the CAS that should be set up when the type system is committed.
+   * 
+   * @return the committed type system.  Note that this may be the same object as "this" or a 
+   *         different (but equal) object.  Type systems are cached and recreating the exact same type system
+   *         repeatedly will return the original one.
    */
-  void commit();
+  TypeSystem commit();
 
   /**
    * Check if this instance has been committed.
