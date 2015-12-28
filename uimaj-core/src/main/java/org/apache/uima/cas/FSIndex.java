@@ -156,13 +156,6 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
   int compare(FeatureStructure fs1, FeatureStructure fs2);
 
   /**
-   * Return an iterator over the index. The iterator will be set to the start position of the index.
-   * 
-   * @return An iterator over the index.
-   */
-  FSIterator<T> iterator();
-
-  /**
    * Return an iterator over the index. The position of the iterator will be set such that the
    * feature structure returned by a call to the iterator's {@link FSIterator#get() get()} method is
    * greater than or equal to <code>fs</code>, and any previous FS is less than <code>FS</code>
@@ -175,11 +168,20 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * @return An iterator positioned at <code>fs</code>, if it exists; else, an invalid iterator.
    */
   default FSIterator<T> iterator(FeatureStructure fs) {
-    FSIterator<T> it = iterator();
+    FSIterator<T> it = (FSIterator<T>) iterator();
     it.moveTo(fs);
     return it;
   }
 
+  /**
+   * Return an iterator over the index. The position of the iterator will be set to 
+   * return the first item in the index.
+   * If the index is empty, the iterator position will be marked as invalid.
+   * 
+   * @return An iterator positioned at the beginning, or an invalid iterator.
+   */
+  FSIterator<T> iterator();
+  
   /**
    * Return the indexing strategy.
    * 
