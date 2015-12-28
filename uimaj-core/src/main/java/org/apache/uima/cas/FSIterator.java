@@ -22,6 +22,12 @@ package org.apache.uima.cas;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.apache.uima.cas.impl.LowLevelIterator;
 
 /**
  * Iterator over feature structures.
@@ -184,4 +190,23 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
     throw new UnsupportedOperationException();
   } 
 
+  /**
+   * 
+   * @return a split iterator for this iterator, which has the following characteristics
+   *   DISTINCT, SIZED, SUBSIZED
+   *   
+   */
+  default Spliterator<T> spliterator() {
+    return Spliterators.spliterator(
+        this, 
+        ((LowLevelIterator<T>)this).ll_indexSize(), 
+
+        Spliterator.DISTINCT |
+        Spliterator.SIZED    |
+        Spliterator.SUBSIZED);
+  }
+  
+  default Stream<T> asStream() {
+    return StreamSupport.stream(spliterator(),  false);
+  }
 }
