@@ -23,41 +23,44 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SerialFormat;
-import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.CASImpl.BinDeserSupport;
+import org.apache.uima.cas.function.DeserBinaryIndexes;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 
 /**
  * Binary (mostly non compressed) CAS serialization and deserialization
+ * Was originally part of the CASImpl, moved to its own class for v3
  */
 public class BinaryCasSerDes {
+  
+  final private CASImpl baseCas;  // must be the base cas
 
-  public BinaryCasSerDes() {
-    // TODO Auto-generated constructor stub
+  public BinaryCasSerDes(CASImpl baseCAS) {
+    this.baseCas = baseCAS;
   }
   
   public void reinit(CASSerializer ser) {
-    if (this != this.svd.baseCAS) {
-      this.svd.baseCAS.reinit(ser);
-      return;
-    }
-    this.resetNoQuestions();
+    baseCas.resetNoQuestions();
     reinit(ser.getHeapMetadata(), ser.getHeapArray(), ser.getStringTable(), ser.getFSIndex(), ser
         .getByteArray(), ser.getShortArray(), ser.getLongArray());
   }
 
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
       byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
+    
+    reinitHeap(heapMetadata, heapArray);
+    
     createStringTableFromArray(stringTable);
     this.getHeap().reinit(heapMetadata, heapArray);
     if (byteHeapArray != null) {
@@ -72,70 +75,35 @@ public class BinaryCasSerDes {
 
     reinitIndexedFSs(fsIndex);
   }
-  
-  void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
-      byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
-    createStringTableFromArray(stringTable);
-    this.getHeap().reinit(heapMetadata, heapArray);
-    if (byteHeapArray != null) {
-      this.getByteHeap().reinit(byteHeapArray);
-    }
-    if (shortHeapArray != null) {
-      this.getShortHeap().reinit(shortHeapArray);
-    }
-    if (longHeapArray != null) {
-      this.getLongHeap().reinit(longHeapArray);
-    }
 
-    reinitIndexedFSs(fsIndex);
-  }
 
   /* *********************************
    *      D e s e r i a l i z e r s 
    ***********************************/
   
   public void reinit(CASCompleteSerializer casCompSer) {
-    if (this != this.svd.baseCAS) {
-      this.svd.baseCAS.reinit(casCompSer);
-      return;
-    }
     TypeSystemImpl ts = casCompSer.getCASMgrSerializer().getTypeSystem();
-    this.svd.casMetadata = ts.casMetadata;
-    this.tsi = null; // reset cache
-    commitTypeSystem();
+    baseCas.svd.clear();
+    baseCas.installTypeSystem(ts);
+    baseCas.commitTypeSystem();
 
     // reset index repositories -- wipes out Sofa index
-    this.indexRepository = casCompSer.getCASMgrSerializer().getIndexRepository(this);
-    this.indexRepository.commit();
+    baseCas.indexRepository = casCompSer.getCASMgrSerializer().getIndexRepository(baseCas);
+    baseCas.indexRepository.commit();
 
     // get handle to existing initial View
-    CAS initialView = this.getInitialView();
-
-    // throw away all other View information as the CAS definition may have
-    // changed
-    this.svd.sofa2indexMap.clear();
-    this.svd.sofaNbr2ViewMap.clear();
-    this.svd.viewCount = 0;
+    CASImpl initialView = (CASImpl) baseCas.getInitialView();
 
     // freshen the initial view
-    ((CASImpl) initialView).refreshView(this.svd.baseCAS, null);
-    setViewForSofaNbr(1, initialView);
-    this.svd.viewCount = 1;
+    initialView.refreshView(baseCas, null);  // sets jcas to null for the view, too
+    baseCas.setViewForSofaNbr(1, initialView);
+    baseCas.svd.viewCount = 1;
 
     // deserialize heap
     CASSerializer casSer = casCompSer.getCASSerializer();
     reinit(casSer.getHeapMetadata(), casSer.getHeapArray(), casSer.getStringTable(), casSer
         .getFSIndex(), casSer.getByteArray(), casSer.getShortArray(), casSer.getLongArray());
-
-    // we also need to throw away the JCAS. A new JCAS will be created on
-    // the next
-    // call to getJCas(). As with the CAS, we are counting on the fact that
-    // this happens only in a service, where JCAS handles are not held on
-    // to.
-    this.jcas = null;
-    // this.sofa2jcasMap.clear();
     
-    clearTrackingMarks();
   }
 
   /**
@@ -173,14 +141,10 @@ public class BinaryCasSerDes {
    */
 
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
-    if (this != this.svd.baseCAS) {
-      return this.svd.baseCAS.reinit(istream);
-    }
    
     final DataInputStream dis = (istream instanceof DataInputStream) ?  
        (DataInputStream) istream : new DataInputStream(istream);
-
-    final BinDeserSupport bds = new BinDeserSupport();
+       
     try {
       // key
       // determine if byte swap if needed based on key
@@ -198,27 +162,52 @@ public class BinaryCasSerDes {
       final boolean delta = ((version & 2) == 2);
       
       if (!delta) {
-        this.resetNoQuestions();
+        baseCas.resetNoQuestions();
       }
       
       if (0 != (version & 4)) {
         final int compressedVersion = readInt(dis, swap);
         if (compressedVersion == 0) {
-          (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
+          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false)).deserialize(baseCas, dis, delta);
           return SerialFormat.COMPRESSED;
         } else {
 //          throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED);
           // Only works for cases where the type systems match, and delta is false.
           try {
-            (new BinaryCasSerDes6(this)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+            (new BinaryCasSerDes6(baseCas)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
           } catch (ResourceInitializationException e) {
             throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED, null, e);
           }
           return SerialFormat.COMPRESSED_FILTERED;
         }
       }
+     
+      return binaryDeserialization(dis, swap, delta);
       
-      // main fsheap
+    } catch (IOException e) {
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = e.toString();
+      }
+      throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
+    }
+  }
+
+  /************************************************************
+   * ------   NON COMPRESSED BINARY DESEERIALIZATION   ------ *
+   ************************************************************/
+  /**
+   * 
+   * @param dis
+   * @param swap
+   * @param delta
+   */
+  private SerialFormat binaryDeserialization(DataInputStream dis, boolean swap, boolean delta) {
+    
+    final BinDeserSupport bds = new BinDeserSupport();
+    
+    try {
+    // main fsheap
       final int fsheapsz = readInt(dis, swap);
       
       int startPos = 0;
@@ -303,7 +292,7 @@ public class BinaryCasSerDes {
           bds.tobeAddedback.addback(bds.lastRemovedFsAddr);
           bds.fssAddrArray = null;  // free storage
         } finally {
-          svd.fsTobeAddedbackSingleInUse = false;
+          baseCas.resetAddbackSingleInUse();
         }
       }
 
@@ -421,61 +410,65 @@ public class BinaryCasSerDes {
       if (msg == null) {
         msg = e.toString();
       }
-      CASRuntimeException exception = new CASRuntimeException(
-          CASRuntimeException.BLOB_DESERIALIZATION, new String[] { msg });
-      throw exception;
+      throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
     }
     return SerialFormat.BINARY;
   }
 
-  void reinitIndexedFSs(int[] fsIndex) {
+  void reinitIndexedFSs_common(int[] fsIndex, DeserBinaryIndexes viewAction) {
     // Add FSs to index repository for base CAS
     int numViews = fsIndex[0];
     int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as
     // number of views
     // because the initial view may not have a sofa
     for (int i = 2; i < loopLen + 2; i++) { // iterate over all the sofas,
-      this.indexRepository.addFS(fsIndex[i]); // add to base index
+      baseCas.indexRepository.addFS(fsIndex[i]); // add to base index
     }
     int loopStart = loopLen + 2;
 
-    FSIterator<SofaFS> iterator = this.svd.baseCAS.getSofaIterator();
-    final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
+    FSIterator<Sofa> iterator = baseCas.getSofaIterator();
+//    final Feature idFeat = getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
     // Add FSs to index repository for each View
     while (iterator.isValid()) {
-      SofaFS sofa = iterator.get();
-      String id = ll_getStringValue(((FeatureStructureImpl) sofa).getAddress(),
-          ((FeatureImpl) idFeat).getCode());
-      if (CAS.NAME_DEFAULT_SOFA.equals(id)) {
-        this.registerInitialSofa();
-        this.svd.sofaNameSet.add(id);
+      Sofa sofa = iterator.get();
+      String id = sofa.getSofaID();
+      if (CAS.NAME_DEFAULT_SOFA.equals(id)) { // _InitialView
+        baseCas.registerInitialSofa();
+        baseCas.addSofaViewName(id);
       }
       // next line the getView as a side effect
       // checks for dupl sofa name, and if not,
       // adds the name to the sofaNameSet
-      ((CASImpl) this.getView(sofa)).registerView(sofa);
+      ((CASImpl) baseCas.getView(sofa)).registerView(sofa);
 
       iterator.moveToNext();
     }
-    getInitialView();  // done for side effect of creating the initial view.
+    baseCas.getInitialView();  // done for side effect of creating the initial view.
     // must be done before the next line, because it sets the
     // viewCount to 1.
-    this.svd.viewCount = numViews; // total number of views
+    baseCas.setViewCount(numViews); // total number of views
     
     for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
-      CAS view = (viewNbr == 1) ? getInitialView() : getView(viewNbr);
+      CASImpl view = (viewNbr == 1) ? (CASImpl) baseCas.getInitialView() : (CASImpl) baseCas.getView(viewNbr);
       if (view != null) {
-        FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) getSofaIndexRepository(viewNbr);
-        loopLen = fsIndex[loopStart];
-        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
-          loopIndexRep.addFS(fsIndex[i]);
-        }
-        loopStart += loopLen + 1;
-          ((CASImpl) view).updateDocumentAnnotation();
+        loopStart += (1 + viewAction.apply(loopStart, view));
+        view.updateDocumentAnnotation();  
       } else {
         loopStart += 1;
       }
     }
+  }
+  
+  
+  void reinitIndexedFSs(int[] fsIndex) {
+    reinitIndexedFSs_common(fsIndex, (loopStart, view) -> {      
+      FSIndexRepositoryImpl loopIndexRep = view.indexRepository;
+      final int loopLen = fsIndex[loopStart];
+      for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
+        loopIndexRep.addFS(fsIndex[i]);
+      }
+      return loopLen;
+    });
   }
   
   /**
@@ -487,76 +480,42 @@ public class BinaryCasSerDes {
    * @param fsIndex - array of fsRefs and counts, for sofas, and all views
    */
   void reinitDeltaIndexedFSs(int[] fsIndex) {
-    assert(this.svd.baseCAS == this);  
-    // Add Sofa FSs to index repository for base CAS
-    int numViews = fsIndex[0]; // total number of views
-    int loopLen = fsIndex[1]; // number of sofas, not necessarily the same as number of views (initial view could be missing a Sofa)
-    // add Sofa FSs to base view number of views. Should only contain new Sofas.
-    for (int i = 2; i < loopLen + 2; i++) { // iterate over all the sofas,
-      this.indexRepository.addFS(fsIndex[i]); // add to base index
-    }
-    int loopStart = loopLen + 2;
-
-    FSIterator<SofaFS> iterator = this.getSofaIterator();
-    final int idFeatCode = ((FeatureImpl)getTypeSystem().getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID)).getCode();
-    
-    // Register all Sofas
-    while (iterator.isValid()) {
-      SofaFS sofa = iterator.get();
-      String id = ll_getStringValue(((FeatureStructureImpl) sofa).getAddress(), idFeatCode);
-      if (CAS.NAME_DEFAULT_SOFA.equals(id)) {
-        this.registerInitialSofa();
-        this.svd.sofaNameSet.add(id);
-      }
-      // next line the getView as a side effect
-      // checks for dupl sofa name, and if not,
-      // adds the name to the sofaNameSet
-      ((CASImpl) this.getView(sofa)).registerView(sofa);
-
-      iterator.moveToNext();
-    }
-    
-    this.svd.viewCount = numViews; // total number of views
-
-    for (int viewNbr = 1; viewNbr <= numViews; viewNbr++) {
-      CAS view = (viewNbr == 1) ? getInitialView() : getView(viewNbr);
-      if (view != null) {
-        
-        // for all views
-        
-        FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) getSofaIndexRepository(viewNbr);
-        loopLen = fsIndex[loopStart];
-        
-        // add FSs to index
-        
-        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
-          loopIndexRep.addFS(fsIndex[i]);
-        }
-        
-        // remove FSs from indexes
-        
-        loopStart += loopLen + 1;
-        loopLen = fsIndex[loopStart];
-        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
-          loopIndexRep.removeFS(fsIndex[i]);
-        }
-        
-        // skip the reindex - this isn't done here https://issues.apache.org/jira/browse/UIMA-4100
-        // but we need to run the loop to read over the items in the input stream
-        loopStart += loopLen + 1;
-        loopLen = fsIndex[loopStart];
-//        for (int i = loopStart + 1; i < loopStart + 1 + loopLen; i++) {
-//          loopIndexRep.removeFS(fsIndex[i]);
-//          loopIndexRep.addFS(fsIndex[i]);
-//        }
-        loopStart += loopLen + 1;
-        ((CASImpl) view).updateDocumentAnnotation();
-      } else {
-        loopStart += 1;
-      }
-    }
+    reinitIndexedFSs_common(fsIndex, (loopStart, view) -> {
+      // for all views
+      
+      FSIndexRepositoryImpl ir = view.indexRepository;
+      loopStart = reinitDeltaIndexedFSsInner(ir, fsIndex, loopStart, true); // adds
+      loopStart = reinitDeltaIndexedFSsInner(ir, fsIndex, loopStart, false); // removes
+      
+      // skip the reindex - this isn't done here https://issues.apache.org/jira/browse/UIMA-4100
+      // but we need to run the loop to read over the items in the input stream
+      return fsIndex[loopStart];  // return loopLen
+    });
   }
-
+  
+  int reinitDeltaIndexedFSsInner(FSIndexRepositoryImpl ir, int[] fsIndex, int loopStart, boolean isAdd) {
+    int loopLen = fsIndex[loopStart];
+    final int end1 = loopStart + 1 + loopLen;
+    
+    // add FSs to index
+    
+    for (int i = loopStart + 1; i < end1; i++) {
+      if (isAdd) {
+        ir.addFS(fsIndex[i]);
+      } else {
+        ir.removeFS(fsIndex[i]);
+      }
+    }
+    return loopStart + loopLen + 1;
+  }
+  
+  static class IndexedFSs {
+    int numViews;
+    int numSofas;
+    List<Sofa> sofas;
+    List<Stream<TOP>> viewFssList;
+  }
+  
   // IndexedFSs format:
   // number of views
   // number of sofas
@@ -564,40 +523,40 @@ public class BinaryCasSerDes {
   // number of FS indexed in View1
   // [FS-1 ... FS-n]
   // etc.
-  int[] getIndexedFSs() {
-    IntVector v = new IntVector();
-    int[] fsLoopIndex;
-
-    int numViews = getBaseSofaCount();
-    v.add(numViews);
-
-    // Get indexes for base CAS
-    Stream<FeatureStructure> indexedFSs = getBaseCAS().indexRepository.getIndexedFSs();
-    
-    
-    fsLoopIndex = this.svd.baseCAS.indexRepository.getIndexedFSs();
-    v.add(fsLoopIndex.length);
-    v.add(fsLoopIndex, 0, fsLoopIndex.length);
-//    for (int k = 0; k < fsLoopIndex.length; k++) {
-//      v.add(fsLoopIndex[k]);
+//  int[] getIndexedFSs() {
+//    IntVector v = new IntVector();
+//    int[] fsLoopIndex;
+//
+//    int numViews = baseCas.getBaseSofaCount();
+//    v.add(numViews);
+//
+//    // Get indexes for base CAS
+//    Stream<FeatureStructure> indexedFSs = baseCas.indexRepository.getIndexedFSs();
+//    
+//    
+//    fsLoopIndex = baseCas.svd.baseCAS.indexRepository.getIndexedFSs();
+//    v.add(fsLoopIndex.length);
+//    v.add(fsLoopIndex, 0, fsLoopIndex.length);
+////    for (int k = 0; k < fsLoopIndex.length; k++) {
+////      v.add(fsLoopIndex[k]);
+////    }
+//
+//    // Get indexes for each SofaFS in the CAS
+//    for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
+//      FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) baseCas.svd.baseCAS
+//          .getSofaIndexRepository(sofaNum);
+//      if (loopIndexRep != null) {
+//        fsLoopIndex = loopIndexRep.getIndexedFSs();
+//      } else {
+//        fsLoopIndex = INT0;
+//      }
+//      v.add(fsLoopIndex.length);
+//      for (int k = 0; k < fsLoopIndex.length; k++) {
+//        v.add(fsLoopIndex[k]);
+//      }
 //    }
-
-    // Get indexes for each SofaFS in the CAS
-    for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
-      FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) this.svd.baseCAS
-          .getSofaIndexRepository(sofaNum);
-      if (loopIndexRep != null) {
-        fsLoopIndex = loopIndexRep.getIndexedFSs();
-      } else {
-        fsLoopIndex = INT0;
-      }
-      v.add(fsLoopIndex.length);
-      for (int k = 0; k < fsLoopIndex.length; k++) {
-        v.add(fsLoopIndex[k]);
-      }
-    }
-    return v.toArray();
-  }
+//    return v.toArray();
+//  }
   
  
   
@@ -612,62 +571,62 @@ public class BinaryCasSerDes {
   //number of  FS reindexed in View1
   // [FS-1 ... FS-n]
   // etc.
-  int[] getDeltaIndexedFSs(MarkerImpl mark) {
-    IntVector v = new IntVector();
-    int[] fsLoopIndex;
-    int[] fsDeletedFromIndex;
-    int[] fsReindexed;
-
-    int numViews = getBaseSofaCount();
-    v.add(numViews);
-
-    // Get indexes for base CAS
-    fsLoopIndex = this.svd.baseCAS.indexRepository.getIndexedFSs();
-    // Get the new Sofa FS
-    IntVector newSofas = new IntVector();
-    for (int k = 0; k < fsLoopIndex.length; k++) {
-      if ( mark.isNew(fsLoopIndex[k]) ) {
-        newSofas.add(fsLoopIndex[k]);
-      }
-    }
-    
-    v.add(newSofas.size());
-    v.add(newSofas.getArray(), 0, newSofas.size());
-//    for (int k = 0; k < newSofas.size(); k++) {
-//      v.add(newSofas.get(k));
+//  int[] getDeltaIndexedFSs(MarkerImpl mark) {
+//    IntVector v = new IntVector();
+//    int[] fsLoopIndex;
+//    int[] fsDeletedFromIndex;
+//    int[] fsReindexed;
+//
+//    int numViews = getBaseSofaCount();
+//    v.add(numViews);
+//
+//    // Get indexes for base CAS
+//    fsLoopIndex = baseCas.svd.baseCAS.indexRepository.getIndexedFSs();
+//    // Get the new Sofa FS
+//    IntVector newSofas = new IntVector();
+//    for (int k = 0; k < fsLoopIndex.length; k++) {
+//      if ( mark.isNew(fsLoopIndex[k]) ) {
+//        newSofas.add(fsLoopIndex[k]);
+//      }
 //    }
-
-    // Get indexes for each view in the CAS
-    for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
-      FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) this.svd.baseCAS
-          .getSofaIndexRepository(sofaNum);
-      if (loopIndexRep != null) {
-        fsLoopIndex = loopIndexRep.getAddedFSs();
-        fsDeletedFromIndex = loopIndexRep.getDeletedFSs();
-        fsReindexed = loopIndexRep.getReindexedFSs();
-      } else {
-        fsLoopIndex = INT0;
-        fsDeletedFromIndex = INT0;
-        fsReindexed = INT0;
-      }
-      v.add(fsLoopIndex.length);
-      v.add(fsLoopIndex, 0, fsLoopIndex.length);
-//      for (int k = 0; k < fsLoopIndex.length; k++) {
-//        v.add(fsLoopIndex[k]);
+//    
+//    v.add(newSofas.size());
+//    v.add(newSofas.getArray(), 0, newSofas.size());
+////    for (int k = 0; k < newSofas.size(); k++) {
+////      v.add(newSofas.get(k));
+////    }
+//
+//    // Get indexes for each view in the CAS
+//    for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
+//      FSIndexRepositoryImpl loopIndexRep = (FSIndexRepositoryImpl) baseCas.svd.baseCAS
+//          .getSofaIndexRepository(sofaNum);
+//      if (loopIndexRep != null) {
+//        fsLoopIndex = loopIndexRep.getAddedFSs();
+//        fsDeletedFromIndex = loopIndexRep.getDeletedFSs();
+//        fsReindexed = loopIndexRep.getReindexedFSs();
+//      } else {
+//        fsLoopIndex = INT0;
+//        fsDeletedFromIndex = INT0;
+//        fsReindexed = INT0;
 //      }
-      v.add(fsDeletedFromIndex.length);
-      v.add(fsDeletedFromIndex, 0, fsDeletedFromIndex.length);
-//      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
-//        v.add(fsDeletedFromIndex[k]);
-//      }
-      v.add(fsReindexed.length);
-      v.add(fsReindexed, 0, fsReindexed.length);
-//      for (int k = 0; k < fsReindexed.length; k++) {
-//        v.add(fsReindexed[k]);
-//      }
-    }
-    return v.toArray();
-  }
+//      v.add(fsLoopIndex.length);
+//      v.add(fsLoopIndex, 0, fsLoopIndex.length);
+////      for (int k = 0; k < fsLoopIndex.length; k++) {
+////        v.add(fsLoopIndex[k]);
+////      }
+//      v.add(fsDeletedFromIndex.length);
+//      v.add(fsDeletedFromIndex, 0, fsDeletedFromIndex.length);
+////      for (int k = 0; k < fsDeletedFromIndex.length; k++) {
+////        v.add(fsDeletedFromIndex[k]);
+////      }
+//      v.add(fsReindexed.length);
+//      v.add(fsReindexed, 0, fsReindexed.length);
+////      for (int k = 0; k < fsReindexed.length; k++) {
+////        v.add(fsReindexed[k]);
+////      }
+//    }
+//    return v.toArray();
+//  }
 
   void createStringTableFromArray(String[] stringTable) {
     // why a new heap instead of reseting the old one???
@@ -753,7 +712,7 @@ public class BinaryCasSerDes {
     } else if (type.isArray()) {
       return fsAddr + 3;  // for the aux ref and the length
     } else {
-      return fsAddr + this.svd.casMetadata.fsSpaceReq[typeCode];
+      return fsAddr + baseCas.svd.casMetadata.fsSpaceReq[typeCode];
     }    
   }
   
