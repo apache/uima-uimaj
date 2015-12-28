@@ -24,10 +24,12 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -758,10 +760,11 @@ public interface CAS extends AbstractCas {
    * the document language is specified.
    * 
    * @param <T> the Java class for the document annotation.  Could be the JCas cover class or FeatureStructure
-   * @return The document annotation, or <code>null</code> if there is none.  The return value is the
-   *         JCas cover class or the plain Java cover class for FeatureStructures if JCas is not in use.
+   * @return The document annotation.  If it doesn't exist, one is created.  The return value is the
+   *         JCas cover class or the plain Java cover class for FeatureStructures if 
+   *         there is no JCas cover class for this type.
    */
-  <T extends Annotation> T getDocumentAnnotation();
+  <T extends AnnotationFS> T getDocumentAnnotation();
 
   /**
    * Informs the CAS of relevant information about the component that is currently processing it.
@@ -808,7 +811,7 @@ public interface CAS extends AbstractCas {
    * 
    * @return an iterator over SofaFS.
    */
-  FSIterator<SofaFS> getSofaIterator();
+  <T extends SofaFS> FSIterator<T> getSofaIterator();
 
   /**
    * Create an iterator over structures satisfying a given constraint. Constraints are described in
