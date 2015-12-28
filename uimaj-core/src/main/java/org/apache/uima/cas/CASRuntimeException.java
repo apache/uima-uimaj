@@ -236,6 +236,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** The CAS doesn't have a Feature Structure whose ID is {0}; it may have been garbage collected.*/
   public static final String CAS_MISSING_FS = "CAS_MISSING_FS";
   
+  /** Type Systems must be committed before calling this method. */
+  public static final String TYPESYSTEMS_NOT_COMMITTED = "TYPESYSTEMS_NOT_COMMITTED";
+  
   /**
    * The constructors are organized
    * 
