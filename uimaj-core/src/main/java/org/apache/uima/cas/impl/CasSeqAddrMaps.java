@@ -19,11 +19,17 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
- * Manage the conversion of Items (FSrefs) to relative sequential index number, and back 
+ * Used by Binary serialization form 6
+ * 
+ * Manage the conversion of FSs to relative sequential index number, and back 
  * Manage the difference in two type systems
  *   both size of the FSs and
  *   handling excluded types
@@ -39,7 +45,7 @@ import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 public class CasSeqAddrMaps {
   
   /**
-   * map from a target FS sequence nbr to a source address.
+   * map from a target FS sequence nbr to a source id.
    *   value is 0 if the target instance doesn't exist in the source
    *     (this doesn't occur for receiving remote CASes back
    *      (because src ts is always a superset of tgt ts),
@@ -47,7 +53,13 @@ public class CasSeqAddrMaps {
    *      
    * First seq number is 0.
    */
-  final private IntVector tgtSeq2SrcAddr;
+  final private IntVector tgtId2SrcId;
+  
+//  /**
+//   * map from a target FS sequence nbr to a source FS.
+//   *   value is null if the target instance doesn't exist in the source
+//   */
+//  final private List<TOP> tgtId2SrcFs;
   
 //  /**
 //   * (Not Used, currently)
@@ -63,76 +75,40 @@ public class CasSeqAddrMaps {
 //  final private IntVector tgtSeq2TgtAddr = new IntVector();  // used for comparing
   
   /**
-   * map from source address to target sequence number.
+   * map from source id to target id.
    * if source is not in target, value = -1;
    */
-  final private Int2IntRBT srcAddr2TgtSeq;
-  
-  /**
-   * info needed to do a map from target aux heap to source aux heap
-   * Used when applying delta modifications "below the line" to these elements
-   *   Assumes any target ts element exists in source ts, so target is a subset
-   *   (due to type merging, when delta cas is used to return updates from service)
-   */
-  
-
-  /**
-   * Indexed by AuxHeap kind: 
-   */
-
-//  final private List<List<AuxSkip>> skips = new ArrayList<List<AuxSkip>>(AuxHeap.values().length);
-//  
-//  { // initialize instance block
-//    for (int i = 0; i < skips.size(); i++) {
-//      skips.add(new ArrayList<AuxSkip>());
-//    }
-//  }
- 
+  final private Int2IntRBT srcId2TgtId;
+   
   private int nextTgt = 0;
 
   public CasSeqAddrMaps() {
     // this call makes the first real seq number == 1.
-    // seq 0 refers to the NULL fs value at heap location 0.
-    this.tgtSeq2SrcAddr = new IntVector();
-    this.srcAddr2TgtSeq = new Int2IntRBT();
-    addItemAddr(0, 0, true);
+    // seq 0 refers to the NULL fs value.
+    this.tgtId2SrcId = new IntVector();
+//    this.tgtId2SrcFs = new ArrayList<>();
+    this.srcId2TgtId = new Int2IntRBT();
+    addItemId(0, 0, true);
   }
   
   public CasSeqAddrMaps(IntVector tgtSeq2SrcAddr, Int2IntRBT srcAddr2TgtSeq) {
-    this.tgtSeq2SrcAddr = tgtSeq2SrcAddr;
-    this.srcAddr2TgtSeq = srcAddr2TgtSeq;
+    this.tgtId2SrcId = tgtSeq2SrcAddr;
+    this.srcId2TgtId = srcAddr2TgtSeq;
   }
         
   /**
-   * Add a new FS address - done during prescan of source
+   * Add a new FS id - done during prescan of source
    * Must call in heap scan order
-   * @param srcAddr -
-   * @param tgtAddr -
+   * @param srcId -
+   * @param tgtId -
    * @param inTarget true if this type is in the target
    */
-  public void addItemAddr(int srcAddr, int tgtAddr, boolean inTarget) {
+  public void addItemId(int srcId, int tgtId, boolean inTarget) {
     if (inTarget) {
-      tgtSeq2SrcAddr.add(srcAddr);
-//      tgtSeq2TgtAddr.add(tgtAddr);
+      tgtId2SrcId.add(srcId);
     }
-    srcAddr2TgtSeq.put(srcAddr, inTarget ? nextTgt++ : -1);
-//    // debug
-//    if (srcAddr < 525) {
-//      System.out.format("Adding to srcAddr2TgtSeq: addr: %d tgtSeq: %d, type=%s%n", srcAddr, inTarget ? i : 0, 
-//         );
-//    }
-//    srcSeq2TgtSeq.add(inTarget ? nextTgt++ : 0);
+    srcId2TgtId.put(srcId, inTarget ? nextTgt++ : -1);
   }
-  
-//  /**
-//   * record skipped entries in an Aux heap
-//   * @param auxHeap which heap this is for
-//   * @param srcSkipIndex the index of the first skipped slot in the src heap
-//   * @param srcSkipSize the number of entries skipped
-//   */
-//  public void recordSkippedAuxHeap(AuxHeap auxHeap, int srcSkipIndex, int srcSkipSize) {
-//    skips.get(auxHeap.ordinal()).add(new AuxSkip(srcSkipIndex, srcSkipSize));
-//  }
   
   /**
    * Called during deserialize to incrementally add 
@@ -141,15 +117,21 @@ public class CasSeqAddrMaps {
    */
   public void addSrcAddrForTgt(int srcAddr, boolean inSrc) {
     if (inSrc) {
-      srcAddr2TgtSeq.put(srcAddr, nextTgt);
-//      srcSeq2TgtSeq.add(nextTgt);
-      tgtSeq2SrcAddr.add(srcAddr);
+      srcId2TgtId.put(srcAddr, nextTgt);
+      tgtId2SrcId.add(srcAddr);
     } else {
-      tgtSeq2SrcAddr.add(0);
+      tgtId2SrcId.add(0);
     }
-//    tgtSeq2TgtAddr.add(-1);  // not used I hope - need to check TODO
     nextTgt++;
   }
+  
+//  public void addSrcFsForTgtId(TOP srcFS, boolean isInSrc) {
+//    if (isInSrc) {
+//      tgtId2SrcFs.add(srcFS);
+//    } else {
+//      tgtId2SrcFs.add(null);
+//    }
+//  }
              
   /**
    * 
@@ -157,36 +139,28 @@ public class CasSeqAddrMaps {
    * @return 0 means target seq doesn't exist in source CAS
    */
   public int getSrcAddrFromTgtSeq(int seq) {
-    return tgtSeq2SrcAddr.get(seq);
+    if (seq >= tgtId2SrcId.size()) {
+      return 0;
+    }
+    return tgtId2SrcId.get(seq);
   }
 
-//  public int getTgtAddrFromTgtSeq(int seq) {
-//    return tgtSeq2TgtAddr.get(seq);
-//  }
-
-//  public int getMappedItemAddr(int index) {
-//    if (null == typeMapper) {
-//      return tgtIndexToSeq.get(index);
-//    } else {
-//      return tgtItemIndexToAddr.get(index);
-//    }
-//  }
-  
   /**
    * @param itemAddr -
    * @return -1 if src addr not in target seq
    */
   public int getTgtSeqFromSrcAddr(int itemAddr) {
-//    System.out.println(" " + itemAddr);
-    return srcAddr2TgtSeq.getMostlyClose(itemAddr);      
+    return srcId2TgtId.getMostlyClose(itemAddr);      
   }
   
   public int getNumberSrcFss() {
-    return srcAddr2TgtSeq.size();
+    return srcId2TgtId.size();
   }
 
   CasSeqAddrMaps copy() {
-    CasSeqAddrMaps c = new CasSeqAddrMaps(tgtSeq2SrcAddr.copy(), srcAddr2TgtSeq.copy());
+    CasSeqAddrMaps c = new CasSeqAddrMaps(
+        tgtId2SrcId.copy(),
+        srcId2TgtId.copy());
     c.nextTgt = nextTgt;
     return c;    
   }
