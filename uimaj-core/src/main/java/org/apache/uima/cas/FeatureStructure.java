@@ -355,4 +355,10 @@ public interface FeatureStructure {
 
   int id();
   
+  /**
+   * Internal use
+   * @return the type code of this feature structure
+   */
+  int _getTypeCode();
+  
 }
