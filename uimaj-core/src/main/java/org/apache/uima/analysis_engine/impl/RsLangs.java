@@ -187,7 +187,7 @@ public class RsLangs {
       if (rsl == null || rsl.isShared) {
         rsl = new RsLangs();
       }
-      rsl.languages = new ArrayList<String>(1);  // special form means empty, not x-unspec
+      rsl.languages = new ArrayList<String>(0);  // special form means empty, not x-unspec
     }
     return addAll(rsl, langs);
   }
@@ -269,7 +269,7 @@ public class RsLangs {
     }
     
     RsLangs r = new RsLangs();
-    r.languages = new ArrayList<String>(1);  // creates an empty, not null arraylist
+    r.languages = new ArrayList<String>(0);  // creates an empty, not null arraylist
     
     for (String lang : this.languages) {
       if (subsumesCanonical(other, lang)) {
