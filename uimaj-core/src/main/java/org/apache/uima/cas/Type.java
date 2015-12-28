@@ -22,6 +22,8 @@ package org.apache.uima.cas;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.uima.cas.impl.FeatureImpl;
+
 /**
  * The interface describing types in the type system.
  * 
@@ -92,7 +94,7 @@ public interface Type {
    *          The short, unqualified name of the feature.
    * @return The feature, if it exists; <code>null</code>, else.
    */
-  Feature getFeatureByBaseName(String featureName);
+  FeatureImpl getFeatureByBaseName(String featureName);
 
   /**
    * Check if type is feature final, i.e., if no more new features may be defined for it.
@@ -124,11 +126,17 @@ public interface Type {
 
   /**
    * Check if the type is a String subtype.
+   * Note: returns false if a plain string
    * 
-   * @return <code>true</code> iff the type is a String subtype type.
+   * @return <code>true</code> iff the type is a String subtype type; false for plain string
    */
   boolean isStringSubtype();
 
+  /**
+   * @return true if is a String or a StringSubtype
+   */
+  boolean isStringOrStringSubtype();
+  
   /**
    * For array types, returns the component type of the array type. For all other types, it will
    * return <code>null</code>.
