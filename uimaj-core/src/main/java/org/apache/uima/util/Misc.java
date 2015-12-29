@@ -124,6 +124,10 @@ public class Misc {
     return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
   }
   
+  static public int nextHigherPowerOfX(int i, int x) {
+    int shft = 31 - Integer.numberOfLeadingZeros(x);  // x == 8, shft = 3
+    return (i < 1) ? x : ((i+(x - 1)) >>> shft) << shft;
+  }
   /**
    * Given a class, a lookup context, and a protected method and its arg classes,
    * return the method handle for that method.
@@ -249,6 +253,32 @@ public class Misc {
     }
     a.set(i, value);
   }
+  
+  public static boolean equalStrings(String s1, String s2) {
+    if (null == s1) {
+      return (null == s2);
+    }
+    return (null == s2) ? false : s1.equals(s2);
+  }
+
+  public static int compareStrings(String s1, String s2) {
+    if (null == s1) {
+      if (null == s2) {
+        return 0;
+      }
+      return -1;
+    }
+    return (null == s2) ? 1 : s1.compareTo(s2);
+  }
+  
+  public static String elideString(String s, int len) {
+    if (s.length() <= len) {
+      return s;
+    }
+    
+    return (s.substring(0, len) + "...");
+  }
+
   
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
