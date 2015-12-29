@@ -28,7 +28,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding subtypes)
@@ -37,7 +36,7 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
-public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TOP>, LowLevelIndex<T> {
+public abstract class FsIndex_singletype<T extends FeatureStructure> implements Comparator<FeatureStructure>, LowLevelIndex<T> {
 
   private final static String[] indexTypes = new String[] {"Sorted", "Set", "Bag", "DefaultBag"}; 
 
@@ -151,7 +150,7 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
   
   @Override
   public FSIterator<T> iterator(FeatureStructure initialPositionFs) {
-    FSIterator<T> fsIt = iterator();
+    FSIterator<T> fsIt = (FSIterator<T>) iterator();
     fsIt.moveTo(initialPositionFs);
     return fsIt;
   }
@@ -188,17 +187,12 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
   public int compare(int fs1, int fs2) {
     return compare(casImpl.getFsFromId_checked(fs1), casImpl.getFsFromId_checked(fs2));
   }
-  
-  @Override
-  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return compare((TOP) fs1, (TOP) fs2);
-  }
-  
+    
   /**
    * @see org.apache.uima.cas.FSIndex#compare(T, T)
    */    
   @Override
-  public int compare(TOP fs1, TOP fs2) {
+  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
   
     if (fs1 == fs2) {
       return 0;
@@ -319,7 +313,7 @@ public abstract class FsIndex_singletype<T extends TOP> implements Comparator<TO
    * For serialization: get all the items in this index and bulk add to an List<T>
    * @param v the set of items to add
    */
-  protected abstract void bulkAddTo(List<TOP> v);
+  protected abstract void bulkAddTo(List<T> v);
   
   @Override
   public LowLevelIterator<T> ll_iterator(boolean ambiguous) {

@@ -31,7 +31,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Implements AnnotationIndex
  * replaces AnnotationIndexImpl in v2
  */
-public class FsIndex_annotation <T extends Annotation> 
+public class FsIndex_annotation <T extends AnnotationFS> 
                  extends FsIndex_iicp<T> 
                  implements AnnotationIndex<T> {
   
@@ -146,7 +146,7 @@ public class FsIndex_annotation <T extends Annotation>
 
   @Override
   public FSIndex<T> withSnapshotIterators() {
-    return new FsIndex_snapshot(this);
+    return new FsIndex_snapshot<>(this);
   }
 //  public FSIndex<T> withSnapshotIterators() {
 //    return (FSIndex<T>) Proxy.newProxyInstance(

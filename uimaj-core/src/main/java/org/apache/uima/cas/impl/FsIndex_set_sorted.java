@@ -52,9 +52,13 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  * @param <T> the Java class type for this index
  */
-public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
+public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
-  final private SortedSet<TOP> ss = new SortedSet<TOP>() {
+  /**
+   * This impl of sorted set interface allows using the bulk add operation implemented in Java's 
+   * TreeSet - that tests if the argument being passed in is an instance of SortedSet and does a fast insert.
+   */
+  final private SortedSet<T> ss = new SortedSet<T>() {
     
     @Override
     public int size() { return itemsToBeAdded.size(); }
@@ -63,19 +67,19 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
     @Override
     public boolean contains(Object o) { throw new UnsupportedOperationException(); }
     @Override
-    public Iterator<TOP> iterator() { return itemsToBeAdded.iterator(); }
+    public Iterator<T> iterator() { return itemsToBeAdded.iterator(); }
     @Override
     public Object[] toArray() { throw new UnsupportedOperationException(); }
     @Override
     public <U> U[] toArray(U[] a) { throw new UnsupportedOperationException(); }
     @Override
-    public boolean add(TOP e) { throw new UnsupportedOperationException(); }
+    public boolean add(T e) { throw new UnsupportedOperationException(); }
     @Override
     public boolean remove(Object o) { throw new UnsupportedOperationException(); }
     @Override
     public boolean containsAll(Collection<?> c) { throw new UnsupportedOperationException(); }
     @Override
-    public boolean addAll(Collection<? extends TOP> c) { throw new UnsupportedOperationException(); }
+    public boolean addAll(Collection<? extends T> c) { throw new UnsupportedOperationException(); }
     @Override
     public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
     @Override
@@ -83,28 +87,30 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
     @Override
     public void clear() { throw new UnsupportedOperationException(); }
     @Override
-    public Comparator<TOP> comparator() { return comparator; }
+    public Comparator<? super T> comparator() { return comparator; }
     @Override
-    public SortedSet<TOP> subSet(TOP fromElement, TOP toElement) { throw new UnsupportedOperationException(); }
+    public SortedSet<T> subSet(FeatureStructure fromElement, FeatureStructure toElement) { throw new UnsupportedOperationException(); }
     @Override
-    public SortedSet<TOP> headSet(TOP toElement) { throw new UnsupportedOperationException(); }
+    public SortedSet<T> headSet(FeatureStructure toElement) { throw new UnsupportedOperationException(); }
     @Override
-    public SortedSet<TOP> tailSet(TOP fromElement) { throw new UnsupportedOperationException(); }
+    public SortedSet<T> tailSet(FeatureStructure fromElement) { throw new UnsupportedOperationException(); }
     @Override
-    public TOP first() { throw new UnsupportedOperationException(); }
+    public T first() { throw new UnsupportedOperationException(); }
     @Override
-    public TOP last() { throw new UnsupportedOperationException(); }     
+    public T last() { throw new UnsupportedOperationException(); }  
+    
+    
   };
 
 
   // The index, a NavigableSet. 
-  final private TreeSet<TOP> indexedFSs;
+  final private TreeSet<FeatureStructure> indexedFSs;
   
-  final private Comparator<TOP> comparator;
+  final private Comparator<FeatureStructure> comparator;
   
-  final private ArrayList<TOP> itemsToBeAdded = new ArrayList<>();  // to batch the adds
+  final private ArrayList<T> itemsToBeAdded = new ArrayList<>();  // to batch the adds
   
-  private TOP largestItem = null;
+  private T largestItem = null;
    
   FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs, boolean useSorted) {
     super(cas, type, indexType, comparatorForIndexSpecs);
@@ -120,7 +126,7 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
               return (c == 0) ? (Integer.compare(o1.id(), o2.id())) : c;} 
           : (o1, o2) -> compare(o1,  o2);
     }          
-    this.indexedFSs = new TreeSet<TOP>(comparator);
+    this.indexedFSs = new TreeSet<FeatureStructure>(comparator);
   }
 
   @Override
@@ -178,7 +184,7 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
       }
       
       maybeProcessBulkAdds(); // we do this so the return value from add is accurate
-      return this.indexedFSs.add((TOP)fs);
+      return this.indexedFSs.add(fs);
     }
   }
 
@@ -201,14 +207,13 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
    * @return an arbitrary fs that matches 
    */
   @Override
-  public T find(FeatureStructure templateKeyIn) {
+  public T find(FeatureStructure templateKey) {
     maybeProcessBulkAdds();
-    TOP templateKey = (TOP) templateKeyIn;
     if (null == templateKey || this.indexedFSs.size() == 0) {
       return null;
     }
     T found;
-    TOP fs1GEfs = this.indexedFSs.ceiling(templateKey);
+    FeatureStructure fs1GEfs = this.indexedFSs.ceiling(templateKey);
     
     if (fs1GEfs == null) {  // then all elements are less-that the templateKey
       found = (T) indexedFSs.lower(templateKey);  //highest of elements less-than the template key
@@ -271,9 +276,9 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
   }
   
   @Override
-  protected void bulkAddTo(List<TOP> v) {
+  protected void bulkAddTo(List<T> v) {
     maybeProcessBulkAdds();
-    v.addAll(indexedFSs);
+    v.addAll((Collection<? extends T>) indexedFSs);
   }
   
 //  @Override
@@ -281,9 +286,9 @@ public class FsIndex_set_sorted<T extends TOP> extends FsIndex_singletype<T> {
 //    this.indexedFSs.stream().mapToInt(fs -> ((FeatureStructureImplC)fs).id()).forEach(v::add);
 //  }
   
-  NavigableSet<TOP> getNavigableSet() { //used by FsIterator_sorted to compute various derivitive nav sets
+  NavigableSet<T> getNavigableSet() { //used by FsIterator_sorted to compute various derivitive nav sets
     maybeProcessBulkAdds();
-    return indexedFSs;
+    return (NavigableSet<T>) indexedFSs;
   }
    
   @Override

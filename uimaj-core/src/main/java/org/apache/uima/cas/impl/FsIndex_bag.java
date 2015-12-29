@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.uima.cas.FSIterator;
@@ -34,7 +35,7 @@ import org.apache.uima.jcas.cas.TOP;
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  * NOTE: V3 doesn't support ALLOW_DUP_ADD_TO_INDEXES
  */
-public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
+public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
 //  // package private
 //  final static boolean USE_POSITIVE_INT_SET = !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES;
@@ -83,7 +84,7 @@ public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
    * For bag indexes, compare equal only if identical addresses
    */
   @Override
-  public int compare(TOP fs1, TOP fs2) {
+  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
     return (fs1 == fs2) ? 0 : (fs1.id() < fs2.id()) ? -1 : 1;
   }
 
@@ -179,8 +180,8 @@ public class FsIndex_bag<T extends TOP> extends FsIndex_singletype<T> {
   }
 
   @Override
-  protected void bulkAddTo(List<TOP> fss) {
-    fss.addAll(this.index);
+  protected void bulkAddTo(List<T> fss) {
+    fss.addAll((Collection<? extends T>) this.index);
   }
   
   /* (non-Javadoc)
