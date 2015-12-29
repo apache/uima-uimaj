@@ -616,7 +616,7 @@ public class CasCopier {
    * @return a deep copy of the Feature Structure - any referred to FSs will also be copied.
    */
   
-  public FeatureStructure copyFs(FeatureStructure aFS) {
+  public <T extends FeatureStructure> T copyFs(T aFS) {
     if (null == srcCasViewImpl) {
       srcCasViewImpl = originalSrcCasImpl;
     }
@@ -626,7 +626,7 @@ public class CasCopier {
     
     // safety - insure DocumentAnnotation is tested.
     srcCasDocumentAnnotation = null;  
-    return copyFs2Fs((TOP) aFS);
+    return copyFs2Fs(aFS);
   }
   
   /**
@@ -637,9 +637,9 @@ public class CasCopier {
    * @param aFS a Feature Structure reference in the originalSrcCas
    * @return a Feature Structure reference in the originalTgtCas
    */
-  private TOP copyFs2(TOP aFS) {
+  private <T extends FeatureStructure> T copyFs2(T aFS) {
     
-    TOP copy = copyFsInner(aFS);  // doesn't copy the slot values, but enqueues them
+    T copy = copyFsInner(aFS);  // doesn't copy the slot values, but enqueues them
     // the iteration is done this way because the body can add more to the queue
     while (fsToDo.size() > 0) {
       Runnable r = fsToDo.removeFirst();
@@ -648,7 +648,7 @@ public class CasCopier {
     return copy;
   }
   
-  private FeatureStructure copyFs2Fs(TOP fs) {
+  private <T extends FeatureStructure> T copyFs2Fs(T fs) {
     return copyFs2(fs);
   }
 
@@ -660,13 +660,13 @@ public class CasCopier {
    *          the FS to copy. Must be contained within the source CAS.
    * @return the copy of <code>aFS</code> in the target CAS.
    */
-  private TOP copyFsInner(TOP srcFs) {
+  private <T extends FeatureStructure> T copyFsInner(T srcFs) {
     // FS must be in the source CAS
     // this test must be done by the caller if wanted.
 //    assert (casViewsInSameCas(aFS.getCAS(), originalSrcCas));
 
     // check if we already copied this FS
-    TOP copy = mFsMap.get(srcFs);
+    T copy = (T) mFsMap.get(srcFs);
     if (copy != null) {
       return copy;
     }
@@ -679,7 +679,7 @@ public class CasCopier {
       Sofa srcSofa = (Sofa) srcFs;
       String destSofaId = getDestSofaId(srcSofa.getSofaID());
       // note: not put into the mFsMap, because each view needs a separate copy
-      return ((CASImpl)getOrCreateView(originalTgtCas, destSofaId)).getSofa();
+      return (T) ((CASImpl)getOrCreateView(originalTgtCas, destSofaId)).getSofa();
     }
 
     // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
@@ -713,17 +713,17 @@ public class CasCopier {
         }
       }
       // note note put into mFsMap, because each view needs a separate copy
-      return destDocAnnot;
+      return (T) destDocAnnot;
     }
 
     // Arrays - need to be created a populated differently than "normal" FS
     if (srcFs instanceof CommonArray) {
       copy = copyArray(srcFs);
-      mFsMap.put(srcFs, copy);
+      mFsMap.put((TOP)srcFs, (TOP)copy);
       return copy;
     }
 
-    TypeImpl tgtTi = getTargetType(srcFs._typeImpl);
+    TypeImpl tgtTi = getTargetType(((TOP)srcFs)._typeImpl);
     if (null == tgtTi) {
       return null; // not in target, no FS to create
     }
@@ -740,10 +740,10 @@ public class CasCopier {
     TOP tgtFs = tgtCasViewImpl.createFS(tgtTi);
 
     // add to map so we don't try to copy this more than once
-    mFsMap.put(srcFs, tgtFs);
+    mFsMap.put((TOP)srcFs, tgtFs);
 
     fsToDo.addLast(() -> copyFeatures(srcFs, tgtFs));
-    return tgtFs;
+    return (T) tgtFs;
   }
   
   /**
@@ -777,7 +777,9 @@ public class CasCopier {
    * @param tgtFS
    *          FeatureStructure to copy to, which must not be in the index (index corruption checks skipped)
    */
-  private void copyFeatures(TOP srcFS, TOP tgtFS) {
+  private <T extends FeatureStructure> void copyFeatures(T srcFSi, T tgtFSi) {
+    TOP srcFS = (TOP) srcFSi;
+    TOP tgtFS = (TOP) tgtFSi;
     for (FeatureImpl fi : srcFS.getTypeImpl().getFeatureImpls()) {
       FeatureImpl tgtFi = getTargetFeature(fi);
       if (null == tgtFi) {
@@ -867,15 +869,15 @@ public class CasCopier {
    * @param arrayFS
    * @return a copy of the array
    */
-  private TOP copyArray(TOP srcFS) {
+  private <T extends FeatureStructure> T copyArray(T srcFS) {
     final CommonArray srcCA = (CommonArray) srcFS;
     final int size = srcCA.size();
-    final TypeImpl tgtTi = getTargetType(srcFS._typeImpl);
+    final TypeImpl tgtTi = getTargetType(((TOP)srcFS)._typeImpl);
     
     if (srcFS instanceof CommonPrimitiveArray) {
       CommonArray copy = (CommonArray) tgtCasViewImpl.createArray(tgtTi, size);
       copy.copyValuesFrom(srcCA);
-      return (TOP) copy;
+      return (T) copy;
     }
     
     FSArray fsArray = (FSArray) tgtCasViewImpl.createArray(tgtTi, size);
@@ -889,7 +891,7 @@ public class CasCopier {
       }
     }
 
-    return (TOP) fsArray;
+    return (T) fsArray;
   }
   
   /**
@@ -911,8 +913,8 @@ public class CasCopier {
    * This is more than just a type check; we actually check if it is the one "special"
    * DocumentAnnotation that CAS.getDocumentAnnotation() would return.
    */
-  private boolean isDocumentAnnotation(TOP aFS) {
-    if (aFS._getTypeCode() != TypeSystemImpl.docTypeCode) {
+  private <T extends FeatureStructure> boolean isDocumentAnnotation(T aFS) {
+    if (((TOP)aFS)._getTypeCode() != TypeSystemImpl.docTypeCode) {
       return false;
     }
     if (srcCasDocumentAnnotation == null) {
