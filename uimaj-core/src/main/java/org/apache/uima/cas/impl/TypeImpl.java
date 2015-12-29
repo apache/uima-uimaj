@@ -779,12 +779,14 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   @Override
   public int hashCode() {
     if (hasHashCode) return hashCode;
-    int h = computeHashCode();
-    if (tsi.isCommitted()) {
-      hashCode = h;
-      hasHashCode = true;
+    synchronized (this) {
+      int h = computeHashCode();
+      if (tsi.isCommitted()) {
+        hashCode = h;
+        hasHashCode = true;
+      }
+      return h;
     }
-    return h;
   }
   
   private int computeHashCode() {
