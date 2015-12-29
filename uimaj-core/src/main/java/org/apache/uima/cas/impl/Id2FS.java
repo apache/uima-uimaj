@@ -60,6 +60,13 @@ public class Id2FS {
     }    
     return (T) id2fsw.get(id).get();  // could return null if fs is gc'd
   }
+  
+  public <T extends FeatureStructure> T getWithMissingIsNull(int id) {
+    if (id < 1 || id >= id2fsw.size()) {
+      return null;
+    }    
+    return (T) id2fsw.get(id).get();  // could return null if fs is gc'd
+  }
     
   int size() {
     return id2fsw.size(); 
