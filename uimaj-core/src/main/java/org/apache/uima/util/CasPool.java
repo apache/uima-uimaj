@@ -90,7 +90,7 @@ public class CasPool {
     mNumInstances = aNumInstances;
     permits = new Semaphore(mNumInstances, true);
     mAllInstances = allInstances;
-    Set<CAS> free = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());
+    Set<CAS> free = Collections.newSetFromMap(new ConcurrentHashMap<>());
     free.addAll(mAllInstances);
     mFreeInstances = free;  // concurrent safe publishing idiom 
   }
