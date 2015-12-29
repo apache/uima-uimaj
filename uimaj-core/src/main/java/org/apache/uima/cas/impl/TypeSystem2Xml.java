@@ -81,7 +81,7 @@ public class TypeSystem2Xml {
     List<TypeDescription> typeDescs = new ArrayList<TypeDescription>();
     Iterator<Type> typeIterator = aTypeSystem.getTypeIterator();
     while (typeIterator.hasNext()) {
-      Type type = typeIterator.next();
+      TypeImpl type = (TypeImpl) typeIterator.next();
 
       Type superType = aTypeSystem.getParent(type);
       if ((type.getName().startsWith("uima.cas") && type.isFeatureFinal()) || type.isArray()) {
@@ -93,7 +93,7 @@ public class TypeSystem2Xml {
       typeDesc.setSupertypeName(superType.getName());
       LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
       List<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
-      Iterator<Feature> featIterator = type.getFeatures().iterator();
+      Iterator<FeatureImpl> featIterator = type.getFeatureImpls().iterator();
       while (featIterator.hasNext()) {
         Feature feat = featIterator.next();
         if (!feat.getDomain().equals(type)) {
