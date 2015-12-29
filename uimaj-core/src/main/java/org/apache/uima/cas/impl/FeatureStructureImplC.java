@@ -43,12 +43,14 @@ import org.apache.uima.cas.function.JCas_setter_generic;
 import org.apache.uima.cas.function.JCas_setter_int;
 import org.apache.uima.cas.function.JCas_setter_long;
 import org.apache.uima.cas.function.JCas_setter_short;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.JavaObjectArray;
@@ -79,7 +81,7 @@ import org.apache.uima.util.Misc;
  *     -- can't be static - may be multiple type systems in use
  * 
  */
-public class FeatureStructureImplC implements FeatureStructure, Cloneable {
+public class FeatureStructureImplC implements FeatureStructure, Cloneable, Comparable<FeatureStructure> {
 
   // note: these must be enabled to make the test cases work
   public static final String DISABLE_RUNTIME_FEATURE_VALIDATION = "uima.disable_runtime_feature_validation";
@@ -237,8 +239,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   }
   
   /**
+   * starts with _ 
    * @return the UIMA TypeImpl for this Feature Structure
    */
+@Override
   public int _getTypeCode() {
     return _typeImpl.getCode();
   }
@@ -766,11 +770,17 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     
     final TypeImpl ti = this._typeImpl;
     if (ti != null) { // null for REMOVED marker
-      ti.getFeaturesAsStream()
+      if (ti.isArray() && (fs instanceof FSArray)) {
+        for (TOP item : ((FSArray)fs)._getTheArray()) {
+          getPrintRefs(printRefs, item);
+        }
+      } else {
+        ti.getFeaturesAsStream()
           .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
           .map(fi -> this.getFeatureValue(fi)) // get the feature value
           .filter(refFs -> refFs != null)            // skip null ones
           .forEachOrdered(refFs -> getPrintRefs(printRefs, refFs));
+      }
     }
   }
 
@@ -843,7 +853,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     switch (_getTypeCode()) {
     case TypeSystemImpl.stringArrayTypeCode: {
       StringArray a = (StringArray) this;
-      printArrayElements(a.size(), a::get, indent, buf);
+      printArrayElements(a.size(), i -> a.get(i), indent, buf);
       return;
     }
     case TypeSystemImpl.intArrayTypeCode: {
@@ -889,10 +899,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       buf.append(fi.getShortName() + ": ");
       TypeImpl range = (TypeImpl) fi.getRange();
       
-      if (range.getCode() == TypeSystemImpl.stringTypeCode ||
-          range.isStringSubtype()) {
+      if (range.isStringOrStringSubtype()) {
         String stringVal = getStringValue(fi);
-        stringVal = (null == stringVal) ? "<null>" : "\"" + stringVal + "\"";
+        stringVal = (null == stringVal) ? "<null>" : "\"" + Misc.elideString(stringVal, 15) + "\"";
         buf.append(stringVal + '\n');
         continue;
       }
@@ -941,7 +950,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
           buf.append(", ");
         }
         String element = f.apply(i); //this._casView.ll_getStringArrayValue(this.getAddress(), i);
-        buf.append("\"" + element + "\"");
+        if (null == element) {
+          buf.append("null");
+        } else {
+          buf.append("\"" + Misc.elideString(element, 15) + "\"");
+        }
       }
       
       if (arrayLen > numToPrint) {
@@ -953,6 +966,27 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   
   public int getTypeIndexID() {
     throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR); // dummy, always overridden
+  }
+  
+  public void setIntLikeValue(SlotKind slotKind, FeatureImpl fi, int v) {
+    switch(slotKind) {
+    case Slot_Boolean: setBooleanValue(fi, v == 1); break;
+    case Slot_Byte: setByteValue(fi, (byte) v); break;
+    case Slot_Short: setShortValue(fi, (short) v); break;
+    case Slot_Int: setIntValue(fi, v); break;
+    case Slot_Float: setFloatValue(fi, Float.intBitsToFloat(v)); break;
+    default: assert(false);
+    }
+  }
+
+
+  /* (non-Javadoc)
+   * Supports "natural" compare order based on id values
+   * @see java.lang.Comparable#compareTo(java.lang.Object)
+   */
+  @Override
+  public int compareTo(FeatureStructure o) {
+    return Integer.compare(this._id, o.id());
   }
   
 }
