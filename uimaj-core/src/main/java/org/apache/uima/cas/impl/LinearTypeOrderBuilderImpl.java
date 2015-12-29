@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.LinearTypeOrder;
@@ -92,7 +93,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
      * @see org.apache.uima.cas.admin.LinearTypeOrder#compare(org.apache.uima.cas.impl.FeatureStructureImplC, org.apache.uima.cas.impl.FeatureStructureImplC)
      */
     @Override
-    public int compare(FeatureStructureImplC fs1, FeatureStructureImplC fs2) {
+    public int compare(FeatureStructure fs1, FeatureStructure fs2) {
       if (fs1 == fs2) return 0;
  
       final int tc1 = fs1._getTypeCode();
