@@ -202,13 +202,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * adjusted for strict exclusions
    */
   private void movePastAnnot() {
-    Comparator<TOP> annotationComparator = getAnnotationComparator();
-    while (isValid() && (0 == annotationComparator.compare(boundingAnnotation, (TOP) it.get()))) {
+    Comparator<FeatureStructure> annotationComparator = getAnnotationComparator();
+    while (isValid() && (0 == annotationComparator.compare(boundingAnnotation, it.get()))) {
       it.moveToNext();
     }
   }
   
-  private Comparator<TOP> getAnnotationComparator() {
+  private Comparator<FeatureStructure> getAnnotationComparator() {
     return fsIndexRepo.getAnnotationFsComparator();
   }
   
@@ -418,7 +418,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       convertToListForm();
     }
      if (isListForm) {
-      Comparator<TOP> annotationComparator = getAnnotationComparator();
+      Comparator<FeatureStructure> annotationComparator = getAnnotationComparator();
       pos = Collections.binarySearch(this.list, (Annotation) fs, annotationComparator);
       if (pos >= 0) {
         if (!isValid()) {
