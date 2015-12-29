@@ -29,4 +29,9 @@ public class TypeImpl_string extends TypeImpl_primitive {  // string considered 
     super(name, tsi, supertype, javaType);
   }
   
+  @Override
+  public boolean isStringOrStringSubtype() {
+    return true;
+  }
+  
 }
