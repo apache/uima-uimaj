@@ -21,8 +21,6 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,6 +51,7 @@ import org.apache.uima.cas.function.JCas_setter_generic;
 import org.apache.uima.cas.function.JCas_setter_int;
 import org.apache.uima.cas.function.JCas_setter_long;
 import org.apache.uima.cas.function.JCas_setter_short;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.util.Misc;
 
 /**
@@ -78,7 +77,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private final TypeSystemImpl tsi ; // the Type System instance this type belongs to.
                                      // This means that built-in types have multiple instances, so this field can vary.
-  
+  final SlotKind slotKind;  
   /* the Java class for this type 
    *   integer = int.class, etc.
    *   used for args in methodType
@@ -114,8 +113,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private final List<TypeImpl> directSubtypes = new ArrayList<>();
     
   // ********  Features  *********
-  private final Map<String, FeatureImpl> staticMergedFeatures = new LinkedHashMap<>(1);
-  private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(1);
+  private       Map<String, FeatureImpl> staticMergedFeatures = new LinkedHashMap<>(1); // set to null at commit time
+  private final List<FeatureImpl> staticMergedFeaturesList = new ArrayList<>(0);  // set after commit
+  private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(0);
   
   /**
    * The number of used slots needed = total number of features minus those represented by fields in JCas cover classes
@@ -123,9 +123,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   int nbrOfUsedIntDataSlots = -1;
   int nbrOfUsedRefDataSlots = -1;
   
-  // for journalling allocation: as above, but excluding the adjustment for fields in the JCas cover class
-  int highestIntOffset = -1;  
-  int highestRefOffset = -1;  
+  // for journalling allocation: This is a 0-based offset for all features in feature order
+  int highestOffset = -1;  
   
   private TypeImpl() {
     this.name = null;
@@ -143,6 +142,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.javaClass = null;
     getter_funct_intfc_class = null;
     setter_funct_intfc_class = null;
+    
+    slotKind = TypeSystemImpl.getSlotKindFromType(this);
   }
   
   /**
@@ -182,7 +183,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
         // this because we have from V2: xyz[] is a subtype of FSArray, but FSArray doesn't list it as a direct sutype
         superType.directSubtypes.add(this);
       }
-      staticMergedFeatures.putAll(superType.staticMergedFeatures);
+      if (superType.staticMergedFeatures != null) {
+        staticMergedFeatures.putAll(superType.staticMergedFeatures);
+      }
     }
     this.isCreatableAndNotBuiltinArray = 
         // until stringType is set, skip this part of the test
@@ -218,6 +221,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
       getter_funct_intfc_class = JCas_getter_generic.class;
       setter_funct_intfc_class = JCas_setter_generic.class;
     }
+    
+    slotKind = TypeSystemImpl.getSlotKindFromType(this);
   }
 
   /**
@@ -251,11 +256,15 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   @Override
   public String toString() {
+    return toString(0);
+  }
+  
+  public String toString(int indent) {
     StringBuilder sb = new StringBuilder();
     sb.append(this.getClass().getSimpleName() + " [name: ").append(name).append(", superType: ").append((superType == null) ? "<null>" :superType.getName()).append(", ");
     prettyPrintList(sb, "directSubtypes", directSubtypes, ti -> sb.append(ti.getName()));
     sb.append(", ");
-    appendIntroFeats(sb);
+    appendIntroFeats(sb, indent);
     return sb.toString();
   }
   
@@ -268,24 +277,28 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   static {Arrays.fill(blanks,  ' ');}
 
   public void prettyPrint(StringBuilder sb, int indent) {
-    sb.append(blanks, 0, Math.min(indent,  blanks.length)).append(name).append(": super: ").append(superType.getName());
+    indent(sb, indent).append(name).append(": super: ").append((null == superType) ? "<null>" : superType.getName());
     
     if (staticMergedFeaturesIntroducedByThisType.size() > 0) {
       sb.append(", ");
-      appendIntroFeats(sb);
+      appendIntroFeats(sb, indent);
     }
     sb.append('\n');
+  }
+  
+  private StringBuilder indent(StringBuilder sb, int indent) {
+    return sb.append(blanks, 0, Math.min(indent,  blanks.length));
   }
   
   public void prettyPrintWithSubTypes(StringBuilder sb, int indent) {
     prettyPrint(sb, indent);
     int nextIndent = indent + 2;
-    directSubtypes.stream().forEachOrdered(ti -> prettyPrint(sb, nextIndent));
+    directSubtypes.stream().forEachOrdered(ti -> ti.prettyPrint(sb, nextIndent));
   }
 
-  private void appendIntroFeats(StringBuilder sb) {
+  private void appendIntroFeats(StringBuilder sb, int indent) {
     prettyPrintList(sb, "FeaturesIntroduced/Range/multiRef", staticMergedFeaturesIntroducedByThisType,
-        fi -> sb.append(fi.getShortName()).append('/')
+        fi -> indent(sb.append('\n'), indent + 2).append(fi.getShortName()).append('/')
                 .append(fi.getRange().getName()).append('/')
                 .append(fi.isMultipleReferencesAllowed() ? 'T' : 'F') );
   }
@@ -311,11 +324,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public int getNumberOfFeatures() {
-    return staticMergedFeatures.size();
+    return (staticMergedFeatures != null) ? staticMergedFeatures.size() : staticMergedFeaturesList.size();
   }
   
   public boolean isAppropriateFeature(Feature feature) {
-    return feature == staticMergedFeatures.get(feature.getShortName());
+    return feature == getFeatureByBaseName(feature.getShortName());
   }
 
   /**
@@ -366,7 +379,15 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public FeatureImpl getFeatureByBaseName(String featureShortName) {
-    return staticMergedFeatures.get(featureShortName);
+    if (staticMergedFeatures != null) {
+      return staticMergedFeatures.get(featureShortName);
+    }
+    for (FeatureImpl fi : staticMergedFeaturesList) {
+      if (fi.getShortName().equals(featureShortName)) {
+        return fi;
+      }
+    }
+    return null;
   }
 
   /**
@@ -422,15 +443,36 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public List<Feature> getFeatures() {
-    return new ArrayList<>(staticMergedFeatures.values());
+    return new ArrayList<>( (staticMergedFeatures != null) ? staticMergedFeatures.values() : staticMergedFeaturesList);
   }
   
-  public Collection<FeatureImpl> getFeatureImpls() {
-    return staticMergedFeatures.values();
+  /** 
+   * This impl depends on features never being removed from types, only added
+   * Minimal Java object generation, maximal reuse
+   * @return the list of feature impls
+   */
+  public List<FeatureImpl> getFeatureImpls() {
+    if (staticMergedFeatures != null) {
+      // means not yet committed
+      // recompute the list if needed
+      int nbrOfFeats = staticMergedFeatures.size();
+      if (nbrOfFeats != staticMergedFeaturesList.size()) {
+        computeStaticMergedFeaturesList();
+      }
+    }
+    return staticMergedFeaturesList;
+  }
+  
+  private void computeStaticMergedFeaturesList() {
+    synchronized (staticMergedFeaturesList) {
+      staticMergedFeaturesList.clear();
+      staticMergedFeaturesList.addAll(superType.getFeatureImpls());
+      staticMergedFeaturesList.addAll(staticMergedFeaturesIntroducedByThisType);
+    }    
   }
   
   Stream<FeatureImpl> getFeaturesAsStream() {
-    return staticMergedFeatures.values().stream();
+    return getFeatureImpls().stream();
   }
 
   public List<FeatureImpl> getMergedStaticFeaturesIntroducedByThisType() {
@@ -564,6 +606,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return false;  // overridden by array subtype
   }
   
+  boolean isHeapStoredArray() {
+    return false; // overridden by array subtype, used for backward compatibility
+  }
+  
   /**
    * @see org.apache.uima.cas.Type#isStringSubtype()
    */
@@ -571,11 +617,18 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public boolean isStringSubtype() {
     return false;  // overridden by string subtype
   }
+  
+  @Override
+  public boolean isStringOrStringSubtype() {
+    return false;
+  }
 
   @Override
   public Type getComponentType() {
     return null;  // not an array, array subtype overrides
   }
+  
+  public SlotKind getComponentSlotKind() { return null; /* not an array, array subtype overrides */ }
 
   /**
    * 
@@ -670,6 +723,21 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   int computeDepthFirstCode(int level) {
+    // other work done for each type at commit time, just piggy backing on this method
+    
+    /**************************************************************************************
+     *    N O T E :                                                                           *
+     *    fixup the ordering of staticMergedFeatures:                                     *
+     *      - supers, then features introduced by this type.                              *
+     *      - order may be "bad" if later feature merge introduced an additional feature  *
+     **************************************************************************************/
+    if (level != 1) {
+      // skip for top level; no features there, but no super type either
+      computeStaticMergedFeaturesList();
+    }
+      
+    staticMergedFeatures = null;
+     
     depthFirstCode = level ++;
     for (TypeImpl subti : directSubtypes) {
       level = subti.computeDepthFirstCode(level);
@@ -677,6 +745,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     depthFirstNextSibling = level;
     return level;
   }
+
   
   /**
    * @return the javaClass
@@ -686,8 +755,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
 
   Class<?> getJavaPrimitiveClassOrObject() {
-    if (!isPrimitive() || isStringSubtype() || 
-        this == tsi.stringType) {
+    if (!isPrimitive() || isStringOrStringSubtype()) {
       return Object.class;
     }
     return javaClass;
@@ -700,6 +768,77 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.javaClass = javaClass;
   }
   
+  /**
+   * A special instance used in CasCopier to identify a missing type
+   */
   public final static TypeImpl singleton = new TypeImpl();
+
+  private int hashCode = 0;
+  private boolean hasHashCode = false;
+  
+  @Override
+  public int hashCode() {
+    if (hasHashCode) return hashCode;
+    int h = computeHashCode();
+    if (tsi.isCommitted()) {
+      hashCode = h;
+      hasHashCode = true;
+    }
+    return h;
+  }
+  
+  private int computeHashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + name.hashCode();
+    result = prime * result + ((superType == null) ? 0 : superType.name.hashCode());
+    for (TypeImpl ti : directSubtypes) {
+      result = prime * result + ti.name.hashCode();
+    }
+    result = prime * result + (isFeatureFinal ? 1231 : 1237);
+    result = prime * result + (isInheritanceFinal ? 1231 : 1237);
+    for (FeatureImpl fi : getFeatureImpls()) {
+      result = prime * result + fi.hashCode();
+    }
+    return result;
+  }
+
+  /**
+   * Equal TypeImpl
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || !(obj instanceof TypeImpl)) return false;
+
+    TypeImpl other = (TypeImpl) obj;
+    if (hashCode() != other.hashCode()) return false;
+    
+    if (!name.equals(other.name)) return false;
+    
+    if (superType == null) {
+      if (other.superType != null) return false;
+    } else {
+      if (other.superType == null) return false;
+      if (!superType.name.equals(other.superType.name)) return false;
+    }
+    
+    if (directSubtypes.size() != other.directSubtypes.size()) return false;
+    for (int i = 0; i < directSubtypes.size(); i++) {
+      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
+    }
+    
+    if (isFeatureFinal != other.isFeatureFinal) return false;
+    if (isInheritanceFinal != other.isInheritanceFinal) return false;
+    
+    final List<FeatureImpl> fis1 = getFeatureImpls();
+    final List<FeatureImpl> fis2 = other.getFeatureImpls();
+    if (fis1.size() != fis2.size()) return false;
+    for (int i = 0; i < fis1.size(); i++) {
+      if (!fis1.get(i).equals(fis2.get(i))) return false;
+    }
+    
+    return true;
+  }
   
 }
