@@ -893,8 +893,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
     }    
     
-    for (Feature feat : _typeImpl.getFeatures()) {
-      FeatureImpl fi = (FeatureImpl) feat;
+    for (FeatureImpl fi : _typeImpl.getFeatureImpls()) {
       StringUtils.printSpaces(indent, buf);
       buf.append(fi.getShortName() + ": ");
       TypeImpl range = (TypeImpl) fi.getRange();
@@ -917,7 +916,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
           hadException = true;
         }
         if (!hadException) {
-          if (val != null && !feat.getName().equals(CAS.TYPE_NAME_SOFA)) {
+          if (val != null && !fi.getName().equals(CAS.TYPE_NAME_SOFA)) {
             ((FeatureStructureImplC) val).prettyPrint(indent, incr, buf, useShortNames, null, printRefs);
           } else {
             buf.append((val == null) ? "<null>\n" : ((SofaFS) val).getSofaID() + '\n'); 
@@ -926,7 +925,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     
       } else {  
         // is primitive
-        buf.append(this.getFeatureValueAsString(feat) + "\n");
+        buf.append(this.getFeatureValueAsString(fi) + "\n");
       }
     }
     } catch (Exception e) {
