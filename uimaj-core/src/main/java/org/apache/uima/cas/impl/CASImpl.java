@@ -3935,6 +3935,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   Collection<FsChange> getModifiedFSList() {
 	  return this.svd.modifiedPreexistingFSs.values();
   }
+  
+  boolean isInModifiedPreexisting(TOP fs) {
+    return this.svd.modifiedPreexistingFSs.containsKey(fs);
+  }
     
   @Override
   public String toString() {

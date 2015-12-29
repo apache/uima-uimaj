@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * A MarkerImpl holds a high-water "mark" in the CAS,
@@ -63,7 +64,7 @@ public class MarkerImpl implements Marker {
 	  if (isNew(fs)) {
 	    return false;  // new fs's are not modified ones
 	  }
-    return this.cas.getModifiedFSList(fs) != null;
+    return this.cas.isInModifiedPreexisting((TOP)fs);
   }
     
   boolean isNew(int id) {
