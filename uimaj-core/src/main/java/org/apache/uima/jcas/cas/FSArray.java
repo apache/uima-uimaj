@@ -88,6 +88,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
     theArray[i] = (TOP) v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /** return the size of the array. */

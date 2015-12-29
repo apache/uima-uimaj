@@ -86,6 +86,7 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
    */
   public void set(int i, String v) {
     theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**

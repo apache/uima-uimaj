@@ -84,8 +84,9 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
   }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
-  public void set(int i, FeatureStructure v) {
-    theArray[i] = (FeatureStructureImplC) v;
+  public void set(int i, Object v) {
+    theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /** return the size of the array. */

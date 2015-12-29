@@ -103,6 +103,7 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
    */
   public void set(int i, float v) {
     theArray[i] = v;
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /**
