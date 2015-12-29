@@ -57,6 +57,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -1356,7 +1357,7 @@ public class BinaryCasSerDes6 {
   private class SerializeModifiedFSs {
 
 //    final int[] modifiedMainHeapAddrs = toArrayOrINT0(cas.getModifiedFSHeapAddrs());
-    final List<FsChange> modifiedFSs = cas.getModifiedFSList();  // does sorting and other cleanup
+    final Collection<FsChange> modifiedFSs = cas.getModifiedFSList();  // does sorting and other cleanup
 //    final int[] modifiedByteHeapAddrs = toArrayOrINT0(cas.getModifiedByteHeapAddrs());
 //    final int[] modifiedShortHeapAddrs = toArrayOrINT0(cas.getModifiedShortHeapAddrs());
 //    final int[] modifiedLongHeapAddrs = toArrayOrINT0(cas.getModifiedLongHeapAddrs());

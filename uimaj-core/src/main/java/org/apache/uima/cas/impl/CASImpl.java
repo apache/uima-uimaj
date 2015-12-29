@@ -29,8 +29,10 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -240,53 +242,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return ((FsChange)obj).fs._id == fs._id;
     }
   }
-  
-  /**
-   * Cleanup by 
-   *   merging changes to the same Feature Structure into one FsChange element
-   *     - with arrays sorted by index  (no sort needed because kept as PositiveIntSet and read out in order)
-   *     - with features sorted by offset (no sort needed because kept as BitSet, and read out in order)
-   *   updates the changes object by removing merged FsChange elements
-   * @param changes the list of FsChange elements to cleanup
-   */
-  private List<FsChange> cleanupFsChanges(List<FsChange> changes) {
-    final Map<FsChange, FsChange> seenFsChanges = new HashMap<>();  // compare on fs only
-    Iterator<FsChange> it = changes.iterator();
-    while (it.hasNext()) {
-      FsChange change = it.next();
-      // add (if not present) the change element to seenFsChanges (based on fs._id)
-      FsChange existing = seenFsChanges.computeIfAbsent(change, c -> c);
-      
-      // if there was an existing element, 
-      // merge it and remove the new one
-      if (existing != change) {
-        if (existing.arrayUpdates != null) {
-          final PositiveIntSet eau = existing.arrayUpdates;
-          IntListIterator it2 = change.arrayUpdates.iterator();
-          while (it2.hasNext()) {
-            eau.add(it2.next());
-          }
-        } else {
-          mergeChangeBitSets(existing.featuresModified, change.featuresModified);
-        }
-        it.remove();
-      }
-    }
-    return changes;
-  }
-
-  private void mergeChangeBitSets(BitSet existing, BitSet change) {
-    if (existing != change) {
-      if (existing != null) {
-        if (change != null) {
-          existing.or(change);
-        }
-      } else if (change != null) {
-        existing = change;
-      }
-    }
-  }
-  
+    
   // fields shared among all CASes belong to views of a common base CAS
   static class SharedViewData {
     /**
@@ -381,7 +337,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private MarkerImpl trackingMark;
    
     
-    private List<FsChange> modifiedPreexistingFSs;
+    private Map<TOP, FsChange> modifiedPreexistingFSs;
       
     /**
      * This list currently only contains at most 1 element.
@@ -1307,19 +1263,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    
     //log the FS
     
+    final Map<TOP, FsChange> changes = this.svd.modifiedPreexistingFSs;
+    
     //create or use last FsChange element
-    FsChange change = null;
-
-    final List<FsChange> changes = this.svd.modifiedPreexistingFSs;
-    final int nbrOfChanges = changes.size(); 
-    if (nbrOfChanges > 0) {
-      change =  changes.get(nbrOfChanges - 1); // get last element
-    }
-
-    // only create a new FsChange element if needed
-    if (change == null || change.fs != fs) {
-      this.svd.modifiedPreexistingFSs.add(change = new FsChange(fs));
-    }
+    
+    FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
           
     if (fi == null) {
       if (arrayIndexStart < 0) {
@@ -3964,7 +3912,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   	this.svd.trackingMark = new MarkerImpl(this.getLastUsedFsId() + 1, 
   			this);
   	if (this.svd.modifiedPreexistingFSs == null) {
-  	  this.svd.modifiedPreexistingFSs = new ArrayList<FsChange>();
+  	  this.svd.modifiedPreexistingFSs = new IdentityHashMap<>();
   	} else {errorMultipleMarkers();}
 
   	if (this.svd.trackingMarkList == null) {
@@ -3984,19 +3932,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 	  return this.svd.trackingMark;
   }
   
-  List<FsChange> getModifiedFSList() {
-	return cleanupFsChanges(this.svd.modifiedPreexistingFSs);  
+  Collection<FsChange> getModifiedFSList() {
+	  return this.svd.modifiedPreexistingFSs.values();
   }
-  
-  FsChange getFirstModifiedFSList(FeatureStructure fs) {
-    for (FsChange fsc : this.svd.modifiedPreexistingFSs) {
-      if (fsc.fs == fs) {
-        return fsc;
-      }
-    }
-    return null;
-  }
-  
+    
   @Override
   public String toString() {
     String sofa =  (mySofaRef == null) ? (isBaseCas() ? "Base CAS" : "_InitialView or no Sofa") :
