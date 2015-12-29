@@ -35,7 +35,10 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 public class FeatureImpl implements Feature {
   
   private final int featureCode;        // unique id for this feature, in this type system
-  private       int featureOffset = -1; // the offset in the storage array for this feature without regard to JCas implemented features; set at commit time
+  /**
+   * the 0 based offset in the storage array for this feature ignoring ref/int distinction, in feature order, without regard to JCas implemented features; set at commit time
+   */
+  private       int featureOffset = -1;  
   private       int adjustedFeatureOffset = -1; // the offset in the storage array for this feature, adjusted to exclude JCas implemented features; set at commit time
   
                 int registryIndex = -1; // set from JCas classes feature registry
@@ -167,7 +170,7 @@ public class FeatureImpl implements Feature {
   }
   
   /**
-   * @return the offset in the storage array for this feature
+   * @return the 0-based offset for this feature
    */
   public int getOffset() {
     return featureOffset;
@@ -238,5 +241,35 @@ public class FeatureImpl implements Feature {
     ti.validateIsInAllowedValues(v);
   }
   
+  /**
+   * Used by CAS Copier to denote missing feature
+   */
   public final static FeatureImpl singleton = new FeatureImpl();
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((highestDefiningType == null) ? 0 : highestDefiningType.getName().hashCode());
+    result = prime * result + (isMultipleRefsAllowed ? 1231 : 1237);
+    result = prime * result + ((rangeType == null) ? 0 : rangeType.getName().hashCode());
+    result = prime * result + ((shortName == null) ? 0 : shortName.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (!(obj instanceof FeatureImpl)) return false;
+    
+    FeatureImpl other = (FeatureImpl) obj;
+    if (!highestDefiningType.getName().equals(other.highestDefiningType.getName())) return false;
+    if (isMultipleRefsAllowed != other.isMultipleRefsAllowed) return false;
+    if (!rangeType.getName().equals(other.rangeType.getName())) return false;
+    if (!shortName.equals(other.shortName)) return false;
+    return true;
+  }
+  
+  
 }
