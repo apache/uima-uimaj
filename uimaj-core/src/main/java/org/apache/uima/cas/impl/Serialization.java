@@ -110,7 +110,7 @@ public class Serialization {
    * @param casMgr the CAS to receive the data
    */
   public static void deserializeCASComplete(CASCompleteSerializer casCompSer, CASMgr casMgr) {
-    ((CASImpl) casMgr).reinit(casCompSer);
+    ((CASImpl) casMgr).getBinaryCasSerDes().reinit(casCompSer);
   }
 
   /**
@@ -135,7 +135,7 @@ public class Serialization {
    * @return the initialized CAS loaded with the deserialized data
    */
   public static CAS createCAS(CASMgr casMgr, CASSerializer casSer) {
-    ((CASImpl) casMgr).reinit(casSer);
+    ((CASImpl) casMgr).getBinaryCasSerDes().reinit(casSer);
     return ((CASImpl) casMgr).getCurrentView();
   }
 
