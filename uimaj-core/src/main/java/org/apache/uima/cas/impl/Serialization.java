@@ -168,7 +168,7 @@ public class Serialization {
    * @return The form of the serialized CAS (from its header)
    */
   public static SerialFormat deserializeCAS(CAS cas, InputStream istream) {
-    return ((CASImpl) cas).reinit(istream);
+    return ((CASImpl) cas).getBinaryCasSerDes().reinit(istream);
   }
 
   /**
