@@ -411,7 +411,7 @@ public class XCASDeserializer {
         String sofaMimeType = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAMIME);
 
         fs = cas.createSofa(this.indexMap.get(extSofaNum), sofaID, sofaMimeType);
-      } else {
+      } else {  // not a Sofa
         if (type.isAnnotationBaseType()) {
           
           // take pains to create FS in the right view.
@@ -438,7 +438,7 @@ public class XCASDeserializer {
           } else {
             fs = casView.createFS(type);
           }
-        } else {
+        } else {  // not an annotation base
           fs = cas.createFS(type);
         }
       }
