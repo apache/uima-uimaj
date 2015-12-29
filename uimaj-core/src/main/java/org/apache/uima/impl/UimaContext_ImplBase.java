@@ -158,7 +158,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * The size check followed by an add is in one sync block within getEmptyCas(), 
    * locked on the set object itself (not shared with any other locks).
    */
-  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());
+  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   /**
    * Object that implements management interface to the AE.
