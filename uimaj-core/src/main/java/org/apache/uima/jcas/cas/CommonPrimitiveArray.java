@@ -24,5 +24,13 @@ package org.apache.uima.jcas.cas;
  *   boolean, byte, short, int, long, float, double, String, JavaObject
  */
 public interface CommonPrimitiveArray extends CommonArray {
+  
+  /**
+   * Set an array value from a string representation
+   * NOTE: does **not** log the change for delta cas; this should only be used by 
+   *       internal deserializers
+   * @param i the index
+   * @param v the value to set at the above index
+   */
   void setArrayValueFromString(int i, String v);
 }
