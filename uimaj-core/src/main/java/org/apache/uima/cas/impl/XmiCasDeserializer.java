@@ -311,7 +311,7 @@ public class XmiCasDeserializer {
       indexRepositories.add(this.casBeingFilled.getView(CAS.NAME_DEFAULT_SOFA).getIndexRepository());
       //add an entry to indexRepositories for each Sofa in the CAS (which can only happen if
       //a mergePoint was specified)
-      FSIterator<SofaFS> sofaIter = this.casBeingFilled.getSofaIterator();
+      FSIterator<Sofa> sofaIter = this.casBeingFilled.getSofaIterator();
       while(sofaIter.hasNext()) {
         SofaFS sofa = sofaIter.next();
         if (sofa.getSofaRef() == 1) {
@@ -565,7 +565,7 @@ public class XmiCasDeserializer {
           
 //          // get the sofa's FeatureStructure id
 //          final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
-          } else {
+          } else { // not a sofa, not an array
             if (currentType.isAnnotationBaseType()) {
 
               // take pains to create FS in the right view.
@@ -596,7 +596,7 @@ public class XmiCasDeserializer {
             } else {  // not annotationBase subtype
       		    fs = casBeingFilled.createFS(currentType);
             }
-          }  // not array
+          }  // end of not a sofa, not an array
           readFS(fs, attrs, IS_NEW_FS);
       	} else {  //preexisting
       		if (this.allowPreexistingFS == AllowPreexistingFS.disallow) {
@@ -615,7 +615,7 @@ public class XmiCasDeserializer {
        	    readFS(fs, attrs, IS_EXISTING_FS);
       		} // otherwise ignore  ( AllowPreexistingFS is not disallow nor allow)
       	}
-      }
+      } // end of not-an-array type
     }
     
     private void doDeferFsOrThrow(String idStr, String nameSpaceURI, String localName, String qualifiedName, Attributes attrs) throws XCASParsingException {
