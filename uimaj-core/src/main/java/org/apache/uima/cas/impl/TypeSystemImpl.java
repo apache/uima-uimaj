@@ -34,11 +34,13 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_JavaObjectRef;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -92,7 +94,6 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Misc;
 
 import com.strobel.assembler.metadata.Buffer;
@@ -114,14 +115,18 @@ import com.strobel.decompiler.DecompilerSettings;
  * 
  * Association with Class Loaders, after type system is committed
  *   Because JCas classes are generated from the merged type system, and then loaded under some class loader,
- *   several use cases need to be accomodated.
+ *   several use cases need to be accommodated.
  *   
  *     Multiple type systems committed in sequence within one UIMA application.
  *       - Under one class loader
- *         -- a problem unless the type systems are the same.  
- *              If the type systems are different, this corresponds to reloading existing classes.  Disallow.
- *       - a new UIMATypeSystemClassLoader is associated with each commit - this is OK
- *       - a new 
+ *         -- therefore, they share one JCas loaded classes definition
+ *       - OK provided type system is compatible with JCas loaded definitions
+ *       
+ * At commit time, a type system is compared with existing ones; if it is equal, then
+ *   the typeImpl and featureImpls and all other instance vars are replaced with existing ones.
+ *   -- this removes issues in type system mapping needed between "equal" type systems to get feature validation to work.
+ *   -- implemented via custom hashcode and equals.
+ *         
  */
 public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem {  
   
@@ -233,6 +238,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     slotKindsForNonArrays.put(CAS.TYPE_NAME_FLOAT, Slot_Float);
     slotKindsForNonArrays.put(CAS.TYPE_NAME_LONG, Slot_LongRef);
     slotKindsForNonArrays.put(CAS.TYPE_NAME_DOUBLE, Slot_DoubleRef);
+    slotKindsForNonArrays.put(CAS.TYPE_NAME_JAVA_OBJECT, Slot_JavaObjectRef);
   }
   
 
@@ -282,7 +288,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
            CAS.TYPE_NAME_DOCUMENT_ANNOTATION,
            CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
   }
-             
+    
+  final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections.synchronizedMap(new WeakHashMap<>()); 
   /******************************************
    *   I N S T A N C E   V A R I A B L E S  *
    ******************************************/
@@ -290,7 +297,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //
 //    private FeatureStructureClassGen featureStructureClassGen = new FeatureStructureClassGen(); 
 
-  private FSClassRegistry fsClassRegistry; // set at type system commit time.
+  private FSClassRegistry fsClassRegistry; // a new instance is created at commit time.
   
   /**
    * Map from built-in array name to component Type
@@ -429,6 +436,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   FeatureImpl sofaArray;
   FeatureImpl sofaString;
   FeatureImpl sofaUri;
+  FeatureImpl annotBaseSofaFeat;
 
 
 
@@ -513,7 +521,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
     // Annotations
     annotBaseType = new TypeImpl_annotBase(CAS.TYPE_NAME_ANNOTATION_BASE, this, topType, AnnotationBase.class);
-    addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofaType, false);
+    annotBaseSofaFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_SOFA, annotBaseType, sofaType, false);
     
     annotType = new TypeImpl_annot(CAS.TYPE_NAME_ANNOTATION, this, annotBaseType, Annotation.class);
     startFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_BEGIN, annotType, intType, false);
@@ -764,7 +772,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return An feature object, or <code>null</code> if no such feature exists.
    */
   @Override
-  public Feature getFeatureByFullName(String featureName) {
+  public FeatureImpl getFeatureByFullName(String featureName) {
     int split = featureName.indexOf(TypeSystem.FEATURE_SEPARATOR);
     return getFeature(featureName.substring(0,  split), featureName.substring(split + 1));
   }
@@ -908,7 +916,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         getSlotKindFromType(rangeType));
   }
   
-  private static SlotKind getSlotKindFromType(Type rangeType) {
+  /**
+   * Given a range type, return the corresponding slot kind
+   *   string -> Slot_StrRef, long and double -> ...Ref
+   *   boolean, byte, int, short, float, -> withoutRef
+   *   
+   * @param rangeType
+   * @return
+   */
+  static SlotKind getSlotKindFromType(Type rangeType) {
     SlotKind slotKind = slotKindsForNonArrays.get(rangeType.getName());
     return (null == slotKind) ? Slot_HeapRef : slotKind; 
   }
@@ -1286,9 +1302,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("Type System<").append(System.identityHashCode(this)).append(">:\n");
-    int indent = 2;
-    topType.prettyPrintWithSubTypes(sb, indent);  
+    sb.append(String.format("Type System <%,d>:%n", System.identityHashCode(this)));
+    topType.prettyPrintWithSubTypes(sb, 2); // 2 is indent  
     return sb.toString();
   }
   
@@ -1296,43 +1311,56 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @see org.apache.uima.cas.admin.TypeSystemMgr#commit()
    */
   @Override
-  public void commit() {
+  public TypeSystemImpl commit() {
     if (this.locked) {
-      return; // might be called multiple times, but only need to do once
+      return this; // might be called multiple times, but only need to do once
     }
-    this.locked = true;
-    // because subsumes depends on it
-    // and generator initialization uses subsumes
-//    this.numCommittedTypes = this.getNumberOfTypes(); // do before
-//    this.numTypeNames = this.typeNameST.size();
-//    this.numFeatureNames = this.featureNameST.size();
-//    this.typeInfoArray = new TypeInfo[getTypeArraySize()];
-    // cas.commitTypeSystem -
-    // because it will call the type system iterator
-//    this.casMetadata.setupFeaturesAndCreatableTypes();
-    // ts should never point to a CAS. Many CASes can share one ts.
-    // if (this.cas != null) {
-    // this.cas.commitTypeSystem();
-    // }
     
-    topType.computeDepthFirstCode(1);
-    
-    computeFeatureOffsets(topType, 0, 0);
-               
-    if (IS_DECOMPILE_JCAS) {  
-      synchronized(GLOBAL_TYPESYS_LOCK) {
-        for(Type t : types) {
-          if (t == null) continue;
-          decompile(t);
+    synchronized(this) {
+      if (this.locked) {
+        return this; // might be called multiple times, but only need to do once
+      }
+      this.locked = true;
+      // because subsumes depends on it
+      // and generator initialization uses subsumes
+  //    this.numCommittedTypes = this.getNumberOfTypes(); // do before
+  //    this.numTypeNames = this.typeNameST.size();
+  //    this.numFeatureNames = this.featureNameST.size();
+  //    this.typeInfoArray = new TypeInfo[getTypeArraySize()];
+      // cas.commitTypeSystem -
+      // because it will call the type system iterator
+  //    this.casMetadata.setupFeaturesAndCreatableTypes();
+      
+      WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
+      if (null != prevWr) {
+        TypeSystemImpl prev = prevWr.get();
+        if (null != prev) {
+          return prev;
         }
       }
-    }
-    
-    // true = do user jcas class loading
-    fsClassRegistry = new FSClassRegistry(this, true);
-    
-    computeAdjustedFeatureOffsets(topType, 0, 0);
-    
+      
+      prevWr = new WeakReference<>(this);
+      committedTypeSystems.put(this, prevWr);
+      
+      topType.computeDepthFirstCode(1);
+      
+      computeFeatureOffsets(topType, 0);
+                 
+      if (IS_DECOMPILE_JCAS) {  
+        synchronized(GLOBAL_TYPESYS_LOCK) {
+          for(Type t : types) {
+            if (t == null) continue;
+            decompile(t);
+          }
+        }
+      }
+      
+      // true = do user jcas class loading
+      fsClassRegistry = new FSClassRegistry(this, true);
+      
+      computeAdjustedFeatureOffsets(topType, 0, 0);
+      return this;
+    } // of sync block 
   }
   
   /**
@@ -1374,20 +1402,16 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param nextI - the next available int offset
    * @param nextR - the next available ref offset
    */
-  private void computeFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
+  private void computeFeatureOffsets(TypeImpl ti, int next) {
     
     for (FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      fi.setOffset(fi.isInInt ? (nextI ++) : (nextR ++));
-      if (((TypeImpl)fi.getRange()).isLongOrDouble) {
-        nextI ++;
-      }
+      fi.setOffset(next ++);
     }
         
-    ti.highestIntOffset = nextI - 1;  // highest index value, 0 based index
-    ti.highestRefOffset = nextR - 1;
+    ti.highestOffset = next - 1;  // highest index value, 0 based index
     
     for (TypeImpl sub : ti.getDirectSubtypes()) {
-      computeFeatureOffsets(sub, nextI, nextR);
+      computeFeatureOffsets(sub, next);
     }  
   }
 
@@ -1575,11 +1599,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     t.setInheritanceFinal();
   }
   
-  private Feature getFeature(String typeName, String featureShortName) {
+  private FeatureImpl getFeature(String typeName, String featureShortName) {
     return getFeature(getType(typeName), featureShortName);
   }
   
-  private Feature getFeature(Type type, String featureShortName) {
+  private FeatureImpl getFeature(Type type, String featureShortName) {
     return type.getFeatureByBaseName(featureShortName);
   }
   
@@ -1752,28 +1776,27 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * Key = target type system, via a weak reference.
    * Automatically cleared via WeakHashMap
    * 
-   * The may itself is not synchronized, because all accesses to it are
+   * The map itself is not synchronized, because all accesses to it are
    * from the synchronized getTypeSystemMapper method
    *********************************************************/
   public final Map<TypeSystemImpl, CasTypeSystemMapper> typeSystemMappers = 
       new WeakHashMap<TypeSystemImpl, CasTypeSystemMapper>();
    
-  synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) throws ResourceInitializationException {
+  synchronized CasTypeSystemMapper getTypeSystemMapper(TypeSystemImpl tgtTs) {
+    CasTypeSystemMapper ctsm = getTypeSystemMapperInner(tgtTs);
+    if (null == ctsm || ctsm.isEqual()) { // if the mapper is for this type system
+      return null;
+    } 
+    return ctsm;
+  }
+  
+  synchronized CasTypeSystemMapper getTypeSystemMapperInner(TypeSystemImpl tgtTs) {
     if ((null == tgtTs) || (this == tgtTs)) {
       return null;  // conventions for no type mapping
     }
-    CasTypeSystemMapper m = typeSystemMappers.get(tgtTs);
-    
-    if (null == m) {
-      m = new CasTypeSystemMapper(this, tgtTs);
-      typeSystemMappers.put(tgtTs, m);
-    }
-    
-    if (m.isEqual()) { // if the mapper is for this type system
-      typeSystemMappers.put(tgtTs,  null);
-      return null;
-    }
-    
+    CasTypeSystemMapper m = typeSystemMappers.computeIfAbsent(tgtTs, 
+        key -> new CasTypeSystemMapper(this, tgtTs));
+        
     return m;
   }
   
@@ -2345,8 +2368,50 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return CASImpl.TYPE_CLASS_FS;
   }
 
+  public List<TypeImpl> getAllTypes() {
+    return types.subList(1,  types.size());
+  }
+  
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
-    
+
+
+  /**
+   * HashCode and Equals
+   *   used to compare two type system.  
+   *   Equal type systems are collapsed into one
+   *   
+   * Equal means 
+   *   Same types
+   *     Type are same if they have the same features and other flags
+   *       Same Features  
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((types == null) ? 0 : types.hashCode());
+    return result;
+  }
+
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    TypeSystemImpl other = (TypeSystemImpl) obj;
+    if (types == null) {
+      if (other.types != null)
+        return false;
+    } else if (!types.equals(other.types))
+      return false;
+    return true;
+  }
+   
 //  public void installTypeCreator(Class<?> jcasClass) {
 //    TypeImpl ti = typeName2TypeImpl.get(jcasClass.getName());
 //    assert (ti != null);
@@ -2356,4 +2421,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //  public void install_TypeCreator(Class<?> jcasClass) {
 //    Type
 //  }
+  
+  
 }
