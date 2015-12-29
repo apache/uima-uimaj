@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
-public abstract class FsIterator_subtypes_list <T extends TOP>  extends FsIterator_subtypes<T> {
+public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  extends FsIterator_subtypes<T> {
 
   // An array of iterators, one for each subtype.
   //   This array has the indexes for all the subtypes that were non-empty at the time of iterator creation
@@ -48,19 +49,19 @@ public abstract class FsIterator_subtypes_list <T extends TOP>  extends FsIterat
   //     subsequently ignored - same effect
   private FsIterator_singletype<T>[] initIterators() {
     iicp.createIndexIteratorCache();
-    final ArrayList<FsIndex_singletype<TOP>> cachedSubIndexes = iicp.cachedSubFsLeafIndexes;
+    final ArrayList<FsIndex_singletype<FeatureStructure>> cachedSubIndexes = iicp.cachedSubFsLeafIndexes;
     
     // map from single-type index to iterator over that single type
-    Function<FsIndex_singletype<TOP>, FsIterator_singletype<T>> m = 
+    Function<FsIndex_singletype<T>, FsIterator_singletype<T>> m = 
         fsIndex_singletype -> (FsIterator_singletype<T>)(fsIndex_singletype.iterator());
     
     FsIterator_singletype<T>[] r = cachedSubIndexes.stream()
-        .filter(leafIndex -> leafIndex.size() > 0)  // filter out empty ones
-        .map(m)  // map fsIndex_singletype to an iterator over that
+        .filter(leafIndex -> leafIndex.size() > 0)  // filter out empty ones     
+        .map( index -> index.iterator())  // map fsIndex_singletype to an iterator over that
         .toArray(FsIterator_singletype[]::new);
 
     // if all are empty, put the first one in (to avoid handling 0 as a special case)
-    return (r.length != 0) ? r : new FsIterator_singletype[] {m.apply(cachedSubIndexes.get(0))};
+    return (r.length != 0) ? r : new FsIterator_singletype[] {(FsIterator_singletype) cachedSubIndexes.get(0).iterator()};
   }
 
   /* (non-Javadoc)

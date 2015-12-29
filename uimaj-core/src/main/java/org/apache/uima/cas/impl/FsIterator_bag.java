@@ -23,9 +23,8 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.ObjHashSet;
-import org.apache.uima.jcas.cas.TOP;
 
-class FsIterator_bag<T extends TOP> extends FsIterator_singletype<T> {
+class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
   private ObjHashSet<T> bag;
   

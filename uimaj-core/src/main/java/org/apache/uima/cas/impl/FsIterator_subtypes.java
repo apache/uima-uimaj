@@ -26,7 +26,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
 
-public abstract class FsIterator_subtypes<T extends TOP> implements LowLevelIterator<T> {
+public abstract class FsIterator_subtypes<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   // The IICP
   final protected FsIndex_iicp<T> iicp;
@@ -52,11 +52,11 @@ public abstract class FsIterator_subtypes<T extends TOP> implements LowLevelIter
     return ll_getIndex().size();
   }
 
-  final static FsIterator_subtypes FS_ITERATOR_EMPTY = new FsIterator_subtypes(null) {
+  final static FsIterator_subtypes<TOP> FS_ITERATOR_EMPTY = new FsIterator_subtypes<TOP>(null) {
     @Override
     public boolean isValid() {return false;}
     @Override
-    public FeatureStructure get() throws NoSuchElementException { throw new NoSuchElementException(); }
+    public TOP get() throws NoSuchElementException { throw new NoSuchElementException(); }
     @Override
     public void moveToNext() {}
     @Override
@@ -68,7 +68,9 @@ public abstract class FsIterator_subtypes<T extends TOP> implements LowLevelIter
     @Override
     public void moveTo(FeatureStructure fs) {}
     @Override
-    public FSIterator<FeatureStructure> copy() { return this; }
+    public FSIterator<TOP> copy() { return this; }
+    @Override
+    public int ll_indexSize() { return 0; }    
   };
   
   @Override

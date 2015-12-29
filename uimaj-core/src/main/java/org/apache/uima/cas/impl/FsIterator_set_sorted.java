@@ -27,12 +27,12 @@ import java.util.NoSuchElementException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
-class FsIterator_set_sorted<T extends TOP> extends FsIterator_singletype<T> {
+class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
   // We use TOP instead of T because the 
   // signature of getting a "matching" element limits the type to the declared type, and 
   // in UIMA we can use, say an Annotation instance as a moveTo arg, for a navSet of some subtype of Annotation.
-  final private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
+  final private NavigableSet<FeatureStructure> navSet;  // == fsSortIndex.getNavigableSet()
   
   final private FsIndex_set_sorted<T> fsSetSortIndex;
   
@@ -52,10 +52,10 @@ class FsIterator_set_sorted<T extends TOP> extends FsIterator_singletype<T> {
 
   private Iterator<T> iterator; 
   
-  FsIterator_set_sorted(FsIndex_set_sorted<T> fsSetSortIndex, int[] detectIllegalIndexUpdates, int typeCode, Comparator<TOP> comp) {
+  FsIterator_set_sorted(FsIndex_set_sorted<T> fsSetSortIndex, int[] detectIllegalIndexUpdates, int typeCode, Comparator<FeatureStructure> comp) {
     super(detectIllegalIndexUpdates, typeCode, comp);
     this.fsSetSortIndex = fsSetSortIndex;
-    this.navSet = fsSetSortIndex.getNavigableSet();
+    this.navSet = (NavigableSet<FeatureStructure>) fsSetSortIndex.getNavigableSet();
     iterator = (Iterator<T>) navSet.iterator();  // can't use fsSortIndex.iterator - that recursively calls this
   }
 

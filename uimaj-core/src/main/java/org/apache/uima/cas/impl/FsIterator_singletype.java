@@ -4,10 +4,10 @@ import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.cas.TOP;
 
-public abstract class FsIterator_singletype<T extends TOP>
+public abstract class FsIterator_singletype<T extends FeatureStructure>
                     implements LowLevelIterator<T>, 
                                Comparable<FsIterator_singletype<T>> {
 
@@ -27,9 +27,9 @@ public abstract class FsIterator_singletype<T extends TOP>
    * an instance of T and some other template type which can be a supertype of T, as long as
    * the keys are defined in both.
    */
-  final protected Comparator<TOP> comparator;
+  final protected Comparator<FeatureStructure> comparator;
 
-  public FsIterator_singletype(int[] detectConcurrentMods, int typeCode, Comparator<TOP> comparator){
+  public FsIterator_singletype(int[] detectConcurrentMods, int typeCode, Comparator<FeatureStructure> comparator){
     this.comparator = comparator;
     this.detectIllegalIndexUpdates = detectConcurrentMods;
     this.typeCode = typeCode;
