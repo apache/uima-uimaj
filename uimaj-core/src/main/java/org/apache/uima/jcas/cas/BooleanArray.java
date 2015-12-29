@@ -144,6 +144,11 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     return strArray;
   }
   
+  // internal use
+  public boolean[] _getTheArray() {
+    return theArray;
+  }
+  
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
