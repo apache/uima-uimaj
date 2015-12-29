@@ -108,10 +108,6 @@ public class Int2ObjHashMap<T> {
   private static final boolean TUNE = false;
   
   private final static int[] EMPTY_INT_ARRAY = new int[0];
-
-  static int nextHigherPowerOf2(int i) {
-    return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
-  }
  
   // this load factor gives, for array doubling strategy:
   //   between 1.5 * 8 bytes (2 words, one for key, one for value) = 12 and
@@ -159,8 +155,24 @@ public class Int2ObjHashMap<T> {
     }
   }
   
+  /** 
+   * for use by copy
+   * @param clazz
+   * @param initialCapacity
+   */
+  private Int2ObjHashMap(Class<T> clazz, int initialCapacity,
+    int sizeWhichTriggersExpansion, int size, int[] keys, T [] values) {
+    this.componentType = clazz;
+    this.initialCapacity = initialCapacity;
+    this.sizeWhichTriggersExpansion = sizeWhichTriggersExpansion;
+    this.histogram = null;
+    this.size = size;
+    this.keys = Arrays.copyOf(keys, keys.length);
+    this.values = Arrays.copyOf(values, values.length);
+  }
+        
   private void newTableKeepSize(int capacity) {
-    capacity = Math.max(16, nextHigherPowerOf2(capacity));
+    capacity = Math.max(16, Misc.nextHigherPowerOf2(capacity));
     keys = new int[capacity];
     values = (T[]) Array.newInstance(componentType, capacity);
     sizeWhichTriggersExpansion = (int)(capacity * loadFactor);
@@ -430,6 +442,10 @@ public class Int2ObjHashMap<T> {
           (int) ((keys.length >>> 1) * loadFactor),
           (int) (keys.length * loadFactor));
     }
+  }
+
+  public Int2ObjHashMap<T> copy() {
+    return new Int2ObjHashMap<>(componentType, initialCapacity, sizeWhichTriggersExpansion, size, keys, values);
   }
 
 }
