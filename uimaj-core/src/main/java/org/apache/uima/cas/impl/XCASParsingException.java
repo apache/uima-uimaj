@@ -92,11 +92,12 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
    */
   public static final int INTEGER_EXPECTED = 9;
 
+  
   /**
-   * Error parsing XCAS from source {0} at line {1}, column {2}: expected float value, but found:
+   * Error parsing XCAS from source {0} at line {1}, column {2}: expected numeric value, but found:
    * {3}.
    */
-  public static final int NUMBER_EXPECTED = 10;
+  public static final int FLOAT_EXPECTED = 10;
 
   /**
    * Error parsing XCAS from source {0} at line {1}, column {2}: number of array elements exceeds
@@ -119,7 +120,7 @@ public class XCASParsingException extends org.xml.sax.SAXParseException {
   private static final String[] identifiers = { "WRONG_ROOT_TAG", "TEXT_EXPECTED",
       "ARRAY_ELE_EXPECTED", "ARRAY_ELE_ATTRS", "UNKNOWN_TYPE", 
       "ILLEGAL_ID", "ILLEGAL_ARRAY_SIZE", "ILLEGAL_ARRAY_ATTR", "UNKNOWN_FEATURE", "INTEGER_EXPECTED", 
-      "NUMBER_EXPECTED", "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING", "BYTE_ARRAY_LENGTH_NOT_EVEN"};
+      "FLOAT_EXPECTED", "EXCESS_ARRAY_ELE", "UNKNOWN_ID", "SOFA_REF_MISSING", "BYTE_ARRAY_LENGTH_NOT_EVEN"};
 
   private int error;
 
