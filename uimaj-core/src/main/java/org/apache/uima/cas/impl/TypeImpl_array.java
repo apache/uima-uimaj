@@ -28,6 +28,7 @@ public class TypeImpl_array extends TypeImpl {
   
   private final boolean isHeapStoredArray;
   
+  /** Component slot kind */
   private final SlotKind slotKind;
   
   public TypeImpl_array(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, 
@@ -61,7 +62,9 @@ public class TypeImpl_array extends TypeImpl {
     return isHeapStoredArray;
   }
   
-  SlotKind getSlotKind() {
+  /** Component Slot Kind */
+  @Override
+  public SlotKind getComponentSlotKind() {
     return slotKind;
   }
 }
