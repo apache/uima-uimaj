@@ -1800,8 +1800,18 @@ public class BinaryCasSerDes6 {
               preventFsGc.add(currentFs = view.createFS(srcType));
             }
           }
-          for (Runnable r : singleFsDefer) {
-            r.run();
+          if (srcType.getCode() == TypeSystemImpl.docTypeCode) { 
+            boolean wasRemoved = cas.removeFromCorruptableIndexAnyViewSetCache(currentFs, cas.getAddbackSingle());
+            for (Runnable r : singleFsDefer) {
+              r.run();
+            }
+            if (wasRemoved) {
+              cas.addbackSingle(currentFs);
+            }
+          } else {
+            for (Runnable r : singleFsDefer) {
+              r.run();
+            }
           }
         }
       }
