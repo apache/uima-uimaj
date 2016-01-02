@@ -54,7 +54,7 @@ public class UIMAException extends Exception implements I18nExceptionI {
    * The base name of the resource bundle in which the message for this
    * exception is located.
    */
-  private String mResourceBundleName;
+  private String mResourceBundleName = STANDARD_MESSAGE_CATALOG;  // use a default
 
   /**
    * An identifier that maps to the message for this exception.
