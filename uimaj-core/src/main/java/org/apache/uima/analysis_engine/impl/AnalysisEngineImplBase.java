@@ -40,6 +40,10 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.jcas.JCas;
@@ -363,22 +367,12 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    */
   public synchronized String[] getFeatureNamesForType(String aTypeName) {
     // build CAS and populate mFirstTypeSystem
-    CAS cas = getCasManager().getCas(this.getUimaContextAdmin().getQualifiedContextName());
-    TypeSystem ts = cas.getTypeSystem();
+    CASImpl cas = (CASImpl) getCasManager().getCas(this.getUimaContextAdmin().getQualifiedContextName());
+    TypeSystemImpl ts = cas.getTypeSystemImpl();
     getCasManager().releaseCas(cas);
 
-    Type t = ts.getType(aTypeName);
-    if (t != null) {
-      List<Feature> features = t.getFeatures();
-      String[] featNames = new String[features.size()];
-      for (int i = 0; i < features.size(); i++) {
-        Feature f = features.get(i);
-        featNames[i] = f.getShortName();
-      }
-      return featNames;
-    } else {
-      return null;
-    }
+    TypeImpl t = ts.getType(aTypeName);
+    return (t == null) ? null : t.getFeatureImpls().stream().map(f -> f.getShortName()).toArray(size -> new String[size]);
   }
 
   /*
