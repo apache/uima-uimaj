@@ -1723,8 +1723,7 @@ public class BinaryCasSerDes6 {
       // The strategy for deserializing heap refs depends on finding
       // the prev value for that type.  This must be done in the context 
       // of the sending CAS's type system
-    
-                                                      
+                                                          
 //      SlotKind slotKind = srcType.slotKind;
       
       if (storeIt) {
@@ -2085,9 +2084,9 @@ public class BinaryCasSerDes6 {
     TOP src = getRefVal(tgtSeq);
     if (src == null) {
       //  need to do the getRefVal later when it's known
+      //    here are the two values of "r"
       // () -> sofa.setLocalSofaData(getRefVal(vh))
       // () -> lfs.setFeatureValue(srcFeat, getRefVal(vh))
-      // debug
       fixupsNeeded.add(() -> r.accept(getRefVal(tgtSeq)));
     } else {
       // sofa.setLocalSofaData(tgt);
@@ -2970,6 +2969,7 @@ public class BinaryCasSerDes6 {
       final Set<TOP> wasSeen = Collections.newSetFromMap(new IdentityHashMap<>());
       
       private TOP fs1, fs2;
+      private boolean isSrcCas;  // used for sorting with a CAS, to differentiate between src and target CASes
             
     public CasCompare(CASImpl c1, CASImpl c2) {
       this.c1 = c1;
@@ -3005,7 +3005,9 @@ public class BinaryCasSerDes6 {
         final int sz1 = c1FoundFSs.size();
         final int sz2 = c2FoundFSs.size();
         
-        sort(c1FoundFSs);        
+        isSrcCas = true;
+        sort(c1FoundFSs);
+        isSrcCas = false;
         sort(c2FoundFSs);
         wasSeen.clear();
         
@@ -3015,8 +3017,8 @@ public class BinaryCasSerDes6 {
           
           if (isTypeMapping) {
             // skip compares for types that are missing in the other type system
-            final boolean typeMissingIn1 = isTypeMapping && typeMapper.mapTypeTgt2Src(fs2._typeImpl) == null;
-            final boolean typeMissingIn2 = isTypeMapping && typeMapper.mapTypeSrc2Tgt(fs1._typeImpl) == null;
+            final boolean typeMissingIn1 = typeMapper.mapTypeTgt2Src(fs2._typeImpl) == null;
+            final boolean typeMissingIn2 = typeMapper.mapTypeSrc2Tgt(fs1._typeImpl) == null;
             if (!typeMissingIn1 && !typeMissingIn2) {
               if (!compareFss()) {
                 return false;
@@ -3332,6 +3334,7 @@ public class BinaryCasSerDes6 {
     /**
      * Used for sorting within one type system, for two instances of the same type
      * 
+     * Uses field isSrcCas (boolean) to differentiate when being used to sort for srcCas vs tgtCas
      * 
      * @param fs1
      * @param fs2
@@ -3339,18 +3342,25 @@ public class BinaryCasSerDes6 {
      */
     private int sortCompare(TOP fs1, TOP fs2) {
       // sort by type code first
-      int c = fs1._typeImpl.getName().compareTo(fs2._typeImpl.getName());
+      final TypeImpl fs1Type = fs1._typeImpl;
+      int c = fs1Type.getName().compareTo(fs2._typeImpl.getName());
       if (c != 0) return c;
       
       // same type: compare on features, or if array, on length, then content
       
-      if (fs1._typeImpl.isArray()) {
+      if (fs1Type.isArray()) {
         return sortArray(fs1, fs2);
       }
       
-      List<FeatureImpl> fis = fs1._typeImpl.getFeatureImpls();
+      List<FeatureImpl> fis = fs1Type.getFeatureImpls();
       for (FeatureImpl fi : fis) {
-        
+        if (isTypeMapping) {
+          if (isSrcCas && typeMapper.getTgtFeature(fs1Type, fi) == null) {
+            continue; // don't sort on features not in target type
+          } else if (typeMapper.getSrcFeature(fs1Type,  fi) == null) {
+            continue;  // don't sort on features not in source type
+          }
+        }
         SlotKind kind = fi.getSlotKind();
         switch(kind) {    // ...Ref are either long/double/str 
         case Slot_Boolean: 
