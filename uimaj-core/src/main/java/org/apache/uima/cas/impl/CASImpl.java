@@ -5027,8 +5027,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       int pos = s.indexOf(addbacks);
       if (pos >= 0) {
         for (int i = s.size() - 1; i > pos; i--) {
-          s.remove(i);
-          s.get(i).addback();
+          FSsTobeAddedback toAddBack = s.remove(i);
+          toAddBack.addback();
         }
       }      
     }
