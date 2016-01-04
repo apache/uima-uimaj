@@ -168,7 +168,14 @@ public class CasTypeSystemMapper {
   
   public FeatureImpl getToFeature(FeatureImpl[][] mapByTypeCode, TypeImpl fromType, FeatureImpl fromFeat) {
     FeatureImpl[] map = mapByTypeCode[fromType.getCode()];
-    return (map == null) ? null : map[fromFeat.getOffset()];
+    if (map == null) {
+      return null;
+    }
+    final int offset = fromFeat.getOffset();
+    if (map.length <= offset) {
+      return null;
+    }
+    return map[offset];
   }
   
   
