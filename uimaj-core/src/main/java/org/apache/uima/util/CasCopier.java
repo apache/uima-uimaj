@@ -889,6 +889,7 @@ public class CasCopier {
       if (null != srcItem) {
         tgtArray[i] = copyFsInner(srcItem);
       }
+      i++;
     }
 
     return (T) fsArray;
