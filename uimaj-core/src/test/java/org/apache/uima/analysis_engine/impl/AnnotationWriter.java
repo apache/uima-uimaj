@@ -30,6 +30,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumer_ImplBase;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
@@ -94,7 +95,7 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     try {
       // iterate and print annotations
-      FSIterator<AnnotationFS> typeIterator = aCAS.getCurrentView().getAnnotationIndex().iterator();
+      FSIterator<Annotation> typeIterator = aCAS.getCurrentView().<Annotation>getAnnotationIndex().iterator();
 
       for (typeIterator.moveToFirst(); typeIterator.isValid(); typeIterator.moveToNext()) {
         AnnotationFS annot = typeIterator.get();

@@ -37,7 +37,7 @@ public class AnalysisEngineManagementImplTest extends TestCase {
     
     // Try multi-threaded
     final Random random = new Random();
-    final Set<String> s = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+    final Set<String> s = Collections.newSetFromMap(new ConcurrentHashMap<>());
     int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
 
     MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
