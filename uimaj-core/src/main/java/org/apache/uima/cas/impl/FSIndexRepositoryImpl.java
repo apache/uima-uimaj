@@ -1079,11 +1079,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public final void ll_addFS(int fsRef, boolean doChecks) {
     ll_addFS(fsRef);
   }
-  
-  
-
-
-  
+    
   public <T extends TOP> void addback(T fs) {
     addFS_common(fs, true);
   }
@@ -1171,26 +1167,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     incrementIllegalIndexUpdateDetector(typeCode);
     final ArrayList<FsIndex_iicp<FeatureStructure>> idxList = this.indexArray[typeCode].indexesForType;
 
-    int nbrRemoved = 0;
+    boolean wasRemoved = false;
     
     for (FsIndex_iicp<FeatureStructure> iicp : idxList) {
       FsIndex_singletype<FeatureStructure> st = iicp.fsIndex_singletype;
       if (skipBagIndexes && !st.isSetOrSorted()) {
         continue;
       }
-      nbrRemoved = nbrRemoved + (st.deleteFS(fs) ? 1 : 0);
+      if (st.deleteFS(fs)) {
+        wasRemoved = true;
+      }
     }
 //    
 //    int nbrRemoved = idxList.stream().map(iicp -> iicp.fsIndex_singletype)
 //           .filter(st -> (!skipBagIndexes) || st.isSetOrSorted())
 //           .mapToInt(st -> st.deleteFS(fs) ? 1 : 0).sum();
     
-    if (nbrRemoved > 0) {
+    if (wasRemoved) {
       if (this.cas.getCurrentMark() != null) {
         logIndexOperation(fs, ITEM_REMOVED_FROM_INDEX);
       }
     }
-    return nbrRemoved > 0;    
+    return wasRemoved;    
   }
    
   public <T extends FeatureStructure> LowLevelIterator<T> ll_getAllIndexedFS(Type type) {
@@ -1348,6 +1346,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     int bi = i4t.aBagIndex;
     if (bi >= 0) { // have one or more bag indexes including default bag index, for this type
+      // use the bag index to stop if it doesn't contain the FS, because bag contains testing is fast..
       if (!i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
         return false;
       }
