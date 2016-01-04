@@ -104,11 +104,30 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
   }
   
-  void addback()                         {throw new UnsupportedOperationException();}
-  void addback(TOP fs) {throw new UnsupportedOperationException();}
+  /**
+   * add back all the FSs that were removed in a protect block
+   *   -- for "Multiple" subclass
+   */
+  void addback()       {throw new UnsupportedOperationException();}  // is overridden in one subclass, throws in other
+  
+  /**
+   * add back the single FS that was removed due to 
+   *   -  automatic protection or 
+   *   -  delta deserialization or 
+   *   -  updating document annotation
+   *   -- for "Single" subclass
+   */
+  void addback(TOP fs) {throw new UnsupportedOperationException();}  // is overridden in one subclass, throws in other
   abstract void clear();
 
+  /**
+   * Version of this class for recording 1 FS
+   *
+   */
   static class FSsTobeAddedbackSingle extends FSsTobeAddedback {
+    /**
+     * list of views where the FS was removed; used when adding the fs back
+     */
     final List<FSIndexRepositoryImpl> views = new ArrayList<FSIndexRepositoryImpl>();
     
     @Override
@@ -117,6 +136,9 @@ abstract class FSsTobeAddedback implements AutoCloseable {
       views.add(view);
     }
     
+    /**
+     * in single, the fs is ignored
+     */
     @Override
     void recordRemove(TOP fs, FSIndexRepositoryImpl view) {
       recordRemove(view);
@@ -130,12 +152,16 @@ abstract class FSsTobeAddedback implements AutoCloseable {
       recordRemove(view);
     }
           
+    
     @Override
     void addback(TOP fs) {
+      /**
+       * add this back only to those views where it was removed
+       */
       for (FSIndexRepositoryImpl ir : views) {
         ir.addback(fs);
       }
-      clear();
+      clear();  // clear the viewlist
     }
     
     @Override
@@ -145,10 +171,21 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     }
   }
   
+  /**
+   * Version of this class used for protect blocks - where multiple FSs may be removed.
+   *   - records the fs along with the list of views where it was removed.
+   *
+   */
   static class FSsTobeAddedbackMultiple extends FSsTobeAddedback {
   
+    /**
+     * For each FS, the list of views where it was removed. 
+     */
     final Map<TOP, List<?>> fss2views = new HashMap<TOP, List<?>>();
     
+    /**
+     * An arbitrary cas view or base cas
+     */
     final CASImpl cas;
     
     FSsTobeAddedbackMultiple(CASImpl cas) {
@@ -182,7 +219,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     
     @Override
     void clear() {
-      fss2views.clear();
+      fss2views.clear(); // clears all the list of views for all feature structures
 //      if (SHOW) removes.set(0);
     }
   }
@@ -194,6 +231,11 @@ abstract class FSsTobeAddedback implements AutoCloseable {
     return new FSsTobeAddedbackSingle();
   }
   
+  /**
+   * 
+   * @param cas the view where the protect block was set up
+   * @return an instance for recording removes of multiple FSs
+   */
   public static FSsTobeAddedback createMultiple(CASImpl cas) {
     return new FSsTobeAddedbackMultiple(cas);
   }
