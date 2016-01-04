@@ -303,7 +303,7 @@ public class TypeSystemTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
       e.printStackTrace();
@@ -317,14 +317,14 @@ public class TypeSystemTest extends TestCase {
   }
 
   public void testSuperTypeBuiltIn() {
-    CAS cas = CASInitializer.initCas(new SetupTest());
+    CAS cas = CASInitializer.initCas(new SetupTest(), null);
     TypeSystem ts = cas.getTypeSystem();
     Type stringArray = ts.getType("uima.cas.StringArray");
     assertEquals("uima.cas.ArrayBase", ts.getParent(stringArray).getName());
   }
   
   public void testNameChecking() {
-    CAS tcas = CASInitializer.initCas(new SetupTest());
+    CAS tcas = CASInitializer.initCas(new SetupTest(), null);
     assertTrue(tcas != null);
   }
 

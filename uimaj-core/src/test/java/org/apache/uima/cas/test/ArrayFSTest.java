@@ -47,7 +47,7 @@ public class ArrayFSTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {
       assertTrue(false);

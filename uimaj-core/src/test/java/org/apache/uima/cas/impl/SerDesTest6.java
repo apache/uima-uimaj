@@ -57,6 +57,7 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.BinaryCasSerDes6.ReuseInfo;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -126,7 +127,7 @@ public class SerDesTest6 extends TestCase {
       switch (kind) {
       case TwoTypes: 
       case TwoTypesSubsetFeatures: 
-      case TwoTypesNoFeatures: {
+      case TwoTypesNoFeatures: 
         m.addType(Akof2.name(),"Top");
         if (kind != TwoTypesNoFeatures) {
           for (String fn : featureNameRoots) {
@@ -137,8 +138,8 @@ public class SerDesTest6 extends TestCase {
           }
         }
         break;
-        }
-      }
+      default: // skip the other cases
+      } // end of switch
     }
     
     void addBuiltins() {
@@ -175,15 +176,17 @@ public class SerDesTest6 extends TestCase {
   
   static class TTypeSystem {
     final TypeSystems kind;
-    final TypeSystemMgr tsm;
+    TypeSystemMgr tsm;
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
     Map<String, Type> mapString2Type = new HashMap<String, Type>();
     public TypeSystemImpl ts;
     public CASImpl cas;  // the Cas setup as part of initialization
+    private boolean isUpdateAfterCommit = false;
     
     public TTypeSystem(TypeSystemMgr tsm, TypeSystems kind) {
       this.tsm = tsm;
       this.kind = kind;
+      this.ts = (TypeSystemImpl) tsm;
     }
 
     void addType(Type type, String shortName) {
@@ -220,18 +223,39 @@ public class SerDesTest6 extends TestCase {
       Type t = fs.getType();
       return getFeature(Types.valueOf(t.getShortName()), featNameRoot);
     }
+    
+    void updateAfterCommit() {
+      ts = cas.getTypeSystemImpl();
+      tsm = ts;
+      for (String typename : mapString2Type.keySet()) {
+        TypeImpl ti = ts.getType(typename);
+        mapString2Type.put(typename, ti);
+      }
+      
+      for (Types typeKind : Types.values()) {
+        Type ti = tsm.getType(typeKind.name());
+        if (ti != null) {
+          Feature[] features = featureTable[typeKind.ordinal()];
+          for (int i = 0; i < features.length; i++) {
+            features[i] = ti.getFeatureByBaseName(ti.getShortName() + featureNameRoots.get(i)); 
+          }
+        }
+      }
+      isUpdateAfterCommit = true;
+    }
   }
 
   // Constructor
   public SerDesTest6() {
-    setRandom(/*seed = 1994207594477441796L*/);
+//    setRandom(seed = 1994207594477441796L);
+    setRandom();
     System.out.format("SerDesTest6 RandomSeed: %,d%n", seed);
    }
   
   private void setRandom() {
     Random sg = new Random();
     seed = sg.nextLong();
-//    seed =  2934127305128325787L;
+//    seed =  -4003978854850136823L;
     random = new Random(seed);
   }
   
@@ -242,14 +266,14 @@ public class SerDesTest6 extends TestCase {
   public TTypeSystem setupTTypeSystem(TypeSystems kind) {
     if (kind == EqTwoTypes) {
       TTypeSystem m = new TTypeSystem(mSrc.tsm, kind);
-      m.ts = mSrc.cas.getTypeSystemImpl();
+//      m.ts = mSrc.cas.getTypeSystemImpl();
       return mSrc;
     }
     CASTestSetup setup = new CASTestSetup(kind);
-    CASImpl cas = (CASImpl) CASInitializer.initCas(setup);
+    CASImpl cas = (CASImpl) CASInitializer.initCas(setup, null);
     TTypeSystem m = setup.m;
     m.cas = cas;
-    m.ts = cas.getTypeSystemImpl();
+    m.updateAfterCommit();
     return m;
   }
   
@@ -388,8 +412,7 @@ public class SerDesTest6 extends TestCase {
     
     TTypeSystem m = getTT(tskind);
     remoteCas = setupCas(m);
-    
-    TTypeSystem mSrc = getTT(TwoTypes);
+//    casSrc.reset();
     makeFeaturesForAkof(casSrc, mSrc, Akof1);
     
     FeatureStructure otherTsFs = casSrc.createFS(mSrc.getType(Akof2));
@@ -553,14 +576,13 @@ public class SerDesTest6 extends TestCase {
   }
   
   private void serdesDelta(TTypeSystem m) {
-    remoteCas = setupCas(m);
-//    casSrc.reset();
-    loadCas(casSrc, mSrc);
-    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
+    remoteCas = setupCas(m);  // create empty new CAS with specified type system from m.ts
+    loadCas(casSrc, mSrc);    // load up the src cas using mSrc spec
+    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);    //src -> serialize -> deserialize -> rmt 
     
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    loadCas(remoteCas, m);
-    verifyDelta(marker, ri); 
+    loadCas(remoteCas, m);  // load some changes into remote
+    verifyDelta(marker, ri);  // rmt -> serialize(full ts) -> deserialize(2 ts) -> src, then compare src & rmt
   }
   
   public void testDeltaWithRefsBelow() {
@@ -613,6 +635,12 @@ public class SerDesTest6 extends TestCase {
   public void testDeltaWithAllMods() {
 
     for (int i = 0; i < 100; i ++ ) {
+//      if (i == 53) {
+//        BinaryCasSerDes6.TRACE_SER = true;
+//        BinaryCasSerDes6.TRACE_DES = true;
+//        BinaryCasSerDes6.TRACE_MOD_SER = true;
+//        BinaryCasSerDes6.TRACE_MOD_DES = true;
+//      }
       checkDeltaWithAllMods();
       tearDown();
       setUp();
@@ -700,7 +728,7 @@ public class SerDesTest6 extends TestCase {
     remoteCas = setupCas(m);
     verify(remoteCas);
     
-    FSIterator<FeatureStructure> it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
+    FSIterator<TOP> it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     FeatureStructure fsAt1d = it.next();
     FeatureStructure fsAt2d = it.next();
     StringArrayFS sa1 = (StringArrayFS) maybeGetFeatureKind(fsAt1d, m, "Astring");
@@ -946,7 +974,8 @@ public class SerDesTest6 extends TestCase {
     case EqTwoTypes:
     case TwoTypesSubsetFeatures:
     case TwoTypesNoFeatures:
-      makeFeaturesForAkof(cas, m, Akof2);
+      makeFeaturesForAkof(cas, m, Akof2); break;
+    default:
     }
   }
   
@@ -1214,7 +1243,7 @@ public class SerDesTest6 extends TestCase {
 //        }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      casTgt.reinit(bais);
+      casTgt.getBinaryCasSerDes().reinit(bais);
       if (doPlain) {
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, casTgt));
       } else {
@@ -1277,7 +1306,7 @@ public class SerDesTest6 extends TestCase {
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       if (doPlain) {
-        casTgt.reinit(bais);
+        casTgt.getBinaryCasSerDes().reinit(bais);
       } else {
         riToReturn[1] = Serialization.deserializeCAS(casTgt, bais, null, null).getReuseInfo();
       }
@@ -1302,7 +1331,7 @@ public class SerDesTest6 extends TestCase {
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       if (doPlain) {
-        casSrc.reinit(bais);
+        casSrc.getBinaryCasSerDes().reinit(bais);
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, remoteCas));
       } else {
           BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais, remoteCas.getTypeSystemImpl(), ri[0]);
@@ -1441,7 +1470,7 @@ public class SerDesTest6 extends TestCase {
   }
 
   private List<FeatureStructure> getIndexedFSs(CASImpl cas, TTypeSystem m) {
-    FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(m.getType(Akof1));
+    FSIterator<TOP> it = cas.getIndexRepository().getAllIndexedFS(m.getType(Akof1));
     List<FeatureStructure> lfs = new ArrayList<FeatureStructure>();
     while (it.hasNext()) {
       lfs.add(it.next());

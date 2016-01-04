@@ -49,7 +49,7 @@ public class IndexRepositoryTest extends TestCase {
    */
   protected void setUp() throws Exception {
     super.setUp();
-    this.cas = CASInitializer.initCas(new CASTestSetup());
+    this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     this.typeSystem = this.cas.getTypeSystem();
     this.indexRep = this.cas.getIndexRepository();
   }

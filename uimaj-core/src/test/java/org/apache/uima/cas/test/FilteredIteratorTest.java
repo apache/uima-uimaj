@@ -87,7 +87,7 @@ public class FilteredIteratorTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(cas != null);
       this.ts = this.cas.getTypeSystem();
       assertTrue(ts != null);

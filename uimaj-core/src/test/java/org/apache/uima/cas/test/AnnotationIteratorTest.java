@@ -95,7 +95,7 @@ public class AnnotationIteratorTest extends TestCase {
   public void setUp() {
     try {
       // make a cas with various types, fairly complex -- see CASTestSetup class
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
       assertTrue(this.cas != null);
       this.ts = this.cas.getTypeSystem();
       assertTrue(this.ts != null);

@@ -35,6 +35,8 @@ import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import junit.framework.TestCase;
@@ -251,7 +253,7 @@ public class IndexComparitorTest extends TestCase {
 
   public void setUp() throws Exception {
     try {
-      this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting());
+      this.cas = CASInitializer.initCas(new SetupForIndexCompareTesting(), ts -> reinitTypes(ts));
       assertNotNull(cas);
       ir = cas.getIndexRepository();
       sortedType1 = ir.getIndex("SortedType1");
@@ -271,7 +273,9 @@ public class IndexComparitorTest extends TestCase {
       fss = new FeatureStructure[3][2][2];
       for (int i = 0; i < 2; i++) {
         for (int j = 0; j < 2; j++) {
-          ir.addFS(fss[0][i][j] = createFs(type1, i, j));
+          FeatureStructure tfs = createFs(type1, i, j);
+          fss[0][i][j] = tfs;
+          ir.addFS(tfs);
           ir.addFS(fss[1][i][j] = createFs(type1Sub1, i, j));
           ir.addFS(fss[2][i][j] = createFs(type1Sub2, i, j));
         }
@@ -279,6 +283,51 @@ public class IndexComparitorTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
+  }
+  
+  private void reinitTypes(TypeSystemImpl tsm) {
+    
+    // Add new types and features.
+    topType = tsm.getTopType();
+    integerType = tsm.refreshType(integerType);
+    stringType = tsm.refreshType(stringType);
+    booleanType = tsm.refreshType(booleanType);
+    doubleType = tsm.refreshType(doubleType);
+    longType = tsm.refreshType(longType);
+    byteType = tsm.refreshType(byteType);
+    shortType = tsm.refreshType(shortType);
+    
+    type1 = tsm.refreshType(type1);
+    type1Sub1 = tsm.refreshType(type1Sub1);
+    type1Sub2 = tsm.refreshType(type1Sub2);
+
+    type1Used = tsm.refreshFeature(type1Used);
+    type1UsedShort = tsm.refreshFeature(type1UsedShort);
+    type1UsedByte = tsm.refreshFeature(type1UsedByte);
+    type1UsedBoolean = tsm.refreshFeature(type1UsedBoolean);
+    type1UsedString = tsm.refreshFeature(type1UsedString);
+    type1UsedLong = tsm.refreshFeature(type1UsedLong);
+    type1UsedDouble = tsm.refreshFeature(type1UsedDouble);
+    
+    type1Ignored = tsm.refreshFeature(type1Ignored);
+
+    type1Sub1Used = tsm.refreshFeature(type1Sub1Used);
+    type1Sub1UsedShort = tsm.refreshFeature(type1Sub1UsedShort);
+    type1Sub1UsedByte = tsm.refreshFeature(type1Sub1UsedByte);
+    type1Sub1UsedBoolean = tsm.refreshFeature(type1Sub1UsedBoolean);
+    type1Sub1UsedString = tsm.refreshFeature(type1Sub1UsedString);
+    type1Sub1UsedLong = tsm.refreshFeature(type1Sub1UsedLong);
+    type1Sub1UsedDouble = tsm.refreshFeature(type1Sub1UsedDouble);
+    type1Sub1Ignored = tsm.refreshFeature(type1Sub1Ignored);
+
+    type1Sub2Used = tsm.refreshFeature(type1Sub2Used);
+    type1Sub2UsedShort = tsm.refreshFeature(type1Sub2UsedShort);
+    type1Sub2UsedByte = tsm.refreshFeature(type1Sub2UsedByte);
+    type1Sub2UsedBoolean = tsm.refreshFeature(type1Sub2UsedBoolean);
+    type1Sub2UsedString = tsm.refreshFeature(type1Sub2UsedString);
+    type1Sub2UsedLong = tsm.refreshFeature(type1Sub2UsedLong);
+    type1Sub2UsedDouble = tsm.refreshFeature(type1Sub2UsedDouble);
+    type1Sub2Ignored = tsm.refreshFeature(type1Sub2Ignored);
   }
 
   public void tearDown() {

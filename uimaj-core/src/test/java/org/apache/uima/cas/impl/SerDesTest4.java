@@ -237,6 +237,52 @@ public class SerDesTest4 extends TestCase {
 
     public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
     }
+    
+    void reinitTypeSystem(TypeSystemImpl tsm) {
+      topType = tsm.getTopType();
+      
+      akof = tsm.refreshType(akof);
+      
+      typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+      typeArrayFs = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
+      typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
+      typeArrayDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
+      typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
+      typeArrayShort = tsm.getType(CAS.TYPE_NAME_SHORT_ARRAY);
+      typeArrayByte = tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY);
+      typeArrayBoolean= tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY);
+      typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
+      
+      typeInt = tsm.getType(CAS.TYPE_NAME_INTEGER);
+      typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
+      typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
+      typeLong = tsm.getType(CAS.TYPE_NAME_LONG);
+      typeShort = tsm.getType(CAS.TYPE_NAME_SHORT);
+      typeByte = tsm.getType(CAS.TYPE_NAME_BYTE);
+      typeBoolean = tsm.getType(CAS.TYPE_NAME_BOOLEAN);
+      typeString = tsm.getType(CAS.TYPE_NAME_STRING);
+      typeFs = tsm.getType(CAS.TYPE_NAME_TOP);
+
+      akofInt = tsm.refreshFeature(akofInt);
+      akofFs = tsm.refreshFeature(akofFs);
+      akofFloat = tsm.refreshFeature(akofFloat);
+      akofDouble = tsm.refreshFeature(akofDouble);
+      akofLong = tsm.refreshFeature(akofLong);
+      akofShort = tsm.refreshFeature(akofShort);
+      akofByte = tsm.refreshFeature(akofByte);
+      akofBoolean = tsm.refreshFeature(akofBoolean);
+      akofString = tsm.refreshFeature(akofString);
+      
+      akofAint = tsm.refreshFeature(akofAint);
+      akofAfs = tsm.refreshFeature(akofAfs);
+      akofAfloat = tsm.refreshFeature(akofAfloat);
+      akofAdouble = tsm.refreshFeature(akofAdouble);
+      akofAlong = tsm.refreshFeature(akofAlong);
+      akofAshort = tsm.refreshFeature(akofAshort);
+      akofAbyte = tsm.refreshFeature(akofAbyte);
+      akofAboolean = tsm.refreshFeature(akofAboolean);
+      akofAstring = tsm.refreshFeature(akofAstring);
+    }
   }
 
   public SerDesTest4() {
@@ -251,7 +297,7 @@ public class SerDesTest4 extends TestCase {
 //    System.out.format("RandomSeed: %,d%n", seed);
 
     try {
-      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup());
+      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), ts -> reinitTypeSystem(ts));
       this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
       deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);

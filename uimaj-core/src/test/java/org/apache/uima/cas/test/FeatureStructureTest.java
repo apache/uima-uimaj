@@ -97,7 +97,7 @@ public class FeatureStructureTest extends TestCase {
 
 	public void setUp() {
 		try {
-			this.cas = CASInitializer.initCas(new CASTestSetup());
+			this.cas = CASInitializer.initCas(new CASTestSetup(), null);
 			assertTrue(this.cas != null);
 			this.ts = this.cas.getTypeSystem();
 			assertTrue(this.ts != null);
@@ -177,7 +177,7 @@ public class FeatureStructureTest extends TestCase {
 	}
 
 	public void testErrorDerefDifferentCAS() {
-	  CAS cas2 = CASInitializer.initCas(new CASTestSetup());
+	  CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
 	  Type tokenType1 = this.ts.getType(CASTestSetup.TOKEN_TYPE);
 	  Feature tokenTypeFeature = this.ts.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":" + CASTestSetup.TOKEN_TYPE_FEAT);
 	  FeatureStructure fs1 = cas2.createFS(tokenType1);

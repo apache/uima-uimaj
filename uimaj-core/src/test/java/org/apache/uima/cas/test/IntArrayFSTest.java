@@ -40,7 +40,7 @@ public class IntArrayFSTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = CASInitializer.initCas(new CASTestSetup());
+      this.cas = CASInitializer.initCas(new CASTestSetup(), null);
     } catch (Exception e) {
       assertTrue(false);
     }

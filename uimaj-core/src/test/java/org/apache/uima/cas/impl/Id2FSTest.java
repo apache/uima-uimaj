@@ -35,7 +35,7 @@ public class Id2FSTest extends TestCase {
 
   public void setUp() {
     try {
-      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup());
+      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), null);
       this.jcas = cas.getJCas();
       this.ts = this.cas.getTypeSystem();
     } catch (Exception e) {

@@ -54,6 +54,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.Serialization;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -161,6 +162,8 @@ public class NewPrimitiveTypesTest extends TestCase {
 
       // Commit the type system.
       ((CASImpl) casMgr).commitTypeSystem();
+      tsa = ((CASImpl) casMgr).getTypeSystemMgr();
+      reinitTypeSystem((TypeSystemImpl) tsa);
 
       // Create the Base indexes.
       casMgr.initCASIndexes();
@@ -193,6 +196,30 @@ public class NewPrimitiveTypesTest extends TestCase {
       JUnitExtension.handleException(e);
     }
 
+  }
+  
+  private void reinitTypeSystem(TypeSystemImpl tsa) {
+    annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+
+    // new primitive types
+    exampleType = tsa.refreshType(exampleType);
+
+    floatFeature = tsa.refreshFeature(floatFeature);
+    stringFeature = tsa.refreshFeature(stringFeature);
+    booleanFeature = tsa.refreshFeature(booleanFeature);
+    byteFeature = tsa.refreshFeature(byteFeature);
+    shortFeature = tsa.refreshFeature(shortFeature);
+    longFeature = tsa.refreshFeature(longFeature);
+    doubleFeature = tsa.refreshFeature(doubleFeature);
+
+    intArrayFeature = tsa.refreshFeature(intArrayFeature);
+    floatArrayFeature = tsa.refreshFeature(floatArrayFeature);
+    stringArrayFeature = tsa.refreshFeature(stringArrayFeature);
+    booleanArrayFeature = tsa.refreshFeature(booleanArrayFeature);
+    byteArrayFeature = tsa.refreshFeature(byteArrayFeature);
+    shortArrayFeature = tsa.refreshFeature(shortArrayFeature);
+    longArrayFeature = tsa.refreshFeature(longArrayFeature);
+    doubleArrayFeature = tsa.refreshFeature(doubleArrayFeature);
   }
 
   public void tearDown() {

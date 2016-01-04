@@ -153,6 +153,7 @@ public class IndexSerializationTest extends TestCase {
     tsa.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     // Commit the type system.
     ((CASImpl) casMgr).commitTypeSystem();
+    tsa = casMgr.getTypeSystemMgr();  // because of type system consolidation
     // assert(tsa.isCommitted());
     // // Create the CAS indexes.
     // tcas.initCASIndexes();

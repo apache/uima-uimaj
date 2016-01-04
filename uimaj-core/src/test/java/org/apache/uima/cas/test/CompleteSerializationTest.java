@@ -49,7 +49,7 @@ public class CompleteSerializationTest extends TestCase {
     try {
       CASMgr cas = null;
       try {
-        cas = (CASMgr) CASInitializer.initCas(new CASTestSetup());
+        cas = (CASMgr) CASInitializer.initCas(new CASTestSetup(), null);
       } catch (Exception e) {
         assertTrue(false);
       }

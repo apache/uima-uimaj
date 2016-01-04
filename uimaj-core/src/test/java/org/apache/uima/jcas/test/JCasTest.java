@@ -437,7 +437,7 @@ public class JCasTest extends TestCase {
 				CAS cas2 = CASInitializer.initCas(new CASTestSetup());
 				TypeSystem ts2 = cas2.getTypeSystem();
 				JCas jcas2 = cas2.getJCas();
-				assertTrue(jcas.getCasType(Annotation.type) != jcas2.getCasType(Annotation.type));
+				assertTrue(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
 			} catch (Exception e) {
 				checkOkMissingImport(e);
 			}
