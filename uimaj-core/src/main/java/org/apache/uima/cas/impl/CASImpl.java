@@ -2323,11 +2323,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     
     if (jcasFieldRegistryIndex == Integer.MIN_VALUE) {
-      if (!svd.featureCodesInIndexKeys.get(featCode)) {
+      if (!svd.featureCodesInIndexKeys.get(featCode)) { // skip if no index uses this feature
         return false;
       }
     } else {
-      if (!svd.featureJiInIndexKeys.get(jcasFieldRegistryIndex)) {
+      if (!svd.featureJiInIndexKeys.get(jcasFieldRegistryIndex)) {  // skip if no index uses this feature
         return false;
       }
     }
@@ -3413,10 +3413,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (null != newDoc) {
       Annotation docAnnot = getDocumentAnnotationNoCreate();
       if (docAnnot != null) {
-        boolean wasRemoved = this.indexRepository.removeIfInCorrputableIndexInThisView(docAnnot);
+        boolean wasRemoved = this.removeFromCorruptableIndexAnyViewSetCache(docAnnot, this.getAddbackSingle());
         docAnnot.setIntValue(getTypeSystemImpl().endFeat, newDoc.length());
         if (wasRemoved) {
-          ((FSIndexRepositoryImpl)ll_getIndexRepository()).addback(docAnnot);
+          this.addbackSingle(docAnnot);
+        } else {
+          resetAddbackSingleInUse();
         }
       } else {
         // not in the index (yet)
@@ -3865,15 +3867,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param addbacks
    */
   void addbackModifiedFSs (FSsTobeAddedback addbacks) {
-    final List<FSsTobeAddedback> s =  svd.fssTobeAddedback;
-    if (s.get(s.size() - 1) == addbacks) {
-      s.remove(s.size());
+    final List<FSsTobeAddedback> listOfAddbackInfos =  svd.fssTobeAddedback;
+    if (listOfAddbackInfos.get(listOfAddbackInfos.size() - 1) == addbacks) {
+      listOfAddbackInfos.remove(listOfAddbackInfos.size());
     } else {
-      int pos = s.indexOf(addbacks);
+      int pos = listOfAddbackInfos.indexOf(addbacks);
       if (pos >= 0) {
-        for (int i = s.size() - 1; i > pos; i--) {
-          s.remove(i);
-          s.get(i).addback();
+        for (int i = listOfAddbackInfos.size() - 1; i > pos; i--) {
+          FSsTobeAddedback toAddBack = listOfAddbackInfos.remove(i);
+          toAddBack.addback();
         }
       }      
     }
