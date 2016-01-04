@@ -355,9 +355,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   void addbackSingle(int fsAddr) {
     svd.fsTobeAddedbackSingle.addback(fsAddr);
     svd.fsTobeAddedbackSingleInUse = false;
+//    System.out.format("debug return (addbackSingle) add back single for cas %s%n", this.getViewName());    
   }
   
   void resetAddbackSingleInUse() {
+//    System.out.format("debug return (reset) add back single for cas %s%n", this.getViewName());
     svd.fsTobeAddedbackSingleInUse = false;
   }
   
@@ -365,6 +367,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (svd.fsTobeAddedbackSingleInUse) {
       throw new RuntimeException(); // internal error
     }
+//    System.out.format("debug checkout add back single for cas %s%n", this.getViewName());
     svd.fsTobeAddedbackSingleInUse = true;
     return svd.fsTobeAddedbackSingle;
   }
@@ -1461,6 +1464,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         
         // first disable auto addbacks for index corruption - this routine is handling that
         svd.fsTobeAddedbackSingleInUse = true;  // sorry, a bad hack...
+//        System.out.format("debug checkout (fake) add back single for cas %s%n", this.getViewName());
         try {
           for (int i = 0; i < fsmodssz; i++) {
             final int heapAddrBeingModified = readInt(dis, swap);
@@ -1470,6 +1474,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           bds.tobeAddedback.addback(bds.lastRemovedFsAddr);
           bds.fssAddrArray = null;  // free storage
         } finally {
+//          System.out.format("debug return (fake) add back single for cas %s%n", this.getViewName());
           svd.fsTobeAddedbackSingleInUse = false;
         }
       }
@@ -4603,13 +4608,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     String newDoc = ll_getSofaDataString(this.mySofaRef);
     if (null != newDoc) {
-      int count = 0;
       final int docAnnot = ll_getDocumentAnnotation();
       if (docAnnot != 0) {
-        count = this.indexRepository.removeIfInCorrputableIndexInThisView(docAnnot);
+        boolean wasRemoved = this.removeFromCorruptableIndexAnyViewSetCache(docAnnot, this.getAddbackSingle());
         setFeatureValueNoIndexCorruptionCheck(docAnnot, TypeSystemImpl.endFeatCode, newDoc.length());
-        if (count > 0) {
-          ((FSIndexRepositoryImpl)ll_getIndexRepository()).ll_addback(docAnnot, count);
+        if (wasRemoved) {
+          this.addbackSingle(docAnnot);
+        } else {
+          this.svd.fsTobeAddedbackSingleInUse = false;
         }
       } else {
         // not in the index (yet)
