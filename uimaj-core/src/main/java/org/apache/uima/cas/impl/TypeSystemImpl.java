@@ -2422,5 +2422,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    Type
 //  }
   
+  // Methods to assist users who build type systems programatically and have
+  // variables referring to Types and Features to update these after a commit
+  //   (in case the commit consolidated type systems).
+  public TypeImpl refreshType(Type t) {
+    return getType(t.getName());
+  }
+  
+  public FeatureImpl refreshFeature(Feature f) {
+    return getFeatureByFullName(f.getName());
+  }
   
 }
