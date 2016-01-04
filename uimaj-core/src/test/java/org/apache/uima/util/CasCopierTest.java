@@ -30,11 +30,8 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.TOP;
@@ -202,17 +199,17 @@ public class CasCopierTest extends TestCase {
     CasCopier copierv = new CasCopier(srcCas, tgtCas);
     
     // copy a fs while in an iteration
-    FSIterator<FeatureStructure> itv = srcCas.getJCas().getFSIndexRepository().getIndex("testEntityIndex").iterator();
+    FSIterator<TOP> itv = srcCas.getJCas().getFSIndexRepository().<TOP>getIndex("testEntityIndex").iterator();
     FSIterator<Annotation> ita = srcCas.getJCas().getAnnotationIndex().iterator();
 
     while (ita.hasNext()) {
-      Annotation fs = (Annotation) ita.next();
-      Annotation fsv2 = (Annotation) copierv.copyFs(fs);
+      Annotation fs = ita.next();
+      Annotation fsv2 = copierv.copyFs(fs);
       fsv2.addToIndexes();
     }
 
     while (itv.hasNext()) {
-      FeatureStructure fs =  itv.next();
+      TOP fs =  itv.next();
       TOP fsv2 = (TOP) copierv.copyFs(fs);
       fsv2.addToIndexes();      
     }
@@ -232,7 +229,7 @@ public class CasCopierTest extends TestCase {
       destCas.reset();
       long startTime = System.nanoTime();
       copier = new CasCopier(srcCas, destCas);
-      copier.copyCasView(srcCas, true);
+      copier.copyCasView(srcCas, true);  // true == copy the sofa too
       long time = (System.nanoTime() - startTime)/ 1000;
       if (time < shortest) {
         shortest = time;
@@ -307,24 +304,24 @@ public class CasCopierTest extends TestCase {
 
     CasComparer cci = new CasComparer();
     // copy all entities
-    Iterator<FeatureStructure> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
+    Iterator<TOP> it = srcCas.getIndexRepository().getAllIndexedFS(srcCas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity"));
 //    while(it.hasNext()) {
-      FeatureStructure fs = it.next();
-      FeatureStructure fsc = copier.copyFs(fs);
+      TOP fs = it.next();
+      TOP fsc = (TOP) copier.copyFs(fs);
 //      destCas.addFsToIndexes(fsc);
       CasComparer.assertEquals(fs, fsc);
 //    }
     // copy an Annotation
-    Iterator<AnnotationFS> annotIter = srcCas.getAnnotationIndex().iterator();
-    FeatureStructure annot = annotIter.next();
-    FeatureStructure copy = copier.copyFs(annot);
+    Iterator<Annotation> annotIter = srcCas.<Annotation>getAnnotationIndex().iterator();
+    TOP annot = annotIter.next();
+    TOP copy = (TOP) copier.copyFs(annot);
     // verify copy
     CasComparer.assertEquals(annot, copy);
 
     // copy a Relation (which will have references)
-    Iterator<FeatureStructure> relationIter = srcCas.getIndexRepository().getIndex("testRelationIndex").iterator();
-    FeatureStructure relFS = relationIter.next();
-    FeatureStructure relCopy = copier.copyFs(relFS);
+    Iterator<TOP> relationIter = srcCas.getIndexRepository().<TOP>getIndex("testRelationIndex").iterator();
+    TOP relFS = relationIter.next();
+    TOP relCopy = (TOP) copier.copyFs(relFS);
     // verify copy
     CasComparer.assertEquals(relFS, relCopy);
 
@@ -333,8 +330,8 @@ public class CasCopierTest extends TestCase {
     arrFS.set(0, annot);
     arrFS.set(1, null);
     arrFS.set(2, relFS);
-    FeatureStructure copyArrFS = copier.copyFs(arrFS);
-    CasComparer.assertEquals(arrFS, copyArrFS);
+    TOP copyArrFS = (TOP) copier.copyFs(arrFS);
+    CasComparer.assertEquals((TOP)arrFS, copyArrFS);
     
     // test with using base cas
     
@@ -343,7 +340,7 @@ public class CasCopierTest extends TestCase {
     destCas.setDocumentText(srcCas.getDocumentText());
     copier = new CasCopier(((CASImpl)srcCas).getBaseCAS(), ((CASImpl)destCas).getBaseCAS());
 
-    annotIter = srcCas.getAnnotationIndex().iterator();
+    annotIter = srcCas.<Annotation>getAnnotationIndex().iterator();
     annot = annotIter.next();
     boolean wascaught = false;
     try {
@@ -362,25 +359,25 @@ public class CasCopierTest extends TestCase {
     CAS srcCasView = srcCas.createView("TestView");
     srcCasView.setDocumentText("This is a test");
     CAS destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    LowLevelCAS lowLevelSrcCasView = srcCasView.getLowLevelCAS();
-    int typeCode = lowLevelSrcCasView.ll_getTypeSystem().ll_getCodeForType(
-            srcCas.getAnnotationType());
+//    LowLevelCAS lowLevelSrcCasView = srcCasView.getLowLevelCAS();
+//    int typeCode = lowLevelSrcCasView.ll_getTypeSystem().ll_getCodeForType(
+//            srcCas.getAnnotationType());
     // switch method of creating Annotation to create one with valid sofa ref https://issues.apache.org/jira/browse/UIMA-4099
 //    int destFsAddr = lowLevelSrcCasView.ll_createFS(typeCode);
-//    AnnotationFS fs = (AnnotationFS) lowLevelSrcCasView.ll_getFSForRef(destFsAddr);
+//    Annotation fs = (Annotation) lowLevelSrcCasView.ll_getFSForRef(destFsAddr);
     // the above creates an invalid Annotation, because it doesn't set the sofa ref for the view
     // replace with below that includes the proper sofa ref
     JCas srcJCas = srcCasView.getJCas();
-    AnnotationFS fs = new Annotation(srcJCas, 0, 4);
+    Annotation fs = new Annotation(srcJCas, 0, 4);
 //    fs.setIntValue(srcCas.getBeginFeature(), 0);
 //    fs.setIntValue(srcCas.getEndFeature(), 4);
     assertEquals("This", fs.getCoveredText());
     srcCasView.addFsToIndexes(fs);
     CasCopier.copyCas(srcCas, destCas, true);
     CAS destCasView = destCas.getView("TestView");
-    Iterator<AnnotationFS> annotIter = destCasView.getAnnotationIndex().iterator();
+    Iterator<Annotation> annotIter = destCasView.<Annotation>getAnnotationIndex().iterator();
     annotIter.next(); // document annotation
-    AnnotationFS copiedFs = annotIter.next();
+    Annotation copiedFs = annotIter.next();
     assertEquals("This", copiedFs.getCoveredText());
   }
 }
