@@ -352,7 +352,7 @@ public class FeaturePathTest extends TestCase {
             cas.getDocumentAnnotation());
 
       // test fsId()
-      String docAnnotId = Integer.toString(cas.getDocumentAnnotation()._id); 
+      String docAnnotId = Integer.toString(cas.getDocumentAnnotation().id()); 
       
       String path = "/refFeature:fsId()";
       FeaturePath featurePath = new FeaturePathImpl();
