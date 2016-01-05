@@ -755,52 +755,56 @@ public class XmiCasDeserializer {
       
       this.featsSeen = null;
       
-      // before looping over all features for this FS, remove this FS if in any index.
+      // before looping over all features for this FS, remove this FS if it's not new and if in any index.
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
-      if (!isNewFs) {   
-        casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(fsAddr, casBeingFilled.getAddbackSingle());
-        // else clause not needed because caller does ll_createFS which sets this anyways
-//      } else {  
-//        // need this to prevent using sofa ref before it's set
-//        casBeingFilled.setCacheNotInIndex(fsAddr);  // new FSs are not indexed (yet)
-      }
-      // loop over all features for this FS
-      for (int i = 0; i < attrs.getLength(); i++) {
-        attrName = attrs.getQName(i);
-        attrValue = attrs.getValue(i);
-        if (attrName.equals(ID_ATTR_NAME)) {
-          try {
-            id = Integer.parseInt(attrValue);
-//            newFS = this.isNewFS(id);  // we already specifically got this attribute
-            if (sofaTypeCode != typeCode && !isNewFs) {
-              this.featsSeen = new IntVector(attrs.getLength());
-            } else {
-              this.featsSeen = null;
-            }
-          } catch (NumberFormatException e) {
-            throw createException(XCASParsingException.ILLEGAL_ID, attrValue);
-          }
-        } else {
-          if (sofaTypeCode == typeCode && attrName.equals(CAS.FEATURE_BASE_NAME_SOFAID)) {
-            if (attrValue.equals("_DefaultTextSofaName")) {
-              // First change old default Sofa name into the new one
-              attrValue = CAS.NAME_DEFAULT_SOFA;
-            }
-          } else if (sofaTypeCode == typeCode && attrName.equals(CAS.FEATURE_BASE_NAME_SOFANUM)) {
-            attrValue = Integer.toString(thisSofaNum);
-          }
-          int featCode = handleFeature(type, fsAddr, attrName, attrValue, isNewFs);
-          //if processing delta cas preexisting FS, keep track of features that have
-          //been deserialized.
-          if (this.featsSeen != null && !isNewFs && featCode != -1) {
-            this.featsSeen.add(featCode); 
-          }
+      try {
+        if (!isNewFs) {   
+        
+          casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(fsAddr, casBeingFilled.getAddbackSingle());
+          // else clause not needed because caller does ll_createFS which sets this anyways
+  //      } else {  
+  //        // need this to prevent using sofa ref before it's set
+  //        casBeingFilled.setCacheNotInIndex(fsAddr);  // new FSs are not indexed (yet)
         }
-      }  // end of all features loop
-      
-      if (!isNewFs) {
-        casBeingFilled.addbackSingle(fsAddr);
+        // loop over all features for this FS
+        for (int i = 0; i < attrs.getLength(); i++) {
+          attrName = attrs.getQName(i);
+          attrValue = attrs.getValue(i);
+          if (attrName.equals(ID_ATTR_NAME)) {
+            try {
+              id = Integer.parseInt(attrValue);
+  //            newFS = this.isNewFS(id);  // we already specifically got this attribute
+              if (sofaTypeCode != typeCode && !isNewFs) {
+                this.featsSeen = new IntVector(attrs.getLength());
+              } else {
+                this.featsSeen = null;
+              }
+            } catch (NumberFormatException e) {
+              throw createException(XCASParsingException.ILLEGAL_ID, attrValue);
+            }
+          } else {
+            if (sofaTypeCode == typeCode && attrName.equals(CAS.FEATURE_BASE_NAME_SOFAID)) {
+              if (attrValue.equals("_DefaultTextSofaName")) {
+                // First change old default Sofa name into the new one
+                attrValue = CAS.NAME_DEFAULT_SOFA;
+              }
+            } else if (sofaTypeCode == typeCode && attrName.equals(CAS.FEATURE_BASE_NAME_SOFANUM)) {
+              attrValue = Integer.toString(thisSofaNum);
+            }
+            int featCode = handleFeature(type, fsAddr, attrName, attrValue, isNewFs);
+            //if processing delta cas preexisting FS, keep track of features that have
+            //been deserialized.
+            if (this.featsSeen != null && !isNewFs && featCode != -1) {
+              this.featsSeen.add(featCode); 
+            }
+          }
+        }  // end of all features loop
+        
+      } finally {
+        if (!isNewFs) {
+          casBeingFilled.addbackSingle(fsAddr);
+        }
       }
       
       if (sofaTypeCode == typeCode && isNewFs) {
@@ -1505,16 +1509,7 @@ public class XmiCasDeserializer {
 
       
       for (CAS view : views) {
-        AutoCloseable ac = view.protectIndexes();
-        try {
-          ((CASImpl) view).updateDocumentAnnotation();
-        } finally {
-          try {
-            ac.close();
-          } catch (Exception e1) {
-            assert(false);
-          }
-        }
+        ((CASImpl) view).updateDocumentAnnotation();
       }
      
       

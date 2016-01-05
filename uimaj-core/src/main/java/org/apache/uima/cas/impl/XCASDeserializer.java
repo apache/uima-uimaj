@@ -778,16 +778,7 @@ public class XCASDeserializer {
       }
 
       for (CAS view : views) {
-        AutoCloseable ac = view.protectIndexes();
-        try {
-          ((CASImpl)view).updateDocumentAnnotation();
-        } finally {
-          try {
-            ac.close();
-          } catch (Exception e) {
-            assert(false);
-          }
-        }
+        ((CASImpl)view).updateDocumentAnnotation();
       }
 //      for (int i = 0; i < views.size(); i++) {       
 //        ((CASImpl) views.get(i)).updateDocumentAnnotation();
