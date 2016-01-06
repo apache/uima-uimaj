@@ -20,7 +20,9 @@
 package org.apache.uima.internal.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -84,4 +86,18 @@ public class Int2IntHashMapTest extends TestCase {
       assertEquals(10000 + k, ia.get(k));
     }
   }
+  
+  public void testContainsKey() {
+    Int2IntHashMap map1 = new Int2IntHashMap();
+    
+    for (int i = 1; i < 100; i++) {
+        map1.put(i, 100-1);
+    }
+
+    for (int i = 1; i < 100; i++) {
+      assertTrue("Map should contain key " + i + " but it is missing", map1.containsKey(i));
+    }
+    
+  }
+  
 }

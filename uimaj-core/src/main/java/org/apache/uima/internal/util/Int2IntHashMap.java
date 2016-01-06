@@ -380,7 +380,7 @@ public class Int2IntHashMap {
  
  public boolean containsKey(int key) {
    int probeAddr = find(key);
-   return probeAddr != 0 && keys[probeAddr] != 0;
+   return keys[probeAddr] != 0;
  }
  
  public boolean isKeyValid(int position) {
