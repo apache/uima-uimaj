@@ -26,11 +26,17 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.function.Consumer;
+
+import org.apache.uima.UIMARuntimeException;
 
 public class Misc {
 
@@ -215,7 +221,19 @@ public class Misc {
   
   public static void debug(Object o) {
     System.err.println("Debug: " + o);
-    
+  }
+  
+  /** 
+   * Check and throw UIMA Internal Error if false
+   * @param v if false, throws
+   */
+  public static void assertUie(boolean v) {
+    if (!v) 
+      throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
+  }
+  
+  public static void internalError() {
+    assertUie(false);
   }
   
   // The hash function is derived from murmurhash3 32 bit, which
@@ -279,6 +297,34 @@ public class Misc {
     return (s.substring(0, len) + "...");
   }
 
+  /**
+   * Some objects can be shared, if "equal", rather than creating duplicates, if they're read-only.
+   * This may in general be beneficial by reducing the size of the "working set" via more sharing of read-only objects.
+   * Users should insure the read-only property.
+   * This routine allows 
+   *   a) creating a potentially sharable object
+   *   b) checking to see if we already have an "equal" one, and 
+   *   c) if so, using that and allowing the just created one to be GC'd.
+   *   
+   * Items in this "set" are held with weak references, so may be gc'd if no longer referenced anywhere.
+   * @param obj - the object to use a cached substitute for, if one exists
+   * @param cache - the cache
+   * @return - the object or a cached version of it.
+   */
+  public static <T> T shareExisting(T obj, WeakHashMap<T, WeakReference<T>> cache) {
+    if (null == obj) {
+      throw new IllegalArgumentException();
+    }
+    T v;
+    synchronized (cache) {
+      WeakReference<T> r = cache.get(obj);
+      if (r == null || (v = r.get()) == null) {
+        cache.put(obj, new WeakReference<T>(obj));
+        return obj;
+      }
+      return v;      
+    }
+  }
   
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
