@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -123,6 +124,32 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     @Override
     public int[] getOrder() {
       return this.order;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + Arrays.hashCode(order);
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      TotalTypeOrder other = (TotalTypeOrder) obj;
+      if (!Arrays.equals(order, other.order)) {
+        return false;
+      }
+      return true;
     }
 
   }
