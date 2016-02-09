@@ -38,6 +38,7 @@ import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.Misc;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -831,7 +832,7 @@ public class XCASDeserializer {
           try {
             ac.close();
           } catch (Exception e) {
-            assert(false);
+            Misc.internalError();
           }
         }
       }

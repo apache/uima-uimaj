@@ -344,7 +344,7 @@ public class XCASSerializer {
       
 
       // Get indexes for each SofaFS in the CAS
-      for (int sofaNum = 1, numViews = cas.getBaseSofaCount(); sofaNum <= numViews; sofaNum++) {
+      for (int sofaNum = 1, numViews = cas.getViewCount(); sofaNum <= numViews; sofaNum++) {
         FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
         if (viewIR != null) {
           enqueueList(viewIR.getIndexedFSs(), sofaNum);

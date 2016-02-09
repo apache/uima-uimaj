@@ -301,7 +301,7 @@ public class XmiCasDeserializer {
         //new Sofas start at 2
         this.nextSofaNum = 2;
       } else {
-        this.nextSofaNum = this.casBeingFilled.getBaseSofaCount() + 1; 
+        this.nextSofaNum = this.casBeingFilled.getViewCount() + 1; 
       }
       this.buffer = new StringBuilder();
       this.indexRepositories = new ArrayList<FSIndexRepository>();
@@ -966,7 +966,7 @@ public class XmiCasDeserializer {
     }
 
     /** 
-     * called from endElement after collecting non-byte array element instances into a string list for a particular array feature
+     * called from endElement after collecting non-byte array element instances into a string list for a particular array or list feature
      *   (excluding oots and deferred FSs)
      * @param type - 
      * @param fs -
@@ -1117,6 +1117,9 @@ public class XmiCasDeserializer {
      * listed as a separate subelement.
      * 
      * used for arrays and lists
+     * 
+     * NOTE: we deserialized arrays and lists encoded this way, even if the type system
+     * indicates the feature is multi-ref-allowed.  (in this case, although allowed, it is not multi-refed)
      * 
      * @param addr
      *          address of FS containing the feature
@@ -1740,7 +1743,7 @@ public class XmiCasDeserializer {
           try {
             ac.close();
           } catch (Exception e1) {
-            assert(false);
+            Misc.internalError();
           }
         }
       }
