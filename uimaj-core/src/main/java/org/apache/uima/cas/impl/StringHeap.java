@@ -161,7 +161,7 @@ final class StringHeap {
     this.stringList.add(s);
     return addr;
   }
-
+  
   // Not sure what this is supposed to do.  Passes unit tests like this.
   int cloneStringReference(int stringCode) {
     return stringCode;
@@ -190,4 +190,9 @@ final class StringHeap {
 	  return this.stringList.size();
   }
   
+  public String[] toArray() {
+    String[] r = new String[stringList.size()];
+    return (String[]) stringList.toArray(r);
+  }
+
 }
