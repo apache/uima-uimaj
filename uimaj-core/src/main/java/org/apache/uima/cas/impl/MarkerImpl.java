@@ -38,7 +38,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 public class MarkerImpl implements Marker {
 	
-  protected int nextFSId;    //next FS addr
+  protected int nextFSId;    //next FS id
   protected boolean isValid;
   
   CASImpl cas;
