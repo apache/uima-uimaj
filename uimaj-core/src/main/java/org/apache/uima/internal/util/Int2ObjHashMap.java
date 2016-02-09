@@ -231,7 +231,7 @@ public class Int2ObjHashMap<T> {
           newTable(newCapacity);  // shrink table by 50%
         } else { // don't shrink below minimum
           Arrays.fill(keys, 0);
-          Arrays.fill(values,  0);
+          Arrays.fill(values,  null);
         }
         size = 0;
         resetHistogram();
@@ -406,7 +406,7 @@ public class Int2ObjHashMap<T> {
     Arrays.sort(r);
     return r;
   }
-
+  
   public IntListIterator keyIterator() {
     return new KeyIterator();
   }
