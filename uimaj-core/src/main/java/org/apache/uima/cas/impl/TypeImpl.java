@@ -104,6 +104,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   public final boolean isRefType;  // not a primitive, can be a FeatureStructure in the CAS, added to indexes etc.
   
+  /**
+   * true for FSarrays non-arrays having 1 or more refs to FSs
+   */
+  boolean hasRefFeature;  // true for FSarrays non-arrays having 1 or more refs to FSs
+  
   
   /* ***************** type hierarchy *****************/
   private final TypeImpl superType;
@@ -124,7 +129,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   int nbrOfUsedRefDataSlots = -1;
   
   // for journalling allocation: This is a 0-based offset for all features in feature order
-  int highestOffset = -1;  
+  int highestOffset = -1;
   
   private TypeImpl() {
     this.name = null;
@@ -223,6 +228,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
+    
+    hasRefFeature = name.equals(CAS.TYPE_NAME_FS_ARRAY);  // initialization of other cases done at commit time
   }
 
   /**
@@ -240,7 +247,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * 
    * @return The super type or null for Top.
    */
-  public Type getSuperType() {
+  public TypeImpl getSuperType() {
     return this.superType;
   }
 
@@ -334,13 +341,16 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   /**
    * Check if this is an annotation type.
    * 
-   * @return <code>true</code>, if <code>this</code> is an annotation type; <code>false</code>,
+   * @return <code>true</code>, if <code>this</code> is an annotation type or subtype; <code>false</code>,
    *         else.
    */
   public boolean isAnnotationType() {
     return false;
   }
   
+  /**
+   * @return true for AnnotationBaseType or any subtype
+   */
   public boolean isAnnotationBaseType() {
     return false;
   }
@@ -468,6 +478,16 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
       staticMergedFeaturesList.clear();
       staticMergedFeaturesList.addAll(superType.getFeatureImpls());
       staticMergedFeaturesList.addAll(staticMergedFeaturesIntroducedByThisType);
+      if (superType.hasRefFeature) {
+        hasRefFeature = true;
+      } else {
+        for (FeatureImpl fi : staticMergedFeaturesIntroducedByThisType) {
+          if (fi.getRangeImpl().isRefType) {
+            hasRefFeature = true;
+            break;
+          }
+        }
+      }
     }    
   }
   
@@ -606,7 +626,19 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return false;  // overridden by array subtype
   }
   
+  /**
+   * model how v2 stores this - needed for backward compatibility / (de)serialization
+   * @return true if it is an array and is stored in the main heap (int, float, or string)
+   */
   boolean isHeapStoredArray() {
+    return false; // overridden by array subtype, used for backward compatibility
+  }
+  
+  /**
+   * model how v2 stores this - needed for backward compatibility / (de)serialization
+   * @return true if it is an array and is one of the 3 aux arrays (byte (also used for boolean) short, long
+   */
+  boolean isAuxStoredArray() {
     return false; // overridden by array subtype, used for backward compatibility
   }
   
@@ -766,6 +798,23 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   void setJavaClass(Class<?> javaClass) {
     this.javaClass = javaClass;
+  }
+  
+  /**
+   * Get the v2 heap size for types with features
+   * @return the main heap size for this FeatureStructure, assuming it's not a heap stored array (see below)
+   */
+  public int getFsSpaceReq() {
+    return getFeatureImpls().size() + 1;  // number of feats + 1 for the type code
+  }
+  
+  /**
+   * get the v2 heap size for types
+   * @param length for heap-stored arrays, the array length
+   * @return the main heap size for this FeatureStructure
+   */
+  public int getFsSpaceReq(int length) {
+    return isHeapStoredArray() ? (2 + length) : isArray() ? 3 : getFsSpaceReq();
   }
   
   /**

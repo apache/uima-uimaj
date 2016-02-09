@@ -41,10 +41,12 @@ public class TypeImpl_array extends TypeImpl {
     this.slotKind = slotKind;
   }
   
+  @Override
   public Type getComponentType() {
     return componentType;
   }
   
+  @Override
   TypeImpl consolidateType(TypeImpl topType, TypeImpl fsArrayType) {
     if (!(componentType instanceof TypeImpl_primitive)) {
         return fsArrayType;  // booleanArrayType, stringArrayType etc.
@@ -58,8 +60,14 @@ public class TypeImpl_array extends TypeImpl {
     return true;
   }
   
+  @Override
   boolean isHeapStoredArray() {
     return isHeapStoredArray;
+  }
+  
+  @Override
+  boolean isAuxStoredArray() {
+    return !isHeapStoredArray;
   }
   
   /** Component Slot Kind */
