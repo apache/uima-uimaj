@@ -18,6 +18,8 @@
  */
 package org.apache.uima.internal.util;
 
+import java.util.function.IntConsumer;
+
 public interface PositiveIntSet {
 
   /**
@@ -110,4 +112,16 @@ public interface PositiveIntSet {
    * @return true if the position is between the first and last element inclusive.
    */
   boolean isValid(int position);
+  
+  /**
+   * Iterate over the positive int set in sort order, and run the consumer on each value
+   * @param v the consumer to run
+   */
+  
+  default void forAllInts(IntConsumer v) {
+    IntListIterator it = iterator();
+    while (it.hasNext()) {
+      v.accept(it.next());
+    }
+  }
 }
