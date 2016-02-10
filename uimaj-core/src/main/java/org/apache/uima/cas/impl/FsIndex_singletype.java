@@ -166,6 +166,10 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   public FSIndexComparator getComparatorForIndexSpecs() {
     return this.comparatorForIndexSpecs;
   }
+  
+  public FSIndexComparatorImpl getComparatorImplForIndexSpecs() {
+    return this.comparatorForIndexSpecs;
+  }
 
   @Override
   public int getIndexingStrategy() {
