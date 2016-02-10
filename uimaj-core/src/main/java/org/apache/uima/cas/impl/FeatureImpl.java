@@ -36,7 +36,8 @@ public class FeatureImpl implements Feature {
   
   private final int featureCode;        // unique id for this feature, in this type system
   /**
-   * the 0 based offset in the storage array for this feature ignoring ref/int distinction, in feature order, without regard to JCas implemented features; set at commit time
+   * the 0 based offset for this feature ignoring ref/int distinction, in feature order, without regard to JCas implemented features; set at commit time
+   * used by v2 style de/serializers
    */
   private       int featureOffset = -1;  
   private       int adjustedFeatureOffset = -1; // the offset in the storage array for this feature, adjusted to exclude JCas implemented features; set at commit time
