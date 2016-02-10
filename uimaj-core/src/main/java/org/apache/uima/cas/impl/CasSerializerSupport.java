@@ -387,7 +387,7 @@ public class CasSerializerSupport {
 
       tsi = cas.getTypeSystemImpl();
       queue = new ArrayDeque<>();
-      indexedFSs = (List<TOP>[]) new List<?>[cas.getBaseSofaCount()];  // number of views
+      indexedFSs = (List<TOP>[]) new List<?>[cas.getViewCount()];  // number of views
 //      listUtils = new ListUtils(cas, logger, errorHandler);
       typeUsed = new BitSet();
 
@@ -440,7 +440,7 @@ public class CasSerializerSupport {
       	iElementCount += (sofaIndex.size()); // one View element per sofa
       	iElementCount += getElementCountForSharedData();
       } else {
-        int numViews = cas.getBaseSofaCount();
+        int numViews = cas.getViewCount();
         for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
           FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
           if (loopIR != null && loopIR.isModified()) {
@@ -471,7 +471,7 @@ public class CasSerializerSupport {
 
     public void writeViewsCommons() throws Exception {
       // Get indexes for each SofaFS in the CAS
-      int numViews = cas.getBaseSofaCount();
+      int numViews = cas.getViewCount();
     
       
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
@@ -595,7 +595,7 @@ public class CasSerializerSupport {
       // FSIterator iterator = sofaIndex.iterator();
       // // Get indexes for each SofaFS in the CAS
       // while (iterator.isValid())
-      int numViews = cas.getBaseSofaCount();
+      int numViews = cas.getViewCount();
       for (int sofaNum = 1; sofaNum <= numViews; sofaNum++) {
         // SofaFS sofa = (SofaFS) iterator.get();
         // int sofaNum = sofa.getSofaRef();
