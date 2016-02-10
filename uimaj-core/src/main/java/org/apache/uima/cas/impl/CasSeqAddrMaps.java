@@ -49,17 +49,11 @@ public class CasSeqAddrMaps {
    *   value is 0 if the target instance doesn't exist in the source
    *     (this doesn't occur for receiving remote CASes back
    *      (because src ts is always a superset of tgt ts),
-   *      but can occur while deserializing from Disk.
+   *      but can occur while deserializing from Disk.)
    *      
-   * First seq number is 0.
+   * index 0 is reserved for null
    */
-  final private IntVector tgtId2SrcId;
-  
-//  /**
-//   * map from a target FS sequence nbr to a source FS.
-//   *   value is null if the target instance doesn't exist in the source
-//   */
-//  final private List<TOP> tgtId2SrcFs;
+  final private List<TOP> tgtId2SrcFs; // the key is the index
   
 //  /**
 //   * (Not Used, currently)
@@ -85,29 +79,29 @@ public class CasSeqAddrMaps {
   public CasSeqAddrMaps() {
     // this call makes the first real seq number == 1.
     // seq 0 refers to the NULL fs value.
-    this.tgtId2SrcId = new IntVector();
-//    this.tgtId2SrcFs = new ArrayList<>();
+    this.tgtId2SrcFs = new ArrayList<>();
     this.srcId2TgtId = new Int2IntRBT();
-    addItemId(0, 0, true);
+    addItemId(null, 0, true);
   }
-  
-  public CasSeqAddrMaps(IntVector tgtSeq2SrcAddr, Int2IntRBT srcAddr2TgtSeq) {
-    this.tgtId2SrcId = tgtSeq2SrcAddr;
+
+  // copy constructor
+  public CasSeqAddrMaps(List<TOP> tgtSeq2SrcFs, Int2IntRBT srcAddr2TgtSeq) {
+    this.tgtId2SrcFs = tgtSeq2SrcFs;
     this.srcId2TgtId = srcAddr2TgtSeq;
   }
         
   /**
-   * Add a new FS id - done during prescan of source
+   * Add a new FS id - done during prescan of source during serialization
    * Must call in heap scan order
    * @param srcId -
    * @param tgtId -
    * @param inTarget true if this type is in the target
    */
-  public void addItemId(int srcId, int tgtId, boolean inTarget) {
+  public void addItemId(TOP srcFs, int tgtId, boolean inTarget) {
     if (inTarget) {
-      tgtId2SrcId.add(srcId);
+      tgtId2SrcFs.add(srcFs);
     }
-    srcId2TgtId.put(srcId, inTarget ? nextTgt++ : -1);
+    srcId2TgtId.put((null == srcFs) ? 0 : srcFs._id, inTarget ? nextTgt++ : -1);
   }
   
   /**
@@ -115,12 +109,12 @@ public class CasSeqAddrMaps {
    * @param srcAddr -
    * @param inSrc -
    */
-  public void addSrcAddrForTgt(int srcAddr, boolean inSrc) {
+  public void addSrcFsForTgt(TOP srcFs, boolean inSrc) {
     if (inSrc) {
-      srcId2TgtId.put(srcAddr, nextTgt);
-      tgtId2SrcId.add(srcAddr);
+      srcId2TgtId.put(srcFs._id, nextTgt);
+      tgtId2SrcFs.add(srcFs);
     } else {
-      tgtId2SrcId.add(0);
+      tgtId2SrcFs.add(null);
     }
     nextTgt++;
   }
@@ -138,11 +132,11 @@ public class CasSeqAddrMaps {
    * @param seq -
    * @return 0 means target seq doesn't exist in source CAS
    */
-  public int getSrcAddrFromTgtSeq(int seq) {
-    if (seq >= tgtId2SrcId.size()) {
-      return 0;
+  public TOP getSrcFsFromTgtSeq(int seq) {
+    if (seq >= tgtId2SrcFs.size()) {
+      return null;
     }
-    return tgtId2SrcId.get(seq);
+    return tgtId2SrcFs.get(seq);
   }
 
   /**
@@ -159,7 +153,7 @@ public class CasSeqAddrMaps {
 
   CasSeqAddrMaps copy() {
     CasSeqAddrMaps c = new CasSeqAddrMaps(
-        tgtId2SrcId.copy(),
+        new ArrayList<>(tgtId2SrcFs),
         srcId2TgtId.copy());
     c.nextTgt = nextTgt;
     return c;    
