@@ -141,7 +141,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     c = _typeImpl.nbrOfUsedRefDataSlots;
     _refData = (c == 0) ? null : new Object[c];
     
-    _id = casView.setId2fs(this);    
+    _id = casView.setId2fs((TOP)this);    
   }
 
   /**
@@ -164,7 +164,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     c = _typeImpl.nbrOfUsedRefDataSlots;
     _refData = (c == 0) ? null : new Object[c];
     
-    _id = _casView.setId2fs(this); 
+    _id = _casView.setId2fs((TOP)this); 
     _casView.setCacheNotInIndex(this);
   }
   
@@ -175,7 +175,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     this._typeImpl = type;
     _intData = intData.clone();
     _refData = refData.clone();
-    _id = casView.setId2fs(this);    
+    _id = casView.setId2fs((TOP)this);    
   }
   
   /* ***********************
@@ -339,7 +339,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     // this case will only happen if we can create non FSArrays
     //   of particular types
 
-    assert(false);  //System.out.println("Debug - should never hit this");
+    Misc.internalError();  //System.out.println("Debug - should never hit this");
     return false;
     
 //    return (range.getComponentType() == ((TypeImpl)(vc._typeImpl)).getComponentType());
@@ -973,8 +973,56 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     case Slot_Byte: setByteValue(fi, (byte) v); break;
     case Slot_Short: setShortValue(fi, (short) v); break;
     case Slot_Int: setIntValue(fi, v); break;
-    case Slot_Float: setFloatValue(fi, Float.intBitsToFloat(v)); break;
-    default: assert(false);
+    case Slot_Float: setFloatValue(fi, CASImpl.int2float(v)); break;
+    default: Misc.internalError();
+    }
+  }
+  
+  /**
+   * for compressed form 4 - for getting the prev value of int-like slots
+   * @param slotKind
+   * @param fi
+   * @param v
+   */
+  public int getIntLikeValue(SlotKind slotKind, FeatureImpl f) {
+    if (null == f) {
+      switch(slotKind) {
+      
+      case Slot_Boolean: {
+        BooleanArray a = (BooleanArray)this;
+        return (a.size() == 0) ? 0 : a.get(0) ? 1 : 0;
+      }
+      
+      case Slot_Byte: {
+        ByteArray a = (ByteArray)this;
+        return (a.size() == 0) ? 0 : a.get(0);
+      }
+      
+      case Slot_Short: {
+        ShortArray a = (ShortArray)this;
+        return (a.size() == 0) ? 0 : a.get(0);
+      }
+      
+      case Slot_Int: {
+        IntegerArray a = (IntegerArray)this;
+        return (a.size() == 0) ? 0 : a.get(0);
+      }
+
+      case Slot_Float: {
+        FloatArray a = (FloatArray)this;
+        return (a.size() == 0) ? 0 : CASImpl.float2int(a.get(0));
+      }
+      default: Misc.internalError(); return 0;
+      }
+    }
+    
+    switch(slotKind) {
+    case Slot_Boolean: return getBooleanValue(f) ? 1 : 0;
+    case Slot_Byte: return getByteValue(f);
+    case Slot_Short: return getShortValue(f);
+    case Slot_Int: return getIntValue(f);
+    case Slot_Float: return CASImpl.float2int(getFloatValue(f));
+    default: Misc.internalError(); return 0;
     }
   }
 
