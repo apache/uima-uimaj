@@ -19,8 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.ref.WeakReference;
 import java.util.Comparator;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -28,6 +30,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
+import org.apache.uima.util.Misc;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding subtypes)
@@ -38,7 +41,10 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
  */
 public abstract class FsIndex_singletype<T extends FeatureStructure> implements Comparator<FeatureStructure>, LowLevelIndex<T> {
 
-  private final static String[] indexTypes = new String[] {"Sorted", "Set", "Bag", "DefaultBag"}; 
+  private final static String[] indexTypes = new String[] {"Sorted", "Set", "Bag", "DefaultBag"};
+  
+  private final static WeakHashMap<FSIndexComparatorImpl, WeakReference<FSIndexComparatorImpl>> comparatorCache = 
+      new WeakHashMap<>();
 
   private final int indexType;  // Sorted, Set, Bag, Default-bag, etc.
 
@@ -95,7 +101,8 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     this.type = (TypeImpl) type;
     this.typeCode = ((TypeImpl)type).getCode();
     FSIndexComparatorImpl compForIndexSpecs = (FSIndexComparatorImpl) comparatorForIndexSpecs;
-    this.comparatorForIndexSpecs = compForIndexSpecs.copy();
+    this.comparatorForIndexSpecs = Misc.shareExisting(compForIndexSpecs, comparatorCache);
+//    this.comparatorForIndexSpecs = compForIndexSpecs/*.copy()*/;
     
     // Initialize the comparator info.
     final int nKeys = this.comparatorForIndexSpecs.getNumberOfKeys();
@@ -211,13 +218,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
       if (key instanceof FeatureImpl) {
         FeatureImpl fi = (FeatureImpl) key;
         if (fi.getRange() instanceof TypeImpl_string) { // string and string subtypes
-          String s1 = fs1.getStringValue(fi);
-          String s2 = fs2.getStringValue(fi);
-          result = (s1 == null)
-                   ? ((s2 == null) ? 0 : -1)   // s1 null is lessthan a non-null s2
-                   : ( (s2 == null)            
-                       ? 1                     // s1 not null is greaterthan a null s2
-                       : s1.compareTo(s2) );   // if both not null, do compare
+          result = Misc.compareStrings(fs1.getStringValue(fi), fs2.getStringValue(fi));
         } else {
           switch (keyTypeCodes[i]) {
           case TypeSystemImpl.booleanTypeCode:
@@ -243,13 +244,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
             result = Double.compare(fs1.getDoubleValue(fi), fs2.getDoubleValue(fi));
             break;
           case TypeSystemImpl.stringTypeCode:
-            String s1 = fs1.getStringValue(fi);
-            String s2 = fs1.getStringValue(fi);
-            result = (s1 == null)
-                     ? ((s2 == null) ? 0 : -1)   // s1 null is lessthan a non-null s2
-                     : ( (s2 == null)            
-                         ? 1                     // s1 not null is greaterthan a null s2
-                         : s1.compareTo(s2) );   // if both not null, do compare
+            result = Misc.compareStrings(fs1.getStringValue(fi), fs2.getStringValue(fi));
             break;         
           } // end of switch
         }
