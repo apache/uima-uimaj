@@ -42,7 +42,7 @@ import org.apache.uima.internal.util.GraphNode;
  */
 
 public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
-
+ 
         /**
          * An implementation of the {@link LinearTypeOrder LinearTypeOrder}
          * interface.
@@ -59,6 +59,10 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     // index= typeCode, value = order number
     private int[] typeCodeToOrder;
+
+    private boolean hashCodeComputed = false;
+
+    private int computedHashCode;
 
     private TotalTypeOrder(String[] typeList, TypeSystem ts) throws CASException {
       this(encodeTypeList(typeList, ts), ts);
@@ -77,7 +81,13 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       return a;
     }
 
-    // Create the order from an array of type codes in ascending order.
+    /**
+     * The constructor for the total type order, called by the other constructor and also when doing a 
+     *   cas complete deserialization, or just deserializing the type system/index defs
+     *   Create the order from an array of type codes in ascending order.
+     * @param typeList the list of ordered types
+     * @param ts the type system
+     */
     private TotalTypeOrder(int[] typeList, TypeSystem ts) {
       super();
       TypeSystemImpl tsi = (TypeSystemImpl) ts;
@@ -128,10 +138,11 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + Arrays.hashCode(order);
-      return result;
+      if (!hashCodeComputed) {
+        computedHashCode = Arrays.hashCode(order);
+        hashCodeComputed = true;  
+      }
+      return computedHashCode;
     }
 
     @Override
@@ -146,6 +157,9 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
         return false;
       }
       TotalTypeOrder other = (TotalTypeOrder) obj;
+      if (hashCode() != other.hashCode()) {
+        return false;
+      }
       if (!Arrays.equals(order, other.order)) {
         return false;
       }
@@ -211,17 +225,6 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
         // }
       }
     }
-
-    @Override
-    public boolean equals(Object o) {
-      return (this == o);
-    }
-
-    @Override
-    public int hashCode() {
-      return super.hashCode();
-    }
-
   }
 
   private class Graph {
@@ -334,6 +337,13 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     this.ts = ts;
   }
 
+  /**
+   * The constructor for the total type order, called by the other constructor and also when doing a 
+   *   cas complete deserialization, or just deserializing the type system/index defs
+   * @param typeList
+   * @param ts
+   * @return
+   */
   public static LinearTypeOrder createTypeOrder(int[] typeList, TypeSystem ts) {
     return new TotalTypeOrder(typeList, ts);
   }
@@ -431,7 +441,7 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       inRank0Nodes.removeSuccessor(0);
       ArrayList<Node> newRank0Nodes = g.removeNode(n);
       for (Iterator<Node> it = newRank0Nodes.iterator(); it.hasNext();) {
-	inRank0Nodes.addSuccessor(it.next());
+	      inRank0Nodes.addSuccessor(it.next());
       }
     }
 

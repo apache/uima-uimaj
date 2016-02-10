@@ -47,17 +47,9 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
 //  // FEATURE_KEY or TYPE_ORDER_KEY
 //  private IntVector keyTypeVector;
 
-  private final CASImpl cas;
-
-  @SuppressWarnings("unused")
-  private FSIndexComparatorImpl() {
-    this.cas = null;
-  }
-
   // Public only for testing purposes.
-  public FSIndexComparatorImpl(CASImpl cas) {
+  public FSIndexComparatorImpl() {
     this.type = null;
-    this.cas = cas;
   }
 
   private boolean checkType(Type t) {
@@ -121,42 +113,54 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return this.directions.get(key);
   }
 
+  /**
+   * Equals including the type of the comparator
+   */
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof FSIndexComparator)) {
+    if (!(o instanceof FSIndexComparatorImpl)) {
       return false;
     }
-    FSIndexComparator comp = (FSIndexComparator) o;
+    FSIndexComparatorImpl comp = (FSIndexComparatorImpl) o;
+    if (this.type != comp.type) {
+      return false;
+    }
+    return equalsWithoutType(comp);
+  }
+  
+  /**
+   * Compare two comparators, ignoring the type
+   * @param comp the other comparator to compare to
+   * @return true if they're the same comparator
+   */
+  public boolean equalsWithoutType(FSIndexComparatorImpl comp) {
     final int max = this.getNumberOfKeys();
     if (max != comp.getNumberOfKeys()) {
       return false;
     }
     for (int i = 0; i < max; i++) {
-      if ((this.getKeyFeature(i) != comp.getKeyFeature(i)) || 
-          (this.getKeyComparator(i) != comp.getKeyComparator(i))) {
+      if (this.keySpecs  .get(i) != comp.keySpecs  .get(i) ||
+          this.directions.get(i) != comp.directions.get(i)) {
         return false;
       }
     }
-    return true;
+    return true;    
   }
   
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+    result = prime * result + ((this.type == null) ? 31 : type.hashCode()); 
     final int max = this.getNumberOfKeys();
     for (int i = 0; i < max; i++) {
-      Feature f = this.getKeyFeature(i);
-      result = prime * result + ((f == null) ? 31 : f.hashCode());
-      result = prime * result + this.getKeyComparator(i);
+      Object o = this.keySpecs.get(i);  // lto or feature
+      result = prime * result + o.hashCode();
+      result = prime * result + this.directions.get(i);
     }
     return result;
-  }
-  
-  CASImpl getLowLevelCAS() {
-    return this.cas;
   }
 
   public boolean isValid() {
@@ -181,8 +185,8 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   }
 
 
-  synchronized FSIndexComparatorImpl copy() {
-    FSIndexComparatorImpl copy = new FSIndexComparatorImpl(this.cas);
+  public synchronized FSIndexComparatorImpl copy() {
+    FSIndexComparatorImpl copy = new FSIndexComparatorImpl();
     copy.type = this.type;
     copy.directions.addAll(this.directions);
     copy.keySpecs.addAll(this.keySpecs);
@@ -192,7 +196,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   /**
    * Compares two FSIndexComparator instances.
    * 
-   * The code to compare two FSs is in the compare method of FSLeafIndexImpl.
+   * The code to compare two FSs is in the compare method of FsIndex_singletype.
    * 
    * @see java.lang.Comparable#compareTo(Object)
    */
