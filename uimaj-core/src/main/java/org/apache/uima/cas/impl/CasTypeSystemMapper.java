@@ -123,7 +123,7 @@ public class CasTypeSystemMapper {
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public TypeImpl mapTypeSrc2Tgt(TypeImpl srcType) {
-    return tSrc2Tgt.get(srcType.getCode());
+    return (tSrc2Tgt.size() == 0) ? srcType : tSrc2Tgt.get(srcType.getCode());
   }
   
 //  public TypeImpl mapTypeSrc2Tgt(int srcTypeCode) {
@@ -135,11 +135,11 @@ public class CasTypeSystemMapper {
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public TypeImpl mapTypeTgt2Src(TypeImpl tgtType) {
-    return tTgt2Src.get(tgtType.getCode());
+    return (tTgt2Src.size() == 0) ? tgtType : tTgt2Src.get(tgtType.getCode());
   }
   
   public TypeImpl mapTypeCodeTgt2Src(int tgtTypeCode) {
-    return tTgt2Src.get(tgtTypeCode);
+    return (tTgt2Src.size() == 0) ? tsSrc.getTypeForCode(tgtTypeCode) : tTgt2Src.get(tgtTypeCode);
   }
   
   /**
@@ -167,6 +167,9 @@ public class CasTypeSystemMapper {
   }
   
   public FeatureImpl getToFeature(FeatureImpl[][] mapByTypeCode, TypeImpl fromType, FeatureImpl fromFeat) {
+    if (mapByTypeCode == null) { // is null if type systems ==
+      return fromFeat;
+    }
     FeatureImpl[] map = mapByTypeCode[fromType.getCode()];
     if (map == null) {
       return null;
@@ -231,7 +234,4 @@ public class CasTypeSystemMapper {
     return r;
   }
   
-  public int nbrTgtFeatures(int tgtTypeCode) {
-    return fTgt2Src.length;
-  }
 }
