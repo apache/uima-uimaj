@@ -9,7 +9,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * FsIndex_iicp (iicp)
@@ -89,11 +88,16 @@ class FsIndex_iicp<T extends FeatureStructure>
 //      return fsIndexRepositoryImpl.createFSIterator(this, is_unordered);
 //    }
 
-  // Two IICPs are equal iff their index comparators are equal AND their
-  // indexing strategy is the same.
-  // Equal is used when creating the index iterator cache to select
-  //   from the set of all FsIndex_iicps for a particular type,
-  //   the one that goes with the same index definition
+
+  /**
+   * Two iicps are equal if and only if:
+   *   - the types they index are the same, and
+   *   - the comparators are equal, and
+   *   - the indexing stragtegy (bag/set/sorted) are the same
+   * Used when creating the index iterator cache to select from the
+   *   set of all instances of these the one that goes with the same index definition
+   * Used by CasComplete serialization to merge multiple index names referring to the same index  
+   */
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof FsIndex_iicp)) {
@@ -101,8 +105,9 @@ class FsIndex_iicp<T extends FeatureStructure>
     }
     @SuppressWarnings("rawtypes")
     final FsIndex_iicp iicp = (FsIndex_iicp) o;
-    return this.fsIndex_singletype.getComparatorForIndexSpecs().equals(iicp.fsIndex_singletype.getComparatorForIndexSpecs())
-        && (this.getIndexingStrategy() == iicp.getIndexingStrategy());
+    return
+        this.getIndexingStrategy() == iicp.getIndexingStrategy() &&
+        this.fsIndex_singletype.getComparatorImplForIndexSpecs().equals(iicp.fsIndex_singletype.getComparatorImplForIndexSpecs()); 
   }
 
 // Implement a hashCode; 
@@ -113,7 +118,8 @@ class FsIndex_iicp<T extends FeatureStructure>
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + this.fsIndex_singletype.getComparatorForIndexSpecs().hashCode();
+      // next hashCode includes the type
+    result = prime * result + this.fsIndex_singletype.getComparatorImplForIndexSpecs().hashCode();  
     result = prime * result + this.getIndexingStrategy();
     return result;
   }
@@ -132,7 +138,7 @@ class FsIndex_iicp<T extends FeatureStructure>
         return;
       }
       
-      final TypeImpl rootType = (TypeImpl) this.fsIndex_singletype.getComparatorForIndexSpecs().getType();
+      final TypeImpl rootType = (TypeImpl) this.fsIndex_singletype.getComparatorImplForIndexSpecs().getType();
       final int indexKind = this.getIndexingStrategy();
       int size = (indexKind == FSIndex.DEFAULT_BAG_INDEX) ? 1 : 1 + (int) rootType.getAllSubtypes().count();
 
@@ -171,11 +177,13 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   private void initOneType(TypeImpl ti, ArrayList<FsIndex_singletype<FeatureStructure>> cache, int indexKind) {
-    ArrayList<FsIndex_iicp<FeatureStructure>> ift = 
-        fsIndexRepositoryImpl.getIndexesForType(ti.getCode()).indexesForType;
-    
-    FsIndex_singletype<FeatureStructure> singleIndex = ift.get(ift.indexOf(this)).fsIndex_singletype;
-    
+        
+    final FsIndex_singletype<FeatureStructure> singleIndex =  fsIndexRepositoryImpl.getIndexBySpec(
+           ti.getCode(),
+           getIndexingStrategy(),
+           getComparatorImplForIndexSpecs())
+        .fsIndex_singletype;
+        
     if (indexKind == FSIndex.SORTED_INDEX) {
       sortedTypeCodes[cache.size()] = singleIndex.getTypeCode();
     }
@@ -206,8 +214,8 @@ class FsIndex_iicp<T extends FeatureStructure>
     } else if (typeCode1 > typeCode2) {
       return 1;
     } else { // types are equal
-      return this.fsIndex_singletype.getComparatorForIndexSpecs()
-          .compareTo(cp.fsIndex_singletype.getComparatorForIndexSpecs());
+      return this.fsIndex_singletype.getComparatorImplForIndexSpecs()
+          .compareTo(cp.fsIndex_singletype.getComparatorImplForIndexSpecs());
     }
   }
 
@@ -320,11 +328,11 @@ class FsIndex_iicp<T extends FeatureStructure>
 //      }
 //    }
   
-  <T extends FeatureStructure> FsIndex_singletype<T> getNoSubtypeIndexForType(Type type) {
+  <T2 extends FeatureStructure> FsIndex_singletype<T2> getNoSubtypeIndexForType(Type type) {
     createIndexIteratorCache();
     for (FsIndex_singletype<FeatureStructure> noSubtypeIndex : cachedSubFsLeafIndexes) {
       if (noSubtypeIndex.getType() == type) {
-        return (FsIndex_singletype<T>) noSubtypeIndex;
+        return (FsIndex_singletype<T2>) noSubtypeIndex;
       }
     }
     return null;
@@ -359,6 +367,10 @@ class FsIndex_iicp<T extends FeatureStructure>
   @Override
   public FSIndexComparator getComparatorForIndexSpecs() {
     return fsIndex_singletype.getComparatorForIndexSpecs();
+  }
+  
+  public FSIndexComparatorImpl getComparatorImplForIndexSpecs() {
+    return fsIndex_singletype.getComparatorImplForIndexSpecs();
   }
 
   @Override
@@ -395,7 +407,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   public FSIterator<T> iterator() {
-    createIndexIteratorCache();  // may not be needed here   
+    createIndexIteratorCache();  
    
     return (cachedSubFsLeafIndexes.size() == 1)
            ? (FSIterator<T>) fsIndex_singletype.iterator()
