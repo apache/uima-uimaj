@@ -57,7 +57,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     // it isn't, we create an empty one.
     FSIndexComparator newComp;
     if (comp.getNumberOfKeys() > 0) {
-      newComp = new FSIndexComparatorImpl(casImpl);
+      newComp = new FSIndexComparatorImpl();
       newComp.setType(comp.getType());
     } else {
       newComp = comp;
@@ -74,10 +74,10 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return index.add((TOP) fs);
   }
 
-  @SuppressWarnings("unchecked")
-  public final boolean insert(int fs) {
-    return insert((T) casImpl.getFsFromId_checked(fs)); 
-  }
+//  @SuppressWarnings("unchecked")  // unused 1/2016
+//  public final boolean insert(int fs) {
+//    return insert((T) casImpl.getFsFromId_checked(fs)); 
+//  }
     
   /**
    * Override the super impl which uses comparators.
@@ -172,7 +172,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   
   @Override
   public boolean remove(int fsRef) {    
-    return deleteFS(casImpl.getFsFromId_checked(fsRef));
+    return deleteFS((T) casImpl.getFsFromId_checked(fsRef));
   }
 
   public int hashCode() {
