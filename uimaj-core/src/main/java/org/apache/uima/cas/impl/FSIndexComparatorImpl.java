@@ -39,10 +39,10 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   private Type type;
 
   // the Feature or Linear Type Order, as an ordered collection, one per key
-  private final List<Object> keySpecs = new ArrayList<Object>();  // Feature or LinearTypeOrder
+  private final List<Object> keySpecs;  // Feature or LinearTypeOrder
 
   // Standard or Reverse
-  private final List<Integer> directions = new ArrayList<Integer>();
+  private final List<Integer> directions;
 
 //  // FEATURE_KEY or TYPE_ORDER_KEY
 //  private IntVector keyTypeVector;
@@ -50,6 +50,14 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   // Public only for testing purposes.
   public FSIndexComparatorImpl() {
     this.type = null;
+    this.keySpecs = new ArrayList<Object>();
+    this.directions = new ArrayList<Integer>();
+  }
+  
+  private FSIndexComparatorImpl(Type type, List<Object> keySpecs, List<Integer> directions) {
+    this.type = type;
+    this.keySpecs = keySpecs;
+    this.directions = directions;
   }
 
   private boolean checkType(Type t) {
@@ -135,7 +143,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
    * @param comp the other comparator to compare to
    * @return true if they're the same comparator
    */
-  public boolean equalsWithoutType(FSIndexComparatorImpl comp) {
+  boolean equalsWithoutType(FSIndexComparatorImpl comp) {
     final int max = this.getNumberOfKeys();
     if (max != comp.getNumberOfKeys()) {
       return false;
@@ -184,13 +192,8 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return true;
   }
 
-
   public synchronized FSIndexComparatorImpl copy() {
-    FSIndexComparatorImpl copy = new FSIndexComparatorImpl();
-    copy.type = this.type;
-    copy.directions.addAll(this.directions);
-    copy.keySpecs.addAll(this.keySpecs);
-    return copy;
+    return new FSIndexComparatorImpl(type, keySpecs, directions);
   }
 
   /**
