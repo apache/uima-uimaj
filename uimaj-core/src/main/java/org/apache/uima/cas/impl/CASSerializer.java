@@ -23,7 +23,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import org.apache.uima.cas.CASRuntimeException;
@@ -150,29 +149,7 @@ public class CASSerializer implements Serializable {
     this.longHeapArray = new long[longHeapSize];
     System.arraycopy(cas.getLongHeap().heap, 0, this.longHeapArray, 0, longHeapSize);
   }
-  
-  // version
-  // encode: bits 7 6 5 4 3 2 1 0
-  //                        0 0 1 = no delta, no compression
-  //                        0 1 - = delta, no compression
-  //                        1 d - = compression, w/wo delta
-
-  static void outputVersion(int version, DataOutputStream dos) throws IOException {
-    // output the key and version number
-
-    byte[] uima = new byte[4];
-    uima[0] = 85; // U
-    uima[1] = 73; // I
-    uima[2] = 77; // M
-    uima[3] = 65; // A
-
-    ByteBuffer buf = ByteBuffer.wrap(uima);
-    int key = buf.asIntBuffer().get();
-
-    dos.writeInt(key);
-    dos.writeInt(version);
-  }
-  
+    
   private void outputStringHeap(DataOutputStream dos, CASImpl cas, StringHeapDeserializationHelper shdh) throws IOException {
     // output the strings
 
@@ -266,8 +243,11 @@ public class CASSerializer implements Serializable {
       this.fsIndex = cas.getIndexedFSs();
 
       // output the key and version number
-      outputVersion(1, dos);
-      
+      CommonSerDes.createHeader()
+      .seqVer(1)     // version 1 for UIMA-4743
+                     // if we decide to write older format (with checking) change this to 0 "conditionally"
+      .write(dos);
+     
       // output the FS heap
       final int heapSize = cas.getHeap().getCellsUsed();
       dos.writeInt(heapSize);
@@ -430,10 +410,11 @@ public class CASSerializer implements Serializable {
       // get the indexed FSs
       this.fsIndex = cas.getDeltaIndexedFSs(mark);
       
-      // output the key and version number
-      //1 = current full serialization; 2 = delta format 
-      //perhaps this should be split into 2 bytes for version and 2 bytes for format.
-      outputVersion(2, dos);
+      CommonSerDes.createHeader()
+      .delta()
+      .seqVer(1)     // version 1 for UIMA-4743
+                     // if we decide to write older format (with checking) change this to 0 "conditionally"
+      .write(dos);    
 
       // output the new FS heap cells
       final int heapSize = cas.getHeap().getCellsUsed() - mark.nextFSId;

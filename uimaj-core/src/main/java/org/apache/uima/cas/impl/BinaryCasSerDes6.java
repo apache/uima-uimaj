@@ -70,6 +70,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeSystemImpl.TypeInfo;
@@ -608,7 +609,13 @@ public class BinaryCasSerDes6 {
       sm.totalTime = System.currentTimeMillis();
     }
 
-    writeHeader();
+    CommonSerDes.createHeader()
+    .form6()
+    .delta(isSerializingDelta)
+    .seqVer(0)     
+    .write(serializedOut);
+    
+ 
     os = new OptimizeStrings(doMeasurements);
  
     /******************************************************************
@@ -699,6 +706,7 @@ public class BinaryCasSerDes6 {
 //      }
 //      System.err.println("");
 //    }
+    int fsid = 1;
     for (int fssi = 0; fssi < foundFSsArray.length; fssi++) {
       iHeap = foundFSsArray[fssi];
       if (isDelta && iHeap < mark.nextFSId) {
@@ -707,8 +715,10 @@ public class BinaryCasSerDes6 {
       final int tCode = heap[iHeap];  // get type code
       final int mappedTypeCode = isTypeMapping ? typeMapper.mapTypeCodeSrc2Tgt(tCode) : tCode;
       if (TRACE_SER) {
-        System.out.format("Ser: adr: %,d tCode: %s %,d tgtTypeCode: %,d %n", iHeap, tCode, ts.getTypeInfo(tCode), mappedTypeCode);
+        System.out.format("Ser: %,d adr: %,8d tCode: %,3d %13s tgtTypeCode: %,3d %n", 
+            fsid, iHeap, tCode, ts.getTypeInfo(tCode).type.getShortName(), mappedTypeCode);
       }
+      fsid ++;
       if (mappedTypeCode == 0) { // means no corresponding type in target system
         continue;
       }
@@ -1381,9 +1391,9 @@ public class BinaryCasSerDes6 {
          * handle aux byte, short, long array modifications
          **************************************************/
         if (typeInfo.isArray && (!typeInfo.isHeapStoredArray)) {
-          writeAuxHeapMods(skipping);           
+          writeAuxHeapMods(skipping);  // not used for long/double slot mods, only for arrays         
         } else { 
-          writeMainHeapMods(skipping); 
+          writeMainHeapMods(skipping);   // includes long/double mods - the main heap value is changed
         }  // end of processing 1 modified FS
         if (skipping) {
           skipped ++;
@@ -1427,6 +1437,15 @@ public class BinaryCasSerDes6 {
       return countModifiedSlots(iHeap, fsLength, modifiedMainHeapAddrs, imaModMainHeap, modMainHeapAddrsLength);
     }
     
+    /**
+     * For arrays of boolean/byte, short, long/double, 
+     *   the heap+1 is the length, 
+     *   the heap+2 is the index of the first element in the aux array
+     * @param modifiedAddrs
+     * @param indexInModAddrs
+     * @param length
+     * @return for a particular array, the number of modified slots (>= 1)
+     */
     private int countModifiedSlotsInAuxHeap(int[] modifiedAddrs, int indexInModAddrs, int length) {
       return countModifiedSlots(heap[iHeap + 2], heap[iHeap + 1], modifiedAddrs, indexInModAddrs, length);
     }
@@ -1538,6 +1557,11 @@ public class BinaryCasSerDes6 {
         writeVnumber(fsIndexes_dos, numberOfModsInAuxHeap);
       }
       
+      /**
+       * for each modified slot in the AUX array, write
+       *   - the index of that slot relative to the start of the array (0-based)
+       *   - the new value
+       */
       for (int i = 0; i < numberOfModsInAuxHeap; i++) {
         final int nextModAuxIndex = modXxxHeapAddrs[imaModXxxRef++];
         final int offsetInAuxArray = nextModAuxIndex - auxHeapIndex;
@@ -1709,7 +1733,7 @@ public class BinaryCasSerDes6 {
         initPrevIntValue(iHeap);  // note "typeInfo" a hidden parameter - ugly...
       }
       if (TRACE_DES) {
-        System.out.format("Des: addr %,d tgtTypeCode: %,d %s srcTypeCode: %,d%n", iHeap, tgtTypeCode, tgtTypeInfo,  srcTypeCode);
+        System.out.format("Des: addr %,5d tgtTypeCode: %,3d %13s srcTypeCode: %,3d%n", iHeap, tgtTypeCode, tgtTypeInfo.type.getShortName(),  srcTypeCode);
       }
 
 //      if (srcTypeInfo == null) {
@@ -3516,51 +3540,20 @@ public class BinaryCasSerDes6 {
       }
     }
   }
-
-  /*********************************************
-   * HEADERS
-   * @throws IOException passthru
-   *********************************************/
-  private void writeHeader() throws IOException {
-    // encode: bits 7 6 5 4 3 2 1 0
-    //                        0 0 1 = no delta, no compression
-    //                        0 1 - = delta, no compression
-    //                        1 d - = compression, w/wo delta
-    int version = 4 | ((isSerializingDelta) ? 2 : 0);
-    CASSerializer.outputVersion(version, serializedOut);
-      
-    serializedOut.writeInt(VERSION);  // reserved for future version info
-    if (doMeasurements) {
-      sm.header = 12;
-    }
-  }
   
   private void readHeader(InputStream istream) throws IOException {
-    deserIn = (istream instanceof DataInputStream) ? (DataInputStream) istream
-        : new DataInputStream(istream);
-
-    // key
-    // determine if byte swap if needed based on key
-    byte[] bytebuf = new byte[4];
-    bytebuf[0] = deserIn.readByte(); // U
-    bytebuf[1] = deserIn.readByte(); // I
-    bytebuf[2] = deserIn.readByte(); // M
-    bytebuf[3] = deserIn.readByte(); // A
-
-    // version
-    // version bit in 2's place indicates this is in delta format.
-    final int version1 = deserIn.readInt();
-    isDelta = isReadingDelta = ((version1 & 2) == 2);
-
-    if (0 == (version1 & 4)) {
+    deserIn = CommonSerDes.maybeWrapToDataInputStream(istream);
+    Header h = CommonSerDes.readHeader(deserIn);
+    if (!h.isCompressed) {
       throw new RuntimeException(
           "non-compressed invalid object passed to BinaryCasSerDes6 deserialize");
     }
     
-    version = deserIn.readInt();
-    if (version == 0) {
-      throw new RuntimeException(String.format("Wrong version: %d in input source passed to BinaryCasSerDes6 for deserialization", version));
+    if (!h.form6) {
+      throw new RuntimeException(String.format("Wrong version: %x in input source passed to BinaryCasSerDes6 for deserialization", h.v));
     }
+    
+    isReadingDelta = h.isDelta;
   }
   
   /* *******************************************
