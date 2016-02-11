@@ -219,7 +219,23 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @see org.apache.uima.UimaContextAdmin#createChild(java.lang.String)
    */
   public UimaContextAdmin createChild(String aContextName, Map<String, String> aSofaMappings) {
-    // The aSofaMappings parameter, if present, defines the mapping between the child
+
+    // create child context with the absolute mappings
+    ChildUimaContext_impl child = new ChildUimaContext_impl(this, aContextName, combineSofaMappings(aSofaMappings));
+
+    // build a tree of MBeans that parallels the tree of UimaContexts
+    mMBean.addComponent(aContextName, child.mMBean);
+
+    return child;
+  }
+
+  /**
+   * Create the child sofa map by combining existing mapping from the current context with
+   * any mappings specific for this child, passed in as aSofaMappings
+   * @return the combined absolute sofamappings
+   */
+  public Map<String, String> combineSofaMappings(Map<String, String> aSofaMappings) {
+ // The aSofaMappings parameter, if present, defines the mapping between the child
     // context's sofa names and this context's sofa names. This context's sofa names
     // may again be remapped (according to the mSofaMappings field). We need to
     // produce the absolute mapping and pass that into the child context's constructor.
@@ -241,16 +257,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
         childSofaMap.put(childSofaName, absoluteSofaName);
       }
     }
-
-    // create child context with the absolute mappings
-    ChildUimaContext_impl child = new ChildUimaContext_impl(this, aContextName, childSofaMap);
-
-    // build a tree of MBeans that parallels the tree of UimaContexts
-    mMBean.addComponent(aContextName, child.mMBean);
-
-    return child;
+    return childSofaMap;
   }
-
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String)
    */
