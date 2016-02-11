@@ -223,18 +223,24 @@ public class GrowingTheCasTest extends TestCase {
     jcas.setDocumentText(text);
     int numberOfSentences = 0;
     int numberOfTokens = 0;
-    try {
-//      long time = System.currentTimeMillis();
-      this.ae.process(jcas);
-//      time = System.currentTimeMillis() - time;
-//      System.out.println("Time for large CAS: " + new TimeSpan(time));
-      numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
-      numberOfTokens = jcas.getAnnotationIndex(Token.type).size();
-//      System.out.println(numberOfSentences);
-//      System.out.println(numberOfTokens);
-    } catch (AnalysisEngineProcessException e) {
-      e.printStackTrace();
-      assertTrue(false);
+    for (int i = 0; i < 1; i++) {
+      numberOfSentences = 0;
+      numberOfTokens = 0;
+      try {
+  //      long time = System.currentTimeMillis();
+        this.ae.process(jcas);
+  //      time = System.currentTimeMillis() - time;
+  //      System.out.println("Time for large CAS: " + new TimeSpan(time));
+        numberOfSentences = jcas.getAnnotationIndex(Sentence.type).size();
+        numberOfTokens = jcas.getAnnotationIndex(Token.type).size();
+  //      System.out.println(numberOfSentences);
+  //      System.out.println(numberOfTokens);
+      } catch (AnalysisEngineProcessException e) {
+        e.printStackTrace();
+        assertTrue(false);
+      }
+      jcas.reset();
+      jcas.setDocumentText(text);
     }
     jcas = null;
     
