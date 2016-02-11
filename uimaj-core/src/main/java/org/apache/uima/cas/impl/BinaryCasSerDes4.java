@@ -510,19 +510,12 @@ public class BinaryCasSerDes4 {
         sm.origAuxLongs = cas.getLongHeap().getSize() * 8;
         sm.totalTime = System.currentTimeMillis();
       }
-
-      /******************
-       * Process Header  
-       * Standardized    
-       ******************/
-      // encode: bits 7 6 5 4 3 2 1 0
-      //                        0 0 1 = no delta, no compression
-      //                        0 1 - = delta, no compression
-      //                        1 d - = compression, w/wo delta
-      int version = 4 | ((isDelta) ? 2 : 0);
-      CASSerializer.outputVersion(version, serializedOut);
+      
+      CommonSerDes.createHeader()
+        .form4()
+        .delta(isDelta)
+        .write(serializedOut);
         
-      serializedOut.writeInt(0);  // reserved for future version info
       if (doMeasurement) {
         sm.header = 12;
       }
@@ -621,6 +614,21 @@ public class BinaryCasSerDes4 {
       if (doMeasurement) {
         sm.statDetails[Slot_MainHeap.i].original = (1 + heapEnd - heapStart) * 4;      
       }
+      
+      // debug - for delta
+//      if (isDelta) {
+//        int[] heap = cas.getHeap().heap;
+//        for (int iHeap =1; iHeap < heapEnd; iHeap += incrToNextFs(heap, iHeap, typeInfo)) {
+//          int tCode = heap[iHeap];  // get type code      
+//          typeInfo = getTypeInfo(tCode);
+//          System.out.format("debug heapAddr: %,d type: %s%n", iHeap, typeInfo.type.getShortName());
+//          if (iHeap == 439) {
+//            System.out.println("debug");
+//          }
+//        }
+//        System.out.format("debug heapStart: %,d heapEnd: %,d", heapStart, heapEnd);
+//      }
+      
       
       resetIprevious();
 
@@ -1670,9 +1678,11 @@ public class BinaryCasSerDes4 {
       case Slot_ShortRef:
         heap[iHeap + 2] = readIntoShortArray(length);
         break; 
-      case Slot_LongRef: case Slot_DoubleRef:
+      case Slot_LongRef: 
+      case Slot_DoubleRef:
         heap[iHeap + 2] = readIntoLongArray(refKind, length);
-        break; 
+        break;
+        
       default:
         throw new RuntimeException();
       }
@@ -2316,7 +2326,7 @@ public class BinaryCasSerDes4 {
             break;
           case Slot_LongRef: case Slot_DoubleRef: {
             if (c1.getLongHeap().getHeapValue(c1heap[iHeap + 2] + i)  !=
-                c1.getLongHeap().getHeapValue(c1heap[iHeap + 2] + i)) {
+                c2.getLongHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
               return mismatchFs();
             }
             break;
