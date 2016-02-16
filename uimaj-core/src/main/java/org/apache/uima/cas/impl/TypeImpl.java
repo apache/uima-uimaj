@@ -118,7 +118,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private final List<TypeImpl> directSubtypes = new ArrayList<>();
     
   // ********  Features  *********
-  private       Map<String, FeatureImpl> staticMergedFeatures = new LinkedHashMap<>(1); // set to null at commit time
+  private final Map<String, FeatureImpl> staticMergedFeatures = new LinkedHashMap<>(1); // set to null at commit time
   private final List<FeatureImpl> staticMergedFeaturesList = new ArrayList<>(0);  // set after commit
   private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(0);
   
@@ -331,11 +331,12 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public int getNumberOfFeatures() {
-    return (staticMergedFeatures != null) ? staticMergedFeatures.size() : staticMergedFeaturesList.size();
+    return staticMergedFeatures.size();
   }
   
   public boolean isAppropriateFeature(Feature feature) {
-    return feature == getFeatureByBaseName(feature.getShortName());
+    TypeImpl domain = (TypeImpl) feature.getDomain();
+    return domain.subsumes(this);
   }
 
   /**
@@ -389,15 +390,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public FeatureImpl getFeatureByBaseName(String featureShortName) {
-    if (staticMergedFeatures != null) {
-      return staticMergedFeatures.get(featureShortName);
-    }
-    for (FeatureImpl fi : staticMergedFeaturesList) {
-      if (fi.getShortName().equals(featureShortName)) {
-        return fi;
-      }
-    }
-    return null;
+    return staticMergedFeatures.get(featureShortName);
   }
 
   /**
@@ -453,7 +446,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public List<Feature> getFeatures() {
-    return new ArrayList<>( (staticMergedFeatures != null) ? staticMergedFeatures.values() : staticMergedFeaturesList);
+    return new ArrayList<>(getFeatureImpls());
   }
   
   /** 
@@ -462,8 +455,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return the list of feature impls
    */
   public List<FeatureImpl> getFeatureImpls() {
-    if (staticMergedFeatures != null) {
-      // means not yet committed
+    if (!tsi.isCommitted()) {
       // recompute the list if needed
       int nbrOfFeats = staticMergedFeatures.size();
       if (nbrOfFeats != staticMergedFeaturesList.size()) {
@@ -477,18 +469,21 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     synchronized (staticMergedFeaturesList) {
       staticMergedFeaturesList.clear();
       staticMergedFeaturesList.addAll(superType.getFeatureImpls());
-      staticMergedFeaturesList.addAll(staticMergedFeaturesIntroducedByThisType);
-      if (superType.hasRefFeature) {
-        hasRefFeature = true;
-      } else {
-        for (FeatureImpl fi : staticMergedFeaturesIntroducedByThisType) {
-          if (fi.getRangeImpl().isRefType) {
-            hasRefFeature = true;
-            break;
-          }
+      staticMergedFeaturesList.addAll(staticMergedFeaturesIntroducedByThisType);   
+    }    
+  }
+  
+  private void computeHasRef() {
+    if (superType.hasRefFeature) {
+      hasRefFeature = true;
+    } else {
+      for (FeatureImpl fi : staticMergedFeaturesIntroducedByThisType) {
+        if (fi.getRangeImpl().isRefType) {
+          hasRefFeature = true;
+          break;
         }
       }
-    }    
+    }
   }
   
   Stream<FeatureImpl> getFeaturesAsStream() {
@@ -739,11 +734,15 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //    creator = fi;
 //  }
       
-  public boolean subsumes(TypeImpl ti) {
+  final public boolean subsumes(TypeImpl ti) {
+    if (depthFirstCode <= ti.depthFirstCode && ti.depthFirstCode < depthFirstNextSibling) {
+      return true;
+    }
     
     if (depthFirstNextSibling != 0) {
-      return (depthFirstCode <= ti.depthFirstCode && ti.depthFirstCode < depthFirstNextSibling);
+      return false;
     }
+    
     return getTypeSystem().subsumes(this, ti);
   }
   
@@ -766,9 +765,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     if (level != 1) {
       // skip for top level; no features there, but no super type either
       computeStaticMergedFeaturesList();
+      computeHasRef();
     }
-      
-    staticMergedFeatures = null;
      
     depthFirstCode = level ++;
     for (TypeImpl subti : directSubtypes) {
