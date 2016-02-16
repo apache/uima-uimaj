@@ -675,7 +675,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return LEAST_FEATURE_CODE;
   }
 
-  final int getTypeArraySize() {
+  public final int getTypeArraySize() {
     return getNumberOfTypes() + getSmallestType();
   }
 
@@ -1307,7 +1307,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (this.locked) {
         return this; // might be called multiple times, but only need to do once
       }
-      this.locked = true;
       // because subsumes depends on it
       // and generator initialization uses subsumes
   //    this.numCommittedTypes = this.getNumberOfTypes(); // do before
@@ -1346,6 +1345,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       fsClassRegistry = new FSClassRegistry(this, true);
       
       computeAdjustedFeatureOffsets(topType, 0, 0);
+      this.locked = true;
       return this;
     } // of sync block 
   }
@@ -2380,7 +2380,21 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return result;
   }
 
+  // debug - compare two type systems, print first different type
+  public static void compareTs(TypeSystem t1, TypeSystem t2) {
+    TypeSystemImpl ts1 = (TypeSystemImpl) t1;
+    TypeSystemImpl ts2 = (TypeSystemImpl) t2;
+    if (ts1.types.size() != ts2.types.size()) {
+      System.out.format("ts1 size: %,d ts2 size: %d%n", ts1.types.size(), ts2.types.size());
+    }
 
+    for (int i = 1; i < ts1.types.size(); i++) {
+      if (ts1.types.get(i).hashCode() != ts2.types.get(i).hashCode()) {
+        System.out.format("ts1 type: %s%n%nts2 type: %s%n", ts1.types.get(i), ts2.types.get(i));
+      }
+    }
+    System.out.println("done");
+  }
 
   @Override
   public boolean equals(Object obj) {
