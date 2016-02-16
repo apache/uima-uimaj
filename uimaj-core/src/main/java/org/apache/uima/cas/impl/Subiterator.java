@@ -164,7 +164,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   private void moveToExact(T targetAnnotation) {
     it.moveTo(targetAnnotation);  // move to left-most equal one
     while (it.isValid()) {         // advance to the exact equal one
-      if (targetAnnotation.id() == it.get().id()) {
+      if (targetAnnotation.id() == it.getNvc().id()) {
         break;
       }
       it.moveToNext();
@@ -222,7 +222,11 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     final int begin = fs.getBegin();
     final int end = fs.getEnd();
     
-    while (it.isValid() && (it.get().getBegin() == begin) && (it.get().getEnd() == end)) {
+    while (it.isValid()) {
+      T item = it.getNvc();
+      if (item.getBegin() != begin || item.getEnd() != end) {
+        break;
+      }
       it.moveToPrevious();  
     }
     // are one position too far, move back one
@@ -238,7 +242,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   private void adjustForStrictForward() {
     if (strict && isBounded) {
-      while (it.isValid() && (it.get().getEnd() > this.boundingEnd)) {
+      while (it.isValid() && (it.getNvc().getEnd() > this.boundingEnd)) {
         it.moveToNext();
       }
     }
@@ -299,6 +303,19 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
   /*
    * (non-Javadoc)
    * 
+   * @see org.apache.uima.cas.FSIterator#getNvc()
+   */
+  public T getNvc() {
+    if (isListForm) {
+      return (T) this.list.get(this.pos);
+    } else {
+      return it.get();
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.apache.uima.cas.FSIterator#moveToNext()
    */
   public void moveToNext() {
@@ -322,6 +339,29 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       setPrevEnd();
     }
   }
+  
+  public void moveToNextNvc() {
+    if (isListForm) {
+      ++this.pos;
+      // setPrevEnd not needed because list form already accounted for unambiguous
+      return;
+    }
+   
+    it.moveToNextNvc();
+    
+    if (!ambiguous) {
+        movePastPrevAnnotation();
+    }
+
+    adjustForStrictForward();
+    if (it.isValid() && (it.getNvc().getBegin() > boundingEnd)) {
+      it.moveToLast();
+      it.moveToNext();  // mark invalid
+    } else {
+      setPrevEnd();
+    }
+  }
+
 
   /*
    * (non-Javadoc)
