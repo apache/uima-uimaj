@@ -630,10 +630,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   @Override
   public boolean getBooleanValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_boolean)getter).get(this)
-                            : getIntValueCommon(fi) == 1;
+    return getBooleanValueNc((FeatureImpl) feat);
   }
 
   public boolean getBooleanValueNc(FeatureImpl fi) {
