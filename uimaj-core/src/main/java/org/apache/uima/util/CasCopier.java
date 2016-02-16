@@ -202,8 +202,8 @@ public class CasCopier {
   private final TypeSystemImpl srcTsi;
   private final TypeSystemImpl tgtTsi;
   
-  private final Int2ObjListMap<TypeImpl>    src2TgtType = new Int2ObjListMap<>();  
-  private final Int2ObjListMap<FeatureImpl> src2TgtFeat = new Int2ObjListMap<>();
+  private final Int2ObjListMap<TypeImpl>    src2TgtType;  
+  private final Int2ObjListMap<FeatureImpl> src2TgtFeat;
   
 //  
 //  private final TypeImpl srcStringType;
@@ -233,7 +233,7 @@ public class CasCopier {
    * Target not set for DocumentAnnotation or SofaFSs
    * Target not set if lenient specified and src type isn't in target
    */
-  final private Map<TOP, TOP> mFsMap = new IdentityHashMap<>();
+  final private Map<TOP, TOP> mFsMap;
   
   /**
    * Deferred calls to copy Features of a FS
@@ -275,6 +275,7 @@ public class CasCopier {
    */
   public CasCopier(CAS aSrcCas, CAS aDestCas, boolean lenient) {
 
+    mFsMap = new IdentityHashMap<>(((CASImpl)(aSrcCas.getLowLevelCAS())).getLastUsedFsId());
     originalSrcCas = aSrcCas;
     originalTgtCas = aDestCas;
     
@@ -283,7 +284,11 @@ public class CasCopier {
     
     srcTsi = originalSrcCasImpl.getTypeSystemImpl();
     tgtTsi = originalTgtCasImpl.getTypeSystemImpl();
+
+    src2TgtType = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<TypeImpl>(srcTsi.getTypeArraySize());
+    src2TgtFeat = (srcTsi == tgtTsi) ? null : new Int2ObjListMap<FeatureImpl>(srcTsi.getNumberOfFeatures() + 1);
     
+
 //    tInfoArray = new TypeInfo[srcTsi.getLargestTypeCode() + 1];
     
 //    srcStringType = srcTsi.stringType;
@@ -551,7 +556,8 @@ public class CasCopier {
 //    LowLevelIterator it = ((FSIndexRepositoryImpl)(srcCasViewImpl.getIndexRepository())).ll_getAllIndexedFS(srcTsi.getTopType());
 
     while (it.hasNext()) {
-      final TOP fs = it.next();
+      final TOP fs = it.nextNvc();
+//      System.out.format("debug  id: %,d  type: %s%n", fs.id(), fs._typeImpl.getShortName());
 //    Iterator<LowLevelIndex> indexes = srcCasViewImpl.getIndexRepository().ll_getIndexes();
 //    while (indexes.hasNext()) {
 //      LowLevelIndex index = indexes.next();
@@ -792,9 +798,9 @@ public class CasCopier {
         if (fi.isAnnotBaseSofaRef) {
           continue;
         }
-        TOP refFs = srcFS.getFeatureValue(fi);
+        TOP refFs = srcFS.getFeatureValueNc(fi);
         if (null != refFs) {
-          tgtFS.setFeatureValue(tgtFi, copyFsInner(refFs));  
+          tgtFS.setFeatureValueNcNj(tgtFi, copyFsInner(refFs));  // recursive call
         }
       }
     }
@@ -943,6 +949,9 @@ public class CasCopier {
   }
   
   private TypeImpl getTargetType(TypeImpl srcTi) {
+    if (srcTsi == tgtTsi) {
+      return srcTi;
+    }
     int srcTypeCode = srcTi.getCode();
     TypeImpl r = src2TgtType.get(srcTypeCode);
     if (r == null) {
@@ -952,7 +961,15 @@ public class CasCopier {
     return (r == MISSING_TYPE) ? null : r;
   }
   
+  // tiny method to inline
   private FeatureImpl getTargetFeature(FeatureImpl srcFi) {
+    if (srcTsi == tgtTsi) {
+      return srcFi;
+    }
+    return getTargetFeature2(srcFi);
+  }
+  
+  private FeatureImpl getTargetFeature2(FeatureImpl srcFi) {
     int srcFeatCode = srcFi.getCode();
     FeatureImpl r = src2TgtFeat.get(srcFeatCode);
     if (r == null) {
