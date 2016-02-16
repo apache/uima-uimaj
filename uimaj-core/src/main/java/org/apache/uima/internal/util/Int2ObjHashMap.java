@@ -50,30 +50,43 @@ public class Int2ObjHashMap<T> {
 
   private class KeyIterator implements IntListIterator {
 
+    /**
+     * Keep this always pointing to a non-0 entry, or
+     * if not valid, outside the range
+     */
     private int curPosition;
+    
+    private final int firstPosition;
 
     private KeyIterator() {
       this.curPosition = 0;
+      moveToNextFilled();
+      firstPosition = curPosition;
     }
     
     public final boolean hasNext() {
-      curPosition = moveToNextFilled(curPosition);
       return curPosition < keys.length;
     }
 
     public final int next() {
-      if (!hasNext()) {
+      
+//      if (!hasNext()) {
+//        throw new NoSuchElementException();
+//      }
+      try {
+        final int r = keys[curPosition++];
+        moveToNextFilled();
+        return r;
+      } catch (IndexOutOfBoundsException e) {
         throw new NoSuchElementException();
       }
-      return keys[curPosition++];
     }
 
     /**
      * @see org.apache.uima.internal.util.IntListIterator#hasPrevious()
      */
     public boolean hasPrevious() {
-      curPosition = moveToPreviousFilled(curPosition);
-      return (curPosition >= 0);
+      return (curPosition > firstPosition);
     }
 
     /**
@@ -83,7 +96,9 @@ public class Int2ObjHashMap<T> {
       if (!hasPrevious()) {
         throw new NoSuchElementException();
       }
-      return keys[curPosition--];
+      curPosition --;
+      moveToPreviousFilled();
+      return keys[curPosition];
     }
 
     /**
@@ -91,6 +106,7 @@ public class Int2ObjHashMap<T> {
      */
     public void moveToEnd() {
       curPosition = keys.length - 1;
+      moveToPreviousFilled();
     }
 
     /**
@@ -98,6 +114,47 @@ public class Int2ObjHashMap<T> {
      */
     public void moveToStart() {
       curPosition = 0;
+      moveToNextFilled();
+    }
+    
+    /**
+     * advance pos until it points to a non 0 or is 1 past end
+     * @param pos
+     * @return updated pos
+     */
+    private void moveToNextFilled() {      
+      final int max = keys.length;
+      while (true) {
+        if (curPosition >= max) {
+          return;
+        }
+        if (keys[curPosition] != 0) {
+          return;
+        }
+        curPosition ++;
+      }
+    }
+     
+    /**
+     * decrement pos until it points to a non 0 or is -1
+     * @param pos
+     * @return updated pos
+     */
+    private void moveToPreviousFilled() {
+      final int max = keys.length;
+      if (curPosition > max) {
+        curPosition = max - 1;
+      }
+      
+      while (true) {
+        if (curPosition < 0) {
+          return;
+        }
+        if (keys[curPosition] != 0) {
+          return;
+        }
+        curPosition --;
+      }
     }
   }
   
@@ -344,50 +401,6 @@ public class Int2ObjHashMap<T> {
   
  public int size() {
    return size;
- }
- 
- /**
-  * advance pos until it points to a non 0 or is 1 past end
-  * @param pos
-  * @return updated pos
-  */
- private int moveToNextFilled(int pos) {
-   if (pos < 0) {
-     pos = 0;
-   }
-   
-   final int max = keys.length;
-   while (true) {
-     if (pos >= max) {
-       return pos;
-     }
-     if (keys[pos] != 0) {
-       return pos;
-     }
-     pos ++;
-   }
- }
-  
- /**
-  * decrement pos until it points to a non 0 or is -1
-  * @param pos
-  * @return updated pos
-  */
- private int moveToPreviousFilled(int pos) {
-   final int max = keys.length;
-   if (pos > max) {
-     pos = max - 1;
-   }
-   
-   while (true) {
-     if (pos < 0) {
-       return pos;
-     }
-     if (keys[pos] != 0) {
-       return pos;
-     }
-     pos --;
-   }
  }
   
   public int[] getSortedKeys() {
