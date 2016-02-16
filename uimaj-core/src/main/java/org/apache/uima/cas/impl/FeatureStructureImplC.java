@@ -90,6 +90,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   public static final String DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION = "uima.disable_runtime_feature_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION);
 
+  public static final int IN_SET_SORTED_INDEX = 1;
   // data storage
   // slots start with _ to prevent name collision with JCas style getters and setters.
   
@@ -97,10 +98,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   protected final Object[] _refData;
   protected final int _id;  // a separate slot for access without loading _intData object
   protected int flags = 0;  // a set of flags
-                            // bit 0 (least significant): fs is in one or more indexes
+                            // bit 0 (least significant): fs is in one or more non-bag indexes
                             // bits 1-31 reserved
                            
-
   
   /**
    * These next two object references are the same for every FS of this class created in one view.
@@ -436,7 +436,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       ((JCas_setter_long)setter).set(this, v);
     } else {
       if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-      _casView.setFeatureValue(this, (FeatureImpl) feat, (int)(v & 0xffffffff), (int)(v >> 32));
+      _casView.setLongValue(this, (FeatureImpl) feat, (int)(v & 0xffffffff), (int)(v >> 32));
     }
   }
 
@@ -445,7 +445,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     if (setter != null) {
       ((JCas_setter_long)setter).set(this, v);
     } else {
-      _casView.setFeatureValueNcNj(this, fi, (int)(v & 0xffffffff), (int)(v >> 32));
+      _casView.setLongValueNcNj(this, fi, (int)(v & 0xffffffff), (int)(v >> 32));
     }
   }
 
@@ -536,7 +536,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
   }
 
-  public void setFeatureValueNoIndexCorruptionCheck(Feature feat, Object v) {
+  public void setFeatureValueNoIndexCorruptionCheck(Feature feat, TOP v) {
     FeatureImpl fi = (FeatureImpl) feat;
  
     if (fi.isInInt) {
@@ -548,7 +548,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
  
     Object setter =  fi.getJCasSetter();
     if (setter != null) {
-      ((JCas_setter_generic<Object>)setter).set(this, v);
+      ((JCas_setter_generic<Object>)setter).set(this, v);  // also may do logging
     } else {
       _refData[fi.getAdjustedOffset()] = v;
       if (_casView.isLogging()) { 
@@ -1184,11 +1184,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     return Integer.compare(this._id, o.id());
   }
   
-  protected boolean _isIndexed() { return (flags & 1) != 0;}
-  protected void _setIsIndexed() { flags |= 1; }
+  protected boolean _inSetSortedIndex() { return (flags & IN_SET_SORTED_INDEX) != 0;}
+  protected void _setInSetSortedIndexed() { flags |= IN_SET_SORTED_INDEX; }
   /**
    * All callers of this must insure fs is not indexed in **Any** View
    */
-  protected void _resetIsIndexed() { flags &= 0xfffffffe; }
-  
+  protected void _resetInSetSortedIndex() { flags &= ~IN_SET_SORTED_INDEX; }
+   
 }
