@@ -41,22 +41,30 @@ import org.apache.uima.util.Misc;
  */
 public class Int2ObjListMap<T> {
   
-  private final ArrayList<T> values = new ArrayList<>();
+  private final ArrayList<T> values;
+  
+  public Int2ObjListMap() {
+    values = new ArrayList<>();
+  }
+  
+  public Int2ObjListMap(int initialSize) {
+    values = new ArrayList<>(initialSize);
+  }
   
   public void clear() {
     values.clear();
   }
 
- public T get(int key) {
-   return (key < 0 || key >= values.size()) 
-            ? null 
-            : values.get(key);
- }
+  public T get(int key) {
+    return (key < 0 || key >= values.size()) 
+             ? null 
+             : values.get(key);
+  }
   
- public T put(int key, T value) {
-   T prev = get(key);
-   Misc.setWithExpand(values,  key,  value);
-   return prev;
- }
+  public T put(int key, T value) {
+    T prev = get(key);
+    Misc.setWithExpand(values,  key,  value);
+    return prev;
+  }
   
 }
