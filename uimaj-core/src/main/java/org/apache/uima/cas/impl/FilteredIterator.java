@@ -89,6 +89,11 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
     adjustForConstraintForward();
   }
 
+  public void moveToNextNvc() {
+    this.it.moveToNextNvc();
+    adjustForConstraintForward();
+  }
+
   public void moveToPrevious() {
     this.it.moveToPrevious();
     adjustForConstraintBackward();
@@ -99,6 +104,10 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
     return this.it.get();
   }
 
+  public T getNvc() {
+    return this.it.getNvc();
+  }
+  
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
