@@ -563,6 +563,18 @@ public class CasCreationUtils {
       throw new ResourceInitializationException(e);
     }
     
+ // get initial heap size
+    String initialHeapSizeStr = null;
+    if (aPerformanceTuningSettings != null) {
+      initialHeapSizeStr = aPerformanceTuningSettings
+          .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
+    }
+    
+    int initialHeapSize = (null == initialHeapSizeStr) 
+                            ? CASImpl.DEFAULT_INITIAL_HEAP_SIZE
+                            : Integer.parseInt(initialHeapSizeStr);
+    
+    
     // Check Jcas cache performance setting.  Defaults to true.
     boolean useJcasCache = true;
     if (aPerformanceTuningSettings != null) {
@@ -576,7 +588,7 @@ public class CasCreationUtils {
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
-      casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
+      casMgr = CASFactory.createCAS(initialHeapSize, aTypeSystem, useJcasCache);
       
       // Set JCas ClassLoader - before setupTypeSystem
       if (aResourceManager.getExtensionClassLoader() != null) {
