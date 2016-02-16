@@ -63,6 +63,10 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     }
     return iterators[lastValidIndex].get();
   }
+  
+  public T getNvc() {
+    return iterators[lastValidIndex].getNvc();
+  }
 
   public boolean isValid() {
     return lastValidIndex >= 0 &&
@@ -131,6 +135,25 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     lastValidIndex = iterators.length;  // invalid position
   }
     
+  public void moveToNextNvc() {
+    FSIterator<T> it = iterators[lastValidIndex];
+    it.moveToNextNvc();
+
+    if (it.isValid()) {
+      return;
+    }
+    
+    final int nbrIt = iterators.length;
+    for (int i = lastValidIndex + 1; i < nbrIt; i++) {
+      it = iterators[i];
+      it.moveToFirst();
+      if (it.isValid()) {
+        lastValidIndex = i;
+        return;
+      }
+    }
+    lastValidIndex = iterators.length;  // invalid position
+  }
 
   public void moveToPrevious() {
     // No point in going anywhere if iterator is not valid.

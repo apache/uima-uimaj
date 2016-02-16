@@ -56,6 +56,7 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     moveTo(ll_getIndex().getCasImpl().ll_getFSForRef(fsRef));
   }
   
+  
 
   /**
    * Return the size of the underlying index.
@@ -80,6 +81,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     @Override
     public FeatureStructure get() throws NoSuchElementException { throw new NoSuchElementException(); }
     @Override
+    public FeatureStructure getNvc() { throw new NoSuchElementException(); }
+    @Override
     public void moveTo(int i) {}
     @Override
     public void moveToFirst() {}
@@ -89,6 +92,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     public LowLevelIterator<FeatureStructure> copy() { return this; }
     @Override
     public void moveToNext() {}
+    @Override
+    public void moveToNextNvc() {}
     @Override
     public void moveToPrevious() {}
     @Override

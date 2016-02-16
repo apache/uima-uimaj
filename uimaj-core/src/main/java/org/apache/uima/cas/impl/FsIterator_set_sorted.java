@@ -83,7 +83,11 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     if (!isValid()) {
       return;
     }
+    moveToNextNvc();
+  }
   
+  @Override
+  public void moveToNextNvc() { 
     checkConcurrentModification();
     if (isGoingForward) {
       if (isCurrentElementFromLastGet) {
@@ -103,6 +107,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
       isCurrentElementFromLastGet = false;
     }
   }
+
 
   @Override
   public void moveToPrevious() {
@@ -135,6 +140,16 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     if (!isValid()) {
       throw new NoSuchElementException();
     }
+    checkConcurrentModification();
+    if (!isCurrentElementFromLastGet) {
+      currentElement = iterator.next();
+      isCurrentElementFromLastGet = true;
+    }
+    return currentElement;
+  }
+
+  @Override
+  public T getNvc() {
     checkConcurrentModification();
     if (!isCurrentElementFromLastGet) {
       currentElement = iterator.next();

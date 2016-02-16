@@ -44,7 +44,7 @@ public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIte
     it.moveToFirst();
     // Iterate over the input iterator.
     while (it.isValid()) {
-      FeatureStructure fs = it.next();
+      FeatureStructure fs = it.nextNvc();
       if (!(fs instanceof Annotation)) {
         continue;  // skip until get an annotation
       }

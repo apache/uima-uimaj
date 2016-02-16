@@ -61,6 +61,11 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     throw new NoSuchElementException();
   }
 
+  public T getNvc() {
+    checkConcurrentModification();
+    return bag.get(position);
+  }
+
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#moveToFirst()
    */
@@ -93,6 +98,14 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
       position = bag.moveToNextFilled(++position);
     }
   }
+  
+  @Override
+  public void moveToNextNvc() {
+    checkConcurrentModification(); 
+    isGoingForward = true;
+    position = bag.moveToNextFilled(++position);
+  }
+
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#moveToPrevious()

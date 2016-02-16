@@ -42,7 +42,11 @@ public class FsIterator_subtypes_unordered<T extends FeatureStructure> extends F
   @Override
   public T get() throws NoSuchElementException {throw new UnsupportedOperationException();}
   @Override
+  public T getNvc() {throw new UnsupportedOperationException();}
+  @Override
   public void moveToNext() {throw new UnsupportedOperationException();}
+  @Override
+  public void moveToNextNvc() {throw new UnsupportedOperationException();}
   @Override
   public void moveToPrevious() {throw new UnsupportedOperationException();}
   @Override

@@ -122,46 +122,63 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       it0.moveToNext();
       heapify_down(it0, 1);
     } else {
-      // We need to increment everything.
-      int lvi = this.iterators.length - 1;
-      int i = 1;
-      while (i <= lvi) {
-        // Any iterator other than the current one needs to be
-        // incremented until it's pointing at something that's
-        // greater than the current element.
-        final FsIterator_singletype<T> it = iterators[i].checkConcurrentModification();
-        // If the iterator we're considering is not valid, we
-        // set it to the first element. This should be it for this iterator...
-        if (!it.isValid()) {
-          it.moveToFirst();
-        }
-        // Increment the iterator while it is valid and pointing
-        // at something smaller than the current element.
-        while (it.isValid() && is_before(it, it0, 1)) {
-          it.moveToNext();
-        }
-
-        // find placement
-        if (it.isValid()) {
-          heapify_up(it, i, 1);
-          ++i;
-        } else {
-          // swap this iterator with the last possibly valid one
-          // lvi might be equal to i, this will not be a problem
-          this.iterators[i] = this.iterators[lvi];
-          this.iterators[lvi] = it;
-          --lvi;
-        }
-      }
-
-      this.lastValidIndex = lvi;
-      this.wentForward = true;
-
-      it0.moveToNext();
-      heapify_down(it0, 1);
+      moveToNextCmn(it0);
     }
   }
 
+  @Override
+  public void moveToNextNvc() {
+    final FsIterator_singletype<T> it0 = iterators[0].checkConcurrentModification();
+
+    if (this.wentForward) {
+      it0.moveToNextNvc();
+      heapify_down(it0, 1);
+    } else {
+      moveToNextCmn(it0);
+    }
+  }
+
+  private void moveToNextCmn(final FsIterator_singletype<T> it0) {
+    // We need to increment everything.
+    int lvi = this.iterators.length - 1;
+    int i = 1;
+    while (i <= lvi) {
+      // Any iterator other than the current one needs to be
+      // incremented until it's pointing at something that's
+      // greater than the current element.
+      final FsIterator_singletype<T> it = iterators[i].checkConcurrentModification();
+      // If the iterator we're considering is not valid, we
+      // set it to the first element. This should be it for this iterator...
+      if (!it.isValid()) {
+        it.moveToFirst();
+      }
+      // Increment the iterator while it is valid and pointing
+      // at something smaller than the current element.
+      while (it.isValid() && is_before(it, it0, 1)) {
+        it.moveToNext();
+      }
+
+      // find placement
+      if (it.isValid()) {
+        heapify_up(it, i, 1);
+        ++i;
+      } else {
+        // swap this iterator with the last possibly valid one
+        // lvi might be equal to i, this will not be a problem
+        this.iterators[i] = this.iterators[lvi];
+        this.iterators[lvi] = it;
+        --lvi;
+      }
+    }
+
+    this.lastValidIndex = lvi;
+    this.wentForward = true;
+
+    it0.moveToNext();
+    heapify_down(it0, 1);
+
+  }
+  
   @Override
   public void moveToPrevious() {
     if (!isValid()) {
@@ -368,6 +385,14 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     if (!isValid()) {
       throw new NoSuchElementException();
     }
+    return iterators[0].checkConcurrentModification().get();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#getNvc()
+   */
+  @Override
+  public T getNvc() throws NoSuchElementException {
     return iterators[0].checkConcurrentModification().get();
   }
 

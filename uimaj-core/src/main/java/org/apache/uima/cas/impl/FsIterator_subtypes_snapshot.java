@@ -67,6 +67,14 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   }
 
   /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#get()
+   */
+  @Override
+  public T getNvc() {
+    return snapshot[pos];
+  }
+
+  /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#moveToNext()
    */
   @Override
@@ -74,6 +82,11 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     if (isValid()) {
       pos++;
     }
+  }
+
+  @Override
+  public void moveToNextNvc() {
+    pos++;
   }
 
   /* (non-Javadoc)

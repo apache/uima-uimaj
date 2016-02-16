@@ -37,7 +37,7 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
     // subtypes do moveToFirst after they finish initialization
   }
     
-  protected <I extends FSIterator<T>> I checkConcurrentModification() {
+  final protected <I extends FSIterator<T>> I checkConcurrentModification() {
     if ((null != detectIllegalIndexUpdates) && (modificationSnapshot != detectIllegalIndexUpdates[typeCode])) {
       throw new ConcurrentModificationException();
     }
@@ -67,4 +67,5 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
     sb.append(", size: ").append(this.ll_indexSize());
     return sb.toString();
   }
+  
 }

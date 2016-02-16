@@ -58,7 +58,11 @@ public abstract class FsIterator_subtypes<T extends FeatureStructure> implements
     @Override
     public TOP get() throws NoSuchElementException { throw new NoSuchElementException(); }
     @Override
+    public TOP getNvc() { throw new NoSuchElementException(); }
+    @Override
     public void moveToNext() {}
+    @Override
+    public void moveToNextNvc() {}
     @Override
     public void moveToPrevious() {}
     @Override
