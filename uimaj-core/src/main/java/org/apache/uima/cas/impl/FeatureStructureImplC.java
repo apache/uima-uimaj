@@ -96,6 +96,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   protected final int[] _intData;  
   protected final Object[] _refData;
   protected final int _id;  // a separate slot for access without loading _intData object
+  protected int flags = 0;  // a set of flags
+                            // bit 0 (least significant): fs is in one or more indexes
+                            // bits 1-31 reserved
+                           
 
   
   /**
@@ -165,7 +169,6 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _refData = (c == 0) ? null : new Object[c];
     
     _id = _casView.setId2fs((TOP)this); 
-    _casView.setCacheNotInIndex(this);
   }
   
   
@@ -265,7 +268,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    *   - if no, then converge the code to an _intData or _refData reference
    ***********************************************************/
   protected void featureValidation(Feature feat) {
-    if (!_typeImpl.isAppropriateFeature(feat)) {
+    
+    if (!(((TypeImpl) (feat.getDomain()) ).subsumes(_typeImpl))) {
+    
       /* Feature "{0}" is not defined for type "{1}". */
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, feat.getName(), _typeImpl.getName());
     }
@@ -285,10 +290,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       return true;
     }
     
-    final int rtc = range.getCode();
+    final int rangeTypeCode = range.getCode();
 
     /* The assignment is stricter than the Java rules - must match */
-    switch (rtc) {
+    switch (rangeTypeCode) {
     case TypeSystemImpl.booleanArrayTypeCode:
       return v instanceof BooleanArray;
     case TypeSystemImpl.byteArrayTypeCode:
@@ -307,42 +312,16 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       return v instanceof StringArray;
     case TypeSystemImpl.javaObjectArrayTypeCode:
       return v instanceof JavaObjectArray;
+    case TypeSystemImpl.fsArrayTypeCode:
+      return v instanceof FSArray;
     }
     
-    if (!(v instanceof FeatureStructureImplC)) { return false; }
-    final TypeImpl vType = ((FeatureStructureImplC) v)._typeImpl;
-    if (!vType.isArray()) { return false; }
+    // it is possible that the array has a special type code corresponding to a type "someUserType"[]
+    //   meaning an array of some user type.  UIMA implements these as instances of FSArray (I think)
     
-    if (rtc == TypeSystemImpl.fsArrayTypeCode) {
-      return !vType.isPrimitive();
-    }
+    if (!(v instanceof FSArray)) { return false; }
     
-    // because we cannot create xyz[] instances (10/2015) 
-    // but can only create instances of FSArray
-    // we violate the typing restrictions and allow
-    // assigning FSArray  == TOP[] to some xyz[] type.
-    // This should be fixed.
-    final int vCode = vType.getCode();
-    if (vCode == TypeSystemImpl.fsArrayTypeCode) {
-      // range type isArray
-      // range type is not one of the built-in primitive arrays
-      // 
-      // case where range type is TOP or ArrayBase is handled by 
-      //   the caller
-      return true;
-    }
-    
-    // Both range and value are arrays, but 
-    //   - neither are primitive arrays, and 
-    //   - neither are fsArrays.
-    
-    // this case will only happen if we can create non FSArrays
-    //   of particular types
-
-    Misc.internalError();  //System.out.println("Debug - should never hit this");
-    return false;
-    
-//    return (range.getComponentType() == ((TypeImpl)(vc._typeImpl)).getComponentType());
+    return true;
   }
 
   /**
@@ -363,6 +342,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   protected void setRefValueCJ(FeatureImpl feat, Object v) {
     _casView.setWithCheckAndJournal((TOP)this, feat.getCode(), () -> _refData[feat.getAdjustedOffset()] = v); 
   }
+  
+  protected void setRefValue(FeatureImpl fi, Object v) {
+    _refData[fi.getAdjustedOffset()] = v;
+  }
 
   @Override
   public void setBooleanValue(Feature feat, boolean v) {
@@ -375,6 +358,15 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
   }
  
+  public final void setBooleanValueNcNj(FeatureImpl fi, boolean v) {
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_boolean)setter).set(this, v);
+    } else {
+      setIntValue(fi, v ? 1 : 0); 
+    }
+  }
+
   @Override
   public void setByteValue(Feature feat, byte v) {
     FeatureImpl fi = (FeatureImpl) feat;
@@ -385,6 +377,16 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       setIntValueCJ(fi, v); 
     }
   }
+  
+  public void setByteValueNcNj(FeatureImpl fi, byte v) {
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_byte)setter).set(this, v);
+    } else {
+      setIntValue(fi, v); 
+    }
+  }
+
   
   @Override
   public void setShortValue(Feature feat, short v) {
@@ -397,6 +399,15 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
 }
 
+  public void setShortValueNcNj(FeatureImpl fi, short v) {
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_short)setter).set(this, v);
+    } else {
+      setIntValue(fi, v);
+    }
+}
+ 
   @Override
   public void setIntValue(Feature feat, int v) {
     FeatureImpl fi = (FeatureImpl) feat;
@@ -407,7 +418,16 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       setIntValueCJ(fi, v);
     }
   }
-  
+
+  public void setIntValueNcNj(FeatureImpl fi, int v) {
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_int)setter).set(this, v);
+    } else {
+      setIntValue(fi, v);
+    }
+  }
+
   @Override
   public void setLongValue(Feature feat, long v) {
     FeatureImpl fi = (FeatureImpl) feat;
@@ -417,6 +437,15 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     } else {
       if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
       _casView.setFeatureValue(this, (FeatureImpl) feat, (int)(v & 0xffffffff), (int)(v >> 32));
+    }
+  }
+
+  public void setLongValueNcNj(FeatureImpl fi, long v) {
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_long)setter).set(this, v);
+    } else {
+      _casView.setFeatureValueNcNj(this, fi, (int)(v & 0xffffffff), (int)(v >> 32));
     }
   }
 
@@ -431,9 +460,21 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
   }
 
+  public void setFloatValueNcNj(FeatureImpl fi, float v) {
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_float)setter).set(this, v);
+    } else {
+      setIntValue(fi, CASImpl.float2int(v));
+    }
+  }
+
   @Override
   public void setDoubleValue(Feature feat, double v) {
     setLongValue(feat, CASImpl.double2long(v));}
+
+  public void setDoubleValueNcNj(FeatureImpl fi, double v) {
+    setLongValueNcNj(fi, CASImpl.double2long(v));}
 
   @Override
   public void setStringValue(Feature feat, String v) {
@@ -456,6 +497,24 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
   }
   
+  public void setStringValueNcNj(FeatureImpl fi, String v) {
+    TypeImpl range = fi.getRangeImpl();
+    if (range.isStringSubtype()) {
+      if (v != null) {
+        TypeImpl_stringSubtype tiSubtype = (TypeImpl_stringSubtype) range;
+        tiSubtype.validateIsInAllowedValues(v);
+      }
+    } else if (range.getCode() != TypeSystemImpl.stringTypeCode) {
+      /** Expected value of type "{0}", but found "{1}". */
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE, range.getName(), "Java String");
+    }
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_generic<String>)setter).set(this, v);
+    } else {
+      setRefValue(fi, v);
+    }
+  }
 
   @Override
   public void setFeatureValue(Feature feat, FeatureStructure v) {
@@ -472,7 +531,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     if (setter != null) {
       ((JCas_setter_generic<FeatureStructureImplC>)setter).set(this, (FeatureStructureImplC) v);
     } else {
-      setRefValueCJ(fi, v); 
+      // no need to check for index corruption because fs refs can't be index keys
+      _casView.setWithJournal(this, fi, () -> _refData[fi.getAdjustedOffset()] = v); 
     }
   }
 
@@ -491,7 +551,19 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       ((JCas_setter_generic<Object>)setter).set(this, v);
     } else {
       _refData[fi.getAdjustedOffset()] = v;
-      _casView.maybeLogUpdate(this, fi.getCode());
+      if (_casView.isLogging()) { 
+        _casView.maybeLogUpdate(this, fi.getCode());
+      }
+    }
+  }
+  
+  public void setFeatureValueNcNj(FeatureImpl fi, Object v) {
+ 
+    Object setter =  fi.getJCasSetter();
+    if (setter != null) {
+      ((JCas_setter_generic<Object>)setter).set(this, v);
+    } else {
+      setRefValue(fi, v);
     }
   }
 
@@ -525,6 +597,27 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       }
     }
   }
+  
+  public void setJavaObjectValueNcNj(FeatureImpl fi, Object v) { 
+    if (v instanceof String) {
+      setStringValueNcNj(fi,  (String) v);  // in order to do proper string subtype checking
+    } else { 
+      Object setter =  fi.getJCasSetter();
+      if (setter != null) {
+        ((JCas_setter_generic<Object>)setter).set(this, v);
+      } else {
+        final int adjustedOffset = fi.getAdjustedOffset();
+        if (-1 == adjustedOffset) {
+          /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
+          throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
+              fi.getHighestDefiningType().javaClass.getName(),
+              fi.getShortName(), 
+              "set");
+        }
+        setRefValue(fi, v);
+      }
+    }
+  }
 
   @Override
   public void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException {
@@ -536,25 +629,44 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   @Override
   public boolean getBooleanValue(Feature feat) {
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     FeatureImpl fi = (FeatureImpl) feat;
     Object getter =  fi.getJCasGetter();
     return (getter != null) ? ((JCas_getter_boolean)getter).get(this)
-                            : getIntValue(feat) == 1;
+                            : getIntValueCommon(fi) == 1;
+  }
+
+  public boolean getBooleanValueNc(FeatureImpl fi) {
+    Object getter =  fi.getJCasGetter();
+    return (getter != null) ? ((JCas_getter_boolean)getter).get(this)
+                            : getIntValueCommon(fi) == 1;
   }
 
   @Override
   public byte getByteValue(Feature feat) { return (byte) getIntValue(feat); }
 
+  public byte getByteValueNc(FeatureImpl feat) { return (byte) getIntValueNc(feat); }
+
   @Override
   public short getShortValue(Feature feat) { return (short) getIntValue(feat); }
 
+  public short getShortValueNc(FeatureImpl feat) { return (short) getIntValueNc(feat); }
+  
   @Override
   public int getIntValue(Feature feat) {
     return getIntValue((FeatureImpl)feat);
   }
     
+  private int getIntValueCommon(FeatureImpl feat) {
+    return _intData[feat.getAdjustedOffset()];
+  }
+
   public int getIntValue(FeatureImpl feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    return getIntValueNc(feat);
+  }
+
+  public int getIntValueNc(FeatureImpl feat) {
     Object getter =  feat.getJCasGetter();
     return (getter != null) ? ((JCas_getter_int)getter).get(this)
                             : _intData[feat.getAdjustedOffset()]; 
@@ -563,12 +675,15 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   @Override
   public long getLongValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    FeatureImpl fi = (FeatureImpl) feat;
+    return getLongValueNc((FeatureImpl) feat);
+  }
+  
+  public long getLongValueNc(FeatureImpl fi) {
     Object getter =  fi.getJCasGetter();
     return (getter != null) ? ((JCas_getter_long)getter).get(this)
                             : getLongValueOffset(fi.getAdjustedOffset());
   }
-  
+
   /**
    * When converting the lower 32 bits to a long, sign extension is done, so have to 
    * 0 out those bits before or-ing in the high order 32 bits.
@@ -581,19 +696,27 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   @Override
   public float getFloatValue(Feature feat) {
-    FeatureImpl fi = (FeatureImpl) feat;
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    return getFloatValueNc((FeatureImpl) feat);
+  }
+
+  public float getFloatValueNc(FeatureImpl fi) {
     Object getter =  fi.getJCasGetter();
     return (getter != null) ? ((JCas_getter_long)getter).get(this)
-                            : (float) CASImpl.int2float(getIntValue(feat)); 
+                            : (float) CASImpl.int2float(getIntValue(fi)); 
   }
-  
+
   @Override
   public double getDoubleValue(Feature feat) {
-    FeatureImpl fi = (FeatureImpl) feat;
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    return getDoubleValueNc((FeatureImpl) feat);
+  }
+  
+  public double getDoubleValueNc(FeatureImpl fi) {
     Object getter =  fi.getJCasGetter();
     return (getter != null) ? ((JCas_getter_double)getter).get(this)
-                            : CASImpl.long2double(getLongValue(feat)); }
-  
+                            : CASImpl.long2double(getLongValue(fi)); }
+
   public double getDoubleValueOffset(int offset) {
     return CASImpl.long2double(getLongValueOffset(offset));
   }
@@ -606,6 +729,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
                             : (String) getJavaObjectValue(feat);
   }
 
+  public String getStringValueNc(FeatureImpl feat) {
+    Object getter =  feat.getJCasGetter();
+    return (getter != null) ? ((JCas_getter_generic<String>)getter).get(this)
+                            : (String) getJavaObjectValueFromRefArray(feat);
+  }
+
   @Override
   public TOP getFeatureValue(Feature feat) {
     FeatureImpl fi = (FeatureImpl) feat;
@@ -613,14 +742,24 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     return (getter != null) ? ((JCas_getter_generic<TOP>)getter).get(this)
                             : (TOP) getJavaObjectValue(feat);
   }
+  
+  public TOP getFeatureValueNc(FeatureImpl feat) {
+    Object getter =  feat.getJCasGetter();
+    return (getter != null) ? ((JCas_getter_generic<TOP>)getter).get(this)
+                            : (TOP) getJavaObjectValueFromRefArray(feat);
+  }
+
 
   @Override
   public Object getJavaObjectValue(Feature feat) { 
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    FeatureImpl fi = (FeatureImpl) feat;
+    return getJavaObjectValueNc((FeatureImpl) feat);
+  }
+
+  public Object getJavaObjectValueNc(FeatureImpl fi) { 
     Object getter =  fi.getJCasGetter();
     if (getter == null) {
-      final int adjustedOffset = ((FeatureImpl)feat).getAdjustedOffset();
+      final int adjustedOffset = fi.getAdjustedOffset();
       if (-1 == adjustedOffset) {
         /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
         throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
@@ -628,9 +767,21 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
             fi.getShortName(), 
             "get");
       }
-      return _refData[((FeatureImpl)feat).getAdjustedOffset()];
+      return _refData[adjustedOffset];
     }
     return ((JCas_getter_generic<Object>)getter).get(this);
+  }
+
+  public Object getJavaObjectValueFromRefArray(FeatureImpl fi) { 
+    final int adjustedOffset = fi.getAdjustedOffset();
+    if (-1 == adjustedOffset) {
+      /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
+      throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
+          fi.getHighestDefiningType().javaClass.getName(),
+          fi.getShortName(), 
+          "get");
+    }
+    return _refData[adjustedOffset];
   }
 
   @Override
@@ -1035,5 +1186,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   public int compareTo(FeatureStructure o) {
     return Integer.compare(this._id, o.id());
   }
+  
+  protected boolean _isIndexed() { return (flags & 1) != 0;}
+  protected void _setIsIndexed() { flags |= 1; }
+  /**
+   * All callers of this must insure fs is not indexed in **Any** View
+   */
+  protected void _resetIsIndexed() { flags &= 0xfffffffe; }
   
 }
