@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -45,8 +44,8 @@ public class Id2FS {
    
   final private ArrayList<WeakReference<TOP>> id2fsw;
   
-  public Id2FS() {  
-    id2fsw = new ArrayList<>();
+  public Id2FS(int initialHeapSize) {  
+    id2fsw = new ArrayList<>(initialHeapSize >> 4);  
     id2fsw.add(null);  // because id's start with 1
   }
   
@@ -76,10 +75,19 @@ public class Id2FS {
     return id2fsw.size(); 
   }
   
+  /**
+   * adjusts the underlying array down in size if grew beyond the reset heap size value
+   */
   void clear() {
-    id2fsw.clear();
-    id2fsw.add(null); // so that ids start at 1
-    id2fsw.trimToSize();
+    if (id2fsw.size() > (CASImpl.DEFAULT_RESET_HEAP_SIZE >> 4)) {
+      id2fsw.clear();
+      id2fsw.add(null); // so that ids start at 1
+      id2fsw.trimToSize();  
+      id2fsw.ensureCapacity(CASImpl.DEFAULT_INITIAL_HEAP_SIZE >> 4);     
+    } else {
+      id2fsw.clear();
+      id2fsw.add(null); // so that ids start at 1      
+    }
   }
   
   /**
