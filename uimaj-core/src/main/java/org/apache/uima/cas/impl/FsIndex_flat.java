@@ -64,7 +64,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
     FSIterator<T> it = iicp.iterator();
     int i = 0;
     while (it.hasNext()) {
-      a[i++] = it.next();
+      a[i++] = it.nextNvc();
     }
     
     if (i != a.length) {

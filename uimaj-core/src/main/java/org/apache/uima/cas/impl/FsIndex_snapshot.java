@@ -30,10 +30,7 @@ import org.apache.uima.jcas.cas.TOP;
  *   base on the setting of IteratorExtraFunction
  */
 public class FsIndex_snapshot <T extends FeatureStructure> implements FSIndex<T> {
-  
-  static final boolean ORDERED = false;
-  static final boolean UNORDERED = true;
-  
+    
   /**
    * wrapped index 
    */

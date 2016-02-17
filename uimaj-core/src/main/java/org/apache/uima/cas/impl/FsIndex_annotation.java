@@ -110,8 +110,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
     AnnotationTreeNodeImpl<T> dtr;
     T annot;
     while (it.isValid()) {
-      annot = it.get();
-      it.moveToNext();
+      annot = it.nextNvc();
       dtr = new AnnotationTreeNodeImpl<T>();
       dtr.set(annot);
       node.addChild(dtr);
