@@ -97,6 +97,11 @@ public class CASAdminException extends UIMARuntimeException {
    */
   public static final String INDEX_DUPLICATES_NOT_SUPPORTED = "INDEX_DUPLICATES_NOT_SUPPORTED";
   
+  /**
+   * Total number of UIMA types, {0}, exceeds the maximum of 32767.
+   */
+  public static final String TOO_MANY_TYPES = "TOO_MANY_TYPES";
+  
   private String resourceBundleName = DEFAULT_RESOURCE_BUNDLE_NAME;
     
   public CASAdminException(String aResourceBundleName, Throwable aCause, String aMessageKey, Object ... aArguments) {
