@@ -65,7 +65,7 @@ public class CompleteSerializationTest extends TestCase {
       } catch (Exception e) {
         assertTrue(false);
       }
-      assertTrue(cas.getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
+      assertTrue(((CASImpl) newCas).getTypeSystemMgr().getType(CASTestSetup.GROUP_1) != null);
       assertTrue(((CASImpl) newCas).isBackwardCompatibleCas());
       assertEquals("Create the sofa for the inital view", newCas.getDocumentText());
 
