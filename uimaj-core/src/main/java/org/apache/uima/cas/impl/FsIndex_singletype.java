@@ -30,6 +30,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.Misc;
 
 /**
@@ -203,12 +204,15 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * @see org.apache.uima.cas.FSIndex#compare(T, T)
    */    
   @Override
-  public int compare(FeatureStructure fs1, FeatureStructure fs2) {
+  public int compare(FeatureStructure afs1, FeatureStructure afs2) {
   
-    if (fs1 == fs2) {
+    if (afs1 == afs2) {
       return 0;
     }
     
+    FeatureStructureImplC fs1 = (FeatureStructureImplC) afs1;
+    FeatureStructureImplC fs2 = (FeatureStructureImplC) afs2;
+
     /**
      * for each key:
      *   if Feature:
@@ -222,34 +226,35 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
       if (key instanceof FeatureImpl) {
         FeatureImpl fi = (FeatureImpl) key;
         if (fi.getRange() instanceof TypeImpl_string) { // string and string subtypes
-          result = Misc.compareStrings(fs1.getStringValue(fi), fs2.getStringValue(fi));
+          result = Misc.compareStrings(fs1.getStringValueNc(fi), fs2.getStringValueNc(fi));
         } else {
           switch (keyTypeCodes[i]) {
           case TypeSystemImpl.booleanTypeCode:
-            result = Integer.compare(fs1.getBooleanValue(fi) ? 1 : 0,
-                                     fs2.getBooleanValue(fi) ? 1 : 0);
+            result = Integer.compare(fs1.getBooleanValueNc(fi) ? 1 : 0,
+                                     fs2.getBooleanValueNc(fi) ? 1 : 0);
             break;
           case TypeSystemImpl.byteTypeCode:
-            result = Integer.compare(fs1.getByteValue(fi), fs2.getByteValue(fi));
+            result = Integer.compare(fs1.getByteValueNc(fi), fs2.getByteValueNc(fi));
             break;
           case TypeSystemImpl.shortTypeCode:
-            result = Integer.compare(fs1.getShortValue(fi), fs2.getShortValue(fi));
+            result = Integer.compare(fs1.getShortValueNc(fi), fs2.getShortValueNc(fi));
             break;
           case TypeSystemImpl.intTypeCode:
-            result = Integer.compare(fs1.getIntValue(fi), fs2.getIntValue(fi));
+            result = Integer.compare(fs1.getIntValueNc(fi), fs2.getIntValueNc(fi));
             break;
           case TypeSystemImpl.longTypeCode:
-            result = Long.compare(fs1.getLongValue(fi), fs2.getLongValue(fi));
+            result = Long.compare(fs1.getLongValueNc(fi), fs2.getLongValueNc(fi));
             break;
           case TypeSystemImpl.floatTypeCode:
-            result = Float.compare(fs1.getFloatValue(fi), fs2.getFloatValue(fi));
+            result = Float.compare(fs1.getFloatValueNc(fi), fs2.getFloatValueNc(fi));
             break;
           case TypeSystemImpl.doubleTypeCode:
-            result = Double.compare(fs1.getDoubleValue(fi), fs2.getDoubleValue(fi));
+            result = Double.compare(fs1.getDoubleValueNc(fi), fs2.getDoubleValueNc(fi));
             break;
-          case TypeSystemImpl.stringTypeCode:
-            result = Misc.compareStrings(fs1.getStringValue(fi), fs2.getStringValue(fi));
-            break;         
+            // next is compared above before the switch
+//          case TypeSystemImpl.stringTypeCode:
+//            result = Misc.compareStrings(fs1.getStringValueNc(fi), fs2.getStringValueNc(fi));
+//            break;         
           } // end of switch
         }
       } else { // is type order compare    
@@ -349,5 +354,19 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   
   boolean isSorted() {
     return indexType == FSIndex.SORTED_INDEX;
+  }
+  
+  /**
+   * Differs from flush in that it manipulates flags in the FSs to indicate removed.
+   */
+  void removeAll() {
+    FSIterator<T> it = iterator();
+    if (type instanceof TypeImpl_annotBase) {
+      // only indexed in one index if at all
+      while (it.hasNext()) {
+        ((TOP) it.nextNvc())._resetInSetSortedIndex();
+      }
+    }
+    flush();
   }
 }
