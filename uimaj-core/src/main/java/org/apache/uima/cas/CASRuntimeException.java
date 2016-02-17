@@ -239,6 +239,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Type Systems must be committed before calling this method. */
   public static final String TYPESYSTEMS_NOT_COMMITTED = "TYPESYSTEMS_NOT_COMMITTED";
   
+  /** While deserializing, no type found for type code {0}. */
+  public static final String deserialized_type_not_found = "deserialized_type_not_found";
+  
   /**
    * The constructors are organized
    * 
