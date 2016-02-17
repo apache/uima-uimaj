@@ -1487,12 +1487,12 @@ public class BinaryCasSerDes {
           case Slot_Int: 
           case Slot_Float: 
             if (!isSofa || feat != tsi.sofaNum) {
-              fs.setIntLikeValue(slotKind, feat, heapFeat(heapIndex, feat));
+              fs.setIntLikeValueNcNj(slotKind, feat, heapFeat(heapIndex, feat));
             }
             break;
                
-          case Slot_LongRef: fs.setLongValue(feat, longHeap.heap[heapFeat(heapIndex, feat)]); break;
-          case Slot_DoubleRef: fs.setDoubleValue(feat, CASImpl.long2double(longHeap.heap[heapFeat(heapIndex, feat)])); break;
+          case Slot_LongRef: fs.setLongValueNcNj(feat, longHeap.heap[heapFeat(heapIndex, feat)]); break;
+          case Slot_DoubleRef: fs.setDoubleValueNcNj(feat, CASImpl.long2double(longHeap.heap[heapFeat(heapIndex, feat)])); break;
           case Slot_StrRef: {
             String s = stringHeap.getStringForCode(heapFeat(heapIndex, feat));
             if (null == s) {
@@ -1519,7 +1519,7 @@ public class BinaryCasSerDes {
                 break;
               }
             }
-            fs.setStringValue(feat, s);
+            fs.setStringValueNcNj(feat, s);
             break;
           }
           
@@ -1532,7 +1532,7 @@ public class BinaryCasSerDes {
                 if (feat == tsi.sofaArray) {
                   ((Sofa)finalFs).setLocalSofaData(item);
                 } else {
-                  finalFs.setFeatureValue(feat, item);
+                  finalFs.setFeatureValueNcNj(feat, item);
                 }}, addr2fs);                        
             break;
           }
