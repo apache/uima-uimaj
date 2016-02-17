@@ -81,7 +81,7 @@ public class Id2FSTest extends TestCase {
       assertTrue(caught);
     }
     
-    Id2FS id2fs = new Id2FS(); 
+    Id2FS id2fs = new Id2FS(200); 
     cas.reset();
     fs1 = new TOP(jcas);
     
