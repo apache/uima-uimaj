@@ -435,7 +435,7 @@ public class XCASDeserializer {
           }
           if (ts.docType.subsumes(type)) {
             fs = casView.getDocumentAnnotation();
-            cas.setCacheNotInIndex(fs);
+            cas.removeFromCorruptableIndexAnyView(fs, cas.getAddbackSingle());
           } else {
             fs = casView.createFS(type);
           }
@@ -494,6 +494,10 @@ public class XCASDeserializer {
         }
       }
 
+      if (ts.docType.subsumes(type)) {
+        cas.addbackSingle(fs);
+      }
+      
       if (sofaTypeCode == typecode) {
         Sofa sofa = (Sofa) fs;
         cas.getBaseIndexRepository().addFS(sofa);

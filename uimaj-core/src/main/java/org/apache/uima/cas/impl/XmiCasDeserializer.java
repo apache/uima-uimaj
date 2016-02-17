@@ -852,7 +852,7 @@ public class XmiCasDeserializer {
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
       if (!isNewFs || fs._getTypeCode() == TypeSystemImpl.docTypeCode) {   
-        casBeingFilled.removeFromCorruptableIndexAnyViewSetCache(fs, casBeingFilled.getAddbackSingle());
+        casBeingFilled.removeFromCorruptableIndexAnyView(fs, casBeingFilled.getAddbackSingle());
         // else clause not needed because caller does ll_createFS which sets this anyways
 //      } else {  
 //        // need this to prevent using sofa ref before it's set
