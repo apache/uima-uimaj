@@ -90,11 +90,23 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   T get() throws NoSuchElementException;
 
   /**
+   * Get the structure the iterator is pointing at.
+   * Throws various unchecked exceptions, if the iterator is not valid
+   * @return The structure the iterator is pointing at.
+   */
+  T getNvc();
+  
+  /**
    * Advance the iterator. This may invalidate the iterator.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveToNext();
 
+  /**
+   * version of moveToNext which bypasses the isValid check - call only if you've just done this check yourself
+   */
+  void moveToNextNvc();
+  
   /**
    * Move the iterator one element back. This may invalidate the iterator.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
@@ -178,6 +190,12 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   default T next() {
     T result = get();
     moveToNext();
+    return result;
+  }
+  
+  default T nextNvc() {
+    T result = getNvc();
+    moveToNextNvc();
     return result;
   }
 
