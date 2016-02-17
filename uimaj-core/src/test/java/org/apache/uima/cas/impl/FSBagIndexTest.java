@@ -71,7 +71,7 @@ public class FSBagIndexTest extends TestCase {
   }
   
   private FsIndex_bag<TOP> cbi() {
-    FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl(cas);
+    FSIndexComparator comparatorForIndexSpecs = new FSIndexComparatorImpl();
     comparatorForIndexSpecs.setType(ts.getTopType());
     return new FsIndex_bag<TOP>(cas, ts.getType("uima.cas.TOP"), 16, FSIndex.BAG_INDEX, comparatorForIndexSpecs);
   }
