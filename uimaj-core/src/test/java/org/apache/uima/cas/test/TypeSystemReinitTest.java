@@ -67,7 +67,7 @@ public class TypeSystemReinitTest extends TestCase {
       // reinit
       //  This uses cas2 which only has a base type system to start, 
       //    and loads it from a complete serialization which has other new types
-      cas2.reinit(ser);
+      cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
       assertTrue(tcas2 == tcas3);
@@ -97,7 +97,7 @@ public class TypeSystemReinitTest extends TestCase {
       // reinit
       //  This uses cas2 which only has a base type system to start, 
       //    and loads it from a complete serialization which has other new types
-      cas2.reinit(ser);
+      cas2.getBinaryCasSerDes().reinit(ser);
       CAS tcas3 = cas2.getCurrentView();
 
       assertTrue(tcas2 == tcas3);
