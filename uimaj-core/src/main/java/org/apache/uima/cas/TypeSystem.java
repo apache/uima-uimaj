@@ -97,13 +97,6 @@ public interface TypeSystem {
   Iterator<Type> getTypeIterator();
 
   /**
-   * Get a Stream over all types, in no particular order.
-   * 
-   * @return The stream.
-   */
-  Stream<Type> types();
-
-  /**
    * Get the top type, i.e., the root of the type system.
    * 
    * @return The top type.
