@@ -80,7 +80,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts);
+    return new CASImpl((TypeSystemImpl) ts, initialHeapSize);
   }
 
   /**
@@ -99,7 +99,7 @@ public abstract class CASFactory {
     if (ts == null) {
       throw new NullPointerException("TypeSystem");
     }
-    return new CASImpl((TypeSystemImpl) ts);
+    return new CASImpl((TypeSystemImpl) ts, CASImpl.DEFAULT_INITIAL_HEAP_SIZE);
   }
 
   /**
