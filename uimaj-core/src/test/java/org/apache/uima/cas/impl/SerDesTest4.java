@@ -107,7 +107,7 @@ public class SerDesTest4 extends TestCase {
     public double nextDouble() {
       int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
       if (capture) writeSavedInt(r);
-      return Double.longBitsToDouble((long) r);
+      return CASImpl.long2double((long) r);
     }
   }
   
@@ -286,18 +286,17 @@ public class SerDesTest4 extends TestCase {
   }
 
   public SerDesTest4() {
-    Random sg = new Random();
-    seed = sg.nextLong();
-    random.setSeed(seed);
   }
   
   public void setUp() {
     long seed = (new Random()).nextLong();
     random.setSeed(seed);
+//    random .setSeed(15L);
 //    System.out.format("RandomSeed: %,d%n", seed);
 
     try {
-      this.cas = (CASImpl) CASInitializer.initCas(new CASTestSetup(), ts -> reinitTypeSystem(ts));
+      CASTestSetup cts = new CASTestSetup();
+      this.cas = (CASImpl) CASInitializer.initCas(cts, ts -> cts.reinitTypeSystem(ts));
       this.ts = (TypeSystemImpl) this.cas.getTypeSystem();
       deserCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
       deltaCas = (CASImpl) CasCreationUtils.createCas(ts, null, null, null);
@@ -587,7 +586,7 @@ public class SerDesTest4 extends TestCase {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     Serialization.serializeCAS(cas, baos);
     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-    c2.reinit(bais);
+    c2.getBinaryCasSerDes().reinit(bais);
   }
   
   private FeatureStructure newAkof(List<FeatureStructure> fsl) {
@@ -896,7 +895,7 @@ public class SerDesTest4 extends TestCase {
       } else {
         bais = new ByteArrayInputStream(readIn(fname));
       }
-      deserCas.reinit(bais);
+      deserCas.getBinaryCasSerDes().reinit(bais);
       assertTrue(bcs.getCasCompare().compareCASes(cas, deserCas));
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -926,13 +925,16 @@ public class SerDesTest4 extends TestCase {
       } else {
         bais = new ByteArrayInputStream(readIn(fname));
       }      
-      
-      deltaCas.reinit(bais);
+      BinaryCasSerDes bcsd_deltaCas = deltaCas.getBinaryCasSerDes();
+      bcsd_deltaCas.reinit(bais);
       assertTrue(bcs.getCasCompare().compareCASes(cas, deltaCas));
       
-      // verify indexed fs same, and in same order
-      int[] fsIndexes1 = cas.getIndexedFSs();
-      int[] fsIndexes2 = deltaCas.getIndexedFSs();
+      // verify indexed fs same; the order may be different so sort first
+     
+      int[] fsIndexes1 = cas.getBinaryCasSerDes().getIndexedFSs(null);
+      int[] fsIndexes2 = bcsd_deltaCas.getIndexedFSs(null);
+      Arrays.sort(fsIndexes1);
+      Arrays.sort(fsIndexes2);
       assertTrue(Arrays.equals(fsIndexes1, fsIndexes2));
     } catch (IOException e) {
       throw new RuntimeException(e);
