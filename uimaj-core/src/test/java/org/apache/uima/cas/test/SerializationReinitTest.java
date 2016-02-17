@@ -892,6 +892,7 @@ public class SerializationReinitTest extends TestCase {
       //======================================================================
       //deserialize delta xmi into cas1
       ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
+      CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = false;
       Serialization.deserializeCAS(cas1, fisDelta);
       
       //======================================================================
