@@ -1115,6 +1115,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR); // dummy, always overridden
   }
   
+  /**
+   * Internal Use only
+   * @param slotKind -
+   * @param fi -
+   * @param v -
+   */
   public void setIntLikeValue(SlotKind slotKind, FeatureImpl fi, int v) {
     switch(slotKind) {
     case Slot_Boolean: setBooleanValue(fi, v == 1); break;
@@ -1127,7 +1133,26 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   }
   
   /**
+   * Internal Use only - no feature check, no journaling
+   * @param slotKind -
+   * @param fi -
+   * @param v -
+   */
+  public void setIntLikeValueNcNj(SlotKind slotKind, FeatureImpl fi, int v) {
+    switch(slotKind) {
+    case Slot_Boolean: setBooleanValueNcNj(fi, v == 1); break;
+    case Slot_Byte: setByteValueNcNj(fi, (byte) v); break;
+    case Slot_Short: setShortValueNcNj(fi, (short) v); break;
+    case Slot_Int: setIntValueNcNj(fi, v); break;
+    case Slot_Float: setFloatValueNcNj(fi, CASImpl.int2float(v)); break;
+    default: Misc.internalError();
+    }
+  }
+
+  
+  /**
    * for compressed form 4 - for getting the prev value of int-like slots
+   * Uses unchecked forms for feature access
    * @param slotKind
    * @param fi
    * @param v
@@ -1165,11 +1190,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
     
     switch(slotKind) {
-    case Slot_Boolean: return getBooleanValue(f) ? 1 : 0;
-    case Slot_Byte: return getByteValue(f);
-    case Slot_Short: return getShortValue(f);
-    case Slot_Int: return getIntValue(f);
-    case Slot_Float: return CASImpl.float2int(getFloatValue(f));
+    case Slot_Boolean: return getBooleanValueNc(f) ? 1 : 0;
+    case Slot_Byte: return getByteValueNc(f);
+    case Slot_Short: return getShortValueNc(f);
+    case Slot_Int: return getIntValueNc(f);
+    case Slot_Float: return CASImpl.float2int(getFloatValueNc(f));
     default: Misc.internalError(); return 0;
     }
   }
