@@ -96,7 +96,7 @@ public class SimpleCasGenerator extends CasMultiplier_ImplBase {
         URL url = this.getClass().getClassLoader().getResource(filename);
 //        System.out.println("************ File::::" + url.getPath());
         // open input stream to file
-        file = new File(url.getPath());
+        file = new File((null == url) ? filename : url.getPath());
       } catch (Exception e) {
         file = new File(filename);
       }
