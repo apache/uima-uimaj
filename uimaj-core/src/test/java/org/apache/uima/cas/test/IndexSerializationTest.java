@@ -226,8 +226,8 @@ public class IndexSerializationTest extends TestCase {
     CASCompleteSerializer cs;
     cs = Serialization.serializeCASComplete(casMgr);
     // casMgr = CASFactory.createCAS();
-    CASMgr realCasMgr = CASFactory.createCAS();
-    ((CASImpl) realCasMgr).commitTypeSystem();
+    CASMgr realCasMgr = CASFactory.createCAS();  // creates base view, but no ts, so no ir
+    ((CASImpl) realCasMgr).commitTypeSystem();   // also makes index repo (which will be replaced), but doesn't init the built-in indexes
     Serialization.deserializeCASComplete(cs, realCasMgr);
     cas = ((CASImpl) realCasMgr).getCurrentView();
     casMgr = (CASMgr) cas;
