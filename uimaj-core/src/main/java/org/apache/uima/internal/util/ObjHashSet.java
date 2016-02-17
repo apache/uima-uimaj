@@ -63,7 +63,7 @@ public class ObjHashSet<T> implements Set<T>{
   private int size; // number of elements in the table
   private int nbrRemoved; // number of removed elements (coded as removed)
   
-  // the actual Object table
+  // the actual Object table, operated as a hashtable
   private T [] keys;
 
   private boolean secondTimeShrinkable = false;
@@ -364,9 +364,9 @@ public class ObjHashSet<T> implements Set<T>{
    * @return updated pos
    */
   public int moveToNextFilled(int pos) {
-    if (pos < 0) {
-      pos = 0;
-    }
+//    if (pos < 0) {
+//      pos = 0;
+//    }
     
     final int max = getCapacity();
     while (true) {
@@ -406,6 +406,10 @@ public class ObjHashSet<T> implements Set<T>{
 
   private class ObjHashSetIterator implements Iterator<T> {
 
+    /**
+     * Keep this always pointing to a non-0 entry, or
+     * if not valid, outside the range
+     */
     protected int curPosition;
 
     private ObjHashSetIterator() {
@@ -414,16 +418,18 @@ public class ObjHashSet<T> implements Set<T>{
 
     @Override
     public final boolean hasNext() {
-      curPosition = moveToNextFilled(curPosition);
       return curPosition < getCapacity();
     }
 
     @Override
     public final T next() {
-      if (!hasNext()) {
+      try {
+        T r = get(curPosition);
+        curPosition = moveToNextFilled(curPosition + 1);
+        return r;
+      } catch (ArrayIndexOutOfBoundsException e) {
         throw new NoSuchElementException();
       }
-      return get(curPosition++);
     }
 
     @Override
