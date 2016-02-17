@@ -1045,9 +1045,9 @@ public interface CAS extends AbstractCas {
    * structures) pertaining to that Sofa.
    * 
    * @return an iterator which returns all views.  Each object returned by
-   *   the iterator is of type CAS.
+   *   the iterator is of type CAS or a subtype.
    */
-  Iterator<CAS> getViewIterator();
+  <T extends CAS> Iterator<T> getViewIterator();
   
   /**
    * Get iterator over all views with the given name prefix.  Each view provides access to Sofa data
