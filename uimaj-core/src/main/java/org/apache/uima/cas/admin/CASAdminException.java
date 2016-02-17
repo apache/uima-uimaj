@@ -25,7 +25,7 @@ public class CASAdminException extends UIMARuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  private static String DEFAULT_RESOURCE_BUNDLE_NAME = "org.apache.uima.admin.admin_errors";
+  private static String DEFAULT_RESOURCE_BUNDLE_NAME = "org.apache.uima.cas.admin.admin_errors";
 
   /** Can't add index to a committed repository. */
   public static final String REPOSITORY_LOCKED = "REPOSITORY_LOCKED";
