@@ -31,6 +31,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.internal.util.GraphNode;
@@ -55,10 +56,10 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
     // be awkward and inefficient to compute it from lt.
     // index = orderNumber, value = type-code
     // used by serialization routines
-    private int[] order;
+    final private int[] order;
 
     // index= typeCode, value = order number
-    private int[] typeCodeToOrder;
+    final private short[] typeCodeToOrder;
 
     private boolean hashCodeComputed = false;
 
@@ -92,9 +93,14 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
       super();
       TypeSystemImpl tsi = (TypeSystemImpl) ts;
       this.order = typeList;
-      this.typeCodeToOrder = new int[this.order.length + tsi.getSmallestType()];
+      final int sz = this.order.length + tsi.getSmallestType();
+      if (sz > 32767) {
+        /** Total number of UIMA types, {0}, exceeds the maximum of 32766. **/
+        throw new CASAdminException(CASAdminException.TOO_MANY_TYPES, sz - 1);
+      }
+      this.typeCodeToOrder = new short[this.order.length + tsi.getSmallestType()];
       for (int i = 0; i < this.order.length; i++) {
-        this.typeCodeToOrder[this.order[i]] = i;
+        this.typeCodeToOrder[this.order[i]] = (short)i;
       }
     }
 
@@ -105,15 +111,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
      */
     @Override
     public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-      if (fs1 == fs2) return 0;
- 
-      final int tc1 = fs1._getTypeCode();
-      final int tc2 = fs2._getTypeCode();
-      
-      return (tc1 == tc2) 
-          ? 0 
-          : Integer.compare(typeCodeToOrder[tc1],
-                            typeCodeToOrder[tc2]);
+      return Short.compare(this.typeCodeToOrder[fs1._getTypeCode()], 
+                           this.typeCodeToOrder[fs2._getTypeCode()]);
     }
 
     // Look-up.
