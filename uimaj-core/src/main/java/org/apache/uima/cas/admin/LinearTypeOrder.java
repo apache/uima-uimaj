@@ -21,7 +21,6 @@ package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 
 /**
  * Linear order on types.
