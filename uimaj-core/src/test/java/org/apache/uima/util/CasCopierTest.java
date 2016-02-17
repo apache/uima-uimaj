@@ -225,7 +225,7 @@ public class CasCopierTest extends TestCase {
     // do the copy
     long shortest = Long.MAX_VALUE;
     int i = 0;
-//    for (; i < 6000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
+//    for (; i < 60000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
       destCas.reset();
       long startTime = System.nanoTime();
       copier = new CasCopier(srcCas, destCas);
