@@ -36,6 +36,8 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.function.Consumer_T_int_withIOException;
 import org.apache.uima.cas.function.DeserBinaryIndexes;
+import org.apache.uima.cas.impl.CommonSerDes.Header;
+import org.apache.uima.cas.impl.CommonSerDes.Reading;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntListIterator;
@@ -288,7 +290,7 @@ public class BinaryCasSerDes {
       boolean wasRemoved;
       if (!type.isArray()) {
         FeatureImpl feat = type.getFeatureImpls().get(heapAddr - fsStartAddr - 1);
-        wasRemoved = baseCas.removeFromCorruptableIndexAnyView(fs, tobeAddedback, feat.getCode());
+        wasRemoved = baseCas.checkForInvalidFeatureSetting(fs, feat.getCode(), tobeAddedback);
         addrOfFsToBeAddedBack = wasRemoved ? fsStartAddr : 0;
         fsToBeAddedBack = wasRemoved ? fs : null; 
       }
@@ -376,60 +378,24 @@ public class BinaryCasSerDes {
 
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
    
-    final DataInputStream dis = (istream instanceof DataInputStream) ?  
-       (DataInputStream) istream : new DataInputStream(istream);
+    final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
   
     try {
-      // key
-      // determine if byte swap if needed based on key
-      byte[] bytebuf = new byte[4];
-      bytebuf[0] = dis.readByte(); // U
-      bytebuf[1] = dis.readByte(); // I
-      bytebuf[2] = dis.readByte(); // M
-      bytebuf[3] = dis.readByte(); // A
-
-      final boolean swap = (bytebuf[0] != 85);
-
-      // version      
-      // version bit in 2's place indicates this is in delta format.
-      /**
-       * Serialization versioning
-       *   There are 1 or 2 words used for versioning.
-       *     Compressed formats and plain formats with bit xx on in first word use 2nd word
-       *     
-       *   First word:
-       *   
-       *     - bit in 0x02 position: on means delta, off - not delta
-       *     - bit in 0x04 position: on means compressed, off means plain binary
-       *     - bit in 0x40 position: on means 2nd word present
-       *     
-       *     - byte in 0xFF00 position: incrementing (starting w/ 0) version
-       *     
-       *         Form 4:  0 = original (UIMA v2)
-       *                  1 = fixes to original found during V3 development
-       *                       
-       *     - byte in 0xFF 00 00  position: special flags with some shared meaning
-       *       -- bit 0x01 00 00: V3 formats
-       *         
-       *   Second word:
-       *     - bit in 0x01 position: on means form6, off = form 4
-       *     - bit in 0x02 position: 1 = compressed form 6  
-       */
-      final int version1 = readInt(dis, swap);
-      final int version2 = ((version1 & 0x44) != 0) ? readInt(dis, swap) : 0;
-
-      final boolean delta = ((version1 & 2) == 2);
+      Header h = CommonSerDes.readHeader(dis);
+      
+      final boolean delta = h.isDelta;
       
       if (!delta) {
         baseCas.resetNoQuestions();
       }
       
-      if (0 != (version1 & 4)) {
+      if (h.isCompressed) {
         if (TRACE_DESER) {
-          System.out.format("BinDeser version = %d compressedVersion = %d%n", version1, version2);
+          System.out.format("BinDeser version = %d%n", h.v);
         }
-        if (version2 == 0) {
-          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false)).deserialize(baseCas, dis, delta, version1);
+        if (h.form4) {
+          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
+            .deserialize(baseCas, dis, delta, h.v);
           return SerialFormat.COMPRESSED;
         } else {
           try {
@@ -441,7 +407,7 @@ public class BinaryCasSerDes {
         }
       }
      
-      return binaryDeserialization(dis, swap, delta);
+      return binaryDeserialization(h);
       
     } catch (IOException e) {
       String msg = e.getMessage();
@@ -491,9 +457,15 @@ public class BinaryCasSerDes {
    * @param delta true if delta binary deserialization being received
    * @return the format of the incoming serialized data
    */
-  private SerialFormat binaryDeserialization(DataInputStream dis, boolean swap, boolean delta) {
+  private SerialFormat binaryDeserialization(Header h) {
     
     CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);
+    
+    final boolean delta = h.isDelta;
+    
+    final Reading r = h.reading;
+    
+    final DataInputStream dis = r.dis;
     
     if (delta) {
       if (nextHeapAddrAfterMark == 0 ||
@@ -514,7 +486,7 @@ public class BinaryCasSerDes {
     
     try {
     // main fsheap
-      final int fsheapsz = readInt(dis, swap);
+      final int fsheapsz = r.readInt();
       
       // reading the 0th (null) element, because that's what V2 did
       int startPos = 0;
@@ -531,7 +503,7 @@ public class BinaryCasSerDes {
             
       // add new heap slots
       for (int i = startPos; i < fsheapsz+startPos; i++) {
-        heap.heap[i] = readInt(dis, swap);
+        heap.heap[i] = r.readInt();
 //        if (TRACE_DESER) {
 //          if (i < 101 + startPos) {
 //            if (i % 5 == 0) System.out.format("%n i: %4d ", i);
@@ -542,13 +514,13 @@ public class BinaryCasSerDes {
 //      if (TRACE_DESER) System.out.println("");
       
       // string heap
-      int stringheapsz = readInt(dis, swap);
+      int stringheapsz = r.readInt();
 
       final StringHeapDeserializationHelper shdh = new StringHeapDeserializationHelper();
       
       shdh.charHeap = new char[stringheapsz];
       for (int i = 0; i < stringheapsz; i++) {
-        shdh.charHeap[i] = (char) readShort(dis, swap);
+        shdh.charHeap[i] = (char) r.readShort();
       }
       shdh.charHeapPos = stringheapsz;
 
@@ -558,7 +530,7 @@ public class BinaryCasSerDes {
       }
 
       // string ref heap
-      int refheapsz = readInt(dis, swap);
+      int refheapsz = r.readInt();
 
       refheapsz--;
       refheapsz = refheapsz / 2;
@@ -570,8 +542,8 @@ public class BinaryCasSerDes {
 
       dis.readInt(); // 0
       for (int i = shdh.refHeapPos; i < shdh.refHeap.length; i += StringHeapDeserializationHelper.REF_HEAP_CELL_SIZE) {
-        shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = readInt(dis, swap);
-        shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = readInt(dis, swap);
+        shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_POINTER_OFFSET] = r.readInt();
+        shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET] = r.readInt();
         shdh.refHeap[i + StringHeapDeserializationHelper.STRING_LIST_ADDR_OFFSET] = 0;
       }
       shdh.refHeapPos = refheapsz + StringHeapDeserializationHelper.FIRST_CELL_REF;
@@ -594,11 +566,11 @@ public class BinaryCasSerDes {
          *   - Phase 2 happens after the FSs are created from the heap data.
          *   
          */
-        fsmodssz2 = 2 * readInt(dis, swap);
+        fsmodssz2 = 2 * r.readInt();
         modWords = new int[fsmodssz2];
         
         for (int i = 0; i < fsmodssz2; i++) {
-          modWords[i] = readInt(dis, swap);
+          modWords[i] = r.readInt();
         }
         if (TRACE_DESER) {
           System.out.format("BinDes modified heap slot count: %,d%n", fsmodssz2 / 2);
@@ -610,11 +582,11 @@ public class BinaryCasSerDes {
         
 
       // indexed FSs
-      int fsindexsz = readInt(dis, swap);
+      int fsindexsz = r.readInt();
       int[] fsindexes = new int[fsindexsz];
       if (TRACE_DESER) System.out.format("BinDes indexedFSs count: %,d%n", fsindexsz);
       for (int i = 0; i < fsindexsz; i++) {
-        fsindexes[i] = readInt(dis, swap);
+        fsindexes[i] = r.readInt();
         if (TRACE_DESER) {
           if (i % 5 == 0) System.out.format("%n i: %5d ", i);
           System.out.format("%15d ", fsindexes[i]);
@@ -623,7 +595,7 @@ public class BinaryCasSerDes {
       if (TRACE_DESER) System.out.println("");
 
       // byte heap
-      int heapsz = readInt(dis, swap);
+      int heapsz = r.readInt();
       if (TRACE_DESER) System.out.format("BinDes ByteHeap size: %,d%n", heapsz);
       
       if (!delta) {
@@ -639,20 +611,20 @@ public class BinaryCasSerDes {
       BinaryCasSerDes6.skipBytes(dis, align);
 
       // short heap
-      heapsz = readInt(dis, swap);
+      heapsz = r.readInt();
       if (TRACE_DESER) System.out.format("BinDes ShortHeap size: %,d%n", heapsz);
       
       if (!delta) {
         shortHeap.heap = new short[Math.max(16, heapsz)]; // must be > 0
         for (int i = 0; i < heapsz; i++) {
-          shortHeap.heap[i] = readShort(dis, swap);
+          shortHeap.heap[i] = r.readShort();
         }
         shortHeap.heapPos = heapsz;
       } else {
         final int pos = shortHeap.reserve(heapsz);
         final int end = pos + heapsz;
         for (int i = pos; i < end; i++) {
-          shortHeap.addShort(readShort(dis, swap));
+          shortHeap.addShort(r.readShort());
         }
       }
       // word alignment
@@ -661,19 +633,19 @@ public class BinaryCasSerDes {
       }
 
       // long heap
-      heapsz = readInt(dis, swap);
+      heapsz = r.readInt();
       if (TRACE_DESER) System.out.format("BinDes LongHeap size: %,d%n", heapsz);
       
       if (!delta) {
         longHeap.heap = new long[Math.max(16, heapsz)]; // must be > 0
         for (int i = 0; i < heapsz; i++) {
-          longHeap.heap[i] = readLong(dis, swap);
+          longHeap.heap[i] = r.readLong();
         }
         longHeap.heapPos = heapsz;
       } else {
         longHeap.reserve(heapsz);
         for (int i = 0; i < heapsz; i++) {
-          longHeap.addLong(readLong(dis, swap));
+          longHeap.addLong(r.readLong());
         }
       }
       
@@ -688,7 +660,7 @@ public class BinaryCasSerDes {
          */
         
         //modified Byte Heap        
-        heapsz = updateAuxArrayMods(dis, swap, byteAuxAddr2fsa, (ba, arrayIndex) -> {
+        heapsz = updateAuxArrayMods(r, byteAuxAddr2fsa, (ba, arrayIndex) -> {
             if (ba instanceof ByteArray) {
               ((ByteArray)ba).set(arrayIndex, dis.readByte());
             } else {
@@ -701,8 +673,8 @@ public class BinaryCasSerDes {
         BinaryCasSerDes6.skipBytes(dis, align);
         
         //modified Short Heap
-        heapsz = updateAuxArrayMods(dis, swap, shortAuxAddr2fsa, (sa, arrayIndex) -> {
-          ((ShortArray)sa).set(arrayIndex, readShort(dis, swap));
+        heapsz = updateAuxArrayMods(r, shortAuxAddr2fsa, (sa, arrayIndex) -> {
+          ((ShortArray)sa).set(arrayIndex, r.readShort());
         });
                 
         // word alignment
@@ -711,11 +683,11 @@ public class BinaryCasSerDes {
         }
       
         //modified Long Heap
-        updateAuxArrayMods(dis, swap, longAuxAddr2fsa, (la, arrayIndex) -> {
+        updateAuxArrayMods(r, longAuxAddr2fsa, (la, arrayIndex) -> {
           if (la instanceof LongArray) {
-            ((LongArray)la).set(arrayIndex, readLong(dis, swap));
+            ((LongArray)la).set(arrayIndex, r.readLong());
           } else {
-            ((DoubleArray)la).set(arrayIndex, CASImpl.long2double(readLong(dis, swap)));
+            ((DoubleArray)la).set(arrayIndex, CASImpl.long2double(r.readLong()));
           }
         });
       } // of delta - modified processing
@@ -755,7 +727,7 @@ public class BinaryCasSerDes {
             final int heapAddrBeingModified = modWords[i];
             bds.maybeAddBackAndRemoveFs(heapAddrBeingModified, csds.addr2fs);
             updateHeapSlot(bds, heapAddrBeingModified, modWords[i+1], csds.addr2fs);
-  //          heap.heap[heapAddrBeingModified] = readInt(dis, swap);
+  //          heap.heap[heapAddrBeingModified] = r.readInt();
           }
           bds.addBackIfRemoved();
           bds.fssAddrArray = null;  // free storage
@@ -822,16 +794,16 @@ public class BinaryCasSerDes {
    * @return heapsz (used by caller to do word alignment)
    * @throws IOException 
    */
-  int updateAuxArrayMods(DataInputStream dis, boolean swap, Int2ObjHashMap<TOP> auxAddr2fsa, 
+  int updateAuxArrayMods(Reading r, Int2ObjHashMap<TOP> auxAddr2fsa, 
       Consumer_T_int_withIOException<TOP> setter) throws IOException {
-    final int heapsz = readInt(dis, swap);
+    final int heapsz = r.readInt();
     if (heapsz > 0) {
       final int[] tempHeapAddrs = new int[heapsz];
       final int[] sortedArrayAddrs = auxAddr2fsa.getSortedKeys();
       int sortedArrayAddrsIndex = 0;
 
       for (int i = 0; i < heapsz; i++) {
-        tempHeapAddrs[i] = readInt(dis, swap);
+        tempHeapAddrs[i] = r.readInt();
       }
       
       for (int i = 0; i < heapsz; i++) {
@@ -842,9 +814,9 @@ public class BinaryCasSerDes {
         setter.accept(fs, arrayIndex);
 //         EXAMPLE of setter:
 //        if (la instanceof LongArray) {
-//          ((LongArray)la).set(arrayIndex, readLong(dis, swap));
+//          ((LongArray)la).set(arrayIndex, r.readLong());
 //        } else {
-//          ((DoubleArray)la).set(arrayIndex, CASImpl.long2double(readLong(dis, swap)));
+//          ((DoubleArray)la).set(arrayIndex, CASImpl.long2double(r.readLong()));
 //        }
       }
     }    
@@ -1038,21 +1010,6 @@ public class BinaryCasSerDes {
       //                 binary search returns -insertionpoint -1 = -3 -1 == -4
       //  extraction code (below) returns: 4 -2 = 2;
     return (v >= 0 ) ? v : (-v) - 2;
-  }
-
-  private long readLong(DataInputStream dis, boolean swap) throws IOException {
-    long v = dis.readLong();
-    return swap ? Long.reverseBytes(v) : v;
-  }
-  
-  private int readInt(DataInputStream dis, boolean swap) throws IOException {
-    int v = dis.readInt();
-    return swap ? Integer.reverseBytes(v) : v;
-  }
-  
-  private short readShort(DataInputStream dis, boolean swap) throws IOException {
-    short v = dis.readShort();
-    return swap ? Short.reverseBytes(v) : v;
   }
 
   /******************************************************
@@ -1509,7 +1466,7 @@ public class BinaryCasSerDes {
           view = (sofa == null) ? baseCas.getInitialView() : baseCas.getView(sofa);
           if (type == tsi.docType) {
             fs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
-            view.removeFromCorruptableIndexAnyViewSetCache(fs, view.getAddbackSingle());
+            view.removeFromCorruptableIndexAnyView(fs, view.getAddbackSingle());
           } else {
             fs = view.createFS(type);
           }          
