@@ -79,6 +79,11 @@ public class SerDesTest6 extends TestCase {
     Akof1, Akof2,
   }
 
+  private static long seed;
+  // -8,093,220,039,004,886,811
+//  final private static Random random = setRandom(seed = -8093220039004886811L);
+  final private static Random random = setRandom();
+  static {    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed); }
   private final String testDocText = "test document text";
   private CASImpl remoteCas;
 
@@ -90,8 +95,6 @@ public class SerDesTest6 extends TestCase {
   private CASImpl casSrc;
   private TTypeSystem[] alternateTTypeSystems;
   
-  private  Random random;
-  private long seed;
 
   public class CASTestSetup implements AnnotatorInitializer {
 
@@ -247,25 +250,26 @@ public class SerDesTest6 extends TestCase {
 
   // Constructor
   public SerDesTest6() {
-//    setRandom(seed = 1994207594477441796L);
-    setRandom();
-    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed);
+    
+//    setRandom();
+
    }
   
-  private void setRandom() {
+  private static Random setRandom() {
     Random sg = new Random();
     seed = sg.nextLong();
-//    seed =  -4003978854850136823L;
-    random = new Random(seed);
+//    seed =  1096269913061953477L;
+    return new Random(seed);
   }
   
-  private void setRandom(long seed) {
-    random = new Random(seed);
+  private static Random setRandom(long seed) {
+    return new Random(seed);
   }
   
   public TTypeSystem setupTTypeSystem(TypeSystems kind) {
     if (kind == EqTwoTypes) {
       TTypeSystem m = new TTypeSystem(mSrc.tsm, kind);
+      m.cas = mSrc.cas;
 //      m.ts = mSrc.cas.getTypeSystemImpl();
       return mSrc;
     }
@@ -449,7 +453,7 @@ public class SerDesTest6 extends TestCase {
         verifyDelta(marker, ri);
         break;
       }
-      setRandom();
+//      setRandom();
       setUp();
       System.out.println(" testDelta w/ String array mod random = " + seed + ", i = " + i);
     }
@@ -474,7 +478,7 @@ public class SerDesTest6 extends TestCase {
         verifyDelta(marker, ri);
         break;
       }      
-      setRandom();
+//      setRandom();
       setUp();
       System.out.println(" testDelta w/ dbl array mod random = " + seed + ", i = " + i);
     }
@@ -501,7 +505,7 @@ public class SerDesTest6 extends TestCase {
         verifyDelta(marker, ri);
         break;
       }
-      setRandom();  // retry with different random number
+//      setRandom();  // retry with different random number
       setUp();
       System.out.println("  testDelta w byte array mod retrying, i = " + i);
     }
@@ -613,9 +617,9 @@ public class SerDesTest6 extends TestCase {
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
     
-    lfs = getIndexedFSs(remoteCas, m);
+    lfs = getIndexedFSs(remoteCas, m);  // get list of all "Akof1" FS
     FeatureStructure fs = remoteCas.createFS(m.getType(Akof1));
-    maybeSetFeatureKind( lfs.get(0), m, "Fs", fs);
+    maybeSetFeatureKind( lfs.get(0), m, "Fs", fs); // set the lfs.get(0) featurestructure's feature "Fs" to the new fs
     
     verifyDelta(marker, ri);
   }
@@ -711,14 +715,14 @@ public class SerDesTest6 extends TestCase {
   }
 
   public void testArrayAux() {
-    ArrayList<FeatureStructure> fsl = new ArrayList<FeatureStructure>();
+    ArrayList<FeatureStructure> fsList = new ArrayList<FeatureStructure>();
     /**
      * Strings, non-array Long/Double:
      * Make equal items,
      * ser/deser, update one of the equal items, insure other not updated
      */
-    FeatureStructure fsAt1 = newAkof(casSrc, mSrc, Akof1, fsl);
-    FeatureStructure fsAt2 = newAkof(casSrc, mSrc, Akof1, fsl);
+    FeatureStructure fsAt1 = newAkof(casSrc, mSrc, Akof1, fsList);
+    FeatureStructure fsAt2 = newAkof(casSrc, mSrc, Akof1, fsList);
     casSrc.addFsToIndexes(fsAt1);
     casSrc.addFsToIndexes(fsAt2);
 
@@ -739,8 +743,8 @@ public class SerDesTest6 extends TestCase {
     
     casSrc.reset();
     
-    fsAt1 = newAkof(casSrc, mSrc, Akof1, fsl);
-    fsAt2 = newAkof(casSrc, mSrc, Akof1, fsl);
+    fsAt1 = newAkof(casSrc, mSrc, Akof1, fsList);
+    fsAt2 = newAkof(casSrc, mSrc, Akof1, fsList);
     casSrc.addFsToIndexes(fsAt1);
     casSrc.addFsToIndexes(fsAt2);
 
