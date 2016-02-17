@@ -118,6 +118,13 @@ public class SofaTest extends TestCase {
       // Commit the type system.
       ((CASImpl) this.casMgr).commitTypeSystem();
 
+      // reinit type system values because the commit might reuse an existing one
+      tsa = this.casMgr.getTypeSystemMgr(); 
+      this.annotationType = tsa.getType(CAS.TYPE_NAME_ANNOTATION);
+      this.docAnnotationType = tsa.getType(CAS.TYPE_NAME_DOCUMENT_ANNOTATION);
+      this.crossType = tsa.getType("sofa.test.CrossAnnotation");
+      this.otherFeat = crossType.getFeatureByBaseName("otherAnnotation");
+      
       // Create the Base indexes.
       this.casMgr.initCASIndexes();
       FSIndexRepositoryMgr irm = this.casMgr.getIndexRepositoryMgr();
