@@ -234,7 +234,7 @@ public class CasComparer {
         case Slot_HeapRef: return    compareAllArrayElements(len1, i ->        compare1(((FSArray       )fs1).get(i), ((FSArray     )fs2).get(i), visited), "Miscompare FS Arrays %n%s%n%s", fs1, fs2);
         case Slot_StrRef:  return    compareAllArrayElements(len1, i -> Misc.compareStrings(((StringArray   )fs1).get(i), ((StringArray )fs2).get(i)), "Miscompare String Arrays %n%s%n%s", fs1, fs2);
         default: 
-          assert(false); return 0;  // only to avoid a compile error
+          Misc.internalError(); return 0;  // only to avoid a compile error
         }        
       }
       
