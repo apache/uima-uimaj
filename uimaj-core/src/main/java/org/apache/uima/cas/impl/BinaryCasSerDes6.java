@@ -19,27 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.NBR_SLOT_KIND_ZIP_STREAMS;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ArrayLength;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Byte;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Control;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Exponent;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Double_Mantissa_Sign;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Exponent;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float_Mantissa_Sign;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_FsIndexes;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_LongRef;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrSeg;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -57,12 +40,12 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 import java.util.zip.Deflater;
@@ -75,11 +58,13 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.CASImpl.FsChange;
+import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Pair;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -210,8 +195,8 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *   *               *         *        *   uses info saved when serializing
  *   **************************************************************************
  */
-public class BinaryCasSerDes6 {
-
+public class BinaryCasSerDes6 implements SlotKindsConstants {
+  
   private static final String EMPTY_STRING = "";
   
   private static final boolean TRACE_SER = false;
@@ -221,14 +206,6 @@ public class BinaryCasSerDes6 {
   private static final boolean TRACE_MOD_DES = false;
   
   private static final boolean TRACE_STR_ARRAY = false;
-  /**
-   * Version of the serializer/deserializer, used to allow deserialization of 
-   * older versions
-   * 
-   * Version 0 - initial SVN checkin
-   * Version 1 - changes to support CasTypeSystemMapper 
-   */
-  private static final int VERSION = 1;  
   
   /**
    * Compression alternatives
@@ -298,26 +275,6 @@ public class BinaryCasSerDes6 {
     return new ReuseInfo(foundFSsBitset, fssToSerialize, fsStartIndexes);
   }
     
-  // speedups - ints for SlotKind ordinals
-  final private static int arrayLength_i = Slot_ArrayLength.ordinal();
-  final private static int heapRef_i = Slot_HeapRef.ordinal();
-  final private static int int_i = Slot_Int.ordinal();
-  final private static int byte_i = Slot_Byte.ordinal();
-  final private static int short_i = Slot_Short.ordinal();
-  final private static int typeCode_i = Slot_TypeCode.ordinal();
-  final private static int strOffset_i = Slot_StrOffset.ordinal();
-  final private static int strLength_i = Slot_StrLength.ordinal();
-  final private static int long_High_i = Slot_Long_High.ordinal();
-  final private static int long_Low_i = Slot_Long_Low.ordinal();
-  final private static int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.ordinal();
-  final private static int float_Exponent_i = Slot_Float_Exponent.ordinal();
-  final private static int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.ordinal();
-  final private static int double_Exponent_i = Slot_Double_Exponent.ordinal();
-  final private static int fsIndexes_i = Slot_FsIndexes.ordinal();
-  final private static int strChars_i = Slot_StrChars.ordinal();
-  final private static int control_i = Slot_Control.ordinal();
-  final private static int strSeg_i = Slot_StrSeg.ordinal();
-
   /**
    * Things set up for one instance of this class
    */
@@ -374,6 +331,11 @@ public class BinaryCasSerDes6 {
   /**
    * Hold prev instance of FS which have non-array FSRef slots, to allow 
    * computing these to match case where a 0 value is used because of type filtering
+   * and also to allow for forward references.
+   * 
+   * Note: we can't use the actual prev FS, because for type filtering, it may not exist!
+   * and even if it exists, it may not be fixed up (forward ref not yet deserialized)
+   * 
    *   for each target typecode, only set if the type has 1 or more non-array fsref
    *   set only for non-filtered domain types
    *     set only for non-0 values
@@ -388,7 +350,7 @@ public class BinaryCasSerDes6 {
   final private int[] [] prevHeapInstanceWithIntValues;
   
   /**
-   * Hold prev values of slots, by type, for instances of FS which are non-arrays containing 
+   * Hold prev values of "long" slots, by type, for instances of FS which are non-arrays containing 
    *   slots which have long values, used for differencing 
    *   - not using the actual FS instance, because during deserialization, these may not be 
    *     deserialized due to type filtering
@@ -437,8 +399,6 @@ public class BinaryCasSerDes6 {
   final private ByteArrayOutputStream[] baosZipSources = new ByteArrayOutputStream[NBR_SLOT_KIND_ZIP_STREAMS];  // lazily created, indexed by SlotKind.i
   final private DataOutputStream[] dosZipSources = new DataOutputStream           [NBR_SLOT_KIND_ZIP_STREAMS];      // lazily created, indexed by SlotKind.i
   
-  /** used to compute the size of the byte array output stream */
-  final private int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
   // speedups
   
   // any use of these means caller handles measurement
@@ -476,8 +436,8 @@ public class BinaryCasSerDes6 {
 
   /** the "fixups" for relative heap refs */
   final private List<Runnable> fixupsNeeded = new ArrayList<>();
-  /** hold on to FS prior to getting them indexed to prevent them from being GC'd */
-  final private List<TOP> preventFsGc = new ArrayList<>();
+//  /** hold on to FS prior to getting them indexed to prevent them from being GC'd */
+//  final private List<TOP> preventFsGc = new ArrayList<>();
 
   /** 
    * the deferrals needed when deserializing a subtype of AnnotationBase before the sofa is known
@@ -524,7 +484,9 @@ public class BinaryCasSerDes6 {
    * Setup to serialize or deserialize using binary compression, with (optional) type mapping and only processing reachable Feature Structures
    * @param aCas required - refs the CAS being serialized or deserialized into
    * @param mark if not null is the serialization mark for delta serialization.  Unused for deserialization.
-   * @param tgtTs if not null is the target type system.  For serialization - this is a subset of the CASs TS
+   * @param tgtTs if not null is the target type system.  
+   *                - For serialization - this is a subset of the CASs TS
+   *                - for deserialization, is the type system of the serialized data being read.
    * @param rfs For delta serialization - must be not null, and the saved value after deserializing the original
    *                                      before any modifications / additions made.
    *            For normal serialization - can be null, but if not, is used in place of re-calculating, for speed up
@@ -538,7 +500,7 @@ public class BinaryCasSerDes6 {
   public BinaryCasSerDes6(
       AbstractCas aCas,
       MarkerImpl mark,
-      TypeSystemImpl tgtTs,
+      TypeSystemImpl tgtTs, 
       ReuseInfo rfs,
       boolean doMeasurements,
       CompressLevel compressLevel, 
@@ -578,8 +540,8 @@ public class BinaryCasSerDes6 {
     this.compressStrategy = compressStrategy;
     reuseInfoProvided = (rfs != null);
     if (reuseInfoProvided) {
-      foundFSsBitset = rfs.foundFSsBitset;
-      fssToSerialize = rfs.fssToSerialize;
+      foundFSsBitset = rfs.foundFSsBitset;  // broken for serialization - not reused
+      fssToSerialize = rfs.fssToSerialize;  // broken for serialization - not reused
       // TODO figure out why there's a copy for next
       fsStartIndexes = rfs.fsStartIndexes.copy();
     } else {
@@ -613,7 +575,7 @@ public class BinaryCasSerDes6 {
    * Setup to serialize (maybe delta) or deserialize (maybe delta) using binary compression, with type mapping and only processing reachable Feature Structures
    * @param cas -
    * @param mark -
-   * @param tgtTs -
+   * @param tgtTs - for deserialization, is the type system of the serialized data being read.
    * @param rfs Reused Feature Structure information - required for both delta serialization and delta deserialization
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
@@ -625,7 +587,7 @@ public class BinaryCasSerDes6 {
    * Setup to serialize (maybe delta) or deserialize (maybe delta) using binary compression, with type mapping and only processing reachable Feature Structures, output measurements
    * @param cas -
    * @param mark -
-   * @param tgtTs -
+   * @param tgtTs - - for deserialization, is the type system of the serialized data being read.
    * @param rfs Reused Feature Structure information - speed up on serialization, required on delta deserialization
    * @param doMeasurements -
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
@@ -672,7 +634,13 @@ public class BinaryCasSerDes6 {
       sm.totalTime = System.currentTimeMillis();
     }
 
-    writeHeader();
+    CommonSerDes.createHeader()
+    .form6()
+    .delta(isSerializingDelta)
+    .seqVer(0)
+    .v3()
+    .write(serializedOut);
+    
     os = new OptimizeStrings(doMeasurements);
  
     /******************************************************************
@@ -850,7 +818,7 @@ public class BinaryCasSerDes6 {
       
     case Slot_Float:
       for (float item : ((FloatArray)fs)._getTheArray()) {
-        writeFloat(Float.floatToRawIntBits(item));
+        writeFloat(CASImpl.float2int(item));
       }
       break;
 
@@ -891,7 +859,7 @@ public class BinaryCasSerDes6 {
       }
       break;
 
-    default: assert(false); 
+    default: Misc.internalError(); 
     } // end of switch    
   }
           
@@ -908,26 +876,26 @@ public class BinaryCasSerDes6 {
     SlotKind kind = feat.getSlotKind();
     switch (kind) {
     //Slot_Int, Slot_Float, Slot_Boolean, Slot_Byte, Slot_Short
-    case Slot_Short:     serializeDiffWithPrevTypeSlot(kind, fs, feat, fs.getShortValue(feat));       break;
-    case Slot_Int:       serializeDiffWithPrevTypeSlot(kind, fs, feat, fs.getIntValue(feat));         break;
+    case Slot_Short:     serializeDiffWithPrevTypeSlot(kind, fs, feat, fs.getShortValueNc(feat));       break;
+    case Slot_Int:       serializeDiffWithPrevTypeSlot(kind, fs, feat, fs.getIntValueNc(feat));         break;
     case Slot_HeapRef:
 //      if ()
-      serializeDiffWithPrevTypeSlot(kind, fs, feat, getTgtSeqFromSrcFS(fs.getFeatureValue(feat))); 
+      serializeDiffWithPrevTypeSlot(kind, fs, feat, getTgtSeqFromSrcFS(fs.getFeatureValueNc(feat))); 
       break;
-    case Slot_Float:     writeFloat(Float.floatToRawIntBits(fs.getFloatValue(feat)));                 break;
-    case Slot_Boolean:   byte_dos.write(fs.getBooleanValue(feat) ? 1 : 0);                         break;
-    case Slot_Byte:      byte_dos.write(fs.getByteValue(feat));                                       break;
-    case Slot_StrRef:    writeString(fs.getStringValue(feat));                                        break;
+    case Slot_Float:     writeFloat(CASImpl.float2int(fs.getFloatValueNc(feat)));                       break;
+    case Slot_Boolean:   byte_dos.write(fs.getBooleanValueNc(feat) ? 1 : 0);                            break;
+    case Slot_Byte:      byte_dos.write(fs.getByteValueNc(feat));                                       break;
+    case Slot_StrRef:    writeString(fs.getStringValueNc(feat));                                        break;
     case Slot_LongRef:
       final TypeImpl ti = fs._typeImpl;
       final int offset = feat.getOffset();
       final long prevLong = getPrevLongValue(ti.getCode(), offset);
-      final long vLong = fs.getLongValue(feat);
+      final long vLong = fs.getLongValueNc(feat);
       writeLong(vLong, prevLong);
       updatePrevLongValue(ti, offset, vLong);
       break;
       
-    case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs.getDoubleValue(feat)));            break;
+    case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs.getDoubleValueNc(feat)));            break;
     default: 
       throw new RuntimeException("internal error");
     } // end of switch
@@ -1357,7 +1325,11 @@ public class BinaryCasSerDes6 {
   private class SerializeModifiedFSs {
 
 //    final int[] modifiedMainHeapAddrs = toArrayOrINT0(cas.getModifiedFSHeapAddrs());
-    final Collection<FsChange> modifiedFSs = cas.getModifiedFSList();  // does sorting and other cleanup
+    
+    // duplicate elimination done when change is added
+    // the collection is not sorted
+    final FsChange[] modifiedFSs = cas.getModifiedFSList();  
+
 //    final int[] modifiedByteHeapAddrs = toArrayOrINT0(cas.getModifiedByteHeapAddrs());
 //    final int[] modifiedShortHeapAddrs = toArrayOrINT0(cas.getModifiedShortHeapAddrs());
 //    final int[] modifiedLongHeapAddrs = toArrayOrINT0(cas.getModifiedLongHeapAddrs());
@@ -1400,6 +1372,9 @@ public class BinaryCasSerDes6 {
         if (isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType)) {
           continue; // skip this fs - it's not in target type system
         }
+
+        // probably don't need this test, because change logging is done when a mark is set, 
+        //   only for items below the line
         if (!foundFSsBelowMarkBitset.get(fs._id)) {
 //          System.out.format("  skipping heap addr %,d%n", currentFsId);
           continue;        
@@ -1423,7 +1398,7 @@ public class BinaryCasSerDes6 {
                 continue;  // skip - feature not in target type
             }
             if (srcFeat.getRangeImpl().isStringOrStringSubtype()) {
-              os.add(fs.getStringValue(feats.get(next)));
+              os.add(fs.getStringValueNc(feats.get(next)));
             }
             next = featuresModified.nextSetBit(next + 1);
           }
@@ -1443,6 +1418,9 @@ public class BinaryCasSerDes6 {
           continue;  // skip - type is not in target
         }
         final int id= fs._id;
+        // perhaps part of this if test is not needed:
+        //   the id is probably guaranteed to be below the split point
+        //   because logging doesn't happen unless a change is below the mark
         if ((id >= splitPoint && !foundFSsBitset.get(id)) ||
             (id < splitPoint && !foundFSsBelowMarkBitset.get(id))) {
           // although it was modified, it isn't going to be serialized because
@@ -1462,7 +1440,7 @@ public class BinaryCasSerDes6 {
 
       if (TRACE_MOD_SER) {
         System.out.format("trace writing mods, length mod list: %,d nbr written: %,d%n",
-          modifiedFSs.size(), nbrModifiedFSWritten);
+          modifiedFSs.length, nbrModifiedFSWritten);
       }
 
       // write out number of modified Feature Structures
@@ -1535,7 +1513,7 @@ public class BinaryCasSerDes6 {
           }
 
           case Slot_Int: vPrevModInt = writeDiff(int_i, ((IntegerArray)fs).get(index), vPrevModInt); break;
-          case Slot_Float: writeFloat(Float.floatToRawIntBits(((FloatArray)fs).get(index))); break;
+          case Slot_Float: writeFloat(CASImpl.float2int(((FloatArray)fs).get(index))); break;
           case Slot_HeapRef: {
             final int v = getTgtSeqFromSrcFS(((FSArray)fs).get(index)); 
             vPrevModHeapRef = writeDiff(heapRef_i, v, vPrevModHeapRef); break;
@@ -1545,7 +1523,7 @@ public class BinaryCasSerDes6 {
           case Slot_JavaObjectRef: throw new UnsupportedOperationException();
           
           default: 
-            assert(false);
+            Misc.internalError();
           } // end of switch for array types
         } // end of loop for elements in array
         return;
@@ -1578,26 +1556,26 @@ public class BinaryCasSerDes6 {
         
         final SlotKind slotKind = fi.getSlotKind();
         switch (slotKind) {
-        case Slot_Boolean: byte_dos.write(fs.getBooleanValue(fi) ? 1 : 0); break;
-        case Slot_Byte: byte_dos.write(fs.getByteValue(fi)); break;
-        case Slot_Short: vPrevModShort = (short) writeDiff(int_i, fs.getShortValue(fi), vPrevModShort); break;
-        case Slot_Int: vPrevModInt = writeDiff(int_i, fs.getIntValue(fi), vPrevModInt); break;
+        case Slot_Boolean: byte_dos.write(fs.getBooleanValueNc(fi) ? 1 : 0); break;
+        case Slot_Byte: byte_dos.write(fs.getByteValueNc(fi)); break;
+        case Slot_Short: vPrevModShort = (short) writeDiff(int_i, fs.getShortValueNc(fi), vPrevModShort); break;
+        case Slot_Int: vPrevModInt = writeDiff(int_i, fs.getIntValueNc(fi), vPrevModInt); break;
         case Slot_LongRef: {
-          long v = fs.getLongValue(fi);  
+          long v = fs.getLongValueNc(fi);  
           writeLong(v, vPrevModLong);
           vPrevModLong = v;
           break;
         }
-        case Slot_Float: writeFloat(Float.floatToRawIntBits(fs.getFloatValue(fi))); break;
-        case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs.getDoubleValue(fi))); break;
+        case Slot_Float: writeFloat(CASImpl.float2int(fs.getFloatValueNc(fi))); break;
+        case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs.getDoubleValueNc(fi))); break;
         case Slot_HeapRef: {
-            final int v = getTgtSeqFromSrcFS(fs.getFeatureValue(fi));
+            final int v = getTgtSeqFromSrcFS(fs.getFeatureValueNc(fi));
             vPrevModHeapRef = writeDiff(heapRef_i, v, vPrevModHeapRef);
           }
           break;
-        case Slot_StrRef: writeString(fs.getStringValue(fi)); break;
+        case Slot_StrRef: writeString(fs.getStringValueNc(fi)); break;
         case Slot_JavaObjectRef: throw new UnsupportedOperationException(); 
-        default: assert(false);
+        default: Misc.internalError();
         } // end of Switch
         offset = bs.nextSetBit(offset + 1);
       } // end of iterator over all features
@@ -1672,6 +1650,7 @@ public class BinaryCasSerDes6 {
      ***************************/
     int nbrNewFSsInTarget = readVnumber(control_dis);  // is nbr of FSs serialized (excluding mods) in v3         
     
+//    stringTableOffset = isReadingDelta ? (stringHeapObj.getSize() - 1) : 0;
     nextFsId = isReadingDelta ? (cas.getLastUsedFsId() + 1) : 0;
     
 //    if (!isReadingDelta) {
@@ -1703,12 +1682,11 @@ public class BinaryCasSerDes6 {
     }
 
     fixupsNeeded.clear();
-    preventFsGc.clear();
+//    preventFsGc.clear();
     /**********************************************************
      * Read in new FSs being deserialized and add them to heap
      **********************************************************/
     for (int currentFsId = nextFsId, nbrFSs = 0; nbrFSs < nbrNewFSsInTarget; nbrFSs++) {
-
       final int tgtTypeCode = readVnumber(typeCode_dis); // get type code
       final TypeImpl tgtType = (isTypeMapping ? tgtTs : srcTs).getTypeForCode(tgtTypeCode); 
       final TypeImpl srcType = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tgtTypeCode) : tgtType;
@@ -1734,7 +1712,7 @@ public class BinaryCasSerDes6 {
 
 //      typeInfo = storeIt ? srcTypeInfo : tgtTypeInfo; // if !storeIt, then srcTypeInfo is null.
       
-      fsStartIndexes.addSrcAddrForTgt(currentFsId, storeIt);
+//      fsStartIndexes.addSrcAddrForTgt(currentFsId, storeIt);
  
       if (TRACE_DES) {
         System.out.format("Des: fsnbr %,4d fsid %,4d tgtTypeCode: %,3d %13s srcTypeCode: %s%n", 
@@ -1754,7 +1732,7 @@ public class BinaryCasSerDes6 {
         if (storeIt) {
           if (!srcTs.annotBaseType.subsumes(srcType) &&  // defer subtypes of AnnotationBase
               !(srcTs.sofaType == srcType)) {            // defer sofa types
-            preventFsGc.add(currentFs = cas.createFS(srcType));
+            currentFs = cas.createFS(srcType);
           } else {
             currentFs = null;
             singleFsDefer.clear();
@@ -1796,17 +1774,15 @@ public class BinaryCasSerDes6 {
               // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
               // would end up creating additional instances
             } else {
-              preventFsGc.add(currentFs = view.createFS(srcType));
+              currentFs = view.createFS(srcType);
             }
           }
           if (srcType.getCode() == TypeSystemImpl.docTypeCode) { 
-            boolean wasRemoved = cas.removeFromCorruptableIndexAnyViewSetCache(currentFs, cas.getAddbackSingle());
+            boolean wasRemoved = cas.removeFromCorruptableIndexAnyView(currentFs, cas.getAddbackSingle());
             for (Runnable r : singleFsDefer) {
               r.run();
             }
-            if (wasRemoved) {
-              cas.addbackSingle(currentFs);
-            }
+            cas.maybeAddbackSingle(wasRemoved, currentFs);
           } else {
             for (Runnable r : singleFsDefer) {
               r.run();
@@ -1824,6 +1800,7 @@ public class BinaryCasSerDes6 {
 //                 need to fixup final heap to account for skipped slots
 //                 need to have read skip slots not present in src
 //      targetHeapUsed += incrToNextFs(heap, currentFsId, tgtTypeInfo);  // typeInfo is target type info
+      fsStartIndexes.addSrcFsForTgt(currentFs, storeIt);
       currentFsId += storeIt ? 1 : 0;
     }
 
@@ -1838,7 +1815,7 @@ public class BinaryCasSerDes6 {
       (new ReadModifiedFSs()).readModifiedFSs();
     }
     
-    preventFsGc.clear();
+//    preventFsGc.clear();
 
     closeDataInputs();
 //      System.out.format("Deserialize took %,d ms%n", System.currentTimeMillis() - startTime1);
@@ -1856,7 +1833,7 @@ public class BinaryCasSerDes6 {
     final SlotKind slotKind = tgtType.getComponentSlotKind();
 
     final TOP fs = storeIt ? cas.createArray(srcType, length) : null;
-    preventFsGc.add(currentFs = fs); 
+    currentFs = fs; 
         
     switch (slotKind) {
     case Slot_BooleanRef: 
@@ -1869,12 +1846,12 @@ public class BinaryCasSerDes6 {
       }
       break;
     
-    case Slot_ByteRef: readIntoByteArray(((ByteArray)fs)._getTheArray(), length, storeIt); break;
-    
+    case Slot_ByteRef: 
+      readIntoByteArray(((ByteArray)fs)._getTheArray(), length, storeIt); 
+      break;
     
     case Slot_ShortRef: {
-      ShortArray sa = (ShortArray)fs;
-      readIntoShortArray(sa._getTheArray(), length, storeIt);
+      readIntoShortArray(((ShortArray)fs)._getTheArray(), length, storeIt);
       break;
     }
     
@@ -1894,18 +1871,24 @@ public class BinaryCasSerDes6 {
       break;
     }
     
-    case Slot_LongRef: readIntoLongArray(((LongArray)fs)._getTheArray(), Slot_LongRef, length, storeIt); break;
+    case Slot_LongRef: 
+      readIntoLongArray(((LongArray)fs)._getTheArray(), Slot_LongRef, length, storeIt); 
+      break;
     
-    case Slot_Float: 
+    case Slot_Float: {
+      final FloatArray fa = (FloatArray)fs;
       for (int i = 0; i < length; i++) {
         final int floatRef = readFloat();
         if (storeIt) {
-          ((FloatArray)fs).set(i,  Float.intBitsToFloat(floatRef));
+          fa.set(i,  Float.intBitsToFloat(floatRef));
         }
       }
       break;
-      
-      case Slot_DoubleRef: readIntoDoubleArray(((DoubleArray)fs)._getTheArray(), Slot_DoubleRef, length, storeIt); break;
+    }  
+    
+      case Slot_DoubleRef: 
+        readIntoDoubleArray(((DoubleArray)fs)._getTheArray(), Slot_DoubleRef, length, storeIt); 
+        break;
       
       case Slot_HeapRef: {
         FSArray fsa = (FSArray)fs;
@@ -1936,12 +1919,12 @@ public class BinaryCasSerDes6 {
         break;
 
       case Slot_JavaObjectRef: throw new UnsupportedOperationException();
-      default: assert(false);
+      default: Misc.internalError();
     } // end of switch
   }
   
   private TOP getRefVal(int tgtSeq) {
-    return (tgtSeq == 0) ? null : cas.getFsFromId(fsStartIndexes.getSrcAddrFromTgtSeq(tgtSeq));
+    return (tgtSeq == 0) ? null : fsStartIndexes.getSrcFsFromTgtSeq(tgtSeq);
   }
     
   private int readArrayLength() throws IOException {
@@ -1976,13 +1959,13 @@ public class BinaryCasSerDes6 {
       if (srcFeat == srcTs.sofaNum) {
         sofaNum = vi;
       } else {
-        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValue(kind,  srcFeat, vi));
+        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValueNcNj(kind,  srcFeat, vi));
       }
       break;
       
     case Slot_Short:
       int vs = readDiffIntSlot(storeIt, tgtFeatOffset, kind, tgtType);
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValue(kind, srcFeat, vs));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValueNcNj(kind, srcFeat, vs));
       break;
       
     case Slot_HeapRef:
@@ -1998,12 +1981,12 @@ public class BinaryCasSerDes6 {
           //   two cases: the ref'd value is known, or not.
           //     - if not known, a fixup is added to
           if (tgtType.getCode() == TypeSystemImpl.sofaTypeCode) {
-            if (tgtFeat.getCode() == TypeSystemImpl.sofaArrayFeatCode) {
+            if (tgtFeat.getCode() == TypeSystemImpl.sofaArrayFeatCode) { // sofaArrayFeatCode is the ref to array for sofa data
               Sofa sofa = (Sofa) lfs;
               maybeStoreOrDefer_slotFixups(vh, ref_fs -> sofa.setLocalSofaData(ref_fs));
             }
           } else {
-            maybeStoreOrDefer_slotFixups(vh, ref_fs -> lfs.setFeatureValue(srcFeat,  ref_fs));
+            maybeStoreOrDefer_slotFixups(vh, ref_fs -> lfs.setFeatureValueNcNj(srcFeat,  ref_fs));
           }
         });
       }
@@ -2011,34 +1994,41 @@ public class BinaryCasSerDes6 {
       
     case Slot_Float:
       final int floatAsInt = readFloat();
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setFloatValue(srcFeat, Float.intBitsToFloat(floatAsInt)));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setFloatValueNcNj(srcFeat, Float.intBitsToFloat(floatAsInt)));
       break;
       
     case Slot_Boolean: case Slot_Byte:
       final byte vByte = byte_dis.readByte();
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValue(kind, srcFeat, vByte));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValueNcNj(kind, srcFeat, vByte));
       break;
       
     case Slot_StrRef: 
       final String vString = readString(storeIt);
+      if (null == vString) {
+        break;  // null is the default value, no need to set it
+      }
       if (storeIt) {
         if (tgtType.getCode() == TypeSystemImpl.sofaTypeCode) {
           if (srcFeat == srcTs.sofaId) {
             sofaName = vString; 
             break;
-          } else if (srcFeat == srcTs.sofaMime) {
+          }
+          if (srcFeat == srcTs.sofaMime) {
             maybeStoreOrDefer(storeIt, fs, lfs -> ((Sofa)lfs).setMimeType(vString));
             break;
-          } else if (srcFeat == srcTs.sofaUri && vString != null) {
+          }
+          if (srcFeat == srcTs.sofaUri) {
             maybeStoreOrDefer(storeIt, fs, lfs -> ((Sofa)lfs).setRemoteSofaURI(vString));
             break;
-          } else if (srcFeat == srcTs.sofaString && vString != null) {
+          }
+          if (srcFeat == srcTs.sofaString) {
             maybeStoreOrDefer(storeIt, fs, lfs -> ((Sofa)lfs).setLocalSofaData(vString));
             break;
           }
-        } else { // is not a sofa
-          maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setStringValue(srcFeat, vString));
         }
+        // other user-defined custom sofa extended string features (if any)
+        //   as well as non-sofa FS features, are set by the following code
+        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setStringValueNcNj(srcFeat, vString));
       }
       break;
       
@@ -2046,15 +2036,15 @@ public class BinaryCasSerDes6 {
       long prevLong = getPrevLongValue(tgtType.getCode(), tgtFeatOffset);
       long vl = readLongOrDouble(kind, prevLong);
       updatePrevLongValue(tgtType, tgtFeatOffset, vl);
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setLongValue(srcFeat, vl));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setLongValueNcNj(srcFeat, vl));
       break;
 
     case Slot_DoubleRef: 
       long vd = readDouble();
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setDoubleValue(srcFeat, Double.longBitsToDouble(vd)));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setDoubleValueNcNj(srcFeat, CASImpl.long2double(vd)));
       break;
     
-    default: assert(false);                
+    default: Misc.internalError();                
     } // end of switch
   }
   
@@ -2107,8 +2097,8 @@ public class BinaryCasSerDes6 {
     fsIndexes.add(nbrViews);
     fsIndexes.add(nbrSofas);
     for (int i = 0; i < nbrSofas; i++) {
-      final int realAddrOfSofa = fsStartIndexes.getSrcAddrFromTgtSeq(readVnumber(control_dis));
-      fsIndexes.add(realAddrOfSofa);
+      final int tgtAddrOfSofa = readVnumber(control_dis);
+      fsIndexes.add(tgtAddrOfSofa);
     }
       
     for (int i = 0; i < nbrViews; i++) {
@@ -2119,13 +2109,9 @@ public class BinaryCasSerDes6 {
       }
     }
     
-    if (isDelta) {
-      // getArray avoids copying.
-      // length is too long, but extra is never accessed
-      bcsd.reinitDeltaIndexedFSs(fsIndexes.getArray());
-    } else {
-      bcsd.reinitIndexedFSs(fsIndexes.getArray());
-    }
+    IntFunction<TOP> getFsFromTgtAddr = i -> fsStartIndexes.getSrcFsFromTgtSeq(i);
+
+    bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta, getFsFromTgtAddr);
   }
 
   /**
@@ -2141,8 +2127,9 @@ public class BinaryCasSerDes6 {
     for (int i = 0; i < nbrEntries; i++) {
       int v = readVnumber(fsIndexes_dis) + prev;
       prev = v;
-      v = fsStartIndexes.getSrcAddrFromTgtSeq(v);
-      if (v > 0) {  // if not, no src type for this type in tgtTs
+      // if type filtering (source type doesn't exist)
+      //   skip this one
+      if (fsStartIndexes.getSrcFsFromTgtSeq(v) != null) {
         nbrEntriesAdded++;
         fsIndexes.add(v);
       }
@@ -2152,8 +2139,7 @@ public class BinaryCasSerDes6 {
 
   
   private DataInput getInputStream(SlotKind kind) {
-    return dataInputs[kind.ordinal()];
-  }
+    return dataInputs[kind.ordinal()];  }
 
   private int readVnumber(DataInputStream dis) throws IOException {
     return DataIO.readVnumber(dis);
@@ -2202,7 +2188,7 @@ public class BinaryCasSerDes6 {
       long prev = 0L;
       for (int i = 0; i < length; i++) {
         prev = readLongOrDouble(kind, prev);
-        array[i] = Double.longBitsToDouble(prev);
+        array[i] = CASImpl.long2double(prev);
       }
     } else {
       if (kind == Slot_LongRef) {
@@ -2440,14 +2426,14 @@ public class BinaryCasSerDes6 {
         prevSeq = seqNbrModified;
 //          prevFs = iHeap;
 
-        iHeap = fsStartIndexes.getSrcAddrFromTgtSeq(seqNbrModified);
-        if (iHeap < 1) {
+        TOP fs= fsStartIndexes.getSrcFsFromTgtSeq(seqNbrModified);
+        if (fs == null) {
           // never happen because in the delta CAS ts system use-case, the 
           //   target is always a subset of the source
           //   due to type system merging
-          throw new RuntimeException("never happen");
+          Misc.internalError();
         }
-        TOP fs = cas.getFsFromId_checked(iHeap);
+        
         TypeImpl srcType = fs._typeImpl;
 //        typeInfo = ts.getTypeInfo(tCode);
 //        if (isTypeMapping) {
@@ -2458,9 +2444,9 @@ public class BinaryCasSerDes6 {
 
         if (TRACE_MOD_DES) {
           System.out.format("  %,d tr de mod fsId: %,d nbrMods: %,d type: %s%n", 
-              i, iHeap, numberOfModsInThisFs, srcType.getShortName());
+              i, fs._id, numberOfModsInThisFs, srcType.getShortName());
         }
-         if (srcType.isArray() && (!srcType.isHeapStoredArray())) { 
+         if (srcType.isAuxStoredArray()) { 
           /**************************************************
            * *** This strange split is to be compatible with v2 form 6 ***
            * 
@@ -2523,10 +2509,10 @@ public class BinaryCasSerDes6 {
         }
         
         case Slot_DoubleRef: {
-            doubleArray.set(offset, Double.longBitsToDouble(readLongOrDouble(kind, vPrevModLong)));
+            doubleArray.set(offset, CASImpl.long2double(readDouble()));
           }
           break;
-        default: assert(false);
+        default: Misc.internalError();
         } // end of switch
       } // end of loop over all changed slots in the array
     }
@@ -2543,7 +2529,6 @@ public class BinaryCasSerDes6 {
       int iPrevTgtOffsetInFs = 0;
       boolean wasRemoved = false;  // set to true when removed from index to stop further testing
       addbackSingle = cas.getAddbackSingle();
-      addbackSingle.clear();
       final boolean isArray = srcType.isArray();
       final List<FeatureImpl> features = isArray ? null : srcType.getFeatureImpls();
       
@@ -2563,7 +2548,7 @@ public class BinaryCasSerDes6 {
 //        System.out.format("mainHeapModRead type: %s slot: %s%n", typeInfo, kind);
 
         if (!isArray && kind != SlotKind.Slot_HeapRef && !wasRemoved) {
-          wasRemoved = cas.removeFromCorruptableIndexAnyView(fs, addbackSingle, srcFeat.getCode());
+          wasRemoved = cas.checkForInvalidFeatureSetting(fs, srcFeat.getCode(), addbackSingle);
         }
         
         if (TRACE_MOD_DES) {
@@ -2618,7 +2603,7 @@ public class BinaryCasSerDes6 {
         case Slot_DoubleRef: {
             final long v = readDouble();
             // double arrays were not on main heap
-            fs.setDoubleValue(srcFeat, Double.longBitsToDouble(v));
+            fs.setDoubleValue(srcFeat, CASImpl.long2double(v));
           }
           break;
           
@@ -2646,15 +2631,11 @@ public class BinaryCasSerDes6 {
         case Slot_Byte:    fs.setByteValue   (srcFeat, byte_dis.readByte()              ); break;        
                   
         default:
-          assert(false);
+          Misc.internalError();
         } // end of switch
       } // end of for loop over all FS
       
-      if (wasRemoved) {
-        cas.addbackSingle(fs);
-      } else {
-        cas.resetAddbackSingleInUse();
-      }
+      cas.maybeAddbackSingle(wasRemoved, fs);
     }    
   }
   
@@ -2671,6 +2652,7 @@ public class BinaryCasSerDes6 {
    *     because they are in some index, or
    *     are pointed to by something that is in some index (recursively)
    *   excluding those below the mark
+   *   excluding those that are not in the target type system
    *   
    *   The second thing is to serialize out the index information.
    *   This step has to wait until the first time call has completed and 
@@ -2700,7 +2682,7 @@ public class BinaryCasSerDes6 {
     // write or enqueue the sofas
     final FSIterator<Sofa> it = cas.getSofaIterator();
     while (it.hasNext()) {
-      Sofa sofa = it.next();
+      Sofa sofa = it.nextNvc();
       if (isWrite) {
         // for delta only write new sofas
         if (!isSerializingDelta || mark.isNew(sofa)) {
@@ -2718,30 +2700,27 @@ public class BinaryCasSerDes6 {
     }
     TypeImpl topType = (TypeImpl) cas.getTypeSystemImpl().getTopType();
 
-    // write (id's only) and/or enqueue indexed FSs, either all, or (for delta writes) the added/deleted/reindexed ones
+    // write (id's only, for index info) and/or enqueue indexed FSs, either all, or (for delta writes) the added/deleted/reindexed ones
     if (isWrite) {
       cas.forAllViews(view -> {
-        processFSsForView(true, true,
+        processFSsForView(true, true,   // is enqueue, is write
           isSerializingDelta 
-            ? view.indexRepository.getAddedFSs()
-            : view.indexRepository.getAllIndexedFS(topType));
+            ? view.indexRepository.getAddedFSs().stream()
+            : view.indexRepository.<TOP>getAllIndexedFS(topType).asStream());
         if (isSerializingDelta) {
           // for write/delta, write out (but don't enqueue) the deleted/reindexed FSs
-          processFSsForView(false, true, view.indexRepository.getDeletedFSs());
-          processFSsForView(false, true, view.indexRepository.getReindexedFSs());
+          processFSsForView(false, true, view.indexRepository.getDeletedFSs().stream());
+          processFSsForView(false, true, view.indexRepository.getReindexedFSs().stream());
         }
       });   
     } else { // is not write
       // debug
 //      cas.forAllViews(view -> System.out.println("View name is " + view.getViewName()));
-      cas.getInitialView().getIndexRepository().getAllIndexedFS(topType);
+//      cas.getInitialView().getIndexRepository().getAllIndexedFS(topType);
       cas.forAllViews(view -> 
-        processFSsForView  (true, false, view.indexRepository.getAllIndexedFS(topType)));
-    }
-
-    processRefedFSs();
-    
-    if (!isWrite) {
+        processFSsForView  (true, false, view.indexRepository.<TOP>getAllIndexedFS(topType).asStream()));
+      processRefedFSs();
+      // convert representation from bitset to list<TOP>
       final int fsslen = foundFSsBitset.cardinality();
       fssToSerialize = new ArrayList<>(fsslen);
       final int len = foundFSsBitset.length();
@@ -2751,6 +2730,7 @@ public class BinaryCasSerDes6 {
         fssToSerialize.add(cas.getFsFromId(b));
       }
     }
+    
     return;
   }
 
@@ -2766,17 +2746,19 @@ public class BinaryCasSerDes6 {
  
     
   private void processFSsForView(final boolean isEnqueue, final boolean isWrite,
-                                Object fssx) {
+                                Stream<TOP> fss) {
     //  prev id and entries written as a captured value in context
-    final int[] context = {0, 0};  
+
     final int prevId = 0, entriesWritten = 1;  // indexes into context
-    Stream<TOP> stream = (fssx instanceof FSIterator<?>) 
-        ? ((FSIterator<TOP>)fssx).asStream()
-        : ((Set<TOP>)fssx).stream();
-    stream.sorted()
+//    Stream<TOP> stream = (fssx instanceof FSIterator<?>) 
+//        ? ((FSIterator<TOP>)fssx).asStream()
+//        : ((Set<TOP>)fssx).stream();
+    if (isWrite) {
+      final int[] context = {0, 0};  
+      fss.sorted()
         .forEachOrdered(fs -> {
           // skip write if typemapping, and target type isn't there
-          if (isWrite && (!isTypeMapping || (null != typeMapper.mapTypeSrc2Tgt(fs._typeImpl)))) {
+          if (isWrite && isTypeInTgt(fs)) {
             
             final int tgtId = getTgtSeqFromSrcFS(fs);
             assert(tgtId > 0);
@@ -2792,13 +2774,12 @@ public class BinaryCasSerDes6 {
             if (doMeasurements) {
               sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
             }
-          }
-          
+          } // end of conditional write
+        
           if (isEnqueue) {
             enqueueFS(fs);
           }
         });
-    if (isWrite) {
       try {
         writeVnumber(control_dos, context[entriesWritten]);
       } catch (IOException e) {
@@ -2807,6 +2788,9 @@ public class BinaryCasSerDes6 {
       if (doMeasurements) {
         sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(entriesWritten));
       }
+    } else if (isEnqueue) {
+      // not write case, just enqueue, not sorted
+      fss.forEach(fs -> enqueueFS(fs));
     }
   }
   
@@ -2836,7 +2820,7 @@ public class BinaryCasSerDes6 {
   }
   
   private boolean isTypeInTgt(TOP fs) {
-    return !isTypeMapping || (null != typeMapper.mapTypeSrc2Tgt(fs.getTypeImpl()));
+    return !isTypeMapping || (null != typeMapper.mapTypeSrc2Tgt(fs._typeImpl));
   }
   
 //  private boolean isTypeInTgt(int typecode) {
@@ -2875,7 +2859,7 @@ public class BinaryCasSerDes6 {
         }
       } 
       if (srcFeat.getRangeImpl().isRefType) {
-        enqueueFS(fs.getFeatureValue(srcFeat));
+        enqueueFS(fs.getFeatureValueNc(srcFeat));
       }
     }
   }
@@ -2897,7 +2881,7 @@ public class BinaryCasSerDes6 {
       TypeImpl tgtType = isTypeMapping ? typeMapper.mapTypeSrc2Tgt(srcType) : srcType;
       final boolean isIncludedType = (tgtType != null);
       
-      fsStartIndexes.addItemId(fs._id, nextTgtId, isIncludedType);  // maps src heap to tgt seq
+      fsStartIndexes.addItemId(fs, nextTgtId, isIncludedType);  // maps src heap to tgt seq
       
       if (isIncludedType) {
         // for features in type - 
@@ -2934,7 +2918,7 @@ public class BinaryCasSerDes6 {
     
     for (FeatureImpl fi : fs._typeImpl.getFeatureImpls()) {
       if (fi.getRange() instanceof TypeImpl_string) {
-        os.add(fs.getStringValue(fi));
+        os.add(fs.getStringValueNc(fi));
       }
     }
   }
@@ -2966,8 +2950,14 @@ public class BinaryCasSerDes6 {
       final private CASImpl c2;
       final private TypeSystemImpl ts1;      
       final private TypeSystemImpl ts2;
-      final Set<TOP> wasSeen = Collections.newSetFromMap(new IdentityHashMap<>());
       
+      /**
+       * This is used for two things:
+       *   First, used twice while sorting individual FS collections to be compared.
+       *   Second, used when doing the comparison to break recursion if asked to compare the same two things while comaring them.
+       */
+      final Set<Pair<TOP, TOP>> prevCompare = Collections.newSetFromMap(new HashMap<>());
+            
       private TOP fs1, fs2;
       private boolean isSrcCas;  // used for sorting with a CAS, to differentiate between src and target CASes
             
@@ -2985,7 +2975,9 @@ public class BinaryCasSerDes6 {
       final boolean savedIsTypeMapping= isTypeMapping;
       try {
         assert(ts1 == srcTs);
-        assert(ts2 == tgtTs);
+        // sometimes the tgtTs is null, indicating no type mapping
+        //   the CASs being compared are then both of type srcTs
+        assert(ts2 == srcTs || ts2 == tgtTs);
 //        srcTs = ts1;
         processIndexedFeatureStructures(c1, false);
         c1FoundFSs = fssToSerialize;  // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
@@ -3009,7 +3001,7 @@ public class BinaryCasSerDes6 {
         sort(c1FoundFSs);
         isSrcCas = false;
         sort(c2FoundFSs);
-        wasSeen.clear();
+        prevCompare.clear();
         
         while (i1 < sz1 && i2 < sz2) {
           fs1 = c1FoundFSs.get(i1);  // assumes the elements are in same order??
@@ -3028,7 +3020,7 @@ public class BinaryCasSerDes6 {
               continue;
             }
             if (typeMissingIn1 && typeMissingIn2) {
-              assert(false);
+              Misc.internalError();
               i1++;
               i2++;
               continue;
@@ -3039,7 +3031,7 @@ public class BinaryCasSerDes6 {
               continue;
             }
             if (typeMissingIn2) {
-              assert(false); 
+              Misc.internalError(); 
               i1++;
               continue;
             }
@@ -3143,32 +3135,32 @@ public class BinaryCasSerDes6 {
       case Slot_ShortRef:   return compareAllArrayElements(len1, i -> ((ShortArray  )a1).get(i) == ((ShortArray  )a2).get(i));
       case Slot_Int:     return compareAllArrayElements(len1, i -> ((IntegerArray)a1).get(i) == ((IntegerArray)a2).get(i));
       case Slot_LongRef:    return compareAllArrayElements(len1, i -> ((LongArray   )a1).get(i) == ((LongArray   )a2).get(i));
-      case Slot_Float:   return compareAllArrayElements(len1, i -> Float.floatToRawIntBits(((FloatArray  )a1).get(i)) == 
-                                                                   Float.floatToRawIntBits(((FloatArray  )a2).get(i)));
+      case Slot_Float:   return compareAllArrayElements(len1, i -> CASImpl.float2int(((FloatArray  )a1).get(i)) == 
+                                                                   CASImpl.float2int(((FloatArray  )a2).get(i)));
       case Slot_DoubleRef:  return compareAllArrayElements(len1, i -> Double.doubleToRawLongBits(((DoubleArray)a1).get(i)) == 
                                                                       Double.doubleToRawLongBits(((DoubleArray)a2).get(i)));
       case Slot_HeapRef: return compareAllArrayElements(len1, i -> compareRefs(((FSArray)a1).get(i), ((FSArray)a2).get(i), null));
       case Slot_StrRef:  return compareAllArrayElements(len1, i -> areStringsEqual(((StringArray)a1).get(i), ((StringArray)a2).get(i)));
       default: 
-        assert(false); return true;  // only to avoid a compile error
+        Misc.internalError(); return true;  // only to avoid a compile error
       }
     }
         
     private boolean compareSlot(FeatureImpl fi1, FeatureImpl fi2) {
       SlotKind kind = fi1.getSlotKind();
       switch (kind) {
-      case Slot_Int: return fs1.getIntValue(fi1) == fs2.getIntValue(fi2); 
-      case Slot_Short: return fs1.getShortValue(fi1) == fs2.getShortValue(fi2);
-      case Slot_Boolean: return fs1.getBooleanValue(fi1) == fs2.getBooleanValue(fi2);
-      case Slot_Byte: return fs1.getByteValue(fi1) == fs2.getByteValue(fi2);
+      case Slot_Int: return fs1.getIntValueNc(fi1) == fs2.getIntValueNc(fi2); 
+      case Slot_Short: return fs1.getShortValueNc(fi1) == fs2.getShortValueNc(fi2);
+      case Slot_Boolean: return fs1.getBooleanValueNc(fi1) == fs2.getBooleanValueNc(fi2);
+      case Slot_Byte: return fs1.getByteValueNc(fi1) == fs2.getByteValueNc(fi2);
             // don't compare floats directly - the NaN is defined to miscompare
-      case Slot_Float: return Float.floatToRawIntBits(fs1.getFloatValue(fi1)) == Float.floatToRawIntBits(fs2.getFloatValue(fi2));
-      case Slot_HeapRef: return compareRefs(fs1.getFeatureValue(fi1), fs2.getFeatureValue(fi2), fi1);
-      case Slot_StrRef: return areStringsEqual(fs1.getStringValue(fi1), fs2.getStringValue(fi2));
-      case Slot_LongRef: return fs1.getLongValue(fi1) == fs2.getLongValue(fi2);
+      case Slot_Float: return CASImpl.float2int(fs1.getFloatValueNc(fi1)) == CASImpl.float2int(fs2.getFloatValueNc(fi2));
+      case Slot_HeapRef: return compareRefs(fs1.getFeatureValueNc(fi1), fs2.getFeatureValueNc(fi2), fi1);
+      case Slot_StrRef: return areStringsEqual(fs1.getStringValueNc(fi1), fs2.getStringValueNc(fi2));
+      case Slot_LongRef: return fs1.getLongValueNc(fi1) == fs2.getLongValueNc(fi2);
             // don't compare doubles directly - the NaN is defined to miscompare
-      case Slot_DoubleRef: return Double.doubleToRawLongBits(fs1.getDoubleValue(fi1)) == Double.doubleToRawLongBits(fs2.getDoubleValue(fi2));
-      default: assert(false); return true;     
+      case Slot_DoubleRef: return Double.doubleToRawLongBits(fs1.getDoubleValueNc(fi1)) == Double.doubleToRawLongBits(fs2.getDoubleValueNc(fi2));
+      default: Misc.internalError(); return true;     
       }
     }
           
@@ -3208,12 +3200,15 @@ public class BinaryCasSerDes6 {
       // ids mismatch, but might have the same "value"
       // do a recursive check 
       
-      if (alreadyChecked(rfs1, rfs2)) {
-        return true; // already seen, all compare ok
+      Pair<TOP, TOP> refs = new Pair<TOP, TOP>(rfs1, rfs2);      
+      if (!prevCompare.add(refs)) {
+        return true; // consider these FSs to be equal, since we hit this while comparing them, to break recursion.
+                     // if there are other slots to compare, they will be compared subsequentially, at the higher level.
       }
-      
+            
       TOP savedFs1 = fs1;
       TOP savedFs2 = fs2;
+      
       fs1 = rfs1;
       fs2 = rfs2;
       try {
@@ -3221,15 +3216,10 @@ public class BinaryCasSerDes6 {
       } finally {
         fs1 = savedFs1;
         fs2 = savedFs2;
+        prevCompare.remove(refs);
       }
     }
-    
-    private boolean alreadyChecked(TOP fs1, TOP fs2) {
-      boolean stop = !wasSeen.add(fs1);
-      stop = stop | !wasSeen.add(fs2);
-      return stop;
-    }
-    
+        
     private boolean compareAllArrayElements(int len, IntPredicate c) {
       for (int i = 0; i < len; i++) {
         if (!c.test(i)) {
@@ -3327,7 +3317,7 @@ public class BinaryCasSerDes6 {
     }
         
     private void sort(List<TOP> fss) {
-      wasSeen.clear();
+      prevCompare.clear();
       Collections.sort(fss,  (fs1, fs2) -> sortCompare(fs1, fs2));
     }
     
@@ -3336,20 +3326,23 @@ public class BinaryCasSerDes6 {
      * 
      * Uses field isSrcCas (boolean) to differentiate when being used to sort for srcCas vs tgtCas
      * 
-     * @param fs1
-     * @param fs2
+     * When sorting where type mapping is happening between source and target CASs, skip compares for
+     * features which are not in the opposite CAS.
+     * 
+     * @param scFs1
+     * @param scFs2
      * @return
      */
-    private int sortCompare(TOP fs1, TOP fs2) {
+    private int sortCompare(TOP scFs1, TOP scFs2) {
       // sort by type code first
-      final TypeImpl fs1Type = fs1._typeImpl;
-      int c = fs1Type.getName().compareTo(fs2._typeImpl.getName());
+      final TypeImpl fs1Type = scFs1._typeImpl;
+      int c = fs1Type.getName().compareTo(scFs2._typeImpl.getName());
       if (c != 0) return c;
       
       // same type: compare on features, or if array, on length, then content
       
       if (fs1Type.isArray()) {
-        return sortArray(fs1, fs2);
+        return sortArray(scFs1, scFs2);
       }
       
       List<FeatureImpl> fis = fs1Type.getFeatureImpls();
@@ -3357,43 +3350,43 @@ public class BinaryCasSerDes6 {
         if (isTypeMapping) {
           if (isSrcCas && typeMapper.getTgtFeature(fs1Type, fi) == null) {
             continue; // don't sort on features not in target type
-          } else if (typeMapper.getSrcFeature(fs1Type,  fi) == null) {
+          } else if ((!isSrcCas) && typeMapper.getSrcFeature(fs1Type,  fi) == null) {
             continue;  // don't sort on features not in source type
           }
         }
         SlotKind kind = fi.getSlotKind();
         switch(kind) {    // ...Ref are either long/double/str 
         case Slot_Boolean: 
-          c = Boolean.compare(fs1.getBooleanValue(fi),  fs2.getBooleanValue(fi));
+          c = Boolean.compare(scFs1.getBooleanValueNc(fi),  scFs2.getBooleanValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Byte: 
-          c = Byte.compare(fs1.getByteValue(fi),  fs2.getByteValue(fi));
+          c = Byte.compare(scFs1.getByteValueNc(fi),  scFs2.getByteValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Short: 
-          c = Short.compare(fs1.getShortValue(fi),  fs2.getShortValue(fi));
+          c = Short.compare(scFs1.getShortValueNc(fi),  scFs2.getShortValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Int:     
-          c = Integer.compare(fs1.getIntValue(fi),  fs2.getIntValue(fi));
+          c = Integer.compare(scFs1.getIntValueNc(fi),  scFs2.getIntValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Float:                               
-          c = Integer.compare(Float.floatToRawIntBits(fs1.getFloatValue(fi)),  
-                              Float.floatToRawIntBits(fs2.getFloatValue(fi)));
+          c = Integer.compare(CASImpl.float2int(scFs1.getFloatValueNc(fi)),  
+                              CASImpl.float2int(scFs2.getFloatValueNc(fi)));
           if (c != 0) return c; continue;
         case Slot_LongRef:   
-          c = Long.compare(fs1.getLongValue(fi),  fs2.getLongValue(fi));
+          c = Long.compare(scFs1.getLongValueNc(fi),  scFs2.getLongValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_DoubleRef:   
-          c = Long.compare(Double.doubleToRawLongBits(fs1.getDoubleValue(fi)),  
-                           Double.doubleToRawLongBits(fs2.getDoubleValue(fi)));
+          c = Long.compare(Double.doubleToRawLongBits(scFs1.getDoubleValueNc(fi)),  
+                           Double.doubleToRawLongBits(scFs2.getDoubleValueNc(fi)));
           if (c != 0) return c; continue;
         case Slot_StrRef:  
-          c = Misc.compareStrings(fs1.getStringValue(fi), fs2.getStringValue(fi));
+          c = Misc.compareStrings(scFs1.getStringValueNc(fi), scFs2.getStringValueNc(fi));
           if (c != 0) return c; 
           continue;
           
         case Slot_HeapRef: 
-          TOP refFs1 = fs1.getFeatureValue(fi);
-          TOP refFs2 = fs2.getFeatureValue(fi);
+          TOP refFs1 = scFs1.getFeatureValueNc(fi);
+          TOP refFs2 = scFs2.getFeatureValueNc(fi);
           if (null == refFs1) {
             if (null == refFs2) {
               continue;
@@ -3408,14 +3401,13 @@ public class BinaryCasSerDes6 {
             continue; 
           }
           // refFS1 != null; refFs2 != null; type is not sofaTypeCode
-          boolean stop = alreadyChecked(fs1, fs2);
-          if (stop) {
-            return 0;
+          if (!prevCompare.add(new Pair<TOP, TOP>(scFs1, scFs2))) {
+            continue; // skip recursion if previously were in the middle of sort-comparing these two elements
           }
           return sortCompare(refFs1, refFs2);
           
         default: 
-          assert(false); 
+          Misc.internalError(); 
           return 0;
         } // end of switch
       } // end of for loop
@@ -3503,7 +3495,7 @@ public class BinaryCasSerDes6 {
 //        case Slot_LongRef: case Slot_DoubleRef: {
 //          long v = cas.getLongHeap().getHeapValue(heap[iHeap + 2 + i]);
 //          if (arrayElementKind == Slot_DoubleRef) {
-//            sb.append(Double.longBitsToDouble(v));
+//            sb.append(CASImpl.long2double(v));
 //          } else {
 //            sb.append(String.format("%,d", v));
 //          }
@@ -3541,7 +3533,7 @@ public class BinaryCasSerDes6 {
 //        return sb.append(String.format("%,d", cas.getLongHeap().getHeapValue(heap[iHeap + offset])));
 //      case Slot_DoubleRef: {
 //        long v = cas.getLongHeap().getHeapValue(heap[iHeap + offset]);
-//        return sb.append(Double.longBitsToDouble(v)).append(' ').append(Long.toHexString(v));
+//        return sb.append(CASImpl.long2double(v)).append(' ').append(Long.toHexString(v));
 //      }
 //      default: throw new RuntimeException("internal error");      
 //      }
@@ -3604,12 +3596,44 @@ public class BinaryCasSerDes6 {
    * @throws FileNotFoundException passthru
    ********************************************/
   private void setupOutputStreams(Object out) throws FileNotFoundException { 
+    
     serializedOut = makeDataOutputStream(out);
+    
+    setupOutputStreams(cas, baosZipSources, dosZipSources); 
+
+//    arrayLength_dos = dosZipSources[arrayLength_i];
+//    heapRef_dos = dosZipSources[heapRef_i];
+//    int_dos = dosZipSources[int_i];
+    byte_dos = dosZipSources[byte_i];
+//    short_dos = dosZipSources[short_i];
+    typeCode_dos = dosZipSources[typeCode_i];
+    strOffset_dos = dosZipSources[strOffset_i];
+    strLength_dos = dosZipSources[strLength_i];
+//    long_High_dos = dosZipSources[long_High_i];
+//    long_Low_dos = dosZipSources[long_Low_i];
+    float_Mantissa_Sign_dos = dosZipSources[float_Mantissa_Sign_i];
+    float_Exponent_dos = dosZipSources[float_Exponent_i];
+    double_Mantissa_Sign_dos = dosZipSources[double_Mantissa_Sign_i];
+    double_Exponent_dos = dosZipSources[double_Exponent_i];
+    fsIndexes_dos = dosZipSources[fsIndexes_i];
+//    strChars_dos = dosZipSources[strChars_i];
+    control_dos = dosZipSources[control_i];
+    strSeg_dos = dosZipSources[strSeg_i];
+  } 
+  
+  static void setupOutputStreams(
+      CASImpl cas, 
+      ByteArrayOutputStream[] baosZipSources,
+      DataOutputStream[] dosZipSources) { 
+
+    final int[] estimatedZipSize = new int[NBR_SLOT_KIND_ZIP_STREAMS]; // one entry for each output stream kind
 
     // estimate model:
-    //   33% of space in strings, 33% in heap, 33% other
-    //   compr ratio for heap is 98%
-    int compr = Misc.nextHigherPowerOfX(10 * 1024 * 1024 * 8 / 3 / 50, 4096);  // = 561152
+    //   33% of space in strings, 33% in heap, 33% other == divide est by 3
+    //   compr ratio for heap is 98%, == divide est by 50
+    //   avg # of v2 heap slots per fs = 5
+    //   avg bytes per slot = 4 + 4(to cover for off heap things) = 8
+    int compr = cas.getLastUsedFsId() * 5 * 8 / 3 / 50;
     int compr1000 = Misc.nextHigherPowerOfX(Math.max(512, compr/1000), 32); // = 576
     // 2nd arg is the number of bytes in the byte output stream, initially
     estimatedZipSize[typeCode_i] = Math.max(512, compr/4);  // /4 for ~4 slots per fs = 140,288 
@@ -3632,35 +3656,16 @@ public class BinaryCasSerDes6 {
     estimatedZipSize[control_i] = 128;
     
     for (int i = 0; i < baosZipSources.length; i++) {
-      setupOutputStream(i);
+      setupOutputStream(i, estimatedZipSize[i], baosZipSources, dosZipSources);
     }
-    // below must follow the setupOutputStream calls above
-    
-//    arrayLength_dos = dosZipSources[arrayLength_i];
-//    heapRef_dos = dosZipSources[heapRef_i];
-//    int_dos = dosZipSources[int_i];
-    byte_dos = dosZipSources[byte_i];
-//    short_dos = dosZipSources[short_i];
-    typeCode_dos = dosZipSources[typeCode_i];
-    strOffset_dos = dosZipSources[strOffset_i];
-    strLength_dos = dosZipSources[strLength_i];
-//    long_High_dos = dosZipSources[long_High_i];
-//    long_Low_dos = dosZipSources[long_Low_i];
-    float_Mantissa_Sign_dos = dosZipSources[float_Mantissa_Sign_i];
-    float_Exponent_dos = dosZipSources[float_Exponent_i];
-    double_Mantissa_Sign_dos = dosZipSources[double_Mantissa_Sign_i];
-    double_Exponent_dos = dosZipSources[double_Exponent_i];
-    fsIndexes_dos = dosZipSources[fsIndexes_i];
-//    strChars_dos = dosZipSources[strChars_i];
-    control_dos = dosZipSources[control_i];
-    strSeg_dos = dosZipSources[strSeg_i];
-  } 
-  
-  private DataOutputStream setupOutputStream(int i) {
+  }
+
+  static private void setupOutputStream(int i, int size,
+      ByteArrayOutputStream[] baosZipSources,
+      DataOutputStream[] dosZipSources) {
     // set up output stream
-    int size = estimatedZipSize[i];
     baosZipSources[i] = new ByteArrayOutputStream(size);
-    return dosZipSources[i] = new DataOutputStream(baosZipSources[i]); 
+    dosZipSources[i] = new DataOutputStream(baosZipSources[i]); 
   }
 
   private void setupReadStreams() throws IOException {
@@ -3758,46 +3763,24 @@ public class BinaryCasSerDes6 {
    * HEADERS
    * @throws IOException passthru
    *********************************************/
-  private void writeHeader() throws IOException {
-    // encode: bits 7 6 5 4 3 2 1 0
-    //                        0 0 1 = no delta, no compression
-    //                        0 1 - = delta, no compression
-    //                        1 d - = compression, w/wo delta
-    int version = 4 | ((isSerializingDelta) ? 2 : 0);
-    CASSerializer.outputVersion(version, serializedOut);
-      
-    serializedOut.writeInt(VERSION);  // reserved for future version info
-    if (doMeasurements) {
-      sm.header = 12;
-    }
-  }
   
   private void readHeader(InputStream istream) throws IOException {
-    deserIn = (istream instanceof DataInputStream) ? (DataInputStream) istream
-        : new DataInputStream(istream);
-
-    // key
-    // determine if byte swap if needed based on key
-    byte[] bytebuf = new byte[4];
-    bytebuf[0] = deserIn.readByte(); // U
-    bytebuf[1] = deserIn.readByte(); // I
-    bytebuf[2] = deserIn.readByte(); // M
-    bytebuf[3] = deserIn.readByte(); // A
-
-    // version
-    // version bit in 2's place indicates this is in delta format.
-    final int version1 = deserIn.readInt();
-    isDelta = isReadingDelta = ((version1 & 2) == 2);
-
-    if (0 == (version1 & 4)) {
+    deserIn = CommonSerDes.maybeWrapToDataInputStream(istream);
+    Header h = CommonSerDes.readHeader(deserIn);
+    
+    if (!h.isCompressed) {
       throw new RuntimeException(
           "non-compressed invalid object passed to BinaryCasSerDes6 deserialize");
     }
     
-    version = deserIn.readInt();
-    if (version == 0) {
+    if (!h.form6) {
       throw new RuntimeException(String.format("Wrong version: %d in input source passed to BinaryCasSerDes6 for deserialization", version));
     }
+    
+    isReadingDelta = isDelta = h.isDelta;
+    
+    
+    
   }
   
   /* *******************************************
