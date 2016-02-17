@@ -415,6 +415,14 @@ class FsIndex_iicp<T extends FeatureStructure>
              ? new FsIterator_subtypes_ordered<T>(this)
              : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).iterators, fsIndex_singletype);
   } 
+  
+  public FSIterator<T> iteratorUnordered() {
+    createIndexIteratorCache();  
+    
+    return (cachedSubFsLeafIndexes.size() == 1)
+           ? (FSIterator<T>) fsIndex_singletype.iterator()
+           : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).iterators, fsIndex_singletype); 
+  }
 
   /**
    * Iterator over arbitrary Feature Structures, but also filters out non-AnnotationFS FeatureStructures
