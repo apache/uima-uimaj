@@ -1015,7 +1015,6 @@ public class XmiCasSerializer {
 
       StringBuilder buf = new StringBuilder();
       CommonArray fs = (CommonArray) fsIn;
-      final int size = fs.size();
       String elemStr = null;
       
       // FS arrays: handle shared data items

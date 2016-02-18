@@ -170,17 +170,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     
     _id = _casView.setId2fs((TOP)this); 
   }
-  
-  
-  // Only for clone use
-  private FeatureStructureImplC(CASImpl casView, TypeImpl type, int[] intData, Object[] refData) {
-    this._casView = casView;
-    this._typeImpl = type;
-    _intData = intData.clone();
-    _refData = refData.clone();
-    _id = casView.setId2fs((TOP)this);    
-  }
-  
+    
   /* ***********************
    *    Index Add Remove
    * ***********************/

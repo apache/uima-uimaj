@@ -525,22 +525,22 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @param fi the feature
    */
   private void checkAndAdjustFeatureInSubtypes(TypeImpl ti, FeatureImpl fi) {
-    String shortName = fi.getShortName();
+    String featShortName = fi.getShortName();
     for (TypeImpl subti : ti.directSubtypes) {
-      removeEqualFeatureNameMatch(subti.staticMergedFeaturesIntroducedByThisType, shortName);
-      FeatureImpl existing = subti.staticMergedFeatures.get(shortName);
+      removeEqualFeatureNameMatch(subti.staticMergedFeaturesIntroducedByThisType, featShortName);
+      FeatureImpl existing = subti.staticMergedFeatures.get(featShortName);
       checkExistingFeatureCompatible(existing, fi.getRange());
       if (existing == null) {
-        subti.staticMergedFeatures.put(shortName, fi);
+        subti.staticMergedFeatures.put(featShortName, fi);
       }
       checkAndAdjustFeatureInSubtypes(subti, fi);
     }
   }
 
-  private void removeEqualFeatureNameMatch(List<FeatureImpl> fiList, String name) {
+  private void removeEqualFeatureNameMatch(List<FeatureImpl> fiList, String aName) {
     for (Iterator<FeatureImpl> it = fiList.iterator(); it.hasNext();) {
       FeatureImpl fi = it.next();
-      if (fi.getShortName().equals(name)) {
+      if (fi.getShortName().equals(aName)) {
         it.remove();
         break;
       }

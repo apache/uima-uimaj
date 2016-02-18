@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Misc;
 
 /**

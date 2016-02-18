@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 import org.apache.uima.jcas.cas.TOP;
 

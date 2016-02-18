@@ -1527,7 +1527,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     /** used for deferred creation */
     private int sofaNum;
     private String sofaName;
-    private String sofaMimeType;
     private Sofa sofaRef;
 
 //    private int[] heap;           // main heap
@@ -1754,7 +1753,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             sofaRef = null;
             sofaNum = -1;
             sofaName = null;
-            sofaMimeType = null;
           }
           for (FeatureImpl feat : type.getFeatureImpls()) {
             readByKind(feat, type);
@@ -1775,7 +1773,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
            */
 
           if (ts.sofaType == type) {
-            currentFs = baseCas.createSofa(sofaNum, sofaName, sofaMimeType);  
+            currentFs = baseCas.createSofa(sofaNum, sofaName, null);  
           } else {
             CASImpl view = (CASImpl) baseCas.getView(sofaRef);
             if (type.getCode() == TypeSystemImpl.docTypeCode) {

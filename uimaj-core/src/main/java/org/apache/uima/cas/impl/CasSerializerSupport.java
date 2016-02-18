@@ -348,7 +348,7 @@ public class CasSerializerSupport {
 
     private TypeImpl[] sortedUsedTypes;
     
-    private final ErrorHandler errorHandler;
+    private final ErrorHandler errorHandler2;
     
     public TypeSystemImpl filterTypeSystem;
     
@@ -383,7 +383,7 @@ public class CasSerializerSupport {
       filterTypeSystem = CasSerializerSupport.this.filterTypeSystem; 
       isFormattedOutput = CasSerializerSupport.this.isFormattedOutput; 
       this.marker = marker;
-      errorHandler = CasSerializerSupport.this.errorHandler;
+      errorHandler2 = CasSerializerSupport.this.errorHandler;
 
       tsi = cas.getTypeSystemImpl();
       queue = new ArrayDeque<>();
@@ -405,8 +405,8 @@ public class CasSerializerSupport {
           + " multiple references.  These will be serialized in duplicate.", 
           fi.getName());
       MessageReport.decreasingWithTrace(errorCount, message, logger);
-      if (this.errorHandler != null) {
-        this.errorHandler.warning(new SAXParseException(message, null));
+      if (this.errorHandler2 != null) {
+        this.errorHandler2.warning(new SAXParseException(message, null));
       }
     }
 
@@ -1015,13 +1015,7 @@ public class CasSerializerSupport {
              (i1 >  i2) ? 1 : -1;
     }
     
-    
-    private int compareFeat(int o1, int o2, int featCode) {
-      final int f1 = cas.ll_getIntValue(o1, featCode);
-      final int f2 = cas.ll_getIntValue(o2, featCode);
-      return compareInts(f1, f2);
-    }
-    
+        
     /** 
      * Called for JSon Serialization
      * Sort a view, by type and then by begin/end asc/des for subtypes of Annotation,

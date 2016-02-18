@@ -95,7 +95,6 @@ final class ByteHeap extends CommonAuxHeap {
 
   int addBooleanArrayNoStore(boolean[] val) {  // for compress4 
     int pos = reserve(val.length);
-    int i = pos;
     return pos;   
   }
 

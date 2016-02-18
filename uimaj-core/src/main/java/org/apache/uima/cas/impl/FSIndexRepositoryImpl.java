@@ -704,22 +704,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     return ind;
   }
-  
-  private boolean isAnnotationIndex(Type type, FSIndexComparator compForIndexSpecs) {
-    TypeSystemImpl tsi = this.sii.tsi;
-    return 
-        (type == tsi.annotType) &&
-        (compForIndexSpecs.getNumberOfKeys() == 3) &&
-        (compForIndexSpecs.getKeyType(0) == FSIndexComparator.FEATURE_KEY) &&
-        (compForIndexSpecs.getKeyType(1) == FSIndexComparator.FEATURE_KEY) &&
-        (compForIndexSpecs.getKeyType(2) == FSIndexComparator.TYPE_ORDER_KEY) &&
-        (compForIndexSpecs.getKeyComparator(0) == FSIndexComparator.STANDARD_COMPARE) &&
-        (compForIndexSpecs.getKeyComparator(1) == FSIndexComparator.REVERSE_STANDARD_COMPARE) &&       
-        (compForIndexSpecs.getKeyComparator(2) == FSIndexComparator.STANDARD_COMPARE) &&
-        (compForIndexSpecs.getKeyFeature(0) == tsi.startFeat) &&
-        (compForIndexSpecs.getKeyFeature(1) == tsi.endFeat); 
-  }
- 
+   
   /**
    * Top level call to add the indexes for a particular index definition
    * @param compForIndexSpecs
@@ -959,7 +944,6 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       throw new CASRuntimeException(CASRuntimeException.TYPE_NOT_IN_INDEX, label, type.getName(), indexType.getName());
     }
 
-    final ArrayList<FsIndex_iicp<TOP>> inds = this.getIndexesForType(ti.getCode()).indexesForType;
     // Since we found an index for the correct type, and 
     // named indexes at creation time create all their subtype iicps, find() must return a
     // valid result

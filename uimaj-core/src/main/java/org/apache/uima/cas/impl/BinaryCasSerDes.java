@@ -1579,23 +1579,23 @@ public class BinaryCasSerDes {
     return heap.heap[nextFsAddr + 1 + feat.getOffset()];
   }
   
-  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap, Int2ObjHashMap<TOP> addr2fs) {
+  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs) {
     int sofaAddr = heapFeat(annotBaseAddr, tsi.annotBaseSofaFeat);
     if (0 == sofaAddr) {
       return null;
     }
     // get existing sofa or create sofa
-    return makeSofaFromHeap(sofaAddr, stringHeap, addr2fs);
+    return makeSofaFromHeap(sofaAddr, stringHeap2, addr2fs);
   }
   
-  private Sofa makeSofaFromHeap(int sofaAddr, StringHeap stringHeap, Int2ObjHashMap<TOP> addr2fs) {
+  private Sofa makeSofaFromHeap(int sofaAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs) {
     TOP sofa = addr2fs.get(sofaAddr);
     if (sofa != null) {
       return (Sofa) sofa;
     }
     // create sofa
     int sofaNum = heapFeat(sofaAddr, tsi.sofaNum);
-    String sofaName = stringHeap.getStringForCode(heapFeat(sofaAddr, tsi.sofaId));
+    String sofaName = stringHeap2.getStringForCode(heapFeat(sofaAddr, tsi.sofaId));
     sofa = baseCas.createSofa(sofaNum, sofaName, null);
     addr2fs.put(sofaAddr,  sofa);
     return (Sofa) sofa;

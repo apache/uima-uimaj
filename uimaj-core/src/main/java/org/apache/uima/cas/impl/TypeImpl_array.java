@@ -29,16 +29,16 @@ public class TypeImpl_array extends TypeImpl {
   private final boolean isHeapStoredArray;
   
   /** Component slot kind */
-  private final SlotKind slotKind;
+  private final SlotKind  componentSlotKind;
   
   public TypeImpl_array(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, 
-      SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
+      SlotKind componentSlotKind, boolean isHeapStoredArray, Class<?> javaClass) {
     super(name, tsi, supertype, javaClass);
     this.isInheritanceFinal = true;
     this.isFeatureFinal = true;
     this.componentType = componentType;
     this.isHeapStoredArray = isHeapStoredArray;
-    this.slotKind = slotKind;
+    this.componentSlotKind = componentSlotKind;
   }
   
   @Override
@@ -73,6 +73,6 @@ public class TypeImpl_array extends TypeImpl {
   /** Component Slot Kind */
   @Override
   public SlotKind getComponentSlotKind() {
-    return slotKind;
+    return componentSlotKind;
   }
 }

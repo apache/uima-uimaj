@@ -24,7 +24,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationTree;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Implementation of annotation indexes.

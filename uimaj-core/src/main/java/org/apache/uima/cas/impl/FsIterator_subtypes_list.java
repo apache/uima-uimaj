@@ -21,10 +21,8 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Function;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.jcas.cas.TOP;
 
 public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  extends FsIterator_subtypes<T> {
 
@@ -50,11 +48,7 @@ public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  ext
   private FsIterator_singletype<T>[] initIterators() {
     iicp.createIndexIteratorCache();
     final ArrayList<FsIndex_singletype<FeatureStructure>> cachedSubIndexes = iicp.cachedSubFsLeafIndexes;
-    
-    // map from single-type index to iterator over that single type
-    Function<FsIndex_singletype<T>, FsIterator_singletype<T>> m = 
-        fsIndex_singletype -> (FsIterator_singletype<T>)(fsIndex_singletype.iterator());
-    
+        
     FsIterator_singletype<T>[] r = cachedSubIndexes.stream()
         .filter(leafIndex -> leafIndex.size() > 0)  // filter out empty ones     
         .map( index -> index.iterator())  // map fsIndex_singletype to an iterator over that

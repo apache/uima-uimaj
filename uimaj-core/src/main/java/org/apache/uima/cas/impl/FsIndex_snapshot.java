@@ -23,7 +23,6 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Implementation of light-weight wrapper of normal indexes, which support special kinds of iterators

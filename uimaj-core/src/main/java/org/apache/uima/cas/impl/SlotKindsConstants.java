@@ -31,10 +31,10 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_High;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Long_Low;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrChars;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrLength;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrOffset;
+import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrSeg;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_TypeCode;
 

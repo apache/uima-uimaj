@@ -26,6 +26,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
+import org.apache.uima.internal.util.IntVector;
 
 /**
  * Specifies the comparison to be used for an index, in terms of
@@ -42,7 +43,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   private final List<Object> keySpecs;  // Feature or LinearTypeOrder
 
   // Standard or Reverse
-  private final List<Integer> directions;
+  private final IntVector directions;
 
 //  // FEATURE_KEY or TYPE_ORDER_KEY
 //  private IntVector keyTypeVector;
@@ -51,10 +52,10 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   public FSIndexComparatorImpl() {
     this.type = null;
     this.keySpecs = new ArrayList<Object>();
-    this.directions = new ArrayList<Integer>();
+    this.directions = new IntVector();
   }
   
-  private FSIndexComparatorImpl(Type type, List<Object> keySpecs, List<Integer> directions) {
+  private FSIndexComparatorImpl(Type type, List<Object> keySpecs, IntVector directions) {
     this.type = type;
     this.keySpecs = keySpecs;
     this.directions = directions;
