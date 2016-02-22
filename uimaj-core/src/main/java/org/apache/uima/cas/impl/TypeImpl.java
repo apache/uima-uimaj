@@ -365,7 +365,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * 
    * @return The type hierarchy.
    */
-  public TypeSystem getTypeSystem() {
+  public TypeSystemImpl getTypeSystem() {
     return this.tsi;
   }
 

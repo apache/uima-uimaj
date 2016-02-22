@@ -1334,8 +1334,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
                  
       if (IS_DECOMPILE_JCAS) {  
         synchronized(GLOBAL_TYPESYS_LOCK) {
-          for(Type t : types) {
-            if (t == null) continue;
+          for(Type t : getAllTypes()) {
             decompile(t);
           }
         }
