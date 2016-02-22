@@ -122,7 +122,7 @@ public class FeatureImpl implements Feature {
     return this.rangeType;
   }
   
-  SlotKind getSlotKind() {
+  public SlotKind getSlotKind() {
     return this.slotKind;
   }
 
