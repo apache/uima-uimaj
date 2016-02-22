@@ -145,6 +145,7 @@ public class Jg {
 
     builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();
     ((CASImpl) tcas).commitTypeSystem();
+    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();  // needed because commit may reuse existing type system
 
     for (Iterator it = builtInTypeSystem.getTypeIterator(); it.hasNext();) {
       Type type = (Type) it.next();
