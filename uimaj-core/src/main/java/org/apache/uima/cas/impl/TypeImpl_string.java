@@ -19,6 +19,9 @@
 
 package org.apache.uima.cas.impl;
 
+/**
+ * String or String Subtype
+ */
 public class TypeImpl_string extends TypeImpl_primitive {  // string considered a primitive e.g. in index comparators
   
   public TypeImpl_string(String name, TypeSystemImpl tsi, TypeImpl supertype) {
