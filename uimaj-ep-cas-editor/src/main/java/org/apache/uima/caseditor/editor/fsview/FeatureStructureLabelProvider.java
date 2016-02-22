@@ -20,9 +20,9 @@
 package org.apache.uima.caseditor.editor.fsview;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.FeatureValue;
+import org.apache.uima.jcas.cas.TOP;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -61,7 +61,7 @@ public final class FeatureStructureLabelProvider implements ILabelProvider {
       }
 
       return structure.getType().getShortName() + " (id=" +
-      		((FeatureStructureImpl) structure).getAddress() + ")";
+      		((TOP) structure).getAddress() + ")";
     }
     else {
       assert false : "Unexpected element!";
