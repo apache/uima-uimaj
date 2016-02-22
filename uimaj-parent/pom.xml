@@ -196,7 +196,8 @@
           <!-- version 2.3.4 eliminates spurious warning messages -->
           <!-- version 2.5 has accidental dependency on Java 6 -->
           <!-- version 2.5.0 gives error - default pkg '.' not permitted, o.a.u.cas.impl -->
-          <version>2.3.7</version>
+          <!-- version 2.3.7 failing in some projects  -->
+          <version>3.0.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
