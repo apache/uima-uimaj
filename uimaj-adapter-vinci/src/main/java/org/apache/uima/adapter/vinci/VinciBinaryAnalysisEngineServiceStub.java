@@ -214,7 +214,7 @@ public class VinciBinaryAnalysisEngineServiceStub implements AnalysisEngineServi
       byte[] responseCasBytes = responseFrame.fgetTrueBinary("BinaryCAS");
       CASSerializer responseSerializer = (CASSerializer) SerializationUtils
               .deserialize(responseCasBytes);
-      ((CASImpl) cas).reinit(responseSerializer);
+      ((CASImpl) cas).getBinaryCasSerDes().reinit(responseSerializer);
 
       // also read annotation time and enter into AnalysisEngineManagementMBean
       int annotationTime = responseFrame.fgetInt(Constants.ANNOTATION_TIME);
