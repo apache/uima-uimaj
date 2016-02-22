@@ -29,7 +29,7 @@ public class CasTestUtil {
    * @return
    */
   public static int getHeapSize(CAS aCAS) {
-    return ((CASImpl) aCAS).getHeap().heap.length;
+    return ((CASImpl) aCAS).getLastUsedFsId() << 3;  // an approximation
   }
-
 }
+
