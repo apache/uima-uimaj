@@ -30,17 +30,17 @@ import javax.swing.tree.TreePath;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeImpl_string;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
- * Insert comment for enclosing_type here.
- * 
- * 
+ * Swing Tree Model for Feature Structures
  */
+
 public class FSTreeModel implements TreeModel {
 
   private FSTreeNode root;
@@ -61,7 +61,7 @@ public class FSTreeModel implements TreeModel {
    */
   public FSTreeModel() {
     super();
-    this.root = new FSNode(this, FSNode.DISPLAY_NODE, 0, null);
+    this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
     this.root.setChildren(new ArrayList<FSTreeNode>());
   }
 
@@ -71,13 +71,13 @@ public class FSTreeModel implements TreeModel {
     final int size = index.size();
     this.rootString = "<html><font color=green>" + indexName + "</font> - <font color=blue>"
             + index.getType().getName() + "</font> [" + size + "]</html>";
-    this.root = new FSNode(this, FSNode.DISPLAY_NODE, 0, null);
+    this.root = new FSNode(this, FSNode.DISPLAY_NODE, null, 0, null);
     this.fss = new ArrayList<FSNode>();
-    FSIterator it = index.iterator();
+    FSIterator<TOP> it = index.iterator();
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
-      FeatureStructure fs = it.get();
-      this.fss.add(new FSNode(this, getNodeType(fs.getType()), fs.hashCode(), count));
+      TOP fs = it.get();
+      this.fss.add(new FSNode(this, getNodeType(fs.getType()), fs, fs.id(), count));
       ++count;
     }
     List<FSTreeNode> kids = createArrayChildren(0, size, this.fss, this);
@@ -122,55 +122,50 @@ public class FSTreeModel implements TreeModel {
     return node.getChildren().get(index);
   }
 
-  int getNodeType(int addr, Feature feat) {
-    Type domType = feat.getRange();
-    if (this.cas.isStringType(domType)) {
-      return FSNode.STRING_FS;
-    } else if (this.cas.isIntType(domType)) {
-      return FSNode.INT_FS;
-    } else if (this.cas.isFloatType(domType)) {
-      return FSNode.FLOAT_FS;
-    } else if (this.cas.isByteType(domType)) {
-      return FSNode.BYTE_FS;
-    } else if (this.cas.isBooleanType(domType)) {
-      return FSNode.BOOL_FS;
-    } else if (this.cas.isShortType(domType)) {
-      return FSNode.SHORT_FS;
-    } else if (this.cas.isLongType(domType)) {
-      return FSNode.LONG_FS;
-    } else if (this.cas.isDoubleType(domType)) {
-      return FSNode.DOUBLE_FS;
-    } else if (this.cas.isAbstractArrayType(domType)) {
-      final int featAddr = this.cas.getFeatureValue(addr, ((FeatureImpl) feat).getCode());
-      if (this.cas.isArrayType(this.cas.getTypeSystemImpl()
-              .ll_getTypeForCode(this.cas.getHeapValue(featAddr)))) {
-        return FSNode.ARRAY_FS;
-      }
-    }
-    return FSNode.STD_FS;
-  }
+//  int getNodeType(int addr, Feature feat) {
+//    Type domType = feat.getRange();
+//    if (this.cas.isStringType(domType)) {
+//      return FSNode.STRING_FS;
+//    } else if (this.cas.isIntType(domType)) {
+//      return FSNode.INT_FS;
+//    } else if (this.cas.isFloatType(domType)) {
+//      return FSNode.FLOAT_FS;
+//    } else if (this.cas.isByteType(domType)) {
+//      return FSNode.BYTE_FS;
+//    } else if (this.cas.isBooleanType(domType)) {
+//      return FSNode.BOOL_FS;
+//    } else if (this.cas.isShortType(domType)) {
+//      return FSNode.SHORT_FS;
+//    } else if (this.cas.isLongType(domType)) {
+//      return FSNode.LONG_FS;
+//    } else if (this.cas.isDoubleType(domType)) {
+//      return FSNode.DOUBLE_FS;
+//    } else if (this.cas.isArrayOfFsType(domType)) {
+//      final int featAddr = this.cas.getFeatureValue(addr, ((FeatureImpl) feat).getCode());
+//      if (this.cas.isArrayType(this.cas.getTypeSystemImpl()
+//              .ll_getTypeForCode(this.cas.getHeapValue(featAddr)))) {
+//        return FSNode.ARRAY_FS;
+//      }
+//    }
+//    return FSNode.STD_FS;
+//  }
 
   int getNodeType(Type type) {
-    if (this.cas.isStringType(type)) {
+    if (type instanceof TypeImpl_string) {
       return FSNode.STRING_FS;
-    } else if (this.cas.isIntType(type)) {
-      return FSNode.INT_FS;
-    } else if (this.cas.isFloatType(type)) {
-      return FSNode.FLOAT_FS;
-    } else if (this.cas.isArrayType(type)) {
-      return FSNode.ARRAY_FS;
-    } else if (this.cas.isByteArrayType(type)) {
-      return FSNode.BYTE_FS;
-    } else if (this.cas.isBooleanArrayType(type)) {
-      return FSNode.BOOL_FS;
-    } else if (this.cas.isShortArrayType(type)) {
-      return FSNode.SHORT_FS;
-    } else if (this.cas.isLongArrayType(type)) {
-      return FSNode.LONG_FS;
-    } else if (this.cas.isDoubleArrayType(type)) {
-      return FSNode.DOUBLE_FS;
+    } else {
+      switch(((TypeImpl)type).getCode()) {
+      case TypeSystemImpl.intTypeCode: return FSNode.INT_FS;
+      case TypeSystemImpl.floatTypeCode: return FSNode.FLOAT_FS;
+      case TypeSystemImpl.fsArrayTypeCode: return FSNode.ARRAY_FS;
+      case TypeSystemImpl.byteArrayTypeCode: return FSNode.BYTE_FS;
+      case TypeSystemImpl.booleanArrayTypeCode: return FSNode.BOOL_FS;
+      case TypeSystemImpl.shortArrayTypeCode: return FSNode.SHORT_FS;
+      case TypeSystemImpl.longArrayTypeCode: return FSNode.LONG_FS;
+      case TypeSystemImpl.doubleArrayTypeCode: return FSNode.DOUBLE_FS;
+      default: return FSNode.STD_FS;
+      }
     }
-    return FSNode.STD_FS;
   }
 
   /**
