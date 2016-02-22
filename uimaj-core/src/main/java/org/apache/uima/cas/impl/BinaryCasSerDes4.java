@@ -129,7 +129,7 @@ import org.apache.uima.util.impl.SerializationMeasures;
 public class BinaryCasSerDes4 implements SlotKindsConstants {
   //  0 - original, 1 = fixes from V3 in v2, 2 = v3 --------------------------v
   private static final boolean TRACE_DOUBLE = false;
-  private static final boolean TRACE_INT = false;
+//  private static final boolean TRACE_INT = false;
   public static final int TYPECODE_COMPR = 8;
   public static final boolean CHANGE_FS_REFS_TO_SEQUENTIAL = true;
   // may add more later - to specify differing trade-offs between speed and compression
@@ -586,7 +586,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
       os.optimize();
       
-      writeStringInfo(os);
+      writeStringInfo();
             
       /***************************
        * Prepare to walk main heap
@@ -652,7 +652,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * Write the compressed string table(s)
      * @throws IOException
      */
-    private void writeStringInfo(OptimizeStrings os) throws IOException {
+    private void writeStringInfo() throws IOException {
       String [] commonStrings = os.getCommonStrings();
       writeVnumber(strChars_i, commonStrings.length);
       DataOutputStream out = dosZipSources[strChars_i];
@@ -874,8 +874,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       return ((IntegerArray)prevFs).get(0);      
     }
 
-    private boolean isNoPrevArrayValue(CommonArray prevFs) {
-      return prevFs == null || prevFs.size() == 0;
+    private boolean isNoPrevArrayValue(CommonArray prevCommonArray) {
+      return prevCommonArray == null || prevCommonArray.size() == 0;
     }
                 
     private void serializeByKind(TOP fs, FeatureImpl feat) throws IOException {
@@ -1609,7 +1609,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * convert between FSs and "sequential" numbers
      * Note: This may be identity map, but may not in the case for V3 where some FSs are GC'd
      */    
-    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP.singleton);
+//    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP.singleton);
     private final Int2ObjHashMap<TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
 
     /**
@@ -1666,7 +1666,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       isBeforeV3 = (version1 & 0xff00) == 0;
       
-      fs2seq.clear();
+//      fs2seq.clear();
       seq2fs.clear();
       /************************************************
        * Setup all the input streams with inflaters
@@ -1689,7 +1689,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       csds.setup();
       int seq = 1;
       for (TOP fs : csds.sortedFSs) {
-        fs2seq.put(fs, seq);
+//        fs2seq.put(fs, seq);
         seq2fs.put(seq++, fs);
       }
       
@@ -1803,8 +1803,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //          System.out.format("debug adding iHeap: %,d afterAdd: %,d%n", iHeap, iHeap + nextHeapAddrAfterMark);
 //        }
         csds.addFS(currentFs, iHeap);
-        int s2 = 1 + fs2seq.size();  
-        fs2seq.put(currentFs, s2);  // 1 origin to match v2
+        int s2 = 1 + seq2fs.size();  
+//        fs2seq.put(currentFs, s2);  // 1 origin to match v2
         seq2fs.put(s2, currentFs);
         
         prevFsByType[adjTypeCode] = currentFs;
@@ -2247,7 +2247,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
     private int readDiff(DataInput in, int prev) throws IOException {
       final long encoded = readVlong(in);
-      final boolean isDelta = (0 != (encoded & 1L));
+      final boolean isDelta1 = (0 != (encoded & 1L));
       final boolean isNegative = (0 != (encoded & 2L));
       int v = (int)(encoded >>> 2);
       if (isNegative) {
@@ -2256,7 +2256,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
         v = -v;
       }
-      if (isDelta) {
+      if (isDelta1) {
         v = v + prev;
       }
       return v;  
@@ -2568,9 +2568,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       return cache; 
     }
     
-    private int fs2seq(TOP fs) {
-      return (fs == null) ? 0 : fs2seq.get(fs);
-    }
+//    private int fs2seq(TOP fs) {
+//      return (fs == null) ? 0 : fs2seq.get(fs);
+//    }
 
     private TOP seq2fs(int s) {
       return (s == 0) ? null : seq2fs.get(s);
