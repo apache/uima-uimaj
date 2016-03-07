@@ -138,7 +138,7 @@ public class CASSerializer implements Serializable {
    */
   public void addCAS(CASImpl cas, boolean addMetaData) {
     BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
-    CommonSerDesSequential csds = new CommonSerDesSequential(cas.getBaseCAS());
+    CommonSerDesSequential csds = cas.newCsds();
     scanAllFSsForBinarySerialization(bcsd, null, csds); // populates the arrays
     this.fsIndex = bcsd.getIndexedFSs(csds.fs2addr);  // must follow scanAll...
     
@@ -251,7 +251,7 @@ public class CASSerializer implements Serializable {
   public void addCAS(CASImpl cas, OutputStream ostream) {
     final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
     
-    final CommonSerDesSequential csds = new CommonSerDesSequential(cas.getBaseCAS());
+    final CommonSerDesSequential csds = cas.newCsds();
     scanAllFSsForBinarySerialization(bcsd, null, csds); // populates the arrays
     
     try {
@@ -373,6 +373,8 @@ public class CASSerializer implements Serializable {
     }
     
     bcsd.setHeapExtents();
+    // non delta serialization
+    csds.setHeapEnd(bcsd.nextHeapAddrAfterMark);
   }
 
   
@@ -425,7 +427,10 @@ public class CASSerializer implements Serializable {
     
     // because the output is only the new elements, this populates the arrays with only the new elements
     //   Note: all heaps reserve slot 0 for null, real data starts at position 1
-    final CommonSerDesSequential csds = new CommonSerDesSequential(cas.getBaseCAS());    
+    final CommonSerDesSequential csds = cas.getCsds(); 
+    if (csds.getHeapEnd() == 0) {
+      System.out.println("debug");
+    }
     scanAllFSsForBinarySerialization(bcsd, mark, csds); // populates the arrays
 
     try {
@@ -690,28 +695,28 @@ public class CASSerializer implements Serializable {
           FeatureImpl feat = type.getFeatureImpls().get(offset);
 
           switch (feat.getSlotKind()) {
-          case Slot_Boolean: chgMainHeapValue.add(fs.getBooleanValueNc(feat) ? 1 : 0); break;
+          case Slot_Boolean: chgMainHeapValue.add(fs._getBooleanValueNc(feat) ? 1 : 0); break;
             
-          case Slot_Byte:    chgMainHeapValue.add(fs.getByteValueNc(feat)); break;
-          case Slot_Short:   chgMainHeapValue.add(fs.getShortValueNc(feat)); break;
-          case Slot_Int:     chgMainHeapValue.add(fs.getIntValueNc(feat)); break;
-          case Slot_Float:   chgMainHeapValue.add(CASImpl.float2int(fs.getFloatValueNc(feat))); break;
+          case Slot_Byte:    chgMainHeapValue.add(fs._getByteValueNc(feat)); break;
+          case Slot_Short:   chgMainHeapValue.add(fs._getShortValueNc(feat)); break;
+          case Slot_Int:     chgMainHeapValue.add(fs._getIntValueNc(feat)); break;
+          case Slot_Float:   chgMainHeapValue.add(CASImpl.float2int(fs._getFloatValueNc(feat))); break;
           case Slot_LongRef: {
-            int v = bcsd.nextLongHeapAddrAfterMark + bcsd.longHeap.addLong(fs.getLongValueNc(feat));
+            int v = bcsd.nextLongHeapAddrAfterMark + bcsd.longHeap.addLong(fs._getLongValueNc(feat));
             chgMainHeapValue.add(v);
             break;
           }
           case Slot_DoubleRef: {
-            int v = bcsd.nextLongHeapAddrAfterMark + bcsd.longHeap.addLong(CASImpl.double2long(fs.getDoubleValueNc(feat)));
+            int v = bcsd.nextLongHeapAddrAfterMark + bcsd.longHeap.addLong(CASImpl.double2long(fs._getDoubleValueNc(feat)));
             chgMainHeapValue.add(v);
             break;
           }
           case Slot_StrRef: {
-            int v = bcsd.nextStringHeapAddrAfterMark + bcsd.stringHeap.addString(fs.getStringValueNc(feat));
+            int v = bcsd.nextStringHeapAddrAfterMark + bcsd.stringHeap.addString(fs._getStringValueNc(feat));
             chgMainHeapValue.add(v);
             break;
           }
-          case Slot_HeapRef: chgMainHeapValue.add(fs2addr.get(fs.getFeatureValueNc(feat))); break;
+          case Slot_HeapRef: chgMainHeapValue.add(fs2addr.get(fs._getFeatureValueNc(feat))); break;
           default: Misc.internalError();
           } // end of switch
           

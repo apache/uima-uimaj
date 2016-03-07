@@ -31,18 +31,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.function.JCas_getter_boolean;
-import org.apache.uima.cas.function.JCas_getter_double;
-import org.apache.uima.cas.function.JCas_getter_generic;
-import org.apache.uima.cas.function.JCas_getter_int;
-import org.apache.uima.cas.function.JCas_getter_long;
-import org.apache.uima.cas.function.JCas_setter_boolean;
-import org.apache.uima.cas.function.JCas_setter_byte;
-import org.apache.uima.cas.function.JCas_setter_float;
-import org.apache.uima.cas.function.JCas_setter_generic;
-import org.apache.uima.cas.function.JCas_setter_int;
-import org.apache.uima.cas.function.JCas_setter_long;
-import org.apache.uima.cas.function.JCas_setter_short;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
@@ -87,8 +75,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   public static final String DISABLE_RUNTIME_FEATURE_VALIDATION = "uima.disable_runtime_feature_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_VALIDATION);
 
-  public static final String DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION = "uima.disable_runtime_feature_validation";
+  public static final String DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION = "uima.disable_runtime_feature_value_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION);
+
+  public static final String DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION = "uima.disable_runtime_feature_range_validation";
+  public static final boolean IS_ENABLE_RUNTIME_FEATURE_RANGE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION);
 
   public static final int IN_SET_SORTED_INDEX = 1;
   // data storage
@@ -128,7 +119,18 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _refData = null;
     _id = 0;    
   }
-
+  
+  /** 
+   * For use in creating search keys
+   * @param id
+   */
+  protected FeatureStructureImplC(int id) {
+    _casView = null;
+    _typeImpl = null;
+    _intData = null;
+    _refData = null;
+    _id = id;    
+  }
   
   /**
    * For non-JCas use
@@ -257,356 +259,194 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    *          used for String and FeatureStructures
    *   - if no, then converge the code to an _intData or _refData reference
    ***********************************************************/
-  protected void featureValidation(Feature feat) {
-    
-    if (!(((TypeImpl) (feat.getDomain()) ).subsumes(_typeImpl))) {
-    
-      /* Feature "{0}" is not defined for type "{1}". */
-      throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, feat.getName(), _typeImpl.getName());
-    }
-  }
+
+  /**************************************
+   *           S E T T E R S 
+   * 4 levels:  
+   *   - check feature for validity
+   *     -- this is skipped with feature comes from fs type info (internal calls)
+   *   - check for setting something which could corrupt indexes
+   *     -- this is skipped when the caller knows 
+   *        --- the FS is not in the index, perhpas because they just created it
+   *     -- skipped when the range is not a valid index key   
+   *   - check for needing to log (journal) setting
+   *     -- this is skipped when the caller knows 
+   *       --- no journalling is enabled or
+   *       --- the FS is a new (above-the-line) FS
+   *   - check the value is suitable
+   *     -- this can be skipped if Java is doing the checking (via the type of the argument)
+   *     -- done for string subtypes and Feature References
+   *       --- skipped if the caller knows the value is OK (e.g., it is copying an existing FS)
+   *       
+   * all 4 checks are normally done by the standard API call in the FeatureStructure interface 
+   *    setXyzValue(Feature, value)
+   *    
+   * Other methods have suffixes and prefixes to the setter name
+   *   - prefix is "_" to avoid conflicting with existing other names
+   *   - suffixes are: 
+   *     -- Nfc:    skip feature validity checking
+   *     -- NcNj:   implies Nfc, skips corrupt check and journaling and feature validation
+   *          The next two are only for setters where value checking might be needed (i.e., Java checking isn't sufficient)
+   *     -- Nv:     implies Nfc, skips value range checking and feature validation
+   *     -- NcNjNv: implies Nfc, skips all checks
+   *     
+   *          For JCas setters: convert offset to feature
+   **************************************/
   
-  protected void featureValueValidation(Feature feat, Object v) {
-    TypeImpl range = (TypeImpl)feat.getRange();
-    if ((range.isArray() && !isOkArray(range, v)) ||
-        (!range.isArray() && (!range.subsumesValue(v)))) {
-      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, feat.getName(), range.getName(), v.getClass().getName());
-    }
-  }
-    
-  // called when range isArray() is true, only
-  private boolean isOkArray(TypeImpl range, Object v) {
-    if (v == null) {
-      return true;
-    }
-    
-    final int rangeTypeCode = range.getCode();
-
-    /* The assignment is stricter than the Java rules - must match */
-    switch (rangeTypeCode) {
-    case TypeSystemImpl.booleanArrayTypeCode:
-      return v instanceof BooleanArray;
-    case TypeSystemImpl.byteArrayTypeCode:
-    return v instanceof ByteArray;
-    case TypeSystemImpl.shortArrayTypeCode:
-      return v instanceof ShortArray;
-    case TypeSystemImpl.intArrayTypeCode:
-      return v instanceof IntegerArray;
-    case TypeSystemImpl.floatArrayTypeCode:
-      return v instanceof FloatArray;
-    case TypeSystemImpl.longArrayTypeCode:
-      return v instanceof LongArray;
-    case TypeSystemImpl.doubleArrayTypeCode:
-      return v instanceof DoubleArray;
-    case TypeSystemImpl.stringArrayTypeCode:
-      return v instanceof StringArray;
-    case TypeSystemImpl.javaObjectArrayTypeCode:
-      return v instanceof JavaObjectArray;
-    case TypeSystemImpl.fsArrayTypeCode:
-      return v instanceof FSArray;
-    }
-    
-    // it is possible that the array has a special type code corresponding to a type "someUserType"[]
-    //   meaning an array of some user type.  UIMA implements these as instances of FSArray (I think)
-    
-    if (!(v instanceof FSArray)) { return false; }
-    
-    return true;
-  }
-
-  /**
-   * Setters for values which could be keys in indexes have to do index corruption checking
-   * 
-   * All setters may have to journal which fs, feature (and for arrays, element) is being set.
-   */
-
-  protected void setIntValueCJ(FeatureImpl fi, int v) {
-    if (!fi.isInInt) {
-      /** Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
-      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int", fi.getRange().getName());
-    }
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
-    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
-  }
-
-  protected void setRefValueCJ(FeatureImpl feat, Object v) {
-    _casView.setWithCheckAndJournal((TOP)this, feat.getCode(), () -> _refData[feat.getAdjustedOffset()] = v); 
-  }
-  
-  protected void setRefValue(FeatureImpl fi, Object v) {
-    _refData[fi.getAdjustedOffset()] = v;
-  }
-
   @Override
   public void setBooleanValue(Feature feat, boolean v) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_boolean)setter).set(this, v);
-    } else {
-      setIntValueCJ(fi, v ? 1 : 0); 
-    }
+    _setIntValueCJ((FeatureImpl) feat, v ? 1 : 0);
   }
+  
+  public void _setBooleanValueNfc(FeatureImpl feat, boolean v) { _setIntValueNfcCJ(feat, v ? 1 : 0); }
  
-  public final void setBooleanValueNcNj(FeatureImpl fi, boolean v) {
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_boolean)setter).set(this, v);
-    } else {
-      setIntValue(fi, v ? 1 : 0); 
-    }
-  }
-
+  public final void _setBooleanValueNcNj(FeatureImpl fi, boolean v) { _setIntValueCommon(fi, v? 1 : 0); }
+   
+  public final void _setBooleanValueNcNj(int adjOffset, boolean v) { _setIntValueCommon(adjOffset, v? 1 : 0); }
+ 
   @Override
   public void setByteValue(Feature feat, byte v) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_byte)setter).set(this, v);
-    } else {
-      setIntValueCJ(fi, v); 
-    }
+    _setIntValueCJ((FeatureImpl) feat, v);
   }
   
-  public void setByteValueNcNj(FeatureImpl fi, byte v) {
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_byte)setter).set(this, v);
-    } else {
-      setIntValue(fi, v); 
-    }
+  public void _setByteValueNfc(FeatureImpl fi, byte v) {
+    _setIntValueNfcCJ(fi, v);
+  }
+  
+  public void _setByteValueNcNj(FeatureImpl fi, byte v) {
+    _setIntValueCommon(fi, v);
   }
 
-  
+  public void _setByteValueNcNj(int adjOffset, byte v) {
+    _setIntValueCommon(adjOffset, v);
+  }
+
   @Override
   public void setShortValue(Feature feat, short v) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_short)setter).set(this, v);
-    } else {
-      setIntValueCJ(fi, v);
-    }
-}
-
-  public void setShortValueNcNj(FeatureImpl fi, short v) {
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_short)setter).set(this, v);
-    } else {
-      setIntValue(fi, v);
-    }
-}
- 
-  @Override
-  public void setIntValue(Feature feat, int v) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_int)setter).set(this, v);
-    } else {
-      setIntValueCJ(fi, v);
-    }
+    _setIntValueCJ((FeatureImpl) feat, v);
+  }
+  
+  public void _setShortValueNfc(FeatureImpl fi, short v) {
+    _setIntValueNfcCJ(fi, v);
+  }
+  
+  public void _setShortValueNcNj(FeatureImpl fi, short v) {
+    _setIntValueCommon(fi, v);
   }
 
-  public void setIntValueNcNj(FeatureImpl fi, int v) {
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_int)setter).set(this, v);
-    } else {
-      setIntValue(fi, v);
-    }
+  public void _setShortValueNcNj(int adjOffset, short v) {
+    _setIntValueCommon(adjOffset, v);
+  }
+
+  @Override
+  public void setIntValue(Feature feat, int v) {
+    _setIntValueCJ((FeatureImpl) feat, v);
+  }
+  
+  public void _setIntValueNfc(FeatureImpl fi, int v) {
+    _setIntValueNfcCJ(fi, v);
+  }
+  
+  public void _setIntValueNcNj(FeatureImpl fi, int v) {
+    _setIntValueCommon(fi, v);
+  }
+
+  public void _setIntValueNcNj(int adjOffset, int v) {
+    _setIntValueCommon(adjOffset, v);
   }
 
   @Override
   public void setLongValue(Feature feat, long v) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_long)setter).set(this, v);
-    } else {
-      if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-      _casView.setLongValue(this, (FeatureImpl) feat, (int)(v & 0xffffffff), (int)(v >> 32));
-    }
+    _setLongValueCJ((FeatureImpl) feat, v);
   }
 
-  public void setLongValueNcNj(FeatureImpl fi, long v) {
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_long)setter).set(this, v);
-    } else {
-      _casView.setLongValueNcNj(this, fi, (int)(v & 0xffffffff), (int)(v >> 32));
-    }
+  public void _setLongValueNfc(FeatureImpl fi, long v) {
+    _setLongValueNfcCJ(fi, v);
+  }
+  
+  public void _setLongValueNcNj(FeatureImpl fi, long v) { _setLongValueNcNj(fi.getAdjustedOffset(), v); }
+
+  public void _setLongValueNcNj(int adjOffset, long v) {
+    _intData[adjOffset] = (int)(v & 0xffffffff);
+    _intData[adjOffset + 1] = (int)(v >> 32);
   }
 
   @Override
-  public void setFloatValue(Feature feat, float v) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_float)setter).set(this, v);
-    } else {
-      setIntValueCJ(fi, CASImpl.float2int(v));
-    }
+  public void setFloatValue(Feature feat, float v) { setIntValue(feat, CASImpl.float2int(v)); }
+  
+  protected void _setFloatValueNfc(FeatureImpl feat, float v) { _setIntValueNfc(feat, CASImpl.float2int(v)); }
+
+  public void _setFloatValueNcNj(FeatureImpl fi, float v) {
+    _intData[fi.getAdjustedOffset()] = CASImpl.float2int(v);
   }
 
-  public void setFloatValueNcNj(FeatureImpl fi, float v) {
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_float)setter).set(this, v);
-    } else {
-      setIntValue(fi, CASImpl.float2int(v));
-    }
+  public void _setFloatValueNcNj(int adjOffset, float v) {
+    _intData[adjOffset] = CASImpl.float2int(v);
   }
 
   @Override
-  public void setDoubleValue(Feature feat, double v) {
-    setLongValue(feat, CASImpl.double2long(v));}
+  public void setDoubleValue(Feature feat, double v) { setLongValue(feat, CASImpl.double2long(v)); }
 
-  public void setDoubleValueNcNj(FeatureImpl fi, double v) {
-    setLongValueNcNj(fi, CASImpl.double2long(v));}
+  public void _setDoubleValueNcNj(FeatureImpl fi, double v) { _setLongValueNcNj(fi, CASImpl.double2long(v)); }
+
+  public void _setDoubleValueNcNj(int adjOffset, double v) { _setLongValueNcNj(adjOffset, CASImpl.double2long(v)); }
 
   @Override
   public void setStringValue(Feature feat, String v) {
-    TypeImpl range = (TypeImpl) feat.getRange();
-    if (range.isStringSubtype()) {
-      if (v != null) {
-        TypeImpl_stringSubtype tiSubtype = (TypeImpl_stringSubtype) range;
-        tiSubtype.validateIsInAllowedValues(v);
-      }
-    } else if (range.getCode() != TypeSystemImpl.stringTypeCode) {
-      /** Expected value of type "{0}", but found "{1}". */
-      throw new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE, range.getName(), "Java String");
-    }
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_generic<String>)setter).set(this, v);
-    } else {
-      setRefValueCJ(fi, v);
-    }
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    subStringRangeCheck(feat, v);
+    _setRefValueCJ((FeatureImpl) feat, v);
   }
   
-  public void setStringValueNcNj(FeatureImpl fi, String v) {
-    TypeImpl range = fi.getRangeImpl();
-    if (range.isStringSubtype()) {
-      if (v != null) {
-        TypeImpl_stringSubtype tiSubtype = (TypeImpl_stringSubtype) range;
-        tiSubtype.validateIsInAllowedValues(v);
-      }
-    } else if (range.getCode() != TypeSystemImpl.stringTypeCode) {
-      /** Expected value of type "{0}", but found "{1}". */
-      throw new CASRuntimeException(CASRuntimeException.INAPPROP_TYPE, range.getName(), "Java String");
-    }
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_generic<String>)setter).set(this, v);
-    } else {
-      setRefValue(fi, v);
-    }
+  public void _setStringValueNfc(FeatureImpl fi, String v) {
+    subStringRangeCheck(fi, v); 
+    _setRefValueCJ(fi, v);
+  }
+
+  public void _setStringValueNcNj(FeatureImpl fi, String v) {
+    subStringRangeCheck(fi, v); 
+    _setRefValueCommon(fi, v);
+  }
+  
+  /**
+   * Skips substring range checking, but maybe does journalling
+   * @param adjOffset offset
+   * @param v to set
+   */
+  public void _setStringValueNcWj(int adjOffset, String v) {
+    _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), v);
   }
 
   @Override
   public void setFeatureValue(Feature feat, FeatureStructure v) {
     FeatureImpl fi = (FeatureImpl) feat;
- 
-    if (fi.isInInt) {
-      /** Trying to access value of feature "{0}" as feature structure, but is primitive type. */
-      throw new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT, feat.getName());
-    }
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
- 
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_generic<FeatureStructureImplC>)setter).set(this, (FeatureStructureImplC) v);
-    } else {
-      // no need to check for index corruption because fs refs can't be index keys
-      _casView.setWithJournal(this, fi, () -> _refData[fi.getAdjustedOffset()] = v); 
-    }
-  }
 
-  public void setFeatureValueNoIndexCorruptionCheck(Feature feat, TOP v) {
-    FeatureImpl fi = (FeatureImpl) feat;
- 
-    if (fi.isInInt) {
-      /** Trying to access value of feature "{0}" as feature structure, but is primitive type. */
-      throw new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT, feat.getName());
-    }
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
- 
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_generic<Object>)setter).set(this, v);  // also may do logging
-    } else {
-      _refData[fi.getAdjustedOffset()] = v;
-      if (_casView.isLogging()) { 
-        _casView.maybeLogUpdate(this, fi.getCode());
-      }
-    }
+    // no need to check for index corruption because fs refs can't be index keys
+    _refData[fi.getAdjustedOffset()] = v;
+    _casView.maybeLogUpdate(this, fi);
   }
   
-  public void setFeatureValueNcNj(FeatureImpl fi, Object v) {
- 
-    Object setter =  fi.getJCasSetter();
-    if (setter != null) {
-      ((JCas_setter_generic<Object>)setter).set(this, v);
-    } else {
-      setRefValue(fi, v);
-    }
+  public void _setFeatureValueNcNj(FeatureImpl fi, Object v) { 
+    _setRefValueCommon(fi, v);
+  }
+
+  public void _setFeatureValueNcWj(FeatureImpl fi, Object v) { 
+    _setRefValueCommonWj(fi, v);
   }
 
   @Override
   public void setJavaObjectValue(Feature feat, Object v) { 
-    if (v instanceof String) {
-      setStringValue(feat,  (String) v);  // in order to do proper string subtype checking
-    } else { 
-      FeatureImpl fi = (FeatureImpl) feat;
-      
-      if (fi.isInInt) {
-        /** Trying to access value of feature "{0}" as feature structure, but is primitive type. */
-        throw new CASRuntimeException(CASRuntimeException.PRIMITIVE_VAL_FEAT, feat.getName());
-      }
-      if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-      if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
-
-      Object setter =  fi.getJCasSetter();
-      if (setter != null) {
-        ((JCas_setter_generic<Object>)setter).set(this, v);
-      } else {
-        final int adjustedOffset = ((FeatureImpl)feat).getAdjustedOffset();
-        if (-1 == adjustedOffset) {
-          /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
-          throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
-              fi.getHighestDefiningType().javaClass.getName(),
-              fi.getShortName(), 
-              "set");
-        }
-        setRefValueCJ(fi, v);
-      }
-    }
+    FeatureImpl fi = (FeatureImpl) feat;
+    
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
+    _setRefValueCJ(fi, v);
   }
   
-  public void setJavaObjectValueNcNj(FeatureImpl fi, Object v) { 
-    if (v instanceof String) {
-      setStringValueNcNj(fi,  (String) v);  // in order to do proper string subtype checking
-    } else { 
-      Object setter =  fi.getJCasSetter();
-      if (setter != null) {
-        ((JCas_setter_generic<Object>)setter).set(this, v);
-      } else {
-        final int adjustedOffset = fi.getAdjustedOffset();
-        if (-1 == adjustedOffset) {
-          /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
-          throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
-              fi.getHighestDefiningType().javaClass.getName(),
-              fi.getShortName(), 
-              "set");
-        }
-        setRefValue(fi, v);
-      }
-    }
+  public void _setJavaObjectValueNcNj(FeatureImpl fi, Object v) { 
+    _setRefValueCommon(fi, v);
   }
 
   @Override
@@ -614,167 +454,184 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     _casView.setFeatureValueFromString(this, (FeatureImpl) feat, s);
   }
+
+  /**
+   * All 3 checks
+   * @param fi - the feature
+   * @param v - the value
+   */
+  protected void _setIntValueCJ(FeatureImpl fi, int v) {
+    if (!fi.isInInt) {
+      /** Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "boolean, byte, short, int, or float", fi.getRange().getName());
+    }
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
+  }
   
-  /**   G E T T E R S **/
+  /**
+   * All 3 checks for long
+   * @param fi - the feature
+   * @param v - the value
+   */
+  protected void _setLongValueCJ(FeatureImpl fi, long v) {
+    if (!fi.isInInt) {
+      /** Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "long or double", fi.getRange().getName());
+    }
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
+    _casView.setLongValue(this, fi, v); 
+  }
+
+  
+  /**
+   * 2 checks, no feature check
+   * @param fi - the feature
+   * @param v - the value
+   */
+  protected void _setIntValueNfcCJ(FeatureImpl fi, int v) {
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
+  }
+  
+  /**
+   * 2 checks, no feature check
+   * @param fi - the feature
+   * @param v - the value
+   */
+  protected void _setLongValueNfcCJ(FeatureImpl fi, long v) {
+    _casView.setLongValue(this, fi, v); 
+  }
+
+  protected void _setRefValueCJ(FeatureImpl fi, Object v) {
+    if (fi.isInInt) {
+      /** Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int", fi.getRange().getName());
+    }
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _refData[fi.getAdjustedOffset()] = v); 
+  }
+  
+  /**
+   * 2 checks, no feature check
+   * @param fi - the feature
+   * @param v - the value
+   */
+  protected void _setRefValueNfcCJ(FeatureImpl fi, Object v) {
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _refData[fi.getAdjustedOffset()] = v); 
+  }
+
+  /********************************************************************************************************   
+   *       G E T T E R S
+   * 
+   *  (The array getters are part of the Classes for the built-in arrays, here are only the non-array ones)
+   *  
+   *  getXyzValue(Feature feat) - this is the standard from V2 plain API
+   *                            - it does validity checking (normally) that the feature belongs to the type
+   *  getXyzValueNc(FeatureImpl feat) - skips the validity checking that the feature belongs to the type.                          
+   *********************************************************************************************************/
 
   @Override
   public boolean getBooleanValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return getBooleanValueNc((FeatureImpl) feat);
+    return _getBooleanValueNc((FeatureImpl) feat);
   }
 
-  public boolean getBooleanValueNc(FeatureImpl fi) {
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_boolean)getter).get(this)
-                            : getIntValueCommon(fi) == 1;
-  }
+  public boolean _getBooleanValueNc(FeatureImpl fi) { return _getIntValueCommon(fi) == 1; }
+  
+  // for JCas use
+  public boolean _getBooleanValueNc(int adjOffset) { return _getIntValueCommon(adjOffset) == 1; }
 
   @Override
   public byte getByteValue(Feature feat) { return (byte) getIntValue(feat); }
 
-  public byte getByteValueNc(FeatureImpl feat) { return (byte) getIntValueNc(feat); }
+  public byte _getByteValueNc(FeatureImpl feat) { return (byte) _getIntValueNc(feat); }
+  
+  public byte _getByteValueNc(int adjOffset) { return  (byte) _getIntValueNc(adjOffset); }
 
   @Override
   public short getShortValue(Feature feat) { return (short) getIntValue(feat); }
 
-  public short getShortValueNc(FeatureImpl feat) { return (short) getIntValueNc(feat); }
-  
+  public short _getShortValueNc(FeatureImpl feat) { return (short) _getIntValueNc(feat); }
+
+  public short _getShortValueNc(int adjOffset) { return (short) _getIntValueNc(adjOffset); }
+
   @Override
   public int getIntValue(Feature feat) {
-    return getIntValue((FeatureImpl)feat);
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    return _getIntValueCommon((FeatureImpl)feat);
   }
     
-  private int getIntValueCommon(FeatureImpl feat) {
-    return _intData[feat.getAdjustedOffset()];
-  }
+  public int _getIntValueNc(FeatureImpl feat) { return _getIntValueCommon(feat); }
+  
+  public int _getIntValueNc(int adjOffset) { return _getIntValueCommon(adjOffset); }
 
-  public int getIntValue(FeatureImpl feat) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return getIntValueNc(feat);
-  }
-
-  public int getIntValueNc(FeatureImpl feat) {
-    Object getter =  feat.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_int)getter).get(this)
-                            : _intData[feat.getAdjustedOffset()]; 
-  }
 
   @Override
   public long getLongValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return getLongValueNc((FeatureImpl) feat);
+    return _getLongValueNc((FeatureImpl) feat);
   }
   
-  public long getLongValueNc(FeatureImpl fi) {
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_long)getter).get(this)
-                            : getLongValueOffset(fi.getAdjustedOffset());
+  public long _getLongValueNc(FeatureImpl feat) { return _getLongValueNc(feat.getAdjustedOffset());
+    
   }
-
-  /**
-   * When converting the lower 32 bits to a long, sign extension is done, so have to 
-   * 0 out those bits before or-ing in the high order 32 bits.
-   * @param offset -
-   * @return -
-   */
-  public long getLongValueOffset(int offset) {
-    return (((long)_intData[offset]) & 0x00000000ffffffffL) | (((long)_intData[offset + 1]) << 32);      
+  public long _getLongValueNc(int adjOffset) { 
+    /**
+     * When converting the lower 32 bits to a long, sign extension is done, so have to 
+     * 0 out those bits before or-ing in the high order 32 bits.
+     */
+    return (((long)_intData[adjOffset]) & 0x00000000ffffffffL) | (((long)_intData[adjOffset + 1]) << 32); 
   }
-
+  
   @Override
   public float getFloatValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return getFloatValueNc((FeatureImpl) feat);
+    return _getFloatValueNc(((FeatureImpl) feat).getAdjustedOffset());
   }
 
-  public float getFloatValueNc(FeatureImpl fi) {
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_long)getter).get(this)
-                            : (float) CASImpl.int2float(getIntValue(fi)); 
-  }
+  public float _getFloatValueNc(FeatureImpl fi) { return _getFloatValueNc(fi.getAdjustedOffset()); }
+  
+  public float _getFloatValueNc(int adjOffset) { return CASImpl.int2float(_getIntValueCommon(adjOffset)); }
 
   @Override
   public double getDoubleValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return getDoubleValueNc((FeatureImpl) feat);
+    return _getDoubleValueNc((FeatureImpl) feat); 
   }
   
-  public double getDoubleValueNc(FeatureImpl fi) {
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_double)getter).get(this)
-                            : CASImpl.long2double(getLongValue(fi)); }
-
-  public double getDoubleValueOffset(int offset) {
-    return CASImpl.long2double(getLongValueOffset(offset));
-  }
+  public double _getDoubleValueNc(FeatureImpl fi) { return _getDoubleValueNc(fi.getAdjustedOffset()); }
+  
+  public double _getDoubleValueNc(int adjOffset) { return CASImpl.long2double(_getLongValueNc(adjOffset)); }
   
   @Override
   public String getStringValue(Feature feat) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_generic<String>)getter).get(this)
-                            : (String) getJavaObjectValue(feat);
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    return _getStringValueNc((FeatureImpl) feat);
   }
 
-  public String getStringValueNc(FeatureImpl feat) {
-    Object getter =  feat.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_generic<String>)getter).get(this)
-                            : (String) getJavaObjectValueFromRefArray(feat);
-  }
+  public String _getStringValueNc(FeatureImpl feat) { return _getStringValueNc(feat.getAdjustedOffset()); }
+
+  public String _getStringValueNc(int adjOffset) { return (String) _refData[adjOffset]; }
 
   @Override
   public TOP getFeatureValue(Feature feat) {
-    FeatureImpl fi = (FeatureImpl) feat;
-    Object getter =  fi.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_generic<TOP>)getter).get(this)
-                            : (TOP) getJavaObjectValue(feat);
+    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    return _getFeatureValueNc((FeatureImpl) feat);
   }
   
-  public TOP getFeatureValueNc(FeatureImpl feat) {
-    Object getter =  feat.getJCasGetter();
-    return (getter != null) ? ((JCas_getter_generic<TOP>)getter).get(this)
-                            : (TOP) getJavaObjectValueFromRefArray(feat);
-  }
+  public TOP _getFeatureValueNc(FeatureImpl feat) { return (TOP) _getFeatureValueNc(feat.getAdjustedOffset()); }
 
-
+  public TOP _getFeatureValueNc(int adjOffset) { return (TOP) _refData[adjOffset]; }
+ 
   @Override
   public Object getJavaObjectValue(Feature feat) { 
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return getJavaObjectValueNc((FeatureImpl) feat);
+    return _getJavaObjectValueNc((FeatureImpl) feat);
   }
 
-  public Object getJavaObjectValueNc(FeatureImpl fi) { 
-    Object getter =  fi.getJCasGetter();
-    if (getter == null) {
-      final int adjustedOffset = fi.getAdjustedOffset();
-      if (-1 == adjustedOffset) {
-        /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
-        throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
-            fi.getHighestDefiningType().javaClass.getName(),
-            fi.getShortName(), 
-            "get");
-      }
-      return _refData[adjustedOffset];
-    }
-    return ((JCas_getter_generic<Object>)getter).get(this);
-  }
+  public Object _getJavaObjectValueNc(FeatureImpl fi) { return _getRefValueCommon(fi); }
 
-  public Object getJavaObjectValueFromRefArray(FeatureImpl fi) { 
-    final int adjustedOffset = fi.getAdjustedOffset();
-    if (-1 == adjustedOffset) {
-      /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
-      throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_FIELD_ACCESSOR, 
-          fi.getHighestDefiningType().javaClass.getName(),
-          fi.getShortName(), 
-          "get");
-    }
-    return _refData[adjustedOffset];
-  }
-
-  @Override
-  public String getFeatureValueAsString(Feature feat) throws CASRuntimeException {
-    return _casView.getFeatureValueAsString(this, (FeatureImpl) feat);
-  }
+  public Object _getJavaObjectValueNc(int adjOffset) { return _getRefValueCommon(adjOffset); }
 
   /**
    * @return the CAS view where this FS was created
@@ -969,7 +826,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       buf.append(' ');
     }
     if (_typeImpl == null) {
-      buf.append(" Special REMOVED marker ");
+      buf.append((_id == 0) ? " Special REMOVED marker " : " Special Search Key, id = " + _id);
     } else {
       if (useShortNames) {
         buf.append(getType().getShortName());
@@ -1111,7 +968,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * @param fi -
    * @param v -
    */
-  public void setIntLikeValue(SlotKind slotKind, FeatureImpl fi, int v) {
+  public void _setIntLikeValue(SlotKind slotKind, FeatureImpl fi, int v) {
     switch(slotKind) {
     case Slot_Boolean: setBooleanValue(fi, v == 1); break;
     case Slot_Byte: setByteValue(fi, (byte) v); break;
@@ -1128,13 +985,13 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * @param fi -
    * @param v -
    */
-  public void setIntLikeValueNcNj(SlotKind slotKind, FeatureImpl fi, int v) {
+  public void _setIntLikeValueNcNj(SlotKind slotKind, FeatureImpl fi, int v) {
     switch(slotKind) {
-    case Slot_Boolean: setBooleanValueNcNj(fi, v == 1); break;
-    case Slot_Byte: setByteValueNcNj(fi, (byte) v); break;
-    case Slot_Short: setShortValueNcNj(fi, (short) v); break;
-    case Slot_Int: setIntValueNcNj(fi, v); break;
-    case Slot_Float: setFloatValueNcNj(fi, CASImpl.int2float(v)); break;
+    case Slot_Boolean: _setBooleanValueNcNj(fi, v == 1); break;
+    case Slot_Byte: _setByteValueNcNj(fi, (byte) v); break;
+    case Slot_Short: _setShortValueNcNj(fi, (short) v); break;
+    case Slot_Int: _setIntValueNcNj(fi, v); break;
+    case Slot_Float: _setFloatValueNcNj(fi, CASImpl.int2float(v)); break;
     default: Misc.internalError();
     }
   }
@@ -1147,7 +1004,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * @param fi
    * @param v
    */
-  public int getIntLikeValue(SlotKind slotKind, FeatureImpl f) {
+  public int _getIntLikeValue(SlotKind slotKind, FeatureImpl f) {
     if (null == f) {
       switch(slotKind) {
       
@@ -1180,16 +1037,52 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
     
     switch(slotKind) {
-    case Slot_Boolean: return getBooleanValueNc(f) ? 1 : 0;
-    case Slot_Byte: return getByteValueNc(f);
-    case Slot_Short: return getShortValueNc(f);
-    case Slot_Int: return getIntValueNc(f);
-    case Slot_Float: return CASImpl.float2int(getFloatValueNc(f));
+    case Slot_Boolean: return _getBooleanValueNc(f) ? 1 : 0;
+    case Slot_Byte: return _getByteValueNc(f);
+    case Slot_Short: return _getShortValueNc(f);
+    case Slot_Int: return _getIntValueNc(f);
+    case Slot_Float: return CASImpl.float2int(_getFloatValueNc(f));
     default: Misc.internalError(); return 0;
     }
   }
 
+  @Override
+  public String getFeatureValueAsString(Feature feat) {
+    FeatureImpl fi = (FeatureImpl) feat;
+    TypeImpl range = fi.getRangeImpl();
+    if (fi.isInInt) {
+      switch (range.getCode()) {
+      case TypeSystemImpl.floatTypeCode :
+        return Float.toString(getFloatValue(feat));
+      case TypeSystemImpl.booleanTypeCode :
+        return Boolean.toString(getBooleanValue(feat));
+      case TypeSystemImpl.longTypeCode :
+        return Long.toString(getLongValue(feat));
+      case TypeSystemImpl.doubleTypeCode :
+        return Double.toString(getDoubleValue(feat));
+      default: 
+        return Integer.toString(getIntValue(feat));
+      }
+    }
+    
+    if (range instanceof TypeImpl_string) {
+      return getStringValue(feat);
+    }
+    
+    if (range.getCode() == TypeSystemImpl.javaObjectTypeCode) {
+      return CASImpl.serializeJavaObject(getJavaObjectValue(feat));
+    }
+    
+    if (range.isRefType) {
+      TOP ref = getFeatureValue(feat);
+      return (ref == null) ? null : ref.toString();
+    }
+    
+    Misc.internalError();
+    return null;  // needed to avoid compile error
+  }
 
+  
   /* (non-Javadoc)
    * Supports "natural" compare order based on id values
    * @see java.lang.Comparable#compareTo(java.lang.Object)
@@ -1205,5 +1098,115 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * All callers of this must insure fs is not indexed in **Any** View
    */
   protected void _resetInSetSortedIndex() { flags &= ~IN_SET_SORTED_INDEX; }
+  
+  protected FeatureImpl _getFeatFromAdjOffset(int adjOffset, boolean isInInt) {
+    return _typeImpl.getFeatureByAdjOffset(adjOffset, isInInt);
+  }
+  
+  private int _getIntValueCommon(FeatureImpl feat) {
+    return _intData[feat.getAdjustedOffset()];
+  }
+
+  private int _getIntValueCommon(int adjOffset) {
+    return _intData[adjOffset];
+  }
+
+  private Object _getRefValueCommon(FeatureImpl feat) {
+    return _refData[feat.getAdjustedOffset()];
+  }
+  
+  private Object _getRefValueCommon(int adjOffset) {
+    return _refData[adjOffset];
+  }
    
+  private void _setIntValueCommon(FeatureImpl fi, int v) {
+    _intData[fi.getAdjustedOffset()] = v;
+  }
+  
+  private void _setIntValueCommon(int adjOffset, int v) {
+    _intData[adjOffset] = v;
+  }
+
+  private void _setRefValueCommon(FeatureImpl fi, Object v) {
+    _refData[fi.getAdjustedOffset()] = v;
+  }
+  
+  // used also for sofa string setting
+  protected void _setRefValueCommonWj(FeatureImpl fi, Object v) {
+    _refData[fi.getAdjustedOffset()] = v;
+    _casView.maybeLogUpdate(this, fi);
+  }
+
+  /*************************************
+   *  Validation checking
+   *************************************/
+  private void featureValidation(Feature feat) {   
+    if (!(((TypeImpl) (feat.getDomain()) ).subsumes(_typeImpl))) {
+      /* Feature "{0}" is not defined for type "{1}". */
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, feat.getName(), _typeImpl.getName());
+    }
+  }
+  
+//  private void featureValidation(Feature feat, Object x) {
+//    featureValidation(feat);
+//    if (feat.getRange())
+//  }
+    
+  private void featureValueValidation(Feature feat, Object v) {
+    TypeImpl range = (TypeImpl)feat.getRange();
+    if ((range.isArray() && !isOkArray(range, v)) ||
+        (!range.isArray() && (!range.subsumesValue(v)))) {
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, feat.getName(), range.getName(), (v == null) ? "null" : v.getClass().getName());
+    }
+  }
+    
+  // called when range isArray() is true, only
+  private boolean isOkArray(TypeImpl range, Object v) {
+    if (v == null) {
+      return true;
+    }
+    
+    final int rangeTypeCode = range.getCode();
+
+    /* The assignment is stricter than the Java rules - must match */
+    switch (rangeTypeCode) {
+    case TypeSystemImpl.booleanArrayTypeCode:
+      return v instanceof BooleanArray;
+    case TypeSystemImpl.byteArrayTypeCode:
+    return v instanceof ByteArray;
+    case TypeSystemImpl.shortArrayTypeCode:
+      return v instanceof ShortArray;
+    case TypeSystemImpl.intArrayTypeCode:
+      return v instanceof IntegerArray;
+    case TypeSystemImpl.floatArrayTypeCode:
+      return v instanceof FloatArray;
+    case TypeSystemImpl.longArrayTypeCode:
+      return v instanceof LongArray;
+    case TypeSystemImpl.doubleArrayTypeCode:
+      return v instanceof DoubleArray;
+    case TypeSystemImpl.stringArrayTypeCode:
+      return v instanceof StringArray;
+    case TypeSystemImpl.javaObjectArrayTypeCode:
+      return v instanceof JavaObjectArray;
+    case TypeSystemImpl.fsArrayTypeCode:
+      return v instanceof FSArray;
+    }
+    
+    // it is possible that the array has a special type code corresponding to a type "someUserType"[]
+    //   meaning an array of some user type.  UIMA implements these as instances of FSArray (I think)
+    
+    if (!(v instanceof FSArray)) { return false; }
+    
+    return true;
+  }
+
+  private void subStringRangeCheck(Feature feat, String v) {
+    Type range = feat.getRange();
+    if (range instanceof TypeImpl_stringSubtype) {
+      if (v != null) { // null values always OK
+        ((TypeImpl_stringSubtype)range).validateIsInAllowedValues(v);
+      }
+    }     
+  }
+  
 }

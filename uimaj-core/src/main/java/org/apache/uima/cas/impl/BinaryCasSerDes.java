@@ -66,11 +66,38 @@ import org.apache.uima.util.Misc;
  * in this class.
  * 
  * There is one instance of this class per CAS (shared by all views of that CAS).
+ * 
+ * Lifecycle: 
+ *   created when a CAS (any view) is first created, as part of the shared view data for that CAS.
+ *   never re-created.
+ *   
+ *   Data created when non-delta serializing, in case needed when delta-deserializing later:
+ *     xxxAuxAddr2fsa maps aux arrays to FSs
+ *     
+ *   Data created when non-delta deserializing, in case needed when delta-serializing later:
+ *     heaps and nextXXXHeapAddrAfterMark (in this case mark is the end).
+ *     
+ *   Reset: 
+ *     
+ * Instance Data:
+ *   baseCas - ref to the corresponding CAS (final)
+ *   tsi - the CAS's type system impl (can change; each use sets it from CAS API)
+ *   
+ *   heaps - there is 1 main heap, and 4 aux heaps (Byte, Short, Long, and String
+ *     Some uses of this class require these be materialized. (May be input or output)
+ *   
+ *   for Delta deserialization:
+ *     5 ints - representing the first free address in the above 5 heaps, after the mark
+ *   
+ *   For delta deserialization: Maps for Aux arrays representing updatable arrays (not String):
+ *     From starting addr in the aux array to the corresponding V3 FS object    
  */
 public class BinaryCasSerDes {
   
-  static final int Version1Flag_V3 = 0x01_00_00;
   private static final boolean TRACE_DESER = false;
+  
+  private static final boolean SOFA_IN_NORMAL_ORDER = false;
+  private static final boolean SOFA_AHEAD_OF_NORMAL_ORDER = true;
   
   /**
    * The offset for the array length cell. An array consists of length+2 number
@@ -153,9 +180,9 @@ public class BinaryCasSerDes {
    * updated when delta deserializing 
    * reset at end of delta deserializings because multiple mods not supported
    */
-  final Int2ObjHashMap<TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final Int2ObjHashMap<TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);      
+  final private Int2ObjHashMap<TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
+  final private Int2ObjHashMap<TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
+  final private Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);      
   
   public BinaryCasSerDes(CASImpl baseCAS) {
     this.baseCas = baseCAS;
@@ -176,6 +203,17 @@ public class BinaryCasSerDes {
         .getByteArray(), ser.getShortArray(), ser.getLongArray());
   }
 
+  /**
+   * This is for deserializing (never delta) from a serialized java object representation or maybe from the JNI bridge
+   * 
+   * @param heapMetadata -
+   * @param heapArray -
+   * @param stringTable -
+   * @param fsIndex -
+   * @param byteHeapArray -
+   * @param shortHeapArray -
+   * @param longHeapArray -
+   */
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
       byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
     CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);
@@ -206,6 +244,7 @@ public class BinaryCasSerDes {
 
   /**
    * Deserializer for CASCompleteSerializer instances - includes type system and index definitions
+   * Never delta
    * @param casCompSer -
    */
   public void reinit(CASCompleteSerializer casCompSer) {
@@ -371,6 +410,8 @@ public class BinaryCasSerDes {
    * needed if the blob is from C++ -- C++ blob serialization writes data in
    * native byte order.
    * 
+   * Supports delta deserialization.  For that, the the csds from the serialization event must be used.
+   *  
    * @param istream -
    * @return - the format of the input stream detected
    * @throws CASRuntimeException wraps IOException
@@ -459,13 +500,13 @@ public class BinaryCasSerDes {
    */
   private SerialFormat binaryDeserialization(Header h) {
     
-    CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);
-    
     final boolean delta = h.isDelta;
     
     final Reading r = h.reading;
     
     final DataInputStream dis = r.dis;
+    
+    final CommonSerDesSequential csds;
     
     if (delta) {
       if (nextHeapAddrAfterMark == 0 ||
@@ -473,7 +514,7 @@ public class BinaryCasSerDes {
           heap.getCellsUsed() <=1) {
         Misc.internalError();  // can't deserialize without a previous binary serialization for this CAS
       }
-      csds.setup();
+      csds = baseCas.getCsds();
     } else {
       if (heap == null) heap = new Heap(); else heap.reset();
       if (byteHeap == null) byteHeap = new ByteHeap(); else byteHeap.reset();
@@ -481,7 +522,7 @@ public class BinaryCasSerDes {
       if (longHeap == null) longHeap = new LongHeap(); else longHeap.reset();
       if (stringHeap == null) stringHeap = new StringHeap(); else stringHeap.reset();
       clearDeltaOffsets();
-      csds.clear();
+      csds = baseCas.newCsds();
     } 
     
     try {
@@ -654,7 +695,7 @@ public class BinaryCasSerDes {
          * The modifications are all to existing FSs.  
          * The modifications consist of an address (offset in an aux array) which is an array element.
          *   We don't update the aux array, but instead update the actual FS below the line representing the array.
-         *   To identify the fs, we use the xxAuxAddr2fs sorted list forms and do a binary search to find the item to update,
+         *   To identify the fs, we use the xxAuxAddr2fsa sorted list forms and do a binary search to find the item to update,
          *     with a fast path for the same or next item. 
          *       Same - use case is multiple updates into the same array
          */
@@ -742,9 +783,10 @@ public class BinaryCasSerDes {
       
       if (!delta) {
         setHeapExtents();
+        csds.setHeapEnd(nextHeapAddrAfterMark);
       }
 
-      // cleanup
+      // cleanup at the end of Binary Deserialization, both Delta and full
       // saved and not cleaned up
       //   because needed by subsequent delta serialization: 
       //     fs2addr, addr2fs, 
@@ -758,8 +800,6 @@ public class BinaryCasSerDes {
       byteHeap = null;
       shortHeap = null;
       longHeap = null;
-      
-      csds.clearSortedFSs();
       
       // cleared because only used for delta deser, for mods, and mods not allowed for multiple deltas
       byteAuxAddr2fsa.clear();
@@ -786,7 +826,7 @@ public class BinaryCasSerDes {
     nextStringHeapAddrAfterMark = stringHeap.getSize() - 1;
     nextByteHeapAddrAfterMark   = byteHeap.getSize() - 1;
     nextShortHeapAddrAfterMark  = shortHeap.getSize() - 1;
-    nextLongHeapAddrAfterMark   = longHeap.getSize() - 1;    
+    nextLongHeapAddrAfterMark   = longHeap.getSize() - 1;
   }
   /**
    * Called 3 times to process non-compressed binary deserialization of aux array modifications
@@ -1190,14 +1230,16 @@ public class BinaryCasSerDes {
   void scanAllFSsForBinarySerialization(MarkerImpl mark, CommonSerDesSequential csds) {
     final boolean isMarkSet = mark != null;
 
-    csds.clear();
-    
-   
-    // in delta case, as well as non delta case, 
-    //   add above and below the line (**all**) FSs to fs2addr map
-    
-    csds.setup();
-    
+    if (isMarkSet) {
+      if (csds.getHeapEnd() == 0) {
+        System.out.println("debug");
+      }
+      csds.setup(mark.getNextFSId(), csds.getHeapEnd()); 
+    } else {
+      csds.clear();
+      csds.setup();
+    }
+        
     // For delta, these heaps will start at 1, and only hold new items
     heap = new Heap();
     byteHeap = new ByteHeap();
@@ -1209,7 +1251,7 @@ public class BinaryCasSerDes {
       clearDeltaOffsets();  // set nextXXheapAfterMark to 0;
     }
 
-    for (TOP fs : csds.sortedFSs) {
+    for (TOP fs : csds.getSortedFSs()) {
       if (!isMarkSet || mark.isNew(fs)) {
         // skip extraction for FSs below the mark. 
         //   - updated slots will update aux heaps when delta mods are processed
@@ -1307,27 +1349,27 @@ public class BinaryCasSerDes {
       int i = pos + 1;
       for (FeatureImpl feat : type.getFeatureImpls()) {
         switch (feat.getSlotKind()) {
-        case Slot_Boolean:   heap.heap[i++] = fs.getBooleanValue(feat) ? 1 : 0; break;
-        case Slot_Byte:      heap.heap[i++] = fs.getByteValue(feat); break;
-        case Slot_Short:     heap.heap[i++] = fs.getShortValue(feat); break;
-        case Slot_Int:       heap.heap[i++] = fs.getIntValue(feat); break;
-        case Slot_Float:     heap.heap[i++] = CASImpl.float2int(fs.getFloatValue(feat)); break;
+        case Slot_Boolean:   heap.heap[i++] = fs._getBooleanValueNc(feat) ? 1 : 0; break;
+        case Slot_Byte:      heap.heap[i++] = fs._getByteValueNc(feat); break;
+        case Slot_Short:     heap.heap[i++] = fs._getShortValueNc(feat); break;
+        case Slot_Int:       heap.heap[i++] = fs._getIntValueNc(feat); break;
+        case Slot_Float:     heap.heap[i++] = CASImpl.float2int(fs._getFloatValueNc(feat)); break;
         case Slot_LongRef: {
-          int lAddr = longHeap.addLong(fs.getLongValue(feat));
+          int lAddr = longHeap.addLong(fs._getLongValueNc(feat));
           heap.heap[i++] = nextLongHeapAddrAfterMark + lAddr;
           break;
         }
         case Slot_DoubleRef: {
-          int lAddr = longHeap.addLong(CASImpl.double2long(fs.getDoubleValue(feat)));
+          int lAddr = longHeap.addLong(CASImpl.double2long(fs._getDoubleValueNc(feat)));
           heap.heap[i++] = nextLongHeapAddrAfterMark + lAddr;
           break;
         }
         case Slot_StrRef: {
-          int sAddr = stringHeap.addString(fs.getStringValue(feat));
+          int sAddr = stringHeap.addString(fs._getStringValueNc(feat));
           heap.heap[i++] = (sAddr == 0) ? 0 : nextStringHeapAddrAfterMark + sAddr;  // is 0 if string is null
           break;
         }
-        case Slot_HeapRef:   heap.heap[i++] = fs2addr.get(fs.getFeatureValue(feat)); break;
+        case Slot_HeapRef:   heap.heap[i++] = fs2addr.get(fs._getFeatureValueNc(feat)); break;
         default: Misc.internalError();
         } // end of switch
       } // end of iter over all features
@@ -1360,16 +1402,12 @@ public class BinaryCasSerDes {
    *   Delta serialization: this routine adds just the new (above-the-line) FSs, and augments existing addr2fs and auxAddr2fsa
    */
   private void createFSsFromHeaps(boolean isDelta, int startPos, CommonSerDesSequential csds) {
-    final Int2ObjHashMap<TOP> addr2fs = csds.addr2fs;
     final int heapsz = heap.getCellsUsed();
+    final Int2ObjHashMap<TOP> addr2fs = csds.addr2fs;
     tsi = baseCas.getTypeSystemImpl();
     TOP fs;
     TypeImpl type;
     CASImpl initialView = baseCas.getInitialView();  // creates if needed
-    if (!isDelta) {
-      addr2fs.clear();
-      // key 0 is automatically mapped to null, can't add it to map
-    }
     
     List<Runnable> fixups4forwardFsRefs = new ArrayList<>();
 
@@ -1384,7 +1422,7 @@ public class BinaryCasSerDes {
         final int hhi = heapIndex + arrayContentOffset;
 
         fs = baseCas.createArray(type, len);
-        addr2fs.put(heapIndex, fs);
+        csds.addFS(fs, heapIndex);
         switch(type.getComponentSlotKind()) {
 
         case Slot_BooleanRef: {
@@ -1462,7 +1500,7 @@ public class BinaryCasSerDes {
         CASImpl view = null; 
         boolean isSofa = false;
         if (type.isAnnotationBaseType()) {
-          Sofa sofa = getSofaFromAnnotBase(heapIndex, stringHeap, addr2fs);  // creates sofa if needed and exists (forward ref case)
+          Sofa sofa = getSofaFromAnnotBase(heapIndex, stringHeap, addr2fs, csds);  // creates sofa if needed and exists (forward ref case)
           view = (sofa == null) ? baseCas.getInitialView() : baseCas.getView(sofa);
           if (type == tsi.docType) {
             fs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
@@ -1471,12 +1509,12 @@ public class BinaryCasSerDes {
             fs = view.createFS(type);
           }          
         } else if (type == tsi.sofaType) {
-          fs = makeSofaFromHeap(heapIndex, stringHeap, addr2fs);  // creates Sofa if not already created due to annotationbase code above
+          fs = makeSofaFromHeap(heapIndex, stringHeap, csds, SOFA_IN_NORMAL_ORDER);  // creates Sofa if not already created due to annotationbase code above
           isSofa = true;
         } else {
           fs = initialView.createFS(type);
         }
-        addr2fs.put(heapIndex, fs);
+        csds.addFS(fs, heapIndex);
         
         for (final FeatureImpl feat : type.getFeatureImpls()) {
           SlotKind slotKind = feat.getSlotKind();
@@ -1487,39 +1525,17 @@ public class BinaryCasSerDes {
           case Slot_Int: 
           case Slot_Float: 
             if (!isSofa || feat != tsi.sofaNum) {
-              fs.setIntLikeValueNcNj(slotKind, feat, heapFeat(heapIndex, feat));
+              fs._setIntLikeValueNcNj(slotKind, feat, heapFeat(heapIndex, feat));
             }
             break;
                
-          case Slot_LongRef: fs.setLongValueNcNj(feat, longHeap.heap[heapFeat(heapIndex, feat)]); break;
-          case Slot_DoubleRef: fs.setDoubleValueNcNj(feat, CASImpl.long2double(longHeap.heap[heapFeat(heapIndex, feat)])); break;
+          case Slot_LongRef: fs._setLongValueNcNj(feat, longHeap.heap[heapFeat(heapIndex, feat)]); break;
+          case Slot_DoubleRef: fs._setDoubleValueNcNj(feat, CASImpl.long2double(longHeap.heap[heapFeat(heapIndex, feat)])); break;
           case Slot_StrRef: {
             String s = stringHeap.getStringForCode(heapFeat(heapIndex, feat));
-            if (null == s) {
-              break;  // null is the default value, no need to set it
+            if (updateStringFeature(fs, feat, s, fixups4forwardFsRefs)) {
+              fs._setStringValueNcNj(feat, s);
             }
-            if (fs instanceof Sofa) {
-              if (feat == tsi.sofaId) {
-                break;  // do nothing, this value was already used
-              }
-              Sofa sofa = (Sofa)fs;
-              if (feat == tsi.sofaMime) {
-                sofa.setMimeType(s);
-                break;
-              }
-              if (feat == tsi.sofaUri) {
-                sofa.setRemoteSofaURI(s);
-                break;
-              }
-              if (feat == tsi.sofaString) {
-                // has to be deferred because it updates docAnnot which might not be deser yet.
-                Sofa capturedSofa = sofa;
-                String capturedString = s;
-                fixups4forwardFsRefs.add(() -> capturedSofa.setLocalSofaData(capturedString));
-                break;
-              }
-            }
-            fs.setStringValueNcNj(feat, s);
             break;
           }
           
@@ -1532,7 +1548,7 @@ public class BinaryCasSerDes {
                 if (feat == tsi.sofaArray) {
                   ((Sofa)finalFs).setLocalSofaData(item);
                 } else {
-                  finalFs.setFeatureValueNcNj(feat, item);
+                  finalFs._setFeatureValueNcNj(feat, item);
                 }}, addr2fs);                        
             break;
           }
@@ -1579,17 +1595,18 @@ public class BinaryCasSerDes {
     return heap.heap[nextFsAddr + 1 + feat.getOffset()];
   }
   
-  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs) {
+  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs,
+                                    CommonSerDesSequential csds) {
     int sofaAddr = heapFeat(annotBaseAddr, tsi.annotBaseSofaFeat);
     if (0 == sofaAddr) {
       return null;
     }
     // get existing sofa or create sofa
-    return makeSofaFromHeap(sofaAddr, stringHeap2, addr2fs);
+    return makeSofaFromHeap(sofaAddr, stringHeap2, csds, SOFA_AHEAD_OF_NORMAL_ORDER);
   }
   
-  private Sofa makeSofaFromHeap(int sofaAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs) {
-    TOP sofa = addr2fs.get(sofaAddr);
+  private Sofa makeSofaFromHeap(int sofaAddr, StringHeap stringHeap2, CommonSerDesSequential csds, boolean isUnordered) {
+    TOP sofa = csds.addr2fs.get(sofaAddr);
     if (sofa != null) {
       return (Sofa) sofa;
     }
@@ -1597,7 +1614,11 @@ public class BinaryCasSerDes {
     int sofaNum = heapFeat(sofaAddr, tsi.sofaNum);
     String sofaName = stringHeap2.getStringForCode(heapFeat(sofaAddr, tsi.sofaId));
     sofa = baseCas.createSofa(sofaNum, sofaName, null);
-    addr2fs.put(sofaAddr,  sofa);
+    if (isUnordered) {
+      csds.addFSunordered(sofa, sofaAddr);
+    } else {
+      csds.addFS(sofa, sofaAddr);
+    }
     return (Sofa) sofa;
   }
     
@@ -1645,15 +1666,62 @@ public class BinaryCasSerDes {
       case Slot_Byte:   
       case Slot_Short:  
       case Slot_Int:    
-      case Slot_Float: fs.setIntLikeValue(slotKind, feat, slotValue); break;
+      case Slot_Float: fs._setIntLikeValue(slotKind, feat, slotValue); break;
       
       case Slot_LongRef:   fs.setLongValue(feat, longHeap.getHeapValue(slotValue)); break;
       case Slot_DoubleRef: fs.setDoubleValue(feat, CASImpl.long2double(longHeap.getHeapValue(slotValue))); break;
-      case Slot_StrRef:    fs.setStringValue(feat, stringHeap.getStringForCode(slotValue)); break;
+      case Slot_StrRef: {
+        String s = stringHeap.getStringForCode(slotValue);        
+        if (updateStringFeature(fs, feat, s, null)) {
+          fs.setStringValue(feat, stringHeap.getStringForCode(slotValue));
+        }
+        break;
+      }
+        
       case Slot_HeapRef:   fs.setFeatureValue(feat, addr2fs.get(slotValue)); break;
       default: Misc.internalError();
       }
     }
+  }
+  
+  /**
+   * 
+   * @param fs
+   * @param feat
+   * @param s
+   * @param fixups4forwardFsRefs
+   * @return true if caller needs to do an appropriate fs._setStringValue...
+   */
+  private boolean updateStringFeature(TOP fs, FeatureImpl feat, String s, List<Runnable> fixups4forwardFsRefs) {
+    if (null == s) {
+      return false;  // null is the default value, no need to set it
+    }
+    if (fs instanceof Sofa) {
+      if (feat == tsi.sofaId) {
+        return false;  // do nothing, this value was already used
+      }
+      Sofa sofa = (Sofa)fs;
+      if (feat == tsi.sofaMime) {
+        sofa.setMimeType(s);
+        return false;
+      }
+      if (feat == tsi.sofaUri) {
+        sofa.setRemoteSofaURI(s);
+        return false;
+      }
+      if (feat == tsi.sofaString) {
+        if (fixups4forwardFsRefs != null) {
+          // has to be deferred because it updates docAnnot which might not be deser yet.
+          Sofa capturedSofa = sofa;
+          String capturedString = s;
+          fixups4forwardFsRefs.add(() -> capturedSofa.setLocalSofaData(capturedString));
+        } else {
+          sofa.setLocalSofaData(s);
+        }
+        return false;
+      }
+    }
+    return true; //    fs._setStringValueNcNj(feat, s);
   }
   
   CASImpl getCas() {

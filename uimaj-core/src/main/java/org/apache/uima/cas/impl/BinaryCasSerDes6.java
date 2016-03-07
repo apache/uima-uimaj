@@ -876,26 +876,26 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     SlotKind kind = feat.getSlotKind();
     switch (kind) {
     //Slot_Int, Slot_Float, Slot_Boolean, Slot_Byte, Slot_Short
-    case Slot_Short:     serializeDiffWithPrevTypeSlot(kind, fs, feat, fs.getShortValueNc(feat));       break;
-    case Slot_Int:       serializeDiffWithPrevTypeSlot(kind, fs, feat, fs.getIntValueNc(feat));         break;
+    case Slot_Short:     serializeDiffWithPrevTypeSlot(kind, fs, feat, fs._getShortValueNc(feat));       break;
+    case Slot_Int:       serializeDiffWithPrevTypeSlot(kind, fs, feat, fs._getIntValueNc(feat));         break;
     case Slot_HeapRef:
 //      if ()
-      serializeDiffWithPrevTypeSlot(kind, fs, feat, getTgtSeqFromSrcFS(fs.getFeatureValueNc(feat))); 
+      serializeDiffWithPrevTypeSlot(kind, fs, feat, getTgtSeqFromSrcFS(fs._getFeatureValueNc(feat))); 
       break;
-    case Slot_Float:     writeFloat(CASImpl.float2int(fs.getFloatValueNc(feat)));                       break;
-    case Slot_Boolean:   byte_dos.write(fs.getBooleanValueNc(feat) ? 1 : 0);                            break;
-    case Slot_Byte:      byte_dos.write(fs.getByteValueNc(feat));                                       break;
-    case Slot_StrRef:    writeString(fs.getStringValueNc(feat));                                        break;
+    case Slot_Float:     writeFloat(CASImpl.float2int(fs._getFloatValueNc(feat)));                       break;
+    case Slot_Boolean:   byte_dos.write(fs._getBooleanValueNc(feat) ? 1 : 0);                            break;
+    case Slot_Byte:      byte_dos.write(fs._getByteValueNc(feat));                                       break;
+    case Slot_StrRef:    writeString(fs._getStringValueNc(feat));                                        break;
     case Slot_LongRef:
       final TypeImpl ti = fs._typeImpl;
       final int offset = feat.getOffset();
       final long prevLong = getPrevLongValue(ti.getCode(), offset);
-      final long vLong = fs.getLongValueNc(feat);
+      final long vLong = fs._getLongValueNc(feat);
       writeLong(vLong, prevLong);
       updatePrevLongValue(ti, offset, vLong);
       break;
       
-    case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs.getDoubleValueNc(feat)));            break;
+    case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs._getDoubleValueNc(feat)));            break;
     default: 
       throw new RuntimeException("internal error");
     } // end of switch
@@ -1398,7 +1398,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
                 continue;  // skip - feature not in target type
             }
             if (srcFeat.getRangeImpl().isStringOrStringSubtype()) {
-              os.add(fs.getStringValueNc(feats.get(next)));
+              os.add(fs._getStringValueNc(feats.get(next)));
             }
             next = featuresModified.nextSetBit(next + 1);
           }
@@ -1556,24 +1556,24 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         
         final SlotKind slotKind = fi.getSlotKind();
         switch (slotKind) {
-        case Slot_Boolean: byte_dos.write(fs.getBooleanValueNc(fi) ? 1 : 0); break;
-        case Slot_Byte: byte_dos.write(fs.getByteValueNc(fi)); break;
-        case Slot_Short: vPrevModShort = (short) writeDiff(int_i, fs.getShortValueNc(fi), vPrevModShort); break;
-        case Slot_Int: vPrevModInt = writeDiff(int_i, fs.getIntValueNc(fi), vPrevModInt); break;
+        case Slot_Boolean: byte_dos.write(fs._getBooleanValueNc(fi) ? 1 : 0); break;
+        case Slot_Byte: byte_dos.write(fs._getByteValueNc(fi)); break;
+        case Slot_Short: vPrevModShort = (short) writeDiff(int_i, fs._getShortValueNc(fi), vPrevModShort); break;
+        case Slot_Int: vPrevModInt = writeDiff(int_i, fs._getIntValueNc(fi), vPrevModInt); break;
         case Slot_LongRef: {
-          long v = fs.getLongValueNc(fi);  
+          long v = fs._getLongValueNc(fi);  
           writeLong(v, vPrevModLong);
           vPrevModLong = v;
           break;
         }
-        case Slot_Float: writeFloat(CASImpl.float2int(fs.getFloatValueNc(fi))); break;
-        case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs.getDoubleValueNc(fi))); break;
+        case Slot_Float: writeFloat(CASImpl.float2int(fs._getFloatValueNc(fi))); break;
+        case Slot_DoubleRef: writeDouble(Double.doubleToRawLongBits(fs._getDoubleValueNc(fi))); break;
         case Slot_HeapRef: {
-            final int v = getTgtSeqFromSrcFS(fs.getFeatureValueNc(fi));
+            final int v = getTgtSeqFromSrcFS(fs._getFeatureValueNc(fi));
             vPrevModHeapRef = writeDiff(heapRef_i, v, vPrevModHeapRef);
           }
           break;
-        case Slot_StrRef: writeString(fs.getStringValueNc(fi)); break;
+        case Slot_StrRef: writeString(fs._getStringValueNc(fi)); break;
         case Slot_JavaObjectRef: throw new UnsupportedOperationException(); 
         default: Misc.internalError();
         } // end of Switch
@@ -1959,13 +1959,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       if (srcFeat == srcTs.sofaNum) {
         sofaNum = vi;
       } else {
-        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValueNcNj(kind,  srcFeat, vi));
+        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setIntLikeValueNcNj(kind,  srcFeat, vi));
       }
       break;
       
     case Slot_Short:
       int vs = readDiffIntSlot(storeIt, tgtFeatOffset, kind, tgtType);
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValueNcNj(kind, srcFeat, vs));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setIntLikeValueNcNj(kind, srcFeat, vs));
       break;
       
     case Slot_HeapRef:
@@ -1986,7 +1986,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
               maybeStoreOrDefer_slotFixups(vh, ref_fs -> sofa.setLocalSofaData(ref_fs));
             }
           } else {
-            maybeStoreOrDefer_slotFixups(vh, ref_fs -> lfs.setFeatureValueNcNj(srcFeat,  ref_fs));
+            maybeStoreOrDefer_slotFixups(vh, ref_fs -> lfs._setFeatureValueNcNj(srcFeat,  ref_fs));
           }
         });
       }
@@ -1994,12 +1994,12 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       
     case Slot_Float:
       final int floatAsInt = readFloat();
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setFloatValueNcNj(srcFeat, Float.intBitsToFloat(floatAsInt)));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setFloatValueNcNj(srcFeat, Float.intBitsToFloat(floatAsInt)));
       break;
       
     case Slot_Boolean: case Slot_Byte:
       final byte vByte = byte_dis.readByte();
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setIntLikeValueNcNj(kind, srcFeat, vByte));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setIntLikeValueNcNj(kind, srcFeat, vByte));
       break;
       
     case Slot_StrRef: 
@@ -2028,7 +2028,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
         // other user-defined custom sofa extended string features (if any)
         //   as well as non-sofa FS features, are set by the following code
-        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setStringValueNcNj(srcFeat, vString));
+        maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setStringValueNcNj(srcFeat, vString));
       }
       break;
       
@@ -2036,12 +2036,12 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       long prevLong = getPrevLongValue(tgtType.getCode(), tgtFeatOffset);
       long vl = readLongOrDouble(kind, prevLong);
       updatePrevLongValue(tgtType, tgtFeatOffset, vl);
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setLongValueNcNj(srcFeat, vl));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setLongValueNcNj(srcFeat, vl));
       break;
 
     case Slot_DoubleRef: 
       long vd = readDouble();
-      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs.setDoubleValueNcNj(srcFeat, CASImpl.long2double(vd)));
+      maybeStoreOrDefer(storeIt, fs, (lfs) -> lfs._setDoubleValueNcNj(srcFeat, CASImpl.long2double(vd)));
       break;
     
     default: Misc.internalError();                
@@ -2859,7 +2859,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
       } 
       if (srcFeat.getRangeImpl().isRefType) {
-        enqueueFS(fs.getFeatureValueNc(srcFeat));
+        enqueueFS(fs._getFeatureValueNc(srcFeat));
       }
     }
   }
@@ -2918,7 +2918,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     
     for (FeatureImpl fi : fs._typeImpl.getFeatureImpls()) {
       if (fi.getRange() instanceof TypeImpl_string) {
-        os.add(fs.getStringValueNc(fi));
+        os.add(fs._getStringValueNc(fi));
       }
     }
   }
@@ -3149,17 +3149,17 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     private boolean compareSlot(FeatureImpl fi1, FeatureImpl fi2) {
       SlotKind kind = fi1.getSlotKind();
       switch (kind) {
-      case Slot_Int: return fs1.getIntValueNc(fi1) == fs2.getIntValueNc(fi2); 
-      case Slot_Short: return fs1.getShortValueNc(fi1) == fs2.getShortValueNc(fi2);
-      case Slot_Boolean: return fs1.getBooleanValueNc(fi1) == fs2.getBooleanValueNc(fi2);
-      case Slot_Byte: return fs1.getByteValueNc(fi1) == fs2.getByteValueNc(fi2);
+      case Slot_Int: return fs1._getIntValueNc(fi1) == fs2._getIntValueNc(fi2); 
+      case Slot_Short: return fs1._getShortValueNc(fi1) == fs2._getShortValueNc(fi2);
+      case Slot_Boolean: return fs1._getBooleanValueNc(fi1) == fs2._getBooleanValueNc(fi2);
+      case Slot_Byte: return fs1._getByteValueNc(fi1) == fs2._getByteValueNc(fi2);
             // don't compare floats directly - the NaN is defined to miscompare
-      case Slot_Float: return CASImpl.float2int(fs1.getFloatValueNc(fi1)) == CASImpl.float2int(fs2.getFloatValueNc(fi2));
-      case Slot_HeapRef: return compareRefs(fs1.getFeatureValueNc(fi1), fs2.getFeatureValueNc(fi2), fi1);
-      case Slot_StrRef: return areStringsEqual(fs1.getStringValueNc(fi1), fs2.getStringValueNc(fi2));
-      case Slot_LongRef: return fs1.getLongValueNc(fi1) == fs2.getLongValueNc(fi2);
+      case Slot_Float: return CASImpl.float2int(fs1._getFloatValueNc(fi1)) == CASImpl.float2int(fs2._getFloatValueNc(fi2));
+      case Slot_HeapRef: return compareRefs(fs1._getFeatureValueNc(fi1), fs2._getFeatureValueNc(fi2), fi1);
+      case Slot_StrRef: return areStringsEqual(fs1._getStringValueNc(fi1), fs2._getStringValueNc(fi2));
+      case Slot_LongRef: return fs1._getLongValueNc(fi1) == fs2._getLongValueNc(fi2);
             // don't compare doubles directly - the NaN is defined to miscompare
-      case Slot_DoubleRef: return Double.doubleToRawLongBits(fs1.getDoubleValueNc(fi1)) == Double.doubleToRawLongBits(fs2.getDoubleValueNc(fi2));
+      case Slot_DoubleRef: return Double.doubleToRawLongBits(fs1._getDoubleValueNc(fi1)) == Double.doubleToRawLongBits(fs2._getDoubleValueNc(fi2));
       default: Misc.internalError(); return true;     
       }
     }
@@ -3357,36 +3357,36 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         SlotKind kind = fi.getSlotKind();
         switch(kind) {    // ...Ref are either long/double/str 
         case Slot_Boolean: 
-          c = Boolean.compare(scFs1.getBooleanValueNc(fi),  scFs2.getBooleanValueNc(fi));
+          c = Boolean.compare(scFs1._getBooleanValueNc(fi),  scFs2._getBooleanValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Byte: 
-          c = Byte.compare(scFs1.getByteValueNc(fi),  scFs2.getByteValueNc(fi));
+          c = Byte.compare(scFs1._getByteValueNc(fi),  scFs2._getByteValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Short: 
-          c = Short.compare(scFs1.getShortValueNc(fi),  scFs2.getShortValueNc(fi));
+          c = Short.compare(scFs1._getShortValueNc(fi),  scFs2._getShortValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Int:     
-          c = Integer.compare(scFs1.getIntValueNc(fi),  scFs2.getIntValueNc(fi));
+          c = Integer.compare(scFs1._getIntValueNc(fi),  scFs2._getIntValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_Float:                               
-          c = Integer.compare(CASImpl.float2int(scFs1.getFloatValueNc(fi)),  
-                              CASImpl.float2int(scFs2.getFloatValueNc(fi)));
+          c = Integer.compare(CASImpl.float2int(scFs1._getFloatValueNc(fi)),  
+                              CASImpl.float2int(scFs2._getFloatValueNc(fi)));
           if (c != 0) return c; continue;
         case Slot_LongRef:   
-          c = Long.compare(scFs1.getLongValueNc(fi),  scFs2.getLongValueNc(fi));
+          c = Long.compare(scFs1._getLongValueNc(fi),  scFs2._getLongValueNc(fi));
           if (c != 0) return c; continue;
         case Slot_DoubleRef:   
-          c = Long.compare(Double.doubleToRawLongBits(scFs1.getDoubleValueNc(fi)),  
-                           Double.doubleToRawLongBits(scFs2.getDoubleValueNc(fi)));
+          c = Long.compare(Double.doubleToRawLongBits(scFs1._getDoubleValueNc(fi)),  
+                           Double.doubleToRawLongBits(scFs2._getDoubleValueNc(fi)));
           if (c != 0) return c; continue;
         case Slot_StrRef:  
-          c = Misc.compareStrings(scFs1.getStringValueNc(fi), scFs2.getStringValueNc(fi));
+          c = Misc.compareStrings(scFs1._getStringValueNc(fi), scFs2._getStringValueNc(fi));
           if (c != 0) return c; 
           continue;
           
         case Slot_HeapRef: 
-          TOP refFs1 = scFs1.getFeatureValueNc(fi);
-          TOP refFs2 = scFs2.getFeatureValueNc(fi);
+          TOP refFs1 = scFs1._getFeatureValueNc(fi);
+          TOP refFs2 = scFs2._getFeatureValueNc(fi);
           if (null == refFs1) {
             if (null == refFs2) {
               continue;
