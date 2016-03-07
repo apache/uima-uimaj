@@ -1,19 +1,22 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
 
 package org.apache.uima.cas.test;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Token extends Annotation {
@@ -34,14 +37,13 @@ public class Token extends Annotation {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
+  /* Feature Adjusted Offsets */
 
    
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected Token() {/* intentionally empty block */}

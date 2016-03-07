@@ -1,20 +1,22 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
 
 import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class MissingFeatureInCas extends TOP {
@@ -35,20 +37,16 @@ public class MissingFeatureInCas extends TOP {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
-  public final static int _FI_haveThisOne = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_missingThisOne = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_changedFType = JCasRegistry.registerFeature(typeIndexID);
+  /* Feature Adjusted Offsets */
+  public final static int _FI_haveThisOne = TypeSystemImpl.getAdjustedFeatureOffset("haveThisOne");
+  public final static int _FI_missingThisOne = TypeSystemImpl.getAdjustedFeatureOffset("missingThisOne");
+  public final static int _FI_changedFType = TypeSystemImpl.getAdjustedFeatureOffset("changedFType");
 
    
-  private int _F_haveThisOne;  // 
-  private float _F_missingThisOne;  // 
-  private String _F_changedFType;  // 
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected MissingFeatureInCas() {/* intentionally empty block */}
@@ -89,15 +87,16 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public int getHaveThisOne() { return _F_haveThisOne;}
+  public int getHaveThisOne() { return _getIntValueNc(_FI_haveThisOne);}
     
   /** setter for haveThisOne - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setHaveThisOne(int v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_haveThisOne, () -> _F_haveThisOne = v);
-      }    
+    _setIntValueNfc(_getFeatFromAdjOffset(_FI_haveThisOne, true), v);
+  }    
+    
    
     
   //*--------------*
@@ -107,15 +106,16 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public float getMissingThisOne() { return _F_missingThisOne;}
+  public float getMissingThisOne() { return _getFloatValueNc(_FI_missingThisOne);}
     
   /** setter for missingThisOne - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setMissingThisOne(float v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_missingThisOne, () -> _F_missingThisOne = v);
-      }    
+    _setFloatValueNfc(_getFeatFromAdjOffset(_FI_missingThisOne, true), v);
+  }    
+    
    
     
   //*--------------*
@@ -125,15 +125,16 @@ public class MissingFeatureInCas extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public String getChangedFType() { return _F_changedFType;}
+  public String getChangedFType() { return _getStringValueNc(_FI_changedFType);}
     
   /** setter for changedFType - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setChangedFType(String v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_changedFType, () -> _F_changedFType = v);
-      }    
+    _setStringValueNfc(_getFeatFromAdjOffset(_FI_changedFType, false), v);
+  }    
+    
   }
 
     

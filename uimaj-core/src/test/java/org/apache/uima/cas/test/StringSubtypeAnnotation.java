@@ -1,19 +1,22 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Oct 28 14:10:07 EDT 2015 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:51:54 EST 2016 */
 
 package org.apache.uima.cas.test;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Oct 28 14:10:07 EDT 2015
+ * Updated by JCasGen Wed Mar 02 13:51:54 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/resources/CASTests/desc/StringSubtypeTest.xml
  * @generated */
 public class StringSubtypeAnnotation extends Annotation {
@@ -34,11 +37,14 @@ public class StringSubtypeAnnotation extends Annotation {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
-  private String _F_stringSetFeature;  // 
- 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  /* Feature Adjusted Offsets */
+  public final static int _FI_stringSetFeature = TypeSystemImpl.getAdjustedFeatureOffset("stringSetFeature");
+
+   
   /** Never called.  Disable default constructor
    * @generated */
   protected StringSubtypeAnnotation() {/* intentionally empty block */}
@@ -79,17 +85,16 @@ public class StringSubtypeAnnotation extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getStringSetFeature() { return _F_stringSetFeature;}
+  public String getStringSetFeature() { return _getStringValueNc(_FI_stringSetFeature);}
     
   /** setter for stringSetFeature - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setStringSetFeature(String v) {
-          _typeImpl.getFeatureByBaseName("stringSetFeature").validateIsInAllowedValue(v);
-         
-      _casView.setWithJournal(this, _typeImpl.getFeatureByBaseName("stringSetFeature"), () -> _F_stringSetFeature = v);
-      }    
+    _setStringValueNfc(_getFeatFromAdjOffset(_FI_stringSetFeature, false), v);
+  }    
+    
   }
 
     

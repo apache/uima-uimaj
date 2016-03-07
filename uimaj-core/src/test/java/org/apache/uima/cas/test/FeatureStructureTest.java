@@ -250,7 +250,7 @@ public class FeatureStructureTest extends TestCase {
 		try {
 			token.setFeatureValue(this.startFeature, null);
 		} catch (CASRuntimeException e) {
-			assertTrue(e.getMessageKey().equals(CASRuntimeException.PRIMITIVE_VAL_FEAT));
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 			caughtExc = true;
 		}
 		assertTrue(caughtExc);

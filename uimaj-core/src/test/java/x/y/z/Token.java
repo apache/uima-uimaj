@@ -1,21 +1,23 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Mon Mar 07 09:21:36 EST 2016 */
 
 package x.y.z;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
 
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Mon Mar 07 09:21:36 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Token extends Annotation {
@@ -36,24 +38,17 @@ public class Token extends Annotation {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
-  public final static int _FI_ttype = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_tokenFloatFeat = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_lemma = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_sentenceLength = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_lemmaList = JCasRegistry.registerFeature(typeIndexID);
+  /* Feature Adjusted Offsets */
+  public final static int _FI_ttype = TypeSystemImpl.getAdjustedFeatureOffset("ttype");
+  public final static int _FI_tokenFloatFeat = TypeSystemImpl.getAdjustedFeatureOffset("tokenFloatFeat");
+  public final static int _FI_lemma = TypeSystemImpl.getAdjustedFeatureOffset("lemma");
+  public final static int _FI_lemmaList = TypeSystemImpl.getAdjustedFeatureOffset("lemmaList");
 
    
-  private TokenType _F_ttype;  // 
-  private float _F_tokenFloatFeat;  // 
-  private String _F_lemma;  // 
-  private int _F_sentenceLength;  // 
-  private StringArray _F_lemmaList;  // 
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected Token() {/* intentionally empty block */}
@@ -94,16 +89,16 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public TokenType getTtype() { return _F_ttype;}
+  public TokenType getTtype() { return (TokenType)(_getFeatureValueNc(_FI_ttype));}
     
   /** setter for ttype - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setTtype(TokenType v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_ttype, () -> _F_ttype = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_ttype, false), v);
+  }    
+    
    
     
   //*--------------*
@@ -113,15 +108,16 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public float getTokenFloatFeat() { return _F_tokenFloatFeat;}
+  public float getTokenFloatFeat() { return _getFloatValueNc(_FI_tokenFloatFeat);}
     
   /** setter for tokenFloatFeat - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setTokenFloatFeat(float v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_tokenFloatFeat, () -> _F_tokenFloatFeat = v);
-      }    
+    _setFloatValueNfc(_getFeatFromAdjOffset(_FI_tokenFloatFeat, true), v);
+  }    
+    
    
     
   //*--------------*
@@ -131,33 +127,16 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getLemma() { return _F_lemma;}
+  public String getLemma() { return _getStringValueNc(_FI_lemma);}
     
   /** setter for lemma - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setLemma(String v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_lemma, () -> _F_lemma = v);
-      }    
-   
+    _setStringValueNfc(_getFeatFromAdjOffset(_FI_lemma, false), v);
+  }    
     
-  //*--------------*
-  //* Feature: sentenceLength
-
-  /** getter for sentenceLength - gets 
-   * @generated
-   * @return value of the feature 
-   */
-  public int getSentenceLength() { return _F_sentenceLength;}
-    
-  /** setter for sentenceLength - sets  
-   * @generated
-   * @param v value to set into the feature 
-   */
-  public void setSentenceLength(int v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_sentenceLength, () -> _F_sentenceLength = v);
-      }    
    
     
   //*--------------*
@@ -167,16 +146,16 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getLemmaList() { return _F_lemmaList;}
+  public StringArray getLemmaList() { return (StringArray)(_getFeatureValueNc(_FI_lemmaList));}
     
   /** setter for lemmaList - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setLemmaList(StringArray v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_lemmaList, () -> _F_lemmaList = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_lemmaList, false), v);
+  }    
+    
     
   /** indexed getter for lemmaList - gets an indexed value - 
    * @generated
@@ -184,7 +163,7 @@ public class Token extends Annotation {
    * @return value of the element at index i 
    */
   public String getLemmaList(int i) {
-     return getLemmaList().get(i);} 
+     return ((StringArray)(_getFeatureValueNc(_FI_lemmaList))).get(i);} 
 
   /** indexed setter for lemmaList - sets an indexed value - 
    * @generated
@@ -192,7 +171,8 @@ public class Token extends Annotation {
    * @param v value to set into the array 
    */
   public void setLemmaList(int i, String v) {
-    getLemmaList().set(i, v);}  
+    ((StringArray)(_getFeatureValueNc(_FI_lemmaList))).set(i, v);
+  }  
   }
 
     

@@ -1,9 +1,9 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:49:48 EST 2016 */
 
-package org.apache.uima.cas.test;
+package sofa.test;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -16,8 +16,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Wed Mar 02 13:49:48 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/resources/ExampleCas/testTypeSystem.xml
  * @generated */
 public class CrossAnnotation extends Annotation {
   /** @generated

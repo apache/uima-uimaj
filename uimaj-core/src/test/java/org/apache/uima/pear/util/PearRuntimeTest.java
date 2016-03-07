@@ -106,7 +106,7 @@ public class PearRuntimeTest extends TestCase {
     // The 3 annotations are the doc annotation, plus 2 room numbers
     //  The date-time annotators are skipped because the default result spec is "en"
     //    and is missing the "x-unspecified"
-    Assert.assertEquals(cas.getAnnotationIndex().size(), 3);
+    assertEquals(cas.getAnnotationIndex().size(), 3);
 //    FSIterator i = cas.getAnnotationIndex().iterator();
 //    while (i.hasNext()) {
 //      System.out.println(i.next());
@@ -120,7 +120,7 @@ public class PearRuntimeTest extends TestCase {
     CAS cas = this.runPearRuntimeTestcase(new String[]{"pearTests/analysisEngine.pear", "pearTests/analysisEngine2.pear"});
 
     //check if 3 annotations are available in the CAS index
-    Assert.assertEquals(cas.getAnnotationIndex().size(), 3);
+    assertEquals(cas.getAnnotationIndex().size(), 3);
    }
 
   private Import [] installPears(String [] pears) throws IOException {
@@ -139,14 +139,14 @@ public class PearRuntimeTest extends TestCase {
 
     // get pear files to install
     File pearFile = JUnitExtension.getFile(pear);
-    Assert.assertNotNull(pearFile);
+    assertNotNull(pearFile);
 
     // Install PEAR packages
     PackageBrowser instPear = PackageInstaller
             .installPackage(this.tempInstallDir, pearFile, true);
 
     // check pear PackageBrowser object
-    Assert.assertNotNull(instPear); 
+    assertNotNull(instPear); 
  
     // import pear specifiers
     Import impPear = UIMAFramework.getResourceSpecifierFactory().createImport();
@@ -197,7 +197,7 @@ public class PearRuntimeTest extends TestCase {
   private CAS runDesc(AnalysisEngineDescription desc) throws Exception {
     // Create analysis engine from aggregate ae description
     AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, null, null);
-    Assert.assertNotNull(ae);
+    assertNotNull(ae);
 
     // Create a CAS with a sample document text and process the CAS
     CAS cas = ae.newCAS();

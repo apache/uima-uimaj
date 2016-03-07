@@ -1,19 +1,21 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 
 
 
+
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class ConcreteType extends AbstractType {
@@ -34,16 +36,14 @@ public class ConcreteType extends AbstractType {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
-  public final static int _FI_concreteString = JCasRegistry.registerFeature(typeIndexID);
+  /* Feature Adjusted Offsets */
+  public final static int _FI_concreteString = TypeSystemImpl.getAdjustedFeatureOffset("concreteString");
 
    
-  private String _F_concreteString;  // 
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected ConcreteType() {/* intentionally empty block */}
@@ -84,15 +84,16 @@ public class ConcreteType extends AbstractType {
    * @generated
    * @return value of the feature 
    */
-  public String getConcreteString() { return _F_concreteString;}
+  public String getConcreteString() { return _getStringValueNc(_FI_concreteString);}
     
   /** setter for concreteString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setConcreteString(String v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_concreteString, () -> _F_concreteString = v);
-      }    
+    _setStringValueNfc(_getFeatFromAdjOffset(_FI_concreteString, false), v);
+  }    
+    
   }
 
     

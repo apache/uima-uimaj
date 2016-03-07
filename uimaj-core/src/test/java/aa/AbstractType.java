@@ -1,20 +1,22 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
 
 import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class AbstractType extends TOP {
@@ -35,16 +37,14 @@ public class AbstractType extends TOP {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
-  public final static int _FI_abstractInt = JCasRegistry.registerFeature(typeIndexID);
+  /* Feature Adjusted Offsets */
+  public final static int _FI_abstractInt = TypeSystemImpl.getAdjustedFeatureOffset("abstractInt");
 
    
-  private int _F_abstractInt;  // 
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected AbstractType() {/* intentionally empty block */}
@@ -85,15 +85,16 @@ public class AbstractType extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public int getAbstractInt() { return _F_abstractInt;}
+  public int getAbstractInt() { return _getIntValueNc(_FI_abstractInt);}
     
   /** setter for abstractInt - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAbstractInt(int v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_abstractInt, () -> _F_abstractInt = v);
-      }    
+    _setIntValueNfc(_getFeatFromAdjOffset(_FI_abstractInt, true), v);
+  }    
+    
   }
 
     

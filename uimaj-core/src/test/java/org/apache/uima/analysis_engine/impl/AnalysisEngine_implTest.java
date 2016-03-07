@@ -95,7 +95,6 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
 import org.apache.uima.util.impl.Settings_impl;
 import org.xml.sax.ContentHandler;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**

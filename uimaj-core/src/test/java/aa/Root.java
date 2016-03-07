@@ -1,23 +1,26 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
-import org.apache.uima.jcas.cas.IntegerArray;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.IntegerArray;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Root extends TOP {
@@ -38,30 +41,21 @@ public class Root extends TOP {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
-  public final static int _FI_arrayInt = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_arrayRef = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_arrayFloat = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_arrayString = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_plainInt = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_plainFloat = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_plainString = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_plainRef = JCasRegistry.registerFeature(typeIndexID);
+  /* Feature Adjusted Offsets */
+  public final static int _FI_arrayInt = TypeSystemImpl.getAdjustedFeatureOffset("arrayInt");
+  public final static int _FI_arrayRef = TypeSystemImpl.getAdjustedFeatureOffset("arrayRef");
+  public final static int _FI_arrayFloat = TypeSystemImpl.getAdjustedFeatureOffset("arrayFloat");
+  public final static int _FI_arrayString = TypeSystemImpl.getAdjustedFeatureOffset("arrayString");
+  public final static int _FI_plainInt = TypeSystemImpl.getAdjustedFeatureOffset("plainInt");
+  public final static int _FI_plainFloat = TypeSystemImpl.getAdjustedFeatureOffset("plainFloat");
+  public final static int _FI_plainString = TypeSystemImpl.getAdjustedFeatureOffset("plainString");
+  public final static int _FI_plainRef = TypeSystemImpl.getAdjustedFeatureOffset("plainRef");
 
    
-  private IntegerArray _F_arrayInt;  // 
-  private FSArray _F_arrayRef;  // 
-  private FloatArray _F_arrayFloat;  // 
-  private StringArray _F_arrayString;  // 
-  private int _F_plainInt;  // 
-  private float _F_plainFloat;  // 
-  private String _F_plainString;  // 
-  private Root _F_plainRef;  // TokenType testMissingImport;
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected Root() {/* intentionally empty block */}
@@ -102,16 +96,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public IntegerArray getArrayInt() { return _F_arrayInt;}
+  public IntegerArray getArrayInt() { return (IntegerArray)(_getFeatureValueNc(_FI_arrayInt));}
     
   /** setter for arrayInt - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArrayInt(IntegerArray v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_arrayInt, () -> _F_arrayInt = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayInt, false), v);
+  }    
+    
     
   /** indexed getter for arrayInt - gets an indexed value - 
    * @generated
@@ -119,7 +113,7 @@ public class Root extends TOP {
    * @return value of the element at index i 
    */
   public int getArrayInt(int i) {
-     return getArrayInt().get(i);} 
+     return ((IntegerArray)(_getFeatureValueNc(_FI_arrayInt))).get(i);} 
 
   /** indexed setter for arrayInt - sets an indexed value - 
    * @generated
@@ -127,7 +121,8 @@ public class Root extends TOP {
    * @param v value to set into the array 
    */
   public void setArrayInt(int i, int v) {
-    getArrayInt().set(i, v);}  
+    ((IntegerArray)(_getFeatureValueNc(_FI_arrayInt))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -137,16 +132,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public FSArray getArrayRef() { return _F_arrayRef;}
+  public FSArray getArrayRef() { return (FSArray)(_getFeatureValueNc(_FI_arrayRef));}
     
   /** setter for arrayRef - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArrayRef(FSArray v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_arrayRef, () -> _F_arrayRef = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayRef, false), v);
+  }    
+    
     
   /** indexed getter for arrayRef - gets an indexed value - 
    * @generated
@@ -154,7 +149,7 @@ public class Root extends TOP {
    * @return value of the element at index i 
    */
   public TOP getArrayRef(int i) {
-     return getArrayRef().get(i);} 
+     return (TOP)(((FSArray)(_getFeatureValueNc(_FI_arrayRef))).get(i));} 
 
   /** indexed setter for arrayRef - sets an indexed value - 
    * @generated
@@ -162,7 +157,8 @@ public class Root extends TOP {
    * @param v value to set into the array 
    */
   public void setArrayRef(int i, TOP v) {
-    getArrayRef().set(i, v);}  
+    ((FSArray)(_getFeatureValueNc(_FI_arrayRef))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -172,16 +168,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public FloatArray getArrayFloat() { return _F_arrayFloat;}
+  public FloatArray getArrayFloat() { return (FloatArray)(_getFeatureValueNc(_FI_arrayFloat));}
     
   /** setter for arrayFloat - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArrayFloat(FloatArray v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_arrayFloat, () -> _F_arrayFloat = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayFloat, false), v);
+  }    
+    
     
   /** indexed getter for arrayFloat - gets an indexed value - 
    * @generated
@@ -189,7 +185,7 @@ public class Root extends TOP {
    * @return value of the element at index i 
    */
   public float getArrayFloat(int i) {
-     return getArrayFloat().get(i);} 
+     return ((FloatArray)(_getFeatureValueNc(_FI_arrayFloat))).get(i);} 
 
   /** indexed setter for arrayFloat - sets an indexed value - 
    * @generated
@@ -197,7 +193,8 @@ public class Root extends TOP {
    * @param v value to set into the array 
    */
   public void setArrayFloat(int i, float v) {
-    getArrayFloat().set(i, v);}  
+    ((FloatArray)(_getFeatureValueNc(_FI_arrayFloat))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -207,16 +204,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getArrayString() { return _F_arrayString;}
+  public StringArray getArrayString() { return (StringArray)(_getFeatureValueNc(_FI_arrayString));}
     
   /** setter for arrayString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setArrayString(StringArray v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_arrayString, () -> _F_arrayString = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayString, false), v);
+  }    
+    
     
   /** indexed getter for arrayString - gets an indexed value - 
    * @generated
@@ -224,7 +221,7 @@ public class Root extends TOP {
    * @return value of the element at index i 
    */
   public String getArrayString(int i) {
-     return getArrayString().get(i);} 
+     return ((StringArray)(_getFeatureValueNc(_FI_arrayString))).get(i);} 
 
   /** indexed setter for arrayString - sets an indexed value - 
    * @generated
@@ -232,7 +229,8 @@ public class Root extends TOP {
    * @param v value to set into the array 
    */
   public void setArrayString(int i, String v) {
-    getArrayString().set(i, v);}  
+    ((StringArray)(_getFeatureValueNc(_FI_arrayString))).set(i, v);
+  }  
    
     
   //*--------------*
@@ -242,15 +240,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public int getPlainInt() { return _F_plainInt;}
+  public int getPlainInt() { return _getIntValueNc(_FI_plainInt);}
     
   /** setter for plainInt - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setPlainInt(int v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_plainInt, () -> _F_plainInt = v);
-      }    
+    _setIntValueNfc(_getFeatFromAdjOffset(_FI_plainInt, true), v);
+  }    
+    
    
     
   //*--------------*
@@ -260,15 +259,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public float getPlainFloat() { return _F_plainFloat;}
+  public float getPlainFloat() { return _getFloatValueNc(_FI_plainFloat);}
     
   /** setter for plainFloat - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setPlainFloat(float v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_plainFloat, () -> _F_plainFloat = v);
-      }    
+    _setFloatValueNfc(_getFeatFromAdjOffset(_FI_plainFloat, true), v);
+  }    
+    
    
     
   //*--------------*
@@ -278,15 +278,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public String getPlainString() { return _F_plainString;}
+  public String getPlainString() { return _getStringValueNc(_FI_plainString);}
     
   /** setter for plainString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setPlainString(String v) {
-              _casView.setWithCheckAndJournalJFRI(this, _FI_plainString, () -> _F_plainString = v);
-      }    
+    _setStringValueNfc(_getFeatFromAdjOffset(_FI_plainString, false), v);
+  }    
+    
    
     
   //*--------------*
@@ -296,16 +297,16 @@ public class Root extends TOP {
    * @generated
    * @return value of the feature 
    */
-  public Root getPlainRef() { return _F_plainRef;}
+  public Root getPlainRef() { return (Root)(_getFeatureValueNc(_FI_plainRef));}
     
   /** setter for plainRef - sets TokenType testMissingImport; 
    * @generated
    * @param v value to set into the feature 
    */
   public void setPlainRef(Root v) {
-         
-      _casView.setWithJournalJFRI(this, _FI_plainRef, () -> _F_plainRef = v);
-      }    
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_plainRef, false), v);
+  }    
+    
   }
 
     

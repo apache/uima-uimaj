@@ -1,20 +1,22 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Tue Nov 03 17:48:38 EST 2015 */
+/* Apache UIMA v3 - First created by JCasGen Mon Mar 07 09:21:36 EST 2016 */
 
 package x.y.z;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
 
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Tue Nov 03 17:48:38 EST 2015
+ * Updated by JCasGen Mon Mar 07 09:21:36 EST 2016
  * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Sentence extends Annotation {
@@ -35,14 +37,14 @@ public class Sentence extends Annotation {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /* Register Features */
+  /* Feature Adjusted Offsets */
+  public final static int _FI_sentenceLength = TypeSystemImpl.getAdjustedFeatureOffset("sentenceLength");
 
    
- 
   /** Never called.  Disable default constructor
    * @generated */
   protected Sentence() {/* intentionally empty block */}
@@ -74,6 +76,25 @@ public class Sentence extends Annotation {
    */
   private void readObject() {/*default - does nothing empty block */}
      
-}
+ 
+    
+  //*--------------*
+  //* Feature: sentenceLength
+
+  /** getter for sentenceLength - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public int getSentenceLength() { return _getIntValueNc(_FI_sentenceLength);}
+    
+  /** setter for sentenceLength - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setSentenceLength(int v) {
+    _setIntValueNfc(_getFeatFromAdjOffset(_FI_sentenceLength, true), v);
+  }    
+    
+  }
 
     
