@@ -19,8 +19,10 @@
 
 package org.apache.uima.jcas.tcas;
 
+import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -41,12 +43,12 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
     return typeIndexID;
   }
   
-  public final static int _FI_begin = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_end = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_begin = TypeSystemImpl.getAdjustedFeatureOffset("begin");
+  public final static int _FI_end   = TypeSystemImpl.getAdjustedFeatureOffset("end");
   
-  /* local data */
-  private int _F_begin;
-  private int _F_end;
+//  /* local data */
+//  private int _F_begin;
+//  private int _F_end;
 
   // Never called. Disable default constructor
   protected Annotation() {
@@ -74,15 +76,15 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * getter for begin - gets beginning of span of annotation
    */
-  public int getBegin() { return _F_begin; }
+//  public int getBegin() { return _F_begin; }
+  public int getBegin() { return _getIntValueNc(_FI_begin); 
+  }
 
   /*
    * setter for begin - sets beginning of span of annotation
    */
-  public void setBegin(int v) { 
-    _casView.setWithCheckAndJournalJFRI(this, _FI_begin , () -> _F_begin = v);
-  }
-
+  public void setBegin(int v) { _setIntValueNfcCJ(_getFeatFromAdjOffset(_FI_begin, true), v); }
+  
   // *------------------*
   // * Feature: end
   // * ending of span of annotation
@@ -90,15 +92,17 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * getter for end - gets ending of span of annotation
    */
-  public int getEnd() { return _F_end; }
+  public int getEnd() { 
+    return this._getIntValueNc(_FI_end);
+  }
 
   /*
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {
-    _casView.setWithCheckAndJournalJFRI(this,  _FI_end,  () -> _F_end = v);
+    this._setIntValueNfc(_getFeatFromAdjOffset(_FI_end, true),  v);
   }
-
+  
   /**
    * Constructor with begin and end passed as arguments
    * @param jcas JCas
@@ -106,9 +110,9 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * @param end   end offset
    */
   public Annotation(JCas jcas, int begin, int end) {
-    this(jcas); // forward to constructor
-    this.setBegin(begin);
-    this.setEnd(end);
+    super(jcas); // forward to constructor
+    this._setIntValueNcNj(_FI_begin, begin);
+    this._setIntValueNcNj(_FI_end, end);
   }
 
   /**
@@ -133,4 +137,57 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
     return getBegin();
   }
   
+  /**
+   * Compare two annotations, no type order
+   * @param other
+   * @return
+   */
+  public int compareAnnotation(Annotation other) {
+    int[] o = other._intData;
+    int result = Integer.compare(_intData[_FI_begin], o[_FI_begin]);
+    if (result != 0) return result;
+
+    result = Integer.compare(_intData[_FI_end], o[_FI_end]);
+    return (result == 0) ? 0 : -result;  // reverse compare
+  }
+  
+  /**
+   * Compare two annotations incl type order
+   * @param other
+   * @return
+   */
+  public int compareAnnotation(Annotation other, LinearTypeOrder lto) {
+    int[] o = other._intData;
+    int result = Integer.compare(_intData[_FI_begin], o[_FI_begin]);
+    if (result != 0) return result;
+
+    result = Integer.compare(_intData[_FI_end], o[_FI_end]);
+    if (result != 0) return -result;
+    
+    return lto.compare(this,  other);
+  }
+
+
+  /**
+   * Compare two annotations, with type order, with id compare
+   * @param other
+   * @return
+   */
+  public int compareAnnotationWithId(Annotation other) {
+    int result = compareAnnotation(other);
+    if (result != 0) return result;    
+    return Integer.compare(_id,  other._id);
+  }
+  
+  /**
+   * Compare two annotations, with type order, with id compare
+   * @param other
+   * @return
+   */
+  public int compareAnnotationWithId(Annotation other, LinearTypeOrder lto) {
+    int result = compareAnnotation(other, lto);
+    if (result != 0) return result;    
+    return Integer.compare(_id,  other._id);
+  }
+
 }

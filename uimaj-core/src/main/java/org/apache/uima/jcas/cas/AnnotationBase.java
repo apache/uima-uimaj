@@ -24,6 +24,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -51,6 +52,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
 
   public final static int type = typeIndexID;
 
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -58,13 +60,12 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
   // private final static int _FI_sofa = JCasRegistry.registerFeature();  // only for journal-able or corruptable feature slots
 
   /* local data */
-  public final static int _FI_sofa = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
   
-  private final Sofa _F_sofa;
+//  private final Sofa _F_sofa;
   
   // Never called. Disable default constructor
   protected AnnotationBase() {
-    _F_sofa = null;
   }
 
 // /* Internal - Constructor used by generator */
@@ -77,7 +78,8 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
     if (_casView.isBaseCas()) {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
-    _F_sofa = _casView.getSofa();
+    // no journaling, no index corruption checking
+    _refData[_FI_sofa] = _casView.getSofa();
   }
 
   /**
@@ -92,7 +94,8 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
     if (_casView.isBaseCas()) {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
-    _F_sofa = _casView.getSofa();
+    // no journaling, no index corruption checking
+    _refData[_FI_sofa] = _casView.getSofa();
   }
 
   // *------------------*
@@ -101,11 +104,12 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
   /*
    * getter for sofa - gets Sofaref for annotation
    */
-  public Sofa getSofa() { return _F_sofa; }
+  public Sofa getSofa() { return (Sofa) _getFeatureValueNc(_FI_sofa); }
   
   // There is no setter for this
   //   The value is set and is fixed when this is created
     
+  @Override
   public CAS getView() {
     return _casView;
   }

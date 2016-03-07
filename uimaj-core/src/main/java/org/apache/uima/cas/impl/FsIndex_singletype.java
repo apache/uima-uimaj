@@ -226,30 +226,30 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
       if (key instanceof FeatureImpl) {
         FeatureImpl fi = (FeatureImpl) key;
         if (fi.getRange() instanceof TypeImpl_string) { // string and string subtypes
-          result = Misc.compareStrings(fs1.getStringValueNc(fi), fs2.getStringValueNc(fi));
+          result = Misc.compareStrings(fs1._getStringValueNc(fi), fs2._getStringValueNc(fi));
         } else {
           switch (keyTypeCodes[i]) {
           case TypeSystemImpl.booleanTypeCode:
-            result = Integer.compare(fs1.getBooleanValueNc(fi) ? 1 : 0,
-                                     fs2.getBooleanValueNc(fi) ? 1 : 0);
+            result = Integer.compare(fs1._getBooleanValueNc(fi) ? 1 : 0,
+                                     fs2._getBooleanValueNc(fi) ? 1 : 0);
             break;
           case TypeSystemImpl.byteTypeCode:
-            result = Integer.compare(fs1.getByteValueNc(fi), fs2.getByteValueNc(fi));
+            result = Integer.compare(fs1._getByteValueNc(fi), fs2._getByteValueNc(fi));
             break;
           case TypeSystemImpl.shortTypeCode:
-            result = Integer.compare(fs1.getShortValueNc(fi), fs2.getShortValueNc(fi));
+            result = Integer.compare(fs1._getShortValueNc(fi), fs2._getShortValueNc(fi));
             break;
           case TypeSystemImpl.intTypeCode:
-            result = Integer.compare(fs1.getIntValueNc(fi), fs2.getIntValueNc(fi));
+            result = Integer.compare(fs1._getIntValueNc(fi), fs2._getIntValueNc(fi));
             break;
           case TypeSystemImpl.longTypeCode:
-            result = Long.compare(fs1.getLongValueNc(fi), fs2.getLongValueNc(fi));
+            result = Long.compare(fs1._getLongValueNc(fi), fs2._getLongValueNc(fi));
             break;
           case TypeSystemImpl.floatTypeCode:
-            result = Float.compare(fs1.getFloatValueNc(fi), fs2.getFloatValueNc(fi));
+            result = Float.compare(fs1._getFloatValueNc(fi), fs2._getFloatValueNc(fi));
             break;
           case TypeSystemImpl.doubleTypeCode:
-            result = Double.compare(fs1.getDoubleValueNc(fi), fs2.getDoubleValueNc(fi));
+            result = Double.compare(fs1._getDoubleValueNc(fi), fs2._getDoubleValueNc(fi));
             break;
             // next is compared above before the switch
 //          case TypeSystemImpl.stringTypeCode:

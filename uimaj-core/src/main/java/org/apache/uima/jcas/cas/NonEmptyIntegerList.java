@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -36,12 +37,12 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
     return typeIndexID;
   }
   
-  public final static int _FI_head = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_tail = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+  public final static int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
 
-  /* local data */
-  private int _F_head;
-  private IntegerList _F_tail;
+//  /* local data */
+//  private int _F_head;
+//  private IntegerList _F_tail;
   
   // Never called. Disable default constructor
   protected NonEmptyIntegerList() {
@@ -66,31 +67,25 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public int getHead() { return _F_head; }
+  public int getHead() { return _getIntValueNc(_FI_head); }
 
   /* setter for head * */
   public void setHead(int v) {
-    _F_head = v;  
-    // no corruption check - can't be a key
-    _casView.maybeLogUpdateJFRI(this, _FI_head);
+    _setIntValueNfc(_getFeatFromAdjOffset(_FI_head, true), v);
   }
+
+//  public void _setHeadNcNj(int v) { _FI_head = v;}
   
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public IntegerList getTail() { return _F_tail; }
+  public IntegerList getTail() { return (IntegerList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(IntegerList v) {
-    _F_tail = v;
-    // no corruption check - can't be a key
-    _casView.maybeLogUpdateJFRI(this, _FI_tail);
-  }
+  public void setTail(IntegerList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
   
-  public void setTail(CommonList v) {
-    setTail((IntegerList)v);
-  }
-  
+  public void setTail(CommonList v) { setTail((IntegerList)v); }
+    
   public void setHead(List<String> stringValues, int i) {
     setHead(Integer.parseInt(stringValues.get(i)));
   }

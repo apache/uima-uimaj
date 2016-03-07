@@ -63,7 +63,7 @@ import org.apache.uima.cas.TypeNameSpace;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.FSClassRegistry.GetterSetter;
+import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
@@ -285,7 +285,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
            CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
   }
     
-  final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections.synchronizedMap(new WeakHashMap<>()); 
+  final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections.synchronizedMap(new WeakHashMap<>());
+  
+  /**
+   * used to pass the type being loaded reference to the JCas static initializer code,
+   *   referenced from the TypeSystemImpl.getAdjustedFeatureOffset([featurename]) method.
+   */
+  public final static ThreadLocal<TypeImpl> typeBeingLoadedThreadLocal = new ThreadLocal<TypeImpl>();
+  
   /******************************************
    *   I N S T A N C E   V A R I A B L E S  *
    ******************************************/
@@ -295,6 +302,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   private FSClassRegistry fsClassRegistry; // a new instance is created at commit time.
   
+  // the loaded JCas cover classes, generators.  index is typecode; value is JCas cover class which may belong to a supertype.
+  // OK because the instance of this class FSClassRegistry is one per Type System
+  // not final because set after all types are defined and committed
+  JCasClassInfo[] jcasClassesInfo; 
+
   /**
    * Map from built-in array name to component Type
    */
@@ -460,36 +472,39 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     intArrayType = addArrayType(intType, Slot_Int, HEAP_STORED_ARRAY, IntegerArray.class);
     stringArrayType = addArrayType(stringType, Slot_StrRef, HEAP_STORED_ARRAY, StringArray.class);
     
-    // Add lists
+    /**********************************************************************************************
+     * Add Lists                                                                                  *
+     *   The Tail feature is not factored out into listBaseType because it returns a typed value. *
+     **********************************************************************************************/
     listBaseType = new TypeImpl(CAS.TYPE_NAME_LIST_BASE, this, topType);
     
     // FS list
     fsListType = new TypeImpl_list(CAS.TYPE_NAME_FS_LIST, topType, this, listBaseType, FSList.class);
     fsEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_FS_LIST, topType, this, fsListType, EmptyFSList.class);
     fsNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_FS_LIST, topType, this, fsListType, NonEmptyFSList.class);
-    addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeListType, topType, true);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, fsNeListType, fsListType, true);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, fsNeListType, topType, true);
     
     // Float list
     floatListType = new TypeImpl_list(CAS.TYPE_NAME_FLOAT_LIST, floatType, this, listBaseType, FloatList.class);
     floatEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_FLOAT_LIST, floatType, this, floatListType, EmptyFloatList.class);
     floatNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST, floatType, this, floatListType, NonEmptyFloatList.class);
-    addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeListType, floatType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, floatNeListType, floatListType, true);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, floatNeListType, floatType, false);
     
     // Integer list
     intListType = new TypeImpl_list(CAS.TYPE_NAME_INTEGER_LIST, intType, this, listBaseType, IntegerList.class);
     intEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_INTEGER_LIST, intType, this, intListType, EmptyIntegerList.class);
     intNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST, intType, this, intListType, NonEmptyIntegerList.class);
-    addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeListType, intType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, intNeListType, intListType, true);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, intNeListType, intType, false);
     
     // String list
     stringListType = new TypeImpl_list(CAS.TYPE_NAME_STRING_LIST, stringType, this, listBaseType, StringList.class);
     stringEListType = new TypeImpl_list(CAS.TYPE_NAME_EMPTY_STRING_LIST, stringType, this, stringListType, EmptyStringList.class);
     stringNeListType = new TypeImpl_list(CAS.TYPE_NAME_NON_EMPTY_STRING_LIST, stringType, this, stringListType, NonEmptyStringList.class);
-    addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeListType, stringType, false);
     addFeature(CAS.FEATURE_BASE_NAME_TAIL, stringNeListType, stringListType, true);
+    addFeature(CAS.FEATURE_BASE_NAME_HEAD, stringNeListType, stringType, false);
     
     booleanType = new TypeImpl_primitive(CAS.TYPE_NAME_BOOLEAN, this, topType, boolean.class);    
     byteType = new TypeImpl_primitive(CAS.TYPE_NAME_BYTE, this, topType, byte.class);
@@ -1328,7 +1343,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       prevWr = new WeakReference<>(this);
       committedTypeSystems.put(this, prevWr);
       
-      topType.computeDepthFirstCode(1);
+      topType.computeDepthFirstCode(1); // fixes up ordering, supers before subs. also sets hasRef.
       
       computeFeatureOffsets(topType, 0);
                  
@@ -1340,38 +1355,35 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         }
       }
       
-      // true = do user jcas class loading
+      computeAdjustedFeatureOffsets(topType, 0, 0);  // must preceed the FSClassRegistry JCas stuff below
+      
+      // Load all the available JCas classes (if not already loaded).
+      
       fsClassRegistry = new FSClassRegistry(this, true);
       
-      computeAdjustedFeatureOffsets(topType, 0, 0);
       this.locked = true;
       return this;
     } // of sync block 
   }
   
   /**
-   * This is the actual offset for the feature, only if it is not in the JCas class as a field
-   * Also sets the getter and setter items from the FSClassRegistry. 
+   * This is the actual offset for the feature, in either the int or ref array
+   *   
    * @param ti - the type
    * @param nextI - the next available slot to use - for int style items
    * @param nextR - the next available slot to use - for ref style items
    */
   private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
-    
-    Class<?>clazz = getFSClassRegistry().getJCasClass(ti.getCode());
+    if (ti != topType) {
+      ti.initAdjOffset2FeatureMaps();
+    }
     
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      if ( ! FSClassRegistry.isFieldInClass(fi, clazz)) {
-
-        fi.setAdjustedOffset(fi.isInInt ? (nextI ++) : (nextR ++));
-        if (((TypeImpl)fi.getRange()).isLongOrDouble) {
-          nextI ++;
-        }        
-      } else { // field is in the JCas cover object
-        GetterSetter gs = fsClassRegistry.getGetterSetter(ti.getCode(), fi.getShortName());
-        fi.jcasGetter = gs.getter;
-        fi.jcasSetter = gs.setter;
-      }
+      fi.setAdjustedOffset(fi.isInInt ? nextI : nextR);
+      ti.setOffset2Feat(fi, fi.isInInt ? (nextI++) : (nextR++));
+      if (((TypeImpl)fi.getRange()).isLongOrDouble) {
+        nextI ++;
+      }        
     }
     
     ti.nbrOfUsedIntDataSlots = nextI;
@@ -1381,7 +1393,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       computeAdjustedFeatureOffsets(sub, nextI, nextR);
     }  
   }
-    
+      
   /**
    * Feature "ids" - offsets without adjusting for whether or not they're in the class itself
    * @param ti a type to compute these for
@@ -2294,25 +2306,26 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return - the type impl associated with that JCas cover class
    */
   public TypeImpl getJCasRegisteredType(int i) {
-    if (i >= jcasRegisteredTypes.size()) {
-      Class<? extends TOP> cls = JCasRegistry.getClassForIndex(i);
-      if (cls != null) {
-        String typeName = cls.getName();
-        // is type in type system
-        if (getType(typeName) == null) {
-          // no - report error that JCAS type was not defined in XML
-          // descriptor
-          throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, typeName);
-        } else {
-          // yes - there was some problem loading the _Type object
-          throw new CASRuntimeException(CASRuntimeException.JCAS_MISSING_COVERCLASS, typeName);
-        }
-
-      } else {
-        throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
-      }
-    }  
-    return jcasRegisteredTypes.get(i);
+    TypeImpl ti = (i >= jcasRegisteredTypes.size()) ? null : jcasRegisteredTypes.get(i);
+    if (null == ti) {
+      throwMissingUIMAtype(i);
+    }
+    return ti;
+  }
+  
+  /**
+   * For a given JCasRegistry index, that doesn't have a corresponding UIMA type,
+   * throw an appropriate exception
+   * @param i - the index in the JCasRegistry
+   */
+  private void throwMissingUIMAtype(int i) {
+    Class<? extends TOP> cls = JCasRegistry.getClassForIndex(i);
+    if (cls != null) {
+      String className = cls.getName();
+      throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, className);
+    } else {
+      throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
+    }
   }
   
   public FSClassRegistry getFSClassRegistry() {
@@ -2359,6 +2372,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
+  static { staticTsi.commit(); }  // needed to assign adjusted offsets to the builtins
 
 
   /**
@@ -2433,4 +2447,35 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return getFeatureByFullName(f.getName());
   }
   
+  /**
+   * @param typecode the type code
+   * @return the generator for the type
+   */
+  Object getGenerator(int typecode) {
+    return jcasClassesInfo[typecode].generator;
+  }
+
+  /**
+   * @param typecode
+   * @return the associated JCas class (may be for a UIMA supertype, is never null)
+   */
+  Class<?> getJCasClass(int typecode) {
+    return jcasClassesInfo[typecode].jcasClass; 
+  }
+  
+  /**
+   * This code is run when a JCas class is loaded and resolved, for the first time, as part of type system commit, or
+   * as part of statically loading the FSClassRegister class (where this is done for all the built-ins, once).
+   * It looks up the offset value in the type system (via a thread-local)
+   *
+   * hidden parameter: threadLocal value: referencing this type
+   * @return the next available offset
+   */
+  public static synchronized int getAdjustedFeatureOffset(String featName) {
+    TypeImpl type = typeBeingLoadedThreadLocal.get();
+    FeatureImpl fi = type.getFeatureByBaseName(featName);
+    return (fi == null) ? -1 : type.getFeatureByBaseName(featName).getAdjustedOffset();
+  }
+
+
 }

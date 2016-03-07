@@ -521,7 +521,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         for (int i = 0, nKeys = comp.getNumberOfKeys(); i < nKeys; i++) {
           if (comp.getKeyType(i) == FSIndexComparator.FEATURE_KEY) {
             FeatureImpl fi = comp.getKeyFeature(i);
-            cas.featureCodes_inIndexKeysAdd(fi.getCode(), fi.registryIndex);
+            cas.featureCodes_inIndexKeysAdd(fi.getCode()/*, fi.registryIndex*/);
           }
         }
       }
@@ -1643,14 +1643,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (fsx1 == fsx2) return 0;
       Annotation fs1 = (Annotation) fsx1;
       Annotation fs2 = (Annotation) fsx2;
-
-      int result =  Integer.compare(fs1.getBegin(), fs2.getBegin());
-      if (result != 0) return result;
-
-      result = Integer.compare(fs1.getEnd(), fs2.getEnd());
-      if (result != 0) return -result;  // reverse compare
-
-      return lto.compare(fs1, fs2);          
+      
+      return fs1.compareAnnotation(fs2, lto);
     };
   }
   
@@ -1665,14 +1659,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       final Annotation fs1 = (Annotation) fsx1;
       final Annotation fs2 = (Annotation) fsx2;
       
-      final int r1, r2, r3;
-      if ((r1 = Integer.compare(fs1.getBegin(), fs2.getBegin())) != 0) return r1;
-
-      if ((r2 = Integer.compare(fs1.getEnd(), fs2.getEnd())) != 0) return -r2;  // reverse compare
-      
-      if ((r3 = lto.compare(fs1, fs2)) != 0) return r3;
-
-      return Integer.compare(fs1._id,  fs2._id);
+      return fs1.compareAnnotationWithId(fs2, lto);
     };
     
     return this.sii.annotationFsComparatorWithId;

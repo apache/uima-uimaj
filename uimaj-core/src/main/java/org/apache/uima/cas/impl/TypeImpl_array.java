@@ -42,7 +42,7 @@ public class TypeImpl_array extends TypeImpl {
   }
   
   @Override
-  public Type getComponentType() {
+  public TypeImpl getComponentType() {
     return componentType;
   }
   

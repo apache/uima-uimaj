@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -34,12 +35,12 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
     return typeIndexID;
   }
 
-  public static final int _FI_head = JCasRegistry.registerFeature(typeIndexID);
-  public static final int _FI_tail = JCasRegistry.registerFeature(typeIndexID);
+  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
   
-  /* local data */
-  private String _F_head;
-  private StringList _F_tail;
+//  /* local data */
+//  private String _F_head;
+//  private StringList _F_tail;
   
   // Never called. Disable default constructor
   protected NonEmptyStringList() {
@@ -63,30 +64,28 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
 // *------------------*
   // * Feature: head
   /* getter for head * */
-  public String getHead() { return _F_head; }
+  public String getHead() { return _getStringValueNc(_FI_head); }
 
   /* setter for head * */
   public void setHead(String v) {
-    _F_head = v;  
-    // no corruption check - can't be a key
-    _casView.maybeLogUpdateJFRI(this, _FI_head);
+    _setStringValueNfc(_getFeatFromAdjOffset(_FI_head, false), v);
   }
+  
+//  public void _setHeadNcNj(String v) {_FI_head = v;};
 
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public StringList getTail() { return _F_tail; }
+  public StringList getTail() { return (StringList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(StringList v) {
-    _F_tail = v;
-    // no corruption check - can't be a key
-    _casView.maybeLogUpdateJFRI(this, _FI_tail);
-  }
+  public void setTail(StringList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
   
   public void setTail(CommonList v) {
     setTail((StringList)v);
   }
+  
+//  public void _setTailNcNj(StringList v) { _FI_tail = v; }
   
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()

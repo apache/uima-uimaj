@@ -31,8 +31,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
@@ -134,6 +132,7 @@ public class Misc {
     int shft = 31 - Integer.numberOfLeadingZeros(x);  // x == 8, shft = 3
     return (i < 1) ? x : ((i+(x - 1)) >>> shft) << shft;
   }
+  
   /**
    * Given a class, a lookup context, and a protected method and its arg classes,
    * return the method handle for that method.
@@ -326,6 +325,29 @@ public class Misc {
     }
   }
   
+  /**
+   * @return the name of the caller in the stack
+   */
+  public static String getCaller() {
+    StackTraceElement[] e = Thread.currentThread().getStackTrace();
+    return formatcaller(e[4]) + "called by: " + formatcaller(e[5]);
+  }
+  
+  private static String formatcaller(StackTraceElement e) {
+    String n = e.getClassName();
+    return n.substring(1 + n.lastIndexOf('.')) + "." + e.getMethodName() + "[" + e.getLineNumber() + "]";
+  }
+  
+  /**
+   * format a list of items for pretty printing as [item1, item2, ... ]
+   * @param items to print
+   * @return  [item1, item2, ... ]
+   */
+  public static String ppList(List<?> items) {
+    StringBuilder sb = new StringBuilder(items.size() * 5 + 2);
+    return addElementsToStringBuilder(sb, items).toString();
+  }
+    
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
 //  try {

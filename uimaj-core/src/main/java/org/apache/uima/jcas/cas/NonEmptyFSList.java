@@ -20,7 +20,9 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -34,12 +36,12 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
     return typeIndexID;
   }
 
-  public static final int _FI_head = JCasRegistry.registerFeature(typeIndexID);
-  public static final int _FI_tail = JCasRegistry.registerFeature(typeIndexID);
+  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
 
-  /* local data */
-  private TOP _F_head;
-  private FSList _F_tail;
+//  /* local data */
+//  private TOP _F_head;
+//  private FSList _F_tail;
   
   // Never called. Disable default constructor
   protected NonEmptyFSList() {
@@ -63,27 +65,21 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public TOP getHead() { return _F_head; }
+  public TOP getHead() { return _getFeatureValueNc(_FI_head); }
 
   /* setter for head * */
-  public void setHead(TOP v) {
-    _F_head = v;  
-    // no corruption check - can't be a key
-    _casView.maybeLogUpdateJFRI(this, _FI_head);
-  }
+  public void setHead(TOP v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_head, false), v); }
 
+//  public void _setHeadNcNj(TOP v) { _F_head = v; }
+  
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FSList getTail() { return _F_tail; }
+  public FSList getTail() { return (FSList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(FSList v) {
-    _F_tail = v;
-    // no corruption check - can't be a key
-    _casView.maybeLogUpdateJFRI(this, _FI_tail);
-  }
-  
+  public void setTail(FSList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
+    
   public void setTail(CommonList v) {
     setTail((FSList) v);
   }

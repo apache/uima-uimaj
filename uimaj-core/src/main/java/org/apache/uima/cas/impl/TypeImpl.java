@@ -35,22 +35,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
-import org.apache.uima.cas.function.JCas_getter_boolean;
-import org.apache.uima.cas.function.JCas_getter_byte;
-import org.apache.uima.cas.function.JCas_getter_double;
-import org.apache.uima.cas.function.JCas_getter_float;
-import org.apache.uima.cas.function.JCas_getter_generic;
-import org.apache.uima.cas.function.JCas_getter_int;
-import org.apache.uima.cas.function.JCas_getter_long;
-import org.apache.uima.cas.function.JCas_getter_short;
-import org.apache.uima.cas.function.JCas_setter_boolean;
-import org.apache.uima.cas.function.JCas_setter_byte;
-import org.apache.uima.cas.function.JCas_setter_double;
-import org.apache.uima.cas.function.JCas_setter_float;
-import org.apache.uima.cas.function.JCas_setter_generic;
-import org.apache.uima.cas.function.JCas_setter_int;
-import org.apache.uima.cas.function.JCas_setter_long;
-import org.apache.uima.cas.function.JCas_setter_short;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.util.Misc;
 
@@ -84,8 +68,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    *   set when type is committed and JCas cover classes are loaded
    */
   protected       Class<?> javaClass;
-  final protected Class<?> getter_funct_intfc_class;
-  final protected Class<?> setter_funct_intfc_class;
+//  final protected Class<?> getter_funct_intfc_class;
+//  final protected Class<?> setter_funct_intfc_class;
   /* ***************** boolean flags *****************/
   protected boolean isFeatureFinal;
 
@@ -113,6 +97,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   /* ***************** type hierarchy *****************/
   private final TypeImpl superType;
   
+  /**
+   * All supertypes, in order, starting with immediate (nearest) supertype
+   */
   private final List<TypeImpl> allSuperTypes = new ArrayList<>();  
   
   private final List<TypeImpl> directSubtypes = new ArrayList<>();
@@ -123,11 +110,20 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(0);
   
   /**
+   * Map from adjusted offset in int features to feature
+   */
+  private final List<FeatureImpl> staticMergedIntFeaturesList = new ArrayList<>(0);
+  /**
+   * Map from adjusted offset in ref features to feature
+   */
+  private final List<FeatureImpl> staticMergedRefFeaturesList = new ArrayList<>(0);
+  
+  /**
    * The number of used slots needed = total number of features minus those represented by fields in JCas cover classes
    */
   int nbrOfUsedIntDataSlots = -1;
   int nbrOfUsedRefDataSlots = -1;
-  
+   
   // for journalling allocation: This is a 0-based offset for all features in feature order
   int highestOffset = -1;
   
@@ -145,8 +141,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     
     this.isRefType = false;
     this.javaClass = null;
-    getter_funct_intfc_class = null;
-    setter_funct_intfc_class = null;
+//    getter_funct_intfc_class = null;
+//    setter_funct_intfc_class = null;
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
   }
@@ -155,7 +151,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * Create a new type. This should only be done by a <code>TypeSystemImpl</code>.
    */
   TypeImpl(String name, TypeSystemImpl tsi, final TypeImpl supertype) {
-    this(name, tsi,supertype, FeatureStructureImplC.class);
+    this(name, tsi, supertype, supertype.javaClass);
   }
   
   TypeImpl(String name, TypeSystemImpl tsi, final TypeImpl supertype, Class<?> javaClass) {
@@ -201,31 +197,31 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.javaClass = javaClass;
     tsi.typeName2TypeImpl.put(name, this);
     
-    if (javaClass == boolean.class) {
-      getter_funct_intfc_class = JCas_getter_boolean.class;
-      setter_funct_intfc_class = JCas_setter_boolean.class;
-    } else if (javaClass == byte.class) {
-      getter_funct_intfc_class = JCas_getter_byte.class;
-      setter_funct_intfc_class = JCas_setter_byte.class;
-    } else if (javaClass == short.class) {
-      getter_funct_intfc_class = JCas_getter_short.class;
-      setter_funct_intfc_class = JCas_setter_short.class;
-    } else if (javaClass == int.class) {
-      getter_funct_intfc_class = JCas_getter_int.class;
-      setter_funct_intfc_class = JCas_setter_int.class;
-    } else if (javaClass == long.class) {
-      getter_funct_intfc_class = JCas_getter_long.class;
-      setter_funct_intfc_class = JCas_setter_long.class;
-    } else if (javaClass == float.class) {
-      getter_funct_intfc_class = JCas_getter_float.class;
-      setter_funct_intfc_class = JCas_setter_float.class;
-    } else if (javaClass == double.class) {
-      getter_funct_intfc_class = JCas_getter_double.class;
-      setter_funct_intfc_class = JCas_setter_double.class;
-    } else {
-      getter_funct_intfc_class = JCas_getter_generic.class;
-      setter_funct_intfc_class = JCas_setter_generic.class;
-    }
+//    if (javaClass == boolean.class) {
+//      getter_funct_intfc_class = JCas_getter_boolean.class;
+//      setter_funct_intfc_class = JCas_setter_boolean.class;
+//    } else if (javaClass == byte.class) {
+//      getter_funct_intfc_class = JCas_getter_byte.class;
+//      setter_funct_intfc_class = JCas_setter_byte.class;
+//    } else if (javaClass == short.class) {
+//      getter_funct_intfc_class = JCas_getter_short.class;
+//      setter_funct_intfc_class = JCas_setter_short.class;
+//    } else if (javaClass == int.class) {
+//      getter_funct_intfc_class = JCas_getter_int.class;
+//      setter_funct_intfc_class = JCas_setter_int.class;
+//    } else if (javaClass == long.class) {
+//      getter_funct_intfc_class = JCas_getter_long.class;
+//      setter_funct_intfc_class = JCas_setter_long.class;
+//    } else if (javaClass == float.class) {
+//      getter_funct_intfc_class = JCas_getter_float.class;
+//      setter_funct_intfc_class = JCas_setter_float.class;
+//    } else if (javaClass == double.class) {
+//      getter_funct_intfc_class = JCas_getter_double.class;
+//      setter_funct_intfc_class = JCas_setter_double.class;
+//    } else {
+//      getter_funct_intfc_class = JCas_getter_generic.class;
+//      setter_funct_intfc_class = JCas_setter_generic.class;
+//    }
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
     
@@ -651,7 +647,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
 
   @Override
-  public Type getComponentType() {
+  public TypeImpl getComponentType() {
     return null;  // not an array, array subtype overrides
   }
   
@@ -672,6 +668,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   boolean hasSupertype(TypeImpl supertype) {
     return allSuperTypes.contains(supertype);
+  }
+  
+  List<TypeImpl> getAllSuperTypes() {
+    return allSuperTypes;
   }
     
 //  public <T extends FeatureStructure> T createFS(CAS cas) {
@@ -747,10 +747,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   public boolean subsumesValue(Object v) {
-    return (v == null) ||
+    return (isRefType && v == null) ||
            (v instanceof String && typeCode == TypeSystemImpl.stringTypeCode) ||
            ((v instanceof FeatureStructureImplC) &&
-             subsumes( ((FeatureStructureImplC)v)._typeImpl));
+             subsumes( ((FeatureStructureImplC)v)._typeImpl)) ||
+           this.getCode() == TypeSystemImpl.javaObjectTypeCode;
   }
   
   int computeDepthFirstCode(int level) {
@@ -764,7 +765,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
      **************************************************************************************/
     if (level != 1) {
       // skip for top level; no features there, but no super type either
-      computeStaticMergedFeaturesList();
+      getFeatureImpls(); // also done for side effect of computingcomputeStaticMergedFeaturesList();
       computeHasRef();
     }
      
@@ -813,6 +814,32 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   public int getFsSpaceReq(int length) {
     return isHeapStoredArray() ? (2 + length) : isArray() ? 3 : getFsSpaceReq();
+  }
+  
+  void setOffset2Feat(FeatureImpl fi, int next) {
+    if (fi.isInInt) {     
+      assert staticMergedIntFeaturesList.size() == next;
+      staticMergedIntFeaturesList.add(fi);
+      if (fi.getRangeImpl().isLongOrDouble) {
+        staticMergedIntFeaturesList.add(null);  
+      }
+    } else {
+      assert staticMergedRefFeaturesList.size() == next;
+      staticMergedRefFeaturesList.add(fi);
+    }
+  }
+  
+  void initAdjOffset2FeatureMaps() {
+    staticMergedIntFeaturesList.addAll(superType.staticMergedIntFeaturesList);
+    staticMergedRefFeaturesList.addAll(superType.staticMergedRefFeaturesList);
+  }
+  
+  FeatureImpl getFeatureByAdjOffset(int adjOffset, boolean isInInt) {
+    if (isInInt) {
+      return staticMergedIntFeaturesList.get(adjOffset);
+    } else {
+      return staticMergedRefFeaturesList.get(adjOffset);
+    }
   }
   
   /**

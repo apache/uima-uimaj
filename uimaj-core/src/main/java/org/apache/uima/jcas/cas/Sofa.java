@@ -27,6 +27,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCasRegistry;
 
 public class Sofa extends TOP implements SofaFS {
@@ -41,24 +42,24 @@ public class Sofa extends TOP implements SofaFS {
   
   /* local data */
   // these static ints are for fast index corruption checking
-  public final static int _FI_sofaNum = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_sofaID = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_mimeType = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_sofaArray = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_sofaString = JCasRegistry.registerFeature(typeIndexID);
-  public final static int _FI_sofaURI = JCasRegistry.registerFeature(typeIndexID);
+  public final static int _FI_sofaNum    = TypeSystemImpl.getAdjustedFeatureOffset("sofaNum");
+  public final static int _FI_sofaID     = TypeSystemImpl.getAdjustedFeatureOffset("sofaID");
+  public final static int _FI_mimeType   = TypeSystemImpl.getAdjustedFeatureOffset("mimeType");
+  public final static int _FI_sofaArray  = TypeSystemImpl.getAdjustedFeatureOffset("sofaArray");
+  public final static int _FI_sofaString = TypeSystemImpl.getAdjustedFeatureOffset("sofaString");
+  public final static int _FI_sofaURI    = TypeSystemImpl.getAdjustedFeatureOffset("sofaURI");
   
-  private final int _F_sofaNum;
-  private final String _F_sofaID;  // view name or _InitialView
-  private String _F_mimeType;      // may be changed
-  private TOP _F_sofaArray;
-  private String _F_sofaString;
-  private String _F_sofaURI;
+//  private final int _F_sofaNum;
+//  private final String _F_sofaID;  // view name or _InitialView
+//  private String _F_mimeType;      // may be changed
+//  private TOP _F_sofaArray;
+//  private String _F_sofaString;
+//  private String _F_sofaURI;
 
   protected Sofa() {
-    _F_sofaNum = 0;
-    _F_sofaID = null;
-    _F_mimeType = null;
+//    _F_sofaNum = 0;
+//    _F_sofaID = null;
+//    _F_mimeType = null;
 	}
 
 	 /**
@@ -69,15 +70,18 @@ public class Sofa extends TOP implements SofaFS {
    */
   public Sofa(TypeImpl t, CASImpl c) {
     super(t, c);
-    _F_sofaNum = 0;
-    _F_sofaID = null; 
+//    _F_sofaNum = 0;
+//    _F_sofaID = null; 
   }
   
   public Sofa(TypeImpl t, CASImpl c, int sofaNum, String viewName, String mimeType) {
     super(t, c);
-    _F_sofaNum = sofaNum;
-    _F_sofaID = viewName;
-    _F_mimeType = mimeType;
+    _intData[_FI_sofaNum ] = sofaNum;
+    _refData[_FI_sofaID  ] = viewName;
+    _refData[_FI_mimeType] =  mimeType;
+//    _F_sofaNum = sofaNum;
+//    _F_sofaID = viewName;
+//    _F_mimeType = mimeType;
   }
 
   // no constructor for Sofa for users
@@ -109,7 +113,7 @@ public class Sofa extends TOP implements SofaFS {
    * getter for sofaNum
    * @return the sofa number
    */
-	public int getSofaNum() { return _F_sofaNum; }
+	public int getSofaNum() { return _getIntValueNc(_FI_sofaNum); }
 	
 	// *--------------*
 	// * Feature: sofaID
@@ -119,7 +123,7 @@ public class Sofa extends TOP implements SofaFS {
    * @return the sofaID, which is the same as the view name
    */
 	@Override
-  public String getSofaID() { return _F_sofaID; }
+  public String getSofaID() { return _getStringValueNc(_FI_sofaID); }
 
 	// *--------------*
 	// * Feature: mimeType
@@ -128,7 +132,7 @@ public class Sofa extends TOP implements SofaFS {
    * getter for mimeType - gets
    * @return the mime type
    */
-	public String getMimeType() { return _F_mimeType; }
+	public String getMimeType() { return _getStringValueNc(_FI_mimeType); }
 
 	/**
    * @see org.apache.uima.cas.SofaFS#setLocalSofaData(FeatureStructure) This method is duplicated in
@@ -138,12 +142,12 @@ public class Sofa extends TOP implements SofaFS {
   @Override
   public void setLocalSofaData(FeatureStructure aFS) {   
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
-    _F_sofaArray = (TOP) aFS;
+    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_sofaArray, false), aFS);
   }
 
 	public void setLocalSofaData(FeatureStructure aFS, String mimeType) {
 	  setLocalSofaData(aFS);
-		_F_mimeType = mimeType;
+		setMimeType(mimeType);
 	}
 
 	/**
@@ -153,7 +157,7 @@ public class Sofa extends TOP implements SofaFS {
   @Override
   public void setLocalSofaData(String aString) {
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
-    _F_sofaString = aString;
+    _setStringValueNcWj(_FI_sofaString, aString);
 
     // create or update the document annotation for this Sofa's view
     ((CASImpl)(_casView.getView(this))).updateDocumentAnnotation();
@@ -161,7 +165,7 @@ public class Sofa extends TOP implements SofaFS {
 
   public void setLocalSofaData(String aString, String mimeType) {
     setLocalSofaData(aString);
-    _F_mimeType = mimeType;
+    setMimeType(mimeType);
 	}
 
 	/**
@@ -169,14 +173,13 @@ public class Sofa extends TOP implements SofaFS {
    * returns an UIMA Array whose data represents the sofa
    */
 	@Override
-  public FeatureStructure getLocalFSData() { return _F_sofaArray; }
+  public FeatureStructure getLocalFSData() { return _getFeatureValueNc(_FI_sofaArray); }
 
 	/**
-   * @see org.apache.uima.cas.SofaFS#getLocalStringData() This method is duplicated in SofaFSImpl.
-   *      Any changes should be made in both places.
+   * @see org.apache.uima.cas.SofaFS#getLocalStringData() 
    */
 	@Override
-  public String getLocalStringData() { return _F_sofaString; }
+  public String getLocalStringData() { return _getStringValueNc(_FI_sofaString); }
 
 	/**
    * @see org.apache.uima.cas.SofaFS#setRemoteSofaURI(String) This method is duplicated in
@@ -185,12 +188,12 @@ public class Sofa extends TOP implements SofaFS {
   @Override
   public void setRemoteSofaURI(String aURI) {
     if (isSofaDataSet()) { throwAlreadySet("setRemoteSofaURI()"); }
-    _F_sofaURI = aURI;
+    _setStringValueNcWj(_FI_sofaURI, aURI);
   }
 	
 	public void setRemoteSofaURI(String aURI, String mimeType) {
     setRemoteSofaURI(aURI);
-    _F_mimeType = mimeType;
+    setMimeType(mimeType);
 	}
 
 	public boolean isSofaDataSet() {
@@ -200,14 +203,14 @@ public class Sofa extends TOP implements SofaFS {
 	}
 	
   @Override
-  public String getSofaMime() { return _F_mimeType; }
+  public String getSofaMime() { return _getStringValueNc(_FI_mimeType); }
 
   @Override
-  public String getSofaURI() { return _F_sofaURI; }
+  public String getSofaURI() { return _getStringValueNc(_FI_sofaURI); }
 
   // ** Note: this gets the feature named "sofaNum"
   @Override
-  public int getSofaRef() { return _F_sofaNum; }
+  public int getSofaRef() { return _getIntValueNc(_FI_sofaNum); }
 
   @Override
   public InputStream getSofaDataStream() {
@@ -220,9 +223,9 @@ public class Sofa extends TOP implements SofaFS {
    *   - used in generic pretty printing routines
    */
   
-  public TOP getSofaArray() { return _F_sofaArray; }
+  public TOP getSofaArray() { return _getFeatureValueNc(_FI_sofaArray); }
   
-  public String getSofaString() { return _F_sofaString; }
+  public String getSofaString() { return _getStringValueNc(_FI_sofaString); }
     
 
 	// override setStringValue for SofaFS to prohibit setting in this manner!
@@ -247,9 +250,5 @@ public class Sofa extends TOP implements SofaFS {
 	  throw new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET, msg);
 	}
 
-	public void setMimeType(String v) {
-    _F_mimeType = v;  
-    // no corruption check - sofa's aren't in any index except base view bag
-    _casView.maybeLogUpdateJFRI(this, _FI_mimeType);
-	}
+	public void setMimeType(String v) { _setStringValueNcWj(_FI_mimeType, v); }
 }

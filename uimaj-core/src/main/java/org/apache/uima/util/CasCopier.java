@@ -798,9 +798,9 @@ public class CasCopier {
         if (fi.isAnnotBaseSofaRef) {
           continue;
         }
-        TOP refFs = srcFS.getFeatureValueNc(fi);
+        TOP refFs = srcFS._getFeatureValueNc(fi);
         if (null != refFs) {
-          tgtFS.setFeatureValueNcNj(tgtFi, copyFsInner(refFs));  // recursive call
+          tgtFS._setFeatureValueNcNj(tgtFi, copyFsInner(refFs));  // recursive call
         }
       }
     }

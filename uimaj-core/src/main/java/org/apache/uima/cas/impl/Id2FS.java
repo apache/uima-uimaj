@@ -21,6 +21,9 @@ package org.apache.uima.cas.impl;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.uima.cas.CASRuntimeException;
@@ -34,9 +37,10 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  * New additions always have increasing int keys.
  * 
- * Removes not supported; the weak refs allow garbage collection to reclaim the feature structure space.
+ * IN THIS IMPL, the id is the index into the array.
+ * IN THIS IMPL, Searching is by simple index lookup in an ArrayList
  * 
- * Searching is by simple index lookup in an ArrayList
+ * Removes not supported; the weak refs allow garbage collection to reclaim the feature structure space.
  * 
  * Alternative: a map based on sorted arrays, searched by binary search
  */
@@ -95,11 +99,40 @@ public class Id2FS {
    * @param action
    */
   void walkReachablePlusFSsSorted(Consumer<TOP> action) {
-    for (WeakReference<TOP> wr : id2fsw.subList(1, id2fsw.size())) {
+    walkReachablePlueFSsSorted(action, 1);
+  }
+  
+  /**
+   * walk a part of the id2fsw list; for delta, just the part above the line
+   * @param action
+   * @param items the part of the id2fsw list to walk
+   */
+  void walkReachablePlueFSsSorted(Consumer<TOP> action, int fromId) {
+//    int i;
+//    if (fromId == 1) {
+//      i = fromId;
+//    } else {
+//      TOP holdkey = TOP.createSearchKey(fromId); // hold to kep from getting GC'd
+//      WeakReference<TOP> key = new WeakReference<TOP>(holdkey);
+//      i = Collections.binarySearch(id2fsw, key, new Comparator<WeakReference<TOP>>() {
+//        @Override
+//        public int compare(WeakReference<TOP> o1, WeakReference<TOP> o2) {
+//          TOP k1 = o1.get();
+//          if (k1 == null) return -1;
+//          return k1.compareTo(holdkey);
+//        }
+//      });
+//      
+//      if (i < 0) {
+//        i = -(i + 1); // i is (-(insertion point) - 1) 
+//      }
+//    }
+    // in this impl, the id is the index.
+    for (WeakReference<TOP> wr : id2fsw.subList(fromId, id2fsw.size())) {
       TOP fs = wr.get();
       if (null != fs) {
         action.accept(fs);
       }
-    }
+    }   
   }
 }

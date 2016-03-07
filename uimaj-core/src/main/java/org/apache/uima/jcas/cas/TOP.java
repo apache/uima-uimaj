@@ -56,6 +56,14 @@ public class TOP extends FeatureStructureImplC {
   // maybe called to create unique removed marker, but not otherwise used
   public TOP() {
   }
+  
+  /**
+   * For use when creating a search key
+   * @param id -
+   */
+  private TOP(int id) {
+    super(id);
+  }
 
   /**
    * used by generator
@@ -76,6 +84,9 @@ public class TOP extends FeatureStructureImplC {
 	  super((JCasImpl) jcas);	  
 	}
 
+  public static TOP createSearchKey(int id) {
+    return new TOP(id);
+  }
 
 	final public static TOP singleton = new TOP();
 }

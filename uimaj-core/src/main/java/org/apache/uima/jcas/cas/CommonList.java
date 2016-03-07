@@ -145,10 +145,18 @@ public interface CommonList extends FeatureStructure {
 	  return newNode;	  
 	}
 
+	/**
+	 * default impl for empty lists
+	 * @return -
+	 */
   default CommonList getTail() {
     throw new UnsupportedOperationException();
-  }
+  };
 
+  /**
+   * default impl for empty lists
+   * @return -
+   */
   default void setTail(CommonList v) {
     throw new UnsupportedOperationException();
   }

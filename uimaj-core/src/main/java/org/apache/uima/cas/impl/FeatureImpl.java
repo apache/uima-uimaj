@@ -42,7 +42,8 @@ public class FeatureImpl implements Feature {
   private       int featureOffset = -1;  
   private       int adjustedFeatureOffset = -1; // the offset in the storage array for this feature, adjusted to exclude JCas implemented features; set at commit time
   
-                int registryIndex = -1; // set from JCas classes feature registry
+                // not used 2/29/16 to be removed
+//                int registryIndex = -1; // set from JCas classes feature registry
                                         // used to setup index corruption bitset                
           final boolean isInInt;        // specifies which array the data is in
 
@@ -59,8 +60,9 @@ public class FeatureImpl implements Feature {
   public final boolean isAnnotBaseSofaRef;
   private final String shortName;     //         feat
     
-  protected Object jcasGetter;  // null or the functional interface to call to get this feature
-  protected Object jcasSetter;  // null or the functional interface to call to set this feature
+//  protected Object jcasGetter;  // null or the functional interface to call to get this feature
+//  protected Object jcasSetter;  // null or the functional interface to call to set this feature
+//  protected Object jcasSetterNcNj; // null or the functional interface to call to set this feature, no check for corruption, no journaling
     
   private final SlotKind slotKind;
   /** type class of the range, including CasSerializer List constants */
@@ -189,41 +191,35 @@ public class FeatureImpl implements Feature {
     adjustedFeatureOffset = offset;
   }
 
-  /**
-   * @return the functionalGetter
-   */
-  Object getJCasGetter() {
-    return jcasGetter;
-  }
-
-  /**
-   * @param functionalGetter the functionalGetter to set
-   */
-  void setJCasGetter(Object functionalGetter) {
-    this.jcasGetter = functionalGetter;
-  }
-
-  /**
-   * @return the functionalSetter
-   */
-  Object getJCasSetter() {
-    return jcasSetter;
-  }
-
-  /**
-   * the setter is either a nonJCas or JCas style
-   * 
-   * NonJCas is equivalent to:
-   *   _casView.setWithCheckAndJournal(this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v);
-   *   
-   * JCas is equivalent to
-   *    (this) -> this.setXYZ(v)
-   *      
-   * @param functionalSetter the functionalSetter to set
-   */
-  void setJCasSetter(Object functionalSetter) {
-    this.jcasSetter = functionalSetter;
-  }
+//  /**
+//   * @return the functionalGetter
+//   */
+//  Object getJCasGetter() {
+//    return jcasGetter;
+//  }
+//
+//  /**
+//   * @param functionalGetter the functionalGetter to set
+//   */
+//  void setJCasGetter(Object functionalGetter) {
+//    this.jcasGetter = functionalGetter;
+//  }
+//
+//  /**
+//   * @return the functionalSetter
+//   */
+//  Object getJCasSetter() {
+//    return jcasSetter;
+//  }
+//  
+//  /**
+//   * @return the functional setter with no index corruption checking, no journalling
+//   */
+//  Object getJCasSetterNcNj() {
+//    return jcasSetterNcNj;
+//  }
+  
+  /* Set for these values done directly in TypeSystemImpl, computeAdjustedFeatureOffsets */
   
   TypeImpl getHighestDefiningType() {
     return highestDefiningType;
