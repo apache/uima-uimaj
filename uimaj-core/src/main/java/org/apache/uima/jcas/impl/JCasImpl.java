@@ -36,6 +36,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.CAS;
@@ -77,6 +78,8 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 
 // *********************************
 // * Implementation of JCas *
@@ -219,6 +222,15 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     }
   }
 
+  static public class ErrorReport {
+    final Exception e;
+    final boolean doThrow;
+    ErrorReport(Exception e, boolean doThrow) {
+      this.e = e;
+      this.doThrow = doThrow;
+    }
+  }
+
   // *************************************************
   // * Static Data shared with all instances of JCas *
   // *************************************************
@@ -297,7 +309,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     public FSArray fsArray0L = null;
 
     // * collection of errors that occur during initialization
-    public Collection<Exception> errorSet = new ArrayList<Exception>();
+    public Collection<ErrorReport> errorSet = new ArrayList<ErrorReport>();
 
     public ClassLoader currentClassLoader = null;
 
@@ -736,14 +748,26 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     JCasImpl jcas = new JCasImpl(cas);
     JCasSharedView sv = jcas.sharedView;
     if (sv.errorSet.size() > 0) {
+      boolean doThrow = false;
       StringBuffer msg = new StringBuffer(100);
-      for (Exception f : sv.errorSet) {
-        msg.append(f.getMessage());
+      msg.append('\n');
+      for (ErrorReport f : sv.errorSet) {
+        msg.append(f.e.getMessage());
         msg.append('\n');
+        doThrow = doThrow || f.doThrow;
       }
-      CASException e = new CASException(CASException.JCAS_INIT_ERROR,
-          new String[] { msg.toString() });
-      throw e;
+      if (doThrow) {
+        CASException e = new CASException(CASException.JCAS_INIT_ERROR,
+            new String[] { msg.toString() });
+        throw e;
+      } else {
+        Logger logger = UIMAFramework.getLogger();
+        if (null == logger) {
+          throw new CASRuntimeException(CASException.JCAS_INIT_ERROR, new String[] {msg.toString()});
+        } else {
+          logger.log(Level.WARNING, msg.toString());
+        }          
+      }
     }
     return jcas;
   }
@@ -1036,10 +1060,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst) {
     Feature f = t.getFeatureByBaseName(s);
     Type rangeType = this.getTypeSystem().getType(rangeName);
-    if (null == f && !featOkTst) {
+    if (null == f && featOkTst) {
       CASException casEx = new CASException(CASException.JCAS_FEATURENOTFOUND_ERROR, new String[] {
           t.getName(), s });
-      sharedView.errorSet.add(casEx);
+      sharedView.errorSet.add(new ErrorReport(casEx, false));  // false - no throw
     }
     if (null != f)
       try {
@@ -1047,7 +1071,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       } catch (LowLevelException e) {
         CASException casEx = new CASException(CASException.JCAS_FEATURE_WRONG_TYPE, new String[] {
             t.getName(), s, rangeName, f.getRange().toString() });
-        sharedView.errorSet.add(casEx);
+        sharedView.errorSet.add(new ErrorReport(casEx, true));
       }
     return f;
   }
