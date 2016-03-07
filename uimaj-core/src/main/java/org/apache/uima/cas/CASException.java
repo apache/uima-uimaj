@@ -59,8 +59,7 @@ public class CASException extends UIMAException {
   public static final String JCAS_TYPENOTFOUND_ERROR = "JCAS_TYPENOTFOUND_ERROR";
 
   /**
-   * Feature information from the CAS cannot be accessed while initializing the JCAS type {0} with
-   * feature {1}.
+   * JCas Type "{0}" implements getters and setters for feature "{1}", but the type system doesn't define that feature.
    */
   public static final String JCAS_FEATURENOTFOUND_ERROR = "JCAS_FEATURENOTFOUND_ERROR";
 
