@@ -92,12 +92,23 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** CAS type system doesn''t match JCas Type definition for type "{0}". */
 	public static final String JCAS_CAS_MISMATCH = "JCAS_CAS_MISMATCH";
 
+	 /** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
+  public static final String JCAS_CAS_MISMATCH_SUPERTYPE = "JCAS_CAS_MISMATCH_SUPERTYPE";
+
 	/**
    * JCas type "{0}" used in Java code, but was not declared in the XML type descriptor.
    */
-	public static final String JCAS_TYPE_NOT_IN_CAS = "JCAS_TYPE_NOT_IN_CAS";
+  public static final String JCAS_TYPE_NOT_IN_CAS = "JCAS_TYPE_NOT_IN_CAS";
 
-	
+	/** CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas class has range "{3}". */
+	public static final String JCAS_TYPE_RANGE_MISMATCH = "JCAS_TYPE_RANGE_MISMATCH";
+
+	/** JCAS class "{0}" defines a UIMA field "{1}" but the UIMA type doesn''t define that field. */
+  public static final String JCAS_FIELD_MISSING_IN_TYPE_SYSTEM = "JCAS_FIELD_MISSING_IN_TYPE_SYSTEM";
+
+  /** In JCAS class "{0}", UIMA field "{1}" was set up at type system type adjusted offset "{2}" but a different type system being used with the same JCas class has this offset at "{3}", which is not allowed.*/
+  public static final String JCAS_FIELD_ADJ_OFFSET_CHANGED = "JCAS_FIELD_ADJ_OFFSET_CHANGED";
+
 	/**
    * Unknown JCas type used in Java code but was not declared or imported in the XML descriptor for
    * this component.
