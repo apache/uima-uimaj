@@ -18,12 +18,7 @@
  */
 /**
  * Custom Functional Interfaces used by various UIMA methods
- *   - generators and by getters and setters
+ *   - generators and by
  *   - de/serializers
- * 
- * For generators/getters/setters, there is a separate one for all the java primitives used by UIMA:
- *   boolean, byte, short, int, long, float, double, 
- *   and one more for non-primitives, which is generic in the type of the object.
- *   There are 2 interfaces per type - one for the setter, and one for the getter.
  */
 package org.apache.uima.cas.function;

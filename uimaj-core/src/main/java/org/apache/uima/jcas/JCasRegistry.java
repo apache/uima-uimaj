@@ -20,13 +20,8 @@ package org.apache.uima.jcas;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 
-import org.apache.uima.internal.util.IntListIterator;
-import org.apache.uima.internal.util.PositiveIntSet;
-import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -57,7 +52,7 @@ public class JCasRegistry {
   
   private static class WeakRefInt<T> extends WeakReference<T> {
     int index;
-    PositiveIntSet featureIndexes = new PositiveIntSet_impl();
+//    PositiveIntSet featureIndexes = new PositiveIntSet_impl();
     
     WeakRefInt(T item, ReferenceQueue<T> q, int index) {
       super(item, q);
@@ -69,11 +64,11 @@ public class JCasRegistry {
   final private static ReferenceQueue<Class<? extends TOP>> releasedQueue = new ReferenceQueue<>();
   
   
-  private static int nextFeatureIndex = 0;
+//  private static int nextFeatureIndex = 0;
   /**
    * accessed under class lock
    */
-  final private static Deque<Integer> availableFeatureIndexes = new ArrayDeque<>();  
+//  final private static Deque<Integer> availableFeatureIndexes = new ArrayDeque<>();  
   /**
    * Registers a JCas cover class with this registry.  The registry will assign
    * it a unique index, which is then used by the cover-class to identify itself
@@ -89,10 +84,10 @@ public class JCasRegistry {
     if (releasedWeakRef != null) {
       int i = releasedWeakRef.index;
       
-      IntListIterator it = releasedWeakRef.featureIndexes.iterator();
-      while (it.hasNext()){
-        availableFeatureIndexes.addLast(it.next());
-      }
+//      IntListIterator it = releasedWeakRef.featureIndexes.iterator();
+//      while (it.hasNext()){
+//        availableFeatureIndexes.addLast(it.next());
+//      }
       
       loadedJCasClasses.set(i, new WeakRefInt<Class<? extends TOP>>(aJCasCoverClass, releasedQueue, i));
       return i;
@@ -103,16 +98,6 @@ public class JCasRegistry {
     return i;
   }
   
-  public static synchronized int registerFeature(int typeIndexID) {
-    Integer i = availableFeatureIndexes.poll();
-    if (i == null) {
-      loadedJCasClasses.get(typeIndexID).featureIndexes.add(nextFeatureIndex);
-      return nextFeatureIndex ++;
-    } else {
-      loadedJCasClasses.get(typeIndexID).featureIndexes.add(i);
-      return i;
-    }
-  }
   
   /**
    * For a particular type, return true if that type should have run-time checking for use of fields
