@@ -2301,6 +2301,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
  
   /**
    * version for deserializers, and for set document language, using their own store for toBeAdded
+   * Doesn't report updating of corruptable slots.
    * @param fs -
    * @param featCode -
    * @param toBeAdded -
@@ -2324,6 +2325,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   /**
    * version for deserializers, using their own store for toBeAdded
    *          and not bothering to check for particular features
+   * Doesn't report updating of corruptable slots.
    * @param fs -
    * @param featCode -
    * @param toBeAdded -
