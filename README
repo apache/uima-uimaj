@@ -1,5 +1,5 @@
 
-      Apache uimaFIT (TM) v2.1.0
+      Apache uimaFIT (TM) v2.2.0
       --------------------------
 
 
@@ -37,12 +37,11 @@ following list highlights some of the features uimaFIT provides:
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 
-What's New in 2.1.0
+What's New in 2.2.0
 -------------------
 
-uimaFIT 2.1.0 is a bugfix release to uimaFIT 2.0.0. The reason that the minor version was increased
-instead of the bugfix version is, that uima 2.1.0 requires Java 6 and uses UIMA 2.6.0. Otherwise,
-this version should serve as a drop-in replacement for uimaFIT 2.0.0.
+uimaFIT 2.2.0 is a minor feature and bugfix release to uimaFIT 2.1.0. It should should serve as a
+drop-in replacement for previous uimaFIT 2.x versions. Mind that uimaFIT 2.2.0 now requires Java 7.
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
@@ -51,7 +50,7 @@ A full list of issues addressed in this release can be found on the Apache issue
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.6 or higher, UIMA 2.6.0 or higher, and the Spring Framework 3.1.2 or higher.
+uimaFIT requires Java 1.7 or higher, UIMA 2.8.1 or higher, and the Spring Framework 3.2.16 or higher.
 
 
 Availability
@@ -68,7 +67,7 @@ add uimaFIT as a dependency to your pom.xml file with the following:
   <dependency>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimafit-core</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
   </dependency>
 
 
