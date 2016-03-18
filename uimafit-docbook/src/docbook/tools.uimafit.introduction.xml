@@ -105,7 +105,8 @@ for(Token token : iterate(jCas, Token.class)){
         or without descriptor files. For example, if you have a descriptor file for your analysis
         engine defined by <classname>MyTagger</classname> (as shown above), then you can instead
         instantiate the analysis engine with:</para>
-      <programlisting>AnalysisEngineDescription tagger = createEngineDescription("mypackage.MyTagger");</programlisting>
+      <programlisting>AnalysisEngineDescription tagger = createEngineDescription(
+    "mypackage.MyTagger");</programlisting>
       <para>This will find the descriptor file <filename>mypackage/MyTagger.xml</filename> by name.
         Similarly, you can find a descriptor file by location with
           <methodname>createEngineDescriptionFromPath()</methodname>. However, if you want to dispense
