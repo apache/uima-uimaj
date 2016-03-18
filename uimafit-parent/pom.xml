@@ -13,7 +13,7 @@
 	<url>${uimaWebsiteUrl}</url>
 	<inceptionYear>2012</inceptionYear>
 	<properties>
-		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.version>3.2.16.RELEASE</spring.version>
 		<uima.version>2.8.1</uima.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -67,7 +67,7 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.10</version>
+				<version>4.12</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-lang</groupId>
@@ -185,7 +185,26 @@
 			<plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.rat</groupId>
+                    <artifactId>apache-rat-plugin</artifactId>
+                    <version>0.11</version>
+                    <dependencies>
+                        <!-- https://issues.apache.org/jira/browse/RAT-158 -->
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-core</artifactId>
+                            <version>1.7</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.5.1</version>
                     <configuration>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
@@ -194,7 +213,8 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId> 
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.3</version> 
                     <executions>
                         <execution>
                             <id>attach-javadocs</id>
@@ -255,6 +275,7 @@
                     <plugins>
                         <plugin>
                             <artifactId>maven-enforcer-plugin</artifactId>
+                            <version>1.4.1</version>
                             <dependencies>
                                 <dependency>
                                     <groupId>org.semver</groupId>
