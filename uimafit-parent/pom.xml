@@ -192,6 +192,23 @@
                     <groupId>org.apache.rat</groupId>
                     <artifactId>apache-rat-plugin</artifactId>
                     <version>0.11</version>
+                    <executions>
+                        <execution>
+                            <id>default-cli</id>
+                            <configuration>
+                                <excludes>
+                                    <!-- Plain documentation -->
+                                    <exclude>README*</exclude>
+                                    <!-- Release files -->
+                                    <exclude>RELEASE_NOTES*</exclude>
+                                    <exclude>issuesFixed/**</exclude>
+                                    <exclude>release.properties</exclude>
+                                    <!-- Build controls -->
+                                    <exclude>.activate-enforce-compatibility</exclude>
+                                </excludes>
+                            </configuration>
+                        </execution>
+                    </executions>
                     <dependencies>
                         <!-- https://issues.apache.org/jira/browse/RAT-158 -->
                         <dependency>

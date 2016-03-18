@@ -119,10 +119,14 @@
 							<id>default-cli</id>
 							<configuration>
 								<excludes>
-									<exclude>release.properties</exclude>
-									<exclude>README*</exclude>
-									<exclude>RELEASE_NOTES*</exclude>
-									<exclude>issuesFixed/**</exclude>
+                                    <!-- Plain documentation -->
+                                    <exclude>README*</exclude>
+                                    <!-- Release files -->
+                                    <exclude>RELEASE_NOTES*</exclude>
+                                    <exclude>issuesFixed/**</exclude>
+                                    <exclude>release.properties</exclude>
+                                    <!-- Build controls -->
+                                    <exclude>.activate-enforce-compatibility</exclude>
 									<!-- These test files are unreasonable to bear a license header -->
 									<exclude>src/test/resources/data/docs/unix-newlines.txt.bin</exclude>
 									<exclude>src/test/resources/data/docs/windows-newlines.txt.bin</exclude>
