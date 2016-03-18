@@ -2,8 +2,8 @@ package org.apache.uima.internal.util;
 
 public class Pair<T, U> {
 
-  final T t;
-  final U u;
+  public final T t;
+  public final U u;
 
   public Pair(T t, U u) {
     this.t = t;

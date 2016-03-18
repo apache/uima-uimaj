@@ -149,12 +149,12 @@ public class FeatureImpl implements Feature {
         this.getClass().getSimpleName(), getName(), rangeType, isMultipleRefsAllowed);
   }
 
-  public String getGetterSetterName(boolean isGet) {
-    String shortName1stLetterUpperCase = Character.toUpperCase(this.shortName.charAt(0)) + 
-        ((shortName.length() == 1) ? "" : this.shortName.substring(1));
-
-    return (isGet ? "get" : "set")  + shortName1stLetterUpperCase;
-  }
+//  public String getGetterSetterName(boolean isGet) {
+//    String shortName1stLetterUpperCase = Character.toUpperCase(this.shortName.charAt(0)) + 
+//        ((shortName.length() == 1) ? "" : this.shortName.substring(1));
+//
+//    return (isGet ? "get" : "set")  + shortName1stLetterUpperCase;
+//  }
   
   /**
    * Note: you can only compare features from the same type system. If you compare features from

@@ -387,6 +387,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   @Override
   public void setDoubleValue(Feature feat, double v) { setLongValue(feat, CASImpl.double2long(v)); }
 
+  protected void _setDoubleValueNfc(FeatureImpl feat, double v) { _setLongValueNfcCJ(feat, CASImpl.double2long(v)); }
+
   public void _setDoubleValueNcNj(FeatureImpl fi, double v) { _setLongValueNcNj(fi, CASImpl.double2long(v)); }
 
   public void _setDoubleValueNcNj(int adjOffset, double v) { _setLongValueNcNj(adjOffset, CASImpl.double2long(v)); }

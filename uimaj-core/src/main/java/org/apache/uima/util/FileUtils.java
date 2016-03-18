@@ -29,6 +29,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -194,6 +197,14 @@ public class FileUtils {
     }
   }
 
+  public static void writeToFile(Path path, String data) {   
+    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {
+      bw.write(data);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   /**
    * Delete all files in a directory (not recursive).
    * 

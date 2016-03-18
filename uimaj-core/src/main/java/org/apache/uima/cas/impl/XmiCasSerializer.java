@@ -912,7 +912,7 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: 
-          if (cds.isStaticMultiRef(fi.getCode())) {
+          if (cds.isStaticMultiRef(fi)) {
             attrValue = cds.getXmiId(fs.getFeatureValue(fi));
           } else {
             attrValue = arrayToString(fs.getFeatureValue(fi), featureValueClass);
@@ -922,7 +922,7 @@ public class XmiCasSerializer {
           // special case for StringArrays, which stored values as child elements rather
           // than attributes.
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: 
-          if (cds.isStaticMultiRef(fi.getCode())) {
+          if (cds.isStaticMultiRef(fi)) {
             attrValue = cds.getXmiId(fs.getFeatureValue(fi));
           } else {
             stringArrayToElementList(featName, (StringArray) fs.getFeatureValue(fi), childElements);
@@ -935,7 +935,7 @@ public class XmiCasSerializer {
         case CasSerializerSupport.TYPE_CLASS_FLOATLIST:
         case CasSerializerSupport.TYPE_CLASS_FSLIST: 
           TOP startNode = fs.getFeatureValue(fi);
-          if (insideListNode || cds.isStaticMultiRef(fi.getCode())) {
+          if (insideListNode || cds.isStaticMultiRef(fi)) {
             // If the feature has multipleReferencesAllowed = true OR if we're already
             // inside another list node (i.e. this is the "tail" feature), serialize as a normal FS.
             // Otherwise, serialize as a multi-valued property.
@@ -952,7 +952,7 @@ public class XmiCasSerializer {
           // special case for StringLists, which stored values as child elements rather
           // than attributes.
         case CasSerializerSupport.TYPE_CLASS_STRINGLIST: 
-          if (insideListNode || cds.isStaticMultiRef(fi.getCode())) {
+          if (insideListNode || cds.isStaticMultiRef(fi)) {
             attrValue = cds.getXmiId(fs.getFeatureValue(fi));
           } else {
             // it is not safe to use a space-separated attribute, which would

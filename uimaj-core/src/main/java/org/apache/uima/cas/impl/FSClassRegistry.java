@@ -402,7 +402,7 @@ public class FSClassRegistry {
    */
   private static Class<?> maybeLoadJCas(String typeName) {
     Class<?> clazz = null;
-    String className = typeName2ClassName(typeName);
+    String className = Misc.typeName2ClassName(typeName);
     try {
       clazz = Class.forName(className, true, FSClassRegistry.class.getClassLoader());
     } catch (ClassNotFoundException e) {
@@ -410,27 +410,7 @@ public class FSClassRegistry {
     }
     return clazz;
   }
-  
-  public static String typeName2ClassName(String typeName) {
-    if (typeName.startsWith(CAS.UIMA_CAS_PREFIX)) {
-      return "org.apache.uima.jcas.cas." + typeName.substring(CAS.UIMA_CAS_PREFIX.length());
-    }
-    if (typeName.startsWith(CAS.UIMA_TCAS_PREFIX)) {
-      return "org.apache.uima.jcas.tcas." + typeName.substring(CAS.UIMA_TCAS_PREFIX.length());
-    }
-    return typeName;
-  }
-  
-  public static String javaClassName2UimaTypeName(String className) {
-    if (className.startsWith("org.apache.uima.jcas.cas.")) { 
-      return CAS.UIMA_CAS_PREFIX + className.substring("org.apache.uima.jcas.cas.".length());
-    }
-    if (className.startsWith("org.apache.uima.jcas.tcas.")) { 
-      return CAS.UIMA_TCAS_PREFIX + className.substring("org.apache.uima.jcas.tcas.".length());
-    }
-    return className;
-  }
-      
+        
   /**
    * Return a Functional Interface for a generator for creating instances of a type.
    *   Function takes a casImpl arg, and returning an instance of the JCas type.
@@ -623,7 +603,7 @@ public class FSClassRegistry {
 
     // skip the test if the jcasClassInfo is being inherited
     //   because that has already been checked
-    if (!clazz.getName().equals(typeName2ClassName(ti.getName()))) {
+    if (!clazz.getName().equals(Misc.typeName2ClassName(ti.getName()))) {
       return;
     }
     

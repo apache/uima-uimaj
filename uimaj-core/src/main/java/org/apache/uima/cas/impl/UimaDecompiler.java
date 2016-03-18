@@ -26,11 +26,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.apache.uima.util.Misc;
 
+import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.Buffer;
+import com.strobel.assembler.metadata.CompositeTypeLoader;
 import com.strobel.assembler.metadata.ITypeLoader;
 import com.strobel.decompiler.Decompiler;
 import com.strobel.decompiler.DecompilerSettings;
@@ -70,6 +73,10 @@ public class UimaDecompiler {
 
   
   private final DecompilerSettings decompilerSettings = DecompilerSettings.javaDefaults();
+  { 
+    decompilerSettings.setMergeVariables(true);
+    decompilerSettings.setSimplifyMemberReferences(true);
+  }
 
   private final ClassLoader classLoader;
   
@@ -86,7 +93,7 @@ public class UimaDecompiler {
       setDecompilerSettingsForClassLoader();
     }
   }
-  
+    
   public ByteArrayOutputStream decompile(String className, byte[] byteArray) {
     setDecompilerSettingsForByteArray(className.replace('.', '/'), byteArray);
     return decompileCommon(className);
@@ -116,6 +123,59 @@ public class UimaDecompiler {
     return baos;
   }
   
+  /**
+   * Decompile from the file system, maybe in a Jar.
+   * @param path the Path to the file to decompile
+   * @return the decompiled form as a string
+   */
+  public String decompile(byte[] b) {
+    PlainTextOutput pto = new PlainTextOutput();
+    
+    String classNameSlashes = extractClassNameSlashes(b);
+    setDecompilerSettingsForByteArray(classNameSlashes, b);
+    Decompiler.decompile(classNameSlashes, pto, decompilerSettings);
+    String s = pto.toString();
+    
+    String packageName = "";
+    String className = "";
+    int ip = s.indexOf("package ");
+    if (ip >= 0) {
+      ip = ip + "package ".length();  // start of package name;
+      int ipe = s.indexOf(";", ip);  
+      packageName = s.substring(ip, ipe).replace('.', '/') + "/";
+    }
+    
+    int ic = s.indexOf(" class ");
+    if (ic >= 0) {
+      ic = ic + " class ".length();  // start of class name
+      int ice = s.indexOf(" ", ic);
+      className = s.substring(ic, ice);
+    }
+    
+    String classNameSlashes2 = packageName + className;
+    
+    if (!classNameSlashes2.equals(classNameSlashes)) {
+//      System.out.println("debug trying classname: " + classNameSlashes2);
+      pto = new PlainTextOutput();
+      setDecompilerSettingsForByteArray(classNameSlashes2, b);
+      Decompiler.decompile(classNameSlashes2, pto, decompilerSettings);
+      s = pto.toString(); 
+    }
+    return s;
+  }
+  
+  public String extractClassNameSlashes(byte[] b) {
+    if (b[10] != 7 || b[13] != 1) { 
+      return "";
+    }
+    int length = b[14] * 16 + b[15];
+    try {
+      return new String(b, 16, length, "UTF-8");      
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   public boolean decompileToOutputDirectory(String className) {
     ByteArrayOutputStream baos = decompile(className);
     return writeIfOk(baos, className);
@@ -140,7 +200,8 @@ public class UimaDecompiler {
           return false;
         }
       }      
-    };    
+    }; 
+    ITypeLoader tc = new CompositeTypeLoader(tl, new InputTypeLoader());
     decompilerSettings.setTypeLoader(tl);
   }
     

@@ -35,6 +35,7 @@ import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.cas.CAS;
 
 public class Misc {
 
@@ -347,7 +348,39 @@ public class Misc {
     StringBuilder sb = new StringBuilder(items.size() * 5 + 2);
     return addElementsToStringBuilder(sb, items).toString();
   }
-    
+
+  /**
+   * Convert a UIMA type name to a JCas class name (fully qualified)
+   *   Normally this is the same, but for two prefixes, it's slightly different
+   * @param typeName the UIMA type name, fully qualified
+   * @return the fully qualified JCas class name 
+   */
+  public static String typeName2ClassName(String typeName) {
+    if (typeName.startsWith(CAS.UIMA_CAS_PREFIX)) {
+      return "org.apache.uima.jcas.cas." + typeName.substring(CAS.UIMA_CAS_PREFIX.length());
+    }
+    if (typeName.startsWith(CAS.UIMA_TCAS_PREFIX)) {
+      return "org.apache.uima.jcas.tcas." + typeName.substring(CAS.UIMA_TCAS_PREFIX.length());
+    }
+    return typeName;
+  }
+  
+  /**
+   * Convert a JCas class name (fully qualified) to a UIMA type name 
+   *   Normally this is the same, but for two prefixes, it's slightly different
+   * @param typeName the UIMA type name, fully qualified
+   * @return the fully qualified JCas class name 
+   */
+  public static String javaClassName2UimaTypeName(String className) {
+    if (className.startsWith("org.apache.uima.jcas.cas.")) { 
+      return CAS.UIMA_CAS_PREFIX + className.substring("org.apache.uima.jcas.cas.".length());
+    }
+    if (className.startsWith("org.apache.uima.jcas.tcas.")) { 
+      return CAS.UIMA_TCAS_PREFIX + className.substring("org.apache.uima.jcas.tcas.".length());
+    }
+    return className;
+  }
+
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
 //  try {

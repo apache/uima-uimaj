@@ -1198,8 +1198,8 @@ public class CasSerializerSupport {
       return r + xe.localName;
     }
     
-    public boolean isStaticMultiRef(int featCode) {
-      return tsi.ll_getFeatureForCode(featCode).isMultipleReferencesAllowed();
+    public boolean isStaticMultiRef(FeatureImpl fi) {
+      return fi.isMultipleReferencesAllowed();
     }
 
 
