@@ -1191,7 +1191,7 @@ public class XmiCasDeserializer {
               CommonList node = theList;
               while (node != null && (node instanceof NonEmptyList)) {
                 addNonsharedFSToEncompassingFSMapping((TOP) node, fs);
-                node = node.getTail();
+                node = node.getCommonTail();
               }
             }
           }
@@ -1361,7 +1361,7 @@ public class XmiCasDeserializer {
       // existingList is non-empty
       if (existingList instanceof FSList) {
         FSList node = (FSList) existingList;
-        FSList prevNode = null;
+        NonEmptyFSList prevNode = null;
         
         for (int i = 0; i < valLen; i++) {
           if (node instanceof EmptyList) {  // never true initially due to above logic
@@ -1373,8 +1373,8 @@ public class XmiCasDeserializer {
           NonEmptyFSList neNode = (NonEmptyFSList) node;
           maybeSetFsListHead(values, i, neNode);
           
-          prevNode = node;
-          node = (FSList) node.getTail();
+          prevNode = (NonEmptyFSList) node;
+          node = prevNode.getTail();
         }
       
         // got to the end of the values, but the existing list has more elements
@@ -1396,7 +1396,7 @@ public class XmiCasDeserializer {
         node.set_headFromString(values.get(i));
         
         prevNode = node;
-        node = node.getTail();
+        node = node.getCommonTail();
       }
     
       // got to the end of the values, but the existing list has more elements
