@@ -126,8 +126,26 @@ import com.strobel.decompiler.DecompilerSettings;
  *   -- implemented via custom hashcode and equals.
  *         
  */
-public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem {  
+public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem, TypeSystemConstants {  
   
+  /**
+   * Define this JVM property to disable equal type system consolidation.  
+   * When a type system is committed, it normally is compared with other committed type systems
+   * that are still available (i.e. not garbage collected) to see if an existing type system
+   * is equal to the new one.  
+   * 
+   *   - if so, then the existing one is reused.
+   *   
+   * This may cause problems for applications which have obtained references to types and
+   * features of a type system before it is committed; the committed version may have 
+   * different (but "equal") types and features.
+   * 
+   */
+  public static final String DISABLE_TYPESYSTEM_CONSOLIDATION = "uima.disable_typesystem_consolidation";
+
+  private static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = //true || // debug
+      Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
+ 
   private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
   private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
   private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
@@ -157,49 +175,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //          Collections.newSetFromMap(
 //              new WeakHashMap<TypeSystemImpl, Boolean>()));
 
-  /******************************************
-   * built-in type codes
-   ******************************************/
-  // Code of root of hierarchy (will be 1 with current implementation)
-         static final int topTypeCode = 1;
-  public static final int intTypeCode = 2;
-  public static final int floatTypeCode = 3;
-  public static final int stringTypeCode = 4;
-         static final int arrayBaseTypeCode = 5;
-  public static final int fsArrayTypeCode = 6;
-  public static final int floatArrayTypeCode = 7;
-  public static final int intArrayTypeCode = 8;
-  public static final int stringArrayTypeCode = 9;
-  // 10 list base
-  public static final int fsListTypeCode = 11; // 11           fs list
-  public static final int fsEListTypeCode = 12;// 12 empty     fs list
-  public static final int fsNeListTypeCode = 13;// 13 non-empty fs list
-  public static final int floatListTypeCode = 14; // 14           float list
-  public static final int floatEListTypeCode = 15;// 15 empty     float list
-  public static final int floatNeListTypeCode = 16;  // 16 non-empty float list
-  public static final int intListTypeCode = 17; // 17           integer list
-  public static final int intEListTypeCode = 18;  // 18 empty     integer list
-  public static final int intNeListTypeCode = 19; // 19 non-empty integer list
-  public static final int stringListTypeCode = 20;  // 20           string list
-  public static final int stringEListTypeCode = 21;  // 21 empty     string list
-  public static final int stringNeListTypeCode = 22;  // 22 non-empty string list
-
-  public static final int booleanTypeCode = 23;
-  public static final int byteTypeCode = 24;
-  public static final int shortTypeCode = 25;
-  public static final int longTypeCode = 26;
-  public static final int doubleTypeCode = 27;
-  public static final int booleanArrayTypeCode = 28;
-  public static final int byteArrayTypeCode = 29;
-  public static final int shortArrayTypeCode = 30;
-  public static final int longArrayTypeCode = 31;
-  public static final int doubleArrayTypeCode = 32;
-  public static final int sofaTypeCode = 33;
-  public static final int annotBaseTypeCode = 34;
-  public static final int annotTypeCode = 35;
-  public static final int docTypeCode = 36;  // DocumentAnnotation
-  public static final int javaObjectTypeCode = 37;
-  public static final int javaObjectArrayTypeCode = 38;
     
   private final static int INIT_SIZE_ARRAYS_BUILT_IN_TYPES = 64;  // approximate... used for array sizing only 
 
@@ -239,21 +214,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
 
   private static final Object GLOBAL_TYPESYS_LOCK = new Object();
-  
-  /**
-   * Static final constants for built-in features
-   */
-  public static final int sofaNumFeatCode = 9;  // ref from another pkg
-  public static final int sofaIdFeatCode = 10;
-  public static final int sofaStringFeatCode = 13;
-         static final int sofaMimeFeatCode = 11;
-         static final int sofaUriFeatCode = 14;
-         static final int sofaArrayFeatCode = 12;
-  public static final int annotBaseSofaFeatCode = 15; // ref from another pkg
-  public static final int beginFeatCode = 16;
-  public static final int endFeatCode = 17;
-         static final int langFeatCode = 18;
-           
+             
   private static final Set<String> builtInsWithAltNames = new HashSet<String>();
   static {Misc.addAll(builtInsWithAltNames, 
            CAS.TYPE_NAME_TOP,
@@ -395,8 +356,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * used as a map, the key is the JCas loaded type id, set once when each JCas class is loaded.
    * value is the corresponding TypeImpl
+   * 
+   * When multiple type systems are being initialized in parallel, this list maybe updated
+   * on different threads.  Access to it is synchronized.
    */
-  final List<TypeImpl> jcasRegisteredTypes = new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES);
+  private final List<TypeImpl> jcasRegisteredTypes = Collections.synchronizedList(new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES));
   /**
    * An ArrayList, unsynchronized, indexed by feature code, of FeatureImpl objects
    */
@@ -1073,6 +1037,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Does one type inherit from the other?
    * 
+   * There are two versions. 
+   * 
+   *  Fast: but only works after commit:  aTypeImplInstance.subsumes(otherTypeImpl)
+   *  Slower: this routine.
+   *  This routine is called from fast one if not committed.
+   * 
    * @param superType
    *          Supertype.
    * @param subType
@@ -1083,40 +1053,24 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public boolean subsumes(Type superType, Type subType) {
     if (superType == subType) 
       return true;
-
-    // Need special handling for arrays
     
-    
-    // Yes, the code below is intentional. Until we actually support real arrays of some particular fs,
-    
-    // We have FSArray is the supertype of xxxx[] AND
-    //           xxx[] is the supertype of FSArray
-    // (this second relation because all we can generate are instances of FSArray
-    // and we must be able to assign them to xxx[] )
-    if (superType == fsArrayType) {
-      return subType.isArray();
+    if (isCommitted()) {
+      return ((TypeImpl)superType).subsumes((TypeImpl)subType);
     }
     
+    if (superType.isArray()) {
+      return ((TypeImpl_array)superType).subsumes((TypeImpl)subType);
+    }
+        
     if (subType == fsArrayType) {
       return superType == topType || 
-             superType == arrayBaseType ||
-             (superType.isArray());
+             superType == arrayBaseType; 
     }
 
     // at this point, we could have arrays of other primitive types, or
     // arrays of specific types: xxx[]
 
-    final boolean isSubArray = subType.isArray();
-    if (superType.isArray()) {
-      if (isSubArray) {
-        // If both types are arrays, simply compare the components.
-        return subsumes(
-            ((TypeImpl_array)superType).getComponentType(), 
-            ((TypeImpl_array)subType  ).getComponentType());
-      }
-      // An array can never subsume a non-array.
-      return false;
-    } else if (isSubArray) {
+    if (subType.isArray()) {
       // If the subtype is an array, and the supertype is not, then the
       // supertype must be top, or the abstract array base.
       return ((superType == topType) || (superType == arrayBaseType));
@@ -1331,17 +1285,19 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // cas.commitTypeSystem -
       // because it will call the type system iterator
   //    this.casMetadata.setupFeaturesAndCreatableTypes();
-      
-      WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
-      if (null != prevWr) {
-        TypeSystemImpl prev = prevWr.get();
-        if (null != prev) {
-          return prev;
+
+      if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
+        WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
+        if (null != prevWr) {
+          TypeSystemImpl prev = prevWr.get();
+          if (null != prev) {
+            return prev;
+          }
         }
-      }
       
-      prevWr = new WeakReference<>(this);
-      committedTypeSystems.put(this, prevWr);
+        prevWr = new WeakReference<>(this);
+        committedTypeSystems.put(this, prevWr);
+      }
       
       topType.computeDepthFirstCode(1); // fixes up ordering, supers before subs. also sets hasRef.
       
@@ -1598,11 +1554,17 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   private FeatureImpl getFeature(String typeName, String featureShortName) {
+    Type type = getType(typeName);
+    if (null == type) {
+//      System.out.println("debug - get feature for typename: " + typeName + ", feature: " + featureShortName 
+//           + " returned null when getting the type.");
+      return null;
+    }
     return getFeature(getType(typeName), featureShortName);
   }
   
   private FeatureImpl getFeature(Type type, String featureShortName) {
-    return type.getFeatureByBaseName(featureShortName);
+    return ((TypeImpl)type).getFeatureByBaseName(featureShortName);
   }
   
   /**
@@ -2301,12 +2263,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /** 
    * Convert between fixed JCas class int (set when it is loaded) and 
    * this type system's TypeImpl.
-   * 
+   *  
    * @param i the index from the typeIndexId of the JCas cover class
    * @return - the type impl associated with that JCas cover class
    */
   public TypeImpl getJCasRegisteredType(int i) {
-    TypeImpl ti = (i >= jcasRegisteredTypes.size()) ? null : jcasRegisteredTypes.get(i);
+    TypeImpl ti;
+    synchronized(jcasRegisteredTypes) {
+      ti = (i >= jcasRegisteredTypes.size()) ? null : jcasRegisteredTypes.get(i);
+    }
     if (null == ti) {
       throwMissingUIMAtype(i);
     }
@@ -2318,14 +2283,48 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * throw an appropriate exception
    * @param i - the index in the JCasRegistry
    */
-  private void throwMissingUIMAtype(int i) {
-    Class<? extends TOP> cls = JCasRegistry.getClassForIndex(i);
+  private void throwMissingUIMAtype(int typeindex) {
+    Class<? extends TOP> cls = JCasRegistry.getClassForIndex(typeindex);
     if (cls != null) {
       String className = cls.getName();
+//      System.err.format("Missing UIMA type, JCas Class name: %s, index: %d, jcasRegisteredTypes size: %d%n", className, typeindex, jcasRegisteredTypes.size());
+//      dumpTypeSystem();
       throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, className);
     } else {
       throw new CASRuntimeException(CASRuntimeException.JCAS_UNKNOWN_TYPE_NOT_IN_CAS);
     }
+  }
+  
+  // for debugging
+  public void dumpTypeSystem() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("TypeSystem committed?: ").append(isCommitted()).append('\n');
+    sb.append("jcasRegisteredTypes:\n");
+    // dump 5 at a time, use temp stringbuilder to avoid issues with users that wrap System.err
+     for (int i = 0; i < jcasRegisteredTypes.size(); i++) {
+      TypeImpl ti = jcasRegisteredTypes.get(i);
+      sb.append(String.format("%4d: ", i));
+      sb.append((ti == null) ? "null" : ti.getName());
+      if (i % 5 == 0) {
+        sb.append('\n');
+      }
+    }
+    System.err.println(sb);
+    
+    /** debug dump all types **/
+    sb.setLength(0);
+    sb.append("Dumping all type names\n");
+    List<TypeImpl> allTypes = getAllTypes();
+    int sz = allTypes.size();
+    
+    for (int i = 0; i < sz;) {
+      sb.append(String.format("%4d: %-20s ", i, allTypes.get(i++).getName()));
+      if (i == sz) break;
+      if (i % 5 == 0) {
+        sb.append('\n');
+      }
+    }
+    System.err.println(sb);
   }
   
   public FSClassRegistry getFSClassRegistry() {
@@ -2373,8 +2372,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
   static { staticTsi.commit(); }  // needed to assign adjusted offsets to the builtins
-
-
+  
   /**
    * HashCode and Equals
    *   used to compare two type system.  
@@ -2476,6 +2474,5 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     FeatureImpl fi = type.getFeatureByBaseName(featName);
     return (fi == null) ? -1 : type.getFeatureByBaseName(featName).getAdjustedOffset();
   }
-
 
 }
