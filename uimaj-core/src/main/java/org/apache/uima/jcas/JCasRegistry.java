@@ -18,6 +18,7 @@
  */
 package org.apache.uima.jcas;
 
+import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -28,12 +29,12 @@ import org.apache.uima.jcas.cas.TOP;
  * Maintains a registry of JCas cover classes that have been loaded
  * in order to be able to assign a unique low-value positive int index to each loaded
  * JCas class.  Note that the same JCas class loaded under two different class loaders
- * will get two different numbers.
+ * may get two different numbers.
  * 
  * The internals maintain a weak reference to the loaded class in order to allow the 
  * index value to be reused if the associated JCas class is garbaged collected.
  * 
- * The register methods is called from JCas cover class static initialization and
+ * The register method is called from JCas cover class static initialization and
  * returns the unique index value for this class.
  * 
  * The associated int index is used in a lookup on a jcas registry array associated with a particular
@@ -42,33 +43,36 @@ import org.apache.uima.jcas.cas.TOP;
  *      -- sequentially by a single instance of UIMA or
  *      -- multiple instances of pipelines running in one JVM each with different type systems 
  * 
- * A similar mechanism is provided for any features defined for this type.  The index values there are 
- * similarly used in a table in the type system to get the associated Feature.  This allows the feature
- * info to be kept in static final fields in the JCas class, and yet reference multiple (by type system)
- * FeatureImpl instances.
- * 
  */
 public class JCasRegistry {
   
+  /**
+   * A WeakReference class holding 
+   *   - a ref to a JCas class 
+   *   - an assigned int for that class 
+   *
+   */
   private static class WeakRefInt<T> extends WeakReference<T> {
-    int index;
-//    PositiveIntSet featureIndexes = new PositiveIntSet_impl();
-    
-    WeakRefInt(T item, ReferenceQueue<T> q, int index) {
+    int index;    
+    WeakRefInt(T item, ReferenceQueue<? super T> q, int index) {
       super(item, q);
       this.index = index;
     }
   }
   
+  /**
+   * The <type> argument say the type is a class, which extends TOP
+   */
   final private static ArrayList<WeakRefInt<Class<? extends TOP>>> loadedJCasClasses = new ArrayList<>();
   final private static ReferenceQueue<Class<? extends TOP>> releasedQueue = new ReferenceQueue<>();
   
   
 //  private static int nextFeatureIndex = 0;
-  /**
-   * accessed under class lock
-   */
+//  /**
+//   * accessed under class lock
+//   */
 //  final private static Deque<Integer> availableFeatureIndexes = new ArrayDeque<>();  
+
   /**
    * Registers a JCas cover class with this registry.  The registry will assign
    * it a unique index, which is then used by the cover-class to identify itself
@@ -79,10 +83,10 @@ public class JCasRegistry {
    * @return the unique index value for this class.
    */
   public static synchronized int register(Class<? extends TOP> aJCasCoverClass) {
-    WeakRefInt<Class<? extends TOP>> releasedWeakRef = (WeakRefInt<Class<? extends TOP>>) releasedQueue.poll();
+    WeakRefInt<Class<? extends TOP>> releasedWeakRefInt = (WeakRefInt<Class<? extends TOP>>) releasedQueue.poll();
     
-    if (releasedWeakRef != null) {
-      int i = releasedWeakRef.index;
+    if (releasedWeakRefInt != null) {
+      int i = releasedWeakRefInt.index;  // an index number that can be reused
       
 //      IntListIterator it = releasedWeakRef.featureIndexes.iterator();
 //      while (it.hasNext()){
@@ -128,7 +132,12 @@ public class JCasRegistry {
   }
   
   /**
-   * NOT CURRENTLY USED
+   * Used for error message:
+   *   When a particular loaded type system is missing the type that corresponds to a loaded JCas class
+   *     (perhaps that class was loaded when another type system was being used, or 
+   *      it was just referred to in Java code (which causes it to be loaded)
+   *   then the error message uses this to get the class to be able to print the class name
+   *   
    * Gets the JCas cover class for a given index.
    * 
    * @param aIndex the index
