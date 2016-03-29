@@ -234,6 +234,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       case FSIndex.SORTED_INDEX:
         aSortedIndex = i;
         break;
+      case FSIndex.SET_INDEX:
+        hasSetIndex = true;
+        break;
+      default: Misc.internalError();
       }
       indexesForType.add(iicp);
     }
@@ -1279,12 +1283,31 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       return false;
     }
     final int typeCode = fs._typeImpl.getCode();
-    incrementIllegalIndexUpdateDetector(typeCode);
-    final ArrayList<FsIndex_iicp<TOP>> idxList = getIndexesForType(typeCode).indexesForType;
+    final IndexesForType i4t = getIndexesForType(typeCode);
+    final ArrayList<FsIndex_iicp<TOP>> indexes4type = i4t.indexesForType;
 
     boolean wasRemoved = false;
+     
+    /** 
+     * some optimization speedup 
+     * - skip remove if 
+     *   
+     *   -- there is no sorted index AND
+     *   -- there is a bag index
+     *   -- but it doesn't contain the item
+     */
+
+    if (i4t.aSortedIndex < 0) {
+      int bi = i4t.aBagIndex;  // >= 0 if there is a bag index
+      if (bi < 0 && !i4t.hasSetIndex) {
+        return false;  // no indexes defined for this type
+      }
+      if (bi >= 0 && !i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
+        return false;  // not in defined bag index
+      }
+    }
     
-    for (FsIndex_iicp<TOP> iicp : idxList) {
+    for (FsIndex_iicp<TOP> iicp : indexes4type) {
       FsIndex_singletype<TOP> st = iicp.fsIndex_singletype;
       if (skipBagIndexes && !st.isSetOrSorted()) {
         continue;
@@ -1299,6 +1322,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //           .mapToInt(st -> st.deleteFS(fs) ? 1 : 0).sum();
     
     if (wasRemoved) {
+      incrementIllegalIndexUpdateDetector(typeCode);
       if (this.cas.getCurrentMark() != null) {
         logIndexOperation(fs, ITEM_REMOVED_FROM_INDEX);
       }
@@ -1462,28 +1486,29 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @return true if this fs was in the indexes and will need to be added back.
    */
   boolean removeIfInCorrputableIndexInThisView(FeatureStructure afs) {
-    TOP fs = (TOP) afs;
-    TypeImpl ti = fs._typeImpl;
-    final IndexesForType i4t = getIndexesForType(ti.getCode());
- 
-    int si = i4t.aSortedIndex;  
-    if (si >= 0) { // then we have a sorted index
-      return removeFS_ret(fs, SKIP_BAG_INDEXES);
-    }
-    
-    int bi = i4t.aBagIndex;
-    if (bi >= 0) { // have one or more bag indexes including default bag index, for this type
-      // use the bag index to stop if it doesn't contain the FS, because bag contains testing is fast..
-      if (!i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
-        return false;
-      }
-      if (i4t.hasSetIndex) {
-        return removeFS_ret(fs, SKIP_BAG_INDEXES);
-      }
-    }
-    
-    // have no bag index, no sort index (implies index is empty) 
-    return false;
+    return removeFS_ret((TOP) afs, SKIP_BAG_INDEXES);
+//    TOP fs = (TOP) afs;
+//    TypeImpl ti = fs._typeImpl;
+//    final IndexesForType i4t = getIndexesForType(ti.getCode());
+// 
+//    int si = i4t.aSortedIndex;  
+//    if (si >= 0) { // then we have a sorted index
+//      return removeFS_ret(fs, SKIP_BAG_INDEXES);
+//    }
+//    
+//    int bi = i4t.aBagIndex;
+//    if (bi >= 0) { // have one or more bag indexes including default bag index, for this type
+//      // use the bag index to stop if it doesn't contain the FS, because bag contains testing is fast..
+//      if (!i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
+//        return false;
+//      }
+//      if (i4t.hasSetIndex) {
+//        return removeFS_ret(fs, SKIP_BAG_INDEXES);
+//      }
+//    }
+//    
+//    // have no bag index, no sort index (implies index is empty) 
+//    return false;
   }
   
 //  /**
