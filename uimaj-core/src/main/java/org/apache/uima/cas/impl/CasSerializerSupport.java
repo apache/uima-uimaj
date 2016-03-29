@@ -772,7 +772,7 @@ public class CasSerializerSupport {
           foundCycle = true;
           break;
         }
-        curNode = curNode.getTail();
+        curNode = curNode.getCommonTail();
       }
       return foundCycle;
     }
