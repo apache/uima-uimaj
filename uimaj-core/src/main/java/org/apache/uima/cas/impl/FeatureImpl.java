@@ -45,7 +45,7 @@ public class FeatureImpl implements Feature {
                 // not used 2/29/16 to be removed
 //                int registryIndex = -1; // set from JCas classes feature registry
                                         // used to setup index corruption bitset                
-          final boolean isInInt;        // specifies which array the data is in
+  public final boolean isInInt;        // specifies which array the data is in
 
   private TypeImpl highestDefiningType;  // not final, could change
   
