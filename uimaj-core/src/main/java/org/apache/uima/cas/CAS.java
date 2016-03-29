@@ -493,7 +493,7 @@ public interface CAS extends AbstractCas {
    * @param <T> the Java cover class for the FS being created
    * @return The new FS.
    */
-  <T extends TOP> T createFS(Type type) throws CASRuntimeException;
+  <T extends FeatureStructure> T createFS(Type type) throws CASRuntimeException;
 
   /**
    * Create a new feature structure array.
