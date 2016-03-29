@@ -48,5 +48,5 @@ public abstract class FSList extends TOP implements CommonList {
     NonEmptyFSList node = new NonEmptyFSList(this._casView.getTypeSystemImpl().fsNeListType, this._casView);
     return node;
   }
-       
+         
 }

@@ -52,5 +52,5 @@ public abstract class StringList extends TOP implements CommonList {
     NonEmptyStringList node = new NonEmptyStringList(this._casView.getTypeSystemImpl().stringNeListType, this._casView);
     return node;
   }  
-
+  
 }

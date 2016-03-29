@@ -68,7 +68,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
   /* setter for head * */
   public void setHead(float v) {
-    this._setFloatValueNfc(_getFeatFromAdjOffset(_FI_head, true), v);
+    this._setFloatValueNfc(_FI_head, v);
   }
 
 //  public void _setHeadNcNj(float v) { setFloatValueNcNj(_getFeat(_FI_head), v); }
@@ -79,7 +79,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   public FloatList getTail() { return (FloatList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(FloatList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
+  public void setTail(FloatList v) { _setFeatureValueNcWj(_FI_tail, v); }
 
   public void setTail(CommonList v) { setTail((FloatList) v); }
   

@@ -68,7 +68,7 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
 
   /* setter for head * */
   public void setHead(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_head, false), v);
+    _setStringValueNfc(_FI_head, v);
   }
   
 //  public void _setHeadNcNj(String v) {_FI_head = v;};
@@ -79,8 +79,9 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
   public StringList getTail() { return (StringList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(StringList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
+  public void setTail(StringList v) { _setFeatureValueNcWj(_FI_tail, v); }
   
+  @Override
   public void setTail(CommonList v) {
     setTail((StringList)v);
   }

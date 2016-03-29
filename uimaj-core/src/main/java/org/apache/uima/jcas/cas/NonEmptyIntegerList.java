@@ -71,7 +71,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
   /* setter for head * */
   public void setHead(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_head, true), v);
+    _setIntValueNfc(_FI_head, v);
   }
 
 //  public void _setHeadNcNj(int v) { _FI_head = v;}
@@ -82,8 +82,9 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   public IntegerList getTail() { return (IntegerList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(IntegerList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
+  public void setTail(IntegerList v) { _setFeatureValueNcWj(_FI_tail, v); }
   
+  @Override
   public void setTail(CommonList v) { setTail((IntegerList)v); }
     
   public void setHead(List<String> stringValues, int i) {

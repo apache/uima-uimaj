@@ -52,5 +52,5 @@ public abstract class IntegerList extends TOP implements CommonList {
     NonEmptyIntegerList node = new NonEmptyIntegerList(this._casView.getTypeSystemImpl().intNeListType, this._casView);
     return node;
   }
-  
+   
 }

@@ -68,7 +68,7 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public TOP getHead() { return _getFeatureValueNc(_FI_head); }
 
   /* setter for head * */
-  public void setHead(TOP v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_head, false), v); }
+  public void setHead(TOP v) { _setFeatureValueNcWj(_FI_head, v); }
 
 //  public void _setHeadNcNj(TOP v) { _F_head = v; }
   
@@ -78,8 +78,9 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public FSList getTail() { return (FSList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(FSList v) { _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_tail, false), v); }
-    
+  public void setTail(FSList v) { _setFeatureValueNcWj(_FI_tail, v); }
+   
+  @Override
   public void setTail(CommonList v) {
     setTail((FSList) v);
   }

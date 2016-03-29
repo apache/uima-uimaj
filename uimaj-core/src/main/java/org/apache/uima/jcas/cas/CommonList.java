@@ -64,7 +64,7 @@ public interface CommonList extends FeatureStructure {
 			if (i == 0) {
 				return node;
 			}
-			node = node.getTail();
+			node = node.getCommonTail();
       if (node instanceof EmptyList) {
         throw new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END, originali);
       }
@@ -100,7 +100,7 @@ public interface CommonList extends FeatureStructure {
 	  CommonList node = this;
 	  while (node instanceof NonEmptyList) {
 	    consumer.accept((NonEmptyList) node);
-	    node = node.getTail();
+	    node = node.getCommonTail();
 	    if (node == null) {
 	      break;
 	    }
@@ -139,23 +139,43 @@ public interface CommonList extends FeatureStructure {
 	default CommonList insertNode() {
 	  assert(this instanceof NonEmptyList);
 	  CommonList newNode = createNonEmptyNode();
-	  CommonList tail = getTail();
+	  CommonList tail = getCommonTail();
 	  setTail(newNode);
 	  newNode.setTail(tail);
 	  return newNode;	  
 	}
 
 	/**
-	 * default impl for empty lists
-	 * @return -
+	 * default impl for empty and nonempty lists
+	 * @return - instance of CommonList
+	 * 
+	 * This has to be named differently from getTail, otherwise the 
+	 * "default" method in the interface appears as declared method in reflection named getTail which conflicts
+	 * with the one returning a specific typed value
 	 */
-  default CommonList getTail() {
+  default CommonList getCommonTail() {
+    if (this instanceof NonEmptyFloatList) {
+      return ((NonEmptyFloatList)this).getTail();
+    }
+    if (this instanceof NonEmptyIntegerList) {
+      return ((NonEmptyIntegerList)this).getTail();
+    }
+    if (this instanceof NonEmptyStringList) {
+      return ((NonEmptyStringList)this).getTail();
+    }
+    if (this instanceof NonEmptyFSList) {
+      return ((NonEmptyFSList)this).getTail();
+    }
     throw new UnsupportedOperationException();
-  };
+  }
 
+  // there is no common getTail, because each one has a different return type
+  // the impl of setTail(CommonList v) is split:
+  //   the default impl throws UnsupportedOperationException;
+  //   each kind of non-empty list class has its own impl
   /**
-   * default impl for empty lists
-   * @return -
+   * default 
+   * @param v -
    */
   default void setTail(CommonList v) {
     throw new UnsupportedOperationException();
@@ -219,7 +239,7 @@ public interface CommonList extends FeatureStructure {
       
 
       
-      curNode = curNode.getTail();
+      curNode = curNode.getCommonTail();
     } // end of while loop
   } 
   

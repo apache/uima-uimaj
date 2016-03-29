@@ -57,5 +57,5 @@ public class EmptyStringList extends StringList implements EmptyList {
   public EmptyStringList(TypeImpl t, CASImpl c) {
     super(t, c);
   }
-
+  
 }
