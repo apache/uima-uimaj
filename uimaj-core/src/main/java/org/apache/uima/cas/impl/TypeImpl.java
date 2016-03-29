@@ -259,7 +259,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   @Override
   public String toString() {
-    return toString(0);
+    // for backwards compatibility, must return just the name
+    return getName();
+//    return toString(0);
   }
   
   public String toString(int indent) {
@@ -734,7 +736,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //    creator = fi;
 //  }
       
-  final public boolean subsumes(TypeImpl ti) {
+  public boolean subsumes(TypeImpl ti) {
     if (depthFirstCode <= ti.depthFirstCode && ti.depthFirstCode < depthFirstNextSibling) {
       return true;
     }
@@ -747,8 +749,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   public boolean subsumesValue(Object v) {
-    return (isRefType && v == null) ||
-           (v instanceof String && typeCode == TypeSystemImpl.stringTypeCode) ||
+    return (v == null && (isRefType || isStringOrStringSubtype())) ||
+           (v instanceof String && isStringOrStringSubtype()) ||
            ((v instanceof FeatureStructureImplC) &&
              subsumes( ((FeatureStructureImplC)v)._typeImpl)) ||
            this.getCode() == TypeSystemImpl.javaObjectTypeCode;
@@ -842,6 +844,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
   }
   
+  int getAdjOffset(String featureShortName) {
+    return getFeatureByBaseName(featureShortName).getAdjustedOffset();
+  }
+  
   /**
    * A special instance used in CasCopier to identify a missing type
    */
@@ -915,6 +921,30 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     
     return true;
+  }
+  
+  boolean isPrimitiveArrayType() {
+    if (!isArray()) {
+      return false;
+    }
+    
+    switch(this.typeCode) {
+    case TypeSystemConstants.floatArrayTypeCode:
+    case TypeSystemConstants.intArrayTypeCode:
+    case TypeSystemConstants.booleanArrayTypeCode:
+    case TypeSystemConstants.shortArrayTypeCode:
+    case TypeSystemConstants.byteArrayTypeCode:
+    case TypeSystemConstants.longArrayTypeCode:
+    case TypeSystemConstants.doubleArrayTypeCode:
+    case TypeSystemConstants.stringArrayTypeCode:
+    case TypeSystemConstants.javaObjectArrayTypeCode:
+      return true;
+    default: return false;
+    }
+  }
+  
+  public boolean hasRefFeature() {
+    return hasRefFeature;
   }
   
 }

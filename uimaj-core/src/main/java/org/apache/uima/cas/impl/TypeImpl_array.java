@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
-public class TypeImpl_array extends TypeImpl {
+public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
   
   private final TypeImpl componentType;
   
@@ -48,7 +48,7 @@ public class TypeImpl_array extends TypeImpl {
   
   @Override
   TypeImpl consolidateType(TypeImpl topType, TypeImpl fsArrayType) {
-    if (!(componentType instanceof TypeImpl_primitive)) {
+    if (!(componentType.isPrimitive())) {
         return fsArrayType;  // booleanArrayType, stringArrayType etc.
     }
     // is a primitive array
@@ -74,5 +74,51 @@ public class TypeImpl_array extends TypeImpl {
   @Override
   public SlotKind getComponentSlotKind() {
     return componentSlotKind;
+  }
+  
+  @Override
+  public boolean subsumes(TypeImpl subType) {
+    if (this == subType) {
+      return true;
+    }
+    
+    // Need special handling for arrays
+    
+    if (!subType.isArray()) {
+      return false;  // arrays never subsume non-arrays
+    }
+    
+    // Yes, the code below is intentional. Until we actually support real arrays of some particular fs,
+    
+    // We have FSArray is the supertype of xxxx[] ( xxxx is non-primitive) AND
+    //           xxx[] is the supertype of FSArray
+    // (this second relation because all we can generate are instances of FSArray
+    // and we must be able to assign them to xxx[] )
+    
+    
+    final TypeImpl superType = this;
+    final int superTypeCode = getCode();
+    
+    if (superTypeCode == fsArrayTypeCode) {
+      return !subType.isPrimitiveArrayType();
+    }
+    
+    if (subType.getCode() == fsArrayTypeCode) {
+      return superTypeCode == arrayBaseTypeCode ||
+             !isPrimitiveArrayType();
+    }
+
+    // at this point, we could have arrays of other primitive types, or
+    // arrays of specific types: xxx[]
+
+    // If both types are arrays, simply compare the components.
+    return getComponentType().subsumes(subType.getComponentType());
+ 
+//    } else if (isSubArray) {
+//      // If the subtype is an array, and the supertype is not, then the
+//      // supertype must be top, or the abstract array base.
+//      return superTypeCode == topTypeCode || superTypeCode == arrayBaseTypeCode;
+//    }
+        
   }
 }
