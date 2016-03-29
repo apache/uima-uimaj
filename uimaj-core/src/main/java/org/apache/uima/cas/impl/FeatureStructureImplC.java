@@ -32,8 +32,10 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.cas_data.impl.FeatureStructureImpl;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.CommonArray;
@@ -262,14 +264,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   /**************************************
    *           S E T T E R S 
-   * 4 levels:  
-   *   - check feature for validity
+   * 4 levels of checking:  
+   *   - check feature for validity (fv)
    *     -- this is skipped with feature comes from fs type info (internal calls)
-   *   - check for setting something which could corrupt indexes
+   *   - check for setting something which could corrupt indexes (ci)
    *     -- this is skipped when the caller knows 
-   *        --- the FS is not in the index, perhpas because they just created it
+   *        --- the FS is not in the index, perhaps because they just created it
    *     -- skipped when the range is not a valid index key   
-   *   - check for needing to log (journal) setting
+   *   - check for needing to log (journal) setting  (jrnl)
    *     -- this is skipped when the caller knows 
    *       --- no journalling is enabled or
    *       --- the FS is a new (above-the-line) FS
@@ -278,16 +280,21 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    *     -- done for string subtypes and Feature References
    *       --- skipped if the caller knows the value is OK (e.g., it is copying an existing FS)
    *       
+   *   The jrnl and ic checks require the FeatureImpl. 
+   *     For setters using these checks, there are two versions: 
+   *       - one with the arg being the FeatureImpl (if it is available at the caller) and
+   *       - one with the int offset (common code coverts this to the Feature Impl).
+   *   
    * all 4 checks are normally done by the standard API call in the FeatureStructure interface 
    *    setXyzValue(Feature, value)
    *    
-   * Other methods have suffixes and prefixes to the setter name
+   * Besides the standard API call, other setter methods have suffixes and prefixes to the setter name
    *   - prefix is "_" to avoid conflicting with existing other names
    *   - suffixes are: 
-   *     -- Nfc:    skip feature validity checking
-   *     -- NcNj:   implies Nfc, skips corrupt check and journaling and feature validation
-   *          The next two are only for setters where value checking might be needed (i.e., Java checking isn't sufficient)
-   *     -- Nv:     implies Nfc, skips value range checking and feature validation
+   *     -- Nfc:    skip feature validity checking, ( ! fv,   jrnl,   ic )  (int/Feat)
+   *     -- NcNj:   implies Nfc,                    ( ! fv, ! jrnl, ! ic )  (int/Feat)
+   *     -- NcWj:   implies Nfc,                    ( ! fv,   jrnl, ! ic )  (int)
+   *          The is for setters where value checking might be needed (i.e., Java checking isn't sufficient)
    *     -- NcNjNv: implies Nfc, skips all checks
    *     
    *          For JCas setters: convert offset to feature
@@ -298,7 +305,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _setIntValueCJ((FeatureImpl) feat, v ? 1 : 0);
   }
   
-  public void _setBooleanValueNfc(FeatureImpl feat, boolean v) { _setIntValueNfcCJ(feat, v ? 1 : 0); }
+  public void _setBooleanValueNfc(int adjOffset, boolean v) { _setIntValueNfcCJ(adjOffset, v ? 1 : 0); }
  
   public final void _setBooleanValueNcNj(FeatureImpl fi, boolean v) { _setIntValueCommon(fi, v? 1 : 0); }
    
@@ -309,8 +316,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
-  public void _setByteValueNfc(FeatureImpl fi, byte v) {
-    _setIntValueNfcCJ(fi, v);
+  public void _setByteValueNfc(int adjOffset, byte v) {
+    _setIntValueNfcCJ(adjOffset, v);
   }
   
   public void _setByteValueNcNj(FeatureImpl fi, byte v) {
@@ -326,8 +333,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
-  public void _setShortValueNfc(FeatureImpl fi, short v) {
-    _setIntValueNfcCJ(fi, v);
+  public void _setShortValueNfc(int adjOffset, short v) {
+    _setIntValueNfcCJ(adjOffset, v);
   }
   
   public void _setShortValueNcNj(FeatureImpl fi, short v) {
@@ -343,8 +350,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
-  public void _setIntValueNfc(FeatureImpl fi, int v) {
-    _setIntValueNfcCJ(fi, v);
+  public void _setIntValueNfc(int adjOffset, int v) {
+    _setIntValueNfcCJ(adjOffset, v);
   }
   
   public void _setIntValueNcNj(FeatureImpl fi, int v) {
@@ -360,8 +367,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _setLongValueCJ((FeatureImpl) feat, v);
   }
 
-  public void _setLongValueNfc(FeatureImpl fi, long v) {
-    _setLongValueNfcCJ(fi, v);
+  public void _setLongValueNfc(int adjOffset, long v) {
+    FeatureImpl fi = _getFeatFromAdjOffset(adjOffset, true);
+    _casView.setLongValue(this, fi, v); 
   }
   
   public void _setLongValueNcNj(FeatureImpl fi, long v) { _setLongValueNcNj(fi.getAdjustedOffset(), v); }
@@ -374,7 +382,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   @Override
   public void setFloatValue(Feature feat, float v) { setIntValue(feat, CASImpl.float2int(v)); }
   
-  protected void _setFloatValueNfc(FeatureImpl feat, float v) { _setIntValueNfc(feat, CASImpl.float2int(v)); }
+  protected void _setFloatValueNfc(int adjOffset, float v) { _setIntValueNfc(adjOffset, CASImpl.float2int(v)); }
 
   public void _setFloatValueNcNj(FeatureImpl fi, float v) {
     _intData[fi.getAdjustedOffset()] = CASImpl.float2int(v);
@@ -385,22 +393,32 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   }
 
   @Override
-  public void setDoubleValue(Feature feat, double v) { setLongValue(feat, CASImpl.double2long(v)); }
+  public void setDoubleValue(Feature feat, double v) {
+    setLongValue(feat, CASImpl.double2long(v)); 
+  }
 
-  protected void _setDoubleValueNfc(FeatureImpl feat, double v) { _setLongValueNfcCJ(feat, CASImpl.double2long(v)); }
+  protected void _setDoubleValueNfc(int adjOffset, double v) {
+    _setLongValueNfc(adjOffset, CASImpl.double2long(v)); 
+  }
 
-  public void _setDoubleValueNcNj(FeatureImpl fi, double v) { _setLongValueNcNj(fi, CASImpl.double2long(v)); }
+  public void _setDoubleValueNcNj(FeatureImpl fi, double v) {
+    _setLongValueNcNj(fi, CASImpl.double2long(v));
+  }
 
-  public void _setDoubleValueNcNj(int adjOffset, double v) { _setLongValueNcNj(adjOffset, CASImpl.double2long(v)); }
+  public void _setDoubleValueNcNj(int adjOffset, double v) {
+    _setLongValueNcNj(adjOffset, CASImpl.double2long(v)); 
+  }
 
   @Override
   public void setStringValue(Feature feat, String v) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
     subStringRangeCheck(feat, v);
     _setRefValueCJ((FeatureImpl) feat, v);
   }
   
-  public void _setStringValueNfc(FeatureImpl fi, String v) {
+  public void _setStringValueNfc(int adjOffset, String v) {
+    FeatureImpl fi = _getFeatFromAdjOffset(adjOffset, false);
     subStringRangeCheck(fi, v); 
     _setRefValueCJ(fi, v);
   }
@@ -425,6 +443,13 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
 
+    if (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode) {
+      // trying to set the sofa - don't do this, but check if the value
+      // is OK (note: may break backwards compatibility)  
+      if (v != _getFeatureValueNc(AnnotationBase._FI_sofa)) {
+        throw new CASRuntimeException(CASRuntimeException.ILLEGAL_SOFAREF_MODIFICATION);
+      }
+    }
     // no need to check for index corruption because fs refs can't be index keys
     _refData[fi.getAdjustedOffset()] = v;
     _casView.maybeLogUpdate(this, fi);
@@ -433,9 +458,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   public void _setFeatureValueNcNj(FeatureImpl fi, Object v) { 
     _setRefValueCommon(fi, v);
   }
+  
+  public void _setFeatureValueNcNj(int adjOffset, Object v) { 
+    _setRefValueCommon(adjOffset, v);
+  }
 
-  public void _setFeatureValueNcWj(FeatureImpl fi, Object v) { 
-    _setRefValueCommonWj(fi, v);
+
+  public void _setFeatureValueNcWj(int adjOffset, Object v) { 
+    _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), v);
   }
 
   @Override
@@ -464,8 +494,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    */
   protected void _setIntValueCJ(FeatureImpl fi, int v) {
     if (!fi.isInInt) {
-      /** Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
-      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "boolean, byte, short, int, or float", fi.getRange().getName());
+      
+        /** Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
+        throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "boolean, byte, short, int, or float", fi.getRange().getName());
+      
     }
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
     _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
@@ -491,8 +523,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * @param fi - the feature
    * @param v - the value
    */
-  protected void _setIntValueNfcCJ(FeatureImpl fi, int v) {
-    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
+  protected void _setIntValueNfcCJ(int adjOffset, int v) {
+    FeatureImpl fi = _getFeatFromAdjOffset(adjOffset, true);
+    _casView.setWithCheckAndJournal((TOP)this, fi, () -> _intData[adjOffset] = v); 
   }
   
   /**
@@ -510,7 +543,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, fi.getName(), "int", fi.getRange().getName());
     }
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
-    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _refData[fi.getAdjustedOffset()] = v); 
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _setRefValueCommon(fi, v)); 
   }
   
   /**
@@ -519,7 +552,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * @param v - the value
    */
   protected void _setRefValueNfcCJ(FeatureImpl fi, Object v) {
-    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _refData[fi.getAdjustedOffset()] = v); 
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _setRefValueCommon(fi, v)); 
   }
 
   /********************************************************************************************************   
@@ -621,7 +654,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     return _getFeatureValueNc((FeatureImpl) feat);
   }
   
-  public TOP _getFeatureValueNc(FeatureImpl feat) { return (TOP) _getFeatureValueNc(feat.getAdjustedOffset()); }
+  public TOP _getFeatureValueNc(FeatureImpl feat) { return _getFeatureValueNc(feat.getAdjustedOffset()); }
 
   public TOP _getFeatureValueNc(int adjOffset) { return (TOP) _refData[adjOffset]; }
  
@@ -681,10 +714,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     TOP fs = _casView.createFS(_typeImpl);
     TOP srcFs = (TOP) this;
     
+   fs._copyIntAndRefArraysEqTypesFrom(srcFs);
+    
     /* copy all the feature values except the sofa ref which is already set as part of creation */
-    for (FeatureImpl feat : _typeImpl.getFeatureImpls()) {
-      CASImpl.copyFeature(srcFs, feat, fs);
-    }   // end of for loop
+//    for (FeatureImpl feat : _typeImpl.getFeatureImpls()) {
+//      CASImpl.copyFeature(srcFs, feat, fs);
+//    }   // end of for loop
     return fs;
   }
 
@@ -1117,7 +1152,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     return _refData[feat.getAdjustedOffset()];
   }
   
-  private Object _getRefValueCommon(int adjOffset) {
+  public Object _getRefValueCommon(int adjOffset) {
     return _refData[adjOffset];
   }
    
@@ -1133,9 +1168,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _refData[fi.getAdjustedOffset()] = v;
   }
   
+  public void  _setRefValueCommon(int adjOffset, Object v) {
+    _refData[adjOffset] = v;
+  }
+
+  
   // used also for sofa string setting
   protected void _setRefValueCommonWj(FeatureImpl fi, Object v) {
-    _refData[fi.getAdjustedOffset()] = v;
+    _setRefValueCommon(fi, v);
     _casView.maybeLogUpdate(this, fi);
   }
 
@@ -1167,6 +1207,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     if (v == null) {
       return true;
     }
+    
     
     final int rangeTypeCode = range.getCode();
 
@@ -1211,4 +1252,41 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }     
   }
   
+//  protected Object[] _getRefData() {
+//    return _refData;
+//  }
+ 
+  /**
+   * @param src the FS to copy features from
+   */
+  public void _copyIntAndRefArraysFrom(FeatureStructureImplC src) {
+    if (src._intData != null && _intData != null) {
+      System.arraycopy(src._intData, 0, _intData, 0, Math.min(src._intData.length, _intData.length));
+     }
+    if (src._refData != null && _refData != null) {
+      System.arraycopy(src._refData, 0, _refData, 0, Math.min(src._refData.length, _refData.length));
+    }
+  }
+ 
+  /**
+   * @param src the FS to copy features from
+   */
+  public void _copyIntAndRefArraysEqTypesFrom(FeatureStructureImplC src) {
+    if (_intData != null) {
+      System.arraycopy(src._intData, 0, _intData, 0, _intData.length);
+     }
+    if (_refData != null) {
+      System.arraycopy(src._refData, 0, _refData, 0, _refData.length);
+    }
+  }
+
+  /**
+   * @param src the FS to copy features from
+   */
+  public void _copyIntArrayEqTypesFrom(FeatureStructureImplC src) {
+    if (_intData != null) {
+      System.arraycopy(src._intData, 0, _intData, 0, _intData.length);
+     }
+  }
+
 }
