@@ -205,6 +205,8 @@ public class CasCopier {
   private final Int2ObjListMap<TypeImpl>    src2TgtType;  
   private final Int2ObjListMap<FeatureImpl> src2TgtFeat;
   
+  private final boolean isEqualTypeSystems;
+  
 //  
 //  private final TypeImpl srcStringType;
   
@@ -313,6 +315,8 @@ public class CasCopier {
     } else {
       isChangeViewName = !srcViewName.equals(tgtViewName);
     }
+    
+    isEqualTypeSystems = srcTsi.equals(tgtTsi);
   }
   
 
@@ -786,12 +790,54 @@ public class CasCopier {
   private <T extends FeatureStructure> void copyFeatures(T srcFSi, T tgtFSi) {
     TOP srcFS = (TOP) srcFSi;
     TOP tgtFS = (TOP) tgtFSi;
+    
+    // guaranteed not an array at this point
+    
+    if (isEqualTypeSystems) {
+      
+      for (FeatureImpl fi : srcFS.getTypeImpl().getFeatureImpls()) {
+        final int adjOffset = fi.getAdjustedOffset();
+        if (fi.isInInt) {
+          tgtFS._setIntValueNcNj(adjOffset, srcFS._getIntValueNc(adjOffset));
+        } else if (!fi.getRangeImpl().isRefType) {
+          tgtFS._setRefValueCommon(adjOffset, srcFS._getRefValueCommon(adjOffset));
+        } else { // is FS reference
+          // feature is a reference to another FS, so enqueue that to copy
+          //   unless it's the sofa feature for AnnotationBase - that's feature final, set when created
+          if (fi.isAnnotBaseSofaRef) {
+            continue;
+          }
+          TOP refFs = srcFS._getFeatureValueNc(adjOffset);
+          if (null != refFs) {
+            tgtFS._setFeatureValueNcNj(adjOffset, copyFsInner(refFs));  // recursive call
+          }
+        }
+      }
+      return;            
+//      final TypeImpl tgtType = tgtFS._typeImpl;
+//      Sofa sofa = (tgtType.isAnnotationBaseType()) ?  ((AnnotationBase)tgtFS).getSofa() : null;
+//      tgtFS._copyIntAndRefArraysEqTypesFrom(srcFS);  
+//      if (tgtType.isAnnotationBaseType()) {
+//        tgtFS._setFeatureValueNcNj(TypeSystemConstants.annotBaseSofaFeatAdjOffset, sofa);
+//      }
+//      
+//      if (tgtType.hasRefFeature()) {
+//        for (FeatureImpl fi : tgtFS._typeImpl.getFeatureImpls()) {
+//          if (!fi.getRangeImpl().isRefType) continue;
+//          final int adjOffset = fi.getAdjustedOffset();
+//          TOP refFs = tgtFS._getFeatureValueNc(adjOffset);
+//          if (null != refFs) {
+//            tgtFS._setFeatureValueNcNj(adjOffset, copyFsInner(refFs));  // recursive call
+//          }
+//        }
+//      }
+    }
+    
     for (FeatureImpl fi : srcFS.getTypeImpl().getFeatureImpls()) {
       FeatureImpl tgtFi = getTargetFeature(fi);
       if (null == tgtFi) {
         continue;  // skip copying features not in the target type system
       }
-      
       if (!CASImpl.copyFeatureExceptFsRef(srcFS, fi, tgtFS, tgtFi)) {
         // feature is a reference to another FS, so enqueue that to copy
         //   unless it's the sofa feature for AnnotationBase - that's feature final, set when created
