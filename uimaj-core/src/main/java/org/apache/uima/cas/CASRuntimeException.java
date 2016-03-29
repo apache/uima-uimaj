@@ -238,6 +238,12 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** While FS was in the index, illegal attempt to modify Feature "{0}" which is used as a key in one or more indexes; FS = "{1}" */
   public static final String ILLEGAL_FEAT_SET = "ILLEGAL_FEAT_SET";
   
+  /** ll_setIntValue call to change the type: new type "{0}" must be a subtype of existing type {1}.*/
+  public static final String ILLEGAL_TYPE_CHANGE = "ILLEGAL_TYPE_CHANGE";
+  
+  /** ll_setIntValue call to change the type, but the Feature Structure is in an index. New type: "{0}", existing type {1}.*/
+  public static final String ILLEGAL_TYPE_CHANGE_IN_INDEX = "ILLEGAL_TYPE_CHANGE_IN_INDEX";
+  
   /** Sofa reference in AnnotationBase may not be modified **/
   public static final String ILLEGAL_SOFAREF_MODIFICATION = "ILLEGAL_SOFAREF_MODIFICATION";
   
