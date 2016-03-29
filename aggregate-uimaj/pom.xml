@@ -59,6 +59,7 @@
   
   <modules>
     <module>../uimaj-core</module>
+    <module>../uimaj-jcas</module>
     <module>../uimaj-cpe</module>
     <module>../uimaj-examples</module>
     <module>../uimaj-tools</module>
