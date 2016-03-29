@@ -225,7 +225,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
       i++;
       if (key instanceof FeatureImpl) {
         FeatureImpl fi = (FeatureImpl) key;
-        if (fi.getRange() instanceof TypeImpl_string) { // string and string subtypes
+        if (fi.getRange().isStringOrStringSubtype()) { // string and string subtypes
           result = Misc.compareStrings(fs1._getStringValueNc(fi), fs2._getStringValueNc(fi));
         } else {
           switch (keyTypeCodes[i]) {
