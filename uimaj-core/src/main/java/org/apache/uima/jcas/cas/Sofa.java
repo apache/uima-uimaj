@@ -142,7 +142,7 @@ public class Sofa extends TOP implements SofaFS {
   @Override
   public void setLocalSofaData(FeatureStructure aFS) {   
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_sofaArray, false), aFS);
+    _setFeatureValueNcWj(_FI_sofaArray, aFS);
   }
 
 	public void setLocalSofaData(FeatureStructure aFS, String mimeType) {

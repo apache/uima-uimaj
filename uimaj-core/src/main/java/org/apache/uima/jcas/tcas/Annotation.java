@@ -83,7 +83,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * setter for begin - sets beginning of span of annotation
    */
-  public void setBegin(int v) { _setIntValueNfcCJ(_getFeatFromAdjOffset(_FI_begin, true), v); }
+  public void setBegin(int v) { _setIntValueNfcCJ(_FI_begin, v); }
   
   // *------------------*
   // * Feature: end
@@ -100,7 +100,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {
-    this._setIntValueNfc(_getFeatFromAdjOffset(_FI_end, true),  v);
+    this._setIntValueNfc(_FI_end,  v);
   }
   
   /**
