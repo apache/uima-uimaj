@@ -94,7 +94,7 @@ public interface Type {
    *          The short, unqualified name of the feature.
    * @return The feature, if it exists; <code>null</code>, else.
    */
-  FeatureImpl getFeatureByBaseName(String featureName);
+  Feature getFeatureByBaseName(String featureName);
 
   /**
    * Check if type is feature final, i.e., if no more new features may be defined for it.
