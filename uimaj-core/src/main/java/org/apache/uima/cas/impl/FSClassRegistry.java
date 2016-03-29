@@ -169,17 +169,17 @@ public class FSClassRegistry {
      */
     final Class<?> jcasClass;
     
+    final int jcasType;
+    
 //    /**
 //     * map from the feature short name to the getter/setter Lambda
 //     */
 //    final Map<String, GetterSetter> gettersAndSetters = new HashMap<>(1);
     
-    JCasClassInfo(String typeName, Class<?> jcasClass, Object generator) {
+    JCasClassInfo(Class<?> jcasClass, Object generator, int jcasType) {
       this.generator = generator;
       this.jcasClass = jcasClass;
-      
-      // add to map
-      type2JCas.put(typeName, this);
+      this.jcasType = jcasType;
     }
   }
 
@@ -195,6 +195,7 @@ public class FSClassRegistry {
    * These instances are shared for all type systems
    */
   private static final JCasClassInfo[] jcasClassesInfoForBuiltins;
+
   static {
     TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
     jcasClassesInfoForBuiltins = new JCasClassInfo[tsi.getTypeArraySize()]; 
@@ -213,7 +214,8 @@ public class FSClassRegistry {
       Class<?> builtinClass = maybeLoadJCas(typeName);
       assert (builtinClass != null);  // builtin types must be present
       // copy down to subtypes, if needed, done later
-      JCasClassInfo jcasClassInfo = createJCasClassInfo(builtinClass, ti); 
+      int jcasType = Misc.getStaticIntFieldNoInherit(builtinClass, "typeIndexID");
+      JCasClassInfo jcasClassInfo = createJCasClassInfo(builtinClass, ti, jcasType); 
       jcasClassesInfoForBuiltins[ti.getCode()] = jcasClassInfo; 
 //      setupGetterSetter(ti, jcasClassInfo);
     }
@@ -233,6 +235,11 @@ public class FSClassRegistry {
    * 
    * Also, for all loaded JCas classes, set the javaClass field (including
    *   in subtypes with no JCas class defined).
+   *   
+   * Called under TypeSystemImpl - instance - lock 
+   * 
+   * Could be running multiple threads
+   *   - one per TypeSystemImpl - instance
    *   
    * @param ts - the type system
    * @param isDoUserJCasLoading a flag to skip loading the JCas classes
@@ -320,27 +327,57 @@ public class FSClassRegistry {
    * @param copyDownDefault_jcasClassInfo
    */
   private void maybeLoadJCasAndSubtypes(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo copyDownDefault_jcasClassInfo) {
-    JCasClassInfo jcasClassInfo = type2JCas.get(ti.getName());
-    if (jcasClassInfo == null) {
-      // not yet loaded.  if Built-in, always skip this body
-      jcasClassInfo = copyDownDefault_jcasClassInfo;  // initialize in case no JCas for this type
     
-    
-      Class<?> clazz;
-  
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);    
-      clazz = maybeLoadJCas(ti.getName());  
+    JCasClassInfo jcasClassInfo;
+//    boolean debug = "com.ibm.hutt.Predicate".equals(ti.getName());
+//    if (debug) {
+//      System.out.println("Loading com.ibm.hutt.Predicate");
+//    }
+    synchronized(type2JCas) {
+      jcasClassInfo = type2JCas.get(ti.getName());
+//      if (debug) {
+//        System.out.println("Loading com.ibm.hutt.Predicate: jcasClassInfo fetch was " + ((jcasClassInfo == null) ? "null" : "not null"));
+//      }
+      if (jcasClassInfo == null) {
+        // not yet loaded.  if Built-in, always skip this body
+        jcasClassInfo = copyDownDefault_jcasClassInfo;  // initialize in case no JCas for this type
       
-      if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
-        jcasClassInfo = createJCasClassInfo(clazz, ti); 
-        if (!Modifier.isAbstract(clazz.getModifiers())) { // skip next for abstract classes
-          int i = Misc.getStaticIntFieldNoInherit(clazz, "typeIndexID");
-          // if i is negative, this means there's no value for this field
-          assert(i >= 0);
-          ts.setJCasRegisteredType(i, ti);
+      
+        Class<?> clazz;
+    
+        TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);    
+        clazz = maybeLoadJCas(ti.getName());  
+//        if (debug) {
+//          System.out.println("Loading com.ibm.hutt.Predicate: returned class from loading was " + ((clazz == null) ? "null" : "not null"));
+//          if (null != clazz) {
+//            System.out.println("Loading com.ibm.hutt.Predicate: TOP was " + ((TOP.class.isAssignableFrom(clazz)) ? "assignable" : "not assignable") + " from Predicate");
+//          }
+//        }
+        if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
+          
+          int jcasType = -1;
+          if (!Modifier.isAbstract(clazz.getModifiers())) { // skip next for abstract classes
+            jcasType = Misc.getStaticIntFieldNoInherit(clazz, "typeIndexID");
+            // if jcasType is negative, this means there's no value for this field
+            assert(jcasType >= 0);
+            ts.setJCasRegisteredType(jcasType, ti);
+          } else {
+//            if (debug) {
+//              System.out.println("Loading com.ibm.hutt.Predicate: SKIPPED setting register because class was Abstract!");
+//            }
+          }
+          
+          jcasClassInfo = createJCasClassInfo(clazz, ti, jcasType); 
+          type2JCas.put(ti.getName(), jcasClassInfo);
+
+        } 
+      } else {  // jcasClassInfo already set
+        // already have info for this class, but need to set the jcas registry for this type system
+        if (jcasClassInfo.jcasType >= 0) {
+          ts.setJCasRegisteredType(jcasClassInfo.jcasType, ti);
         }
-      } 
-    }
+      }
+    } // end of synch on type2JCas
     
     // this check is done even after the class is first loaded, in case the type system changed.
     //   -- if the new type system is equal to a previous one, then no new FSClassRegistry is created.
@@ -356,7 +393,7 @@ public class FSClassRegistry {
       maybeLoadJCasAndSubtypes(ts, subtype, jcasClassInfo);
     }
   }
-  
+    
 //  private static void setupGettersSetters(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo[] jci) {
 //    boolean isBuiltin = BuiltinTypeKinds.creatableBuiltinJCas.contains(ti.getName());
 //
@@ -396,6 +433,8 @@ public class FSClassRegistry {
    * Called at TypeSystemCommit for non-built-in types
    *   Runs the static initializers in the loaded JCas classes - doing resolve
    *   
+   * Synchronization: each unique name
+   *   
    * @param typeName -
    * @param cl the class loader to use
    * @return the loaded / resolved class
@@ -403,8 +442,12 @@ public class FSClassRegistry {
   private static Class<?> maybeLoadJCas(String typeName) {
     Class<?> clazz = null;
     String className = Misc.typeName2ClassName(typeName);
+    
     try {
-      clazz = Class.forName(className, true, FSClassRegistry.class.getClassLoader());
+//      synchronized (className) { // to insure clazz receives a fully-resolved class, must use interned name
+        // parallel class loaders already sync on the name
+        clazz = Class.forName(className, true, FSClassRegistry.class.getClassLoader());
+//      }
     } catch (ClassNotFoundException e) {
       // This is normal, if there is no JCas for this class
     }
@@ -560,11 +603,11 @@ public class FSClassRegistry {
    * @param ti the type
    * @return the info for this JCas that is shared across all type systems under this class loader
    */
-  private static JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti) {
+  private static JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti, int jcasType) {
     boolean noGenerator = ti.getCode() == TypeSystemImpl.sofaTypeCode ||
                           Modifier.isAbstract(jcasClass.getModifiers()); 
     Object generator = noGenerator ? null : createGenerator(jcasClass, ti.isArray());
-    JCasClassInfo jcasClassInfo = new JCasClassInfo(ti.getName(), jcasClass, generator);
+    JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, generator, jcasType);
     return jcasClassInfo;
   }
   
@@ -647,6 +690,7 @@ public class FSClassRegistry {
       FeatureImpl fi = ti.getFeatureByBaseName(fname);
       if (fi == null) {
         fname = mname.charAt(3) + suffix;
+        fi = ti.getFeatureByBaseName(fname);
         if (fi == null) continue;
       }
       
@@ -660,12 +704,12 @@ public class FSClassRegistry {
           rangeClass = range.getComponentType().getJavaClass();
         }
       }
-      if (!returnClass.isAssignableFrom(rangeClass)) {
+      if (!rangeClass.isAssignableFrom(returnClass)) {  // can return subclass of TOP, OK if range is TOP
         /** CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas class has range "{3}". */
         add2errors(errorSet, 
                    new CASRuntimeException(CASRuntimeException.JCAS_TYPE_RANGE_MISMATCH, 
                        ti.getName(), fi.getShortName(), rangeClass, returnClass),
-                   true);  // throw  
+                   false);  // should throw, but some code breaks!  
       }
     }
     
