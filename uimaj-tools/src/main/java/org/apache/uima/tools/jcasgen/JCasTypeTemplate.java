@@ -44,7 +44,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    else 
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); 
-    stringBuilder.append("\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n");
+    stringBuilder.append("\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.impl.TypeSystemImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
    for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
     stringBuilder.append("import ");
     stringBuilder.append((String)i.next());
@@ -70,7 +70,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    StringBuilder localData = new StringBuilder();
    StringBuilder featRegistry = new StringBuilder();
     
-   featRegistry.append("  /* Register Features */\n");
+   featRegistry.append("  /* Feature Adjusted Offsets */\n");
    
    for (FeatureDescription fd : td.getFeatures()) { 
 
@@ -89,14 +89,13 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      String elemType = jg.getJavaRangeArrayElementType(fd);
      
      localData.append("  private ").append(rangeType).append(" _F_").append(featName).append(";  // ").append(featDescCmt).append('\n');
-     featRegistry.append("  public final static int _FI_").append(featName).append(" = JCasRegistry.registerFeature(typeIndexID);\n");   
+     featRegistry.append("  public final static int _FI_").append(featName).append(" = TypeSystemImpl.getAdjustedFeatureOffset(\"")
+                 .append(featName).append("\");\n");   
       
    } /* of Features iteration */ 
-    stringBuilder.append("\n  /* *****************\n   *    Local Data   *\n   * *****************/ \n   \n");
+    stringBuilder.append("\n  /* *******************\n   *   Feature Offsets *\n   * *******************/ \n   \n");
     stringBuilder.append(featRegistry);
-    stringBuilder.append("\n   \n");
-    stringBuilder.append(localData);
-    stringBuilder.append(" \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
+    stringBuilder.append("\n   \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuilder.append(typeName);
     stringBuilder.append("() {/* intentionally empty block */}\n    \n  /** Internal - constructor used by generator \n   * @generated\n   * @param casImpl the CAS this Feature Structure belongs to\n   * @param type the type of this Feature Structure \n   */\n  public ");
     stringBuilder.append(typeName);
@@ -128,8 +127,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(rangeType);
     stringBuilder.append(" get");
     stringBuilder.append(featUName);
-    stringBuilder.append("() { return _F_");
-    stringBuilder.append(featName);
+    stringBuilder.append("() { return ");
+    stringBuilder.append(jg.getFeatureValue(fd, td));
     stringBuilder.append(";}\n    \n  /** setter for ");
     stringBuilder.append(featName);
     stringBuilder.append(" - sets ");
@@ -139,26 +138,8 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append("(");
     stringBuilder.append(rangeType);
     stringBuilder.append(" v) {\n    ");
-  if (jg.isStringSubtype(fd)) {
-    stringBuilder.append("      _typeImpl.getFeatureByBaseName(\"");
-    stringBuilder.append(featName);
-    stringBuilder.append("\").validateIsInAllowedValue(v);\n    ");
-  }
-    stringBuilder.append("    ");
-  if (jg.isPossibleIndexKey(fd)) {
-    stringBuilder.append("      _casView.setWithCheckAndJournalJFRI(this, _FI_");
-    stringBuilder.append(featName);
-    stringBuilder.append(", () -> _F_");
-    stringBuilder.append(featName);
-    stringBuilder.append(" = v);\n    ");
-  } else {
-    stringBuilder.append(" \n      _casView.setWithJournalJFRI(this, _FI_");
-    stringBuilder.append(featName);
-    stringBuilder.append(", () -> _F_");
-    stringBuilder.append(featName);
-    stringBuilder.append(" = v);\n    ");
-  }
-    stringBuilder.append("  }    \n  ");
+    stringBuilder.append(jg.setFeatureValue(fd, td));
+    stringBuilder.append(";\n  }    \n    \n  ");
   if (jg.hasArrayRange(fd)) {
     stringBuilder.append("  \n  /** indexed getter for ");
     stringBuilder.append(featName);
@@ -168,9 +149,9 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(elemType);
     stringBuilder.append(" get");
     stringBuilder.append(featUName);
-    stringBuilder.append("(int i) {\n     return get");
-    stringBuilder.append(featUName);
-    stringBuilder.append("().get(i);} \n\n  /** indexed setter for ");
+    stringBuilder.append("(int i) {\n     return ");
+    stringBuilder.append(jg.getArrayFeatureValue(fd, td));
+    stringBuilder.append(";} \n\n  /** indexed setter for ");
     stringBuilder.append(featName);
     stringBuilder.append(" - sets an indexed value - ");
     stringBuilder.append(featDescCmt);
@@ -178,16 +159,16 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(featUName);
     stringBuilder.append("(int i, ");
     stringBuilder.append(elemType);
-    stringBuilder.append(" v) {\n    get");
-    stringBuilder.append(featUName);
-    stringBuilder.append("().set(i, v);}  \n  ");
+    stringBuilder.append(" v) {\n    ");
+    stringBuilder.append(jg.setArrayFeatureValue(fd, td));
+    stringBuilder.append(";\n  }  \n  ");
    } /* of hasArray */ 
     stringBuilder.append("");
    } /* of Features iteration */ 
     stringBuilder.append("");
    if (td.getName().equals("uima.cas.Annotation")) { 
     stringBuilder.append("  ");
-    stringBuilder.append("  /** Constructor with begin and end passed as arguments \n    * @generated\n    * @param jcas JCas this Annotation is in\n    * @param begin the begin offset\n    * @param end the end offset\n    */\n  public Annotation(JCas jcas, int begin, int end) { \n	  this(jcas); // forward to constructor \n	  this.setBegin(begin); \n	  this.setEnd(end);\n	  readObject(); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated\n    * @return the covered Text \n    */ \n  public String getCoveredText() { \n    final CAS casView = this.getView();\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(), getEnd());\n  } \n  \n  /** @deprecated \n    * @generated\n    * @return the begin offset \n    */\n  public int getStart() {return getBegin();}\n");
+    stringBuilder.append("  /** Constructor with begin and end passed as arguments \n    * @generated\n    * @param jcas JCas this Annotation is in\n    * @param begin the begin offset\n    * @param end the end offset\n    */\n  public Annotation(JCas jcas, int begin, int end) { \n	  this(jcas); // forward to constructor \n	  this.setBegin(begin); \n	  this.setEnd(end); \n  } \n  \n  /** @see org.apache.uima.cas.text.AnnotationFS#getCoveredText() \n    * @generated\n    * @return the covered Text \n    */ \n  public String getCoveredText() { \n    final CAS casView = this.getView();\n    final String text = casView.getDocumentText();\n    if (text == null) {\n      return null;\n    }\n    return text.substring(getBegin(), getEnd());\n  } \n  \n  /** @deprecated \n    * @generated\n    * @return the begin offset \n    */\n  public int getStart() {return getBegin();}\n");
     stringBuilder.append("");
    } /* of Annotation if-statement */ 
     stringBuilder.append("}\n\n    ");

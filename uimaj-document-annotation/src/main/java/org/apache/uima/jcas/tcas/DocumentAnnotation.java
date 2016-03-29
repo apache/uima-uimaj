@@ -43,11 +43,8 @@ public class DocumentAnnotation extends Annotation {
     return typeIndexID;
   }
 
-  public final static int _FI_language = JCasRegistry.registerFeature(typeIndexID); 
+  public final static int _FI_language = TypeSystemImpl.getAdjustedFeatureOffset("language"); 
         
-  /* local data */
-  private String _F_language;
-
   // Never called. Disable default constructor
   protected DocumentAnnotation() {
   }
@@ -73,13 +70,13 @@ public class DocumentAnnotation extends Annotation {
    * getter for language
    * @return the language
    */
-  public String getLanguage() { return _F_language; }
+  public String getLanguage() { return _getStringValueNc(_FI_language); }
 
   /**
    * setter for language
    * @param v the language
    */
   public void setLanguage(String v) {
-    _casView.setWithCheckAndJournalJFRI(this, _FI_language,  () ->_F_language = v);
+    _setStringValueNfc(_FI_language, v);
   }
 }

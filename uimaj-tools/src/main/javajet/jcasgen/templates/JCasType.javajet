@@ -34,8 +34,10 @@ package <%=jg.packageName%>;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
 
 <% for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { %>
 import <%=(String)i.next()%>;
@@ -69,7 +71,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    StringBuilder localData = new StringBuilder();
    StringBuilder featRegistry = new StringBuilder();
     
-   featRegistry.append("  /* Register Features */\n");
+   featRegistry.append("  /* Feature Adjusted Offsets */\n");
    
    for (FeatureDescription fd : td.getFeatures()) { 
 
@@ -88,17 +90,17 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
      String elemType = jg.getJavaRangeArrayElementType(fd);
      
      localData.append("  private ").append(rangeType).append(" _F_").append(featName).append(";  // ").append(featDescCmt).append('\n');
-     featRegistry.append("  public final static int _FI_").append(featName).append(" = JCasRegistry.registerFeature(typeIndexID);\n");   
+     featRegistry.append("  public final static int _FI_").append(featName).append(" = TypeSystemImpl.getAdjustedFeatureOffset(\"")
+                 .append(featName).append("\");\n");   
       
    } /* of Features iteration */ %>
 
-  /* *****************
-   *    Local Data   *
-   * *****************/ 
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
 <%=featRegistry%>
    
-<%=localData%> 
   /** Never called.  Disable default constructor
    * @generated */
   protected <%=typeName%>() {/* intentionally empty block */}
@@ -153,22 +155,16 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    * @generated
    * @return value of the feature 
    */
-  public <%=rangeType%> get<%=featUName%>() { return _F_<%=featName%>;}
+  public <%=rangeType%> get<%=featUName%>() { return <%=jg.getFeatureValue(fd, td)%>;}
     
   /** setter for <%=featName%> - sets <%=featDescCmt%> 
    * @generated
    * @param v value to set into the feature 
    */
   public void set<%=featUName%>(<%=rangeType%> v) {
-    <%if (jg.isStringSubtype(fd)) {%>
-      _typeImpl.getFeatureByBaseName("<%=featName%>").validateIsInAllowedValue(v);
-    <%}%>
-    <%if (jg.isPossibleIndexKey(fd)) {%>
-      _casView.setWithCheckAndJournalJFRI(this, _FI_<%=featName%>, () -> _F_<%=featName%> = v);
-    <%} else {%> 
-      _casView.setWithJournalJFRI(this, _FI_<%=featName%>, () -> _F_<%=featName%> = v);
-    <%}%>
+    <%=jg.setFeatureValue(fd, td)%>;
   }    
+    
   <%if (jg.hasArrayRange(fd)) {%>
   
   /** indexed getter for <%=featName%> - gets an indexed value - <%=featDescCmt%>
@@ -177,7 +173,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    * @return value of the element at index i 
    */
   public <%=elemType%> get<%=featUName%>(int i) {
-     return get<%=featUName%>().get(i);} 
+     return <%=jg.getArrayFeatureValue(fd, td)%>;} 
 
   /** indexed setter for <%=featName%> - sets an indexed value - <%=featDescCmt%>
    * @generated
@@ -185,7 +181,8 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    * @param v value to set into the array 
    */
   public void set<%=featUName%>(int i, <%=elemType%> v) {
-    get<%=featUName%>().set(i, v);}  
+    <%=jg.setArrayFeatureValue(fd, td)%>;
+  }  
   <% } /* of hasArray */ %>
 <% } /* of Features iteration */ %>
 <% if (td.getName().equals("uima.cas.Annotation")) { %>

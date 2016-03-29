@@ -59,6 +59,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeImpl_string;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -143,9 +144,8 @@ public class Jg {
       // never get here
     }
 
-    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();
     ((CASImpl) tcas).commitTypeSystem();
-    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();  // needed because commit may reuse existing type system
+    builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();  // follow commit because commit may reuse existing type system
 
     for (Iterator it = builtInTypeSystem.getTypeIterator(); it.hasNext();) {
       Type type = (Type) it.next();
@@ -362,7 +362,7 @@ public class Jg {
     try {
       // Generate type classes by using DEFAULT templates
       mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, aError, inputFile,
-              outputDirectory, tds, aCas, JCasTypeTemplate.class, JCas_TypeTemplate.class,
+              outputDirectory, tds, aCas, JCasTypeTemplate.class,
               projectPathDir, limitJCasGenToProjectScope, mergedTypesAddingFeatures);
       // convert thrown things to IOExceptions to avoid changing API for this
       // FIXME later
@@ -381,13 +381,12 @@ public class Jg {
       throws IOException, InstantiationException, IllegalAccessException {
     mainGenerateAllTypesFromTemplates(aMerger, aProgressMonitor, 
              aError, inputFile, outputDirectory, tds, aCas, 
-             jcasTypeClass, jcas_TypeClass, "", false, null);
+             jcasTypeClass, "", false, null);
   }
   
   public void mainGenerateAllTypesFromTemplates(IMerge aMerger, IProgressMonitor aProgressMonitor,
           IError aError, String inputFile, String outputDirectory, TypeDescription[] tds,
           CASImpl aCas, Class jcasTypeClass, // Template class
-          Class jcas_TypeClass,
           String projectPathDir, boolean limitJCasGenToProjectScope,
           Map<String, Set<String>> mergedTypesAddingFeatures) // Template class
           throws IOException, InstantiationException, IllegalAccessException {
@@ -400,7 +399,7 @@ public class Jg {
     this.mergedTypesAddingFeatures = mergedTypesAddingFeatures;
 
     // Generate type classes by using SPECIFIED templates
-    generateAllTypesFromTemplates(outputDirectory, tds, aCas, jcasTypeClass, jcas_TypeClass);
+    generateAllTypesFromTemplates(outputDirectory, tds, aCas, jcasTypeClass);
   }
 
   public int main0(String[] args, IMerge aMerger, IProgressMonitor aProgressMonitor, IError aError) {
@@ -567,8 +566,7 @@ public class Jg {
         tds = typeSystemDescription.getTypes();
 
         // Generate type classes from DEFAULT templates
-        generateAllTypesFromTemplates(outputDirectory, tds, casLocal, JCasTypeTemplate.class,
-                JCas_TypeTemplate.class);
+        generateAllTypesFromTemplates(outputDirectory, tds, casLocal, JCasTypeTemplate.class);
 
       } catch (IOException e) {
         error.newError(IError.ERROR, getString("IOException", new Object[] {}), e);
@@ -611,12 +609,11 @@ public class Jg {
 
   // This is also the interface for CDE
   private void generateAllTypesFromTemplates(String outputDirectory, TypeDescription[] tds,
-          CASImpl aCas, Class jcasTypeClass, Class jcas_TypeClass) throws IOException,
+          CASImpl aCas, Class jcasTypeClass) throws IOException,
           InstantiationException, IllegalAccessException {
 
     // Create instances of Template classes
     IJCasTypeTemplate jcasTypeInstance = (IJCasTypeTemplate) jcasTypeClass.newInstance();
-    IJCasTypeTemplate jcas_TypeInstance = (IJCasTypeTemplate) jcas_TypeClass.newInstance();
 
     Set generatedBuiltInTypes = new TreeSet();
 
@@ -667,7 +664,7 @@ public class Jg {
           continue;
         }
       }
-      generateClassesFromTemplate(td, outputDirectory, jcasTypeInstance, jcas_TypeInstance);
+      generateClassesFromTemplate(td, outputDirectory, jcasTypeInstance);
     }
 
     /* 
@@ -790,7 +787,7 @@ public class Jg {
    * @return void
    */
   private void generateClassesFromTemplate(TypeDescription td, String outputDirectory,
-          IJCasTypeTemplate jcasTypeInstance, IJCasTypeTemplate jcas_TypeInstance)
+          IJCasTypeTemplate jcasTypeInstance)
           throws IOException {
     simpleClassName = removePkg(getJavaName(td));
     generateClass(progressMonitor, outputDirectory, td, jcasTypeInstance.generate(new Object[] {
@@ -873,7 +870,7 @@ public class Jg {
       return "Long";
     if (v.equals("double"))
       return "Double";
-    return "Ref"; // for user defined features and other built-ins
+    return "Feature"; // for user defined features and other built-ins which are FSs
   }
 
   // * Functions that convert between CAS fully-qualified names and Java names.
@@ -982,7 +979,7 @@ public class Jg {
     String rangeTypeNameCAS = fd.getRangeTypeName();
     if (null != typeSystem) {
       Type rangeCasType = typeSystem.getType(rangeTypeNameCAS);
-      if (typeSystem.subsumes(casStringType, rangeCasType)) {
+      if (rangeCasType instanceof TypeImpl_string) {
         // type is a subtype of string, make its java type = to string
         return "String";
       }
@@ -1053,7 +1050,7 @@ public class Jg {
   // * castResult *
   // *******************************
   String castResult(String resultType, String core) {
-    if ("Ref".equals(sc(resultType)) && resultType != null
+    if ("Feature".equals(sc(resultType)) && resultType != null
             && !resultType.equals("FeatureStructure"))
       return "(" + resultType + ")(" + core + ")";
     return core;
@@ -1063,27 +1060,42 @@ public class Jg {
   // get/setIntValue
   // get/setStringValue String
   // get/setFloatValue float
-  // range = Ref, String, Float, Int
+  // range = Feature, String, Float, Int
 
+  /**
+   * 
+   * @param core string representing the get or set code
+   * @param range Boolean, Byte, Short, Int, Long, Float, Double, String, or Feature
+   * @return -
+   */
   String wrapToGetFS(String core, String range) {
-    if (range.equals("Ref"))
+    if (range.equals("Feature"))
       return "jcasType.ll_cas.ll_getFSForRef(" + core + ")";
     return core;
   }
 
-  String simpleCore(String get_set, String range, String fname, String tname_Type) {
-    
-    
+  /**
+   * 
+   * @param get_set get or set
+   * @param range Boolean, Byte, Short, Int, Long, Float, Double, String, or Feature
+   * @param fname feature name (e.g. "begin"
+   * @param tname_Type _type name 
+   * @return
+   */
+  String simpleCore(String get_set, String range, String fname) {
     String v = ", v";
-    if (get_set.equals("set") && range.equals("Ref"))
-      v = ", jcasType.ll_cas.ll_getFSRef(v)";
-    return "jcasType.ll_cas.ll_" + get_set + range + "Value(addr, ((" + tname_Type
-            + ")jcasType).casFeatCode_" + fname + ((get_set.equals("set")) ? v : "") + ")";
+//    if (get_set.equals("set") && range.equals("Feature"))
+//      v = ", jcasType.ll_cas.ll_getFSRef(v)";
+    boolean isInInt = ! (range.equals("String") || range.equals("Feature") || range.equals("JavaObject"));
+    String chksfx = getCheckSuffix(get_set, range);
+    String featOrOffset = "_FI_" + fname;
+    return "_" + get_set + range + "Value" + chksfx + "(" + featOrOffset  +
+        ((get_set.equals("set")) ? v : "") + ")";
   }
 
   String simpleLLCore(String get_set, String range, String fname) {
     String v = ", v";
-    // if (get_set.equals("set") && range.equals("Ref"))
+    // if (get_set.equals("set") && range.equals("Feature"))
     // v = ", ll_cas.ll_getFSRef(v)";
     return "ll_cas.ll_" + get_set + range + "Value(addr, casFeatCode_" + fname
             + ((get_set.equals("set")) ? v : "") + ")";
@@ -1091,47 +1103,54 @@ public class Jg {
 
   // return string that starts with FS whose value is not an array object, but
   // a normal CAS type, one of whose features is the array object
-  String arrayCore(String get_set, String range, String fname, String tname_Type) {
+  /**
+   * 
+   * @param get_set  get or set
+   * @param range the component range: Boolean, Byte, Short, Int, Long, Float, Double, String, Feature
+   * @param arrayRange: BooleanArray, ByteArray, ShortArray, IntegerArray, LongArray, FloatArray, DoubleArray, StringArray, JavaObjectArray, FSArray  
+   * @param fname
+   * @param tname_Type
+   * @return
+   */
+  String arrayCore(String get_set, String range, String arrayRange, String fname) {
     String v = ", v";
-    if (get_set.equals("set") && range.equals("Ref"))
-      v = ", jcasType.ll_cas.ll_getFSRef(v)";
-    return "jcasType.ll_cas.ll_" + get_set + range + "ArrayValue("
-            + simpleCore("get", "Ref", fname, tname_Type) + ", i"
-            + ((get_set.equals("set")) ? v : "") + ")";
+//    if (get_set.equals("set") && range.equals("Feature"))
+//      v = ", jcasType.ll_cas.ll_getFSRef(v)";
+    return 
+        "((" + arrayRange + ")(" + simpleCore("get", "Feature", fname) + "))." + get_set +
+        "(i" + ((get_set.equals("set")) ? v : "") + ")"; 
   }
 
   String arrayLLCore(String get_set, String range, String fname) {
     String v = ", v";
-    return "ll_cas.ll_" + get_set + range + "ArrayValue(" + simpleLLCore("get", "Ref", fname)
+    return "ll_cas.ll_" + get_set + range + "ArrayValue(" + simpleLLCore("get", "Feature", fname)
             + ", i" + ((get_set.equals("set")) ? v : "") + ")";
   }
 
   String arrayLLCoreChk(String get_set, String range, String fname) {
     String v = ", v";
-    return "ll_cas.ll_" + get_set + range + "ArrayValue(" + simpleLLCore("get", "Ref", fname)
+    return "ll_cas.ll_" + get_set + range + "ArrayValue(" + simpleLLCore("get", "Feature", fname)
             + ", i" + ((get_set.equals("set")) ? v : "") + ", true)";
   }
 
   String getFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetNamePart = getGetSetNamePart(fd);
-    String core = wrapToGetFS(simpleCore("get", getSetNamePart, fd.getName(), getJavaName(td)
-            + "_Type"), getSetNamePart);
+    String core = simpleCore("get", getSetNamePart, fd.getName());
     return castResult(getJavaRangeType(fd), core);
   }
 
   String setFeatureValue(FeatureDescription fd, TypeDescription td) {
-    return simpleCore("set", getGetSetNamePart(fd), fd.getName(), getJavaName(td) + "_Type");
+    return simpleCore("set", getGetSetNamePart(fd), fd.getName());
   }
 
   String getArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
     String getSetArrayNamePart = getGetSetArrayNamePart(fd);
-    String core = wrapToGetFS(arrayCore("get", getSetArrayNamePart, fd.getName(), getJavaName(td)
-            + "_Type"), getSetArrayNamePart);
+    String core = arrayCore("get", getSetArrayNamePart, getJavaRangeType(fd), fd.getName());
     return castResult(getJavaRangeArrayElementType(fd), core);
   }
 
   String setArrayFeatureValue(FeatureDescription fd, TypeDescription td) {
-    return arrayCore("set", getGetSetArrayNamePart(fd), fd.getName(), getJavaName(td) + "_Type");
+    return arrayCore("set", getGetSetArrayNamePart(fd), getJavaRangeType(fd), fd.getName());
   }
 
   String getGetSetNamePart(FeatureDescription fd) {
@@ -1187,6 +1206,12 @@ public class Jg {
     if (!f2.getRangeTypeName().equals(f1.getRangeTypeName()))
       return false;
     return true;
+  }
+  
+  private String getCheckSuffix(String get_set, String range) {
+    if (get_set.equals("get")) return "Nc";
+    
+    return (range.equals("Feature")) ? "NcWj" : "Nfc";  
   }
 
 }
