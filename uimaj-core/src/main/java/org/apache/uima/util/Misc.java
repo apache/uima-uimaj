@@ -33,12 +33,72 @@ import java.util.Collection;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 
 public class Misc {
 
+  public static final String blanks = "                                                     ";
+  public static final String dots = "...";
+  
+  private static final Pattern whitespace = Pattern.compile("\\s");
+
+  public static String replaceWhiteSpace(String s, String replacement) {
+    return whitespace.matcher(s).replaceAll(replacement);
+  }
+  
+  
+  /**
+   * @param s starting frames above invoker
+   * @param n max number of callers to return
+   * @return  x called by: y ...
+   */
+  public static StringBuilder getCallers(final int s, final int n) {
+    StackTraceElement[] e = Thread.currentThread().getStackTrace();
+    StringBuilder sb = new StringBuilder();
+    for (int i = s + 2; i < s + n + 3; i++) {
+      if (i >= e.length) break;
+      if (i != s + 2) {
+        sb.append("  called_by: ");
+      }
+      sb.append(formatcaller(e[i]));      
+    }
+    return sb;
+  }
+  
+  /**
+   * @return the name of the caller in the stack
+   */
+  public static String getCaller() {
+    StackTraceElement[] e = Thread.currentThread().getStackTrace();
+    return formatcaller(e[4]) + "called by: " + formatcaller(e[5]);
+  }
+  
+  private static String formatcaller(StackTraceElement e) {
+    String n = e.getClassName();
+    return n.substring(1 + n.lastIndexOf('.')) + "." + e.getMethodName() + "[" + e.getLineNumber() + "]";
+  }
+
+  public static String elide(String s, int n) {
+    return elide(s, n, true);
+  }
+  
+  public static String elide(String s, int n, boolean pad) {
+    if (s == null) {
+      s = "null";
+    }
+    int sl = s.length();
+    if (sl <= n) {
+      return s + (pad ? blanks.substring(0, n - sl) : "");
+    }
+    int dl = 1; //(n < 11) ? 1 : (n < 29) ? 2 : 3;  // number of dots
+    int ss = (n - dl) / 2;
+    int ss2 = ss + (( ss * 2 == (n - dl)) ? 0 : 1);
+    return s.substring(0, ss) + dots.substring(0, dl) + s.substring(sl - ss2);
+  }
+  
   public final static MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
   
   /**
@@ -232,8 +292,17 @@ public class Misc {
       throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
   }
   
+  public static void assertUie(boolean v, Exception e) {
+    if (!v) 
+      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
+  }
+  
   public static void internalError() {
     assertUie(false);
+  }
+  
+  public static void internalError(Exception e) {
+    assertUie(false, e);
   }
   
   // The hash function is derived from murmurhash3 32 bit, which
@@ -327,19 +396,6 @@ public class Misc {
   }
   
   /**
-   * @return the name of the caller in the stack
-   */
-  public static String getCaller() {
-    StackTraceElement[] e = Thread.currentThread().getStackTrace();
-    return formatcaller(e[4]) + "called by: " + formatcaller(e[5]);
-  }
-  
-  private static String formatcaller(StackTraceElement e) {
-    String n = e.getClassName();
-    return n.substring(1 + n.lastIndexOf('.')) + "." + e.getMethodName() + "[" + e.getLineNumber() + "]";
-  }
-  
-  /**
    * format a list of items for pretty printing as [item1, item2, ... ]
    * @param items to print
    * @return  [item1, item2, ... ]
@@ -398,6 +454,17 @@ public class Misc {
 //}
 
 //  public static void main(String[] args) {
+//    foo();
+//        //    String s = "0123456789abcdef0123456789abcde";
+//    for (int i = 3; i < 35; i++) {
+//      System.out.print(Integer.toString(i) + " " + elide(s, i));
+//      System.out.println("|");
+//    }
+//  }
+//  private static  void foo() {
+//    System.out.format(" callers %n%s%ndone%n", getCallers(0, 2));
+//    
+//  }
 //    System.out.println("should be false - not defined: " + getNoValueSystemProperty("foo"));
 //    System.setProperty("foo", "");
 //    System.out.println("should be true - defined, 0 len str value: " + getNoValueSystemProperty("foo"));
