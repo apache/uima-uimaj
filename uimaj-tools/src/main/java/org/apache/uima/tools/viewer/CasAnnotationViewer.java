@@ -212,6 +212,7 @@ public class CasAnnotationViewer extends JPanel {
   private JPanel sofaSelectionPanel;
   @SuppressWarnings("rawtypes")
   private JComboBox sofaSelectionComboBox;
+  private boolean disableSofaSelectionComboBoxStateChangeAction = false;
 
   private JTabbedPane tabbedChoicePane;
   private JScrollPane typeCheckBoxScrollPane;
@@ -353,7 +354,10 @@ public class CasAnnotationViewer extends JPanel {
     this.sofaSelectionComboBox.addItemListener(new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() != sofaSelectionComboBox || cas == null) {
+        if (disableSofaSelectionComboBoxStateChangeAction) { // UIMA-4863
+          return;
+        }
+        if (e.getSource() != sofaSelectionComboBox || cas == null || e.getStateChange() != ItemEvent.SELECTED ) {
           return;
         }
         // a new sofa was selected. Switch to that view and update display
@@ -755,7 +759,7 @@ public class CasAnnotationViewer extends JPanel {
 
     this.featureRadioButtonScrollPane = new JScrollPane();
     this.featureRadioButtonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	this.featureRadioButtonScrollPane.setViewportView(this.featureRadioButtonVerticalScrollPanel);
+  this.featureRadioButtonScrollPane.setViewportView(this.featureRadioButtonVerticalScrollPanel);
   }
 
   private void createTypeRadioButtonPane() {
@@ -843,7 +847,7 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * @deprecated use the zero-argument constructor and call {@link #setEntityViewEnabled(boolean)}
+   * @deprecated use the zero-argument constructor
    */
   @Deprecated
   public CasAnnotationViewer(boolean aEntityViewEnabled) {
@@ -968,7 +972,6 @@ public class CasAnnotationViewer extends JPanel {
 
   /**
    * Sets the {@link EntityResolver} to use when the viewer is in entity mode.
-   * Entity mode must be turned on using the {@link #setEntityViewEnabled(boolean)} method.
    * @param aEntityResolver user-supplied class that can determine which annotations correspond
    *   to the same entity.
    */
@@ -1044,6 +1047,7 @@ public class CasAnnotationViewer extends JPanel {
     if (this.sofaSelectionComboBox == null) {
       return;
     }
+    this.disableSofaSelectionComboBoxStateChangeAction = true; // UIMA-4863
     this.sofaSelectionComboBox.removeAllItems();
     boolean hasNonDefaultSofa = false;
     Feature sofaIdFeature = this.typeSystem.getFeatureByFullName(CAS.FEATURE_FULL_NAME_SOFAID);
@@ -1059,12 +1063,14 @@ public class CasAnnotationViewer extends JPanel {
       } else {
         hasNonDefaultSofa = true;
       }
+      
       this.sofaSelectionComboBox.addItem(sofaId);
       // if this sofa matches the view passed to this method, select it
       if (this.cas.getView(sofa) == this.cas) {
         this.sofaSelectionComboBox.setSelectedIndex(this.sofaSelectionComboBox.getItemCount() - 1);
       }
     }
+    this.disableSofaSelectionComboBoxStateChangeAction = false; // UIMA-4863
     if (this.sofaSelectionComboBox.getItemCount() == 0) {
       throw new RuntimeException("This CAS contains no document to view.");
     }
@@ -1416,10 +1422,10 @@ public class CasAnnotationViewer extends JPanel {
 
     JCas jcas = null;
     try {
-		jcas = this.cas.getJCas();
-	} catch (CASException e) {
-		e.printStackTrace();
-	}
+    jcas = this.cas.getJCas();
+  } catch (CASException e) {
+    e.printStackTrace();
+  }
     AnnotationIndex<Annotation> annotationIndex = jcas.getAnnotationIndex();
     if (annotationIndex == null) {
       return;
@@ -1978,10 +1984,10 @@ public class CasAnnotationViewer extends JPanel {
     JCas jcas = null;
     try {
       jcas = this.cas.getJCas();
-  	} catch (CASException e) {
+    } catch (CASException e) {
         e.printStackTrace();
         return;
-  	}
+    }
 
     DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
     root.removeAllChildren();
