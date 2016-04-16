@@ -227,7 +227,7 @@ public class CasCopierTest extends TestCase {
     // do the copy
     long shortest = Long.MAX_VALUE;
     int i = 0;
-    for (; i < 60000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
+//    for (; i < 60000; i++) {  // uncomment for perf test.  was more than 5x faster than version 2.6.0
       destCas.reset();
       long startTime = System.nanoTime();
       copier = new CasCopier(srcCas, destCas);
@@ -237,7 +237,7 @@ public class CasCopierTest extends TestCase {
         shortest = time;
         System.out.format("CasCopier speed for 400KB xcas is %,d microseconds on iteration %,d%n", shortest, i);
       }
-    }
+//    }
     
     // verify copy
     CasComparer.assertEquals(srcCas, destCas);
@@ -345,6 +345,21 @@ public class CasCopierTest extends TestCase {
     copy = copier.copyFs(annot);
     // verify copy
     CasComparer.assertEquals(annot, copy);
+    
+    // test copyFS with two CASs, different views, annotations
+    // create a destination CAS and the CasCopier instance
+    CAS destCas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CAS destCas2v = destCas2.createView("secondView");
+    CasCopier copier2 = new CasCopier(srcCas, destCas2v);
+    
+    // copy an Annotation
+    annotIter = srcCas.getAnnotationIndex().iterator();
+    annot = annotIter.next();
+    copy = copier2.copyFs(annot);
+    destCas2v.addFsToIndexes(copy);
+    // verify copy
+    CasComparer.assertEquals(annot, copy);
+
   }
 
   public void testAnnotationWithNullSofaRef() throws Exception {
