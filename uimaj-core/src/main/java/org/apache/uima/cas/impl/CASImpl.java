@@ -19,10 +19,13 @@
 
 package org.apache.uima.cas.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -89,6 +92,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.MiscImpl;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
@@ -105,6 +109,17 @@ import org.apache.uima.util.Misc;
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS {
   
   private static final boolean trace = false;
+  public static final boolean traceFSs = false;  // debug - trace FS creation and update
+  private static final String traceFile = "traceFSs.log.txt";
+  private static final PrintStream traceOut;
+  static {
+    try {
+      System.out.println("Creating traceFSs file in directory " + System.getProperty("user.dir"));
+      traceOut = traceFSs ? new PrintStream(new BufferedOutputStream(new FileOutputStream(traceFile, false))) : null;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
   
   // debug
   private static final AtomicInteger casIdProvider = new AtomicInteger(0);
@@ -337,6 +352,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private final AtomicInteger casResets = new AtomicInteger(0);
     
     private final int casId;
+    
+    private final  StringBuilder traceFScreationSb = traceFSs ? new StringBuilder() : null;
+    private int traceFSid = 0; 
+    private boolean traceFSisCreate;    
     
     private SharedViewData(boolean useFSCache, Heap heap, CASImpl baseCAS, CASMetadata casMetadata) {
       this.useFSCache = useFSCache;
@@ -1118,6 +1137,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.svd.cache_not_in_index = 0;
     this.svd.fssTobeAddedback.clear();
     this.svd.fssTobeAddedback.trimToSize();
+    
+    svd.traceFSid = 0;
+    if (traceFSs) svd.traceFScreationSb.setLength(0);
   }
 
   /**
@@ -2218,6 +2240,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   void setFeatureValueNotJournaled(int addr, int feat, int val) {
     this.getHeap().heap[(addr + this.svd.casMetadata.featureOffset[feat])] = val;
+    if (traceFSs) {
+      traceFSfeat(ll_getFSForRef(addr), (FeatureImpl) getTypeSystemImpl().ll_getFeatureForCode(feat), val);
+    }
   }
   
   public void setStringValue(int addr, int feat, String s) {
@@ -3263,6 +3288,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final int ll_createFS(int typeCode) {
     final int fsAddr = this.getHeap().add(this.svd.casMetadata.fsSpaceReq[typeCode], typeCode);
     svd.cache_not_in_index = fsAddr;
+    if (traceFSs) {
+      traceFSCreate((FeatureStructureImpl) ll_getFSForRef(fsAddr));
+    }
     return fsAddr;
   }
 
@@ -3329,6 +3357,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int addr = this.getHeap().add(arrayContentOffset + arrayLength, typeCode);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = arrayLength;
     svd.cache_not_in_index = addr;
+    if (traceFSs) {
+      traceFSCreate((FeatureStructureImpl) ll_getFSForRef(addr));
+    }
     return addr;
   }
 
@@ -3336,6 +3367,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int addr = this.getHeap().add(arrayContentOffset + 1, typeCode);
     this.getHeap().heap[(addr + arrayLengthFeatOffset)] = arrayLength;
     svd.cache_not_in_index = addr;
+    if (traceFSs) {
+      traceFSCreate((FeatureStructureImpl) ll_getFSForRef(addr));
+    }
     return addr;
   }
 
@@ -5152,5 +5186,105 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   int getCasId() {
     return svd.casId;
+  }
+  
+  /******************************************
+   * DEBUGGING and TRACING
+   *
+   ******************************************/
+  
+  void traceFSCreate(FeatureStructureImpl fs) {
+    StringBuilder b = svd.traceFScreationSb;
+    if (b.length() > 0) {
+      traceFSflush();
+    }
+    traceFSfs(fs);
+    svd.traceFSisCreate = true;
+    if (fs.getType().isArray()) {
+      int arraySize = ll_getArraySize(((FeatureStructureImpl)fs).getAddress());
+      b.append(" l:").append(arraySize);
+    }
+    if (fs.getAddress() > 190000 && fs.getAddress() < 200000 && fs.getType().getShortName().equals("Passage")) {
+      traceOut.println("Passage callback: " + MiscImpl.getCallers(3, 10));
+    }
+  }
+  
+  void traceFSfs(FeatureStructureImpl fs) {
+    StringBuilder b = svd.traceFScreationSb;
+    svd.traceFSid = fs.getAddress();
+    b.append("c:").append(String.format("%-3d", getCasId()));
+    String viewName = fs.getCAS().getViewName();
+    if (null == viewName) {
+      viewName = "base";
+    }
+    b.append(" v:").append(MiscImpl.elide(viewName, 8));
+    b.append(" i:").append(String.format("%-5s", fs.getAddress()));
+    b.append(" t:").append(MiscImpl.elide(fs.getType().getShortName(), 10));    
+  }
+  
+  void traceFSfeat(FeatureStructure fs, FeatureImpl fi, int v) {
+    StringBuilder b = svd.traceFScreationSb;
+//    assert (b.length() > 0);  // may be 0 if fs created via deserialization
+    FeatureStructureImpl fsi = (FeatureStructureImpl) fs;
+    if (fsi.getAddress() != svd.traceFSid) {
+      traceFSfeatUpdate(fsi);
+    }
+    String fn = fi.getShortName();
+    String fv = getTraceRepOfObj(fi, v);
+    int i_v = Math.max(0, 10 - fn.length());
+    int i_n = Math.max(0,  10 - fv.length());
+    
+    fn = MiscImpl.elide(fn, 10 + i_n, false);
+    fv = MiscImpl.elide(fv, 10 + i_v, false);
+    
+    // debug
+//    if (!svd.traceFSisCreate && fn.equals("uninf.dWord") && fv.equals("XsgTokens")) {
+//      traceOut.println("debug uninf.dWord:XsgTokens: updated by " + MiscImpl.getCallers(3, 10));
+//    }
+    b.append(' ').append(MiscImpl.elide(fn + ':' + fv, 21));
+  }
+  
+  private String getTraceRepOfObj( FeatureImpl fi, int v) {
+    TypeImpl range = (TypeImpl) fi.getRange();
+    int rangeCode = range.getCode();
+    if (ll_isRefType(rangeCode)) {
+      if (v == 0) return "null";
+//      FeatureStructureImpl fs = ll_getFSForRef(v);
+      Type type = getTypeSystemImpl().ll_getTypeForCode(getTypeCode(v));
+      return ((type == null) ? "unknwn" 
+                             : MiscImpl.elide(type.getShortName(), 5, false))
+              + ':' + v;
+    } else if (isStringType(rangeCode)){
+      String s = this.getStringHeap().getStringForCode(v);
+      s = MiscImpl.elide(s, 50, false);
+      return MiscImpl.replaceWhiteSpace(s, "_");
+    } else if (isFloatType(rangeCode)) {
+      return Float.toString(int2float(v));
+    } else if (isBooleanType(rangeCode)) {
+      return (v == 1) ? "true" : "false";
+    } else if (isLongType(rangeCode)) {
+      return Long.toString(this.getLongHeap().getHeapValue(v));
+    } else if (isDoubleType(rangeCode)) {
+      return Double.toString(long2double(this.getLongHeap().getHeapValue(v)));
+    } else {
+      return Integer.toString(v);
+    }
+  }
+  
+  void traceFSfeatUpdate(FeatureStructureImpl fs) {
+    StringBuilder b = traceFSflush();
+    traceFSfs(fs);
+    svd.traceFSisCreate = false; 
+  }
+  
+  StringBuilder traceFSflush() {
+    StringBuilder b = svd.traceFScreationSb;
+//    assert (b.length() > 0);  // may be 0 if fs created via deserialization
+    if (b.length() > 0) {
+      traceOut.println((svd.traceFSisCreate ? "cr: " :
+                                              "up: ") + b);
+      b.setLength(0);
+    }
+    return b;
   }
 }

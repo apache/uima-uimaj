@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.util.impl;
+package org.apache.uima.internal.util;
 
 import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
