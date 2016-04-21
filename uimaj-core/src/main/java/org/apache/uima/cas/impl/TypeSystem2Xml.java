@@ -44,7 +44,8 @@ import org.xml.sax.SAXException;
  */
 public class TypeSystem2Xml {
   /**
-   * Converts a TypeSystem object to XML
+   * Converts a TypeSystem object to XML.
+   * Built-in types and Array types (e.g. Annotation[]) are not included.
    * 
    * @param aTypeSystem
    *          the TypeSystem to convert
