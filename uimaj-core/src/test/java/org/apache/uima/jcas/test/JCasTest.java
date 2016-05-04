@@ -38,6 +38,7 @@ import org.apache.uima.cas.impl.LowLevelException;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
 import org.apache.uima.jcas.cas.EmptyIntegerList;
@@ -320,6 +321,23 @@ public class JCasTest extends TestCase {
 					assertTrue(false);
 			}
 
+			// float values
+			r1 = new Root(jcas);
+			r1.setPlainFloat(1247.3F);
+			r1.setArrayFloat(new FloatArray(jcas, 3));
+			r1.setArrayFloat(2, 321.4F);
+			assertEquals(1247.3F, r1.getPlainFloat());
+			assertEquals(321.4F, r1.getArrayFloat(2));
+
+			// double values
+      r1 = new Root(jcas);
+      r1.setPlainDouble(2247.3D);
+      r1.setArrayDouble(new DoubleArray(jcas, 3));
+      r1.setArrayDouble(2, 421.4D);
+      assertEquals(2247.3D, r1.getPlainDouble());
+      assertEquals(421.4D, r1.getArrayDouble(2));
+			
+			
 			// null values
 			r2.setArrayString(0, null);
 			r2.setArrayRef(0, null);
