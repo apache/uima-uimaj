@@ -109,9 +109,9 @@ public class XmiCasDeserializerTest extends TestCase {
   public void testDeserializeAndReserialize() throws Exception {
     try {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
-      doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
       File tsWithMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem_withMultiRefs.xml");
       doTestDeserializeAndReserialize(tsWithMultiRefs,false);
+      doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
       //also test with JCas initialized
       doTestDeserializeAndReserialize(tsWithNoMultiRefs,true);
       doTestDeserializeAndReserialize(tsWithMultiRefs,true);
@@ -138,6 +138,21 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.setContentHandler(deserHandler);
     xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
+    
+    // tests serialization of types which are arrays of other FS types, eg. Annotation[]
+    TypeSystemImpl tsi = (TypeSystemImpl) cas.getTypeSystem();
+    TypeImpl arrayOfAnnotType = (TypeImpl) tsi.getArrayType(tsi.annotType);
+    
+    Type annotArrayTestType0 = tsi.getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
+    FeatureImpl annotArrayFeat = (FeatureImpl) annotArrayTestType0.getFeatureByBaseName("arrayOfAnnotations");
+    Iterator<AnnotationFS> iter3 = cas.getAnnotationIndex(annotArrayTestType0).iterator();
+    assertTrue(iter3.hasNext());
+    AnnotationFS aa = iter3.next();
+
+    // This currently fails to serialize (May 2016) so is commented out for now
+    // see https://issues.apache.org/jira/browse/UIMA-4917
+//    int a2 = cas.getLowLevelCAS().ll_createArray(arrayOfAnnotType.getCode(), 2);
+//    cas.getLowLevelCAS().ll_setIntValue(((FeatureStructureImpl)aa).getAddress(), annotArrayFeat.getCode(), a2);
 
     // reserialize as XMI
     String xml = serialize(cas, null);
@@ -173,7 +188,6 @@ public class XmiCasDeserializerTest extends TestCase {
       }
     }
     Type annotArrayTestType = cas2.getTypeSystem().getType("org.apache.uima.testTypeSystem.AnnotationArrayTest");
-    Feature annotArrayFeat = annotArrayTestType.getFeatureByBaseName("arrayOfAnnotations");
     Iterator<AnnotationFS> iter2 = cas2.getAnnotationIndex(annotArrayTestType).iterator();
     assertTrue(iter2.hasNext());
     while (iter2.hasNext()) {
