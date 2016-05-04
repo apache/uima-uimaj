@@ -223,7 +223,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       
       final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
-      Random random = new Random();      
+//      Random random = new Random();      
 
       for (int i = 0; i < NUM_THREADS; i++) {
         threads[i] = new ProcessThread(ae);
@@ -283,6 +283,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
   
+  
   public void testProcessManyAgg() throws Exception {
     //get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
@@ -292,6 +293,22 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       processMany(specifier);
     }
   }
+  
+//  public void testLoopProcessManyAgg() throws Exception {
+//    XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
+//    final ResourceSpecifier specifier = 
+//        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+//    Misc.timeLoops("ProcessManyAgg", 1000, new Callable<Object>() {
+//
+//      @Override
+//      public Object call() throws Exception {
+//        processMany(specifier);
+//        return null;
+//      }
+//    });
+//      
+//  }
+ 
   
   final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
   final int NUM_INSTANCES = (int)(NUM_THREADS * .7);
