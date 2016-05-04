@@ -504,8 +504,11 @@ public class CasCopier {
       // can't copy the SofaFS - just copy the sofa data and mime type
       SofaFS sofa = srcCasViewImpl.getSofa();
       if (null != sofa) {
-        // if the sofa doesn't exist in the target, these calls will create it
-        //  (view can exist without Sofa, at least for the initial view)
+        // Sofa exists in the source; 
+        //   it may or may not exist in the target. 
+        //   If it doesn't exist in the target, these calls will create it
+        //     (view can exist without Sofa, for the initial view)
+        //   If the sofa exists, and the data is already set, an exception is thrown
         String sofaMime = sofa.getSofaMime();
         if (srcCasViewImpl.getDocumentText() != null) {
           aTgtCasView.setSofaDataString(srcCasViewImpl.getDocumentText(), sofaMime);
@@ -661,7 +664,7 @@ public class CasCopier {
     // same Sofa ID in the target CAS. If it does not exist it will be created.
     if (srcTypeCode == srcSofaTypeCode) {
       String destSofaId = getDestSofaId(srcCasViewImpl.ll_getSofaID(aFS));
-      // note: not put into the mFsMap, because each view needs a separate copy
+      // note: not put into the mFsMap, because subsequent refs wont create new sofas
       return ((CASImpl)getOrCreateView(originalTgtCas, destSofaId)).getSofaRef();
     }
 
