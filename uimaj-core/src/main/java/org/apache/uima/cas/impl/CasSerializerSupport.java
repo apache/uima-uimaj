@@ -850,7 +850,9 @@ public class CasSerializerSupport {
               continue;  // don't enqueue this type because it's filtered out
             }
           }
-          enqueue(fsRef);  
+          if (fsRef != CASImpl.NULL) {      // null feature values do not refer to any other FS
+            enqueue(fsRef);
+          }
         }
         return;
       }
