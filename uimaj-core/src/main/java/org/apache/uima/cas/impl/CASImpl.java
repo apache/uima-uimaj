@@ -114,8 +114,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private static final PrintStream traceOut;
   static {
     try {
-      System.out.println("Creating traceFSs file in directory " + System.getProperty("user.dir"));
-      traceOut = traceFSs ? new PrintStream(new BufferedOutputStream(new FileOutputStream(traceFile, false))) : null;
+      if (traceFSs) {
+        System.out.println("Creating traceFSs file in directory " + System.getProperty("user.dir"));
+        traceOut = traceFSs ? new PrintStream(new BufferedOutputStream(new FileOutputStream(traceFile, false))) : null;
+      } else {
+        traceOut = null;
+      }
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
