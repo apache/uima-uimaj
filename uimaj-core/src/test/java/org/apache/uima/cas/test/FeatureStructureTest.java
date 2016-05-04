@@ -28,8 +28,11 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FeatureImpl;
+import org.apache.uima.cas.impl.FeatureStructureImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
@@ -262,6 +265,16 @@ public class FeatureStructureTest extends TestCase {
 		testString = "";
 		token.setStringValue(this.lemmaFeat, testString);
 		assertTrue(token.getStringValue(this.lemmaFeat).equals(testString));
+		
+    // test low level
+    LowLevelCAS llcas = cas.getLowLevelCAS();
+    token.setFeatureValue(tokenTypeFeat, word);
+    int fsRef = ((FeatureStructureImpl)token).getAddress();
+    int fc = ((FeatureImpl)tokenTypeFeat).getCode();
+    assertEquals(llcas.ll_getIntValue(fsRef, fc), word.hashCode());
+    FeatureStructureImpl word2 = cas.createFS(wordType);
+    llcas.ll_setIntValue(fsRef, fc, word2.hashCode());
+    assertEquals(token.getFeatureValue(tokenTypeFeat), word2);
 	}
 
 	public void testSetFloatValue() {
