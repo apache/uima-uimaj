@@ -835,7 +835,9 @@ public class CasSerializerSupport {
               (null == filterTypeSystem.getType(elem._typeImpl.getName()))) {
             continue;  // skip because not in filter type system
           }
-          enqueue(elem);
+          if (elem != null) {
+            enqueue(elem);
+          }
         }
         
         return;
