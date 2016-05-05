@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.uima.internal.util.IntVector;
+
 /**
  * Share common underlying char[] among strings: Optimize sets of strings for
  * efficient storage
@@ -283,7 +285,7 @@ public class OptimizeStrings {
     String previous = "";
     int previousOffset = 0;
     offsets = new int[ssLength];
-    List<Integer> lastIndexInCommonStrings = new ArrayList<Integer>();
+    IntVector lastIndexInCommonStrings = new IntVector();
     List<String> commonStrings = new ArrayList<String>();
 
     for (int i = ssLength - 1; i >= 0; i--) {
@@ -311,10 +313,8 @@ public class OptimizeStrings {
     lastIndexInCommonStrings.add(0);   // the last index 
     
     // convert List<Integer> to int[]
-    lastIndexInCommonStringsA = new int[lastIndexInCommonStrings.size()];
-    for (int i = 0; i < lastIndexInCommonStrings.size(); i++) {
-      lastIndexInCommonStringsA[i] = lastIndexInCommonStrings.get(i);
-    }
+    lastIndexInCommonStrings.toArray();
+    lastIndexInCommonStringsA = lastIndexInCommonStrings.toArray();
     
     commonStringsA = commonStrings.toArray(new String[commonStrings.size()]);
     
