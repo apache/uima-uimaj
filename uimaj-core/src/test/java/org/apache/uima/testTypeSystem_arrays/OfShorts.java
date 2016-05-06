@@ -26,10 +26,8 @@ package org.apache.uima.testTypeSystem_arrays;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -111,7 +109,7 @@ public class OfShorts extends Annotation {
    * @param v value to set into the feature 
    */
   public void setF1Shorts(ShortArray v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_f1Shorts, false), v);
+    _setFeatureValueNcWj(_FI_f1Shorts, v);
   }    
     
     

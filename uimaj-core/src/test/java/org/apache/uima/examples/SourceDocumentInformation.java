@@ -29,8 +29,6 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 
@@ -114,7 +112,7 @@ public class SourceDocumentInformation extends Annotation {
    * @param v value to set into the feature
    */
   public void setUri(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_uri, false), v);
+    _setStringValueNfc(_FI_uri, v);
   }
 
 
@@ -133,7 +131,7 @@ public class SourceDocumentInformation extends Annotation {
    * @param v value to set into the feature
    */
   public void setOffsetInSource(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_offsetInSource, true), v);
+    _setIntValueNfc(_FI_offsetInSource, v);
   }
 
 
@@ -152,7 +150,7 @@ public class SourceDocumentInformation extends Annotation {
    * @param v value to set into the feature
    */
   public void setDocumentSize(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_documentSize, true), v);
+    _setIntValueNfc(_FI_documentSize, v);
   }
 
 
@@ -171,7 +169,7 @@ public class SourceDocumentInformation extends Annotation {
    * @param v value to set into the feature
    */
   public void setLastSegment(boolean v) {
-    _setBooleanValueNfc(_getFeatFromAdjOffset(_FI_lastSegment, true), v);
+    _setBooleanValueNfc(_FI_lastSegment, v);
   }
 
 }
