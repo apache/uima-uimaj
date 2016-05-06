@@ -32,7 +32,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
-import org.apache.uima.cas_data.impl.FeatureStructureImpl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.AnnotationBase;
@@ -49,7 +49,6 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
-import org.apache.uima.util.Misc;
 
 /**
  * Feature structure implementation (for non JCas and JCas)
@@ -82,19 +81,55 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   public static final String DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION = "uima.disable_runtime_feature_range_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_RANGE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION);
-
+  
+  private  static final boolean traceFSs = CASImpl.traceFSs;
+  
   public static final int IN_SET_SORTED_INDEX = 1;
+  
+  // next is for experiment of allocating multiple int arrays for different fss
+  
+//  //    3322 2222 2222 1111 1111 1100 0000 0000
+//  //    1098 7654 3210 9876 5432 1098 7654 3210
+//  //-------------------------------------------
+//  //    0000 0000 0001 1111 1111 1000 0000 0000   int offset mask
+//  //    0111 1111 1110 0000 0000 0000 0000 0000   ref offset mask
+//  
+//  private static final int bitMaskIntOffset = 0x001ff800;
+//  private static final int bitMaskRefOffset = 0x7fe00000;
+//  private static final int shiftIntOffset = 11;
+//  private static final int shiftRefOffset = 21;
+  
   // data storage
   // slots start with _ to prevent name collision with JCas style getters and setters.
   
-  protected final int[] _intData;  
-  protected final Object[] _refData;
-  protected final int _id;  // a separate slot for access without loading _intData object
-  protected int flags = 0;  // a set of flags
-                            // bit 0 (least significant): fs is in one or more non-bag indexes
-                            // bits 1-31 reserved
-                           
+  /**
+   * Experiment:
+   *   goal: speed up allocation and maybe improve locality of reference
+   *         a) have _intData and _refData point to 
+   *             1) for array sizes < 256, a common shared array used with an offset
+   *             2) for array sizes > 256, individual arrays as is the previous design case
+   *             
+   *         b) have accesses use an offset kept in the flags; 
+   *            allocate in blocks of 1k
+   *              the larger, the less java object overhead per
+   *              the larger, the less "breakage" waste
+   *              the smaller, the better GC 
+   *            offset = 10 bits * 2 (one for int, one for ref)
+   *            
+   *   results: on 16-way processor (64 hyperthreaded cores), caused 2x slowdown, probably due to cache
+   *     contention.         
+   */
   
+  private final int[] _intData;  
+  private final Object[] _refData;
+  protected final int _id;  // a separate slot for access without loading _intData object
+  private int _flags = 0;  // a set of flags
+                            // bit 0 (least significant): fs is in one or more non-bag indexes
+                            // bit 1-20 reserved
+                            // bits 21-30 ref offset
+                            // bits 11-20 int offset
+                            // bit 31 reserved
+                           
   /**
    * These next two object references are the same for every FS of this class created in one view.
    *   So, they could be stored in a shared object
@@ -108,9 +143,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    * 
    * Also used to access other metadata including the type system
    */
-  protected final CASImpl _casView;  
+  public final CASImpl _casView;  
   
-  public final TypeImpl _typeImpl;
+  public TypeImpl _typeImpl;  // experiment : support switching the type
   
   // Called only to generate a dummy value for the REMOVED flag in bag indexes
 
@@ -143,13 +178,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _casView = casView;
     _typeImpl = type;
     
-    int c = _typeImpl.nbrOfUsedIntDataSlots;
-    _intData = (c == 0) ? null : new int[c];
+    _intData = _allocIntData();
+    _refData = _allocRefData();
+
+    _id = casView.setId2fs((TOP)this);   
     
-    c = _typeImpl.nbrOfUsedRefDataSlots;
-    _refData = (c == 0) ? null : new Object[c];
-    
-    _id = casView.setId2fs((TOP)this);    
+    if (traceFSs && !(this instanceof CommonArray)) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**
@@ -166,13 +202,34 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, this.getClass().getName());
     }
     
-    int c = _typeImpl.nbrOfUsedIntDataSlots;
-    _intData = (c == 0) ? null : new int[c];
-    
-    c = _typeImpl.nbrOfUsedRefDataSlots;
-    _refData = (c == 0) ? null : new Object[c];
+    _intData = _allocIntData();
+    _refData = _allocRefData();    
     
     _id = _casView.setId2fs((TOP)this); 
+
+    if (traceFSs && !(this instanceof CommonArray)) {
+      _casView.traceFSCreate(this);
+    }
+  }
+  
+  private int[] _allocIntData() {
+    final int c = _typeImpl.nbrOfUsedIntDataSlots;
+    if (c != 0) {
+//      _setIntDataArrayOffset(_casView.allocIntData(c));
+//      return _casView.getReturnIntDataForAlloc();
+      return new int[c];
+    } 
+    return null;    
+  }
+  
+  private Object[] _allocRefData() {
+    final int c = _typeImpl.nbrOfUsedRefDataSlots;
+    if (c != 0) {
+//      _setRefDataArrayOffset(_casView.allocRefData(c));
+//      return _casView.getReturnRefDataForAlloc();
+      return new Object[c];
+    } 
+    return null;    
   }
     
   /* ***********************
@@ -369,14 +426,18 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   public void _setLongValueNfc(int adjOffset, long v) {
     FeatureImpl fi = _getFeatFromAdjOffset(adjOffset, true);
-    _casView.setLongValue(this, fi, v); 
+    _casView.setLongValue(this, fi, v);  // has trace call 
   }
   
   public void _setLongValueNcNj(FeatureImpl fi, long v) { _setLongValueNcNj(fi.getAdjustedOffset(), v); }
 
   public void _setLongValueNcNj(int adjOffset, long v) {
-    _intData[adjOffset] = (int)(v & 0xffffffff);
+//    final int offset = adjOffset + _getIntDataArrayOffset();  
+    _intData[adjOffset] = (int)v;  // narrowing cast discards all but lowest 32 bits; may change sign of value 
     _intData[adjOffset + 1] = (int)(v >> 32);
+    if (traceFSs) {
+      _casView.traceFSfeat(this, _getFeatFromAdjOffset(adjOffset, true), v);
+    }
   }
 
   @Override
@@ -385,11 +446,13 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   protected void _setFloatValueNfc(int adjOffset, float v) { _setIntValueNfc(adjOffset, CASImpl.float2int(v)); }
 
   public void _setFloatValueNcNj(FeatureImpl fi, float v) {
-    _intData[fi.getAdjustedOffset()] = CASImpl.float2int(v);
+    _setIntValueCommon(fi, CASImpl.float2int(v));
+//    _intData[fi.getAdjustedOffset()] = CASImpl.float2int(v);
   }
 
   public void _setFloatValueNcNj(int adjOffset, float v) {
-    _intData[adjOffset] = CASImpl.float2int(v);
+    _setIntValueCommon(adjOffset, CASImpl.float2int(v));
+//    _intData[adjOffset] = CASImpl.float2int(v);
   }
 
   @Override
@@ -411,8 +474,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   @Override
   public void setStringValue(Feature feat, String v) {
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
+//    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);  // done by _setRefValueCJ
+    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v); // verifies feat can take a string
     subStringRangeCheck(feat, v);
     _setRefValueCJ((FeatureImpl) feat, v);
   }
@@ -420,7 +483,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   public void _setStringValueNfc(int adjOffset, String v) {
     FeatureImpl fi = _getFeatFromAdjOffset(adjOffset, false);
     subStringRangeCheck(fi, v); 
-    _setRefValueCJ(fi, v);
+    _setRefValueNfcCJ(fi, v);
   }
 
   public void _setStringValueNcNj(FeatureImpl fi, String v) {
@@ -451,7 +514,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       }
     }
     // no need to check for index corruption because fs refs can't be index keys
-    _refData[fi.getAdjustedOffset()] = v;
+    _setRefValueCommon(fi, v);
     _casView.maybeLogUpdate(this, fi);
   }
   
@@ -500,7 +563,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       
     }
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
-    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _intData[fi.getAdjustedOffset()] = v); 
+    _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _setIntValueCommon(fi, v)); 
+
   }
   
   /**
@@ -525,7 +589,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    */
   protected void _setIntValueNfcCJ(int adjOffset, int v) {
     FeatureImpl fi = _getFeatFromAdjOffset(adjOffset, true);
-    _casView.setWithCheckAndJournal((TOP)this, fi, () -> _intData[adjOffset] = v); 
+    _casView.setWithCheckAndJournal((TOP)this, fi, () -> _setIntValueCommon(adjOffset, v));
   }
   
   /**
@@ -544,6 +608,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     }
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(fi);
     _casView.setWithCheckAndJournal((TOP)this, fi.getCode(), () -> _setRefValueCommon(fi, v)); 
+  
   }
   
   /**
@@ -615,6 +680,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
      * When converting the lower 32 bits to a long, sign extension is done, so have to 
      * 0 out those bits before or-ing in the high order 32 bits.
      */
+//    final int offset = adjOffset + _getIntDataArrayOffset();
     return (((long)_intData[adjOffset]) & 0x00000000ffffffffL) | (((long)_intData[adjOffset + 1]) << 32); 
   }
   
@@ -646,7 +712,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
   public String _getStringValueNc(FeatureImpl feat) { return _getStringValueNc(feat.getAdjustedOffset()); }
 
-  public String _getStringValueNc(int adjOffset) { return (String) _refData[adjOffset]; }
+  public String _getStringValueNc(int adjOffset) { return (String) _refData[adjOffset /*+ _getRefDataArrayOffset()*/]; }
 
   @Override
   public TOP getFeatureValue(Feature feat) {
@@ -656,7 +722,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
   
   public TOP _getFeatureValueNc(FeatureImpl feat) { return _getFeatureValueNc(feat.getAdjustedOffset()); }
 
-  public TOP _getFeatureValueNc(int adjOffset) { return (TOP) _refData[adjOffset]; }
+  public TOP _getFeatureValueNc(int adjOffset) { return (TOP) _refData[adjOffset /*+ _getRefDataArrayOffset()*/]; }
  
   @Override
   public Object getJavaObjectValue(Feature feat) { 
@@ -1097,7 +1163,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
         return Long.toString(getLongValue(feat));
       case TypeSystemImpl.doubleTypeCode :
         return Double.toString(getDoubleValue(feat));
-      default: 
+      default: // byte, short, int, 
         return Integer.toString(getIntValue(feat));
       }
     }
@@ -1129,47 +1195,57 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     return Integer.compare(this._id, o.id());
   }
   
-  protected boolean _inSetSortedIndex() { return (flags & IN_SET_SORTED_INDEX) != 0;}
-  protected void _setInSetSortedIndexed() { flags |= IN_SET_SORTED_INDEX; }
+  protected boolean _inSetSortedIndex() { return (_flags & IN_SET_SORTED_INDEX) != 0;}
+  protected void _setInSetSortedIndexed() { _flags |= IN_SET_SORTED_INDEX; }
   /**
    * All callers of this must insure fs is not indexed in **Any** View
    */
-  protected void _resetInSetSortedIndex() { flags &= ~IN_SET_SORTED_INDEX; }
+  protected void _resetInSetSortedIndex() { _flags &= ~IN_SET_SORTED_INDEX; }
   
   protected FeatureImpl _getFeatFromAdjOffset(int adjOffset, boolean isInInt) {
     return _typeImpl.getFeatureByAdjOffset(adjOffset, isInInt);
   }
   
   private int _getIntValueCommon(FeatureImpl feat) {
-    return _intData[feat.getAdjustedOffset()];
+    return _intData[feat.getAdjustedOffset() /*+ _getIntDataArrayOffset()*/];
   }
 
   private int _getIntValueCommon(int adjOffset) {
-    return _intData[adjOffset];
+    return _intData[adjOffset /*+ _getIntDataArrayOffset()*/];
   }
 
   private Object _getRefValueCommon(FeatureImpl feat) {
-    return _refData[feat.getAdjustedOffset()];
+    return _refData[feat.getAdjustedOffset() /*+ _getRefDataArrayOffset()*/];
   }
   
   public Object _getRefValueCommon(int adjOffset) {
-    return _refData[adjOffset];
+    return _refData[adjOffset /*+ _getRefDataArrayOffset()*/];
   }
    
   private void _setIntValueCommon(FeatureImpl fi, int v) {
-    _intData[fi.getAdjustedOffset()] = v;
+    _intData[fi.getAdjustedOffset() /*+ _getIntDataArrayOffset()*/] = v;
+    if (traceFSs) {
+      _casView.traceFSfeat(this, fi, v);
+    }
   }
   
   private void _setIntValueCommon(int adjOffset, int v) {
-    _intData[adjOffset] = v;
+    _intData[adjOffset /*+ _getIntDataArrayOffset()*/] = v;
+    if (traceFSs) {
+      _casView.traceFSfeat(this, _getFeatFromAdjOffset(adjOffset, true), v);
+    }
   }
 
   private void _setRefValueCommon(FeatureImpl fi, Object v) {
-    _refData[fi.getAdjustedOffset()] = v;
+    _setRefValueCommon(fi.getAdjustedOffset(), v);
   }
   
   public void  _setRefValueCommon(int adjOffset, Object v) {
-    _refData[adjOffset] = v;
+    _refData[adjOffset /*+ _getRefDataArrayOffset()*/] = v;
+    if (traceFSs) {
+      _casView.traceFSfeat(this, _getFeatFromAdjOffset(adjOffset, false), v);
+    }
+    
   }
 
   
@@ -1179,6 +1255,15 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _casView.maybeLogUpdate(this, fi);
   }
 
+//  private String getTraceRepOfObj(Object v) {
+//    if (v instanceof TOP) {
+//      TOP fs = (TOP) v;
+//      return fs._typeImpl.getShortName() + ':' + fs._id;
+//    } else {
+//      return (v == null) ? "null" : v.toString();
+//    }
+//  }
+  
   /*************************************
    *  Validation checking
    *************************************/
@@ -1261,10 +1346,16 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    */
   public void _copyIntAndRefArraysFrom(FeatureStructureImplC src) {
     if (src._intData != null && _intData != null) {
-      System.arraycopy(src._intData, 0, _intData, 0, Math.min(src._intData.length, _intData.length));
+//      System.arraycopy(src._intData, src._getIntDataArrayOffset(), _intData, _getIntDataArrayOffset(), 
+//          Math.min(src._typeImpl.nbrOfUsedIntDataSlots, _typeImpl.nbrOfUsedIntDataSlots));
+      System.arraycopy(src._intData, 0, _intData, 0, 
+          Math.min(src._intData.length, _intData.length));
      }
     if (src._refData != null && _refData != null) {
-      System.arraycopy(src._refData, 0, _refData, 0, Math.min(src._refData.length, _refData.length));
+//      System.arraycopy(src._refData, src._getRefDataArrayOffset(), _refData, _getRefDataArrayOffset(), 
+//          Math.min(src._typeImpl.nbrOfUsedRefDataSlots, _typeImpl.nbrOfUsedRefDataSlots));
+      System.arraycopy(src._refData, 0, _refData, 0, 
+          Math.min(src._refData.length, _refData.length));
     }
   }
  
@@ -1273,10 +1364,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    */
   public void _copyIntAndRefArraysEqTypesFrom(FeatureStructureImplC src) {
     if (_intData != null) {
-      System.arraycopy(src._intData, 0, _intData, 0, _intData.length);
+//      System.arraycopy(src._intData, src._getIntDataArrayOffset(), _intData, _getIntDataArrayOffset(), _typeImpl.nbrOfUsedIntDataSlots);
+      System.arraycopy(src._intData, 0, _intData, 0, _typeImpl.nbrOfUsedIntDataSlots);
      }
     if (_refData != null) {
-      System.arraycopy(src._refData, 0, _refData, 0, _refData.length);
+//      System.arraycopy(src._refData, src._getRefDataArrayOffset(), _refData, _getRefDataArrayOffset(), _typeImpl.nbrOfUsedRefDataSlots);
+      System.arraycopy(src._refData, 0, _refData, 0, _typeImpl.nbrOfUsedRefDataSlots);
     }
   }
 
@@ -1288,5 +1381,25 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       System.arraycopy(src._intData, 0, _intData, 0, _intData.length);
      }
   }
+  
+  public String toShortString() {
+    return new StringBuilder(_typeImpl.getShortName()).append(':').append(_id).toString();   
+  }
+  
+//  private int _getIntDataArrayOffset() {
+//    return (_flags & bitMaskIntOffset) >> shiftIntOffset;
+//  }
+//  
+//  private void _setIntDataArrayOffset(int v) {
+//    _flags = (_flags & ~bitMaskIntOffset) | v << shiftIntOffset;
+//  }
+//  
+//  private int _getRefDataArrayOffset() {
+//    return _flags >> shiftRefOffset;
+//  }
+//  
+//  private void _setRefDataArrayOffset(int v) {
+//    _flags = (_flags & ~bitMaskRefOffset) | v << shiftRefOffset;
+//  }
 
 }
