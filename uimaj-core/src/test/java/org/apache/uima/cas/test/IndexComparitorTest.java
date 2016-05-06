@@ -36,7 +36,6 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LinearTypeOrderBuilderImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
 import junit.framework.TestCase;
