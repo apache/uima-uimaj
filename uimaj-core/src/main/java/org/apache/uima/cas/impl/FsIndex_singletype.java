@@ -30,8 +30,8 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Misc;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding subtypes)
@@ -64,7 +64,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   // For each key, the comparison to use.
   final private boolean[] isReverse;    // true = reverse, false = standard
 
-  final private TypeImpl type; // The type of this
+  protected final TypeImpl type; // The type of this
   
   final private int typeCode;
   
@@ -132,9 +132,8 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * Adding FS to an index.
    *   not in upper interfaces because it's internal use only - called via addToIndexes etc.
    * @param fs the fs to be added
-   * @return true if the fs was added, (an identical one wasn't already there)
    */
-  abstract boolean insert(T fs);  // not in upper interfaces because it's internal use only
+  abstract void insert(T fs);  // not in upper interfaces because it's internal use only
 
   /**
    * @param fs - the Feature Structure to be removed.
@@ -175,10 +174,6 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   @Override
   public int getIndexingStrategy() {
     return this.indexType;
-  }
-
-  public int[] getDetectIllegalIndexUpdates() {
-    return this.casImpl.indexRepository.detectIllegalIndexUpdates;
   }
 
   /**
@@ -341,13 +336,6 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     return this;
   }
   
-  /**
-   * used to see if a particular fs is in the index  
-   * @param fs
-   * @return
-   */
-  public abstract boolean containsEq(FeatureStructureImplC fs);
-
   boolean isSetOrSorted() {
     return indexType == FSIndex.SET_INDEX || indexType == FSIndex.SORTED_INDEX;
   }
