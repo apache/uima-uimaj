@@ -32,7 +32,7 @@ public class TypeImpl_primitive extends TypeImpl {
   
   @Override
   public boolean subsumes(TypeImpl ti) {
-    return ti == this;  // primitives don't subsume any other type except itself
+    return ti == this;  // primitives don't subsume any other type except itself, except for string / stringsubtype (overrides)
   }
 
 }
