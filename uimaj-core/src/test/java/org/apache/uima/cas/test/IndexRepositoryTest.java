@@ -27,7 +27,9 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -41,6 +43,8 @@ public class IndexRepositoryTest extends TestCase {
   TypeSystem typeSystem;
 
   FSIndexRepository indexRep;
+
+  private String running;
 
   /*
    * (non-Javadoc)
@@ -106,7 +110,7 @@ public class IndexRepositoryTest extends TestCase {
     
     FSIndexRepository ir = cas.getIndexRepository();
     FSIndex<FeatureStructure> index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX);
-    assertEquals(index.size(), 1);
+    assertEquals(1, index.size());
 
     index = ir.getIndex(CASTestSetup.ANNOT_SORT_INDEX);
     assertEquals(2, index.size());
@@ -143,17 +147,17 @@ public class IndexRepositoryTest extends TestCase {
     }
     
     // warmup and jit
-    timeAdd2Indexes(fsa);
+    timeAdd2Indexes(fsa, false);
     timeRemoveFromIndexes(fsa);
     
-    long a2i = timeAdd2Indexes(fsa);
+    long a2i = timeAdd2Indexes(fsa, false);
     long rfi = timeRemoveFromIndexes(fsa);
     
-    long a2i2 = timeAdd2Indexes(fsa);
+    long a2i2 = timeAdd2Indexes(fsa, false);
     long rfir = timeRemoveFromIndexesReverse(fsa);
     
-    System.out.format("Timing add/remv from indexes: add1: %,d msec, add2: %,d msec, rmv: %,d msec, rmvReversed: %,d msec%n", 
-        a2i, a2i2, rfi, rfir);
+    System.out.format("Timing add/remv from indexes: add1: %,d microsec, add2: %,d microsec, rmv: %,d microsec, rmvReversed: %,d microsec%n", 
+        a2i/1000, a2i2/1000, rfi/1000, rfir/1000);
 // big loop for doing profiling by hand and checking space recovery by hand   
     
 //    for (int i = 0; i < 10000; i++) {
@@ -162,69 +166,137 @@ public class IndexRepositoryTest extends TestCase {
 //    }
   }
   
+  public void testAddSpeed() {
+    running = "testAddSpeed - 2 sorted, 1 set, 1 bag";
+    runAddSpeed();
+  }
+  
+  public void testAddSpeedSorted() {
+    FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
+    ir.removeIndex(CASTestSetup.ANNOT_SET_INDEX);
+    ir.removeIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    ir.removeIndex(CASTestSetup.ANNOT_BAG_INDEX);
+//   ir.removeIndex(CAS.STD_ANNOTATION_INDEX);
+    running = "testAddSpeedSorted";
+    runAddSpeed();
+  }
+    
+  private void runAddSpeed() { 
+   //  create an instance of an annotation type
+    Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
+    Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
+    FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
+    // create 40000 tokens
+    for (int i = 0; i < fsa.length; i++) {
+      fsa[i] = this.cas.createFS(fsType);
+      fsa[i].setIntValue(beginFeat,  i);
+    }
+    
+    // warmup and jit
+    long prev = Long.MAX_VALUE;
+    for (int i = 0; i < 10; i++) {
+      cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
+      long t = timeAdd2Indexes(fsa, false);
+      if (t < prev) {
+        System.out.format("%s Iteration %,d Add Forward 40K took  %,d microsec%n", running, i, t/1000);
+        prev = t;
+      }
+    }
+    
+    prev = Long.MAX_VALUE;
+    for (int i = 0; i < 10; i++) {
+      cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
+      long t = timeAdd2Indexes(fsa, true);
+      if (t < prev) {
+        System.out.format("%s Iteration %,d Add Reverse 40K took  %,d microsec%n", running, i, t/1000);
+        prev = t;
+      }
+    }
+    
+  }
+  
   public void testRemovalSpeedBagAlone() throws Exception {
-    // create an instance of an non-annotation type
    
+    FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
+    // run with bag only
+    ir.removeIndex(CASTestSetup.ANNOT_SET_INDEX);
+    ir.removeIndex(CASTestSetup.ANNOT_SORT_INDEX);
+    ir.removeIndex(CAS.STD_ANNOTATION_INDEX);
+    
+    // create 40000 token-types
+    Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
+//    Feature beginFeat = typeSystem.getFeatureByFullName("Token:begin");
+    FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
+    for (int i = 0; i < fsa.length; i++) {
+      fsa[i] = this.cas.createFS(fsType);
+//      fsa[i].setIntValue(beginFeat,  i);
+    }
 
     for (int iii = 0; iii < 3 /*10000*/; iii++) { // change to 10000 for iterations
-      
+
+      cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
+
 //      this.cas = CASInitializer.initCas(new CASTestSetup());
 //      this.typeSystem = this.cas.getTypeSystem();
 //      this.indexRep = this.cas.getIndexRepository();
       
-      // create 40000 token-types
-      Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE_TYPE);
-//      Feature beginFeat = typeSystem.getFeatureByFullName("Token:begin");
-      FeatureStructure[] fsa = new FeatureStructure[NBR_ITEMS];
-      for (int i = 0; i < fsa.length; i++) {
-        fsa[i] = this.cas.createFS(fsType);
-//        fsa[i].setIntValue(beginFeat,  i);
+      // warmup and jit
+      timeAdd2Indexes(fsa, false);
+      timeRemoveFromIndexes(fsa);
+  //    timeAdd2Indexes(fsa);
+  //    timeRemoveFromIndexes(fsa);
+      cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
+      System.gc();
+      
+      long a2i = timeAdd2Indexes(fsa, false);
+  //    Thread.currentThread().sleep(1000*60*60);  // for using yourkit to investigate memory sizes
+      long rfi = timeRemoveFromIndexes(fsa);
+      
+      long a2i2 = timeAdd2Indexes(fsa, false);
+      long rfir = timeRemoveFromIndexesReverse(fsa);
+      
+  //    if (iii == 600) {
+  //      System.out.println("debug stop");
+  //    }
+      if (iii < 10 || (iii % 200) == 0) {
+      System.out.format("%,d Timing add/remv from bag indexes: add1: %,d microsec, add2: %,d microsec, rmv: %,d microsec, rmvReversed: %,d microsec%n", 
+          iii, a2i/1000, a2i2/1000, rfi/1000, rfir/1000);
       }
-    // warmup and jit
-    timeAdd2Indexes(fsa);
-    timeRemoveFromIndexes(fsa);
-//    timeAdd2Indexes(fsa);
-//    timeRemoveFromIndexes(fsa);
-    System.gc();
-    long a2i = timeAdd2Indexes(fsa);
-//    Thread.currentThread().sleep(1000*60*60);  // for using yourkit to investigate memory sizes
-    long rfi = timeRemoveFromIndexes(fsa);
-    
-    long a2i2 = timeAdd2Indexes(fsa);
-    long rfir = timeRemoveFromIndexesReverse(fsa);
-    
-//    if (iii == 600) {
-//      System.out.println("debug stop");
-//    }
-    if (iii < 10 || (iii % 200) == 0) {
-    System.out.format("%,d Timing add/remv from bag indexes: add1: %,d msec, add2: %,d msec, rmv: %,d msec, rmvReversed: %,d msec%n", 
-        iii, a2i, a2i2, rfi, rfir);
-    }
     }
   }
 
-  private long timeAdd2Indexes (FeatureStructure[] fsa) {
-    long start = System.currentTimeMillis();
-    for (int i = 0; i < fsa.length; i++) {
-      cas.addFsToIndexes(fsa[i]);
+  private long timeAdd2Indexes (FeatureStructure[] fsa, boolean reverse) {
+    long start = System.nanoTime();
+    if (reverse) {
+      AnnotationIndex<AnnotationFS> annotIndex = cas.getAnnotationIndex();
+      for (int i = fsa.length - 1; i >= 0; i--) {
+        cas.addFsToIndexes(fsa[i]);
+        if ((i % 10000) == 9999) {
+          annotIndex.size();  // forces batch add to indexes
+        }
+      }      
+    } else {
+      for (int i = 0; i < fsa.length; i++) {
+        cas.addFsToIndexes(fsa[i]);
+      }
     }
-    return System.currentTimeMillis() - start;
+    return System.nanoTime() - start;
   }
 
   private long timeRemoveFromIndexes (FeatureStructure[] fsa) {
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     for (int i = 0; i < fsa.length; i++) {
       cas.removeFsFromIndexes(fsa[i]);
     }
-    return System.currentTimeMillis() - start;
+    return System.nanoTime() - start;
   }
 
   private long timeRemoveFromIndexesReverse (FeatureStructure[] fsa) {
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     for (int i = fsa.length -1; i >= 0; i--) {
       cas.removeFsFromIndexes(fsa[i]);
     }
-    return System.currentTimeMillis() - start;
+    return System.nanoTime() - start;
   }
   
 }
