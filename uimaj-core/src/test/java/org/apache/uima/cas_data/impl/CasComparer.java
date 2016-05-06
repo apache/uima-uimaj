@@ -48,6 +48,7 @@ import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.CommonArray;
@@ -61,7 +62,6 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Misc;
 
 import junit.framework.Assert;
 
@@ -270,13 +270,13 @@ public class CasComparer {
     
   private int compareFeatures(
       TOP fs1, TOP fs2, 
-      List<FeatureImpl> feats1, List<FeatureImpl> feats2,
+      FeatureImpl[] feats1, FeatureImpl[] feats2,
       Set<TOP> visited) {
     
     IntVector fsCompares = new IntVector(2);
-    for (int i = 0; i < feats1.size(); i++) {
-      Feature feat1 = feats1.get(i);
-      Feature feat2 = feats2.get(i);
+    for (int i = 0; i < feats1.length; i++) {
+      Feature feat1 = feats1[i];
+      Feature feat2 = feats2[i];
       Type rangeType;
       String rangeTypeName;
       int r;
@@ -321,7 +321,7 @@ public class CasComparer {
       int r = 0;
       for (int j = 0; j < fsCompares.size(); j++) {
         int i = fsCompares.get(j);
-        if (0 != ( r = compare1(fs1.getFeatureValue(feats1.get(i)), fs2.getFeatureValue(feats2.get(i)), visited))) return r; 
+        if (0 != ( r = compare1(fs1.getFeatureValue(feats1[i]), fs2.getFeatureValue(feats2[i]), visited))) return r; 
       }      
     }
     return 0;

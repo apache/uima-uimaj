@@ -102,9 +102,9 @@ public class JCasTest extends TestCase {
 			System.out.print("setup caught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
-			assertEquals(m, "The JCas cannot be initialized.  The following errors occurred: "
+			assertEquals("The JCas cannot be initialized.  The following errors occurred: "
 			    + "\nUnable to find required getPlainRef method for JCAS type aa.Root with return type of org.apache.uima.jcas.cas.TOP."
-			    + "\nUnable to find required setPlainRef method for JCAS type aa.Root with argument type of org.apache.uima.jcas.cas.TOP.\n");
+			    + "\nUnable to find required setPlainRef method for JCAS type aa.Root with argument type of org.apache.uima.jcas.cas.TOP.\n", m);
 //			if (!m
 //					.equals("Error initializing JCas: Error: can't access feature information from CAS in initializing JCas type: aa.Root, feature: testMissingImport\n")) {
 //				assertTrue(false);
@@ -295,6 +295,14 @@ public class JCasTest extends TestCase {
 			}
       assertTrue(caught);
 
+      // float values
+      r1 = new Root(jcas);
+      r1.setPlainFloat(1247.3F);
+      r1.setArrayFloat(new FloatArray(jcas, 3));
+      r1.setArrayFloat(2, 321.4F);
+      assertEquals(1247.3F, r1.getPlainFloat());
+      assertEquals(321.4F, r1.getArrayFloat(2));
+      
 			// null values
 			r2.setArrayString(0, null);
 			r2.setArrayRef(0, null);
@@ -351,6 +359,7 @@ public class JCasTest extends TestCase {
 			// oI.moveToNext();
 			// assertTrue(oI.isValid());
 			// assertTrue(r1 == oI.get());
+			((CASImpl)cas).traceFSflush();
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
 		}

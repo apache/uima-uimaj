@@ -33,12 +33,12 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.impl.ChildUimaContext_impl;
 import org.apache.uima.impl.RootUimaContext_impl;
 import org.apache.uima.impl.UimaContext_ImplBase;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.Misc;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
 

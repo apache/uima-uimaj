@@ -212,6 +212,10 @@ public class XCASDeserializerTest extends TestCase {
     XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
     xmlReader.setContentHandler(deserHandler2);
+//    // debug
+//    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
+//    ps.println(xml);
+//    ps.close();
     xmlReader.parse(new InputSource(new StringReader(xml)));
 
     // compare

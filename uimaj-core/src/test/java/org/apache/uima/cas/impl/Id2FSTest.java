@@ -78,7 +78,7 @@ public class Id2FSTest extends TestCase {
       } catch (LowLevelException e) {
         caught = true;
       }
-      assertTrue(caught);
+      assertTrue( Id2FS.IS_DISABLE_FS_GC || caught);
     }
     
     Id2FS id2fs = new Id2FS(200); 
@@ -101,10 +101,12 @@ public class Id2FSTest extends TestCase {
     // remove 20 of them
     System.gc();
     Thread.sleep(10);  // in case gc needs time to finish 
-    for (int i = 0; i < 19; i++) { // last TOP is held by cas.svd.cache_not_in_index
-      TOP fs = id2fs.get(i + 2);
-      assertNull(fs);
-    }    
+    if (!Id2FS.IS_DISABLE_FS_GC) {
+      for (int i = 0; i < 19; i++) { // last TOP is held by cas.svd.cache_not_in_index
+        TOP fs = id2fs.get(i + 2);
+        assertNull(fs);
+      }
+    }
   }
 
 }
