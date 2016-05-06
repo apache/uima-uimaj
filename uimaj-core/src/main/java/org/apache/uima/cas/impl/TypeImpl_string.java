@@ -37,4 +37,12 @@ public class TypeImpl_string extends TypeImpl_primitive {  // string considered 
     return true;
   }
   
+  @Override
+  public boolean subsumes(TypeImpl ti) {
+    if (this.isStringSubtype()) {
+      return this == ti;  // a string subtype only can subsume itself
+    }
+    return ti.isStringOrStringSubtype();
+  }
+  
 }
