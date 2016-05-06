@@ -76,7 +76,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
   private int pos = 0;  // used for form 2
   
-  private final FSIterator<T> it;
+  private final FSIterator<Annotation> it;
 
   private final FSIndexRepositoryImpl fsIndexRepo;
   
@@ -128,7 +128,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     // non bounded iterators don't use any begin/end compares
     // begin end compares not yet implemented.  This next should be set to false.  10/2015
     this.isBeginEndCompare = this.isBounded ? (boundingAnnotation == null) : false;
-    this.it = it;
+    this.it = (FSIterator<Annotation>) it;
     this.boundingAnnotation = this.isBounded ? (Annotation) boundingAnnotation : null;
     this.boundingBegin = (boundingAnnotation == null) ? boundingBegin : boundingAnnotation.getBegin();
     this.boundingEnd = (boundingAnnotation == null) ? boundingEnd : boundingAnnotation.getEnd();
@@ -161,7 +161,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     isListForm = true;  // do at end, so up to this point, iterator is not the list form style
   }
   
-  private void moveToExact(T targetAnnotation) {
+  private void moveToExact(Annotation targetAnnotation) {
     it.moveTo(targetAnnotation);  // move to left-most equal one
     while (it.isValid()) {         // advance to the exact equal one
       if (targetAnnotation.id() == it.getNvc().id()) {
@@ -202,13 +202,13 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * adjusted for strict exclusions
    */
   private void movePastAnnot() {
-    Comparator<FeatureStructure> annotationComparator = getAnnotationComparator();
+    Comparator<TOP> annotationComparator = getAnnotationComparator();
     while (isValid() && (0 == annotationComparator.compare(boundingAnnotation, it.get()))) {
       it.moveToNext();
     }
   }
   
-  private Comparator<FeatureStructure> getAnnotationComparator() {
+  private Comparator<TOP> getAnnotationComparator() {
     return fsIndexRepo.getAnnotationFsComparator();
   }
   
@@ -223,7 +223,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     final int end = fs.getEnd();
     
     while (it.isValid()) {
-      T item = it.getNvc();
+      Annotation item = it.getNvc();
       if (item.getBegin() != begin || item.getEnd() != end) {
         break;
       }
@@ -294,7 +294,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       }
     } else {
       if (isValid()) {
-        return it.get();
+        return (T)it.get();
       }
     }
     throw new NoSuchElementException();
@@ -309,7 +309,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     if (isListForm) {
       return (T) this.list.get(this.pos);
     } else {
-      return it.get();
+      return (T)it.get();
     }
   }
 
@@ -368,6 +368,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#moveToPrevious()
    */
+  @Override
   public void moveToPrevious() {
     if (isListForm) {
       --this.pos;
@@ -376,7 +377,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
 
     if (!ambiguous) {
       // Convert to list form
-      T currentAnnotation = it.get();  // save to restore position
+      Annotation currentAnnotation = it.get();  // save to restore position
       convertToListForm();
       moveToExact(currentAnnotation);
       --this.pos;
@@ -390,6 +391,11 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       it.moveToPrevious();
       adjustForStrictBackward();
     }
+  }
+  
+  @Override
+  public void moveToPreviousNvc() {
+    moveToPrevious();
   }
 
   /*
@@ -458,7 +464,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       convertToListForm();
     }
      if (isListForm) {
-      Comparator<FeatureStructure> annotationComparator = getAnnotationComparator();
+      Comparator<TOP> annotationComparator = getAnnotationComparator();
       pos = Collections.binarySearch(this.list, (Annotation) fs, annotationComparator);
       if (pos >= 0) {
         if (!isValid()) {
@@ -558,7 +564,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    */
   public FSIterator<T> copy() {
     Subiterator<T> copy = new Subiterator<T>(
-        this.it.copy(), this.boundingAnnotation, this.boundingBegin, this.boundingEnd, this.ambiguous, this.strict, this.isBounded, this.fsIndexRepo);
+        (FSIterator<T>) this.it.copy(), this.boundingAnnotation, this.boundingBegin, this.boundingEnd, this.ambiguous, this.strict, this.isBounded, this.fsIndexRepo);
     copy.list = this.list;  // non-final things
     copy.pos  = this.pos;
     return copy;
