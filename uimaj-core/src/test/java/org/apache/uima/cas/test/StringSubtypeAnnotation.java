@@ -8,10 +8,8 @@ package org.apache.uima.cas.test;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 
@@ -92,7 +90,7 @@ public class StringSubtypeAnnotation extends Annotation {
    * @param v value to set into the feature 
    */
   public void setStringSetFeature(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_stringSetFeature, false), v);
+    _setStringValueNfc(_FI_stringSetFeature, v);
   }    
     
   }
