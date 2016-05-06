@@ -97,6 +97,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     @Override
     public void moveToPrevious() {}
     @Override
+    public void moveToPreviousNvc() {}
+    @Override
     public void moveTo(FeatureStructure fs) {}
     @Override
     public int ll_indexSize() { return 0; }
