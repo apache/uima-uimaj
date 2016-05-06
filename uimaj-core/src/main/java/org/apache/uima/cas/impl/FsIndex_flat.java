@@ -90,7 +90,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    * @see org.apache.uima.cas.impl.FsIndex_singletype#insert(org.apache.uima.cas.FeatureStructure)
    */
   @Override
-  boolean insert(T fs) {
+  void insert(T fs) {
     throw new UnsupportedOperationException();  
   }
   
@@ -101,12 +101,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   public boolean contains(FeatureStructure fs) {
     return find(fs) != null;
   }
-  
-  @Override
-  public boolean containsEq(FeatureStructureImplC fs) {
-    return findEq((T) fs) != null;
-  }
-  
+    
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIndex#find(org.apache.uima.cas.FeatureStructure)
    */
