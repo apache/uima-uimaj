@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.function.Consumer;
 
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Misc;
 
 /**
  * A map from ints representing FS id's (or "addresses") to those FSs
@@ -50,7 +50,7 @@ public class Id2FS {
    */
   public static final String DISABLE_FS_GC = "uima.disable_feature_structure_garbage_collection";
   
-  private static final boolean IS_DISABLE_FS_GC = true || // debug
+  public static final boolean IS_DISABLE_FS_GC =   // true || // debug
       Misc.getNoValueSystemProperty(DISABLE_FS_GC);
   
   final private ArrayList<Object> id2fsw;
@@ -72,6 +72,9 @@ public class Id2FS {
   }
   
   public void replaceWithStrongRef(TOP fs) {
+    if (IS_DISABLE_FS_GC) {
+      return;
+    } 
     id2fsw.set(fs._id, fs);  
   }
  
@@ -154,11 +157,21 @@ public class Id2FS {
 //      }
 //    }
     // in this impl, the id is the index.
-    for (Object o : id2fsw.subList(fromId, id2fsw.size())) {
-      TOP fs = (o == null) ? null
-                           : (o instanceof TOP) ? (TOP) o 
-                                                : (TOP) ((WeakReference)o).get(); 
-      if (null != fs) {
+    final int sz = id2fsw.size();
+    for (int i = fromId; i < sz; i++) {
+      Object o = id2fsw.get(i);
+      if (o == null) { 
+        continue;
+      }
+      
+      if (o instanceof TOP) {
+        action.accept((TOP)o);
+      } else {
+        TOP fs = ((WeakReference<TOP>)o).get();
+        if (fs == null) {
+          id2fsw.set(i, null);
+          continue;
+        }
         action.accept(fs);
       }
     }   
