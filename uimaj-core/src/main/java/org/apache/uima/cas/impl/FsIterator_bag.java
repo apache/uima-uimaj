@@ -34,10 +34,11 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   final private FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from super class, allows dispatch w/o casting
 
-  FsIterator_bag(FsIndex_bag<T> fsBagIndex, int[] detectIllegalIndexUpdates, int typeCode) {
-    super(detectIllegalIndexUpdates, typeCode, null);
+  FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti) {
+    super(ti, null);  // null: null comparator for bags
     this.fsBagIndex = fsBagIndex;  // need for copy()
     bag = (ObjHashSet<T>) fsBagIndex.getObjHashSet();
+    resetConcurrentModification();
     moveToFirst();
   }
 
@@ -119,6 +120,13 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     }
   }
 
+  @Override
+  public void moveToPreviousNvc() {
+    checkConcurrentModification();
+    isGoingForward = false;
+    position = bag.moveToPreviousFilled(--position);
+  }
+  
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
@@ -133,7 +141,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public FsIterator_bag<T> copy() {
-    FsIterator_bag<T> copy = new FsIterator_bag<T>(this.fsBagIndex, this.detectIllegalIndexUpdates, this.typeCode);
+    FsIterator_bag<T> copy = new FsIterator_bag<T>(this.fsBagIndex, this.ti);
     copy.position = position;
     copy.isGoingForward = isGoingForward;   
     return copy;
@@ -154,5 +162,14 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return fsBagIndex;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FsIterator_singletype#getModificationCountFromIndex()
+   */
+  @Override
+  protected int getModificationCountFromIndex() {
+    return bag.getModificationCount();
+  }
+
+  
 }
 
