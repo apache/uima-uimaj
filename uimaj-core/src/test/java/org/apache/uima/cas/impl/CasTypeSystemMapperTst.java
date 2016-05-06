@@ -18,10 +18,9 @@
  */
 package org.apache.uima.cas.impl;
 
+import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.cas.CAS;
@@ -316,8 +315,8 @@ public class CasTypeSystemMapperTst extends TestCase {
    * @param tCode
    */
   private void chkfeats(CasTypeSystemMapper m, TypeImpl srcType, TypeImpl tgtType) {
-    Set<FeatureImpl> srcFeats = new HashSet<>(srcType.getFeatureImpls());
-    Set<FeatureImpl> tgtFeats = new HashSet<>(tgtType.getFeatureImpls());
+    Set<FeatureImpl> srcFeats = new HashSet<>(Arrays.asList(srcType.getFeatureImpls()));
+    Set<FeatureImpl> tgtFeats = new HashSet<>(Arrays.asList(tgtType.getFeatureImpls()));
     assertTrue(srcFeats.equals(tgtFeats));
   }
 
@@ -333,12 +332,12 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeImpl srcType = m.tsSrc.getTypeForCode(tCode);
     TypeImpl tgtType = m.tsTgt.get().getTypeForCode(tCode);
     
-    List<FeatureImpl> tgtFeats = tgtType.getFeatureImpls();
+    FeatureImpl[] tgtFeats = tgtType.getFeatureImpls();
     
     for (int j = 0, mf = 1; 
-         j < tgtFeats.size(); 
+         j < tgtFeats.length; 
          j++, mf = mf<<1) {
-      FeatureImpl tgtFeat = tgtFeats.get(j);
+      FeatureImpl tgtFeat = tgtFeats[j];
       if ((mFeats & mf) == mf) {  // if the feature is supposed to be missing
         assertEquals(null, m.getSrcFeature(tgtType, tgtFeat));
         continue;
@@ -360,12 +359,12 @@ public class CasTypeSystemMapperTst extends TestCase {
     TypeImpl srcType = m.tsSrc.getTypeForCode(tCode);
     TypeImpl tgtType = m.tsTgt.get().getTypeForCode(tCode);
     
-    List<FeatureImpl> srcFeats = srcType.getFeatureImpls();
+    FeatureImpl[] srcFeats = srcType.getFeatureImpls();
     
     for (int j = 0, mf = 1; 
-         j < srcFeats.size(); 
+         j < srcFeats.length; 
          j++, mf = mf<<1) {
-      FeatureImpl srcFeat = srcFeats.get(j);
+      FeatureImpl srcFeat = srcFeats[j];
       if ((mFeats & mf) == mf) {  // if the feature is supposed to be missing
         assertEquals(null, m.getTgtFeature(srcType, srcFeat));
         continue;
