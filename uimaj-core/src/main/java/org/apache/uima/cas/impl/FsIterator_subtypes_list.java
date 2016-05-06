@@ -47,15 +47,25 @@ public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  ext
   //     subsequently ignored - same effect
   private FsIterator_singletype<T>[] initIterators() {
     iicp.createIndexIteratorCache();
-    final ArrayList<FsIndex_singletype<FeatureStructure>> cachedSubIndexes = iicp.cachedSubFsLeafIndexes;
+    final FsIndex_singletype<FeatureStructure>[] cachedSubIndexes = iicp.cachedSubFsLeafIndexes;
         
-    FsIterator_singletype<T>[] r = cachedSubIndexes.stream()
-        .filter(leafIndex -> leafIndex.size() > 0)  // filter out empty ones     
-        .map( index -> index.iterator())  // map fsIndex_singletype to an iterator over that
-        .toArray(FsIterator_singletype[]::new);
+//    FsIterator_singletype<T>[] r = cachedSubIndexes.stream()
+//        .filter(leafIndex -> leafIndex.size() > 0)  // filter out empty ones     
+//        .map( index -> index.iterator())  // map fsIndex_singletype to an iterator over that
+//        .toArray(FsIterator_singletype[]::new);
 
+    ArrayList<FsIterator_singletype<T>> r = new ArrayList<>();
+    for (FsIndex_singletype<FeatureStructure> leafIndex : iicp.cachedSubFsLeafIndexes) {
+      if (leafIndex.size() == 0) {
+        continue;
+      }
+      r.add((FsIterator_singletype<T>) leafIndex.iterator());
+    }
+    
     // if all are empty, put the first one in (to avoid handling 0 as a special case)
-    return (r.length != 0) ? r : new FsIterator_singletype[] {(FsIterator_singletype) cachedSubIndexes.get(0).iterator()};
+    return (r.size() != 0) 
+             ? r.toArray(new FsIterator_singletype[r.size()]) 
+             : new FsIterator_singletype[] {(FsIterator_singletype<T>) cachedSubIndexes[0].iterator()};
   }
 
   /* (non-Javadoc)
@@ -63,7 +73,11 @@ public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  ext
    */
   @Override
   public int ll_indexSize() {
-    return Arrays.stream(iterators).mapToInt(it -> it.ll_getIndex().size()).sum();
+    int sz = 0;
+    for (FsIterator_singletype<T> it : iterators) {
+      sz += it.ll_getIndex().size();      
+    }
+    return sz;
   }
   
 }
