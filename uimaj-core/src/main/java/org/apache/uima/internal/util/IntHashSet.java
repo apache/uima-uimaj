@@ -22,8 +22,6 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.util.Misc;
-
 /**
  * A set of non-zero ints. 
  *   0 reserved internally to indicate "not in the map";

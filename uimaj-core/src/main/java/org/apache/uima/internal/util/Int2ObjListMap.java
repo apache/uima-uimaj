@@ -21,8 +21,6 @@ package org.apache.uima.internal.util;
 
 import java.util.ArrayList;
 
-import org.apache.uima.util.Misc;
-
 /**
  * A map&lt;int, T&gt;
  * 

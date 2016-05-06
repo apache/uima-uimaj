@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.util.Misc;
 
 /**
  * A Map from non-null Objects of type T to ints
