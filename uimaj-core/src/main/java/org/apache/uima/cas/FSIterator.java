@@ -114,6 +114,11 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   void moveToPrevious();
 
   /**
+   * version of moveToPrevious which bypasses the isValid check - call only if you've just done this check yourself
+   */
+  void moveToPreviousNvc();
+
+  /**
    * Move the iterator to the first element. The iterator will be valid iff the underlying
    * collection is non-empty.  Allowed even if the underlying indexes being iterated over were modified.
    */
