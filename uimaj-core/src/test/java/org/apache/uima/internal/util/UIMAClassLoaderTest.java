@@ -26,7 +26,6 @@ import java.net.URL;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.test.junit_extension.JUnitExtension;
-import org.apache.uima.util.Misc;
 
 import junit.framework.TestCase;
 

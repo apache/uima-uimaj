@@ -40,7 +40,6 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**

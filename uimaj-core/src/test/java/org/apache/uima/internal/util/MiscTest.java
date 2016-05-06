@@ -1,6 +1,6 @@
-package org.apache.uima.util;
+package org.apache.uima.internal.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
