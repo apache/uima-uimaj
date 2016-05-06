@@ -22,6 +22,7 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -79,7 +80,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
     // no journaling, no index corruption checking
-    _refData[_FI_sofa] = _casView.getSofa();
+    _setRefValueCommon(_FI_sofa, _casView.getSofa());
   }
 
   /**
@@ -95,7 +96,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
     // no journaling, no index corruption checking
-    _refData[_FI_sofa] = _casView.getSofa();
+    _setRefValueCommon(_FI_sofa, _casView.getSofa());
   }
 
   // *------------------*

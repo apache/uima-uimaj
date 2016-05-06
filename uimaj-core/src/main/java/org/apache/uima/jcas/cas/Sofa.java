@@ -76,9 +76,9 @@ public class Sofa extends TOP implements SofaFS {
   
   public Sofa(TypeImpl t, CASImpl c, int sofaNum, String viewName, String mimeType) {
     super(t, c);
-    _intData[_FI_sofaNum ] = sofaNum;
-    _refData[_FI_sofaID  ] = viewName;
-    _refData[_FI_mimeType] =  mimeType;
+    _setIntValueNcNj(_FI_sofaNum, sofaNum);
+    _setRefValueCommon(_FI_sofaID, viewName);
+    _setRefValueCommon(_FI_mimeType, mimeType);
 //    _F_sofaNum = sofaNum;
 //    _F_sofaID = viewName;
 //    _F_mimeType = mimeType;
