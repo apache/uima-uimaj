@@ -27,7 +27,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.util.Misc;
 
 /**
  * A set of Objects of type T 
@@ -67,6 +66,8 @@ public class ObjHashSet<T> implements Set<T>{
   private T [] keys;
 
   private boolean secondTimeShrinkable = false;
+  
+  private int modificationCount = 0;
   
   public ObjHashSet(Class<T> clazz, T removedMarker) {
     this(12, clazz, removedMarker);  // default initial size
@@ -158,12 +159,13 @@ public class ObjHashSet<T> implements Set<T>{
   private void resetTable() {
     resetHistogram();
     size = 0;
+    modificationCount ++;
   }
   
   @Override
   public void clear() {
-    // see if size is less than the 1/2 size that triggers expansion
-    if (size <  (sizeWhichTriggersExpansion >>> 1)) {
+    // see if size is less than the 1/4 size that triggers expansion
+    if (size <  (sizeWhichTriggersExpansion >>> 2)) { 
       // if 2nd time then shrink by 50%
       //   this is done to avoid thrashing around the threshold
       if (secondTimeShrinkable) {
@@ -274,6 +276,7 @@ public class ObjHashSet<T> implements Set<T>{
     }
     keys[i] = obj;
     incrementSize();
+    modificationCount ++;
     return true;
   }
         
@@ -308,7 +311,8 @@ public class ObjHashSet<T> implements Set<T>{
   private boolean removeAtPosition(int pos) {
     // found, remove it
     keys[pos] = (T) removedMarker;  // at runtime, this cast is a no-op    
-    size--;
+    size --;
+    modificationCount ++;
     nbrRemoved ++;
     return true;
   }
@@ -476,9 +480,9 @@ public class ObjHashSet<T> implements Set<T>{
   
   /**
    * if the fs is in the set, the iterator should return it.
-   * if not, move to the first - just to return something.
+   * if not, return -1 (makes iterator invalid)
    * @param fs position to this fs
-   * @return the index if present, otherwise moveToNextFileed(0);
+   * @return the index if present, otherwise -1;
    */
   public int moveTo(FeatureStructure fs) {
     if (clazz.isAssignableFrom(fs.getClass())) {
@@ -487,7 +491,7 @@ public class ObjHashSet<T> implements Set<T>{
         return pos;
       }
     }
-    return moveToFirst(); 
+    return -1; 
   }
 
   @Override
@@ -567,5 +571,9 @@ public class ObjHashSet<T> implements Set<T>{
       }
     }
     return anyChanged;
+  }
+  
+  public int getModificationCount() {
+    return modificationCount;
   }
 }
