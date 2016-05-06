@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class TypeSystem2Xml {
   /**
-   * Converts a TypeSystem object to XML
+   * Converts a TypeSystem object to XML.  Built-in types and array types are not included.
    * 
    * @param aTypeSystem
    *          the TypeSystem to convert
@@ -93,7 +94,7 @@ public class TypeSystem2Xml {
       typeDesc.setSupertypeName(superType.getName());
       LowLevelTypeSystem llts = aTypeSystem.getLowLevelTypeSystem();
       List<FeatureDescription> featDescs = new ArrayList<FeatureDescription>();
-      Iterator<FeatureImpl> featIterator = type.getFeatureImpls().iterator();
+      Iterator<FeatureImpl> featIterator = Arrays.asList(type.getFeatureImpls()).iterator();
       while (featIterator.hasNext()) {
         Feature feat = featIterator.next();
         if (!feat.getDomain().equals(type)) {
