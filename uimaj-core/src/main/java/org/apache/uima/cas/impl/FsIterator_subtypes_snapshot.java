@@ -98,6 +98,11 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
       pos--;
     }
   }
+  
+  @Override
+  public void moveToPreviousNvc() {
+    pos--;
+  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#moveToFirst()

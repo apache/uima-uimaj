@@ -50,6 +50,8 @@ public class FsIterator_subtypes_unordered<T extends FeatureStructure> extends F
   @Override
   public void moveToPrevious() {throw new UnsupportedOperationException();}
   @Override
+  public void moveToPreviousNvc() {throw new UnsupportedOperationException();}
+  @Override
   public void moveToFirst() {}  // can't throw, should be a no-op.
   @Override
   public void moveToLast() {throw new UnsupportedOperationException();}
