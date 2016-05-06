@@ -103,7 +103,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setArrayInt(IntegerArray v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayInt, false), v);
+    _setFeatureValueNcWj(_FI_arrayInt, v);
   }    
     
     
@@ -139,7 +139,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setArrayRef(FSArray v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayRef, false), v);
+    _setFeatureValueNcWj(_FI_arrayRef, v);
   }    
     
     
@@ -175,7 +175,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setArrayFloat(FloatArray v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayFloat, false), v);
+    _setFeatureValueNcWj(_FI_arrayFloat, v);
   }    
     
     
@@ -211,7 +211,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setArrayString(StringArray v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_arrayString, false), v);
+    _setFeatureValueNcWj(_FI_arrayString, v);
   }    
     
     
@@ -247,7 +247,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setPlainInt(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_plainInt, true), v);
+    _setIntValueNfc(_FI_plainInt, v);
   }    
     
    
@@ -266,7 +266,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setPlainFloat(float v) {
-    _setFloatValueNfc(_getFeatFromAdjOffset(_FI_plainFloat, true), v);
+    _setFloatValueNfc(_FI_plainFloat, v);
   }    
     
    
@@ -285,7 +285,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setPlainString(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_plainString, false), v);
+    _setStringValueNfc(_FI_plainString, v);
   }    
     
    
@@ -304,7 +304,7 @@ public class Root extends TOP {
    * @param v value to set into the feature 
    */
   public void setPlainRef(Root v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_plainRef, false), v);
+    _setFeatureValueNcWj(_FI_plainRef, v);
   }    
     
   }

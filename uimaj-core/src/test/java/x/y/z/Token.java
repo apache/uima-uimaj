@@ -96,7 +96,7 @@ public class Token extends Annotation {
    * @param v value to set into the feature 
    */
   public void setTtype(TokenType v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_ttype, false), v);
+    _setFeatureValueNcWj(_FI_ttype, v);
   }    
     
    
@@ -115,7 +115,7 @@ public class Token extends Annotation {
    * @param v value to set into the feature 
    */
   public void setTokenFloatFeat(float v) {
-    _setFloatValueNfc(_getFeatFromAdjOffset(_FI_tokenFloatFeat, true), v);
+    _setFloatValueNfc(_FI_tokenFloatFeat, v);
   }    
     
    
@@ -134,7 +134,7 @@ public class Token extends Annotation {
    * @param v value to set into the feature 
    */
   public void setLemma(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_lemma, false), v);
+    _setStringValueNfc(_FI_lemma, v);
   }    
     
    
@@ -153,7 +153,7 @@ public class Token extends Annotation {
    * @param v value to set into the feature 
    */
   public void setLemmaList(StringArray v) {
-    _setFeatureValueNcWj(_getFeatFromAdjOffset(_FI_lemmaList, false), v);
+    _setFeatureValueNcWj(_FI_lemmaList, v);
   }    
     
     

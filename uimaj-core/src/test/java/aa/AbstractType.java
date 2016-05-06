@@ -92,7 +92,7 @@ public class AbstractType extends TOP {
    * @param v value to set into the feature 
    */
   public void setAbstractInt(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_abstractInt, true), v);
+    _setIntValueNfc(_FI_abstractInt, v);
   }    
     
   }

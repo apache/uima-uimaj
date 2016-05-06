@@ -92,7 +92,7 @@ public class Sentence extends Annotation {
    * @param v value to set into the feature 
    */
   public void setSentenceLength(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_sentenceLength, true), v);
+    _setIntValueNfc(_FI_sentenceLength, v);
   }    
     
   }

@@ -91,7 +91,7 @@ public class ConcreteType extends AbstractType {
    * @param v value to set into the feature 
    */
   public void setConcreteString(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_concreteString, false), v);
+    _setStringValueNfc(_FI_concreteString, v);
   }    
     
   }

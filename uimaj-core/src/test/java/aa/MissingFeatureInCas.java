@@ -94,7 +94,7 @@ public class MissingFeatureInCas extends TOP {
    * @param v value to set into the feature 
    */
   public void setHaveThisOne(int v) {
-    _setIntValueNfc(_getFeatFromAdjOffset(_FI_haveThisOne, true), v);
+    _setIntValueNfc(_FI_haveThisOne, v);
   }    
     
    
@@ -113,7 +113,7 @@ public class MissingFeatureInCas extends TOP {
    * @param v value to set into the feature 
    */
   public void setMissingThisOne(float v) {
-    _setFloatValueNfc(_getFeatFromAdjOffset(_FI_missingThisOne, true), v);
+    _setFloatValueNfc(_FI_missingThisOne, v);
   }    
     
    
@@ -132,7 +132,7 @@ public class MissingFeatureInCas extends TOP {
    * @param v value to set into the feature 
    */
   public void setChangedFType(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_changedFType, false), v);
+    _setStringValueNfc(_FI_changedFType, v);
   }    
     
   }
