@@ -70,8 +70,8 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   }
 
   @Override
-  public final boolean insert(T fs) {
-    return index.add((TOP) fs);
+  public final void insert(T fs) {
+    index.add((TOP) fs);
   }
 
 //  @SuppressWarnings("unchecked")  // unused 1/2016
@@ -130,11 +130,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   public boolean contains(FeatureStructure fs) {
     return this.index.contains(fs);
   }
-  
-  public boolean containsEq(FeatureStructureImplC fs) {
-    return index.contains(fs);
-  }
-  
+    
   boolean ll_contains(int fsAddr) {
     return contains(casImpl.getFsFromId_checked(fsAddr));
   }
@@ -189,34 +185,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public FSIterator<T> iterator() {
-    return new FsIterator_bag<T>(this, getDetectIllegalIndexUpdates(), getTypeCode());
-  }
-
-  /*
-   * Iterator support 
-   */
-  boolean isValid(int itPos) {
-    return index.isValid(itPos);
-  }
-  
-  int moveToFirst() {
-    return index.moveToFirst();
-  }
-
-  int moveToLast() {
-    return index.moveToLast();
-  }
-  
-  int moveToNext(int itPos) {
-     return index.moveToNext(itPos);
-  }
-  
-  int moveToPrevious(int itPos) {
-    return index.moveToPrevious(itPos);
-  }
-  
-  T get(int itPos) {
-    return (T) index.get(itPos);
+    return new FsIterator_bag<T>(this, type);
   }
   
   ObjHashSet<TOP> getObjHashSet() {
