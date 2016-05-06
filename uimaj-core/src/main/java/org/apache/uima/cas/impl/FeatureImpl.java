@@ -39,21 +39,24 @@ public class FeatureImpl implements Feature {
    * the 0 based offset for this feature ignoring ref/int distinction, in feature order, without regard to JCas implemented features; set at commit time
    * used by v2 style de/serializers
    */
-  private       int featureOffset = -1;  
-  private       int adjustedFeatureOffset = -1; // the offset in the storage array for this feature, adjusted to exclude JCas implemented features; set at commit time
+  private       short featureOffset = -1;  
+  private       short adjustedFeatureOffset = -1; // the offset in the storage array for this feature, adjusted to exclude JCas implemented features; set at commit time
   
                 // not used 2/29/16 to be removed
 //                int registryIndex = -1; // set from JCas classes feature registry
                                         // used to setup index corruption bitset                
   public final boolean isInInt;        // specifies which array the data is in
-
+  private final boolean isMultipleRefsAllowed;
+  /**
+   * true if the range is a long or double
+   */
+  public final boolean isLongOrDouble; 
   private TypeImpl highestDefiningType;  // not final, could change
   
   private final TypeImpl rangeType;
   
 //  private final TypeSystemImpl ts;
 
-  private final boolean isMultipleRefsAllowed;
   /**
    * true for the feature which is the AnnotationBase sofa reference.
    */
@@ -77,6 +80,7 @@ public class FeatureImpl implements Feature {
     shortName = null;
     slotKind = null;
     rangeTypeClass = 0;
+    isLongOrDouble = false;
   }
 
   FeatureImpl(TypeImpl typeImpl, String shortName, TypeImpl rangeType, TypeSystemImpl tsi, boolean isMultipleRefsAllowed, SlotKind slotKind) {
@@ -86,6 +90,7 @@ public class FeatureImpl implements Feature {
   featureCode = feats.size();
   
   this.rangeType = rangeType;
+  this.isLongOrDouble = rangeType.isLongOrDouble;
   this.slotKind = slotKind;
   this.shortName = shortName;
   this.isMultipleRefsAllowed = isMultipleRefsAllowed;
@@ -145,8 +150,9 @@ public class FeatureImpl implements Feature {
   @Override
   public String toString() {
     return String.format(
-        "%s [%s: rangeType=%s, isMultipleRefsAllowed=%s]",
-        this.getClass().getSimpleName(), getName(), rangeType, isMultipleRefsAllowed);
+        "%s [%s: rangeType=%s, isMultipleRefsAllowed=%s, slotKind=%s]",
+        this.getClass().getSimpleName(), getName(), rangeType, isMultipleRefsAllowed,
+        slotKind);
   }
 
 //  public String getGetterSetterName(boolean isGet) {
@@ -180,7 +186,10 @@ public class FeatureImpl implements Feature {
   }
   
   void setOffset(int offset) {
-    featureOffset = offset;
+    if (offset > Short.MAX_VALUE) {
+      throw new RuntimeException("Feature Offset exceeds maximum of 32767");
+    }
+    featureOffset = (short) offset;
   }
   
   public int getAdjustedOffset() {
@@ -188,7 +197,10 @@ public class FeatureImpl implements Feature {
   }
   
   void setAdjustedOffset(int offset) {    
-    adjustedFeatureOffset = offset;
+    if (offset > Short.MAX_VALUE) {
+      throw new RuntimeException("Feature Offset exceeds maximum of 32767");
+    }
+    adjustedFeatureOffset = (short) offset;
   }
 
 //  /**
