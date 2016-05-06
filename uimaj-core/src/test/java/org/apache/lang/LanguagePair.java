@@ -94,7 +94,7 @@ public class LanguagePair extends TOP {
    * @param v value to set into the feature 
    */
   public void setLang1(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_lang1, false), v);
+    _setStringValueNfc(_FI_lang1, v);
   }    
     
    
@@ -113,7 +113,7 @@ public class LanguagePair extends TOP {
    * @param v value to set into the feature 
    */
   public void setLang2(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_lang2, false), v);
+    _setStringValueNfc(_FI_lang2, v);
   }    
     
    
@@ -132,7 +132,7 @@ public class LanguagePair extends TOP {
    * @param v value to set into the feature 
    */
   public void setDescription(String v) {
-    _setStringValueNfc(_getFeatFromAdjOffset(_FI_description, false), v);
+    _setStringValueNfc(_FI_description, v);
   }    
     
   }
