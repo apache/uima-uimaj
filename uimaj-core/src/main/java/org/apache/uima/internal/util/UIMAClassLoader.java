@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.uima.util.Misc;
-
 /**
  * UIMAClassLoader is used as extension ClassLoader for UIMA to load additional components like
  * annotators and resources. The classpath of the classloader is specified as string.
