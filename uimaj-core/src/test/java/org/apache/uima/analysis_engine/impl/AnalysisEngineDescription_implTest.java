@@ -42,6 +42,7 @@ import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_i
 import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.SerializationUtils;
 import org.apache.uima.resource.ConfigurationManager;
@@ -83,11 +84,9 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.Misc;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 /**

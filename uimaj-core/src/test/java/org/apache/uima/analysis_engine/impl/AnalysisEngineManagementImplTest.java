@@ -23,8 +23,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
-import org.apache.uima.util.Misc;
 
 import junit.framework.TestCase;
 
