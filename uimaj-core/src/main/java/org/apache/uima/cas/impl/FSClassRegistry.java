@@ -31,6 +31,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +42,10 @@ import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.Misc;
 
 /*
  * There is one class instance of this per class loader.
@@ -675,7 +676,7 @@ public class FSClassRegistry {
       /** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
       add2errors(errorSet, 
                  new CASRuntimeException(CASRuntimeException.JCAS_CAS_MISMATCH_SUPERTYPE, 
-                     clazz.getName(), Misc.ppList(superClasses), ti.getName(), Misc.ppList(ti.getAllSuperTypes())),
+                     clazz.getName(), Misc.ppList(superClasses), ti.getName(), Misc.ppList(Arrays.asList(ti.getAllSuperTypes()))),
                  true);  // throwable error
     }
 
@@ -704,12 +705,18 @@ public class FSClassRegistry {
           rangeClass = range.getComponentType().getJavaClass();
         }
       }
-      if (!rangeClass.isAssignableFrom(returnClass)) {  // can return subclass of TOP, OK if range is TOP
-        /** CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas class has range "{3}". */
-        add2errors(errorSet, 
-                   new CASRuntimeException(CASRuntimeException.JCAS_TYPE_RANGE_MISMATCH, 
-                       ti.getName(), fi.getShortName(), rangeClass, returnClass),
-                   false);  // should throw, but some code breaks!  
+      if (!rangeClass.isAssignableFrom(returnClass)) {   // can return subclass of TOP, OK if range is TOP
+        if (rangeClass.getName().equals("org.apache.uima.jcas.cas.Sofa") &&       // exception: for backwards compat reasons, sofaRef returns SofaFS, not Sofa.
+            returnClass.getName().equals("org.apache.uima.cas.SofaFS")) {
+          // empty
+        } else {
+          
+          /** CAS type system type "{0}" defines field "{1}" with range "{2}", but JCas getter method is returning "{3}" which is not a subtype of the declared range.*/
+          add2errors(errorSet, 
+                     new CASRuntimeException(CASRuntimeException.JCAS_TYPE_RANGE_MISMATCH, 
+                         ti.getName(), fi.getShortName(), rangeClass, returnClass),
+                     false);  // should throw, but some code breaks!
+        }
       }
     }
     
