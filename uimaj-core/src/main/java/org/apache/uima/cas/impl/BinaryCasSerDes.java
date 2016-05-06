@@ -42,6 +42,7 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -56,7 +57,6 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Misc;
 
 /**
  * Binary (mostly non compressed) CAS deserialization
@@ -328,7 +328,7 @@ public class BinaryCasSerDes {
       TypeImpl type = fs._typeImpl;
       boolean wasRemoved;
       if (!type.isArray()) {
-        FeatureImpl feat = type.getFeatureImpls().get(heapAddr - fsStartAddr - 1);
+        FeatureImpl feat = type.getFeatureImpls()[heapAddr - fsStartAddr - 1];
         wasRemoved = baseCas.checkForInvalidFeatureSetting(fs, feat.getCode(), tobeAddedback);
         addrOfFsToBeAddedBack = wasRemoved ? fsStartAddr : 0;
         fsToBeAddedBack = wasRemoved ? fs : null; 
@@ -761,7 +761,7 @@ public class BinaryCasSerDes {
         // loop over all heap modifications to existing FSs
         
         // first disable auto addbacks for index corruption - this routine is handling that
-        baseCas.svd.fsTobeAddedbackSingleInUse = true;  // sorry, a bad hack...
+        baseCas.svd.disableAutoCorruptionCheck = true;        
         
         try {
           for (int i = 0; i < modWords.length; i = i + 2) {
@@ -773,7 +773,7 @@ public class BinaryCasSerDes {
           bds.addBackIfRemoved();
           bds.fssAddrArray = null;  // free storage
         } finally {
-          baseCas.resetAddbackSingleInUse();
+          baseCas.svd.disableAutoCorruptionCheck = false;
         }
       }
   
@@ -1163,7 +1163,7 @@ public class BinaryCasSerDes {
 
   public static int getFsSpaceReq(TOP fs, TypeImpl type) {
     // use method in type; pass in array size if array
-    return type.getFsSpaceReq(type.isHeapStoredArray() ? ((CommonArray)fs).size() : 0);
+    return type.getFsSpaceReq(fs);
   }  
   
 
@@ -1659,7 +1659,7 @@ public class BinaryCasSerDes {
     } else { // end of arrays
       // is plain fs with fields
       final int offset0 = slotAddr - bds.fsStartAddr - 1;  // 0 based offset of feature, -1 for type code word
-      FeatureImpl feat = type.getFeatureImpls().get(offset0);
+      FeatureImpl feat = type.getFeatureImpls()[offset0];
       SlotKind slotKind = feat.getSlotKind();
       switch(slotKind) {
       case Slot_Boolean:

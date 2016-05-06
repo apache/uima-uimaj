@@ -64,6 +64,7 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Pair;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -79,7 +80,6 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Misc;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
@@ -1390,15 +1390,15 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         } else {
           final BitSet featuresModified = changedFs.featuresModified;
           int next = featuresModified.nextSetBit(0);
-          List<FeatureImpl> feats = fs._typeImpl.getFeatureImpls();
+          FeatureImpl[] feats = fs._typeImpl.getFeatureImpls();
           while (next >= 0) {
-            FeatureImpl srcFeat = feats.get(next);
+            FeatureImpl srcFeat = feats[next];
             // add only those strings in slots that are in target type system
             if (isTypeMapping && typeMapper.getTgtFeature(srcType, srcFeat) == null) {
                 continue;  // skip - feature not in target type
             }
             if (srcFeat.getRangeImpl().isStringOrStringSubtype()) {
-              os.add(fs._getStringValueNc(feats.get(next)));
+              os.add(fs._getStringValueNc(feats[next]));
             }
             next = featuresModified.nextSetBit(next + 1);
           }
@@ -1547,7 +1547,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         writeVnumber(fsIndexes_dos, offset - iPrevOffsetInFs);
         iPrevOffsetInFs = offset;
         
-        final FeatureImpl fi = ti.getFeatureImpls().get(offset);
+        final FeatureImpl fi = ti.getFeatureImpls()[offset];
         
         if (TRACE_MOD_SER) {
           System.out.format("  tr se mod fsId: %,d offset: %,d type: %s%n", 
@@ -1782,7 +1782,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
             for (Runnable r : singleFsDefer) {
               r.run();
             }
-            cas.maybeAddbackSingle(wasRemoved, currentFs);
+            cas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
           } else {
             for (Runnable r : singleFsDefer) {
               r.run();
@@ -2530,7 +2530,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       boolean wasRemoved = false;  // set to true when removed from index to stop further testing
       addbackSingle = cas.getAddbackSingle();
       final boolean isArray = srcType.isArray();
-      final List<FeatureImpl> features = isArray ? null : srcType.getFeatureImpls();
+      final FeatureImpl[] features = isArray ? null : srcType.getFeatureImpls();
       
       for (int i = 0; i < numberOfMods; i++) {
         // offset may be index or feature offset
@@ -2543,7 +2543,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           // srcOffset must be >= 0 because if type mapping, and delta cas being deserialized,
           //   all of the target features would have been merged into the source ones.
         assert (srcOffsetInFs >= 0);
-        FeatureImpl srcFeat = (features == null) ? null : features.get(srcOffsetInFs); 
+        FeatureImpl srcFeat = (features == null) ? null : features[srcOffsetInFs]; 
         final SlotKind kind = srcType.isArray() ? srcType.getComponentSlotKind() : srcFeat.getSlotKind();
 //        System.out.format("mainHeapModRead type: %s slot: %s%n", typeInfo, kind);
 
@@ -2635,7 +2635,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         } // end of switch
       } // end of for loop over all FS
       
-      cas.maybeAddbackSingle(wasRemoved, fs);
+      cas.addbackSingleIfWasRemoved(wasRemoved, fs);
     }    
   }
   
@@ -3345,7 +3345,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         return sortArray(scFs1, scFs2);
       }
       
-      List<FeatureImpl> fis = fs1Type.getFeatureImpls();
+      FeatureImpl[] fis = fs1Type.getFeatureImpls();
       for (FeatureImpl fi : fis) {
         if (isTypeMapping) {
           if (isSrcCas && typeMapper.getTgtFeature(fs1Type, fi) == null) {

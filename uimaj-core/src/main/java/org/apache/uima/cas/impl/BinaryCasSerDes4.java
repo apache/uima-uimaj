@@ -54,6 +54,7 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -69,7 +70,6 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Misc;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
@@ -1274,7 +1274,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       } else { // end of is array
         BitSet fm = fsChange.featuresModified;
         for (int offset = fm.nextSetBit(0); offset >= 0; offset = fm.nextSetBit(offset + 1)) {
-          FeatureImpl feat = type.getFeatureImpls().get(offset);
+          FeatureImpl feat = type.getFeatureImpls()[offset];
           if (feat.getSlotKind() == SlotKind.Slot_StrRef) {
             os.add(fs._getStringValueNc(feat));
           }
@@ -1347,11 +1347,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         final TOP fs = fsChange.fs;
         
         if (fsChange.arrayUpdates == null) {
-          List<FeatureImpl> features = fs._typeImpl.getFeatureImpls();
+          FeatureImpl[] features = fs._typeImpl.getFeatureImpls();
           int iPrevOffsetInFs = 0;
           final BitSet bs = fsChange.featuresModified;
           for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
-            FeatureImpl feat = features.get(i);
+            FeatureImpl feat = features[i];
             // next +1 to conform to v2 encoding of feat offsets
             writeVnumber(fsIndexes_dos, i + 1 - iPrevOffsetInFs);
             iPrevOffsetInFs = i + 1;
@@ -1810,7 +1810,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             for (Runnable r : singleFsDefer) {
               r.run();
             }
-            baseCas.maybeAddbackSingle(wasRemoved, currentFs);
+            baseCas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
           } else {
             for (Runnable r : singleFsDefer) {
               r.run();
@@ -2465,7 +2465,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       private void readModifiedMainHeap(int numberOfMods, TOP fs, TypeImpl type) throws IOException {
         final boolean isArray = type.isArray();
         int iPrevOffsetInFs = 0;
-        final List<FeatureImpl> features = isArray ? null : type.getFeatureImpls();
+        final FeatureImpl[] features = isArray ? null : type.getFeatureImpls();
                
         wasRemoved = false;  // set to true when removed from index to stop further testing
         addbackSingle = baseCas.getAddbackSingle();
@@ -2475,7 +2475,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           final int offsetInFs = readVnumber(fsIndexes_dis) + iPrevOffsetInFs;  // this is encoded in v2 style, -1 for feat offset, -2 for array indexes
           iPrevOffsetInFs = offsetInFs;
           
-          FeatureImpl feat = (features == null) ? null : features.get(offsetInFs - 1); // -1 because v2 records it this way
+          FeatureImpl feat = (features == null) ? null : features[offsetInFs - 1]; // -1 because v2 records it this way
           
           final SlotKind kind = isArray ? type.getComponentSlotKind() : feat.getSlotKind();
           
