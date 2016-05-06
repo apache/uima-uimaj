@@ -143,11 +143,10 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * @return
    */
   public int compareAnnotation(Annotation other) {
-    int[] o = other._intData;
-    int result = Integer.compare(_intData[_FI_begin], o[_FI_begin]);
+    int result = Integer.compare(_getIntValueNc(_FI_begin), other._getIntValueNc(_FI_begin));
     if (result != 0) return result;
 
-    result = Integer.compare(_intData[_FI_end], o[_FI_end]);
+    result = Integer.compare(_getIntValueNc(_FI_end), other._getIntValueNc(_FI_end));
     return (result == 0) ? 0 : -result;  // reverse compare
   }
   
@@ -157,14 +156,10 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * @return
    */
   public int compareAnnotation(Annotation other, LinearTypeOrder lto) {
-    int[] o = other._intData;
-    int result = Integer.compare(_intData[_FI_begin], o[_FI_begin]);
+    int result = compareAnnotation(other);
     if (result != 0) return result;
-
-    result = Integer.compare(_intData[_FI_end], o[_FI_end]);
-    if (result != 0) return -result;
     
-    return lto.compare(this,  other);
+    return lto.compare(this, other);
   }
 
 
