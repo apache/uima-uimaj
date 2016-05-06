@@ -37,6 +37,7 @@ import org.apache.uima.cas.impl.CasSerializerSupport.CasDocSerializer;
 import org.apache.uima.cas.impl.CasSerializerSupport.CasSerializerSupportSerialize;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -818,7 +819,10 @@ public class XmiCasSerializer {
           XmlAttribute attr = attrIt.next();
           addAttribute(workAttrs, attr.name, attr.value);
         }
-        
+        // debug
+        if (oed.elementName.qName.endsWith("[]")) {
+          Misc.internalError(new Exception("XMI Cas Serialization: out of type system data has type name ending with []"));
+        }
         // serialize element
         startElement(oed.elementName, workAttrs, oed.childElements.size());
         
@@ -1253,6 +1257,11 @@ public class XmiCasSerializer {
      */
     @Override
     protected XmlElementName uimaTypeName2XmiElementName(String uimaTypeName) {
+      if (uimaTypeName.endsWith(TypeSystemImpl.ARRAY_TYPE_SUFFIX)) {
+        // can't write out xyz[] as the qname.  Use FSArray instead
+        uimaTypeName = CASImpl.TYPE_NAME_FS_ARRAY;
+      }
+
       // split uima type name into namespace and short name
       String shortName, nsUri;
       final int lastDotIndex = uimaTypeName.lastIndexOf('.');
@@ -1281,7 +1290,7 @@ public class XmiCasSerializer {
 
       // determine what namespace prefix to use
       String prefix = cds.getNameSpacePrefix(uimaTypeName, nsUri, lastDotIndex);
-
+      // debug
       return new XmlElementName(nsUri, shortName, cds.getUniqueString(prefix + ':' + shortName));
     }
 

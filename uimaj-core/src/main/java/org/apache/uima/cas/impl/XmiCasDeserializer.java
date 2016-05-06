@@ -49,6 +49,7 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.NameMultiValue;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -64,7 +65,6 @@ import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.NonEmptyList;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Misc;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -1075,7 +1075,7 @@ public class XmiCasDeserializer {
           break;
         }
         default: {
-          assert false; // this should be an exhaustive case block
+          Misc.internalError(); // this should be an exhaustive case block
         }
       }
     }
@@ -1090,6 +1090,7 @@ public class XmiCasDeserializer {
           fixupToDos.add( () -> finalizeRefValue(xmiId, fs, fi));
         } else {
           fs.setFeatureValue(fi,  tgtFs);
+          ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
         }
       }
     }
@@ -1769,6 +1770,7 @@ public class XmiCasDeserializer {
         }
       } else {
         fs.setFeatureValue(fi,  tgtFs);
+        ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
       }
     }
    

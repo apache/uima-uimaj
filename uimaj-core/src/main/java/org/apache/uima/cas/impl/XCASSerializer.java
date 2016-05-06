@@ -508,12 +508,15 @@ public class XCASSerializer {
     }
 
     private void encodeFSArray(FSArray fs, AttributesImpl attrs) throws SAXException {
-      final String typeName = fs._typeImpl.getName();
+      String typeName = fs._typeImpl.getName();
       final int size = fs.size();
 //      int pos = cas.getArrayStartAddress(fs_id);
       // xmlStack.addAttribute(ARRAY_SIZE_ATTR, Integer.toString(size));
       // xmlStack.commitNode();
       addAttribute(attrs, ARRAY_SIZE_ATTR, Integer.toString(size));
+      if (typeName.endsWith(TypeSystemImpl.ARRAY_TYPE_SUFFIX)) {
+        typeName = CASImpl.TYPE_NAME_FS_ARRAY;
+      }
       startElement(typeName, attrs, size);
       for (int i = 0; i < size; i++) {
         String val = null;
