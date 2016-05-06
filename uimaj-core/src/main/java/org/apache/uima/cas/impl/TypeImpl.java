@@ -36,7 +36,9 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
-import org.apache.uima.util.Misc;
+import org.apache.uima.internal.util.Misc;
+import org.apache.uima.jcas.cas.CommonArray;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * The implementation of types in the type system.
@@ -55,9 +57,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private final String name;                // x.y.Foo
   private final String shortName;           //     Foo
   
-  private final int typeCode;               // subtypes always have typecodes > this one and < typeCodeNextSibling
-  private       int depthFirstCode;         // assigned at commit time
-  private       int depthFirstNextSibling;  // for quick subsumption testing, set at commit time
+  private final short typeCode;               // subtypes always have typecodes > this one and < typeCodeNextSibling
+  private       short depthFirstCode;         // assigned at commit time
+  private       short depthFirstNextSibling;  // for quick subsumption testing, set at commit time
 
   private final TypeSystemImpl tsi ; // the Type System instance this type belongs to.
                                      // This means that built-in types have multiple instances, so this field can vary.
@@ -92,6 +94,19 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * true for FSarrays non-arrays having 1 or more refs to FSs
    */
   boolean hasRefFeature;  // true for FSarrays non-arrays having 1 or more refs to FSs
+//  /**
+//   * true if only has int slots, no ref slots
+//   */
+//  boolean hasOnlyInts;
+//  /**
+//   * true if only has ref slots, no int slots
+//   */
+//  boolean hasOnlyRefs;
+//  
+//  /**
+//   * true if has no int or data slots
+//   */
+//  boolean hasNoSlots;
   
   
   /* ***************** type hierarchy *****************/
@@ -100,23 +115,26 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   /**
    * All supertypes, in order, starting with immediate (nearest) supertype
    */
-  private final List<TypeImpl> allSuperTypes = new ArrayList<>();  
+  private final TypeImpl[] allSuperTypes;  
   
   private final List<TypeImpl> directSubtypes = new ArrayList<>();
     
   // ********  Features  *********
   private final Map<String, FeatureImpl> staticMergedFeatures = new LinkedHashMap<>(1); // set to null at commit time
-  private final List<FeatureImpl> staticMergedFeaturesList = new ArrayList<>(0);  // set after commit
+  private FeatureImpl[] staticMergedFeaturesList = null;  // set after commit
   private final List<FeatureImpl> staticMergedFeaturesIntroducedByThisType = new ArrayList<>(0);
   
   /**
    * Map from adjusted offset in int features to feature
+   * Corrects for Long/Double values taking 2 int slots
+   * Set at commit time
    */
-  private final List<FeatureImpl> staticMergedIntFeaturesList = new ArrayList<>(0);
+  private FeatureImpl[] staticMergedIntFeaturesList;
   /**
    * Map from adjusted offset in ref features to feature
+   * Set at commit time
    */
-  private final List<FeatureImpl> staticMergedRefFeaturesList = new ArrayList<>(0);
+  private FeatureImpl[] staticMergedRefFeaturesList;
   
   /**
    * The number of used slots needed = total number of features minus those represented by fields in JCas cover classes
@@ -145,6 +163,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //    setter_funct_intfc_class = null;
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
+    this.allSuperTypes = null;
   }
   
   /**
@@ -170,20 +189,26 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.isFeatureFinal = false;
     this.isLongOrDouble = name.equals(CAS.TYPE_NAME_LONG) || name.equals(CAS.TYPE_NAME_DOUBLE);
     this.tsi = tsi;
-    this.typeCode = tsi.types.size();  // initialized with one null; so first typeCode == 1
+    if (tsi.types.size() > Short.MAX_VALUE) {
+      throw new RuntimeException("Too many types declared, max is 32767.");
+    }
+    this.typeCode = (short) tsi.types.size();  // initialized with one null; so first typeCode == 1
     tsi.types.add(this);
     
     TypeImpl node = supertype;
+    ArrayList<TypeImpl> a = new ArrayList<>();
     while (node != null) {
-      allSuperTypes.add(node);
+      a.add(node);
       node = node.superType;
     }
+    allSuperTypes = a.toArray(new TypeImpl[a.size()]);
     
     if (null != this.superType) {  // top has null super
-      if (!superType.isArray()) {
-        // this because we have from V2: xyz[] is a subtype of FSArray, but FSArray doesn't list it as a direct sutype
+//      if (!superType.isArray()) {
+        // this because we have from V2: xyz[] is a subtype of FSArray, but FSArray doesn't list it as a direct subtype
+        // but this breaks commit
         superType.directSubtypes.add(this);
-      }
+//      }
       if (superType.staticMergedFeatures != null) {
         staticMergedFeatures.putAll(superType.staticMergedFeatures);
       }
@@ -444,7 +469,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   @Override
   public List<Feature> getFeatures() {
-    return new ArrayList<>(getFeatureImpls());
+    return new ArrayList<Feature>(Arrays.asList(getFeatureImpls()));
   }
   
   /** 
@@ -452,11 +477,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * Minimal Java object generation, maximal reuse
    * @return the list of feature impls
    */
-  public List<FeatureImpl> getFeatureImpls() {
+  public FeatureImpl[] getFeatureImpls() {
     if (!tsi.isCommitted()) {
       // recompute the list if needed
       int nbrOfFeats = staticMergedFeatures.size();
-      if (nbrOfFeats != staticMergedFeaturesList.size()) {
+      if (staticMergedFeaturesList == null || nbrOfFeats != staticMergedFeaturesList.length) {
         computeStaticMergedFeaturesList();
       }
     }
@@ -464,10 +489,19 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   private void computeStaticMergedFeaturesList() {
-    synchronized (staticMergedFeaturesList) {
-      staticMergedFeaturesList.clear();
-      staticMergedFeaturesList.addAll(superType.getFeatureImpls());
-      staticMergedFeaturesList.addAll(staticMergedFeaturesIntroducedByThisType);   
+    synchronized (staticMergedFeaturesIntroducedByThisType) {
+      if (null == superType) {  // is top type
+        staticMergedFeaturesList = new FeatureImpl[0];
+        return;
+      }
+      int length1 = superType.getFeatureImpls().length; 
+      int length2 = staticMergedFeaturesIntroducedByThisType.size();
+      staticMergedFeaturesList = new FeatureImpl[length1 + length2];
+      System.arraycopy(superType.getFeatureImpls(), 0, staticMergedFeaturesList, 0, length1);
+      int i = length1;
+      for (FeatureImpl fi : staticMergedFeaturesIntroducedByThisType) {
+        staticMergedFeaturesList[i++] = fi;
+      }
     }    
   }
   
@@ -484,8 +518,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
   }
   
-  Stream<FeatureImpl> getFeaturesAsStream() {
-    return getFeatureImpls().stream();
+  public Stream<FeatureImpl> getFeaturesAsStream() {
+    return Arrays.stream(getFeatureImpls());
   }
 
   public List<FeatureImpl> getMergedStaticFeaturesIntroducedByThisType() {
@@ -669,10 +703,15 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }
   
   boolean hasSupertype(TypeImpl supertype) {
-    return allSuperTypes.contains(supertype);
+    for (TypeImpl st : allSuperTypes) {
+      if (st == supertype) {
+        return true;
+      }
+    }
+    return false;
   }
   
-  List<TypeImpl> getAllSuperTypes() {
+  TypeImpl[] getAllSuperTypes() {
     return allSuperTypes;
   }
     
@@ -735,19 +774,47 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //  public void setCreator(Function<JCas, TOP> fi, Function<>) {
 //    creator = fi;
 //  }
-      
+  /**
+   * @param ti the subtype to check
+   * @return true if this type subsumes the subtype (is equal to or a supertype of the subtype)
+   */
   public boolean subsumes(TypeImpl ti) {
     if (depthFirstCode <= ti.depthFirstCode && ti.depthFirstCode < depthFirstNextSibling) {
       return true;
     }
     
-    if (depthFirstNextSibling != 0) {
+    if (depthFirstNextSibling != 0) { // means that these codes are valid
       return false;
     }
     
     return getTypeSystem().subsumes(this, ti);
   }
   
+  /**
+   * @param ti the subtype to check
+   * @return true if this type subsumes the subtype (is equal to or a supertype of the subtype)
+   */
+  public boolean subsumesStrictly(TypeImpl ti) {
+    if (depthFirstCode < ti.depthFirstCode && ti.depthFirstCode < depthFirstNextSibling) {
+      return true;
+    }
+    
+    if (depthFirstNextSibling != 0) { // means that these codes are valid
+      return false;
+    }
+    
+    if (this.equals(ti)) {
+      return false;
+    }
+    
+    return getTypeSystem().subsumes(this, ti);   
+  }
+  
+  /**
+   * 
+   * @param v the value to test
+   * @return true if value v can be assigned to an object of this type
+   */
   public boolean subsumesValue(Object v) {
     return (v == null && (isRefType || isStringOrStringSubtype())) ||
            (v instanceof String && isStringOrStringSubtype()) ||
@@ -771,11 +838,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
       computeHasRef();
     }
      
-    depthFirstCode = level ++;
+    depthFirstCode = (short) ( level ++ );
     for (TypeImpl subti : directSubtypes) {
       level = subti.computeDepthFirstCode(level);
     }
-    depthFirstNextSibling = level;
+    depthFirstNextSibling = (short) level;
     return level;
   }
 
@@ -806,7 +873,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return the main heap size for this FeatureStructure, assuming it's not a heap stored array (see below)
    */
   public int getFsSpaceReq() {
-    return getFeatureImpls().size() + 1;  // number of feats + 1 for the type code
+    return getFeatureImpls().length + 1;  // number of feats + 1 for the type code
   }
   
   /**
@@ -818,29 +885,34 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return isHeapStoredArray() ? (2 + length) : isArray() ? 3 : getFsSpaceReq();
   }
   
-  void setOffset2Feat(FeatureImpl fi, int next) {
+  public int getFsSpaceReq(TOP fs) {
+    return getFsSpaceReq(isHeapStoredArray() ? ((CommonArray)fs).size() : 0);
+  }  
+
+  
+  void setOffset2Feat(List<FeatureImpl> tempIntFis, List<FeatureImpl> tempRefFis, FeatureImpl fi, int next) {
     if (fi.isInInt) {     
-      assert staticMergedIntFeaturesList.size() == next;
-      staticMergedIntFeaturesList.add(fi);
+      assert tempIntFis.size() == next;
+      tempIntFis.add(fi);
       if (fi.getRangeImpl().isLongOrDouble) {
-        staticMergedIntFeaturesList.add(null);  
+        tempIntFis.add(null);  
       }
     } else {
-      assert staticMergedRefFeaturesList.size() == next;
-      staticMergedRefFeaturesList.add(fi);
+      assert tempRefFis.size() == next;
+      tempRefFis.add(fi);
     }
   }
   
-  void initAdjOffset2FeatureMaps() {
-    staticMergedIntFeaturesList.addAll(superType.staticMergedIntFeaturesList);
-    staticMergedRefFeaturesList.addAll(superType.staticMergedRefFeaturesList);
+  void initAdjOffset2FeatureMaps(List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis) {
+    tmpIntFis.addAll(Arrays.asList(superType.staticMergedIntFeaturesList));
+    tmpRefFis.addAll(Arrays.asList(superType.staticMergedRefFeaturesList));
   }
   
   FeatureImpl getFeatureByAdjOffset(int adjOffset, boolean isInInt) {
     if (isInInt) {
-      return staticMergedIntFeaturesList.get(adjOffset);
+      return staticMergedIntFeaturesList[adjOffset];
     } else {
-      return staticMergedRefFeaturesList.get(adjOffset);
+      return staticMergedRefFeaturesList[adjOffset];
     }
   }
   
@@ -913,14 +985,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     if (isFeatureFinal != other.isFeatureFinal) return false;
     if (isInheritanceFinal != other.isInheritanceFinal) return false;
     
-    final List<FeatureImpl> fis1 = getFeatureImpls();
-    final List<FeatureImpl> fis2 = other.getFeatureImpls();
-    if (fis1.size() != fis2.size()) return false;
-    for (int i = 0; i < fis1.size(); i++) {
-      if (!fis1.get(i).equals(fis2.get(i))) return false;
-    }
-    
-    return true;
+    final FeatureImpl[] fis1 = getFeatureImpls();
+    final FeatureImpl[] fis2 = other.getFeatureImpls();
+    return Arrays.equals(fis1,  fis2);
   }
   
   boolean isPrimitiveArrayType() {
@@ -947,4 +1014,30 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return hasRefFeature;
   }
   
+  /**
+   * @return true if this type is an array of specific (not TOP) Feature structures, not FSArray
+   */
+  public boolean isTypedFsArray() {
+    return false;
+  }
+  
+  void setStaticMergedIntFeaturesList(FeatureImpl[] v) {
+    staticMergedIntFeaturesList = v;
+  }
+  
+  void setStaticMergedRefFeaturesList(FeatureImpl[] v) {
+    staticMergedRefFeaturesList = v;
+  }
+
+  //  public boolean hasOnlyInts() {
+//    return hasOnlyInts;
+//  }
+//  
+//  public boolean hasOnlyRefs() {
+//    return hasOnlyRefs;
+//  }
+//  
+//  public boolean hasNoSlots() {
+//    return hasNoSlots;
+//  }
 }
