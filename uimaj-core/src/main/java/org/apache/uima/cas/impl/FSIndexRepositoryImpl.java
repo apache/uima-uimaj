@@ -47,11 +47,11 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.ObjHashSet;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.util.Misc;
 
 /**
  * There is one instance of this class per CAS View.
@@ -102,7 +102,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   public static final String DISABLE_ENHANCED_WRONG_INDEX = "uima.disable_enhanced_check_wrong_add_to_index";
  
-  private static final boolean IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK = Misc.getNoValueSystemProperty(DISABLE_ENHANCED_WRONG_INDEX);
+  private static final boolean IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK = // true || // debug
+      Misc.getNoValueSystemProperty(DISABLE_ENHANCED_WRONG_INDEX);
       
   // Implementation note: the use of equals() here is pretty hairy and
   // should probably be fixed. We rely on the fact that when two
@@ -168,9 +169,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     /**
      * lazily created comparator using the built-in annotation index
      */
-    private Comparator<FeatureStructure> annotationFsComparator = null;
+    private Comparator<TOP> annotationFsComparator = null;
     
-    private Comparator<FeatureStructure> annotationFsComparatorWithId = null;
+    private Comparator<TOP> annotationFsComparatorWithId = null;
     
     /**
      * optimization only - bypasses some shared (among views) initialization if already done
@@ -255,6 +256,20 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
       return null;
     }
+    
+    private void removeIndexExcludingType(int indexingStrategy, FSIndexComparatorImpl comparatorForIndexSpecs) {
+      Iterator<FsIndex_iicp<TOP>> it = indexesForType.iterator();
+      while (it.hasNext()) {
+        FsIndex_singletype<TOP> singleTypeIndex = it.next().fsIndex_singletype;
+        if (singleTypeIndex.getIndexingStrategy() == indexingStrategy) {
+          FSIndexComparatorImpl indexComp = singleTypeIndex.getComparatorImplForIndexSpecs();
+          if (indexComp.equalsWithoutType(comparatorForIndexSpecs)) {
+            it.remove();
+            break;
+          }
+        }
+      }
+    }
 
     @Override
     public String toString() {
@@ -296,14 +311,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   IndexesForType getIndexesForUsedType(int i) {
     return indexArray[this.usedIndexes.get(i)];
   }
-  
-  /** 
-   * an array of ints, one for each type in the type hierarchy. 
-   * Used to enable iterators to detect modifications (adds / removes) 
-   * to indexes they're iterating over while they're iterating over them.
-   * Not private so it can be seen by FSLeafIndexImpl
-   */
-  final int[] detectIllegalIndexUpdates;
+
+  // moved from here into individual indexes over each type, for better locality of reference
+//  /** 
+//   * an array of ints, one for each type in the type hierarchy. 
+//   * Used to enable iterators to detect modifications (adds / removes) 
+//   * to indexes they're iterating over while they're iterating over them.
+//   * Not private so it can be seen by FSLeafIndexImpl
+//   */
+//  final int[] detectIllegalIndexUpdates;
   
   /**
    * A map from names to FsIndex_iicps, which represent the index at the
@@ -386,7 +402,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.sii = null;
     this.name2indexMap = null;
     this.indexArray = null;
-    this.detectIllegalIndexUpdates = null;
+//    this.detectIllegalIndexUpdates = null;
 //    this.flattenedIndexValid = null;
     this.indexUpdates = null;
     this.indexUpdateOperation = null;
@@ -407,7 +423,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final TypeSystemImpl ts = this.sii.tsi;
     // Type counting starts at 1.
     final int numTypes = ts.getNumberOfTypes() + 1;
-    this.detectIllegalIndexUpdates = new int[numTypes];
+//    this.detectIllegalIndexUpdates = new int[numTypes];
 //    this.flattenedIndexValid = new ConcurrentBits(numTypes);
     this.name2indexMap = new HashMap<String, FsIndex_iicp<TOP>>();
     this.indexUpdates = new ArrayList<>();
@@ -434,7 +450,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final TypeSystemImpl ts = this.sii.tsi;
     // Type counting starts at 1.
     final int numTypes = ts.getNumberOfTypes() + 1;
-    this.detectIllegalIndexUpdates = new int[numTypes];
+//    this.detectIllegalIndexUpdates = new int[numTypes];
 //    this.flattenedIndexValid = new ConcurrentBits(numTypes);
     
     this.name2indexMap = new HashMap<String, FsIndex_iicp<TOP>>();
@@ -467,7 +483,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       this.indexArray[i] = new IndexesForType();
     }
     
-    Arrays.fill(detectIllegalIndexUpdates, Integer.MIN_VALUE);
+//    Arrays.fill(detectIllegalIndexUpdates, Integer.MIN_VALUE);
     mPii = new ProcessedIndexInfo();
   }
 
@@ -559,6 +575,34 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // return false;
     // }
     // }
+  }
+  
+  /**
+   * just for testing purposes
+   * removes the named index
+   * Also removes indexes for all subtypes.  
+   *   - NOTE this might remove another index definition's index, if it matches
+   * Only valid if no add-to-index operations have happened.
+   * 
+   * @param label the name of the index to remove
+   */
+  public void removeIndex(String label) {
+    FsIndex_iicp<TOP> cp = this.name2indexMap.get(label);
+    if (cp == null) {
+      return;
+    }
+    int indexingStrategy = cp.getIndexingStrategy();
+    FSIndexComparatorImpl comp = cp.getComparatorImplForIndexSpecs();
+    removeIndexBySpec(cp.getTypeCode(), indexingStrategy, comp);    
+    
+    if (indexingStrategy != FSIndex.DEFAULT_BAG_INDEX) {
+      final TypeImpl type = (TypeImpl) cp.getType();
+      type.getAllSubtypes().forEachOrdered(subType -> {
+        FSIndexComparatorImpl compSub = comp.copy();
+        compSub.setType(type);
+        removeIndexBySpec(subType.getCode(), indexingStrategy, compSub);
+      });
+    }    
   }
 
   /**
@@ -732,7 +776,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   private FsIndex_iicp<TOP> addNewIndexRec(FSIndexComparatorImpl comp4indexSpecs, int indexType) {
     
-    // if this index is already in existance, just reuse it.
+    // if this index is already in existence, just reuse it.
     FsIndex_iicp<TOP> existing = getIndexBySpec(comp4indexSpecs.getTypeCode(), indexType, comp4indexSpecs);
     if (null != existing) {
       return existing;
@@ -747,14 +791,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       // In this special case, we do not add indexes for subtypes.
       return iicp;
     }
-    final Type superType = comp4indexSpecs.getType();
-    final Vector<Type> types = this.sii.tsi.getDirectlySubsumedTypes(superType);
-    final int max = types.size();
-    FSIndexComparatorImpl compCopy;
-    for (int i = 0; i < max; i++) {
-      compCopy = comp4indexSpecs.copy();
-      compCopy.setType(types.get(i));
-      addNewIndexRec(compCopy, indexType);
+    final TypeImpl superType = (TypeImpl) comp4indexSpecs.getType();
+    
+    for (Type subType : superType.getDirectSubtypes()) {
+      FSIndexComparatorImpl compCopy = comp4indexSpecs.copy();
+      compCopy.setType(subType);
+      addNewIndexRec(compCopy, indexType);      
     }
     return iicp;
   }
@@ -969,7 +1011,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public void removeAllExcludingSubtypes(Type type) {
     final int typeCode = ((TypeImpl) type).getCode();
-    incrementIllegalIndexUpdateDetector(typeCode);
+//    incrementIllegalIndexUpdateDetector(typeCode);
     // get a list of all indexes defined over this type
     // Includes indexes defined on supertypes of this type
     final ArrayList<FsIndex_iicp<TOP>> allIndexesForType = getIndexesForType(typeCode).indexesForType;
@@ -1146,9 +1188,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     addFS_common((TOP)fs, false);
   }
 
-  private void incrementIllegalIndexUpdateDetector(int typeCode) {
-    this.detectIllegalIndexUpdates[typeCode] ++;
-  }
+//  private void incrementIllegalIndexUpdateDetector(int typeCode) {
+//    this.detectIllegalIndexUpdates[typeCode] ++;
+//  }
 
   /**
    * @see org.apache.uima.cas.FSIndexRepository#removeFS(org.apache.uima.cas.FeatureStructure)
@@ -1221,7 +1263,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    
     // indicate this type's indexes are being modified
     // in case an iterator is simultaneously active over this type
-    incrementIllegalIndexUpdateDetector(typeCode);
+//    incrementIllegalIndexUpdateDetector(typeCode);
     
     // Get the indexes for the type.
     final ArrayList<FsIndex_iicp<TOP>> indexes = getIndexesForType(typeCode).indexesForType;
@@ -1279,7 +1321,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   boolean removeFS_ret(TOP fs, boolean skipBagIndexes) {
-    if (!fs._inSetSortedIndex() && skipBagIndexes) {
+    if (skipBagIndexes && !fs._inSetSortedIndex()) {
       return false;
     }
     final int typeCode = fs._typeImpl.getCode();
@@ -1293,8 +1335,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * - skip remove if 
      *   
      *   -- there is no sorted index AND
-     *   -- there is a bag index
-     *   -- but it doesn't contain the item
+     *     -- there is no bag index and no set index (no index at all) OR
+     *     -- this is a bag index but it doesn't have this fs
      */
 
     if (i4t.aSortedIndex < 0) {
@@ -1322,7 +1364,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //           .mapToInt(st -> st.deleteFS(fs) ? 1 : 0).sum();
     
     if (wasRemoved) {
-      incrementIllegalIndexUpdateDetector(typeCode);
+//      incrementIllegalIndexUpdateDetector(typeCode);
       if (this.cas.getCurrentMark() != null) {
         logIndexOperation(fs, ITEM_REMOVED_FROM_INDEX);
       }
@@ -1460,56 +1502,57 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    return false;
 //  }
  
-  /**
-   * This is called when it has been determined that:
-   *   - the fs might be in some indexes
-   *   - a change is being made to 1 or more feature values, and those features are being used as keys in one or more indexes
-   * 
-   * This happens 
-   *   - in normal operation, when setting feature values.
-   *   - when deserializing a FS using delta CAS which could be modifying an existing one (below the line).
-   * 
-   * Although one could check each index's keys against the value which was changing, this isn't done because
-   *   - it would slow things down
-   *   - this "automatic" removal should be the exception.  Users are advised to manually remove the FSs from indexes themselves
-   *     before updating features which might be used as keys.
-   *     
-   * The removal skips removing FSs from bag or default-bag indexes, because these have no keys.
-   * The add-back also refrains from adding the FSs back to bag indexes.
-   * 
-   * The current implementation does not try to determine if any keys are updated with different values,
-   *    it just assumes one or more are.   
-   * 
-   * If the view has nothing other than bag indexes for this type, return false without doing any remove
-   * 
-   * @param afs - the FS to see if it is in some index that could be corrupted by a key feature value change
-   * @return true if this fs was in the indexes and will need to be added back.
-   */
-  boolean removeIfInCorrputableIndexInThisView(FeatureStructure afs) {
-    return removeFS_ret((TOP) afs, SKIP_BAG_INDEXES);
-//    TOP fs = (TOP) afs;
-//    TypeImpl ti = fs._typeImpl;
-//    final IndexesForType i4t = getIndexesForType(ti.getCode());
-// 
-//    int si = i4t.aSortedIndex;  
-//    if (si >= 0) { // then we have a sorted index
-//      return removeFS_ret(fs, SKIP_BAG_INDEXES);
-//    }
-//    
-//    int bi = i4t.aBagIndex;
-//    if (bi >= 0) { // have one or more bag indexes including default bag index, for this type
-//      // use the bag index to stop if it doesn't contain the FS, because bag contains testing is fast..
-//      if (!i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
-//        return false;
-//      }
-//      if (i4t.hasSetIndex) {
-//        return removeFS_ret(fs, SKIP_BAG_INDEXES);
-//      }
-//    }
-//    
-//    // have no bag index, no sort index (implies index is empty) 
-//    return false;
-  }
+  // see instead removeAndRecord in CASImpl
+//  /**
+//   * This is called when it has been determined that:
+//   *   - the fs might be in some indexes
+//   *   - a change is being made to 1 or more feature values, and those features are being used as keys in one or more indexes
+//   * 
+//   * This happens 
+//   *   - in normal operation, when setting feature values.
+//   *   - when deserializing a FS using delta CAS which could be modifying an existing one (below the line).
+//   * 
+//   * Although one could check each index's keys against the value which was changing, this isn't done because
+//   *   - it would slow things down
+//   *   - this "automatic" removal should be the exception.  Users are advised to manually remove the FSs from indexes themselves
+//   *     before updating features which might be used as keys.
+//   *     
+//   * The removal skips removing FSs from bag or default-bag indexes, because these have no keys.
+//   * The add-back also refrains from adding the FSs back to bag indexes.
+//   * 
+//   * The current implementation does not try to determine if any keys are updated with different values,
+//   *    it just assumes one or more are.   
+//   * 
+//   * If the view has nothing other than bag indexes for this type, return false without doing any remove
+//   * 
+//   * @param afs - the FS to see if it is in some index that could be corrupted by a key feature value change
+//   * @return true if this fs was in the indexes and will need to be added back.
+//   */
+//  boolean removeIfInCorrputableIndexInThisView(FeatureStructure afs) {
+//    return removeFS_ret((TOP) afs, SKIP_BAG_INDEXES);
+////    TOP fs = (TOP) afs;
+////    TypeImpl ti = fs._typeImpl;
+////    final IndexesForType i4t = getIndexesForType(ti.getCode());
+//// 
+////    int si = i4t.aSortedIndex;  
+////    if (si >= 0) { // then we have a sorted index
+////      return removeFS_ret(fs, SKIP_BAG_INDEXES);
+////    }
+////    
+////    int bi = i4t.aBagIndex;
+////    if (bi >= 0) { // have one or more bag indexes including default bag index, for this type
+////      // use the bag index to stop if it doesn't contain the FS, because bag contains testing is fast..
+////      if (!i4t.indexesForType.get(bi).fsIndex_singletype.contains(fs)) {
+////        return false;
+////      }
+////      if (i4t.hasSetIndex) {
+////        return removeFS_ret(fs, SKIP_BAG_INDEXES);
+////      }
+////    }
+////    
+////    // have no bag index, no sort index (implies index is empty) 
+////    return false;
+//  }
   
 //  /**
 //   * reset the flat index is valid for this type
@@ -1641,8 +1684,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    return this.sii.annotationComparator;
 //  }
   
-  Comparator<FeatureStructure> getAnnotationFsComparator() {
-    Comparator<FeatureStructure> r = this.sii.annotationFsComparator;
+  Comparator<TOP> getAnnotationFsComparator() {
+    Comparator<TOP> r = this.sii.annotationFsComparator;
     // lazy creation
     if (null != r) {
       return r;
@@ -1651,8 +1694,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return createAnnotationFsComparator();
   }
   
-  Comparator<FeatureStructure> getAnnotationFsComparatorWithId() {
-    Comparator<FeatureStructure> r = this.sii.annotationFsComparatorWithId;
+  Comparator<TOP> getAnnotationFsComparatorWithId() {
+    Comparator<TOP> r = this.sii.annotationFsComparatorWithId;
     // lazy creation
     if (null != r) {
       return r;
@@ -1661,7 +1704,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return createAnnotationFsComparatorWithId();    
   }
   
-  private Comparator<FeatureStructure> createAnnotationFsComparator() {
+  private Comparator<TOP> createAnnotationFsComparator() {
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
     
     return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
@@ -1674,7 +1717,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
   
   //unrolled because of high frequency use
-  private Comparator<FeatureStructure> createAnnotationFsComparatorWithId() {
+  private Comparator<TOP> createAnnotationFsComparatorWithId() {
 
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
 
@@ -1698,6 +1741,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public <T extends FeatureStructure> FsIndex_iicp<T> getIndexBySpec(int typeCode, int indexingStrategy, FSIndexComparatorImpl comp) {
     return getIndexesForType(typeCode).getIndexExcludingType(indexingStrategy, comp);
+  }
+  
+  private void removeIndexBySpec(int typeCode, int indexingStrategy, FSIndexComparatorImpl comp) {
+    getIndexesForType(typeCode).removeIndexExcludingType(indexingStrategy, comp);
   }
   
   public TypeSystemImpl getTypeSystemImpl() {
