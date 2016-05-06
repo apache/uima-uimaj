@@ -429,6 +429,10 @@ public class TypeSystemTest extends TestCase {
     assertTrue(this.ts.subsumes(annotType, tokenType));
     assertTrue(!this.ts.subsumes(tokenType, annotType));
     assertTrue(!this.ts.subsumes(tokenType, top));
+
+    Type stringType = this.ts.getType(CAS.TYPE_NAME_STRING);
+    Type substringType = this.ts.getType(CASTestSetup.GROUP_1);
+    assertTrue(this.ts.subsumes(stringType, substringType));
   }
 
   /**
@@ -552,6 +556,46 @@ public class TypeSystemTest extends TestCase {
       assertTrue(false);
     }
   }
+  
+  public void testSerializeParameterizedArrayTypeSystem() {
+    
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    try {
+      TypeSystem2Xml.typeSystem2Xml(ts, os);
+    } catch (SAXException e) {
+      assertTrue(false);
+    } catch (IOException e) {
+      assertTrue(false);
+    }
+    try {
+      os.close();
+    } catch (IOException e) {
+      assertTrue(false);
+    }
+    InputStream is = new ByteArrayInputStream(os.toByteArray());
+//    System.out.println(os.toString());
+    XMLInputSource xis = new XMLInputSource(is, new File("."));
+    Object descriptor = null;
+    try {
+      descriptor = UIMAFramework.getXMLParser().parse(xis);
+    } catch (InvalidXMLException e) {
+      assertTrue(false);
+    }
+    // instantiate CAS to get type system. Also build style
+    // map file if there is none.
+    TypeSystemDescription tsDesc = (TypeSystemDescription) descriptor;
+    try {
+      tsDesc.resolveImports();
+    } catch (InvalidXMLException e) {
+      assertTrue(false);
+    }
+    try {
+      CasCreationUtils.createCas(tsDesc, null, new FsIndexDescription[] {});
+    } catch (ResourceInitializationException e) {
+      assertTrue(false);
+    }
+  }
+  
 
   public static void main(String[] args) {
     junit.textui.TestRunner.run(TypeSystemTest.class);
