@@ -25,16 +25,20 @@ import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
 
+/**
+ * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
+ */
 class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
   // We use TOP instead of T because the 
   // signature of getting a "matching" element limits the type to the declared type, and 
   // in UIMA we can use, say an Annotation instance as a moveTo arg, for a navSet of some subtype of Annotation.
-  final private NavigableSet<FeatureStructure> navSet;  // == fsSortIndex.getNavigableSet()
+  final private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
   
-  final private FsIndex_set_sorted<T> fsSetSortIndex;
+  final private FsIndex_set_sorted<T> fsSetSortIndex;  // only for ll_getIndex, backwards compatibility
   
   private T currentElement;
   
@@ -50,13 +54,14 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
    */
   private boolean isCurrentElementFromLastGet = false;
 
-  private Iterator<T> iterator; 
+  private Iterator<T> iterator; // changes according to direction, starting point, etc.
   
-  FsIterator_set_sorted(FsIndex_set_sorted<T> fsSetSortIndex, int[] detectIllegalIndexUpdates, int typeCode, Comparator<FeatureStructure> comp) {
-    super(detectIllegalIndexUpdates, typeCode, comp);
+  FsIterator_set_sorted(FsIndex_set_sorted<T> fsSetSortIndex, TypeImpl ti, Comparator<FeatureStructure> comp) {
+    super(ti, comp);
     this.fsSetSortIndex = fsSetSortIndex;
-    this.navSet = (NavigableSet<FeatureStructure>) fsSetSortIndex.getNavigableSet();
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getNavigableSet(); // cast to TOP to allow keys outside of range of returned values
     iterator = (Iterator<T>) navSet.iterator();  // can't use fsSortIndex.iterator - that recursively calls this
+    resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
   }
 
   @Override
@@ -64,16 +69,18 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
 
   @Override
   public void moveToFirst() {
-    resetConcurrentModification();
-    iterator = (Iterator<T>) navSet.iterator();
+//    fsSetSortIndex.maybeProcessBulkAdds();
+    iterator = (Iterator<T>) navSet.iterator();  // in case iterator was reverse, etc.
+    resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     isGoingForward = true;
     isCurrentElementFromLastGet = false;
   }
 
   @Override
   public void moveToLast() {
-    resetConcurrentModification();
+//    fsSetSortIndex.maybeProcessBulkAdds();
     iterator =  (Iterator<T>) navSet.descendingIterator();
+    resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     isGoingForward = false;
     isCurrentElementFromLastGet = false;
   }
@@ -88,7 +95,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   
   @Override
   public void moveToNextNvc() { 
-    checkConcurrentModification();
+//    checkConcurrentModification();  // skip this check because the Treeset has its own 
     if (isGoingForward) {
       if (isCurrentElementFromLastGet) {
         isCurrentElementFromLastGet = false;
@@ -102,7 +109,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
         currentElement = iterator.next();  // need current value to do reverse iterator starting point
       }
       assert(currentElement != null);
-      iterator = (Iterator<T>) navSet.tailSet(currentElement, false).iterator();
+      iterator = (Iterator<T>) navSet.tailSet((TOP)currentElement, false).iterator();
       isGoingForward = true;
       isCurrentElementFromLastGet = false;
     }
@@ -114,8 +121,14 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     if (!isValid()) {
       return;
     }
+    
+    moveToPreviousNvc();
+  }
+  
+  @Override
+  public void moveToPreviousNvc() {
 
-    checkConcurrentModification();
+//  checkConcurrentModification();  // skip this check because the Treeset has its own 
     if (!isGoingForward) {
       if (isCurrentElementFromLastGet) {
         isCurrentElementFromLastGet = false;
@@ -129,7 +142,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
         currentElement = iterator.next();  // need current value to do reverse iterator starting point
       }
       assert(currentElement != null);
-      iterator = (Iterator<T>) navSet.headSet(currentElement, false).descendingIterator();
+      iterator = (Iterator<T>) navSet.headSet((TOP)currentElement, false).descendingIterator();
       isGoingForward = false;
       isCurrentElementFromLastGet = false;
     }  
@@ -140,7 +153,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     if (!isValid()) {
       throw new NoSuchElementException();
     }
-    checkConcurrentModification();
+//  checkConcurrentModification();  // skip this check because is done on some moves 
     if (!isCurrentElementFromLastGet) {
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
@@ -150,7 +163,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
 
   @Override
   public T getNvc() {
-    checkConcurrentModification();
+//    checkConcurrentModification();  // don't need this check on get, only on some moves?
     if (!isCurrentElementFromLastGet) {
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
@@ -163,7 +176,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
    */
   @Override
   public FsIterator_set_sorted<T> copy() {
-    return new FsIterator_set_sorted<T>(this.fsSetSortIndex, this.detectIllegalIndexUpdates, typeCode, this.comparator);
+    return new FsIterator_set_sorted<T>(this.fsSetSortIndex, ti, this.comparator);
   }
 
   /**
@@ -178,39 +191,58 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     TOP fs = (TOP) fsIn;
     isGoingForward = true;
     isCurrentElementFromLastGet = false;
-    currentElement = null;
-    resetConcurrentModification();    
-    Iterator<T> it = (Iterator<T>) navSet.headSet(fs, false).descendingIterator();
-
+    currentElement = null;   
+//    fsSetSortIndex.maybeProcessBulkAdds();  // not needed, always done due to previous size() call when creating iterator    
+    Iterator<T> it = (Iterator<T>) navSet.headSet(fs, false).descendingIterator();  // may have a bunch of equal (using withoutID compare) at end
+    // last element in headSet is 1 before the one LE fs.
+    //   define "target element" to be the found in the search
+    //                           the last element in the headSet if was "inclusive" mode
+    //     target element is LE fs including id compare
+    //       not including ID compare: target element is LE fs, maybe more likely equal
+    //     last element for "exclusive":
+    //       target if target is LT,
+    //       one before target if EQ 
+    //   by including ID, sometimes last element may be EQ to target
+   
     // if the 1st previous element doesn't exist, then start at the first element 
     if (!it.hasNext()) {
       moveToFirst();
       return;
     }
     
-    // it iterator is valid.  Move backwards until either hit the end or find element not equal
-    T elementBefore = null;
+    // iterator is valid.  Move backwards until either hit the end or find element not equal
+    TOP elementBefore = null;
     boolean comparedEqual = false;  // value is ignored, but needed for Java compile
-    while (it.hasNext() && 
-           (comparedEqual = (0 == comparator.compare(elementBefore = it.next(), fs))));     
-    
+    while (it.hasNext()) {
+      comparedEqual = (0 == ((OrderedFsSet_array)navSet).comparatorWithoutID.compare(elementBefore = (TOP)it.next(), fs));
+      if (!comparedEqual) {
+        break;
+      }
+    }
+           
     if (comparedEqual) { // then we ran off the end
       moveToFirst();
       return;
     }
     
     iterator = (Iterator<T>) navSet.tailSet(elementBefore, false).iterator();
+    resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     return;
   }
   
   @Override
   public int ll_indexSize() {
-    return fsSetSortIndex.size();
+    return navSet.size();
   }
   
   @Override
   public LowLevelIndex<T> ll_getIndex() {
     return fsSetSortIndex;
+  }
+  
+  @Override
+  protected int getModificationCountFromIndex() {
+    return ((OrderedFsSet_array)navSet).getModificationCount();
   }
 }
 
