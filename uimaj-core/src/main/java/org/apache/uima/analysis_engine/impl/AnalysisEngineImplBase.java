@@ -372,7 +372,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     getCasManager().releaseCas(cas);
 
     TypeImpl t = ts.getType(aTypeName);
-    return (t == null) ? null : t.getFeatureImpls().stream().map(f -> f.getShortName()).toArray(size -> new String[size]);
+    return (t == null) ? null : t.getFeaturesAsStream().map(f -> f.getShortName()).toArray(size -> new String[size]);
   }
 
   /*
