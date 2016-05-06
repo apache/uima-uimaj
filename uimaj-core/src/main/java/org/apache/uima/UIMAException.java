@@ -88,6 +88,7 @@ public class UIMAException extends Exception implements I18nExceptionI {
    */
   public UIMAException(Throwable aCause) {
     super(aCause);
+    mCause = aCause;
     if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
       I18nExceptionI cause = (I18nExceptionI)aCause;
       mMessageKey = cause.getMessageKey();
@@ -131,7 +132,7 @@ public class UIMAException extends Exception implements I18nExceptionI {
    */
   public UIMAException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
           Throwable aCause) {
-    super();
+    super(aCause);
     this.mResourceBundleName = aResourceBundleName;
     this.mMessageKey = aMessageKey;
     this.mArguments = aArguments;
