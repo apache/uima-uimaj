@@ -60,8 +60,11 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	/** Error accessing type system: the type system has not been committed. */
 	public static final String TYPESYSTEM_NOT_LOCKED = "TYPESYSTEM_NOT_LOCKED";
-
-	/** Can't create FS of type "{0}" until the type system has been committed. */
+	
+	/** Can''t add an array type "{0}" to the type system after the type system has been committed. */
+  public static final String ADD_ARRAY_TYPE_AFTER_TS_COMMITTED = "ADD_ARRAY_TYPE_AFTER_TS_COMMITTED";
+  
+	/** Can''t create FS of type "{0}" until the type system has been committed. */
 	public static final String CREATE_FS_BEFORE_TS_COMMITTED = "CREATE_FS_BEFORE_TS_COMMITTED";
 	
   /** Cannot request the Java Class for a UIMA type before type system commit **/
