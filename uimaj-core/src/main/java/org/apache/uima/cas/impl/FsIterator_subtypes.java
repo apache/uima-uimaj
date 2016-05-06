@@ -51,31 +51,6 @@ public abstract class FsIterator_subtypes<T extends FeatureStructure> implements
   public int ll_indexSize() {
     return ll_getIndex().size();
   }
-
-  final static FsIterator_subtypes<TOP> FS_ITERATOR_EMPTY = new FsIterator_subtypes<TOP>(null) {
-    @Override
-    public boolean isValid() {return false;}
-    @Override
-    public TOP get() throws NoSuchElementException { throw new NoSuchElementException(); }
-    @Override
-    public TOP getNvc() { throw new NoSuchElementException(); }
-    @Override
-    public void moveToNext() {}
-    @Override
-    public void moveToNextNvc() {}
-    @Override
-    public void moveToPrevious() {}
-    @Override
-    public void moveToFirst() {}
-    @Override
-    public void moveToLast() {}
-    @Override
-    public void moveTo(FeatureStructure fs) {}
-    @Override
-    public FSIterator<TOP> copy() { return this; }
-    @Override
-    public int ll_indexSize() { return 0; }    
-  };
   
   @Override
   public String toString() {

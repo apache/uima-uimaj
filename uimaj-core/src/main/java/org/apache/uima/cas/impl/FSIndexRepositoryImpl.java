@@ -1390,7 +1390,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     getAllIndexedFS(type, iteratorList);
     final int iteratorListSize = iteratorList.size();
     if (iteratorListSize == 0) {
-      return (LowLevelIterator<T>) FsIterator_subtypes.FS_ITERATOR_EMPTY;
+      return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
     }
     if (iteratorListSize == 1) {
       return iteratorList.get(0);
