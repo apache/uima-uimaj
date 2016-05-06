@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
 public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
@@ -94,24 +93,31 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
     //           xxx[] is the supertype of FSArray
     // (this second relation because all we can generate are instances of FSArray
     // and we must be able to assign them to xxx[] )
+    //   *** Correction: there is a way to generate instances of xxx[] - via ll_createArray and CASImpl.createTempArray ***
     
     
     final TypeImpl superType = this;
     final int superTypeCode = getCode();
     
     if (superTypeCode == fsArrayTypeCode) {
-      return !subType.isPrimitiveArrayType();
+      return !subType.isPrimitiveArrayType();    // primitive 
     }
     
     if (subType.getCode() == fsArrayTypeCode) {
-      return superTypeCode == arrayBaseTypeCode ||
+      return superTypeCode == arrayBaseTypeCode ||  // this subsumes FSArray only if this is arrayBaseTypeCode, or 
+                                                    //       this is some Array of specific FSs (seems wrong)
              !isPrimitiveArrayType();
     }
 
-    // at this point, we could have arrays of other primitive types, or
-    // arrays of specific types: xxx[]
-
-    // If both types are arrays, simply compare the components.
+    // at this point, the super type and the subtype are 
+    //  both arrays, 
+    //  not fsArrays
+    //  not equal
+    
+    if (superType.isPrimitiveArrayType() || subType.isPrimitiveArrayType()) {
+      return false; 
+    }
+    
     return getComponentType().subsumes(subType.getComponentType());
  
 //    } else if (isSubArray) {
@@ -120,5 +126,16 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
 //      return superTypeCode == topTypeCode || superTypeCode == arrayBaseTypeCode;
 //    }
         
+  }
+ 
+  /**
+   * @return true if this array type is a subtype of FSArray over a specific feature structure (other than TOP, or 
+   *              one of the primitives)
+   */
+  @Override
+  public boolean isTypedFsArray() {
+    return componentType.isRefType && 
+           componentType.getCode() != fsArrayTypeCode && 
+           componentType.getCode() != topTypeCode;
   }
 }
