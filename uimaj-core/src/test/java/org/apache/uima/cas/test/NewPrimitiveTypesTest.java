@@ -381,14 +381,14 @@ public class NewPrimitiveTypesTest extends TestCase {
     // clone it
     AnnotationFS clone = (AnnotationFS) fs.clone();
 
-    // subsitute the clone for the original in the index,
+    // substitute the clone for the original in the index,
     // and validate that it was correctly copied
     englishView.removeFsFromIndexes(fs);
     englishView.addFsToIndexes(clone);
     validateFSData(cas);
 
     // editing the original FS should not change the clone
-    englishView.removeFsFromIndexes(fs);
+    englishView.removeFsFromIndexes(fs);  // does nothing, is not in the index, the clone is
     fs.setStringValue(stringFeature, "foo");
     fs.setFloatValue(floatFeature, -1f);
     fs.setByteValue(byteFeature, (byte) -1);
@@ -397,7 +397,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setLongValue(longFeature, -1);
     fs.setDoubleValue(doubleFeature, -1);
     fs.setBegin(clone.getBegin() + 1);  // to be sure that fs is beyond the original
-    englishView.addFsToIndexes(fs);
+    englishView.addFsToIndexes(fs);  // will add, is no longer "equal" to the clone
     validateFSData(cas);
   }
 
