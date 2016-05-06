@@ -42,7 +42,7 @@ import org.apache.uima.cas.Type;
 class FsIterator_aggregation_common<T extends FeatureStructure> 
           implements LowLevelIterator<T> {
   
-  final private FSIterator<T>[] iterators;
+  final private FSIterator<T>[] iterators; // not just for single-type iterators
   
   private int lastValidIndex;
   
@@ -117,7 +117,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     }
     
     FSIterator<T> it = iterators[lastValidIndex];
-    it.moveToNext();
+    it.moveToNextNvc();
 
     if (it.isValid()) {
       return;
@@ -161,8 +161,14 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
       return;
     }
     
+    moveToPreviousNvc();
+  }
+  
+  @Override
+  public void moveToPreviousNvc() {
+    
     FSIterator<T> it = iterators[lastValidIndex];
-    it.moveToPrevious();
+    it.moveToPreviousNvc();
 
     if (it.isValid()) {
       return;
