@@ -65,6 +65,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -92,7 +93,6 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.util.Misc;
 
 import com.strobel.assembler.metadata.Buffer;
 import com.strobel.assembler.metadata.ITypeLoader;
@@ -160,7 +160,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // private static final int INVALID_TYPE_CODE = 0;
   private static final int LEAST_FEATURE_CODE = 1;
   
-  private static final String ARRAY_TYPE_SUFFIX = "[]";
+  static final String ARRAY_TYPE_SUFFIX = "[]";
   
   /**
    * HEAP_STORED_ARRAY flag is kept for ser/deserialization compatibility
@@ -302,7 +302,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
          
          final TypeImpl_javaObject javaObjectType;   // for Map, List, etc.
          final TypeImpl_array javaObjectArrayType;   // for arrays of these
-         final TypeImpl listBaseType;
+         final TypeImpl      listBaseType;
   public final TypeImpl_list intListType;
   public final TypeImpl_list floatListType;
   public final TypeImpl_list stringListType;
@@ -358,9 +358,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * value is the corresponding TypeImpl
    * 
    * When multiple type systems are being initialized in parallel, this list maybe updated
-   * on different threads.  Access to it is synchronized.
+   * on different threads.  Access to it is synchronized on the object itself
    */
-  private final List<TypeImpl> jcasRegisteredTypes = Collections.synchronizedList(new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES));
+  private final List<TypeImpl> jcasRegisteredTypes = new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES);
   /**
    * An ArrayList, unsynchronized, indexed by feature code, of FeatureImpl objects
    */
@@ -900,7 +900,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return
    */
   static SlotKind getSlotKindFromType(Type rangeType) {
-    SlotKind slotKind = slotKindsForNonArrays.get(rangeType.getName());
+    SlotKind slotKind = rangeType.isStringOrStringSubtype() 
+                         ? Slot_StrRef 
+                         : slotKindsForNonArrays.get(rangeType.getName());
     return (null == slotKind) ? Slot_HeapRef : slotKind; 
   }
 
@@ -1059,16 +1061,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }
     
     if (superType.isArray()) {
-      return ((TypeImpl_array)superType).subsumes((TypeImpl)subType);
+      return ((TypeImpl_array)superType).subsumes((TypeImpl)subType);  // doesn't need to be committed
     }
         
     if (subType == fsArrayType) {
       return superType == topType || 
              superType == arrayBaseType; 
     }
-
-    // at this point, we could have arrays of other primitive types, or
-    // arrays of specific types: xxx[]
 
     if (subType.isArray()) {
       // If the subtype is an array, and the supertype is not, then the
@@ -1078,7 +1077,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
     return ((TypeImpl)subType).hasSupertype((TypeImpl) superType);
   }
-
 
 //  /**
 //   * Get the overall number of features defined in the type system.
@@ -1330,13 +1328,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param nextR - the next available slot to use - for ref style items
    */
   private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
+    List<FeatureImpl> tempIntFis = new ArrayList<>();
+    List<FeatureImpl> tempRefFis = new ArrayList<>();
     if (ti != topType) {
-      ti.initAdjOffset2FeatureMaps();
+      ti.initAdjOffset2FeatureMaps(tempIntFis, tempRefFis);
     }
     
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
       fi.setAdjustedOffset(fi.isInInt ? nextI : nextR);
-      ti.setOffset2Feat(fi, fi.isInInt ? (nextI++) : (nextR++));
+      ti.setOffset2Feat(tempIntFis, tempRefFis, fi, fi.isInInt ? (nextI++) : (nextR++));
       if (((TypeImpl)fi.getRange()).isLongOrDouble) {
         nextI ++;
       }        
@@ -1344,6 +1344,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
     ti.nbrOfUsedIntDataSlots = nextI;
     ti.nbrOfUsedRefDataSlots = nextR;
+    
+    ti.setStaticMergedIntFeaturesList(tempIntFis.toArray(new FeatureImpl[tempIntFis.size()]));
+    ti.setStaticMergedRefFeaturesList(tempRefFis.toArray(new FeatureImpl[tempRefFis.size()]));
+    
+//    ti.hasOnlyInts = ti.nbrOfUsedIntDataSlots > 0 && ti.nbrOfUsedRefDataSlots == 0;
+//    ti.hasOnlyRefs = ti.nbrOfUsedRefDataSlots > 0 && ti.nbrOfUsedIntDataSlots == 0;
+//    ti.hasNoSlots = ti.nbrOfUsedIntDataSlots == 0 && ti.nbrOfUsedRefDataSlots == 0;
     
     for (TypeImpl sub : ti.getDirectSubtypes()) {
       computeAdjustedFeatureOffsets(sub, nextI, nextR);
@@ -1513,11 +1520,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
   /**
    * Add an array type.  This is called for builtin array types, and when processing a Feature specification
-   * that represents an FSArray
+   * that represents an FSArray of a particular type
    * @param componentType the component type
    * @return a TypeImplArray 
    */
   TypeImpl_array addArrayType(Type componentType, SlotKind slotKind, boolean isHeapStoredArray, Class<?> javaClass) {
+    if (isCommitted()) {
+      throw new CASRuntimeException(CASRuntimeException.ADD_ARRAY_TYPE_AFTER_TS_COMMITTED, 
+          componentType.getName() + TypeSystemImpl.ARRAY_TYPE_SUFFIX);
+    }
     String arrayTypeName = getArrayTypeName(componentType.getName());
     // either fsArray or TOP
     TypeImpl supertype = computeArrayParentFromComponentType(componentType); 
@@ -2121,9 +2132,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return it;
   }
   
-  public List<FeatureImpl> getFeatureImpls() {
-    return this.features;
-  }
+//  public List<FeatureImpl> getFeatureImpls() {
+//    return this.features;
+//  }
   
   /**
    * 
@@ -2301,12 +2312,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     sb.append("TypeSystem committed?: ").append(isCommitted()).append('\n');
     sb.append("jcasRegisteredTypes:\n");
     // dump 5 at a time, use temp stringbuilder to avoid issues with users that wrap System.err
-     for (int i = 0; i < jcasRegisteredTypes.size(); i++) {
-      TypeImpl ti = jcasRegisteredTypes.get(i);
-      sb.append(String.format("%4d: ", i));
-      sb.append((ti == null) ? "null" : ti.getName());
-      if (i % 5 == 0) {
-        sb.append('\n');
+    synchronized(jcasRegisteredTypes) {
+      for (int i = 0; i < jcasRegisteredTypes.size(); i++) {
+        TypeImpl ti = jcasRegisteredTypes.get(i);
+        sb.append(String.format("%4d: ", i));
+        sb.append((ti == null) ? "null" : ti.getName());
+        if (i % 5 == 0) {
+          sb.append('\n');
+        }
       }
     }
     System.err.println(sb);
@@ -2335,7 +2348,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    if (typeIndexID == 0 && !ti.getShortName().equals("TOP")) {
 //      System.out.println("debug");
 //    }
-    Misc.setWithExpand(jcasRegisteredTypes, typeIndexID, ti);
+    synchronized (jcasRegisteredTypes) {
+      Misc.setWithExpand(jcasRegisteredTypes, typeIndexID, ti);
+    }
   }
   
   public static final int getTypeClass(TypeImpl ti) { 
@@ -2357,6 +2372,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     case TypeSystemImpl.shortArrayTypeCode: return CASImpl.TYPE_CLASS_SHORTARRAY;
     case TypeSystemImpl.longArrayTypeCode: return CASImpl.TYPE_CLASS_LONGARRAY;
     case TypeSystemImpl.doubleArrayTypeCode: return CASImpl.TYPE_CLASS_DOUBLEARRAY;
+    }
+    
+    if (ti.isStringOrStringSubtype()) {
+      return CASImpl.TYPE_CLASS_STRING;
     }
         
     if (ti.isArray()) {
@@ -2467,12 +2486,29 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * It looks up the offset value in the type system (via a thread-local)
    *
    * hidden parameter: threadLocal value: referencing this type
-   * @return the next available offset
+   * @return the offset in the int or ref data arrays for the named feature
    */
   public static synchronized int getAdjustedFeatureOffset(String featName) {
     TypeImpl type = typeBeingLoadedThreadLocal.get();
     FeatureImpl fi = type.getFeatureByBaseName(featName);
-    return (fi == null) ? -1 : type.getFeatureByBaseName(featName).getAdjustedOffset();
+    return (fi == null) ? -1 : fi.getAdjustedOffset();
+  }
+  
+  /**
+   * When deserializing Xmi and XCAS, Arrays of Feature Structures are encoded as FSArray types, but they
+   * may have a more restrictive typing, e.g. arrays of Annotation, with the type code of Annotation[].
+   * 
+   * This is determined by the range type of the feature referring to the array instance.
+   * 
+   * A fixup is done when one of these feature references is set, that updates the type of the deserialized object
+   * from FSArray to the most restrictive (in case there are multiple refs) array type.
+   */
+  void fixupFSArrayTypes(TypeImpl featRange, TOP arrayFs) {
+    if (featRange.isTypedFsArray()) {
+      if (arrayFs._typeImpl.getComponentType().subsumesStrictly(featRange.getComponentType())) {
+        arrayFs._typeImpl = featRange;  // replace more general type with more specific type
+      }
+    }
   }
 
 }
