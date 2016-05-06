@@ -48,7 +48,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * 
    * This is set up lazily on first need, to avoid extra work when won't be accessed
    */
-  ArrayList<FsIndex_singletype<FeatureStructure>> cachedSubFsLeafIndexes = null;
+  FsIndex_singletype<FeatureStructure>[] cachedSubFsLeafIndexes = null;
   
   // VOLATILE to permit double-checked locking technique
   private volatile boolean isIteratorCacheSetup = false;
@@ -71,14 +71,14 @@ class FsIndex_iicp<T extends FeatureStructure>
     if (!isIteratorCacheSetup) {
       sb.append(" cache not set up yet");
     } else {  
-      int len = Math.min(3,  cachedSubFsLeafIndexes.size());
+      int len = Math.min(3,  cachedSubFsLeafIndexes.length);
       for (int i = 0; i < len; i++) {
-        FsIndex_singletype<FeatureStructure> lii = cachedSubFsLeafIndexes.get(i); 
+        FsIndex_singletype<FeatureStructure> lii = cachedSubFsLeafIndexes[i]; 
         sb.append("  cache ").append(i++);
         sb.append("  ").append(lii).append('\n');
       }
-      if (cachedSubFsLeafIndexes.size() > 3) {
-        sb.append(" ... and " + (cachedSubFsLeafIndexes.size() - 3) + " more\n");
+      if (cachedSubFsLeafIndexes.length > 3) {
+        sb.append(" ... and " + (cachedSubFsLeafIndexes.length - 3) + " more\n");
       }
     }
     return sb.toString();
@@ -145,7 +145,7 @@ class FsIndex_iicp<T extends FeatureStructure>
       final ArrayList<FsIndex_singletype<FeatureStructure>> tempSubIndexCache = new ArrayList<FsIndex_singletype<FeatureStructure>>();
       sortedTypeCodes = (indexKind == FSIndex.SORTED_INDEX) ? new int[size] : null;
 
-      initOneType(rootType, tempSubIndexCache, indexKind);
+      initOneTypeThenAllSubtypes(rootType, tempSubIndexCache, indexKind);
       
       
 //      Stream<TypeImpl> typePlusSubtypes = (indexKind == FSIndex.DEFAULT_BAG_INDEX) 
@@ -167,7 +167,7 @@ class FsIndex_iicp<T extends FeatureStructure>
 //                                         }
 //                                         tempSubIndexCache.add(singleIndex);});
  
-      this.cachedSubFsLeafIndexes = tempSubIndexCache; 
+      this.cachedSubFsLeafIndexes = tempSubIndexCache.toArray(new FsIndex_singletype[tempSubIndexCache.size()]); 
       if (this.getIndexingStrategy() == FSIndex.SORTED_INDEX) {
         Arrays.sort(sortedTypeCodes);
       }
@@ -176,7 +176,13 @@ class FsIndex_iicp<T extends FeatureStructure>
     }  // end of synchronized block
   }
   
-  private void initOneType(TypeImpl ti, ArrayList<FsIndex_singletype<FeatureStructure>> cache, int indexKind) {
+  /**
+   * This method inits one type then calls itself for all direct subtypes
+   * @param ti
+   * @param cache
+   * @param indexKind
+   */
+  private void initOneTypeThenAllSubtypes(TypeImpl ti, ArrayList<FsIndex_singletype<FeatureStructure>> cache, int indexKind) {
         
     final FsIndex_singletype<FeatureStructure> singleIndex =  fsIndexRepositoryImpl.getIndexBySpec(
            ti.getCode(),
@@ -191,7 +197,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     cache.add(singleIndex);
     if (indexKind != FSIndex.DEFAULT_BAG_INDEX) {
       for (TypeImpl subti : ti.getDirectSubtypes()) {
-        initOneType(subti, cache, indexKind);        
+        initOneTypeThenAllSubtypes(subti, cache, indexKind);        
       }
     }
   }
@@ -206,6 +212,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * @see java.lang.Comparable#compareTo(Object)
    * 
    */
+  @Override
   public int compareTo(FsIndex_iicp<? extends FeatureStructure> cp) {
     final int typeCode1 = ((TypeImpl) this.fsIndex_singletype.getType()).getCode();
     final int typeCode2 = ((TypeImpl) cp.fsIndex_singletype.getType()).getCode();
@@ -223,9 +230,14 @@ class FsIndex_iicp<T extends FeatureStructure>
    * 
    * @return the sum of the sizes of the indexes of the type + all subtypes
    */
+  @Override
   public int size() {
     createIndexIteratorCache();  // does nothing if already created
-    return cachedSubFsLeafIndexes.stream().mapToInt(iicp -> iicp.size()).sum();
+    int size = 0;
+    for (FsIndex_singletype<FeatureStructure> iicp : cachedSubFsLeafIndexes) {
+      size += iicp.size();
+    }
+    return size;
   }
   
   public boolean isEmpty() {
@@ -240,10 +252,10 @@ class FsIndex_iicp<T extends FeatureStructure>
   
   boolean has1OrMoreEntries() {
     createIndexIteratorCache();  // does nothing if already created
-    final ArrayList<FsIndex_singletype<FeatureStructure>> localIc = this.cachedSubFsLeafIndexes;
-    final int len = localIc.size();
+    final FsIndex_singletype<FeatureStructure>[] localIc = this.cachedSubFsLeafIndexes;
+    final int len = localIc.length;
     for (int i = 0; i < len; i++) {
-      if (localIc.get(i).size() > 0) {
+      if (localIc[i].size() > 0) {
         return true;
       };
     }
@@ -260,12 +272,12 @@ class FsIndex_iicp<T extends FeatureStructure>
    * @return a guess at the size, done quickly
    */
   int guessedSize() {
-    final ArrayList<FsIndex_singletype<FeatureStructure>> localIc = this.cachedSubFsLeafIndexes;
-    final int len = localIc.size();
+    final FsIndex_singletype<FeatureStructure>[] localIc = this.cachedSubFsLeafIndexes;
+    final int len = localIc.length;
     final int lim = Math.min(3, len);
     int size = 0;
     for (int i = 0; i < lim; i++) {
-      size += localIc.get(i).size();
+      size += localIc[i].size();
     }
     size += len - lim;
     return size;
@@ -400,16 +412,21 @@ class FsIndex_iicp<T extends FeatureStructure>
   public Type getType() {
     return fsIndex_singletype.getType();
   }
+  
+  int getTypeCode() {
+    return fsIndex_singletype.getTypeCode();
+  }
 
   @Override
   public CASImpl getCasImpl() {
     return fsIndex_singletype.casImpl;
   }
   
+  @Override
   public FSIterator<T> iterator() {
     createIndexIteratorCache();  
    
-    return (cachedSubFsLeafIndexes.size() == 1)
+    return (cachedSubFsLeafIndexes.length == 1)
            ? (FSIterator<T>) fsIndex_singletype.iterator()
            : fsIndex_singletype.isSorted()
              ? new FsIterator_subtypes_ordered<T>(this)
@@ -419,7 +436,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   public FSIterator<T> iteratorUnordered() {
     createIndexIteratorCache();  
     
-    return (cachedSubFsLeafIndexes.size() == 1)
+    return (cachedSubFsLeafIndexes.length == 1)
            ? (FSIterator<T>) fsIndex_singletype.iterator()
            : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).iterators, fsIndex_singletype); 
   }
