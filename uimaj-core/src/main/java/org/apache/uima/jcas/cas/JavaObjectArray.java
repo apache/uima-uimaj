@@ -63,6 +63,9 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
   public JavaObjectArray(JCas jcas, int length) {
     super(jcas);
     theArray = new Object[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
   
   /**
@@ -75,6 +78,9 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
   public JavaObjectArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new Object[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
 

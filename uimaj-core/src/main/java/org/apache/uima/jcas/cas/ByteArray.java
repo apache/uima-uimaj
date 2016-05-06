@@ -60,6 +60,9 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
   public ByteArray(JCas jcas, int length) {
     super(jcas);  
     theArray = new byte[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**
@@ -72,6 +75,9 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
   public ByteArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new byte[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**

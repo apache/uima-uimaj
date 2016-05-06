@@ -60,6 +60,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   public LongArray(JCas jcas, int length) {
     super(jcas);
     theArray = new long[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**
@@ -72,6 +75,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   public LongArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new long[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
   
   /**

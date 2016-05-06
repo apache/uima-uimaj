@@ -64,6 +64,10 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     super(jcas);
     _casView.validateArraySize(length);
     theArray = new TOP[length];
+
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
   
   /**
@@ -77,6 +81,10 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     super(t, c);  
     _casView.validateArraySize(length);
     theArray = new TOP[length];
+    
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
 

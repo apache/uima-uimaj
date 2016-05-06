@@ -60,6 +60,9 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
   public ShortArray(JCas jcas, int length) {
     super(jcas);
     theArray = new short[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**
@@ -72,7 +75,10 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
   public ShortArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new short[length];
-  }
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
+ }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#get(int)

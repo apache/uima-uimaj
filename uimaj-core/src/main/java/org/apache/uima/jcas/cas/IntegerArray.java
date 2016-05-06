@@ -60,6 +60,9 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   public IntegerArray(JCas jcas, int length) {
     super(jcas);
     theArray = new int[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**
@@ -72,6 +75,9 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   public IntegerArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new int[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**

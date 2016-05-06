@@ -61,6 +61,9 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   public DoubleArray(JCas jcas, int length) {
     super(jcas);
     theArray = new double[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
   
   /**
@@ -73,6 +76,9 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   public DoubleArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new double[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**

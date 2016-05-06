@@ -63,6 +63,10 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
   public BooleanArray(JCas jcas, int length) {
     super(jcas);
     theArray = new boolean[length];
+
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
   
   /**
@@ -74,6 +78,9 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
   public BooleanArray(TypeImpl t, CASImpl c, int l) {
     super(t, c);
     theArray = new boolean[l];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
   /**

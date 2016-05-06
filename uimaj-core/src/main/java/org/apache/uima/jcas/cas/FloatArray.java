@@ -60,6 +60,9 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
   public FloatArray(JCas jcas, int length) {
     super(jcas);
     theArray = new float[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
   
   /**
@@ -72,6 +75,9 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
   public FloatArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new float[length];
+    if (CASImpl.traceFSs) {
+      _casView.traceFSCreate(this);
+    }
   }
 
 
