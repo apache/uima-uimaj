@@ -335,7 +335,6 @@ public class CasCopierTest extends TestCase {
     
     // test with using base cas
     
-    // Note that in v3, you cannot create subtypes of AnnotationBase in the base CAS
     destCas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     destCas.setDocumentText(srcCas.getDocumentText());
     copier = new CasCopier(((CASImpl)srcCas).getBaseCAS(), ((CASImpl)destCas).getBaseCAS());
@@ -347,9 +346,8 @@ public class CasCopierTest extends TestCase {
       copy = copier.copyFs(annot);
     } catch (CASRuntimeException e) {
       wascaught = true;
-      assertEquals(e.getMessageKey(), CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS);
     }
-    assertTrue(wascaught);
+    assertFalse(wascaught);
     // verify copy
     CasComparer.assertEquals(annot, copy);
   }
