@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * Performs an ordered iteration among a set of iterators, each one corresponding to
@@ -185,6 +186,11 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       return;
     }
 
+    moveToPreviousNvc();
+  }
+  
+  @Override
+  public void moveToPreviousNvc() {
     final FsIterator_singletype<T> it0 = iterators[0].checkConcurrentModification();
     if (!this.wentForward) {
       it0.moveToPrevious();
