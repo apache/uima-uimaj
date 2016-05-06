@@ -646,7 +646,7 @@ public class SerializationReinitTest extends TestCase {
   int ll_shortarrayfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theShortArrayFeature);
   int ll_longfeatcode = ll_cas.ll_getTypeSystem().ll_getCodeForFeature(theLongFeature);
   
-  for (int cycle=0; cycle<10; cycle+=2) {
+  for (int cycle = 0; cycle < 10; cycle +=2 ) {
     FeatureStructure newFS1 = cas.createFS(theTypeType); 
     newFS1.setIntValue(startFeature, cycle);
     newFS1.setIntValue(endFeature, cycle+1);
@@ -692,7 +692,7 @@ public class SerializationReinitTest extends TestCase {
 
     FSIndex<AnnotationFS> idx = cas.getAnnotationIndex(theTypeType);
     FSIterator<AnnotationFS> iter = idx.iterator();
-    for (int tc=0; tc<cycle+1; tc++) {
+    for (int tc = 0; tc < cycle + 1; tc++) {
       FeatureStructure testFS = iter.get();
       iter.moveToNext();
       assertTrue(tc == testFS.getIntValue(startFeature));
