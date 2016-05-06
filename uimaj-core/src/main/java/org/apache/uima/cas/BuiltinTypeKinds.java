@@ -3,7 +3,7 @@ package org.apache.uima.cas;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.uima.util.Misc;
+import org.apache.uima.internal.util.Misc;
 
 public class BuiltinTypeKinds {
   
