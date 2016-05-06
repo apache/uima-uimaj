@@ -72,9 +72,12 @@ public class CASTestSetup  implements AnnotatorInitializer {
           + SENT_LEN_FEAT;
 
   public static final String TOKEN_FLOAT_FEAT = "tokenFloatFeat";
+  public static final String TOKEN_DOUBLE_FEAT = "tokenDoubleFeat";
+  public static final String TOKEN_LONG_FEAT = "tokenLongFeat";
 
-  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR
-          + TOKEN_FLOAT_FEAT;
+  public static final String TOKEN_FLOAT_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_FLOAT_FEAT;
+  public static final String TOKEN_DOUBLE_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_DOUBLE_FEAT;
+  public static final String TOKEN_LONG_FEAT_Q = TOKEN_TYPE + TypeSystem.FEATURE_SEPARATOR + TOKEN_LONG_FEAT;
 
   public static final String LEMMA_LIST_FEAT = "lemmaList";
 
@@ -120,17 +123,23 @@ public class CASTestSetup  implements AnnotatorInitializer {
   
   /* Types:
    * TOP
-   *   Token  TOKEN_TYPE
-   *     Word
-   *     Separator
-   *     EndOfSentence
+   *   token_type_type 
+   *     Word_type
+   *     Sep_type
+   *     EOS_type
    *   ArrayFSwithSubtype
    *   Annotation
-   *     Sentence
-   *   
+   *     Sentence [SEN_LEN_FEAT(int)
+   *     Token  TOKEN_TYPE [TOKEN_TYPE_FEAT(TOKEN_TYPE_TYPE), TOKEN_FLOAT_FEAT, LEMMA_FEAT(string), LEMMA_LIST_FEAT[stringArray]
+   *   String
+   *     Group1
+   *     Group2
+   *   Lang_pair [LANG1(Group1), LANG2(Group2), DESCR_FEAT(string)  
    */
   public void initTypeSystem(TypeSystemMgr tsm) {
     // Add new types and features.
+    Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
+
     Type topType = tsm.getTopType();
     Type annotType = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
@@ -145,13 +154,15 @@ public class CASTestSetup  implements AnnotatorInitializer {
     tsm.addType(EOS_TYPE, tokenTypeType);
     tsm.addFeature(TOKEN_TYPE_FEAT, tokenType, tokenTypeType);
     tsm.addFeature(TOKEN_FLOAT_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_FLOAT));
+    tsm.addFeature(TOKEN_DOUBLE_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_DOUBLE));
+    tsm.addFeature(TOKEN_LONG_FEAT, tokenType,  tsm.getType(CAS.TYPE_NAME_LONG));
     // Add a type that inherits from IntArray.
     // tsm.addType(INT_ARRAY_SUB, tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY));
     // tsm.addFeature(
     // INT_SUB_NAME,
     // tsm.getType(INT_ARRAY_SUB),
     // tsm.getType(CAS.TYPE_NAME_STRING));
-    tsm.addFeature(LEMMA_FEAT, tokenType, tsm.getType(CAS.TYPE_NAME_STRING));
+    tsm.addFeature(LEMMA_FEAT, tokenType, stringType);
     tsm.addFeature(SENT_LEN_FEAT, tsm.getType(SENT_TYPE), tsm.getType(CAS.TYPE_NAME_INTEGER));
     tsm.addFeature(LEMMA_LIST_FEAT, tsm.getType(TOKEN_TYPE), tsm
             .getType(CAS.TYPE_NAME_STRING_ARRAY));
@@ -160,7 +171,6 @@ public class CASTestSetup  implements AnnotatorInitializer {
     Type langPair = tsm.addType(LANG_PAIR, topType);
     tsm.addFeature(LANG1, langPair, group1);
     tsm.addFeature(LANG2, langPair, group2);
-    Type stringType = tsm.getType(CAS.TYPE_NAME_STRING);
     tsm.addFeature(DESCR_FEAT, langPair, stringType);
     boolean exc = false;
     try {
@@ -178,6 +188,9 @@ public class CASTestSetup  implements AnnotatorInitializer {
       exc = true;
     }
     TestCase.assertTrue(exc);
+    // add IntegerArray[] type before commit for testArrayTypes in TypeSystemTest
+    Type intArrayType = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
+    Type arrayOfIntArray = tsm.getArrayType(intArrayType);
   }
 
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
