@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.uima.util;
+package org.apache.uima.internal.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.function.Runnable_withException;
 
 public class Misc {
 
@@ -292,7 +293,7 @@ public class Misc {
       throw new UIMARuntimeException(UIMARuntimeException.INTERNAL_ERROR);
   }
   
-  public static void assertUie(boolean v, Exception e) {
+  public static void assertUie(boolean v, Throwable e) {
     if (!v) 
       throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
   }
@@ -301,7 +302,7 @@ public class Misc {
     assertUie(false);
   }
   
-  public static void internalError(Exception e) {
+  public static void internalError(Throwable e) {
     assertUie(false, e);
   }
   
@@ -435,6 +436,27 @@ public class Misc {
       return CAS.UIMA_TCAS_PREFIX + className.substring("org.apache.uima.jcas.tcas.".length());
     }
     return className;
+  }
+  
+  public static void timeLoops(String title, int iterations, Runnable_withException r) throws Exception {
+    long shortest = Long.MAX_VALUE;
+    for (int i = 0; i < iterations; i++) {
+      long startTime = System.nanoTime();
+      r.run();
+      long time = (System.nanoTime() - startTime)/ 1000;  // microseconds
+      if (time < shortest) {
+        shortest = time;
+        System.out.format("%s: speed is %,d microseconds on iteration %,d%n", title, shortest, i);
+      }
+    }
+  }
+  
+  public static void sleep(int milliseconds) {
+    try {
+      Thread.sleep(milliseconds);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
   }
 
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
