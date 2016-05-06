@@ -35,6 +35,7 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -291,6 +292,14 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     for (int i = 0; i < 10; i++) {
       processMany(specifier);
     }
+  }
+  
+  // rename to run this in a loop
+  public void tstLoopProcessManyAgg() throws Exception {
+    XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
+    ResourceSpecifier specifier = 
+        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+    Misc.timeLoops("ProcessManyAgg", 1000, () -> processMany(specifier));   
   }
   
   final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
