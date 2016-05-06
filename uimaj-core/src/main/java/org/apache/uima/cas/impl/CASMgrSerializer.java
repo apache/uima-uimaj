@@ -34,8 +34,8 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.SymbolTable;
-import org.apache.uima.util.Misc;
 
 /**
  * Container for serialized CAS typing information. Contains information about the type system, as

@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.apache.uima.cas.function.Consumer_T_withIOException;
 import org.apache.uima.internal.util.Int2ObjHashMap;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Misc;
 
 /**
  * Common de/serialization for plain binary and compressed binary form 4

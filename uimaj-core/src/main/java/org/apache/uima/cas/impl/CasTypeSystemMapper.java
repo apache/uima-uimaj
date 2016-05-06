@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.util.Misc;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * This class gets initialized with two type systems, and then provides 
@@ -213,7 +213,7 @@ public class CasTypeSystemMapper {
         continue;  // no corresponding type in tsTo
       }
       
-      final FeatureImpl[] map1 = map[ti.getCode()] = new FeatureImpl[ti.getFeatureImpls().size()];
+      final FeatureImpl[] map1 = map[ti.getCode()] = new FeatureImpl[ti.getFeatureImpls().length];
       
       for (FeatureImpl fi : ti.getFeatureImpls()) {
         FeatureImpl toFi = toTi.getFeatureByBaseName(fi.getShortName());

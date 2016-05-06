@@ -30,6 +30,7 @@ import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.function.IntConsumer_withIOException;
 import org.apache.uima.cas.impl.CASImpl.FsChange;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -41,7 +42,6 @@ import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.Misc;
 
 /**
  * This object has 2 purposes.
@@ -692,7 +692,7 @@ public class CASSerializer implements Serializable {
         int offset = fm.nextSetBit(0);
         while (offset >= 0) {
           chgMainHeapAddr.add(csds.fs2addr.get(fs) + offset + 1);  // skip over type code);
-          FeatureImpl feat = type.getFeatureImpls().get(offset);
+          FeatureImpl feat = type.getFeatureImpls()[offset];
 
           switch (feat.getSlotKind()) {
           case Slot_Boolean: chgMainHeapValue.add(fs._getBooleanValueNc(feat) ? 1 : 0); break;

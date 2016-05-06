@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Arrays;
 
 import org.apache.uima.internal.util.IntArrayUtils;
-import org.apache.uima.util.Misc;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * the v2 CAS heap - used in modeling some binary (de)serialization

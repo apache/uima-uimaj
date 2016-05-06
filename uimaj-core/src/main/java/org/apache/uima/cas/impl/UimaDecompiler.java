@@ -29,7 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.apache.uima.util.Misc;
+import org.apache.uima.internal.util.Misc;
 
 import com.strobel.assembler.InputTypeLoader;
 import com.strobel.assembler.metadata.Buffer;
