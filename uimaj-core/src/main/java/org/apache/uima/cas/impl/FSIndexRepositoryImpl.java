@@ -50,6 +50,7 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.ObjHashSet;
 import org.apache.uima.jcas.cas.AnnotationBase;
+import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
@@ -1112,15 +1113,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       action.accept(fs);
     }
   }
-  
-  /**
-   * plus means all reachable, plus maybe others not reachable but not yet gc'd
-   * @param action -
-   */
-  public void walkReachablePlusFSsSorted(Consumer<TOP> action) {
-    cas.walkReachablePlusFSsSorted(action);
-  }
-  
+    
   public FsIndex_singletype<TOP> getNonSetSingleIndexForType(int typecode) {
     return getIndexesForType(typecode).getNonSetIndex().fsIndex_singletype;
   }
@@ -1243,13 +1236,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
   
   private <T extends TOP> void addFS_common(T fs, boolean isAddback) {
-    TypeImpl ti = ((FeatureStructureImplC)fs)._typeImpl;
+    TypeImpl ti = ((FeatureStructureImplC)fs)._getTypeImpl();
     final int typeCode = ti.getCode();    
 
     // https://issues.apache.org/jira/browse/UIMA-4099
     // skip test for wrong view if addback, etc.
  
     if (!isAddback && (!IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK) && ti.isAnnotationBaseType()) {
+      Sofa sofa = ((AnnotationBase)fs).getSofa();
+      if (sofa == null) {
+        throw new CASRuntimeException(
+            CASRuntimeException.SOFAREF_NOT_SET, fs.toString(3));            
+      }
       
       // Check that the annotationBase FS is being added to the proper Cas View
       CASImpl indexView = fs._getView();
@@ -1317,14 +1315,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   private static final String getAutoIndexNameForType(Type type) {
-    return "_" + type.getName() + "_GeneratedIndex";
+    return "_" + type.getName() + "_DefaultBagGeneratedIndex";
   }
 
   boolean removeFS_ret(TOP fs, boolean skipBagIndexes) {
     if (skipBagIndexes && !fs._inSetSortedIndex()) {
       return false;
     }
-    final int typeCode = fs._typeImpl.getCode();
+    final int typeCode = fs._getTypeImpl().getCode();
     final IndexesForType i4t = getIndexesForType(typeCode);
     final ArrayList<FsIndex_iicp<TOP>> indexes4type = i4t.indexesForType;
 
@@ -1474,7 +1472,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //   * @return true if this fs is found in a Set or Sorted index.  
 //   */
 //  public boolean isInSetOrSortedIndexInThisView(FeatureStructureImplC fs) {
-//    final TypeImpl ti = fs._typeImpl;
+//    final TypeImpl ti = fs._getTypeImpl();
 //    
 //    final IndexesForType i4t = indexArray[ti.getCode()];
 //    
@@ -1531,7 +1529,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //  boolean removeIfInCorrputableIndexInThisView(FeatureStructure afs) {
 //    return removeFS_ret((TOP) afs, SKIP_BAG_INDEXES);
 ////    TOP fs = (TOP) afs;
-////    TypeImpl ti = fs._typeImpl;
+////    TypeImpl ti = fs._getTypeImpl();
 ////    final IndexesForType i4t = getIndexesForType(ti.getCode());
 //// 
 ////    int si = i4t.aSortedIndex;  
