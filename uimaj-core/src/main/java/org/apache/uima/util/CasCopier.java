@@ -579,7 +579,7 @@ public class CasCopier {
   
       while (it.hasNext()) {
         final TOP fs = it.nextNvc();
-  //      System.out.format("debug  id: %,d  type: %s%n", fs.id(), fs._typeImpl.getShortName());
+  //      System.out.format("debug  id: %,d  type: %s%n", fs.id(), fs._getTypeImpl().getShortName());
   //    Iterator<LowLevelIndex> indexes = srcCasViewImpl.getIndexRepository().ll_getIndexes();
   //    while (indexes.hasNext()) {
   //      LowLevelIndex index = indexes.next();
@@ -771,7 +771,7 @@ public class CasCopier {
       return copy;
     }
 
-    TypeImpl tgtTi = getTargetType(((TOP)srcFs)._typeImpl);
+    TypeImpl tgtTi = getTargetType(((TOP)srcFs)._getTypeImpl());
     if (null == tgtTi) {
       return null; // not in target, no FS to create
     }
@@ -965,7 +965,7 @@ public class CasCopier {
   private TOP copyArray(TOP srcFS) {
     final CommonArray srcCA = (CommonArray) srcFS;
     final int size = srcCA.size();
-    final TypeImpl tgtTi = getTargetType(((TOP)srcFS)._typeImpl);  // could be null for src = e.g. Annotation[]
+    final TypeImpl tgtTi = getTargetType(((TOP)srcFS)._getTypeImpl());  // could be null for src = e.g. Annotation[]
     
     if (tgtTi == null) {
       return null; // can't copy
