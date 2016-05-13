@@ -226,7 +226,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 
 	}
 
-	public Object evaluate(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Object evaluate(int currentFS, LowLevelCAS cas) {
 		String valueType = getValueType();
 		if (CAS.TYPE_NAME_FLOAT.equals(valueType)) {
 			return evaluateAsFloat(currentFS, cas);
@@ -245,7 +246,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Float evaluateAsFloat(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Float evaluateAsFloat(int currentFS, LowLevelCAS cas) {
 		if (currentFS == 0) {
 			return null;
 		}
@@ -314,7 +316,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Float[] evaluateAsFloatArray(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Float[] evaluateAsFloatArray(int currentFS, LowLevelCAS cas) {
 		if (!getValueType().equals(CAS.TYPE_NAME_FLOAT_ARRAY)) {
 			throw new IllegalStateException("Feature path does not denote a float array");
 		}
@@ -402,7 +405,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Integer evaluateAsInt(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Integer evaluateAsInt(int currentFS, LowLevelCAS cas) {
 		if (currentFS == 0) {
 			return null;
 		}
@@ -474,7 +478,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Integer[] evaluateAsIntArray(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Integer[] evaluateAsIntArray(int currentFS, LowLevelCAS cas) {
 		if (!getValueType().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
 			throw new IllegalStateException("Feature path does not denote an int array");
 		}
@@ -572,7 +577,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * @param cas CAS
    * @return A string representation of the leaf value.
    */
-	public String evaluateAsString(int currentFS, LowLevelCAS cas) {
+	@Override
+  public String evaluateAsString(int currentFS, LowLevelCAS cas) {
 		if (currentFS == 0) {
 			return null;
 		}
@@ -652,7 +658,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public String[] evaluateAsStringArray(int currentFS, LowLevelCAS cas) {
+	@Override
+  public String[] evaluateAsStringArray(int currentFS, LowLevelCAS cas) {
 		if (!getValueType().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
 			throw new IllegalStateException("Feature path does not denote a String array");
 		}
@@ -759,7 +766,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * 
    * @return the type for which the last feature in the feature path is defined.
    */
-	public int getFSType() {
+	@Override
+  public int getFSType() {
 		if (this.isSimpleRangeType) {
 			return this.typeCode;
 		}
@@ -780,7 +788,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    *         <li>CAS.TYPE_NAME_FLOAT_ARRAY
    *         </ul>
    */
-	public String getValueType() {
+	@Override
+  public String getValueType() {
 		if (this.valueTypeName == null) {
 			this.valueTypeName = this.childPath.getValueType();
 			if (this.arrayIndex == USE_ALL_ENTRIES) {
@@ -796,7 +805,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		return this.valueTypeName;
 	}
 
-	public String toString() {
+	@Override
+  public String toString() {
 		StringBuilder result = new StringBuilder();
 		if (this.typeNameInSnippet != null) {
 			result.append(this.typeNameInSnippet);
@@ -820,7 +830,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		return result.toString();
 	}
 
-	public void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException {
+	@Override
+  public void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException {
 		if (this.typeNameInSnippet != null) { // if the feature path snippet
 			// defines
 			// its own

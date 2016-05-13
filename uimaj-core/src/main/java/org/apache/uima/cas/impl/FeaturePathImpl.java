@@ -547,15 +547,15 @@ class FeaturePathImpl implements FeaturePath {
     }
     
     if (this.featurePathElementNames.size() == 0) { 
-      targetType = fs._typeImpl;
+      targetType = fs._getTypeImpl();
       return fs;
     }
     
     // we have a feature path that must be evaluated
     
-    if (boundBaseType == null || !boundBaseType.subsumes(fs._typeImpl)) {
+    if (boundBaseType == null || !boundBaseType.subsumes(fs._getTypeImpl())) {
       boundFeatures.clear();  // reset if supplied FS not the one the features were calculated for.
-      boundBaseType = fs._typeImpl;
+      boundBaseType = fs._getTypeImpl();
     }
          
     // set current FS values
@@ -579,7 +579,7 @@ class FeaturePathImpl implements FeaturePath {
          * 
          * So we check if this bound feature is appropriate for the current FS
          */
-        if ( ! ((TypeImpl)targetFeature.getDomain()).subsumes(currentFs._typeImpl)) {
+        if ( ! ((TypeImpl)targetFeature.getDomain()).subsumes(currentFs._getTypeImpl())) {
           setTargetFeature(currentFs, i);
         }
       } else {
@@ -644,10 +644,10 @@ class FeaturePathImpl implements FeaturePath {
   }
 
   private void setTargetFeature(TOP currentFs, int i) {
-    targetFeature = currentFs._typeImpl.getFeatureByBaseName(featurePathElementNames.get(i));
+    targetFeature = currentFs._getTypeImpl().getFeatureByBaseName(featurePathElementNames.get(i));
     if (targetFeature == null) {
       throw new CASRuntimeException(MESSAGE_DIGEST, "INVALID_FEATURE_PATH_FEATURE_NOT_DEFINED", 
-          new Object[] { getFeaturePathString(), currentFs._typeImpl.getName(), this.featurePathElementNames.get(i) });
+          new Object[] { getFeaturePathString(), currentFs._getTypeImpl().getName(), this.featurePathElementNames.get(i) });
     }
     boundFeatures.add(targetFeature);  // cache for future use
   }
