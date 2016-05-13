@@ -82,6 +82,7 @@ public class SerDesTest6 extends TestCase {
   private static long seed;
   // -8,093,220,039,004,886,811
 //  final private static Random random = setRandom(seed = -8093220039004886811L);
+//  final private static Random random = setRandom(seed = -7_080_877_499_529_731_700L);
   final private static Random random = setRandom();
   static {    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed); }
   private final String testDocText = "test document text";
@@ -581,6 +582,7 @@ public class SerDesTest6 extends TestCase {
   
   private void serdesDelta(TTypeSystem m) {
     remoteCas = setupCas(m);  // create empty new CAS with specified type system from m.ts
+    casSrc.reset();
     loadCas(casSrc, mSrc);    // load up the src cas using mSrc spec
     ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);    //src -> serialize -> deserialize -> rmt 
     

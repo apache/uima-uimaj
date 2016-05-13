@@ -254,7 +254,7 @@ public class FeatureStructureTest extends TestCase {
     Annotation fs = cas.getFsFromId(tokId);
     assertTrue(fs == token);
     assertTrue(fs.id() == token.id());
-    assertEquals(ts.annotType, fs._typeImpl);
+    assertEquals(ts.annotType, fs._getTypeImpl());
     assertEquals(fs.getBegin(), 3);
     assertEquals(fs.getEnd(), 5);
     assertEquals(sofa, fs.getSofa());
@@ -283,7 +283,7 @@ public class FeatureStructureTest extends TestCase {
     TOP ttt = cas.getFsFromId(tokId);
     assertTrue(ttt != token);
     assertTrue(ttt.id() == tokId);
-    assertEquals(ttt._typeImpl, tokenTypeType);
+    assertEquals(ttt._getTypeImpl(), tokenTypeType);
     assertTrue(fsa.get(0) == ttt);
     assertTrue(fsl.getHead() == ttt);
     

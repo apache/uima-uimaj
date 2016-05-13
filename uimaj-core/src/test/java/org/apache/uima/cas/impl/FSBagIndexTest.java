@@ -112,8 +112,8 @@ public class FSBagIndexTest extends TestCase {
       r.add(it.get());
       it.moveToNext();
     }
-    Collections.sort(r, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
-    Arrays.sort(ns,  (fs1, fs2) -> Integer.compare(fs1._id,  fs2._id));
+    Collections.sort(r);
+    Arrays.sort(ns);
     assertTrue(Arrays.equals(ns, r.toArray()));
     assertFalse(it.isValid());
   }

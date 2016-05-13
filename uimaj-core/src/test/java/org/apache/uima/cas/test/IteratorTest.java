@@ -715,6 +715,7 @@ public class IteratorTest extends TestCase {
     boolean ok = false;
     try {
       it.moveToNext();
+      it.get();  // for set/sorted, the get does the actual "move" operation
     } catch (ConcurrentModificationException e) {
       ok = true;
     }
@@ -1004,7 +1005,7 @@ public class IteratorTest extends TestCase {
 
     FSIndex<FeatureStructure> setIndex = this.cas.getIndexRepository().getIndex(
         CASTestSetup.ANNOT_SET_INDEX, this.tokenType);
-    FSIterator<FeatureStructure> setIt = setIndex.iterator();
+    FSIterator<FeatureStructure> set_iterator = setIndex.iterator();
     
     FSIndex<AnnotationFS> sortedIndex = this.cas.getAnnotationIndex(this.tokenType);
     FSIterator<AnnotationFS> sortedIt = sortedIndex.iterator();
@@ -1019,9 +1020,9 @@ public class IteratorTest extends TestCase {
     
     // For each index, check that the FSs are actually in the index.
     for (int i = 0; i < fsArray.length; i++) {
-      setIt.moveTo(fsArray[i]);
-      assertTrue(setIt.isValid());
-      assertTrue(setIt.get().equals(fsArray[(i < 90) ? i : 90]));
+      set_iterator.moveTo(fsArray[i]);
+      assertTrue(set_iterator.isValid());
+      assertTrue(set_iterator.get().equals(fsArray[(i < 90) ? i : 90]));
 
       bagIt.moveTo(fsArray[i]);
       assertTrue(bagIt.isValid());
@@ -1049,17 +1050,15 @@ public class IteratorTest extends TestCase {
     for (int i = 0; i < fsArray.length; i++) {
       ir.removeFS(fsArray[i]);
       ir.removeFS(fsArray[i]);  // a 2nd remove should be a no-op https://issues.apache.org/jira/browse/UIMA-2934
-      setIt.moveTo(fsArray[i]);
-      if (setIt.isValid()) {
+      set_iterator.moveTo(fsArray[i]);
+      if (set_iterator.isValid()) {
         int oldRef = this.cas.ll_getFSRef(fsArray[i]);
-        int newRef = this.cas.ll_getFSRef(setIt.get());
+        int newRef = this.cas.ll_getFSRef(set_iterator.get());
         assertTrue(oldRef != newRef);
-        assertTrue(!setIt.get().equals(fsArray[i]));
+        assertTrue(!set_iterator.get().equals(fsArray[i]));
       }
       bagIt.moveTo(fsArray[i]);
-      if (bagIt.isValid()) {
-        assertTrue(!bagIt.get().equals(fsArray[i]));
-      }
+      assertFalse(bagIt.hasNext());
       sortedIt.moveTo(fsArray[i]);
       if (sortedIt.isValid()) {
         assertTrue(!sortedIt.get().equals(fsArray[i]));
@@ -1073,8 +1072,8 @@ public class IteratorTest extends TestCase {
     // All iterators should be invalidated when being reset.
     bagIt.moveToFirst();
     assertFalse(bagIt.isValid());
-    setIt.moveToFirst();
-    assertFalse(setIt.isValid());
+    set_iterator.moveToFirst();
+    assertFalse(set_iterator.isValid());
     sortedIt.moveToFirst();
     assertFalse(sortedIt.isValid());
   }
@@ -1186,10 +1185,13 @@ public class IteratorTest extends TestCase {
     } catch (Exception e) {
       caught = true;
     }
+    if (it.isValid()) {
+      it.isValid(); // debug
+      assertTrue(caught);  // v3: it becomes invalid
+    }
 //    if (caught != true) {
 //      System.out.println("Debug");
 //    }
-    assertTrue(caught);
   }
   
   
