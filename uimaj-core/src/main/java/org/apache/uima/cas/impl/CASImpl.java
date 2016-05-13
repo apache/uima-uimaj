@@ -28,6 +28,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.AbstractCas_ImplBase;
@@ -244,7 +246,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     FsChange(TOP fs) {
       this.fs = fs;
-      TypeImpl ti = fs._typeImpl;
+      TypeImpl ti = fs._getTypeImpl();
       featuresModified = (ti.highestOffset == -1) ? null : new BitSet(ti.highestOffset + 1); 
       arrayUpdates = (ti.isArray()) ? new PositiveIntSet_impl() : null;
     }
@@ -460,6 +462,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // fss
       fsIdGenerator = 0;
       id2fs.clear();
+      baseCAS.resetId2fswInAllViews(); // follows id2fs.clear() above
 
       // index corruption avoidance
       fssTobeAddedback.clear();
@@ -584,6 +587,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   private TypeSystemImpl tsi_local;
+  private ArrayList<Object> id2fsw_local;
 
   // CASImpl(TypeSystemImpl typeSystem) {
   // this(typeSystem, DEFAULT_INITIAL_HEAP_SIZE);
@@ -709,7 +713,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   private void checkInternalCodes(CASMgrSerializer ser) throws CASAdminException {
     if ((ser.topTypeCode > 0)
-        && (ser.topTypeCode != ((TypeImpl) getTypeSystemImpl().getTopType()).getCode())) {
+        && (ser.topTypeCode != topTypeCode)) {
       throw new CASAdminException(CASAdminException.DESERIALIZATION_ERROR);
     }
     if (ser.featureOffsets == null) {
@@ -803,6 +807,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
     } 
     this.getBaseCAS().tsi_local = ts;  
+  }
+  
+  void resetId2fswInAllViews() {
+    final List<CASImpl> sn2v = this.svd.sofaNbr2ViewMap;
+    if (sn2v.size() > 0) {
+      for (CASImpl view : sn2v.subList(1, sn2v.size())) {
+        view.id2fsw_local = this.svd.id2fs.getId2fsw();
+      }
+    } 
+    this.getBaseCAS().id2fsw_local = this.svd.id2fs.getId2fsw();  
+    
   }
   
   @Override
@@ -2258,7 +2273,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public final int ll_getIntValue(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
     if (featureCode == 0) {
-      return fs._typeImpl.getCode(); // case where the type is being requested
+      return fs._getTypeImpl().getCode(); // case where the type is being requested
     }
     FeatureImpl fi = getFeatFromCode_checked(featureCode);
     
@@ -2560,7 +2575,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return true if was removed from one or more indexes
    */
   boolean removeFromIndexAnyView(final TOP fs, FSsTobeAddedback toBeAdded, boolean isSkipBagIndexes) {
-    final TypeImpl ti = ((FeatureStructureImplC)fs)._typeImpl;
+    final TypeImpl ti = ((FeatureStructureImplC)fs)._getTypeImpl();
     if (ti.isAnnotationBaseType()) {
       boolean r = removeAndRecord(fs, 
                                   (FSIndexRepositoryImpl) fs._casView.getIndexRepository(), 
@@ -2622,7 +2637,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     FeatureImpl fi = getFeatFromCode_checked(featureCode);
     
-    if (fs._typeImpl.isArray()) {
+    if (fs._getTypeImpl().isArray()) {
       throw new UnsupportedOperationException("ll_setIntValue not permitted to set a feature of an array");
     }
     SlotKind kind = fi.getSlotKind();
@@ -2704,6 +2719,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   private void switchFsType(TOP fs, int value) {
+//    throw new UnsupportedOperationException();
     // case where the type is being changed
     // if the new type is a sub/super type of the existing type,
     //   some field data may be copied
@@ -2717,10 +2733,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     //
     
-//    boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(), FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
-//    if (!wasRemoved) {
-//      svd.fsTobeAddedbackSingleInUse = false;
-//    }
+    boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(), FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
+    if (!wasRemoved) {
+      svd.fsTobeAddedbackSingleInUse = false;
+    }
     TypeImpl newType = getTypeFromCode_checked(value);
     
     // Measurement - record which type gets switched to which other type
@@ -2730,7 +2746,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     //               value = count
     MeasureSwitchType mst = null;
     if (MEASURE_SETINT) {
-      MeasureSwitchType key = new MeasureSwitchType(fs._typeImpl, newType);
+      MeasureSwitchType key = new MeasureSwitchType(fs._getTypeImpl(), newType);
       synchronized (measureSwitches)  { // map access / updating must be synchronized
         mst = measureSwitches.get(key); 
         if (null == mst) {
@@ -2738,15 +2754,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           mst = key;
         }      
         mst.count ++;
-        mst.newSubsumesOld = newType.subsumes(fs._typeImpl);
-        mst.oldSubsumesNew = fs._typeImpl.subsumes(newType);
+        mst.newSubsumesOld = newType.subsumes(fs._getTypeImpl());
+        mst.oldSubsumesNew = fs._getTypeImpl().subsumes(newType);
       }
     }
 
-    if (newType.getJavaClass() == fs._typeImpl.getJavaClass() ||
-        newType.subsumes(fs._typeImpl)) {
+    if (newType.getJavaClass() == fs._getTypeImpl().getJavaClass() ||
+        newType.subsumes(fs._getTypeImpl())) {
       // switch in place
-      fs._typeImpl = newType;
+      fs._setTypeImpl(newType);
       return;
     }
     
@@ -2754,9 +2770,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     //   deviate a bit from V2 behavior
     //   and skip copying the feature slots
     boolean isOkToCopyFeatures = // true ||  // debug 
-                                 fs._typeImpl.subsumes(newType) ||
-                                 newType.subsumes(fs._typeImpl);
-//      throw new CASRuntimeException(CASRuntimeException.ILLEGAL_TYPE_CHANGE, newType.getName(), fs._typeImpl.getName());
+                                 fs._getTypeImpl().subsumes(newType) ||
+                                 newType.subsumes(fs._getTypeImpl());
+//      throw new CASRuntimeException(CASRuntimeException.ILLEGAL_TYPE_CHANGE, newType.getName(), fs._getTypeImpl().getName());
     TOP newFs = createFsWithExistingId(newType, fs._id);  // updates id -> fs map
     // initialize fields:
     if (isOkToCopyFeatures) { 
@@ -2772,7 +2788,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     //   universal indirection - very inefficient, so just accept for now
     long st = System.nanoTime();
     walkReachablePlusFSsSorted(fsItem -> {
-      if (fsItem._typeImpl.hasRefFeature) {
+      if (fsItem._getTypeImpl().hasRefFeature) {
         if (fsItem instanceof FSArray) {
           TOP[] a = ((FSArray)fsItem)._getTheArray();
           for (int i = 0; i < a.length; i++) {
@@ -2783,7 +2799,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           return;
         }
       
-        final int sz = fsItem._typeImpl.nbrOfUsedRefDataSlots;
+        final int sz = fsItem._getTypeImpl().nbrOfUsedRefDataSlots;
         for (int i = 0; i < sz; i++) {
           Object o = fsItem._getRefValueCommon(i);
           if (o == fs) {
@@ -2990,7 +3006,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   private final void checkFsRefConditions(int fsRef, int featureCode) {
     TOP fs = getFsFromId_checked(fsRef);
-    checkLowLevelParams(fs, fs._typeImpl, featureCode);  // checks type has feature
+    checkLowLevelParams(fs, fs._getTypeImpl(), featureCode);  // checks type has feature
 
     TypeSystemImpl tsi = getTypeSystemImpl();
     FeatureImpl fi = tsi.getFeatureForCode_checked(featureCode);
@@ -4280,8 +4296,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
     
   public <T extends TOP> T getFsFromId(int id) {
-    return this.svd.id2fs.getWithMissingIsNull(id);
+    if (null == id2fsw_local) {
+      id2fsw_local = this.svd.id2fs.getId2fsw();
+    }
+    if (id < 1 || id >= id2fsw_local.size()) {
+      return null;
+    }    
+    Object o = id2fsw_local.get(id);
+    if (o == null) { 
+      return null;
+    }
+    if (o instanceof TOP) {
+      return (T) o; 
+    }
+    return (T) ((WeakReference)o).get();  // could return null if fs is gc'd    
   }
+  
   
   /**
    * plus means all reachable, plus maybe others not reachable but not yet gc'd
@@ -4450,7 +4480,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public static CommonArray copyArray(TOP srcArray) {
     CommonArray srcCA = (CommonArray) srcArray;
-    CommonArray copy = (CommonArray) srcArray._casView.createArray(srcArray._typeImpl, srcCA.size());
+    CommonArray copy = (CommonArray) srcArray._casView.createArray(srcArray._getTypeImpl(), srcCA.size());
     copy.copyValuesFrom(srcCA); 
     return copy;
   }
@@ -4492,15 +4522,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     
     svd.id2addr.add(svd.nextId2Addr);
-    svd.nextId2Addr += fs._typeImpl.getFsSpaceReq((TOP)fs);
+    svd.nextId2Addr += fs._getTypeImpl().getFsSpaceReq((TOP)fs);
     traceFSfs(fs);
     svd.traceFSisCreate = true;
-    if (fs._typeImpl.isArray()) {
+    if (fs._getTypeImpl().isArray()) {
       b.append(" l:").append(((CommonArray)fs).size());
-    }
-    int addr = svd.id2addr.get(fs._id);
-    if (addr > 190000 && addr < 200000 && fs._typeImpl.getShortName().equals("Passage")) {
-      traceOut.println("Passage callback: " + Misc.getCallers(3, 10));
     }
   }
   
@@ -4514,7 +4540,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     b.append(" v:").append(Misc.elide(viewName, 8));
     b.append(" i:").append(String.format("%-5s", geti2addr(fs._id)));
-    b.append(" t:").append(Misc.elide(fs._typeImpl.getShortName(), 10));    
+    b.append(" t:").append(Misc.elide(fs._getTypeImpl().getShortName(), 10));    
   }
   
   private FeatureImpl prevFi;
@@ -4566,7 +4592,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //      new Throwable().printStackTrace(traceOut);
 //    }
     // debug
-//    if (fs._typeImpl.getShortName().equals("Passage") &&
+//    if (fs._getTypeImpl().getShortName().equals("Passage") &&
 //        "score".equals(fn) && 
 //        debug2cnt < 5) {
 //      debug2cnt++;
