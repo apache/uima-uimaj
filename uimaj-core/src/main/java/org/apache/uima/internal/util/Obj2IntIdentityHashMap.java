@@ -164,28 +164,10 @@ public class Obj2IntIdentityHashMap<T> {
   }
   
   public void clear() {
-    // see if size is less than the 1/2 size that triggers expansion
-    if (size <  (sizeWhichTriggersExpansion >>> 1)) {
-      // if 2nd time then shrink by 50%
-      //   this is done to avoid thrashing around the threshold
-      if (secondTimeShrinkable) {
-        secondTimeShrinkable = false;
-        final int currentCapacity = getCapacity();
-        final int newCapacity = Math.max(initialCapacity, currentCapacity >>> 1);
-        if (newCapacity < currentCapacity) { 
-          newTable(newCapacity);  // shrink table by 50%
-        } else { // don't shrink below minimum
-          resetArray();
-        }
-        return;
-        
-      } else {
-        secondTimeShrinkable = true;
-      }
-    } else {
-      secondTimeShrinkable = false; // reset this to require 2 triggers in a row
-    }
-   resetArray();
+    secondTimeShrinkable = Misc.maybeShrink(
+        secondTimeShrinkable, size, getCapacity(), 2, initialCapacity,
+        newCapacity -> newTable(newCapacity),
+        () -> resetArray());
   }
 
   /** 

@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.regex.Pattern;
 
 import org.apache.uima.UIMARuntimeException;
@@ -459,6 +460,34 @@ public class Misc {
     }
   }
 
+  public static boolean maybeShrink(
+      boolean secondTimeShrinkable, 
+      int size, 
+      int capacity, 
+      int factor, 
+      int minCapacity,
+      IntConsumer realloc,
+      Runnable reset) {
+
+    if (size < (capacity >> factor)) {
+      if (secondTimeShrinkable) {
+        int newCapacity = Math.max(minCapacity, capacity >> 1);
+        if (newCapacity < capacity) {
+          realloc.accept(newCapacity);
+        } else {
+          reset.run();
+        }
+        return false;       
+      } else {
+        reset.run();
+        return true;
+      }
+    } else {
+      reset.run();
+      return false;  
+    }
+  }
+  
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
 //  try {
