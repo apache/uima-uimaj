@@ -23,6 +23,7 @@ import org.apache.uima.UIMARuntimeException;
 
 /**
  * Runtime exception class for package org.apache.uima.cas.
+ * Messages in org.apache.uima.UIMAException_Messages
  */
 public class CASRuntimeException extends UIMARuntimeException {
 
@@ -161,7 +162,10 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** No sofaFS for specified sofaRef found. */
 	public static final String SOFAREF_NOT_FOUND = "SOFAREF_NOT_FOUND";
 
-	/** Can''t use standard set methods with SofaFS features. */
+  /** Sofa reference for FS {0} is required, but it is not set.  This can happen during deserialization when the type system changes where this FeatureStructure''s type definition is now a subtype of uima.cas.AnnotationBase but was not when the serialized form was created.*/
+  public static final String SOFAREF_NOT_SET= "SOFAREF_NOT_SET";
+
+  /** Can''t use standard set methods with SofaFS features. */
 	public static final String PROTECTED_SOFA_FEATURE = "PROTECTED_SOFA_FEATURE";
 
 	/** The JCAS cover class "{0}" could not be loaded. */
