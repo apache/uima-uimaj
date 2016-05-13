@@ -20,6 +20,7 @@ package org.apache.uima.cas.test;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -27,7 +28,11 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
+import org.apache.uima.cas.impl.TypeSystemConstants;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -62,6 +67,18 @@ public class IndexRepositoryTest extends TestCase {
     cas = null;
     typeSystem = null;
     indexRep = null;
+  }
+  
+  public void testMissingSofaRef() throws Exception {
+    JCas jcas = cas.getJCas();
+    Annotation a = new Annotation(jcas, 0, 4);
+    try {
+      jcas.addFsToIndexes(a);
+    } catch (CASRuntimeException e) {
+      assertEquals("SOFAREF_NOT_SET", e.getMessageKey());
+      return;
+    }
+    fail("required exception not thrown"); // fail
   }
   
   public void testDefaultBagIndex() throws Exception {
@@ -123,11 +140,13 @@ public class IndexRepositoryTest extends TestCase {
    * @throws CASException
    */
   public void testDupFsIndex() throws CASException {
+    cas.setSofaDataString("something", "text"); // otherwise triggers failure in addFsToIndex - no sofa ref
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
     cas.addFsToIndexes(a);
     cas.addFsToIndexes(a);
-    int expected = /*FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES ? 2 :*/ 1;
+    cas.addFsToIndexes(a);
+    int expected = /*FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES ? 4 :*/ 2;
     assertEquals(expected, cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_SORT_INDEX).size());
     assertEquals(expected, cas.getIndexRepository().getIndex(CASTestSetup.ANNOT_BAG_INDEX).size());
     assertEquals(expected, cas.getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX).size());
