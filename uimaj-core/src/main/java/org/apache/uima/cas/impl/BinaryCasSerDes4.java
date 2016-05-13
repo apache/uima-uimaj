@@ -615,7 +615,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //      if (isDelta) {
 //        // debug
 //        for (TOP fs : csds.sortedFSs) {
-//          System.out.format("debug heapAddr: %,d type: %s%n", csds.fs2addr.get(fs), fs._typeImpl.getShortName());
+//          System.out.format("debug heapAddr: %,d type: %s%n", csds.fs2addr.get(fs), fs._getTypeImpl().getShortName());
 //          if (csds.fs2addr.get(fs) == 439) {
 //            System.out.println("debug");
 //          }
@@ -714,7 +714,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }  
 
     private void writeFs(TOP fs) throws IOException {
-      TypeImpl type = fs._typeImpl;
+      TypeImpl type = fs._getTypeImpl();
       int typeCode = type.getCode();
       writeVnumber(typeCode_dos, typeCode);
       
@@ -803,7 +803,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       if (length == 0) {
         return;
       }
-      final TypeImpl type = fs._typeImpl;
+      final TypeImpl type = fs._getTypeImpl();
       
       // output values
 
@@ -1240,7 +1240,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       if (isDelta && !mark.isNew(fs)) {
         return;
       }
-      TypeImpl type = fs._typeImpl;
+      TypeImpl type = fs._getTypeImpl();
      
       if (type.isArray()) {
         if (type.getComponentSlotKind() == SlotKind.Slot_StrRef) {
@@ -1263,7 +1263,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      */
     private void extractStringsFromModifications(FsChange fsChange) {
       final TOP fs = fsChange.fs;
-      final TypeImpl type = fs._typeImpl;
+      final TypeImpl type = fs._getTypeImpl();
       if (fsChange.arrayUpdates != null) {
         if (type.getComponentSlotKind() == SlotKind.Slot_StrRef) {
           String[] sa = ((StringArray)fs)._getTheArray();  
@@ -1320,7 +1320,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         for (FsChange fsChange : fsChanges) {
 
           TOP fs = fsChange.fs;
-          TypeImpl ti = fs._typeImpl;
+          TypeImpl ti = fs._getTypeImpl();
           final int addr = csds.fs2addr.get(fs);
           // write out the address of the modified FS
           writeVnumber(fsIndexes_dos, addr - iPrevAddr);
@@ -1347,7 +1347,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         final TOP fs = fsChange.fs;
         
         if (fsChange.arrayUpdates == null) {
-          FeatureImpl[] features = fs._typeImpl.getFeatureImpls();
+          FeatureImpl[] features = fs._getTypeImpl().getFeatureImpls();
           int iPrevOffsetInFs = 0;
           final BitSet bs = fsChange.featuresModified;
           for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i+1)) {
@@ -1414,7 +1414,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           }  // end of looping for all modified slots in this FS
         } else { // end of processing of features
           // heap stored arrays
-          TypeImpl type = fs._typeImpl;
+          TypeImpl type = fs._getTypeImpl();
           SlotKind kind = type.getComponentSlotKind();
           int kindi = kind.ordinal();
           
@@ -1457,7 +1457,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       private void writeAuxHeapMods(FsChange fsChange) throws IOException {
         final TOP fs = fsChange.fs;
-        final TypeImpl type = fs._typeImpl;
+        final TypeImpl type = fs._getTypeImpl();
         
         int iPrevOffset = 0;
         
@@ -2404,7 +2404,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           
           TOP fs = csds.addr2fs.get(iHeap);
           assert(fs != null);
-          TypeImpl type = fs._typeImpl;
+          TypeImpl type = fs._getTypeImpl();
                     
           final int numberOfModsInThisFs = readVnumber(fsIndexes_dis); 
   
@@ -3138,7 +3138,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     csds.setup();
     
     for (TOP fs : csds.getSortedFSs()) {
-//      System.out.format("debug heapAddr: %,d type: %s%n", csds.fs2addr.get(fs), fs._typeImpl.getShortName());
+//      System.out.format("debug heapAddr: %,d type: %s%n", csds.fs2addr.get(fs), fs._getTypeImpl().getShortName());
       if (csds.fs2addr.get(fs) == 439) {
         System.out.format("debug, fs: %s%n", fs);
       }

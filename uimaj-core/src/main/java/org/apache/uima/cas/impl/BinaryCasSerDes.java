@@ -325,7 +325,7 @@ public class BinaryCasSerDes {
      * @param heapAddr - 
      */
     private void maybeRemove(int heapAddr) {
-      TypeImpl type = fs._typeImpl;
+      TypeImpl type = fs._getTypeImpl();
       boolean wasRemoved;
       if (!type.isArray()) {
         FeatureImpl feat = type.getFeatureImpls()[heapAddr - fsStartAddr - 1];
@@ -1231,9 +1231,6 @@ public class BinaryCasSerDes {
     final boolean isMarkSet = mark != null;
 
     if (isMarkSet) {
-      if (csds.getHeapEnd() == 0) {
-        System.out.println("debug");
-      }
       csds.setup(mark.getNextFSId(), csds.getHeapEnd()); 
     } else {
       csds.clear();
@@ -1269,7 +1266,7 @@ public class BinaryCasSerDes {
    * @param isMarkSet true if mark is set, used to compute first 
    */
   private void extractFsToV2Heaps(TOP fs, boolean isMarkSet, Obj2IntIdentityHashMap<TOP> fs2addr) {
-    TypeImpl type = fs._typeImpl;
+    TypeImpl type = fs._getTypeImpl();
     // pos is the pos in the new heaps; for delta it needs adjustment if written out  
     int pos = heap.add(getFsSpaceReq(fs, type), type.getCode());  
 
@@ -1642,7 +1639,7 @@ public class BinaryCasSerDes {
    */
   private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue, Int2ObjHashMap<TOP> addr2fs) {
     TOP fs = bds.fs;
-    TypeImpl type = fs._typeImpl;
+    TypeImpl type = fs._getTypeImpl();
     if (type.isArray()) {
       // only heap stored arrays have mod updates.  
       final int hsai = slotAddr - bds.fsStartAddr - arrayContentOffset;  // heap stored array index

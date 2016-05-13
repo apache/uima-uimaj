@@ -704,7 +704,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    
     for (TOP fs : fssToSerialize) {
 
-      final TypeImpl srcType = fs._typeImpl;
+      final TypeImpl srcType = fs._getTypeImpl();
       final int tCode = srcType.getCode();
       final TypeImpl tgtType = isTypeMapping ? typeMapper.mapTypeSrc2Tgt(srcType) : srcType;
       assert(null != tgtType); // because those are not put on queue for serialization
@@ -758,7 +758,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
           
   private void serializeArray(TOP fs) throws IOException {
-    final TypeImpl_array arrayType = (TypeImpl_array) fs._typeImpl;
+    final TypeImpl_array arrayType = (TypeImpl_array) fs._getTypeImpl();
     CommonArray a = (CommonArray) fs;
     final SlotKind arrayElementKind = arrayType.getComponentSlotKind();
 
@@ -887,7 +887,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     case Slot_Byte:      byte_dos.write(fs._getByteValueNc(feat));                                       break;
     case Slot_StrRef:    writeString(fs._getStringValueNc(feat));                                        break;
     case Slot_LongRef:
-      final TypeImpl ti = fs._typeImpl;
+      final TypeImpl ti = fs._getTypeImpl();
       final int offset = feat.getOffset();
       final long prevLong = getPrevLongValue(ti.getCode(), offset);
       final long vLong = fs._getLongValueNc(feat);
@@ -911,7 +911,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     final int prev = getPrevIntValue(fs._getTypeCode(), feat.getOffset());
     writeDiff(kind.ordinal(), newValue, prev);
     if (isUpdatePrevOK) {
-      updatePrevIntValue(fs._typeImpl, feat.getOffset(), newValue);
+      updatePrevIntValue(fs._getTypeImpl(), feat.getOffset(), newValue);
     }
   }
   
@@ -1368,7 +1368,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //      System.out.println("Enter addModifiedStrings");
       for (FsChange changedFs : modifiedFSs) {
         final TOP fs = (TOP) changedFs.fs;
-        final TypeImpl srcType = fs._typeImpl;
+        final TypeImpl srcType = fs._getTypeImpl();
         if (isTypeMapping && null == typeMapper.mapTypeSrc2Tgt(srcType)) {
           continue; // skip this fs - it's not in target type system
         }
@@ -1390,7 +1390,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         } else {
           final BitSet featuresModified = changedFs.featuresModified;
           int next = featuresModified.nextSetBit(0);
-          FeatureImpl[] feats = fs._typeImpl.getFeatureImpls();
+          FeatureImpl[] feats = fs._getTypeImpl().getFeatureImpls();
           while (next >= 0) {
             FeatureImpl srcFeat = feats[next];
             // add only those strings in slots that are in target type system
@@ -1413,7 +1413,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       final int splitPoint = mark.nextFSId;
       for (FsChange fsChange : modifiedFSs) {
         final TOP fs = fsChange.fs;
-        final TypeImpl srcType = fs._typeImpl;
+        final TypeImpl srcType = fs._getTypeImpl();
         if (isTypeMapping && typeMapper.mapTypeSrc2Tgt(srcType) == null) {
           continue;  // skip - type is not in target
         }
@@ -1467,7 +1467,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      */
     private void writeModsForOneFs(FsChange fsChange) throws IOException {
       TOP fs = fsChange.fs;
-      TypeImpl ti = fs._typeImpl;
+      TypeImpl ti = fs._getTypeImpl();
 
       if (fsChange.arrayUpdates != null) {
         int prevIndex = 0;
@@ -1862,7 +1862,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         int v = readDiff(Slot_Int, prev);
         prev = v;
         if (0 == i && isUpdatePrevOK && storeIt) {
-          updatePrevArray0IntValue(ia._typeImpl, v);
+          updatePrevArray0IntValue(ia._getTypeImpl(), v);
         }
         if (storeIt) {
           ia.set(i, v);
@@ -1897,7 +1897,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           final int v = readDiff(Slot_HeapRef, prev);
           prev = v;
           if (0 == i && isUpdatePrevOK && storeIt) {
-            updatePrevArray0IntValue(fsa._typeImpl, v);
+            updatePrevArray0IntValue(fsa._getTypeImpl(), v);
           }
           if (storeIt) {
             final int locali = i;
@@ -2434,7 +2434,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           Misc.internalError();
         }
         
-        TypeImpl srcType = fs._typeImpl;
+        TypeImpl srcType = fs._getTypeImpl();
 //        typeInfo = ts.getTypeInfo(tCode);
 //        if (isTypeMapping) {
 //          tgtF2srcF = typeMapper.getTgtFeatOffsets2Src(tCode);
@@ -2807,7 +2807,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     final int id = fs._id;
     
     if (!isSerializingDelta || mark.isNew(fs)) { // separately track items below the line
-       if (!foundFSsBitset.get(id)) {
+      if (!foundFSsBitset.get(id)) {
         foundFSsBitset.set(id);
         toBeScanned.add(fs);
       }
@@ -2820,7 +2820,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
   
   private boolean isTypeInTgt(TOP fs) {
-    return !isTypeMapping || (null != typeMapper.mapTypeSrc2Tgt(fs._typeImpl));
+    return !isTypeMapping || (null != typeMapper.mapTypeSrc2Tgt(fs._getTypeImpl()));
   }
   
 //  private boolean isTypeInTgt(int typecode) {
@@ -2850,7 +2850,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       return;
     }
   
-    final TypeImpl srcType = fs._typeImpl;
+    final TypeImpl srcType = fs._getTypeImpl();
     for (FeatureImpl srcFeat : srcType.getFeatureImpls()) {
       if (isTypeMapping) {
         FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
@@ -2877,7 +2877,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     // for delta serialization - the iterator is only for things above the line.
 
     for (TOP fs : fssToSerialize) {
-      TypeImpl srcType = fs._typeImpl;
+      TypeImpl srcType = fs._getTypeImpl();
       TypeImpl tgtType = isTypeMapping ? typeMapper.mapTypeSrc2Tgt(srcType) : srcType;
       final boolean isIncludedType = (tgtType != null);
       
@@ -2916,7 +2916,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       return;
     }
     
-    for (FeatureImpl fi : fs._typeImpl.getFeatureImpls()) {
+    for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
       if (fi.getRange() instanceof TypeImpl_string) {
         os.add(fs._getStringValueNc(fi));
       }
@@ -2983,13 +2983,15 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         c1FoundFSs = fssToSerialize;  // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
 
         isTypeMapping = false;   // when scanning CAS2, don't use type mapping
-
         srcTs = ts2;
+        
         processIndexedFeatureStructures(c2, false);
-        isTypeMapping = savedIsTypeMapping;
+        
+        isTypeMapping = savedIsTypeMapping;  // restore
+        srcTs = ts1; 
+
         c2FoundFSs = fssToSerialize; // all reachable FSs in cas 2
 
-        srcTs = ts1; 
         // if type systems are "isEqual()" still need to map because of feature validation testing
           
         int i1 = 0;
@@ -2997,9 +2999,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         final int sz1 = c1FoundFSs.size();
         final int sz2 = c2FoundFSs.size();
         
-        isSrcCas = true;
+        isSrcCas = true;   // avoids sorting on types/features not present in ts2
         sort(c1FoundFSs);
-        isSrcCas = false;
+        
+        isSrcCas = false;  // avoids sorting on types/features not present in ts1
         sort(c2FoundFSs);
         prevCompare.clear();
         
@@ -3009,8 +3012,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           
           if (isTypeMapping) {
             // skip compares for types that are missing in the other type system
-            final boolean typeMissingIn1 = typeMapper.mapTypeTgt2Src(fs2._typeImpl) == null;
-            final boolean typeMissingIn2 = typeMapper.mapTypeSrc2Tgt(fs1._typeImpl) == null;
+            final boolean typeMissingIn1 = typeMapper.mapTypeTgt2Src(fs2._getTypeImpl()) == null;
+            final boolean typeMissingIn2 = typeMapper.mapTypeSrc2Tgt(fs1._getTypeImpl()) == null;
             if (!typeMissingIn1 && !typeMissingIn2) {
               if (!compareFss()) {
                 return false;
@@ -3058,7 +3061,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
           while (i2 < sz2) {
             TOP fs = c2FoundFSs.get(i2);
-            if (isTypeMapping && typeMapper.mapTypeTgt2Src(fs._typeImpl) != null) {  // not a complete test, misses refs
+            if (isTypeMapping && typeMapper.mapTypeTgt2Src(fs._getTypeImpl()) != null) {  // not a complete test, misses refs
               return false;  // have more FSs in c2 than in c1
             }
             i2++;
@@ -3081,8 +3084,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
 
     private boolean compareFss() {
-      TypeImpl ti1 = fs1._typeImpl;
-      TypeImpl ti2 = fs2._typeImpl;  // even if not type mapping, may be "equal" but not ==
+      TypeImpl ti1 = fs1._getTypeImpl();
+      TypeImpl ti2 = fs2._getTypeImpl();  // even if not type mapping, may be "equal" but not ==
       
       if (isTypeMapping) {
         if (ti1 != typeMapper.mapTypeTgt2Src(ti2)) {
@@ -3126,7 +3129,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         return mismatchFs();
       }
       
-      TypeImpl ti = fs1._typeImpl;
+      TypeImpl ti = fs1._getTypeImpl();
       SlotKind kind = ti.getComponentSlotKind();
       
       switch(kind) {
@@ -3318,7 +3321,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         
     private void sort(List<TOP> fss) {
       prevCompare.clear();
-      Collections.sort(fss,  (fs1, fs2) -> sortCompare(fs1, fs2));
+      Collections.sort(fss,  (afs1, afs2) -> sortCompare(afs1, afs2));
     }
     
     /**
@@ -3335,8 +3338,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      */
     private int sortCompare(TOP scFs1, TOP scFs2) {
       // sort by type code first
-      final TypeImpl fs1Type = scFs1._typeImpl;
-      int c = fs1Type.getName().compareTo(scFs2._typeImpl.getName());
+      final TypeImpl fs1Type = scFs1._getTypeImpl();
+      int c = fs1Type.getName().compareTo(scFs2._getTypeImpl().getName());
       if (c != 0) return c;
       
       // same type: compare on features, or if array, on length, then content
@@ -3847,7 +3850,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   private int getTgtSeqFromSrcFS(TOP fs) {
     if (null == fs) return 0;
     if (isTypeMapping) {
-      if (typeMapper.mapTypeSrc2Tgt(fs._typeImpl) == null) {
+      if (typeMapper.mapTypeSrc2Tgt(fs._getTypeImpl()) == null) {
         return 0;
       }
     }
