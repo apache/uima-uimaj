@@ -145,7 +145,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
    */
   public final CASImpl _casView;  
   
-  public TypeImpl _typeImpl;  // experiment : support switching the type
+  private TypeImpl _typeImpl;  //for backwards compatibility and deser typed arrays: support switching the type
   
   // Called only to generate a dummy value for the REMOVED flag in bag indexes
 
@@ -1401,5 +1401,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 //  private void _setRefDataArrayOffset(int v) {
 //    _flags = (_flags & ~bitMaskRefOffset) | v << shiftRefOffset;
 //  }
+
+  public TypeImpl _getTypeImpl() {
+    return _typeImpl;
+  }
+  
+  protected void _setTypeImpl(TypeImpl ti) {
+    _typeImpl = ti;
+  }
+  
 
 }
