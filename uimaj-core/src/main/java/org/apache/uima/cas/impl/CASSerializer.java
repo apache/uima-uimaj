@@ -428,9 +428,9 @@ public class CASSerializer implements Serializable {
     // because the output is only the new elements, this populates the arrays with only the new elements
     //   Note: all heaps reserve slot 0 for null, real data starts at position 1
     final CommonSerDesSequential csds = cas.getCsds(); 
-    if (csds.getHeapEnd() == 0) {
-      System.out.println("debug");
-    }
+//    if (csds.getHeapEnd() == 0) {
+//      System.out.println("debug");
+//    }
     scanAllFSsForBinarySerialization(bcsd, mark, csds); // populates the arrays
 
     try {
@@ -617,7 +617,7 @@ public class CASSerializer implements Serializable {
     final Obj2IntIdentityHashMap<TOP> fs2addr = csds.fs2addr;
     for (FsChange fsChange : fssModified) {
       final TOP fs = fsChange.fs;
-      final TypeImpl type = fs._typeImpl;
+      final TypeImpl type = fs._getTypeImpl();
       if (fsChange.arrayUpdates != null) {
         switch(type.getComponentSlotKind()) {
         

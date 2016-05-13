@@ -135,14 +135,14 @@ public class CommonSerDesSequential {
     baseCas.walkReachablePlusFSsSorted(fs -> {
       addFS(fs, nextAddr[0]);
       if (TRACE_SETUP) {
-        System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs.id(), nextAddr[0], fs._typeImpl.getShortName());
+        System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs.id(), nextAddr[0], fs._getTypeImpl().getShortName());
       }
-      nextAddr[0] += BinaryCasSerDes.getFsSpaceReq(fs, fs._typeImpl);  
+      nextAddr[0] += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  
     }, fromId);
     heapEnd = nextAddr[0];
-    if (heapEnd == 0) {
-      System.out.println("debug");
-    }
+//    if (heapEnd == 0) {
+//      System.out.println("debug");
+//    }
   }
   
   /**

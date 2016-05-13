@@ -675,7 +675,7 @@ public class CasSerializerSupport {
         }
       
         if (isFiltering) {
-          String typeName = fs._typeImpl.getName();
+          String typeName = fs._getTypeImpl().getName();
           if (filterTypeSystem.getType(typeName) == null) {
             return -1; // this type is not in the target type system
           }
@@ -705,7 +705,7 @@ public class CasSerializerSupport {
       if (!alreadySet) {
         typeUsed.set(typeCode);
 
-        String typeName = fs._typeImpl.getName();
+        String typeName = fs._getTypeImpl().getName();
         XmlElementName newXel = csss.uimaTypeName2XmiElementName(typeName);
 
         if (!needNameSpaces) {
@@ -832,7 +832,7 @@ public class CasSerializerSupport {
 
         for (TOP elem : theArray) {
           if (isFiltering &&
-              (null == filterTypeSystem.getType(elem._typeImpl.getName()))) {
+              (null == filterTypeSystem.getType(elem._getTypeImpl().getName()))) {
             continue;  // skip because not in filter type system
           }
           if (elem != null) {
@@ -846,7 +846,7 @@ public class CasSerializerSupport {
       
       boolean insideListNode = fs instanceof CommonList;
 
-      for (FeatureImpl fi : fs._typeImpl.getFeatureImpls()) {
+      for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
         if (isFiltering && filterTypeSystem.getFeatureByFullName(fi.getName()) == null) { 
           // skip features that aren't in the target type system
             continue;
@@ -1011,13 +1011,7 @@ public class CasSerializerSupport {
 //      }
 //      return r;
 //    }
-  
-    private int compareInts(int i1, int i2) {
-      return (i1 == i2) ? 0 :
-             (i1 >  i2) ? 1 : -1;
-    }
-    
-        
+          
     /** 
      * Called for JSon Serialization
      * Sort a view, by type and then by begin/end asc/des for subtypes of Annotation,
@@ -1026,7 +1020,7 @@ public class CasSerializerSupport {
     public final Comparator<TOP> sortFssByType = 
         new Comparator<TOP>() {
           public int compare(TOP fs1, TOP fs2) {
-            int c = Integer.compare(fs1._typeImpl.getCode(), fs2._typeImpl.getCode());
+            int c = Integer.compare(fs1._getTypeImpl().getCode(), fs2._getTypeImpl().getCode());
             if (c != 0) {
               return c;
             }
@@ -1044,7 +1038,7 @@ public class CasSerializerSupport {
               return (c != 0) ? c : Integer.compare(fs2a.getEnd(), fs1a.getEnd()); // reverse order
             }
             // not annotation
-            return compareInts(fs1._id, fs2._id);  // return in @id order
+            return Integer.compare(fs1._id, fs2._id);  // return in @id order
           }
       };
       
@@ -1071,9 +1065,9 @@ public class CasSerializerSupport {
      * @throws SAXException passthru
      */
     public void encodeFS(TOP fs) throws Exception {
-      final int typeCode = fs._typeImpl.getCode();
+      final int typeCode = fs._getTypeImpl().getCode();
 
-      final int typeClass = classifyType(fs._typeImpl);
+      final int typeClass = classifyType(fs._getTypeImpl());
       boolean isIndexId = csss.writeFsStart(fs, typeCode);
       
       if (!isIndexId && multiRefFSs != null && multiRefFSs.contains(fs)) {
@@ -1133,7 +1127,7 @@ public class CasSerializerSupport {
       if (fs == null) {
         return 0;
       }
-      if (isFiltering && null == filterTypeSystem.getType(fs._typeImpl.getName())) { // return as null any references to types not in target TS
+      if (isFiltering && null == filterTypeSystem.getType(fs._getTypeImpl().getName())) { // return as null any references to types not in target TS
           return 0;
       }
       
