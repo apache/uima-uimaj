@@ -2776,6 +2776,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // skip test for wrong view if addback, etc.
     if (!isAddback && (!IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK) && sii.tsi.isAnnotationBaseOrSubtype(typeCode)) {
       final int sofaAddr = cas.getSofaFeat(fsRef);
+      if (sofaAddr == 0) {
+        throw new CASRuntimeException(
+            CASRuntimeException.SOFAREF_NOT_SET, new String[] {
+                ((FeatureStructureImpl)(cas.ll_getFSForRef(fsRef))).toString()});            
+      }
       if (!cas.isSofaView(sofaAddr)) {
         AnnotationBaseImpl fs_abi = new AnnotationBaseImpl(fsRef, cas);
         SofaFS annotSofaFS = cas.getSofa(sofaAddr);
