@@ -588,7 +588,7 @@ public class XCASDeserializer {
     // Create a feature value from a string representation.
     private void handleFeature(TOP fs, String featName, String featVal, boolean lenient)
             throws SAXParseException {
-      Type type = fs._typeImpl;
+      Type type = fs._getTypeImpl();
       handleFeature(type, fs, featName, featVal, lenient);
     }
 

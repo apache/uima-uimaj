@@ -142,7 +142,7 @@ public class XCASSerializer {
       // at this point we don't know if this FS is indexed
       queued.put(fs, NOT_INDEXED);
       queue.push(fs);
-      final int typeClass = classifyType(fs._typeImpl);
+      final int typeClass = classifyType(fs._getTypeImpl());
       if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
         if (mOutOfTypeSystemData != null) {
           enqueueOutOfTypeSystemFeatures(fs);
@@ -363,7 +363,7 @@ public class XCASSerializer {
       for (int i = 0; i < max; i++) {
         TOP fs = indexedFSs.get(i);
         int typeCode = fs._getTypeCode();
-        final int typeClass = classifyType(fs._typeImpl);
+        final int typeClass = classifyType(fs._getTypeImpl());
         if (typeClass == LowLevelCAS.TYPE_CLASS_FS) {
           if (mOutOfTypeSystemData != null) {
             enqueueOutOfTypeSystemFeatures(fs);
@@ -429,7 +429,7 @@ public class XCASSerializer {
       // actually referenced.
       // xmlStack.addAttribute(ID_ATTR_NAME, Integer.toString(fs_id));
       addAttribute(workAttrs, ID_ATTR_NAME, Integer.toString(fs._id));
-      final int typeClass = classifyType(fs._typeImpl);
+      final int typeClass = classifyType(fs._getTypeImpl());
       // Call special code according to the type of the FS (special
       // treatment
       // for arrays).
@@ -508,7 +508,7 @@ public class XCASSerializer {
     }
 
     private void encodeFSArray(FSArray fs, AttributesImpl attrs) throws SAXException {
-      String typeName = fs._typeImpl.getName();
+      String typeName = fs._getTypeImpl().getName();
       final int size = fs.size();
 //      int pos = cas.getArrayStartAddress(fs_id);
       // xmlStack.addAttribute(ARRAY_SIZE_ATTR, Integer.toString(size));
@@ -569,7 +569,7 @@ public class XCASSerializer {
      * Encode features of a regular (non-array) FS.
      */
     private void encodeFeatures(TOP fs, AttributesImpl attrs) {
-      TypeImpl ti = fs._typeImpl;
+      TypeImpl ti = fs._getTypeImpl();
       
       for (FeatureImpl fi : ti.getFeatureImpls()) {
         String attrValue;
@@ -586,7 +586,7 @@ public class XCASSerializer {
     }
 
     private void enqueueFeatures(TOP fs, int heapValue) {
-      TypeImpl ti = fs._typeImpl;
+      TypeImpl ti = fs._getTypeImpl();
       
       for (FeatureImpl fi : ti.getFeatureImpls()) {
         if (fi.getRangeImpl().isRefType) {

@@ -819,7 +819,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return (v == null && (isRefType || isStringOrStringSubtype())) ||
            (v instanceof String && isStringOrStringSubtype()) ||
            ((v instanceof FeatureStructureImplC) &&
-             subsumes( ((FeatureStructureImplC)v)._typeImpl)) ||
+             subsumes( ((FeatureStructureImplC)v)._getTypeImpl())) ||
            this.getCode() == TypeSystemImpl.javaObjectTypeCode;
   }
   

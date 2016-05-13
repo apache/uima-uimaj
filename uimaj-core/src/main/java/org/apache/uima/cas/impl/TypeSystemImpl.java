@@ -2505,8 +2505,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   void fixupFSArrayTypes(TypeImpl featRange, TOP arrayFs) {
     if (featRange.isTypedFsArray()) {
-      if (arrayFs._typeImpl.getComponentType().subsumesStrictly(featRange.getComponentType())) {
-        arrayFs._typeImpl = featRange;  // replace more general type with more specific type
+      if (arrayFs._getTypeImpl().getComponentType().subsumesStrictly(featRange.getComponentType())) {
+        arrayFs._setTypeImpl(featRange);  // replace more general type with more specific type
       }
     }
   }

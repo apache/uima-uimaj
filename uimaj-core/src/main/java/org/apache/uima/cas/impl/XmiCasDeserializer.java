@@ -816,7 +816,7 @@ public class XmiCasDeserializer {
       // Hang on to FS for setting content feature (things coded as child xml elements)
       this.currentFs = fs;
       String attrName, attrValue;
-      final TypeImpl type = fs._typeImpl;
+      final TypeImpl type = fs._getTypeImpl();
       final int typeCode = type.getCode();
 
 //      if (fs instanceof Sofa) {

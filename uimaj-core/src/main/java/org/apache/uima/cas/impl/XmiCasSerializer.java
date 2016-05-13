@@ -878,7 +878,7 @@ public class XmiCasSerializer {
       // // set isSofa flag to apply SofaID mapping and to store sofaNum->xmi:id mapping
       // isSofa = true;
       // }
-      for (final FeatureImpl fi : fs._typeImpl.getFeatureImpls()) {
+      for (final FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
 
         if (cds.isFiltering) {
           // skip features that aren't in the target type system
@@ -1050,7 +1050,7 @@ public class XmiCasSerializer {
           } else {  // not null
             String xmiId = cds.getXmiId(elemFS);
             if (cds.isFiltering) { // return as null any references to types not in target TS
-              String typeName = elemFS._typeImpl.getName();
+              String typeName = elemFS._getTypeImpl().getName();
               if (cds.filterTypeSystem.getType(typeName) == null) {
                 xmiId = "0";
               }

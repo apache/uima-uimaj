@@ -111,8 +111,8 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
      */
     @Override
     public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-      TypeImpl t1 = ((FeatureStructureImplC)fs1)._typeImpl;
-      TypeImpl t2 = ((FeatureStructureImplC)fs2)._typeImpl;
+      TypeImpl t1 = ((FeatureStructureImplC)fs1)._getTypeImpl();
+      TypeImpl t2 = ((FeatureStructureImplC)fs2)._getTypeImpl();
       if (t1 == t2) return 0;
       return Short.compare(this.typeCodeToOrder[t1.getCode()], 
                            this.typeCodeToOrder[t2.getCode()]);
