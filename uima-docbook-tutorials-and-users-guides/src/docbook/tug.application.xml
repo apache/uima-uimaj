@@ -485,17 +485,21 @@ ae.destroy();</programlisting></para>
       <title>Saving CASes to file systems or general Streams</title>
       
       <para>The UIMA framework provides multiple APIs to save and restore the contents of a CAS to streams. 
+      Two common uses of this are to save CASes to the file system, and to send CASes to other processes, running
+      on remote systems.</para>
+      
+      <para>
         The CASes can be serialized in multiple formats:
         <itemizedlist>
           <listitem>
             <para>Binary formats:
               <itemizedlist>
                 <listitem>
-                  <para>plain binary:  This is used to communicate with remote services, and also for interfacing with
+                  <para>plain binary: This is used to communicate with remote services, and also for interfacing with
                   annotators written in C/C++ or related languages via the JNI Java interface, from Java</para>
                 </listitem>
                 <listitem>
-                  <para>Two forms of compressed binary.  The recommend one is form 6, which also allows
+                  <para>Compressed binary: There are two forms of compressed binary.  The recommend one is form 6, which also allows
                   type filtering. See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.compress.overview"/>.</para>
                 </listitem>
               </itemizedlist>
@@ -515,6 +519,141 @@ ae.destroy();</programlisting></para>
         </itemizedlist>
       </para>
       
+      <para>Each of these serializations has different capabilities, summarized in the table below.
+       <table frame="all" id="ugr.tug.tbl.serialization_capabilities">
+          <title>Serialization Capabilities</title>
+          <tgroup cols="7" rowsep="1" colsep="1">
+            <colspec colname="c1"/>
+            <colspec colname="c2"/>
+            <colspec colname="c3"/>
+            <colspec colname="c4"/>
+            <colspec colname="c5"/>
+            <colspec colname="c6"/>
+            <colspec colname="c7"/>
+            <thead>
+              <row>
+                <entry align="center"></entry>
+                <entry align="center">XCAS</entry>
+                <entry align="center">XMI</entry>
+                <entry align="center">JSON</entry>
+                <entry align="center">Binary</entry>
+                <entry align="center">Cmpr 4</entry>
+                <entry align="center">Cmrp 6</entry>
+              </row>
+            </thead>
+            <tbody>
+              <row>
+                <entry>Output</entry>
+                <entry>Output Stream</entry>
+                <entry>Output Stream</entry>
+                <entry>Output Stream, File, Writer</entry>
+                <entry>Output Stream</entry>
+                <entry>Output Stream, Data Output Stream, File</entry>
+                <entry>Output Stream, Data Output Stream, File</entry>
+              </row>
+              <row>
+                <entry>Lists/Arrays inline formatting?</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+              </row>
+              <row>
+                <entry>Formatted?</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+              </row>
+              <row>
+                <entry>Type Filtering?</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+              </row>
+              <row>
+                <entry>Delta Cas?</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+              </row>
+              <row>
+                <entry>OOTS?</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+              </row>
+              <row>
+                <entry>Only send indexed + reachable FSs?</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>send all</entry>
+                <entry>send all</entry>
+                <entry>Yes</entry>
+              </row>
+              <row>
+                <entry>NameSpace/Schemas?</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+              </row>
+            </tbody>
+          </tgroup>
+          
+        </table>
+      </para>
+      
+      <para>In the above table, Cmpr 4 and Cmpr 6 refer to Compressed forms of the serialization.</para>
+      
+      <para>For the XMI and JSON formats, lists and arrays can sometimes be formatted "inline".
+      In this representation, the elements are formatted directly as the value of a particular
+      feature.  This is only done if the arrays and lists are not multiply-referenced.</para>
+      
+      <para>Type Filtering support enables only a subset of the types and/or features to be
+      serialized. An additional type system object is used to specify the types to be included
+      in the serialization.  This can be useful, for instance, when sending a CAS to a remote service,
+      where the remote service only uses a small number of the types and features, to reduce the size
+      of the serialized CAS.</para>
+      
+      <para>Delta Cas support makes use of a "mark" set in the CAS, and only serializes changes in the CAS,
+      both new and modified Feature Structures, that were added or changed after the mark was set.
+      This is useful for remote services, supporting the use-case where a large CAS is sent to the service,
+      which sets the mark in the received CAS, and then adds a small amount of information; 
+      the Delta CAS then serializes only that small amount as the "reply" sent back to the sender.</para>
+      
+      <para>OOTS means "Out of Type System" support, intended to support the use-case where a CAS is being sent
+      to a remote application.  This supports deserializing an incoming CAS where
+      some of the types and/or features may not be present in the receiving CAS's type system.  A "lenient" 
+      option on the deserialization permits the deserialization to proceed, with the out-of-type-system
+      information preserved so that when the CAS is subsequently reserialized (in the use-case, to be 
+      returned back to the sender), the out-of-type-system information is re-merged back into the output stream.
+      </para>
+      
+      <para>The Binary and Compressed Form 4 serializations send all the Feature Structures in the CAS,
+      in the order they were created in the CAS.  The other methods only 
+      send Feature Structures that are reachable, either by 
+      their being in some CAS index, or being referenced 
+      as a feature of another Feature Structure which is reachable.</para>
+      
+      <para>The NameSpace/Schema support allows specifying a set of schemas, each one corresponding to a particular
+      namespace, used in XMI serialization.</para>
       <para>To save an XMI representation of a CAS, use the <literal>serialize</literal> method of the class
         <literal>org.apache.uima.util.XmlCasSerializer</literal>. To save an XCAS representation of a CAS,
         use the class <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
