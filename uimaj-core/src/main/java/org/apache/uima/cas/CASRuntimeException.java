@@ -266,6 +266,15 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** While deserializing, no type found for type code {0}. */
   public static final String deserialized_type_not_found = "deserialized_type_not_found";
   
+  /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+  public static final String FS_NOT_MEMBER_OF_CAS = "FS_NOT_MEMBER_OF_CAS";
+  
+  /** Illegal State - cannot do delta serialization ({0}) of a Cas {1} without a previous deserialize.*/
+  public static final String ILLEGAL_STATE_DELTA_SERIALIZE_WITHOUT_PREVIOUS_DESERIALIZE = "ILLEGAL_STATE_DELTA_SERIALIZE_WITHOUT_PREVIOUS_DESERIALIZE";
+  
+  /** Illegal operation - cannot add Feature Structure {0} to base Cas {1}.*/
+  public static final String ILLEGAL_ADD_TO_INDEX_IN_BASE_CAS = "ILLEGAL_ADD_TO_INDEX_IN_BASE_CAS";
+  
   /**
    * The constructors are organized
    * 
