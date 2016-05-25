@@ -200,6 +200,7 @@ public class Int2ObjHashMap<T> {
   
   public Int2ObjHashMap(Class<T> clazz, int initialCapacity) {
     this.componentType = clazz;
+    initialCapacity = Misc.nextHigherPowerOf2(initialCapacity);
     this.initialCapacity = initialCapacity;
     newTableKeepSize(initialCapacity);
     size = 0;
@@ -218,7 +219,7 @@ public class Int2ObjHashMap<T> {
   private Int2ObjHashMap(Class<T> clazz, int initialCapacity,
     int sizeWhichTriggersExpansion, int size, int[] keys, T [] values) {
     this.componentType = clazz;
-    this.initialCapacity = initialCapacity;
+    this.initialCapacity = Misc.nextHigherPowerOf2(initialCapacity);
     this.sizeWhichTriggersExpansion = sizeWhichTriggersExpansion;
     this.histogram = null;
     this.size = size;

@@ -78,6 +78,7 @@ public class Obj2IntIdentityHashMap<T> {
    */
   public Obj2IntIdentityHashMap(int initialCapacity, Class<T> clazz, T removedMarker) {
     this.componentType = clazz;
+    initialCapacity = Misc.nextHigherPowerOf2(initialCapacity);
     this.initialCapacity = initialCapacity;
     newTableKeepSize(initialCapacity);
     size = 0;
