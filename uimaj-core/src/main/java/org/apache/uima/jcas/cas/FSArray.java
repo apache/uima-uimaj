@@ -20,6 +20,7 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.ArrayFS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -95,7 +96,12 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
-    theArray[i] = (TOP) v;
+    TOP vt = (TOP) v;
+    if (v != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
+    }
+    theArray[i] = vt;
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 

@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -68,7 +69,12 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public TOP getHead() { return _getFeatureValueNc(_FI_head); }
 
   /* setter for head * */
-  public void setHead(TOP v) { _setFeatureValueNcWj(_FI_head, v); }
+  public void setHead(TOP v) {
+    if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
+    }
+    _setFeatureValueNcWj(_FI_head, v); }
 
 //  public void _setHeadNcNj(TOP v) { _F_head = v; }
   
@@ -78,7 +84,12 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public FSList getTail() { return (FSList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(FSList v) { _setFeatureValueNcWj(_FI_tail, v); }
+  public void setTail(FSList v) {
+    if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
+    }
+    _setFeatureValueNcWj(_FI_tail, v); }
    
   @Override
   public void setTail(CommonList v) {

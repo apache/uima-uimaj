@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import java.util.List;
 
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -82,10 +83,16 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   public IntegerList getTail() { return (IntegerList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
-  public void setTail(IntegerList v) { _setFeatureValueNcWj(_FI_tail, v); }
+  public void setTail(IntegerList v) {
+    if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
+    }
+  _setFeatureValueNcWj(_FI_tail, v); 
+  }
   
   @Override
-  public void setTail(CommonList v) { setTail((IntegerList)v); }
+  public void setTail(CommonList v) {setTail((IntegerList)v);}
     
   public void setHead(List<String> stringValues, int i) {
     setHead(Integer.parseInt(stringValues.get(i)));
