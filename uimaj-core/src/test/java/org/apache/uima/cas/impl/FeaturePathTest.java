@@ -417,6 +417,7 @@ public class FeaturePathTest extends TestCase {
             .getValueAsString(cas.getDocumentAnnotation()));
 
       // test coveredText() on root
+      LowLevelCAS llc = cas.getLowLevelCAS();
       path = "/:coveredText()";
       featurePath = new FeaturePathImpl();
       featurePath.initialize(path);
@@ -424,8 +425,10 @@ public class FeaturePathTest extends TestCase {
       featurePath.typeInit(cas.getDocumentAnnotation().getType());
       assertEquals(cas.getDocumentText(), featurePath.getValueAsString(cas
             .getDocumentAnnotation()));
-      assertEquals(cas.getDocumentText(), featurePath.ll_getValueAsString(cas.getLowLevelCAS().ll_getFSRef(
-            cas.getDocumentAnnotation()), cas.getLowLevelCAS()));
+      assertEquals(cas.getDocumentText(), 
+                   featurePath.ll_getValueAsString(
+                       llc.ll_getFSRef(cas.getDocumentAnnotation()), 
+                       llc));
       assertEquals(cas.getDocumentAnnotation().getType(), featurePath.getType(cas.getDocumentAnnotation()));
       assertEquals(TypeClass.TYPE_CLASS_FS, featurePath.getTypeClass(cas.getDocumentAnnotation()));
 
