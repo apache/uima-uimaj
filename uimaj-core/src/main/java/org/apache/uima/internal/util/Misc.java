@@ -30,6 +30,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
@@ -81,6 +82,10 @@ public class Misc {
   private static String formatcaller(StackTraceElement e) {
     String n = e.getClassName();
     return n.substring(1 + n.lastIndexOf('.')) + "." + e.getMethodName() + "[" + e.getLineNumber() + "]";
+  }
+  
+  public static String formatcaller(String className, String methodName, int lineNumber) {
+    return className.substring(1 + className.lastIndexOf('.')) + "." + methodName + "[" + lineNumber + "]";
   }
 
   public static String elide(String s, int n) {
@@ -191,6 +196,12 @@ public class Misc {
     return (i < 1) ? 1 : Integer.highestOneBit(i) << ( (Integer.bitCount(i) == 1 ? 0 : 1));
   }
   
+  /**
+   * Convert an int argument to the next higher power of 2 to the x power
+   * @param i the value to convert
+   * @param x the power of 2 to use
+   * @return the next higher power of 2 to the x, or i if it is already == to 2 to the x
+   */
   static public int nextHigherPowerOfX(int i, int x) {
     int shft = 31 - Integer.numberOfLeadingZeros(x);  // x == 8, shft = 3
     return (i < 1) ? x : ((i+(x - 1)) >>> shft) << shft;
@@ -488,6 +499,14 @@ public class Misc {
     }
   }
   
+  public static <T> Iterable<T> iterable(Iterator<T> iterator) {
+    return new Iterable<T>() {
+      @Override
+      public Iterator<T> iterator() {
+        return iterator;
+      }
+    };
+  }
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
 //  try {
