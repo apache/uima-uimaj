@@ -3,7 +3,8 @@ package org.apache.uima.internal.util;
 public class Pair<T, U> {
 
   public final T t;
-  public final U u;
+  /** updatable but don't update if used as key in hashtable */
+  public U u;  
 
   public Pair(T t, U u) {
     this.t = t;
