@@ -279,7 +279,7 @@ public class FSClassRegistry {
        *   - The second pass performs the conformance checks between the loaded JCas cover classes, and the current type system.
        *     This depends on having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
        */
-      maybeLoadJCasAndSubtypes(ts, ts.topType, ts.jcasClassesInfo[TypeSystemImpl.topTypeCode]);
+      maybeLoadJCasAndSubtypes(ts, ts.topType, ts.jcasClassesInfo[TypeSystemConstants.topTypeCode]);
       checkConformance(ts, ts.topType);
 //      setupGettersSetters(ts, ts.topType, jcasClassesInfo);
     }
@@ -605,7 +605,7 @@ public class FSClassRegistry {
    * @return the info for this JCas that is shared across all type systems under this class loader
    */
   private static JCasClassInfo createJCasClassInfo(Class<?> jcasClass, TypeImpl ti, int jcasType) {
-    boolean noGenerator = ti.getCode() == TypeSystemImpl.sofaTypeCode ||
+    boolean noGenerator = ti.getCode() == TypeSystemConstants.sofaTypeCode ||
                           Modifier.isAbstract(jcasClass.getModifiers()); 
     Object generator = noGenerator ? null : createGenerator(jcasClass, ti.isArray());
     JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, generator, jcasType);

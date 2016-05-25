@@ -1217,10 +1217,10 @@ public class CasSerializerSupport {
    */
   public static final int classifyType(TypeImpl ti) {
     switch (ti.getCode()) {
-    case TypeSystemImpl.intListTypeCode: return TYPE_CLASS_INTLIST;
-    case TypeSystemImpl.floatListTypeCode: return TYPE_CLASS_FLOATLIST;
-    case TypeSystemImpl.stringListTypeCode: return TYPE_CLASS_STRINGLIST;
-    case TypeSystemImpl.fsListTypeCode: return TYPE_CLASS_FSLIST;
+    case TypeSystemConstants.intListTypeCode: return TYPE_CLASS_INTLIST;
+    case TypeSystemConstants.floatListTypeCode: return TYPE_CLASS_FLOATLIST;
+    case TypeSystemConstants.stringListTypeCode: return TYPE_CLASS_STRINGLIST;
+    case TypeSystemConstants.fsListTypeCode: return TYPE_CLASS_FSLIST;
     default : return TypeSystemImpl.getTypeClass(ti);
     }
   }

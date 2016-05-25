@@ -85,7 +85,7 @@ public class XmiCasDeserializer {
   private final static boolean IS_EXISTING_FS = false;
   
   // SofaFS type
-  private final static int sofaTypeCode = TypeSystemImpl.sofaTypeCode;
+  private final static int sofaTypeCode = TypeSystemConstants.sofaTypeCode;
   
   private final static Pattern whiteSpace = Pattern.compile("\\s+");
 
@@ -587,7 +587,7 @@ public class XmiCasDeserializer {
                 doDeferFsOrThrow(idStr, nameSpaceURI, localName, qualifiedName, attrs);              
                 return;  // no further processing of this element when deferred.  Subelements recorded though.
               } else {   
-                if (currentType.getCode() == TypeSystemImpl.docTypeCode) { // documentAnnotation
+                if (currentType.getCode() == TypeSystemConstants.docTypeCode) { // documentAnnotation
                   fs = casView.getDocumentAnnotation(); // gets existing one or creates a new one
                 } else {
                   fs = casView.createFS(currentType);  // not document annotation
@@ -747,7 +747,7 @@ public class XmiCasDeserializer {
 //              // translate sofa's xmi:id into its sofanum
 //              int sofaXmiId = Integer.parseInt(sofa);
 //              int sofaAddr = getFsForXmiId(sofaXmiId);
-//              sofaNum = casBeingFilled.getFeatureValue(sofaAddr, TypeSystemImpl.sofaNumFeatCode);
+//              sofaNum = casBeingFilled.getFeatureValue(sofaAddr, TypeSystemConstants.sofaNumFeatCode);
 //        }
 //      indexRep = (FSIndexRepositoryImpl) indexRepositories.get(sofaNum);
 
@@ -851,7 +851,7 @@ public class XmiCasDeserializer {
       // before looping over all features for this FS, remove this FS if in any index.
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
-      if (!isNewFs || fs._getTypeCode() == TypeSystemImpl.docTypeCode) {   
+      if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {   
         casBeingFilled.removeFromCorruptableIndexAnyView(fs, casBeingFilled.getAddbackSingle());
         // else clause not needed because caller does ll_createFS which sets this anyways
 //      } else {  
@@ -892,7 +892,7 @@ public class XmiCasDeserializer {
         }
       }  // end of all features loop
       
-      if (!isNewFs || fs._getTypeCode() == TypeSystemImpl.docTypeCode) {
+      if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {
         casBeingFilled.addbackSingle(fs);
       }
       
@@ -1003,7 +1003,7 @@ public class XmiCasDeserializer {
      * @throws SAXException - 
      */
     private void handleFeatSingleValue(TOP fs, FeatureImpl fi, String featVal) throws SAXException {
-      if ((fs instanceof AnnotationBase) && (fi.getCode() == TypeSystemImpl.annotBaseSofaFeatCode)) {
+      if ((fs instanceof AnnotationBase) && (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode)) {
         // the sofa feature is set when the FS is created, can't be set separately
         return;
       }
@@ -1644,7 +1644,7 @@ public class XmiCasDeserializer {
 
           } else if (currentType != null) {
             
-            if (currentType.isArray() && currentType.getCode() != TypeSystemImpl.byteArrayTypeCode) {
+            if (currentType.isArray() && currentType.getCode() != TypeSystemConstants.byteArrayTypeCode) {
               // create the array now. elements may have been provided either as
               // attributes or child elements, but not both.
               // BUT - not byte arrays! They are created immediately, to avoid

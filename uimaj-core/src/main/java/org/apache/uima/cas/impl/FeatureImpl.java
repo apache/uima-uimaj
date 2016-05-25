@@ -94,7 +94,7 @@ public class FeatureImpl implements Feature {
   this.slotKind = slotKind;
   this.shortName = shortName;
   this.isMultipleRefsAllowed = isMultipleRefsAllowed;
-  this.isAnnotBaseSofaRef = (highestDefiningType.getCode() == TypeSystemImpl.annotBaseTypeCode) && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA);
+  this.isAnnotBaseSofaRef = (highestDefiningType.getCode() == TypeSystemConstants.annotBaseTypeCode) && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA);
   this.isInInt = tsi.isInInt(rangeType);
   this.rangeTypeClass = CasSerializerSupport.classifyType(rangeType);
   typeImpl.addFeature(this);  // might throw if existing feature with different range

@@ -224,30 +224,30 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
           result = Misc.compareStrings(fs1._getStringValueNc(fi), fs2._getStringValueNc(fi));
         } else {
           switch (keyTypeCodes[i]) {
-          case TypeSystemImpl.booleanTypeCode:
+          case TypeSystemConstants.booleanTypeCode:
             result = Integer.compare(fs1._getBooleanValueNc(fi) ? 1 : 0,
                                      fs2._getBooleanValueNc(fi) ? 1 : 0);
             break;
-          case TypeSystemImpl.byteTypeCode:
+          case TypeSystemConstants.byteTypeCode:
             result = Integer.compare(fs1._getByteValueNc(fi), fs2._getByteValueNc(fi));
             break;
-          case TypeSystemImpl.shortTypeCode:
+          case TypeSystemConstants.shortTypeCode:
             result = Integer.compare(fs1._getShortValueNc(fi), fs2._getShortValueNc(fi));
             break;
-          case TypeSystemImpl.intTypeCode:
+          case TypeSystemConstants.intTypeCode:
             result = Integer.compare(fs1._getIntValueNc(fi), fs2._getIntValueNc(fi));
             break;
-          case TypeSystemImpl.longTypeCode:
+          case TypeSystemConstants.longTypeCode:
             result = Long.compare(fs1._getLongValueNc(fi), fs2._getLongValueNc(fi));
             break;
-          case TypeSystemImpl.floatTypeCode:
+          case TypeSystemConstants.floatTypeCode:
             result = Float.compare(fs1._getFloatValueNc(fi), fs2._getFloatValueNc(fi));
             break;
-          case TypeSystemImpl.doubleTypeCode:
+          case TypeSystemConstants.doubleTypeCode:
             result = Double.compare(fs1._getDoubleValueNc(fi), fs2._getDoubleValueNc(fi));
             break;
             // next is compared above before the switch
-//          case TypeSystemImpl.stringTypeCode:
+//          case TypeSystemConstants.stringTypeCode:
 //            result = Misc.compareStrings(fs1.getStringValueNc(fi), fs2.getStringValueNc(fi));
 //            break;         
           } // end of switch

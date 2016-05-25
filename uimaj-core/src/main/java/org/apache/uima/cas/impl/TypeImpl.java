@@ -599,21 +599,21 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //  public String getJavaDescriptor() {
 //    // built-ins
 //    switch (typeCode) {
-//    case TypeSystemImpl.booleanTypeCode: return "Z";
-//    case TypeSystemImpl.byteTypeCode: return "B";
-//    case TypeSystemImpl.shortTypeCode: return "S";
-//    case TypeSystemImpl.intTypeCode: return "I";
-//    case TypeSystemImpl.floatTypeCode: return "F";
-//    case TypeSystemImpl.longTypeCode: return "J";
-//    case TypeSystemImpl.doubleTypeCode: return "D";
-//    case TypeSystemImpl.booleanArrayTypeCode: return "[Z";
-//    case TypeSystemImpl.byteArrayTypeCode: return "[B";
-//    case TypeSystemImpl.shortArrayTypeCode: return "[S";
-//    case TypeSystemImpl.intArrayTypeCode: return "[I";
-//    case TypeSystemImpl.floatArrayTypeCode: return "[F";
-//    case TypeSystemImpl.longArrayTypeCode: return "[J";
-//    case TypeSystemImpl.doubleArrayTypeCode: return "[D";
-//    case TypeSystemImpl.stringArrayTypeCode: return "[Ljava/lang/String;";
+//    case TypeSystemConstants.booleanTypeCode: return "Z";
+//    case TypeSystemConstants.byteTypeCode: return "B";
+//    case TypeSystemConstants.shortTypeCode: return "S";
+//    case TypeSystemConstants.intTypeCode: return "I";
+//    case TypeSystemConstants.floatTypeCode: return "F";
+//    case TypeSystemConstants.longTypeCode: return "J";
+//    case TypeSystemConstants.doubleTypeCode: return "D";
+//    case TypeSystemConstants.booleanArrayTypeCode: return "[Z";
+//    case TypeSystemConstants.byteArrayTypeCode: return "[B";
+//    case TypeSystemConstants.shortArrayTypeCode: return "[S";
+//    case TypeSystemConstants.intArrayTypeCode: return "[I";
+//    case TypeSystemConstants.floatArrayTypeCode: return "[F";
+//    case TypeSystemConstants.longArrayTypeCode: return "[J";
+//    case TypeSystemConstants.doubleArrayTypeCode: return "[D";
+//    case TypeSystemConstants.stringArrayTypeCode: return "[Ljava/lang/String;";
 //    }
 //    
 //    if (isStringSubtype()) {
@@ -820,7 +820,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
            (v instanceof String && isStringOrStringSubtype()) ||
            ((v instanceof FeatureStructureImplC) &&
              subsumes( ((FeatureStructureImplC)v)._getTypeImpl())) ||
-           this.getCode() == TypeSystemImpl.javaObjectTypeCode;
+           this.getCode() == TypeSystemConstants.javaObjectTypeCode;
   }
   
   int computeDepthFirstCode(int level) {

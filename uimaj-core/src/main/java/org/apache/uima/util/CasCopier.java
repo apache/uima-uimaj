@@ -33,6 +33,7 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.Int2ObjListMap;
 import org.apache.uima.internal.util.Misc;
@@ -1018,7 +1019,7 @@ public class CasCopier {
    * DocumentAnnotation that CAS.getDocumentAnnotation() would return.
    */
   private <T extends FeatureStructure> boolean isDocumentAnnotation(T aFS) {
-    if (((TOP)aFS)._getTypeCode() != TypeSystemImpl.docTypeCode) {
+    if (((TOP)aFS)._getTypeCode() != TypeSystemConstants.docTypeCode) {
       return false;
     }
     if (srcCasDocumentAnnotation == null) {
