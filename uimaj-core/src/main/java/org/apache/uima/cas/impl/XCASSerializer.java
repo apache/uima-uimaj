@@ -29,12 +29,14 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -79,7 +81,7 @@ public class XCASSerializer {
     // The CAS we're serializing.
     private CASImpl cas;
 
-    // Any FS reference we've touched goes in here.
+    /** Any FS reference we've touched goes in here. value is index repo (first one?), or MULTIPLY_INDEXED */
     final private Map<TOP, Integer> queued = new IdentityHashMap<>();
 
     private static final int NOT_INDEXED = -1;
@@ -88,22 +90,29 @@ public class XCASSerializer {
 
     private static final int INVALID_INDEX = -3;
 
-    // Any FS indexed in more than one IR goes in here
+    
+    /** Any FS indexed in more than one IR goes in here, the value is the associated duplicate key,
+     * Key is used to index into dupVectors */
     final private Map<TOP, Integer> duplicates = new IdentityHashMap<>();
 
-    // Number of FS indexed in more than one IR
+    /** A key identifying a particular FS indexed in multiple indexes.
+     *  Starts a 0, incr by 1 for each new FS discovered to be indexed in more than one IR */
     int numDuplicates;
 
-    // Vector of IntVectors for duplicates
+    /** list of IntVectors holding lists of repo numbers.
+     * Indexed by the key above, for fss that are in multiple index repos */
     final List<IntVector> dupVectors = new ArrayList<>();
 
-    // All FSs that are in an index somewhere.
+
+    // next 2 are a pair; the first is a fs, the 2nd is the index repo its indexed in
+    /** list of FSs that are in an index somewhere.  */
     final private List<TOP> indexedFSs = new ArrayList<>();
 
-    // Specific IndexRepository for indexed FSs
+    /** Specific IndexRepository for indexed FSs */
     final private IntVector indexReps = new IntVector();
 
-    // The current queue for FSs to write out.
+    
+    /** The current queue for FSs to write out. */
     final private Deque<TOP> queue = new ArrayDeque<>();
 
     private final AttributesImpl emptyAttrs = new AttributesImpl();
@@ -184,7 +193,7 @@ public class XCASSerializer {
             dupVectors.get(thisDup).add(indexRep);
             break;
           }
-          // duplicate index detected!
+          // first time we notice this FS is indexed in multiple indexes
           duplicates.put(fs, numDuplicates);
           dupVectors.add(new IntVector());
           dupVectors.get(numDuplicates).add(prevIndex);
@@ -353,7 +362,7 @@ public class XCASSerializer {
     }
     
     private void enqueueList(List<TOP> fss, int sofaNum) {
-      for (TOP fs : fss) {   // enqueues the Sofas
+      for (TOP fs : fss) {   // enqueues the fss for one view (incl view 0 - the base view
         enqueueIndexed(fs, sofaNum);
       }
     }
@@ -485,7 +494,7 @@ public class XCASSerializer {
         }
         default: {
           // Internal error.
-          System.err.println("Error classifying FS type.");
+          throw new RuntimeException("Internal error: classifying FS type.");
         }
       } // end of switch
       // common code for most of the cases
@@ -602,17 +611,18 @@ public class XCASSerializer {
      * Encode Out-Of-TypeSystem Features.
      */
     private void encodeOutOfTypeSystemFeatures(TOP fs, AttributesImpl attrs) {
-      List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
+      List<Pair<String, Object>> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
       if (attrList != null) {
-        for (String[] attr : attrList) {
+        for (Pair<String, Object> p : attrList) {
+          String sv = (p.u instanceof String) ? (String) p.u : "";
           // remap ID if necessary
-          if (attr[0].startsWith(REF_PREFIX)) {
-            if (attr[1].startsWith("a")) { // reference to OOTS FS
+          if (p.t.startsWith(REF_PREFIX)) {
+            if (sv.startsWith("a")) { // reference to OOTS FS
               // - remap
-              attr[1] = mOutOfTypeSystemData.idMap.get(attr[1]);
+              p.u = sv = mOutOfTypeSystemData.idMap.get(sv);
             }
           }
-          addAttribute(attrs, attr[0], attr[1]);
+          addAttribute(attrs, p.t, sv);
         }
       }
     }
@@ -621,18 +631,20 @@ public class XCASSerializer {
      * Encode Out-Of-TypeSystem Features.
      */
     private void enqueueOutOfTypeSystemFeatures(TOP fs) {
-      List<String[]> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
+      List<Pair<String, Object>> attrList = mOutOfTypeSystemData.extraFeatureValues.get(fs);
       if (attrList != null) {
-        Iterator<String[]> it = attrList.iterator();
+        Iterator<Pair<String, Object>> it = attrList.iterator();
         while (it.hasNext()) {
-          String[] attr = it.next();
+          Pair<String, Object> p = it.next();
+          String sv = (p.u instanceof String) ? (String) p.u : "";
           // remap ID if necessary
-          if (attr[0].startsWith(REF_PREFIX)) {
+          if (p.t.startsWith(REF_PREFIX)) {
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (!attr[1].startsWith("a")) {
-              enqueue(cas.getFsFromId_checked(Integer.parseInt(attr[1])));
+            if (p.u instanceof TOP) {
+              enqueue((TOP) p.u);
+//              enqueue(cas.getFsFromId_checked(Integer.parseInt(attr[1])));
             }
           }
         }
@@ -657,15 +669,16 @@ public class XCASSerializer {
      */
     private void enqueueOutOfTypeSystemData(OutOfTypeSystemData aData) {
       for (FSData fs : aData.fsList) {
-        for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
+        for (Entry<String, Object> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
           if (attrName.startsWith(REF_PREFIX)) {
-            String attrVal = entry.getValue();
+            Object attrVal = entry.getValue();
             // references whose ID starts with the character 'a' are references to out of type
             // system FS. All other references should be to in-typesystem FS, which we need to
             // enqueue.
-            if (!attrVal.startsWith("a")) {
-              enqueue(cas.getFsFromId_checked(Integer.parseInt(attrVal)));
+            if (attrVal instanceof TOP /*String && !((String)attrVal).startsWith("a")*/) {
+              enqueue((TOP)attrVal);
+//              enqueue(cas.getFsFromId_checked(Integer.parseInt(attrVal)));
             }
           }
         }
@@ -684,11 +697,11 @@ public class XCASSerializer {
         addAttribute(workAttrs, ID_ATTR_NAME, fs.id);
 
         // Add other attributes (remap OOTS refs)
-        for (Map.Entry<String, String> entry : fs.featVals.entrySet()) {
+        for (Entry<String, Object> entry : fs.featVals.entrySet()) {
           String attrName = entry.getKey();
-          String attrVal = entry.getValue();
+          Object attrVal = entry.getValue();
           if (attrName.startsWith(REF_PREFIX)) {
-            if (attrVal.startsWith("a")) {
+            if (attrVal instanceof String && ((String)attrVal).startsWith("a")) {
               // "a" prefix indicates a reference from one OOTS FS
               // to another OOTS FS;
               // we need to remap those IDs to the actual IDs used
@@ -696,7 +709,9 @@ public class XCASSerializer {
               attrVal = mOutOfTypeSystemData.idMap.get(attrVal);
             }
           }
-          addAttribute(workAttrs, attrName, attrVal);
+          addAttribute(workAttrs, attrName, (attrVal instanceof TOP) 
+                                              ? Integer.toString(((TOP)attrVal)._id) 
+                                              : (String)attrVal);
         }
         // send events
         String xcasElementName = getXCasElementName(fs.type);

@@ -61,12 +61,17 @@ public class CasTypeSystemMapper {
   public final WeakReference<TypeSystemImpl> tsTgt;
   
   /** 
-   * Map from source type codes to target type codes.  
+   * Map from source types to target types.  
    * Source type code used as index, 
    * value is target type or null if the type doesn't exist in the target
    */
   final private List<TypeImpl> tSrc2Tgt = new ArrayList<>();
   
+  /** 
+   * Map from target types to source types.  
+   * Source type code used as index, 
+   * value is target type or null if the type doesn't exist in the target
+   */
   final private List<TypeImpl> tTgt2Src = new ArrayList<>();
   /**
    * Feature mapping from source to target
@@ -76,7 +81,7 @@ public class CasTypeSystemMapper {
   
   /**
    * Feature mapping from target to source 
-   *   first key is the type code, 2nd is the feature offset 
+   *   first key is the tgt type code, 2nd is the tgt feature offset 
    * Only used for type codes that are not arrays.
    * Use: When serializing a source type that exists in the target, have to output
    *   the slots in the target feature order
@@ -104,12 +109,14 @@ public class CasTypeSystemMapper {
       fSrc2Tgt = new FeatureImpl[tsSrc.getTypeArraySize()][];
       fTgt2Src = new FeatureImpl[tsTgt.getTypeArraySize()][];    
     
-      // NOTE: the "&" operator applied to booleans always evals both args
-      // See http://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.22.2
-      tss = tss & addTypes(tSrc2Tgt, tsSrc, tsTgt);
-      tss = tss & addTypes(tTgt2Src, tsTgt, tsSrc);  // both directions
-      tss = tss & addFeatures(fSrc2Tgt, tsSrc, tsTgt);
-      tss = tss & addFeatures(fTgt2Src, tsTgt, tsSrc);
+      boolean b1 = addTypes(tSrc2Tgt, tsSrc, tsTgt);
+      boolean b2 = addTypes(tTgt2Src, tsTgt, tsSrc);  // both directions
+      boolean b3 = addFeatures(fSrc2Tgt, tsSrc, tsTgt);
+      boolean b4 = addFeatures(fTgt2Src, tsTgt, tsSrc);
+     
+      if (!b1 || !b2 || !b3 || !b4) {
+        tss = false;
+      }
     } else {
       fSrc2Tgt = null;
       fTgt2Src = null;
@@ -165,6 +172,16 @@ public class CasTypeSystemMapper {
     return getToFeature(fTgt2Src, tgtType, tgtFeat);
   }
   
+  /**
+   * Given a tgt type, return an array of source features in the order
+   * they would appear in the target.
+   * @param tgtType 
+   * @return array of corresponding source features, in target type order
+   */
+  public FeatureImpl[] getSrcFeatures(TypeImpl tgtType) {
+    return fTgt2Src[tgtType.getCode()];
+  }
+  
   public FeatureImpl getToFeature(FeatureImpl[][] mapByTypeCode, TypeImpl fromType, FeatureImpl fromFeat) {
     if (mapByTypeCode == null) { // is null if type systems ==
       return fromFeat;
@@ -180,7 +197,13 @@ public class CasTypeSystemMapper {
     return map[offset];
   }
   
-  
+  /**
+   * return true if no types are filtered
+   * @param map
+   * @param tsSrc
+   * @param tsTgt
+   * @return
+   */
   private boolean addTypes(List<TypeImpl> map, TypeSystemImpl tsSrc, TypeSystemImpl tsTgt) {
     boolean r = true;
     for (TypeImpl tSrc : tsSrc.getAllTypes()) {

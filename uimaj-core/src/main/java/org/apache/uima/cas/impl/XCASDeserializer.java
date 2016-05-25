@@ -33,6 +33,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
+import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
@@ -124,7 +125,7 @@ public class XCASDeserializer {
     private static final String unknownXMLSource = "<unknown>";
 
     // SofaFS type
-    static final private int sofaTypeCode = TypeSystemImpl.sofaTypeCode;
+    static final private int sofaTypeCode = TypeSystemConstants.sofaTypeCode;
 
     // private long time;
 
@@ -603,19 +604,19 @@ public class XCASDeserializer {
                              ? Integer.toString(this.sofaRefMap.get(
                                  ((Sofa)fsTree.get(Integer.parseInt(featValIn)).fs).getSofaNum()))
                              : featValIn;
-
-//      // can't do this in v3, dropping support  
+  
       // handle v1.x sofanum values, remapping so that _InitialView always == 1
+      // Bypassed in v3 of UIMA because sofa was already created with the right sofanum
 //      if (featName.equals(CAS.FEATURE_BASE_NAME_SOFAID) && (fs instanceof Sofa)) {
 //        Sofa sofa = (Sofa) fs;
 //        int sofaNum = sofa.getSofaNum();
-//        sofa.  --- oops, not possible to update the sofanum - it's final
+//        sofa._setIntValueNcNj(Sofa._FI_sofaNum, this.indexMap.get(sofaNum));
 //        
-//        Type sofaType = ts.sofaType;
-//        final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
-//                .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
-//        int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
-//        cas.setFeatureValue(addr, sofaNumFeat.getCode(), this.indexMap.get(sofaNum));
+////        Type sofaType = ts.sofaType;
+////        final FeatureImpl sofaNumFeat = (FeatureImpl) sofaType
+////                .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFANUM);
+////        int sofaNum = cas.getFeatureValue(addr, sofaNumFeat.getCode());
+////        cas.setFeatureValue(addr, sofaNumFeat.getCode(), this.indexMap.get(sofaNum));
 //      }
 
       String realFeatName = getRealFeatName(featName);
@@ -624,12 +625,12 @@ public class XCASDeserializer {
       if (feat == null) { // feature does not exist in typesystem
         if (outOfTypeSystemData != null) {
           // Add to Out-Of-Typesystem data (APL)
-          List<String[]> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(fs);
+          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(fs);
           if (ootsAttrs == null) {
-            ootsAttrs = new ArrayList<String[]>();
+            ootsAttrs = new ArrayList<Pair<String, Object>>();
             outOfTypeSystemData.extraFeatureValues.put(fs, ootsAttrs);
           }
-          ootsAttrs.add(new String[] { featName, featVal });
+          ootsAttrs.add(new Pair(featName, featVal));
         } else if (!lenient) {
           throw createException(XCASParsingException.UNKNOWN_FEATURE, featName);
         }
@@ -863,25 +864,25 @@ public class XCASDeserializer {
         // this feature may be a ref to an out-of-typesystem FS.
         // add it to the Out-of-typesystem features list (APL)
         if (extId != 0 && outOfTypeSystemData != null) {
-          List<String[]> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(extId);
+          List<Pair<String, Object>> ootsAttrs = outOfTypeSystemData.extraFeatureValues.get(fs);
           if (ootsAttrs == null) {
-            ootsAttrs = new ArrayList<String[]>();
+            ootsAttrs = new ArrayList<Pair<String, Object>>();
             outOfTypeSystemData.extraFeatureValues.put(fs, ootsAttrs);
           }
           String featFullName = fi.getName();
           int separatorOffset = featFullName.indexOf(TypeSystem.FEATURE_SEPARATOR);
           String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
-          ootsAttrs.add(new String[] { featName, Integer.toString(extId) });
+          ootsAttrs.add(new Pair(featName, Integer.toString(extId)));
         }
         fs.setFeatureValue(fi, null);
       } else {
         // the sofa ref in annotationBase is set when the fs is created, not here
-        if (fi.getCode() != TypeSystemImpl.annotBaseSofaFeatCode) { 
+        if (fi.getCode() != TypeSystemConstants.annotBaseSofaFeatCode) { 
           if (fs instanceof Sofa) {
             // special setters for sofa values
             Sofa sofa = (Sofa) fs;
             switch (fi.getRangeImpl().getCode()) {
-            case TypeSystemImpl.sofaArrayFeatCode: sofa.setLocalSofaData(fsInfo.fs); break;
+            case TypeSystemConstants.sofaArrayFeatCode: sofa.setLocalSofaData(fsInfo.fs); break;
             default: throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
             }
             return;
@@ -948,16 +949,17 @@ public class XCASDeserializer {
       // make ID unique by prefixing a letter
       aFS.id = 'a' + aFS.id;
       // remap ref features
-      for (Map.Entry<String, String> entry : aFS.featVals.entrySet()) {
+      for (Map.Entry<String, Object> entry : aFS.featVals.entrySet()) {
         String attrName =  entry.getKey();
         if (attrName.startsWith("_ref_")) {
-          int val = Integer.parseInt(entry.getValue());
+          int val = Integer.parseInt((String)entry.getValue());
           if (val >= 0) // negative numbers represent null and are left unchanged
           {
             // attempt to locate target in type system
             FSInfo fsValInfo = fsTree.get(val);
             if (fsValInfo != null) {
-              entry.setValue(Integer.toString(fsValInfo.fs._id));
+//              entry.setValue(Integer.toString(fsValInfo.fs._id));
+              entry.setValue(fsValInfo.fs);
             } else
             // out of type system - remap by prepending letter
             {
@@ -974,20 +976,21 @@ public class XCASDeserializer {
      */
     private void finalizeOutOfTypeSystemFeatures() {
       // remap ref features
-      for (List<String[]> attrs : outOfTypeSystemData.extraFeatureValues.values()) {
-        for (String[] attr : attrs) {
-          if (attr[0].startsWith("_ref_")) {
-            int val = Integer.parseInt(attr[1]);
+      for (List<Pair<String, Object>> attrs : outOfTypeSystemData.extraFeatureValues.values()) {
+        for (Pair<String, Object> p : attrs) {
+          String sv = (p.u instanceof String) ? (String) p.u : "";
+          if (p.t.startsWith("_ref_")) {
+            int val = Integer.parseInt(sv);
             if (val >= 0) // negative numbers represent null and are left unchanged
             {
               // attempt to locate target in type system
               FSInfo fsValInfo = fsTree.get(val);
               if (fsValInfo != null) {
-                attr[1] = Integer.toString(fsValInfo.fs._id);
+                p.u = fsValInfo.fs;
               } else
               // out of type system - remap by prepending letter
               {
-                attr[1] = "a" + val;
+                p.u = "a" + val;
               }
             }
           }

@@ -66,6 +66,7 @@ import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Pair;
+import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -249,9 +250,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      *   - Delta serialization (uses reuse info saved during initial deserialization)
      *   - Delta deserialization 
      *   if Null, recomputed when needed
-     * BitSet used to test if fsRef needs to be serialized   
+     * foundFSs used to test if fsRef needs to be serialized   
      */
-    final private BitSet foundFSsBitset;
+    final private PositiveIntSet foundFSs;
     final private List<TOP> fssToSerialize; // ordered list of FSs found in indexes or linked from other found FSs
     
     /**
@@ -262,17 +263,17 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     final private CasSeqAddrMaps fsStartIndexes;
     
     private ReuseInfo(
-        BitSet foundFSsBitset,
+        PositiveIntSet foundFSs,
         List<TOP> fssToSerialize, 
         CasSeqAddrMaps fsStartIndexes) {
-      this.foundFSsBitset = foundFSsBitset;
+      this.foundFSs = foundFSs;
       this.fssToSerialize = fssToSerialize;
       this.fsStartIndexes = fsStartIndexes;
     }
   }
   
   public ReuseInfo getReuseInfo() {
-    return new ReuseInfo(foundFSsBitset, fssToSerialize, fsStartIndexes);
+    return new ReuseInfo(foundFSs, fssToSerialize, fsStartIndexes);
   }
     
   /**
@@ -367,13 +368,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * ordered set of FSs found in indexes or linked from other found FSs.
    * used to control loops/recursion when locating things
    */
-  private BitSet foundFSsBitset;
+  private PositiveIntSet foundFSs;
   
   /**
    * ordered set of FSs found in indexes or linked from other found FSs, which are below the mark.
    * used to control loops/recursion when locating things
    */
-  private BitSet foundFSsBelowMarkBitset;
+  private PositiveIntSet foundFSsBelowMark;
   
   /**
    * FSs being serialized. For delta, just the deltas above the delta line.
@@ -540,12 +541,12 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     this.compressStrategy = compressStrategy;
     reuseInfoProvided = (rfs != null);
     if (reuseInfoProvided) {
-      foundFSsBitset = rfs.foundFSsBitset;  // broken for serialization - not reused
+      foundFSs = rfs.foundFSs;  // broken for serialization - not reused
       fssToSerialize = rfs.fssToSerialize;  // broken for serialization - not reused
       // TODO figure out why there's a copy for next
       fsStartIndexes = rfs.fsStartIndexes.copy();
     } else {
-      foundFSsBitset = null;
+      foundFSs = null;
       fssToSerialize = null;
       fsStartIndexes = new CasSeqAddrMaps();
     }
@@ -1375,7 +1376,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
         // probably don't need this test, because change logging is done when a mark is set, 
         //   only for items below the line
-        if (!foundFSsBelowMarkBitset.get(fs._id)) {
+        if (!foundFSsBelowMark.contains(fs._id)) {
 //          System.out.format("  skipping heap addr %,d%n", currentFsId);
           continue;        
         }
@@ -1421,8 +1422,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         // perhaps part of this if test is not needed:
         //   the id is probably guaranteed to be below the split point
         //   because logging doesn't happen unless a change is below the mark
-        if ((id >= splitPoint && !foundFSsBitset.get(id)) ||
-            (id < splitPoint && !foundFSsBelowMarkBitset.get(id))) {
+        if ((id >= splitPoint && !foundFSs.contains(id)) ||
+            (id < splitPoint && !foundFSsBelowMark.contains(id))) {
           // although it was modified, it isn't going to be serialized because
           //   it isn't indexed or referenced
           continue;
@@ -1769,7 +1770,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
             currentFs = cas.createSofa(sofaNum, sofaName, sofaMimeType);  
           } else {
             CASImpl view = (CASImpl) cas.getView(sofaRef);
-            if (srcType.getCode() == TypeSystemImpl.docTypeCode) {
+            if (srcType.getCode() == TypeSystemConstants.docTypeCode) {
               currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
               // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
               // would end up creating additional instances
@@ -1777,7 +1778,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
               currentFs = view.createFS(srcType);
             }
           }
-          if (srcType.getCode() == TypeSystemImpl.docTypeCode) { 
+          if (srcType.getCode() == TypeSystemConstants.docTypeCode) { 
             boolean wasRemoved = cas.removeFromCorruptableIndexAnyView(currentFs, cas.getAddbackSingle());
             for (Runnable r : singleFsDefer) {
               r.run();
@@ -1857,7 +1858,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     
     case Slot_Int: {
       IntegerArray ia = (IntegerArray)fs;
-      int prev = getPrevIntValue(TypeSystemImpl.intArrayTypeCode, 0);
+      int prev = getPrevIntValue(TypeSystemConstants.intArrayTypeCode, 0);
       for (int i = 0; i < length; i++) {
         int v = readDiff(Slot_Int, prev);
         prev = v;
@@ -1886,13 +1887,16 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       break;
     }  
     
-      case Slot_DoubleRef: 
+      case Slot_DoubleRef:
+//        if (length == 0) {
+//          System.out.println("debug deser Double Array len 0, fsId = " + fs._id);
+//        }
         readIntoDoubleArray(((DoubleArray)fs)._getTheArray(), Slot_DoubleRef, length, storeIt); 
         break;
       
       case Slot_HeapRef: {
         FSArray fsa = (FSArray)fs;
-        int prev = getPrevIntValue(TypeSystemImpl.fsArrayTypeCode, 0);
+        int prev = getPrevIntValue(TypeSystemConstants.fsArrayTypeCode, 0);
         for (int i = 0; i < length; i++) {
           final int v = readDiff(Slot_HeapRef, prev);
           prev = v;
@@ -1980,8 +1984,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           // When the setting is done for this one feature structure (now or at the end of deserializing features for it)
           //   two cases: the ref'd value is known, or not.
           //     - if not known, a fixup is added to
-          if (tgtType.getCode() == TypeSystemImpl.sofaTypeCode) {
-            if (tgtFeat.getCode() == TypeSystemImpl.sofaArrayFeatCode) { // sofaArrayFeatCode is the ref to array for sofa data
+          if (tgtType.getCode() == TypeSystemConstants.sofaTypeCode) {
+            if (tgtFeat.getCode() == TypeSystemConstants.sofaArrayFeatCode) { // sofaArrayFeatCode is the ref to array for sofa data
               Sofa sofa = (Sofa) lfs;
               maybeStoreOrDefer_slotFixups(vh, ref_fs -> sofa.setLocalSofaData(ref_fs));
             }
@@ -2008,7 +2012,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         break;  // null is the default value, no need to set it
       }
       if (storeIt) {
-        if (tgtType.getCode() == TypeSystemImpl.sofaTypeCode) {
+        if (tgtType.getCode() == TypeSystemConstants.sofaTypeCode) {
           if (srcFeat == srcTs.sofaId) {
             sofaName = vString; 
             break;
@@ -2381,7 +2385,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     private short vPrevModShort = 0;
     private long vPrevModLong = 0;
     private int iHeap;
-    private int[] tgtF2srcF;
+    /** a map from target offsets to source offsets */
+    private FeatureImpl[] tgtF2srcF;
     
     // next for managing index removes / readds
     private FSsTobeAddedbackSingle addbackSingle;
@@ -2435,10 +2440,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
         
         TypeImpl srcType = fs._getTypeImpl();
-//        typeInfo = ts.getTypeInfo(tCode);
-//        if (isTypeMapping) {
-//          tgtF2srcF = typeMapper.getTgtFeatOffsets2Src(tCode);
-//        }
+        if (isTypeMapping) {
+          tgtF2srcF = typeMapper.getSrcFeatures(typeMapper.mapTypeSrc2Tgt(srcType));
+        }
         
         final int numberOfModsInThisFs = readVnumber(fsIndexes_dis); 
 
@@ -2538,7 +2542,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         iPrevTgtOffsetInFs = tgtOffsetInFs;
         
         // srcOffsetInFs is either array index or feature offset
-        final int srcOffsetInFs = (!isArray && isTypeMapping) ? tgtF2srcF[tgtOffsetInFs] : tgtOffsetInFs;
+        final int srcOffsetInFs = (!isArray && isTypeMapping) 
+                                    ? tgtF2srcF[tgtOffsetInFs].getOffset() 
+                                    : tgtOffsetInFs;
         
           // srcOffset must be >= 0 because if type mapping, and delta cas being deserialized,
           //   all of the target features would have been merged into the source ones.
@@ -2663,75 +2669,55 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    */
   private void processIndexedFeatureStructures(final CASImpl cas, boolean isWrite) throws IOException {
     if (!isWrite) {
-      foundFSsBitset = new BitSet(4096);  // is 64 long words  
-      foundFSsBelowMarkBitset = isSerializingDelta ? new BitSet(1024) : null;
-      toBeScanned.clear();
-    } else {
+      AllFSs allFSs = new AllFSs(cas, mark, isTypeMapping ? fs -> isTypeInTgt(fs) : null, 
+                                            isTypeMapping ? typeMapper            : null);
+      fssToSerialize = CASImpl.filterAboveMark(allFSs.getAllFSsSorted(), mark);
+      foundFSs = allFSs.getAllNew();
+      foundFSsBelowMark = allFSs.getAllBelowMark();
+      return;
+    }
+    
+    
       
 //      if (doMeasurements) {
 //        sm.statDetails[fsIndexes_i].original = fsIndexes.length * 4 + 1;      
 //      }
-      writeVnumber(control_i, cas.getNumberOfViews());
-      writeVnumber(control_i, cas.getNumberOfSofas());
-      if (doMeasurements) {
-        sm.statDetails[fsIndexes_i].incr(1); // an approximation - probably correct
-        sm.statDetails[fsIndexes_i].incr(1);
-      }
+    writeVnumber(control_i, cas.getNumberOfViews());
+    writeVnumber(control_i, cas.getNumberOfSofas());
+    if (doMeasurements) {
+      sm.statDetails[fsIndexes_i].incr(1); // an approximation - probably correct
+      sm.statDetails[fsIndexes_i].incr(1);
     }
 
     // write or enqueue the sofas
     final FSIterator<Sofa> it = cas.getSofaIterator();
     while (it.hasNext()) {
       Sofa sofa = it.nextNvc();
-      if (isWrite) {
-        // for delta only write new sofas
-        if (!isSerializingDelta || mark.isNew(sofa)) {
-          // never returns -1, because this is for the sofa fs, and that's never filtered
-          final int v = getTgtSeqFromSrcFS(sofa);
-          writeVnumber(control_i, v);    // version 1
-           
-          if (doMeasurements) {
-            sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(v));
-          }
+      // for delta only write new sofas
+      if (!isSerializingDelta || mark.isNew(sofa)) {
+        // never returns -1, because this is for the sofa fs, and that's never filtered
+        final int v = getTgtSeqFromSrcFS(sofa);
+        writeVnumber(control_i, v);    // version 1
+         
+        if (doMeasurements) {
+          sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(v));
         }
-      } else {
-        enqueueFS(sofa);  //sofa fs's always in the type system
       }
     }
     TypeImpl topType = (TypeImpl) cas.getTypeSystemImpl().getTopType();
 
     // write (id's only, for index info) and/or enqueue indexed FSs, either all, or (for delta writes) the added/deleted/reindexed ones
-    if (isWrite) {
-      cas.forAllViews(view -> {
-        processFSsForView(true, true,   // is enqueue, is write
-          isSerializingDelta 
-            ? view.indexRepository.getAddedFSs().stream()
-            : view.indexRepository.<TOP>getAllIndexedFS(topType).asStream());
-        if (isSerializingDelta) {
-          // for write/delta, write out (but don't enqueue) the deleted/reindexed FSs
-          processFSsForView(false, true, view.indexRepository.getDeletedFSs().stream());
-          processFSsForView(false, true, view.indexRepository.getReindexedFSs().stream());
-        }
-      });   
-    } else { // is not write
-      // debug
-//      cas.forAllViews(view -> System.out.println("View name is " + view.getViewName()));
-//      cas.getInitialView().getIndexRepository().getAllIndexedFS(topType);
-      cas.forAllViews(view -> 
-        processFSsForView  (true, false, view.indexRepository.<TOP>getAllIndexedFS(topType).asStream()));
-      processRefedFSs();
-      // convert representation from bitset to list<TOP>
-      final int fsslen = foundFSsBitset.cardinality();
-      fssToSerialize = new ArrayList<>(fsslen);
-      final int len = foundFSsBitset.length();
-    
-      for (int b = 0; b < len; b++) {
-        b = foundFSsBitset.nextSetBit(b);
-        fssToSerialize.add(cas.getFsFromId(b));
+    cas.forAllViews(view -> {
+      processFSsForView(true,  // is enqueue
+        isSerializingDelta 
+          ? view.indexRepository.getAddedFSs().stream()
+          : view.indexRepository.<TOP>getAllIndexedFS(topType).asStream());
+      if (isSerializingDelta) {
+        // for write/delta, write out (but don't enqueue) the deleted/reindexed FSs
+        processFSsForView(false, view.indexRepository.getDeletedFSs().stream());
+        processFSsForView(false, view.indexRepository.getReindexedFSs().stream());
       }
-    }
-    
-    return;
+    });       
   }
 
   /**
@@ -2745,52 +2731,50 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    */
  
     
-  private void processFSsForView(final boolean isEnqueue, final boolean isWrite,
-                                Stream<TOP> fss) {
+  private void processFSsForView(final boolean isEnqueue, Stream<TOP> fss) {
     //  prev id and entries written as a captured value in context
 
     final int prevId = 0, entriesWritten = 1;  // indexes into context
 //    Stream<TOP> stream = (fssx instanceof FSIterator<?>) 
 //        ? ((FSIterator<TOP>)fssx).asStream()
 //        : ((Set<TOP>)fssx).stream();
-    if (isWrite) {
-      final int[] context = {0, 0};  
-      fss.sorted()
-        .forEachOrdered(fs -> {
-          // skip write if typemapping, and target type isn't there
-          if (isWrite && isTypeInTgt(fs)) {
-            
-            final int tgtId = getTgtSeqFromSrcFS(fs);
-            assert(tgtId > 0);
-            final int delta = tgtId - context[prevId];
-            context[prevId] = tgtId;
-            
-            try {
-              writeVnumber(fsIndexes_dos, delta);
-            } catch (Exception e) { 
-              throw new RuntimeException(e);
-            }
-            context[entriesWritten] ++;
-            if (doMeasurements) {
-              sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
-            }
-          } // end of conditional write
-        
-          if (isEnqueue) {
-            enqueueFS(fs);
+
+    final int[] context = {0, 0};  
+    fss.sorted()
+      .forEachOrdered(fs -> {
+        // skip write if typemapping, and target type isn't there
+//          if (fs._id == 199) { 
+//            System.out.println("debug write out fs id 199 as 119");
+//          }
+        if (isTypeInTgt(fs)) {
+          
+          final int tgtId = getTgtSeqFromSrcFS(fs);
+          assert(tgtId > 0);
+          final int delta = tgtId - context[prevId];
+          context[prevId] = tgtId;
+          
+          try {
+            writeVnumber(fsIndexes_dos, delta);
+          } catch (Exception e) { 
+            throw new RuntimeException(e);
           }
-        });
-      try {
-        writeVnumber(control_dos, context[entriesWritten]);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }   
-      if (doMeasurements) {
-        sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(entriesWritten));
-      }
-    } else if (isEnqueue) {
-      // not write case, just enqueue, not sorted
-      fss.forEach(fs -> enqueueFS(fs));
+          context[entriesWritten] ++;
+          if (doMeasurements) {
+            sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(delta));
+          }
+        } // end of conditional write
+      
+        if (isEnqueue) {
+          enqueueFS(fs);
+        }
+      });
+    try {
+      writeVnumber(control_dos, context[entriesWritten]);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }   
+    if (doMeasurements) {
+      sm.statDetails[typeCode_i].incr(DataIO.lengthVnumber(entriesWritten));
     }
   }
   
@@ -2807,13 +2791,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     final int id = fs._id;
     
     if (!isSerializingDelta || mark.isNew(fs)) { // separately track items below the line
-      if (!foundFSsBitset.get(id)) {
-        foundFSsBitset.set(id);
+      if (!foundFSs.contains(id)) {
+        foundFSs.add(id);
         toBeScanned.add(fs);
       }
     } else {
-      if (!foundFSsBelowMarkBitset.get(id)) {
-        foundFSsBelowMarkBitset.set(id);
+      if (!foundFSsBelowMark.contains(id)) {
+        foundFSsBelowMark.add(id);
         toBeScanned.add(fs);
       }
     }
@@ -3398,7 +3382,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           } else if (null == refFs2) {
             return 1;
           }
-          if (refFs1._getTypeCode() == TypeSystemImpl.sofaTypeCode) {
+          if (refFs1._getTypeCode() == TypeSystemConstants.sofaTypeCode) {
             c = Integer.compare(refFs1._id,  refFs2._id);
             if (c != 0) return c; // approximate
             continue; 

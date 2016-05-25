@@ -126,7 +126,7 @@ import com.strobel.decompiler.DecompilerSettings;
  *   -- implemented via custom hashcode and equals.
  *         
  */
-public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem, TypeSystemConstants {  
+public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem {  
   
   /**
    * Define this JVM property to disable equal type system consolidation.  
@@ -1266,10 +1266,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public TypeSystemImpl commit() {
-    if (this.locked) {
-      return this; // might be called multiple times, but only need to do once
-    }
-    
     synchronized(this) {
       if (this.locked) {
         return this; // might be called multiple times, but only need to do once
@@ -2006,55 +2002,55 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
   @Override
   public final int ll_getTypeClass(int typeCode) {
-    if (typeCode == booleanTypeCode) {
+    if (typeCode == TypeSystemConstants.booleanTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BOOLEAN;
     }
-    if (typeCode == byteTypeCode) {
+    if (typeCode == TypeSystemConstants.byteTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BYTE;
     }
-    if (typeCode == shortTypeCode) {
+    if (typeCode == TypeSystemConstants.shortTypeCode) {
       return LowLevelCAS.TYPE_CLASS_SHORT;
     }
-    if (typeCode == intTypeCode) {
+    if (typeCode == TypeSystemConstants.intTypeCode) {
       return LowLevelCAS.TYPE_CLASS_INT;
     }
-    if (typeCode == floatTypeCode) {
+    if (typeCode == TypeSystemConstants.floatTypeCode) {
       return LowLevelCAS.TYPE_CLASS_FLOAT;
     }
-    if (typeCode == longTypeCode) {
+    if (typeCode == TypeSystemConstants.longTypeCode) {
       return LowLevelCAS.TYPE_CLASS_LONG;
     }
-    if (typeCode == doubleTypeCode) {
+    if (typeCode == TypeSystemConstants.doubleTypeCode) {
       return LowLevelCAS.TYPE_CLASS_DOUBLE;
     }
     // false if string type code not yet set up (during initialization)
     //   need this to avoid NPE in subsumes
-    if ((stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
-          ll_subsumes(stringTypeCode, typeCode)) {
+    if ((TypeSystemConstants.stringTypeCode != LowLevelTypeSystem.UNKNOWN_TYPE_CODE) &&
+          ll_subsumes(TypeSystemConstants.stringTypeCode, typeCode)) {
       return LowLevelCAS.TYPE_CLASS_STRING;
     }
-    if (typeCode == booleanArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.booleanArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BOOLEANARRAY;
     }
-    if (typeCode == byteArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.byteArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_BYTEARRAY;
     }
-    if (typeCode == shortArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.shortArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_SHORTARRAY;
     }
-    if (typeCode == intArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.intArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_INTARRAY;
     }
-    if (typeCode == floatArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.floatArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_FLOATARRAY;
     }
-    if (typeCode == longArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.longArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_LONGARRAY;
     }
-    if (typeCode == doubleArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.doubleArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_DOUBLEARRAY;
     }
-    if (typeCode == stringArrayTypeCode) {
+    if (typeCode == TypeSystemConstants.stringArrayTypeCode) {
       return LowLevelCAS.TYPE_CLASS_STRINGARRAY;
     }
     if (ll_isArrayType(typeCode)) {
@@ -2355,23 +2351,23 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   public static final int getTypeClass(TypeImpl ti) { 
     switch (ti.getCode()) {
-    case TypeSystemImpl.intTypeCode: return CASImpl.TYPE_CLASS_INT;
-    case TypeSystemImpl.floatTypeCode: return CASImpl.TYPE_CLASS_FLOAT;
-    case TypeSystemImpl.stringTypeCode: return CASImpl.TYPE_CLASS_STRING;
-    case TypeSystemImpl.intArrayTypeCode: return CASImpl.TYPE_CLASS_INTARRAY;
-    case TypeSystemImpl.floatArrayTypeCode: return CASImpl.TYPE_CLASS_FLOATARRAY;
-    case TypeSystemImpl.stringArrayTypeCode: return CASImpl.TYPE_CLASS_STRINGARRAY;
-    case TypeSystemImpl.fsArrayTypeCode: return CASImpl.TYPE_CLASS_FSARRAY;
-    case TypeSystemImpl.booleanTypeCode: return CASImpl.TYPE_CLASS_BOOLEAN;
-    case TypeSystemImpl.byteTypeCode: return CASImpl.TYPE_CLASS_BYTE;
-    case TypeSystemImpl.shortTypeCode: return CASImpl.TYPE_CLASS_SHORT;
-    case TypeSystemImpl.longTypeCode: return CASImpl.TYPE_CLASS_LONG;
-    case TypeSystemImpl.doubleTypeCode: return CASImpl.TYPE_CLASS_DOUBLE;
-    case TypeSystemImpl.booleanArrayTypeCode: return CASImpl.TYPE_CLASS_BOOLEANARRAY;
-    case TypeSystemImpl.byteArrayTypeCode: return CASImpl.TYPE_CLASS_BYTEARRAY;
-    case TypeSystemImpl.shortArrayTypeCode: return CASImpl.TYPE_CLASS_SHORTARRAY;
-    case TypeSystemImpl.longArrayTypeCode: return CASImpl.TYPE_CLASS_LONGARRAY;
-    case TypeSystemImpl.doubleArrayTypeCode: return CASImpl.TYPE_CLASS_DOUBLEARRAY;
+    case TypeSystemConstants.intTypeCode: return CASImpl.TYPE_CLASS_INT;
+    case TypeSystemConstants.floatTypeCode: return CASImpl.TYPE_CLASS_FLOAT;
+    case TypeSystemConstants.stringTypeCode: return CASImpl.TYPE_CLASS_STRING;
+    case TypeSystemConstants.intArrayTypeCode: return CASImpl.TYPE_CLASS_INTARRAY;
+    case TypeSystemConstants.floatArrayTypeCode: return CASImpl.TYPE_CLASS_FLOATARRAY;
+    case TypeSystemConstants.stringArrayTypeCode: return CASImpl.TYPE_CLASS_STRINGARRAY;
+    case TypeSystemConstants.fsArrayTypeCode: return CASImpl.TYPE_CLASS_FSARRAY;
+    case TypeSystemConstants.booleanTypeCode: return CASImpl.TYPE_CLASS_BOOLEAN;
+    case TypeSystemConstants.byteTypeCode: return CASImpl.TYPE_CLASS_BYTE;
+    case TypeSystemConstants.shortTypeCode: return CASImpl.TYPE_CLASS_SHORT;
+    case TypeSystemConstants.longTypeCode: return CASImpl.TYPE_CLASS_LONG;
+    case TypeSystemConstants.doubleTypeCode: return CASImpl.TYPE_CLASS_DOUBLE;
+    case TypeSystemConstants.booleanArrayTypeCode: return CASImpl.TYPE_CLASS_BOOLEANARRAY;
+    case TypeSystemConstants.byteArrayTypeCode: return CASImpl.TYPE_CLASS_BYTEARRAY;
+    case TypeSystemConstants.shortArrayTypeCode: return CASImpl.TYPE_CLASS_SHORTARRAY;
+    case TypeSystemConstants.longArrayTypeCode: return CASImpl.TYPE_CLASS_LONGARRAY;
+    case TypeSystemConstants.doubleArrayTypeCode: return CASImpl.TYPE_CLASS_DOUBLEARRAY;
     }
     
     if (ti.isStringOrStringSubtype()) {

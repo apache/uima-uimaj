@@ -507,9 +507,9 @@ public class XmiSerializationSharedData {
    * is a reference to an out-of-typesystem FS.
    */
   public static class XmiArrayElement {
-    public int index;
+    final public int index;
 
-    public String xmiId;
+    final public String xmiId;
 
     XmiArrayElement(int index, String xmiId) {
       this.index = index;

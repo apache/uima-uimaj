@@ -40,6 +40,7 @@ import org.apache.uima.jcas.cas.TOP;
  *   Creation:  
  *     non-delta serialization
  *     non-delta deserialization
+ *     for delta serialization, a previous instance is used if available, otherwise a new csds is made
  *     
  *   Reset: 
  *     CAS Reset
@@ -48,12 +49,13 @@ import org.apache.uima.jcas.cas.TOP;
  *   Logical constraints:
  *     - delta de/serialization must use an existing version of this,
  *        -- set during a previous non-delta de/serialization
+ *        -- or created just in time via a scan of the cas
  */
 public class CommonSerDesSequential {
 
   public static final boolean TRACE_SETUP = false;
   /**
-   * a map from a fs to its addr in the modeled heap
+   * a map from a fs to its addr in the modeled heap, == v2 style addr
    * 
    * created during serialization and deserialization
    * used during serialization to create addr info for index info serialization
@@ -63,7 +65,7 @@ public class CommonSerDesSequential {
   final Obj2IntIdentityHashMap<TOP> fs2addr = new Obj2IntIdentityHashMap<>(TOP.class, TOP.singleton);
 
   /**
-   * a map from the modelled FS addr to the V3 FS
+   * a map from the modelled (v2 style) FS addr to the V3 FS
    * created when serializing (non-delta), deserializing (non-delta)
    *   augmented when deserializing(delta)
    * used when deserializing (delta and non-delta)
@@ -99,14 +101,22 @@ public class CommonSerDesSequential {
   public CommonSerDesSequential(CASImpl cas) {
     this.baseCas = cas.getBaseCAS();
   }
+  
+  public boolean isEmpty() {
+    return sortedFSs.isEmpty() && pending.isEmpty();
+  }
 
   /**
    * Must call in fs sorted order
    * @param fs
    */
   void addFS(TOP fs, int addr) {
-    fs2addr.put(fs, addr);
+    addFS1(fs, addr);
     sortedFSs.add(fs);
+  }
+  
+  void addFS1(TOP fs, int addr) {
+    fs2addr.put(fs, addr);
     addr2fs.put(addr, fs);
   }
   
@@ -115,9 +125,8 @@ public class CommonSerDesSequential {
    * @param fs
    */
   void addFSunordered(TOP fs, int addr) {
-    fs2addr.put(fs, addr);
+    addFS1(fs, addr);
     pending.add(fs);
-    addr2fs.put(addr, fs);
   }  
       
   void clear() {
@@ -125,38 +134,44 @@ public class CommonSerDesSequential {
     fs2addr.clear();
     addr2fs.clear();
     pending.clear();
+    heapEnd = 0;
   }
   
-  void setup(int fromId, int fromAddr) {
+  void setup(MarkerImpl mark, int fromAddr) {
+    if (mark == null) {
+      clear();
+    }
     // local value as "final" to permit use in lambda below
     final int[] nextAddr = {fromAddr};
     if (TRACE_SETUP) System.out.println("Cmn serDes sequential setup called by: " + Misc.getCaller());
 
-    baseCas.walkReachablePlusFSsSorted(fs -> {
-      addFS(fs, nextAddr[0]);
-      if (TRACE_SETUP) {
-        System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs.id(), nextAddr[0], fs._getTypeImpl().getShortName());
-      }
-      nextAddr[0] += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  
-    }, fromId);
+    List<TOP> allAboveMark = baseCas.walkReachablePlusFSsSorted(fs -> {
+          addFS1(fs, nextAddr[0]);
+          if (TRACE_SETUP) {
+            System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs.id(), nextAddr[0], fs._getTypeImpl().getShortName());
+          }
+          nextAddr[0] += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  
+        }, mark, null, null);
+    
+    sortedFSs.addAll(allAboveMark);
     heapEnd = nextAddr[0];
 //    if (heapEnd == 0) {
 //      System.out.println("debug");
 //    }
   }
   
-  /**
-   * called to augment an existing csds with information on FSs added after the mark was set
-   * @param mark -
-   */
-  void setup() { setup(1, 1); }
+//  /**
+//   * called to augment an existing csds with information on FSs added after the mark was set
+//   * @param mark -
+//   */
+//  void setup() { setup(1, 1); }
   
-  void walkSeqFSs(Consumer_T_withIOException<TOP> action) throws IOException {
-    for (TOP fs : sortedFSs) {
-      action.accept(fs);
-    }
-  }
-  
+//  void walkSeqFSs(Consumer_T_withIOException<TOP> action) throws IOException {
+//    for (TOP fs : sortedFSs) {
+//      action.accept(fs);
+//    }
+//  }
+//  
   List<TOP> getSortedFSs() {
     if (pending.size() != 0) {
       merge();

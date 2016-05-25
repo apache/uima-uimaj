@@ -138,7 +138,7 @@ public class CASSerializer implements Serializable {
    */
   public void addCAS(CASImpl cas, boolean addMetaData) {
     BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
-    CommonSerDesSequential csds = cas.newCsds();
+    final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas
     scanAllFSsForBinarySerialization(bcsd, null, csds); // populates the arrays
     this.fsIndex = bcsd.getIndexedFSs(csds.fs2addr);  // must follow scanAll...
     
@@ -251,7 +251,7 @@ public class CASSerializer implements Serializable {
   public void addCAS(CASImpl cas, OutputStream ostream) {
     final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
     
-    final CommonSerDesSequential csds = cas.newCsds();
+    final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas, used for delta
     scanAllFSsForBinarySerialization(bcsd, null, csds); // populates the arrays
     
     try {

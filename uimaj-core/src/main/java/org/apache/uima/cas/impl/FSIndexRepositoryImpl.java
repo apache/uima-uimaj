@@ -1237,8 +1237,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   private <T extends TOP> void addFS_common(T fs, boolean isAddback) {
     TypeImpl ti = ((FeatureStructureImplC)fs)._getTypeImpl();
-    final int typeCode = ti.getCode();    
+    final int typeCode = ti.getCode();  
 
+    if (typeCode != TypeSystemConstants.sofaTypeCode && cas.isBaseCas()) {
+      throw new CASRuntimeException(CASRuntimeException.ILLEGAL_ADD_TO_INDEX_IN_BASE_CAS, fs, cas);
+    }
     // https://issues.apache.org/jira/browse/UIMA-4099
     // skip test for wrong view if addback, etc.
  

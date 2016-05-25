@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 
 import org.apache.uima.cas.CAS;
@@ -216,7 +217,9 @@ public class BinaryCasSerDes {
    */
   void reinit(int[] heapMetadata, int[] heapArray, String[] stringTable, int[] fsIndex,
       byte[] byteHeapArray, short[] shortHeapArray, long[] longHeapArray) {
-    CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);
+    CommonSerDesSequential csds = new CommonSerDesSequential(baseCas);  // for non Delta case, not held on to
+            // compare with compress form 4, which does cas.getCsds() or cas.newCsds() which saves it in cas.svd
+    csds.setup(null, 1);
     heap = new Heap();
     byteHeap = new ByteHeap();
     shortHeap = new ShortHeap();
@@ -506,7 +509,7 @@ public class BinaryCasSerDes {
     
     final DataInputStream dis = r.dis;
     
-    final CommonSerDesSequential csds;
+    final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(baseCas, delta);
     
     if (delta) {
       if (nextHeapAddrAfterMark == 0 ||
@@ -514,7 +517,6 @@ public class BinaryCasSerDes {
           heap.getCellsUsed() <=1) {
         Misc.internalError();  // can't deserialize without a previous binary serialization for this CAS
       }
-      csds = baseCas.getCsds();
     } else {
       if (heap == null) heap = new Heap(); else heap.reset();
       if (byteHeap == null) byteHeap = new ByteHeap(); else byteHeap.reset();
@@ -522,7 +524,6 @@ public class BinaryCasSerDes {
       if (longHeap == null) longHeap = new LongHeap(); else longHeap.reset();
       if (stringHeap == null) stringHeap = new StringHeap(); else stringHeap.reset();
       clearDeltaOffsets();
-      csds = baseCas.newCsds();
     } 
     
     try {
@@ -1094,14 +1095,13 @@ public class BinaryCasSerDes {
       }
     }
   }
-  
+    
   void addIdsToIntVector(Set<TOP> fss, IntVector v, Obj2IntIdentityHashMap<TOP> fs2addr) {
     v.add(fss.size());
     for (TOP fs : fss) {
       v.add(fs2addr.get(fs));
     }
   }
-
   
   //Delta IndexedFSs format:
   // number of views
@@ -1231,14 +1231,11 @@ public class BinaryCasSerDes {
     final boolean isMarkSet = mark != null;
 
     if (isMarkSet) {
-      csds.setup(mark.getNextFSId(), csds.getHeapEnd()); 
-    } else {
-      csds.clear();
-      csds.setup();
-    }
+      csds.setup(mark, csds.getHeapEnd());   // add new stuff to existing csds
+    }  // otherwise, it's set up using null, 1 as the arguments
         
     // For delta, these heaps will start at 1, and only hold new items
-    heap = new Heap();
+    heap = new Heap(csds.getHeapEnd());
     byteHeap = new ByteHeap();
     shortHeap = new ShortHeap();
     longHeap = new LongHeap();
@@ -1248,7 +1245,8 @@ public class BinaryCasSerDes {
       clearDeltaOffsets();  // set nextXXheapAfterMark to 0;
     }
 
-    for (TOP fs : csds.getSortedFSs()) {
+    List<TOP> itemsToExtract = isMarkSet ? CASImpl.filterAboveMark(csds.getSortedFSs(), mark) : csds.getSortedFSs();
+    for (TOP fs : itemsToExtract) {
       if (!isMarkSet || mark.isNew(fs)) {
         // skip extraction for FSs below the mark. 
         //   - updated slots will update aux heaps when delta mods are processed
@@ -1511,7 +1509,9 @@ public class BinaryCasSerDes {
         } else {
           fs = initialView.createFS(type);
         }
-        csds.addFS(fs, heapIndex);
+        if (!isSofa) { // if it was a sofa, other code added or pended it
+          csds.addFS(fs, heapIndex);
+        }
         
         for (final FeatureImpl feat : type.getFeatureImpls()) {
           SlotKind slotKind = feat.getSlotKind();

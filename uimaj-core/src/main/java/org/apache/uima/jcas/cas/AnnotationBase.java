@@ -22,9 +22,12 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.AnnotationBaseFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.SofaFS;
+import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -80,7 +83,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
     // no journaling, no index corruption checking
-    _setRefValueCommon(_FI_sofa, _casView.getSofa());
+    _setRefValueCommon(_FI_sofa, _casView.getSofaRef());
   }
 
   /**
@@ -96,7 +99,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
     // no journaling, no index corruption checking
-    _setRefValueCommon(_FI_sofa, _casView.getSofa());
+    _setRefValueCommon(_FI_sofa, _casView.getSofaRef());
   }
 
   // *------------------*
@@ -114,5 +117,17 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
   public CAS getView() {
     return _casView;
   }
-   
+  
+  @Override
+  public void setFeatureValue(Feature feat, FeatureStructure v) {
+    FeatureImpl fi = (FeatureImpl) feat;
+    if (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode) {
+      // trying to set the sofa - don't do this, but check if the value
+      // is OK (note: may break backwards compatibility)  
+      if (v != _getFeatureValueNc(AnnotationBase._FI_sofa)) {
+        throw new CASRuntimeException(CASRuntimeException.ILLEGAL_SOFAREF_MODIFICATION);
+      }
+    }
+    super.setFeatureValue(feat,  v);
+  }
 }

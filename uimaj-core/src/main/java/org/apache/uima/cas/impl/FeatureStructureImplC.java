@@ -181,7 +181,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _intData = _allocIntData();
     _refData = _allocRefData();
 
-    _id = casView.setId2fs((TOP)this);   
+    _id = casView.getNextFsId((TOP)this);   
     
     if (traceFSs && !(this instanceof CommonArray)) {
       _casView.traceFSCreate(this);
@@ -205,7 +205,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _intData = _allocIntData();
     _refData = _allocRefData();    
     
-    _id = _casView.setId2fs((TOP)this); 
+    _id = _casView.getNextFsId((TOP)this); 
 
     if (traceFSs && !(this instanceof CommonArray)) {
       _casView.traceFSCreate(this);
@@ -506,13 +506,6 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
 
-    if (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode) {
-      // trying to set the sofa - don't do this, but check if the value
-      // is OK (note: may break backwards compatibility)  
-      if (v != _getFeatureValueNc(AnnotationBase._FI_sofa)) {
-        throw new CASRuntimeException(CASRuntimeException.ILLEGAL_SOFAREF_MODIFICATION);
-      }
-    }
     // no need to check for index corruption because fs refs can't be index keys
     _setRefValueCommon(fi, v);
     _casView.maybeLogUpdate(this, fi);
@@ -949,42 +942,42 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       return;
     }
     switch (_getTypeCode()) {
-    case TypeSystemImpl.stringArrayTypeCode: {
+    case TypeSystemConstants.stringArrayTypeCode: {
       StringArray a = (StringArray) this;
       printArrayElements(a.size(), i -> a.get(i), indent, buf);
       return;
     }
-    case TypeSystemImpl.intArrayTypeCode: {
+    case TypeSystemConstants.intArrayTypeCode: {
       IntegerArray a = (IntegerArray) this;
       printArrayElements(a.size(), i -> Integer.toString(a.get(i)), indent, buf);
       return;
     }
-    case TypeSystemImpl.floatArrayTypeCode: {
+    case TypeSystemConstants.floatArrayTypeCode: {
       FloatArray a = (FloatArray) this;
       printArrayElements(a.size(), i -> Float.toString(a.get(i)), indent, buf);
       return;
     }
-    case TypeSystemImpl.booleanArrayTypeCode: {
+    case TypeSystemConstants.booleanArrayTypeCode: {
       BooleanArray a = (BooleanArray) this;
       printArrayElements(a.size(), i -> Boolean.toString(a.get(i)), indent, buf);
       return;
     }
-    case TypeSystemImpl.byteArrayTypeCode: {
+    case TypeSystemConstants.byteArrayTypeCode: {
       ByteArray a = (ByteArray) this;
       printArrayElements(a.size(), i -> Byte.toString(a.get(i)), indent, buf);
       return;
     }
-    case TypeSystemImpl.shortArrayTypeCode: {
+    case TypeSystemConstants.shortArrayTypeCode: {
       ShortArray a = (ShortArray) this;
       printArrayElements(a.size(), i -> Short.toString(a.get(i)), indent, buf);
       return;
     }
-    case TypeSystemImpl.longArrayTypeCode: {
+    case TypeSystemConstants.longArrayTypeCode: {
       LongArray a = (LongArray) this;
       printArrayElements(a.size(), i -> Long.toString(a.get(i)), indent, buf);
       return;
     }
-    case TypeSystemImpl.doubleArrayTypeCode: {
+    case TypeSystemConstants.doubleArrayTypeCode: {
       DoubleArray a = (DoubleArray) this;
       printArrayElements(a.size(), i -> Double.toString(a.get(i)), indent, buf);
       return;
@@ -1155,13 +1148,13 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     TypeImpl range = fi.getRangeImpl();
     if (fi.isInInt) {
       switch (range.getCode()) {
-      case TypeSystemImpl.floatTypeCode :
+      case TypeSystemConstants.floatTypeCode :
         return Float.toString(getFloatValue(feat));
-      case TypeSystemImpl.booleanTypeCode :
+      case TypeSystemConstants.booleanTypeCode :
         return Boolean.toString(getBooleanValue(feat));
-      case TypeSystemImpl.longTypeCode :
+      case TypeSystemConstants.longTypeCode :
         return Long.toString(getLongValue(feat));
-      case TypeSystemImpl.doubleTypeCode :
+      case TypeSystemConstants.doubleTypeCode :
         return Double.toString(getDoubleValue(feat));
       default: // byte, short, int, 
         return Integer.toString(getIntValue(feat));
@@ -1172,7 +1165,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
       return getStringValue(feat);
     }
     
-    if (range.getCode() == TypeSystemImpl.javaObjectTypeCode) {
+    if (range.getCode() == TypeSystemConstants.javaObjectTypeCode) {
       return CASImpl.serializeJavaObject(getJavaObjectValue(feat));
     }
     
@@ -1298,25 +1291,25 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
 
     /* The assignment is stricter than the Java rules - must match */
     switch (rangeTypeCode) {
-    case TypeSystemImpl.booleanArrayTypeCode:
+    case TypeSystemConstants.booleanArrayTypeCode:
       return v instanceof BooleanArray;
-    case TypeSystemImpl.byteArrayTypeCode:
+    case TypeSystemConstants.byteArrayTypeCode:
     return v instanceof ByteArray;
-    case TypeSystemImpl.shortArrayTypeCode:
+    case TypeSystemConstants.shortArrayTypeCode:
       return v instanceof ShortArray;
-    case TypeSystemImpl.intArrayTypeCode:
+    case TypeSystemConstants.intArrayTypeCode:
       return v instanceof IntegerArray;
-    case TypeSystemImpl.floatArrayTypeCode:
+    case TypeSystemConstants.floatArrayTypeCode:
       return v instanceof FloatArray;
-    case TypeSystemImpl.longArrayTypeCode:
+    case TypeSystemConstants.longArrayTypeCode:
       return v instanceof LongArray;
-    case TypeSystemImpl.doubleArrayTypeCode:
+    case TypeSystemConstants.doubleArrayTypeCode:
       return v instanceof DoubleArray;
-    case TypeSystemImpl.stringArrayTypeCode:
+    case TypeSystemConstants.stringArrayTypeCode:
       return v instanceof StringArray;
-    case TypeSystemImpl.javaObjectArrayTypeCode:
+    case TypeSystemConstants.javaObjectArrayTypeCode:
       return v instanceof JavaObjectArray;
-    case TypeSystemImpl.fsArrayTypeCode:
+    case TypeSystemConstants.fsArrayTypeCode:
       return v instanceof FSArray;
     }
     
