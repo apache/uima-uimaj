@@ -247,7 +247,9 @@ public class XCASDeserializerTest extends TestCase {
     XMLSerializer xmlSer = new XMLSerializer(sw, false);
     xcasSer.serialize(cas, xmlSer.getContentHandler(), true, ootsd);
     String xml = sw.getBuffer().toString();
-    // System.out.println(xml);
+//    System.out.println("debug writing temp/xmlv3.xml");
+//    FileUtils.saveString2File(xml, new File("c:/temp/xmlv3.xml"));
+//    System.out.println(xml);
 
     // deserialize into a CAS that accepts the full typesystem
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);

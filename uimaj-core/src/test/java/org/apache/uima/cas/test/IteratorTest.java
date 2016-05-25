@@ -770,9 +770,9 @@ public class IteratorTest extends TestCase {
   
   private void findTestCas(FSIndex<FeatureStructure> index) {
     AnnotationFS annot = (AnnotationFS) index.iterator().get();  // first element
-    if (null == index.find(annot)) {
-      System.out.println("debug");
-    }
+//    if (null == index.find(annot)) {
+//      System.out.println("debug");
+//    }
     assertNotNull(index.find(annot));
     assertNull(index.find(this.cas.createAnnotation(this.annotationType, -1, -1)));
   }

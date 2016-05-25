@@ -83,6 +83,7 @@ public class SerDesTest6 extends TestCase {
   // -8,093,220,039,004,886,811
 //  final private static Random random = setRandom(seed = -8093220039004886811L);
 //  final private static Random random = setRandom(seed = -7_080_877_499_529_731_700L);
+//  final private static Random random = setRandom(seed = 5_688_205_586_965_564_941L);
   final private static Random random = setRandom();
   static {    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed); }
   private final String testDocText = "test document text";

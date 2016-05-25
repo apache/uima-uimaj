@@ -175,9 +175,7 @@ class FeaturePathImpl implements FeaturePath {
         if ((index = token.indexOf(BUILT_IN_FUNCTION_SEPARATOR)) != -1) {
           if (index > 0) {
             // we have a built-in function that is separated with a ":"
-            if (index > 0) {
-              this.featurePathElementNames.add(token.substring(0, index));
-            }
+            this.featurePathElementNames.add(token.substring(0, index));
           }
           // get built-in function
           originalBuiltInName = token.substring(index + 1);

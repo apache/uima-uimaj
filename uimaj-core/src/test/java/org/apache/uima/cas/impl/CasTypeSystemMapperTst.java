@@ -185,8 +185,8 @@ public class CasTypeSystemMapperTst extends TestCase {
 
   public void testMissingType6() throws ResourceInitializationException {
     ts1 = createTs(0, 0x1ffff, 0x1ffff);
-    TypeImpl ts1t1 = t1t;
-    TypeImpl ts1t2 = t2t;    
+    ts1t1 = t1t;
+    ts1t2 = t2t;    
     ts2 = createTs(3, 0x1ffff, 0x1ffff); 
 
     CasTypeSystemMapper m = new CasTypeSystemMapper(ts1, ts2);

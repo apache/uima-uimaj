@@ -318,14 +318,9 @@ class FsIndex_iicp<T extends FeatureStructure>
 //    }
     
   boolean subsumes(int superType, int subType) {
-    return getCASImpl().getTypeSystemImpl().subsumes(superType,  subType);
+    return getCasImpl().getTypeSystemImpl().subsumes(superType,  subType);
   }
   
-  // debug
-  CASImpl getCASImpl() {
-    return fsIndex_singletype.casImpl;
-  }
-
   // for flat index support
 //    void addToIteratedSortedIndexes() {
 //      iteratedSortedIndexes.add(this);

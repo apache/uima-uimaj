@@ -53,7 +53,6 @@ public class MarkerImpl implements Marker {
   
   public boolean isNew(FeatureStructure fs) {
   	//check if same CAS instance
-  	//TODO: define a CASRuntimeException
   	if (!isValid || !cas.isInCAS(fs)) {
   		throw new CASRuntimeException(CASRuntimeException.CAS_MISMATCH, "FS and Marker are not from the same CAS.");
   	}
