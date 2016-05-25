@@ -28,7 +28,6 @@ import junit.framework.TestCase;
 
 public class Id2FSTest extends TestCase {
 
-  Id2FS id2fs;
   CASImpl cas;
   JCas jcas;
   TypeSystem ts;
@@ -46,13 +45,14 @@ public class Id2FSTest extends TestCase {
   public void testId2fs() throws InterruptedException {
     
     TOP fs1 = new TOP(jcas);
+    cas.setId2FSs(fs1);
 
     int lastUsedId = fs1.id();
     assertEquals(fs1, cas.<TOP>getFsFromId(lastUsedId));
     // make 20 more that could be gc'd
     
     for (int i = 0; i < 20; i++) {
-      new TOP(jcas);
+      cas.setId2FSs(new TOP(jcas));
     }
    
     // verify they can be found by id #
@@ -65,48 +65,47 @@ public class Id2FSTest extends TestCase {
       assertEquals(fs._id, i + 2);      
     }
     
-    // remove 19 of them
-    System.gc();
-    Thread.sleep(10);  // in case gc needs time to finish
-    assertTrue(fsh == cas.getFsFromId(2));
+//    // remove 19 of them
+//    System.gc();
+//    Thread.sleep(10);  // in case gc needs time to finish
+//    assertTrue(fsh == cas.getFsFromId(2));
+//    
+//    for (int i = 3; i < 21; i++) {  //TOP:21 is held onto by the cas svd cache; might change if we don't cache non corruptable FSs 
+//      TOP fs = null; // for debugging
+//      boolean caught = false;
+//      try {
+//        fs = cas.getFsFromId_checked(i);
+//      } catch (LowLevelException e) {
+//        caught = true;
+//      }
+//      assertTrue( Id2FS.IS_DISABLE_FS_GC || caught);
+//    }
     
-    for (int i = 3; i < 21; i++) {  //TOP:21 is held onto by the cas svd cache; might change if we don't cache non corruptable FSs 
-      TOP fs = null; // for debugging
-      boolean caught = false;
-      try {
-        fs = cas.getFsFromId_checked(i);
-      } catch (LowLevelException e) {
-        caught = true;
-      }
-      assertTrue( Id2FS.IS_DISABLE_FS_GC || caught);
-    }
-    
-    Id2FS id2fs = new Id2FS(200); 
     cas.reset();
     fs1 = new TOP(jcas);
-    
-    id2fs.add(fs1);    
+    cas.setId2FSs(fs1);
+       
     lastUsedId = fs1.id();
-    assertEquals(fs1, id2fs.get(lastUsedId));
+    assertEquals(fs1, cas.getFsFromId(lastUsedId));
     
     for (int i = 0; i < 20; i++) {
-      id2fs.add(new TOP(jcas));
+      cas.setId2FSs(new TOP(jcas));
     }
     // verify they can be found by id #
     for (int i = 0; i < 20; i++) {
-      TOP fs = id2fs.get(i + 2);
+      TOP fs = cas.getFsFromId(i + 2);
       assertEquals(fs._id, i + 2);      
     } 
     
-    // remove 20 of them
-    System.gc();
-    Thread.sleep(10);  // in case gc needs time to finish 
-    if (!Id2FS.IS_DISABLE_FS_GC) {
-      for (int i = 0; i < 19; i++) { // last TOP is held by cas.svd.cache_not_in_index
-        TOP fs = id2fs.get(i + 2);
-        assertNull(fs);
-      }
-    }
+//    // remove 20 of them
+//    System.gc();
+//    Thread.sleep(10);  // in case gc needs time to finish 
+//    if (!Id2FS.IS_DISABLE_FS_GC) {
+//      for (int i = 0; i < 19; i++) { // last TOP is held by cas.svd.cache_not_in_index
+//        TOP fs = cas.getFsFromId(i + 2);
+//        assertNull(fs);
+//      }
+//    }
   }
 
 }
