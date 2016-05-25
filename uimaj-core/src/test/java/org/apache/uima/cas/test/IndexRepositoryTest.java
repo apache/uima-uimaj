@@ -30,12 +30,14 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
+import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import junit.framework.TestCase;
@@ -72,6 +74,9 @@ public class IndexRepositoryTest extends TestCase {
   public void testMissingSofaRef() throws Exception {
     JCas jcas = cas.getJCas();
     Annotation a = new Annotation(jcas, 0, 4);
+    FeatureImpl feat = (FeatureImpl) cas.getTypeSystem().getType(CAS.TYPE_NAME_ANNOTATION_BASE)
+                         .getFeatureByBaseName(CAS.FEATURE_BASE_NAME_SOFA);
+    a._setFeatureValueNcNj(feat, null);
     try {
       jcas.addFsToIndexes(a);
     } catch (CASRuntimeException e) {
