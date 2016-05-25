@@ -25,6 +25,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 
 import junit.framework.TestCase;
@@ -187,6 +188,7 @@ public class StringArrayTest extends TestCase {
      final Feature lemmaList = this.ts.getFeatureByFullName(lemmaListName);
      assertTrue(lemmaList != null);
      StringArrayFS casArray = this.cas.createStringArrayFS(3);
+     ((CASImpl)(casArray.getCAS())).setId2FSs(casArray);
      casArray.set(0, "1");
      casArray.set(1, null);
      casArray.set(2, "3");
