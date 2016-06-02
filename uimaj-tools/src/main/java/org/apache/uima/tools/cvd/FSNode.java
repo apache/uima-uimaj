@@ -27,6 +27,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -40,7 +41,6 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
-import org.apache.uima.util.Misc;
 
 /**
  * A node in the FS Tree Model
@@ -240,7 +240,7 @@ public class FSNode extends FSTreeNode {
       this.children = FSTreeModel.createArrayChildren(0, arrayLength, arrayNodes, this.fSTreeModel);
     } else {
       this.children = new ArrayList<FSTreeNode>(type.getNumberOfFeatures());
-      List<FeatureImpl> feats = type.getFeatureImpls();
+      FeatureImpl[] feats = type.getFeatureImpls();
       for (FeatureImpl f : feats) {
         SlotKind kind = f.getSlotKind();
         int nc = k2nc(kind);
@@ -399,7 +399,7 @@ public class FSNode extends FSTreeNode {
   }
 
   TypeImpl getType() {
-    return fs._typeImpl;
+    return fs._getTypeImpl();
   }
 
   public boolean isAnnotation() {
