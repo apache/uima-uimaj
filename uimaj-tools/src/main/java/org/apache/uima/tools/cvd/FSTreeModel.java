@@ -34,7 +34,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeImpl_string;
-import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -155,14 +155,14 @@ public class FSTreeModel implements TreeModel {
       return FSNode.STRING_FS;
     } else {
       switch(((TypeImpl)type).getCode()) {
-      case TypeSystemImpl.intTypeCode: return FSNode.INT_FS;
-      case TypeSystemImpl.floatTypeCode: return FSNode.FLOAT_FS;
-      case TypeSystemImpl.fsArrayTypeCode: return FSNode.ARRAY_FS;
-      case TypeSystemImpl.byteArrayTypeCode: return FSNode.BYTE_FS;
-      case TypeSystemImpl.booleanArrayTypeCode: return FSNode.BOOL_FS;
-      case TypeSystemImpl.shortArrayTypeCode: return FSNode.SHORT_FS;
-      case TypeSystemImpl.longArrayTypeCode: return FSNode.LONG_FS;
-      case TypeSystemImpl.doubleArrayTypeCode: return FSNode.DOUBLE_FS;
+      case TypeSystemConstants.intTypeCode: return FSNode.INT_FS;
+      case TypeSystemConstants.floatTypeCode: return FSNode.FLOAT_FS;
+      case TypeSystemConstants.fsArrayTypeCode: return FSNode.ARRAY_FS;
+      case TypeSystemConstants.byteArrayTypeCode: return FSNode.BYTE_FS;
+      case TypeSystemConstants.booleanArrayTypeCode: return FSNode.BOOL_FS;
+      case TypeSystemConstants.shortArrayTypeCode: return FSNode.SHORT_FS;
+      case TypeSystemConstants.longArrayTypeCode: return FSNode.LONG_FS;
+      case TypeSystemConstants.doubleArrayTypeCode: return FSNode.DOUBLE_FS;
       default: return FSNode.STD_FS;
       }
     }
