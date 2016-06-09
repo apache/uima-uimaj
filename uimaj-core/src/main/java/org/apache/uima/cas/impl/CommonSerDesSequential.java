@@ -184,9 +184,9 @@ public class CommonSerDesSequential {
   void setHeapEnd(int heapEnd) { this.heapEnd = heapEnd; }
   
   private void merge() {
-    Collections.sort(pending);
+    Collections.sort(pending, FeatureStructureImplC::compare);
     sortedFSs.addAll(pending);
     pending.clear();
-    Collections.sort(sortedFSs);
+    Collections.sort(sortedFSs, FeatureStructureImplC::compare);
   }
 }

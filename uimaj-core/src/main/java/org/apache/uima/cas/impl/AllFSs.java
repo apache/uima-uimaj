@@ -67,7 +67,7 @@ class AllFSs {
   }
     
   ArrayList<TOP> getAllFSsSorted() {
-    Collections.sort(toBeScanned);
+    Collections.sort(toBeScanned, FeatureStructureImplC::compare);
     return toBeScanned;
   }
   

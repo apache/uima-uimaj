@@ -70,7 +70,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
  *     -- can't be static - may be multiple type systems in use
  * 
  */
-public class FeatureStructureImplC implements FeatureStructure, Cloneable, Comparable<FeatureStructure> {
+public class FeatureStructureImplC implements FeatureStructure, Cloneable {
 
   // note: these must be enabled to make the test cases work
   public static final String DISABLE_RUNTIME_FEATURE_VALIDATION = "uima.disable_runtime_feature_validation";
@@ -1177,16 +1177,6 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     Misc.internalError();
     return null;  // needed to avoid compile error
   }
-
-  
-  /* (non-Javadoc)
-   * Supports "natural" compare order based on id values
-   * @see java.lang.Comparable#compareTo(java.lang.Object)
-   */
-  @Override
-  public int compareTo(FeatureStructure o) {
-    return Integer.compare(this._id, o.id());
-  }
   
   protected boolean _inSetSortedIndex() { return (_flags & IN_SET_SORTED_INDEX) != 0;}
   protected void _setInSetSortedIndexed() { _flags |= IN_SET_SORTED_INDEX; }
@@ -1403,5 +1393,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable, Compa
     _typeImpl = ti;
   }
   
+  public static int compare(FeatureStructureImplC a, FeatureStructureImplC b) {
+    return Integer.compare(a._id, b._id);
+  }
 
 }

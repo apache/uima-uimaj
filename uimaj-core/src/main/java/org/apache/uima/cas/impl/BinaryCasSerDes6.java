@@ -2740,7 +2740,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //        : ((Set<TOP>)fssx).stream();
 
     final int[] context = {0, 0};  
-    fss.sorted()
+    fss.sorted(FeatureStructureImplC::compare)
       .forEachOrdered(fs -> {
         // skip write if typemapping, and target type isn't there
 //          if (fs._id == 199) { 
