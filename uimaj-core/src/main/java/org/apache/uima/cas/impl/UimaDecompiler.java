@@ -28,6 +28,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.uima.internal.util.Misc;
 
@@ -48,6 +50,7 @@ import com.strobel.decompiler.PlainTextOutput;
  *   Make an instance, optionally setting
  *     - class loader to use (may pass byte array instead)
  *     - directory where to write output (may output to string instead)
+ *     - class loader to use when resolving symbols during decompile
  *   
  *   call decompile
  *     - argument
@@ -78,13 +81,21 @@ public class UimaDecompiler {
     decompilerSettings.setSimplifyMemberReferences(true);
   }
 
-  private final ClassLoader classLoader;
+  private final ClassLoader classLoader; 
   
   private File outputDirectory = null;
   
   public UimaDecompiler() {
     classLoader = null;
   }
+
+  // if you want this  constructor, call the 2 arg constructor, passing null as the 2nd arg
+//  public UimaDecompiler(ClassLoader classLoader) {
+//    this.classLoader = classLoader; 
+//    if (classLoader != null) {
+//      setDecompilerSettingsForClassLoader();
+//    }    
+//  }
   
   public UimaDecompiler(ClassLoader classLoader, File outputDirectory) {
     this.classLoader = classLoader;
@@ -94,16 +105,33 @@ public class UimaDecompiler {
     }
   }
     
+  /**
+   * decompile className, and use the byte array passed in instead of getting it from the classpath
+   * @param className the dotted name of the class
+   * @param byteArray the compiled definition for this class to decompile
+   * @return the decompilation
+   */
   public ByteArrayOutputStream decompile(String className, byte[] byteArray) {
     setDecompilerSettingsForByteArray(className.replace('.', '/'), byteArray);
     return decompileCommon(className);
   }
   
+  /**
+   * decompile className, getting the compiled version from the classpath
+   * @param className the dotted name of the class
+   * @return the decompilation
+   */
   public ByteArrayOutputStream decompile(String className) {
     setDecompilerSettingsForClassLoader();
     return decompileCommon(className);
   }
   
+  /**
+   * Common part for decompiling to a ByteArrayOutputStream
+   *   the decompiler settings are set up to get the compiled form by name
+   * @param className the class to decompile
+   * @return the decompilation
+   */
   public ByteArrayOutputStream decompileCommon(String className) {
     
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -123,9 +151,13 @@ public class UimaDecompiler {
     return baos;
   }
   
+  /** pattern to extract name following class, interface, or enum */
+  private static final Pattern cie_name = Pattern.compile("( class | interface | enum )\\s*(\\w*)");
   /**
    * Decompile from the file system, maybe in a Jar.
-   * @param path the Path to the file to decompile
+   * This is a 2 pass operation, usually, to get the classname from the decompilation,
+   *   and then redo the decompilation with that extra bit of configuration.
+   * @param b the Path to the file to decompile
    * @return the decompiled form as a string
    */
   public String decompile(byte[] b) {
@@ -145,12 +177,11 @@ public class UimaDecompiler {
       packageName = s.substring(ip, ipe).replace('.', '/') + "/";
     }
     
-    int ic = s.indexOf(" class ");
-    if (ic >= 0) {
-      ic = ic + " class ".length();  // start of class name
-      int ice = s.indexOf(" ", ic);
-      className = s.substring(ic, ice);
-    }
+    Matcher m = cie_name.matcher(s);
+    boolean ok = m.find();
+    className = ok 
+                   ? m.group(2) 
+                   : "";    
     
     String classNameSlashes2 = packageName + className;
     
@@ -201,8 +232,8 @@ public class UimaDecompiler {
         }
       }      
     }; 
-    ITypeLoader tc = new CompositeTypeLoader(tl, new InputTypeLoader());
-    decompilerSettings.setTypeLoader(tl);
+    ITypeLoader tc = new CompositeTypeLoader(tl, getClasspathTypeLoader(), new InputTypeLoader());
+    decompilerSettings.setTypeLoader(tc);
   }
     
   public boolean writeIfOk(ByteArrayOutputStream baos, String className) {
@@ -218,17 +249,22 @@ public class UimaDecompiler {
   }
   
   private void setDecompilerSettingsForClassLoader() {
-    ITypeLoader tl = new ITypeLoader() {
+    decompilerSettings.setTypeLoader(getClasspathTypeLoader());
+  }
+  
+  private ITypeLoader getClasspathTypeLoader() {
+    return new ITypeLoader() {
       
       @Override
       public boolean tryLoadType(String internalName, Buffer buffer) {
         
         // read the class as a resource, and put into temporary byte array output stream
         // because we need to know the length
-        
+//        System.out.println("debug trying to load " + internalName);
         internalName = internalName.replace('.', '/') + ".class";
         InputStream stream = classLoader.getResourceAsStream(internalName);
         if (stream == null) {
+//          System.out.println("debug failed to load " + internalName);
           return false;
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 16);        
@@ -247,10 +283,9 @@ public class UimaDecompiler {
         b = baos.toByteArray();
         buffer.reset(length);
         System.arraycopy(b, 0, buffer.array(), 0, length);
-        
+//        System.out.println("debug OK loading " + internalName);
         return true;
       }      
     };    
-    decompilerSettings.setTypeLoader(tl);
   }
 }
