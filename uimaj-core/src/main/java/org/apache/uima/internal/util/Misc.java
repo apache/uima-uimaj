@@ -29,6 +29,8 @@ import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +53,6 @@ public class Misc {
   public static String replaceWhiteSpace(String s, String replacement) {
     return whitespace.matcher(s).replaceAll(replacement);
   }
-  
   
   /**
    * @param s starting frames above invoker
@@ -107,6 +108,19 @@ public class Misc {
   }
   
   public final static MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
+  
+  public static URL[] classpath2urls (String classpath) {
+    try {
+      String [] sa = classpath.split(File.pathSeparator);
+      URL[] r = new URL[sa.length];
+      for (int i = 0; i < sa.length; i++) {
+        r[i] = new File(sa[i]).toURI().toURL();
+      }
+      return r;
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    }
+  }
   
   /**
    * 

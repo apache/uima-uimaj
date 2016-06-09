@@ -113,17 +113,17 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String reader2String(Reader reader) throws IOException {
-    StringBuffer strBuffer = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     char[] buf = new char[10000];
     int charsRead;
     try {
       while ((charsRead = reader.read(buf)) >= 0) {
-        strBuffer.append(buf, 0, charsRead);
+        sb.append(buf, 0, charsRead);
       }
     } finally {
       reader.close();
     }
-    return strBuffer.toString();
+    return sb.toString();
   }
 
   /**
@@ -373,15 +373,15 @@ public class FileUtils {
         && filePathComponents[i].equals(relToPathComponents[i])) {
       i++;
     }
-    StringBuffer buf = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int j = i; j < relToPathComponents.length; j++) {
-      buf.append("../");
+      sb.append("../");
     }
     for (int j = i; j < filePathComponents.length - 1; j++) {
-      buf.append(filePathComponents[j]).append('/');
+      sb.append(filePathComponents[j]).append('/');
     }
-    buf.append(filePathComponents[filePathComponents.length - 1]);
-    return buf.toString();
+    sb.append(filePathComponents[filePathComponents.length - 1]);
+    return sb.toString();
   }
 
   /**
