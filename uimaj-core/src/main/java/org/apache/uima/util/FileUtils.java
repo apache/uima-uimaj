@@ -198,7 +198,8 @@ public class FileUtils {
   }
 
   public static void writeToFile(Path path, String data) {   
-    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {
+    // try with resources, closes bw at end
+    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {  
       bw.write(data);
     } catch (IOException e) {
       throw new RuntimeException(e);

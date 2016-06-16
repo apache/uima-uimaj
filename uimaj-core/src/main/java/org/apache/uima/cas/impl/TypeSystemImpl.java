@@ -34,10 +34,6 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,10 +90,6 @@ import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import com.strobel.assembler.metadata.Buffer;
-import com.strobel.assembler.metadata.ITypeLoader;
-import com.strobel.decompiler.DecompilerSettings;
-
 /**
  * Type system implementation.
  * 
@@ -146,9 +138,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   private static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = //true || // debug
       Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
  
-  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
-  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
-  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
+//  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
+//  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
+//  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
     
   /**
    * Type code that is returned on unknown type names.
@@ -397,7 +389,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   // must be volatile to force the right memory barriers
   volatile boolean areBuiltInTypesSetup = false;
   
-  private final DecompilerSettings decompilerSettings = (IS_DECOMPILE_JCAS) ? DecompilerSettings.javaDefaults() : null;
+//  private final DecompilerSettings decompilerSettings = (IS_DECOMPILE_JCAS) ? DecompilerSettings.javaDefaults() : null;
   
   FeatureImpl startFeat;
   FeatureImpl endFeat;
@@ -519,49 +511,49 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     arrayName2ComponentType.put(CAS.TYPE_NAME_STRING_ARRAY, stringType);
     arrayName2ComponentType.put(CAS.TYPE_NAME_JAVA_OBJECT_ARRAY,  javaObjectType);
 
-    // initialize the decompiler settings to read the class definition
-    // from the classloader of this class.  Needs to be fixed to work with PEARs
-    // or custom UIMA class loaders.
-    
-    if (IS_DECOMPILE_JCAS) {
-      ITypeLoader tl = new ITypeLoader() {
-  
-        @Override
-        public boolean tryLoadType(String internalName, Buffer buffer) {
-          
-          // get the classloader to use to read the class as a resource
-          ClassLoader cl = this.getClass().getClassLoader();
-          
-          // read the class as a resource, and put into temporary byte array output stream
-          // because we need to know the length
-          
-          internalName = internalName.replace('.', '/') + ".class";
-          InputStream stream = cl.getResourceAsStream(internalName);
-          if (stream == null) {
-            return false;
-          }
-          ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 16);        
-          byte[] b = new byte[1024 * 16]; 
-          int numberRead;
-          try {
-            while (0 <= (numberRead = stream.read(b))){
-              baos.write(b, 0, numberRead);
-            }
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-          
-          // Copy result (based on length) into output buffer spot
-          int length = baos.size();
-          b = baos.toByteArray();
-          buffer.reset(length);
-          System.arraycopy(b, 0, buffer.array(), 0, length);
-          
-          return true;
-        }      
-      };    
-      decompilerSettings.setTypeLoader(tl);
-    }
+//    // initialize the decompiler settings to read the class definition
+//    // from the classloader of this class.  Needs to be fixed to work with PEARs
+//    // or custom UIMA class loaders.
+//    
+//    if (IS_DECOMPILE_JCAS) {
+//      ITypeLoader tl = new ITypeLoader() {
+//  
+//        @Override
+//        public boolean tryLoadType(String internalName, Buffer buffer) {
+//          
+//          // get the classloader to use to read the class as a resource
+//          ClassLoader cl = this.getClass().getClassLoader();
+//          
+//          // read the class as a resource, and put into temporary byte array output stream
+//          // because we need to know the length
+//          
+//          internalName = internalName.replace('.', '/') + ".class";
+//          InputStream stream = cl.getResourceAsStream(internalName);
+//          if (stream == null) {
+//            return false;
+//          }
+//          ByteArrayOutputStream baos = new ByteArrayOutputStream(1024 * 16);        
+//          byte[] b = new byte[1024 * 16]; 
+//          int numberRead;
+//          try {
+//            while (0 <= (numberRead = stream.read(b))){
+//              baos.write(b, 0, numberRead);
+//            }
+//          } catch (IOException e) {
+//            throw new RuntimeException(e);
+//          }
+//          
+//          // Copy result (based on length) into output buffer spot
+//          int length = baos.size();
+//          b = baos.toByteArray();
+//          buffer.reset(length);
+//          System.arraycopy(b, 0, buffer.array(), 0, length);
+//          
+//          return true;
+//        }      
+//      };    
+//      decompilerSettings.setTypeLoader(tl);
+//    }
     
     // Lock individual types.
     setTypeFinal(intType);
@@ -1297,17 +1289,19 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       
       computeFeatureOffsets(topType, 0);
                  
-      if (IS_DECOMPILE_JCAS) {  
-        synchronized(GLOBAL_TYPESYS_LOCK) {
-          for(Type t : getAllTypes()) {
-            decompile(t);
-          }
-        }
-      }
+//      if (IS_DECOMPILE_JCAS) {  
+//        synchronized(GLOBAL_TYPESYS_LOCK) {
+//          for(Type t : getAllTypes()) {
+//            decompile(t);
+//          }
+//        }
+//      }
       
       computeAdjustedFeatureOffsets(topType, 0, 0);  // must preceed the FSClassRegistry JCas stuff below
       
       // Load all the available JCas classes (if not already loaded).
+      // Has to follow above, because information computed above is used when
+      // loading and checking JCas classes
       
       fsClassRegistry = new FSClassRegistry(this, true);
       
@@ -1372,22 +1366,22 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     }  
   }
 
-  private void decompile(Type t) {
-    String name = t.getName();  
-    if (name.endsWith(ARRAY_TYPE_SUFFIX)) return;
-    if (decompiled.contains(name)) return;
-    decompiled.add(name);
-    
-    if(builtInsWithAltNames.contains(name) )
-      name = "org.apache.uima.jcas."+ name.substring(5 /* "uima.".length() */);
-    
-    String h = System.getProperty(DECOMPILE_JCAS);
-    File file = new File(h + "decompiled");
-    file.mkdir();
- 
-    UimaDecompiler ud = new UimaDecompiler(this.getClass().getClassLoader(), file);
-    ud.decompileToOutputDirectory(name.replace('.', '/'));
-  }
+//  private void decompile(Type t) {
+//    String name = t.getName();  
+//    if (name.endsWith(ARRAY_TYPE_SUFFIX)) return;
+//    if (decompiled.contains(name)) return;
+//    decompiled.add(name);
+//    
+//    if(builtInsWithAltNames.contains(name) )
+//      name = "org.apache.uima.jcas."+ name.substring(5 /* "uima.".length() */);
+//    
+//    String h = System.getProperty(DECOMPILE_JCAS);
+//    File file = new File(h + "decompiled");
+//    file.mkdir();
+// 
+//    UimaDecompiler ud = new UimaDecompiler(this.getClass().getClassLoader(), file);
+//    ud.decompileToOutputDirectory(name.replace('.', '/'));
+//  }
   
   /**
    * @see org.apache.uima.cas.admin.TypeSystemMgr#isCommitted()
@@ -2486,6 +2480,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   public static synchronized int getAdjustedFeatureOffset(String featName) {
     TypeImpl type = typeBeingLoadedThreadLocal.get();
+    if (null == type) {
+      /*A JCas class field "{0}" is being initialized by non-framework (user) code before Type System Commit 
+       * for a type system with a corresponding type. 
+       * Either change the user load code to not do initialize, or to defer it until after the type system commit.*/
+      throw new CASRuntimeException(CASRuntimeException.JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT, featName);
+    }
     FeatureImpl fi = type.getFeatureByBaseName(featName);
     return (fi == null) ? -1 : fi.getAdjustedOffset();
   }

@@ -119,6 +119,10 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
 	public static final String JCAS_UNKNOWN_TYPE_NOT_IN_CAS = "JCAS_UNKNOWN_TYPE_NOT_IN_CAS";
 
+	/*A JCas class field "{0}" is being initialized by non-framework (user) code before Type System Commit 
+	 * for a type system with a corresponding type. 
+	 * Either change the user load code to not do initialize, or to defer it until after the type system commit.*/
+	public static final String JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT = "JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT";
 	/**
    * JCas getNthElement method called via invalid object - an empty list: {0}.
    */

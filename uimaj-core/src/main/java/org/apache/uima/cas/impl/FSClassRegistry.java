@@ -211,8 +211,7 @@ public class FSClassRegistry {
     String typeName = ti.getName();
     
     if (BuiltinTypeKinds.creatableBuiltinJCas.contains(typeName) || typeName.equals(CAS.TYPE_NAME_SOFA)) {
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);
-      Class<?> builtinClass = maybeLoadJCas(typeName);
+      Class<?> builtinClass = maybeLoadJCas(ti);
       assert (builtinClass != null);  // builtin types must be present
       // copy down to subtypes, if needed, done later
       int jcasType = Misc.getStaticIntFieldNoInherit(builtinClass, "typeIndexID");
@@ -227,7 +226,6 @@ public class FSClassRegistry {
     }
   }
   
-
 //  final FeatureImpl[] featuresFromJFRI;
   
   /**
@@ -344,16 +342,7 @@ public class FSClassRegistry {
         jcasClassInfo = copyDownDefault_jcasClassInfo;  // initialize in case no JCas for this type
       
       
-        Class<?> clazz;
-    
-        TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);    
-        clazz = maybeLoadJCas(ti.getName());  
-//        if (debug) {
-//          System.out.println("Loading com.ibm.hutt.Predicate: returned class from loading was " + ((clazz == null) ? "null" : "not null"));
-//          if (null != clazz) {
-//            System.out.println("Loading com.ibm.hutt.Predicate: TOP was " + ((TOP.class.isAssignableFrom(clazz)) ? "assignable" : "not assignable") + " from Predicate");
-//          }
-//        }
+        Class<?> clazz = maybeLoadJCas(ti);
         if (null != clazz && TOP.class.isAssignableFrom(clazz)) {
           
           int jcasType = -1;
@@ -363,9 +352,6 @@ public class FSClassRegistry {
             assert(jcasType >= 0);
             ts.setJCasRegisteredType(jcasType, ti);
           } else {
-//            if (debug) {
-//              System.out.println("Loading com.ibm.hutt.Predicate: SKIPPED setting register because class was Abstract!");
-//            }
           }
           
           jcasClassInfo = createJCasClassInfo(clazz, ti, jcasType); 
@@ -440,17 +426,20 @@ public class FSClassRegistry {
    * @param cl the class loader to use
    * @return the loaded / resolved class
    */
-  private static Class<?> maybeLoadJCas(String typeName) {
+  private static Class<?> maybeLoadJCas(TypeImpl ti) {
     Class<?> clazz = null;
-    String className = Misc.typeName2ClassName(typeName);
+    String className = Misc.typeName2ClassName(ti.getName());
     
     try {
+      TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);
 //      synchronized (className) { // to insure clazz receives a fully-resolved class, must use interned name
         // parallel class loaders already sync on the name
         clazz = Class.forName(className, true, FSClassRegistry.class.getClassLoader());
 //      }
     } catch (ClassNotFoundException e) {
       // This is normal, if there is no JCas for this class
+    } finally {
+      TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
     }
     return clazz;
   }
@@ -483,7 +472,11 @@ public class FSClassRegistry {
                      : (FsGenerator) callSite.getTarget().invokeExact();
     } catch (Throwable e) {
       if (e instanceof NoSuchMethodException) {
-        add2errors(errorSet, new CASRuntimeException(e, CASRuntimeException.JCAS_CAS_NOT_V3, jcasClass.getName()));
+        String classname = jcasClass.getName();
+        add2errors(errorSet, new CASRuntimeException(e, CASRuntimeException.JCAS_CAS_NOT_V3, 
+            classname,
+            FSClassRegistry.class.getClassLoader().getResource(classname.replace('.', '/') + ".class").toString()
+            ));
         return null;
       }
       throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
@@ -728,16 +721,18 @@ public class FSClassRegistry {
       if (fi == null) {
         add2errors(errorSet, 
                    new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM, clazz.getName(), featName), 
-                   false);  // don't throw on this error, field is set to -1 and will throw if trying to use it        
-      } else {
+                   false);  // don't throw on this error, field is set to -1 and will throw if trying to use it   
+       } else {
         int staticOffsetInClass = Misc.getStaticIntFieldNoInherit(clazz, fname);
         if (fi.getAdjustedOffset() != staticOffsetInClass) {
-          /** In JCAS class "{0}", UIMA field "{1}" was set up at type system type adjusted offset "{2}" but 
-           * a different type system being used with the same JCas class has this offset at "{3}", which is not allowed. */
+          /** In JCAS class "{0}", UIMA field "{1}" was set up when this class was previously loaded and initialized, to have
+           * an adjusted offset of "{2}" but now the feature has a different adjusted offset of "{3}"; this may be due to 
+           * something else other than type system commit actions loading and initializing the JCas class, or to
+           * having a different non-compatible type system for this class, trying to use a common JCas cover class, which is not supported. */
           add2errors(errorSet, 
-                     new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM,
+                     new CASRuntimeException(CASRuntimeException.JCAS_FIELD_ADJ_OFFSET_CHANGED,
                         clazz.getName(), fi.getName(), staticOffsetInClass, fi.getAdjustedOffset()),
-                     staticOffsetInClass != -1);  // throw unless static offset is -1
+                     staticOffsetInClass != -1);  // throw unless static offset is -1, in that case, a runtime error will occur if it is usedd
         }
       }
     }
