@@ -64,7 +64,27 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
     super(t, c);
   }
 
-
+  /**
+   * Generate a NonEmpty node with the specified head and tail
+   * @param jcas -
+   * @param head -
+   * @param tail -
+   */
+  public NonEmptyIntegerList(JCas jcas, int v, CommonList tail) {
+    this(jcas);
+    setHead(v);
+    setTail(tail);
+  }
+  
+  /**
+   * Generate a NonEmpty node with the specified head with the empty node as the tail
+   * @param jcas -
+   * @param head -
+   */
+  public NonEmptyIntegerList(JCas jcas, int v) {
+    this(jcas, v, jcas.getCasImpl().getEmptyIntegerList());
+  }
+  
   // *------------------*
   // * Feature: head
   /* getter for head * */
@@ -114,5 +134,8 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
     setHead(Integer.parseInt(v));
   }  
 
-  
+  @Override
+  public EmptyIntegerList getEmptyList() {
+    return this._casView.getEmptyIntegerList();
+  }
 }

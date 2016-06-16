@@ -112,6 +112,8 @@ public interface CommonList extends FeatureStructure {
 	
 	CommonList createNonEmptyNode();
 	
+	CommonList getEmptyList();
+	
 	/**
    * overridden in nonempty nodes
 	 * Return the head value of a list as a string suitable for serialization.
@@ -255,11 +257,6 @@ public interface CommonList extends FeatureStructure {
   @Override
   default int id() {
     return ((FeatureStructureImplC)this).id();
-  }
-  
-  default CommonList getEmptyList() {
-    TOP node = (TOP) this;
-    return (CommonList) node._getView().getEmptyList(node._getTypeCode());
   }
 
 }

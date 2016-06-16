@@ -62,6 +62,27 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
     super(t, c);
   }
   
+  /**
+   * Generate a NonEmpty node with the specified head and tail
+   * @param jcas -
+   * @param head -
+   * @param tail -
+   */
+  public NonEmptyStringList(JCas jcas, String v, CommonList tail) {
+    this(jcas);
+    setHead(v);
+    setTail(tail);
+  }
+  
+  /**
+   * Generate a NonEmpty node with the specified head with the empty node as the tail
+   * @param jcas -
+   * @param head -
+   */
+  public NonEmptyStringList(JCas jcas, String v) {
+    this(jcas, v, jcas.getCasImpl().getEmptyStringList());
+  }
+  
 // *------------------*
   // * Feature: head
   /* getter for head * */
@@ -111,4 +132,8 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
     setHead(v);
   }
   
+  @Override
+  public EmptyStringList getEmptyList() {
+    return this._casView.getEmptyStringList();
+  }
 }

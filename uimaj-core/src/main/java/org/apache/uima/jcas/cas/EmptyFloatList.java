@@ -57,5 +57,9 @@ public class EmptyFloatList extends FloatList implements EmptyList {
   public EmptyFloatList(TypeImpl t, CASImpl c) {
     super(t, c);
   }  
-  
+    
+  @Override
+  public EmptyFloatList getEmptyList() {
+    return this;
+  }
 }

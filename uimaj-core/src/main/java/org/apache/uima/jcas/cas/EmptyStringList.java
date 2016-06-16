@@ -58,4 +58,8 @@ public class EmptyStringList extends StringList implements EmptyList {
     super(t, c);
   }
   
+  @Override
+  public CommonList getEmptyList() {
+    return this;
+  }
 }

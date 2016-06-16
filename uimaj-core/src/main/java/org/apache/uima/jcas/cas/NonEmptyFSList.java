@@ -21,7 +21,6 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
@@ -62,7 +61,28 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public NonEmptyFSList(TypeImpl t, CASImpl c) {
     super(t, c);
   }
+  
+  /**
+   * Generate a NonEmpty node with the specified head and tail
+   * @param jcas -
+   * @param head -
+   * @param tail -
+   */
+  public NonEmptyFSList(JCas jcas, TOP head, CommonList tail) {
+    this(jcas);
+    setHead(head);
+    setTail(tail);
+  }
 
+  /**
+   * Generate a NonEmpty node with the specified head with the empty node as the tail
+   * @param jcas -
+   * @param head -
+   */
+  public NonEmptyFSList(JCas jcas, TOP head) {
+    this(jcas, head, jcas.getCasImpl().getEmptyFSList());
+  }
+  
   // *------------------*
   // * Feature: head
   /* getter for head * */
@@ -100,4 +120,8 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
     return ((NonEmptyFSList)getNonEmptyNthNode(i)).getHead();
   }
   
+  @Override
+  public EmptyFSList getEmptyList() {
+    return this._casView.getEmptyFSList();
+  }
 }

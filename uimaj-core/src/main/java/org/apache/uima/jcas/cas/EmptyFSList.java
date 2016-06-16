@@ -59,4 +59,8 @@ public class EmptyFSList extends FSList implements EmptyList {
     super(t, c);
   }
 
+  @Override
+  public EmptyFSList getEmptyList() {
+    return this;
+  }
 }

@@ -58,4 +58,8 @@ public class EmptyIntegerList extends IntegerList implements EmptyList {
     super(t, c);
   }
   
+  @Override
+  public EmptyIntegerList getEmptyList() {
+    return this;
+  }
 }
