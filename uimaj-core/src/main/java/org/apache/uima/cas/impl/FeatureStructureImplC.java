@@ -266,7 +266,14 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public void removeFromIndexes(CAS cas) {
     cas.removeFsFromIndexes(this);
   }
+  
+  public void removeFromIndexes(JCas jcas) {
+    jcas.removeFsFromIndexes(this);
+  }
 
+  public LowLevelCAS getLowLevelCas() {
+    return _casView;
+  }
   
   /* *******************************
    *    IDs and Type
