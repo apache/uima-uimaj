@@ -208,6 +208,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
    */
   public UIMARuntimeException(Throwable aCause) {
     super(aCause);
+    mCause = aCause;
     if (mMessageKey == null && (aCause instanceof I18nExceptionI)) {
       I18nExceptionI cause = (I18nExceptionI)aCause;
       mMessageKey = cause.getMessageKey();
