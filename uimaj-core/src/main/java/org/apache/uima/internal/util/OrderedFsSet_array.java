@@ -59,6 +59,7 @@ import org.apache.uima.jcas.cas.TOP;
  */
 public class OrderedFsSet_array implements NavigableSet<TOP> {
 //  public boolean specialDebug = false;
+  final private static boolean TRACE = false;
   final private static boolean MEASURE = false;
   final private static int DEFAULT_MIN_SIZE = 8;  // power of 2 please
   final private static int MAX_DOUBLE_SIZE = 1024 * 1024 * 4;  // 4 million, power of 2 please
@@ -106,6 +107,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
   private int modificationCount = 0;
   private int lastRemovedPos = -1;
     
+  private StringBuilder tr = TRACE ? new StringBuilder() : null;
   public OrderedFsSet_array(Comparator<TOP> comparatorWithID, Comparator<TOP> comparatorWithoutID) {
     this.comparatorWithID = comparatorWithID;
     this.comparatorWithoutID = comparatorWithoutID;
@@ -392,12 +394,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         // there may be other elements in batch that duplicate; these won't be inserted, but 
         //   there will be space lost in this case
         
-        int newInsertPos = insertSpace(insertPosOfAddedSpace, nbrNewSlots) - 1;  // inserts nulls at the insert point, shifting other cells down
+        int indexOfNewItem = insertSpace(insertPosOfAddedSpace, nbrNewSlots) // returns index of a non-null item
+                                                                           // the new item goes one spot to the left of this
+            - 1;  // inserts nulls at the insert point, shifting other cells down
     
         // process first item
-        insertItem(newInsertPos, itemToAdd);
+        insertItem(indexOfNewItem, itemToAdd);
 //        TOP prevItem = itemToAdd;
-        if (newInsertPos + 1 == a_nextFreeslot) {
+        if (indexOfNewItem + 1 == a_nextFreeslot) {
           highest = itemToAdd;
         }
         nbrNewSlots --;
@@ -415,10 +419,10 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
           }
           pos = (-pos) - 1;
               
-          newInsertPos = pos - 1;
+          indexOfNewItem = pos - 1;
           if (nullBlockStart == 0) {
             // this and all the rest of the elements are lower, insert in bulk
-            insertItem(newInsertPos--, itemToAdd);
+            insertItem(indexOfNewItem--, itemToAdd);
             nbrNewSlots --;
             bPos--;
             
@@ -427,33 +431,33 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
               if (itemToAdd == null) {
                 continue;
               }
-              insertItem(newInsertPos--, itemToAdd);
+              insertItem(indexOfNewItem--, itemToAdd);
               nbrNewSlots --;  // do this way to respect skipped items due to == to prev        
             }
             break;
           }
           
-          if (newInsertPos == -1 || null != a[newInsertPos]) {
-            newInsertPos = shiftFreespaceDown(pos, nbrNewSlots) - 1;  // results in null being available at pos - 1
+          if (indexOfNewItem == -1 || null != a[indexOfNewItem]) {
+            indexOfNewItem = shiftFreespaceDown(pos, nbrNewSlots) - 1;  // results in null being available at pos - 1
           }
-          insertItem(newInsertPos, itemToAdd);
+          insertItem(indexOfNewItem, itemToAdd);
           nbrNewSlots --;
         }
         
         if (nbrNewSlots > 0) {
           // have extra space left over due to dups not being added
           // If this space is not at beginning, move space to beginning or end (whichever is closer)
-          if (newInsertPos - nbrNewSlots > 0) { 
+          if (indexOfNewItem - nbrNewSlots > 0) { 
             // space is not at beginning
           
             int mid = (a_nextFreeslot + a_firstUsedslot) >>> 1;  // overflow aware 
-            if (newInsertPos < mid) {
+            if (indexOfNewItem < mid) {
               // move to beginning
-              System.arraycopy(a, newInsertPos - nbrNewSlots, a, 0, nbrNewSlots);
+              System.arraycopy(a, indexOfNewItem - nbrNewSlots, a, 0, nbrNewSlots);
               a_firstUsedslot += nbrNewSlots;
             } else {
               // move to end
-              System.arraycopy(a, newInsertPos, a, newInsertPos - nbrNewSlots, a_nextFreeslot - newInsertPos);
+              System.arraycopy(a, indexOfNewItem, a, indexOfNewItem - nbrNewSlots, a_nextFreeslot - indexOfNewItem);
               Arrays.fill(a, a_nextFreeslot - nbrNewSlots, a_nextFreeslot, null);
               a_nextFreeslot -= nbrNewSlots;
             }
@@ -468,15 +472,35 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     }
   }
   
-  private void insertItem(int newInsertPos, TOP itemToAdd) {
-    assert newInsertPos >= 0;
-    assert null == a[newInsertPos];
-    a[newInsertPos] = itemToAdd;
-    incrSize();
-    if (newInsertPos < a_firstUsedslot) {
-      a_firstUsedslot = newInsertPos;  
+  /**
+   * 
+   * @param indexToUpdate - the index in the array to update with the item to add
+   * @param itemToAdd -
+   */
+  private void insertItem(int indexToUpdate, TOP itemToAdd) {
+    try {
+    assert indexToUpdate >= 0;
+    assert null == a[indexToUpdate];
+    } catch (AssertionError e) {
+      if (TRACE) {
+        System.err.println("OrderedFsSet_array caught assert.  array values around indexToUpdate: ");
+        for (int i = indexToUpdate - 2; i < indexToUpdate + 3; i++) {
+          if (i >= 0 && i < a.length) {
+            System.err.format("a[%,d]: %s%n", i, a[i].toString(2));
+          } else {
+            System.err.format("a[%,d}: out-of-range%n", i);
+          }
+        }
+        System.err.format("trace info: %n%s", tr);
+      }
+      throw e;
     }
-    if (nullBlockEnd == newInsertPos + 1) {
+    a[indexToUpdate] = itemToAdd;
+    incrSize();
+    if (indexToUpdate < a_firstUsedslot) {
+      a_firstUsedslot = indexToUpdate;  
+    }
+    if (nullBlockEnd == indexToUpdate + 1) {
       nullBlockEnd --;
     }
   }
@@ -487,9 +511,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    * @param positionToInsert position containing a value, to free up by moving the current free block
    *                         so that the last free element is at that (adjusted up) position.          
    * @param nbrNewSlots
-   * @return adjusted positionToInsert
+   * @return adjusted positionToInsert, the free spot is just to the left of this position
    */
   private int insertSpace(int positionToInsert, int nbrNewSlots) {
+    if (TRACE) {
+      tr.setLength(0);
+      tr.append("Tracing OrderedFsSet_array\n");
+      tr.append(String.format("insertSpace called with positionToInsert: %,d nbrNewSlots: %,d%n", positionToInsert, nbrNewSlots));
+    }
     if (nbrNewSlots == 1) {
       int distanceFromLastRemoved = (lastRemovedPos == -1) 
                                       ? Integer.MAX_VALUE 
@@ -501,6 +530,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       boolean useFront = distanceFromFront < distanceFromEnd;
       boolean useLastRemoved = Math.abs(distanceFromLastRemoved) < (useFront ? distanceFromFront : distanceFromEnd);
       
+      if (TRACE) 
+        tr.append(String.format("distances: %d %d %d, useFront: %s useLastRemoved: %s%n",
+            distanceFromLastRemoved, distanceFromEnd, distanceFromFront, useFront, useLastRemoved));
       if (useLastRemoved) {  // due to find skipping over nulls, the distanceFromLastRemoved is never 0
         if (distanceFromLastRemoved > 0) {
           if (distanceFromLastRemoved != 1) { 
@@ -513,12 +545,17 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         } else {
           nullBlockStart = lastRemovedPos;
           lastRemovedPos = -1;
-          return shiftFreespaceDown(positionToInsert, nbrNewSlots);
+          int r = shiftFreespaceDown(positionToInsert, nbrNewSlots);
+          if (TRACE) 
+            tr.append(String.format("shiftFreespaceDown result was %,d%n", r));
+          return r;
         }
       }
       if (useFront) {
         nullBlockStart = a_firstUsedslot - 1;
-        if (null != a[nullBlockStart]) {
+//        if (null != a[nullBlockStart]) {
+        if (a_firstUsedslot != positionToInsert) {
+          // need to move the free slot if not already next to the insert position
           nullBlockEnd = a_firstUsedslot;
           shiftFreespaceUp(positionToInsert, nbrNewSlots);
         }
@@ -531,27 +568,35 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     nullBlockStart = a_nextFreeslot;
     nullBlockEnd = nullBlockStart + nbrNewSlots; 
     a_nextFreeslot += nbrNewSlots;
-    return shiftFreespaceDown(positionToInsert, nbrNewSlots);
+    int r = shiftFreespaceDown(positionToInsert, nbrNewSlots);
+    if (TRACE) {
+      tr.append(String.format("shiftFreespaceDown2 result was %,d, nullBlockStart: %,d nullBlockEnd: %,d a_nextFreeslot: %,d%n", 
+          r, nullBlockStart, nullBlockEnd, a_nextFreeslot));
+    }
+    return r;
   }
   
   /**
    * Shift a block of free space lower in the array.
-   * This is done by shifting the space at the insert point to the right by the nbrNewSlots
+   * This is done by shifting the space at the insert point
+   *   for length = start of free block - insert point 
+   *   to the right by the nbrNewSlots
    *   and then resetting (filling) the freed up space with null
    *   
    * Example:  u = used, f = free space
    * 
-   * before 
+   * before                      |--| 
    * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu
    *                             ^ insert point
-   * after
+   * after                               |--|
    * uuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuuuuuu
-   *                                    ^ insert point
+   *                                     ^ insert point
    *                                    
    * before 
+   * |------------------------------|
    * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu
    * ^ insert point
-   * after
+   * after   |------------------------------| 
    * ffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
    *        ^ insert point
    *                                    
@@ -580,6 +625,52 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     }
     return newInsertPoint + nbrNewSlots;
   }
+  
+  /**
+   * Shift a block of free space higher in the array.
+   * This is done by shifting the space at the insert point
+   *   of length = insert point - (end+1) of free block 
+   *   to the left by the nbrNewSlots
+   *   and then resetting (filling) the freed up space with null
+   *   
+   * Example:  u = used, f = free space
+   * 
+   * before              |-|   << block shifted 
+   * uuuuuuuuuuuuuuufffffuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *                        ^ insert point
+   * after          |-|   << block shifted
+   * uuuuuuuuuuuuuuuuuufffffuuuuuuuuuuuuuuuuuuu
+   *                        ^ insert point
+   *                                    
+   * before                                  |----|
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffuuuuuuu
+   *                                               ^ insert point
+   *     note: insert point is never beyond last because
+   *     those are added immediately
+   * after                               |----|
+   * uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffu
+   *                                               ^ insert point
+   *                                    
+   * before       |--|   
+   * uuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *                  ^ insert point
+   * after       |--|
+   * uuuuuuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *                  ^ insert point
+   *                                    
+   *                                    
+   *                                    
+   * move down by nbrNewSlots
+   * length to move = insert point - null block end (which is 1 plus index of last free)
+   * new insert point is the same as the old one (this points to a filled spot, prev spot is free)
+   * 
+   * fill goes from original null block end, for min(nbrNewSlots, length of move)
+   *   
+   * hidden param:  nullBlockEnd = 1 past end of last free slot
+   * @param newInsertPoint index of slot array, currently occupied, where an item is to be set into
+   * @param nbrNewSlots - the size of the inserted space
+   * @return the updated insert point, now moved up
+   */
   
   private int shiftFreespaceUp(int newInsertPoint, int nbrNewSlots) {
     int lengthToMove = newInsertPoint - nullBlockEnd;
