@@ -189,6 +189,19 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         r[i++] = item;
       }
     }
+//    try { // debug
+      assert r.length == i;
+//    } catch (AssertionError e) { // debug
+//      System.err.format("size: %,d, final index: %,d, array length: %,d%n", size(), i, a.length );
+//      for (int di = 0; di < a.length; di++) {
+//        System.err.format("a[%,d] = %s%n", di, a[di]);
+//      }
+//      System.err.format("first used slot: %,d, next free slot: %,d batch size: %,d,"
+//          + " nullblockstart: %,d nullBlockEnd: %d, lastRemovedPos: %,d",
+//          a_firstUsedslot, a_nextFreeslot, batch.size(), nullBlockStart, nullBlockEnd,
+//          lastRemovedPos);
+//      throw e;
+//    }
     return r;
   }
 
@@ -203,6 +216,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       if (item != null) {
         a1[i++] = (T) item;
       }
+    }
+    if (i < a1.length) {
+      a1[i] = null;  // contract for toArray, when array bigger than items
     }
     return a1;
   }
@@ -253,23 +269,29 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     modificationCount++;
   }
   
+  /** validate array
+   *    number of non-null elements == size
+   */
   // debug
   private void validateA() {
+    synchronized (batch) {
     int sz = 0;
     for (TOP item : a) {
       if (item != null) {
         sz++;
       }
     }
-    if (sz != size) {
-      System.out.println("debug ");
-    }
+//    if (sz != size) {
+//      System.out.format("debug error OrderedFsSet_array size(): %,d array non-null element count: %,d%n",
+//          size, sz);
+//    }
     assert sz == size;
     for (int i = 0; i < a_firstUsedslot; i++) {
       assert a[i] == null;
     }
     for (int i = a_nextFreeslot; i < a.length; i++) {
       assert a[i] == null;
+    }
     }
   }
 
@@ -322,6 +344,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     if (batch.size() != 0) {
 //      validateA();
       doProcessBatch();
+//      validateA();
     }
   }
   
@@ -350,7 +373,12 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
           batchCountHistogram[31 - Integer.numberOfLeadingZeros(batchSize)] ++;
         }
         
-        int nbrNewSlots = 1;
+        /* the number of new empty slots created, 
+         *   may end up being larger than actually used because some of the items 
+         *   being inserted may already be in the array
+         *     - decreases as each item is actually inserted into the array
+         */
+        int nbrNewSlots = 1; // start at one, may increase
         
         if (batchSize > 1) {
           // Sort the items to add 
@@ -370,7 +398,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
               }
             } else {
               prev = item;
-              nbrNewSlots++;
+              nbrNewSlots++;  // count of items that will actually be added; skips the duplicates
             }
           }
         } 
@@ -398,13 +426,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
                                                                            // the new item goes one spot to the left of this
             - 1;  // inserts nulls at the insert point, shifting other cells down
     
+        int nbrNewSlotsRemaining = nbrNewSlots;  // will be decremented as slots are used
         // process first item
         insertItem(indexOfNewItem, itemToAdd);
 //        TOP prevItem = itemToAdd;
         if (indexOfNewItem + 1 == a_nextFreeslot) {
           highest = itemToAdd;
         }
-        nbrNewSlots --;
+        nbrNewSlotsRemaining --;
         
         int bPos = i_batch - 1; // next after first one from end
         for (; bPos >= 0; bPos --) {
@@ -417,13 +446,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
           if (pos >= 0) {
             continue;  // already in the list
           }
-          pos = (-pos) - 1;
+          pos = (-pos) - 1;  // pos is the insert point, new item goes 1 to left of this
               
-          indexOfNewItem = pos - 1;
+          indexOfNewItem = pos - 1;  // where the new item goes, 1 to left of insert point
           if (nullBlockStart == 0) {
             // this and all the rest of the elements are lower, insert in bulk
+            // because all are lower, none are in the array, so don't need the compare check
             insertItem(indexOfNewItem--, itemToAdd);
-            nbrNewSlots --;
+            nbrNewSlotsRemaining --;
             bPos--;
             
             for (;bPos >= 0; bPos--) {          
@@ -432,34 +462,37 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
                 continue;
               }
               insertItem(indexOfNewItem--, itemToAdd);
-              nbrNewSlots --;  // do this way to respect skipped items due to == to prev        
+              nbrNewSlotsRemaining --;  // do this way to respect skipped items due to == to prev        
             }
             break;
           }
           
           if (indexOfNewItem == -1 || null != a[indexOfNewItem]) {
-            indexOfNewItem = shiftFreespaceDown(pos, nbrNewSlots) - 1;  // results in null being available at pos - 1
+            indexOfNewItem = shiftFreespaceDown(pos, nbrNewSlotsRemaining) - 1;  // results in null being available at pos - 1
           }
           insertItem(indexOfNewItem, itemToAdd);
-          nbrNewSlots --;
+          nbrNewSlotsRemaining --;
         }
         
-        if (nbrNewSlots > 0) {
+        if (nbrNewSlotsRemaining > 0) {
           // have extra space left over due to dups not being added
           // If this space is not at beginning, move space to beginning or end (whichever is closer)
-          if (indexOfNewItem - nbrNewSlots > 0) { 
-            // space is not at beginning
+//          if (indexOfNewItem - nbrNewSlotsRemaining > 0) { 
+          if (nullBlockEnd != a_firstUsedslot) {
+          // space is not at beginning
           
             int mid = (a_nextFreeslot + a_firstUsedslot) >>> 1;  // overflow aware 
             if (indexOfNewItem < mid) {
-              // move to beginning
-              System.arraycopy(a, indexOfNewItem - nbrNewSlots, a, 0, nbrNewSlots);
-              a_firstUsedslot += nbrNewSlots;
+              shiftFreespaceDown(a_firstUsedslot, nbrNewSlotsRemaining);
+//              System.arraycopy(a, indexOfNewItem - nbrNewSlots, a, 0, nbrNewSlots);
+//              a_firstUsedslot += nbrNewSlots;
             } else {
-              // move to end
-              System.arraycopy(a, indexOfNewItem, a, indexOfNewItem - nbrNewSlots, a_nextFreeslot - indexOfNewItem);
-              Arrays.fill(a, a_nextFreeslot - nbrNewSlots, a_nextFreeslot, null);
-              a_nextFreeslot -= nbrNewSlots;
+              shiftFreespaceUp(a_nextFreeslot, nbrNewSlotsRemaining);
+              a_nextFreeslot -= nbrNewSlotsRemaining;
+//              // move to end
+//              System.arraycopy(a, indexOfNewItem, a, indexOfNewItem - nbrNewSlots, a_nextFreeslot - indexOfNewItem);
+//              Arrays.fill(a, a_nextFreeslot - nbrNewSlots, a_nextFreeslot, null);
+//              a_nextFreeslot -= nbrNewSlots;
             }
           }
         }
@@ -473,14 +506,18 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
   }
   
   /**
-   * 
+   * side effects:
+   *   increment size
+   *   reset a_firstUsedslot if adding in front
+   *   ( a_nextFreeslot not updated, because this method only called to inserting before end )
+   *   nullBlockEnd reduced conditionally
    * @param indexToUpdate - the index in the array to update with the item to add
    * @param itemToAdd -
    */
   private void insertItem(int indexToUpdate, TOP itemToAdd) {
     try {
-    assert indexToUpdate >= 0;
-    assert null == a[indexToUpdate];
+      assert indexToUpdate >= 0;
+      assert null == a[indexToUpdate];
     } catch (AssertionError e) {
       if (TRACE) {
         System.err.println("OrderedFsSet_array caught assert.  array values around indexToUpdate: ");
@@ -559,7 +596,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
           nullBlockEnd = a_firstUsedslot;
           shiftFreespaceUp(positionToInsert, nbrNewSlots);
         }
-        a_firstUsedslot --;
+//        a_firstUsedslot --;  // not done here, done in insert routine
         return positionToInsert;
       }
     }
@@ -598,7 +635,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    * ^ insert point
    * after   |------------------------------| 
    * ffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
-   *        ^ insert point
+   *         ^ insert point
+   * before 
+   *     |------------------------------|
+   * ffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffffffffuuuuuuu
+   *     ^ insert point
+   * after       |------------------------------| 
+   * ffffffffffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *             ^ insert point
    *                                    
    * move up by nbrNewSlots
    * length to move = nullBlockStart - insert point
@@ -612,6 +656,8 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    * @return the updated insert point, now moved up
    */
   private int shiftFreespaceDown(int newInsertPoint, int nbrNewSlots) {
+    assert newInsertPoint >= 0;
+    assert nbrNewSlots >= 0;
     int lengthToMove = nullBlockStart - newInsertPoint;
     System.arraycopy(a, newInsertPoint, a, newInsertPoint + nbrNewSlots, lengthToMove);
     int lengthToClear = Math.min(nbrNewSlots, lengthToMove);
@@ -622,6 +668,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       moveSizeHistogram[32 - Integer.numberOfLeadingZeros(lengthToMove)] ++;
       movePctHistogram[lengthToMove* 10 / (a_nextFreeslot - a_firstUsedslot)] ++;
       fillHistogram[32 - Integer.numberOfLeadingZeros(lengthToClear)] ++;
+    }
+    if (newInsertPoint == a_firstUsedslot) {
+      a_firstUsedslot = newInsertPoint + nbrNewSlots;
     }
     return newInsertPoint + nbrNewSlots;
   }
@@ -658,6 +707,12 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    * uuuuuuuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
    *                  ^ insert point
    *                                    
+   *     |--------|  before 
+   * ffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *               ^ insert point
+   * |--------|
+   * uuuuuuuuuuffffuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+   *               ^ insert point
    *                                    
    *                                    
    * move down by nbrNewSlots
@@ -673,12 +728,16 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    */
   
   private int shiftFreespaceUp(int newInsertPoint, int nbrNewSlots) {
+    boolean need2setFirstUsedslot = nullBlockEnd == a_firstUsedslot;
     int lengthToMove = newInsertPoint - nullBlockEnd;
     System.arraycopy(a, nullBlockEnd, a, nullBlockStart, lengthToMove);
     int lengthToClear = Math.min(nbrNewSlots, lengthToMove);
     Arrays.fill(a, newInsertPoint - lengthToClear, newInsertPoint, null);
     nullBlockStart = newInsertPoint - nbrNewSlots;
     nullBlockEnd = newInsertPoint;
+    if (need2setFirstUsedslot) {
+      a_firstUsedslot = 0;
+    }
     return newInsertPoint;
   }
     
@@ -806,8 +865,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     size --;
     modificationCount ++;
     if (size == 0) {
-      clearResets();
+      clearResets();  // also clears last removed pos
     } else {
+      // size is > 0
       if (pos == a_firstUsedslot) {
         do {  // removed the first used slot
           a_firstUsedslot ++;
@@ -821,10 +881,12 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       
       if (size < ((a_nextFreeslot - a_firstUsedslot) >> 1) &&
           size > 8) {
-        compressOutRemoves();
-      } else if (lastRemovedPos > a_firstUsedslot &&
-                 lastRemovedPos < (a_nextFreeslot - 1) ) {
-        lastRemovedPos = pos;
+        compressOutRemoves();  // also clears lastRemovedPos
+      } else {
+        // update lastRemovedPos
+        lastRemovedPos = (pos > a_firstUsedslot && pos < (a_nextFreeslot - 1))
+                           ? pos  // is a valid position 
+                           : -1;  // is not a valid position
       }
     }
     return true;
@@ -881,6 +943,13 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       return;
     }
     if (!shrinkCapacity()) {
+//      //debug 
+//      if (a_firstUsedslot == -1) {
+//        System.out.println("a_firstUsedslot was -1");
+//      }
+//      if (a_nextFreeslot == -1) {
+//        System.out.println("a_nextFreeslot was -1");
+//      }
       Arrays.fill(a, a_firstUsedslot, a_nextFreeslot, null);      
     }
     clearResets();
