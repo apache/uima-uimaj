@@ -200,7 +200,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 //        largestItemNotYetAdded = fs;
 //        return;
 //      }       
-////      maybeProcessBulkAdds();
+////      maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
 //    }
 //    
     // past the initial load, or item is not > previous largest item to be added 
@@ -232,7 +232,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    */
   @Override
   public T find(FeatureStructure templateKey) {
-//    maybeProcessBulkAdds();
+//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     if (null == templateKey || this.indexedFSs.isEmpty()) {
       return null;
     }
@@ -265,7 +265,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   }
 
   public T findLeftmost(TOP templateKey) {
-//    maybeProcessBulkAdds();
+//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     // descending iterator over elements LessThan templateKey
     // iterator is over TOP, not T, to make compare easier
     Iterator<TOP> it = indexedFSs.headSet(templateKey, false).descendingIterator();
@@ -307,13 +307,13 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    */
   @Override
   public boolean deleteFS(T fs) {
-//    maybeProcessBulkAdds();
+//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     return this.indexedFSs.remove(fs);
   }
   
   @Override
   protected void bulkAddTo(List<T> v) {
-//    maybeProcessBulkAdds();
+//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     v.addAll((Collection<? extends T>) indexedFSs);
   }
   
@@ -323,13 +323,13 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 //  }
   
   NavigableSet<T> getNavigableSet() { //used by FsIterator_set_sorted to compute various derivitive nav sets
-//    maybeProcessBulkAdds();
+//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     return (NavigableSet<T>) indexedFSs;
   }
    
   @Override
   public FSIterator<T> iterator() {
-//    maybeProcessBulkAdds();
+//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     return new FsIterator_set_sorted<T>(this, type, this);
   }
     

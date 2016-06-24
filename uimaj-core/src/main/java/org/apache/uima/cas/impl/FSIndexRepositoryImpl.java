@@ -1078,7 +1078,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      *   bag preferred over sorted; 
      */
     for (int i = 0; i < this.usedIndexes.size(); i++) {
+//      // debug
+//      int vs1 = v.size();
       getNonSetSingleIndexForUsedType(i).bulkAddTo(v);
+//      for (int di = vs1; di < v.size(); di ++) {  // debug
+//        assert v.get(di) != null;                 // debug verify not null
+//      }
     }  
    
     return (List<T>) v;
