@@ -88,6 +88,7 @@ public class JCasIterator implements Iterator<JCas> {
 
     ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     jCas = CasCreationUtils.createCas(metaData, null, resMgr).getJCas();
+    collectionReader.typeSystemInit(jCas.getTypeSystem());
   }
 
   /**

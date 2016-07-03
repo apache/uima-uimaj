@@ -18,28 +18,24 @@
  */
 package org.apache.uima.fit.pipeline;
 
-import static org.apache.uima.fit.pipeline.SimplePipeline.*;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.pipeline.SimplePipeline.iteratePipeline;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.collection.CollectionException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.component.JCasCollectionReader_ImplBase;
 import org.apache.uima.fit.component.Resource_ImplBase;
 import org.apache.uima.fit.descriptor.ExternalResource;
-import org.apache.uima.fit.pipeline.SimplePipelineTest.Annotator;
-import org.apache.uima.fit.pipeline.SimplePipelineTest.DummySharedResource;
-import org.apache.uima.fit.pipeline.SimplePipelineTest.Reader;
-import org.apache.uima.fit.pipeline.SimplePipelineTest.Writer;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ExternalResourceDescription;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -89,7 +85,14 @@ public class JCasIterableTest {
 
     private final int N = 3;
     private int n = 0;
-    
+
+    private boolean initTypeSystemCalled = false;
+
+    @Override
+    public void typeSystemInit(TypeSystem aTypeSystem) throws ResourceInitializationException {
+      initTypeSystemCalled = true;
+    }
+          
     public Progress[] getProgress() {
       return new Progress[] { new ProgressImpl(n, N, "document") };
     }
@@ -100,6 +103,7 @@ public class JCasIterableTest {
 
     @Override
     public void getNext(JCas aJCas) throws IOException, CollectionException {
+      assertTrue("typeSystemInit() has not been called", initTypeSystemCalled);
       n++;
       aJCas.setDocumentText("Document " + n);
     }
