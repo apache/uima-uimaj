@@ -294,7 +294,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //    private final BitSet featureJiInIndexKeys = new BitSet(1024);  // indexed by JCas Feature Index, not feature code.
     
     // A map from SofaNumbers which are also view numbers to IndexRepositories.
-    // these numbers are dense, and start with 1.  1 is the initial view.  0 is the base case
+    // these numbers are dense, and start with 1.  1 is the initial view.  0 is the base cas
     private ArrayList<FSIndexRepositoryImpl> sofa2indexMap;
 
 
@@ -416,12 +416,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     /**
      * Created at startup time, lives as long as the CAS lives
+     * Serves to reference code for binary cas ser/des that used to live
+     * in this class, but was moved out
      */
     private final BinaryCasSerDes bcsd;
     
     /**
-     * Created when doing binary or form4 non-delta serialization, used in subsequent delta deserialization
-     * Created when doing binary or form4 non-delta deserialization, used in subsequent delta serialization
+     * Created when doing binary or form4 non-delta (de)serialization, used in subsequent delta ser/deserialization
+     * Created when doing binary or form4 non-delta ser/deserialization, used in subsequent delta (de)serialization
      * Reset with CasReset or deltaMergesComplete API call 
      */
     private CommonSerDesSequential csds;
@@ -1265,6 +1267,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
          " for CasId = " + getCasId() + ", new reset count = " + svd.casResets.get());
     }
+    
     int numViews = this.getViewCount();
     // Flush indexRepository for all views
     for (int view = 1; view <= numViews; view++) {
@@ -1284,8 +1287,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     this.svd.clearTrackingMarks();
     
-
-    this.indexRepository.flush();  // for base view, other views flushed above
+    // safety : in case this public method is called on other than the base cas 
+    this.getBaseCAS().indexRepository.flush();  // for base view, other views flushed above
     this.svd.clearSofaInfo();  // but keep initial view, and other views
                                // because setting up the index infrastructure is expensive
     this.svd.viewCount = 1;  // initial view

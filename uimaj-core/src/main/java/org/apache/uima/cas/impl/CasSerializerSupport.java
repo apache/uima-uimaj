@@ -350,12 +350,12 @@ public class CasSerializerSupport {
     
     private final ErrorHandler errorHandler2;
     
-    public TypeSystemImpl filterTypeSystem;
+    public TypeSystemImpl filterTypeSystem_inner;
     
     // map to reduce string usage by reusing equal string representations; lives just for one serialize call
     private final Map<String, String> uniqueStrings = new HashMap<String, String>();
 
-    public final boolean isFormattedOutput;
+    public final boolean isFormattedOutput_inner;
     
     private final CasSerializerSupportSerialize csss;
 
@@ -380,8 +380,8 @@ public class CasSerializerSupport {
       this.sharedData = sharedData;
 
       // copy outer class values into final inner ones, to keep the outer thread-safe
-      filterTypeSystem = CasSerializerSupport.this.filterTypeSystem; 
-      isFormattedOutput = CasSerializerSupport.this.isFormattedOutput; 
+      filterTypeSystem_inner = CasSerializerSupport.this.filterTypeSystem; 
+      isFormattedOutput_inner = CasSerializerSupport.this.isFormattedOutput; 
       this.marker = marker;
       errorHandler2 = CasSerializerSupport.this.errorHandler;
 
@@ -391,7 +391,7 @@ public class CasSerializerSupport {
 //      listUtils = new ListUtils(cas, logger, errorHandler);
       typeUsed = new BitSet();
 
-      isFiltering = filterTypeSystem != null && filterTypeSystem != tsi;
+      isFiltering = filterTypeSystem_inner != null && filterTypeSystem_inner != tsi;
       if (marker != null && !marker.isValid()) {
   	    throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
       }
@@ -625,6 +625,7 @@ public class CasSerializerSupport {
       for (TOP fs : fss) {
         if (marker.isModified(fs)) {
           TOP encompassingFs = sharedData.getEncompassingFS(fs);
+          assert null != encompassingFs;
           if (-1 != enqueueCommonWithoutDeltaAndFilteringCheck(encompassingFs)) {  // only to set type used info and check if already enqueued
             modifiedEmbeddedValueFSs.add(encompassingFs);
           }
@@ -664,7 +665,26 @@ public class CasSerializerSupport {
     }
     
     private int enqueueCommon(TOP fs, boolean doDeltaAndFilteringCheck) {
+//      // debug 
+//      if (null == fs) {
+//        System.out.println("debug null fs");
+//        new Throwable().printStackTrace();
+//        int i = 0;
+//        while (true) {
+//          try {
+//            Thread.sleep(10000);
+//          } catch (InterruptedException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          }
+//          i++;
+//          if (i % 10 == 0) {
+//            System.err.println("debug sleeping");
+//          }
+//        }
+//      }
 
+      
 //      final int typeCode = cas.getHeapValue(addr);
 //      assert(typeCode != 0);
       if (doDeltaAndFilteringCheck) {
@@ -676,7 +696,7 @@ public class CasSerializerSupport {
       
         if (isFiltering) {
           String typeName = fs._getTypeImpl().getName();
-          if (filterTypeSystem.getType(typeName) == null) {
+          if (filterTypeSystem_inner.getType(typeName) == null) {
             return -1; // this type is not in the target type system
           }
         }
@@ -832,7 +852,7 @@ public class CasSerializerSupport {
 
         for (TOP elem : theArray) {
           if (isFiltering &&
-              (null == filterTypeSystem.getType(elem._getTypeImpl().getName()))) {
+              (null == filterTypeSystem_inner.getType(elem._getTypeImpl().getName()))) {
             continue;  // skip because not in filter type system
           }
           if (elem != null) {
@@ -847,7 +867,7 @@ public class CasSerializerSupport {
       boolean insideListNode = fs instanceof CommonList;
 
       for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
-        if (isFiltering && filterTypeSystem.getFeatureByFullName(fi.getName()) == null) { 
+        if (isFiltering && filterTypeSystem_inner.getFeatureByFullName(fi.getName()) == null) { 
           // skip features that aren't in the target type system
             continue;
         }
@@ -1127,7 +1147,7 @@ public class CasSerializerSupport {
       if (fs == null) {
         return 0;
       }
-      if (isFiltering && null == filterTypeSystem.getType(fs._getTypeImpl().getName())) { // return as null any references to types not in target TS
+      if (isFiltering && null == filterTypeSystem_inner.getType(fs._getTypeImpl().getName())) { // return as null any references to types not in target TS
           return 0;
       }
       

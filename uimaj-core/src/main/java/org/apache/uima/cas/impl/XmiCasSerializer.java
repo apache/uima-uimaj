@@ -655,7 +655,7 @@ public class XmiCasSerializer {
             isPastFirstElement = true;
           }
           sb.append(xmiId);
-          if (cds.isFormattedOutput && (sb.length() > nextBreak)) {
+          if (cds.isFormattedOutput_inner && (sb.length() > nextBreak)) {
             sb.append(SYSTEM_LINE_FEED);
             nextBreak += CasSerializerSupport.PP_LINE_LENGTH; 
           }
@@ -883,7 +883,7 @@ public class XmiCasSerializer {
         if (cds.isFiltering) {
           // skip features that aren't in the target type system
           String fullFeatName = fi.getName();
-          if (cds.filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
+          if (cds.filterTypeSystem_inner.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }
         }
@@ -1051,7 +1051,7 @@ public class XmiCasSerializer {
             String xmiId = cds.getXmiId(elemFS);
             if (cds.isFiltering) { // return as null any references to types not in target TS
               String typeName = elemFS._getTypeImpl().getName();
-              if (cds.filterTypeSystem.getType(typeName) == null) {
+              if (cds.filterTypeSystem_inner.getType(typeName) == null) {
                 xmiId = "0";
               }
             }

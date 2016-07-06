@@ -32,7 +32,7 @@ import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Common de/serialization for plain binary and compressed binary form 4
- * which both walk the cas using the sequential, incrementing id approach
+ * which both used to walk the cas using the sequential, incrementing id approach
  * 
  * Lifecycle:  
  *   There is 0/1 instance per CAS, representing the FSs at some point in time in that CAS.

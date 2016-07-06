@@ -65,7 +65,7 @@ public class XmiSerializationSharedData {
   /**
    * V3: FSs have an id - use that.  (Assumes id's are internal ones)
    * 
-   * A map from FeatureStructure address to xmi:id. This is populated whenever
+   * A map from FeatureStructures to xmi:id. This is populated whenever
    * an XMI element is serialized or deserialized.  It is used by the
    * getXmiId() method, which is done to ensure a consistent ID for each FS 
    * address across multiple serializations.
@@ -73,8 +73,6 @@ public class XmiSerializationSharedData {
   private Obj2IntIdentityHashMap<TOP> fsToXmiId = new Obj2IntIdentityHashMap<>(TOP.class, TOP.singleton);
   
   /**
-   * V3: use the cas's getFsFromId   (Assumes id's are internal ones)
-   *  
    * A map from xmi:id to FeatureStructure address.  This is populated whenever
    * an XMI element is serialized or deserialized.  It is used by the
    * getFsAddrForXmiId() method, necessary to support merging multiple XMI
@@ -118,7 +116,7 @@ public class XmiSerializationSharedData {
   /**
    * V3: key is TOP, value is TOP
    * 
-   * Map from FS address of a non-shared multi-valued (Array/List) FS to the 
+   * Map from FS of a non-shared multi-valued (Array/List) FS to the 
    * FS address of the encompassing FS which has a feature whose value is this multi-valued FS.
    * Used when deserializing a Delta CAS to find and serialize the encompassing FS when 
    * the non-shared array/list FS is modified. 

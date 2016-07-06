@@ -267,6 +267,10 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     cas.removeFsFromIndexes(this);
   }
   
+  /**
+   * remove this FS from indexes in a specific view, perhaps different from the view where this was created.
+   * @param cas the Cas
+   */
   public void removeFromIndexes(JCas jcas) {
     jcas.removeFsFromIndexes(this);
   }
