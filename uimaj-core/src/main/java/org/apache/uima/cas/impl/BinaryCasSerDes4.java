@@ -129,6 +129,9 @@ import org.apache.uima.util.impl.SerializationMeasures;
  */
 public class BinaryCasSerDes4 {
   
+  private static final boolean TRACE_SER = true;
+  private static final boolean TRACE_DES = true;
+  
   public static final int TYPECODE_COMPR = 8;
   public static final boolean CHANGE_FS_REFS_TO_SEQUENTIAL = true;
   // may add more later - to specify differing trade-offs between speed and compression
@@ -515,7 +518,9 @@ public class BinaryCasSerDes4 {
         .form4()
         .delta(isDelta)
         .write(serializedOut);
-        
+
+      if (TRACE_SER) System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
+
       if (doMeasurement) {
         sm.header = 12;
       }
@@ -611,6 +616,8 @@ public class BinaryCasSerDes4 {
        * Prepare to walk main heap
        ***************************/
       writeVnumber(control_dos, heapEnd - heapStart);  
+      if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
+      
       if (doMeasurement) {
         sm.statDetails[Slot_MainHeap.i].original = (1 + heapEnd - heapStart) * 4;      
       }
@@ -693,9 +700,11 @@ public class BinaryCasSerDes4 {
         }
       }  // end of heap walk
       
+      if (TRACE_SER) System.out.println("Form4Ser writing index info");
       serializeIndexedFeatureStructures();
 
       if (isDelta) {
+        if (TRACE_SER) System.out.println("Form4Ser writing modified FSs");
         (new SerializeModifiedFSs()).serializeModifiedFSs();
       }
 
@@ -1577,7 +1586,8 @@ public class BinaryCasSerDes4 {
     }
     
     private void deserialize() throws IOException {
-      
+      if (TRACE_DES) System.out.println("Form4Deser starting");
+     
       /************************************************
        * Setup all the input streams with inflaters
        ************************************************/
@@ -1625,6 +1635,7 @@ public class BinaryCasSerDes4 {
        * walk main heap
        ***************************/
 
+      if (TRACE_DES) System.out.println("Form4Deser heapStart: " + heapStart + "  heapEnd: " + heapEnd);
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += incrToNextFs(heap, iHeap, typeInfo)) {
         if (CHANGE_FS_REFS_TO_SEQUENTIAL) {
           fsStartIndexes.addItemAddr(iHeap);
@@ -1655,9 +1666,11 @@ public class BinaryCasSerDes4 {
         }        
       }
       
+      if (TRACE_DES) System.out.println("Form4Deser indexing FSs");
       readIndexedFeatureStructures();
 
       if (isDelta) {
+        if (TRACE_DES) System.out.println("Form4Deser modifying existing FSs");
         (new ReadModifiedFSs()).readModifiedFSs();
       }
 
