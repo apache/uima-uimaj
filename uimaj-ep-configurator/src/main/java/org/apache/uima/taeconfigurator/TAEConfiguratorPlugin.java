@@ -19,14 +19,12 @@
 
 package org.apache.uima.taeconfigurator;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -40,9 +38,6 @@ import org.osgi.framework.BundleContext;
  */
 
 /*
- * Plugin not yet converted to OSGi Bundle (3.0 design) - therefore will require the compatibility
- * interface.
- * 
  * The descriptor editor is a Multi-page editor, and implements the Model View Controller pattern
  * (MVC). Model: Maintain data, basic logic plus one or more data sources View: Display all or a
  * portion of the data. Implements the GUI that displays information about the model to the user
@@ -61,29 +56,13 @@ import org.osgi.framework.BundleContext;
 
 public class TAEConfiguratorPlugin extends AbstractUIPlugin {
 
-  // no longer include support for < 3.1
-  public static final boolean is30version = false;
-
-  /*
-  public static final int eclipseVersionMajor;
-
-  public static final int eclipseVersionMinor;
-  static {
-    Bundle bundle = Platform.getBundle("org.eclipse.platform");
-    String versionString = (String) bundle.getHeaders().get(
-            org.osgi.framework.Constants.BUNDLE_VERSION);
-    PluginVersionIdentifier version = new PluginVersionIdentifier(versionString);
-    eclipseVersionMajor = version.getMajorComponent();
-    eclipseVersionMinor = version.getMinorComponent();
-    is30version = eclipseVersionMajor == 3 && eclipseVersionMinor == 0;
-  }
-  */
-
   // The shared instance.
   private static TAEConfiguratorPlugin plugin;
 
   // Resource bundle.
   private ResourceBundle resourceBundle;
+  
+
 
   private static FormColors formColors;
 
@@ -119,17 +98,15 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
 
   public final static String IMAGE_NOMREF = "one_arrow.gif";
 
-  private static URL installURL = null;
-
-  public static String pluginId;
+  public static String pluginId ;
 
   /**
-   * The constructor.
+   * The constructor, version 3
    */
-  public TAEConfiguratorPlugin(IPluginDescriptor descriptor) {
-    super(descriptor);
+  public TAEConfiguratorPlugin() {
+    super();
     plugin = this;
-    pluginId = descriptor.getUniqueIdentifier();
+    pluginId = getBundle().getSymbolicName();
     try {
       resourceBundle = ResourceBundle.getBundle("org.apache.uima.taeconfigurator.taeconfigurator");
     } catch (MissingResourceException x) {
@@ -151,14 +128,14 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
     imageRegistry.put(IMAGE_MREFOK, getImageDescriptor("arrows.gif"));
     imageRegistry.put(IMAGE_NOMREF, getImageDescriptor("one_arrow.gif"));
   }
-
+  
   /**
    * Returns the shared instance.
    */
   public static TAEConfiguratorPlugin getDefault() {
     return plugin;
   }
-
+  
   /**
    * Returns the workspace instance.
    */
@@ -177,10 +154,14 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
       return key;
     }
   }
-
+  
   /**
-   * called when the Eclipse environment is shut down
+   * This method is called when the plug-in is stopped.
+   *
+   * @param context
+   * @throws Exception -
    */
+  @Override
   public void stop(BundleContext context) throws Exception {
     try {
       if (null != formColors)
@@ -218,16 +199,9 @@ public class TAEConfiguratorPlugin extends AbstractUIPlugin {
     return imageRegistry.get(imageFile);
   }
 
-  public static ImageDescriptor getImageDescriptor(String imageFile) {
-    String iconPath = "icons/";
-    try {
-      if (null == installURL)
-        installURL = getDefault().getDescriptor().getInstallURL();
-      URL url = new URL(installURL, iconPath + imageFile);
-      return ImageDescriptor.createFromURL(url);
-    } catch (MalformedURLException exc) {
-      return ImageDescriptor.getMissingImageDescriptor();
-    }
+  public ImageDescriptor getImageDescriptor(String imageFile) {
+    URL url = getBundle().getEntry("icons/" + imageFile);    
+    return ImageDescriptor.createFromURL(url);
   }
 
 }

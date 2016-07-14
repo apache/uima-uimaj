@@ -170,12 +170,6 @@ UIMA data structures to the Eclipse Debug displays</description>
       <version>3.2.0</version>
       <scope>provided</scope>      
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime.compatibility.auth</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>      
-    </dependency>  
 	</dependencies>
   
 	<build>  

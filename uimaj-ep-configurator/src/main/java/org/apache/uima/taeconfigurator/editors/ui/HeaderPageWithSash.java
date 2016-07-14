@@ -62,9 +62,10 @@ public class HeaderPageWithSash extends HeaderPage {
     };
     haction.setChecked(true);
     haction.setToolTipText("Horizontal Orientation");
-    haction.setImageDescriptor(TAEConfiguratorPlugin
+    TAEConfiguratorPlugin instance = TAEConfiguratorPlugin.getDefault();
+    haction.setImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
-    haction.setDisabledImageDescriptor(TAEConfiguratorPlugin
+    haction.setDisabledImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_HORIZONTAL));
 
     vaction = new Action("ver", Action.AS_RADIO_BUTTON) { //$NON-NLS-1$
@@ -75,9 +76,9 @@ public class HeaderPageWithSash extends HeaderPage {
     };
     vaction.setChecked(false);
     vaction.setToolTipText("Vertical Orientation");
-    vaction.setImageDescriptor(TAEConfiguratorPlugin
+    vaction.setImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
-    vaction.setDisabledImageDescriptor(TAEConfiguratorPlugin
+    vaction.setDisabledImageDescriptor(instance
             .getImageDescriptor(TAEConfiguratorPlugin.IMAGE_TH_VERTICAL));
     form.getToolBarManager().add(haction);
     form.getToolBarManager().add(vaction);

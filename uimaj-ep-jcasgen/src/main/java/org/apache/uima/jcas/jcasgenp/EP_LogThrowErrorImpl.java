@@ -35,7 +35,7 @@ public class EP_LogThrowErrorImpl implements IError {
    * @see org.apache.uima.jcas.jcasgen_gen.IError#newError(int, java.lang.String)
    */
   public void newError(int severity, String message, Exception exception) {
-    String pluginId = JgPlugin.getDefault().getDescriptor().getUniqueIdentifier();
+    String pluginId = JgPlugin.getUniqueIdentifier();        
     ILog log = JgPlugin.getDefault().getLog();
     log.log(new Status(logLevels[severity], pluginId, IStatus.OK, message, exception));
     if (IError.WARN < severity)

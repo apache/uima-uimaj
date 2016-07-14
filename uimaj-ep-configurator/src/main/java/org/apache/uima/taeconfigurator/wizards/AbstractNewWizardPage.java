@@ -57,7 +57,7 @@ public abstract class AbstractNewWizardPage extends WizardPage {
     super("wizardPage");
     setTitle(title);
     setDescription(description);
-    setImageDescriptor(TAEConfiguratorPlugin.getImageDescriptor("big_t_s.gif"));
+    setImageDescriptor(TAEConfiguratorPlugin.getDefault().getImageDescriptor("big_t_s.gif"));
 
     selection = pSelection;
     this.defaultNewName = defaultNewName;
