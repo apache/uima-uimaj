@@ -78,10 +78,10 @@ public class CommonSerDes {
     Reading reading;
     
     Header delta() {isDelta = true;  return this; }
-    Header delta(boolean v) {isDelta = v;  return this; }
+    Header delta(boolean v2) {isDelta = v2;  return this; }
     Header form4() {isCompressed = form4 = true; form6 = false; return this; }
     Header form6() {isCompressed = form6 = true; form4 = false; return this; }
-    Header seqVer(int v) { assert (v >= 0 && v < 256); seqVersionNbr = (byte)v; return this; }
+    Header seqVer(int v2) { assert (v2 >= 0 && v2 < 256); seqVersionNbr = (byte)v2; return this; }
     Header v3() {isV3 = true; return this; }
     
     
