@@ -41,6 +41,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -199,7 +200,8 @@ public class XCASDeserializerTest extends TestCase {
     XMLSerializer xmlSer = new XMLSerializer(sw, false);
     xcasSer.serialize(cas, xmlSer.getContentHandler(), true, ootsd);
     String xml = sw.getBuffer().toString();
-    // System.out.println(xml);
+//    FileUtils.saveString2File(xml, new File("c:/temp/xmlv2.xml"));
+//    System.out.println(xml);
 
     // deserialize into a CAS that accepts the full typesystem
     CAS cas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
@@ -400,7 +402,7 @@ public class XCASDeserializerTest extends TestCase {
     XCASDeserializer.deserialize(bais, cas);
 
     //check
-    Iterator iter = cas.getIndexRepository().getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
+    Iterator<StringArray> iter = cas.getIndexRepository().getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
     StringArrayFS strArrayOut = (StringArrayFS)iter.next();
     assertEquals(null, strArrayOut.get(0));
     assertEquals("value", strArrayOut.get(1));
