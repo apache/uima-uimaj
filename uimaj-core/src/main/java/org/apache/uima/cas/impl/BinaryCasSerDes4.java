@@ -129,8 +129,8 @@ import org.apache.uima.util.impl.SerializationMeasures;
  */
 public class BinaryCasSerDes4 {
   
-  private static final boolean TRACE_SER = true;
-  private static final boolean TRACE_DES = true;
+  private static final boolean TRACE_SER = false;
+  private static final boolean TRACE_DES = false;
   
   public static final int TYPECODE_COMPR = 8;
   public static final boolean CHANGE_FS_REFS_TO_SEQUENTIAL = true;
