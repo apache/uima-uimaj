@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.8.1 Release Notes</title>
+  <title>Apache UIMA v2.8.2 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.1 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.2 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -80,25 +80,27 @@
 			</p>
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
-
-<p>The flattened index support added in 2.8.0 has some edge cases where the
-flattened version needs to be invalidated.  In trading off complexity versus
-performance improvements, we decided to disable this feature for now. 
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4542">UIMA-4542</a>
-</p>
-
-<p>A few bugs were fixed in the CasAnnotationViewer
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4533">UIMA-4533</a>, a name-clash was
-fixed in an internal method, which could clash with a JCas-generated name
-if there was a feature that happened to be named "TypeCode" 
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4534">UIMA-4534</a>,
-and the CasCopier code was improved to cover an additional use case
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4541">UIMA-4541</a>
+<p><ul>
+<li>Update the Eclipse plugins to work with the latest Eclipse (4.6, Neon) version.</li>
+<li>Sofa mapping support for flow controllers corrected.</li>
+<li>Correct an stack overflow error in AnnotationViewer when switching Sofas.</li>
+<li>Correct some serialization errors in JSON serialization of arrays of FeatureStructures having null entries.</li>
+</ul>
 </p>
  
  <h3>API changes</h3>
  <p> 
  There were no API changes that affect backward compatibility.
+ </p>
+ 
+ <h3>Change in Binary Delta serialization</h3>
+ <p>
+ Versioning information is added to the binary serialization streams in a backward compatible manner.
+ In addition, this release includes a <a href="https://issues.apache.org/jira/browse/UIMA-4743">bug fix</a>
+ that changes the format of Binary Delta serialization slightly, but only for delta serialization, as used by
+ UIMA-AS.  UIMA-AS next release will include support for this and 
+ automatically select the old or new version when sending a delta CAS back to the client; so this change
+ should be invisible to users. 
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
