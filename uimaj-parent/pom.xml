@@ -145,7 +145,7 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
     <compat.level>BACKWARD_COMPATIBLE_IMPLEMENTER</compat.level>
-    <compat.previous.version>2.8.0</compat.previous.version>
+    <compat.previous.version>2.8.1</compat.previous.version>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
@@ -335,8 +335,11 @@
                         <excludes>
                           <exclude>**/impl/**/*</exclude>
                           <exclude>**/internal/**/*</exclude>
+                          <exclude>org/apache/uima/cas/CASRuntimeException</exclude> <!-- Exclude adding error msg from check -->
+                          
                           <!-- UIMA-4565 Exclude CAS from check for 2.8.2 - after 2.8.2 release -->
                           <exclude>org/apache/uima/cas/CAS</exclude>
+
                         </excludes>
                       </requireBackwardCompatibility>
                     </rules>
