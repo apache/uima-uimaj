@@ -249,6 +249,10 @@ public class JCasGenMojo extends AbstractMojo {
     public JCasGenErrors() {
     }
 
+    /*
+     * called by the common JCasGen code when it detects an error
+     * If no exception, the "exception" parameter is null
+     */
     public void newError(int severity, String message, Exception exception) {
       String fullMessage = "JCasGen: " + message;
       if (severity == IError.INFO) {
@@ -256,7 +260,11 @@ public class JCasGenMojo extends AbstractMojo {
       } else if (severity == IError.WARN) {
         getLog().warn(fullMessage, exception);
       } else if (severity == IError.ERROR) {
-        throw new JCasGenException(exception.getMessage(), exception);
+        String m = fullMessage;
+        if (exception != null) {
+          m = m + "\nException: " + exception.getMessage(); 
+        }
+        throw new JCasGenException(m, exception);
       } else {
         throw new UnsupportedOperationException("Unknown severity level: " + severity);
       }

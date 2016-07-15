@@ -35,6 +35,17 @@ import org.codehaus.plexus.util.FileUtils;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
+  public void testInvalidFeature() throws Exception {
+    Exception ee = null;
+    try {
+      this.test("invalidFeature");
+    } catch (Exception e) {
+      ee = e;
+    }
+    assertTrue(ee != null);
+    assertEquals("JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.", ee.getMessage());
+  }
+  
   public void testSimple() throws Exception {
     this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
