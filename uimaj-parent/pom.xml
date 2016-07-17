@@ -149,12 +149,15 @@
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
-     Local configuratins within plugins should be avoided. Where plugins do not pick up default
+     Local configurations within plugins should be avoided. Where plugins do not pick up default
      properties already, they should be injected manually into the plugins. 
     -->    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.7</maven.compiler.target>
     <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.surefire.heap>512m</maven.surefire.heap>
+    <maven.surefire.argLine />
+    <jacoco.argLine />
   </properties>
   
   <build>
@@ -186,6 +189,15 @@
               </configuration> 
             </execution>
           </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.19.1</version>
+          <configuration>
+            <argLine>@{jacoco.argLine} -Xmx${maven.surefire.heap} -Xms${maven.surefire.heap} ${maven.surefire.argLine}</argLine>
+          </configuration>
         </plugin>
         
         <!-- Code quality checking plugins mostly used for CI builds -->
@@ -307,10 +319,6 @@
     </profile>
     <profile>
       <id>jacoco</id>
-      <properties>
-          <maven.surefire.argLine />
-          <jacoco.argLine />
-      </properties>
       <build>
         <plugins>
           <plugin>
@@ -343,13 +351,6 @@
                 </configuration>
               </execution>
             </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <argLine>@{jacoco.argLine} ${maven.surefire.argLine}</argLine>
-            </configuration>
           </plugin>
         </plugins>
       </build>

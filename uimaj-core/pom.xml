@@ -56,6 +56,7 @@
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
+    <maven.surefire.heap>650M</maven.surefire.heap>
   </properties>
   
 	<dependencies>
@@ -191,16 +192,6 @@
           </execution>
         </executions>
       </plugin>
-      
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-          <!-- testing on 64 bit Linux requires larger heap -->
-					<argLine>-Xmx650M</argLine>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-  
+    </plugins>
+  </build>
 </project>
