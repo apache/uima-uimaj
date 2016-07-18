@@ -137,6 +137,17 @@ public class CasIOUtilsTest extends TestCase{
     Assert.fail("An exception should have been thrown for wrong input.");
   }
   
+  public void testWrongFormat() throws Exception {
+    File casFile = new File("target/temp-test-output/simpleCas.wrong");
+    try {
+      CasIOUtils.save(cas, new FileOutputStream(casFile), "WRONG");
+    } catch (Exception e) {
+      Assert.assertTrue(e instanceof IllegalArgumentException);
+      return;
+    }
+    Assert.fail("An exception should have been thrown for wrong format.");
+  }
+  
   
   protected void tearDown() throws Exception {
     cas.release();
