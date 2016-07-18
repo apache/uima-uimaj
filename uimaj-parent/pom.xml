@@ -220,13 +220,13 @@
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.7.6.201602180812</version>
-            <configuration>
-              <excludes>
-                <!-- Duplicates on classpath cause an exception in JaCoCo report -->
-                <exclude>org/apache/uima/examples/SourceDocumentInformation</exclude>
-                <exclude>org/apache/uima/examples/SourceDocumentInformation_Type</exclude>
-              </excludes>
-            </configuration>
+          <configuration>
+            <excludes>
+              <!-- Duplicates on classpath cause an exception in JaCoCo report -->
+              <exclude>**/org/apache/uima/examples/SourceDocumentInformation*</exclude>
+              <exclude>**/org/apache/uima/examples/SourceDocumentInformation_Type*</exclude>
+            </excludes>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
