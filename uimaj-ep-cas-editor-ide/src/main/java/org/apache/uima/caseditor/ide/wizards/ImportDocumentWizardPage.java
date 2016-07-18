@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
-import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.ide.CasEditorIdePlugin;
 import org.apache.uima.caseditor.ide.CasEditorIdePreferenceConstants;
+import org.apache.uima.util.SerializationFormat;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -97,7 +97,7 @@ final class ImportDocumentWizardPage extends WizardPage {
   
   private String language;
   
-  private DocumentFormat documentFormat;
+  private SerializationFormat documentFormat;
   
   private TableViewer fileTable;
 
@@ -430,14 +430,19 @@ final class ImportDocumentWizardPage extends WizardPage {
   
     final Combo casFormatCombo = new Combo(importOptions, SWT.READ_ONLY);
     casFormatCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    casFormatCombo.setItems(new String[]{DocumentFormat.XMI.toString(), DocumentFormat.XCAS.toString()});
-    documentFormat = DocumentFormat.XMI;
+    SerializationFormat[] values = SerializationFormat.values();
+    String[] stringValues = new String[values.length];
+    for (int i = 0; i < values.length; i++) {
+      stringValues[i] = values[i].toString();
+    }
+    casFormatCombo.setItems(stringValues);
+    documentFormat = SerializationFormat.XMI;
     casFormatCombo.select(0);
     
     casFormatCombo.addSelectionListener(new SelectionListener() {
   		
   		public void widgetSelected(SelectionEvent e) {
-  			documentFormat = DocumentFormat.valueOf(casFormatCombo.getText());
+  			documentFormat = SerializationFormat.valueOf(casFormatCombo.getText());
   		}
   		
   		public void widgetDefaultSelected(SelectionEvent e) {
@@ -477,7 +482,7 @@ final class ImportDocumentWizardPage extends WizardPage {
     return language;
   }
   
-  DocumentFormat getCasFormat() {
+  SerializationFormat getCasFormat() {
 	  return documentFormat;
   }
 }

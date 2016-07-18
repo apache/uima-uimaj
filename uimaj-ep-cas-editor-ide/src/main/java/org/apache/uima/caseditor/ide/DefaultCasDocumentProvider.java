@@ -36,12 +36,12 @@ import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpus;
 import org.apache.uima.caseditor.core.model.dotcorpus.DotCorpusSerializer;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.CasDocumentProvider;
-import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.caseditor.editor.DocumentUimaImpl;
 import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.apache.uima.caseditor.ide.searchstrategy.ITypeSystemSearchStrategy;
 import org.apache.uima.caseditor.ide.searchstrategy.TypeSystemSearchStrategyFactory;
+import org.apache.uima.util.CasIOUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -315,7 +315,6 @@ public class DefaultCasDocumentProvider extends
 
             if (styleFile.exists()) {
               InputStream styleFileIn = null;
-              ;
               DotCorpus dotCorpus = null;
               try {
                 styleFileIn = styleFile.getContents();
@@ -403,38 +402,7 @@ public class DefaultCasDocumentProvider extends
 
         CAS cas = DocumentUimaImpl.getVirginCAS(typeSystemFile);
 
-        DocumentFormat documentFormat;
-
-        // Which file format to use ?
-        if (casFile.getName().endsWith("xmi")) {
-          documentFormat = DocumentFormat.XMI;
-        } else if (casFile.getName().endsWith("xcas")) {
-          documentFormat = DocumentFormat.XCAS;
-        } else {
-          throw new CoreException(new Status(IStatus.ERROR, "org.apache.uima.dev",
-                  "Unkown file format!"));
-        }
-
-        InputStream casIn = casFile.getContents();
-
-        org.apache.uima.caseditor.editor.ICasDocument doc;
-
-        try {
-          doc = new DocumentUimaImpl(cas, casIn, documentFormat, typeSystemFile.getFullPath().makeRelative().toString());
-        } finally {
-          try {
-            casIn.close();
-          } catch (IOException e) {
-            // Unable to close file after loading it
-            //
-            // In the current implementation the user
-            // does not notice the error and can just
-            // edit the file, tough saving it might fail
-            // if the io error persists
-
-            CasEditorPlugin.log(e);
-          }
-        }
+        ICasDocument   doc = new DocumentUimaImpl(cas, casFile, typeSystemFile.getFullPath().makeRelative().toString());
 
         elementErrorStatus.remove(element);
 
