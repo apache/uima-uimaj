@@ -63,6 +63,8 @@ public class SourceDocumentInformation extends Annotation {
   /**
    * Internal - constructor used by generator
    * 
+   * @param addr -
+   * @param type -
    * @generated
    */
   public SourceDocumentInformation(int addr, TOP_Type type) {
@@ -70,13 +72,21 @@ public class SourceDocumentInformation extends Annotation {
     readObject();
   }
 
-  /** @generated */
+  /** 
+   * @generated
+   * @param jcas - 
+   * */
   public SourceDocumentInformation(JCas jcas) {
     super(jcas);
     readObject();
   }
 
-  /** @generated */
+  /** 
+   * @generated
+   * @param jcas -
+   * @param begin -
+   * @param end - 
+   * */
   public SourceDocumentInformation(JCas jcas, int begin, int end) {
     super(jcas);
     setBegin(begin);
@@ -100,6 +110,7 @@ public class SourceDocumentInformation extends Annotation {
    * simple file or http://incubator.apache.org/uima/index.html for content from a web source.)
    * 
    * @generated
+   * @return the Uri
    */
   public String getUri() {
     if (SourceDocumentInformation_Type.featOkTst
@@ -113,6 +124,7 @@ public class SourceDocumentInformation extends Annotation {
    * setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a
    * simple file or http://incubator.apache.org/uima/index.html for content from a web source.)
    * 
+   * @param v this document's Uri
    * @generated
    */
   public void setUri(String v) {
@@ -131,6 +143,7 @@ public class SourceDocumentInformation extends Annotation {
    * source file or other input source. Only used if the CAS document was retrieved from an source
    * where one physical source file contained several conceptual documents. Zero otherwise.
    * 
+   * @return the byte offset of the start of the document within the original
    * @generated
    */
   public int getOffsetInSource() {
@@ -146,6 +159,7 @@ public class SourceDocumentInformation extends Annotation {
    * source file or other input source. Only used if the CAS document was retrieved from an source
    * where one physical source file contained several conceptual documents. Zero otherwise.
    * 
+   * @param v the byte offset of the start of the document within the original
    * @generated
    */
   public void setOffsetInSource(int v) {
@@ -163,6 +177,7 @@ public class SourceDocumentInformation extends Annotation {
    * getter for documentSize - gets Size of original document in bytes before processing by CAS
    * Initializer. Either absolute file size of size within file or other source.
    * 
+   * @return the document size in bytes
    * @generated
    */
   public int getDocumentSize() {
@@ -177,6 +192,7 @@ public class SourceDocumentInformation extends Annotation {
    * setter for documentSize - sets Size of original document in bytes before processing by CAS
    * Initializer. Either absolute file size of size within file or other source.
    * 
+   * @param v the document size in bytes
    * @generated
    */
   public void setDocumentSize(int v) {
@@ -196,6 +212,7 @@ public class SourceDocumentInformation extends Annotation {
    * useful for downstream components that want to take some action after having seen all of the
    * segments of a particular source document.
    * 
+   * @return true if this is the final segment
    * @generated
    */
   public boolean getLastSegment() {
@@ -212,6 +229,7 @@ public class SourceDocumentInformation extends Annotation {
    * useful for downstream components that want to take some action after having seen all of the
    * segments of a particular source document.
    * 
+   * @param v true if this is the last segment
    * @generated
    */
   public void setLastSegment(boolean v) {

@@ -77,14 +77,22 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
   /** @generated */
   final int casFeatCode_uri;
 
-  /** @generated */
+  /**
+   * @param addr - 
+   * @return the Uri
+   * @generated 
+   * */
   public String getUri(int addr) {
     if (featOkTst && casFeat_uri == null)
       this.jcas.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
     return ll_cas.ll_getStringValue(addr, casFeatCode_uri);
   }
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @param v the Uri 
+   * @generated 
+   * */
   public void setUri(int addr, String v) {
     if (featOkTst && casFeat_uri == null)
       this.jcas.throwFeatMissing("uri", "org.apache.uima.examples.SourceDocumentInformation");
@@ -97,14 +105,22 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
   /** @generated */
   final int casFeatCode_offsetInSource;
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @return - 
+   * @generated 
+   * */
   public int getOffsetInSource(int addr) {
     if (featOkTst && casFeat_offsetInSource == null)
       this.jcas.throwFeatMissing("offsetInSource", "org.apache.uima.examples.SourceDocumentInformation");
     return ll_cas.ll_getIntValue(addr, casFeatCode_offsetInSource);
   }
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @param v - 
+   * @generated 
+   * */
   public void setOffsetInSource(int addr, int v) {
     if (featOkTst && casFeat_offsetInSource == null)
       this.jcas.throwFeatMissing("offsetInSource", "org.apache.uima.examples.SourceDocumentInformation");
@@ -117,34 +133,52 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
   /** @generated */
   final int casFeatCode_documentSize;
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @return - 
+   * @generated 
+   * */
   public int getDocumentSize(int addr) {
     if (featOkTst && casFeat_documentSize == null)
       this.jcas.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
     return ll_cas.ll_getIntValue(addr, casFeatCode_documentSize);
   }
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @param v the document size 
+   * @generated 
+   * */
   public void setDocumentSize(int addr, int v) {
     if (featOkTst && casFeat_documentSize == null)
       this.jcas.throwFeatMissing("documentSize", "org.apache.uima.examples.SourceDocumentInformation");
     ll_cas.ll_setIntValue(addr, casFeatCode_documentSize, v);
   }
 
-  /** @generated */
+  /** 
+   * @generated 
+   * */
   final Feature casFeat_lastSegment;
 
   /** @generated */
   final int casFeatCode_lastSegment;
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @return true if it is last segment 
+   * @generated 
+   * */
   public boolean getLastSegment(int addr) {
     if (featOkTst && casFeat_lastSegment == null)
       this.jcas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
     return ll_cas.ll_getBooleanValue(addr, casFeatCode_lastSegment);
   }
 
-  /** @generated */
+  /**
+   * @param addr -
+   * @param v true if last segment 
+   * @generated 
+   * */
   public void setLastSegment(int addr, boolean v) {
     if (featOkTst && casFeat_lastSegment == null)
       this.jcas.throwFeatMissing("lastSegment", "org.apache.uima.examples.SourceDocumentInformation");
@@ -154,6 +188,8 @@ public class SourceDocumentInformation_Type extends Annotation_Type {
   /**
    * initialize variables to correspond with Cas Type and Features
    * 
+   * @param jcas -
+   * @param casType -
    * @generated
    */
   public SourceDocumentInformation_Type(JCas jcas, Type casType) {
