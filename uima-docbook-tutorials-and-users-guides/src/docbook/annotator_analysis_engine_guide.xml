@@ -1136,7 +1136,7 @@ public void initialize(UimaContext aContext)
           UIMA also provides a logging implementation that use Apache Log4j instead of Java logging. To
           use Log4j you have to provide the Log4j jars in the classpath and your application 
           must specify the logging configuration as shown below. 
-          <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=&lt;org.apache.uima.util.impl.Log4jLogger_impl></programlisting>
+          <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=org.apache.uima.util.impl.Log4jLogger_impl</programlisting>
         </para>
       </section>
       
