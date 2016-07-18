@@ -19,48 +19,59 @@
 package org.apache.uima.util;
 
 /**
- * The available serialization formats in uimaj-core. Additional serializers like json are not included.
+ * The available serialization formats in uimaj-core. Additional serializers like json are not
+ * included.
  *
  */
 public enum SerializationFormat {
-  
+
   /**
    * XML-serialized CAS
    */
-  XMI, 
-  
+  XMI("xmi"),
+
   /**
    * XML-serialized CAS
    */
-  XCAS, 
-  
+  XCAS("xcas"),
+
   /**
    * Java-serialized CAS without type system
    */
-  S, 
-  
+  S("scas"),
+
   /**
    * Java-serialized CAS with type system
    */
-  Sp, 
-  
+  Sp("scas"),
+
   /**
    * Java-serialized CAS without type system
    */
-  S0, 
-  
+  S0("scas"),
+
   /**
    * Binary compressed CAS without type system (form 4)
    */
-  S4, 
-  
+  S4("bcas"),
+
   /**
    * Binary compressed CAS (form 6)
    */
-  S6, 
-  
+  S6("bcas"),
+
   /**
    * Binary compressed CAS (form 6) with embedded Java-serialized type system
    */
-  S6p;
+  S6p("bcas");
+
+  private String defaultFileExtension;
+
+  SerializationFormat(String defaultFileExtension) {
+    this.defaultFileExtension = defaultFileExtension;
+  }
+
+  public String getDefaultFileExtension() {
+    return defaultFileExtension;
+  }
 }
