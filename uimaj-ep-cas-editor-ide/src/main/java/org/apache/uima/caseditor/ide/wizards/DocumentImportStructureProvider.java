@@ -254,15 +254,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
       int nameWithouEndingLength = fileName.lastIndexOf(".");
       String nameWithouEnding = fileName.substring(0, nameWithouEndingLength);
 
-      String ending;
-      if (SerializationFormat.XMI.equals(casFormat)) {
-        ending = "xmi";
-      } else if (SerializationFormat.XCAS.equals(casFormat)) {
-        ending = "xcas";
-      } else {
-        ending = "bcas";
-      }
-
+      String ending = casFormat.getDefaultFileExtension();
       return nameWithouEnding + "." + ending;
     } else {
       return fileName;
