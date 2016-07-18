@@ -67,7 +67,7 @@ public class CasIOUtils {
    */
   public static SerializationFormat load(Path casPath, CAS aCAS) throws IOException {
 
-    return load(casPath, null, aCAS);
+    return load(casPath, null, aCAS, false);
   }
 
   /**
@@ -78,13 +78,16 @@ public class CasIOUtils {
    *          The optional path containing the type system
    * @param aCAS
    *          The CAS that should be filled
+   * @param lentiently
+   *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(Path casPath, Path tsPath, CAS aCAS) throws IOException {
+  public static SerializationFormat load(Path casPath, Path tsPath, CAS aCAS, boolean leniently)
+          throws IOException {
 
     URL casUrl = casPath.toUri().toURL();
     URL tsUrl = tsPath == null ? null : tsPath.toUri().toURL();
-    return load(casUrl, tsUrl, aCAS);
+    return load(casUrl, tsUrl, aCAS, leniently);
   }
 
   /**
@@ -97,7 +100,7 @@ public class CasIOUtils {
    */
   public static SerializationFormat load(File casFile, CAS aCAS) throws IOException {
 
-    return load(casFile, null, aCAS);
+    return load(casFile, null, aCAS, false);
   }
 
   /**
@@ -108,13 +111,16 @@ public class CasIOUtils {
    *          The optional file containing the type system
    * @param aCAS
    *          The CAS that should be filled
+   * @param lentiently
+   *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(File casFile, File tsFile, CAS aCAS) throws IOException {
+  public static SerializationFormat load(File casFile, File tsFile, CAS aCAS, boolean lentiently)
+          throws IOException {
 
     URL casUrl = casFile.toURI().toURL();
     URL tsUrl = tsFile == null ? null : tsFile.toURI().toURL();
-    return load(casUrl, tsUrl, aCAS);
+    return load(casUrl, tsUrl, aCAS, lentiently);
   }
 
   /**
@@ -127,7 +133,7 @@ public class CasIOUtils {
    */
   public static SerializationFormat load(URL casUrl, CAS aCAS) throws IOException {
 
-    return load(casUrl, null, aCAS);
+    return load(casUrl, null, aCAS, false);
   }
 
   /**
@@ -138,26 +144,29 @@ public class CasIOUtils {
    *          The optional url containing the type system
    * @param aCAS
    *          The CAS that should be filled
+   * @param lentiently
+   *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(URL casUrl, URL tsUrl, CAS aCAS) throws IOException {
+  public static SerializationFormat load(URL casUrl, URL tsUrl, CAS aCAS, boolean lentietly)
+          throws IOException {
     String path = casUrl.getPath().toLowerCase();
     if (path.endsWith(".xmi")) {
       try {
-        XmiCasDeserializer.deserialize(casUrl.openStream(), aCAS, true);
+        XmiCasDeserializer.deserialize(casUrl.openStream(), aCAS, lentietly);
         return SerializationFormat.XMI;
       } catch (SAXException e) {
         throw new IOException(e);
       }
     } else if (path.endsWith(".xcas") || path.endsWith(".xml")) {
       try {
-        XCASDeserializer.deserialize(casUrl.openStream(), aCAS, true);
+        XCASDeserializer.deserialize(casUrl.openStream(), aCAS, lentietly);
         return SerializationFormat.XCAS;
       } catch (SAXException e) {
         throw new IOException(e);
       }
     }
-return      loadBinary(casUrl.openStream(), tsUrl == null ? null : tsUrl.openStream(), aCAS);
+    return loadBinary(casUrl.openStream(), tsUrl == null ? null : tsUrl.openStream(), aCAS);
   }
 
   /**
@@ -171,7 +180,7 @@ return      loadBinary(casUrl.openStream(), tsUrl == null ? null : tsUrl.openStr
    * @throws IOException
    */
   public static SerializationFormat load(InputStream casInputStream, CAS aCAS) throws IOException {
-    return load(casInputStream, null, aCAS);
+    return load(casInputStream, null, aCAS, false);
   }
 
   /**
@@ -184,10 +193,12 @@ return      loadBinary(casUrl.openStream(), tsUrl == null ? null : tsUrl.openStr
    *          The optional input stream containing the type system
    * @param aCAS
    *          The CAS that should be filled
+   * @param lentiently
+   *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(InputStream casInputStream, InputStream tsInputStream, CAS aCAS)
-          throws IOException {
+  public static SerializationFormat load(InputStream casInputStream, InputStream tsInputStream,
+          CAS aCAS, boolean lentiently) throws IOException {
     BufferedInputStream bis = new BufferedInputStream(casInputStream);
     bis.mark(32);
     byte[] headerXml = new byte[16];
@@ -196,13 +207,13 @@ return      loadBinary(casUrl.openStream(), tsUrl == null ? null : tsUrl.openStr
     String start = new String(headerXml);
     if (start.startsWith("<?xml ")) {
       try {
-        XmiCasDeserializer.deserialize(bis, aCAS, true);
+        XmiCasDeserializer.deserialize(bis, aCAS, lentiently);
         return SerializationFormat.XMI;
       } catch (SAXException e) {
         throw new IOException(e);
       }
     }
-return      loadBinary(bis, tsInputStream, aCAS);
+    return loadBinary(bis, tsInputStream, aCAS);
   }
 
   /**
@@ -231,7 +242,8 @@ return      loadBinary(bis, tsInputStream, aCAS);
    *          the CAS in which the input stream will be deserialized
    * @throws IOException
    */
-  public static SerializationFormat loadBinary(InputStream is, InputStream typeIS, CAS aCAS) throws IOException {
+  public static SerializationFormat loadBinary(InputStream is, InputStream typeIS, CAS aCAS)
+          throws IOException {
     CASMgrSerializer casMgr = null;
     if (typeIS != null) {
       casMgr = readCasManager(typeIS);
@@ -314,7 +326,7 @@ return      loadBinary(bis, tsInputStream, aCAS);
           } else {
             // This is a form 0 or 4
             deserializeCAS(aCAS, bis);
-            if(version == 4) {
+            if (version == 4) {
               return SerializationFormat.S4;
             }
             return SerializationFormat.S0;
