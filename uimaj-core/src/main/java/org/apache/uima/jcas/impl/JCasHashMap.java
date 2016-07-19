@@ -111,7 +111,7 @@ public class JCasHashMap {
   // set to true to collect statistics for tuning
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
   static final boolean TUNE = false;
-  static final boolean check = true;  // message if concurrency level reduced because initial size was small
+  static final boolean check = false;  // message if concurrency level reduced because initial size was small
 //  private static final boolean MEASURE_CACHE = false /* Misc.getNoValueSystemProperty("uima.measure.jcas.hashmap.cache")*/;
 
 
