@@ -35,6 +35,7 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.caseditor.core.TaeError;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -42,7 +43,6 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.SerializationFormat;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
@@ -55,7 +55,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
 
   private final String importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
 
-  private final SerializationFormat casFormat;
+  private final SerialFormat casFormat;
 
   /**
    * Constructs a new DocumentImportStructureProvider object.
@@ -63,7 +63,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
    * @param containerFullPath
    */
   public DocumentImportStructureProvider(String language, String importEncoding,
-          SerializationFormat casFormat) {
+          SerialFormat casFormat) {
     this.language = language;
     this.importEncoding = importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
     this.casFormat = casFormat;
@@ -116,7 +116,7 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
   }
 
   private InputStream getDocument(String fileName, String text, String language,
-          SerializationFormat format) {
+          SerialFormat format) {
 
     String failedToImportLine = "Failed to import: " + fileName + "\n\n";
 
@@ -131,28 +131,6 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     } catch (IOException e) {
       throw new TaeError(failedToImportLine + e.getMessage(), e);
     }
-
-    // if (DocumentFormat.XCAS.equals(format)) {
-    // try {
-    // XCASSerializer.serialize(cas, out);
-    // } catch (SAXException e) {
-    // // should not happen
-    // throw new TaeError(failedToImportLine + e.getMessage(), e);
-    // } catch (IOException e) {
-    // // will not happen, writing to memory
-    // throw new TaeError(failedToImportLine + e.getMessage(), e);
-    // }
-    // }
-    // else if (DocumentFormat.XMI.equals(format)) {
-    // try {
-    // XmiCasSerializer.serialize(cas, out);
-    // } catch (SAXException e) {
-    // // should not happen
-    // throw new TaeError(failedToImportLine + e.getMessage(), e);
-    // }
-    // } else {
-    // throw new TaeError(failedToImportLine + "Unkown document type!", null);
-    // }
 
     return new ByteArrayInputStream(out.toByteArray());
   }

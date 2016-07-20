@@ -34,6 +34,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -48,7 +49,6 @@ import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
-import org.apache.uima.util.SerializationFormat;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.eclipse.core.filesystem.EFS;
@@ -67,7 +67,7 @@ public class DocumentUimaImpl extends AbstractDocument {
 
   private CAS mCAS;
 
-  private SerializationFormat format = SerializationFormat.XMI;
+  private SerialFormat format = SerialFormat.XMI;
 
   private final String typeSystemText;
 
