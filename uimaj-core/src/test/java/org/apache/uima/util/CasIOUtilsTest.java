@@ -88,11 +88,11 @@ public class CasIOUtilsTest extends TestCase{
   }
 
   public void testS() throws Exception {
-    testFormat(SerialFormat.SERILALIZED, "bins");
+    testFormat(SerialFormat.SERIALIZED, "bins");
   }
   
   public void testSp() throws Exception {
-    testFormat(SerialFormat.SERILALIZED_TS, "binsp");
+    testFormat(SerialFormat.SERIALIZED_TS, "binsp");
   }
   
   public void testS0() throws Exception {

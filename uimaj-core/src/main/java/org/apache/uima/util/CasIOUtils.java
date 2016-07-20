@@ -341,7 +341,7 @@ public class CasIOUtils {
           if (object instanceof CASCompleteSerializer) {
             CASCompleteSerializer serializer = (CASCompleteSerializer) object;
             deserializeCASComplete(serializer, (CASImpl) aCAS);
-            return SerialFormat.SERILALIZED_TS;
+            return SerialFormat.SERIALIZED_TS;
           } else if (object instanceof CASSerializer) {
             CASCompleteSerializer serializer;
             if (casMgr != null) {
@@ -355,7 +355,7 @@ public class CasIOUtils {
               serializer.setCasSerializer((CASSerializer) object);
             }
             deserializeCASComplete(serializer, (CASImpl) aCAS);
-            return SerialFormat.SERILALIZED;
+            return SerialFormat.SERIALIZED;
           } else {
             throw new IOException("Unknown serialized object found with type ["
                     + object.getClass().getName() + "]");
@@ -435,7 +435,7 @@ public class CasIOUtils {
           XMLSerializer xmlSerialzer = new XMLSerializer(docOS, true);
           xcasSerializer.serialize(aCas, xmlSerialzer.getContentHandler());
           break;
-        case SERILALIZED:
+        case SERIALIZED:
         // Java-serialized CAS without type system
         {
           CASSerializer serializer = new CASSerializer();
@@ -445,7 +445,7 @@ public class CasIOUtils {
           objOS.flush();
         }
           break;
-        case SERILALIZED_TS:
+        case SERIALIZED_TS:
         // Java-serialized CAS with type system
         {
           ObjectOutputStream objOS = new ObjectOutputStream(docOS);

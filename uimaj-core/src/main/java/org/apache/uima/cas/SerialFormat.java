@@ -41,12 +41,12 @@ public enum SerialFormat {
   /**
    * Java-serialized CAS without type system
    */
-  SERILALIZED("scas"),
+  SERIALIZED("scas"),
 
   /**
    * Java-serialized CAS with type system
    */
-  SERILALIZED_TS("scas"),
+  SERIALIZED_TS("scas"),
 
   /**
    * Java-serialized CAS without type system, no filtering
