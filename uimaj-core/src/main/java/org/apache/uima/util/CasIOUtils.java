@@ -39,10 +39,12 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.CASSerializer;
+import org.apache.uima.cas.impl.CommonSerDes;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
@@ -65,7 +67,7 @@ public class CasIOUtils {
    *          The CAS that should be filled
    * @throws IOException
    */
-  public static SerializationFormat load(Path casPath, CAS aCAS) throws IOException {
+  public static SerialFormat load(Path casPath, CAS aCAS) throws IOException {
 
     return load(casPath, null, aCAS, false);
   }
@@ -82,7 +84,7 @@ public class CasIOUtils {
    *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(Path casPath, Path tsPath, CAS aCAS, boolean leniently)
+  public static SerialFormat load(Path casPath, Path tsPath, CAS aCAS, boolean leniently)
           throws IOException {
 
     URL casUrl = casPath.toUri().toURL();
@@ -98,7 +100,7 @@ public class CasIOUtils {
    *          The CAS that should be filled
    * @throws IOException
    */
-  public static SerializationFormat load(File casFile, CAS aCAS) throws IOException {
+  public static SerialFormat load(File casFile, CAS aCAS) throws IOException {
 
     return load(casFile, null, aCAS, false);
   }
@@ -115,7 +117,7 @@ public class CasIOUtils {
    *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(File casFile, File tsFile, CAS aCAS, boolean lentiently)
+  public static SerialFormat load(File casFile, File tsFile, CAS aCAS, boolean lentiently)
           throws IOException {
 
     URL casUrl = casFile.toURI().toURL();
@@ -131,7 +133,7 @@ public class CasIOUtils {
    *          The CAS that should be filled
    * @throws IOException
    */
-  public static SerializationFormat load(URL casUrl, CAS aCAS) throws IOException {
+  public static SerialFormat load(URL casUrl, CAS aCAS) throws IOException {
 
     return load(casUrl, null, aCAS, false);
   }
@@ -148,20 +150,20 @@ public class CasIOUtils {
    *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(URL casUrl, URL tsUrl, CAS aCAS, boolean lentietly)
+  public static SerialFormat load(URL casUrl, URL tsUrl, CAS aCAS, boolean lentietly)
           throws IOException {
     String path = casUrl.getPath().toLowerCase();
     if (path.endsWith(".xmi")) {
       try {
         XmiCasDeserializer.deserialize(casUrl.openStream(), aCAS, lentietly);
-        return SerializationFormat.XMI;
+        return SerialFormat.XMI;
       } catch (SAXException e) {
         throw new IOException(e);
       }
     } else if (path.endsWith(".xcas") || path.endsWith(".xml")) {
       try {
         XCASDeserializer.deserialize(casUrl.openStream(), aCAS, lentietly);
-        return SerializationFormat.XCAS;
+        return SerialFormat.XCAS;
       } catch (SAXException e) {
         throw new IOException(e);
       }
@@ -179,7 +181,7 @@ public class CasIOUtils {
    *          The CAS that should be filled
    * @throws IOException
    */
-  public static SerializationFormat load(InputStream casInputStream, CAS aCAS) throws IOException {
+  public static SerialFormat load(InputStream casInputStream, CAS aCAS) throws IOException {
     return load(casInputStream, null, aCAS, false);
   }
 
@@ -197,7 +199,7 @@ public class CasIOUtils {
    *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerializationFormat load(InputStream casInputStream, InputStream tsInputStream,
+  public static SerialFormat load(InputStream casInputStream, InputStream tsInputStream,
           CAS aCAS, boolean lentiently) throws IOException {
     BufferedInputStream bis = new BufferedInputStream(casInputStream);
     bis.mark(32);
@@ -208,7 +210,7 @@ public class CasIOUtils {
     if (start.startsWith("<?xml ")) {
       try {
         XmiCasDeserializer.deserialize(bis, aCAS, lentiently);
-        return SerializationFormat.XMI;
+        return SerialFormat.XMI;
       } catch (SAXException e) {
         throw new IOException(e);
       }
@@ -225,7 +227,7 @@ public class CasIOUtils {
    *          the CAS in which the inpout stream will be deserialized
    * @throws IOException
    */
-  public static SerializationFormat loadBinary(InputStream is, CAS aCAS) throws IOException {
+  public static SerialFormat loadBinary(InputStream is, CAS aCAS) throws IOException {
     return loadBinary(is, (CASMgrSerializer) null, aCAS);
   }
 
@@ -242,7 +244,7 @@ public class CasIOUtils {
    *          the CAS in which the input stream will be deserialized
    * @throws IOException
    */
-  public static SerializationFormat loadBinary(InputStream is, InputStream typeIS, CAS aCAS)
+  public static SerialFormat loadBinary(InputStream is, InputStream typeIS, CAS aCAS)
           throws IOException {
     CASMgrSerializer casMgr = null;
     if (typeIS != null) {
@@ -264,7 +266,7 @@ public class CasIOUtils {
    *          the CAS in which the input stream will be deserialized
    * @throws IOException
    */
-  public static SerializationFormat loadBinary(InputStream is, CASMgrSerializer casMgr, CAS aCAS)
+  public static SerialFormat loadBinary(InputStream is, CASMgrSerializer casMgr, CAS aCAS)
           throws IOException {
     try {
       BufferedInputStream bis = new BufferedInputStream(is);
@@ -290,7 +292,7 @@ public class CasIOUtils {
       if (ts != null) {
         // Only format 6 can have type system information
         deserializeCAS(aCAS, bis, ts, null);
-        return SerializationFormat.S6p;
+        return SerialFormat.COMPRESSED_FILTERED_TS;
       } else {
 
         // Check if this is a UIMA binary CAS stream
@@ -322,14 +324,14 @@ public class CasIOUtils {
               ts.commit();
             }
             deserializeCAS(aCAS, bis, ts, null);
-            return SerializationFormat.S6;
+            return SerialFormat.COMPRESSED_FILTERED;
           } else {
             // This is a form 0 or 4
             deserializeCAS(aCAS, bis);
             if (version == 4) {
-              return SerializationFormat.S4;
+              return SerialFormat.COMPRESSED;
             }
-            return SerializationFormat.S0;
+            return SerialFormat.BINARY;
           }
         } else {
           // If it is not a UIMA binary CAS stream and not xml, assume it is output from
@@ -339,7 +341,7 @@ public class CasIOUtils {
           if (object instanceof CASCompleteSerializer) {
             CASCompleteSerializer serializer = (CASCompleteSerializer) object;
             deserializeCASComplete(serializer, (CASImpl) aCAS);
-            return SerializationFormat.Sp;
+            return SerialFormat.SERILALIZED_TS;
           } else if (object instanceof CASSerializer) {
             CASCompleteSerializer serializer;
             if (casMgr != null) {
@@ -353,7 +355,7 @@ public class CasIOUtils {
               serializer.setCasSerializer((CASSerializer) object);
             }
             deserializeCASComplete(serializer, (CASImpl) aCAS);
-            return SerializationFormat.S;
+            return SerialFormat.SERILALIZED;
           } else {
             throw new IOException("Unknown serialized object found with type ["
                     + object.getClass().getName() + "]");
@@ -384,7 +386,7 @@ public class CasIOUtils {
    * @throws IOException
    */
   public static void save(CAS aCas, OutputStream docOS, String formatName) throws IOException {
-    SerializationFormat format = SerializationFormat.valueOf(formatName);
+    SerialFormat format = SerialFormat.valueOf(formatName);
     save(aCas, docOS, null, format);
   }
 
@@ -396,10 +398,10 @@ public class CasIOUtils {
    * @param docOS
    *          The output stream for the CAS
    * @param format
-   *          The SerializationFormat in which the CAS should be stored.
+   *          The SerialFormat in which the CAS should be stored.
    * @throws IOException
    */
-  public static void save(CAS aCas, OutputStream docOS, SerializationFormat format)
+  public static void save(CAS aCas, OutputStream docOS, SerialFormat format)
           throws IOException {
     save(aCas, docOS, null, format);
   }
@@ -417,11 +419,11 @@ public class CasIOUtils {
    *          Optional output stream for type system information. Only used if the format does not
    *          support storing typesystem information directly in the main output file.
    * @param format
-   *          The SerializationFormat in which the CAS should be stored.
+   *          The SerialFormat in which the CAS should be stored.
    * @throws IOException
    */
   public static void save(CAS aCas, OutputStream docOS, OutputStream typeOS,
-          SerializationFormat format) throws IOException {
+          SerialFormat format) throws IOException {
     boolean typeSystemWritten = false;
     try {
       switch (format) {
@@ -433,7 +435,7 @@ public class CasIOUtils {
           XMLSerializer xmlSerialzer = new XMLSerializer(docOS, true);
           xcasSerializer.serialize(aCas, xmlSerialzer.getContentHandler());
           break;
-        case S:
+        case SERILALIZED:
         // Java-serialized CAS without type system
         {
           CASSerializer serializer = new CASSerializer();
@@ -443,7 +445,7 @@ public class CasIOUtils {
           objOS.flush();
         }
           break;
-        case Sp:
+        case SERILALIZED_TS:
         // Java-serialized CAS with type system
         {
           ObjectOutputStream objOS = new ObjectOutputStream(docOS);
@@ -453,20 +455,20 @@ public class CasIOUtils {
           typeSystemWritten = true; // Embedded type system
         }
           break;
-        case S0:
+        case BINARY:
           // Java-serialized CAS without type system
           serializeCAS(aCas, docOS);
           break;
-        case S4:
+        case COMPRESSED:
           // Binary compressed CAS without type system (form 4)
           serializeWithCompression(aCas, docOS);
           break;
 
-        case S6:
+        case COMPRESSED_FILTERED:
           // Binary compressed CAS (form 6)
           serializeWithCompression(aCas, docOS, aCas.getTypeSystem());
           break;
-        case S6p:
+        case COMPRESSED_FILTERED_TS:
           // Binary compressed CAS (form 6)
           // ... with embedded Java-serialized type system
           writeHeader(docOS);
@@ -476,7 +478,7 @@ public class CasIOUtils {
           break;
         default:
           throw new IllegalArgumentException("Unknown format [" + format.name()
-                  + "]. Must be one of: " + SerializationFormat.values());
+                  + "]. Must be one of: " + SerialFormat.values());
       }
     } catch (IOException e) {
       throw e;

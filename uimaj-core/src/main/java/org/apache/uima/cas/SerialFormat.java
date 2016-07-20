@@ -23,11 +23,67 @@ package org.apache.uima.cas;
  *
  */
 public enum SerialFormat {
-  UNKNOWN,
-  XCAS,         // with reachability filtering
-  XMI,          // with reachability filtering
-  BINARY,       // no filtering
-  COMPRESSED,   // no filtering  (form 4)
-  COMPRESSED_FILTERED,   // with reachability and type and feature filtering (form 6)
-  COMPRESSED_PROJECTION, // with subset of views
+  /**
+   *  Unknown format 
+   */
+  UNKNOWN(""), 
+  
+  /**
+   * XML-serialized CAS
+   */
+  XMI("xmi"),
+
+  /**
+   * XML-serialized CAS
+   */
+  XCAS("xcas"),
+
+  /**
+   * Java-serialized CAS without type system
+   */
+  SERILALIZED("scas"),
+
+  /**
+   * Java-serialized CAS with type system
+   */
+  SERILALIZED_TS("scas"),
+
+  /**
+   * Java-serialized CAS without type system, no filtering
+   */
+  BINARY("bcas"),
+
+  /**
+   * Binary compressed CAS without type system, no filtering  (form 4)
+   */
+  COMPRESSED("bcas"),
+
+  /**
+   * Binary compressed CAS with reachability and type and feature filtering (form 6)
+   */
+  COMPRESSED_FILTERED("bcas"),
+
+  /**
+   * Binary compressed CAS with embedded Java-serialized type system
+   * with reachability and type and feature filtering (form 6)
+   */
+  COMPRESSED_FILTERED_TS("bcas"),
+
+  /**
+   * with subset of views (not in use)
+   */
+  COMPRESSED_PROJECTION("bcas"); 
+  
+  
+  
+  private String defaultFileExtension;
+
+  SerialFormat(String defaultFileExtension) {
+    this.defaultFileExtension = defaultFileExtension;
+  }
+
+  public String getDefaultFileExtension() {
+    return defaultFileExtension;
+  }
+  
 }

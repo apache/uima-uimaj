@@ -29,6 +29,7 @@ import java.io.ObjectOutputStream;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -62,7 +63,7 @@ public class CasIOUtilsTest extends TestCase{
   public void testXMI() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xmi");
     casFile.getParentFile().mkdirs();
-    CasIOUtils.save(cas, new FileOutputStream(casFile), SerializationFormat.XMI);
+    CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.XMI);
     cas.reset();
     CasIOUtils.load(casFile, cas);
     Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
@@ -77,7 +78,7 @@ public class CasIOUtilsTest extends TestCase{
   public void testXCAS() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xcas");
     casFile.getParentFile().mkdirs();
-    CasIOUtils.save(cas, new FileOutputStream(casFile), SerializationFormat.XCAS);
+    CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.XCAS);
     cas.reset();
     CasIOUtils.load(casFile, cas);
     Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
@@ -87,35 +88,35 @@ public class CasIOUtilsTest extends TestCase{
   }
 
   public void testS() throws Exception {
-    testFormat(SerializationFormat.S, "bins");
+    testFormat(SerialFormat.SERILALIZED, "bins");
   }
   
   public void testSp() throws Exception {
-    testFormat(SerializationFormat.Sp, "binsp");
+    testFormat(SerialFormat.SERILALIZED_TS, "binsp");
   }
   
   public void testS0() throws Exception {
-    testFormat(SerializationFormat.S0, "bins0");
+    testFormat(SerialFormat.BINARY, "bins0");
   }
   
   public void testS4() throws Exception {
-    testFormat(SerializationFormat.S4, "bins4");
+    testFormat(SerialFormat.COMPRESSED, "bins4");
   }
   
   public void testS6() throws Exception {
-    testFormat(SerializationFormat.S6, "bins6");
+    testFormat(SerialFormat.COMPRESSED_FILTERED, "bins6");
   }
   
   public void testS6p() throws Exception {
-    testFormat(SerializationFormat.S6p, "bins6p");
+    testFormat(SerialFormat.COMPRESSED_FILTERED_TS, "bins6p");
   }
   
-  private void testFormat(SerializationFormat format, String fileEnding) throws Exception {
+  private void testFormat(SerialFormat format, String fileEnding) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas."+ fileEnding);
     casFile.getParentFile().mkdirs();
     CasIOUtils.save(cas, new FileOutputStream(casFile), format);
     cas.reset();
-    SerializationFormat loadedFormat = CasIOUtils.load(new FileInputStream(casFile), cas);
+    SerialFormat loadedFormat = CasIOUtils.load(new FileInputStream(casFile), cas);
     Assert.assertEquals(format, loadedFormat);
     Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
   }
