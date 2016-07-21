@@ -91,7 +91,7 @@ public final class Util {
       JavaField field = clazz.getFieldByName(aParameterNameConstantField);
       if (field == null) {
         throw new IllegalArgumentException("Parameter name constant ["
-                + aParameterNameConstantField + "] in class ["
+                + aParameterNameConstantField + "] not found in class ["
                 + clazz.asType().getFullyQualifiedName() + "]");
       }
       javadoc = field.getComment();
