@@ -150,6 +150,13 @@
 			<scope>provided</scope>
 		</dependency>
 		
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>launching</artifactId>
+      <version>[3.3.0,6.0.0)</version>
+      <scope>provided</scope>
+    </dependency>
+    
 		<!-- https://issues.apache.org/jira/browse/UIMA-3510 -->
 		<dependency>
 		  <groupId>org.eclipse.equinox</groupId>
@@ -223,6 +230,7 @@
                   org.eclipse.ui.workbench,
                   org.eclipse.core.runtime,
                   org.eclipse.core.resources,
+                  org.eclipse.jdt.core,
                   org.junit4;bundle-version="4.5.0";resolution:=optional
                 </Require-Bundle>
                 <Import-Package>

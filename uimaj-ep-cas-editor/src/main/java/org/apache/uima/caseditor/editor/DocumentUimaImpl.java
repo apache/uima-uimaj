@@ -25,8 +25,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
@@ -42,6 +47,7 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -53,11 +59,16 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
@@ -65,6 +76,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class DocumentUimaImpl extends AbstractDocument {
 
+  public static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
+  
   private CAS mCAS;
 
   private SerialFormat format = SerialFormat.XMI;
@@ -279,8 +292,17 @@ public class DocumentUimaImpl extends AbstractDocument {
     try {
       typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
 
-      ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
-      String dataPath = typeSystemFile.getProject()
+      IProject project = typeSystemFile.getProject();
+      ClassLoader classLoader = getProjectClassLoader(project);
+      
+      ResourceManager resourceManager = null;
+      if(classLoader != null) {
+        resourceManager = new ResourceManager_impl(classLoader);
+      } else {
+        resourceManager = UIMAFramework.newDefaultResourceManager();
+      }
+      
+      String dataPath = project
               .getPersistentProperty((new QualifiedName("", "CDEdataPath")));
       if (dataPath != null) {
         resourceManager.setDataPath(dataPath);
@@ -316,6 +338,24 @@ public class DocumentUimaImpl extends AbstractDocument {
     return cas;
   }
 
-  
+  public static ClassLoader getProjectClassLoader(IProject project) throws CoreException {
+    IProjectNature javaNature = project.getNature(JAVA_NATURE);
+    if (javaNature != null) {
+      JavaProject javaProject = (JavaProject) JavaCore.create(project);
+      
+      String[] runtimeClassPath = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
+      List<URL> urls = new ArrayList<>();
+      for (int i = 0; i < runtimeClassPath.length; i++) {
+        String cp = runtimeClassPath[i];
+        try {
+          urls.add(Paths.get(cp).toUri().toURL());
+        } catch (MalformedURLException e) {
+          CasEditorPlugin.log(e);
+        }
+      }
+      return new URLClassLoader(urls.toArray(new URL[0]));
+    } 
+    return null;
+  }
 
 }
