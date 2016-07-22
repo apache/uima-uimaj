@@ -23,10 +23,6 @@ package org.apache.uima.cas;
  *
  */
 public enum SerialFormat {
-  /**
-   *  Unknown format 
-   */
-  UNKNOWN(""), 
   
   /**
    * XML-serialized CAS
@@ -72,7 +68,12 @@ public enum SerialFormat {
   /**
    * with subset of views (not in use)
    */
-  COMPRESSED_PROJECTION("bcas"); 
+  COMPRESSED_PROJECTION("bcas"),
+  
+  /**
+   *  Unknown format 
+   */
+  UNKNOWN(""); 
   
   
   
