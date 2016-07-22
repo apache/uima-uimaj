@@ -48,6 +48,7 @@ public class CommonSerDes {
    *     - bit in 0x01 position: on for binary non-delta (redundant)   
    *     - bit in 0x02 position: on means delta, off - not delta
    *     - bit in 0x04 position: on means compressed, off means plain binary
+   *     - bit in 0x08 position: on means typer system included
    *     - bits  0xF8 reserved
    *     
    *     - byte in 0xFF 00 position: incrementing (starting w/ 0) version
@@ -63,12 +64,13 @@ public class CommonSerDes {
    *     - bit in 0x01 position: on means form6, off = form 4 
    *********************************************/
   
-  static class Header {
+  public static class Header {
     boolean isDelta;
     boolean isCompressed;
     boolean isV3style;
     boolean form4;
     boolean form6;
+    boolean typeSystemIncluded;
     byte seqVersionNbr;
     boolean isV3;
     boolean swap;
@@ -77,20 +79,23 @@ public class CommonSerDes {
     
     Reading reading;
     
-    Header delta() {isDelta = true;  return this; }
-    Header delta(boolean v2) {isDelta = v2;  return this; }
-    Header form4() {isCompressed = form4 = true; form6 = false; return this; }
-    Header form6() {isCompressed = form6 = true; form4 = false; return this; }
-    Header seqVer(int v2) { assert (v2 >= 0 && v2 < 256); seqVersionNbr = (byte)v2; return this; }
-    Header v3() {isV3 = true; return this; }
+    public Header delta() {isDelta = true;  return this; }
+    public Header delta(boolean v2) {isDelta = v2;  return this; }
+    public Header form4() {isCompressed = form4 = true; form6 = false; return this; }
+    public Header form6() {isCompressed = form6 = true; form4 = false; return this; }
+    public Header typeSystemIncluded() {typeSystemIncluded = true; return this; }
+    public Header seqVer(int v2) { assert (v2 >= 0 && v2 < 256); seqVersionNbr = (byte)v2; return this; }
+    public Header v3() {isV3 = true; return this; }
     
     
-    void write(DataOutputStream dos) throws IOException {
+    public void write(DataOutputStream dos) throws IOException {
       v = (!isCompressed && !isDelta) ? 1 : 0;
       if (isDelta) v |= 0x02;
       if (isCompressed) v |= 0x04;
+      if (typeSystemIncluded) v |= 0x08;
       v |= (seqVersionNbr << 8);
       if (isV3) v |= 0x010000;
+      
       
       byte[] uima = new byte[4];
       uima[0] = 85; // U
@@ -107,15 +112,43 @@ public class CommonSerDes {
       if (isCompressed) {
         dos.writeInt(form6 ? 1 : 0);
       }
+      
     }
+    
+    public boolean isDelta() {
+      return isDelta;
+    }
+    public boolean isCompressed() {
+      return isCompressed;
+    }
+    public boolean isV3style() {
+      return isV3style;
+    }
+    public boolean isForm4() {
+      return form4;
+    }
+    public boolean isForm6() {
+      return form6;
+    }
+    public boolean isTypeSystemIncluded() {
+      return typeSystemIncluded;
+    }
+    public byte getSeqVersionNbr() {
+      return seqVersionNbr;
+    }
+    public boolean isV3() {
+      return isV3;
+    }
+
+    
   }
   
-  static Header createHeader() {
+  public static Header createHeader() {
     return new Header();
   }
   
   
-  static Header readHeader(DataInputStream dis) throws IOException {
+  public static Header readHeader(DataInputStream dis) throws IOException {
 
     Header h = new Header();
     // key
@@ -134,6 +167,7 @@ public class CommonSerDes {
     
     h.isDelta = (v & 2) != 0;
     h.isCompressed = (v & 4) != 0;
+    h.typeSystemIncluded = (v & 8) != 0;
     h.seqVersionNbr = (byte) ((v & 0xFF00) >> 8);
    
     if (h.isCompressed) {
@@ -145,14 +179,14 @@ public class CommonSerDes {
     return h;
   }
 
-  static DataOutputStream maybeWrapToDataOutputStream(OutputStream os) {
+  public static DataOutputStream maybeWrapToDataOutputStream(OutputStream os) {
     if (os instanceof DataOutputStream) {
       return (DataOutputStream) os;
     }
     return new DataOutputStream(os);
   }
   
-  static DataInputStream maybeWrapToDataInputStream(InputStream os) {
+  public static DataInputStream maybeWrapToDataInputStream(InputStream os) {
     if (os instanceof DataInputStream) {
       return (DataInputStream) os;
     }
@@ -163,7 +197,7 @@ public class CommonSerDes {
    * byte swapping reads of integer forms
    */
  
-  static class Reading {
+  public static class Reading {
     final DataInputStream dis;
     final boolean swap;
     

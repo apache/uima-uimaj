@@ -36,7 +36,6 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
@@ -45,6 +44,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.CommonSerDes;
+import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
@@ -54,10 +54,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.xml.sax.SAXException;
 
 public class CasIOUtils {
-
-  public static final byte[] UIMA_TS_HEADER = new byte[] { 'U', 'I', 'M', 'A', 'T', 'S' };
-
-  public static final byte[] UIMA_HEADER = new byte[] { 'U', 'I', 'M', 'A' };
 
   /**
    * 
@@ -199,8 +195,8 @@ public class CasIOUtils {
    *          ignore feature structures of non-existing types
    * @throws IOException
    */
-  public static SerialFormat load(InputStream casInputStream, InputStream tsInputStream,
-          CAS aCAS, boolean lentiently) throws IOException {
+  public static SerialFormat load(InputStream casInputStream, InputStream tsInputStream, CAS aCAS,
+          boolean lentiently) throws IOException {
     BufferedInputStream bis = new BufferedInputStream(casInputStream);
     bis.mark(32);
     byte[] headerXml = new byte[16];
@@ -212,7 +208,8 @@ public class CasIOUtils {
         XmiCasDeserializer.deserialize(bis, aCAS, lentiently);
         return SerialFormat.XMI;
       } catch (SAXException e) {
-        throw new IOException(e);
+        throw new IllegalArgumentException(
+                "Error parsing XMI file. XCAS format not supported for InputStream. Please use File, Path or URL interface.");
       }
     }
     return loadBinary(bis, tsInputStream, aCAS);
@@ -269,76 +266,49 @@ public class CasIOUtils {
   public static SerialFormat loadBinary(InputStream is, CASMgrSerializer casMgr, CAS aCAS)
           throws IOException {
     try {
-      BufferedInputStream bis = new BufferedInputStream(is);
       TypeSystemImpl ts = null;
-
+      DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(is);
+      Header header = CommonSerDes.readHeader(dis);
+      dis.reset();
       // Check if this is original UIMA CAS format or an extended format with type system
-      bis.mark(32);
-      DataInputStream dis = new DataInputStream(bis);
-
-      byte[] header = new byte[UIMA_TS_HEADER.length];
-      dis.read(header);
 
       // If it is UIMA with type system format, read the type system
-      if (Arrays.equals(header, UIMA_TS_HEADER)) {
-        ObjectInputStream ois = new ObjectInputStream(bis);
+      if (header.isForm6() && header.isTypeSystemIncluded()) {
+        // read additional header again
+        CommonSerDes.readHeader(dis);
+        ObjectInputStream ois = new ObjectInputStream(dis);
         CASMgrSerializer casMgrSerializer = (CASMgrSerializer) ois.readObject();
         ts = casMgrSerializer.getTypeSystem();
         ts.commit();
-      } else {
-        bis.reset();
       }
 
       if (ts != null) {
         // Only format 6 can have type system information
-        deserializeCAS(aCAS, bis, ts, null);
+        deserializeCAS(aCAS, dis, ts, null);
         return SerialFormat.COMPRESSED_FILTERED_TS;
       } else {
 
         // Check if this is a UIMA binary CAS stream
-        byte[] header4 = new byte[UIMA_HEADER.length];
-        dis.read(header4);
-
-        if (header4[0] != 'U') {
-          // ArrayUtils.reverse(header4);
-          for (int i = 0; i < header4.length / 2; i++) {
-            byte temp = header4[i];
-            header4[i] = header4[header4.length - i - 1];
-            header4[header4.length - i - 1] = temp;
+        if (header.isForm4()) {
+          deserializeCAS(aCAS, dis);
+          return SerialFormat.COMPRESSED;
+        } else if (header.isForm6()) {
+          if (ts == null && casMgr != null) {
+            // If there was not type system in the file but one is set, then load it
+            ts = casMgr.getTypeSystem();
+            ts.commit();
           }
-        }
-
-        // Peek into the version
-        int version = dis.readInt();
-        int version1 = dis.readInt();
-        bis.reset();
-
-        if (Arrays.equals(header4, UIMA_HEADER)) {
-          // It is a binary CAS stream
-
-          if ((version & 4) == 4 && (version1 != 0)) {
-            // This is a form 6
-            if (ts == null && casMgr != null) {
-              // If there was not type system in the file but one is set, then load it
-              ts = casMgr.getTypeSystem();
-              ts.commit();
-            }
-            deserializeCAS(aCAS, bis, ts, null);
-            return SerialFormat.COMPRESSED_FILTERED;
-          } else {
-            // This is a form 0 or 4
-            deserializeCAS(aCAS, bis);
-            if (version == 4) {
-              return SerialFormat.COMPRESSED;
-            }
-            return SerialFormat.BINARY;
-          }
+          deserializeCAS(aCAS, dis, ts, null);
+          return SerialFormat.COMPRESSED_FILTERED;
+        } else if (header.getSeqVersionNbr() == 1) {
+          deserializeCAS(aCAS, dis);
+          return SerialFormat.BINARY;
         } else {
-          // If it is not a UIMA binary CAS stream and not xml, assume it is output from
-          // SerializedCasWriter
-          ObjectInputStream ois = new ObjectInputStream(bis);
+          // read additional header again
+          CommonSerDes.readHeader(dis);
+          ObjectInputStream ois = new ObjectInputStream(dis);
           Object object = ois.readObject();
-          if (object instanceof CASCompleteSerializer) {
+          if (object instanceof CASCompleteSerializer && header.isTypeSystemIncluded()) {
             CASCompleteSerializer serializer = (CASCompleteSerializer) object;
             deserializeCASComplete(serializer, (CASImpl) aCAS);
             return SerialFormat.SERIALIZED_TS;
@@ -361,6 +331,7 @@ public class CasIOUtils {
                     + object.getClass().getName() + "]");
           }
         }
+
       }
     } catch (ResourceInitializationException e) {
       throw new IOException(e);
@@ -371,7 +342,6 @@ public class CasIOUtils {
         is.close();
       }
     }
-
   }
 
   /**
@@ -401,8 +371,7 @@ public class CasIOUtils {
    *          The SerialFormat in which the CAS should be stored.
    * @throws IOException
    */
-  public static void save(CAS aCas, OutputStream docOS, SerialFormat format)
-          throws IOException {
+  public static void save(CAS aCas, OutputStream docOS, SerialFormat format) throws IOException {
     save(aCas, docOS, null, format);
   }
 
@@ -422,9 +391,10 @@ public class CasIOUtils {
    *          The SerialFormat in which the CAS should be stored.
    * @throws IOException
    */
-  public static void save(CAS aCas, OutputStream docOS, OutputStream typeOS,
-          SerialFormat format) throws IOException {
+  public static void save(CAS aCas, OutputStream docOS, OutputStream typeOS, SerialFormat format)
+          throws IOException {
     boolean typeSystemWritten = false;
+    DataOutputStream dos = CommonSerDes.maybeWrapToDataOutputStream(docOS);
     try {
       switch (format) {
         case XMI:
@@ -438,6 +408,8 @@ public class CasIOUtils {
         case SERIALIZED:
         // Java-serialized CAS without type system
         {
+          Header additionalHeader = CommonSerDes.createHeader();
+          additionalHeader.write(dos);
           CASSerializer serializer = new CASSerializer();
           serializer.addCAS((CASImpl) aCas);
           ObjectOutputStream objOS = new ObjectOutputStream(docOS);
@@ -448,6 +420,8 @@ public class CasIOUtils {
         case SERIALIZED_TS:
         // Java-serialized CAS with type system
         {
+          Header additionalHeader = CommonSerDes.createHeader().typeSystemIncluded();
+          additionalHeader.write(dos);
           ObjectOutputStream objOS = new ObjectOutputStream(docOS);
           CASCompleteSerializer serializer = serializeCASComplete((CASImpl) aCas);
           objOS.writeObject(serializer);
@@ -463,7 +437,6 @@ public class CasIOUtils {
           // Binary compressed CAS without type system (form 4)
           serializeWithCompression(aCas, docOS);
           break;
-
         case COMPRESSED_FILTERED:
           // Binary compressed CAS (form 6)
           serializeWithCompression(aCas, docOS, aCas.getTypeSystem());
@@ -471,7 +444,8 @@ public class CasIOUtils {
         case COMPRESSED_FILTERED_TS:
           // Binary compressed CAS (form 6)
           // ... with embedded Java-serialized type system
-          writeHeader(docOS);
+          Header additionalHeader = CommonSerDes.createHeader().form6().typeSystemIncluded();
+          additionalHeader.write(dos);
           writeTypeSystem(aCas, docOS);
           typeSystemWritten = true; // Embedded type system
           serializeWithCompression(aCas, docOS, aCas.getTypeSystem());
@@ -504,12 +478,6 @@ public class CasIOUtils {
     }
 
     return casMgrSerializer;
-  }
-
-  private static void writeHeader(OutputStream aOS) throws IOException {
-    DataOutputStream dataOS = new DataOutputStream(aOS);
-    dataOS.write(UIMA_TS_HEADER);
-    dataOS.flush();
   }
 
   private static void writeTypeSystem(CAS aCas, OutputStream aOS) throws IOException {
