@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
 public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
@@ -29,6 +30,8 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
   
   /** Component slot kind */
   private final SlotKind  componentSlotKind;
+  
+  private FsGeneratorArray generatorArray;
   
   public TypeImpl_array(String name, TypeImpl componentType, TypeSystemImpl tsi, TypeImpl supertype, 
       SlotKind componentSlotKind, boolean isHeapStoredArray, Class<?> javaClass) {
@@ -137,5 +140,28 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
     return componentType.isRefType && 
            componentType.getCode() != fsArrayTypeCode && 
            componentType.getCode() != topTypeCode;
+  }
+
+  /**
+   * @param jcasClassInfo the jcasClassInfo to set
+   */
+  @Override
+  void setJcasClassInfo(JCasClassInfo jcasClassInfo) {
+    super.setJcasClassInfo(jcasClassInfo);
+    this.generatorArray = (FsGeneratorArray)jcasClassInfo.generator;
+  }
+
+  /**
+   * @return the generatorArray
+   */
+  FsGeneratorArray getGeneratorArray() {
+    return generatorArray;
+  }
+
+  /**
+   * @param generatorArray the generatorArray to set
+   */
+  void setGeneratorArray(FsGeneratorArray generatorArray) {
+    this.generatorArray = generatorArray;
   }
 }
