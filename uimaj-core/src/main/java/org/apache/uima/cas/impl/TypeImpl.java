@@ -35,6 +35,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.CommonArray;
@@ -70,6 +71,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    *   set when type is committed and JCas cover classes are loaded
    */
   protected       Class<?> javaClass;
+  private         JCasClassInfo jcasClassInfo; 
+  private         FsGenerator generator;  // not used for arrays
 //  final protected Class<?> getter_funct_intfc_class;
 //  final protected Class<?> setter_funct_intfc_class;
   /* ***************** boolean flags *****************/
@@ -1027,6 +1030,29 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   void setStaticMergedRefFeaturesList(FeatureImpl[] v) {
     staticMergedRefFeaturesList = v;
+  }
+
+  /**
+   * @return the generator
+   */
+  FsGenerator getGenerator() {
+    return generator;
+  }
+
+  /**
+   * @return the jcasClassInfo
+   */
+  JCasClassInfo getJcasClassInfo() {
+    return jcasClassInfo;
+  }
+
+  /**
+   * @param jcasClassInfo the jcasClassInfo to set
+   */
+  void setJcasClassInfo(JCasClassInfo jcasClassInfo) {
+    this.jcasClassInfo = jcasClassInfo;
+    Object g = jcasClassInfo.generator;
+    this.generator = (g instanceof FsGenerator) ? (FsGenerator)g : null;
   }
 
   //  public boolean hasOnlyInts() {
