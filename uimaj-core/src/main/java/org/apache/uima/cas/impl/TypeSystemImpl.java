@@ -59,7 +59,6 @@ import org.apache.uima.cas.TypeNameSpace;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCasRegistry;
@@ -205,7 +204,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
 
-  private static final Object GLOBAL_TYPESYS_LOCK = new Object();
+//  private static final Object GLOBAL_TYPESYS_LOCK = new Object();
              
   private static final Set<String> builtInsWithAltNames = new HashSet<String>();
   static {Misc.addAll(builtInsWithAltNames, 
@@ -253,12 +252,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //
 //    private FeatureStructureClassGen featureStructureClassGen = new FeatureStructureClassGen(); 
 
-  private FSClassRegistry fsClassRegistry; // a new instance is created at commit time.
+//  private FSClassRegistry fsClassRegistry; // a new instance is created at commit time.
   
   // the loaded JCas cover classes, generators.  index is typecode; value is JCas cover class which may belong to a supertype.
   // OK because the instance of this class FSClassRegistry is one per Type System
   // not final because set after all types are defined and committed
-  JCasClassInfo[] jcasClassesInfo; 
+  
+  // no longer used July 2016 - info moved into individual typeImpls
+//  JCasClassInfo[] jcasClassesInfo; 
 
   /**
    * Map from built-in array name to component Type
@@ -1303,7 +1304,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // Has to follow above, because information computed above is used when
       // loading and checking JCas classes
       
-      fsClassRegistry = new FSClassRegistry(this, true);
+//      fsClassRegistry = new FSClassRegistry(this, true);
+      FSClassRegistry.loadAtTypeSystemCommitTime(this, true);
       
       this.locked = true;
       return this;
@@ -2330,9 +2332,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     System.err.println(sb);
   }
   
-  public FSClassRegistry getFSClassRegistry() {
-    return fsClassRegistry;
-  }
+//  public FSClassRegistry getFSClassRegistry() {
+//    return fsClassRegistry;
+//  }
   
   void setJCasRegisteredType(int typeIndexID, TypeImpl ti) {
 //    if (typeIndexID == 0 && !ti.getShortName().equals("TOP")) {
@@ -2454,21 +2456,21 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return getFeatureByFullName(f.getName());
   }
   
-  /**
-   * @param typecode the type code
-   * @return the generator for the type
-   */
-  Object getGenerator(int typecode) {
-    return jcasClassesInfo[typecode].generator;
-  }
+//  /**
+//   * @param typecode the type code
+//   * @return the generator for the type
+//   */
+//  Object getGenerator(int typecode) {
+//    return jcasClassesInfo[typecode].generator;
+//  }
 
-  /**
-   * @param typecode
-   * @return the associated JCas class (may be for a UIMA supertype, is never null)
-   */
-  Class<?> getJCasClass(int typecode) {
-    return jcasClassesInfo[typecode].jcasClass; 
-  }
+//  /**
+//   * @param typecode
+//   * @return the associated JCas class (may be for a UIMA supertype, is never null)
+//   */
+//  Class<?> getJCasClass(int typecode) {
+//    return jcasClassesInfo[typecode].jcasClass; 
+//  }
   
   /**
    * This code is run when a JCas class is loaded and resolved, for the first time, as part of type system commit, or
