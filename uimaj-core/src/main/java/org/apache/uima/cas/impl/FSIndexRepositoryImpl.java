@@ -191,9 +191,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    *  only used when processing updates in batch mode
    */
   private static class ProcessedIndexInfo {
-    final private Set<TOP> fsAddedToIndex     = new ObjHashSet<TOP>(TOP.class, TOP.singleton);
-    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<TOP>(TOP.class, TOP.singleton); 
-    final private Set<TOP> fsReindexed        = new ObjHashSet<TOP>(TOP.class, TOP.singleton);
+    final private Set<TOP> fsAddedToIndex     = new ObjHashSet<TOP>(TOP.class, TOP._singleton);
+    final private Set<TOP> fsDeletedFromIndex = new ObjHashSet<TOP>(TOP.class, TOP._singleton); 
+    final private Set<TOP> fsReindexed        = new ObjHashSet<TOP>(TOP.class, TOP._singleton);
   }
   
   /**

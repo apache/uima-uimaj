@@ -62,7 +62,7 @@ public class CommonSerDesSequential {
    * 
    * For delta, the addr is the modeled addr for the full CAS including both above and below the line.
    */
-  final Obj2IntIdentityHashMap<TOP> fs2addr = new Obj2IntIdentityHashMap<>(TOP.class, TOP.singleton);
+  final Obj2IntIdentityHashMap<TOP> fs2addr = new Obj2IntIdentityHashMap<>(TOP.class, TOP._singleton);
 
   /**
    * a map from the modelled (v2 style) FS addr to the V3 FS

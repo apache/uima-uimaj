@@ -70,7 +70,7 @@ public class XmiSerializationSharedData {
    * getXmiId() method, which is done to ensure a consistent ID for each FS 
    * address across multiple serializations.
    */
-  private Obj2IntIdentityHashMap<TOP> fsToXmiId = new Obj2IntIdentityHashMap<>(TOP.class, TOP.singleton);
+  private Obj2IntIdentityHashMap<TOP> fsToXmiId = new Obj2IntIdentityHashMap<>(TOP.class, TOP._singleton);
   
   /**
    * A map from xmi:id to FeatureStructure address.  This is populated whenever

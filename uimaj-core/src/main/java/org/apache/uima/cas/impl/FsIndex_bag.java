@@ -45,7 +45,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
-    this.index = new ObjHashSet<TOP>(initialSize, TOP.class, TOP.singleton);
+    this.index = new ObjHashSet<TOP>(initialSize, TOP.class, TOP._singleton);
   }
 
   /**

@@ -66,6 +66,11 @@ public class Id2FS {
     assert prev == null;
   }
   
+  /**
+   * make an id map to an fs, asserting there was a previous mapping for this id
+   * @param id -
+   * @param fs -
+   */
   void putChange(int id, TOP fs) {
     TOP prev = id2fs.put(id, fs);
     assert prev != null;  // changing a preexisting value

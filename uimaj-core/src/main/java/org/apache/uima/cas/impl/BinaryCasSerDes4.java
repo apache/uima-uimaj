@@ -445,7 +445,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
      * 
      * Contrast with fs2addr and addr2fs in csds - these use the pseudo v2 addresses as the int
      */    
-    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP.singleton);
+    private final Obj2IntIdentityHashMap<TOP> fs2seq = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP._singleton);
     private final Int2ObjHashMap<TOP> seq2fs = new Int2ObjHashMap<>(TOP.class);
     /**
      * 
