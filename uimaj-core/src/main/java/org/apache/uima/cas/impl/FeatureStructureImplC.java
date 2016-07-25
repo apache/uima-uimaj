@@ -83,10 +83,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_RANGE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION);
   
   private  static final boolean traceFSs = CASImpl.traceFSs;
-  
-  public static final int IN_SET_SORTED_INDEX = 1;
-  
-  // next is for experiment of allocating multiple int arrays for different fss
+    
+  // next is for experiment (Not implemented) of allocating multiple int arrays for different fss
   
 //  //    3322 2222 2222 1111 1111 1100 0000 0000
 //  //    1098 7654 3210 9876 5432 1098 7654 3210
@@ -98,6 +96,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
 //  private static final int bitMaskRefOffset = 0x7fe00000;
 //  private static final int shiftIntOffset = 11;
 //  private static final int shiftRefOffset = 21;
+  
+  private static final int _BIT_IN_SET_SORTED_INDEX = 1;
+  private static final int _BIT_PEAR_TRAMPOLINE = 2;
+  private static final int _BIT_JCASHASHMAP_RESERVE = 4;
+      
   
   // data storage
   // slots start with _ to prevent name collision with JCas style getters and setters.
@@ -125,9 +128,11 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   protected final int _id;  // a separate slot for access without loading _intData object
   private int _flags = 0;  // a set of flags
                             // bit 0 (least significant): fs is in one or more non-bag indexes
-                            // bit 1-20 reserved
-                            // bits 21-30 ref offset
-                            // bits 11-20 int offset
+                            // bit 1 is on for Pear trampoline FS sharing base int/ref data
+                            // bit 2 is on for "reserve" element in JCasHashMap
+                            // bit 3-20 reserved
+                            // bits 21-30 reserved   // experiment: ref offset
+                            // bits 11-20 reserved   // experiment: int offset
                             // bit 31 reserved
                            
   /**
@@ -178,8 +183,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     _casView = casView;
     _typeImpl = type;
     
-    _intData = _allocIntData();
-    _refData = _allocRefData();
+    FeatureStructureImplC baseFs = _casView.svd.pearBaseFs;
+    _intData = (baseFs == null) ? _allocIntData() : baseFs._intData;
+    _refData = (baseFs == null) ? _allocRefData() : baseFs._refData;    
 
     _id = casView.getNextFsId((TOP)this);   
     
@@ -202,8 +208,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, this.getClass().getName());
     }
     
-    _intData = _allocIntData();
-    _refData = _allocRefData();    
+    FeatureStructureImplC baseFs = _casView.svd.pearBaseFs;
+    _intData = (baseFs == null) ? _allocIntData() : baseFs._intData;
+    _refData = (baseFs == null) ? _allocRefData() : baseFs._refData;    
     
     _id = _casView.getNextFsId((TOP)this); 
 
@@ -1189,12 +1196,29 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     return null;  // needed to avoid compile error
   }
   
-  protected boolean _inSetSortedIndex() { return (_flags & IN_SET_SORTED_INDEX) != 0;}
-  protected void _setInSetSortedIndexed() { _flags |= IN_SET_SORTED_INDEX; }
+  protected boolean _inSetSortedIndex() { return (_flags & _BIT_IN_SET_SORTED_INDEX) != 0;}
+  protected void _setInSetSortedIndexed() { _flags |= _BIT_IN_SET_SORTED_INDEX; }
+  
   /**
    * All callers of this must insure fs is not indexed in **Any** View
    */
-  protected void _resetInSetSortedIndex() { _flags &= ~IN_SET_SORTED_INDEX; }
+  protected void _resetInSetSortedIndex() { _flags &= ~_BIT_IN_SET_SORTED_INDEX; }
+  
+  protected void _setJCasHashMapReserve() {
+    _flags |= _BIT_JCASHASHMAP_RESERVE;
+  }
+  
+  public boolean _isJCasHashMapReserve() {
+    return (_flags & _BIT_JCASHASHMAP_RESERVE) != 0;
+  }
+  
+  protected void _setPearTrampoline() {
+    _flags |= _BIT_PEAR_TRAMPOLINE;
+  }
+  
+  protected boolean _isPearTrampoline() {
+    return (_flags & _BIT_PEAR_TRAMPOLINE) != 0;
+  }
   
   protected FeatureImpl _getFeatFromAdjOffset(int adjOffset, boolean isInInt) {
     return _typeImpl.getFeatureByAdjOffset(adjOffset, isInInt);
