@@ -88,7 +88,6 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
-import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
@@ -282,6 +281,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      final private Id2FS id2fs;
      /** set to > 0 to reuse an id, 0 otherwise */
      private int reuseId = 0;
+     
+     /** 
+      * for Pear generation - set this to the base FS
+      */
+    FeatureStructureImplC pearBaseFs = null;  
     
     // Base CAS for all views
     final private CASImpl baseCAS;
@@ -843,8 +847,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                      // to insure sofa precedes the ref of it
     }
   
-    ;
-    T fs = (T) (((FsGenerator)getFsGenerator(ti.getCode())).createFS(ti, this));
+    T fs = (T) ti.getGenerator().createFS(ti, this);  
+//    T fs = (T) (((FsGenerator)getFsGenerator(ti.getCode())).createFS(ti, this));
     return fs;
   } 
   
@@ -855,8 +859,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   public TOP createArray(TypeImpl type, int arrayLength) {
-    if (((TypeImpl_array)type).getComponentType().isPrimitive()) {
-      return (((FsGeneratorArray)getFsGenerator(type.getCode())).createFS(type, this, arrayLength));
+    TypeImpl_array tia = (TypeImpl_array) type;
+    if (tia.getComponentType().isPrimitive()) {
+      checkArrayPreconditions(arrayLength);  
+      return tia.getGeneratorArray().createFS(type, this, arrayLength); 
+//      return (((FsGeneratorArray)getFsGenerator(type.getCode())).createFS(type, this, arrayLength));
     }
     return (TOP) createArrayFS(type, arrayLength);
   }
@@ -868,35 +875,31 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   private ArrayFS createArrayFS(TypeImpl type, int length) {
     checkArrayPreconditions(length);
-    return (ArrayFS)           (((FsGeneratorArray)getFsGenerator(fsArrayTypeCode))
-        .createFS(type, this, length));
+    return (ArrayFS) getTypeSystemImpl().fsArrayType.getGeneratorArray()         // (((FsGeneratorArray)getFsGenerator(fsArrayTypeCode))
+        .createFS(type, this, length);
   }
   
   @Override
   public IntArrayFS createIntArrayFS(int length) {
     checkArrayPreconditions(length);
-    return (IntArrayFS)        (((FsGeneratorArray)getFsGenerator(intArrayTypeCode))
-        .createFS(getTypeSystemImpl().intArrayType, this, length));
+    return new IntegerArray(getTypeSystemImpl().intArrayType, this, length);
   }
 
   @Override
   public FloatArrayFS createFloatArrayFS(int length) {
     checkArrayPreconditions(length);
-    return (FloatArrayFS)      (((FsGeneratorArray)getFsGenerator(floatArrayTypeCode))
-        .createFS(getTypeSystemImpl().floatArrayType, this, length));
+    return new FloatArray(getTypeSystemImpl().floatArrayType, this, length);
   }
 
   @Override
   public StringArrayFS createStringArrayFS(int length) {
     checkArrayPreconditions(length);
-    return (StringArrayFS)     (((FsGeneratorArray)getFsGenerator(stringArrayTypeCode))
-        .createFS(getTypeSystemImpl().stringArrayType, this, length));
+    return new StringArray(getTypeSystemImpl().stringArrayType, this, length);
   }
   
   public JavaObjectArray createJavaObjectArrayFS(int length) {
     checkArrayPreconditions(length);
-    return (JavaObjectArray)   (((FsGeneratorArray)getFsGenerator(stringArrayTypeCode))
-        .createFS(getTypeSystemImpl().javaObjectArrayType, this, length));
+    return new JavaObjectArray(getTypeSystemImpl().javaObjectArrayType, this, length);
   }
 
 
@@ -1362,10 +1365,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // JCasGen'd cover classes use this to add their generators to the class
   // registry
   // Note that this now (June 2007) a no-op for JCasGen'd generators
-  // Also used in JCas initialization to copy-down super generators to subtypes
+  // Also previously (but not now) used in JCas initialization to copy-down super generators to subtypes
   // as needed
   public FSClassRegistry getFSClassRegistry() {
-    return getTypeSystemImpl().getFSClassRegistry();
+    return null;
+//    return getTypeSystemImpl().getFSClassRegistry();
   }
 
   /**
@@ -3673,6 +3677,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   setting the end feature to be the length of the sofa string, if any.
    *   creates the document annotation if not present
    *   only works if not in the base cas
+   *     
    * @return the document annotation
    */
   public void updateDocumentAnnotation() {
@@ -3683,7 +3688,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (null != newDoc) {
       Annotation docAnnot = getDocumentAnnotationNoCreate();
       if (docAnnot != null) {     
-        // use a local instance of the memory because this may be called as a side effect of updating a sofa
+        // use a local instance of the add-back memory because this may be called as a side effect of updating a sofa
         FSsTobeAddedback tobeAddedback = FSsTobeAddedback.createSingle();
         boolean wasRemoved = this.checkForInvalidFeatureSetting(
             docAnnot, getTypeSystemImpl().endFeat.getCode(), tobeAddedback);
@@ -4266,7 +4271,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (svd.reuseId != 0) {
 //      l.setStrongRef(fs, svd.reuseId);
       return svd.reuseId;
-    }
+    } 
     
 //    l.add(fs);
 //    if (svd.id2fs.size() != (2 + svd.fsIdGenerator.get())) {
@@ -4355,7 +4360,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (null == mark) {
       return all;
     }
-    int c = Collections.binarySearch(all, TOP.createSearchKey(mark.nextFSId),
+    int c = Collections.binarySearch(all, TOP._createSearchKey(mark.nextFSId),
         (fs1, fs2) -> Integer.compare(fs1._id, fs2._id));
     if (c < 0) {
       c = (-c) - 1;
@@ -4388,9 +4393,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return ((TOP)fs)._casView.getBaseCAS() == this.getBaseCAS();
   }
   
-  private Object getFsGenerator(int typecode) {
-    return getTypeSystemImpl().getGenerator(typecode);
-  }
+//  /**
+//   * 
+//   * @param typecode -
+//   * @return Object that can be cast to either a 2 or 3 arg createFs functional interface
+//   *         FsGenerator or FsGeneratorArray
+//   */
+//  private Object getFsGenerator(int typecode) {
+//    return getTypeSystemImpl().getGenerator(typecode);
+//  }
   
   public final void checkArrayPreconditions(int len) throws CASRuntimeException {
     // Check array size.
@@ -4542,6 +4553,34 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public void deltaMergesComplete() {
     svd.csds = null;
+  }
+
+  /******************************************
+   * PEAR support
+   *   Type system not modified - is in use on multiple threads
+   *   
+   *   Handling of id2fs for low level APIs:
+   *     FSs in id2fs map are the outer non-pear ones
+   *     Any gets do pear conversion if needed.
+   *   
+   ******************************************/
+  static <T extends FeatureStructure> T pearConvert(T aFs) {
+    final TOP fs = (TOP) aFs;
+    final CASImpl view = fs._casView;
+    final TypeImpl ti = fs._getTypeImpl();
+    final FsGenerator g = view.getPearGeneratorForType(ti);
+    view.svd.reuseId = fs._id;  // create new FS using base FS's ID
+    view.svd.pearBaseFs = fs;
+    try {
+      return (T) g.createFS(ti, view);
+    } finally {
+      view.svd.reuseId = 0;
+      view.svd.pearBaseFs = null;
+    }
+  }
+  
+  private FsGenerator getPearGeneratorForType(TypeImpl ti) {
+    return null;  // TODO FIXME
   }
 
   /******************************************
