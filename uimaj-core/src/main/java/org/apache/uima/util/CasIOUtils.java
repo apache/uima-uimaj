@@ -305,10 +305,9 @@ public class CasIOUtils {
           return SerialFormat.BINARY;
         } else {
           // read additional header again
-          CommonSerDes.readHeader(dis);
           ObjectInputStream ois = new ObjectInputStream(dis);
           Object object = ois.readObject();
-          if (object instanceof CASCompleteSerializer && header.isTypeSystemIncluded()) {
+          if (object instanceof CASCompleteSerializer) {
             CASCompleteSerializer serializer = (CASCompleteSerializer) object;
             deserializeCASComplete(serializer, (CASImpl) aCAS);
             return SerialFormat.SERIALIZED_TS;
@@ -408,8 +407,6 @@ public class CasIOUtils {
         case SERIALIZED:
         // Java-serialized CAS without type system
         {
-          Header additionalHeader = CommonSerDes.createHeader();
-          additionalHeader.write(dos);
           CASSerializer serializer = new CASSerializer();
           serializer.addCAS((CASImpl) aCas);
           ObjectOutputStream objOS = new ObjectOutputStream(docOS);
@@ -420,8 +417,6 @@ public class CasIOUtils {
         case SERIALIZED_TS:
         // Java-serialized CAS with type system
         {
-          Header additionalHeader = CommonSerDes.createHeader().typeSystemIncluded();
-          additionalHeader.write(dos);
           ObjectOutputStream objOS = new ObjectOutputStream(docOS);
           CASCompleteSerializer serializer = serializeCASComplete((CASImpl) aCas);
           objOS.writeObject(serializer);
