@@ -48,34 +48,28 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
 /*
- * There is one class instance of this per class loader.
+ * There is one **class** instance of this per class loader.
  *   - Builtin JCas Types are loaded and shared among all type systems, once, when this class is loaded.
  * 
- * There is one instance of this class per type system impl instance.
- *   - The type system impl instance points to this object
- *   - It is constructed when the type system is committed
- *   - Multiple simultaneous versions are possible with multiple type systems, but
- *      -- supporting different JCas cover classes requires using different ClassLoaders for the type system.
+ * There are no instances of this class.  
+ *   - The type system impl instances at commit time initialize parts of their Impl from data in this class
+ *   - Some of the data kept in this class in static values, is constructed when the type system is committed
  * 
- * The instance may be shared 
+ * The class instance is shared
+ *   - by multiple type systems 
  *   - by multiple CASes (in a CAS pool, for instance, when these CASes are sharing the same type system).
  *   - by all views of those CASes.
  *   - by multiple different pipelines, built using the same merged type system instance
+ *   
+ * PEAR support
+ *   Multiple PEAR contexts can be associated with the main class loader.
+ *   - Each has a unique class loader, whose parent is the main class loader.
+ *   - when running within a PEAR, operations which return Feature Structures potentially return
+ *     JCas instances of classes loaded from the Pear's class loader. 
+ *       - These instances share the same int[] and Object[] and _typeImpl and _casView refs with the outer class loader's FS  
  */
 
-/* Design:
- *   Goals: Support PEARs. PEARs can have different customizations for JCas classes
- *          These are located via the PEAR's classloader.
- *          
- *          These must be found and merged into a common definition.  This 
- *          merged common definition is created in a process done outside of the 
- *          normal running of the UIMA pipeline. 
- *            - during running, only one classpath is used to locate JCas cover classes, and
- *              those must be the merged ones.
- *            - the merge is only needed in these situations:
- *              -- running with PEARs which have different definitions of JCas cover classes than their containing pipelines
- *              -- running with multiple, different pipelines, under a single type system class loader
- *          
+ /*          
  *   At typeSystemCommit time, this data structure is created and initialized: 
  *     - The built-in JCas types are loaded
  *     
@@ -90,21 +84,14 @@ import org.apache.uima.util.Logger;
  *          --- The ClassLoader used is the same ClassLoader used for the type system, because
  *              multiple sets of JCas classes per typesystem isn't supported.
  *              
- *   JCas definition merging 
- *     - depends on multiple sources for JCas cover classes
- *       -- represented by multiple classloaders, each one corresponding to a different PEAR or other classpath
- *     - can be invoked for a set of classloaders
- *     - is run manually, outside of normal UIMA pipeline operation, as a stand-alone utility
- *   
  *   Assigning slots for features:
  *     - each type being loaded runs static final initializers to set for (a subset of) all features the offset
  *       in the int or ref storage arrays for those values. 
  *     - These call a static method in JCasRegistry: register[Int/Ref]Feature, which assigns the next available slot
  *       via accessing/updating a thread local instance of TypeSystemImpl.SlotAllocate.
- *     - Because the only slots     
  */
 
-public class FSClassRegistry {
+public abstract class FSClassRegistry { // abstract to prevent instantiating; this class only has static methods
   
 //  private static final boolean GETTER = true;
 //  private static final boolean SETTER = false;
@@ -162,6 +149,7 @@ public class FSClassRegistry {
     
     /**
      * For createFS(type) use
+     *   cast to FsGenerator or FsGeneratorArray
      */
     final Object generator;
    
@@ -228,24 +216,75 @@ public class FSClassRegistry {
   
 //  final FeatureImpl[] featuresFromJFRI;
   
-  /**
-   * install the default (non-JCas) generator for all types in the type system and the
-   * JCas style generators for the built-in types
-   * 
-   * Also, for all loaded JCas classes, set the javaClass field (including
-   *   in subtypes with no JCas class defined).
-   *   
-   * Called under TypeSystemImpl - instance - lock 
-   * 
-   * Could be running multiple threads
-   *   - one per TypeSystemImpl - instance
-   *   
-   * @param ts - the type system
-   * @param isDoUserJCasLoading a flag to skip loading the JCas classes
-   */
-  FSClassRegistry(TypeSystemImpl ts, boolean isDoUserJCasLoading) {
+//  /**
+//   * Called at Type System commit time
+//   * 
+//   * Install the default (non-JCas) generator for all types in the type system and the
+//   * JCas style generators for the built-in types
+//   * 
+//   * Also, for all loaded JCas classes, set the javaClass field (including
+//   *   in subtypes with no JCas class defined).
+//   *   
+//   * Called under TypeSystemImpl - instance - lock 
+//   * 
+//   * Could be running multiple threads
+//   *   - one per TypeSystemImpl - instance
+//   *   
+//   * @param ts - the type system
+//   * @param isDoUserJCasLoading a flag to skip loading the JCas classes
+//   */
+//  FSClassRegistry(TypeSystemImpl ts, boolean isDoUserJCasLoading) {
+//    
+//    ts.jcasClassesInfo = new JCasClassInfo[ts.getTypeArraySize()];
+//
+//    /**
+//     * copy in built-ins
+//     */
+//    for (int i = 0; i < jcasClassesInfoForBuiltins.length; i++) {
+//  
+//      JCasClassInfo jci = jcasClassesInfoForBuiltins[i];
+//      ts.jcasClassesInfo[i] = jci;
+//      if (jci != null) {
+//        int v = Misc.getStaticIntField(ts.getJCasClass(i), "typeIndexID");
+//        // v is negative if not found, which is the case for types like FloatList (these can't be instantiated)
+//        if (v >= 0) {
+//          ts.setJCasRegisteredType(v, ts.getTypeForCode(i));
+//        }
+//      }
+//    }
+//     
+//    /**
+//     * Add all user-defined JCas Types, in subsumption order
+//     *   We add these now, in case JCas is turned on later - unless specifically
+//     *   specified to run without user-defined JCas loading
+//     */
+//    
+//    if (isDoUserJCasLoading) {
+//      /**
+//       * Two passes are needed loading is needed.  
+//       *   - The first one loads the JCas Cover Classes initializes everything
+//       *      -- some of the classes might already be loaded (including the builtins which are loaded once per class loader)
+//       *   - The second pass performs the conformance checks between the loaded JCas cover classes, and the current type system.
+//       *     This depends on having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
+//       */
+//      maybeLoadJCasAndSubtypes(ts, ts.topType, ts.jcasClassesInfo[TypeSystemConstants.topTypeCode]);
+//      checkConformance(ts, ts.topType);
+////      setupGettersSetters(ts, ts.topType, jcasClassesInfo);
+//    }
+//    
+//    // walk the type system and extract all the registry indexes
+//    // While walking, update the FeatureImpl with the registry index
+////    ArrayList<FeatureImpl> ffjfri = getFeatureFromJFRI(ts, ts.topType, new ArrayList<FeatureImpl>());
+//    
+////    featuresFromJFRI = new FeatureImpl[ffjfri.size()];
+////    ffjfri.toArray(featuresFromJFRI);
+//    
+//    reportErrors();
+//  }
+  
+  static void loadAtTypeSystemCommitTime(TypeSystemImpl ts, boolean isDoUserJCasLoading) { 
     
-    ts.jcasClassesInfo = new JCasClassInfo[ts.getTypeArraySize()];
+//    ts.jcasClassesInfo = new JCasClassInfo[ts.getTypeArraySize()];
 
     /**
      * copy in built-ins
@@ -253,9 +292,14 @@ public class FSClassRegistry {
     for (int i = 0; i < jcasClassesInfoForBuiltins.length; i++) {
   
       JCasClassInfo jci = jcasClassesInfoForBuiltins[i];
-      ts.jcasClassesInfo[i] = jci;
       if (jci != null) {
-        int v = Misc.getStaticIntField(ts.getJCasClass(i), "typeIndexID");
+        TypeImpl ti = ts.getTypeForCode(i);
+        ti.setJcasClassInfo(jci);
+//        ts.jcasClassesInfo[i] = jci;
+//        TypeImpl ti = ts.getTypeForCode(i);
+//        int v = Misc.getStaticIntField(ti.getJcasClassInfo().jcasClass, "typeIndexID");
+
+        int v = Misc.getStaticIntField(jci.jcasClass, "typeIndexID");
         // v is negative if not found, which is the case for types like FloatList (these can't be instantiated)
         if (v >= 0) {
           ts.setJCasRegisteredType(v, ts.getTypeForCode(i));
@@ -277,18 +321,10 @@ public class FSClassRegistry {
        *   - The second pass performs the conformance checks between the loaded JCas cover classes, and the current type system.
        *     This depends on having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
        */
-      maybeLoadJCasAndSubtypes(ts, ts.topType, ts.jcasClassesInfo[TypeSystemConstants.topTypeCode]);
+      maybeLoadJCasAndSubtypes(ts, ts.topType, ts.topType.getJcasClassInfo()); 
       checkConformance(ts, ts.topType);
-//      setupGettersSetters(ts, ts.topType, jcasClassesInfo);
     }
-    
-    // walk the type system and extract all the registry indexes
-    // While walking, update the FeatureImpl with the registry index
-//    ArrayList<FeatureImpl> ffjfri = getFeatureFromJFRI(ts, ts.topType, new ArrayList<FeatureImpl>());
-    
-//    featuresFromJFRI = new FeatureImpl[ffjfri.size()];
-//    ffjfri.toArray(featuresFromJFRI);
-    
+        
     reportErrors();
   }
 
@@ -325,7 +361,7 @@ public class FSClassRegistry {
    * @param ti
    * @param copyDownDefault_jcasClassInfo
    */
-  private void maybeLoadJCasAndSubtypes(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo copyDownDefault_jcasClassInfo) {
+  private static void maybeLoadJCasAndSubtypes(TypeSystemImpl ts, TypeImpl ti, JCasClassInfo copyDownDefault_jcasClassInfo) {
     
     JCasClassInfo jcasClassInfo;
 //    boolean debug = "com.ibm.hutt.Predicate".equals(ti.getName());
@@ -368,8 +404,8 @@ public class FSClassRegistry {
     
     // this check is done even after the class is first loaded, in case the type system changed.
     //   -- if the new type system is equal to a previous one, then no new FSClassRegistry is created.
-        
-    ts.jcasClassesInfo[ti.getCode()] = jcasClassInfo;  // sets new one or default one
+    ti.setJcasClassInfo(jcasClassInfo);
+//    ts.jcasClassesInfo[ti.getCode()] = jcasClassInfo;  // sets new one or default one
     
     if (!ti.isPrimitive()) {  // bypass this for primitives because the jcasClassInfo is the "inherited one" of TOP
       ti.setJavaClass(jcasClassInfo.jcasClass);
@@ -614,7 +650,7 @@ public class FSClassRegistry {
 //  }
   
   
-  private void checkConformance(TypeSystemImpl ts, TypeImpl ti) {
+  private static void checkConformance(TypeSystemImpl ts, TypeImpl ti) {
     if (ti.isPrimitive()) return;
     JCasClassInfo jcasClassInfo = type2JCas.get(ti.getName());
     if (null != jcasClassInfo) { // skip if the UIMA class has an abstract (non-creatable) JCas class)      
