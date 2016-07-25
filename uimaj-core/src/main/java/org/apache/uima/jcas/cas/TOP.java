@@ -84,9 +84,20 @@ public class TOP extends FeatureStructureImplC {
 	  super((JCasImpl) jcas);	  
 	}
 
-  public static TOP createSearchKey(int id) {
+  public static TOP _createSearchKey(int id) {
     return new TOP(id);
   }
+  
+  /**
+   * for internal use only
+   * @param id -
+   * @return -
+   */
+  public static TOP _createJCasHashMapReserve(int id) {
+    TOP r = new TOP(id);
+    r._setJCasHashMapReserve();
+    return r;
+  }
 
-	final public static TOP singleton = new TOP();
+	final public static TOP _singleton = new TOP();
 }
