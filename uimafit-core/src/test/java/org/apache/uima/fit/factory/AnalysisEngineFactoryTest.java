@@ -29,12 +29,15 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_component.AnalysisComponent;
@@ -54,6 +57,7 @@ import org.apache.uima.fit.factory.testAes.Annotator2;
 import org.apache.uima.fit.factory.testAes.Annotator3;
 import org.apache.uima.fit.factory.testAes.Annotator4;
 import org.apache.uima.fit.factory.testAes.ParameterizedAE;
+import org.apache.uima.fit.factory.testAes.SerializationTestAnnotator;
 import org.apache.uima.fit.factory.testAes.ViewNames;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.type.Sentence;
@@ -537,5 +541,22 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     TypePriorities actual = meta.getTypePriorities();
     assertArrayEquals(expected.getPriorityLists()[0].getTypes(),
             actual.getPriorityLists()[0].getTypes());
+  }
+  
+  @Test
+  public void serializeComponent() throws Exception {
+    File reference = new File("src/test/resources/data/reference/SerializationTestAnnotator.xml");
+    
+    File target = new File("target/test-output/AnalysisEngineFactoryTest/SerializationTestAnnotator.xml");
+    target.getParentFile().mkdirs();
+    
+    AnalysisEngineDescription desc = createEngineDescription(SerializationTestAnnotator.class);
+    try (OutputStream os = new FileOutputStream(target)) {
+      desc.toXML(os);
+    }
+    
+    String actual = FileUtils.readFileToString(target, "UTF-8");
+    String expected = FileUtils.readFileToString(reference, "UTF-8");
+    assertEquals(expected, actual);
   }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.impl.TypeOrFeature_impl;
+import org.apache.uima.fit.descriptor.LanguageCapability;
 import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.internal.ReflectionUtil;
@@ -52,6 +53,16 @@ public final class CapabilityFactory {
 
     Capability capability = new Capability_impl();
 
+    if (ReflectionUtil.isAnnotationPresent(componentClass, LanguageCapability.class)) {
+      LanguageCapability annotation = ReflectionUtil.getAnnotation(componentClass,
+              LanguageCapability.class);
+      String[] languages = annotation.value();
+      if (languages.length == 1 && languages[0].equals(LanguageCapability.NO_DEFAULT_VALUE)) {
+        languages = new String[0];
+      }
+      capability.setLanguagesSupported(languages);
+    }
+    
     if (ReflectionUtil.isAnnotationPresent(componentClass, SofaCapability.class)) {
       SofaCapability annotation = ReflectionUtil.getAnnotation(componentClass, SofaCapability.class);
       String[] inputSofas = annotation.inputSofas();
