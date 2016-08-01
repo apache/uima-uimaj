@@ -42,8 +42,7 @@ public @interface LanguageCapability {
   String[] value() default NO_DEFAULT_VALUE;
 
   /**
-   * Provides the default value for the inputs and the outputs that tells the CapabilityFactory that
-   * no value has been given to the inputs or outputs elements.
+   * Provides the default value that tells the CapabilityFactory that no value has been provided.
    */
   public static final String NO_DEFAULT_VALUE = "org.apache.uima.fit.descriptor.LanguageCapability.NO_DEFAULT_VALUE";
 }
