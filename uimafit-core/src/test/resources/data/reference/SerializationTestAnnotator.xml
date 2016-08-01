@@ -87,6 +87,10 @@
                     <language>en</language>
                     <language>de</language>
                 </languagesSupported>
+                <mimeTypesSupported>
+                    <mimeType>application/xml</mimeType>
+                    <mimeType>text/html</mimeType>
+                </mimeTypesSupported>
             </capability>
         </capabilities>
         <operationalProperties>

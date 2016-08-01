@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.impl.TypeOrFeature_impl;
 import org.apache.uima.fit.descriptor.LanguageCapability;
+import org.apache.uima.fit.descriptor.MimeTypeCapability;
 import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.fit.descriptor.TypeCapability;
 import org.apache.uima.fit.internal.ReflectionUtil;
@@ -61,6 +62,16 @@ public final class CapabilityFactory {
         languages = new String[0];
       }
       capability.setLanguagesSupported(languages);
+    }
+    
+    if (ReflectionUtil.isAnnotationPresent(componentClass, MimeTypeCapability.class)) {
+      MimeTypeCapability annotation = ReflectionUtil.getAnnotation(componentClass,
+              MimeTypeCapability.class);
+      String[] mimeTypes = annotation.value();
+      if (mimeTypes.length == 1 && mimeTypes[0].equals(MimeTypeCapability.NO_DEFAULT_VALUE)) {
+        mimeTypes = new String[0];
+      }
+      capability.setMimeTypesSupported(mimeTypes);
     }
     
     if (ReflectionUtil.isAnnotationPresent(componentClass, SofaCapability.class)) {

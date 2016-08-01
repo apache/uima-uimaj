@@ -21,6 +21,7 @@ package org.apache.uima.fit.factory.testAes;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.LanguageCapability;
+import org.apache.uima.fit.descriptor.MimeTypeCapability;
 import org.apache.uima.fit.descriptor.SofaCapability;
 import org.apache.uima.jcas.JCas;
 
@@ -28,6 +29,7 @@ import org.apache.uima.jcas.JCas;
  * Used to test if metadata gets correctly serialized to XML.
  */
 @LanguageCapability({"en", "de"})
+@MimeTypeCapability({ "application/xml", "text/html" })
 @SofaCapability(inputSofas = "input1", outputSofas = "output1")
 public class SerializationTestAnnotator extends JCasAnnotator_ImplBase {
 
