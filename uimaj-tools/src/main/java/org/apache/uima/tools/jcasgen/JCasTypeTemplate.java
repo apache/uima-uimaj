@@ -101,7 +101,13 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(typeName);
     stringBuilder.append("(TypeImpl type, CASImpl casImpl) {\n    super(type, casImpl);\n    readObject();\n  }\n  \n  /** @generated\n   * @param jcas JCas to which this Feature Structure belongs \n   */\n  public ");
     stringBuilder.append(typeName);
-    stringBuilder.append("(JCas jcas) {\n    super(jcas);\n    readObject();   \n  } \n\n  /** \n   * <!-- begin-user-doc -->\n   * Write your own initialization here\n   * <!-- end-user-doc -->\n   *\n   * @generated modifiable \n   */\n  private void readObject() {/*default - does nothing empty block */}\n     \n");
+    stringBuilder.append("(JCas jcas) {\n    super(jcas);\n    readObject();   \n  } \n\n");
+  if (jg.isSubTypeOfAnnotation(td)) { 
+    stringBuilder.append("\n  /** @generated\n   * @param jcas JCas to which this Feature Structure belongs\n   * @param begin offset to the begin spot in the SofA\n   * @param end offset to the end spot in the SofA \n  */  \n  public ");
+    stringBuilder.append(typeName);
+    stringBuilder.append("(JCas jcas, int begin, int end) {\n    super(jcas);\n    setBegin(begin);\n    setEnd(end);\n    readObject();\n  }   \n");
+  } 
+    stringBuilder.append("\n  /** \n   * <!-- begin-user-doc -->\n   * Write your own initialization here\n   * <!-- end-user-doc -->\n   *\n   * @generated modifiable \n   */\n  private void readObject() {/*default - does nothing empty block */}\n     \n");
    for (FeatureDescription fd : td.getFeatures()) { 
    
      String featName = fd.getName();

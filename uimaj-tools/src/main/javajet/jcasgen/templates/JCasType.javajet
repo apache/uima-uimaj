@@ -123,6 +123,21 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
     readObject();   
   } 
 
+<%if (jg.isSubTypeOfAnnotation(td)) { %>
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
+  public <%=typeName%>(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
+<%} %>
+
   /** 
    * <!-- begin-user-doc -->
    * Write your own initialization here
