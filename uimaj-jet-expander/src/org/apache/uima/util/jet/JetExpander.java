@@ -165,7 +165,10 @@ public class JetExpander {
 
 		String outFileName = null;
 		try {
-			outFileName = outDir + File.separator + pkg.replaceAll("\\.", File.separator) + File.separator + className + ".java";
+		  // replaceAll with replacement of "File.separator" fails in Java 8 with 
+		  //   illegal arg exception; needs to be doubled!
+		  // avoid that by using forward slash which works with Java paths anyways.
+			outFileName = outDir + File.separator + pkg.replaceAll("\\.","/") + File.separator + className + ".java";
 			(new File(pathOnly(outFileName))).mkdirs();			
 			fileWriter = new FileWriter(outFileName);
 		} catch (IOException e1) {
