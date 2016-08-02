@@ -111,7 +111,7 @@ public class JCasHashMap {
   // set to true to collect statistics for tuning
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
   static final boolean TUNE = false;
-  static final boolean check = true;  // message if concurrency level reduced because initial size was small
+  static final boolean check = false;  // message if concurrency level reduced because initial size was small
 //  private static final boolean MEASURE_CACHE = false /* Misc.getNoValueSystemProperty("uima.measure.jcas.hashmap.cache")*/;
 
 
@@ -176,7 +176,7 @@ public class JCasHashMap {
 //  private final int[] cacheInt = new int[CACHE_SIZE];
 //  private int cacheNewIndex = 0;
   
-  JCasHashMap(int capacity, boolean doUseCache) {
+  public JCasHashMap(int capacity) {
     // reduce concurrency so that capacity / concurrency >= 32
     //   that is, minimum sub-table capacity is 32 entries
     // if capacity/concurrency < 32,
@@ -322,7 +322,7 @@ public class JCasHashMap {
 //  }
   
   public TOP put(TOP value) {
-    final int key = value.getAddress();
+    final int key = value.id();
 //    updateCache(key, value);
     final int hash = hashInt(key);
     return getSubMap(hash).put(key, value, hash >>> concurrencyLevelBits);
