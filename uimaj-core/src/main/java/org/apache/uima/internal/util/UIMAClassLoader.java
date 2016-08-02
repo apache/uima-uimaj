@@ -34,6 +34,8 @@ import java.util.StringTokenizer;
  * The strategy for this ClassLoader tries to load the class itself before the classloading is
  * delegated to the application class loader.
  * 
+ * This loader supports loading a special class "MethodHandlesLookup" from org.apache.uima.cas.impl.MethodHandlesLookup
+ * 
  */
 public class UIMAClassLoader extends URLClassLoader {
   
@@ -42,11 +44,30 @@ public class UIMAClassLoader extends URLClassLoader {
           }
          }
 
+  public static final String MHLC = "org.apache.uima.cas.impl.MethodHandlesLookup";
+  /**
+   * This is the byte array that defines the class org.apache.uima.cas.impl.MethodHandlesLookup, obtained by
+   * converting the .class file to a hex byte string.
+   */
+  static byte[] methodHandlesLookupClass = javax.xml.bind.DatatypeConverter.parseHexBinary(
+      "CAFEBABE00000034001B07000201002C6F72672F6170616368652F75696D612F6361732F696D706C2F4D6574686F6448616E646C65734C6F"
+    + "6F6B75700700040100106A6176612F6C616E672F4F626A6563740100063C696E69743E010003282956010004436F64650A000300090C0005"
+    + "000601000F4C696E654E756D6265725461626C650100124C6F63616C5661726961626C655461626C650100047468697301002E4C6F72672F"
+    + "6170616368652F75696D612F6361732F696D706C2F4D6574686F6448616E646C65734C6F6F6B75703B0100166765744D6574686F6448616E"
+    + "646C65734C6F6F6B757001002928294C6A6176612F6C616E672F696E766F6B652F4D6574686F6448616E646C6573244C6F6F6B75703B0A00"
+    + "11001307001201001E6A6176612F6C616E672F696E766F6B652F4D6574686F6448616E646C65730C0014000F0100066C6F6F6B757001000A"
+    + "536F7572636546696C650100184D6574686F6448616E646C65734C6F6F6B75702E6A61766101000C496E6E6572436C617373657307001901"
+    + "00256A6176612F6C616E672F696E766F6B652F4D6574686F6448616E646C6573244C6F6F6B75700100064C6F6F6B75700021000100030000"
+    + "00000002000200050006000100070000002F00010001000000052AB70008B100000002000A0000000600010000001A000B0000000C000100"
+    + "000005000C000D00000009000E000F00010007000000240001000000000004B80010B000000002000A0000000600010000001D000B000000"
+    + "0200000002001500000002001600170000000A000100180011001A0019");       
+
   /**
    * locks for loading more than 1 class at a time (on different threads)
    * no more than the total number of cores, rounded up to pwr of 2
    */
   final private static int nbrLocks = Misc.nextHigherPowerOf2(Runtime.getRuntime().availableProcessors());
+  
   // not static
   final private Object[] syncLocks = new Object[nbrLocks];
 
@@ -185,7 +206,11 @@ public class UIMAClassLoader extends URLClassLoader {
       if (c == null) {
         try {
             // try to load class
+          if (MHLC.equals(name)) {
+            c = defineClass(MHLC, methodHandlesLookupClass, 0, methodHandlesLookupClass.length);
+          } else {
             c = findClass(name);
+          }
         } catch (ClassNotFoundException e) {
           // delegate class loading for this class-name
           c = super.loadClass(name, false);
