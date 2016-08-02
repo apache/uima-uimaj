@@ -132,7 +132,7 @@ public interface JFSIndexRepository {
    * Generics:  The returned Java cover class may not be a JCas one.
    * 
    * @param aType
-   *          The type obtained by doing MyJCasClass.type
+   *          The JCas unique type id obtained by doing MyJCasClass.type
    * @param <T> the Java Class corresponding to aType
    * @return An iterator that returns all indexed FeatureStructures of type <code>aType</code>,
    *         in no particular order.
