@@ -361,6 +361,13 @@ public class Misc {
     return h1;
   }
 
+  public static <T> T getWithExpand(List<T> a, int i) {
+    while (i >= a.size()) {
+      a.add(null);
+    }
+    return a.get(i);
+  }
+
   public static <T> void setWithExpand(List<T> a, int i, T value) {
     while (i >= a.size()) {
       a.add(null);
