@@ -47,7 +47,7 @@ public class Id2FSTest extends TestCase {
     TOP fs1 = new TOP(jcas);
     cas.setId2FSs(fs1);
 
-    int lastUsedId = fs1.id();
+    int lastUsedId = fs1._id();
     assertEquals(fs1, cas.<TOP>getFsFromId(lastUsedId));
     // make 20 more that could be gc'd
     
@@ -85,7 +85,7 @@ public class Id2FSTest extends TestCase {
     fs1 = new TOP(jcas);
     cas.setId2FSs(fs1);
        
-    lastUsedId = fs1.id();
+    lastUsedId = fs1._id();
     assertEquals(fs1, cas.getFsFromId(lastUsedId));
     
     for (int i = 0; i < 20; i++) {

@@ -514,7 +514,7 @@ public class IteratorTest extends TestCase {
     assertEquals(setIndexOverTokens.size(), 20);
     int i = 0;
     for (FeatureStructure fs : setIndexOverTokens) {
-      expected[i++] = fs.id();
+      expected[i++] = fs._id();
     }
     
     LowLevelIndexRepository llir = this.cas.ll_getIndexRepository();
@@ -527,7 +527,7 @@ public class IteratorTest extends TestCase {
     assertEquals(setIndexOverSentences.size(), 20);
     i = 0;
     for (FeatureStructure fs : setIndexOverSentences) {
-      expected[i++] = fs.id();
+      expected[i++] = fs._id();
     }
 
     setIndexForType = llir.ll_getIndex(CASTestSetup.ANNOT_SET_INDEX, ((TypeImpl)sentenceType).getCode());
@@ -538,7 +538,7 @@ public class IteratorTest extends TestCase {
     assertEquals(setIndex.size(), 60);
     i = 0;
     for (FeatureStructure fs : setIndex) {
-      expected[i++] = fs.id();
+      expected[i++] = fs._id();
     }
     
     
