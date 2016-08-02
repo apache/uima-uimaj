@@ -442,6 +442,7 @@ public class JsonCasSerializerTest extends TestCase {
 //  }
   
   private FeatureStructure setAllValues(int v) throws CASException {
+    cas = (CASImpl) cas.getView(CAS.NAME_DEFAULT_SOFA);  // create the default initial view sofa.
     JCas jcas = cas.getJCas();
     boolean s1 = v == 0;
     boolean s2 = v == 1;
@@ -519,6 +520,7 @@ public class JsonCasSerializerTest extends TestCase {
     File tsdFile = JUnitExtension.getFile("CasSerialization/desc/" + tsdName);
     tsd = parser.parseTypeSystemDescription(new XMLInputSource(tsdFile));
     cas = (CASImpl) CasCreationUtils.createCas(tsd, null, null);
+//    cas.getSofaRef();  // creates the default sofa
     jcas = cas.getJCas();
     tsi = cas.getTypeSystemImpl();
     topType = (TypeImpl) tsi.getTopType();
