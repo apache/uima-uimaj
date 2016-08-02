@@ -588,7 +588,7 @@ public class CasCopier {
   //      while (iter.isValid()) {
   //        final int fs = iter.ll_get();
   //        iter.moveToNext();
-        if (!indexedFsAlreadyCopied.contains(fs.id())) {
+        if (!indexedFsAlreadyCopied.contains(fs._id())) {
           final TOP copyOfFs = copyFs2(fs);
           // If the lenient option is used, it's possible that no FS was
           // created (e.g., FS is not defined in the target CAS. So ignore
@@ -614,7 +614,7 @@ public class CasCopier {
           if (!isDocumentAnnotation(fs)) {
             tgtCasViewImpl.getIndexRepository().addFS(copyOfFs);
           }
-          indexedFsAlreadyCopied.add(fs.id());
+          indexedFsAlreadyCopied.add(fs._id());
         }
       }
     } finally {
@@ -844,7 +844,7 @@ public class CasCopier {
    */
   private <T extends FeatureStructure> void copyFeatures(T srcFSi, T tgtFSi) {
     TOP srcFS = (TOP) srcFSi;
-    TypeImpl ti = srcFS.getTypeImpl();
+    TypeImpl ti = srcFS._getTypeImpl();
     
     TOP tgtFS = (TOP) tgtFSi;
     
