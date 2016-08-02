@@ -77,7 +77,7 @@ public class FSTreeModel implements TreeModel {
     int count = 0;
     for (it.moveToFirst(); it.isValid(); it.moveToNext()) {
       TOP fs = it.get();
-      this.fss.add(new FSNode(this, getNodeType(fs.getType()), fs, fs.id(), count));
+      this.fss.add(new FSNode(this, getNodeType(fs.getType()), fs, fs._id(), count));
       ++count;
     }
     List<FSTreeNode> kids = createArrayChildren(0, size, this.fss, this);
