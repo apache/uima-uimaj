@@ -144,8 +144,8 @@
      BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
-    <compat.level>BACKWARD_COMPATIBLE_IMPLEMENTER</compat.level>
-    <compat.previous.version>2.8.0</compat.previous.version>
+    <compat.level>NON_BACKWARD_COMPATIBLE</compat.level>
+    <compat.previous.version>2.8.1</compat.previous.version>
   </properties>
   
   <dependencyManagement>
@@ -269,8 +269,54 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+          
+            <!--This plugin's configuration is used to store Eclipse m2e settings 
+                only. It has no influence on the Maven build itself. -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                  
+                    <!-- ***************************** -->
+                    <!-- IGNORE maven-bundle-plugin    -->
+                    <!-- ***************************** -->
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>
+                          maven-bundle-plugin
+                        </artifactId>
+                        <versionRange>[3,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                          <goal>bundle</goal>
+                          <goal>manifest</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>  
   </profiles>
-  <modules>
-  	<module>uimaj-feature-structure</module>
-  </modules>
 </project>
