@@ -255,8 +255,8 @@ public interface CommonList extends FeatureStructure {
    * @see org.apache.uima.cas.FeatureStructure#id()
    */
   @Override
-  default int id() {
-    return ((FeatureStructureImplC)this).id();
+  default int _id() {
+    return ((FeatureStructureImplC)this)._id();
   }
 
 }

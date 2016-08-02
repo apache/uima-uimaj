@@ -322,7 +322,7 @@ public class JCasHashMap {
 //  }
   
   public TOP put(TOP value) {
-    final int key = value.id();
+    final int key = value._id();
 //    updateCache(key, value);
     final int hash = hashInt(key);
     return getSubMap(hash).put(key, value, hash >>> concurrencyLevelBits);

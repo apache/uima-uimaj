@@ -148,7 +148,7 @@ public class CommonSerDesSequential {
     List<TOP> allAboveMark = baseCas.walkReachablePlusFSsSorted(fs -> {
           addFS1(fs, nextAddr[0]);
           if (TRACE_SETUP) {
-            System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs.id(), nextAddr[0], fs._getTypeImpl().getShortName());
+            System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs._id, nextAddr[0], fs._getTypeImpl().getShortName());
           }
           nextAddr[0] += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  
         }, mark, null, null);

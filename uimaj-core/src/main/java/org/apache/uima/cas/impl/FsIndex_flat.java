@@ -137,7 +137,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
 
     // ordered case
     // r is index if found, otherwise, (-(insertion point) - 1). 
-    int r = Arrays.binarySearch(indexedFSs, fs, (f1, f2) -> Integer.compare(f1.id(), f2.id()));
+    int r = Arrays.binarySearch(indexedFSs, fs, (f1, f2) -> Integer.compare(f1._id(), f2._id()));
     return (r == 0) ? fs : null;    
   }
 
@@ -165,7 +165,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   
   // maybe needed for backwards compatibility for now
   protected void bulkAddTo(IntVector v) {
-    Arrays.stream(indexedFSs).mapToInt(FeatureStructure::id).forEach(v::add);
+    Arrays.stream(indexedFSs).mapToInt(FeatureStructure::_id).forEach(v::add);
   }
   
   /**

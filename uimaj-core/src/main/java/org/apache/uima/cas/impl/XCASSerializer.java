@@ -549,7 +549,7 @@ public class XCASSerializer {
             }
           }
         } else if (null != element) {
-          val = Integer.toString(element.id());
+          val = Integer.toString(element._id);
         }
 
         if (val != null) {

@@ -388,7 +388,7 @@ public class XmiSerializationSharedData {
     StringBuilder buf = new StringBuilder();
     TOP[] keys = getAndSortByIdAllFSsInIdMap();
     for (TOP fs : keys) {
-      buf.append(fs.id()).append(": ").append(fsToXmiId.get(fs)).append('\n');
+      buf.append(fs._id).append(": ").append(fsToXmiId.get(fs)).append('\n');
     }
     return buf.toString();
   }
