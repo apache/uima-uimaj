@@ -23,6 +23,7 @@ import org.apache.uima.UIMAException;
 
 /**
  * Exception class for package org.apache.uima.cas.
+ * Message catalog: org.apache.uima.UIMAException_Messages
  */
 public class CASException extends UIMAException {
 
@@ -54,10 +55,11 @@ public class CASException extends UIMAException {
 
   /** The JCas cannot be initialized. The following errors occurred: {0} */
   public static final String JCAS_INIT_ERROR = "JCAS_INIT_ERROR";
-
+  
   /** Type information from the CAS cannot be accessed while initializing the JCas type {0} */
   public static final String JCAS_TYPENOTFOUND_ERROR = "JCAS_TYPENOTFOUND_ERROR";
 
+  
   /**
    * Feature information from the CAS cannot be accessed while initializing the JCAS type {0} with
    * feature {1}.
