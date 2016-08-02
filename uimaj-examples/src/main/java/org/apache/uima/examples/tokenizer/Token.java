@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,38 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.examples.tokenizer;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 
 public class Token extends Annotation {
 
-  public final static int typeIndexID = JCasRegistry.register(Token.class);
+    public static final int typeIndexID = JCasRegistry.register(Token.class);
 
-  public final static int type = typeIndexID;
+    public static final int type = typeIndexID;
 
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+    public int getTypeIndexID() {
+        return typeIndexID;
+    }
 
-  // Never called. Disable default constructor
-  protected Token() {
-  }
+    // Never called. Disable default constructor
+    protected  Token() {
+    }
 
-  /** Internal - Constructor used by generator */
-  public Token(int addr, TOP_Type type) {
-    super(addr, type);
-  }
+    /** Internal - Constructor used by generator */
+    public  Token(TypeImpl type, CASImpl casImpl) {
+        super(type, casImpl);
+    }
 
-  public Token(JCas jcas) {
-    super(jcas);
-  }
+    public  Token(JCas jcas) {
+        super(jcas);
+    }
 
-  public Token(JCas jcas, int start, int end) {
-    super(jcas, start, end);
-  }
+    public  Token(JCas jcas, int start, int end) {
+        super(jcas, start, end);
+    }
 }
