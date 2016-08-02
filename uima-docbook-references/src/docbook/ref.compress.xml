@@ -117,7 +117,7 @@ under the License.
 
   <section id="ugr.ref.compress.simple-deltas">
     <title>Simple Delta CAS serialization</title>
-    <para>Use Form 4 for this, becuase form 6 supports delta CAS but requires 
+    <para>Use Form 4 for this, because form 6 supports delta CAS but requires 
     that at the time of deserialization of a CAS (on the receiver side) which will later be delta serialized
     back to the sender, 
     an instance of the ReuseInfo must be saved, and that
