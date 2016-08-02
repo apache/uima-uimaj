@@ -970,7 +970,7 @@ public class JsonCasSerializer {
         if (cds.isFiltering) {
           // skip features that aren't in the target type system
           String fullFeatName = feat.getName();
-          if (cds.filterTypeSystem.getFeatureByFullName(fullFeatName) == null) {
+          if (cds.filterTypeSystem_inner.getFeatureByFullName(fullFeatName) == null) {
             continue;
           }
         }
@@ -1260,7 +1260,7 @@ public class JsonCasSerializer {
         } else {
           if (cds.isFiltering) { // return as null any references to types not in target TS
             String typeName = fsItem._getTypeImpl().getName();
-            if (cds.filterTypeSystem.getType(typeName) == null) {
+            if (cds.filterTypeSystem_inner.getType(typeName) == null) {
               fsItem = null;
             }
           }
