@@ -58,9 +58,9 @@ public class JCasHashMapTest extends TestCase {
     for (int i = 1; i <= 128; i *= 2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(i);
       // test default concurrency level adjusted down 
-      m = new JCasHashMap(32 * i, true);
+      m = new JCasHashMap(32 * i);
       assertEquals( i, m.getConcurrencyLevel());
-      m = new JCasHashMap(16 * i, true);
+      m = new JCasHashMap(16 * i);
       assertEquals(Math.max(1, i / 2), m.getConcurrencyLevel());
       
       //test capacity adjusted up
@@ -95,7 +95,7 @@ public class JCasHashMapTest extends TestCase {
     
     for (int th = 2; th <= numberOfThreads; th *=2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
-      final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache   
+      final JCasHashMap m = new JCasHashMap(200);   
       MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
         
         public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
@@ -135,7 +135,7 @@ public class JCasHashMapTest extends TestCase {
     
     for (int th = 2; th <= numberOfThreads; th *= 2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
-      final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+      final JCasHashMap m = new JCasHashMap(200);  
   
       MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
         
@@ -199,7 +199,7 @@ public class JCasHashMapTest extends TestCase {
     final int subThreadPriority = thisThread.getPriority();
     thisThread.setPriority(subThreadPriority - 1);
     final MultiThreadUtils.ThreadM[] threads = new MultiThreadUtils.ThreadM[numberOfThreads];
-    final JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+    final JCasHashMap m = new JCasHashMap(200); 
     final Random r = new Random();  // used to sleep from 0 to 4 milliseconds
     final int hashKey = 15;
     final TOP fs = TOP._createSearchKey(hashKey);
@@ -310,7 +310,7 @@ public class JCasHashMapTest extends TestCase {
 //  }
    
   private void arun(int n) {
-    JCasHashMap m = new JCasHashMap(200, true); // true = do use cache 
+    JCasHashMap m = new JCasHashMap(200); // true = do use cache 
     assertTrue(m.getApproximateSize() == 0);
        
     long start = System.currentTimeMillis();
@@ -333,7 +333,7 @@ public class JCasHashMapTest extends TestCase {
   }
   
   private void arunCk(int n) {
-    JCasHashMap m = new JCasHashMap(200, true); // true = do use cache
+    JCasHashMap m = new JCasHashMap(200); // true = do use cache
     
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
@@ -365,7 +365,7 @@ public class JCasHashMapTest extends TestCase {
       int sub_capacity = 32;   // from JCasHashMap impl
       int subs = th;
       int agg_capacity = subs * sub_capacity;
-      JCasHashMap m = new JCasHashMap(agg_capacity, true); // true = do use cache 
+      JCasHashMap m = new JCasHashMap(agg_capacity); // true = do use cache 
       assertEquals(0, m.getApproximateSize());
       assertEquals(agg_capacity, m.getCapacity());
        

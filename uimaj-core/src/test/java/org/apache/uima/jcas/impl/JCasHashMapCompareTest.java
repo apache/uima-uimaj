@@ -134,7 +134,7 @@ public class JCasHashMapCompareTest extends TestCase {
   }
   
   private int runCustom(int numberOfThreads) throws Exception {
-    final JCasHashMap m = new JCasHashMap(256, true); // true = do use cache
+    final JCasHashMap m = new JCasHashMap(256); // true = do use cache
 
     MultiThreadUtils.Run2isb run2isb= new MultiThreadUtils.Run2isb() {
       
