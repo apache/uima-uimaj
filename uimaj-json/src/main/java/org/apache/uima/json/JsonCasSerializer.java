@@ -1294,7 +1294,7 @@ public class JsonCasSerializer {
           break;  // would be the end element.  a 0 is also treated as an end element
         }
         
-        if (!visited.add(curNode.id())) {
+        if (!visited.add(curNode._id())) {
           break;  // loop detected, stop. no error report here, would be reported earlier during enqueue
         }
         
