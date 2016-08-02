@@ -89,6 +89,9 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	/** JCas Class "{0}" is missing required constructor; likely cause is wrong version (UIMA version 3 or later JCas required). */
   public static final String JCAS_CAS_NOT_V3 = "JCAS_CAS_NOT_V3";
+
+  /** User-defined JCas classes for built-in Arrays not supported, class: {0} */
+  public static final String JCAS_ARRAY_NOT_SUPPORTED = "JCAS_ARRAY_NOT_SUPPORTED"; 
 	
   /** JCas Class "{0}" is missing required field accessor, or access not permitted, for field "{1}" during {2} operation. */
   public static final String JCAS_MISSING_FIELD_ACCESSOR = "JCAS_MISSING_FIELD_ACCESSOR";
@@ -96,9 +99,11 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** CAS type system doesn''t match JCas Type definition for type "{0}". */
 	public static final String JCAS_CAS_MISMATCH = "JCAS_CAS_MISMATCH";
 
-	 /** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
+	/** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
   public static final String JCAS_CAS_MISMATCH_SUPERTYPE = "JCAS_CAS_MISMATCH_SUPERTYPE";
 
+  /** The JCas class: "{0}" has supertype: "{1}" which doesn't match the UIMA type "{2}"''s supertype "{3}". */
+  public static final String JCAS_MISMATCH_SUPERTYPE = "JCAS_MISMATCH_SUPERTYPE";
 	/**
    * JCas type "{0}" used in Java code, but was not declared in the XML type descriptor.
    */
