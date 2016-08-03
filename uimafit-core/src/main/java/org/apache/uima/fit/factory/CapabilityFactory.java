@@ -47,14 +47,24 @@ public final class CapabilityFactory {
    * @return capabilities extracted from the class
    */
   public static Capability createCapability(Class<?> componentClass) {
-    if (!ReflectionUtil.isAnnotationPresent(componentClass, SofaCapability.class)
-            && !ReflectionUtil.isAnnotationPresent(componentClass, TypeCapability.class)) {
+    boolean sofaCapabilityPresent = ReflectionUtil.isAnnotationPresent(componentClass,
+            SofaCapability.class);
+    boolean typeCapabilityPresent = ReflectionUtil.isAnnotationPresent(componentClass,
+            TypeCapability.class);
+    boolean mimeTypeCapabilityPresent = ReflectionUtil.isAnnotationPresent(componentClass,
+            MimeTypeCapability.class);
+    boolean languageCapabilityPresent = ReflectionUtil.isAnnotationPresent(componentClass,
+            LanguageCapability.class);
+    
+    // Skip if no capability annotations are present at all
+    if (!sofaCapabilityPresent && !typeCapabilityPresent && !mimeTypeCapabilityPresent
+            && !languageCapabilityPresent) {
       return null;
     }
 
     Capability capability = new Capability_impl();
 
-    if (ReflectionUtil.isAnnotationPresent(componentClass, LanguageCapability.class)) {
+    if (languageCapabilityPresent) {
       LanguageCapability annotation = ReflectionUtil.getAnnotation(componentClass,
               LanguageCapability.class);
       String[] languages = annotation.value();
@@ -64,7 +74,7 @@ public final class CapabilityFactory {
       capability.setLanguagesSupported(languages);
     }
     
-    if (ReflectionUtil.isAnnotationPresent(componentClass, MimeTypeCapability.class)) {
+    if (mimeTypeCapabilityPresent) {
       MimeTypeCapability annotation = ReflectionUtil.getAnnotation(componentClass,
               MimeTypeCapability.class);
       String[] mimeTypes = annotation.value();
@@ -74,7 +84,7 @@ public final class CapabilityFactory {
       capability.setMimeTypesSupported(mimeTypes);
     }
     
-    if (ReflectionUtil.isAnnotationPresent(componentClass, SofaCapability.class)) {
+    if (sofaCapabilityPresent) {
       SofaCapability annotation = ReflectionUtil.getAnnotation(componentClass, SofaCapability.class);
       String[] inputSofas = annotation.inputSofas();
       if (inputSofas.length == 1 && inputSofas[0].equals(SofaCapability.NO_DEFAULT_VALUE)) {
@@ -89,7 +99,7 @@ public final class CapabilityFactory {
       capability.setOutputSofas(outputSofas);
     }
 
-    if (ReflectionUtil.isAnnotationPresent(componentClass, TypeCapability.class)) {
+    if (typeCapabilityPresent) {
       TypeCapability annotation = ReflectionUtil.getAnnotation(componentClass, TypeCapability.class);
       String[] inputTypesOrFeatureNames = annotation.inputs();
       capability.setInputs(createTypesOrFeatures(inputTypesOrFeatureNames));
