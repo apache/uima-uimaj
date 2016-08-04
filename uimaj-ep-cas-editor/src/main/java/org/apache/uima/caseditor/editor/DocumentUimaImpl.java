@@ -245,7 +245,7 @@ public class DocumentUimaImpl extends AbstractDocument {
     }
     File file = EFS.getStore(uri).toLocalFile(0, new NullProgressMonitor());
     try {
-      format = CasIOUtils.load(file, null, mCAS, withPartialTypesystem);
+      format = CasIOUtils.load(file.toURI().toURL(), null, mCAS, withPartialTypesystem);
     } catch (IOException e) {
       throwCoreException(e);
     }
