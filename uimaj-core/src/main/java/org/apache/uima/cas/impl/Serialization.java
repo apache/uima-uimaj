@@ -42,7 +42,10 @@ import org.apache.uima.resource.ResourceInitializationException;
  *   - one which makes use of various custom binary serialization methods, and
  *   - one which just converts CAS and related objects into other objects which
  *     in turn are serializable by normal Java Object serialization.
- *      
+ * 
+ * See also CasIOUtils, which has static methods for serialization and deserialization, including 
+ * support for XMI and XCAS.
+ *    
  */
 public class Serialization {
 

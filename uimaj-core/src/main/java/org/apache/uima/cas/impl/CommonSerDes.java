@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import org.apache.uima.UIMARuntimeException;
+
 /**
  * Common de/serialization 
  */
@@ -147,7 +149,27 @@ public class CommonSerDes {
     return new Header();
   }
   
-  
+  public static boolean isBinaryHeader(DataInputStream dis) {
+    dis.mark(4);
+    byte[] bytebuf = new byte[4];
+    try {
+      bytebuf[0] = dis.readByte(); // U
+      bytebuf[1] = dis.readByte(); // I
+      bytebuf[2] = dis.readByte(); // M
+      bytebuf[3] = dis.readByte(); // A
+      String s = new String(bytebuf, "UTF-8");
+      return s.equals("UIMA") || s.equals("AMIU");
+    } catch (IOException e) {
+      return false;
+    } finally {
+      try {
+        dis.reset();
+      } catch (IOException e) {
+        throw new UIMARuntimeException(e);
+      }
+    }
+  }
+
   public static Header readHeader(DataInputStream dis) throws IOException {
 
     Header h = new Header();

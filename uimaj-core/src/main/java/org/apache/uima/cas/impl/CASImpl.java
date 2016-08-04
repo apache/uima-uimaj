@@ -1256,32 +1256,39 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.casMetadata.fsClassRegistry;
   }
 
+  public CASImpl setupCasFromCasMgrSerializer(CASImpl cas, CASMgrSerializer casMgrSerializer) {
+    cas = cas.getBaseCAS();
+    
+    TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
+    cas.svd.casMetadata = ts.casMetadata;
+    cas.commitTypeSystem();
+
+    // reset index repositories -- wipes out Sofa index
+    cas.indexRepository = casMgrSerializer.getIndexRepository(cas);
+    cas.indexRepository.commit();
+
+    // get handle to existing initial View
+    CAS initialView = cas.getInitialView();
+
+    // throw away all other View information as the CAS definition may have
+    // changed
+    cas.svd.sofa2indexMap.clear();
+    cas.svd.sofaNbr2ViewMap.clear();
+    cas.svd.viewCount = 0;
+
+    // freshen the initial view
+    ((CASImpl) initialView).refreshView(cas.svd.baseCAS, null);
+    setViewForSofaNbr(1, initialView);
+    cas.svd.viewCount = 1;
+    return cas;
+  }
+  
   public void reinit(CASCompleteSerializer casCompSer) {
     if (this != this.svd.baseCAS) {
       this.svd.baseCAS.reinit(casCompSer);
       return;
     }
-    TypeSystemImpl ts = casCompSer.getCASMgrSerializer().getTypeSystem();
-    this.svd.casMetadata = ts.casMetadata;
-    commitTypeSystem();
-
-    // reset index repositories -- wipes out Sofa index
-    this.indexRepository = casCompSer.getCASMgrSerializer().getIndexRepository(this);
-    this.indexRepository.commit();
-
-    // get handle to existing initial View
-    CAS initialView = this.getInitialView();
-
-    // throw away all other View information as the CAS definition may have
-    // changed
-    this.svd.sofa2indexMap.clear();
-    this.svd.sofaNbr2ViewMap.clear();
-    this.svd.viewCount = 0;
-
-    // freshen the initial view
-    ((CASImpl) initialView).refreshView(this.svd.baseCAS, null);
-    setViewForSofaNbr(1, initialView);
-    this.svd.viewCount = 1;
+    setupCasFromCasMgrSerializer(this, casCompSer.getCASMgrSerializer());
 
     // deserialize heap
     CASSerializer casSer = casCompSer.getCASSerializer();

@@ -29,6 +29,7 @@ import java.io.ObjectOutputStream;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -96,7 +97,7 @@ public class CasIOUtilsTest extends TestCase{
   }
   
   public void testSp() throws Exception {
-    testFormat(SerialFormat.SERIALIZED_TS, "binsp");
+    testFormat(SerialFormat.SERIALIZED_TSI, "binsp");
   }
   
   public void testS0() throws Exception {
@@ -110,11 +111,7 @@ public class CasIOUtilsTest extends TestCase{
   public void testS6() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED, "bins6");
   }
-  
-  public void testS6p() throws Exception {
-    testFormat(SerialFormat.COMPRESSED_FILTERED_TS, "bins6p");
-  }
-  
+    
   private void testFormat(SerialFormat format, String fileEnding) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas."+ fileEnding);
     casFile.getParentFile().mkdirs();
@@ -142,7 +139,8 @@ public class CasIOUtilsTest extends TestCase{
     try {
       CasIOUtils.load(casInputStream, cas);
     } catch (Exception e) {
-      Assert.assertTrue(e instanceof IOException);
+      Assert.assertTrue(e instanceof CASRuntimeException);
+      Assert.assertTrue(((CASRuntimeException)e).getMessageKey().equals("UNRECOGNIZED_SERIALIZED_CAS_FORMAT"));
       casInputStream.close();
       return;
     }

@@ -147,6 +147,9 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
 	public static final String BLOB_SERIALIZATION = "BLOB_SERIALIZATION";
 
+	/** Unrecognized serialized CAS format. */
+  public static final String UNRECOGNIZED_SERIALIZED_CAS_FORMAT = "UNRECOGNIZED_SERIALIZED_CAS_FORMAT";
+	
 	/**
    * Error trying to read BLOB data from an input stream and deserialize Stringo a CAS.
    */
