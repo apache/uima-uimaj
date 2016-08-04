@@ -26,16 +26,15 @@ import static org.apache.uima.cas.impl.Serialization.serializeCASMgr;
 import static org.apache.uima.cas.impl.Serialization.serializeWithCompression;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Path;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SerialFormat;
@@ -54,80 +53,6 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.xml.sax.SAXException;
 
 public class CasIOUtils {
-
-  /**
-   * 
-   * @param casPath
-   *          The path containing the CAS
-   * @param aCAS
-   *          The CAS that should be filled
-   * @return the SerialFormat of the loaded CAS
-   * @throws IOException
-   *           - Problem loading from given Path
-   */
-  public static SerialFormat load(Path casPath, CAS aCAS) throws IOException {
-
-    return load(casPath, null, aCAS, false);
-  }
-
-  /**
-   * 
-   * @param casPath
-   *          The path containing the CAS
-   * @param tsPath
-   *          The optional path containing the type system
-   * @param aCAS
-   *          The CAS that should be filled
-   * @param leniently
-   *          ignore feature structures of non-existing types
-   * @return the SerialFormat of the loaded CAS
-   * @throws IOException
-   *           - Problem loading from given Path
-   */
-  public static SerialFormat load(Path casPath, Path tsPath, CAS aCAS, boolean leniently)
-          throws IOException {
-
-    URL casUrl = casPath.toUri().toURL();
-    URL tsUrl = tsPath == null ? null : tsPath.toUri().toURL();
-    return load(casUrl, tsUrl, aCAS, leniently);
-  }
-
-  /**
-   * 
-   * @param casFile
-   *          The file containing the CAS
-   * @param aCAS
-   *          The CAS that should be filled
-   * @return the SerialFormat of the loaded CAS
-   * @throws IOException
-   *           - Problem loading from given File
-   */
-  public static SerialFormat load(File casFile, CAS aCAS) throws IOException {
-
-    return load(casFile, null, aCAS, false);
-  }
-
-  /**
-   * 
-   * @param casFile
-   *          The file containing the CAS
-   * @param tsFile
-   *          The optional file containing the type system
-   * @param aCAS
-   *          The CAS that should be filled
-   * @param leniently
-   *          ignore feature structures of non-existing types
-   * @return the SerialFormat of the loaded CAS
-   * @throws IOException
-   *           - Problem loading from given File
-   */
-  public static SerialFormat load(File casFile, File tsFile, CAS aCAS, boolean leniently)
-          throws IOException {
-
-    URL casUrl = casFile.toURI().toURL();
-    URL tsUrl = tsFile == null ? null : tsFile.toURI().toURL();
-    return load(casUrl, tsUrl, aCAS, leniently);
-  }
 
   /**
    * 
@@ -160,24 +85,40 @@ public class CasIOUtils {
    */
   public static SerialFormat load(URL casUrl, URL tsUrl, CAS aCAS, boolean leniently)
           throws IOException {
+    SerialFormat result = SerialFormat.UNKNOWN;
     String path = casUrl.getPath().toLowerCase();
-    if (path.endsWith(".xmi")) {
+
+    if (path.endsWith(SerialFormat.XMI.getDefaultFileExtension())) {
+      InputStream casIS = casUrl.openStream();
       try {
-        XmiCasDeserializer.deserialize(casUrl.openStream(), aCAS, leniently);
-        return SerialFormat.XMI;
+        XmiCasDeserializer.deserialize(casIS, aCAS, leniently);
+        result = SerialFormat.XMI;
       } catch (SAXException e) {
         throw new IOException(e);
+      } finally {
+        closeQuitely(casIS);
       }
-    } else if (path.endsWith(".xcas") || path.endsWith(".xml")) {
+    } else if (path.endsWith(SerialFormat.XCAS.getDefaultFileExtension())
+            || path.endsWith(".xml")) {
+      InputStream casIS = casUrl.openStream();
       try {
-        XCASDeserializer.deserialize(casUrl.openStream(), aCAS, leniently);
-        return SerialFormat.XCAS;
+        XCASDeserializer.deserialize(casIS, aCAS, leniently);
+        result = SerialFormat.XCAS;
       } catch (SAXException e) {
         throw new IOException(e);
+      } finally {
+        closeQuitely(casIS);
       }
+    } else {
+      InputStream casIS = casUrl.openStream();
+      InputStream tsIS = tsUrl == null ? null : tsUrl.openStream();
+      result = loadBinary(casIS, tsIS, aCAS);
+      closeQuitely(casIS);
+      closeQuitely(tsIS);
     }
-    return loadBinary(casUrl.openStream(), tsUrl == null ? null : tsUrl.openStream(), aCAS);
+    return result;
   }
+
 
   /**
    * This method tries to guess the format of the input stream. It supports binary format and XMI
@@ -210,7 +151,8 @@ public class CasIOUtils {
    * @return the SerialFormat of the loaded CAS
    * @throws IOException
    *           - Problem loading from given InputStream
-   * @throws IllegalArgumentException - when trying to load XCAS   
+   * @throws IllegalArgumentException
+   *           - when trying to load XCAS
    */
   public static SerialFormat load(InputStream casInputStream, InputStream tsInputStream, CAS aCAS,
           boolean leniently) throws IOException {
@@ -237,21 +179,6 @@ public class CasIOUtils {
    * 
    * @param is
    *          The input stream of the CAS
-   * @param aCAS
-   *          the CAS in which the inpout stream will be deserialized
-   * @return the SerialFormat of the loaded CAS
-   * @throws IOException
-   *           - Problem loading from given InputStream
-   */
-  public static SerialFormat loadBinary(InputStream is, CAS aCAS) throws IOException {
-    return loadBinary(is, (CASMgrSerializer) null, aCAS);
-  }
-
-  /**
-   * Read CAS from the specified stream.
-   * 
-   * @param is
-   *          The input stream of the CAS
    * @param typeIS
    *          Optional stream from which typesystem information may be read. This is only used if
    *          the binary format read from the primary input stream does not already contain
@@ -262,7 +189,7 @@ public class CasIOUtils {
    * @throws IOException
    *           - Problem loading from given InputStream
    */
-  public static SerialFormat loadBinary(InputStream is, InputStream typeIS, CAS aCAS)
+  private static SerialFormat loadBinary(InputStream is, InputStream typeIS, CAS aCAS)
           throws IOException {
     CASMgrSerializer casMgr = null;
     if (typeIS != null) {
@@ -286,7 +213,7 @@ public class CasIOUtils {
    * @throws IOException
    *           - Problem loading from given InputStream
    */
-  public static SerialFormat loadBinary(InputStream is, CASMgrSerializer casMgr, CAS aCAS)
+  private static SerialFormat loadBinary(InputStream is, CASMgrSerializer casMgr, CAS aCAS)
           throws IOException {
     try {
       TypeSystemImpl ts = null;
@@ -360,27 +287,8 @@ public class CasIOUtils {
     } catch (ClassNotFoundException e) {
       throw new IOException(e);
     } finally {
-      if (is != null) {
-        is.close();
-      }
+      closeQuitely(is);
     }
-  }
-
-  /**
-   * Write the CAS in the specified format.
-   * 
-   * @param aCas
-   *          The CAS that should be serialized and stored
-   * @param docOS
-   *          The output stream for the CAS
-   * @param formatName
-   *          The format string in which the CAS should be stored.
-   * @throws IOException
-   *           - Problem saving to the given InputStream
-   */
-  public static void save(CAS aCas, OutputStream docOS, String formatName) throws IOException {
-    SerialFormat format = SerialFormat.valueOf(formatName);
-    save(aCas, docOS, null, format);
   }
 
   /**
@@ -481,7 +389,6 @@ public class CasIOUtils {
       throw new IOException(e);
     }
 
-    // To support writing to ZIPs, the type system must be written separately from the CAS data
     if (typeOS != null && !typeSystemWritten) {
       writeTypeSystem(aCas, typeOS);
       typeSystemWritten = true;
@@ -506,5 +413,15 @@ public class CasIOUtils {
     CASMgrSerializer casMgrSerializer = serializeCASMgr((CASImpl) aCas);
     typeOS.writeObject(casMgrSerializer);
     typeOS.flush();
+  }
+  
+  private static void closeQuitely(Closeable closeable) {
+    if (closeable != null) {
+      try {
+        closeable.close();
+      } catch (IOException e) {
+        // do nothing
+      }
+    }
   }
 }

@@ -57,18 +57,23 @@ public class CasIOUtilsTest extends TestCase{
     FsIndexDescription[] indexes = UIMAFramework.getXMLParser().parseFsIndexCollection(new XMLInputSource(indexesFile))
             .getFsIndexes();
     cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
-    CasIOUtils.load(JUnitExtension.getFile("ExampleCas/simpleCas.xmi"), cas);
+    FileInputStream casInputStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/simpleCas.xmi"));
+    CasIOUtils.load(casInputStream, cas);
+    if(casInputStream != null) {
+      casInputStream.close();
+    }
   }
   
   public void testXMI() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xmi");
     casFile.getParentFile().mkdirs();
-    CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.XMI);
+    FileOutputStream docOS = new FileOutputStream(casFile);
+    CasIOUtils.save(cas, docOS, SerialFormat.XMI);
+    docOS.close();
     cas.reset();
-    CasIOUtils.load(casFile, cas);
-    Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
-    cas.reset();
-    CasIOUtils.load(new FileInputStream(casFile), cas);
+    FileInputStream casInputStream = new FileInputStream(casFile);
+    CasIOUtils.load(casInputStream, cas);
+    casInputStream.close();
     Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
     cas.reset();
     CasIOUtils.load(casFile.toURI().toURL(), cas);
@@ -78,10 +83,9 @@ public class CasIOUtilsTest extends TestCase{
   public void testXCAS() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.xcas");
     casFile.getParentFile().mkdirs();
-    CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.XCAS);
-    cas.reset();
-    CasIOUtils.load(casFile, cas);
-    Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
+    FileOutputStream docOS = new FileOutputStream(casFile);
+    CasIOUtils.save(cas, docOS, SerialFormat.XCAS);
+    docOS.close();
     cas.reset();
     CasIOUtils.load(casFile.toURI().toURL(), cas);
     Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
@@ -114,9 +118,13 @@ public class CasIOUtilsTest extends TestCase{
   private void testFormat(SerialFormat format, String fileEnding) throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas."+ fileEnding);
     casFile.getParentFile().mkdirs();
-    CasIOUtils.save(cas, new FileOutputStream(casFile), format);
+    FileOutputStream docOS = new FileOutputStream(casFile);
+    CasIOUtils.save(cas, docOS, format);
+    docOS.close();
     cas.reset();
-    SerialFormat loadedFormat = CasIOUtils.load(new FileInputStream(casFile), cas);
+    FileInputStream casInputStream = new FileInputStream(casFile);
+    SerialFormat loadedFormat = CasIOUtils.load(casInputStream, cas);
+    casInputStream.close();
     Assert.assertEquals(format, loadedFormat);
     Assert.assertEquals(SIMPLE_CAS_DEFAULT_INDEX_SIZE, cas.getAnnotationIndex().size());
   }
@@ -129,10 +137,13 @@ public class CasIOUtilsTest extends TestCase{
     out.writeObject(new String("WRONG OBJECT"));
 
     byte[] casBytes = byteArrayOutputStream.toByteArray();
+    out.close();
+    ByteArrayInputStream casInputStream = new ByteArrayInputStream(casBytes);
     try {
-      CasIOUtils.load(new ByteArrayInputStream(casBytes), cas);
+      CasIOUtils.load(casInputStream, cas);
     } catch (Exception e) {
       Assert.assertTrue(e instanceof IOException);
+      casInputStream.close();
       return;
     }
     Assert.fail("An exception should have been thrown for wrong input.");
@@ -141,7 +152,7 @@ public class CasIOUtilsTest extends TestCase{
   public void testWrongFormat() throws Exception {
     File casFile = new File("target/temp-test-output/simpleCas.wrong");
     try {
-      CasIOUtils.save(cas, new FileOutputStream(casFile), "WRONG");
+      CasIOUtils.save(cas, new FileOutputStream(casFile), SerialFormat.UNKNOWN);
     } catch (Exception e) {
 //      Assert.assertTrue(e instanceof IllegalArgumentException);
       return;
