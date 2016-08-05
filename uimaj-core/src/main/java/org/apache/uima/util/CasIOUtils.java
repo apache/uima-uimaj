@@ -239,7 +239,7 @@ public class CasIOUtils {
 
     if (start.startsWith("<?xml ")) {  // could be XCAS or XMI
       try {
-        return XmlCasDeserializer.deserialize(casInputStream, aCAS, leniently);
+        return XmlCasDeserializer.deserializeR(casInputStream, aCAS, leniently);
       } catch (SAXException e) {
         throw new UIMARuntimeException(e);
       }
