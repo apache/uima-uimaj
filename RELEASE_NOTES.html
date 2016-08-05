@@ -23,7 +23,7 @@
   <title>Apache UIMA v2.9.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.2 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.9.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -82,15 +82,20 @@
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 <p><ul>
 <li>Update the Eclipse plugins to work with the latest Eclipse (4.6, Neon) version.</li>
+<li>A new general purpose CAS serialization/deserialization class CasIOUtils, with support for
+saving type system and index definition information along with the Feature Structures.</li>
 <li>Sofa mapping support for flow controllers corrected.</li>
 <li>Correct an stack overflow error in AnnotationViewer when switching Sofas.</li>
-<li>Correct some serialization errors in JSON serialization of arrays of FeatureStructures having null entries.</li>
+<li>Correct 2 JSON serialization issues: mishandling of arrays of FeatureStructures having null entries,
+and mishandling of namespaces for uninstantiated types found as supertypes.</li>
+<li>Added a new utility class, CasIOUtils, permitting standard saving and loading of CASs in all the
+formats (except JSON), together (optionally) with the CAS's type system and index definition.
 </ul>
 </p>
  
  <h3>API changes</h3>
  <p> 
- There were no API changes that affect backward compatibility.
+ There were no User API changes that affect backward compatibility.
  </p>
  
  <h3>Change in Binary Delta serialization</h3>
