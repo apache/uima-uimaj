@@ -75,7 +75,7 @@ public class XmiCasDeserializer {
   private final static boolean IS_NEW_FS = true;
   private final static boolean IS_EXISTING_FS = false;
 
-  private class XmiCasDeserializerHandler extends DefaultHandler {
+  public class XmiCasDeserializerHandler extends DefaultHandler {
     // ///////////////////////////////////////////////////////////////////////
     // Internal states for the parser.
 

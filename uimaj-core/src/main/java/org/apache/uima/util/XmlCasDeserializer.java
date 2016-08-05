@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.OutOfTypeSystemData;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -54,8 +55,8 @@ public abstract class XmlCasDeserializer {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public static void deserialize(InputStream aStream, CAS aCAS) throws SAXException, IOException {
-    deserialize(aStream, aCAS, false);
+  public static SerialFormat deserialize(InputStream aStream, CAS aCAS) throws SAXException, IOException {
+    return deserialize(aStream, aCAS, false);
   }
 
   /**
@@ -75,12 +76,15 @@ public abstract class XmlCasDeserializer {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
+  public static SerialFormat deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-    ContentHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
+    XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));
+    return (handler.mDelegateHandler instanceof XmiCasDeserializer.XmiCasDeserializerHandler)
+             ? SerialFormat.XMI
+             : SerialFormat.XCAS;
   }
 
   static class XmlCasDeserializerHandler extends DefaultHandler {

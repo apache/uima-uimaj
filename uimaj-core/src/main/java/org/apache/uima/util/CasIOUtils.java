@@ -231,27 +231,15 @@ public class CasIOUtils {
     
     CASImpl casImpl = (CASImpl) aCAS;
     /** scan the first part of the file for known formats */
-    casInputStream.mark(5000);
-    byte[] firstPartOfFile = new byte[5000];
+    casInputStream.mark(6);
+    byte[] firstPartOfFile = new byte[6];
     int bytesReadCount = casInputStream.read(firstPartOfFile);
     casInputStream.reset();
     String start = new String(firstPartOfFile, 0, bytesReadCount, "UTF-8").toLowerCase();
 
     if (start.startsWith("<?xml ")) {  // could be XCAS or XMI
       try {
-        int firstXmi = start.indexOf("<xmi:xmi");
-        int firstXCAS = start.indexOf("<cas>");
-        if (firstXmi > 0 && (firstXCAS == -1 || firstXCAS > firstXmi)) {
-          casImpl = readCasManager(casImpl, tsiInputStream);  // maybe install type system and index def   
-          XmiCasDeserializer.deserialize(casInputStream, casImpl, leniently);
-          return SerialFormat.XMI;
-        }
-        
-        if (firstXCAS > 0) {
-          casImpl = readCasManager(casImpl, tsiInputStream);  // maybe install type system and index def   
-          XCASDeserializer.deserialize(casInputStream, casImpl, leniently);
-          return SerialFormat.XCAS;
-        }
+        return XmlCasDeserializer.deserialize(casInputStream, aCAS, leniently);
       } catch (SAXException e) {
         throw new UIMARuntimeException(e);
       }
