@@ -68,6 +68,12 @@ public class CASSerializer implements Serializable {
 
   static final long serialVersionUID = -7972011651957420295L;
 
+  /**
+   * Set this to true to not fix the Jira 4743 bug where it causes more bytes to be written
+   *   (the part that doesn't cause a serialized byte format change is still fixed)
+   */
+  private boolean bkwdCompatJira4743 = true;
+  
   // The heap itself.
   public int[] heapArray = null;
 
@@ -244,8 +250,7 @@ public class CASSerializer implements Serializable {
 
       // output the key and version number
       CommonSerDes.createHeader()
-      .seqVer(1)     // version 1 for UIMA-4743
-                     // if we decide to write older format (with checking) change this to 0 "conditionally"
+      .seqVer(bkwdCompatJira4743 ? 0 : 1)     // version 1 for UIMA-4743
       .write(dos);
      
       // output the FS heap
@@ -412,9 +417,8 @@ public class CASSerializer implements Serializable {
       
       CommonSerDes.createHeader()
       .delta()
-      .seqVer(1)     // version 1 for UIMA-4743
-                     // if we decide to write older format (with checking) change this to 0 "conditionally"
-      .write(dos);    
+      .seqVer(bkwdCompatJira4743 ? 0 : 1)     // version 1 for UIMA-4743
+       .write(dos);    
 
       // output the new FS heap cells
       final int heapSize = cas.getHeap().getCellsUsed() - mark.nextFSId;
@@ -548,8 +552,12 @@ public class CASSerializer implements Serializable {
       short[] shortValues = new short[shortHeapModifiedAddrs.length];
       dos.writeInt(shortHeapModifiedAddrs.length);
       for (int i=0; i < shortHeapModifiedAddrs.length; i++) {
-    	dos.writeShort(shortHeapModifiedAddrs[i]);
-    	shortValues[i] = cas.getShortHeap().getHeapValue(shortHeapModifiedAddrs[i]);
+        if (bkwdCompatJira4743) {
+      	  dos.writeShort(shortHeapModifiedAddrs[i]);
+        } else {
+          dos.writeInt(shortHeapModifiedAddrs[i]);
+        }
+      	shortValues[i] = cas.getShortHeap().getHeapValue(shortHeapModifiedAddrs[i]);
       }
       for (int i=0; i < shortValues.length; i++) {  
     	  dos.writeShort(cas.getShortHeap().getHeapValue(shortHeapModifiedAddrs[i]));
@@ -561,12 +569,16 @@ public class CASSerializer implements Serializable {
       }
       
       // 64 bit heap modified cells
-      int[] longHeapModifiedAddrs = cas.getModifiedShortHeapAddrs().toArray();
+      int[] longHeapModifiedAddrs = cas.getModifiedLongHeapAddrs().toArray(); // https://issues.apache.org/jira/browse/UIMA-4743
       long[] longValues = new long[longHeapModifiedAddrs.length];
       dos.writeInt(longHeapModifiedAddrs.length);
       for (int i=0; i < longHeapModifiedAddrs.length; i++) {
-    	dos.writeShort(longHeapModifiedAddrs[i]);
-    	longValues[i] = cas.getLongHeap().getHeapValue(longHeapModifiedAddrs[i]);
+        if (bkwdCompatJira4743) {
+          dos.writeShort(longHeapModifiedAddrs[i]);
+        } else {
+          dos.writeInt(longHeapModifiedAddrs[i]);
+        }
+        longValues[i] = cas.getLongHeap().getHeapValue(longHeapModifiedAddrs[i]);
       }
       for (int i=0; i < longValues.length; i++) {  
     	  dos.writeLong(cas.getLongHeap().getHeapValue(longHeapModifiedAddrs[i]));
@@ -649,6 +661,21 @@ public class CASSerializer implements Serializable {
 
   long[] getLongArray() {
     return this.longHeapArray;
+  }
+
+  /**
+   * @return true if writing backward compatible delta 
+   */
+  public boolean isBkwdCompatJira4743() {
+    return bkwdCompatJira4743;
+  }
+
+  /**
+   * @param bkwdCompatJira4743 set to true to write backward compatable delta, false to fix this bug
+   *        set to false by uima-as version 2.9.0, and other users of delta binary serialization to fix this bug
+   */
+  public void setBkwdCompatJira4743(boolean keepBackwardCompatible) {
+    this.bkwdCompatJira4743 = keepBackwardCompatible;
   }
 
 }
