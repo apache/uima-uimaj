@@ -53,6 +53,8 @@ public class PooledVinciClient {
   /**
    * Create a PooledVinciClient that will establish at most maxPoolSize connections to the
    * designated service.
+   * @param serviceName -
+   * @param maxPoolSize -
    */
   public PooledVinciClient(String serviceName, int maxPoolSize) {
     this.serviceName = serviceName;
@@ -65,6 +67,7 @@ public class PooledVinciClient {
   /**
    * Set a VinciContext that will be used by this PooledVinciClient instead of the default global
    * context.
+   * @param context -
    */
   public void setContext(VinciContext context) {
     this.context = context;
@@ -72,6 +75,7 @@ public class PooledVinciClient {
 
   /**
    * Set a connect timeout that will be used in place of BaseClient.DEFAULT_CONNECT_TIMEOUT
+   * @param connectTimeoutMillis -
    */
   public void setConnectTimeout(int connectTimeoutMillis) {
     this.connectTimeout = connectTimeoutMillis;
@@ -79,6 +83,7 @@ public class PooledVinciClient {
 
   /**
    * Set a socket timeout that will be used in place of BaseClient.DEFAULT_SOCKET_TIMEOUT
+   * @param socketTimeoutMillis -
    */
   public void setSocketTimeout(int socketTimeoutMillis) {
     this.socketTimeout = socketTimeoutMillis;
@@ -86,6 +91,7 @@ public class PooledVinciClient {
 
   /**
    * Set a transportable factory that will be used in place of the VinciFrame factory.
+   * @param factory -
    */
   public void setTransportableFactory(TransportableFactory factory) {
     this.factory = factory;
@@ -93,6 +99,7 @@ public class PooledVinciClient {
 
   /**
    * Get the service name to which this client connects.
+   * @return -
    */
   public String getServiceName() {
     return serviceName;
@@ -100,6 +107,10 @@ public class PooledVinciClient {
 
   /**
    * Send a request to the service and receive the response. This method is tread safe.
+   * @param in -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in) throws IOException, ServiceException {
     VinciClient c = getClientFromPool();
@@ -113,6 +124,11 @@ public class PooledVinciClient {
   /**
    * Send a request to the service and receive the response, using the provided transportable
    * factory in place of the client-provided one. This method is tread safe.
+   * @param in -
+   * @param f -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, TransportableFactory f) throws IOException,
           ServiceException {
@@ -127,6 +143,12 @@ public class PooledVinciClient {
   /**
    * Send a request to the service and receive the response, using the provided transportable
    * factory and socketTimeout in place of the client-provided ones. This method is tread safe.
+   * @param in -
+   * @param f -
+   * @param socketTimeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, TransportableFactory f, int socketTimeout)
           throws IOException, ServiceException {
@@ -141,6 +163,11 @@ public class PooledVinciClient {
   /**
    * Send a request to the service and receive the response, using the provided socketTimeout in
    * place of the client-provided one. This method is tread safe.
+   * @param in -
+   * @param socketTimeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, int socketTimeout) throws IOException,
           ServiceException {

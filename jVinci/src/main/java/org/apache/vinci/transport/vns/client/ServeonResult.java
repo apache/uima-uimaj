@@ -48,6 +48,12 @@ public class ServeonResult extends Frame {
    * @pre host_name != null
    * @pre priority &ge; -1
    * @pre instance &ge; 0
+   * @param service_name -
+   * @param host_name -
+   * @param priority -
+   * @param instance -
+   * @return -
+   * 
    */
   static public Transportable composeQuery(String service_name, String host_name, int priority,
           int instance) {
@@ -63,6 +69,10 @@ public class ServeonResult extends Frame {
    * @pre service_name != null
    * @pre host_name != null
    * @pre priority &ge; -1
+   * @param service_name -
+   * @param host_name -
+   * @param priority -
+   * @return -
    */
   static public Transportable composeQuery(String service_name, String host_name, int priority) {
     VinciFrame query = (VinciFrame) composeQuery(service_name, host_name);
@@ -76,6 +86,9 @@ public class ServeonResult extends Frame {
    * 
    * @pre service_name != null
    * @pre host_name != null
+   * @param service_name -
+   * @param host_name -
+   * @return -
    */
   static public Transportable composeQuery(String service_name, String host_name) {
     VinciFrame query = new VinciFrame();

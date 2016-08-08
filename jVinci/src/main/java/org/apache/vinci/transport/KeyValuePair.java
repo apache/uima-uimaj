@@ -38,6 +38,8 @@ public final class KeyValuePair {
   /**
    * @pre mykey != null
    * @pre myvalue != null
+   * @param mykey -
+   * @param myvalue -
    */
   public KeyValuePair(String mykey, FrameComponent myvalue) {
     this.key = mykey;
@@ -59,6 +61,7 @@ public final class KeyValuePair {
   // Convenient methods for accesing value as a specific type.
   /**
    * @pre value instanceof FrameLeaf
+   * @return -
    */
   public FrameLeaf getValueAsLeaf() {
     return (FrameLeaf) value;
@@ -70,6 +73,7 @@ public final class KeyValuePair {
 
   /**
    * @pre value instanceof Frame
+   * @return -
    */
   public Frame getValueAsFrame() {
     return (Frame) value;

@@ -149,6 +149,8 @@ public class VinciContext {
   /**
    * @pre myport &ge; 0
    * @pre myport &lt; 65536
+   * @param myhost -
+   * @param myport -
    */
   public VinciContext(String myhost, int myport) {
     this.host = myhost;
@@ -163,6 +165,7 @@ public class VinciContext {
    * System.setProperty("VNS_HOST", [hostname]) before ever invoking any Vinci client code.
    * Otherwise, you can set the hostname using the setVNSHost() method provided by this class.
    * 
+   * @return -
    * @throws IllegalStateException 
    *           if the VNS host has not been specified.
    */
@@ -183,6 +186,7 @@ public class VinciContext {
    * System.setProperty("VNS_PORT", [hostname]) before ever invoking any Vinci client code.
    * Otherwise, the port will default to 9000. You can override this default (or any
    * property-specified value) by calling the setPort() method provided by this class.
+   * @return -
    */
   public int getVNSPort() {
     return port;
@@ -190,6 +194,7 @@ public class VinciContext {
 
   /**
    * Set the VNS hostname.
+   * @param h -
    */
   public void setVNSHost(String h) {
     host = h;
@@ -201,6 +206,7 @@ public class VinciContext {
    * 
    * @pre port &ge; 0
    * @pre port &lt; 65536
+   * @param p -
    */
   public void setVNSPort(int p) {
     port = p;
@@ -210,6 +216,7 @@ public class VinciContext {
   /**
    * Returns whether clients can use stale resolve cache entries for service location in the event
    * VNS is unreachable.
+   * @return -
    */
   public boolean areStaleLookupsAllowed() {
     return allowStaleLookups;
@@ -218,6 +225,7 @@ public class VinciContext {
   /**
    * Set whether clients can use stale resolve cache entries for service location in the event VNS
    * is unreachable. Default is true.
+   * @param b -
    */
   public void setAllowStaleLookups(boolean b) {
     allowStaleLookups = b;
@@ -225,6 +233,7 @@ public class VinciContext {
 
   /**
    * Get the time-to-live of cached service locators (resolve results).
+   * @return -
    */
   public int getResolveCacheTTL() {
     return ttlMillis;
@@ -233,6 +242,7 @@ public class VinciContext {
   /**
    * Set the time-to-live of cached service locators (resolve results). Default is 1 minute. Set to
    * 0 to disable caching completely.
+   * @param millis -
    */
   public void setResolveCacheTTL(int millis) {
     ttlMillis = millis;
@@ -240,6 +250,7 @@ public class VinciContext {
 
   /**
    * Get the timeout setting of VNS resolve queries.
+   * @return -
    */
   public int getVNSResolveTimeout() {
     return vnsResolveTimeout;
@@ -247,6 +258,7 @@ public class VinciContext {
 
   /**
    * Set the timeout of VNS resolve queries. Default is 20 seconds.
+   * @param millis -
    */
   public void setVNSResolveTimeout(int millis) {
     vnsResolveTimeout = millis;
@@ -254,6 +266,7 @@ public class VinciContext {
 
   /**
    * Get the timeout setting of VNS serveon queries.
+   * @return -
    */
   public int getVNSServeonTimeout() {
     return vnsServeonTimeout;
@@ -261,6 +274,7 @@ public class VinciContext {
 
   /**
    * Set the timeout of VNS serveon queries. Default is 60 seconds.
+   * @param millis -
    */
   public void setVNSServeonTimeout(int millis) {
     vnsServeonTimeout = millis;
@@ -269,6 +283,7 @@ public class VinciContext {
   /**
    * Returns whether socket keepAlive is enabled.
    * @see java.net.Socket#setKeepAlive(boolean)
+   * @return -
    */
   public boolean isSocketKeepAliveEnabled() {
     return socketKeepAliveEnabled;
@@ -277,6 +292,7 @@ public class VinciContext {
   /**
    * Set whether socket keepAlive is enabled.  Default is true.
    * @see java.net.Socket#setKeepAlive(boolean)
+   * @param b -
    */
   public void setSocketKeepAliveEnabled(boolean b) {
     socketKeepAliveEnabled = b;
@@ -284,6 +300,7 @@ public class VinciContext {
 
   /**
    * Get the global VinciContext used by Vinci classes when no context is explicitly specified.
+   * @return -
    */
   static public VinciContext getGlobalContext() {
     return globalContext;
@@ -292,6 +309,7 @@ public class VinciContext {
   /**
    * Get a cached resolve result (if any).
    * 
+   * @param serviceName -
    * @return the cached resolve result, or null if none is cached.
    * 
    * @pre serviceName != null
@@ -310,6 +328,7 @@ public class VinciContext {
   /**
    * Get a cached resolve result (if any), but allow returning stale cache entries.
    * 
+   * @param serviceName -
    * @return the cached resolve result, or null if none is cached.
    * 
    * @pre serviceName != null
@@ -327,6 +346,8 @@ public class VinciContext {
    * 
    * @pre serviceName != null
    * @pre r != null
+   * @param serviceName -
+   * @param r -
    */
   synchronized public void cacheResolveResult(String serviceName, ResolveResult r) {
     CachedVNSResult c = (CachedVNSResult) vnsCache.get(serviceName);
@@ -343,6 +364,7 @@ public class VinciContext {
    * Flush any cache entries pertaining to the specified service.
    * 
    * @pre serviceName != null
+   * @param serviceName -
    */
   synchronized public void flushFromCache(String serviceName) {
     vnsCache.remove(serviceName);
@@ -357,6 +379,14 @@ public class VinciContext {
    * 
    * @see org.apache.vinci.transport.VinciClient
    * 
+   * @param in -
+   * @param service_name -
+   * @param factory -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if the VNS host has not been specified.
    * 
@@ -380,6 +410,13 @@ public class VinciContext {
    * 
    * @see org.apache.vinci.transport.VinciClient
    * 
+   * @param in -
+   * @param service_name -
+   * @param factory -
+   * @param socket_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    * @throws IllegalStateException
    *           if the VNS host has not been specified.
    * 
@@ -407,7 +444,15 @@ public class VinciContext {
    * 
    * @see org.apache.vinci.transport.VinciClient
    * 
-   * @throws IllegalStateException
+   * @param in -
+   * @param service_name -
+   * @param factory -
+   * @param socket_timeout -
+   * @param connect_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws IllegalStateException 
    *           if the VNS host has not been specified.
    * 
    * @pre in != null
@@ -432,6 +477,13 @@ public class VinciContext {
    * 
    * @see org.apache.vinci.transport.VinciClient
    * 
+   * @param in -
+   * @param service_name -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if the VNS host has not been specified.
    * 
@@ -453,6 +505,14 @@ public class VinciContext {
    * 
    * @see org.apache.vinci.transport.VinciClient
    * 
+   * @param in -
+   * @param service_name -
+   * @param timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if the VNS host has not been specified.
    * 
@@ -479,6 +539,15 @@ public class VinciContext {
    * 
    * @see org.apache.vinci.transport.VinciClient
    * 
+   * @param in -
+   * @param service_name -
+   * @param socket_timeout -
+   * @param connect_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if the VNS host has not been specified.
    * 

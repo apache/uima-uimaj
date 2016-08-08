@@ -278,6 +278,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * Factory method used by fromStream when it needs to create a frame leaf. Default implementation
    * creates a regular FrameLeaf.
    * 
+   * @param array -
    * @return the created FrameLeaf.
    * 
    * @pre array != null
@@ -289,10 +290,11 @@ public abstract class Frame extends FrameComponent implements Transportable {
   /**
    * Factory method used by fromStream when it needs to create a sub-frame. Default implementation
    * creates a subframe of the same type as the current frame.
-   * 
+   * @param tag_name -
+   * @param initialCapacity -
+   * @return the created sub-frame.
    * @throws UnsupportedOperationException
    *           if the getClass().newInstance() call on this object results in an exception.
-   * @return the created sub-frame.
    * 
    * @pre tag_name != null
    * @pre initialCapacity &ge; 0
@@ -336,6 +338,8 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @pre rval != null
    * @pre offset &ge; 0
+   * @param rval -
+   * @param offset -
    */
   protected void toXML(StringBuffer rval, int offset) {
     KeyValuePair keyVal = null;
@@ -376,6 +380,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param key
    *          The key to be associated with the value.
+   * @param val -
    * @return This frame
    * @throws UnsupportedOperationException
    *           if this document model doesn't support key addition.
@@ -392,6 +397,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param key
    *          The key to be associated with the value.
+   * @param val -
    * @return This frame
    * @throws UnsupportedOperationException
    *           if this document model doesn't support key addition.
@@ -410,6 +416,7 @@ public abstract class Frame extends FrameComponent implements Transportable {
    * 
    * @param key
    *          The key to be associated with the value.
+   * @param val -
    * @throws UnsupportedOperationException
    *           if this document model doesn't support key addition.
    * @return This frame

@@ -46,7 +46,7 @@ public class TransportableConverter {
    * @param factory
    *          The factory used to create the return Transportable, which must implement
    *          fromStream().
-   * 
+   * @return -
    * @pre convert_me != null
    * @pre factory != null
    */

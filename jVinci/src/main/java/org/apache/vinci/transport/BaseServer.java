@@ -161,6 +161,7 @@ public class BaseServer {
 
   /**
    * Get the servable object being used by this server.
+   * @return -
    */
   public VinciServable getServable() {
     return servable;
@@ -174,6 +175,7 @@ public class BaseServer {
    * 
    * @param millis
    *          The socket timeout value in milliseconds.
+   * @throws IOException -
    */
   public void setSocketTimeout(int millis) throws IOException {
     socketTimeout = millis;
@@ -218,6 +220,8 @@ public class BaseServer {
   /**
    * Set the intitial and maximum size of the threadpool used by this server. This should be called
    * before serving starts otherwise it has no effect.
+   * @param initial -
+   * @param max -
    */
   public void setThreadPoolSize(int initial, int max) {
     Debug.Assert(!isServing);
@@ -313,6 +317,7 @@ public class BaseServer {
    * @return The server socket to be used by this server for accepting requests.
    * @param port
    *          The port which is to be listened to by the created socket.
+   * @throws IOException -
    * @pre port &ge; 0
    * @pre port &lt; 65536
    */
@@ -379,6 +384,8 @@ public class BaseServer {
    * Get a runnable object to run within a pooled thread that will handle the request.
    * 
    * @pre client != null
+   * @param client -
+   * @return -
    */
   protected Runnable getRunnable(Socket client) {
     return new BaseServerRunnable(client, this);
@@ -389,6 +396,7 @@ public class BaseServer {
    * 
    * @pre client != null
    * @pre threadPool != null
+   * @param client -
    */
   protected void handleRequest(Socket client) {
     try {
@@ -442,6 +450,9 @@ public class BaseServer {
    * the appropriate VinciServable.
    * 
    * @pre in != null
+   * @param in -
+   * @param header -
+   * @return -
    */
   public Transportable eval(Transportable in, KeyValuePair header) {
     // Right now the header parameter is unused by it is provided so that it can be used for

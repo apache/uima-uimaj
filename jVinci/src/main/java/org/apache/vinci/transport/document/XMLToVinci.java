@@ -215,6 +215,7 @@ public class XMLToVinci {
    *          An empty document to be populated.
    * @param r
    *          A reader providing the XML to populate the empty document.
+   * @return -
    * @exception ServiceException
    *              if there is a parse error.
    */
@@ -235,6 +236,7 @@ public class XMLToVinci {
    * 
    * @param r
    *          A reader providing the XML to convert.
+   * @return -
    * @exception ServiceException
    *              if there is a parse error.
    */
@@ -263,7 +265,11 @@ public class XMLToVinci {
       throw new ServiceException("XML Parse error: " + e);
     }
   }
-
+  /*
+   * public static AFrame xmlToAFrame(Reader r) throws ServiceException { return (AFrame)
+   * xmlToTransportable(r, new AFrame()); }
+   */
+ 
   /**
    * Convert the XML document (provided as a Reader) to the AFrame document model. Throws
    * ServiceException if the XML parser reports any error. WARNING: This method will silently ignore
@@ -271,12 +277,9 @@ public class XMLToVinci {
    * 
    * @param r
    *          A reader providing the XML to convert.
+   * @return -
    * @exception ServiceException
    *              if there is a parse error.
-   */
-  /*
-   * public static AFrame xmlToAFrame(Reader r) throws ServiceException { return (AFrame)
-   * xmlToTransportable(r, new AFrame()); }
    */
   public static AFrame xmlToAFrame(Reader r) throws ServiceException {
     XMLReader xr;

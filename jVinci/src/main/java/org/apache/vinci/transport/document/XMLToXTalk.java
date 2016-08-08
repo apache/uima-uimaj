@@ -192,6 +192,12 @@ public class XMLToXTalk {
    * representation of that data. If xml_filename is non-null, then this method will also create a
    * UTF-8 representation of the xml file, exactly mimicing the XTalk encoding (e.g. removing
    * irrelevant whitespace, expanding entity refs, etc).
+   * @param r -
+   * @param filename -
+   * @param purgeWhitespace -
+   * @param xml_filename -
+   * @throws ServiceException -
+   * @throws IOException -
    */
   public static void xmlToXTalk(Reader r, String filename, boolean purgeWhitespace,
           String xml_filename) throws ServiceException, IOException {

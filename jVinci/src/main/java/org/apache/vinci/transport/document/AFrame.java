@@ -69,6 +69,7 @@ public class AFrame extends VinciFrame {
 
   /**
    * Get a TransportableFactory that creates new AFrames.
+   * @return -
    */
   static public TransportableFactory getAFrameFactory() {
     return aFrameFactory;
@@ -80,6 +81,7 @@ public class AFrame extends VinciFrame {
 
   /**
    * @pre capacity &ge; 0
+   * @param capacity -
    */
   public AFrame(int capacity) {
     super(capacity);
@@ -89,6 +91,8 @@ public class AFrame extends VinciFrame {
    * Create an AFrame that is a (deep) copy of the given transportable.
    * 
    * @pre t != null
+   * @param t -
+   * @return -
    */
   public static AFrame toAFrame(Transportable t) {
     return (AFrame) TransportableConverter.convert(t, getAFrameFactory());
@@ -157,6 +161,7 @@ public class AFrame extends VinciFrame {
    * 
    * @param key
    *          The key to be associated with the value.
+   * @param val -
    * @return The (empty) set of attributes associated with the added key.
    * 
    * @pre key != null
@@ -172,6 +177,7 @@ public class AFrame extends VinciFrame {
    * 
    * @param key
    *          The key to be associated with the value.
+   * @param val -
    * @return The (empty) set of attributes associated with the added key.
    * 
    * @pre key != null
@@ -190,6 +196,7 @@ public class AFrame extends VinciFrame {
    * 
    * @param key
    *          The key to be associated with the value.
+   * @param val -
    * @return The (empty) set of attributes associated with the added key.
    * 
    * @pre key != null
@@ -420,6 +427,13 @@ public class AFrame extends VinciFrame {
    * @pre in != null
    * @pre service_name != null
    * 
+   * @param in -
+   * @param service_name -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
@@ -433,6 +447,14 @@ public class AFrame extends VinciFrame {
    * @pre service_name != null
    * @pre socket_timeout &ge; 0
    * 
+   * @param in -
+   * @param service_name -
+   * @param socket_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */
@@ -450,6 +472,15 @@ public class AFrame extends VinciFrame {
    * WARNING: This method relies on JDK-1.4 specific functions. USE IT ONLY if you don't need to
    * maintain JDK1.3 compatability.
    * 
+   * @param in -
+   * @param service_name -
+   * @param socket_timeout -
+   * @param connect_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if VNS_HOST is not specified.
    */

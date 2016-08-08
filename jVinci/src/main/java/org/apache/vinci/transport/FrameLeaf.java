@@ -53,6 +53,8 @@ public class FrameLeaf extends FrameComponent {
    * cannot be modified by external code.
    * 
    * @pre mydata != null
+   * @param mydata -
+   * @param encode -
    */
   public FrameLeaf(byte[] mydata, boolean encode) {
     if (encode) {
@@ -65,6 +67,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre mydata != null
+   * @param mydata -
    */
   public FrameLeaf(String mydata) {
     this.data = UTFConverter.convertStringToUTF(mydata);
@@ -76,6 +79,7 @@ public class FrameLeaf extends FrameComponent {
    * @pre mystring != null
    * @pre { for (int i = 0; i &lt; mystring.length; i++) $assert(mystring[i] != null, "array elements
    *      are non-null"); }
+   * @param mystring -
    */
   public FrameLeaf(String[] mystring) {
     String separator = "#";
@@ -105,6 +109,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre myfloat != null
+   * @param myfloat -
    */
   public FrameLeaf(float[] myfloat) {
     StringBuffer add_me = new StringBuffer();
@@ -123,6 +128,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre mydouble != null
+   * @param mydouble -
    */
   public FrameLeaf(double[] mydouble) {
     StringBuffer add_me = new StringBuffer();
@@ -142,6 +148,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre myint != null
+   * @param myint -
    */
   public FrameLeaf(int[] myint) {
     StringBuffer add_me = new StringBuffer();
@@ -161,6 +168,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * @pre mylong != null
+   * @param mylong -
    */
   public FrameLeaf(long[] mylong) {
     StringBuffer add_me = new StringBuffer();
@@ -241,6 +249,7 @@ public class FrameLeaf extends FrameComponent {
 
   /**
    * Get the raw (usually UTF-8) frame data.
+   * @return -
    */
   public byte[] getData() {
     return data;
@@ -251,6 +260,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data was not base64 encoded.
+   * @return -
    */
   public byte[] toBytes() {
     try {
@@ -265,6 +275,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be converted to long.
+   * @return -
    */
   public long toLong() {
     try {
@@ -281,6 +292,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be convered to a long array.
+   * @return -
    */
   public long[] toLongArray() {
     try {
@@ -307,6 +319,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be converted to int.
+   * @return -
    */
   public int toInt() {
     try {
@@ -323,6 +336,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be convered to an int array.
+   * @return -
    */
   public int[] toIntArray() {
     try {
@@ -349,6 +363,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be converted to float.
+   * @return -
    */
   public float toFloat() {
     try {
@@ -365,6 +380,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be convered to a float array.
+   * @return -
    */
   public float[] toFloatArray() {
     try {
@@ -391,6 +407,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be converted to double.
+   * @return -
    */
   public double toDouble() {
     try {
@@ -407,6 +424,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the data could not be convered to a double array.
+   * @return -
    */
   public double[] toDoubleArray() {
     try {
@@ -433,6 +451,7 @@ public class FrameLeaf extends FrameComponent {
    * 
    * @exception LeafCastException
    *              if the underlying data was not utf-8 (which in general should not happen).
+   * @return -
    */
   public boolean toBoolean() {
     try {
