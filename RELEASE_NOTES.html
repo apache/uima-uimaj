@@ -88,24 +88,12 @@ saving type system and index definition information along with the Feature Struc
 <li>Correct an stack overflow error in AnnotationViewer when switching Sofas.</li>
 <li>Correct 2 JSON serialization issues: mishandling of arrays of FeatureStructures having null entries,
 and mishandling of namespaces for uninstantiated types found as supertypes.</li>
-<li>Added a new utility class, CasIOUtils, permitting standard saving and loading of CASs in all the
-formats (except JSON), together (optionally) with the CAS's type system and index definition.
 </ul>
 </p>
  
  <h3>API changes</h3>
  <p> 
  There were no User API changes that affect backward compatibility.
- </p>
- 
- <h3>Change in Binary Delta serialization</h3>
- <p>
- Versioning information is added to the binary serialization streams in a backward compatible manner.
- In addition, this release includes a <a href="https://issues.apache.org/jira/browse/UIMA-4743">bug fix</a>
- that changes the format of Binary Delta serialization slightly, but only for delta serialization, as used by
- UIMA-AS.  UIMA-AS next release will include support for this and 
- automatically select the old or new version when sending a delta CAS back to the client; so this change
- should be invisible to users. 
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
