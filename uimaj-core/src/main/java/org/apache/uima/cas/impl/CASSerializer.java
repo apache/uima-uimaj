@@ -671,8 +671,9 @@ public class CASSerializer implements Serializable {
   }
 
   /**
-   * @param bkwdCompatJira4743 set to true to write backward compatable delta, false to fix this bug
-   *        set to false by uima-as version 2.9.0, and other users of delta binary serialization to fix this bug
+   * @param keepBackwardCompatible
+   *          set to true to write backward compatible delta, false to fix this bug set to false by
+   *          uima-as version 2.9.0, and other users of delta binary serialization to fix this bug
    */
   public void setBkwdCompatJira4743(boolean keepBackwardCompatible) {
     this.bkwdCompatJira4743 = keepBackwardCompatible;
