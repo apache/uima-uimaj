@@ -125,7 +125,7 @@ public class JCasUtilTest extends ComponentTestBase {
 
   @Test
   public void testSelectCoverRandom() throws Exception {
-    final int ITERATIONS = 10;
+    final int ITERATIONS = 25;
 
     for (int i = 0; i < ITERATIONS; i++) {
       CAS cas = jCas.getCas();
@@ -134,24 +134,41 @@ public class JCasUtilTest extends ComponentTestBase {
       JCas jcas = cas.getJCas();
       long timeNaive = 0;
       long timeOptimized = 0;
-      for (Token t : select(jcas, Token.class)) {
+      
+      // Prepare the index
+      long timeIndexed = System.currentTimeMillis();
+      Map<Sentence, Collection<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
+      timeIndexed = System.currentTimeMillis() - timeIndexed;
+      
+      for (Sentence t : select(jcas, Sentence.class)) {
         long ti = System.currentTimeMillis();
         // The naive approach is assumed to be correct
-        List<Sentence> stem1 = selectCovered(jcas, Sentence.class, t.getBegin(), t.getEnd());
+        List<Token> expected = selectCovered(jcas, Token.class, t.getBegin(), t.getEnd());
         timeNaive += System.currentTimeMillis() - ti;
 
+        // Record time for optimized selectCovered
         ti = System.currentTimeMillis();
-        List<Sentence> stem2 = selectCovered(jcas, Sentence.class, t);
+        List<Token> actual1 = selectCovered(jcas, Token.class, t);
         timeOptimized += System.currentTimeMillis() - ti;
 
-        Collection<Sentence> stem3 = indexCovered(jcas, Token.class, Sentence.class).get(t);
+        // Record index lookup time
+        ti = System.currentTimeMillis();
+        Collection<Token> actual2 = index.get(t);
+        timeIndexed += System.currentTimeMillis() - ti;
 
-        check(jcas, t, stem1, stem2);
-        check(jcas, t, stem1, stem3);
+        check(jcas, t, expected, actual1);
+        check(jcas, t, expected, actual2);
+        
+        // System.out.printf("%n--- OK ---------------%n%n");
       }
-      System.out.format("Speed up factor %.2f [naive:%d optimized:%d diff:%d]\n",
-              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized, timeNaive
-                      - timeOptimized);
+      System.out.printf(
+              "%3d Optimized: speed up factor %3.2f [naive:%4d optimized:%4d (diff:%4d)]%n", i,
+              (double) timeNaive / (double) timeOptimized, timeNaive, timeOptimized,
+              timeNaive - timeOptimized);
+      System.out.printf(
+              "%3d Indexed:   speed up factor %3.2f [naive:%4d indexed  :%4d (diff:%4d)]%n%n", i,
+              (double) timeNaive / (double) timeIndexed, timeNaive, timeIndexed,
+              timeNaive - timeIndexed);
     }
   }
 
@@ -274,7 +291,7 @@ public class JCasUtilTest extends ComponentTestBase {
     return t;
   }
 
-  private void check(JCas jcas, Token t, Collection<? extends Annotation> a1,
+  private void check(JCas jcas, Annotation t, Collection<? extends Annotation> a1,
           Collection<? extends Annotation> a2) {
     // List<Annotation> annos = new ArrayList<Annotation>();
     // FSIterator fs = jcas.getAnnotationIndex().iterator();

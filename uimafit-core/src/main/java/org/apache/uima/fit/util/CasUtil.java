@@ -26,15 +26,16 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -130,7 +131,13 @@ public final class CasUtil {
     }
     final Type type = aCas.getTypeSystem().getType(typeName);
     if (type == null) {
-      throw new IllegalArgumentException("Undeclared type [" + aTypename + "]");
+      StringBuilder sb = new StringBuilder();
+      Iterator<Type> i = aCas.getTypeSystem().getTypeIterator();
+      while (i.hasNext()) {
+        sb.append(i.next().getName()).append('\n');
+      }
+      throw new IllegalArgumentException("Undeclared type [" + aTypename + "]. Available types: "
+              + sb);
     }
     return type;
   }
@@ -772,16 +779,159 @@ public final class CasUtil {
         }
       }
     };
-    for (AnnotationFS s : select(cas, type)) {
-      for (AnnotationFS u : selectCovered(cas, coveredType, s)) {
-        Collection<AnnotationFS> c = index.get(s);
-        if (c == EMPTY_LIST) {
-          c = new LinkedList<AnnotationFS>();
-          index.put(s, c);
+    
+    // Get the covering and covered annotations
+    Collection<AnnotationFS> collType = select(cas, type);
+    Collection<AnnotationFS> collCoveredType = select(cas, coveredType);
+    
+    // Convert them into array for faster access
+    AnnotationFS[] typeArray = collType.toArray(new AnnotationFS[collType.size()]);
+    AnnotationFS[] coveredTypeArray = collCoveredType
+            .toArray(new AnnotationFS[collCoveredType.size()]);
+    
+    // Keeps currently "open" annotations in a sorted order
+    Deque<AnnotationFS> memory = new ArrayDeque<>();
+    Deque<AnnotationFS> memory2 = new ArrayDeque<>();
+    
+    // Array cursors
+    int o = 0;
+    int i = 0;
+    
+    // Whether to log debug information
+    boolean debug = false;
+    
+    while ((o < typeArray.length || !memory.isEmpty()) && i < coveredTypeArray.length) {
+      // Always make sure the memory contains at least one covering annotation to compare against
+      if (memory.isEmpty()) {
+        memory.push(typeArray[o]);
+        if (debug) {
+          System.out.printf("NEXT OUTER%n");
         }
-        c.add(u);
+        o++;
+      }
+      AnnotationFS bottom = memory.peek();
+      
+      // Fast-forward over annotations which cannot be covered by the bottom element because they
+      // start earlier.
+      AnnotationFS iFS = coveredTypeArray[i];
+      while (i < coveredTypeArray.length-1 && iFS.getBegin() < bottom.getBegin()) {
+        if (debug) {
+          System.out.printf("Skipping inner: %d %d%n", iFS.getBegin(), iFS.getEnd());
+        }
+        i++;
+        iFS = coveredTypeArray[i];
+      }
+      
+      // Cache begin/end of current covered annotation for faster access
+      int iFSbegin = iFS.getBegin();
+      int iFSend = iFS.getEnd();
+
+      // If there is any chance that the covering annotations in the memory contains the current
+      // covered ...
+      if (bottom.getBegin() <= iFS.getBegin()) {
+        // ... collect as many potentially covering annotations as possible for the current covered
+        // annotation
+        while (o < typeArray.length && typeArray[o].getBegin() <= iFSbegin) {
+          memory.push(typeArray[o]);
+          o++;
+        }
+        
+        if (debug) {
+          StringBuilder sb2 = new StringBuilder();
+          for (AnnotationFS f : memory) {
+            sb2.append(f.getBegin()).append("-").append(f.getEnd()).append(" ");
+          }
+          System.out.printf("OUTER 1: %s%n", sb2);
+          System.out.printf("INNER  : %d-%d%n", iFSbegin, iFSend);
+        }
+        
+        // Record covered annotations
+        for (AnnotationFS covering : memory) {
+          if (covering.getBegin() <= iFSbegin && iFS.getEnd() <= covering.getEnd()) {
+            Collection<AnnotationFS> c = index.get(covering);
+            if (c == EMPTY_LIST) {
+              c = new LinkedList<AnnotationFS>();
+              index.put(covering, c);
+            }
+            c.add(iFS);
+            if (debug) {
+              System.out.printf("-- %d-%d covers %d-%d%n", covering.getBegin(), covering.getEnd(),
+                      iFSbegin, iFSend);
+            }
+          }
+          else {
+            if (debug) {
+              System.out.printf("-- %d-%d NOT covers %d-%d%n", covering.getBegin(),
+                      covering.getEnd(), iFSbegin, iFSend);
+            }
+          }
+        }
+        
+        if (debug) {
+          System.out.printf("NEXT INNER 1%n");
+        }
+        i++;
+      }
+      else {
+        if (debug) {
+          StringBuilder sb = new StringBuilder();
+          for (AnnotationFS f : memory) {
+            sb.append(f.getBegin()).append("-").append(f.getEnd()).append(" ");
+          }
+          System.out.printf("OUTER 2: %s%n", sb);
+          System.out.printf("INNER  : %d-%d%n", iFSbegin, iFS.getEnd());
+          System.out.printf("HOPELESS!%n");
+          
+          System.out.printf("NEXT INNER 2%n");
+        }
+        i++;
+      }
+        
+      // Purge covering annotations from memory that cannot match anymore given the currently
+      int purgeImpl = 0;
+      // exampled covered annotation
+      if (purgeImpl == 0) {
+        // Alternative implementation: re-uses memory
+        Iterator<AnnotationFS> purgeIterator = memory.iterator();
+        while (purgeIterator.hasNext()) {
+          AnnotationFS purgeCandidate = purgeIterator.next();
+          if (purgeCandidate.getEnd() < iFS.getBegin()) {
+            if (debug) {
+              System.out.printf("Dropping: %d-%d%n", purgeCandidate.getBegin(),
+                      purgeCandidate.getEnd());
+            }
+            purgeIterator.remove();
+          }
+        }
+      }
+      
+      // Alternative implementation: uses more memory but faster?
+      if (purgeImpl == 1) {
+        memory2.clear();
+        for (AnnotationFS purgeCandidate : memory) {
+          if (purgeCandidate.getEnd() < iFS.getBegin()) {
+            if (debug) {
+              System.out.printf("Dropping: %d-%d%n", purgeCandidate.getBegin(),
+                      purgeCandidate.getEnd());
+            }
+          }
+          else {
+            memory2.add(purgeCandidate);
+          }
+        }
+        
+        // Swap
+        Deque<AnnotationFS> buf = memory;
+        memory = memory2;
+        memory2 = buf;
+      }
+      
+      if (debug) {
+        System.out.printf("outer: %d/%d  inner: %d/%d%n", o, typeArray.length, i,
+                coveredTypeArray.length);
       }
     }
+
     return unmodifiableMap(index);
   }
 
