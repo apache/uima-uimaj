@@ -471,6 +471,8 @@ public final class JCasUtil {
    * Create an index for quickly lookup up the annotations covered by a particular annotation. This
    * is preferable to using {@link #selectCovered(JCas, Class, int, int)} because the overhead of
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
+   * The order of entries in the map is not defined. However, lists of covered annotations in
+   * the map are guaranteed to be in the same order as in the UIMA default annotation index.
    * 
    * @param <T>
    *          the covering JCas type.

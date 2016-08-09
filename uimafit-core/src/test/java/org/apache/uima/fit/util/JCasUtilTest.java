@@ -132,6 +132,8 @@ public class JCasUtilTest extends ComponentTestBase {
       initRandomCas(cas, 10 * i);
 
       JCas jcas = cas.getJCas();
+      Collection<Sentence> sentences = select(jcas, Sentence.class);
+      
       long timeNaive = 0;
       long timeOptimized = 0;
       
@@ -140,7 +142,13 @@ public class JCasUtilTest extends ComponentTestBase {
       Map<Sentence, Collection<Token>> index = indexCovered(jcas, Sentence.class, Token.class);
       timeIndexed = System.currentTimeMillis() - timeIndexed;
       
-      for (Sentence t : select(jcas, Sentence.class)) {
+      // -- The order of entries in the index is NOT defined!
+      // Check that order of indexed sentences corresponds to regular CAS-index order
+      // List<Sentence> relevantSentences = new ArrayList<>(sentences);
+      // relevantSentences.retainAll(index.keySet());
+      // assertEquals(relevantSentences, new ArrayList<>(index.keySet()));
+      
+      for (Sentence t : sentences) {
         long ti = System.currentTimeMillis();
         // The naive approach is assumed to be correct
         List<Token> expected = selectCovered(jcas, Token.class, t.getBegin(), t.getEnd());
