@@ -18,12 +18,17 @@
  */
 package org.apache.uima.fit.cpe;
 
+import static java.util.Arrays.asList;
+import static org.apache.uima.fit.cpe.CpePipeline.runPipeline;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.apache.uima.fit.cpe.CpePipeline.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
@@ -40,7 +45,6 @@ import org.apache.uima.util.Progress;
 import org.junit.Test;
 
 public class CasMultiplierTest {
-  
   /**
    * Simulates a CPE with CAS multipliers that always read one CAS and always produce one CAS.
    * It actually appears to work despite CPE not supporting CAS multipliers.
@@ -53,9 +57,18 @@ public class CasMultiplierTest {
     
     AnalysisEngineDescription consumer = createEngineDescription(Consumer.class);
     
-    runPipeline(reader, createEngineDescription(incrementor, incrementor, incrementor, consumer));
+    AnalysisEngineDescription aggregate = createEngineDescription(incrementor, incrementor,
+            incrementor, consumer);
     
-    assertEquals(13, Consumer.result);
+    runPipeline(reader, aggregate);
+    
+    // The order in which the consumer sees the CASes is arbitrary, in particular because we never
+    // tell the CPE that the aggregate which contains the consumer cannot be scaled out.
+    assertFalse(aggregate.getAnalysisEngineMetaData().getOperationalProperties()
+            .isMultipleDeploymentAllowed());
+    Collections.sort(Consumer.result);
+    
+    assertEquals(asList(4,5,6,7,8,9,10,11,12,13), Consumer.result);
   }
 
   public static class Reader extends CasCollectionReader_ImplBase
@@ -126,18 +139,18 @@ public class CasMultiplierTest {
   
   public static class Consumer extends CasConsumer_ImplBase
   {
-    public static int result = -1;
+    public static List<Integer> result;
     
     @Override
     public void initialize(UimaContext aContext) throws ResourceInitializationException {
       super.initialize(aContext);
-      result = -1;
+      result = new ArrayList<>();
     }
     
     @Override
     public void process(CAS aCAS) throws AnalysisEngineProcessException {
       System.out.printf("Result   : %s%n", aCAS.getDocumentText());
-      result = Integer.valueOf(aCAS.getDocumentText());
+      result.add(Integer.valueOf(aCAS.getDocumentText()));
     }
   }
 }
