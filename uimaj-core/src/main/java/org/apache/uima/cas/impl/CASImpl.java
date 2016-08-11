@@ -1385,7 +1385,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     try {
       Header h = CommonSerDes.readHeader(dis);
-      return reinit(h, istream);
+      return reinit(h, istream, null);
     } catch (IOException e) {
       String msg = e.getMessage();
       if (msg == null) {
@@ -1405,13 +1405,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * needed if the blob is from C++ -- C++ blob serialization writes data in
    * native byte order.
    * 
+   * @param h -
    * @param istream -
+   * @param leniently -
    * @return -
    * @throws CASRuntimeException wraps IOException
    */
-  public SerialFormat reinit(Header h, InputStream istream) throws CASRuntimeException {
+  public SerialFormat reinit(Header h, InputStream istream, TypeSystemImpl originalTS) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      return this.svd.baseCAS.reinit(h, istream);
+      return this.svd.baseCAS.reinit(h, istream, originalTS);
     }
    
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
@@ -1432,7 +1434,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       
       if (h.form6) { 
         try {
-          (new BinaryCasSerDes6(this)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+          (new BinaryCasSerDes6(this, originalTS)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
           return h.typeSystemIncluded ? SerialFormat.COMPRESSED_FILTERED_TSI
                   : SerialFormat.COMPRESSED_FILTERED;
         } catch (ResourceInitializationException e) {

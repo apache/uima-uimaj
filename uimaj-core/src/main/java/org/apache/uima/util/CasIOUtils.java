@@ -44,6 +44,7 @@ import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.CommonSerDes;
 import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.Serialization;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -296,20 +297,31 @@ public class CasIOUtils {
     DataInputStream deserIn = CommonSerDes.maybeWrapToDataInputStream(casInputStream);
     if (CommonSerDes.isBinaryHeader(deserIn)) {   
       Header h = CommonSerDes.readHeader(deserIn);
+      TypeSystemImpl ts = null;
       if (h.isTypeSystemIncluded()) { // Load TSI from CAS stream
         try {
           ObjectInputStream ois = new ObjectInputStream(deserIn);
           CASMgrSerializer casMgrSerializer = (CASMgrSerializer) ois.readObject();
-          casImpl.setupCasFromCasMgrSerializer(casImpl, casMgrSerializer);  
+          if (!leniently) {
+            casImpl.setupCasFromCasMgrSerializer(casImpl, casMgrSerializer);  
+          } else {
+            ts = casMgrSerializer.getTypeSystem();
+            ts.commit();
+          }
         } catch (ClassNotFoundException e) {
           /**Unrecognized serialized CAS format*/
           throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT);
         }       
       }
       else if (casMgr != null) { // if TSI not in file, maybe set it from parameter
-        casImpl.setupCasFromCasMgrSerializer(casImpl, casMgr);  
+        if (!leniently) {
+          casImpl.setupCasFromCasMgrSerializer(casImpl, casMgr);  
+        } else {
+          ts = casMgr.getTypeSystem();
+          ts.commit();
+        }
       }
-      return casImpl.reinit(h, casInputStream);
+      return casImpl.reinit(h, casInputStream, ts);
     } else {
       // is a Java Object serialization, with or without a type system
       ObjectInputStream ois = new ObjectInputStream(casInputStream);
