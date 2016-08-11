@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 
@@ -98,6 +97,11 @@ public class CasIOUtilsTest extends TestCase{
   
   public void testSp() throws Exception {
     testFormat(SerialFormat.SERIALIZED_TSI, "binsp");
+  }
+  
+  
+  public void testS6p() throws Exception {
+    testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6p");
   }
   
   public void testS0() throws Exception {

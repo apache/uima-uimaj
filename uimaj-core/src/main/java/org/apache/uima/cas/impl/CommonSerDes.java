@@ -85,7 +85,7 @@ public class CommonSerDes {
     public Header delta(boolean v2) {isDelta = v2;  return this; }
     public Header form4() {isCompressed = form4 = true; form6 = false; return this; }
     public Header form6() {isCompressed = form6 = true; form4 = false; return this; }
-    public Header typeSystemIncluded() {typeSystemIncluded = true; return this; }
+    public Header typeSystemIncluded(boolean f) {typeSystemIncluded = f; return this; }
     public Header seqVer(int v2) { assert (v2 >= 0 && v2 < 256); seqVersionNbr = (byte)v2; return this; }
     public Header v3() {isV3 = true; return this; }
     

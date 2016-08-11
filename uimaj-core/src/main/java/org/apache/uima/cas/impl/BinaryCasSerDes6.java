@@ -58,6 +58,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +71,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
@@ -342,6 +344,8 @@ public class BinaryCasSerDes6 {
 
   final private TypeSystemImpl tgtTs;
 
+  private boolean isTsiIncluded;
+  
   private TypeInfo typeInfo; // type info for the current type being serialized/deserialized
                              // always the "src" typeInfo I think, except for compareCas use
   final private CasTypeSystemMapper typeMapper;
@@ -470,6 +474,7 @@ public class BinaryCasSerDes6 {
       AbstractCas aCas,
       MarkerImpl mark,
       TypeSystemImpl tgtTs,
+      boolean storeTSI,      
       ReuseInfo rfs,
       boolean doMeasurements,
       CompressLevel compressLevel, 
@@ -489,6 +494,7 @@ public class BinaryCasSerDes6 {
     isDelta = isSerializingDelta = (mark != null);
     typeMapperCmn = typeMapper = ts.getTypeSystemMapper(tgtTs);
     isTypeMappingCmn = isTypeMapping = (null != typeMapper);
+    isTsiIncluded = storeTSI;
     
     heap = cas.getHeap().heap;
     heapEnd = cas.getHeap().getCellsUsed();
@@ -523,7 +529,7 @@ public class BinaryCasSerDes6 {
    * @throws ResourceInitializationException never thrown 
    */
   public BinaryCasSerDes6(AbstractCas cas) throws ResourceInitializationException {
-    this(cas, null, null, null, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, null, null, false, null, false, CompressLevel.Default, CompressStrat.Default);
   }
   
   /**
@@ -533,7 +539,7 @@ public class BinaryCasSerDes6 {
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, TypeSystemImpl tgtTs) throws ResourceInitializationException {
-    this(cas, null, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, null, tgtTs, false, null, false, CompressLevel.Default, CompressStrat.Default);
   }
 
   /**
@@ -545,7 +551,7 @@ public class BinaryCasSerDes6 {
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) throws ResourceInitializationException {
-    this(cas, mark, tgtTs, rfs, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, mark, tgtTs, false, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
   
   /**
@@ -558,7 +564,7 @@ public class BinaryCasSerDes6 {
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) throws ResourceInitializationException {
-    this(cas, mark, tgtTs, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
+    this(cas, mark, tgtTs, false, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
   }
 
   /**
@@ -568,7 +574,18 @@ public class BinaryCasSerDes6 {
    * @throws ResourceInitializationException never thrown
    */
   public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) throws ResourceInitializationException {
-    this(cas, null, null, rfs, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, null, null, false, rfs, false, CompressLevel.Default, CompressStrat.Default);
+  }
+
+  /**
+   * Setup to serialize (not delta) or deserialize (maybe delta) using binary compression, no type mapping, optionally storing TSI, and only processing reachable Feature Structures
+   * @param cas -
+   * @param rfs -
+   * @param storeTSI -
+   * @throws ResourceInitializationException never thrown
+   */
+  public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs, boolean storeTSI) throws ResourceInitializationException {
+    this(cas, null, null, storeTSI, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
 
   /*********************************************************************************************
@@ -589,6 +606,10 @@ public class BinaryCasSerDes6 {
       throw new UnsupportedOperationException("Can't do Delta Serialization with different target TS");
     }
 
+    if (isTsiIncluded && (tgtTs != null)) {
+      throw new UnsupportedOperationException("Can't store a different target TS in the serialized form");
+    }
+    
     if (fsStartIndexes == null) {
       if (isSerializingDelta) {
         throw new UnsupportedOperationException("Serializing a delta requires valid ReuseInfo for Cas being serialized," +
@@ -612,9 +633,15 @@ public class BinaryCasSerDes6 {
     CommonSerDes.createHeader()
     .form6()
     .delta(isSerializingDelta)
-    .seqVer(0)     
+    .seqVer(0)
+    .typeSystemIncluded(isTsiIncluded)
     .write(serializedOut);
-    
+ 
+    if (isTsiIncluded) {
+      ObjectOutputStream tsiOS = new ObjectOutputStream(serializedOut);
+      tsiOS.writeObject(Serialization.serializeCASMgr((CASMgr) cas));
+      tsiOS.flush();
+    }
  
     os = new OptimizeStrings(doMeasurements);
  

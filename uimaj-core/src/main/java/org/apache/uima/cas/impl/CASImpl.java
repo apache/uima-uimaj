@@ -1376,7 +1376,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return -
    * @throws CASRuntimeException wraps IOException
    */
-
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
       return this.svd.baseCAS.reinit(istream);
@@ -1384,11 +1383,42 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
 
+    try {
+      Header h = CommonSerDes.readHeader(dis);
+      return reinit(h, istream);
+    } catch (IOException e) {
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = e.toString();
+      }
+      CASRuntimeException exception = new CASRuntimeException(
+          CASRuntimeException.BLOB_DESERIALIZATION, new String[] { msg });
+      throw exception;
+    }
+  }
+  
+  /**
+   * --------------------------------------------------------------------- see
+   * Blob Format in CASSerializer
+   * 
+   * This reads in and deserializes CAS data from a stream. Byte swapping may be
+   * needed if the blob is from C++ -- C++ blob serialization writes data in
+   * native byte order.
+   * 
+   * @param istream -
+   * @return -
+   * @throws CASRuntimeException wraps IOException
+   */
+  public SerialFormat reinit(Header h, InputStream istream) throws CASRuntimeException {
+    if (this != this.svd.baseCAS) {
+      return this.svd.baseCAS.reinit(h, istream);
+    }
+   
+    final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
+
     final BinDeserSupport bds = new BinDeserSupport();
     
     try {
-      Header h = CommonSerDes.readHeader(dis);
-
       final boolean delta = h.isDelta;
       
       if (!delta) {
@@ -1403,7 +1433,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (h.form6) { 
         try {
           (new BinaryCasSerDes6(this)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
-          return SerialFormat.COMPRESSED_FILTERED;
+          return h.typeSystemIncluded ? SerialFormat.COMPRESSED_FILTERED_TSI
+                  : SerialFormat.COMPRESSED_FILTERED;
         } catch (ResourceInitializationException e) {
           throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED, null, e);
         }

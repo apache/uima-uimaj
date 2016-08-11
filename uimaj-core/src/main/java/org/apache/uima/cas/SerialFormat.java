@@ -69,12 +69,11 @@ public enum SerialFormat {
    */
   SERIALIZED_TSI("scas"),
 
-//  /**
-//   * Binary compressed CAS with embedded Java-serialized type system
-//   * with reachability and type and feature filtering (form 6)
-//   */
-//  COMPRESSED_FILTERED_TS("bcas");
-  ;
+  /**
+   * Binary compressed CAS with embedded Java-serialized type system
+   * with reachability and type and feature filtering (form 6)
+   */
+  COMPRESSED_FILTERED_TSI("bcas");
   
   private String defaultFileExtension;
 

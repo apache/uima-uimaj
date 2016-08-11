@@ -42,6 +42,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.CASMgrSerializer;
 import org.apache.uima.cas.impl.CASSerializer;
 import org.apache.uima.cas.impl.CommonSerDes;
+import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
@@ -191,7 +192,7 @@ public class CasIOUtils {
    *           - Problem loading from given InputStream
    */
   public static SerialFormat load(InputStream casInputStream, CAS aCAS) throws IOException {
-    return load(casInputStream, null, aCAS, false);
+    return load(casInputStream, (CASMgrSerializer) null, aCAS, false);
   }
 
   /**
@@ -204,9 +205,10 @@ public class CasIOUtils {
    * pass null for the tsiInputStream.
    * 
    * @param casInputStream
-   *          The input stream containing the CAS. Caller should buffer this appropriately.
+   *          The input stream containing the CAS.
    * @param tsiInputStream
-   *          The optional input stream containing the type system. Caller should buffer this appropriately.
+   *          The optional input stream containing the type system. This is only used if the
+   *          casInputStream does not already come with an embedded CAS configuration.
    * @param aCAS
    *          The CAS that should be filled
    * @param leniently
@@ -220,17 +222,63 @@ public class CasIOUtils {
    */
   public static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
           boolean leniently) throws IOException {
+    CASMgrSerializer casMgrSerializer = null; 
+
+    // If there is a TSI specified, load it - we will see later if we actually use it.
+    if (tsiInputStream != null) {
+      if (!tsiInputStream.markSupported()) {
+        tsiInputStream = new BufferedInputStream(tsiInputStream);
+      }
+      
+      try {
+        ObjectInputStream is = new ObjectInputStream(tsiInputStream);
+        casMgrSerializer = (CASMgrSerializer) is.readObject();
+      } catch (ClassNotFoundException e) {
+        throw new IOException(e);
+      }    
+    }
+
+    return load(casInputStream, casMgrSerializer, aCAS, leniently);
+  }
+
+  /**
+   * Loads a CAS from a URL source. The format is determined from the content. For formats of type
+   * SERIALIZED_TSI, the type system and index definitions are read from the casUrl source; the
+   * value of tsiInputStream is ignored. For other formats, if the tsiUrl is not null, type system
+   * and index definitions are read from that source.
+   * 
+   * To specify lenient loading, without specifying an additional type system and index definition
+   * source, pass null for the tsiInputStream.
+   * 
+   * This method avoids the repeated loading of the typesystem and index definitions
+   * from a stream when loading many CASes in a row.
+   * 
+   * @param casInputStream
+   *          The input stream containing the CAS.
+   * @param casMgr
+   *          The optional CAS configuration including type system definition and index definition
+   *          in form of a {@link CASMgrSerializer}}. This is only used if the
+   *          casInputStream does not already come with an embedded CAS configuration.
+   * @param aCAS
+   *          The CAS that should be filled
+   * @param leniently
+   *          for XCAS and XMI formats, ignore feature structures and features of non-existing types
+   *          and/or features. ignored for other formats.
+   * @return the SerialFormat of the loaded CAS
+   * @throws IOException
+   *           - Problem loading from given InputStream
+   * @throws IllegalArgumentException
+   *           - when trying to load XCAS
+   */
+  public static SerialFormat load(InputStream casInputStream, CASMgrSerializer casMgr, CAS aCAS,
+          boolean leniently) throws IOException {
 
     if (!casInputStream.markSupported()) {
       casInputStream = new BufferedInputStream(casInputStream);
     }
     
-    if (tsiInputStream != null && !tsiInputStream.markSupported()) {
-      tsiInputStream = new BufferedInputStream(tsiInputStream);
-    }
-    
     CASImpl casImpl = (CASImpl) aCAS;
-    /** scan the first part of the file for known formats */
+    // scan the first part of the file for known formats
     casInputStream.mark(6);
     byte[] firstPartOfFile = new byte[6];
     int bytesReadCount = casInputStream.read(firstPartOfFile);
@@ -247,15 +295,31 @@ public class CasIOUtils {
     
     DataInputStream deserIn = CommonSerDes.maybeWrapToDataInputStream(casInputStream);
     if (CommonSerDes.isBinaryHeader(deserIn)) {   
-      return casImpl.reinit(casInputStream);
+      Header h = CommonSerDes.readHeader(deserIn);
+      if (h.isTypeSystemIncluded()) { // Load TSI from CAS stream
+        try {
+          ObjectInputStream ois = new ObjectInputStream(deserIn);
+          CASMgrSerializer casMgrSerializer = (CASMgrSerializer) ois.readObject();
+          casImpl.setupCasFromCasMgrSerializer(casImpl, casMgrSerializer);  
+        } catch (ClassNotFoundException e) {
+          /**Unrecognized serialized CAS format*/
+          throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT);
+        }       
+      }
+      else if (casMgr != null) { // if TSI not in file, maybe set it from parameter
+        casImpl.setupCasFromCasMgrSerializer(casImpl, casMgr);  
+      }
+      return casImpl.reinit(h, casInputStream);
     } else {
       // is a Java Object serialization, with or without a type system
       ObjectInputStream ois = new ObjectInputStream(casInputStream);
       try {
         Object o = ois.readObject();
         if (o instanceof CASSerializer) {
-          casImpl = readCasManager(casImpl, tsiInputStream);  // maybe install type system and index def   
-          casImpl.reinit((CASSerializer) o);                  // deserialize from object
+          if (casMgr != null) { // maybe install type system and index def  
+            casImpl.setupCasFromCasMgrSerializer(casImpl, casMgr);  
+          }
+          casImpl.reinit((CASSerializer) o); // deserialize from object
           return SerialFormat.SERIALIZED;
         } else if (o instanceof CASCompleteSerializer) {
           // with a type system use that, ignore any supplied via tsiInputStream
@@ -331,7 +395,13 @@ public class CasIOUtils {
           serializeWithCompression(aCas, docOS);
           break;
         case COMPRESSED_FILTERED: // Binary compressed CAS (form 6)
-          serializeWithCompression(aCas, docOS, aCas.getTypeSystem());
+          serializeWithCompression(aCas, docOS, false);
+          break;
+        case COMPRESSED_FILTERED_TSI:
+          // Binary compressed CAS (form 6)
+          // ... with embedded Java-serialized type system
+          serializeWithCompression(aCas, docOS, true);
+          typeSystemWritten = true; // Embedded type system
           break;
         default:
           throw new IllegalArgumentException("Unknown format [" + format.name()
@@ -343,35 +413,11 @@ public class CasIOUtils {
       throw new IOException(e);
     }
 
+    // Write type system to the separate stream only if it has not alreay been embedded into the
+    // main stream
     if (tsiOS != null && !typeSystemWritten) {
       writeTypeSystem(aCas, tsiOS);
     }
-  }
-
-  /**
-   * Takes a serialized version of the type system and index definitions as represented by
-   * the Java object serialization of the class CASMgrSerializer, and reads it, and uses it 
-   * to reset the provided CAS to this new definition.
-   * 
-   * @param cas the CAS to reset
-   * @param aIs the stream having the serialized CASMgrSerializer
-   * @return the initial view of the new cas with the type and index definitions installed and set up.
-   * @throws IOException
-   */
-  private static CASImpl readCasManager(CAS cas, InputStream aIs) throws IOException {
-    if (null == aIs) {
-      return (CASImpl) cas;
-    }
-    CASMgrSerializer casMgrSerializer;
-    CASImpl casImpl = (CASImpl) cas;
-
-    try {
-      ObjectInputStream is = new ObjectInputStream(aIs);
-      casMgrSerializer = (CASMgrSerializer) is.readObject();
-      return casImpl.setupCasFromCasMgrSerializer(casImpl, casMgrSerializer);
-    } catch (ClassNotFoundException e) {
-      throw new IOException(e);
-    }    
   }
 
   private static void writeJavaObject(Object o, OutputStream aOS) throws IOException {

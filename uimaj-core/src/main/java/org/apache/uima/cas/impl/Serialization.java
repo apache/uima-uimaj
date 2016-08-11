@@ -228,6 +228,25 @@ public class Serialization {
    * @throws IOException if IO exception
    * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */  
+  public static ReuseInfo serializeWithCompression(CAS cas, Object out, boolean includeTSI) throws IOException, ResourceInitializationException {
+    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, null, includeTSI);
+    bcs.serialize(out);
+    return bcs.getReuseInfo();
+  }
+  
+  /**
+   * Serialize in compressed binary with type filtering
+   * This method can use type filtering to omit sending those types and/or features not present in the target type system.
+   *   - To omit type filtering, use null for the target type system
+   * It also only sends those feature structures which are reachable either from an index or references from other reachable feature structures.
+   * 
+   * @param cas the CAS to serialize
+   * @param out an OutputStream, a DataOutputStream, or a File
+   * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
+   * @return information to be used on subsequent serializations (to save time) or deserializations (for receiving delta CASs), or reserializations (if sending delta CASs)
+   * @throws IOException if IO exception
+   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
+   */  
   public static ReuseInfo serializeWithCompression(CAS cas, Object out, TypeSystem tgtTypeSystem) throws IOException, ResourceInitializationException {
     BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, (TypeSystemImpl) tgtTypeSystem);
     bcs.serialize(out);
