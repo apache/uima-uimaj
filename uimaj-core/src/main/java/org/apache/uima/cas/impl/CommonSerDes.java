@@ -72,7 +72,8 @@ public class CommonSerDes {
     boolean isV3style;
     boolean form4;
     boolean form6;
-    boolean typeSystemIncluded;
+    boolean typeSystemIncluded;  // for form 6, TS only
+    boolean typeSystemIndexDefIncluded;
     byte seqVersionNbr;
     boolean isV3;
     boolean swap;
@@ -86,6 +87,7 @@ public class CommonSerDes {
     public Header form4() {isCompressed = form4 = true; form6 = false; return this; }
     public Header form6() {isCompressed = form6 = true; form4 = false; return this; }
     public Header typeSystemIncluded(boolean f) {typeSystemIncluded = f; return this; }
+    public Header typeSystemIndexDefIncluded(boolean f) {typeSystemIndexDefIncluded = f; return this; }
     public Header seqVer(int v2) { assert (v2 >= 0 && v2 < 256); seqVersionNbr = (byte)v2; return this; }
     public Header v3() {isV3 = true; return this; }
     
@@ -94,7 +96,7 @@ public class CommonSerDes {
       v = (!isCompressed && !isDelta) ? 1 : 0;
       if (isDelta) v |= 0x02;
       if (isCompressed) v |= 0x04;
-      if (typeSystemIncluded) v |= 0x08;
+      if (typeSystemIndexDefIncluded) v |= 0x08;
       v |= (seqVersionNbr << 8);
       if (isV3) v |= 0x010000;
       
@@ -132,9 +134,12 @@ public class CommonSerDes {
     public boolean isForm6() {
       return form6;
     }
+    public boolean isTypeSystemIndexDefIncluded() {
+      return typeSystemIndexDefIncluded;
+    }
     public boolean isTypeSystemIncluded() {
       return typeSystemIncluded;
-    }
+    }    
     public byte getSeqVersionNbr() {
       return seqVersionNbr;
     }
@@ -189,7 +194,7 @@ public class CommonSerDes {
     
     h.isDelta = (v & 2) != 0;
     h.isCompressed = (v & 4) != 0;
-    h.typeSystemIncluded = (v & 8) != 0;
+    h.typeSystemIndexDefIncluded = (v & 8) != 0;
     h.seqVersionNbr = (byte) ((v & 0xFF00) >> 8);
    
     if (h.isCompressed) {

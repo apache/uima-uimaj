@@ -155,6 +155,9 @@ public class CASRuntimeException extends UIMARuntimeException {
    */
 	public static final String BLOB_DESERIALIZATION = "BLOB_DESERIALIZATION";
 
+	/** Deserializing Compressed Form 6 with CasLoadMode LENIENT, but no Type System provided. */
+	public static final String LENIENT_FORM_6_NO_TS = "LENIENT_FORM_6_NO_TS";
+	
 	/** Error trying to open a stream to Sofa data. */
 	public static final String SOFADATASTREAM_ERROR = "SOFADATASTREAM_ERROR";
 
@@ -213,6 +216,8 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** While FS was in the index, illegal attempt to modify Feature "{0}" which is used as a key in one or more indexes; FS = "{1}" */
   public static final String ILLEGAL_FEAT_SET = "ILLEGAL_FEAT_SET";
 
+  /** Lenient deserialization not support for input of type {0}. */
+  public static final String LENIENT_NOT_SUPPORTED = "LENIENT_NOT_SUPPORTED";
   
 	public CASRuntimeException() {
 		super();

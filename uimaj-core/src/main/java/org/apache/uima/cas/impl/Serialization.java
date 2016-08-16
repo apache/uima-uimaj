@@ -95,6 +95,19 @@ public class Serialization {
             .getBaseIndexRepository());
     return ser;
   }
+  
+  /**
+   * Convert a Type System into a 
+   * CASMgrSerializer object which can be serialized
+   * 
+   * @param casMgr the type system and index repo definitions
+   * @return a serializable object version of these
+   */
+  public static CASMgrSerializer serializeCASMgrTypeSystemOnly(CASMgr casMgr) {
+    CASMgrSerializer ser = new CASMgrSerializer();
+    ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
+    return ser;
+  }
 
   /**
    * Convert a CAS + the type system and index definitions into a
@@ -223,13 +236,14 @@ public class Serialization {
    * 
    * @param cas the CAS to serialize
    * @param out an OutputStream, a DataOutputStream, or a File
-   * @param tgtTypeSystem null or a target TypeSystem, which must be mergable with this CAS's type system
+   * @param includeTS true to serialize the type system
+   * @param includeTSI true to serialize the type system and the indexes definition
    * @return information to be used on subsequent serializations (to save time) or deserializations (for receiving delta CASs), or reserializations (if sending delta CASs)
    * @throws IOException if IO exception
    * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
    */  
-  public static ReuseInfo serializeWithCompression(CAS cas, Object out, boolean includeTSI) throws IOException, ResourceInitializationException {
-    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, null, includeTSI);
+  public static ReuseInfo serializeWithCompression(CAS cas, Object out, boolean includeTS, boolean includeTSI) throws IOException, ResourceInitializationException {
+    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, null, includeTS, includeTSI);
     bcs.serialize(out);
     return bcs.getReuseInfo();
   }

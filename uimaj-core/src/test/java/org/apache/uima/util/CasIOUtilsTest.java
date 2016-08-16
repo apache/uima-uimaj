@@ -104,12 +104,12 @@ public class CasIOUtilsTest extends TestCase{
 
     casToUse.reset();
     try (FileInputStream casInputStream = new FileInputStream(casFile)) {
-      CasIOUtils.load(casInputStream, (CASMgrSerializer) null, casToUse, leniently);
+      CasIOUtils.load(casInputStream, null, casToUse, leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
     }
     assertCorrectlyLoaded(casToUse, leniently);
     
     casToUse.reset();
-    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse, leniently);
+    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse, leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
     assertCorrectlyLoaded(casToUse, leniently);
   }
   
@@ -134,7 +134,7 @@ public class CasIOUtilsTest extends TestCase{
     CAS casToUse = leniently ? cas2 : cas;
     
     casToUse.reset();
-    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse, leniently);
+    CasIOUtils.load(casFile.toURI().toURL(), null, casToUse, leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
     assertCorrectlyLoaded(casToUse, leniently);
   }
 
@@ -178,7 +178,7 @@ public class CasIOUtilsTest extends TestCase{
     casToUse.reset();
     
     FileInputStream casInputStream = new FileInputStream(casFile);
-    SerialFormat loadedFormat = CasIOUtils.load(casInputStream, (CASMgrSerializer) null, casToUse, leniently);
+    SerialFormat loadedFormat = CasIOUtils.load(casInputStream, null, casToUse, leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
     casInputStream.close();
     Assert.assertEquals(format, loadedFormat);
     assertCorrectlyLoaded(casToUse, leniently);

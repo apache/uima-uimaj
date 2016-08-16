@@ -40,7 +40,7 @@ public enum SerialFormat {
   XMI("xmi"),
 
   /**
-   * Java-serialized CAS without type system, no filtering
+   * Plain custom binary serialized CAS without type system, no filtering
    */
   BINARY("bcas"),
 
@@ -66,14 +66,37 @@ public enum SerialFormat {
 
   /**
    * Java-serialized CAS with type system and index definitions
+   * The Typs System and Index Definition replaces the CAS's when deserializing.
    */
   SERIALIZED_TSI("scas"),
 
   /**
-   * Binary compressed CAS with embedded Java-serialized type system
-   * with reachability and type and feature filtering (form 6)
+   * Binary compressed form 6 CAS with embedded type system
+   * representing the type system encoding the serialization
+   *
+   * specifies the type system used for the serialized form
    */
-  COMPRESSED_FILTERED_TSI("bcas");
+  COMPRESSED_FILTERED_TS("bcas"),
+  
+  /** 
+   * Type system and index specification included
+   * used to reinitialize the CAS and 
+   * specifies the type system used for the serialized form
+   */
+  COMPRESSED_FILTERED_TSI("bcas"),
+  
+  /**
+   * Plain custom binary serialized CAS, no filtering, plus serialized TSI
+   *   used to reinitialize the CAS
+   */
+  BINARY_TSI("bcas"),
+  
+  /**
+   * Binary Compressed Form 4, plus serialized TSI
+   *   used to reinitialize the CAS
+   */
+  COMPRESSED_TSI("bcas"),
+  ;
   
   private String defaultFileExtension;
 

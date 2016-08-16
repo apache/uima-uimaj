@@ -59,7 +59,7 @@ public class CASMgrSerializer implements Serializable {
   // encoded explicitly. I.e., the fact that tokens are in any index that
   // annotations are in is implicit.
 
-  public int[] typeOrder;
+  public int[] typeOrder = null;
 
   /**
    * The index identifiers. Note that more than one identifier can refer to the same index.
@@ -511,4 +511,7 @@ public class CASMgrSerializer implements Serializable {
     return ir;
   }
 
+  public boolean hasIndexRepository() {
+    return this.typeOrder != null;
+  }
 }
