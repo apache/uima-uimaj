@@ -25,6 +25,7 @@ import java.io.DataInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -97,6 +98,7 @@ import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.CasLoadMode;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Misc;
 
@@ -430,7 +432,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   private int mySofaRef = 0;
 
-  private JCas jcas = null;
+  private JCasImpl jcas = null;
   
   private final boolean isUsedJcasCache;
 
@@ -998,8 +1000,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // at the same time
     synchronized (ts) {
       if (!ts.isCommitted()) {
-        this.svd.casMetadata.ts.commit();
-        initFSClassRegistry();
+        ts.commit();
+        initFSClassRegistry();  // add generators
         FSClassRegistry fscr = getFSClassRegistry();
         // save for the case of non=jcas pipeline with a jcas pear in the middle
         // - this
@@ -1256,30 +1258,33 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.casMetadata.fsClassRegistry;
   }
 
-  public CASImpl setupCasFromCasMgrSerializer(CASImpl cas, CASMgrSerializer casMgrSerializer) {
-    cas = cas.getBaseCAS();
-    
-    TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
-    cas.svd.casMetadata = ts.casMetadata;
-    cas.commitTypeSystem();
+  public CASImpl setupCasFromCasMgrSerializer(CASMgrSerializer casMgrSerializer) {
+    CASImpl cas = this.getBaseCAS();
 
-    // reset index repositories -- wipes out Sofa index
-    cas.indexRepository = casMgrSerializer.getIndexRepository(cas);
-    cas.indexRepository.commit();
-
-    // get handle to existing initial View
-    CAS initialView = cas.getInitialView();
-
-    // throw away all other View information as the CAS definition may have
-    // changed
-    cas.svd.sofa2indexMap.clear();
-    cas.svd.sofaNbr2ViewMap.clear();
-    cas.svd.viewCount = 0;
-
-    // freshen the initial view
-    ((CASImpl) initialView).refreshView(cas.svd.baseCAS, null);
-    setViewForSofaNbr(1, initialView);
-    cas.svd.viewCount = 1;
+    if (null != casMgrSerializer) {
+  
+      TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
+      cas.svd.casMetadata = ts.casMetadata;
+      cas.commitTypeSystem();
+  
+      // reset index repositories -- wipes out Sofa index
+      cas.indexRepository = casMgrSerializer.getIndexRepository(cas);
+      cas.indexRepository.commit();
+  
+      // get handle to existing initial View
+      CAS initialView = cas.getInitialView();
+  
+      // throw away all other View information as the CAS definition may have
+      // changed
+      cas.svd.sofa2indexMap.clear();
+      cas.svd.sofaNbr2ViewMap.clear();
+      cas.svd.viewCount = 0;
+  
+      // freshen the initial view
+      ((CASImpl) initialView).refreshView(cas.svd.baseCAS, null);
+      setViewForSofaNbr(1, initialView);
+      cas.svd.viewCount = 1;
+    }
     return cas;
   }
   
@@ -1288,7 +1293,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       this.svd.baseCAS.reinit(casCompSer);
       return;
     }
-    setupCasFromCasMgrSerializer(this, casCompSer.getCASMgrSerializer());
+    setupCasFromCasMgrSerializer(casCompSer.getCASMgrSerializer());
 
     // deserialize heap
     CASSerializer casSer = casCompSer.getCASSerializer();
@@ -1385,7 +1390,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     try {
       Header h = CommonSerDes.readHeader(dis);
-      return reinit(h, istream, null);
+      return reinit(h, istream, null, CasLoadMode.DEFAULT, null, AllowPreexistingFS.allow);
     } catch (IOException e) {
       String msg = e.getMessage();
       if (msg == null) {
@@ -1398,27 +1403,56 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * --------------------------------------------------------------------- see
-   * Blob Format in CASSerializer
+   * --------------------------------------------------------------------- 
+   * Deserialize a binary input stream, after reading the header, 
+   * and optionally an externally provided type system and index spec 
+   * used in compressed form 6 serialization previously
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be
    * needed if the blob is from C++ -- C++ blob serialization writes data in
    * native byte order.
    * 
+   * The corresponding serialization code is in org.apache.uima.cas.impl.Serialization,
+   * also see CasIOUtils
+   * 
    * @param h -
    * @param istream -
-   * @param leniently -
+   * @param casMgrSerializer null or the Java object representing the externally supplied type 
+   *                         and maybe indexes definition (TSI)
+   * @param casLoadMode DEFAULT or REINIT. REINIT required with compressed form 6 to
+   *                          reinitialize the cas's type system and index definition, for form 6.  
+   * @param f6 only used for form 6 where an instance of BinaryCasSerDes6 has been initialized
+   * @param allowPreexistingFS only used for form 6 delta deserialization    
    * @return -
    * @throws CASRuntimeException wraps IOException
    */
-  public SerialFormat reinit(Header h, InputStream istream, TypeSystemImpl originalTS) throws CASRuntimeException {
+  public SerialFormat reinit(Header h, 
+                             InputStream istream, 
+                             CASMgrSerializer casMgrSerializer,
+                             CasLoadMode casLoadMode,
+                             BinaryCasSerDes6 f6,
+                             AllowPreexistingFS allowPreexistingFS) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      return this.svd.baseCAS.reinit(h, istream, originalTS);
+      return this.svd.baseCAS.reinit(h, istream, casMgrSerializer, casLoadMode, f6, allowPreexistingFS);
     }
    
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
 
     final BinDeserSupport bds = new BinDeserSupport();
+    
+    CASMgrSerializer embeddedCasMgrSerializer = embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
+    
+    if (!h.isForm6() || casLoadMode == CasLoadMode.REINIT)  {
+      setupCasFromCasMgrSerializer(
+          (null != embeddedCasMgrSerializer && embeddedCasMgrSerializer.hasIndexRepository()) 
+            ? embeddedCasMgrSerializer
+            : casMgrSerializer);
+    }
+      
+    if (!h.isForm6() && casLoadMode == CasLoadMode.LENIENT) {
+      /**Lenient deserialization not support for input of type {0}.*/
+      throw new CASRuntimeException(CASRuntimeException.LENIENT_NOT_SUPPORTED, new Object[] {h.toString()});
+    }
     
     try {
       final boolean delta = h.isDelta;
@@ -1432,16 +1466,29 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         return SerialFormat.COMPRESSED;
       }
       
-      if (h.form6) { 
+      if (h.form6) {
+        CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
+        TypeSystemImpl tsRead = (cms != null) ? cms.getTypeSystem() : null;
+        if (null != tsRead) {
+          tsRead.commit();  // no generators set up
+        }
+          
         try {
-          (new BinaryCasSerDes6(this, originalTS)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
-          return h.typeSystemIncluded ? SerialFormat.COMPRESSED_FILTERED_TSI
-                  : SerialFormat.COMPRESSED_FILTERED;
+          BinaryCasSerDes6 bcsd = (f6 != null) 
+                                    ? new BinaryCasSerDes6(f6, (f6.getTgtTs() == null) ? tsRead : f6.getTgtTs())
+                                    : new BinaryCasSerDes6(this, tsRead);          
+         
+          bcsd.deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+          return h.typeSystemIndexDefIncluded 
+                   ? SerialFormat.COMPRESSED_FILTERED_TSI
+                   : h.typeSystemIncluded 
+                       ? SerialFormat.COMPRESSED_FILTERED_TS
+                       : SerialFormat.COMPRESSED_FILTERED;
         } catch (ResourceInitializationException e) {
           throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED, null, e);
         }
       }      
-      
+            
       final Reading r = h.reading;
       
       // main fsheap
@@ -1654,6 +1701,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       throw exception;
     }
     return SerialFormat.BINARY;
+  }
+    
+  
+  static CASMgrSerializer maybeReadEmbeddedTSI(Header h, DataInputStream dis) {  
+    if (h.isTypeSystemIncluded() || h.isTypeSystemIndexDefIncluded()) { // Load TS from CAS stream
+      try {
+        ObjectInputStream ois = new ObjectInputStream(dis);
+        return (CASMgrSerializer) ois.readObject();
+      } catch (ClassNotFoundException | IOException e) {
+        /**Unrecognized serialized CAS format*/
+        throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT, null, e);
+      }
+    }
+    return null;
   }
   
   /**
@@ -2938,7 +2999,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   public JCas getJCas() throws CASException {
     if (this.jcas == null) {
-      this.jcas = JCasImpl.getJCas(this);
+      this.jcas = (JCasImpl) JCasImpl.getJCas(this);
+    } else {
+      this.jcas.maybeInitializeForClassLoader(svd.jcasClassLoader);
     }
     return this.jcas;
   }
@@ -5316,7 +5379,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   void traceFSfeatUpdate(FeatureStructureImpl fs) {
-    StringBuilder b = traceFSflush();
+    traceFSflush();
     traceFSfs(fs);
     svd.traceFSisCreate = false; 
   }
