@@ -232,6 +232,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   /**
    * Create the child sofa map by combining existing mapping from the current context with
    * any mappings specific for this child, passed in as aSofaMappings
+   * @param aSofaMappings -
    * @return the combined absolute sofamappings
    */
   public Map<String, String> combineSofaMappings(Map<String, String> aSofaMappings) {
