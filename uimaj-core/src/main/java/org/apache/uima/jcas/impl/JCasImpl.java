@@ -29,7 +29,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -295,7 +297,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
      */
     private JCasHashMap cAddr2Jfs;
 
-    private final Map<ClassLoader, JCasHashMap> cAddr2JfsByClassLoader = new HashMap<ClassLoader, JCasHashMap>();
+    private final Map<ClassLoader, JCasHashMap> cAddr2JfsByClassLoader = new IdentityHashMap<ClassLoader, JCasHashMap>();
 
     /* convenience holders of CAS constants that may be useful */
     /* initialization done lazily - on first call to getter */
@@ -312,6 +314,9 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     public Collection<ErrorReport> errorSet = new ArrayList<ErrorReport>();
 
     public ClassLoader currentClassLoader = null;
+    
+    private ClassLoader cacheClassLoaderInitialized;
+    final private Map<ClassLoader, Boolean> isInitializedForClassLoader = Collections.synchronizedMap(new IdentityHashMap<ClassLoader, Boolean>());
 
     private JCasSharedView(CASImpl aCAS, boolean useJcasCache) {
       setupJCasHashMap(aCAS.getJCasClassLoader(), useJcasCache, aCAS.getHeap().getInitialSize() / 16);
@@ -422,6 +427,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     return typeArray[i];
   }
   
+  /**
+   * Map from type codes to _Type instances kept per view in the field typeArray
+   * @param i
+   */
   private void getTypeInit(final int i) {
     // unknown ID. This may be due to a need to update the typeArray
     // due to switching class loaders. This updating is done
@@ -578,7 +587,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // * note that many of these may have already been loaded
     // * load all the others. Actually, we ask to load all the types
     // * and the ones already loaded - we just get their loaded versions
-    // returned.
+    //   returned.
     // * Loading will run the static init functions.
 
     while (typeIt.hasNext()) {
@@ -589,8 +598,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
         continue;
       if (builtInsWithAltNames.contains(casName))
         // * convert uima.cas.Xxx -> org.apache.uima.jcas.cas.Xxx
-        // * convert uima.tcas.Annotator ->
-        // org.apache.uima.jcas.tcas.Annotator
+        // * convert uima.tcas.Annotator -> org.apache.uima.jcas.tcas.Annotator
         try {
           String nameBase = "org.apache.uima.jcas." + casName.substring(5);
           name_Type = nameBase + "_Type";
@@ -645,7 +653,29 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       typeArray = newTypeArray;
     }
   }
+  
+  /**
+   * called when switching to JCas and the JCas already exists to check if 
+   * the JCas needs to have classes loaded for this class loader.  This can happen when the JCas is first
+   * instantiated while under the scope of a nested UIMA class loader.  This could be a Pear class loader, or
+   * even just an ordinary UIMA Class loader for a pipeline, where the Framework is running an "exit routine" supplied
+   * by the user, but loaded in a (for example) initial application loader context.
+   * @param cl the class loader in use
+   */
+  public void maybeInitializeForClassLoader(ClassLoader cl) {
+    if (sharedView.cacheClassLoaderInitialized == cl) {
+      return;
+    }
+    if (this.sharedView.isInitializedForClassLoader.get(cl) == null) {
+      instantiateJCas_Types(cl);
+    }
+    sharedView.cacheClassLoaderInitialized = cl;
+  }
 
+  /**
+   * 
+   * @param cl the class loader to use as the initiating loader for loading JCas classes
+   */
   public void instantiateJCas_Types(ClassLoader cl) {
     Map<String, LoadedJCasType<?>> loadedJCasTypes = null;
     FSClassRegistry fscr = casImpl.getFSClassRegistry();
@@ -668,11 +698,15 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       // if already loaded, can skip making new generators - 
       //   in this case newFSGeneratorSet is never referenced
       //   Set it to null for "safety"
+      // If not already loaded, initialize the generators to a clone of the FSClassRegistry generators.
       newFSGeneratorSet = (alreadyLoaded ? null : fscr.getNewFSGeneratorSet());
       for (Iterator<Map.Entry<String, LoadedJCasType<?>>> it = loadedJCasTypes.entrySet().iterator(); it.hasNext();) {
         
         // Explanation for this logic:
         //   Instances of _Types are kept per class loader, per Cas (e.g., in the cas pool)
+        //     and per view (to support having the ref to the casImpl be to the right view
+        //                   so add-to-indexes works better).
+        //                   The "typeArray" field is per view.
         //   When switching class loaders (e.g. a pear in the pipeline), some of the 
         //     _Type instances (e.g. the built-ins) might be already instantiated, but others are not
         //   
@@ -682,7 +716,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
       }
       
       // speed up - skip rest if nothing to do
-      if (!anyNewInstances) {
+      if (!anyNewInstances && 
+          sharedView.isInitializedForClassLoader.get(cl) != null) {  // don't skip if need to install the new generators for this class loader UIMA-5055
         return;
       }
       if (!alreadyLoaded) {
@@ -698,6 +733,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     } else {
       casImpl.setLocalFsGenerators(newFSGeneratorSet);
     }
+    sharedView.isInitializedForClassLoader.put(cl, Boolean.TRUE);
   }
 
   // note all callers are synchronized
@@ -746,6 +782,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    */
   public static JCas getJCas(CASImpl cas) throws CASException {
     JCasImpl jcas = new JCasImpl(cas);
+    reportInitErrors(jcas);
+    return jcas;
+  }
+  
+  private static void reportInitErrors(JCasImpl jcas) throws CASException {
     JCasSharedView sv = jcas.sharedView;
     if (sv.errorSet.size() > 0) {
       boolean doThrow = false;
@@ -769,7 +810,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
         }          
       }
     }
-    return jcas;
   }
 
   /**
@@ -941,9 +981,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
    * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
    * 
-   * returns true if a new instance of a _Type class was created
+   * @param jcasTypeInfo -
+   * @param alreadyLoaded -
+   * @param fsGenerators updated by side effect with new instances of the _Type class
+   * @return true if a new instance of a _Type class was created
    */
-
   private <T extends TOP> boolean makeInstanceOf_Type(LoadedJCasType<T> jcasTypeInfo, boolean alreadyLoaded,
       FSGenerator<?>[] fsGenerators) {
     
@@ -954,8 +996,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     //     instantiated _Type instances, but others may be different
     //     (due to different impls of the _Type class loaded by the different
     //     class loader).
-    //   This can also happen in the case where
-    //   JCasImpl.getType is called for a non-existing class
+    //   This can also happen in the case where JCasImpl.getType is called for a non-existing class.
     //     What happens in this case is that the getType code has to assume that
     //     perhaps none of the _Type instances were made for this JCas (yet), because
     //     these are created lazily - so it calls instantiateJCas_Types to make them.
