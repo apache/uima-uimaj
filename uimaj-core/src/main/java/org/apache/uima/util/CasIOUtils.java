@@ -128,20 +128,20 @@ import org.xml.sax.SAXException;
  * </ul>
  *
  * <p>Summary of APIs for saving:</p>
- * <p style="padding-left: 30px;">
- *   <code>save(aCAS, outputStream, aSerialFormat)</code><br></br>
- *   <code>save(aCAS, outputStream, tsiOutputStream, aSerialFormat)</code></p>
+ * <pre style="padding-left: 30px;">
+ *   <code>save(aCAS, outputStream, aSerialFormat)</code>
+ *   <code>save(aCAS, outputStream, tsiOutputStream, aSerialFormat)</code></pre>
  *
  * <p>Summary of APIs for loading:</p>
- * <p style="padding-left: 30px;">
- *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCas)</code><br></br>
- *   <code>load(inputStream, aCas)</code><br></br>
- *   <code>load(inputStream, tsiInputStream, aCas)</code></p>
- * <p style="padding-left: 30px;">
- *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , tsiURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCAS, casLoadMode)&nbsp;&nbsp; - the second URL is for loading a separately-stored TSI</code><br></br>
- *   <code>load(inputStream, tsiInputStream, aCAS, aCasLoadMode)</code><br></br>
- *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , tsiURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCAS, lenient)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - lenient is used to set the CasLoadMode to LENIENT or DEFAULT</code><br></br>
- *   <code>load(inputStream, tsiInputStream, aCAS, lenient)</code></p>
+ * <pre style="padding-left: 30px;">
+ *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCas)</code>
+ *   <code>load(inputStream, aCas)</code>
+ *   <code>load(inputStream, tsiInputStream, aCas)</code></pre>
+ * <pre style="padding-left: 30px;">
+ *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , tsiURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCAS, casLoadMode)&nbsp;&nbsp; - the second URL is for loading a separately-stored TSI</code>
+ *   <code>load(inputStream, tsiInputStream, aCAS, aCasLoadMode)</code>
+ *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , tsiURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCAS, lenient)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - lenient is used to set the CasLoadMode to LENIENT or DEFAULT</code>
+ *   <code>load(inputStream, tsiInputStream, aCAS, lenient)</code></pre>
  */
 
 public class CasIOUtils {
@@ -267,6 +267,7 @@ public class CasIOUtils {
    * @param casInputStream -
    * @param tsiInputStream -
    * @param aCAS -
+   * @param leniently - 
    * @return -
    * @throws IOException -
    */
