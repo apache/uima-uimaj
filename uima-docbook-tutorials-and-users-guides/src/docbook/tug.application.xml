@@ -692,9 +692,11 @@ ae.destroy();</programlisting></para>
         use the <code>save</code> method in <code>CasIOUtils</code> class or see the <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
         for details.</para>
       
-      <para>All the external forms (except JSON) can be read back in with standard options using the <code>CasIOUtils load</code> methods.
-        The <code>CasIOUtils  load</code> methods also support loading type system and index definition information
-        at the same time (usually from addition input sources).
+      <para>All the external serialized forms (except JSON and the inline CAS approximate serialization) 
+        can be read back in using the <code>CasIOUtils load</code> methods.
+        The <code>CasIOUtils load</code> methods also support loading type system and index definition information
+        at the same time (usually from addition input sources).  Some variations of these will use the read type system
+        and indexes definition to replace those in the CAS.
         The XCAS and XMI external forms can also be read back in using the <literal>deserialize</literal> method of
         the class <literal>org.apache.uima.util.XmlCasDeserializer</literal>. All of these methods deserialize
         into a pre-existing CAS, which you must create ahead of time.  See the
