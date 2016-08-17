@@ -77,22 +77,18 @@ import org.xml.sax.SAXException;
  *   <li>for COMPRESSED_FILTERED_TS
  *     <ul>
  *       <li>it uses the embedded TS for decoding</li>
- *       <li>it uses the external TSI to replace the CAS's existing type system and index definition.</li>
+ *       <li>it uses the external TSI to replace the CAS's existing type system and index definition if CasLoadMode == REINIT.</li>
  *     </ul>
  *   </li>
  *   <li>for COMPRESSED_FILTERED_TSI
  *     <ul>
- *       <li>the external TSI is ignored, the embedded on overrides, both&nbsp;to replace the CAS's existing type system and index definition. and for decoding</li>
+ *       <li>the external TSI is ignored, the embedded one overrides, but otherwise operates as above.</li> 
  *     </ul>
  *   </li>
  *   <li>for COMPRESSED_FILTERED
  *     <ul>
- *       <li>the external TSI's type system part is used for deocding</li>
- *       <li>if CasLoadMode == REINIT, the external TSI is also used to replace the CAS's existing type system and index definition.
- *         <ul>
- *           <li>Note: this is the only use for CasLoadMode.REINIT</li>
- *         </ul>
- *       </li>
+ *       <li>the external TSI's type system part is used for decoding.</li>
+ *       <li>if CasLoadMode == REINIT, the external TSI is also used to replace the CAS's existing type system and index definition.</li>
  *     </ul>
  *   </li>
  * </ul>
@@ -150,8 +146,8 @@ public class CasIOUtils {
 
   /**
    * Loads a Cas from a URL source. 
-   * For SerialFormats ending with _TSI the type system and index definitions are reset.
-   * CasLoadMode is DEFAULT.  To specify this explicitly, use the 4 argument form.
+   * For SerialFormats ending with _TSI the type system and index definitions are reset except for Compressed Form 6.
+   * CasLoadMode is DEFAULT.
    * 
    * @param casUrl
    *          The url containing the CAS
