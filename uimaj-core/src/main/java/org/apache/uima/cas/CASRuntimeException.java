@@ -219,6 +219,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Lenient deserialization not support for input of type {0}. */
   public static final String LENIENT_NOT_SUPPORTED = "LENIENT_NOT_SUPPORTED";
   
+  /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
+  public static final String SWITCH_CLASS_LOADER_NESTED = "SWITCH_CLASS_LOADER_NESTED";
+  
 	public CASRuntimeException() {
 		super();
 	}

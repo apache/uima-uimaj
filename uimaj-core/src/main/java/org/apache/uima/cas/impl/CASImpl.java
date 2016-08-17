@@ -4252,6 +4252,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return;
     }
     if (newClassLoader != this.svd.jcasClassLoader) {
+      if (this.svd.jcasClassLoader != this.svd.previousJCasClassLoader) {
+        /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
+        throw new CASRuntimeException(CASRuntimeException.SWITCH_CLASS_LOADER_NESTED, 
+                                      new Object[] {this.svd.previousJCasClassLoader, this.svd.jcasClassLoader, newClassLoader});
+      }
       // System.out.println("Switching to new class loader");
       this.svd.jcasClassLoader = newClassLoader;
       if (null != this.jcas) {
