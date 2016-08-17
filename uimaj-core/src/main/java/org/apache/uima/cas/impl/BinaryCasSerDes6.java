@@ -80,6 +80,7 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.rb_trees.Int2IntRBT;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.CasLoadMode;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
@@ -701,11 +702,7 @@ public class BinaryCasSerDes6 {
     .write(serializedOut);
  
     if (isTsIncluded || isTsiIncluded) {
-      ObjectOutputStream tsiOS = new ObjectOutputStream(serializedOut);
-      tsiOS.writeObject(isTsiIncluded 
-                          ? Serialization.serializeCASMgr((CASMgr) cas) 
-                          : Serialization.serializeCASMgrTypeSystemOnly((CASMgr) cas));
-      tsiOS.flush();
+      CasIOUtils.writeTypeSystem(cas, serializedOut, isTsiIncluded);
     }
  
     os = new OptimizeStrings(doMeasurements);

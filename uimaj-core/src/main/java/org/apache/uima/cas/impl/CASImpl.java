@@ -1440,7 +1440,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     final BinDeserSupport bds = new BinDeserSupport();
     
-    CASMgrSerializer embeddedCasMgrSerializer = embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
+    CASMgrSerializer embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
     
     if (!h.isForm6() || casLoadMode == CasLoadMode.REINIT)  {
       setupCasFromCasMgrSerializer(
@@ -1463,7 +1463,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       if (h.form4) {
         (new BinaryCasSerDes4(this.getTypeSystemImpl(), false)).deserialize(this, dis, delta);
-        return SerialFormat.COMPRESSED;
+        return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
       }
       
       if (h.form6) {
@@ -1700,7 +1700,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           CASRuntimeException.BLOB_DESERIALIZATION, new String[] { msg });
       throw exception;
     }
-    return SerialFormat.BINARY;
+    return h.typeSystemIndexDefIncluded ? SerialFormat.BINARY_TSI : SerialFormat.BINARY;
   }
     
   

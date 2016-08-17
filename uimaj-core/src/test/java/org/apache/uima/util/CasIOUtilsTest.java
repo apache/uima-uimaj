@@ -157,11 +157,19 @@ public class CasIOUtilsTest extends TestCase{
   public void testS0() throws Exception {
     testFormat(SerialFormat.BINARY, "bins0", false);
   }
-  
+
+  public void testS0tsi() throws Exception {
+    testFormat(SerialFormat.BINARY_TSI, "bins0", false);
+  }
+
   public void testS4() throws Exception {
     testFormat(SerialFormat.COMPRESSED, "bins4", false);
   }
   
+  public void testS4tsi() throws Exception {
+    testFormat(SerialFormat.COMPRESSED_TSI, "bins4", false);
+  }
+
   public void testS6() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED, "bins6", false);
   }

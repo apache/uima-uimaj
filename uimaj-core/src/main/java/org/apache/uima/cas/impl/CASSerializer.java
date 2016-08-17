@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.util.CasIOUtils;
 
 /**
  * This object has 2 purposes.
@@ -204,6 +205,10 @@ public class CASSerializer implements Serializable {
       dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
     }
   }
+  
+  void addTsiCAS(CASImpl cas, OutputStream ostream) {
+    
+  }
 
   /**
    * Serializes the CAS data and writes it to the output stream.
@@ -234,18 +239,26 @@ public class CASSerializer implements Serializable {
    * @param ostream -
    */
   public void addCAS(CASImpl cas, OutputStream ostream) {
- 
-    try {
+    addCAS(cas, ostream, false);
+  }
+    
+  public void addCAS(CASImpl cas, OutputStream ostream, boolean includeTsi) { 
+  try {
 
       DataOutputStream dos = new DataOutputStream(ostream);
-
-      // get the indexed FSs
-      this.fsIndex = cas.getIndexedFSs();
 
       // output the key and version number
       CommonSerDes.createHeader()
       .seqVer(1)     // not a delta, set version 1 for UIMA-4743 to inform receiver that we can handle version 1 format
+      .typeSystemIndexDefIncluded(includeTsi)
       .write(dos);
+      
+      if (includeTsi) {
+        CasIOUtils.writeTypeSystem(cas, ostream, true);
+      }
+
+      // get the indexed FSs
+      this.fsIndex = cas.getIndexedFSs();
      
       // output the FS heap
       final int heapSize = cas.getHeap().getCellsUsed();

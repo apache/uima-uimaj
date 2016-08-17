@@ -79,6 +79,7 @@ import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
@@ -335,10 +336,16 @@ public class BinaryCasSerDes4 {
     
     Serializer serializer = new Serializer(
         casImpl, makeDataOutputStream(out), (MarkerImpl) trackingMark, sm,
-        compressLevel, compressStrategy);
+        compressLevel, compressStrategy, false);
    
     serializer.serialize();
     return sm;
+  }
+  
+  public void serializeWithTsi(CASImpl casImpl, Object out) throws IOException {
+    Serializer serializer = new Serializer(
+        casImpl, makeDataOutputStream(out), null, null, CompressLevel.Default, CompressStrat.Default, true);
+    serializer.serialize();
   }
   
   public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark,
@@ -389,6 +396,7 @@ public class BinaryCasSerDes4 {
     final private ByteHeap byteHeapObj;
 
     final private boolean isDelta;        // if true, there is a marker indicating the start spot(s)
+    final private boolean isTsi;          // true to include the type system and indexes definition
     final private boolean doMeasurement;  // if true, doing measurements
     final private ComprItemRefs fsStartIndexes = (CHANGE_FS_REFS_TO_SEQUENTIAL) ? new ComprItemRefs() : null;
     final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
@@ -430,13 +438,15 @@ public class BinaryCasSerDes4 {
     private Serializer(CASImpl cas, DataOutputStream serializedOut, MarkerImpl mark,
                        SerializationMeasures sm,
                        CompressLevel compressLevel,
-                       CompressStrat compressStrategy) {
+                       CompressStrat compressStrategy,
+                       boolean isTsi) {
       this.cas = cas;
       this.serializedOut = serializedOut;
       this.mark = mark;
       this.sm = sm;
       this.compressLevel = compressLevel;
       this.compressStrategy = compressStrategy;
+      this.isTsi = isTsi;
       isDelta = (mark != null);
       doMeasurement = (sm != null);
       
@@ -517,8 +527,13 @@ public class BinaryCasSerDes4 {
       CommonSerDes.createHeader()
         .form4()
         .delta(isDelta)
+        .typeSystemIndexDefIncluded(isTsi)
         .write(serializedOut);
 
+      if (isTsi) {
+        CasIOUtils.writeTypeSystem(cas, serializedOut, true);    
+      }
+      
       if (TRACE_SER) System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
 
       if (doMeasurement) {
