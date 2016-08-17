@@ -127,19 +127,25 @@ import org.xml.sax.SAXException;
  * </ul>
  *
  * <p>Summary of APIs for saving:</p>
- * <p style="padding-left: 30px;">
- *   <code>save(aCAS, outputStream, aSerialFormat)</code><br />
- *   <code>save(aCAS, outputStream, tsiOutputStream, aSerialFormat)</code></p>
+ * <pre style="padding-left: 30px;"><code>
+ * save(aCAS, outputStream, aSerialFormat)
+ * save(aCAS, outputStream, tsiOutputStream, aSerialFormat)
+ * </code></pre>
  *
  * <p>Summary of APIs for loading:</p>
- * <p style="padding-left: 30px;">
- *   <code>load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS)</code><br />
- *   <code>load(InputStream, CAS)</code></p>
- * <p style="padding-left: 30px;">
- *   <code>load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS, CasLoadMode)&nbsp;&nbsp; - the second URL is for loading a separately-stored TSI</code><br />
- *   <code>load(InputStream, InputStream, CAS, CasLoadMode)</code><br />
- *   <code>load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS, lenient)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - lenient is used to set the CasLoadMode to LENIENT or DEFAULT</code><br />
- *   <code>load(InputStream, InputStream, CAS, lenient)</code></p>
+ * <pre style="padding-left: 30px;"><code>
+ * load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS)
+ * load(InputStream, CAS)
+ * </code></pre>
+ * 
+ * <pre style="padding-left: 30px;"><code>
+ * // the second URL is for loading a separately-stored TSI
+ * load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS, CasLoadMode)&nbsp;&nbsp; 
+ * load(InputStream, InputStream, CAS, CasLoadMode)
+ * // lenient is used to set the CasLoadMode to LENIENT or DEFAULT
+ * load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS, lenient)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ * load(InputStream, InputStream, CAS, lenient)
+ * </code></pre>
  */
 
 public class CasIOUtils {
