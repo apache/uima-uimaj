@@ -155,6 +155,27 @@ public class CasIOUtils {
   }
   
   /**
+   * Loads a CAS from a URL source. The format is determined from the content.
+   * 
+   * If the value of tsiUrl is non-null, it is read.
+   *   If values from both the tsiUrl and embedded values are available, the tsiUrl value is used.    
+   * 
+   * @param casUrl
+   *          The url to deserialize the CAS from
+   * @param tsiUrl
+   *          The optional url to deserialize the type system and index definitions from
+   * @param aCAS
+   *          The CAS that should be filled
+   * @param leniently true means do lenient loading
+   * @return the SerialFormat of the loaded CAS
+   * @throws IOException Problem loading
+   */
+  public static SerialFormat load(URL casUrl, URL tsiUrl, CAS aCAS, boolean leniently)
+      throws IOException {
+    return load(casUrl, tsiUrl, aCAS, leniently ? CasLoadMode.LENIENT : CasLoadMode.DEFAULT);
+  }
+  
+  /**
    * Loads a Cas from a URL source. The format is determined from the content.
    * For formats of type SERIALIZED_TSI, the type system and index definitions are reset.
    * Lenient is false; to use lenient loading, use the 4 argument form.
