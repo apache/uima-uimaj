@@ -50,66 +50,107 @@ import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.xml.sax.SAXException;
 
 /**
- * a collection of static methods aimed at making it easy to 
- *  - save and load CASes, and to
- *  - optionally include their Type Systems (abbreviated TS) 
- *    and perhaps also their index definitions based on those type systems (abbreviated TSI). 
+ * <p>A collection of static methods aimed at making it easy to</p>
+ * <ul>
+ *   <li>save and load CASes, and to</li>
+ *   <li>optionally include the CAS's Type System (abbreviated TS (only available for Compressed Form 6)) and optionally also include the CAS's indexes definition.</li>
+ *   <li>The combinaton of Type System and Indexes definition is called TSI.
+ *     <ul>
+ *       <li>The TSI's purpose: to replace the CAS's existing type system and index definition.</li>
+ *       <li>The TS's purpose: to specify the type system used in the serialized data for format Compressed Form 6, in order to allow deserializing into some other type system in the CAS, leniently.</li>
+ *     </ul>
+ *   </li>
+ * </ul>
  *
- *    * The TSI's purpose: these are used to replace a CAS's existing type system and index definition.
- *      
- *    * The TS's purpose: these are only used with Compressed Form 6 to specify the type system used in the serialized data,
- *      in order to allow deserializing into some other type system in the CAS, leniently.
- *      
- *      ** Note: this use does **not** replace the CAS's type system, like the TSI use does.
- * 
- * There are several serialization formats supported; these are listed in the Java enum SerialFormat, 
- * together with their preferred file extension name.
- * 
- * The APIs for loading attempt to automatically use the appropriate deserializers, based on the input data format.  
- * To select the right deserializer, first, the file extension name (if available) is used:
- *   - xmi: XMI format
- *   - xcas: XCAS format
- *   - xml: XCAS format
- *   
- * If none of these apply, then the first few bytes of the input are examined to determine the format.
- * 
- * For loading, the inputs may be supplied as URLs or as InputStream.  
- * Note: You can use Files or Paths by converting these to URLs:
- *    URL url = a_path.toUri().toURL();
- *    URL url = a_file.toUri().toURL();
- *    
- * When loading, an optional CasLoadMode enum value may be specified.  See the Javadocs for that for details.
- *  
- * When TS or TSI information is saved, it is either saved in the same destination (e.g. file or stream), or in a separate one.
- *   - The serialization formats ending in _TSI support saving the TSI in the same destination. 
- *     The save APIs for other formats can optionally also save the TSI into a separate (second) OutputStream.
- *      
- *  Summary of the APIs for saving:
- *    save(CAS, OutputStream, SerialFormat)
- *    save(CAS, OutputStream, OutputStream, SerialFormat)  - extra outputStream for saving the TSI
- *    
- *  Note: there is no API for saving in COMPRESSED_FILTERED with a filtering type system; to do that, use the
- *  methods in Serialization.serializeWithCompression
- *  
- *  Summary of APIs for loading:
- *    load(URL        , CAS)
- *    load(InputStream, CAS)
- *    
- *    load(URL        , URL        , CAS, CasLoadMode)   - the second URL is for loading a separately-stored TSI
- *    load(InputStream, InputStream, CAS, CasLoadMode)
- *    
- *  When loading, a TSI or a TS may be available.  If available, it is used for one of two purposes:
- *    - except for Compressed Form 6, it must be a TSI and 
- *      it is used to reset the CAS to have the specified type system and index specification
- *    - for Compressed Form 6 (only) it is used to specify the type system of the serialized data, to enable
- *      form 6's lenient deserialization. 
+ * <p>TSI information can be</p>
+ * <ul>
+ *   <li>embedded</li>
+ *   <li>externally supplied (via another input source to the load)</li>
+ *   <li>both embedded and externally supplied.&nbsp; In this case the embedded takes precedence.</li>
+ * </ul>
+ *
+ * <p>TS information is available embedded, for COMPRESSED_FILTERED_TS format,
+ *    and also from embedded or external TSI information (since it also contains the type system information).</p>
+ *
+ * <p>When an external TSI is supplied while loading Compressed Form 6,</p>
+ * <ul>
+ *   <li>for COMPRESSED_FILTERED_TS
+ *     <ul>
+ *       <li>it uses the embedded TS for decoding</li>
+ *       <li>it uses the external TSI to replace the CAS's existing type system and index definition.</li>
+ *     </ul>
+ *   </li>
+ *   <li>for COMPRESSED_FILTERED_TSI
+ *     <ul>
+ *       <li>the external TSI is ignored, the embedded on overrides, both&nbsp;to replace the CAS's existing type system and index definition. and for decoding</li>
+ *     </ul>
+ *   </li>
+ *   <li>for COMPRESSED_FILTERED
+ *     <ul>
+ *       <li>the external TSI's type system part is used for deocding</li>
+ *       <li>if CasLoadMode == REINIT, the external TSI is also used to replace the CAS's existing type system and index definition.
+ *         <ul>
+ *           <li>Note: this is the only use for CasLoadMode.REINIT</li>
+ *         </ul>
+ *       </li>
+ *     </ul>
+ *   </li>
+ * </ul>
+ *
+ * <p>Compressed Form 6 loading decoding type system is picked from these sources, in this order:</p>
+ * <ul>
+ *   <li>an embedded TS or TSI</li>
+ *   <li>an external TSI</li>
+ *   <li>the CAS's type system</li>
+ * </ul>
+ *
+ * <p>The serialization formats supported here are specified in the SerialFormat enum.</p>
+ *
+ * <p>The <code>load </code>api's automatically use the appropriate deserializers, based on the input data format.</p>
+ *
+ * <p>Loading inputs may be supplied as URLs or as an appropriately buffered InputStream.</p>
+ *
+ * <p>Note: you can use Files or Paths by converting these to URLs:</p>
+ * <ul>
+ *   <li><code>URL url = a_path.toUri().toURL();</code></li>
+ *   <li><code>URL url = a_file.toUri().toURL();</code></li>
+ * </ul>
+ *
+ * <p>When loading, an optional CasLoadMode enum value maybe specified to indicate</p>
+ * <ul>
+ *   <li>LENIENT loading - used with XCas and XMI data data sources to silently ignore types and features present in the serialized form, but not in the receiving type system.</li>
+ *   <li>REINIT - used with Compressed Form 6 loading to indicate that&nbsp; if no embedded TSI information is available, the external TSI is to be used to replace the CAS's existing type system and index definition.</li>
+ * </ul>
+ *
+ * <p style="padding-left: 30px;">For more details, see the Javadocs for CasLoadMode.</p>
+ *
+ * <p>When TS or TSI information is saved, it is either saved in the same destination (e.g. file or stream), or in a separate one.</p>
+ * <ul>
+ *   <li>The serialization formats ending in _TSI and _TS support saving the TSI (or TS) in the same destination.</li>
+ *   <li>The save APIs for other formats can optionally also save the TSI into a separate (second) OutputStream.</li>
+ * </ul>
+ *
+ * <p>Summary of APIs for saving:</p>
+ * <p style="padding-left: 30px;">
+ *   <code>save(aCAS, outputStream, aSerialFormat)</code><br />
+ *   <code>save(aCAS, outputStream, tsiOutputStream, aSerialFormat)</code></p>
+ *
+ * <p>Summary of APIs for loading:</p>
+ * <p style="padding-left: 30px;">
+ *   <code>load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS)</code><br />
+ *   <code>load(InputStream, CAS)</code></p>
+ * <p style="padding-left: 30px;">
+ *   <code>load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS, CasLoadMode)&nbsp;&nbsp; - the second URL is for loading a separately-stored TSI</code><br />
+ *   <code>load(InputStream, InputStream, CAS, CasLoadMode)</code><br />
+ *   <code>load(URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , URL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , CAS, lenient)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - lenient is used to set the CasLoadMode to LENIENT or DEFAULT</code><br />
+ *   <code>load(InputStream, InputStream, CAS, lenient)</code></p>
  */
 
 public class CasIOUtils {
 
   /**
-   * Loads a Cas from a URL source. The format is determined from the file extension name and the content.
-   * For formats ending with _TSI, the type system and index definitions are reset.
+   * Loads a Cas from a URL source. 
+   * For SerialFormats ending with _TSI the type system and index definitions are reset.
    * CasLoadMode is DEFAULT.  To specify this explicitly, use the 4 argument form.
    * 
    * @param casUrl
