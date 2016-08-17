@@ -19,9 +19,9 @@
 
 package org.apache.uima;
 
-import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.ResourceBundle;
+
+import org.apache.uima.internal.util.I18nUtil;
 
 /**
  * The <code>InternationalizedException</code> class adds internationalization
@@ -233,25 +233,26 @@ public class InternationalizedException extends Exception {
       if (getMessageKey() == null)
          return null;
 
-      try {
-         // locate the resource bundle for this exception's messages
-         // turn over the classloader of the current object explicitly, so that the
-         // message resolving also works for derived exception classes
-         ResourceBundle bundle = ResourceBundle.getBundle(
-               getResourceBundleName(), aLocale, this.getClass()
-                     .getClassLoader());
-         // retrieve the message from the resource bundle
-         String message = bundle.getString(getMessageKey());
-         // if arguments exist, use MessageFormat to include them
-         if (getArguments().length > 0) {
-            MessageFormat fmt = new MessageFormat(message);
-            fmt.setLocale(aLocale);
-            return fmt.format(getArguments());
-         } else
-            return message;
-      } catch (Exception e) {
-         return "EXCEPTION MESSAGE LOCALIZATION FAILED: " + e.toString();
-      }
+      return I18nUtil.localizeMessage(getResourceBundleName(), aLocale, getMessageKey(), getArguments());
+//      try {
+//         // locate the resource bundle for this exception's messages
+//         // turn over the classloader of the current object explicitly, so that the
+//         // message resolving also works for derived exception classes
+//         ResourceBundle bundle = ResourceBundle.getBundle(
+//               getResourceBundleName(), aLocale, this.getClass()
+//                     .getClassLoader());
+//         // retrieve the message from the resource bundle
+//         String message = bundle.getString(getMessageKey());
+//         // if arguments exist, use MessageFormat to include them
+//         if (getArguments().length > 0) {
+//            MessageFormat fmt = new MessageFormat(message);
+//            fmt.setLocale(aLocale);
+//            return fmt.format(getArguments());
+//         } else
+//            return message;
+//      } catch (Exception e) {
+//         return "EXCEPTION MESSAGE LOCALIZATION FAILED: " + e.toString();
+//      }
    }
 
    /**
