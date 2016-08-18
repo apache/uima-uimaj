@@ -1241,6 +1241,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
   
   private <T extends TOP> void addFS_common(T fs, boolean isAddback) {
+    if (fs._isPearTrampoline()) {
+      fs = fs._casView.getBaseFsFromTrampoline(fs);
+    }
     TypeImpl ti = ((FeatureStructureImplC)fs)._getTypeImpl();
     final int typeCode = ti.getCode();  
 
