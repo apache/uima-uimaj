@@ -61,6 +61,7 @@ public class MsgLocalizationClassLoader {
     /*
      * Try to load the class itself before delegate the class loading to its parent
      */
+    @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve)
             throws ClassNotFoundException {
       // First, check if the class has already been loaded
@@ -136,7 +137,9 @@ public class MsgLocalizationClassLoader {
           return c;
         }    
       }
-      return null;
+      // UIMA-3692  try the thread context class loader
+      // if not found, will return class not found exception
+      return Thread.currentThread().getContextClassLoader().getResource(name);
     }
   }
   
