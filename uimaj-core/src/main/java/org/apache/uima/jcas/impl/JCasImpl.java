@@ -67,7 +67,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 // * Implementation of JCas *
 // *********************************
 
-/*
+/**
  * 
  * Overview 
  * ========
@@ -80,6 +80,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * Built-in JCas classes have one definition.
  * Custom JCas classes have one definition per classloader
+ *   - Running a pipeline with a custom extension classloader
  *   - PEAR Wrappers support contexts with the PEAR where there's potentially different JCas implementations.
  *   - Running with different JCas classes is possible using user (or other framework (e.g. servlet)) class loader isolation  
  * 
@@ -88,47 +89,46 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   - with some additional "marker" interfaces (e.g the built-in UIMA list - marking empty and non-empty nodes)
  *   - TOP extends FeatureStructureImplC 
  *      -- which has the non-JCas support for representing Feature Structures as Java Objects
- *      -- which is what is used when "JCas" is not activated
  *      
  * I N S T A N C E S   of these classes
- *   - belong to a casView 
+ *   - belong to a CAS, and record the particular CAS view used when creating the instance 
  *     -- specifies the CAS to which the Feature Structure belongs
  *     -- is the view in which they were created
  *        --- used for instance.addToIndexes
  *        --- used for checking - e.g. can't create an Annotation in the "base" CAS view
  * 
- * Assume: Each JCas instance (associated with a CAS) is single-threaded. if not - must synchronize
- * refs to tables/arrays associated with this
- * 
+ * The CAS must be updated on a single thread.
+ *   A read-only CAS may be accessed on multiple threads.
  * 
  * At classloader load time, JCas classes are assigned an incrementing static integer index.
  * This index is used with a table kept per Type System (possibly shared among multiple CASes)
  * to locate the corresponding TypeImpl
- *   - this TypeImpl is subsequently cached in a local field in every FS instance
+ *   - this TypeImpl is set in a local field in every FS instance when the instance is created
  *   - multiple JCas cover classes (loaded under different classloaders) may end up having the same TypeImpl
  *     -- e.g. inside a PEAR
  *  
- * ________________________________________________________________________    
- * T r e a t m e n t   o f   e m b e d d e d   classloading context (PEARS)
+ * _______________________________________________________________________    
+ * T r e a t m e n t   o f   e m b e d d e d  classloading context (PEARS)
  * 
  * In v2, different definitions of JCas cover classes were possible within a PEAR, and the 
  *   implementation switched among these.
  *   
- * In v3, because the Feature Structure information is kept only in a Java class, this is not supported.
- *   - Instead, users are required to manually merge JCas cover class definitions from the PEAR and
- *     its outer pipeline classloading environment, if the PEAR defines any JCas cover classes.
- *     
- *   - This may be a common occurrence.
+ * In v3, we copy this implementation.  For those types which have new JCas definitions in the PEAR's
+ * classpath, special versions of Feature Structure instances of those JCas classes are constructed,
+ * called "trampoline" FSs.  These have an internal flag set indicating they're trampolines, and their
+ * refs to the int[] and Object[] values are "shared" with the non-PEAR FSs.
+ * 
+ * When creating new instances, if the PEAR context defines a different JCas class for this type, two FSs
+ * are created: a "base" FS and the trampoline FS.
+ * 
+ * When iterating and retrieving a FS, if in a PEAR context and the type has a different JCas class from the base,
+ * return a (possibly new) trampoline for that FS.
+ *   - the trampolines are kept in a JCasHashMap, indexed by class loader (in case there are multiple PEARs in one pipeline)
+ *   - Once created, the same trampoline is reused when called for
  *   
- *   - The framework will detect if a PEAR redefines a JCas cover class with a different "meaning" from the 
- *     surrounding environment, and if so, will display the two definitions (using a decompiler), or just 
- *     issue a message.
- *     
- *   - Alternatively: the framework can use the different definitions within the PEAR, 
- *     copying among different definitions of customized JCas classes, on the boundaries of the PEAR.
- *     -- only for those JCas classes that are re-defined
- *     -- only for those JCas classes defined as inputs or outputs in the capabilities section
- *     
+ * UIMA structures storing Feature Structures (e.g. indexes) always store the base (non-trampoline) version.
+ *   - Methods like add-to-indexes convert a trampoline to its corresponding base  
+ * 
  * (Possible future generalization for any internals-hiding AE component - not supported)
  *   - support non-input/output Type isolation for internals-hiding components
  *     -- types not specified as input/output are particularized to the internals-hiding component
@@ -246,6 +246,8 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   }
   
   /*
+   * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which
+   * require a CAS Type, for instance iterator creation.
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getCasType(int)
@@ -306,7 +308,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     this.ll_IndexRepository = casImpl.ll_getIndexRepository();
     this.jfsIndexRepository = new JFSIndexRepositoryImpl(this, cas.getIndexRepository());
   }
-
+  
   public TOP createFS(Type type) {
     return casImpl.createFS(type);
   }
@@ -320,7 +322,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @return newly created and initialized JCas
    * @throws CASException -
    */
-  public static JCas getJCas(CASImpl cas) {
+  public static JCasImpl getJCas(CASImpl cas) {
     return getJCasImpl(cas);
   }
   
@@ -654,8 +656,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public void reset() {
     casImpl.reset();
   }
-
-  private final static int NULL = 0;
 
 //  /*
 //   * (non-Javadoc)
