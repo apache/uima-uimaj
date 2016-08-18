@@ -112,6 +112,7 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.impl.JCasHashMap;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Level;
@@ -281,12 +282,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      final private Id2FS id2fs;
      /** set to > 0 to reuse an id, 0 otherwise */
      private int reuseId = 0;
-     
-     /** 
-      * for Pear generation - set this to the base FS
-      */
-    FeatureStructureImplC pearBaseFs = null;  
-    
+         
     // Base CAS for all views
     final private CASImpl baseCAS;
     
@@ -331,7 +327,53 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // FS cover classes for this CAS. Defaults to the ClassLoader used
     // to load the CASImpl class.
     private ClassLoader jcasClassLoader = this.getClass().getClassLoader();
-
+    
+    /*****************************
+     * PEAR Support
+     *****************************/
+    /**
+     * Only support one level of PEAR nesting; for more general approach, make this a deque
+     */
+    private ClassLoader previousJCasClassLoader = null;
+    /**
+     * Save area for suspending this while we create a base instance
+     */
+    private ClassLoader suspendPreviousJCasClassLoader;  
+    
+    /**
+     * A map from IDs to already created trampoline FSs for the base FS with that id.
+     * These are used when in a Pear and retrieving a FS (via index or deref) and you want the 
+     * Pear version for that ID.
+     * There are potentially multiple maps - one per PEAR Classpath
+     */
+    private JCasHashMap id2tramp = null;
+    /**
+     * a map from IDs of FSs that have a Pear version, to the base (non-Pear) version
+     * used to locate the base version for adding to indexes
+     */
+    private JCasHashMap id2base = null;
+    private final Map<ClassLoader, JCasHashMap> cl2id2tramp = new IdentityHashMap<>(); 
+    
+    /**
+     * The current (active, switches at Pear boundaries) FsGenerators (excluding array-generators)
+     * key = type code
+     * read-only, unsynchronized for this CAS
+     * Cache for setting this kept in TypeSystemImpl, by classloader 
+     *   - shared among all CASs that use that Type System and class loader
+     *   -- in turn, initialized from FSClassRegistry, once per classloader / typesystem combo 
+     *   
+     * Pear generators are mostly null except for instances where the PEAR has redefined
+     * the JCas cover class
+     */
+    private FsGenerator[] generators;
+    /**
+     * When generating a new instance of a FS in a PEAR where there's an alternate JCas class impl,
+     * generate the base version, and make the alternate a trampoline to it.
+     *   Note: in future, if it is known that this FS is never used outside of this PEAR, then can
+     *         skip generating the double version
+     */
+    private FsGenerator[] baseGenerators; 
+    
     // If this CAS can be flushed (reset) or not.
     // often, the framework disables this before calling users code
     private boolean flushEnabled = true;
@@ -470,6 +512,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // fss
       fsIdGenerator = 0;
       id2fs.clear();
+      
+      // pear caches
+      id2tramp = null;
+      id2base = null;
+      for (JCasHashMap m : cl2id2tramp.values()) {
+        m.clear();
+      }
 
       // index corruption avoidance
       fssTobeAddedback.clear();
@@ -555,6 +604,37 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       trackingMark = null;
       if (null != modifiedPreexistingFSs) modifiedPreexistingFSs.clear();
     }
+    
+    void switchClassLoader(ClassLoader newClassLoader) {
+      if (null == newClassLoader) { // is null if no cl set
+        return;
+      }
+      if (newClassLoader != jcasClassLoader) {
+        // System.out.println("Switching to new class loader");
+        previousJCasClassLoader = jcasClassLoader;
+        jcasClassLoader = newClassLoader;
+        generators = tsi.getGeneratorsForClassLoader(newClassLoader, true); // true - isPear
+        
+        assert null == id2tramp;  // is null outside of a pear
+        id2tramp = cl2id2tramp.get(newClassLoader);
+        if (null == id2tramp) {
+          cl2id2tramp.put(newClassLoader, id2tramp = new JCasHashMap(32));
+        }
+        if (id2base == null) {
+          id2base = new JCasHashMap(32);
+        }
+      }
+    }
+    
+    void restoreClassLoader() {
+      if (null == previousJCasClassLoader || previousJCasClassLoader == jcasClassLoader) {
+        return;
+      }
+      // System.out.println("Switching back to previous class loader");
+      jcasClassLoader = previousJCasClassLoader;
+      generators = baseGenerators;
+      id2tramp = null;
+    }
   }
   
   /*****************************************************************
@@ -584,7 +664,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private Sofa mySofaRef = null;
 
   /** the corresponding JCas object */
-  JCas jcas = null;
+  JCasImpl jcas = null;
 
   /**
    * Copies of frequently accessed data pulled up for 
@@ -594,6 +674,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   
   private TypeSystemImpl tsi_local;
+  
+  /** 
+   * for Pear generation - set this to the base FS
+   * not in SharedViewData to reduce object traversal when
+   * generating FSs
+   */
+  FeatureStructureImplC pearBaseFs = null;  
 
   // CASImpl(TypeSystemImpl typeSystem) {
   // this(typeSystem, DEFAULT_INITIAL_HEAP_SIZE);
@@ -846,26 +933,89 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                      // must happen before the annotation is created, for compressed form 6 serialization order
                      // to insure sofa precedes the ref of it
     }
-  
-    T fs = (T) ti.getGenerator().createFS(ti, this);  
-//    T fs = (T) (((FsGenerator)getFsGenerator(ti.getCode())).createFS(ti, this));
-    return fs;
-  } 
-  
-  public int ll_createFSAnnotCheck(int typeCode) {
-    TOP fs = createFSAnnotCheck(getTypeFromCode(typeCode));
-    svd.id2fs.put(fs);
-    return fs._id;
+
+    FsGenerator g = svd.generators[ti.getCode()];  // get generator or null
+    if (g != null) {
+      return (T) g.createFS(ti, this);
+    } else { // pear case, with no overriding pear - use base
+      return (T) createFsFromGenerator(svd.baseGenerators, ti);
+    }
+
+//    
+//    
+//    // not pear or no special cover class for this
+//      
+//    
+//      TOP fs = createFsFromGenerator(svd.baseGenerators, ti);
+//      
+//      FsGenerator g = svd.generators[ti.getCode()];  // get pear generator or null
+//      return (g != null) 
+//               ? (T) pearConvert(fs, g)
+//               : (T) fs;
+//    }
+//  
+//    return (T) createFsFromGenerator(svd.generators, ti);
   }
   
-  public TOP createArray(TypeImpl type, int arrayLength) {
-    TypeImpl_array tia = (TypeImpl_array) type;
-    if (tia.getComponentType().isPrimitive()) {
-      checkArrayPreconditions(arrayLength);  
-      return tia.getGeneratorArray().createFS(type, this, arrayLength); 
+  /**
+   * Called during construction of FS.
+   * For normal FS "new" operators, if in PEAR context, make the base version
+   * @param fs
+   * @param ti
+   * @return true if made a base for a trampoline
+   */
+  boolean maybeMakeBaseVersionForPear(FeatureStructureImplC fs, TypeImpl ti) {
+    if (!inPearContext()) return false;
+    FsGenerator g = svd.generators[ti.getCode()];  // get pear generator or null
+    if (g == null) return false;
+    TOP baseFs;
+    try {
+      suspendPearContext();
+      svd.reuseId = fs._id;
+      baseFs = createFsFromGenerator(svd.baseGenerators, ti);
+    } finally {
+      restorePearContext();
+      svd.reuseId = 0;
+    }
+    svd.id2base.put(baseFs);
+    pearBaseFs = baseFs;
+    return true;
+  }
+ 
+  private TOP createFsFromGenerator(FsGenerator[] gs, TypeImpl ti) {
+//    if (ti == null || gs == null || gs[ti.getCode()] == null) {
+//      System.out.println("debug");
+//    }
+    return gs[ti.getCode()].createFS(ti, this);
+  }
+  
+//  public int ll_createFSAnnotCheck(int typeCode) {
+//    TOP fs = createFSAnnotCheck(getTypeFromCode(typeCode));
+//    svd.id2fs.put(fs);  // required for low level, in order to "hold onto" / prevent GC of FS
+//    return fs._id;
+//  }
+  
+  public TOP createArray(TypeImpl array_type, int arrayLength) {
+    TypeImpl_array tia = (TypeImpl_array) array_type;
+    TypeImpl componentType = tia.getComponentType();
+    if (componentType.isPrimitive()) {
+      checkArrayPreconditions(arrayLength);
+      switch (componentType.getCode()) {
+      case intTypeCode: return new IntegerArray(array_type, this, arrayLength);
+      case floatTypeCode: return new FloatArray(array_type, this, arrayLength);
+      case booleanTypeCode: return new BooleanArray(array_type, this, arrayLength);
+      case byteTypeCode: return new ByteArray(array_type, this, arrayLength);
+      case shortTypeCode: return new ShortArray(array_type, this, arrayLength);
+      case longTypeCode: return new LongArray(array_type, this, arrayLength);
+      case doubleTypeCode: return new DoubleArray(array_type, this, arrayLength);
+      case stringTypeCode: return new StringArray(array_type, this, arrayLength);
+      case javaObjectTypeCode: return new JavaObjectArray(array_type, this, arrayLength);
+      default: Misc.internalError();
+      }
+//      return tia.getGeneratorArray().createFS(type, this, arrayLength); 
 //      return (((FsGeneratorArray)getFsGenerator(type.getCode())).createFS(type, this, arrayLength));
     }
-    return (TOP) createArrayFS(type, arrayLength);
+    return (TOP) createArrayFS(array_type, arrayLength);
   }
 
   @Override
@@ -875,8 +1025,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   private ArrayFS createArrayFS(TypeImpl type, int length) {
     checkArrayPreconditions(length);
-    return (ArrayFS) getTypeSystemImpl().fsArrayType.getGeneratorArray()         // (((FsGeneratorArray)getFsGenerator(fsArrayTypeCode))
-        .createFS(type, this, length);
+    return (ArrayFS) new FSArray(type, this, length);         
+//        getTypeSystemImpl().fsArrayType.getGeneratorArray()         // (((FsGeneratorArray)getFsGenerator(fsArrayTypeCode))
+//        .createFS(type, this, length);
   }
   
   @Override
@@ -1197,15 +1348,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // avoid race: two instances of a CAS from a pool attempting to commit the
     // ts
     // at the same time
+    final ClassLoader cl = getJCasClassLoader();
     synchronized (ts) {
       if (!ts.isCommitted()) {
-        TypeSystemImpl tsc = ts.commit();
+        TypeSystemImpl tsc = ts.commit(getJCasClassLoader());
         if (tsc != ts) {
           installTypeSystemInAllViews(tsc);
           ts = tsc;
         }
       }
     }       
+    svd.baseGenerators = svd.generators = ts.getGeneratorsForClassLoader(cl, false);  // false - not PEAR
     createIndexRepository();
     return ts;
   }
@@ -2115,7 +2268,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
     }
     TOP fs = (TOP) createFS(ti);
-    svd.id2fs.put(fs);
+    if (!fs._isPearTrampoline()) {
+      svd.id2fs.put(fs);  // hold on to it if nothing else is
+    }
     return fs._id;
   }
   
@@ -2248,11 +2403,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
+  /**
+   * Safety - any time the low level API to a FS is requested,
+   * hold on to that FS until CAS reset to mimic how v2 works.
+   */
   @Override
   public final int ll_getFSRef(FeatureStructure fs) {
     if (null == fs) {
       return NULL;
     }
+    TOP fst = (TOP) fs;
+    if (fst._isPearTrampoline()) {
+      return fst._id;  // no need to hold on to this one - it's in jcas hash maps
+    }
+    svd.id2fs.putUnconditionally(fst);  // hold on to it
     return ((FeatureStructureImplC)fs)._id;
   }
 
@@ -2327,7 +2491,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @Override
   public final int ll_getRefValue(int fsRef, int featureCode) {
-    return getFsFromId_checked(fsRef).getFeatureValue(getFeatFromCode_checked(featureCode)).id();
+    return getFsFromId_checked(fsRef).getFeatureValue(getFeatFromCode_checked(featureCode))._id();
   }
 
 //  public final int ll_getRefValueFeatOffset(int fsRef, int featureOffset) {
@@ -2380,7 +2544,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (doTypeChecks) {
       checkFsRefConditions(fsRef, featureCode);
     }
-    return getFsFromId_checked(fsRef).getFeatureValue(getFeatFromCode_checked(featureCode)).id();
+    return getFsFromId_checked(fsRef).getFeatureValue(getFeatFromCode_checked(featureCode))._id();
   }
   
   /**
@@ -2953,7 +3117,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @Override
   public final int ll_getRefArrayValue(int fsRef, int position) {
-    return ((TOP)getRefArrayValue(((FSArray)getFsFromId_checked(fsRef)), position)).id();
+    return ((TOP)getRefArrayValue(((FSArray)getFsFromId_checked(fsRef)), position))._id();
   }
 
   private void throwAccessTypeError(int fsRef, int typeCode) {
@@ -3193,23 +3357,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void switchClassLoaderLockCasCL(ClassLoader newClassLoader) {
     // lock out CAS functions to which annotator should not have access
     enableReset(false);
-
-//    switchClassLoader(newClassLoader);
-  }
-
-  // switches ClassLoader but does not lock CAS
-  // needed for backward compatibility only
-  public void switchClassLoader(ClassLoader newClassLoader) {
-    if (null == newClassLoader) { // is null if no cl set
-      return;
-    }
-    if (newClassLoader != this.svd.jcasClassLoader) {
-      // System.out.println("Switching to new class loader");
-      this.svd.jcasClassLoader = newClassLoader;
-//      if (null != this.jcas) {
-//        ((JCasImpl) this.jcas).switchClassLoader(newClassLoader);
-//      }
-    }
+    svd.switchClassLoader(newClassLoader);
   }
 
 //  // internal use, public for cross-package ref
@@ -3221,16 +3369,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // unlock CAS functions
     enableReset(true);
     // this might be called without the switch ever being called
-//    if (null == this.svd.previousJCasClassLoader) {
-//      return;
-//    }
-//    if (this.svd.previousJCasClassLoader != this.svd.jcasClassLoader) {
-//      // System.out.println("Switching back to previous class loader");
-//      this.svd.jcasClassLoader = this.svd.previousJCasClassLoader;
-//      if (null != this.jcas) {
-//        ((JCasImpl) this.jcas).switchClassLoader(this.svd.previousJCasClassLoader);
-//      }
-//    }
+    svd.restoreClassLoader();
 
   }
   
@@ -3578,7 +3717,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public int ll_createAnnotation(int typeCode, int begin, int end) {
     TOP fs = createAnnotation(getTypeFromCode(typeCode), begin, end);
 //    setId2fs(fs);
-    return fs.id();
+    return fs._id();
   }
   
   /**
@@ -3652,7 +3791,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public <T extends Annotation> T createDocumentAnnotationNoRemoveNoIndex(int length) {
     final TypeSystemImpl ts = getTypeSystemImpl();
     AnnotationFS docAnnot = createAnnotation(ts.docType, 0, length);
-    setId2FSs(docAnnot);  // because FeaturePath uses low-level access to it
     docAnnot.setStringValue(ts.langFeat, CAS.DEFAULT_LANGUAGE_NAME);
     return (T) docAnnot;    
   }
@@ -3743,7 +3881,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     FSIterator<FeatureStructure> it = getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX, getTypeSystemImpl().docType).iterator();
     if (it.isValid()) {
-      return it.get().id();
+      return it.get()._id();
     }
     return 0;
   }
@@ -3819,7 +3957,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   @Override
   public int ll_getSofa() {
-    return mySofaIsValid() ? mySofaRef.id() : 0;
+    return mySofaIsValid() ? mySofaRef._id() : 0;
   }
 
   @Override
@@ -4467,10 +4605,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     default: throw new IllegalArgumentException();
     }
   }
-
-  public TypeImpl getTypeImplFromJCasTypeIndex(int typeIndexID) {
-    return getTypeSystemImpl().getJCasRegisteredType(typeIndexID);
-  }
   
 //  /**
 //   * Copies a feature, from one fs to another
@@ -4557,32 +4691,65 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   /******************************************
    * PEAR support
-   *   Type system not modified - is in use on multiple threads
+   *   Don't modify the type system because it is in use on multiple threads
    *   
    *   Handling of id2fs for low level APIs:
    *     FSs in id2fs map are the outer non-pear ones
    *     Any gets do pear conversion if needed.
    *   
    ******************************************/
+  /**
+   * 3 cases:
+   *   1) no trampoline needed, no conversion, return the original fs
+   *   2) trampoline already exists - return that one
+   *   3) create new trampoline
+   * @param aFs
+   * @return
+   */
   static <T extends FeatureStructure> T pearConvert(T aFs) {
+    if (null == aFs) {
+      return null;
+    }
     final TOP fs = (TOP) aFs;
     final CASImpl view = fs._casView;
     final TypeImpl ti = fs._getTypeImpl();
-    final FsGenerator g = view.getPearGeneratorForType(ti);
-    view.svd.reuseId = fs._id;  // create new FS using base FS's ID
-    view.svd.pearBaseFs = fs;
-    try {
-      return (T) g.createFS(ti, view);
-    } finally {
-      view.svd.reuseId = 0;
-      view.svd.pearBaseFs = null;
+    final FsGenerator generator = view.svd.generators[ti.getCode()];
+    if (null == generator) {
+      return aFs;
     }
+    return (T) view.pearConvert(fs, generator);
+  }  
+  
+  private TOP pearConvert(TOP fs, FsGenerator g) {
+    TOP r = svd.id2tramp.getReserve(fs._id);
+    if (r != null) {
+      return r;
+    }
+    
+    svd.reuseId = fs._id;  // create new FS using base FS's ID
+    pearBaseFs = fs;
+    try {
+      r = g.createFS(fs._getTypeImpl(), this);
+    } finally {
+      svd.reuseId = 0;
+      pearBaseFs = null;
+    }
+    svd.id2tramp.put(r);
+    return r;
   }
   
-  private FsGenerator getPearGeneratorForType(TypeImpl ti) {
-    return null;  // TODO FIXME
+  /**
+   * Given a trampoline FS, return the corresponding base Fs
+   * Supports adding Fs (which must be a non-trampoline version) to indexes
+   * @param fs trampoline fs
+   * @return the corresponding base fs
+   */
+  <T extends TOP> T getBaseFsFromTrampoline(T fs) {
+    TOP r = svd.id2base.getReserve(fs._id);
+    assert r != null;
+    return (T) r;
   }
-
+  
   /******************************************
    * DEBUGGING and TRACING
    ******************************************/
@@ -4870,6 +5037,27 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   @Deprecated
   public void setCAS(CAS cas) {}
+  
+  /**
+   * @return true if in Pear context, or external context outside AnalysisEngine having a UIMA Extension class loader
+   *                e.g., if calling a call-back routine loaded outside the AE.
+   */
+  boolean inPearContext() {
+    return svd.previousJCasClassLoader != null;
+  }
+  
+  /**
+   * Pear context suspended while creating a base version, when we need to create a new FS 
+   *   (we need to create both the base and the trampoline version)
+   */
+  private void suspendPearContext() {
+    svd.suspendPreviousJCasClassLoader = svd.previousJCasClassLoader;
+    svd.previousJCasClassLoader = null;
+  }
+  
+  private void restorePearContext() {
+    svd.previousJCasClassLoader = svd.suspendPreviousJCasClassLoader;
+  }
 
 //  int allocIntData(int sz) {
 //    

@@ -19,15 +19,31 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
- * A Functional Interface for generating Java Feature Structures
- * NO LONGER USED
+ * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
  */
-@FunctionalInterface
-public interface FsGeneratorArray {
+class FsIterator_bag_pear<T extends FeatureStructure> extends FsIterator_bag<T> {
+
+  FsIterator_bag_pear(FsIndex_bag<T> fsBagIndex, TypeImpl ti) {
+    super(fsBagIndex, ti);
+  }    
+
+  @Override
+  public T get() {
+    return CASImpl.pearConvert(super.get());
+  }
+
+  @Override
+  public T getNvc() {
+    return CASImpl.pearConvert(super.getNvc());
+  }
   
-  TOP createFS(TypeImpl typeImpl, CASImpl casImpl, int length);
-  
+  @Override
+  public FsIterator_bag_pear<T> copy() {
+    FsIterator_bag_pear<T> copy = new FsIterator_bag_pear<T>(this.fsBagIndex, this.ti);
+    copyCommonSetup(copy);
+    return copy;
+  }
 }

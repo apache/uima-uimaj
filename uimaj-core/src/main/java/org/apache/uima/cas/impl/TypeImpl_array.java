@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 
 public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
@@ -140,15 +139,6 @@ public class TypeImpl_array extends TypeImpl implements TypeSystemConstants {
     return componentType.isRefType && 
            componentType.getCode() != fsArrayTypeCode && 
            componentType.getCode() != topTypeCode;
-  }
-
-  /**
-   * @param jcasClassInfo the jcasClassInfo to set
-   */
-  @Override
-  void setJcasClassInfo(JCasClassInfo jcasClassInfo) {
-    super.setJcasClassInfo(jcasClassInfo);
-    this.generatorArray = (FsGeneratorArray)jcasClassInfo.generator;
   }
 
   /**

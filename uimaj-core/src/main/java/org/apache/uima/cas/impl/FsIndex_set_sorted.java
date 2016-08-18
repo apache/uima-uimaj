@@ -130,7 +130,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
           ? (o1, o2) -> {
               final int c = compare(o1,  o2); 
               // augment normal comparator with one that compares IDs if everything else equal
-              return (c == 0) ? (Integer.compare(o1.id(), o2.id())) : c;} 
+              return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;} 
           : comparatorWithoutID;
     }          
 //    comparatorO = new Comparator() {
@@ -329,8 +329,9 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    
   @Override
   public FSIterator<T> iterator() {
-//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
-    return new FsIterator_set_sorted<T>(this, type, this);
+    return casImpl.inPearContext()
+             ? new FsIterator_set_sorted_pear<>(this, type, this)
+             : new FsIterator_set_sorted     <>(this, type, this);
   }
     
 //  synchronized void maybeProcessBulkAdds() {

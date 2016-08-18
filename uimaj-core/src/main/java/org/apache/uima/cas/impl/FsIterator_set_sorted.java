@@ -38,7 +38,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   // in UIMA we can use, say an Annotation instance as a moveTo arg, for a navSet of some subtype of Annotation.
   final private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
   
-  final private FsIndex_set_sorted<T> fsSetSortIndex;  // only for ll_getIndex, backwards compatibility
+  final protected FsIndex_set_sorted<T> fsSetSortIndex;  // only for ll_getIndex, backwards compatibility
   
   private T currentElement;
   

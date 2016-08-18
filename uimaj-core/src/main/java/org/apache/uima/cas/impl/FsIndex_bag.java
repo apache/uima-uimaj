@@ -85,7 +85,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return (fs1 == fs2) ? 0 : (fs1.id() < fs2.id()) ? -1 : 1;
+    return (fs1 == fs2) ? 0 : (fs1._id() < fs2._id()) ? -1 : 1;
   }
 
   /*
@@ -185,7 +185,9 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public FSIterator<T> iterator() {
-    return new FsIterator_bag<T>(this, type);
+    return casImpl.inPearContext()
+             ? new FsIterator_bag_pear<>(this, type)
+             : new FsIterator_bag     <>(this, type);
   }
   
   ObjHashSet<TOP> getObjHashSet() {

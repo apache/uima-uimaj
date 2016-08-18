@@ -32,7 +32,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   
   private boolean isGoingForward = true;
 
-  final private FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from super class, allows dispatch w/o casting
+  final protected FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from super class, allows dispatch w/o casting
 
   FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti) {
     super(ti, null);  // null: null comparator for bags
@@ -142,9 +142,13 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   @Override
   public FsIterator_bag<T> copy() {
     FsIterator_bag<T> copy = new FsIterator_bag<T>(this.fsBagIndex, this.ti);
-    copy.position = position;
-    copy.isGoingForward = isGoingForward;   
+    copyCommonSetup(copy);
     return copy;
+  }
+  
+  protected void copyCommonSetup(FsIterator_bag<T> copy) {
+    copy.position = position;
+    copy.isGoingForward = isGoingForward;
   }
 
   /* (non-Javadoc)

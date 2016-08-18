@@ -347,11 +347,18 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   { types.add(null); }  // use up slot 0
 
   /**
-   * used as a map, the key is the JCas loaded type id, set once when each JCas class is loaded.
+   * Used to go from a JCas class's JCasTypeID to the corresponding UIMA type for this type system.
+   *   - when doing "new Foo(jcas)"
+   *   - when referring to a type using its JCas typeID
+   *   
+   * Used as a map, the key is the JCas loaded type id, set once when each JCas class is loaded.
    * value is the corresponding TypeImpl
    * 
    * When multiple type systems are being initialized in parallel, this list maybe updated
    * on different threads.  Access to it is synchronized on the object itself
+   * 
+   * A single JCas type ID (corresponding to a single JCas type) might be used for many UIMA types.
+   * but they are always in a type hierarchy, and the top most one is the one stored here
    */
   private final List<TypeImpl> jcasRegisteredTypes = new ArrayList<>(INIT_SIZE_ARRAYS_BUILT_IN_TYPES);
   /**
@@ -403,7 +410,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   FeatureImpl sofaUri;
   FeatureImpl annotBaseSofaFeat;
 
-
+  /**
+   * Cache for implementing map from type code -> FsGenerator
+   * Shared by all CASes using this type system
+   *   Excludes FsGeneratorArrays - those are built-in and constant 
+   */
+  private final Map<ClassLoader, FsGenerator[]> generatorsByClassLoader = new IdentityHashMap<>();
 
   public TypeSystemImpl() {
 
@@ -648,7 +660,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   public final int getTypeArraySize() {
-    return getNumberOfTypes() + getSmallestType();
+    return types.size(); //        getNumberOfTypes() + getSmallestType();
   }
 
   public Vector<Feature> getIntroFeatures(Type type) {
@@ -1259,6 +1271,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public TypeSystemImpl commit() {
+    return commit(this.getClass().getClassLoader());  // default if not called with a CAS context 
+  }
+  
+  public TypeSystemImpl commit(ClassLoader cl) {
     synchronized(this) {
       if (this.locked) {
         return this; // might be called multiple times, but only need to do once
@@ -1304,8 +1320,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // Has to follow above, because information computed above is used when
       // loading and checking JCas classes
       
+      
+      // not done here, done in caller (CASImpl commitTypeSystem), 
+      // when it gets the generators for the class loader for this type system for the first time.
 //      fsClassRegistry = new FSClassRegistry(this, true);
-      FSClassRegistry.loadAtTypeSystemCommitTime(this, true);
+//      FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
       
       this.locked = true;
       return this;
@@ -2336,12 +2355,32 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    return fsClassRegistry;
 //  }
   
+  /**
+   * 
+   * @param typeIndexID the JCasTypeID for the JCas cover class that will be used when creating instances of ti
+   *                       - may be a supertype of ti, if ti has no JCas class itself
+   *                       - may be a subtype of the supertype of ti, if ti has no JCas class itself
+   * @param ti the UIMA type
+   */
   void setJCasRegisteredType(int typeIndexID, TypeImpl ti) {
 //    if (typeIndexID == 0 && !ti.getShortName().equals("TOP")) {
 //      System.out.println("debug");
 //    }
     synchronized (jcasRegisteredTypes) {
-      Misc.setWithExpand(jcasRegisteredTypes, typeIndexID, ti);
+      TypeImpl existing = Misc.getWithExpand(jcasRegisteredTypes,  typeIndexID);
+      if (existing != null) {
+        if (ti != existing) {
+          // allowed 
+          if (ti == null) {
+            Misc.internalError();
+          }
+          if (!existing.subsumes(ti)) {
+            Misc.internalError();
+          }
+        }
+      } else {
+        jcasRegisteredTypes.set(typeIndexID, ti);
+      }
     }
   }
   
@@ -2506,6 +2545,23 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (arrayFs._getTypeImpl().getComponentType().subsumesStrictly(featRange.getComponentType())) {
         arrayFs._setTypeImpl(featRange);  // replace more general type with more specific type
       }
+    }
+  }
+  
+  /**
+   * Called when switching or initializing CAS's shared-view-data instance of FsGenerator[]
+   * @param cl the class loader
+   * @param baseGenerators null or the outside-of-PEARs (base) generators
+   * @return the generators
+   */
+  public FsGenerator[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {
+    synchronized (generatorsByClassLoader) {
+      FsGenerator[] g = generatorsByClassLoader.get(cl);
+      if (g == null) {
+        g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
+        generatorsByClassLoader.put(cl, g);
+      }
+      return g;
     }
   }
 

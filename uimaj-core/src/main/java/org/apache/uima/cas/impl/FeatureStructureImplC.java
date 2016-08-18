@@ -35,7 +35,6 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.CommonArray;
@@ -175,19 +174,29 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   }
   
   /**
-   * For non-JCas use
+   * For non-JCas use, Internal Use Only, called by cas.createFS via generators
    * @param casView -
    * @param type -
    */
   protected FeatureStructureImplC(TypeImpl type, CASImpl casView) {
     _casView = casView;
     _typeImpl = type;
-    
-    FeatureStructureImplC baseFs = _casView.svd.pearBaseFs;
-    _intData = (baseFs == null) ? _allocIntData() : baseFs._intData;
-    _refData = (baseFs == null) ? _allocRefData() : baseFs._refData;    
-
     _id = casView.getNextFsId((TOP)this);   
+    
+    if (_casView.maybeMakeBaseVersionForPear(this, _typeImpl)) {
+      _setPearTrampoline();
+    }
+
+    FeatureStructureImplC baseFs = _casView.pearBaseFs;
+    if (null != baseFs) {
+      _intData = baseFs._intData;
+      _refData = baseFs._refData;
+      _casView.pearBaseFs = null;
+    } else {
+      _intData = _allocIntData();
+      _refData = _allocRefData();
+    }
+
     
     if (traceFSs && !(this instanceof CommonArray)) {
       _casView.traceFSCreate(this);
@@ -203,17 +212,26 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   protected FeatureStructureImplC(JCasImpl jcasImpl) {
     _casView = jcasImpl.getCasImpl();
     _typeImpl = _casView.getTypeSystemImpl().getJCasRegisteredType(getTypeIndexID());
+    _id = _casView.getNextFsId((TOP)this); 
     
     if (null == _typeImpl) {
       throw new CASRuntimeException(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, this.getClass().getName());
     }
-    
-    FeatureStructureImplC baseFs = _casView.svd.pearBaseFs;
-    _intData = (baseFs == null) ? _allocIntData() : baseFs._intData;
-    _refData = (baseFs == null) ? _allocRefData() : baseFs._refData;    
-    
-    _id = _casView.getNextFsId((TOP)this); 
 
+    if (_casView.maybeMakeBaseVersionForPear(this, _typeImpl)) {
+      _setPearTrampoline();
+    }
+    
+    FeatureStructureImplC baseFs = _casView.pearBaseFs;
+    if (null != baseFs) {
+      _intData = baseFs._intData;
+      _refData = baseFs._refData;
+      _casView.pearBaseFs = null;
+    } else {
+      _intData = _allocIntData();
+      _refData = _allocRefData();
+    }
+    
     if (traceFSs && !(this instanceof CommonArray)) {
       _casView.traceFSCreate(this);
     }
@@ -296,7 +314,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public final int getAddress() { return _id; };
 
   @Override
-  public final int id() {return _id; };
+  public final int _id() {return _id; };
   
   /**
    * Returns the UIMA TypeImpl value
@@ -305,11 +323,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public Type getType() {
     return _typeImpl;
   }
-  
-  public TypeImpl getTypeImpl() {
-    return _typeImpl;
-  }
-  
+    
   /**
    * starts with _ 
    * @return the UIMA TypeImpl for this Feature Structure
@@ -525,7 +539,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
 
     // no need to check for index corruption because fs refs can't be index keys
-    _setRefValueCommon(fi, v);
+    _setRefValueCommon(fi, _maybeGetBaseForPearFs((TOP)v));
     _casView.maybeLogUpdate(this, fi);
   }
   
@@ -537,9 +551,21 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     _setRefValueCommon(adjOffset, v);
   }
 
-
-  public void _setFeatureValueNcWj(int adjOffset, Object v) { 
-    _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), v);
+  /**
+   * Called when setting a FS value which might be a trampoline
+   * @param v the FS to check
+   * @return the FS or if it was a trampoline, the base FS
+   */
+  private TOP _maybeGetBaseForPearFs(TOP v) {
+    return (v == null) 
+             ? null
+             : v._isPearTrampoline() 
+                 ? v._casView.getBaseFsFromTrampoline(v)
+                 : v;
+  }
+  
+  public void _setFeatureValueNcWj(int adjOffset, FeatureStructure v) {
+    _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), _maybeGetBaseForPearFs((TOP)v));
   }
 
   @Override
@@ -733,7 +759,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   
   public TOP _getFeatureValueNc(FeatureImpl feat) { return _getFeatureValueNc(feat.getAdjustedOffset()); }
 
-  public TOP _getFeatureValueNc(int adjOffset) { return (TOP) _refData[adjOffset /*+ _getRefDataArrayOffset()*/]; }
+  public TOP _getFeatureValueNc(int adjOffset) { 
+    TOP r = (TOP) _refData[adjOffset /*+ _getRefDataArrayOffset()*/];
+    return (_casView.inPearContext()) 
+             ? _casView.pearConvert(r)
+             : r;      
+  }
  
   @Override
   public Object getJavaObjectValue(Feature feat) { 

@@ -66,6 +66,10 @@ public class Id2FS {
     assert prev == null;
   }
   
+  void putUnconditionally(TOP fs) {
+    id2fs.put(fs._id, fs);
+  }
+  
   /**
    * make an id map to an fs, asserting there was a previous mapping for this id
    * @param id -
