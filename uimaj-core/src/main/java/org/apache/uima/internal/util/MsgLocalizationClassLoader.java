@@ -30,6 +30,7 @@ import java.util.Map;
  *   the class loader that loaded the 2nd previous caller
  *   the class loader that loaded the 3rd previous caller
  *   etc.
+ *   and finally, the thread local context loader, if it exists UIMA-3692
  * Note: the caller of this method is presumed to be framework code
  *   that was, in turn, called to perform some logging or whatever,
  *   so we skip the 1st previous caller.
@@ -105,9 +106,11 @@ public class MsgLocalizationClassLoader {
           // leave c == null
         }      
       }
-      throw new ClassNotFoundException(name);
+      // UIMA-3692  try the thread context class loader
+      // if not found, will return class not found exception
+      return Thread.currentThread().getContextClassLoader().loadClass(name);
     }
-
+    
     @Override
     public URL getResource(String name) {
       Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<ClassLoader, ClassLoader>(7);
