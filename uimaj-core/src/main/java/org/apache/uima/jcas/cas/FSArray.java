@@ -91,17 +91,17 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
   public TOP get(int i) {
-    return theArray[i];
+    return _maybeGetPearFs(theArray[i]);
   }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
     TOP vt = (TOP) v;
-    if (v != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
+    if (vt != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
     }
-    theArray[i] = vt;
+    theArray[i] = _maybeGetBaseForPearFs(vt);
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 
@@ -114,21 +114,43 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   public void copyFromArray(FeatureStructure[] src, int srcPos, int destPos, int length) {
-    System.arraycopy(src, srcPos, theArray, destPos, length);
+    int srcEnd = srcPos + length;
+    int destEnd = destPos + length;
+    if (srcPos < 0 ||
+        srcEnd > src.length ||
+        destEnd > size()) {
+      throw new ArrayIndexOutOfBoundsException(
+          String.format("FSArray.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
+    }
+    for (;srcPos < srcEnd && destPos < destEnd;) {
+      set(destPos++, src[srcPos++]);
+    }
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
   public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
-    System.arraycopy(theArray, srcPos, dest, destPos, length);
+    int srcEnd = srcPos + length;
+    int destEnd = destPos + length;
+    if (srcPos < 0 ||
+        srcEnd > size() ||
+        destEnd > dest.length) {
+      throw new ArrayIndexOutOfBoundsException(
+          String.format("FSArray.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
+    }
+    for (;srcPos < srcEnd && destPos < destEnd;) {
+      dest[destPos++] = _maybeGetPearFs(get(srcPos++));
+    }
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   public FeatureStructure[] toArray() {
-    return theArray.clone();
+    FeatureStructure[] r = new FeatureStructure[size()];
+    copyToArray(0, r, 0, size());
+    return r;
   }
 
   /**
@@ -158,7 +180,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      FeatureStructure fs = theArray[i + srcPos];
+      FeatureStructure fs = _maybeGetPearFs(theArray[i + srcPos]);
       dest[i + destPos] = (fs == null) ? null : fs.toString();
     }
   }
@@ -171,12 +193,15 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   }
 
   // internal use
+  // used by serializers
+  // no conversion to Pear trampolines done
   public TOP[] _getTheArray() {
     return theArray;
   }
   
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   * no conversion to Pear trampolines done
    */
   @Override
   public void copyValuesFrom(CommonArray v) {

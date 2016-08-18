@@ -556,12 +556,23 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
    * @param v the FS to check
    * @return the FS or if it was a trampoline, the base FS
    */
-  private TOP _maybeGetBaseForPearFs(TOP v) {
+  protected TOP _maybeGetBaseForPearFs(TOP v) {
     return (v == null) 
              ? null
              : v._isPearTrampoline() 
                  ? v._casView.getBaseFsFromTrampoline(v)
                  : v;
+  }
+  
+  /**
+   * Called when getting a FS value which might need to return a Pear context's trampoline
+   * @param v the FS to check
+   * @return the FS or if we're in a Pear context, perhaps the trampoline (only some classes might have trampolines)
+   */
+  protected TOP _maybeGetPearFs(TOP v) {
+    return (_casView.inPearContext()) 
+      ? _casView.pearConvert(v)
+      : v;
   }
   
   public void _setFeatureValueNcWj(int adjOffset, FeatureStructure v) {
@@ -760,10 +771,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   public TOP _getFeatureValueNc(FeatureImpl feat) { return _getFeatureValueNc(feat.getAdjustedOffset()); }
 
   public TOP _getFeatureValueNc(int adjOffset) { 
-    TOP r = (TOP) _refData[adjOffset /*+ _getRefDataArrayOffset()*/];
-    return (_casView.inPearContext()) 
-             ? _casView.pearConvert(r)
-             : r;      
+    return _maybeGetPearFs((TOP) _refData[adjOffset /*+ _getRefDataArrayOffset()*/]);
   }
  
   @Override
