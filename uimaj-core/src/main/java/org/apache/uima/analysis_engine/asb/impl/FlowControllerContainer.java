@@ -278,16 +278,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     // load FlowController class
     Class<?> flowControllerClass = null;
     try {
-      // get UIMA extension ClassLoader if available
-      ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
-
-      if (cl != null) {
-        // use UIMA extension ClassLoader to load the class
-        flowControllerClass = cl.loadClass(flowControllerClassName);
-      } else {
-        // use application ClassLoader to load the class
-        flowControllerClass = Class.forName(flowControllerClassName);
-      }
+      flowControllerClass= loadUserClass(flowControllerClassName);
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
               new Object[] { flowControllerClassName, aDescriptor.getSourceUrlString() }, e);

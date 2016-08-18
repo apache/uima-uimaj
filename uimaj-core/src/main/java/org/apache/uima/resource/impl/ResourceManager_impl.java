@@ -535,19 +535,9 @@ public class ResourceManager_impl implements ResourceManager {
       } else {
         // make sure resource exists and implements the correct interface
         try {
-          if (aDependencies[i].getInterfaceName() != null
-                  && aDependencies[i].getInterfaceName().length() > 0) {
-            // get UIMA extension ClassLoader if available
-            ClassLoader cl = getExtensionClassLoader();
-            Class<?> theInterface = null;
-
-            if (cl != null) {
-              // use UIMA extension ClassLoader to load the class
-              theInterface = cl.loadClass(aDependencies[i].getInterfaceName());
-            } else {
-              // use application ClassLoader to load the class
-              theInterface = Class.forName(aDependencies[i].getInterfaceName());
-            }
+          String name = aDependencies[i].getInterfaceName();
+          if (name != null && name.length() > 0) {
+            Class<?> theInterface = loadUserClass(name);
 
             Class<? extends Resource> resourceClass = getResourceClass(qname);
             if (!theInterface.isAssignableFrom(resourceClass)) {
@@ -589,16 +579,7 @@ public class ResourceManager_impl implements ResourceManager {
     Class<?> implClass = null;
     if (implementationName != null && implementationName.length() > 0) {
       try {
-        // get UIMA extension ClassLoader if available
-        ClassLoader cl = getExtensionClassLoader();
-
-        if (cl != null) {
-          // use UIMA extension ClassLoader to load the class
-          implClass = cl.loadClass(implementationName);
-        } else {
-          // use application ClassLoader to load the class
-          implClass = Class.forName(implementationName);
-        }
+        implClass = loadUserClass(implementationName);
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
                 new Object[] { implementationName, aResourceDescription.getSourceUrlString() }, e);
@@ -711,6 +692,14 @@ public class ResourceManager_impl implements ResourceManager {
 
   public Map<String, XMLizable> getImportCache() {
     return importCache;
+  }
+
+  public Class<?> loadUserClass(String name) throws ClassNotFoundException {
+    ClassLoader cl = getExtensionClassLoader();
+    if (cl == null) {
+      cl = this.getClass().getClassLoader();
+    }
+    return Class.forName(name, true, cl);
   }
 
 }

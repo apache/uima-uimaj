@@ -285,4 +285,13 @@ public abstract class Resource_ImplBase implements Resource {
   public CasManager getCasManager() {
     return getResourceManager().getCasManager();
   }
+  
+  public Class<?> loadUserClass(String name) throws ClassNotFoundException {
+    return getResourceManager().loadUserClass(name);
+//    ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
+//    if (null == cl) {
+//      cl = this.getClass().getClassLoader();
+//    }
+//    return Class.forName(name, true, cl);
+  }
 }

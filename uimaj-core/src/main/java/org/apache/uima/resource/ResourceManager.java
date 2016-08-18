@@ -312,4 +312,13 @@ public interface ResourceManager {
    * @return A map from absolute URL to the XMLizable object that was parsed from that URL
    */
   public Map<String,XMLizable> getImportCache();
+  
+  /**
+   * Loads a user class using either the UIMA extension class loader (if specified) or 
+   * the loader the UIMA framework is running in.
+   * @param name the class to load
+   * @return the class
+   * @throws ClassNotFoundException -
+   */
+  public Class<?> loadUserClass(String name) throws ClassNotFoundException;
 }
