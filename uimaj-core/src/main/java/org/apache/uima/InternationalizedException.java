@@ -72,6 +72,11 @@ public class InternationalizedException extends Exception {
     * The exception that caused this exception to occur.
     */
    private Throwable mCause;
+   
+   /**
+    * the thread local class loader at creation time, see UIMA-4793
+    */
+   final private ClassLoader originalContextClassLoader;
 
    /**
     * Creates a new <code>InternationalizedException</code> with a null
@@ -134,6 +139,7 @@ public class InternationalizedException extends Exception {
    public InternationalizedException(String aResourceBundleName,
          String aMessageKey, Object[] aArguments, Throwable aCause) {
       super();
+      originalContextClassLoader = Thread.currentThread().getContextClassLoader();
       mCause = aCause;
       mResourceBundleName = aResourceBundleName;
       mMessageKey = aMessageKey;
@@ -232,8 +238,12 @@ public class InternationalizedException extends Exception {
       // check for null message
       if (getMessageKey() == null)
          return null;
-
-      return I18nUtil.localizeMessage(getResourceBundleName(), aLocale, getMessageKey(), getArguments());
+      try {
+        I18nUtil.setTccl(originalContextClassLoader);       
+        return I18nUtil.localizeMessage(getResourceBundleName(), aLocale, getMessageKey(), getArguments());
+      } finally {
+        I18nUtil.removeTccl();        
+      }
 //      try {
 //         // locate the resource bundle for this exception's messages
 //         // turn over the classloader of the current object explicitly, so that the

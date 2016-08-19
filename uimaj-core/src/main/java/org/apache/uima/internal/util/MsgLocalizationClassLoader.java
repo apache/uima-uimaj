@@ -58,6 +58,7 @@ public class MsgLocalizationClassLoader {
 
   static class CallClimbingClassLoader extends ClassLoader {
   
+    static final ThreadLocal<ClassLoader> originalTccl = new ThreadLocal<>();
     /*
      * Try to load the class itself before delegate the class loading to its parent
      */
@@ -107,8 +108,15 @@ public class MsgLocalizationClassLoader {
           // leave c == null
         }      
       }
-      // UIMA-3692  try the thread context class loader
+      // UIMA-3692, UIMA-4793 try the thread context class loader
       // if not found, will return class not found exception
+      try {
+        ClassLoader cl = originalTccl.get();
+        if (cl != null) {
+          return cl.loadClass(name);
+        }
+      } catch (ClassNotFoundException e) {}
+      // last try: the current thread context class loader
       return Thread.currentThread().getContextClassLoader().loadClass(name);
     }
     
