@@ -135,7 +135,7 @@ public class AnnotationIndexImpl <T extends AnnotationFS> implements AnnotationI
       return (FSIterator<T>) this.index.iterator();
     }
     // return non-constrained, non-strict, unambiguous iterator
-    boolean strict = true;
+    boolean strict = false;
     boolean isBounded = false;
     return new Subiterator<T>(this.index.iterator(), null, 0, 0, ambiguous, strict, isBounded, ((FSIndexRepositoryImpl.IndexImpl<T>)(this.index)).getFsRepositoryImpl());
   }

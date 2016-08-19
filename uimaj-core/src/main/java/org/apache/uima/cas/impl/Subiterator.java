@@ -105,7 +105,7 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
    * @param ambiguous true means normal iteration, 
    *                  false means to skip annotations whose begin lies between previous begin (inclusive) and end (exclusive)
    * @param strict true means to skip annotations whose end is greater than the bounding end position (ignoring type priorities)
-   * @param isBounded false means its an unambiguous iterator with no bounds narrowing; ambiguous taken to be false
+   * @param isBounded false means it's an unambiguous iterator with no bounds narrowing; ambiguous taken to be false
    * @param fsIndexRepo the index repository for this iterator
    */
   Subiterator(
@@ -311,7 +311,9 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
     }
 
     adjustForStrictForward();
-    if (it.isValid() && (it.get().getBegin() > boundingEnd)) {
+    
+    // stop in bounded case if out of bounds going forwards UIMA-5063
+    if (isBounded && it.isValid() && (it.get().getBegin() > boundingEnd)) {
       it.moveToLast();
       it.moveToNext();  // mark invalid
     } else {
@@ -340,7 +342,8 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       return;
     }
     
-    if (isValid() && ((FeatureStructureImpl)it.get()).getAddress() == startId) {
+    // stop in bounded case if out of bounds going backwards UIMA-5063
+    if (isBounded && isValid() && ((FeatureStructureImpl)it.get()).getAddress() == startId) {
       it.moveToFirst();
       it.moveToPrevious();  // make it invalid
     } else {

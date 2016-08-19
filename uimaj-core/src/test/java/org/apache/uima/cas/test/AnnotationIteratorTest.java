@@ -156,6 +156,8 @@ public class AnnotationIteratorTest extends TestCase {
   }
 
   public void testIterator1() {
+    
+    
 //   Tokens                +---+
 //                        +---+
 //                       +---+
@@ -167,6 +169,7 @@ public class AnnotationIteratorTest extends TestCase {
 //
 //   bound4strict                   +------------------+            
 //   sentence4strict                 +-----------------------------+
+    
     
     try {
       this.cas.setDocumentText(text);
@@ -191,6 +194,11 @@ public class AnnotationIteratorTest extends TestCase {
     // for (int i = 0; i < text.length() - 5; i++) {
     // cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
     // }
+    
+    // create overlapping sentences for unambigious testing
+    //   begin =  0,  5, 10, ...
+    //   end   = 10, 15, 20, ...
+    // non-overlapping:  0-10, 10-20, etc.
     for (int i = 0; i < text.length() - 10; i += 5) {
       ++annotCount;
       ir.addFS(fs = this.cas.createAnnotation(this.sentenceType, i, i + 10));
@@ -264,7 +272,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Normal ambiguous annot iterator", annotCount, it);
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
-    assertCount("Unambiguous annot iterator", 1, it);  // because of document Annotation
+    assertCount("Unambiguous annot iterator", 1, it);  // because of document Annotation - spans the whole range
+    
+    it = sentIndex.iterator(false);  //  false means create an unambiguous iterator
+    assertCount("Unambigous sentence iterator", 5, it);
     
     AnnotationFS bigBound = this.cas.createAnnotation(this.sentenceType, 10, 41);
     it = annotIndex.subiterator(bigBound, true, true);  // ambiguous, and strict
