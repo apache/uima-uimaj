@@ -145,8 +145,15 @@ public class MsgLocalizationClassLoader {
           return c;
         }    
       }
-      // UIMA-3692  try the thread context class loader
+      // UIMA-3692, UIMA-4793  try the thread context class loader
       // if not found, will return class not found exception
+      ClassLoader cl = originalTccl.get();
+      if (cl != null) {
+        URL c = cl.getResource(name);
+        if (null != c) {
+          return c;
+        }
+      }
       return Thread.currentThread().getContextClassLoader().getResource(name);
     }
   }
