@@ -1107,4 +1107,25 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
     with the same name can be merged only if their features can be merged.
     </para>
     </section>
+    
+  <section id="ugr.ref.cas.limitedmultipleaccess">
+    <title>Limited multi-thread access to read-only CASs</title>
+    
+    <para>Some applications may find it useful to scale up pipelines and run these in parallel.</para>
+    <para>
+    Generally, CASs are not threadsafe, and only one thread at a time may operate on it.  In many
+    scenarios, a CAS may be initialized and then filled with Feature Structures, and after some point,
+    no more updates to that particular CAS will be done.</para>
+    
+    <para>
+    If a CAS is no longer going to be changed, it is possible to 
+    access it on multiple threads in a read-only mode, simultaneously, with some limitations.  Limitations 
+    arise because some UIMA Framework activities may update internal CAS data structures.</para>
+    
+    <para>Operational data is updated while running a pipeline when a PEAR is entered or exited, 
+    because PEARs establish new class loaders and can potentially switch the JCas classes being used.
+    Because of this, you cannot have multiple pipelines accessing a CAS in read-only mode if one or more of those
+    pipelines contains a PEAR. 
+    </para>
+    </section>
 </chapter>
