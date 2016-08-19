@@ -1622,4 +1622,59 @@ public class AnalysisEngine_implTest extends TestCase {
     rdr.close();
     return len;
   }
+  
+  /*
+   * Test attempts to update the type-system after the lazy merge (UIMA-1249 & 5048)
+   * Creating a 2nd identical AE should be OK even if the types are assembled in a different order.
+   * Creating an AE with an unseen type, type-priority, or index should fail. 
+   */
+  public void testAdditionalAEs() throws Exception {
+
+    // Create an AE and "freeze" the type-system
+    AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+            new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForMultipleAeTest.xml")));
+    UIMAFramework.getLogger().setLevel(Level.CONFIG);
+    AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
+    ae1.newCAS();
+    
+    // Creating a 2nd duplicate engine failed in 2.8.1 if the 2nd of the 2 typesystems imported
+    // is also contained in the 1st (UIMA-5058)
+    try {
+      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
+      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+    
+    // Try creating one with at least one different type
+    try {
+      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
+      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+      fail();
+    } catch (Exception e) {
+      System.err.println("Expected exception: " + e);
+    }
+    
+    // Try creating one with different type-priorities
+    try {
+      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
+      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+      fail();
+    } catch (Exception e) {
+      System.err.println("Expected exception: " + e);
+    }
+    
+    // Try creating one with different indexes
+    try {
+      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
+      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+      fail();
+    } catch (Exception e) {
+      System.err.println("Expected exception: " + e);
+    }
+  }
 }
