@@ -20,7 +20,6 @@
 package org.apache.uima.resource.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,12 +41,8 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FsIndexCollection;
-import org.apache.uima.resource.metadata.FsIndexDescription;
-import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
-import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
-import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.CasPool;
@@ -101,99 +96,57 @@ public class CasManager_impl implements CasManager {
    */
   public synchronized void addMetaData(ProcessingResourceMetaData aMetaData) {
     if (mCasDefinition != null) {
-      String error = containsSameTypeAndIndexInfo(aMetaData);  //UIMA-1249 UIMA-5058
-      if (error == null) { 
+      if (containsSameTypeAndIndexInfo(aMetaData)) { //UIMA-1249
         return;
       }
-      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, new Object[] {error});  // internal error  UIMA-1249    
+      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, 
+              new Object[] {aMetaData.getSourceUrlString()});  // internal error  UIMA-1249    
     }
     mMetaDataList.add(aMetaData);
+//    mCasDefinition = null; // marka this stale
+//    mCurrentTypeSystem = null; //this too
   }
   
   /**
-   * This check is needed to avoid throwing errors in the use case:
+   * This comparison is needed to avoid throwing errors in the use case:
    *   a) the pipeline has been fully initialized, and one or more CASes have been drawn from this pool
    *   b) Another instance of an annotator using the same resource manager is initialized.
    *   
    * In this case there is no change to the metadata, and we do not want to disturb anything.
    * 
    * @param md the metadata to see if its in the list already
-   * @return  null if the type system description, the type priority description, and the index collection are in the list already,
-   *          or the name of the failing item. UIMA-5058
+   * @return true if the type system description, the type priority description, and the index collection are
+   * in the list already.
    */
-  private String containsSameTypeAndIndexInfo(ProcessingResourceMetaData md) {
+  private boolean containsSameTypeAndIndexInfo(ProcessingResourceMetaData md) {
     final TypeSystemDescription tsd = md.getTypeSystem();
-    if (tsd != null) {
-      for (TypeDescription td : tsd.getTypes()) {
-        String missing = findMissingEntry(td);
-        if (missing != null) return missing;  // At least 1 type is new
-      }
-    }
-    final TypePriorities tp = md.getTypePriorities();
-    if (tp != null) {
-      for (TypePriorityList tpl : tp.getPriorityLists()) {
-        String missing = findMissingEntry(tpl);
-        if (missing != null) return missing;  // At least 1 priority-list is new
-      }
-    }
+    final TypePriorities tsp = md.getTypePriorities();
     final FsIndexCollection ic = md.getFsIndexCollection();
-    if (ic != null) {
-      for (FsIndexDescription fid : ic.getFsIndexes()) {
-        String missing = findMissingEntry(fid);
-        if (missing != null) return missing;   // At least 1 index is new
+    
+    for (ProcessingResourceMetaData item : mMetaDataList) {
+      final TypeSystemDescription otsd = item.getTypeSystem();
+      final TypePriorities otsp = item.getTypePriorities();
+      final FsIndexCollection oic = item.getFsIndexCollection();
+      if (equalsWithNulls(tsp, otsp) &&
+          equalsWithNulls(tsd, otsd) &&
+          equalsWithNulls(ic , oic )) {
+        return true;
       }
     }
-    return null;  // All metadata already merged
+    return false;
   }
   
-  /*
-   * Check if the MetaDataObject is missing from the already merged CasDefinition
-   * Returns its name, or null if it is found.
-   */
-  private String findMissingEntry(MetaDataObject mdo) {
-    for (ProcessingResourceMetaData oldMd : mMetaDataList) {
-      MetaDataObject[] array = getMdArray(mdo, oldMd);
-      if (array != null) {
-        for (MetaDataObject oldMdo : array) {
-          if (mdo.equals(oldMdo)) return null;
-        }
-      }
+  private boolean equalsWithNulls(Object a, Object b) {
+    if (a == null && b == null) {
+      return true;
     }
-    return getMdName(mdo);
-  }
-  
-  /*
-   * Return an array of TypeDescriptions or TypePriorities or FsIndexDescriptions
-   */
-  private MetaDataObject[] getMdArray(MetaDataObject type, ProcessingResourceMetaData md) {
-    if (type instanceof TypeDescription) {
-      TypeSystemDescription tsd = md.getTypeSystem();
-      return tsd==null ? null : tsd.getTypes();
-    } else if (type instanceof TypePriorityList) {
-      TypePriorities tp = md.getTypePriorities();
-      return tp==null ? null : tp.getPriorityLists();
-    } else if (type instanceof FsIndexDescription) {
-       FsIndexCollection ic = md.getFsIndexCollection();
-      return ic==null ? null : ic.getFsIndexes();
+    if (a != null) {
+      return a.equals(b);
+    } else {
+      return b.equals(a);
     }
-    return null;
   }
-  
-  /*
-   * Return the "name" of the MetaDataObject for an error message
-   */
-  private String getMdName(MetaDataObject type) {
-    String name = "?";
-    if (type instanceof TypeDescription) {
-      name = "Type: " + ((TypeDescription)type).getName();
-    } else if (type instanceof TypePriorityList) {
-      name = "TypePriority: " + Arrays.toString(((TypePriorityList)type).getTypes());
-    } else if (type instanceof FsIndexDescription) {
-      name = "FsIndex: " + ((FsIndexDescription)type).getLabel();
-    }
-    return name + "@" + type.getSourceUrlString();
-  }
-  
+
   /*
    * (non-Javadoc)
    * 
