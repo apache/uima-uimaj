@@ -1123,9 +1123,14 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
     arise because some UIMA Framework activities may update internal CAS data structures.</para>
     
     <para>Operational data is updated while running a pipeline when a PEAR is entered or exited, 
-    because PEARs establish new class loaders and can potentially switch the JCas classes being used.
+    because PEARs establish new class loaders and can potentially switch the JCas classes being used
+    (This happens because the class loaders might define different JCas cover classes 
+    implementing the same UIMA type).
     Because of this, you cannot have multiple pipelines accessing a CAS in read-only mode if one or more of those
-    pipelines contains a PEAR. 
+    pipelines contains a PEAR. There are other edge cases where this may happen as well; for example, if you are 
+    running a pipeline with an Extension Class Loader, 
+    and have a callback routine loaded under a different class loader, UIMA will switch the JCas classes when
+    calling the callback.
     </para>
     </section>
 </chapter>
