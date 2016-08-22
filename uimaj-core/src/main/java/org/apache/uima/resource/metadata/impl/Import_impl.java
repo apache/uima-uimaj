@@ -22,9 +22,12 @@ package org.apache.uima.resource.metadata.impl;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,9 +98,12 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
    */
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
+    Logger logger = UIMAFramework.getLogger(this.getClass());
     if (getLocation() != null) {
       try {
-        return new URL(this.getRelativePathBase(), getLocation());
+        URL url = new URL(this.getRelativePathBase(), getLocation());
+        logger.log(Level.CONFIG, "Import by location: " + url);
+        return url;
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
             getLocation(), getSourceUrlString() }, e);
@@ -107,6 +113,7 @@ public class Import_impl extends MetaDataObject_impl implements Import {
       URL url;
       try {
         url = aResourceManager.resolveRelativePath(filename);
+        logger.log(Level.CONFIG, "Import by name: " + url);
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
                 new Object[] { filename, getSourceUrlString() }, e);

@@ -71,14 +71,17 @@ public class Settings_impl implements Settings {
    * 
    * @return - set of strings
    */
+  @Override
   public Set<String> getKeys() {
     return map.keySet();
   }
 
   /**
    * Load properties from an input stream.  
-   * Existing properties are not replaced (unlike java.util.Properties).
-   * May be called multiple times.
+   * Existing properties are not changed and a warning is logged if the new value is different.
+   * May be called multiple times, so effective search is in load order.
+   * Arrays are enclosed in [] and the elements may be separated by <code>,</code> or new-line, so 
+   *   can span multiple lines without using a final \ 
    * 
    * @param in - Stream holding properties
    * @throws IOException if name characters illegal
@@ -123,11 +126,13 @@ public class Settings_impl implements Settings {
   }
 
   /**
-   * Load the files specified in the system property UimaExternalOverrides
-   *
+   * Load properties from the comma-separated list of files specified in the system property 
+   *   UimaExternalOverrides
+   * Files are loaded in order --- so in descending priority.
+   * Any existing entries are removed first.
+   * 
    * @throws ResourceConfigurationException wraps IOException
    */
-  
   public void loadSystemDefaults() throws ResourceConfigurationException {
     String fnames = System.getProperty("UimaExternalOverrides");
     if (fnames != null) {
@@ -152,17 +157,18 @@ public class Settings_impl implements Settings {
   
   /**
    * Look up the value for a property.
-   * Perform one substitution pass on ${key} substrings. If key is undefined throw an exception.
+   * Perform one substitution pass on ${key} substrings replacing them with the value for key.
    * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
-   * To avoid evaluation and get ${key} in the output use a property to generate the $, e.g. 
-   *   $   = $
-   *   key = ${$}{key}
-   * or escape the $
-   *   key = \${key}
+   * If the key variable has not been defined, an exception is thrown.
+   * To avoid evaluation and get ${key} in the output escape the $ or {
+   * Arrays are returned as a comma-separated string, e.g. "[elem1,elem2]" 
+   * Note: escape characters are not removed as they may affect array separators. 
+   * 
+   * Used by getSetting and getSettingArray
    * 
    * @param name - name to look up
    * @return     - value of property
-   * @throws ResourceConfigurationException if override variable references undefined variable
+   * @throws ResourceConfigurationException if the value references an undefined property
    */
   public String lookUp(String name) throws ResourceConfigurationException {
     String value;
@@ -196,6 +202,97 @@ public class Settings_impl implements Settings {
       return result.toString();
     }
   }
+  
+  /**
+   * @see org.apache.uima.util.Settings#getSetting1(java.lang.String)
+   */
+  @Override
+  public String getSetting(String name) throws ResourceConfigurationException {
+    String value = lookUp(name);
+    if (value == null) {
+      return null;
+    }
+    // Arrays start with '[' and end with an ] that is not escaped
+    if (value.length() >= 2 && value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']'
+            && value.charAt(value.length() - 2) != '\\') {
+      // External override value for "{0}" has the wrong type (scalar or array)
+      throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH, 
+              new Object[] { name });
+    }
+    return value;
+  }
+
+  /**
+   * @see org.apache.uima.util.Settings#getSettingArray(java.lang.String)
+   */
+  @Override
+  public String[] getSettingArray(String name) throws ResourceConfigurationException {
+    String value = lookUp(name);
+    if (value == null) {
+      return null;
+    }
+    if (!(value.length() >= 2 && value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']' && value
+            .charAt(value.length() - 2) != '\\')) {
+      // External override value for "{0}" has the wrong type (scalar or array)
+      throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH, 
+              new Object[] { name });
+    }
+    value = value.substring(1, value.length() - 1);
+    if (value.length() == 0) { // If an empty string create a 0-length array
+      return new String[0];
+    }
+    // Split on commas but rejoin tokens if a comma is escaped
+    String[] tokens = value.split(",");
+    int nTokens = tokens.length;
+    int last = tokens.length - 1;
+    for (int i = 0; i < last; ++i) {
+      if (endsWithEscape(tokens[i])) {
+        tokens[i + 1] = tokens[i] + "," + tokens[i + 1];
+        tokens[i] = null;
+        --nTokens;
+      }
+    }
+    if (endsWithEscape(tokens[last])) {
+      tokens[last] += ",";
+    }
+    String[] result = new String[nTokens];
+    int i = 0;
+    for (String token : tokens) {
+      if (token != null) {
+        result[i++] = escape(token.trim());
+      }
+    }
+    return result;
+  }
+
+  // Final step is to process any escapes by replacing \x by x
+  private String escape(String token) {
+    int next = token.indexOf('\\');
+    if (next < 0) {
+      return token;
+    }
+    StringBuilder result = new StringBuilder(token.length());
+    int last = 0;
+    // For each '\' found copy up to it and restart the search after the
+    // next char
+    while (next >= 0) {
+      result.append(token.substring(last, next));
+      last = next + 1;
+      next = token.indexOf('\\', last + 1);
+    }
+    result.append(token.substring(last));
+    return result.toString();
+  }
+
+  private boolean endsWithEscape(String line) {
+    int i = line.length();
+    while (i > 0 && line.charAt(i - 1) == '\\') {
+      --i;
+    }
+    // If change in i is odd then ended with an unescaped \
+    return ((line.length() - i) % 2 != 0);
+  }
+
   
   /*
    * Create a string representing an array from one or more logical lines

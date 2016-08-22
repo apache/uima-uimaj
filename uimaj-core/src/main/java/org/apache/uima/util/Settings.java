@@ -62,7 +62,7 @@ public interface Settings {
    * @throws ResourceConfigurationException wraps IOException
    */
   public void loadSystemDefaults() throws ResourceConfigurationException;
-  
+
   /**
    * Look up the value for a property.
    * Perform one substitution pass on ${key} substrings replacing them with the value for key.
@@ -84,4 +84,25 @@ public interface Settings {
    * @return - set of strings
    */
   public Set<String> getKeys();
+
+  /**
+   * Get the value of an external override setting.
+   * 
+   * @param name - the name of the parameter
+   * @return     - the value found in the settings file(s), or null if missing.
+   * @throws ResourceConfigurationException 
+   *                 if the value references an undefined property, or the value is an array
+   */
+  String getSetting(String name) throws ResourceConfigurationException;
+  
+  /**
+  * Get the array of values for an external override setting.
+  * 
+  * @param name  - the name of the parameter
+  * @return      - an array of values found in the settings file(s), or null if missing.
+  * @throws ResourceConfigurationException 
+  *                  if the value references an undefined property, or the value is not an array
+  */
+  public String[] getSettingArray(String name) throws ResourceConfigurationException;
+  
 }

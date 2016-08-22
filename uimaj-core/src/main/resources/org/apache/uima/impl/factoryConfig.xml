@@ -58,6 +58,7 @@
 	  	             factoryClass="org.apache.uima.impl.CustomResourceFactory_impl"/>
 	</resource>
 
+    <!--  element attribute may be omitted if has no XML specification -->
 	<resourceSpecifier>
 		<binding element="analysisEngineDescription" interface="org.apache.uima.analysis_engine.AnalysisEngineDescription" class="org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_impl"/>
 		<binding element="analysisEngineMetaData" interface="org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData" class="org.apache.uima.analysis_engine.metadata.impl.AnalysisEngineMetaData_impl"/>
@@ -137,7 +138,6 @@
 	    <binding element="errorRateThreshold" interface="org.apache.uima.collection.metadata.CasProcessorErrorRateThreshold" class="org.apache.uima.collection.impl.metadata.cpe.CasProcessorErrorRateThresholdImpl"/>
 	    <binding element="timeout" interface="org.apache.uima.collection.metadata.CasProcessorTimeout" class="org.apache.uima.collection.impl.metadata.cpe.CasProcessorTimeoutImpl"/>
 	    <binding element="sofaNameMappings" interface="org.apache.uima.collection.metadata.CpeSofaMappings" class="org.apache.uima.collection.impl.metadata.cpe.CpeSofaMappingsImpl"/>
-		<binding element="externalOverrideSettings" interface="org.apache.uima.resource.metadata.ExternalOverrideSettings" class="org.apache.uima.resource.metadata.impl.ExternalOverrideSettings_impl"/>	
-
+        <binding interface="org.apache.uima.util.Settings" class="org.apache.uima.util.impl.Settings_impl"/>
 	</resourceSpecifier>
 </factoryConfig>

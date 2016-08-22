@@ -888,6 +888,7 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
   /**
    * Configures this XMLParser by registering a mapping between the name of an XML element and the
    * Class of object to be built from elements with that name.
+   * Ignores entries with no name, i.e. are not configured via XML
    * 
    * @param aElementName
    *          the name of an XML element
@@ -903,6 +904,9 @@ public CasInitializerDescription parseCasInitializerDescription(XMLInputSource a
    */
   @SuppressWarnings("unchecked")
   public void addMapping(String aElementName, String aClassName) throws ClassNotFoundException {
+    if (aElementName == null) {
+      return;
+    }
     // resolve the class name and ensure that it implements XMLizable
     Class<? extends XMLizable> cls = (Class<? extends XMLizable>) Class.forName(aClassName);
     if (XMLizable.class.isAssignableFrom(cls)) {

@@ -328,15 +328,20 @@ public class AnalysisEngine_implTest extends TestCase {
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae1 = new PrimitiveAnalysisEngine_impl();
       ae1.initialize(desc, null);
-      String[] arrayParam = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
-      Assert.assertNotNull(arrayParam);
-      Assert.assertEquals(5, arrayParam.length);
-      String[] expect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
-      Assert.assertTrue(Arrays.equals(expect, arrayParam));
-      Integer[] intArr = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
-      Assert.assertEquals(4, intArr.length);
+      String[] strArray = (String[]) ae1.getUimaContext().getConfigParameterValue("StringArrayParam");
+      Assert.assertNotNull(strArray);
+      Assert.assertEquals(5, strArray.length);
+      String[] strExpect = { "Prefix", "-", "Suffix", "->", "Prefix-Suffix" };
+      Assert.assertTrue(Arrays.equals(strExpect, strArray));
+      Integer[] intArray = (Integer[]) ae1.getUimaContext().getConfigParameterValue("IntegerArrayParam");
+      Assert.assertNotNull(intArray);
+      Assert.assertEquals(4, intArray.length);
+      Integer[] intExpect = { 1, 22, 333, 4444 };
+      Assert.assertTrue(Arrays.equals(intExpect, intArray));
       Float[] floats = (Float[]) ae1.getUimaContext().getConfigParameterValue("FloatArrayParam");
       Assert.assertTrue(floats != null && floats.length == 0);       // Should be an empty array
+      Integer intValue = (Integer) ae1.getUimaContext().getConfigParameterValue("IntegerParam");
+      Assert.assertEquals(43,  intValue.intValue());  // Will be 42 if external override not defined
       System.clearProperty("UimaExternalOverrides");
       
       ae1.destroy();
@@ -348,7 +353,7 @@ public class AnalysisEngine_implTest extends TestCase {
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       Map<String,Object> additionalParams = new HashMap<String,Object>();
-      Settings extSettings = new Settings_impl();
+      Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
       FileInputStream fis = new FileInputStream(new File(resDir,"testExternalOverride2.settings"));
       extSettings.load(fis);
       fis.close();

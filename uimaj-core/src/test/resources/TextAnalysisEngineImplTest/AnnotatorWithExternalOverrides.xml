@@ -49,6 +49,7 @@
       </configurationParameter>  
       <configurationParameter>
         <name>IntegerParam</name>
+        <externalOverrideName>test.externalInteger</externalOverrideName>
         <description/>
         <type>Integer</type>
         <multiValued>false</multiValued>

@@ -21,3 +21,4 @@ prefix-suffix     Prefix-${suffix}
 suffix = should be ignored
 # Empty array
 test.externalFloatArray =  []
+context-holder = Context Holder Test

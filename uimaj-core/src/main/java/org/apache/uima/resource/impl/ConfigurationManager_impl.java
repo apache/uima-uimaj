@@ -20,6 +20,7 @@
 package org.apache.uima.resource.impl;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -76,16 +77,20 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
         Object paramValue = aSettings.getParameterValue(aGroupName, aParams[i].getName());
         String extName = aParams[i].getExternalOverrideName();
         if (extName != null && aExternalOverrides != null) {
-          String propValue = aExternalOverrides.lookUp(extName);
-          if (propValue != null) {
-            Object result = createParam(propValue, aParams[i].getType(), aParams[i].isMultiValued());
-            if (result == null) {
-              throw new NumberFormatException("Array mismatch assigning value of " + extName + " ('" + propValue
-                      + "') to " + aParams[i].getName());
+          if (aParams[i].isMultiValued()) {
+            String[] propValues = aExternalOverrides.getSettingArray(extName);
+            if (propValues != null) {
+              paramValue = createParams(propValues, aParams[i].getType());
+              mLinkMap.remove(qname);
+              from = "(overridden from " + extName + ")";
             }
-            paramValue = result;
-            mLinkMap.remove(qname);
-            from = "(overridden from " + extName + ")";
+          } else {
+            String propValue = aExternalOverrides.getSetting(extName);
+            if (propValue != null) {
+              paramValue = createParam(propValue, aParams[i].getType());
+              mLinkMap.remove(qname);
+              from = "(overridden from " + extName + ")";
+            }
           }
         }
         mSharedParamMap.put(qname, paramValue);
@@ -134,103 +139,68 @@ public class ConfigurationManager_impl extends ConfigurationManagerImplBase {
   /*
    * Create the appropriate type of parameter object from the value of the external override 
    */
-  private Object createParam(String value, String paramType, boolean isArray) throws NumberFormatException {
-    boolean arrayValue = value.length() > 0 && value.charAt(0) == '[' && value.charAt(value.length()-1) == ']';
-    if (arrayValue ^ isArray) {
-      return null;  // Caller throws exception
-    }
-    try {
-      if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
-        return createParamForClass(value, isArray, Boolean.class);
-      } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
-        return createParamForClass(value, isArray, Integer.class);
-      } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
-        return createParamForClass(value, isArray, Float.class);
-      } else { // Must be a string 
-        return createParamForClass(value, isArray, String.class);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new NumberFormatException("Failed to convert '" + value + "' to " + paramType);
+  private Object createParam(String value, String paramType) throws ResourceConfigurationException {
+    if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
+      return createParamForClass(value, Boolean.class);
+    } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
+      return createParamForClass(value, Integer.class);
+    } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
+      return createParamForClass(value, Float.class);
+    } else { // Must be a string
+      return value;
     }
   }
   
-  // String does not have a valueOf(String) method so use this trivial class instead
-  static class StringX {
-    public static String valueOf(String s) {
-      return s;
+  private Object createParams(String[] values, String paramType) {
+    if (paramType.equals(ConfigurationParameter.TYPE_BOOLEAN)) {
+      return createParamsForClass(values, Boolean.class);
+    } else if (paramType.equals(ConfigurationParameter.TYPE_INTEGER)) {
+      return createParamsForClass(values, Integer.class);
+    } else if (paramType.equals(ConfigurationParameter.TYPE_FLOAT)) {
+      return createParamsForClass(values, Float.class);
+    } else { // Must be a string
+      return values;
     }
   }
-
+  
   /*
-   * Convert the string to the appropriate object, or array of.
-   * Suppress the warnings about the casts.
-   * Tokenize arrays on ',' but if should have been escaped put the ',' back
+   * Convert the string to the appropriate object
    */
-  @SuppressWarnings("unchecked")
-  private <T> Object createParamForClass(String value, boolean isArray, Class<T> clas) throws Exception {
-    Method valOf = null;
+  private <T> Object createParamForClass(String value, Class<T> clas) throws ResourceConfigurationException {
+    Method valOf;
     try {
       valOf = clas.getMethod("valueOf", String.class);
-    } catch (NoSuchMethodException e) {
-      valOf = StringX.class.getMethod("valueOf", String.class);
+      return valOf.invoke(null, value);
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      if (e.getCause() instanceof NumberFormatException) {
+        // External override value "{0}" is not an integer
+        throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_NUMERIC_ERROR, 
+                new Object[] { value });
+      }
+      e.printStackTrace();
+      throw new ResourceConfigurationException(e);
     }
-    if (isArray) {
-      value = value.substring(1, value.length()-1);
-      if (value.length() == 0) {          // If an empty string create a 0-length array 
-        return (T[]) Array.newInstance(clas, 0);
-      }
-      String[] tokens = value.split(",");
-      int nTokens = tokens.length;
-      int i;
-      for (i = 0; i < tokens.length - 1; ++i) {
-        if (endsWithEscape(tokens[i])) {
-          tokens[i+1] = tokens[i] + "," + tokens[i+1];
-          tokens[i] = null;
-          --nTokens;
-        }
-      }
-      if (endsWithEscape(tokens[i])) {
-        tokens[i] += ",";
-      }
-      T[] result = (T[]) Array.newInstance(clas, nTokens);
-      i = 0;
-      for (String token : tokens) {
-        if (token != null) {
-          result[i++] = (T) valOf.invoke(null, escape(token.trim()));
-        }
-      }
-      return result;
-    } else {
-      return valOf.invoke(null, escape(value));
-    }
-  }
 
-  // Finally process any escapes by replacing \x by x
-  private String escape(String token) {
-    int next = token.indexOf('\\');
-    if (next < 0) {
-      return token;
-    }
-    StringBuilder result = new StringBuilder(token.length());
-    int last = 0;
-    // For each '\' found copy up to it and restart the search after the next char
-    while (next >= 0) {
-      result.append(token.substring(last, next));
-      last = next + 1;
-      next = token.indexOf('\\', last + 1);
-    }
-    result.append(token.substring(last));
-    return result.toString();
   }
   
-  private boolean endsWithEscape(String line) {
-    int i = line.length();
-    while (i > 0 && line.charAt(i-1) == '\\') {
-      --i;
+  /*
+   * Convert the array of strings to the appropriate array of objects.
+   * Suppress the warnings about the casts.
+   */
+  @SuppressWarnings("unchecked")
+  private <T> Object createParamsForClass(String[] values, Class<T> clas) {
+    Method valOf;
+    try {
+      valOf = clas.getMethod("valueOf", String.class);
+      T[] result = (T[]) Array.newInstance(clas, values.length);
+      for (int i = 0; i < values.length; ++i) {
+        result[i] = (T) valOf.invoke(null, values[i]);
+      }
+      return result;
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+            | IllegalArgumentException | InvocationTargetException e) {
+      throw new IllegalArgumentException(e.getCause());
     }
-    // If change in i is odd then ended with an unescaped \ 
-    return ((line.length() - i) % 2 != 0);
   }
-
+  
 }
