@@ -313,11 +313,4 @@ public interface ResourceManager {
    * @return A map from absolute URL to the XMLizable object that was parsed from that URL
    */
   public Map<String,XMLizable> getImportCache();
-  
-  /**
-   * Gets a cache of imported descriptor URLs from which the parsed objects in the above map
-   * were created, so that these URLs are not re-parsed if the same URL is imported again.
-   * @return A map from absolute URL to a set of URLs it imports.
-   */
-  public Map<String,Set<String>> getImportUrlsCache();
 }

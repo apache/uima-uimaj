@@ -60,25 +60,6 @@ public abstract class XmlCasDeserializer {
   }
 
   /**
-   * Different named version that returns the SerialFormat
-   * Deserializes a CAS from a standoff-XML format.
-   * 
-   * @param aStream
-   *          input stream from which to read the XML document
-   * @param aCAS
-   *          CAS into which to deserialize. This CAS must be set up with a type system that is
-   *          compatible with that in the XML.
-   * @return the format of the data 
-   * @throws SAXException
-   *           if an XML Parsing error occurs
-   * @throws IOException
-   *           if an I/O failure occurs
-   */
-  public static SerialFormat deserializeR(InputStream aStream, CAS aCAS) throws SAXException, IOException {
-    return deserializeR(aStream, aCAS, false);
-  }
-
-  /**
    * Deserializes a CAS from XMI or XCAS.
    * 
    * @param aStream
@@ -121,7 +102,7 @@ public abstract class XmlCasDeserializer {
    * @throws IOException
    *           if an I/O failure occurs
    */
-  public static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
+  static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
       throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
