@@ -397,12 +397,15 @@
                         <excludes>
                           <exclude>**/impl/**/*</exclude>
                           <exclude>**/internal/**/*</exclude>
-                          <exclude>org/apache/uima/cas/CASRuntimeException</exclude> <!-- Exclude adding error msg from check -->
+                          <exclude>org/apache/uima/cas/CASRuntimeException</exclude>
                           <exclude>org/apache/uima/cas/SerialFormat</exclude>
-                          
-                          <!-- UIMA-4565 Exclude CAS from check for 2.9.0 - remove after 2.9.0 release -->
+                          <exclude>org/apache/uima/util/CasIOUtils</exclude>
+                          <exclude>org/apache/uima/util/CasLoadMode</exclude>
+
+                          <!-- UIMA-4565 Exclude CAS from check for 2.9.0 - remove after 2.9.0 release  -->
                           <exclude>org/apache/uima/cas/CAS</exclude>
-                          <!-- unfortunately, due to some bug, the above exclude also excludes the changes to org/apache/uima/resource/ResourceManager -->
+                          <!-- unfortunately, due to some bug, the above exclude 
+                               seems to exclude everything...  -->
                         </excludes>
                       </requireBackwardCompatibility>
                     </rules>
