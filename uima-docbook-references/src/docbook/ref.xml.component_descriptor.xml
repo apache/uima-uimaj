@@ -1955,7 +1955,7 @@ uima.tcas.Annotation.</programlisting>
             <literal>produceAnalysisEngine</literal> method.  In this case the
             Java system property <emphasis>UimaExternalOverrides</emphasis> is ignored.
             <programlisting>  // Construct an analysis engine that uses two settings files
-  Settings extSettings = new Settings_impl();
+  Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
   for (String fname : new String[] { "externalOverride.settings", 
                                      "default.settings" }) {
     FileInputStream fis = new FileInputStream(fname);
@@ -2037,6 +2037,31 @@ key9  :  [ array element1\, with embedded comma, element2 ]
             An external override name may be specified for a parameter declared in a group, but if
             the parameter is in the common group or the group is declared with multiple names, the
             external name is shared amongst all, i.e. these parameters cannot be given group-specific values.
+            </para>
+          </section>
+
+          <section id="&tp;aes.external_configuration_parameter_access">
+            <title>Direct Access to External Configuration Parameters</title>
+
+            <para>
+            An annotator can directly access the external configuration parameters from its
+            UimaContext. 
+			<programlisting>
+String value = aContext.getSetting(paramName);
+String values[] = aContext.getSettingArray(arrayParamName);
+Set&lt;String&gt; allNames = aContext.getSettingNames();
+			</programlisting>
+            Java code called by an annotator in the same thread or a child thread can use the
+            <literal>UimaContextHolder</literal> to get the annotator's UimaContext and hence access
+            the external configuration parameters.
+			<programlisting>
+UimaContext uimaContext = UimaContextHolder.getUimaContext();
+if (uimaContext != null) {
+  value = uimaContext.getSetting(paramName);
+}
+			</programlisting>
+			The UIMA framework puts the context in an InheritableThreadLocal variable.  The value
+			will be null if the code is not called from an annotator.
             </para>
           </section>
 
