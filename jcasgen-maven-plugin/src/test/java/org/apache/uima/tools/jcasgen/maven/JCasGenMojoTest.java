@@ -35,6 +35,17 @@ import org.codehaus.plexus.util.FileUtils;
 
 public class JCasGenMojoTest extends AbstractMojoTestCase {
 
+  public void testInvalidFeature() throws Exception {
+    Exception ee = null;
+    try {
+      this.test("invalidFeature");
+    } catch (Exception e) {
+      ee = e;
+    }
+    assertTrue(ee != null);
+    assertEquals("JCasGen: The feature name 'type', specified in Type 'type.span.Sentence' is reserved. Please choose another name.", ee.getMessage());
+  }
+  
   public void testSimple() throws Exception {
     this.test("simple", "type.span.Sentence", "type.span.Token", "type.relation.Dependency");
   }
@@ -101,13 +112,15 @@ public class JCasGenMojoTest extends AbstractMojoTestCase {
     
     for (String type : types) {
       File wrapperFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + ".java");
-      File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
+      // no _type files in v3
+//      File typeFile = new File(jCasGenDirectory + "/" + type.replace('.', '/') + "_Type.java");
       
       Assert.assertTrue(files.contains(wrapperFile));
-      Assert.assertTrue(files.contains(typeFile));
+      // no _type files in v3
+//      Assert.assertTrue(files.contains(typeFile));
       
       files.remove(wrapperFile);
-      files.remove(typeFile);
+//      files.remove(typeFile);
     }
     
     // check that no extra files were generated
