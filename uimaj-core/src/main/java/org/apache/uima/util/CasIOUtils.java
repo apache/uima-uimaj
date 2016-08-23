@@ -30,6 +30,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Arrays;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -442,8 +443,12 @@ public class CasIOUtils {
           typeSystemWritten = true; // Embedded type system
           break;
         default:
+          StringBuilder sb = new StringBuilder();
+          for (SerialFormat sf : SerialFormat.values()) {
+            sb = sb.append(sf.toString()).append(", ");
+          }
           throw new IllegalArgumentException("Unknown format [" + format.name()
-                  + "]. Must be one of: " + SerialFormat.values());
+                  + "]. Must be one of: " + sb.toString());
       }
     } catch (IOException e) {
       throw e;
