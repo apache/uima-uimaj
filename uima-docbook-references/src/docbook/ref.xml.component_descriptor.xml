@@ -2045,7 +2045,8 @@ key9  :  [ array element1\, with embedded comma, element2 ]
 
             <para>
             An annotator can directly access the external configuration parameters from its
-            UimaContext. 
+            UimaContext.  Direct access means an access where the key to select the external parameter is the 
+            external parameter name as specified in the external configuration settings file. 
 			<programlisting>
 String value = aContext.getSetting(paramName);
 String values[] = aContext.getSettingArray(arrayParamName);
