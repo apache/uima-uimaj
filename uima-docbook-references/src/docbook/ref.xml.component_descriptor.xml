@@ -2044,9 +2044,9 @@ key9  :  [ array element1\, with embedded comma, element2 ]
             <title>Direct Access to External Configuration Parameters</title>
 
             <para>
-            An annotator or flow controller can directly access the external configuration
-            parameters from its UimaContext. 
-            Direct access means an access where the key to select the external parameter is the 
+            Annotators and flow controllers can directly access these global configuration
+            parameters from their UimaContext. 
+            Direct access means an access where the key to select the global parameter is the 
             external parameter name as specified in the external configuration settings file. 
 			<programlisting>
 String value = aContext.getSetting(paramName);
@@ -2055,7 +2055,7 @@ Set&lt;String&gt; allNames = aContext.getSettingNames();
 			</programlisting>
             Java code called by an annotator or flow controller in the same thread or a child thread
             can use the <literal>UimaContextHolder</literal> to get the annotator's UimaContext and
-            hence access the external configuration parameters.
+            hence access the global configuration parameters.
 			<programlisting>
 UimaContext uimaContext = UimaContextHolder.getUimaContext();
 if (uimaContext != null) {
@@ -2063,7 +2063,7 @@ if (uimaContext != null) {
 }
 			</programlisting>
 			The UIMA framework puts the context in an InheritableThreadLocal variable.  The value
-			will be null if the code is not called from an annotator.
+			will be null if the code is not called from an annotator or flow controller.
             </para>
           </section>
 
