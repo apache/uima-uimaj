@@ -117,7 +117,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   // Local VNS is a shared instance across all instances of VinciCasProcessorDeployer. It uses
   // shared
   // portQueue (defined below). VNS and the queue are instantiated once.
-  private static LocalVNS vns = null;
+  private static volatile LocalVNS vns = null;
 
   private int restartCount = 0;
 
@@ -1130,16 +1130,18 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
     }
 
-    if (vns == null) {
-      try {
-        vns = new LocalVNS(startPort, maxPort, vnsPort);
-        vns.setConnectionPool(portQueue);
-
-        localVNSThread = new Thread(vns);
-        localVNSThread.start();
-
-      } catch (Exception e) {
-        throw new CasProcessorDeploymentException(e);
+    synchronized (VinciCasProcessorDeployer.class) {
+      if (vns == null) {
+        try {
+          vns = new LocalVNS(startPort, maxPort, vnsPort);
+          vns.setConnectionPool(portQueue);
+  
+          localVNSThread = new Thread(vns);
+          localVNSThread.start();
+  
+        } catch (Exception e) {
+          throw new CasProcessorDeploymentException(e);
+        }
       }
     }
   }
