@@ -516,13 +516,19 @@ ae.destroy();</programlisting></para>
             web applications.  See <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.json.overview"/>.
             For JSON, only serialization is supported.</para>
           </listitem>
+          <listitem>
+            <para>Java Object serialization: There are APIs to convert a CAS to a Java object that can be serialized
+            and deserialized
+            using standard Java object read and write Object methods.  There is also a way to include the CAS's type system and 
+            index definition.</para>
+          </listitem>
         </itemizedlist>
       </para>
       
       <para>Each of these serializations has different capabilities, summarized in the table below.
        <table frame="all" id="ugr.tug.tbl.serialization_capabilities">
           <title>Serialization Capabilities</title>
-          <tgroup cols="7" rowsep="1" colsep="1">
+          <tgroup cols="8" rowsep="1" colsep="1">
             <colspec colname="c1"/>
             <colspec colname="c2"/>
             <colspec colname="c3"/>
@@ -530,6 +536,7 @@ ae.destroy();</programlisting></para>
             <colspec colname="c5"/>
             <colspec colname="c6"/>
             <colspec colname="c7"/>
+            <colspec colname="c8"/>
             <thead>
               <row>
                 <entry align="center"></entry>
@@ -539,6 +546,7 @@ ae.destroy();</programlisting></para>
                 <entry align="center">Binary</entry>
                 <entry align="center">Cmpr 4</entry>
                 <entry align="center">Cmrp 6</entry>
+                <entry align="center">JavaObj</entry>
               </row>
             </thead>
             <tbody>
@@ -550,12 +558,14 @@ ae.destroy();</programlisting></para>
                 <entry>Output Stream</entry>
                 <entry>Output Stream, Data Output Stream, File</entry>
                 <entry>Output Stream, Data Output Stream, File</entry>
+                <entry>-</entry>
               </row>
               <row>
                 <entry>Lists/Arrays inline formatting?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
+                <entry>-</entry>
                 <entry>-</entry>
                 <entry>-</entry>
                 <entry>-</entry>
@@ -568,6 +578,7 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
                 <entry>-</entry>
                 <entry>-</entry>
+                <entry>-</entry>
               </row>
               <row>
                 <entry>Type Filtering?</entry>
@@ -577,6 +588,7 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
+                <entry>-</entry>
               </row>
               <row>
                 <entry>Delta Cas?</entry>
@@ -586,11 +598,13 @@ ae.destroy();</programlisting></para>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
+                <entry>-</entry>
               </row>
               <row>
                 <entry>OOTS?</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
+                <entry>-</entry>
                 <entry>-</entry>
                 <entry>-</entry>
                 <entry>-</entry>
@@ -604,6 +618,7 @@ ae.destroy();</programlisting></para>
                 <entry>send all</entry>
                 <entry>send all</entry>
                 <entry>Yes</entry>
+                <entry>send all</entry>
               </row>
               <row>
                 <entry>NameSpace/Schemas?</entry>
@@ -613,6 +628,17 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
                 <entry>-</entry>
                 <entry>-</entry>
+                <entry>-</entry>
+              </row>
+             <row>
+                <entry>lenient available?</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>Yes</entry>
+                <entry>-</entry>
               </row>
             </tbody>
           </tgroup>
@@ -620,7 +646,8 @@ ae.destroy();</programlisting></para>
         </table>
       </para>
       
-      <para>In the above table, Cmpr 4 and Cmpr 6 refer to Compressed forms of the serialization.</para>
+      <para>In the above table, Cmpr 4 and Cmpr 6 refer to Compressed forms of the serialization, 
+      and JavaObj refers to Java Object serialization.</para>
       
       <para>For the XMI and JSON formats, lists and arrays can sometimes be formatted "inline".
       In this representation, the elements are formatted directly as the value of a particular
@@ -646,7 +673,7 @@ ae.destroy();</programlisting></para>
       returned back to the sender), the out-of-type-system information is re-merged back into the output stream.
       </para>
       
-      <para>The Binary and Compressed Form 4 serializations send all the Feature Structures in the CAS,
+      <para>The Binary, Java Object, and Compressed Form 4 serializations send all the Feature Structures in the CAS,
       in the order they were created in the CAS.  The other methods only 
       send Feature Structures that are reachable, either by 
       their being in some CAS index, or being referenced 
@@ -654,15 +681,35 @@ ae.destroy();</programlisting></para>
       
       <para>The NameSpace/Schema support allows specifying a set of schemas, each one corresponding to a particular
       namespace, used in XMI serialization.</para>
-      <para>To save an XMI representation of a CAS, use the <literal>serialize</literal> method of the class
+      
+      <para>Lenient allows the receiving Type System to be missing types and/or features that being deserialized.
+      Normally this causes an exception, but with the lenient flag turned on, these extra types and/or features are 
+      skipped over and ignored, with no error indicated.</para>
+      
+      <para>To save an XMI representation of a CAS, use the <code>save</code> method in <code>CasIOUtils</code> or the 
+        <literal>serialize</literal> method of the class
         <literal>org.apache.uima.util.XmlCasSerializer</literal>. To save an XCAS representation of a CAS,
-        use the class <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
+        use the <code>save</code> method in <code>CasIOUtils</code> class or see the <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
         for details.</para>
       
-      <para>Both of these external forms can be read back in, using the <literal>deserialize</literal> method of
-        the class <literal>org.apache.uima.util.XmlCasDeserializer</literal>. This method deserializes
-        into a pre-existing CAS, which you must create ahead of time, pre-set-up with the proper type system. See the
+      <para>All the external serialized forms (except JSON and the inline CAS approximate serialization) 
+        can be read back in using the <code>CasIOUtils load</code> methods.
+        The <code>CasIOUtils load</code> methods also support loading type system and index definition information
+        at the same time (usually from addition input sources).  Some variations of these will use the read type system
+        and indexes definition to replace those in the CAS.
+        The XCAS and XMI external forms can also be read back in using the <literal>deserialize</literal> method of
+        the class <literal>org.apache.uima.util.XmlCasDeserializer</literal>. All of these methods deserialize
+        into a pre-existing CAS, which you must create ahead of time.  See the
         Javadocs for details.</para>
+        
+      <para>The <code>CasIOUtils</code> class has a collection of static methods to load (deserialize) and save (serialize) CASes,
+      optionally with their type system and index definitions.
+      The <code>Serialization</code> class has various static methods for serializing and deserializing Java Object forms and 
+      compressed forms, with finer control over available options.   
+      See the Javadocs for that class for details.</para>
+      
+      <para>Several of the APIs use or return instances of <code>SerialFormat</code>, which is an enum specifying the various
+      forms of serialization.</para>  
     </section>
   </section>
   
