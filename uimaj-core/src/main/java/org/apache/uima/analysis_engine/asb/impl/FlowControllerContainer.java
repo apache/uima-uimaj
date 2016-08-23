@@ -286,9 +286,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @throws AnalysisEngineProcessException - 
    */
   public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
-    UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.removeAnalysisEngines(aKeys);
-    UimaContextHolder.clearContext();
+    try {
+      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
+      mFlowController.removeAnalysisEngines(aKeys);
+    } finally {
+      UimaContextHolder.clearContext();
+    }
   }
 
 
@@ -344,9 +347,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   }
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     if ( mFlowController != null ) {
-      UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-      mFlowController.collectionProcessComplete();
-      UimaContextHolder.clearContext();
+      try {
+        UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
+        mFlowController.collectionProcessComplete();
+      } finally {
+        UimaContextHolder.clearContext();
+      }
     }
   }
 }

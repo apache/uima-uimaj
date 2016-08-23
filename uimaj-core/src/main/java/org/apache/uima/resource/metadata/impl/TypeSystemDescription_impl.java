@@ -262,7 +262,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     //check the import cache
     TypeSystemDescription desc;    
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);

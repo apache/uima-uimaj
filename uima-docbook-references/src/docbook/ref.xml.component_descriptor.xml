@@ -2044,17 +2044,18 @@ key9  :  [ array element1\, with embedded comma, element2 ]
             <title>Direct Access to External Configuration Parameters</title>
 
             <para>
-            An annotator can directly access the external configuration parameters from its
-            UimaContext.  Direct access means an access where the key to select the external parameter is the 
+            An annotator or flow controller can directly access the external configuration
+            parameters from its UimaContext. 
+            Direct access means an access where the key to select the external parameter is the 
             external parameter name as specified in the external configuration settings file. 
 			<programlisting>
 String value = aContext.getSetting(paramName);
 String values[] = aContext.getSettingArray(arrayParamName);
 Set&lt;String&gt; allNames = aContext.getSettingNames();
 			</programlisting>
-            Java code called by an annotator in the same thread or a child thread can use the
-            <literal>UimaContextHolder</literal> to get the annotator's UimaContext and hence access
-            the external configuration parameters.
+            Java code called by an annotator or flow controller in the same thread or a child thread
+            can use the <literal>UimaContextHolder</literal> to get the annotator's UimaContext and
+            hence access the external configuration parameters.
 			<programlisting>
 UimaContext uimaContext = UimaContextHolder.getUimaContext();
 if (uimaContext != null) {

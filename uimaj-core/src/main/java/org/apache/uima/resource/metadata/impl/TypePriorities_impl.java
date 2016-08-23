@@ -267,7 +267,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     //check the import cache
     TypePriorities desc;    
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);

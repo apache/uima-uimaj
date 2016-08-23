@@ -246,8 +246,10 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
                 getAnalysisEngineMetaData(), aAdditionalParams);
       }
     } catch (ResourceInitializationException e) {
+      UimaContextHolder.clearContext();
       throw e;
     } catch (Exception e) {
+      UimaContextHolder.clearContext();
       throw new ResourceInitializationException(
               ResourceInitializationException.COULD_NOT_INSTANTIATE_ANNOTATOR, new Object[] {
                   annotatorClassName, mDescription.getSourceUrlString() }, e);
@@ -269,8 +271,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       throw new ResourceInitializationException(
               ResourceInitializationException.ANNOTATOR_INITIALIZATION_FAILED, new Object[] {
                   annotatorClassName, mDescription.getSourceUrlString() }, e);
-    } 
-    UimaContextHolder.clearContext();
+    } finally {
+      UimaContextHolder.clearContext();
+    }
   }
 
   /**
