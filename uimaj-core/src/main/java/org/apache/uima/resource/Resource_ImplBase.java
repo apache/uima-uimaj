@@ -144,7 +144,7 @@ public abstract class Resource_ImplBase implements Resource {
         // synch around test/set of the (possibly shared) uima-context info about external param overrides
         synchronized(mUimaContextAdmin) {
           if (mUimaContextAdmin.getExternalOverrides() == null) {
-            externalOverrides = new Settings_impl();
+            externalOverrides = UIMAFramework.getResourceSpecifierFactory().createSettings();  // i.e. new Settings_impl()
             try {
               externalOverrides.loadSystemDefaults();
             } catch (ResourceConfigurationException e) {
