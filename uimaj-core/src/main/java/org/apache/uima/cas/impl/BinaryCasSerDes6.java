@@ -1706,7 +1706,7 @@ public class BinaryCasSerDes6 {
       cas.resetNoQuestions();
     }
       
-    cas.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, AllowPreexistingFS.allow);
+    cas.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, AllowPreexistingFS.allow, null);
 //    deserializeAfterVersion(deserIn, isReadingDelta, AllowPreexistingFS.allow);
   }
   
@@ -1727,7 +1727,7 @@ public class BinaryCasSerDes6 {
       throw new UnsupportedOperationException("Delta CAS required for this call");
     }
 
-    cas.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, allowPreexistingFS);
+    cas.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, allowPreexistingFS, null);
   }
   
   

@@ -36,6 +36,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.AllowPreexistingFS;
 import org.apache.uima.cas.impl.BinaryCasSerDes4;
@@ -306,6 +307,29 @@ public class CasIOUtils {
    */
   public static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
           CasLoadMode casLoadMode) throws IOException {
+    return load(casInputStream, tsiInputStream, aCAS, casLoadMode, null);
+  }
+  
+  /**
+   * This is used for loading Form 6 compressed CASes where the type system to use to deserialize is provided as an argument.
+   *  
+   * @param casInputStream
+   *          The input stream containing the CAS, appropriately buffered.
+   * @param aCAS
+   *          The CAS that should be filled
+   * @param typeSystem the type system to use for decoding the serialized form, must be non-null         
+   * @return the SerialFormat of the loaded CAS
+   * @throws IOException Problem loading from given InputStream   
+   */
+  public static SerialFormat load(InputStream casInputStream, CAS aCAS, TypeSystem typeSystem) throws IOException {
+    if (null == typeSystem) {
+      throw new IllegalArgumentException("typeSystem argument cannot be null");
+    }
+    return load(casInputStream, null, aCAS, CasLoadMode.DEFAULT, (TypeSystemImpl) typeSystem);
+  }
+  
+  private static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
+      CasLoadMode casLoadMode, TypeSystemImpl typeSystem) throws IOException {
 
     if (!casInputStream.markSupported()) {
       casInputStream = new BufferedInputStream(casInputStream);
@@ -338,7 +362,7 @@ public class CasIOUtils {
        * Binary, Compressed Binary (form 4 or 6)
        ******************************************/
       Header h = CommonSerDes.readHeader(deserIn);
-      return casImpl.reinit(h, casInputStream, readCasManager(tsiInputStream), casLoadMode, null, AllowPreexistingFS.allow);
+      return casImpl.reinit(h, casInputStream, readCasManager(tsiInputStream), casLoadMode, null, AllowPreexistingFS.allow, typeSystem);
     
     } else {
       

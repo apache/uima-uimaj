@@ -1390,7 +1390,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     try {
       Header h = CommonSerDes.readHeader(dis);
-      return reinit(h, istream, null, CasLoadMode.DEFAULT, null, AllowPreexistingFS.allow);
+      return reinit(h, istream, null, CasLoadMode.DEFAULT, null, AllowPreexistingFS.allow, null);
     } catch (IOException e) {
       String msg = e.getMessage();
       if (msg == null) {
@@ -1431,9 +1431,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                              CASMgrSerializer casMgrSerializer,
                              CasLoadMode casLoadMode,
                              BinaryCasSerDes6 f6,
-                             AllowPreexistingFS allowPreexistingFS) throws CASRuntimeException {
+                             AllowPreexistingFS allowPreexistingFS,
+                             TypeSystemImpl ts) throws CASRuntimeException {
     if (this != this.svd.baseCAS) {
-      return this.svd.baseCAS.reinit(h, istream, casMgrSerializer, casLoadMode, f6, allowPreexistingFS);
+      return this.svd.baseCAS.reinit(h, istream, casMgrSerializer, casLoadMode, f6, allowPreexistingFS, ts);
     }
    
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
@@ -1473,10 +1474,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           tsRead.commit();  // no generators set up
         }
           
+        TypeSystemImpl ts_for_decoding = (ts != null)
+                                           ? ts 
+                                           : (f6 == null) 
+                                               ? tsRead
+                                               : (f6.getTgtTs() == null)
+                                                   ? tsRead
+                                                   : f6.getTgtTs(); 
+                                                   
         try {
           BinaryCasSerDes6 bcsd = (f6 != null) 
-                                    ? new BinaryCasSerDes6(f6, (f6.getTgtTs() == null) ? tsRead : f6.getTgtTs())
-                                    : new BinaryCasSerDes6(this, tsRead);          
+                                    ? new BinaryCasSerDes6(f6, ts_for_decoding)
+                                    : new BinaryCasSerDes6(this, ts_for_decoding);          
          
           bcsd.deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
           return h.typeSystemIndexDefIncluded 
