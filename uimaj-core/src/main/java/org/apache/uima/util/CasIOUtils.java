@@ -98,6 +98,7 @@ import org.xml.sax.SAXException;
  *
  * <p>Compressed Form 6 loading decoding type system is picked from these sources, in this order:</p>
  * <ul>
+ *   <li>a passed in type system</li>
  *   <li>an embedded TS or TSI</li>
  *   <li>an external TSI</li>
  *   <li>the CAS's type system</li>
@@ -138,6 +139,7 @@ import org.xml.sax.SAXException;
  * <pre style="padding-left: 30px;">
  *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCas)</code>
  *   <code>load(inputStream, aCas)</code>
+ *   <code>load(inputStream, aCas, typeSystem)</code> // for Compressed Form 6 only
  *   <code>load(inputStream, tsiInputStream, aCas)</code></pre>
  * <pre style="padding-left: 30px;">
  *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , tsiURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCAS, casLoadMode)&nbsp;&nbsp; - the second URL is for loading a separately-stored TSI</code>
