@@ -1029,7 +1029,7 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
     <para>The CAS APIs are organized into 3 Java packages: cas, cas.impl, and cas.text. Most
       of the APIs described here are in the cas package. The cas.impl package contains classes
       used in serializing and deserializing (reading and writing to external strings) the
-      XCAS form of the CAS (XCAS is an XML serialization of the CAS). The XCAS form is used for
+      CAS in various formats, for
       transporting the CAS among local and remote annotators, or for storing the CAS in
       permanent storage. The cas.text contains the APIs that extend the CAS to support
       artifact (including <quote>text</quote>) analysis.</para>
