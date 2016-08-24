@@ -216,7 +216,7 @@ public class CasIOUtils {
   }
   
   /**
-   * Loads a Cas from a URL source. The format is determined from the content.
+   * Loads a Cas from an Input Stream. The format is determined from the content.
    * For SerialFormats ending with _TSI except for COMPRESSED_FILTERED_TSI, 
    * the CAS's type system and indexes definition are replaced.
    * CasLoadMode is DEFAULT.
