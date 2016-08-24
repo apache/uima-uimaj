@@ -79,7 +79,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       String expected = "Context Holder Test";
       String[] actuals = null;
       try {
-        actuals = UimaContextHolder.getContext().getSettingArray("test.externalFloatArray");
+        actuals = UimaContextHolder.getContext().getSharedSettingArray("test.externalFloatArray");
       } catch (ResourceConfigurationException e) {
         Assert.fail(e.getMessage());
       }
@@ -89,7 +89,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       // suffix = should be ignored
       String actual = null;
       try {
-        actual = UimaContextHolder.getContext().getSetting("context-holder");
+        actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
       } catch (ResourceConfigurationException e) {
         Assert.fail(e.getMessage());
       }
@@ -97,13 +97,13 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       
       // Test assigning an array to a string and vice-versa
       try {
-        actual = UimaContextHolder.getContext().getSetting("test.externalFloatArray");
+        actual = UimaContextHolder.getContext().getSharedSettingValue("test.externalFloatArray");
         Assert.fail("\"bad\" should create an error");
       } catch (ResourceConfigurationException e) {
         System.err.println("Expected exception: " + e.toString());
       }
       try {
-        actuals = UimaContextHolder.getContext().getSettingArray("prefix-suffix");
+        actuals = UimaContextHolder.getContext().getSharedSettingArray("prefix-suffix");
         Assert.fail("\"bad\" should create an error");
       } catch (ResourceConfigurationException e) {
         System.err.println("Expected exception: " + e.toString());

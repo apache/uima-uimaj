@@ -39,7 +39,7 @@ public class UimaContextHolderTest implements Runnable {
     if (uimaContext == null) {
       return nocontextError;
     }
-    return uimaContext.getSetting("context-holder");
+    return uimaContext.getSharedSettingValue("context-holder");
   }
 
   @Override
