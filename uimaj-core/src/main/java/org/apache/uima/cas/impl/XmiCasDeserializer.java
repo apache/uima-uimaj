@@ -1987,7 +1987,7 @@ public class XmiCasDeserializer {
    * Deserializes a CAS from XMI.
    * 
    * @param aStream
-   *          input stream from which to read the XCMI document
+   *          input stream from which to read the XMI document
    * @param aCAS
    *          CAS into which to deserialize. This CAS must be set up with a type system that is
    *          compatible with that in the XMI
