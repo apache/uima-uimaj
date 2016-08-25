@@ -139,7 +139,7 @@ import org.xml.sax.SAXException;
  * <pre style="padding-left: 30px;">
  *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCas)</code>
  *   <code>load(inputStream, aCas)</code>
- *   <code>load(inputStream, aCas, typeSystem)</code> // for Compressed Form 6 only
+ *   <code>load(inputStream, aCas, typeSystem)</code> // typeSystem used for decoding Compressed Form 6
  *   <code>load(inputStream, tsiInputStream, aCas)</code></pre>
  * <pre style="padding-left: 30px;">
  *   <code>load(aURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , tsiURL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , aCAS, casLoadMode)&nbsp;&nbsp; - the second URL is for loading a separately-stored TSI</code>
@@ -313,8 +313,24 @@ public class CasIOUtils {
   }
   
   /**
-   * This is used for loading Form 6 compressed CASes where the type system to use to deserialize is provided as an argument.
-   *  
+   * This load variant can be used for loading Form 6 compressed CASes where the 
+   * type system to use to deserialize is provided as an argument.  It can also load other formats,
+   * where its behavior is identical to load(casInputStream, aCas).
+   *
+   * Loads a CAS from an Input Stream. The format is determined from the content.
+   * For SerialFormats of ending in _TSI SERIALIZED_TSI or COMPRESSED_FILTERED_TSI, 
+   * the type system and index definitions are read from the cas input source;
+   * the value of typeSystem is ignored.
+   * 
+   * For COMPRESSED_FILTERED_xxx formats, if the typeSystem is not null, 
+   * the typeSystem is used for decoding.
+   * 
+   * If embedded TSI information is available, the CAS's type system and indexes definition are replaced,
+   * except for SerialFormats COMPRESSED_FILTERED, COMPRESSED_FILTERED_TS, and COMPRESSED_FILTERED_TSI.
+   * 
+   *   To replace the CAS's type system and indexes definition for these, use a load form which 
+   *   has the CasLoadMode argument, and set this to REINIT.
+   *     
    * @param casInputStream
    *          The input stream containing the CAS, appropriately buffered.
    * @param aCAS
@@ -324,9 +340,6 @@ public class CasIOUtils {
    * @throws IOException Problem loading from given InputStream   
    */
   public static SerialFormat load(InputStream casInputStream, CAS aCAS, TypeSystem typeSystem) throws IOException {
-    if (null == typeSystem) {
-      throw new IllegalArgumentException("typeSystem argument cannot be null");
-    }
     return load(casInputStream, null, aCAS, CasLoadMode.DEFAULT, (TypeSystemImpl) typeSystem);
   }
   

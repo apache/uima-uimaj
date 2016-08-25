@@ -1474,13 +1474,48 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           tsRead.commit();  // no generators set up
         }
           
-        TypeSystemImpl ts_for_decoding = (ts != null)
-                                           ? ts 
-                                           : (f6 == null) 
-                                               ? tsRead
-                                               : (f6.getTgtTs() == null)
-                                                   ? tsRead
-                                                   : f6.getTgtTs(); 
+        
+        TypeSystemImpl ts_for_decoding =
+            (tsRead != null && embeddedCasMgrSerializer != null) 
+              ? tsRead                      // first choice: embedded - it's always correct
+              : (ts != null)                // 2nd choice is passed in ts arg, either ts or f6.getTgtTs() 
+                  ? ts
+                  : (f6 != null && f6.getTgtTs() != null)
+                      ? f6.getTgtTs()       // this is the ts passed in via BinaryCasSerDes6 constructor
+                      : tsRead;             // last choice: the ts read from 2nd input to load() in CasIOUtils
+            
+            
+//            (f6 != null)                    
+//              ? ((f6.getTgtTs() != null)    // first choice: embedded, because it's always correct 
+//                   ? f6.getTgtTs()
+//                   : (ts != null)           // 2nd choice: ts passed in
+//                       ? ts
+//                       : tsRead)            // 3rd choice: tsRead
+//              : (ts != null)            // no embedded
+//                  ? ts
+//                  : tsRead;
+                   
+//        if (f6 != null) {
+//          ts_for_decoding = f6.getTgtTs(); // use embedded one if available
+//          if (null == ts_for_decoding) {
+//            ts_for_decoding = ts;          // use argument ts
+//          }
+//          if (null == ts_for_decoding) {
+//            ts_for_decoding = tsRead;
+//          }
+//        } else {
+//          ts_for_decoding = (ts != null) 
+//                              ? ts
+//                              : tsRead;
+//        }
+          
+//        TypeSystemImpl ts_for_decoding = (ts != null)
+//                                           ? ts 
+//                                           : (f6 == null) 
+//                                               ? tsRead
+//                                               : (f6.getTgtTs() == null)
+//                                                   ? tsRead
+//                                                   : f6.getTgtTs(); 
                                                    
         try {
           BinaryCasSerDes6 bcsd = (f6 != null) 
