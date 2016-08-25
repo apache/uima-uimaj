@@ -715,7 +715,8 @@ ae.destroy();</programlisting></para>
         can be read back in using the <code>CasIOUtils load</code> methods.
         The <code>CasIOUtils load</code> methods also have API forms that support 
         loading type system and index definition information
-        at the same time (from addition input sources).  
+        at the same time (from addition input sources); there is also a form for loading compressed form 6 where
+        you can pass the type system to use for decoding, when it is different from that of the receiving CAS. 
         The XCAS and XMI external forms can also be read back in using the <literal>deserialize</literal> method of
         the class <literal>org.apache.uima.util.XmlCasDeserializer</literal>. All of these methods deserialize
         into a pre-existing CAS, which you must create ahead of time.  See the
