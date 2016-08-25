@@ -1199,7 +1199,7 @@ public class XmiCasDeserializer {
      *          xmi:id assigned to the array object.
      * @param addr
      *          address of preexisting non-shared array
-     * @return
+     * @return the int handle for the array
      */
     private int createArray(int arrayType, List<String> values, int xmiId, int addr) {
       int casArray = -1; 
