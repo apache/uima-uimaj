@@ -204,7 +204,7 @@ public class Settings_impl implements Settings {
   }
   
   /**
-   * @see org.apache.uima.util.Settings#getSetting1(java.lang.String)
+   * @see org.apache.uima.util.Settings#getSetting(java.lang.String)
    */
   @Override
   public String getSetting(String name) throws ResourceConfigurationException {
