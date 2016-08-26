@@ -50,7 +50,7 @@ public class CommonSerDes {
    *     - bit in 0x01 position: on for binary non-delta (redundant)   
    *     - bit in 0x02 position: on means delta, off - not delta
    *     - bit in 0x04 position: on means compressed, off means plain binary
-   *     - bit in 0x08 position: on means typer system included
+   *     - bit in 0x08 position: on means type system included
    *     - bits  0xF8 reserved
    *     
    *     - byte in 0xFF 00 position: incrementing (starting w/ 0) version
