@@ -295,7 +295,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     // A map from SofaNumbers which are also view numbers to IndexRepositories.
     // these numbers are dense, and start with 1.  1 is the initial view.  0 is the base cas
-    private ArrayList<FSIndexRepositoryImpl> sofa2indexMap;
+    ArrayList<FSIndexRepositoryImpl> sofa2indexMap;
 
 
     /**
@@ -309,7 +309,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * However, the maximum view count is reset; so creation of new views "reuses" these pre-setup indexRepos 
      * associated with these views.
      */
-    private ArrayList<CASImpl> sofaNbr2ViewMap;
+    ArrayList<CASImpl> sofaNbr2ViewMap;
 
     /**
      * a set of instantiated sofaNames

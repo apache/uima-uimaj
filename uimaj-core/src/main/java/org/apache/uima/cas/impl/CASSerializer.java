@@ -42,6 +42,7 @@ import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.CasIOUtils;
 
 /**
  * This object has 2 purposes.
@@ -219,6 +220,10 @@ public class CASSerializer implements Serializable {
       dos.writeInt(shdh.refHeap[i + StringHeapDeserializationHelper.CHAR_HEAP_STRLEN_OFFSET]);
     }
   }
+  
+  void addTsiCAS(CASImpl cas, OutputStream ostream) {
+    
+  }
 
   /**
    * Serializes the CAS data and writes it to the output stream.
@@ -249,6 +254,10 @@ public class CASSerializer implements Serializable {
    * @param ostream -
    */
   public void addCAS(CASImpl cas, OutputStream ostream) {
+      addCAS(cas, ostream, false);
+  }
+  
+  public void addCAS(CASImpl cas, OutputStream ostream, boolean includeTsi) {
     final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
     
     final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas, used for delta
@@ -264,9 +273,14 @@ public class CASSerializer implements Serializable {
       // output the key and version number
       CommonSerDes.createHeader()
         .seqVer(1)  // 0 original, 1 UIMA-4743
+        .typeSystemIndexDefIncluded(includeTsi)
         .v3()
         .write(dos);
-      
+
+     if (includeTsi) {
+        CasIOUtils.writeTypeSystem(cas, ostream, true);
+      }
+            
       // output the FS heap
       final int heapSize = bcsd.heap.getCellsUsed();
       dos.writeInt(heapSize);
@@ -536,7 +550,7 @@ public class CASSerializer implements Serializable {
       writeMods(chgByteAddr, dos, i -> dos.writeByte(chgByteValues.heap[i]));
 
       // word alignment
-      align = (4 - (byteheapsz % 4)) % 4;
+      align = (4 - (chgByteAddr.size() % 4)) % 4;
       for (int i = 0; i < align; i++) {
         dos.writeByte(0);
       }
@@ -545,7 +559,7 @@ public class CASSerializer implements Serializable {
       writeMods(chgShortAddr, dos, i -> dos.writeShort(chgShortValues.heap[i]));
 
       // word alignment
-      if (shortheapsz % 2 != 0) {
+      if (chgShortAddr.size() % 2 != 0) {
         dos.writeShort(0);
       }
 

@@ -37,7 +37,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.zip.Deflater;
@@ -340,10 +339,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
     Serializer serializer = new Serializer(
         casImpl, makeDataOutputStream(out), (MarkerImpl) trackingMark, sm,
-        compressLevel, compressStrategy);
+        compressLevel, compressStrategy, false);
    
     serializer.serialize();
     return sm;
+  }
+  
+  public void serializeWithTsi(CASImpl casImpl, Object out) throws IOException {
+    Serializer serializer = new Serializer(
+        casImpl, makeDataOutputStream(out), null, null, CompressLevel.Default, CompressStrat.Default, true);
+    serializer.serialize();
   }
   
   public SerializationMeasures serialize(AbstractCas cas, Object out, Marker trackingMark,
@@ -391,6 +396,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //    final private ByteHeap byteHeapObj;
 
     final private boolean isDelta;        // if true, there is a marker indicating the start spot(s)
+    final private boolean isTsi;          // true to include the type system and indexes definition
     final private boolean doMeasurement;  // if true, doing measurements
 //    final private ComprItemRefs fsStartIndexes = (CHANGE_FS_REFS_TO_SEQUENTIAL) ? new ComprItemRefs() : null;
 //    final private int[] typeCodeHisto = new int[ts.getTypeArraySize()]; 
@@ -460,7 +466,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private Serializer(CASImpl cas, DataOutputStream serializedOut, MarkerImpl mark,
                        SerializationMeasures sm,
                        CompressLevel compressLevel,
-                       CompressStrat compressStrategy) {
+                       CompressStrat compressStrategy,
+                       boolean isTsi) {
       this.baseCas = cas.getBaseCAS();
       this.bcsd = cas.getBinaryCasSerDes();
       this.isDelta = (mark != null);
@@ -473,6 +480,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       this.sm = sm;
       this.compressLevel = compressLevel;
       this.compressStrategy = compressStrategy;
+      this.isTsi = isTsi;
       
       doMeasurement = (sm != null);
       
@@ -532,16 +540,17 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //        sm.origAuxLongs = baseCas.getLongHeap().getSize() * 8;
 //        sm.totalTime = System.currentTimeMillis();
 //      }
-
+      
       /************************
        * Write standard header
        ************************/
       CommonSerDes.createHeader()
-      .v3()
-      .seqVer(2)    // 0 - original, 1 - UIMA-4743, 2 - v3 
-      .form4()
-      .delta(isDelta)
-      .write(serializedOut);
+        .v3()
+        .seqVer(2)    // 0 - original, 1 - UIMA-4743, 2 - v3 
+        .form4()
+        .delta(isDelta)
+        .typeSystemIndexDefIncluded(isTsi)
+        .write(serializedOut);
              
       if (TRACE_SER) System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
       /*******************************************************************************
@@ -983,14 +992,14 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           DeflaterOutputStream cds = new DeflaterOutputStream(baosZipped, deflater, zipBufSize);       
           baos.writeTo(cds);
           cds.close();
-          idxAndLen.add(i);
+          idxAndLen.add(Integer.valueOf(i));
           if (doMeasurement) {
-            idxAndLen.add((int)(sm.statDetails[i].afterZip = deflater.getBytesWritten()));            
-            idxAndLen.add((int)(sm.statDetails[i].beforeZip = deflater.getBytesRead()));
+            idxAndLen.add(Integer.valueOf((int)(sm.statDetails[i].afterZip = deflater.getBytesWritten())));            
+            idxAndLen.add(Integer.valueOf((int)(sm.statDetails[i].beforeZip = deflater.getBytesRead())));
             sm.statDetails[i].zipTime = System.currentTimeMillis() - startTime;
           } else {
-            idxAndLen.add((int)deflater.getBytesWritten());            
-            idxAndLen.add((int)deflater.getBytesRead());
+            idxAndLen.add(Integer.valueOf((int)deflater.getBytesWritten()));            
+            idxAndLen.add(Integer.valueOf((int)deflater.getBytesRead()));
           }
         } 
       }
@@ -1672,7 +1681,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private void deserialize(int version1) throws IOException {
-      
+      if (TRACE_DES) System.out.println("Form4Deser starting");
+     
       if (TRACE_DES) System.out.println("Form4Deser starting");
       isBeforeV3 = (version1 & 0xff00) == 0;
       

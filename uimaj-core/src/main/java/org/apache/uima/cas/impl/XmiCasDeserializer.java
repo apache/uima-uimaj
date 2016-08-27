@@ -91,7 +91,7 @@ public class XmiCasDeserializer {
 
   private static final String ID_ATTR_NAME = "xmi:id";
 
-  private class XmiCasDeserializerHandler extends DefaultHandler {
+  public class XmiCasDeserializerHandler extends DefaultHandler {
     // ///////////////////////////////////////////////////////////////////////
     // Internal states for the parser.
 

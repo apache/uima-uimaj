@@ -42,7 +42,10 @@ import org.apache.uima.resource.ResourceInitializationException;
  *   - one which makes use of various custom binary serialization methods, and
  *   - one which just converts CAS and related objects into other objects which
  *     in turn are serializable by normal Java Object serialization.
- *      
+ * 
+ * See also CasIOUtils, which has static methods for serialization and deserialization, including 
+ * support for XMI and XCAS.
+ *    
  */
 public class Serialization {
 
@@ -90,6 +93,19 @@ public class Serialization {
     ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
     ser.addIndexRepository((FSIndexRepositoryImpl) ((CASImpl) casMgr.getCAS())
             .getBaseIndexRepository());
+    return ser;
+  }
+  
+  /**
+   * Convert a Type System into a 
+   * CASMgrSerializer object which can be serialized
+   * 
+   * @param casMgr the type system and index repo definitions
+   * @return a serializable object version of these
+   */
+  public static CASMgrSerializer serializeCASMgrTypeSystemOnly(CASMgr casMgr) {
+    CASMgrSerializer ser = new CASMgrSerializer();
+    ser.addTypeSystem((TypeSystemImpl) casMgr.getCAS().getTypeSystem());
     return ser;
   }
 
@@ -210,6 +226,26 @@ public class Serialization {
    */  
   public static void serializeWithCompression(CAS cas, Object out, Marker marker) throws IOException {
     (new BinaryCasSerDes4(((CASImpl)cas).getTypeSystemImpl(), false)).serialize(cas, out, marker);
+  }
+  
+  /**
+   * Serialize in compressed binary with type filtering
+   * This method can use type filtering to omit sending those types and/or features not present in the target type system.
+   *   - To omit type filtering, use null for the target type system
+   * It also only sends those feature structures which are reachable either from an index or references from other reachable feature structures.
+   * 
+   * @param cas the CAS to serialize
+   * @param out an OutputStream, a DataOutputStream, or a File
+   * @param includeTS true to serialize the type system
+   * @param includeTSI true to serialize the type system and the indexes definition
+   * @return information to be used on subsequent serializations (to save time) or deserializations (for receiving delta CASs), or reserializations (if sending delta CASs)
+   * @throws IOException if IO exception
+   * @throws ResourceInitializationException if target type system is incompatible with this CAS's type system
+   */  
+  public static ReuseInfo serializeWithCompression(CAS cas, Object out, boolean includeTS, boolean includeTSI) throws IOException, ResourceInitializationException {
+    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas, null, includeTS, includeTSI);
+    bcs.serialize(out);
+    return bcs.getReuseInfo();
   }
   
   /**

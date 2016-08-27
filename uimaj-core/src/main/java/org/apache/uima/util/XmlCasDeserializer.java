@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.OutOfTypeSystemData;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
@@ -59,7 +60,7 @@ public abstract class XmlCasDeserializer {
   }
 
   /**
-   * Deserializes a CAS from XMI.
+   * Deserializes a CAS from XMI or XCAS.
    * 
    * @param aStream
    *          input stream from which to read the XML document
@@ -78,9 +79,38 @@ public abstract class XmlCasDeserializer {
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-    ContentHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
+    XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));
+  }
+
+  /**
+   * Deserializes a CAS from XMI or XCAS, version returning the SerialFormat
+   * 
+   * @param aStream
+   *          input stream from which to read the XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XML
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
+   * @return the format of the data  
+   * 
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
+      throws SAXException, IOException {
+    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
+    xmlReader.setContentHandler(handler);
+    xmlReader.parse(new InputSource(aStream));
+    return (handler.mDelegateHandler instanceof XmiCasDeserializer.XmiCasDeserializerHandler)
+             ? SerialFormat.XMI
+             : SerialFormat.XCAS;
   }
 
   static class XmlCasDeserializerHandler extends DefaultHandler {

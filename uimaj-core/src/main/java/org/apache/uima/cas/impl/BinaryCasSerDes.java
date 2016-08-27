@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 
 import org.apache.uima.cas.CAS;
@@ -58,6 +58,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.CasLoadMode;
 
 /**
  * Binary (mostly non compressed) CAS deserialization
@@ -244,6 +245,34 @@ public class BinaryCasSerDes {
     reinitIndexedFSs(fsIndex, false, i -> csds.addr2fs.get(i));
   }
 
+  public CASImpl setupCasFromCasMgrSerializer(CASMgrSerializer casMgrSerializer) {
+
+    if (null != casMgrSerializer) {
+  
+      TypeSystemImpl ts = casMgrSerializer.getTypeSystem();
+      baseCas.installTypeSystemInAllViews(ts);
+      baseCas.commitTypeSystem();
+  
+      // reset index repositories -- wipes out Sofa index
+      baseCas.indexRepository = casMgrSerializer.getIndexRepository(baseCas);
+      baseCas.indexRepository.commit();
+  
+      // get handle to existing initial View
+      CASImpl initialView = baseCas.getInitialView();
+  
+      // throw away all other View information as the CAS definition may have
+      // changed
+      baseCas.svd.sofa2indexMap.clear();
+      baseCas.svd.sofaNbr2ViewMap.clear();
+      baseCas.svd.viewCount = 0;
+  
+      // freshen the initial view
+      initialView.refreshView(baseCas, null);
+      baseCas.setViewForSofaNbr(1, initialView);
+      baseCas.svd.viewCount = 1;
+    }
+    return baseCas;
+  }
 
   /**
    * Deserializer for CASCompleteSerializer instances - includes type system and index definitions
@@ -421,38 +450,12 @@ public class BinaryCasSerDes {
    */
 
   public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
-   
+      
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
   
     try {
       Header h = CommonSerDes.readHeader(dis);
-      
-      final boolean delta = h.isDelta;
-      
-      if (!delta) {
-        baseCas.resetNoQuestions();
-      }
-      
-      if (h.isCompressed) {
-        if (TRACE_DESER) {
-          System.out.format("BinDeser version = %d%n", h.v);
-        }
-        if (h.form4) {
-          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
-            .deserialize(baseCas, dis, delta, h.v);
-          return SerialFormat.COMPRESSED;
-        } else {
-          try {
-            (new BinaryCasSerDes6(baseCas)).deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
-          } catch (ResourceInitializationException e) {
-            throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED, null, e);
-          }
-          return SerialFormat.COMPRESSED_FILTERED;
-        }
-      }
-     
-      return binaryDeserialization(h);
-      
+      return reinit(h, istream, null, CasLoadMode.DEFAULT, null, AllowPreexistingFS.allow, null);
     } catch (IOException e) {
       String msg = e.getMessage();
       if (msg == null) {
@@ -461,6 +464,127 @@ public class BinaryCasSerDes {
       throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
     }
   }
+  
+  /**
+   * --------------------------------------------------------------------- 
+   * Deserialize a binary input stream, after reading the header, 
+   * and optionally an externally provided type system and index spec 
+   * used in compressed form 6 serialization previously
+   * 
+   * This reads in and deserializes CAS data from a stream. Byte swapping may be
+   * needed if the blob is from C++ -- C++ blob serialization writes data in
+   * native byte order.
+   * 
+   * The corresponding serialization code is in org.apache.uima.cas.impl.Serialization,
+   * also see CasIOUtils
+   * 
+   * @param h -
+   * @param istream -
+   * @param casMgrSerializer null or the Java object representing the externally supplied type 
+   *                         and maybe indexes definition (TSI)
+   * @param casLoadMode DEFAULT or REINIT. REINIT required with compressed form 6 to
+   *                          reinitialize the cas's type system and index definition, for form 6.  
+   * @param f6 only used for form 6 where an instance of BinaryCasSerDes6 has been initialized
+   * @param allowPreexistingFS only used for form 6 delta deserialization    
+   * @return -
+   * @throws CASRuntimeException wraps IOException
+   */
+  public SerialFormat reinit(Header h, 
+                             InputStream istream, 
+                             CASMgrSerializer casMgrSerializer,
+                             CasLoadMode casLoadMode,
+                             BinaryCasSerDes6 f6,
+                             AllowPreexistingFS allowPreexistingFS,
+                             TypeSystemImpl ts) throws CASRuntimeException {
+  
+    final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
+
+    CASMgrSerializer embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
+    
+    if (!h.isForm6() || casLoadMode == CasLoadMode.REINIT)  {
+      setupCasFromCasMgrSerializer(
+          (null != embeddedCasMgrSerializer && embeddedCasMgrSerializer.hasIndexRepository()) 
+            ? embeddedCasMgrSerializer
+            : casMgrSerializer);
+    }
+      
+    if (!h.isForm6() && casLoadMode == CasLoadMode.LENIENT) {
+      /**Lenient deserialization not support for input of type {0}.*/
+      throw new CASRuntimeException(CASRuntimeException.LENIENT_NOT_SUPPORTED, new Object[] {h.toString()});
+    }
+
+    try {
+      final boolean delta = h.isDelta;
+      
+      if (!delta) {
+        baseCas.resetNoQuestions();
+      }
+      
+      
+      if (h.isCompressed) {
+        if (TRACE_DESER) {
+          System.out.format("BinDeser version = %d%n", h.v);
+        }
+        if (h.form4) {
+          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
+            .deserialize(baseCas, dis, delta, h.v);
+          return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
+        } else {
+          CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
+          TypeSystemImpl tsRead = (cms != null) ? cms.getTypeSystem() : null;
+          if (null != tsRead) {
+            tsRead.commit();  // no generators set up
+          }
+            
+          TypeSystemImpl ts_for_decoding =
+              (tsRead != null && embeddedCasMgrSerializer != null) 
+                ? tsRead                      // first choice: embedded - it's always correct
+                : (ts != null)                // 2nd choice is passed in ts arg, either ts or f6.getTgtTs() 
+                    ? ts
+                    : (f6 != null && f6.getTgtTs() != null)
+                        ? f6.getTgtTs()       // this is the ts passed in via BinaryCasSerDes6 constructor
+                        : tsRead;             // last choice: the ts read from 2nd input to load() in CasIOUtils
+              
+          try {
+            BinaryCasSerDes6 bcsd = (f6 != null) 
+                ? new BinaryCasSerDes6(f6, ts_for_decoding)
+                : new BinaryCasSerDes6(baseCas, ts_for_decoding);
+            bcsd.deserializeAfterVersion(dis, delta, AllowPreexistingFS.allow);
+            return h.typeSystemIndexDefIncluded 
+                ? SerialFormat.COMPRESSED_FILTERED_TSI
+                : h.typeSystemIncluded 
+                    ? SerialFormat.COMPRESSED_FILTERED_TS
+                    : SerialFormat.COMPRESSED_FILTERED;
+          } catch (ResourceInitializationException e) {
+            throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED, null, e);
+          }
+        }
+      }
+     
+      return binaryDeserialization(h);
+    } catch (IOException e) {
+      String msg = e.getMessage();
+      if (msg == null) {
+        msg = e.toString();
+      }
+      throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
+    }     
+    
+  }
+  
+  static CASMgrSerializer maybeReadEmbeddedTSI(Header h, DataInputStream dis) {  
+    if (h.isTypeSystemIncluded() || h.isTypeSystemIndexDefIncluded()) { // Load TS from CAS stream
+      try {
+        ObjectInputStream ois = new ObjectInputStream(dis);
+        return (CASMgrSerializer) ois.readObject();
+      } catch (ClassNotFoundException | IOException e) {
+        /**Unrecognized serialized CAS format*/
+        throw new CASRuntimeException(CASRuntimeException.UNRECOGNIZED_SERIALIZED_CAS_FORMAT, null, e);
+      }
+    }
+    return null;
+  }
+
 
   /************************************************************
    * ------   NON COMPRESSED BINARY DESEERIALIZATION   ------ *

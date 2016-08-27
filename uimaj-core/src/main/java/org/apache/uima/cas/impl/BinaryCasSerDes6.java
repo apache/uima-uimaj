@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +82,8 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.CasIOUtils;
+import org.apache.uima.util.CasLoadMode;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
@@ -315,9 +318,17 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   private OptimizeStrings os;
   private boolean only1CommonString;  // true if only one common string
 
+  private boolean isTsIncluded;   // type system used for the serialization
+  private boolean isTsiIncluded;  // types plus index definition, used to reset the cas
+
 //  private TypeInfo typeInfo; // type info for the current type being serialized/deserialized
 //                             // always the "src" typeInfo I think, except for compareCas use
   final private CasTypeSystemMapper typeMapper;
+  
+  /**
+   * This is the used version of isTypeMapping, normally == to isTypeMappingCmn
+   *   But compareCASes sets this false temporarily while setting up the compare
+   */
   private boolean isTypeMapping;
 
 //  /**
@@ -498,10 +509,24 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @param compressStrategy if not null, specifies enum instance for compress strategy
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
+   
   public BinaryCasSerDes6(
       AbstractCas aCas,
       MarkerImpl mark,
       TypeSystemImpl tgtTs, 
+      ReuseInfo rfs,
+      boolean doMeasurements,
+      CompressLevel compressLevel, 
+      CompressStrat compressStrategy) throws ResourceInitializationException {
+    this(aCas, mark, tgtTs, false, false, rfs, doMeasurements, compressLevel, compressStrategy);
+  }
+   
+  private BinaryCasSerDes6(
+      AbstractCas aCas,
+      MarkerImpl mark,
+      TypeSystemImpl tgtTs,
+      boolean storeTS,
+      boolean storeTSI,
       ReuseInfo rfs,
       boolean doMeasurements,
       CompressLevel compressLevel, 
@@ -522,6 +547,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     isDelta = isSerializingDelta = (mark != null);
     typeMapper = srcTs.getTypeSystemMapper(tgtTs);
     isTypeMapping = (null != typeMapper);
+    isTsIncluded = storeTS;
+    isTsiIncluded = storeTSI;
     
 //    heap = cas.getHeap().heap;
 //    heapEnd = cas.getHeap().getCellsUsed();
@@ -554,12 +581,55 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   }
   
   /**
+   * only called to set up for deserialization.
+   * clones existing f6, but changes the tgtTs (used to decode)
+   * @param f6 -
+   * @param tgtTs used for decoding
+   * @throws ResourceInitializationException -
+   */
+  BinaryCasSerDes6(BinaryCasSerDes6 f6, TypeSystemImpl tgtTs) throws ResourceInitializationException {
+    this.cas = f6.cas;
+    this.bcsd = f6.bcsd;
+    this.stringHeapObj = f6.stringHeapObj;
+    this.nextFsId = f6.nextFsId;
+
+    this.srcTs = f6.srcTs;
+    this.tgtTs = tgtTs;  // passed in argument !
+    this.compressLevel = f6.compressLevel;
+    this.compressStrategy = f6.compressStrategy;
+
+    this.mark = f6.mark;
+    if (null != mark && !mark.isValid() ) {
+      throw new CASRuntimeException(
+                CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
+    }
+    
+    this.isDelta = this.isSerializingDelta = (mark != null);
+    this.fsStartIndexes = f6.fsStartIndexes;
+    this.reuseInfoProvided = f6.reuseInfoProvided;
+    this.doMeasurements = f6.doMeasurements;
+    this.sm = f6.sm;
+    
+    this.isTsIncluded = f6.isTsIncluded;
+    this.isTsiIncluded = f6.isTsiIncluded;
+    
+    this.typeMapper = srcTs.getTypeSystemMapper(tgtTs);
+    this.isTypeMapping = (null != typeMapper);
+    this.prevHeapInstanceWithIntValues = f6.prevHeapInstanceWithIntValues;
+    this.prevFsWithLongValues = f6.prevFsWithLongValues;
+    this.foundFSs = f6.foundFSs;
+    this.foundFSsBelowMark = f6.foundFSsBelowMark;
+    this.fssToSerialize = f6.fssToSerialize;
+    
+   }
+  
+  /**
    * Setup to serialize (not delta) or deserialize (not delta) using binary compression, no type mapping but only processing reachable Feature Structures
    * @param cas -
    * @throws ResourceInitializationException never thrown 
    */
   public BinaryCasSerDes6(AbstractCas cas) throws ResourceInitializationException {
-    this(cas, null, null, null, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, null, null, false, false, null, false, CompressLevel.Default, CompressStrat.Default);
   }
   
   /**
@@ -569,7 +639,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, TypeSystemImpl tgtTs) throws ResourceInitializationException {
-    this(cas, null, tgtTs, null, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, null, tgtTs, false, false, null, false, CompressLevel.Default, CompressStrat.Default);
   }
 
   /**
@@ -581,7 +651,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs) throws ResourceInitializationException {
-    this(cas, mark, tgtTs, rfs, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, mark, tgtTs, false, false, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
   
   /**
@@ -594,7 +664,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws ResourceInitializationException if the target type system is incompatible with the source type system
    */
   public BinaryCasSerDes6(AbstractCas cas, MarkerImpl mark, TypeSystemImpl tgtTs, ReuseInfo rfs, boolean doMeasurements) throws ResourceInitializationException {
-    this(cas, mark, tgtTs, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
+    this(cas, mark, tgtTs, false, false, rfs, doMeasurements, CompressLevel.Default, CompressStrat.Default);
   }
 
   /**
@@ -604,7 +674,19 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws ResourceInitializationException never thrown
    */
   public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs) throws ResourceInitializationException {
-    this(cas, null, null, rfs, false, CompressLevel.Default, CompressStrat.Default);
+    this(cas, null, null, false, false, rfs, false, CompressLevel.Default, CompressStrat.Default);
+  }
+
+  /**
+   * Setup to serialize (not delta) or deserialize (maybe delta) using binary compression, no type mapping, optionally storing TSI, and only processing reachable Feature Structures
+   * @param cas -
+   * @param rfs -
+   * @param storeTS - 
+   * @param storeTSI - 
+   * @throws ResourceInitializationException never thrown
+   */
+  public BinaryCasSerDes6(AbstractCas cas, ReuseInfo rfs, boolean storeTS, boolean storeTSI) throws ResourceInitializationException {
+    this(cas, null, null, storeTS, storeTSI, rfs, false, CompressLevel.Default, CompressStrat.Default);
   }
 
   /*********************************************************************************************
@@ -1592,7 +1674,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws IOException -
    */
   public void deserialize(InputStream istream) throws IOException {
-    readHeader(istream);
+    Header h = readHeader(istream);  // side effect, sets deserIn
 
     if (isReadingDelta) {
       if (!reuseInfoProvided) {
@@ -1601,8 +1683,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     } else {
       cas.resetNoQuestions();
     }
-
-    deserializeAfterVersion(deserIn, isReadingDelta, AllowPreexistingFS.allow);
+      
+    bcsd.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, AllowPreexistingFS.allow, null);
+//    deserializeAfterVersion(deserIn, isReadingDelta, AllowPreexistingFS.allow);
   }
   
   /**
@@ -1612,7 +1695,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws IOException passthru
    */
   public void deserialize(InputStream istream, AllowPreexistingFS allowPreexistingFS) throws IOException {
-    readHeader(istream);
+    Header h = readHeader(istream);
 
     if (isReadingDelta) {
       if (!reuseInfoProvided) {
@@ -1622,7 +1705,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       throw new UnsupportedOperationException("Delta CAS required for this call");
     }
 
-    deserializeAfterVersion(deserIn, isReadingDelta, allowPreexistingFS);
+    bcsd.reinit(h, deserIn, null, CasLoadMode.DEFAULT, this, allowPreexistingFS, null);
   }
   
   
@@ -3751,7 +3834,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * @throws IOException passthru
    *********************************************/
   
-  private void readHeader(InputStream istream) throws IOException {
+  private Header readHeader(InputStream istream) throws IOException {
     deserIn = CommonSerDes.maybeWrapToDataInputStream(istream);
     Header h = CommonSerDes.readHeader(deserIn);
     
@@ -3765,9 +3848,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
     
     isReadingDelta = isDelta = h.isDelta;
-    
-    
-    
+    return h;
   }
   
   /* *******************************************
@@ -3841,6 +3922,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     int v = fsStartIndexes.getTgtSeqFromSrcAddr(fs._id);
     assert(v != -1); // tgt must always be present at this point
     return v; 
+  }
+  
+  TypeSystemImpl getTgtTs() {
+    return this.tgtTs;
   }
   
   // number of views:              cas.getNumberOfViews()
