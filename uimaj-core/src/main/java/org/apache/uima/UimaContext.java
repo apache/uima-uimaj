@@ -22,14 +22,17 @@ package org.apache.uima;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Set;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.resource.ResourceAccessException;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.Session;
 import org.apache.uima.util.InstrumentationFacility;
 import org.apache.uima.util.Logger;
+import org.apache.uima.util.Settings;
 
 /**
  * Provides access to external resources (other than the CAS). The <code>UimaContext</code>
@@ -114,6 +117,40 @@ public interface UimaContext {
    */
   public String[] getConfigParameterNames();
 
+  /**
+   * Get the value of an external override setting.
+   * 
+   * @param name - the name of the parameter
+   * @return     - the value found in the settings file(s), or null if missing.
+   * @throws ResourceConfigurationException 
+   *                 if the value references an undefined property, or the value is an array
+   */
+  public String getSetting(String name) throws ResourceConfigurationException;
+  
+  /**
+  * Get the array of values for an external override setting.
+  * 
+  * @param name  - the name of the parameter
+  * @return      - an array of values found in the settings file(s), or null if missing.
+  * @throws ResourceConfigurationException 
+  *                  if the value references an undefined property, or the value is not an array
+  */
+  public String[] getSettingArray(String name) throws ResourceConfigurationException;
+  
+  /**
+   * Return a set containing the names of all the external override settings available
+   * 
+   * @return - set of strings
+   */
+  public Set<String> getSettingNames();
+  
+  /**
+   * Gets the <code>Settings</code> used for external parameter overrides
+   *  
+   * @return the Settings object
+   */
+  public Settings getExternalOverrides();
+  
   /**
    * Gets the <code>Logger</code> to which log output will be sent. UIMA components should use
    * this facility rather than writing to their own log files (or to stdout).
@@ -492,4 +529,5 @@ public interface UimaContext {
    * @return an empty CAS. This will be an implementation of <code>aCasInterface</code>.
    */
   public <T extends AbstractCas> T getEmptyCas(Class<T> aCasInterface);
+  
 }

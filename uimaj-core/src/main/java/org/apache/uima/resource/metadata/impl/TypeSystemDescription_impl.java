@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -260,7 +261,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
     //check the import cache
     TypeSystemDescription desc;    
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof TypeSystemDescription) {

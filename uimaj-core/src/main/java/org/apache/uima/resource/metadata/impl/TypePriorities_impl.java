@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
@@ -265,7 +266,7 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     //check the import cache
     TypePriorities desc;    
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof TypePriorities) {

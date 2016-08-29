@@ -19,10 +19,17 @@
 
 package org.apache.uima.analysis_engine.impl;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map.Entry;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
@@ -31,6 +38,7 @@ import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Settings;
+import org.apache.uima.util.UimaContextHolderTest;
 import org.apache.uima.util.impl.Settings_impl;
 
 import junit.framework.Assert;
@@ -65,20 +73,44 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     stringParamValue = (String) aContext.getConfigParameterValue("StringParam");
     
     // Check if can get an arbitrary external parameter from the override settings
+    // Note: this annotator launched with external overrides loaded from testExternalOverride2.settings 
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
-      String actual = null;
+      String expected = "Context Holder Test";
+      String[] actuals = null;
       try {
-        Settings settings = ((UimaContext_ImplBase)aContext).getExternalOverrides();
-        actual = settings.lookUp("test.externalFloatArray");
+        actuals = UimaContextHolder.getContext().getSettingArray("test.externalFloatArray");
       } catch (ResourceConfigurationException e) {
         Assert.fail(e.getMessage());
       }
-      String expected = "[]";
+      Assert.assertEquals(0, actuals.length);
+      
+      // prefix-suffix     Prefix-${suffix}
+      // suffix = should be ignored
+      String actual = null;
+      try {
+        actual = UimaContextHolder.getContext().getSetting("context-holder");
+      } catch (ResourceConfigurationException e) {
+        Assert.fail(e.getMessage());
+      }
       Assert.assertEquals(expected, actual);
       
+      // Test assigning an array to a string and vice-versa
+      try {
+        actual = UimaContextHolder.getContext().getSetting("test.externalFloatArray");
+        Assert.fail("\"bad\" should create an error");
+      } catch (ResourceConfigurationException e) {
+        System.err.println("Expected exception: " + e.toString());
+      }
+      try {
+        actuals = UimaContextHolder.getContext().getSettingArray("prefix-suffix");
+        Assert.fail("\"bad\" should create an error");
+      } catch (ResourceConfigurationException e) {
+        System.err.println("Expected exception: " + e.toString());
+      }
+
       // Test a stand-alone settings object
-      Settings testSettings = new Settings_impl();
+      Settings testSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
       String lines = "foo = ${bar} \n bar : [ok \n OK] \n bad = ${missing}";
       InputStream is;
       try {
@@ -96,6 +128,44 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       } catch (Exception e) {
         Assert.fail(e.toString());
       }
+      
+      // Test POFO access via UimaContextHolder
+      long threadId = Thread.currentThread().getId();
+      UimaContextHolderTest testPojoAccess = new UimaContextHolderTest();
+      try {
+        actual = testPojoAccess.testSettings();
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(threadId, testPojoAccess.threadId);
+      } catch (ResourceConfigurationException e) {
+        Assert.fail();
+      }
+      // Try from a child thread - should work
+      testPojoAccess.result = null;
+      Thread thrd = new Thread(testPojoAccess);
+      thrd.start();
+      synchronized(thrd) {
+        try {
+          thrd.wait();
+          Assert.assertEquals(expected, testPojoAccess.result);
+          Assert.assertNotSame(threadId, testPojoAccess.threadId);
+        } catch (InterruptedException e) {
+          Assert.fail();        }
+      }
+      // Try from a process - should fail
+      String[] args = {
+              System.getProperty("java.home")+"/bin/java",
+              "-cp", 
+              System.getProperty("java.class.path"), 
+              UimaContextHolderTest.class.getName()};
+      ProcessBuilder pb = new ProcessBuilder(args);
+      try {
+        Process proc = pb.start();
+        int rc = proc.waitFor();
+        Assert.assertEquals(0, rc);
+      } catch (IOException | InterruptedException e) {
+        Assert.fail();
+      }
+      
     }
     // Used to check initialization order by testManyDelegates
     allContexts  = allContexts + contextName.substring(1);

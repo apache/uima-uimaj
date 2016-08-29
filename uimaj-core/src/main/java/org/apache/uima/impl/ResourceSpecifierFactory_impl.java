@@ -89,6 +89,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.Settings;
 
 /**
  * Reference implementation of {@link ResourceSpecifierFactory}. Must be threadsafe.
@@ -308,6 +309,13 @@ public class ResourceSpecifierFactory_impl implements ResourceSpecifierFactory {
     return (ConfigurationParameterSettings) createObject(ConfigurationParameterSettings.class);
   }
 
+  /**
+   * @see org.apache.uima.ResourceSpecifierFactory#createConfigurationParameterSettings()
+   */
+  public Settings createSettings() {
+    return (Settings) createObject(Settings.class);
+  }
+  
   /**
    * @see org.apache.uima.ResourceSpecifierFactory#createTypePriorities()
    */

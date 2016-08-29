@@ -310,7 +310,9 @@ public interface ResourceManager {
    * Gets a cache of imported descriptors, so that the parsed objects can be reused if the
    * same URL is imported more than once.
    * @return A map from absolute URL to the XMLizable object that was parsed from that URL
+   * @deprecated  Intended just for internal use.
    */
+  @Deprecated
   public Map<String,XMLizable> getImportCache();
   
   /**

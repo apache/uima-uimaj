@@ -51,6 +51,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceAccessException;
+import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ConfigurationGroup;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
@@ -276,6 +277,24 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
             aGroupName);
   }
 
+  @Override
+  public String getSetting(String name) throws ResourceConfigurationException {
+    Settings settings = getRootContext().getExternalOverrides();
+    return (settings == null) ? null : settings.getSetting(name);
+  }
+  
+  @Override
+  public String[] getSettingArray(String name) throws ResourceConfigurationException {
+    Settings settings = getRootContext().getExternalOverrides();
+    return (settings == null) ? null : settings.getSettingArray(name);
+  }
+  
+  @Override
+  public Set<String> getSettingNames() {
+    Settings settings = getRootContext().getExternalOverrides();
+    return (settings == null) ? null : settings.getKeys();
+  }
+  
   /**
    * Locates Resource URL's using the ResourceManager.
    * 
@@ -574,7 +593,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public void setExternalOverrides(Settings externalOverrides) {
     getRootContext().setExternalOverrides(externalOverrides);
   }
-  
+
   /**
    * Changes here should also be made in UimaContext_ImplBase.mapToSofaID (non-Javadoc)
    * 

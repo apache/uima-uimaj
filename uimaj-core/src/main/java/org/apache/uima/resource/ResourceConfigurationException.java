@@ -97,6 +97,16 @@ public class ResourceConfigurationException extends UIMAException {
   public static final String EXTERNAL_OVERRIDE_ERROR = "external_override_error";
   
   /**
+   * Message key for a standard UIMA exception message: External override value for "{0}" has the wrong type (scalar or array)
+   */
+  public static final String EXTERNAL_OVERRIDE_TYPE_MISMATCH = "external_override_type_mismatch";
+  
+  /**
+   * Message key for a standard UIMA exception message: External override value "{0}" is not an integer
+   */
+  public static final String EXTERNAL_OVERRIDE_NUMERIC_ERROR = "external_override_numeric_error";
+  
+  /**
    * Creates a new exception with a null message.
    */
   public ResourceConfigurationException() {

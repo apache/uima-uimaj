@@ -31,6 +31,7 @@ import java.util.TreeSet;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.FsIndexCollection;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.Import;
@@ -256,7 +257,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     //check the import cache
     FsIndexCollection desc;    
     String urlString = aURL.toString();
-    Map<String, XMLizable> importCache = aResourceManager.getImportCache();
+    Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof FsIndexCollection) {

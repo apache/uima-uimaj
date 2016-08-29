@@ -80,6 +80,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.Settings;
 
 /**
  * A factory used to create {@link org.apache.uima.resource.ResourceSpecifier} instances and
@@ -232,6 +233,13 @@ public interface ResourceSpecifierFactory {
    * @return an instance of an object implementing <code>ConfigurationParameterSettings</code>.
    */
   public ConfigurationParameterSettings createConfigurationParameterSettings();
+  
+  /**
+   * Creates an empty <code>Settings</code> for External Override parameters.
+   * 
+   * @return an instance of an object implementing <code>Settings</code>.
+   */
+  public Settings createSettings();
 
   /**
    * Creates a <code>Capability</code>.
