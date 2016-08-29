@@ -1909,7 +1909,7 @@ uima.tcas.Annotation.</programlisting>
             <para>
             External parameter overrides are usually declared in primitive descriptors as a way to
             easily modify the parameters in some or all of an application's annotators.  
-            By using external settings files and global parameter names the configuration
+            By using external settings files and shared parameter names the configuration
             information can be specified without regard for a particular descriptor hierachy.
             </para>
 
@@ -1955,7 +1955,7 @@ uima.tcas.Annotation.</programlisting>
             <literal>produceAnalysisEngine</literal> method.  In this case the
             Java system property <emphasis>UimaExternalOverrides</emphasis> is ignored.
             <programlisting>  // Construct an analysis engine that uses two settings files
-  Settings extSettings = new Settings_impl();
+  Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
   for (String fname : new String[] { "externalOverride.settings", 
                                      "default.settings" }) {
     FileInputStream fis = new FileInputStream(fname);
@@ -2037,6 +2037,34 @@ key9  :  [ array element1\, with embedded comma, element2 ]
             An external override name may be specified for a parameter declared in a group, but if
             the parameter is in the common group or the group is declared with multiple names, the
             external name is shared amongst all, i.e. these parameters cannot be given group-specific values.
+            </para>
+          </section>
+
+          <section id="&tp;aes.external_configuration_parameter_access">
+            <title>Direct Access to External Configuration Parameters</title>
+
+            <para>
+            Annotators and flow controllers can directly access these shared configuration
+            parameters from their UimaContext. 
+            Direct access means an access where the key to select the shared parameter is the 
+            parameter name as specified in the external configuration settings file. 
+			<programlisting>
+String value = aContext.getSharedSettingValue(paramName);
+String values[] = aContext.getSharedSettingArray(arrayParamName);
+String allNames[] = aContext.getSharedSettingNames();
+			</programlisting>
+            Java code called by an annotator or flow controller in the same thread or a child thread
+            can use the <literal>UimaContextHolder</literal> to get the annotator's UimaContext and
+            hence access the shared configuration parameters.
+			<programlisting>
+UimaContext uimaContext = UimaContextHolder.getUimaContext();
+if (uimaContext != null) {
+  value = uimaContext.getSharedSettingValue(paramName);
+}
+			</programlisting>
+			The UIMA framework puts the context in an InheritableThreadLocal variable.  The value
+			will be null if <literal>getUimaContext</literal> is not invoked by an annotator or flow
+			controller on the same thread or a child thread.
             </para>
           </section>
 

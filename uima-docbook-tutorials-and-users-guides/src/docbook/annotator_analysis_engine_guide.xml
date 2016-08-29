@@ -915,12 +915,12 @@ public void initialize(UimaContext aContext)
         names in an external properties file.  With this approach a particular parameter setting can
         be easily shared by multiple descriptors, even across different applications.  For applications
         with many levels of descriptor nesting it avoids the need to edit aggregate override
-        definitions when the location of an annotator in the hierarchy is changed.</para>
+        definitions when the location of an annotator in the hierarchy is changed.
 
-        <para>For details see 
+        For details see
           <olink targetdoc="&uima_docs_ref;"/>
           <olink targetdoc="&uima_docs_ref;" 
-          targetptr="ugr.ref.xml.component_descriptor.aes.aggregate.configuration_parameter_overrides"/>
+          targetptr="ugr.ref.xml.component_descriptor.aes.external_configuration_parameter_overrides"/>
         </para> 
       </section>
     </section>
