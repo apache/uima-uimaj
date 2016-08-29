@@ -59,7 +59,6 @@
   
   <modules>
     <module>../uimaj-core</module>
-    <module>../uimaj-jcas</module>
     <module>../uimaj-cpe</module>
     <module>../uimaj-examples</module>
     <module>../uimaj-tools</module>
@@ -74,6 +73,7 @@
     <module>../uimaj-document-annotation</module>
     <module>../PearPackagingMavenPlugin</module>
     <module>../jcasgen-maven-plugin</module>
+    <module>../uimaj-v3migration-jcas</module>
     <!-- the internal tools project is not part of any release 
          and can't be built automatically - to build it,
          cd to the project directory and do mvn install -->
