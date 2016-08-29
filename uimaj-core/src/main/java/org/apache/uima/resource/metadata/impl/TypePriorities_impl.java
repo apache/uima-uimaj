@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.uima.UIMAFramework;
@@ -267,16 +268,24 @@ public class TypePriorities_impl extends MetaDataObject_impl implements TypePrio
     TypePriorities desc;    
     String urlString = aURL.toString();
     Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
+    Map<String, Set<String>> importUrlsCache = aResourceManager.getImportUrlsCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof TypePriorities) {
         desc = (TypePriorities)cachedObject;
+        // Add the URLs parsed for this cached object to the list already-parsed (UIMA-5058)
+        aAlreadyImportedTypePrioritiesURLs.addAll(importUrlsCache.get(urlString));
       } else {   
         XMLInputSource input;
         input = new XMLInputSource(aURL);
         desc = UIMAFramework.getXMLParser().parseTypePriorities(input);
+        TreeSet<String> previouslyImported = new TreeSet<String>(aAlreadyImportedTypePrioritiesURLs);
         desc.resolveImports(aAlreadyImportedTypePrioritiesURLs, aResourceManager);
         importCache.put(urlString, desc);
+        // Save the URLS parsed by this import 
+        TreeSet<String> locallyImported = new TreeSet<String>(aAlreadyImportedTypePrioritiesURLs);
+        locallyImported.removeAll(previouslyImported);
+        importUrlsCache.put(urlString, locallyImported);
       }
     }
     aResults.addAll(Arrays.asList(desc.getPriorityLists()));

@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.XMLizable;

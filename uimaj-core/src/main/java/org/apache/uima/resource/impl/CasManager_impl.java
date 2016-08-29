@@ -99,7 +99,8 @@ public class CasManager_impl implements CasManager {
       if (containsSameTypeAndIndexInfo(aMetaData)) { //UIMA-1249
         return;
       }
-      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, new Object[] {});  // internal error  UIMA-1249    
+      throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, 
+             aMetaData.getSourceUrlString());  // internal error  UIMA-1249    
     }
     mMetaDataList.add(aMetaData);
 //    mCasDefinition = null; // marka this stale

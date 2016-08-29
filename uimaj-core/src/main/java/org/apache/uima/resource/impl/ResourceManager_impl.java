@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.uima.UIMAFramework;
@@ -142,6 +143,12 @@ public class ResourceManager_impl implements ResourceManager {
   //   (for internal calls) anyways, so there's no advantage to the extra overhead
   //   of making this a ConcurrentHashMap  (March 2014)
   final private Map<String,XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
+  
+  /**
+   * Cache of imported descriptor URLs from which the parsed objects in importCache
+   * were created, so that these URLs are not re-parsed if the same URL is imported again.
+   */
+  final private Map<String,Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<String,Set<String>>());
   
   /**
    * Creates a new <code>ResourceManager_impl</code>.
@@ -694,6 +701,10 @@ public class ResourceManager_impl implements ResourceManager {
     return importCache;
   }
 
+  public Map<String, Set<String>> getImportUrlsCache() {
+    return importUrlsCache;
+  }
+  
   public Class<?> loadUserClass(String name) throws ClassNotFoundException {
     ClassLoader cl = getExtensionClassLoader();
     if (cl == null) {
