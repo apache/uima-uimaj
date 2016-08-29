@@ -35,121 +35,101 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.impl.XmiCasSerializer;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.caseditor.core.TaeError;
-import org.apache.uima.caseditor.editor.DocumentFormat;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
-import org.xml.sax.SAXException;
 
 /**
  */
 final class DocumentImportStructureProvider implements IImportStructureProvider {
 
-   private final String language;
-  
-   private final String importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
-   
-   private final DocumentFormat casFormat;
+  private final String language;
+
+  private final String importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
+
+  private final SerialFormat casFormat;
+
   /**
    * Constructs a new DocumentImportStructureProvider object.
    *
    * @param containerFullPath
    */
   public DocumentImportStructureProvider(String language, String importEncoding,
-		  DocumentFormat casFormat) {
+          SerialFormat casFormat) {
     this.language = language;
-	  this.importEncoding = importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
-	  this.casFormat = casFormat;
+    this.importEncoding = importEncoding; // https://issues.apache.org/jira/browse/UIMA-1808
+    this.casFormat = casFormat;
   }
 
-  
   private static String removeNonXmlChars(String input) {
-    
+
     char inputChars[] = input.toCharArray();
-    
+
     StringBuilder cleanedString = new StringBuilder(inputChars.length);
-    
+
     int startIndex = 0;
 
-     int offendingCharOsset;
-     while ((offendingCharOsset = XMLUtils.checkForNonXmlCharacters(
-             inputChars, startIndex, inputChars.length - startIndex, false)) != -1) {
-       cleanedString.append(inputChars, startIndex, offendingCharOsset - startIndex);
-       startIndex = offendingCharOsset + 1;
-     }
-     
-     cleanedString.append(inputChars, startIndex, inputChars.length - startIndex);
-     
+    int offendingCharOsset;
+    while ((offendingCharOsset = XMLUtils.checkForNonXmlCharacters(inputChars, startIndex,
+            inputChars.length - startIndex, false)) != -1) {
+      cleanedString.append(inputChars, startIndex, offendingCharOsset - startIndex);
+      startIndex = offendingCharOsset + 1;
+    }
+
+    cleanedString.append(inputChars, startIndex, inputChars.length - startIndex);
+
     return cleanedString.toString();
   }
-  
+
   public List<Object> getChildren(Object element) {
     return null;
   }
 
-  private static CAS createEmtpyCAS()
-  {
-      XMLInputSource xmlTypeSystemSource = new XMLInputSource(DocumentImportStructureProvider.class
-            .getResourceAsStream("ts.xml"), new File(""));
-      XMLParser xmlParser = UIMAFramework.getXMLParser();
+  private static CAS createEmtpyCAS() {
+    XMLInputSource xmlTypeSystemSource = new XMLInputSource(
+            DocumentImportStructureProvider.class.getResourceAsStream("ts.xml"), new File(""));
+    XMLParser xmlParser = UIMAFramework.getXMLParser();
 
-      TypeSystemDescription typeSystemDesciptor;
+    TypeSystemDescription typeSystemDesciptor;
 
-      try {
-        typeSystemDesciptor = (TypeSystemDescription) xmlParser
-                .parse(xmlTypeSystemSource);
-      } catch (InvalidXMLException e1) {
-        throw new TaeError("Integrated ts.xml typesystem descriptor is not valid!");
-      }
+    try {
+      typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
+    } catch (InvalidXMLException e1) {
+      throw new TaeError("Integrated ts.xml typesystem descriptor is not valid!");
+    }
 
-      try {
-        return CasCreationUtils.createCas(typeSystemDesciptor,
-                    null, null);
-      } catch (ResourceInitializationException e) {
+    try {
+      return CasCreationUtils.createCas(typeSystemDesciptor, null, null);
+    } catch (ResourceInitializationException e) {
 
-        // should not happen
-        throw new TaeError("Unexpected exception!");
-      }
+      // should not happen
+      throw new TaeError("Unexpected exception!");
+    }
   }
 
-  private InputStream getDocument(String fileName, String text, String language, DocumentFormat format) {
+  private InputStream getDocument(String fileName, String text, String language,
+          SerialFormat format) {
 
     String failedToImportLine = "Failed to import: " + fileName + "\n\n";
-    
+
     CAS cas = createEmtpyCAS();
     cas.setDocumentText(removeNonXmlChars(text));
     cas.setDocumentLanguage(language);
-    
+
     ByteArrayOutputStream out = new ByteArrayOutputStream(40000);
 
-    if (DocumentFormat.XCAS.equals(format)) {
-      try {
-        XCASSerializer.serialize(cas, out);
-      } catch (SAXException e) {
-        // should not happen
-        throw new TaeError(failedToImportLine + e.getMessage(), e);
-      } catch (IOException e) {
-        // will not happen, writing to memory
-        throw new TaeError(failedToImportLine + e.getMessage(), e);
-      }
-    } 
-    else if (DocumentFormat.XMI.equals(format)) {
-      try {
-        XmiCasSerializer.serialize(cas, out);
-      } catch (SAXException e) {
-        // should not happen
-        throw new TaeError(failedToImportLine + e.getMessage(), e);
-      }
-    } else {
-      throw new TaeError(failedToImportLine + "Unkown document type!", null);
+    try {
+      CasIOUtils.save(cas, out, format);
+    } catch (IOException e) {
+      throw new TaeError(failedToImportLine + e.getMessage(), e);
     }
 
     return new ByteArrayInputStream(out.toByteArray());
@@ -197,8 +177,8 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
           textStringBuffer.append(new String(readBuffer, 0, length, importEncoding));
         }
 
-        return getDocument(fileToImport.getAbsolutePath(), textStringBuffer.toString(),
-                language, casFormat);
+        return getDocument(fileToImport.getAbsolutePath(), textStringBuffer.toString(), language,
+                casFormat);
       } catch (FileNotFoundException e) {
         return null;
       } catch (IOException e) {
@@ -251,19 +231,9 @@ final class DocumentImportStructureProvider implements IImportStructureProvider 
     if (fileName.endsWith(".rtf") || fileName.endsWith(".txt")) {
       int nameWithouEndingLength = fileName.lastIndexOf(".");
       String nameWithouEnding = fileName.substring(0, nameWithouEndingLength);
-      
-      String ending;
-      if (DocumentFormat.XMI.equals(casFormat)) {
-    	  ending = "xmi";
-      }
-      else if (DocumentFormat.XCAS.equals(casFormat)) {
-    	  ending = "xcas";
-      }
-      else {
-    	  throw new IllegalStateException("Unkown DocumentFormat!");
-      }
-      
-       return nameWithouEnding + "." + ending;
+
+      String ending = casFormat.getDefaultFileExtension();
+      return nameWithouEnding + "." + ending;
     } else {
       return fileName;
     }

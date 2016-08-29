@@ -19,16 +19,19 @@
 
 package org.apache.uima.caseditor.editor;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import java.util.List;
 
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
@@ -36,77 +39,67 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.XCASDeserializer;
-import org.apache.uima.cas.impl.XCASSerializer;
-import org.apache.uima.cas.impl.XmiCasDeserializer;
-import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.util.StrictTypeConstraint;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.FsIndexDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
-import org.apache.uima.util.XMLSerializer;
+import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.xml.sax.SAXException;
 
 /**
  * This document implementation is based on an uima cas object.
  */
 public class DocumentUimaImpl extends AbstractDocument {
 
-  // TODO: Remove field not needed anymore
-  private final TypeSystem mTypeSystem;
-
+  public static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
+  
   private CAS mCAS;
 
-  private final DocumentFormat format;
+  private SerialFormat format = SerialFormat.XMI;
 
   private final String typeSystemText;
-  
-  /**
-   * Initializes a new instance.
-   */
-  public DocumentUimaImpl(CAS cas, InputStream in, DocumentFormat format) throws CoreException {
-    this(cas, in, format, null);
-  }
 
-  
   /**
    * Initializes a new instance.
    * 
    * @param cas
-   * @param in
-   * @param format
-   * @param typeSystemText type system string
+   * @param casFile
+   * @param typeSystemText
+   *          type system string
    */
-  public DocumentUimaImpl(CAS cas, InputStream in, DocumentFormat format, String typeSystemText) throws CoreException {
+  public DocumentUimaImpl(CAS cas, IFile casFile, String typeSystemText) throws CoreException {
     mCAS = cas;
-
-    mTypeSystem = cas.getTypeSystem();
-
-    this.format = format;
 
     this.typeSystemText = typeSystemText;
 
-    setContent(in);
+    setContent(casFile);
   }
-  
-  
+
   /**
    * Retrieves the {@link CAS}.
    */
@@ -118,8 +111,7 @@ public class DocumentUimaImpl extends AbstractDocument {
   public String getTypeSystemText() {
     return typeSystemText;
   }
-  
-  
+
   /**
    * Internally removes an annotation from the {@link CAS}.
    * 
@@ -128,22 +120,21 @@ public class DocumentUimaImpl extends AbstractDocument {
   private void addFeatureStructureInternal(FeatureStructure featureStructure) {
     getCAS().getIndexRepository().addFS(featureStructure);
   }
-  
+
   /**
    * Adds the given annotation to the {@link CAS}.
    */
   public void addFeatureStructure(FeatureStructure annotation) {
     addFeatureStructureInternal(annotation);
-    
+
     fireAddedFeatureStructure(annotation);
   }
 
-  
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     for (FeatureStructure annotation : annotations) {
       addFeatureStructureInternal(annotation);
     }
-    
+
     if (annotations.size() > 0) {
       fireAddedFeatureStructure(annotations);
     }
@@ -207,8 +198,8 @@ public class DocumentUimaImpl extends AbstractDocument {
 
     StrictTypeConstraint typeConstrain = new StrictTypeConstraint(type);
 
-    FSIterator<AnnotationFS> strictTypeIterator = mCAS.createFilteredIterator(
-            annotationIndex.iterator(), typeConstrain);
+    FSIterator<AnnotationFS> strictTypeIterator = mCAS
+            .createFilteredIterator(annotationIndex.iterator(), typeConstrain);
 
     return fsIteratorToCollection(strictTypeIterator);
   }
@@ -242,66 +233,23 @@ public class DocumentUimaImpl extends AbstractDocument {
   /**
    * Sets the content. The XCAS {@link InputStream} gets parsed.
    */
-  private void setContent(InputStream content) throws CoreException {
-
-    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-    saxParserFactory.setValidating(false);
-
-    SAXParser saxParser = null;
-
-    try {
-      saxParser = saxParserFactory.newSAXParser();
-    } catch (ParserConfigurationException e) {
-      throwCoreException(e);
-    } catch (SAXException e) {
-      throwCoreException(e);
-    }
+  private void setContent(IFile casFile) throws CoreException {
 
     IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
     boolean withPartialTypesystem = store
             .getBoolean(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_PARTIAL_TYPESYSTEM);
-    if (DocumentFormat.XCAS.equals(format)) {
-      if(withPartialTypesystem) {
-        try {
-          XCASDeserializer.deserialize(content, mCAS, true);
-        } catch (SAXException e) {
-          throwCoreException(e);
-        } catch (IOException e) {
-          throwCoreException(e);
-        }
-      } else {
-        XCASDeserializer dezerializer = new XCASDeserializer(mTypeSystem);
-        try {
-          saxParser.parse(content, dezerializer.getXCASHandler(mCAS));
-        } catch (IOException e) {
-          throwCoreException(e);
-        } catch (SAXException e) {
-          throwCoreException(e);
-        }
-      }
-    } else if (DocumentFormat.XMI.equals(format)) {
-      if (withPartialTypesystem) {
-        try {
-          XmiCasDeserializer.deserialize(content, mCAS, true);
-        } catch (SAXException e) {
-          throwCoreException(e);
-        } catch (IOException e) {
-          throwCoreException(e);
-        }
-      } else {
-        try {
-          XmiCasDeserializer dezerializer = new XmiCasDeserializer(mTypeSystem);
-          saxParser.parse(content, dezerializer.getXmiCasHandler(mCAS));
-        } catch (IOException e) {
-          throwCoreException(e);
-        } catch (SAXException e) {
-          throwCoreException(e);
-        }
-      }
-    } else {
-      throw new CoreException(new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
-              "Unkown file format!", null));
+
+    URI uri = casFile.getLocationURI();
+    if (casFile.isLinked()) {
+      uri = casFile.getRawLocationURI();
     }
+    File file = EFS.getStore(uri).toLocalFile(0, new NullProgressMonitor());
+    try {
+      format = CasIOUtils.load(file.toURI().toURL(), null, mCAS, withPartialTypesystem);
+    } catch (IOException e) {
+      throwCoreException(e);
+    }
+
   }
 
   private void throwCoreException(Exception e) throws CoreException {
@@ -314,35 +262,13 @@ public class DocumentUimaImpl extends AbstractDocument {
    * Serializes the {@link CAS} to the given {@link OutputStream} in the XCAS format.
    */
   public void serialize(OutputStream out) throws CoreException {
-
-    if (DocumentFormat.XCAS.equals(format)) {
-      XCASSerializer xcasSerializer = new XCASSerializer(mCAS.getTypeSystem());
-
-      XMLSerializer xmlSerialzer = new XMLSerializer(out, true);
-
-      try {
-        xcasSerializer.serialize(mCAS, xmlSerialzer.getContentHandler());
-      } catch (IOException e) {
-        throwCoreException(e);
-      } catch (SAXException e) {
-        throwCoreException(e);
-      }
-    } else if (DocumentFormat.XMI.equals(format)) {
-      XmiCasSerializer xmiSerializer = new XmiCasSerializer(mCAS.getTypeSystem());
-
-      XMLSerializer xmlSerialzer = new XMLSerializer(out, true);
-
-      try {
-        xmiSerializer.serialize(mCAS, xmlSerialzer.getContentHandler());
-      } catch (SAXException e) {
-        throwCoreException(e);
-      }
-    } else {
-      throw new CoreException(new Status(IStatus.ERROR, CasEditorPlugin.ID, IStatus.OK,
-              "Unkown file format!", null));
+    try {
+      CasIOUtils.save(mCAS, out, format);
+    } catch (IOException e) {
+      throwCoreException(e);
     }
   }
-
+  
   public static CAS getVirginCAS(IFile typeSystemFile) throws CoreException {
     ResourceSpecifierFactory resourceSpecifierFactory = UIMAFramework.getResourceSpecifierFactory();
 
@@ -356,8 +282,8 @@ public class DocumentUimaImpl extends AbstractDocument {
       return null;
     }
 
-    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem, extensionTypeSystemFile
-            .getLocation().toFile());
+    XMLInputSource xmlTypeSystemSource = new XMLInputSource(inTypeSystem,
+            extensionTypeSystemFile.getLocation().toFile());
 
     XMLParser xmlParser = UIMAFramework.getXMLParser();
 
@@ -366,9 +292,19 @@ public class DocumentUimaImpl extends AbstractDocument {
     try {
       typeSystemDesciptor = (TypeSystemDescription) xmlParser.parse(xmlTypeSystemSource);
 
-      ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
-      String dataPath = typeSystemFile.getProject().getPersistentProperty((new QualifiedName("", "CDEdataPath")));
-      if(dataPath != null) {
+      IProject project = typeSystemFile.getProject();
+      ClassLoader classLoader = getProjectClassLoader(project);
+      
+      ResourceManager resourceManager = null;
+      if(classLoader != null) {
+        resourceManager = new ResourceManager_impl(classLoader);
+      } else {
+        resourceManager = UIMAFramework.newDefaultResourceManager();
+      }
+      
+      String dataPath = project
+              .getPersistentProperty((new QualifiedName("", "CDEdataPath")));
+      if (dataPath != null) {
         resourceManager.setDataPath(dataPath);
       }
       typeSystemDesciptor.resolveImports(resourceManager);
@@ -402,5 +338,24 @@ public class DocumentUimaImpl extends AbstractDocument {
     return cas;
   }
 
+  public static ClassLoader getProjectClassLoader(IProject project) throws CoreException {
+    IProjectNature javaNature = project.getNature(JAVA_NATURE);
+    if (javaNature != null) {
+      JavaProject javaProject = (JavaProject) JavaCore.create(project);
+      
+      String[] runtimeClassPath = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
+      List<URL> urls = new ArrayList<>();
+      for (int i = 0; i < runtimeClassPath.length; i++) {
+        String cp = runtimeClassPath[i];
+        try {
+          urls.add(Paths.get(cp).toUri().toURL());
+        } catch (MalformedURLException e) {
+          CasEditorPlugin.log(e);
+        }
+      }
+      return new URLClassLoader(urls.toArray(new URL[0]));
+    } 
+    return null;
+  }
 
 }

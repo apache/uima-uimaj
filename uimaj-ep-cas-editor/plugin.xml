@@ -30,7 +30,7 @@
 			contributorClass="org.apache.uima.caseditor.editor.AnnotationEditorActionContributor"
 			id="org.apache.uima.caseditor.editor" 
 			default="true"
-			extensions="xcas,xmi">
+			extensions="xcas,xmi,bcas,scas">
 		</editor>
 	</extension>
 	
