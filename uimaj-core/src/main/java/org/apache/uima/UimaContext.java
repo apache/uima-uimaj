@@ -118,31 +118,31 @@ public interface UimaContext {
   public String[] getConfigParameterNames();
 
   /**
-   * Get the value of an external override setting.
+   * Get the value of a shared configuration parameter from the external override settings.
    * 
    * @param name - the name of the parameter
-   * @return     - the value found in the settings file(s), or null if missing.
+   * @return     - the value found in the shared settings file(s), or null if missing.
    * @throws ResourceConfigurationException 
-   *                 if the value references an undefined property, or the value is an array
+   *                 if the value references an undefined parameter, or the value is an array
    */
-  public String getSetting(String name) throws ResourceConfigurationException;
+  public String getSharedSettingValue(String name) throws ResourceConfigurationException;
   
   /**
-  * Get the array of values for an external override setting.
+  * Get the array of values for a shared configuration parameter from the external override settings.
   * 
   * @param name  - the name of the parameter
-  * @return      - an array of values found in the settings file(s), or null if missing.
+  * @return      - an array of values found in the shared settings file(s), or null if missing.
   * @throws ResourceConfigurationException 
-  *                  if the value references an undefined property, or the value is not an array
+  *                  if the value references an undefined parameter, or the value is not an array
   */
-  public String[] getSettingArray(String name) throws ResourceConfigurationException;
+  public String[] getSharedSettingArray(String name) throws ResourceConfigurationException;
   
   /**
-   * Return a set containing the names of all the external override settings available
+   * Get the names of all the external override settings available.
    * 
-   * @return - set of strings
+   * @return - an array containing the names of all the external override settings.
    */
-  public Set<String> getSettingNames();
+  public String[] getSharedSettingNames();
   
   /**
    * Gets the <code>Settings</code> used for external parameter overrides

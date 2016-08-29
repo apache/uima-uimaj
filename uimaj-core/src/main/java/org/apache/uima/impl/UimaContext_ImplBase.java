@@ -278,21 +278,25 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   }
 
   @Override
-  public String getSetting(String name) throws ResourceConfigurationException {
+  public String getSharedSettingValue(String name) throws ResourceConfigurationException {
     Settings settings = getRootContext().getExternalOverrides();
     return (settings == null) ? null : settings.getSetting(name);
   }
   
   @Override
-  public String[] getSettingArray(String name) throws ResourceConfigurationException {
+  public String[] getSharedSettingArray(String name) throws ResourceConfigurationException {
     Settings settings = getRootContext().getExternalOverrides();
     return (settings == null) ? null : settings.getSettingArray(name);
   }
   
   @Override
-  public Set<String> getSettingNames() {
+  public String[] getSharedSettingNames() {
     Settings settings = getRootContext().getExternalOverrides();
-    return (settings == null) ? null : settings.getKeys();
+    if (settings == null) {
+      return null;
+    }
+    Set<String> names = settings.getKeys();
+    return names.toArray(new String[names.size()]);
   }
   
   /**
