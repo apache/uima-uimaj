@@ -49,7 +49,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
       return iterator();
     }
     // return non-constrained, non-strict, unambiguous iterator
-    boolean strict = true;
+    boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
     boolean isBounded = false;
     return (FSIterator<T>) new Subiterator<T>(iterator(), 
                               null, 

@@ -332,7 +332,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     }
 
     adjustForStrictForward();
-    if (it.isValid() && (it.get().getBegin() > boundingEnd)) {
+    // stop in bounded case if out of bounds going forwards UIMA-5063
+    if (isBounded && it.isValid() && (it.get().getBegin() > boundingEnd)) { 
       it.moveToLast();
       it.moveToNext();  // mark invalid
     } else {
@@ -354,7 +355,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
     }
 
     adjustForStrictForward();
-    if (it.isValid() && (it.getNvc().getBegin() > boundingEnd)) {
+    if (isBounded && it.isValid() && (it.getNvc().getBegin() > boundingEnd)) {
       it.moveToLast();
       it.moveToNext();  // mark invalid
     } else {
@@ -383,8 +384,8 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
       --this.pos;
       return;
     }
-    
-    if (isValid() && it.get()._id() == startId) {
+    // stop in bounded case if out of bounds going backwards UIMA-5063
+    if (isBounded && isValid() && it.get()._id() == startId) {
       it.moveToFirst();
       it.moveToPrevious();  // make it invalid
     } else {
