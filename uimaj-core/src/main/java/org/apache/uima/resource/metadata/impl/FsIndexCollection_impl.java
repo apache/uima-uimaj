@@ -259,7 +259,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
     FsIndexCollection desc;    
     String urlString = aURL.toString();
     Map<String, XMLizable> importCache = ((ResourceManager_impl)aResourceManager).getImportCache();
-    Map<String, Set<String>> importUrlsCache = aResourceManager.getImportUrlsCache();
+    Map<String, Set<String>> importUrlsCache = ((ResourceManager_impl)aResourceManager).getImportUrlsCache();
     synchronized(importCache) {
       XMLizable cachedObject = importCache.get(urlString);
       if (cachedObject instanceof FsIndexCollection) {
