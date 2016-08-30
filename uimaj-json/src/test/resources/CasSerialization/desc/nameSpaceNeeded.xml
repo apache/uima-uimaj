@@ -31,12 +31,17 @@
     <typeDescription>
       <name>org.apache.uimax.test.Token</name>
       <description/>
-      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <supertypeName>org.apache.uima.test.TOP</supertypeName>
     </typeDescription>
     <typeDescription>
       <name>org.apache.uima.test2.Token</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
+    </typeDescription>
+  <typeDescription>
+      <name>org.apache.uima.test.TOP</name>
+      <description/>
+      <supertypeName>uima.cas.TOP</supertypeName>
     </typeDescription>
   </types>
 </typeSystemDescription>

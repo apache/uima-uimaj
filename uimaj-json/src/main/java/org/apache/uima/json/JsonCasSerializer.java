@@ -859,6 +859,7 @@ public class JsonCasSerializer {
         // happens for supertypes which have no instantiations
         String typeName = ti.getName();
         xe = uimaTypeName2XmiElementName(typeName);
+        checkForNameCollision(xe);
         cds.typeCode2namespaceNames[ti.getCode()] = xe;
       }
       return getSerializedString(xe.qName);

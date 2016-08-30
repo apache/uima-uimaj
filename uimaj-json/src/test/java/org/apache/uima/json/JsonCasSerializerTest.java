@@ -72,6 +72,8 @@ public class JsonCasSerializerTest extends TestCase {
    *    d) change the destination to the real expected dir and rerun   *
    *    e) change the GENERATE_EXPECTED back to false, and the         *
    *              generateDir back to newExpected                      *
+   *                                                                   * 
+   *    f) repeat for JsonXmiCasSerializerTest                         *                                          
    *                                                                   *
    *    Testing for proper format:                                     *
    *      can use http://www.jsoneditoronline.org/                     *          
