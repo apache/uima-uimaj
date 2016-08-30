@@ -1370,8 +1370,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
     
   /**
-   * --------------------------------------------------------------------- see
-   * Blob Format in CASSerializer
+   * --------------------------------------------------------------------- 
+   * see Blob Format in CASSerializer
    * 
    * This reads in and deserializes CAS data from a stream. Byte swapping may be
    * needed if the blob is from C++ -- C++ blob serialization writes data in

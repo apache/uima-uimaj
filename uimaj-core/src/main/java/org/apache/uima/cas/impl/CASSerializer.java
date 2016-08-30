@@ -206,10 +206,6 @@ public class CASSerializer implements Serializable {
     }
   }
   
-  void addTsiCAS(CASImpl cas, OutputStream ostream) {
-    
-  }
-
   /**
    * Serializes the CAS data and writes it to the output stream.
    * --------------------------------------------------------------------- 
