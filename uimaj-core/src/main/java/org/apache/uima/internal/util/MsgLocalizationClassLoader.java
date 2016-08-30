@@ -30,6 +30,7 @@ import java.util.Map;
  *   the class loader that loaded the 2nd previous caller
  *   the class loader that loaded the 3rd previous caller
  *   etc.
+ *   and finally, the thread local context loader, if it exists UIMA-3692
  * Note: the caller of this method is presumed to be framework code
  *   that was, in turn, called to perform some logging or whatever,
  *   so we skip the 1st previous caller.
@@ -57,9 +58,11 @@ public class MsgLocalizationClassLoader {
 
   static class CallClimbingClassLoader extends ClassLoader {
   
+    static final ThreadLocal<ClassLoader> originalTccl = new ThreadLocal<>();
     /*
      * Try to load the class itself before delegate the class loading to its parent
      */
+    @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve)
             throws ClassNotFoundException {
       // First, check if the class has already been loaded
@@ -105,9 +108,18 @@ public class MsgLocalizationClassLoader {
           // leave c == null
         }      
       }
-      throw new ClassNotFoundException(name);
+      // UIMA-3692, UIMA-4793 try the thread context class loader
+      // if not found, will return class not found exception
+      try {
+        ClassLoader cl = originalTccl.get();
+        if (cl != null) {
+          return cl.loadClass(name);
+        }
+      } catch (ClassNotFoundException e) {}
+      // last try: the current thread context class loader
+      return Thread.currentThread().getContextClassLoader().loadClass(name);
     }
-
+    
     @Override
     public URL getResource(String name) {
       Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<>(7);
@@ -133,7 +145,16 @@ public class MsgLocalizationClassLoader {
           return c;
         }    
       }
-      return null;
+      // UIMA-3692, UIMA-4793  try the thread context class loader
+      // if not found, will return class not found exception
+      ClassLoader cl = originalTccl.get();
+      if (cl != null) {
+        URL c = cl.getResource(name);
+        if (null != c) {
+          return c;
+        }
+      }
+      return Thread.currentThread().getContextClassLoader().getResource(name);
     }
   }
   

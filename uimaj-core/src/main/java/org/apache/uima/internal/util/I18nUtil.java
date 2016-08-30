@@ -109,19 +109,11 @@ public class I18nUtil {
   public static String localizeMessage(String aResourceBundleName, Locale aLocale,
           String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
     try {
-      // if aLoader is null, replace with the I18nUtil.class.getClassLoader()
       if (aLoader == null) {
         aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
-//        aLoader = I18nUtil.class.getClassLoader();
-//        if (aLoader == null) // bootstrap classLoader; use system classLoader instead
-//        {
-//          aLoader = ClassLoader.getSystemClassLoader();
-//        }
       }
-
       // locate the resource bundle for this exception's messages
-      ResourceBundle bundle = ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
-      // retrieve the message from the resource bundle
+      ResourceBundle bundle =  ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
       String message = bundle.getString(aMessageKey);
       // if arguments exist, use MessageFormat to include them
       if (aArguments != null && aArguments.length > 0) {
@@ -134,4 +126,13 @@ public class I18nUtil {
       return "MESSAGE LOCALIZATION FAILED: The key " + aMessageKey + " may be missing in the properties file " + e.getMessage();
     }
   }
+
+  public static void setTccl(ClassLoader tccl) {
+    MsgLocalizationClassLoader.CallClimbingClassLoader.originalTccl.set(tccl);
+  }
+  
+  public static void removeTccl() {
+    MsgLocalizationClassLoader.CallClimbingClassLoader.originalTccl.remove();
+  }
+    
 }

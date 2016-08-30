@@ -19,9 +19,9 @@
 
 package org.apache.uima;
 
-import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.ResourceBundle;
+
+import org.apache.uima.internal.util.I18nUtil;
 
 /**
  * The <code>InternationalizedRuntimeException</code> class adds internationalization support to
@@ -70,6 +70,11 @@ public class InternationalizedRuntimeException extends RuntimeException {
    * The exception that caused this exception to occur.
    */
   private Throwable mCause;
+
+  /**
+   * the thread local class loader at creation time, see UIMA-4793
+   */
+  final private ClassLoader originalContextClassLoader;
 
   /**
    * Creates a new <code>InternationalizedRuntimeException</code> with a null message.
@@ -128,6 +133,7 @@ public class InternationalizedRuntimeException extends RuntimeException {
   public InternationalizedRuntimeException(String aResourceBundleName, String aMessageKey,
           Object[] aArguments, Throwable aCause) {
     super();
+    originalContextClassLoader = Thread.currentThread().getContextClassLoader();
     mCause = aCause;
     mResourceBundleName = aResourceBundleName;
     mMessageKey = aMessageKey;
@@ -218,20 +224,25 @@ public class InternationalizedRuntimeException extends RuntimeException {
       return null;
 
     try {
-      // locate the resource bundle for this exception's messages
-      ResourceBundle bundle = ResourceBundle.getBundle(getResourceBundleName(), aLocale);
-      // retrieve the message from the resource bundle
-      String message = bundle.getString(getMessageKey());
-      // if arguments exist, use MessageFormat to include them
-      if (getArguments().length > 0) {
-        MessageFormat fmt = new MessageFormat(message);
-        fmt.setLocale(aLocale);
-        return fmt.format(getArguments());
-      } else
-        return message;
-    } catch (Exception e) {
-      return "EXCEPTION MESSAGE LOCALIZATION FAILED: " + e.toString();
-    }
+      I18nUtil.setTccl(originalContextClassLoader);
+      return I18nUtil.localizeMessage(getResourceBundleName(), aLocale, getMessageKey(), getArguments());
+    } finally {
+      I18nUtil.removeTccl();        
+    }   
+//      // locate the resource bundle for this exception's messages
+//      ResourceBundle bundle = ResourceBundle.getBundle(getResourceBundleName(), aLocale);
+//      // retrieve the message from the resource bundle
+//      String message = bundle.getString(getMessageKey());
+//      // if arguments exist, use MessageFormat to include them
+//      if (getArguments().length > 0) {
+//        MessageFormat fmt = new MessageFormat(message);
+//        fmt.setLocale(aLocale);
+//        return fmt.format(getArguments());
+//      } else
+//        return message;
+//    } catch (Exception e) {
+//      return "EXCEPTION MESSAGE LOCALIZATION FAILED: " + e.toString();
+//    }
   }
 
   /**
