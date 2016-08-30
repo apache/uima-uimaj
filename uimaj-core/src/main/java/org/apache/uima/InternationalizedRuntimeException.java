@@ -19,9 +19,7 @@
 
 package org.apache.uima;
 
-import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import org.apache.uima.internal.util.I18nUtil;
 
