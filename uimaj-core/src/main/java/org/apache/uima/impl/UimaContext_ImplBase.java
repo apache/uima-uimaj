@@ -260,7 +260,6 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     }
     return childSofaMap;
   }
-
   /**
    * @see org.apache.uima.analysis_engine.annotator.AnnotatorContext#getConfigParameterValue(java.lang.String)
    */
