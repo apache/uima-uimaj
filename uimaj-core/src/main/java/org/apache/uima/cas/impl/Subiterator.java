@@ -272,6 +272,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#isValid()
    */
+  @Override
   public boolean isValid() {
     return isListForm ? 
         (this.pos >= 0) && (this.pos < this.list.size()) :
@@ -287,6 +288,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#get()
    */
+  @Override
   public T get() throws NoSuchElementException {
     if (isListForm) {
       if ((this.pos >= 0) && (this.pos < this.list.size())) {
@@ -318,6 +320,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#moveToNext()
    */
+  @Override
   public void moveToNext() {
     if (isListForm) {
       ++this.pos;
@@ -404,6 +407,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#moveToFirst()
    */
+  @Override
   public void moveToFirst() {
     if (isListForm) {
       this.pos = 0;
@@ -417,6 +421,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#moveToLast()
    */
+  @Override
   public void moveToLast() {
     if (isListForm) {
       this.pos = this.list.size() - 1;
@@ -563,6 +568,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * 
    * @see org.apache.uima.cas.FSIterator#copy()
    */
+  @Override
   public FSIterator<T> copy() {
     Subiterator<T> copy = new Subiterator<T>(
         (FSIterator<T>) this.it.copy(), this.boundingAnnotation, this.boundingBegin, this.boundingEnd, this.ambiguous, this.strict, this.isBounded, this.fsIndexRepo);
