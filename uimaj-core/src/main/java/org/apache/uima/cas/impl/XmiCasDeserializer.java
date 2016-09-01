@@ -848,52 +848,58 @@ public class XmiCasDeserializer {
       
       this.featsSeen = null;
       
-      // before looping over all features for this FS, remove this FS if in any index.
+      // before looping over all features for this FS, 
+      //   remove this FS if 
+      //      it's not new or
+      //      it's a new documentAnnotation (because that's automatically indexed)
+      /    from all the indexes.
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
-      if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {   
-        casBeingFilled.removeFromCorruptableIndexAnyView(fs, casBeingFilled.getAddbackSingle());
-        // else clause not needed because caller does ll_createFS which sets this anyways
-//      } else {  
-//        // need this to prevent using sofa ref before it's set
-//        casBeingFilled.setCacheNotInIndex(fsAddr);  // new FSs are not indexed (yet)
-      }
-      
-      
-      // before looping over features, set the xmi to fs correspondence for this FS, incase a 
-      //   feature does a self reference
-      String idStr = attrs.getValue(ID_ATTR_NAME);
-      final int extId;
       try {
-        extId = Integer.parseInt(idStr);
-      } catch (NumberFormatException e) {
-        throw createException(XCASParsingException.ILLEGAL_ID, idStr);
-      }
-      addFsToXmiId(fs, extId);
-
-      // set up feats seen for existing, non-sofa FSs
-      this.featsSeen = (sofaTypeCode != typeCode && !isNewFs) 
-                       ? new IntVector(attrs.getLength())
-                       : null;
-
-      // loop over all attributes in the xml for this FS
-      for (int i = 0; i < attrs.getLength(); i++) {
-        attrName = attrs.getQName(i);
-        attrValue = attrs.getValue(i);
-        if (attrName.equals(ID_ATTR_NAME)) {
-          continue;
+        if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {   
+          casBeingFilled.removeFromCorruptableIndexAnyView(fs, casBeingFilled.getAddbackSingle());
+          // else clause not needed because caller does ll_createFS which sets this anyways
+  //      } else {  
+  //        // need this to prevent using sofa ref before it's set
+  //        casBeingFilled.setCacheNotInIndex(fsAddr);  // new FSs are not indexed (yet)
         }
-
-        int featCode = handleFeatureFromName(type, fs, attrName, attrValue, isNewFs);
-        //if processing delta cas preexisting FS, keep track of features that have
-        //been deserialized.
-        if (this.featsSeen != null && featCode != -1) {
-          this.featsSeen.add(featCode); 
+        
+        
+        // before looping over features, set the xmi to fs correspondence for this FS, incase a 
+        //   feature does a self reference
+        String idStr = attrs.getValue(ID_ATTR_NAME);
+        final int extId;
+        try {
+          extId = Integer.parseInt(idStr);
+        } catch (NumberFormatException e) {
+          throw createException(XCASParsingException.ILLEGAL_ID, idStr);
         }
-      }  // end of all features loop
-      
-      if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {
-        casBeingFilled.addbackSingle(fs);
+        addFsToXmiId(fs, extId);
+  
+        // set up feats seen for existing, non-sofa FSs
+        this.featsSeen = (sofaTypeCode != typeCode && !isNewFs) 
+                         ? new IntVector(attrs.getLength())
+                         : null;
+  
+        // loop over all attributes in the xml for this FS
+        for (int i = 0; i < attrs.getLength(); i++) {
+          attrName = attrs.getQName(i);
+          attrValue = attrs.getValue(i);
+          if (attrName.equals(ID_ATTR_NAME)) {
+            continue;
+          }
+  
+          int featCode = handleFeatureFromName(type, fs, attrName, attrValue, isNewFs);
+          //if processing delta cas preexisting FS, keep track of features that have
+          //been deserialized.
+          if (this.featsSeen != null && featCode != -1) {
+            this.featsSeen.add(featCode); 
+          }
+        }  // end of all features loop
+      } finally {
+        if (!isNewFs || fs._getTypeCode() == TypeSystemConstants.docTypeCode) {
+          casBeingFilled.addbackSingle(fs);
+        }
       }
       
       if (sofaTypeCode == typeCode && isNewFs) {
@@ -1737,20 +1743,11 @@ public class XmiCasDeserializer {
 
       
       for (CAS view : views) {
-        AutoCloseable ac = view.protectIndexes();
-        try {
-          ((CASImpl) view).updateDocumentAnnotation();
-        } finally {
-          try {
-            ac.close();
-          } catch (Exception e1) {
-            Misc.internalError();
-          }
-        }
+        ((CASImpl) view).updateDocumentAnnotation();
       }
      
       
-      //check if disallowed fs  encoutered]
+      //check if disallowed fs  encountered]
       if (this.disallowedViewMemberEncountered) {
     	  throw new CASRuntimeException(
     	      CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED, "Preexisting FS view member encountered.");
@@ -2157,7 +2154,7 @@ public class XmiCasDeserializer {
    * Deserializes a CAS from XMI.
    * 
    * @param aStream
-   *          input stream from which to read the XCMI document
+   *          input stream from which to read the XMI document
    * @param aCAS
    *          CAS into which to deserialize. This CAS must be set up with a type system that is
    *          compatible with that in the XMI
@@ -2179,7 +2176,7 @@ public class XmiCasDeserializer {
    * Deserializes a CAS from XMI.
    * 
    * @param aStream
-   *          input stream from which to read the XCMI document
+   *          input stream from which to read the XMI document
    * @param aCAS
    *          CAS into which to deserialize. This CAS must be set up with a type system that is
    *          compatible with that in the XMI
@@ -2205,7 +2202,7 @@ public class XmiCasDeserializer {
    * Deserializes a CAS from XMI.  This version of this method supports merging multiple XMI documents into a single CAS.
    * 
    * @param aStream
-   *          input stream from which to read the XCMI document
+   *          input stream from which to read the XMI document
    * @param aCAS
    *          CAS into which to deserialize. This CAS must be set up with a type system that is
    *          compatible with that in the XMI
@@ -2248,7 +2245,7 @@ public class XmiCasDeserializer {
    * 
    * 
    * @param aStream
-   *            input stream from which to read the XCMI document
+   *            input stream from which to read the XMI document
    * @param aCAS
    *            CAS into which to deserialize. This CAS must be set up with a
    *            type system that is compatible with that in the XMI
