@@ -69,6 +69,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
 import org.apache.uima.util.impl.SerializationMeasures;
@@ -551,7 +552,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         .delta(isDelta)
         .typeSystemIndexDefIncluded(isTsi)
         .write(serializedOut);
-             
+     
+      if (isTsi) {
+        CasIOUtils.writeTypeSystem(baseCas, serializedOut, true);    
+      }
+      
       if (TRACE_SER) System.out.println("Form4Ser start, delta: " + (isDelta ? "true" : "false"));
       /*******************************************************************************
        * Setup tables that map to v2 "addresses" - needed for backwards compatibility
@@ -628,6 +633,8 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //        System.out.format("debug End of debug scan, heapStart: %,d heapEnd: %,d%n%n", heapStart, heapEnd);
 //      }
       
+      if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
+       
       writeVnumber(control_dos, heapEnd - heapStart);   // used for delta heap size to grow the CAS and ending condition on deser loop
       if (TRACE_SER) System.out.println("Form4Ser heapstart: " + heapStart + "  heapEnd: " + heapEnd);
       Arrays.fill(prevFsByType, null);
@@ -1681,8 +1688,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private void deserialize(int version1) throws IOException {
-      if (TRACE_DES) System.out.println("Form4Deser starting");
-     
       if (TRACE_DES) System.out.println("Form4Deser starting");
       isBeforeV3 = (version1 & 0xff00) == 0;
       
