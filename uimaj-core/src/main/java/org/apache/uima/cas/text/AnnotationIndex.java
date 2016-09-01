@@ -126,6 +126,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * definition. If you have not specified the priority, or if <code>annot</code> and
    * <code>b</code> are of the same type, then the behavior is undefined.
    * </p>
+   *
    * <p>
    * For example, if you have an annotation <code>S</code> of type <code>Sentence</code> and an
    * annotation <code>P</code> of type <code>Paragraph</code> that have the same span, and you
