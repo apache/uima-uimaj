@@ -146,7 +146,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // debug
   static final AtomicInteger casIdProvider = new AtomicInteger(0);
-  
+
   // Notes on the implementation
   // ---------------------------
 
@@ -1453,6 +1453,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.svd.clearSofaInfo();  // but keep initial view, and other views
                                // because setting up the index infrastructure is expensive
     this.svd.viewCount = 1;  // initial view
+    
+    svd.traceFSid = 0;
+    if (traceFSs) svd.traceFScreationSb.setLength(0);
+    this.svd.componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
   }
 
   /**
