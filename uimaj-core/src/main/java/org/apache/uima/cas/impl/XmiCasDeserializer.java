@@ -852,7 +852,7 @@ public class XmiCasDeserializer {
       //   remove this FS if 
       //      it's not new or
       //      it's a new documentAnnotation (because that's automatically indexed)
-      /    from all the indexes.
+      //   from all the indexes.
       // we do this once, before the feature setting loop, because that loop may set a sofa Ref which is 
       // invalid (to be fixed up later). But the removal code needs a valid sofa ref.
       try {
