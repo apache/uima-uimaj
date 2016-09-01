@@ -212,12 +212,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @throws AnalysisEngineProcessException
    *           if the FlowController failed
    */
-  public FlowContainer computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+  public FlowContainer computeFlow(final CAS aCAS) throws AnalysisEngineProcessException {
     mTimer.startIt();
     CAS view = null;
     try {
-      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
-
+      // throws if _InitialView is mapped to non-existent sofa https://issues.apache.org/jira/browse/UIMA-5097
+      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());     
       // now get the right interface(e.g. CAS or JCAS)
       UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
@@ -234,9 +234,9 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     } finally {
+      aCAS.setCurrentComponentInfo(null); // https://issues.apache.org/jira/browse/UIMA-5097
       if (view != null) {
-        ((CASImpl)view).restoreClassLoaderUnlockCas();
-        view.setCurrentComponentInfo(null);
+        ((CASImpl)view).restoreClassLoaderUnlockCas();      
       }
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());

@@ -55,12 +55,12 @@ public class FlowContainer {
     mCAS = (CASImpl)aCAS;
   }
 
-  public FlowContainer newCasProduced(CAS newCAS, String producedBy)
+  public FlowContainer newCasProduced(final CAS newCAS, String producedBy)
           throws AnalysisEngineProcessException {
     mTimer.startIt();
     CAS view = null;
     try {
-      view = Util.getStartingView(
+      view = Util.getStartingView(   
           newCAS, 
           mSofaAware, 
           mFlowControllerContainer.getUimaContextAdmin().getComponentInfo());
@@ -81,9 +81,9 @@ public class FlowContainer {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     } finally {
+      newCAS.setCurrentComponentInfo(null);
       if (null != view) {
         ((CASImpl)view).restoreClassLoaderUnlockCas();
-        view.setCurrentComponentInfo(null);
       }
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());

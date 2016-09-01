@@ -1144,8 +1144,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     this.svd.fssTobeAddedback.clear();
     this.svd.fssTobeAddedback.trimToSize();
     
-    svd.traceFSid = 0;
-    if (traceFSs) svd.traceFScreationSb.setLength(0);
+    this.svd.traceFSid = 0;
+    if (traceFSs) { 
+      this.svd.traceFScreationSb.setLength(0);
+    }
+    this.svd.componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
   }
 
   /**

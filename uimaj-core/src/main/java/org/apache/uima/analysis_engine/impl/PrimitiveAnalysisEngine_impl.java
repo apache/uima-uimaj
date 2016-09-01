@@ -350,7 +350,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    *          CAS to be processed by annotator
    * @throws AnalysisEngineProcessException -         
    */
-  protected void callAnalysisComponentProcess(CAS aCAS) throws AnalysisEngineProcessException {
+  protected void callAnalysisComponentProcess(final CAS aCAS) throws AnalysisEngineProcessException {
     // logging and instrumentation
     String resourceName = getMetaData().getName();
     Logger logger = getLogger();
@@ -363,6 +363,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
         // Get the right view of the CAS. Sofa-aware components get the base CAS.
         // Sofa-unaware components get whatever is mapped to the _InitialView.
+        //    note: if initial view is mapped, and the mapped view doesn't exist, throws an exception.
         view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
         // now get the right interface(e.g. CAS or JCAS)
         // must precede the switchClassLoader call below UIMA-2211
@@ -403,7 +404,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       } catch (Exception e) {
         // catching Throwable to catch out-of-memory errors too, which are not Exceptions
         if (null != view) {
-          view.setCurrentComponentInfo(null);
           ((CASImpl)view).restoreClassLoaderUnlockCas();
         }
         if (e instanceof AnalysisEngineProcessException) {
@@ -414,11 +414,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         }
       } catch (Error e) {  // out of memory error, for instance
         if (null != view) {
-          view.setCurrentComponentInfo(null);
           ((CASImpl)view).restoreClassLoaderUnlockCas();
         }
         throw e;
       } finally {
+        aCAS.setCurrentComponentInfo(null); // https://issues.apache.org/jira/browse/UIMA-5097
         UimaContextHolder.clearContext();
       }
 
@@ -537,7 +537,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       } else {
         casToReturn = (CAS) absCas;
       }
-      casToReturn = casToReturn.getView(CAS.NAME_DEFAULT_SOFA);
+      casToReturn = casToReturn.getView(CAS.NAME_DEFAULT_SOFA); 
 
       // clear the CAS's component info, since it is no longer
       // being processed by this AnalysisComponent
