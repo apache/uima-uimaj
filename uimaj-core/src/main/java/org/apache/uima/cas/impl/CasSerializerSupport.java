@@ -728,8 +728,8 @@ public class CasSerializerSupport {
         String typeName = fs._getTypeImpl().getName();
         XmlElementName newXel = csss.uimaTypeName2XmiElementName(typeName);
 
-        if (!needNameSpaces) {
-          csss.checkForNameCollision(newXel);
+        if (!needNameSpaces) {   // means if name spaces are not not always needed, then we have to check for collision
+          csss.checkForNameCollision(newXel);   // executed for JSON code
         }        
         typeCode2namespaceNames[typeCode] = newXel;
       }  
