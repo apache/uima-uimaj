@@ -27,6 +27,7 @@ import org.apache.uima.analysis_engine.impl.AnalysisEngineManagementImpl;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.impl.ChildUimaContext_impl;
+import org.apache.uima.impl.UimaContext_ImplBase;
 
 /**
  * Implementation of FlowControllerContext.
@@ -48,7 +49,7 @@ public class FlowControllerContext_impl extends ChildUimaContext_impl implements
   public FlowControllerContext_impl(UimaContextAdmin aParentContext, String aContextName,
           Map<String, String> aSofaMappings, Map<String, AnalysisEngineMetaData> aAnalysisEngineMetaDataMap,
           AnalysisEngineMetaData aAggregateMetadata) {
-    super(aParentContext, aContextName, aSofaMappings);
+    super(aParentContext, aContextName, ((UimaContext_ImplBase)aParentContext).combineSofaMappings(aSofaMappings));
     mAnalysisEngineMetaDataMap = Collections.unmodifiableMap(aAnalysisEngineMetaDataMap);
     mAggregateMetadata = aAggregateMetadata;
 
