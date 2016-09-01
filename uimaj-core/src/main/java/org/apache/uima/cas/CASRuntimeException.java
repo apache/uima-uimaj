@@ -290,6 +290,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Illegal operation - cannot add Feature Structure {0} to base Cas {1}.*/
   public static final String ILLEGAL_ADD_TO_INDEX_IN_BASE_CAS = "ILLEGAL_ADD_TO_INDEX_IN_BASE_CAS";
   
+  /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
+  public static final String SWITCH_CLASS_LOADER_NESTED = "SWITCH_CLASS_LOADER_NESTED";
+    
   /**
    * The constructors are organized
    * 
