@@ -453,13 +453,15 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // per JCas instance - so don't need to synch.
 //  private final Object[] constructorArgsFor_Type = new Object[2];
 
-  /**
-   * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
-   * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
-   * 
-   * returns true if a new instance of a _Type class was created
-   */
-
+//  /**
+//   * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
+//   * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
+//   * 
+//   * @param jcasTypeInfo -
+//   * @param alreadyLoaded -
+//   * @param fsGenerators updated by side effect with new instances of the _Type class
+//   * @return true if a new instance of a _Type class was created
+//   */
 //  private <T extends TOP> boolean makeInstanceOf_Type(LoadedJCasType<T> jcasTypeInfo, boolean alreadyLoaded,
 //      FSGenerator<?>[] fsGenerators) {
 //    
@@ -514,27 +516,27 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 //    return true;
 //  }
 
-  /**
-   * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
-   * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
-   */
-  /*
-   * private void makeInstanceOf_Type(Type casType, Class clas, CASImpl cas) { Constructor c; Field
-   * typeIndexField = null; int typeIndex; try { c = clas.getDeclaredConstructor(jcasBaseAndType);
-   * try {
-   * 
-   * typeIndexField = clas.getDeclaredField("typeIndexID"); } catch (NoSuchFieldException e) { try { //
-   * old version has the index in the base type String name = clas.getName(); Class clas2 =
-   * Class.forName(name.substring(0, name.length() - 5), true, cas .getJCasClassLoader()); // drop
-   * _Type typeIndexField = clas2.getDeclaredField("typeIndexID"); } catch (NoSuchFieldException e2) {
-   * logAndThrow(e2); } catch (ClassNotFoundException e3) { logAndThrow(e3); } } typeIndex =
-   * typeIndexField.getInt(null); // null - static instance var TOP_Type x_Type_instance =
-   * (TOP_Type) c.newInstance(new Object[] { this, casType }); typeArray[typeIndex] =
-   * x_Type_instance; } catch (SecurityException e) { logAndThrow(e); } catch (NoSuchMethodException
-   * e) { logAndThrow(e); } catch (InstantiationException e) { logAndThrow(e); } catch
-   * (IllegalAccessException e) { logAndThrow(e); } catch (InvocationTargetException e) {
-   * logAndThrow(e); } catch (ArrayIndexOutOfBoundsException e) { logAndThrow(e); } }
-   */
+//  /**
+//   * Make the instance of the JCas xxx_Type class for this CAS. Note: not all types will have
+//   * xxx_Type. Instance creation does the typeSystemInit kind of function, as well.
+//   */
+//  /*
+//   * private void makeInstanceOf_Type(Type casType, Class clas, CASImpl cas) { Constructor c; Field
+//   * typeIndexField = null; int typeIndex; try { c = clas.getDeclaredConstructor(jcasBaseAndType);
+//   * try {
+//   * 
+//   * typeIndexField = clas.getDeclaredField("typeIndexID"); } catch (NoSuchFieldException e) { try { //
+//   * old version has the index in the base type String name = clas.getName(); Class clas2 =
+//   * Class.forName(name.substring(0, name.length() - 5), true, cas .getJCasClassLoader()); // drop
+//   * _Type typeIndexField = clas2.getDeclaredField("typeIndexID"); } catch (NoSuchFieldException e2) {
+//   * logAndThrow(e2); } catch (ClassNotFoundException e3) { logAndThrow(e3); } } typeIndex =
+//   * typeIndexField.getInt(null); // null - static instance var TOP_Type x_Type_instance =
+//   * (TOP_Type) c.newInstance(new Object[] { this, casType }); typeArray[typeIndex] =
+//   * x_Type_instance; } catch (SecurityException e) { logAndThrow(e); } catch (NoSuchMethodException
+//   * e) { logAndThrow(e); } catch (InstantiationException e) { logAndThrow(e); } catch
+//   * (IllegalAccessException e) { logAndThrow(e); } catch (InvocationTargetException e) {
+//   * logAndThrow(e); } catch (ArrayIndexOutOfBoundsException e) { logAndThrow(e); } }
+//   */
 
   /*
    * (non-Javadoc)
