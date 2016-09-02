@@ -38,6 +38,7 @@ import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.StringArrayFS;
@@ -66,7 +67,7 @@ import org.apache.uima.util.XMLInputSource;
 import junit.framework.TestCase;
 
 /**
- * Class comment for TokenizerTest.java goes here.
+ * Test for binary serialization and deserialization (no compression)
  * 
  */
 public class SerializationReinitTest extends TestCase {
@@ -103,7 +104,9 @@ public class SerializationReinitTest extends TestCase {
   public static final String OBYTEA_TYPE_FEAT = "theByteArray";
   
   public static final String OSHORTA_TYPE_FEAT = "theShortArray";
-  
+
+  public static final String OLONGA_TYPE_FEAT = "theLongArray";
+
   public static final String OLONG_TYPE_FEAT = "theLong";
 
   private CASMgr casMgr;
@@ -140,6 +143,8 @@ public class SerializationReinitTest extends TestCase {
   
   private Feature theShortArrayFeature;
   
+  private Feature theLongArrayFeature;
+  
   private Feature theLongFeature;
   
   private FsIndexDescription[] indexes;
@@ -155,6 +160,14 @@ public class SerializationReinitTest extends TestCase {
    * @see junit.framework.TestCase#setUp()
    */
   public void setUp() throws Exception {
+    
+    /**
+     * sets up two type systems:
+     *   One defined via API calls, and set into the global var cas = casMgr
+     *   One defined by parsing ExampleCas/testTypeSystem and setting
+     *     typeSystem and indexes
+     */
+    
     super.setUp();
     casMgr = initCAS();
     cas = (CASImpl)casMgr;
@@ -178,6 +191,7 @@ public class SerializationReinitTest extends TestCase {
     theShortFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORT_TYPE_FEAT);
     theShortArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OSHORTA_TYPE_FEAT);
     theLongFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONG_TYPE_FEAT);
+    theLongArrayFeature = ts.getFeatureByFullName(OSTR_TYPE + TypeSystem.FEATURE_SEPARATOR + OLONGA_TYPE_FEAT);
  
   
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
@@ -238,6 +252,7 @@ public class SerializationReinitTest extends TestCase {
     Type byteArrayType = tsa.getType(CAS.TYPE_NAME_BYTE_ARRAY);
     Type shortType = tsa.getType(CAS.TYPE_NAME_SHORT);
     Type shortArrayType = tsa.getType(CAS.TYPE_NAME_SHORT_ARRAY);
+    Type longArrayType = tsa.getType(CAS.TYPE_NAME_LONG_ARRAY);
     Type longType = tsa.getType(CAS.TYPE_NAME_LONG);
     Type theTypeType = tsa.addType(OSTR_TYPE, annotType);
     tsa.addFeature(OSTR_TYPE_FEAT, theTypeType, stringType);
@@ -245,6 +260,7 @@ public class SerializationReinitTest extends TestCase {
     tsa.addFeature(OSHORT_TYPE_FEAT, theTypeType, shortType);
     tsa.addFeature(OBYTEA_TYPE_FEAT, theTypeType, byteArrayType);
     tsa.addFeature(OSHORTA_TYPE_FEAT, theTypeType, shortArrayType);
+    tsa.addFeature(OLONGA_TYPE_FEAT,  theTypeType,  longArrayType);
     tsa.addFeature(OLONG_TYPE_FEAT, theTypeType, longType);
     // Commit the type system.
     ((CASImpl) aCas).commitTypeSystem();
@@ -407,7 +423,8 @@ public class SerializationReinitTest extends TestCase {
     // System.out.println("Created " + endOfSentenceCounter + " sentences: " + new TimeSpan(time));
   }
   
-  private static final Pattern nlPattern = Pattern.compile("(?m)(.*?$)");
+  //?m (MULTILINE) makes $ match just before line terminator or end of input
+  private static final Pattern nlPattern = Pattern.compile("(?m)(.*?$)"); 
   /**
    * Test driver.
    */
@@ -504,124 +521,6 @@ public class SerializationReinitTest extends TestCase {
 
   }
 
-  /**
-   * Test setCAS().
-   */
-  public void testSetCAS() throws Exception {
-
-    // Read the document into a String. 
-    File textFile = JUnitExtension.getFile("data/moby.txt");
-    String moby = FileUtils.file2String(textFile);
-    // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
-    String line;
-//    BufferedReader br = new BufferedReader(new StringReader(moby));
-    StringBuffer buf = new StringBuffer(10000);
-    List<String> docs = new ArrayList<String>();
-    Matcher m = nlPattern.matcher(moby);
-    while (m.find()) {
-      line = m.group();
-      if (line.startsWith(".. <p")) {
-        docs.add(buf.toString());
-        buf.setLength(0);
-      } else {
-        buf.append(line + "\n");
-      }
-    }
-    
-//    while ((line = br.readLine()) != null) {
-//      if (line.startsWith(".. <p")) {
-//        docs.add(buf.toString());
-//        buf = new StringBuffer();
-//      } else {
-//        buf.append(line + "\n");
-//      }
-//    }
-//    docs.add(buf.toString());
-    m.appendTail(buf);
-    docs.add(buf.toString()); 
-    buf = null;
-
-    final int numDocs = docs.size();
-    final int max = 30;
-    int docCount = 0;
-    long overallTime = System.currentTimeMillis();
-    int numTok, numSent;
-    while (docCount < max) {
-      for (int i = 0; i < numDocs && docCount < max; i++) {
-        // System.out.println("Processing document: " + i);
-        // Set document text in first CAS.
-        cas.setDocumentText(docs.get(i));
-
-        tokenize();
-        numTok = cas.getAnnotationIndex(tokenType).size();
-        assertTrue(numTok > 0);
-        // System.out.println(" Number of tokens: " + numTok);
-
-        // System.out.println("Serializing...");
-        // CASMgr casMgr = CASFactory.createCAS();
-        // casMgr.setCAS(cas);
-        // cas = (CAS) casMgr.getCAS();
-        /* setCAS is no longer used or implemented
-         * You cannot use this method to set up a new cas with a copy of
-         * the contents of another cas, including its indexes
-        CASMgr realCasMgr = CASFactory.createCAS(cas.getTypeSystem());
-        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-        cas = ((CASImpl) realCasMgr).getCurrentView();
-        casMgr = (CASMgr) cas;
-        */
-
-        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-
-        createSentences();
-        numSent = cas.getAnnotationIndex(sentenceType).size();
-        assertTrue(numSent > 0);
-        // System.out.println(" Number of sentences: " + numSent);
-
-        // System.out.println("Serializing...");
-        // casMgr = CASFactory.createCAS();
-        // casMgr.setCAS(cas);
-        // cas = (CAS) casMgr.getCAS();
-        /* setCAS is no longer used or implemented
-         * You cannot use this method to set up a new cas with a copy of
-         * the contents of another cas, including its indexes
-        realCasMgr = CASFactory.createCAS();
-        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-        cas = ((CASImpl) realCasMgr).getCurrentView();
-        casMgr = (CASMgr) cas;
-        */
-
-        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-
-        // System.out.println("Serializing...");
-        // casMgr = CASFactory.createCAS();
-        // casMgr.setCAS(cas);
-        // cas = (CAS) casMgr.getCAS();
-        /* setCAS is no longer used or implemented
-         * You cannot use this method to set up a new cas with a copy of
-         * the contents of another cas, including its indexes
-        realCasMgr = CASFactory.createCAS();
-        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
-        cas = ((CASImpl) realCasMgr).getCurrentView();
-        casMgr = (CASMgr) cas;
-        */
-
-        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
-        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
-        // System.out.println(" Verify: " + numTok + " tokens, " + numSent + " sentences.");
-
-        casMgr.reset();
-
-        ++docCount;
-      }
-      // System.out.println("Number of documents processed: " + docCount);
-    }
-    overallTime = System.currentTimeMillis() - overallTime;
-    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
-
-  }
-
-
   /** Test basic blob serialization
    */
   public void testBlob() throws Exception {
@@ -711,6 +610,73 @@ public class SerializationReinitTest extends TestCase {
     }  
   }
 
+  public void testDeltaBinaryShortLongArrayMods() throws Exception {
+    CASImpl cas2 = (CASImpl) initCAS();
+    CASImpl cas3 = (CASImpl) initCAS();
+
+    // create short array and long array
+    FeatureStructure newFS1 = cas.createFS(theTypeType); 
+    ByteArrayFS newBA1 = cas.createByteArrayFS(1); 
+    ShortArrayFS newSA1 = cas.createShortArrayFS(1); 
+    LongArrayFS newLA1 = cas.createLongArrayFS(1);
+    newBA1.set(0, (byte)1);
+    newSA1.set(0, (short)2);
+    newLA1.set(0, (long)4);
+    newFS1.setFeatureValue(theByteArrayFeature, newBA1);
+    newFS1.setFeatureValue(theShortArrayFeature, newSA1);
+    newFS1.setFeatureValue(theLongArrayFeature, newLA1);
+    cas.getIndexRepository().addFS(newFS1);
+        
+    //serialize binary, non compressed, not delta
+    ByteArrayOutputStream fos = new ByteArrayOutputStream();
+    Serialization.serializeCAS(cas, fos);
+
+    //deserialize into cas2
+    ByteArrayInputStream fis = new ByteArrayInputStream(fos.toByteArray());
+    Serialization.deserializeCAS(cas2, fis);
+    CasComparer.assertEquals(cas, cas2);
+
+    //=======================================================================
+    //create Marker, add/modify fs and serialize in delta xmi format.
+    Marker marker = cas2.createMarker();
+
+    // modify a value in the int arrays
+    Iterator<AnnotationFS> typeIterator = cas2.getAnnotationIndex(theTypeType).iterator();
+    assertTrue(typeIterator.hasNext());
+    FeatureStructure fsWithArrays = typeIterator.next();
+    
+    ((ByteArrayFS)fsWithArrays.getFeatureValue(theByteArrayFeature)).set(0, (byte) 11);
+    ((ShortArrayFS)fsWithArrays.getFeatureValue(theShortArrayFeature)).set(0, (short) 22);
+    ((LongArrayFS)fsWithArrays.getFeatureValue(theLongArrayFeature)).set(0, (long) 44);
+
+    // serialize cas2 in delta format 
+    ByteArrayOutputStream fosDelta = new ByteArrayOutputStream();
+    Serialization.serializeCAS(cas2, fosDelta, marker);
+    
+    //======================================================================
+    //deserialize delta binary into cas1
+    ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
+    Serialization.deserializeCAS(cas, fisDelta);
+    
+    //======================================================================
+    //serialize complete cas and deserialize into cas3 and compare with cas1.
+    ByteArrayOutputStream fosFull = new ByteArrayOutputStream();
+    Serialization.serializeCAS(cas2, fosFull);
+    ByteArrayInputStream fisFull = new ByteArrayInputStream(fosFull.toByteArray());
+    Serialization.deserializeCAS(cas3, fisFull);
+    CasComparer.assertEquals(cas, cas3); 
+
+  }
+  
+  
+  /**
+   * setup cas1, binary (not compressed) serialize to cas2
+   * modify cas2, binary (not compressed) delta serialize back into cas1 
+   * 
+   * serialize cas2 binary (not compressed) not delta into cas3, compare cas 1 and 3
+   * 
+   * @throws Exception
+   */
   public void testDeltaBlobSerialization() throws Exception {
    try {
       CAS cas1 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(),
@@ -778,7 +744,7 @@ public class SerializationReinitTest extends TestCase {
       firstNode.setFeatureValue(headFeat, anAnnot1);
       firstNode.setFeatureValue(tailFeat, secondNode);
       entityFS.setFeatureValue(linksFeat, firstNode);
-      
+            
       // create a view w/o setting document text
       CAS view1 = cas1.createView("View1");
       
@@ -798,7 +764,7 @@ public class SerializationReinitTest extends TestCase {
       relArgs.setFeatureValue(domainFeat, person1Annot);
       ownerAnnot.setFeatureValue(argsFeat, relArgs);
       
-      //serialize complete 
+      //serialize binary, non compressed, not delta
       ByteArrayOutputStream fos = new ByteArrayOutputStream();
       Serialization.serializeCAS(cas1, fos);
 
@@ -878,7 +844,7 @@ public class SerializationReinitTest extends TestCase {
       cas2strarrayFS.set(2, "class3");
       cas2strarrayFS.set(3, "class4");
       cas2strarrayFS.set(4, "class5");
-     
+           
       //add to FSList 
       FeatureStructure cas2linksFS = cas2EntityFS.getFeatureValue(linksFeat);
       FeatureStructure cas2secondNode = cas2linksFS.getFeatureValue(tailFeat);
@@ -893,7 +859,7 @@ public class SerializationReinitTest extends TestCase {
       Serialization.serializeCAS(cas2, fosDelta, marker);
       
       //======================================================================
-      //deserialize delta xmi into cas1
+      //deserialize delta binary into cas1
       ByteArrayInputStream fisDelta = new ByteArrayInputStream(fosDelta.toByteArray());
       CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX = false;
       Serialization.deserializeCAS(cas1, fisDelta);
@@ -954,4 +920,121 @@ public class SerializationReinitTest extends TestCase {
     junit.textui.TestRunner.run(SerializationReinitTest.class);
   }
 
+  /**
+   * Test setCAS().
+   * This test does nothing useful.  setCAS is a no-op
+   */
+//  public void testSetCAS() throws Exception {
+//
+//    // Read the document into a String. 
+//    File textFile = JUnitExtension.getFile("data/moby.txt");
+//    String moby = FileUtils.file2String(textFile);
+//    // String moby = file2String(System.getProperty("cas.data.test") + "moby.txt");
+//    String line;
+////    BufferedReader br = new BufferedReader(new StringReader(moby));
+//    StringBuffer buf = new StringBuffer(10000);
+//    List<String> docs = new ArrayList<String>();
+//    Matcher m = nlPattern.matcher(moby);
+//    while (m.find()) {
+//      line = m.group();
+//      if (line.startsWith(".. <p")) {
+//        docs.add(buf.toString());
+//        buf.setLength(0);
+//      } else {
+//        buf.append(line + "\n");
+//      }
+//    }
+//    
+////    while ((line = br.readLine()) != null) {
+////      if (line.startsWith(".. <p")) {
+////        docs.add(buf.toString());
+////        buf = new StringBuffer();
+////      } else {
+////        buf.append(line + "\n");
+////      }
+////    }
+////    docs.add(buf.toString());
+//    m.appendTail(buf);
+//    docs.add(buf.toString()); 
+//    buf = null;
+//
+//    final int numDocs = docs.size();
+//    final int max = 30;
+//    int docCount = 0;
+//    long overallTime = System.currentTimeMillis();
+//    int numTok, numSent;
+//    while (docCount < max) {
+//      for (int i = 0; i < numDocs && docCount < max; i++) {
+//        // System.out.println("Processing document: " + i);
+//        // Set document text in first CAS.
+//        cas.setDocumentText(docs.get(i));
+//
+//        tokenize();
+//        numTok = cas.getAnnotationIndex(tokenType).size();
+//        assertTrue(numTok > 0);
+//        // System.out.println(" Number of tokens: " + numTok);
+//
+//        // System.out.println("Serializing...");
+//        // CASMgr casMgr = CASFactory.createCAS();
+//        // casMgr.setCAS(cas);
+//        // cas = (CAS) casMgr.getCAS();
+//        /* setCAS is no longer used or implemented
+//         * You cannot use this method to set up a new cas with a copy of
+//         * the contents of another cas, including its indexes
+//        CASMgr realCasMgr = CASFactory.createCAS(cas.getTypeSystem());
+//        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+//        cas = ((CASImpl) realCasMgr).getCurrentView();
+//        casMgr = (CASMgr) cas;
+//        */
+//
+//        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+//
+//        createSentences();
+//        numSent = cas.getAnnotationIndex(sentenceType).size();
+//        assertTrue(numSent > 0);
+//        // System.out.println(" Number of sentences: " + numSent);
+//
+//        // System.out.println("Serializing...");
+//        // casMgr = CASFactory.createCAS();
+//        // casMgr.setCAS(cas);
+//        // cas = (CAS) casMgr.getCAS();
+//        /* setCAS is no longer used or implemented
+//         * You cannot use this method to set up a new cas with a copy of
+//         * the contents of another cas, including its indexes
+//        realCasMgr = CASFactory.createCAS();
+//        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+//        cas = ((CASImpl) realCasMgr).getCurrentView();
+//        casMgr = (CASMgr) cas;
+//        */
+//
+//        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+//        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
+//
+//        // System.out.println("Serializing...");
+//        // casMgr = CASFactory.createCAS();
+//        // casMgr.setCAS(cas);
+//        // cas = (CAS) casMgr.getCAS();
+//        /* setCAS is no longer used or implemented
+//         * You cannot use this method to set up a new cas with a copy of
+//         * the contents of another cas, including its indexes
+//        realCasMgr = CASFactory.createCAS();
+//        realCasMgr.setCAS(((CASImpl) cas).getBaseCAS());
+//        cas = ((CASImpl) realCasMgr).getCurrentView();
+//        casMgr = (CASMgr) cas;
+//        */
+//
+//        assertTrue(numTok == cas.getAnnotationIndex(tokenType).size());
+//        assertTrue(numSent == cas.getAnnotationIndex(sentenceType).size());
+//        // System.out.println(" Verify: " + numTok + " tokens, " + numSent + " sentences.");
+//
+//        casMgr.reset();
+//
+//        ++docCount;
+//      }
+//      // System.out.println("Number of documents processed: " + docCount);
+//    }
+//    overallTime = System.currentTimeMillis() - overallTime;
+//    // System.out.println("Time taken over all: " + new TimeSpan(overallTime));
+//
+//  }
 }
