@@ -1030,10 +1030,15 @@ public class SerDesTest4 extends TestCase {
   private int[] getIndexInfo(CASImpl cas) {
     int[] c = {2};
     IntVector iv = new IntVector();
-    cas.walkReachablePlusFSsSorted(fs -> {
-      if (fs._getTypeImpl() == akof)
-        iv.add(includeUid ? fs.getIntValue(akofUid) : c[0]++);
-    } , null, null, null);
+    cas.walkReachablePlusFSsSorted(
+        fs -> {   // filtered action (only on above mark)
+               if (fs._getTypeImpl() == akof) { 
+                 iv.add(includeUid ? fs.getIntValue(akofUid) : c[0]++);
+               }
+              }, 
+        null,     // mark
+        null,     // null or predicate to filter what gets included
+        null);    // null or typeMapper to exclude things not in other ts
     int[] ia = iv.toArray();
     Arrays.sort(ia);
     return ia;
