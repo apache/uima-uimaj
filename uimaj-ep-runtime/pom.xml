@@ -147,6 +147,7 @@
                    org.apache.uima.analysis_engine.service.impl,
                    org.apache.uima.cas,
                    org.apache.uima.cas.admin,
+                   org.apache.uima.cas.function,
                    org.apache.uima.cas.impl,
                    org.apache.uima.cas.text,
                    org.apache.uima.cas_data,
