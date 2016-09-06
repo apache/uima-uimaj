@@ -71,6 +71,19 @@ class AllFSs {
     return toBeScanned;
   }
   
+  /**
+   * simpler version, no mark info, no filter or type mapper
+   * @param cas
+   */
+  AllFSs(CASImpl cas) {
+    this.cas = cas;
+    this.mark = null;
+    foundFSsBelowMark = null;
+    this.includeFilter = null;
+    this.typeMapper = null;
+    getAllIndexedFSsAllViews();    
+  }
+  
   void getAllIndexedFSsAllViews() {
     cas.forAllSofas(sofa -> enqueueFS(sofa));
     cas.forAllViews(view -> 
