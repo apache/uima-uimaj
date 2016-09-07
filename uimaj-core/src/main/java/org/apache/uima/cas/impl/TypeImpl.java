@@ -82,6 +82,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   protected final boolean isLongOrDouble;  // for code generation
   
+  int nbrOfLongOrDoubleFeatures = 0; 
+  
   /**
    * False for non creatable (as Feature Structures) values (e.g. byte, integer, string) and
    * also false for array built-ins (which can be Feature Structures, can be added-to-indexes, etc.)
@@ -508,19 +510,22 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }    
   }
   
-  private void computeHasRef() {
+  private void computeHasXxx() {
+    nbrOfLongOrDoubleFeatures = superType.getNbrOfLongOrDoubleFeatures();
     if (superType.hasRefFeature) {
       hasRefFeature = true;
-    } else {
-      for (FeatureImpl fi : staticMergedFeaturesIntroducedByThisType) {
-        if (fi.getRangeImpl().isRefType) {
-          hasRefFeature = true;
-          break;
-        }
+    }
+    
+    for (FeatureImpl fi : staticMergedFeaturesIntroducedByThisType) {
+      if (!hasRefFeature && fi.getRangeImpl().isRefType) {
+        hasRefFeature = true;
+      }
+      if (fi.getRangeImpl().isLongOrDouble) {
+        nbrOfLongOrDoubleFeatures ++;
       }
     }
   }
-  
+    
   public Stream<FeatureImpl> getFeaturesAsStream() {
     return Arrays.stream(getFeatureImpls());
   }
@@ -838,7 +843,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     if (level != 1) {
       // skip for top level; no features there, but no super type either
       getFeatureImpls(); // also done for side effect of computingcomputeStaticMergedFeaturesList();
-      computeHasRef();
+      computeHasXxx();
     }
      
     depthFirstCode = (short) ( level ++ );
@@ -1010,6 +1015,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   public boolean hasRefFeature() {
     return hasRefFeature;
+  }
+  
+  public int getNbrOfLongOrDoubleFeatures() {
+    return nbrOfLongOrDoubleFeatures;
   }
   
   /**
