@@ -64,10 +64,17 @@ import org.apache.uima.util.CasLoadMode;
  * Binary (mostly non compressed) CAS deserialization
  * The methods in this class were originally part of the CASImpl, and were moved here to this class for v3
  * 
- * Binary non compressed CAS serialization is in class CASSerializer, but that class uses routine and data structures
+ * Binary non compressed CAS serialization is in class CASSerializer, but that class uses routines and data structures
  * in this class.
  * 
- * There is one instance of this class per CAS (shared by all views of that CAS).
+ * There is one instance of this class per CAS (shared by all views of that CAS), created at the same time the 
+ * CAS is created. 
+ * 
+ * This instance also holds data needed for binary serialization, and deserialization.
+ * For binary delta deserialization, it uses the data computed on a previous serialization, 
+ * or, if none, it re-computes it.  See scanAllFSsForBinarySerialization method.
+ * 
+ *   The data is computed lazily, and reset with cas reset.
  * 
  * Lifecycle: 
  *   created when a CAS (any view) is first created, as part of the shared view data for that CAS.
@@ -75,8 +82,6 @@ import org.apache.uima.util.CasLoadMode;
  *   
  *   Data created when non-delta serializing, in case needed when delta-deserializing later:
  *     xxxAuxAddr2fsa maps aux arrays to FSs
- *     
- *   Data created when non-delta deserializing, in case needed when delta-serializing later:
  *     heaps and nextXXXHeapAddrAfterMark (in this case mark is the end).
  *     
  *   Reset: 
@@ -176,10 +181,13 @@ public class BinaryCasSerDes {
 
   /**
    * Map from an aux addr starting address for an array of boolean/byte/short/long/double to the V3 FS.
+   *   key = simulated starting address in aux heap for the array
+   *   value = FS having that array
    * When deserializing a modification, used to find the v3 FS and the offset in the array to modify.
    * 
-   * created when serializing (in case receive delta deser back)
-   * updated when delta deserializing 
+   * created when serializing (in case receive delta deser back).
+   * created when delta deserializing if not available from previous serialization.
+   * updated when delta deserializing.
    * reset at end of delta deserializings because multiple mods not supported
    */
   final private Int2ObjHashMap<TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
@@ -523,7 +531,7 @@ public class BinaryCasSerDes {
       
       if (h.isCompressed) {
         if (TRACE_DESER) {
-          System.out.format("BinDeser version = %d%n", h.v);
+          System.out.format("BinDeser version = %d%n", Integer.valueOf(h.v));
         }
         if (h.form4) {
           (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
@@ -603,7 +611,7 @@ public class BinaryCasSerDes {
    *     CAS(2) has updates - new FSs, and mods to existing ones
    *   CAS(2) -> delta binary ser -> delta binary deser -> CAS(1).
    *   
-   * V3 supports the above scenario by retaining information in CAS(2) at the
+   * V3 supports the above scenario by retaining some information in CAS(2) at the
    * end of the initial deserialization, including the model heap size/cellsUsed.
    *   - this is needed to properly do a compatible-with-v2 delta serialization.    
 
@@ -616,13 +624,12 @@ public class BinaryCasSerDes {
    * 
    * This method assumes a previous binary serialization was done, and the following data structures
    * are still valid (i.e. no CAS altering operations have been done)
-   *   (maybe these are reset: heap, stringHeap, byteHeap, shortHeap, longHeap)
-   *   csds, [string/byte/short/long]auxAddr2fs (for array mods)
+   *   (these are reset: heap, stringHeap, byteHeap, shortHeap, longHeap)
+   *   csds, 
+   *   [string/byte/short/long]auxAddr2fs (for array mods)
    *   nextHeapAddrAfterMark, next[string/byte/short/long]HeapAddrAfterMark
    *  
-   * @param dis data input stream
-   * @param swap true if byte order needs swapping
-   * @param delta true if delta binary deserialization being received
+   * @param h the Header (read by the caller)
    * @return the format of the incoming serialized data
    */
   private SerialFormat binaryDeserialization(Header h) {
@@ -664,7 +671,7 @@ public class BinaryCasSerDes {
       }
       if (TRACE_DESER) {
         System.out.format("BinDes Plain %s startPos: %,d mainHeapSize: %d%n", 
-            delta ? "Delta" : "", startPos, fsheapsz);
+            delta ? "Delta" : "", Integer.valueOf(startPos), Integer.valueOf(fsheapsz));
       }
             
       // add new heap slots
@@ -739,7 +746,7 @@ public class BinaryCasSerDes {
           modWords[i] = r.readInt();
         }
         if (TRACE_DESER) {
-          System.out.format("BinDes modified heap slot count: %,d%n", fsmodssz2 / 2);
+          System.out.format("BinDes modified heap slot count: %,d%n", Integer.valueOf(fsmodssz2 / 2));
         }
       } else {
         fsmodssz2 = 0; // not used but must be set to make "final" work
@@ -750,19 +757,19 @@ public class BinaryCasSerDes {
       // indexed FSs
       int fsindexsz = r.readInt();
       int[] fsindexes = new int[fsindexsz];
-      if (TRACE_DESER) System.out.format("BinDes indexedFSs count: %,d%n", fsindexsz);
+      if (TRACE_DESER) System.out.format("BinDes indexedFSs count: %,d%n", Integer.valueOf(fsindexsz));
       for (int i = 0; i < fsindexsz; i++) {
         fsindexes[i] = r.readInt();
         if (TRACE_DESER) {
-          if (i % 5 == 0) System.out.format("%n i: %5d ", i);
-          System.out.format("%15d ", fsindexes[i]);
+          if (i % 5 == 0) System.out.format("%n i: %5d ", Integer.valueOf(i));
+          System.out.format("%15d ", Integer.valueOf(fsindexes[i]));
         }
       }
       if (TRACE_DESER) System.out.println("");
 
       // byte heap
       int heapsz = r.readInt();
-      if (TRACE_DESER) System.out.format("BinDes ByteHeap size: %,d%n", heapsz);
+      if (TRACE_DESER) System.out.format("BinDes ByteHeap size: %,d%n", Integer.valueOf(heapsz));
       
       if (!delta) {
         byteHeap.heap = new byte[Math.max(16, heapsz)]; // must be > 0
@@ -778,7 +785,7 @@ public class BinaryCasSerDes {
 
       // short heap
       heapsz = r.readInt();
-      if (TRACE_DESER) System.out.format("BinDes ShortHeap size: %,d%n", heapsz);
+      if (TRACE_DESER) System.out.format("BinDes ShortHeap size: %,d%n", Integer.valueOf(heapsz));
       
       if (!delta) {
         shortHeap.heap = new short[Math.max(16, heapsz)]; // must be > 0
@@ -800,7 +807,7 @@ public class BinaryCasSerDes {
 
       // long heap
       heapsz = r.readInt();
-      if (TRACE_DESER) System.out.format("BinDes LongHeap size: %,d%n", heapsz);
+      if (TRACE_DESER) System.out.format("BinDes LongHeap size: %,d%n", Integer.valueOf(heapsz));
       
       if (!delta) {
         longHeap.heap = new long[Math.max(16, heapsz)]; // must be > 0
@@ -927,10 +934,7 @@ public class BinaryCasSerDes {
       longHeap = null;
       
       // cleared because only used for delta deser, for mods, and mods not allowed for multiple deltas
-      byteAuxAddr2fsa.clear();
-      shortAuxAddr2fsa.clear();
-      longAuxAddr2fsa.clear();     
-
+      clearAuxAddr2fsa();
     } catch (IOException e) {
       String msg = e.getMessage();
       if (msg == null) {
@@ -1323,18 +1327,20 @@ public class BinaryCasSerDes {
 
   
   /**
-   * Called when serializing a cas.
+   * Called when serializing a cas, or deserializing a delta CAS, if not saved in that case from a previous 
+   * binary serialization (in that case, the scan is done as if it is doing a non-delta serialization).
    * 
    * Initialize the serialization model for binary serialization in CASSerializer from a CAS
    * Do 2 scans, each by walking all the reachable FSs
    *   - The first one processes all fs (including for delta, those below the line)
    *      -- computes the fs to addr map and its inverse, based on the size of each FS.
+   *      -- done by CommonSerDesSequential class's "setup" method
    *      
    *   - The second one computes the values of the main and aux heaps and string heaps except for delta mods
    *      -- for delta, the heaps only have "new" values that binary serialization will write out as arrays
    *         --- mods are computed from FsChange info and added to the appropriate heaps, later  
    *
-   *         - for byte/short/long/string array use, compute auxAddr2fsa map. 
+   *         - for byte/short/long/string array use, compute auxAddr2fsa maps. 
    *           This is used when deserializing delta mod info, to locate the fs to update
    * 
    * For delta serialization, the heaps are populated only with the new values.
@@ -1350,16 +1356,20 @@ public class BinaryCasSerDes {
    * @param cs the CASSerializer instance used to record the results of the scan
    * @param mark null or the mark to use for separating the new from from the previously existing 
    *        used by delta cas.
+   * @return null or for delta, all the found FSs
    */
-  void scanAllFSsForBinarySerialization(MarkerImpl mark, CommonSerDesSequential csds) {
+  List<TOP> scanAllFSsForBinarySerialization(MarkerImpl mark, CommonSerDesSequential csds) {
     final boolean isMarkSet = mark != null;
 
+    List<TOP> all = null;
+    int prevHeapEnd = csds.getHeapEnd();  // used if mark is set
     if (isMarkSet) {
-      csds.setup(mark, csds.getHeapEnd());   // add new stuff to existing csds
-    }  // otherwise, it's set up using null, 1 as the arguments
+      
+      all = csds.setup(mark, csds.getHeapEnd());   // add new stuff to existing csds
+    }  // otherwise, it's set up already, using null, 1 as the arguments, when getCsds() is called
         
     // For delta, these heaps will start at 1, and only hold new items
-    heap = new Heap(csds.getHeapEnd());
+    heap = new Heap(isMarkSet ? (1 + csds.getHeapEnd() - prevHeapEnd) : csds.getHeapEnd());  
     byteHeap = new ByteHeap();
     shortHeap = new ShortHeap();
     longHeap = new LongHeap();
@@ -1367,18 +1377,31 @@ public class BinaryCasSerDes {
     
     if (!isMarkSet) {
       clearDeltaOffsets();  // set nextXXheapAfterMark to 0;
+      clearAuxAddr2fsa();
     }
 
-    List<TOP> itemsToExtract = isMarkSet ? CASImpl.filterAboveMark(csds.getSortedFSs(), mark) : csds.getSortedFSs();
+    List<TOP> itemsToExtract = csds.getSortedFSs(); 
+//        isMarkSet ? CASImpl.filterAboveMark(csds.getSortedFSs(), mark) : csds.getSortedFSs();
     for (TOP fs : itemsToExtract) {
       if (!isMarkSet || mark.isNew(fs)) {
         // skip extraction for FSs below the mark. 
         //   - updated slots will update aux heaps when delta mods are processed
         extractFsToV2Heaps(fs, isMarkSet, csds.fs2addr);
       }
-    }        
+    }
+    
+    return all;
   }
   
+//  /**
+//   * to support serializing addr in aux arrays for modifications below the mark,
+//   * scan to compute the starting address of each array that's below the mark
+//   * and build maps from Array FSs to aux array starting addresses
+//   */
+//  void scanAllFSsForBinaryDeltaSerialization(MarkerImpl mark, CommonSerDesSequential csds) {
+//      
+//  }
+//  
   /**
    * called in fs._id order to populate heaps from all FSs.
    * 
@@ -1422,7 +1445,8 @@ public class BinaryCasSerDes {
         
       case Slot_BooleanRef: {
           int baAddr = byteHeap .addBooleanArray(((BooleanArray)fs)._getTheArray());
-        heap.heap[i] = nextByteHeapAddrAfterMark + baAddr;
+          heap.heap[i] = nextByteHeapAddrAfterMark + baAddr;
+          byteAuxAddr2fsa.put(nextByteHeapAddrAfterMark + baAddr, fs);
 //        // hack to find first above-the-mark ref
 //        if (isMarkSet && baAddr < nextByteHeapAddrAfterMark) {
 //          nextByteHeapAddrAfterMark = baAddr;
@@ -1432,7 +1456,8 @@ public class BinaryCasSerDes {
         
       case Slot_ByteRef: {
           int baAddr = byteHeap .addByteArray   (((ByteArray   )fs)._getTheArray());
-        heap.heap[i] = nextByteHeapAddrAfterMark + baAddr;
+          heap.heap[i] = nextByteHeapAddrAfterMark + baAddr;
+          byteAuxAddr2fsa.put(nextByteHeapAddrAfterMark + baAddr, fs);
 //        // hack to find first above-the-mark ref
 //        if (isMarkSet && baAddr < nextByteHeapAddrAfterMark) {
 //          nextByteHeapAddrAfterMark = baAddr;
@@ -1442,17 +1467,20 @@ public class BinaryCasSerDes {
       case Slot_ShortRef: {
           int saAddr = shortHeap.addShortArray  (((ShortArray  )fs)._getTheArray());
           heap.heap[i] = nextShortHeapAddrAfterMark + saAddr;
+          shortAuxAddr2fsa.put(nextShortHeapAddrAfterMark + saAddr, fs);        
         }
         break;
         
       case Slot_LongRef: {
           int laAddr = longHeap .addLongArray   (((LongArray   )fs)._getTheArray());
           heap.heap[i] = nextLongHeapAddrAfterMark + laAddr;
+          longAuxAddr2fsa.put(nextLongHeapAddrAfterMark + laAddr, fs);        
         break;
         }
       case Slot_DoubleRef: {
           int laAddr = longHeap .addDoubleArray (((DoubleArray )fs)._getTheArray());
           heap.heap[i] = nextLongHeapAddrAfterMark + laAddr;
+          longAuxAddr2fsa.put(nextLongHeapAddrAfterMark + laAddr, fs);        
         break;
         }
       case Slot_HeapRef: 
@@ -1533,7 +1561,7 @@ public class BinaryCasSerDes {
     for (int heapIndex = startPos; heapIndex < heapsz; heapIndex += getFsSpaceReq(fs, type)) {
       type = tsi.getTypeForCode(heap.heap[heapIndex]);
       if (type == null) {
-        throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, heap.heap[heapIndex]);
+        throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, Integer.valueOf(heap.heap[heapIndex]));
       }
       if (type.isArray()) {
         final int len = heap.heap[heapIndex + arrayLengthFeatOffset];
@@ -1855,5 +1883,23 @@ public class BinaryCasSerDes {
     nextByteHeapAddrAfterMark   = 0;
     nextShortHeapAddrAfterMark  = 0;
     nextLongHeapAddrAfterMark   = 0;   
+  }
+  
+  private void clearAuxAddr2fsa() {
+    byteAuxAddr2fsa.clear();
+    shortAuxAddr2fsa.clear();
+    longAuxAddr2fsa.clear();    
+  }
+  /**
+   * called by cas reset
+   */
+  public void clear() {
+    clearDeltaOffsets();
+    clearAuxAddr2fsa();
+    heap = null;
+    byteHeap = null;
+    shortHeap = null;
+    longHeap = null;
+    stringHeap = null;
   }
 }

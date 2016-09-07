@@ -19,12 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.uima.cas.function.Consumer_T_withIOException;
 import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
@@ -79,10 +77,9 @@ public class CommonSerDesSequential {
   /**
    * The FSs in this list are not necessarily sequential, but is in ascending (simulated heap) order,
    *   needed for V2 compatibility of serialized forms.
-   * This is populated from the main CAS's id-to-fs map, which is accessed once;
-   *   Subsequent accessing of that could return different lists due to an intervening Garbage Collection.
+   * This is populated either during deserialization, or for serialization, from indexed + reachable.
    *   
-   * Before accessing this, any pending items must be merged.  
+   * Before accessing this, any pending items must be merged (sorting done lazily)  
    */
   final private List<TOP> sortedFSs = new ArrayList<>();  // holds the FSs sorted by id
   
@@ -137,24 +134,39 @@ public class CommonSerDesSequential {
     heapEnd = 0;
   }
   
-  void setup(MarkerImpl mark, int fromAddr) {
+  /**
+   * Scan all indexed + reachable FSs, sorted, and
+   *   - create two maps from those to/from the int offsets in the simulated main heap
+   *   - add all the (filtered - above the mark) FSs to the sortedFSs
+   *   - set the heapEnd
+   * @param mark null or the mark
+   * @param fromAddr often 1 but sometimes the mark next fsid
+   * @return all (not filtered) FSs sorted
+   */
+  List<TOP> setup(MarkerImpl mark, int fromAddr) {
     if (mark == null) {
       clear();
     }
     // local value as "final" to permit use in lambda below
-    final int[] nextAddr = {fromAddr};
+    int nextAddr = fromAddr;
     if (TRACE_SETUP) System.out.println("Cmn serDes sequential setup called by: " + Misc.getCaller());
 
-    List<TOP> allAboveMark = baseCas.walkReachablePlusFSsSorted(fs -> {
-          addFS1(fs, nextAddr[0]);
-          if (TRACE_SETUP) {
-            System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", fs._id, nextAddr[0], fs._getTypeImpl().getShortName());
-          }
-          nextAddr[0] += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  
-        }, mark, null, null);
+    List<TOP> all =  new AllFSs(baseCas).getAllFSsSorted();
+    List<TOP> filtered = CASImpl.filterAboveMark(all, mark);
+    for (TOP fs : filtered) {
+      addFS1(fs, nextAddr);   // doesn't update sortedFSs, that will be done below in batch
+      if (TRACE_SETUP) {
+          System.out.format("Cmn serDes sequential setup: add FS id: %,4d addr: %,5d  type: %s%n", 
+              Integer.valueOf(fs._id), 
+              Integer.valueOf(nextAddr), 
+              fs._getTypeImpl().getShortName());
+      }
+      nextAddr += BinaryCasSerDes.getFsSpaceReq(fs, fs._getTypeImpl());  
+    }
     
-    sortedFSs.addAll(allAboveMark);
-    heapEnd = nextAddr[0];
+    sortedFSs.addAll(filtered);
+    heapEnd = nextAddr;
+    return all;
 //    if (heapEnd == 0) {
 //      System.out.println("debug");
 //    }
@@ -172,6 +184,9 @@ public class CommonSerDesSequential {
 //    }
 //  }
 //  
+  /**
+   * @return sorted FSs above mark if mark set, otherwise all, sorted
+   */
   List<TOP> getSortedFSs() {
     if (pending.size() != 0) {
       merge();
