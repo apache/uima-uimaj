@@ -529,6 +529,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // misc
       flushEnabled = true;      
       componentInfo = null;
+      bcsd.clear();
       csds = null;
       llstringSet = null;
       traceFSid = 0;
@@ -610,7 +611,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         return;
       }
       if (newClassLoader != jcasClassLoader) {
-        if (jcasClassLoader != previousJCasClassLoader) {
+        if (null != previousJCasClassLoader) {
           /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
           throw new CASRuntimeException(CASRuntimeException.SWITCH_CLASS_LOADER_NESTED, 
                                         previousJCasClassLoader, jcasClassLoader, newClassLoader);
@@ -632,11 +633,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     
     void restoreClassLoader() {
-      if (null == previousJCasClassLoader || previousJCasClassLoader == jcasClassLoader) {
+      if (null == previousJCasClassLoader) {
         return;
       }
       // System.out.println("Switching back to previous class loader");
       jcasClassLoader = previousJCasClassLoader;
+      previousJCasClassLoader = null;
       generators = baseGenerators;
       id2tramp = null;
     }
@@ -2963,27 +2965,30 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     //   universal indirection - very inefficient, so just accept for now
     long st = System.nanoTime();
     walkReachablePlusFSsSorted(fsItem -> {
-      if (fsItem._getTypeImpl().hasRefFeature) {
-        if (fsItem instanceof FSArray) {
-          TOP[] a = ((FSArray)fsItem)._getTheArray();
-          for (int i = 0; i < a.length; i++) {
-            if (fs == a[i]) {
-              a[i] = newFs;
+          if (fsItem._getTypeImpl().hasRefFeature) {
+            if (fsItem instanceof FSArray) {
+              TOP[] a = ((FSArray)fsItem)._getTheArray();
+              for (int i = 0; i < a.length; i++) {
+                if (fs == a[i]) {
+                  a[i] = newFs;
+                }
+              }
+              return;
+            }
+          
+            final int sz = fsItem._getTypeImpl().nbrOfUsedRefDataSlots;
+            for (int i = 0; i < sz; i++) {
+              Object o = fsItem._getRefValueCommon(i);
+              if (o == fs) {
+                fsItem._setRefValueCommon(i, newFs);
+    //            fsItem._refData[i] = newFs;
+              }
             }
           }
-          return;
-        }
-      
-        final int sz = fsItem._getTypeImpl().nbrOfUsedRefDataSlots;
-        for (int i = 0; i < sz; i++) {
-          Object o = fsItem._getRefValueCommon(i);
-          if (o == fs) {
-            fsItem._setRefValueCommon(i, newFs);
-//            fsItem._refData[i] = newFs;
-          }
-        }
-      }
-    }, null, null, null);
+        }, 
+        null,   // mark
+        null,   // null or predicate for filtering what gets added
+        null);  // null or type mapper, skips if not in other ts
 
     if (MEASURE_SETINT) {
       mst.scantime += System.nanoTime() - st;
@@ -4480,25 +4485,22 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   /**
    * find all of the FSs via the indexes plus what's reachable.
    * sort into order by id,
-   * if mark is set, filter to include just those above the mark
    * 
    * Apply the action to those
-   * Return the (possibly filtered by mark) list of sorted FSs
+   * Return the list of sorted FSs
    * 
-   * @param action to perform on each item
+   * @param action_filtered   action to perform on each item after filtering
    * @param mark null or the mark
-   * @param includeFilter null or a filter (exclude items not in other type system
+   * @param includeFilter null or a filter (exclude items not in other type system)
    * @param typeMapper null or how to map to other type system, used to skip things missing in other type system
-   * @return sorted list of found items (if mark is set, only new ones)
+   * @return sorted list of all found items (ignoring mark)
    */
   public List<TOP> walkReachablePlusFSsSorted(
-      Consumer<TOP> action, MarkerImpl mark, Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {    
+    Consumer<TOP> action_filtered, MarkerImpl mark, Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {    
     List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper).getAllFSsSorted();
-    if (mark != null) {
-      all = filterAboveMark(all, mark);
-    }
-    for (TOP fs : all) {
-      action.accept(fs);
+    List<TOP> filtered = filterAboveMark(all, mark);
+    for (TOP fs : filtered) {
+      action_filtered.accept(fs);
     }
     return all;
   }
