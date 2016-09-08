@@ -77,7 +77,7 @@ import org.xml.sax.helpers.AttributesImpl;
  *       that were set aside when deserializing, and are to be "merged" back in when serializing
  *   <li>(S) a Marker (default: null) if supplied, where the separation between "new" and previously
  *       exisiting FeatureStructures are in the CAS; causes "delta" serialization, where only the 
- *       new and changed FeatureStructures are serailized.
+ *       new and changed FeatureStructures are serialized.
  * </ul>
  * 
  * Once the XmiCasSerializer instance is configured, the serialize method is called
