@@ -628,8 +628,8 @@ public class XmiCasDeserializer {
       this.deferredFsElement = new OotsElementData(
           idStr, 
           new XmlElementName(nameSpaceURI, localName, qualifiedName),
-          locator.getLineNumber(),
-          locator.getColumnNumber());
+          (locator == null) ? 0 : locator.getLineNumber(),
+          (locator == null) ? 0 : locator.getColumnNumber());
       
       deferredFSs.add(this.deferredFsElement);
       // This next call isn't about oots data, it's reusing that to store the attributes with the deferred thing.
@@ -1871,7 +1871,7 @@ public class XmiCasDeserializer {
      */
     @Override
     public void setDocumentLocator(Locator loc) {
-      // System.out.println("Setting document locator.");
+//       System.out.println("debug  DEBUG  Setting document locator.");
       this.locator = loc;
     }
 
