@@ -149,6 +149,10 @@ public class CasIOUtilsTest extends TestCase{
   public void testS6p() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6p", false);
   }
+  
+  public void testS6pTs() throws Exception {
+    testFormat(SerialFormat.COMPRESSED_FILTERED_TS, "bins6pTs", false);
+  }
 
   public void testS6pLenient() throws Exception {
     testFormat(SerialFormat.COMPRESSED_FILTERED_TSI, "bins6", true);
