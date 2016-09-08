@@ -541,7 +541,7 @@ public class BinaryCasSerDes {
           CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
           TypeSystemImpl tsRead = (cms != null) ? cms.getTypeSystem() : null;
           if (null != tsRead) {
-            tsRead.commit();  // no generators set up
+            tsRead = tsRead.commit();  // no generators set up
           }
             
           TypeSystemImpl ts_for_decoding =
@@ -943,7 +943,7 @@ public class BinaryCasSerDes {
       throw new CASRuntimeException(CASRuntimeException.BLOB_DESERIALIZATION, msg);
     }
 
-    return SerialFormat.BINARY;
+    return h.typeSystemIndexDefIncluded ? SerialFormat.BINARY_TSI : SerialFormat.BINARY;
   }
 
   void setHeapExtents() {
