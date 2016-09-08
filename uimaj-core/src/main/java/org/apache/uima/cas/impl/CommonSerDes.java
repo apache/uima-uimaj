@@ -50,8 +50,9 @@ public class CommonSerDes {
    *     - bit in 0x01 position: on for binary non-delta (redundant)   
    *     - bit in 0x02 position: on means delta, off - not delta
    *     - bit in 0x04 position: on means compressed, off means plain binary
-   *     - bit in 0x08 position: on means type system included
-   *     - bits  0xF8 reserved
+   *     - bit in 0x08 position: on means type system + indexes def included
+   *     - bit in 0x10 position: on means type system (only) included
+   *     - bits  0xF0 reserved
    *     
    *     - byte in 0xFF 00 position: incrementing (starting w/ 0) version
    *     
@@ -97,6 +98,7 @@ public class CommonSerDes {
       if (isDelta) v |= 0x02;
       if (isCompressed) v |= 0x04;
       if (typeSystemIndexDefIncluded) v |= 0x08;
+      if (typeSystemIncluded) v |= 0x10;
       v |= (seqVersionNbr << 8);
       if (isV3) v |= 0x010000;
       
@@ -194,6 +196,7 @@ public class CommonSerDes {
     h.isDelta = (v & 2) != 0;
     h.isCompressed = (v & 4) != 0;
     h.typeSystemIndexDefIncluded = (v & 8) != 0;
+    h.typeSystemIncluded = (v & 16) != 0;
     h.seqVersionNbr = (byte) ((v & 0xFF00) >> 8);
    
     if (h.isCompressed) {
