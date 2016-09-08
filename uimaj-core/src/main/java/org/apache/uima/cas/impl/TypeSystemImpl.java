@@ -1289,6 +1289,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // because it will call the type system iterator
   //    this.casMetadata.setupFeaturesAndCreatableTypes();
 
+
       if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
         WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
         if (null != prevWr) {
@@ -1296,10 +1297,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           if (null != prev) {
             return prev;
           }
-        }
-      
-        prevWr = new WeakReference<>(this);
-        committedTypeSystems.put(this, prevWr);
+        }      
       }
       
       topType.computeDepthFirstCode(1); // fixes up ordering, supers before subs. also sets hasRef.
@@ -1327,6 +1325,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //      FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
       
       this.locked = true;
+      
+      if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
+        committedTypeSystems.put(this, new WeakReference<>(this));
+      }
+
       return this;
     } // of sync block 
   }
@@ -2421,7 +2424,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   public static final TypeSystemImpl staticTsi = new TypeSystemImpl();
-  static { staticTsi.commit(); }  // needed to assign adjusted offsets to the builtins
+  static { 
+    TypeSystemImpl tsi = staticTsi.commit();  // needed to assign adjusted offsets to the builtins
+    if (tsi != staticTsi) Misc.internalError();  
+  }
   
   /**
    * HashCode and Equals
