@@ -350,6 +350,21 @@ public class CasCopierTest extends TestCase {
     assertFalse(wascaught);
     // verify copy
     CasComparer.assertEquals(annot, copy);
+    
+    // test copyFS with two CASs, different views, annotations
+    // create a destination CAS and the CasCopier instance
+    CAS destCas2 = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CAS destCas2v = destCas2.createView("secondView");
+    CasCopier copier2 = new CasCopier(srcCas, destCas2v);
+    
+    // copy an Annotation
+    annotIter = srcCas.<Annotation>getAnnotationIndex().iterator();
+    annot = annotIter.next();
+    copy = copier2.copyFs(annot);
+    destCas2v.addFsToIndexes(copy);
+    // verify copy
+    CasComparer.assertEquals(annot, copy);
+
   }
 
   public void testAnnotationWithNullSofaRef() throws Exception {
