@@ -58,7 +58,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +70,6 @@ import java.util.zip.InflaterInputStream;
 
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
