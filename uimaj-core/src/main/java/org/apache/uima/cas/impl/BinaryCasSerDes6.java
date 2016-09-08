@@ -722,7 +722,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     .delta(isSerializingDelta)
     .seqVer(0)
     .v3()
+    .typeSystemIncluded(isTsIncluded)
+    .typeSystemIndexDefIncluded(isTsiIncluded)
     .write(serializedOut);
+    
+    if (isTsIncluded || isTsiIncluded) {
+      CasIOUtils.writeTypeSystem(cas, serializedOut, isTsiIncluded);
+    }
     
     os = new OptimizeStrings(doMeasurements);
  
