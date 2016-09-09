@@ -193,6 +193,9 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.5.0</version> <!-- get a manifest error with v 2.3.7 
+                                      but changing the parent pom to 2.5.0 causes 
+                                      error - default pkg '.' not permitted, o.a.u.cas.impl -->
         <configuration>
           <instructions>
             <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
@@ -213,7 +216,6 @@
             <Import-Package>
               !org.eclipse.core.runtime,                 
 			  org.eclipse.core.resources,
-			  org.eclipse.core.runtime.model,
 			  org.eclipse.core.variables,
 			  org.eclipse.core.commands.common,
 			  org.eclipse.debug.core,
