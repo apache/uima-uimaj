@@ -45,7 +45,6 @@ public class AllTypes extends AbstractModelPart {
   /**
    * @return a map of Types, keyed by type name, including not only types defined in this TAE, but
    *         also supertypes of said types.
-   * @throws ResourceInitializationException -
    */
   public Map get() {
     if (dirty) {

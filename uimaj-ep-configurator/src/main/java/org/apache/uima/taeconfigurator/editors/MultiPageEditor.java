@@ -175,8 +175,8 @@ import org.xml.sax.SAXException;
  * SuperSuperclass (MultiPageEditorPart) holds array of editors (we only have 1 "editor" - the xml
  * source editor - the rest are views into that model / data).
  * 
- * Stale = model (on disk, saved) is ahead of widgets Dirty = widgets are ahead of model <<< NOT
- * USED HERE
+ * Stale = model (on disk, saved) is ahead of widgets Dirty = widgets are ahead of model 
+ * &lt;&lt;&lt; NOT USED HERE
  * 
  * Each page of the multipage editor has its own class. ownclass -%gt; HeaderPage -%gt; FormPage (impl
  * IFormPage) has instance of PageForm -%gt; ManagedForm ManagedForm (impl IManagedForm): has instance
@@ -190,8 +190,8 @@ import org.xml.sax.SAXException;
  * fireSelectionChanged(IFormPart, ISelection) - can be used to notify other parts that implement
  * IPartSelectionListener about selection changes
  * 
- * Each page has one or more sections. sectionSpecific -%gt; (AbstractTableSection) -%gt; AbstractSection ->
- * SectionPart -%gt; AbstractFormPart (impl IFormPart, see above)
+ * Each page has one or more sections. sectionSpecific -&gt; (AbstractTableSection) -&gt; 
+ * AbstractSection -&gt; SectionPart -&gt; AbstractFormPart (impl IFormPart, see above)
  * 
  * AbstractFormPart holds back ref to managed form, a dirty and stale bit. Stale = model is ahead of
  * widgets (Not used) Dirty = widgets are ahead of model Stale brought into sync by 'refresh'

@@ -479,8 +479,8 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   }
 
   /**
-   * In XML, a 0 - length string is represented as <xxx/>, while a null value causes the element to
-   * be omitted. Fix up values to be null if empty.
+   * In XML, a 0 - length string is represented as &lt;xxx/&gt;, while a null value causes the
+   * element to be omitted. Fix up values to be null if empty.
    * 
    * @param v
    * @return null for 0 length string

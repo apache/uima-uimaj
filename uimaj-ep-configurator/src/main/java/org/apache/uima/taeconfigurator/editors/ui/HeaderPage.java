@@ -80,8 +80,8 @@ public abstract class HeaderPage extends FormPage {
   }
 
   protected void maybeInitialize(IManagedForm managedForm) {
-    if (TAEConfiguratorPlugin.is30version)
-      ((ManagedForm) managedForm).initialize();
+//    if (TAEConfiguratorPlugin.is30version)
+//      ((ManagedForm) managedForm).initialize();
   }
 
   /*
