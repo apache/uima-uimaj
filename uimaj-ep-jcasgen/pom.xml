@@ -91,12 +91,6 @@
       <version>3.2.0</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime.compatibility</artifactId>
-      <version>3.1.100</version>
-      <scope>provided</scope>
-    </dependency>    
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
 			<artifactId>org.eclipse.jdt.core</artifactId>
@@ -110,12 +104,12 @@
       <version>2.1.0</version>
       <scope>provided</scope>
     </dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>org.eclipse.emf</groupId>
 			<artifactId>org.eclipse.emf.codegen</artifactId>
 			<version>2.10.0-v20150123-0452</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency-->
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>common</artifactId>
@@ -151,12 +145,6 @@
       <version>3.2.1</version>
       <scope>provided</scope>      
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.core</groupId>
-      <artifactId>org.eclipse.core.runtime.compatibility.auth</artifactId>
-      <version>3.2.0</version>
-      <scope>provided</scope>      
-    </dependency>  
     <dependency>
       <groupId>org.eclipse.osgi</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
@@ -220,7 +208,7 @@
             <Export-Package>
               org.apache.uima.jcas.jcasgenp
             </Export-Package>
-            <Bundle-Activator>org.eclipse.core.internal.compatibility.PluginActivator</Bundle-Activator>
+            <Bundle-Activator>org.apache.uima.jcas.jcasgenp.JgPlugin</Bundle-Activator>
 
             <!-- handle split packages in Eclipse.
               We do this by using Require-Bundle, and excluding from the Import-Package those

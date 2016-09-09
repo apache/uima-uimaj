@@ -21,7 +21,6 @@ package org.apache.uima.jcas.jcasgenp;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Plugin;
 
 /**
@@ -37,8 +36,8 @@ public class JgPlugin extends Plugin {
    * The constructor.
    */
 //  @edu.umd.cs.findbugs.annotations.SuppressWarnings("ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
-  public JgPlugin(IPluginDescriptor descriptor) {
-    super(descriptor);
+  public JgPlugin() {
+    super();
     plugin = this;
   }
 
