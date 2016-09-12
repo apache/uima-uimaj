@@ -390,7 +390,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   /**
    * FSs being serialized. For delta, just the deltas above the delta line.
    * Constructed from indexed plus reachable, above the delta line.
-   * Built from foundFSsBitset.
    */
   private List<TOP> fssToSerialize; 
   
