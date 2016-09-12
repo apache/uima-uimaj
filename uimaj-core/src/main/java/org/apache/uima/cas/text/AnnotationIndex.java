@@ -185,7 +185,7 @@ public interface AnnotationIndex<T extends AnnotationFS> extends FSIndex<T> {
    * <code>annot.getEnd() &lt; b.getEnd()</code>.
    * </p>
    * <p>
-   * A <code>ambiguous = false</code> specification produces an unambigouse iterator, which 
+   * A <code>ambiguous = false</code> specification produces an unambiguous iterator, which 
    * computes a subset of the annotations, going forward, such that annotations whose <code>begin</code>
    * is contained within the previous returned annotation's span, are skipped.
    * </p>
