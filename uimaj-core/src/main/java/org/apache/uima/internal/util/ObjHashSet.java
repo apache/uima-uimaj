@@ -49,7 +49,7 @@ public class ObjHashSet<T> implements Set<T>{
 
   private final T removedMarker;
 
-  private final Class<T> clazz;  // for rieifying the T type
+  private final Class<T> clazz;  // for reifying the T type
    
   private final float loadFactor = DEFAULT_LOAD_FACTOR;  
   
