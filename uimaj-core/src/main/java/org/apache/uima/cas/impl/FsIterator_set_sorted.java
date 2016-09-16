@@ -95,17 +95,18 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   
   @Override
   public void moveToNextNvc() { 
-//    checkConcurrentModification();  // skip this check because the Treeset has its own 
     if (isGoingForward) {
       if (isCurrentElementFromLastGet) {
         isCurrentElementFromLastGet = false;
       } else {
+        checkConcurrentModification();
         currentElement = iterator.next();
         // leave isCurrentElementFromLastGet false because we just moved to next, but haven't retrieved that value
       } 
     } else {
       //reverse direction
       if (!isCurrentElementFromLastGet) {
+        checkConcurrentModification();
         currentElement = iterator.next();  // need current value to do reverse iterator starting point
       }
       assert(currentElement != null);
@@ -127,18 +128,18 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   
   @Override
   public void moveToPreviousNvc() {
-
-//  checkConcurrentModification();  // skip this check because the Treeset has its own 
     if (!isGoingForward) {
       if (isCurrentElementFromLastGet) {
         isCurrentElementFromLastGet = false;
       } else {
+        checkConcurrentModification();
         currentElement = iterator.next();
         // leave isCurrentElementFromLastGet false
       } 
     } else {
       //reverse direction
       if (!isCurrentElementFromLastGet) {
+        checkConcurrentModification();
         currentElement = iterator.next();  // need current value to do reverse iterator starting point
       }
       assert(currentElement != null);
@@ -153,8 +154,8 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     if (!isValid()) {
       throw new NoSuchElementException();
     }
-//  checkConcurrentModification();  // skip this check because is done on some moves 
     if (!isCurrentElementFromLastGet) {
+      checkConcurrentModification(); 
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
     }
@@ -163,8 +164,8 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
 
   @Override
   public T getNvc() {
-//    checkConcurrentModification();  // don't need this check on get, only on some moves?
     if (!isCurrentElementFromLastGet) {
+      checkConcurrentModification();
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
     }
