@@ -25,7 +25,7 @@ import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.internal.util.OrderedFsSet_array;
+import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -36,7 +36,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   // We use TOP instead of T because the 
   // signature of getting a "matching" element limits the type to the declared type, and 
   // in UIMA we can use, say an Annotation instance as a moveTo arg, for a navSet of some subtype of Annotation.
-  final private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
+  private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
   
   final protected FsIndex_set_sorted<T> fsSetSortIndex;  // only for ll_getIndex, backwards compatibility
   
@@ -59,7 +59,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   FsIterator_set_sorted(FsIndex_set_sorted<T> fsSetSortIndex, TypeImpl ti, Comparator<FeatureStructure> comp) {
     super(ti, comp);
     this.fsSetSortIndex = fsSetSortIndex;
-    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getNavigableSet(); // cast to TOP to allow keys outside of range of returned values
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow(); // cast to TOP to allow keys outside of range of returned values
     iterator = (Iterator<T>) navSet.iterator();  // can't use fsSortIndex.iterator - that recursively calls this
     resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
   }
@@ -70,6 +70,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   @Override
   public void moveToFirst() {
 //    fsSetSortIndex.maybeProcessBulkAdds();
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow();
     iterator = (Iterator<T>) navSet.iterator();  // in case iterator was reverse, etc.
     resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     isGoingForward = true;
@@ -79,6 +80,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   @Override
   public void moveToLast() {
 //    fsSetSortIndex.maybeProcessBulkAdds();
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow();
     iterator =  (Iterator<T>) navSet.descendingIterator();
     resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     isGoingForward = false;
@@ -193,6 +195,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     isGoingForward = true;
     isCurrentElementFromLastGet = false;
     currentElement = null;   
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow();
 //    fsSetSortIndex.maybeProcessBulkAdds();  // not needed, always done due to previous size() call when creating iterator    
     Iterator<T> it = (Iterator<T>) navSet.headSet(fs, false).descendingIterator();  // may have a bunch of equal (using withoutID compare) at end
     // last element in headSet is 1 before the one LE fs.
@@ -215,7 +218,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     TOP elementBefore = null;
     boolean comparedEqual = false;  // value is ignored, but needed for Java compile
     while (it.hasNext()) {
-      comparedEqual = (0 == ((OrderedFsSet_array)navSet).comparatorWithoutID.compare(elementBefore = (TOP)it.next(), fs));
+      comparedEqual = (0 == ((CopyOnWriteOrderedFsSet_array)navSet).comparatorWithoutID.compare(elementBefore = (TOP)it.next(), fs));
       if (!comparedEqual) {
         break;
       }
@@ -243,7 +246,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   
   @Override
   protected int getModificationCountFromIndex() {
-    return ((OrderedFsSet_array)navSet).getModificationCount();
+    return ((CopyOnWriteOrderedFsSet_array)navSet).getModificationCount();
   }
 }
 

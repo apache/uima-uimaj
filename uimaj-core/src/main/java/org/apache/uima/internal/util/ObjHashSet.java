@@ -40,7 +40,7 @@ import org.apache.uima.cas.FeatureStructure;
  * so find operations continue to work (they can't stop upon finding this object).
  *
  */
-public class ObjHashSet<T> implements Set<T>{
+public class ObjHashSet<T> implements Set<T> {
   
   public static final float DEFAULT_LOAD_FACTOR = 0.66F;
   // set to true to collect statistics for tuning
@@ -89,6 +89,24 @@ public class ObjHashSet<T> implements Set<T>{
       maxProbe = 0;
     }
     this.removedMarker = removedMarker;
+  }
+  
+  /**
+   * Copy constructor
+   * @param ohs
+   */
+  public ObjHashSet(ObjHashSet<T> ohs) {
+    this.removedMarker = ohs.removedMarker;
+    this.clazz = ohs.clazz;
+    this.initialCapacity = ohs.initialCapacity;
+    this.histogram = ohs.histogram;
+    this.maxProbe = ohs.maxProbe;
+    this.sizeWhichTriggersExpansion = ohs.sizeWhichTriggersExpansion;
+    this.size = ohs.size;
+    this.nbrRemoved = ohs.nbrRemoved;
+    this.keys = ohs.keys.clone();
+    this.secondTimeShrinkable = ohs.secondTimeShrinkable;
+    this.modificationCount = ohs.modificationCount;
   }
   
   private void newTableKeepSize(int capacity) {
@@ -451,32 +469,32 @@ public class ObjHashSet<T> implements Set<T>{
     return new ObjHashSetIterator();
   }
   
-  public int moveToFirst() {
+  private int moveToFirst() {
     return (size() == 0) ? -1 : moveToNextFilled(0);
   }
 
-  public int moveToLast() {
-    return (size() == 0) ? -1 : moveToPreviousFilled(getCapacity() -1);
-  }
+//  private int moveToLast() {
+//    return (size() == 0) ? -1 : moveToPreviousFilled(getCapacity() -1);
+//  }
 
-  public int moveToNext(int position) {
-    if (position < 0) {
-      return position;
-    }
-    final int n = moveToNextFilled(position + 1); 
-    return (n >= getCapacity()) ? -1 : n;
-  }
+//  private int moveToNext(int position) {
+//    if (position < 0) {
+//      return position;
+//    }
+//    final int n = moveToNextFilled(position + 1); 
+//    return (n >= getCapacity()) ? -1 : n;
+//  }
 
-  public int moveToPrevious(int position) {
+  private int moveToPrevious(int position) {
     if (position >= getCapacity()) {
       return -1;
     }
     return moveToPreviousFilled(position - 1);
   }
 
-  public boolean isValid(int position) {
-    return (position >= 0) && (position < getCapacity());
-  }
+//  public boolean isValid(int position) {
+//    return (position >= 0) && (position < getCapacity());
+//  }
   
   /**
    * if the fs is in the set, the iterator should return it.
@@ -576,4 +594,5 @@ public class ObjHashSet<T> implements Set<T>{
   public int getModificationCount() {
     return modificationCount;
   }
+  
 }

@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -29,6 +30,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.internal.util.CopyOnWriteObjHashSet;
+import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -102,7 +105,21 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   // The index, a NavigableSet. 
 //  final private TreeSet<FeatureStructure> indexedFSs;
 //  final private TreeSet<FeatureStructure> indexedFSs;
-    final private OrderedFsSet_array indexedFSs;
+  final private OrderedFsSet_array indexedFSs;
+  
+  /**
+   * Copy on write, initially null
+   * Iterator creation initializes (if not null), and uses.
+   * Modification to index:
+   *    call cow.makeCopy();
+   *    set cow = null
+   *    do the modification
+   * index clear/flush - set to null;
+   * 
+   * Weak ref so that after iterator is GC'd, and no ref's exist, this becomes null, so that
+   * future mods no longer need to do extra work.
+   */
+  private WeakReference<CopyOnWriteOrderedFsSet_array> cow = null;
     
   final private Comparator<TOP> comparatorWithID;
   final private Comparator<TOP> comparatorWithoutID;
@@ -156,6 +173,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 
   @Override
   public void flush() {
+    this.cow = null;
     this.indexedFSs.clear();
 //    this.itemsToBeAdded.clear();
 //    this.largestItemNotYetAdded = null;
@@ -204,7 +222,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 //    }
 //    
     // past the initial load, or item is not > previous largest item to be added 
-    
+    maybeCopy();
     indexedFSs.add((TOP)fs);
 //    // batch this add 
 //    largestItemNotYetAdded = fs;
@@ -308,6 +326,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   @Override
   public boolean deleteFS(T fs) {
 //    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
+    maybeCopy();
     return this.indexedFSs.remove(fs);
   }
   
@@ -329,9 +348,36 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    
   @Override
   public FSIterator<T> iterator() {
+    if (cow == null || null == cow.get()) {
+      cow = new WeakReference<>(new CopyOnWriteOrderedFsSet_array(this.indexedFSs));
+    }
     return casImpl.inPearContext()
              ? new FsIterator_set_sorted_pear<>(this, type, this)
              : new FsIterator_set_sorted     <>(this, type, this);
+  }
+  
+  private void maybeCopy() {
+    if (cow != null) { 
+      CopyOnWriteOrderedFsSet_array v = cow.get();
+      if (v != null) {
+        v.makeCopy();    
+      }
+      cow = null;
+    }
+  }
+  
+  public CopyOnWriteOrderedFsSet_array getCow() {
+    if (cow != null) {
+      CopyOnWriteOrderedFsSet_array n = cow.get();
+      if (n != null) {
+        return n;
+      }
+    }
+    
+    // null means index updated since iterator was created, need to make new cow and use it
+    CopyOnWriteOrderedFsSet_array n = new CopyOnWriteOrderedFsSet_array(indexedFSs);
+    cow = new WeakReference<>(n);
+    return n;
   }
     
 //  synchronized void maybeProcessBulkAdds() {

@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +27,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.internal.util.CopyOnWriteObjHashSet;
+import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.internal.util.ObjHashSet;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -42,6 +45,18 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   // The index
   final private ObjHashSet<TOP> index;
+  
+
+  /**
+   * Copy on write, initially null
+   * Iterator creation initializes (if not null).
+   * Modification to index:
+   *    call cow.makeCopy();
+   *    set cow = null
+   *    do the modification
+   * index clear/flush - set to null;
+   */
+  private WeakReference<CopyOnWriteObjHashSet<TOP>> cow = null;
   
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
@@ -67,10 +82,12 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   public void flush() {
     index.clear();
+    cow = null;
   }
 
   @Override
   public final void insert(T fs) {
+    maybeCopy();
     index.add((TOP) fs);
   }
 
@@ -163,6 +180,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public boolean deleteFS(T fs) {
+    maybeCopy();
     return this.index.remove(fs);
   }
   
@@ -185,6 +203,9 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public FSIterator<T> iterator() {
+    if (null == cow || null == cow.get()) {
+      cow = new WeakReference<>(new CopyOnWriteObjHashSet<TOP>(index));
+    }
     return casImpl.inPearContext()
              ? new FsIterator_bag_pear<>(this, type)
              : new FsIterator_bag     <>(this, type);
@@ -192,8 +213,33 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   
   ObjHashSet<TOP> getObjHashSet() {
     return index;
+  } 
+
+  private void maybeCopy() {
+    if (cow != null) {
+      CopyOnWriteObjHashSet<TOP> v = cow.get();
+      if (v != null) {
+        v.makeCopy();
+      }
+      cow = null;
+    }
   }
   
-  
-
+  /**
+   * Called when iterator created, and when a reset concur mod happens
+   * @return cow to use in iterator
+   */
+  public CopyOnWriteObjHashSet<TOP> getCow() {
+    if (cow != null) {
+      CopyOnWriteObjHashSet<TOP> n = cow.get();
+      if (n != null) {
+        return n;
+      }
+    }
+    
+    // null means index updated since iterator was created, need to make new cow and use it
+    CopyOnWriteObjHashSet<TOP> n = new CopyOnWriteObjHashSet<TOP>(index);
+    cow = new WeakReference<>(n);
+    return n;
+  }
 }

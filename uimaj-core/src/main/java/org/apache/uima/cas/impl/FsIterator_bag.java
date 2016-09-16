@@ -22,11 +22,13 @@ package org.apache.uima.cas.impl;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.internal.util.CopyOnWriteObjHashSet;
 import org.apache.uima.internal.util.ObjHashSet;
+import org.apache.uima.jcas.cas.TOP;
 
 class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
-  private ObjHashSet<T> bag;
+  private CopyOnWriteObjHashSet<TOP> bag;
   
   private int position = -1;  
   
@@ -37,8 +39,6 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti) {
     super(ti, null);  // null: null comparator for bags
     this.fsBagIndex = fsBagIndex;  // need for copy()
-    bag = (ObjHashSet<T>) fsBagIndex.getObjHashSet();
-    resetConcurrentModification();
     moveToFirst();
   }
 
@@ -57,14 +57,14 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   public T get() {
     checkConcurrentModification();
     if (isValid()) {
-      return bag.get(position);
+      return (T) bag.get(position);
     }
     throw new NoSuchElementException();
   }
 
   public T getNvc() {
     checkConcurrentModification();
-    return bag.get(position);
+    return (T) bag.get(position);
   }
 
   /* (non-Javadoc)
@@ -72,6 +72,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToFirst() {
+    bag = fsBagIndex.getCow();
     resetConcurrentModification();
     isGoingForward = true;
     position = (bag.size() == 0) ? -1 : bag.moveToNextFilled(0);
@@ -83,6 +84,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToLast() {
+    bag = fsBagIndex.getCow();
     resetConcurrentModification();
     isGoingForward = false;
     position =  (bag.size() == 0) ? -1 : bag.moveToPreviousFilled(bag.getCapacity() -1);
@@ -132,6 +134,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveTo(FeatureStructure fs) {
+    bag = fsBagIndex.getCow();
     resetConcurrentModification();
     position = bag.moveTo(fs);
   }

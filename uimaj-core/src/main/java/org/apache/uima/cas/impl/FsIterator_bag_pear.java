@@ -22,6 +22,11 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
+ * This version of the FsIterator is used while iterating within a PEAR
+ * Indexes keep references to the base (possibly non-pear) version of FSs.
+ * During iteration, within PEARs, if there's a different JCas class for the type, 
+ * the corresponding class instance needs to be found (or created) and returned.
+ * 
  * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
  */
 class FsIterator_bag_pear<T extends FeatureStructure> extends FsIterator_bag<T> {

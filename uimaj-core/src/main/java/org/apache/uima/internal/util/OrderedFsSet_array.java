@@ -108,9 +108,30 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
   private int lastRemovedPos = -1;
     
   private StringBuilder tr = TRACE ? new StringBuilder() : null;
+  
   public OrderedFsSet_array(Comparator<TOP> comparatorWithID, Comparator<TOP> comparatorWithoutID) {
     this.comparatorWithID = comparatorWithID;
     this.comparatorWithoutID = comparatorWithoutID;
+  }
+  
+  /**
+   * copy constructor
+   * @param set the original to be copied
+   */
+  public OrderedFsSet_array(OrderedFsSet_array set) {
+    set.processBatch();
+    this.a = set.a.clone();
+    this.a_nextFreeslot = set.a_nextFreeslot;
+    this.a_firstUsedslot = set.a_firstUsedslot;
+    this.comparatorWithID = set.comparatorWithID;
+    this.comparatorWithoutID = set.comparatorWithoutID;
+    this.size = set.size;
+    this.maxSize = set.maxSize;
+    this.highest = set.highest;
+    this.nullBlockStart = set.nullBlockStart;
+    this.nullBlockEnd = set.nullBlockEnd;
+    this.modificationCount = set.modificationCount;
+    this.lastRemovedPos = set.lastRemovedPos;
   }
 
   @Override
@@ -1088,9 +1109,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
        
       @Override
       public boolean hasNext() {
-        if (batch.size() > 0) {
-          throw new ConcurrentModificationException();
-        }
+        processBatch();
         return pos < a_nextFreeslot;
       }
       
@@ -1647,4 +1666,5 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     }
 
   }
+  
 }

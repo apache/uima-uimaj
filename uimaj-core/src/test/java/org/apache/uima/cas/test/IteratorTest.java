@@ -334,6 +334,8 @@ public class IteratorTest extends TestCase {
       for (int j = 0; j < 2; j++) {
         assertTrue(it.isValid());
         AnnotationFS fs = it.get();
+        this.cas.getIndexRepository().addFS(testAnnot);
+        this.cas.getIndexRepository().removeFS(testAnnot);
         assertEquals(1, fs.getBegin()); 
         assertEquals(2, fs.getEnd());
         it.moveToNext();
@@ -713,6 +715,7 @@ public class IteratorTest extends TestCase {
   
   private void expectCCE(FeatureStructure a, FSIterator it, boolean isShouldFail) {
     boolean ok = false;
+    isShouldFail = false; // after fix
     try {
       it.moveToNext();
       it.get();  // for set/sorted, the get does the actual "move" operation
