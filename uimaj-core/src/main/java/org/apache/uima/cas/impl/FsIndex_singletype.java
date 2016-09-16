@@ -36,7 +36,7 @@ import org.apache.uima.jcas.cas.TOP;
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding subtypes)
  *   The name "Leaf" is a misnomer - it's just over one type excluding any subtypes if they exist
- * Subtypes define the actual index repository (integers indexing the CAS) for each kind.
+ * SubClasses define the actual index repository for each kind.
  * 
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
@@ -44,6 +44,10 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
 
   private final static String[] indexTypes = new String[] {"Sorted", "Set", "Bag", "DefaultBag"};
   
+  /**
+   * shares equal FSIndexComparatorImpl comparatorForIndexSpecs objects
+   * updates and accesses are synchronized
+   */
   private final static WeakHashMap<FSIndexComparatorImpl, WeakReference<FSIndexComparatorImpl>> comparatorCache = 
       new WeakHashMap<>();
 
@@ -52,6 +56,9 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   // A reference to the low-level CAS.
   final protected CASImpl casImpl;
   
+  /**
+   * comparator for an index, passed in as an argument to the constructor
+   */
   final private FSIndexComparatorImpl comparatorForIndexSpecs;
 
   /***********  Info about Index Comparator (not used for bag ***********
