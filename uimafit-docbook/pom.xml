@@ -30,6 +30,7 @@
 	<packaging>pom</packaging>
 	<properties>
 		<uimaScmProject>${project.artifactId}</uimaScmProject>
-		<bookNameRoot>tools.uimafit.book</bookNameRoot>
+        <bookNameRoot>tools.uimafit.book</bookNameRoot>
+        <maven.deploy.skip>true</maven.deploy.skip>
 	</properties>
 </project>
