@@ -28,13 +28,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XCASSerializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
 import org.apache.uima.cas.impl.XmiCasSerializer;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.util.CasIOUtils;
 import org.xml.sax.SAXException;
 
+/**
+ * Convenience methods for loading and saving CAS to disk.
+ * 
+ * @deprecated Since UIMA 2.9.0 the core class {@link CasIOUtils} should be used.
+ */
+@Deprecated
 public class CasIOUtil {
 
   private CasIOUtil() {
@@ -51,7 +59,9 @@ public class CasIOUtil {
    *          the file to read from
    * @throws IOException
    *           if there is a problem reading the file
+   * @deprecated Use {@link CasIOUtils#load(java.net.URL, CAS)} instead.
    */
+  @Deprecated
   public static void readCas(CAS aCas, File aFile) throws IOException {
     String lowerCaseFileName = aFile.getName().toLowerCase();
     if (lowerCaseFileName.endsWith(".xmi")) {
@@ -71,7 +81,9 @@ public class CasIOUtil {
    *          the file to read from
    * @throws IOException
    *           if there is a problem reading the file
+   * @deprecated Use {@link CasIOUtils#load(java.net.URL, CAS)} instead.
    */
+  @Deprecated
   public static void readXmi(CAS aCas, File aFile) throws IOException {
     InputStream is = null;
     try {
@@ -96,7 +108,10 @@ public class CasIOUtil {
    *          the file to write to
    * @throws IOException
    *           if there is a problem writing the file
+   * @deprecated Use {@link CasIOUtils#save(CAS, OutputStream, org.apache.uima.cas.SerialFormat)}
+   *             with {@link SerialFormat#XMI} instead.
    */
+  @Deprecated
   public static void writeXmi(CAS aCas, File aFile) throws IOException {
     OutputStream os = null;
     try {
@@ -114,14 +129,15 @@ public class CasIOUtil {
   }
 
   /**
-   * 
    * @param aCas
    *          the target CAS
    * @param aFile
    *          the file to read from
    * @throws IOException
    *           if there is a problem reading the file
+   * @deprecated Use {@link CasIOUtils#load(java.net.URL, CAS)} instead.
    */
+  @Deprecated
   public static void readXCas(CAS aCas, File aFile) throws IOException {
     InputStream is = null;
     try {
@@ -146,7 +162,10 @@ public class CasIOUtil {
    *          the file to write to
    * @throws IOException
    *           if there is a problem writing the file
+   * @deprecated Use {@link CasIOUtils#save(CAS, OutputStream, org.apache.uima.cas.SerialFormat)}
+   *             with {@link SerialFormat#XCAS} instead.
    */
+  @Deprecated
   public static void writeXCas(CAS aCas, File aFile) throws IOException {
     OutputStream os = null;
     try {
@@ -173,7 +192,9 @@ public class CasIOUtil {
    *          the file to read from
    * @throws IOException
    *           if there is a problem reading the file
+   * @deprecated Use {@link CasIOUtils#load(java.net.URL, CAS)} instead.
    */
+  @Deprecated
   public static void readJCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readCas(aJCas.getCas(), aFile);
   }
@@ -186,7 +207,9 @@ public class CasIOUtil {
    *          the file to read from
    * @throws IOException
    *           if there is a problem reading the file
+   * @deprecated Use {@link CasIOUtils#load(java.net.URL, CAS)} instead.
    */
+  @Deprecated
   public static void readXmi(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readXmi(aJCas.getCas(), aFile);
   }
@@ -199,7 +222,10 @@ public class CasIOUtil {
    *          the file to write to
    * @throws IOException
    *           if there is a problem writing the file
+   * @deprecated Use {@link CasIOUtils#save(CAS, OutputStream, org.apache.uima.cas.SerialFormat)}
+   *             with {@link SerialFormat#XMI} instead.
    */
+  @Deprecated
   public static void writeXmi(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.writeXmi(aJCas.getCas(), aFile);
   }
@@ -212,7 +238,9 @@ public class CasIOUtil {
    *          the file to read from
    * @throws IOException
    *           if there is a problem reading the file
+   * @deprecated Use {@link CasIOUtils#load(java.net.URL, CAS)} instead.
    */
+  @Deprecated
   public static void readXCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.readXCas(aJCas.getCas(), aFile);
   }
@@ -225,7 +253,10 @@ public class CasIOUtil {
    *          the file to write to
    * @throws IOException
    *           if there is a problem writing the file
+   * @deprecated Use {@link CasIOUtils#save(CAS, OutputStream, org.apache.uima.cas.SerialFormat)}
+   *             with {@link SerialFormat#XCAS} instead.
    */
+  @Deprecated
   public static void writeXCas(JCas aJCas, File aFile) throws IOException {
     CasIOUtil.writeXCas(aJCas.getCas(), aFile);
   }

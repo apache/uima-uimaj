@@ -22,6 +22,13 @@
   <section>
     <title>Version 2.2.0 to 2.3.0</title>
     <formalpara>
+      <title>CasIOUtil deprecated</title>
+      <para>The functionality of the uimaFIT CasIOUtil class has been superseded by the core UIMA
+      class CasIOUtils added in UIMA 2.9.0. The method signatures in the new class are not the
+      same, but provide more functionality. CasIOUtil has been deprecated and documentation has
+      been added which of the CasIOUtils methods should be used instead.</para>
+    </formalpara>
+    <formalpara>
       <title>Version requirements</title>
       <para>Depends on UIMA 2.9.0, Spring Framework 3.2.16 and Java 7.</para>
     </formalpara>
