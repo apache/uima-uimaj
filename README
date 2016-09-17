@@ -42,7 +42,7 @@ What's New in 2.3.0
 
 uimaFIT 2.3.0 is a minor feature and bugfix release to uimaFIT 2.2.0. It should should serve as a
 drop-in replacement for previous uimaFIT 2.x versions. Mind that uimaFIT 2.3.0 now requires UIMA
-2.9.0.
+2.9.1.
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
@@ -51,7 +51,7 @@ A full list of issues addressed in this release can be found on the Apache issue
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.7 or higher, UIMA 2.9.0 or higher, and the Spring Framework 3.2.16 or higher.
+uimaFIT requires Java 1.7 or higher, UIMA 2.9.1 or higher, and the Spring Framework 3.2.16 or higher.
 
 
 Availability

@@ -30,7 +30,7 @@
     </formalpara>
     <formalpara>
       <title>Version requirements</title>
-      <para>Depends on UIMA 2.9.0, Spring Framework 3.2.16 and Java 7.</para>
+      <para>Depends on UIMA 2.9.1, Spring Framework 3.2.16 and Java 7.</para>
     </formalpara>
     <formalpara>
       <para>Mind the updated version requirements. There should be no other potentially problematic
