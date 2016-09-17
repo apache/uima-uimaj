@@ -75,15 +75,15 @@
                   META-INF/org.apache.uima.fit/typepriorities.txt\
                 &lt;/resource>
               &lt;/transformer>
-              &lt;!-- 
-                Prevent huge shaded artifacts from being deployed
-                to a Maven repository (remove if not desired) 
-              -->
-              &lt;outputFile>\
-                ${project.build.directory}/\
-                ${artifactId}-${version}-standalone.jar\
-              &lt;/outputFile>
             &lt;/transformers>
+            &lt;!-- 
+              Prevent huge shaded artifacts from being deployed
+              to a Maven repository (remove if not desired) 
+            -->
+            &lt;outputFile>\
+              ${project.build.directory}/\
+              ${artifactId}-${version}-standalone.jar\
+            &lt;/outputFile>
           &lt;/configuration>
         &lt;/execution>
       &lt;/executions>
