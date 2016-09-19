@@ -21,12 +21,13 @@ package org.apache.uima.internal.util;
 import java.util.Iterator;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 
 /**
  * implements ObjHashSet partially, for iterator use
  */
 
-public class CopyOnWriteObjHashSet<T> {
+public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   
   private ObjHashSet<T> ohs;
   
@@ -38,6 +39,7 @@ public class CopyOnWriteObjHashSet<T> {
   /**
    * Called by index when about to make an update
    */
+  @Override
   public void makeCopy() {
     ohs = new ObjHashSet<>(ohs);
   }

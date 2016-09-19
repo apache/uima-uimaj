@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.internal.util.CopyOnWriteObjHashSet;
-import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.internal.util.ObjHashSet;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -47,16 +45,16 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   final private ObjHashSet<TOP> index;
   
 
-  /**
-   * Copy on write, initially null
-   * Iterator creation initializes (if not null).
-   * Modification to index:
-   *    call cow.makeCopy();
-   *    set cow = null
-   *    do the modification
-   * index clear/flush - set to null;
-   */
-  private WeakReference<CopyOnWriteObjHashSet<TOP>> cow = null;
+//  /**
+//   * Copy on write, initially null
+//   * Iterator creation initializes (if not null).
+//   * Modification to index:
+//   *    call cow.makeCopy();
+//   *    set cow = null
+//   *    do the modification
+//   * index clear/flush - set to null;
+//   */
+//  private WeakReference<CopyOnWriteObjHashSet<TOP>> cow = null;
   
   FsIndex_bag(CASImpl cas, Type type, int initialSize, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, cleanUpComparator(comparatorForIndexSpecs, cas));
@@ -80,9 +78,10 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return newComp;
   }
 
+  @Override
   public void flush() {
+    super.flush();
     index.clear();
-    cow = null;
   }
 
   @Override
@@ -144,6 +143,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    *           FSs in the index.
    * @return <code>true</code> if the index contains such an element.
    */
+  @Override
   public boolean contains(FeatureStructure fs) {
     return this.index.contains(fs);
   }
@@ -170,6 +170,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   /**
    * @see org.apache.uima.cas.FSIndex#size()
    */
+  @Override
   public int size() {
     return this.index.size();
   }
@@ -189,6 +190,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return deleteFS((T) casImpl.getFsFromId_checked(fsRef));
   }
 
+  @Override
   public int hashCode() {
     throw new UnsupportedOperationException();
   }
@@ -203,43 +205,48 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public FSIterator<T> iterator() {
-    if (null == cow || null == cow.get()) {
-      cow = new WeakReference<>(new CopyOnWriteObjHashSet<TOP>(index));
-    }
+    setupIteratorCopyOnWrite();
     return casImpl.inPearContext()
              ? new FsIterator_bag_pear<>(this, type)
              : new FsIterator_bag     <>(this, type);
   }
   
-  ObjHashSet<TOP> getObjHashSet() {
-    return index;
-  } 
-
-  private void maybeCopy() {
-    if (cow != null) {
-      CopyOnWriteObjHashSet<TOP> v = cow.get();
-      if (v != null) {
-        v.makeCopy();
-      }
-      cow = null;
-    }
+  @Override
+  protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
+    return new CopyOnWriteObjHashSet<TOP>(index);
   }
   
-  /**
-   * Called when iterator created, and when a reset concur mod happens
-   * @return cow to use in iterator
-   */
-  public CopyOnWriteObjHashSet<TOP> getCow() {
-    if (cow != null) {
-      CopyOnWriteObjHashSet<TOP> n = cow.get();
-      if (n != null) {
-        return n;
-      }
-    }
+//  ObjHashSet<TOP> getObjHashSet() {
+//    return index;
+//  } 
     
-    // null means index updated since iterator was created, need to make new cow and use it
-    CopyOnWriteObjHashSet<TOP> n = new CopyOnWriteObjHashSet<TOP>(index);
-    cow = new WeakReference<>(n);
-    return n;
-  }
+
+//  private void maybeCopy() {
+//    if (cow != null) {
+//      CopyOnWriteObjHashSet<TOP> v = cow.get();
+//      if (v != null) {
+//        v.makeCopy();
+//      }
+//      cow = null;
+//    }
+//  }
+  
+//  /**
+//   * Called when iterator created, and when a reset concur mod happens
+//   * @return cow to use in iterator
+//   */
+//  public CopyOnWriteObjHashSet<TOP> getNonNullCow() {
+//    if (cow != null) {
+//      CopyOnWriteObjHashSet<TOP> n = cow.get();
+//      if (n != null) {
+//        return n;
+//      }
+//    }
+//    
+//    // null means index updated since iterator was created, need to make new cow and use it
+//    CopyOnWriteObjHashSet<TOP> n = new CopyOnWriteObjHashSet<TOP>(index);
+//    cow = new WeakReference<>(n);
+//    return n;
+//  }
+  
 }

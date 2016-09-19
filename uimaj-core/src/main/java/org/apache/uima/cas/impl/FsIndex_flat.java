@@ -29,6 +29,7 @@ import java.util.List;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.IntVector;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * Common part of flattened indexes, used for both snapshot iterators and 
@@ -36,7 +37,7 @@ import org.apache.uima.internal.util.IntVector;
  *  
  * @param <T> the Java class type for this index
  */
-public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> {
+public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> implements CopyOnWriteIndexPart {
 
   // The index, an array.
   final private FeatureStructure[] indexedFSs;
@@ -144,6 +145,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   /**
    * @see org.apache.uima.cas.FSIndex#size()
    */
+  @Override
   public int size() {
     return this.indexedFSs.length;
   }
@@ -151,6 +153,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   /**
    * @see org.apache.uima.cas.impl.FsIndex_singletype#deleteFS(T)
    */
+  @Override
   public boolean deleteFS(T fs) {
     throw new UnsupportedOperationException();
   }  
@@ -175,5 +178,21 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
     return comparator.compare(fs1,  fs2);
   }
+
+  @Override
+  protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
+    Misc.internalError();  // should never be called
+    return this;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#makeCopy()
+   */
+  @Override
+  public void makeCopy() {
+    Misc.internalError(); // should never be called
+  }
+  
+  
 
 }

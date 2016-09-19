@@ -59,9 +59,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   FsIterator_set_sorted(FsIndex_set_sorted<T> fsSetSortIndex, TypeImpl ti, Comparator<FeatureStructure> comp) {
     super(ti, comp);
     this.fsSetSortIndex = fsSetSortIndex;
-    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow(); // cast to TOP to allow keys outside of range of returned values
-    iterator = (Iterator<T>) navSet.iterator();  // can't use fsSortIndex.iterator - that recursively calls this
-    resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
+    moveToFirst();
   }
 
   @Override
@@ -70,7 +68,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   @Override
   public void moveToFirst() {
 //    fsSetSortIndex.maybeProcessBulkAdds();
-    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow();
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getNonNullCow();
     iterator = (Iterator<T>) navSet.iterator();  // in case iterator was reverse, etc.
     resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     isGoingForward = true;
@@ -80,7 +78,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   @Override
   public void moveToLast() {
 //    fsSetSortIndex.maybeProcessBulkAdds();
-    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow();
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getNonNullCow();
     iterator =  (Iterator<T>) navSet.descendingIterator();
     resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     isGoingForward = false;
@@ -195,7 +193,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     isGoingForward = true;
     isCurrentElementFromLastGet = false;
     currentElement = null;   
-    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getCow();
+    this.navSet = (NavigableSet<TOP>) fsSetSortIndex.getNonNullCow();
 //    fsSetSortIndex.maybeProcessBulkAdds();  // not needed, always done due to previous size() call when creating iterator    
     Iterator<T> it = (Iterator<T>) navSet.headSet(fs, false).descendingIterator();  // may have a bunch of equal (using withoutID compare) at end
     // last element in headSet is 1 before the one LE fs.

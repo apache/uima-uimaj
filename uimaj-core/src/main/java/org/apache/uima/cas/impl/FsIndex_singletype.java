@@ -63,7 +63,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
 
   /***********  Info about Index Comparator (not used for bag ***********
    * Index into these arrays is the key number (indexes can have multiple keys)
-   */
+   **********************************************************************/
   // For each key, the int code of the type of that key.
   final private Object[] keys;   // either a FeatImpl or a LinearTypeOrder;
 
@@ -74,6 +74,20 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   protected final TypeImpl type; // The type of this
   
   final private int typeCode;
+  
+  /**
+   * common copy on write instance or null; starts out as null
+   * Iterator creation initializes (if not null).
+   * A subsequent Modification to index, if this is not null:
+   *    call cow.makeCopy();
+   *    set wr_cow = null
+   *    do the modification
+   * index clear/flush - set to null;
+   * 
+   * Weak ref so that after iterator is GC'd, and no ref's exist, this becomes null, so that
+   * future mods no longer need to do extra work.
+   */
+  protected WeakReference<CopyOnWriteIndexPart> wr_cow = null;  
   
   
   @Override
@@ -162,9 +176,18 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    */
   abstract boolean deleteFS(T fs);
   
+  /**
+   * Common part of iterator creation
+   */
+  protected void setupIteratorCopyOnWrite() {
+    if (null == wr_cow || null == wr_cow.get()) {
+      wr_cow = new WeakReference<>(createCopyOnWriteIndexPart());
+    }
+  }
+  
   @Override
   public FSIterator<T> iterator(FeatureStructure initialPositionFs) {
-    FSIterator<T> fsIt = (FSIterator<T>) iterator();
+    FSIterator<T> fsIt = iterator();
     fsIt.moveTo(initialPositionFs);
     return fsIt;
   }
@@ -364,4 +387,42 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     }
     flush();
   }
+
+  protected CopyOnWriteIndexPart getNonNullCow() {
+    if (wr_cow != null) {
+      CopyOnWriteIndexPart n = wr_cow.get();
+      if (n != null) {
+        return n;
+      }
+    }
+    
+    // null means index updated since iterator was created, need to make new cow and use it
+    CopyOnWriteIndexPart n = createCopyOnWriteIndexPart();  //new CopyOnWriteObjHashSet<TOP>(index);
+    wr_cow = new WeakReference<>(n);
+    return n;
+  }
+  
+  protected abstract CopyOnWriteIndexPart createCopyOnWriteIndexPart();
+  
+  /**
+   * Called just before modifying an index
+   * if wr_cow has a value, 
+   *   tell that value to create a preserving copy of the index part, and
+   *   set wr_cow to null
+   */
+  protected void maybeCopy() {
+    if (wr_cow != null) {
+      CopyOnWriteIndexPart v = wr_cow.get();
+      if (v != null) {
+        v.makeCopy();
+      }
+      wr_cow = null;
+    }
+  }
+  
+  @Override
+  public void flush() {
+    wr_cow = null;
+  }
+
 }

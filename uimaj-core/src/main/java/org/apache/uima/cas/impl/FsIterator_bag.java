@@ -23,7 +23,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.CopyOnWriteObjHashSet;
-import org.apache.uima.internal.util.ObjHashSet;
 import org.apache.uima.jcas.cas.TOP;
 
 class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T> {
@@ -62,6 +61,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     throw new NoSuchElementException();
   }
 
+  @Override
   public T getNvc() {
     checkConcurrentModification();
     return (T) bag.get(position);
@@ -72,7 +72,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToFirst() {
-    bag = fsBagIndex.getCow();
+    bag = (CopyOnWriteObjHashSet<TOP>) fsBagIndex.getNonNullCow();
     resetConcurrentModification();
     isGoingForward = true;
     position = (bag.size() == 0) ? -1 : bag.moveToNextFilled(0);
@@ -84,7 +84,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToLast() {
-    bag = fsBagIndex.getCow();
+    bag = (CopyOnWriteObjHashSet<TOP>) fsBagIndex.getNonNullCow();
     resetConcurrentModification();
     isGoingForward = false;
     position =  (bag.size() == 0) ? -1 : bag.moveToPreviousFilled(bag.getCapacity() -1);
@@ -134,7 +134,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveTo(FeatureStructure fs) {
-    bag = fsBagIndex.getCow();
+    bag = (CopyOnWriteObjHashSet<TOP>) fsBagIndex.getNonNullCow();
     resetConcurrentModification();
     position = bag.moveTo(fs);
   }
