@@ -57,17 +57,17 @@ public interface SelectFSs {
   SelectFSs allViews();
   SelectFSs allViews(boolean allViews);
   
-  SelectFSs nullOK();
-  SelectFSs nullOK(boolean nullOk);
+  SelectFSs nullOK();  // applies to get() and single()
+  SelectFSs nullOK(boolean nullOk);  // applies to get() and single()
   
 //  SelectFSs noSubtypes();
 //  SelectFSs noSubtypes(boolean noSubtypes);
   
-  SelectFSs unordered();
-  SelectFSs unordered(boolean unordered);
+  SelectFSs unordered();                  // ignored if not ordered index
+  SelectFSs unordered(boolean unordered); // ignored if not ordered index
   
-  SelectFSs backwards();
-  SelectFSs backwards(boolean backwards);
+  SelectFSs backwards();                  // ignored if not ordered index
+  SelectFSs backwards(boolean backwards); // ignored if not ordered index
   
     
 
