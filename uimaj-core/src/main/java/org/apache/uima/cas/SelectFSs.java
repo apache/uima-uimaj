@@ -28,23 +28,23 @@ import java.util.Spliterator;
  * Comment codes:
  *   AI = implies AnnotationIndex
  */
-public interface SelectFSs {
+public interface SelectFSs<T extends FeatureStructure> {
   
   /**
    * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
    */
-  SelectFSs index(String indexName);  
-  SelectFSs index(FSIndex<?> index);
+  SelectFSs<T> index(String indexName);  
+  SelectFSs<T> index(FSIndex<?> index);
 
   /**
    * if not specified defaults to the index's uppermost type.  
    */
-  SelectFSs type(Type uimaType);
-  SelectFSs type(String fullyQualifiedTypeName);
-  SelectFSs type(int jcasClass_dot_type);
-  SelectFSs type(Class<?> jcasClass_dot_class);
+  SelectFSs<T> type(Type uimaType);
+  SelectFSs<T> type(String fullyQualifiedTypeName);
+  SelectFSs<T> type(int jcasClass_dot_type);
+  SelectFSs<T> type(Class<?> jcasClass_dot_class);
     
-  SelectFSs shift(int amount); 
+  SelectFSs<T> shift(int amount); 
   
   
   /*********************************
@@ -55,47 +55,47 @@ public interface SelectFSs {
    * Filters while iterating
    **/
   
-  SelectFSs nonOverlapping();  // AI known as unambiguous
-  SelectFSs nonOverlapping(boolean nonOverlapping); // AI
+  SelectFSs<T> nonOverlapping();  // AI known as unambiguous
+  SelectFSs<T> nonOverlapping(boolean nonOverlapping); // AI
   
-  SelectFSs endWithinBounds();  // AI known as "strict"
-  SelectFSs endWithinBounds(boolean endWithinBounds); // AI
+  SelectFSs<T> endWithinBounds();  // AI known as "strict"
+  SelectFSs<T> endWithinBounds(boolean endWithinBounds); // AI
   
-//  SelectFSs useTypePriorities();
-//  SelectFSs useTypePriorities(boolean useTypePriorities);
+//  SelectFSs<T> useTypePriorities();
+//  SelectFSs<T> useTypePriorities(boolean useTypePriorities);
   
   /**
    * Miscellaneous
    **/
   
-  SelectFSs allViews();
-  SelectFSs allViews(boolean allViews);
+  SelectFSs<T> allViews();
+  SelectFSs<T> allViews(boolean allViews);
   
-  SelectFSs nullOK();  // applies to get() and single()
-  SelectFSs nullOK(boolean nullOk);  // applies to get() and single()
+  SelectFSs<T> nullOK();  // applies to get() and single()
+  SelectFSs<T> nullOK(boolean nullOk);  // applies to get() and single()
     
-  SelectFSs unordered();                  // ignored if not ordered index
-  SelectFSs unordered(boolean unordered); // ignored if not ordered index
+  SelectFSs<T> unordered();                  // ignored if not ordered index
+  SelectFSs<T> unordered(boolean unordered); // ignored if not ordered index
   
-  SelectFSs backwards();                  // ignored if not ordered index
-  SelectFSs backwards(boolean backwards); // ignored if not ordered index
+  SelectFSs<T> backwards();                  // ignored if not ordered index
+  SelectFSs<T> backwards(boolean backwards); // ignored if not ordered index
   
-//  SelectFSs noSubtypes();
-//  SelectFSs noSubtypes(boolean noSubtypes);
+//  SelectFSs<T> noSubtypes();
+//  SelectFSs<T> noSubtypes(boolean noSubtypes);
 
   /*********************************
    * bounding limits
    *********************************/
-  SelectFSs at(FeatureStructure fs);  // AI
-  SelectFSs at(int begin, int end);   // AI
-  SelectFSs between(FeatureStructure fs1, FeatureStructure fs2);  // AI
+  SelectFSs<T> at(FeatureStructure fs);  // AI
+  SelectFSs<T> at(int begin, int end);   // AI
+  SelectFSs<T> between(FeatureStructure fs1, FeatureStructure fs2);  // AI
   
   /*********************************
    * subselection based on bounds
    *********************************/
-  SelectFSs sameBeginEnd();  // AI
-  SelectFSs covered();       // AI
-  SelectFSs covering();      // AI
+  SelectFSs<T> sameBeginEnd();  // AI
+  SelectFSs<T> covered();       // AI
+  SelectFSs<T> covering();      // AI
   
   /*********************************
    * terminal operations
