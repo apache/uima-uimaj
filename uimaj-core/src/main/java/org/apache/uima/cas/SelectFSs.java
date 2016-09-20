@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
+
 /**
  * Collection of builder style methods to specify selection of FSs from indexes
  * Comment codes:
@@ -34,7 +37,7 @@ public interface SelectFSs<T extends FeatureStructure> {
    * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
    */
   SelectFSs<T> index(String indexName);  
-  SelectFSs<T> index(FSIndex<?> index);
+  SelectFSs<T> index(FSIndex<T> index);
 
   /**
    * if not specified defaults to the index's uppermost type.  
@@ -42,7 +45,7 @@ public interface SelectFSs<T extends FeatureStructure> {
   SelectFSs<T> type(Type uimaType);
   SelectFSs<T> type(String fullyQualifiedTypeName);
   SelectFSs<T> type(int jcasClass_dot_type);
-  SelectFSs<T> type(Class<?> jcasClass_dot_class);
+  SelectFSs<T> type(Class<? extends TOP> jcasClass_dot_class);
     
   SelectFSs<T> shift(int amount); 
   
@@ -86,9 +89,9 @@ public interface SelectFSs<T extends FeatureStructure> {
   /*********************************
    * bounding limits
    *********************************/
-  SelectFSs<T> at(FeatureStructure fs);  // AI
+  SelectFSs<T> at(Annotation fs);  // AI
   SelectFSs<T> at(int begin, int end);   // AI
-  SelectFSs<T> between(FeatureStructure fs1, FeatureStructure fs2);  // AI
+  SelectFSs<T> between(Annotation fs1, Annotation fs2);  // AI
   
   /*********************************
    * subselection based on bounds
