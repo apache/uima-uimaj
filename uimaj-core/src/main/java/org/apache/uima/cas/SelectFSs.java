@@ -30,10 +30,15 @@ import java.util.Spliterator;
  */
 public interface SelectFSs {
   
+  /**
+   * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
+   */
   SelectFSs index(String indexName);  
   SelectFSs index(FSIndex<?> index);
 
-  
+  /**
+   * if not specified defaults to the index's uppermost type.  
+   */
   SelectFSs type(Type uimaType);
   SelectFSs type(String fullyQualifiedTypeName);
   SelectFSs type(int jcasClass_dot_type);
@@ -45,6 +50,11 @@ public interface SelectFSs {
   /*********************************
    * boolean operations
    *********************************/
+  
+  /**
+   * Filters while iterating
+   **/
+  
   SelectFSs nonOverlapping();  // AI known as unambiguous
   SelectFSs nonOverlapping(boolean nonOverlapping); // AI
   
@@ -54,22 +64,24 @@ public interface SelectFSs {
 //  SelectFSs useTypePriorities();
 //  SelectFSs useTypePriorities(boolean useTypePriorities);
   
+  /**
+   * Miscellaneous
+   **/
+  
   SelectFSs allViews();
   SelectFSs allViews(boolean allViews);
   
   SelectFSs nullOK();  // applies to get() and single()
   SelectFSs nullOK(boolean nullOk);  // applies to get() and single()
-  
-//  SelectFSs noSubtypes();
-//  SelectFSs noSubtypes(boolean noSubtypes);
-  
+    
   SelectFSs unordered();                  // ignored if not ordered index
   SelectFSs unordered(boolean unordered); // ignored if not ordered index
   
   SelectFSs backwards();                  // ignored if not ordered index
   SelectFSs backwards(boolean backwards); // ignored if not ordered index
   
-    
+//  SelectFSs noSubtypes();
+//  SelectFSs noSubtypes(boolean noSubtypes);
 
   /*********************************
    * bounding limits
