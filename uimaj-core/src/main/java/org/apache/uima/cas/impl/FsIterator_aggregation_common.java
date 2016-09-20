@@ -28,7 +28,7 @@ import org.apache.uima.cas.Type;
 
 /**
  * Aggregate several FS iterators.  Simply iterates over one after the other
- * without any no sorting or merging.
+ * without any sorting or merging.
  * Used by getAllIndexedFS and FsIterator_subtypes_unordered
  * 
  * The iterators can be for single types or for types with subtypes.
