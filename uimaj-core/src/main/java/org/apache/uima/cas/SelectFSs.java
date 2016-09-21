@@ -30,6 +30,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Collection of builder style methods to specify selection of FSs from indexes
  * Comment codes:
  *   AI = implies AnnotationIndex
+ *   Ordered = implies an ordered index not necessarily AnnotationIndex
  */
 public interface SelectFSs<T extends FeatureStructure> {
   
@@ -47,8 +48,7 @@ public interface SelectFSs<T extends FeatureStructure> {
   SelectFSs<T> type(int jcasClass_dot_type);
   SelectFSs<T> type(Class<? extends TOP> jcasClass_dot_class);
     
-  SelectFSs<T> shift(int amount); 
-  
+//  SelectFSs<T> shift(int amount); // incorporated into startAt 
   
   /*********************************
    * boolean operations
@@ -94,10 +94,10 @@ public interface SelectFSs<T extends FeatureStructure> {
   /*********************************
    * starting position specification
    *********************************/
-  SelectFSs<T> startAt(Annotation fs);  // AI
+  SelectFSs<T> startAt(TOP fs);  // Ordered
   SelectFSs<T> startAt(int begin, int end);   // AI
   
-  SelectFSs<T> startAt(Annotation fs, int shift);        // AI
+  SelectFSs<T> startAt(TOP fs, int shift);        // Ordered
   SelectFSs<T> startAt(int begin, int end, int shift);   // AI
     
   /*********************************
