@@ -580,9 +580,8 @@ public interface CAS extends AbstractCas {
    * Get the JCas for this CAS.
    * 
    * @return The JCas for this CAS.
-   * @throws CASException -
    */
-  JCas getJCas() throws CASException;
+  JCas getJCas();
 
   /**
    * Get the Cas view that the current component should use.  This
