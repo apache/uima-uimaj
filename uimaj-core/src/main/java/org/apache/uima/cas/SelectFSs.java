@@ -87,18 +87,31 @@ public interface SelectFSs<T extends FeatureStructure> {
 //  SelectFSs<T> noSubtypes(boolean noSubtypes);
 
   /*********************************
-   * bounding limits
+   * bounding limits specified
+   * as part of subselection style
    *********************************/
-  SelectFSs<T> at(Annotation fs);  // AI
-  SelectFSs<T> at(int begin, int end);   // AI
-  SelectFSs<T> between(Annotation fs1, Annotation fs2);  // AI
   
+  /*********************************
+   * starting position specification
+   *********************************/
+  SelectFSs<T> startAt(Annotation fs);  // AI
+  SelectFSs<T> startAt(int begin, int end);   // AI
+  
+  SelectFSs<T> startAt(Annotation fs, int shift);        // AI
+  SelectFSs<T> startAt(int begin, int end, int shift);   // AI
+    
   /*********************************
    * subselection based on bounds
    *********************************/
-  SelectFSs<T> sameBeginEnd();  // AI
-  SelectFSs<T> covered();       // AI
-  SelectFSs<T> covering();      // AI
+  SelectFSs<T> at(Annotation fs);  // AI
+  SelectFSs<T> at(int begin, int end);  // AI
+  
+  SelectFSs<T> coveredBy(Annotation fs);       // AI
+  SelectFSs<T> coveredBy(int begin, int end);       // AI
+  SelectFSs<T> covering(Annotation fs);      // AI
+  SelectFSs<T> covering(int begin, int end);      // AI
+  
+  SelectFSs<T> between(Annotation fs1, Annotation fs2);  // AI implies a coveredBy style
   
   /*********************************
    * terminal operations
@@ -118,5 +131,4 @@ public interface SelectFSs<T extends FeatureStructure> {
    * concise forms using positional arguments
    ********************************************/
   
-  // empty for now
 }
