@@ -54,9 +54,21 @@ public interface SelectFSs<T extends FeatureStructure> {
   /*********************************
    * boolean operations
    *********************************/
+
+  SelectFSs<T> matchType();      // exact type match (no subtypes)
+  SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
   
   /**
-   * Filters while iterating
+   * only for AnnotationIndex
+   */
+  SelectFSs<T> typePriority();
+  SelectFSs<T> typePriority(boolean typePriority);
+
+  SelectFSs<T> positionUsesType();           // ignored if not ordered index
+  SelectFSs<T> positionUsesType(boolean positionUsesType); // ignored if not ordered index
+  
+  /**
+   * Filters while iterating over Annotations
    **/
   
   SelectFSs<T> nonOverlapping();  // AI known as unambiguous
@@ -64,12 +76,9 @@ public interface SelectFSs<T extends FeatureStructure> {
   
   SelectFSs<T> endWithinBounds();  // AI known as "strict"
   SelectFSs<T> endWithinBounds(boolean endWithinBounds); // AI
-  
-  SelectFSs<T> matchType();      // exact type match (no subtypes)
-  SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
 
-//  SelectFSs<T> useTypePriorities();
-//  SelectFSs<T> useTypePriorities(boolean useTypePriorities);
+  SelectFSs<T> skipEquals();                 
+  SelectFSs<T> skipEquals(boolean skipEquals);
   
   /**
    * Miscellaneous
@@ -86,13 +95,7 @@ public interface SelectFSs<T extends FeatureStructure> {
   
   SelectFSs<T> backwards();                  // ignored if not ordered index
   SelectFSs<T> backwards(boolean backwards); // ignored if not ordered index
-  
-  SelectFSs<T> positionUsesType();           // ignored if not ordered index
-  SelectFSs<T> positionUsesType(boolean positionUsesType); // ignored if not ordered index
-  
-  SelectFSs<T> skipEquals();                 // ignored if not ordered index
-  SelectFSs<T> skipEquals(boolean skipEquals); // ignored if not ordered index
-  
+
 //  SelectFSs<T> noSubtypes();
 //  SelectFSs<T> noSubtypes(boolean noSubtypes);
 
