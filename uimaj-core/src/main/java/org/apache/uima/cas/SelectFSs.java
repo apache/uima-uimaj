@@ -31,6 +31,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Comment codes:
  *   AI = implies AnnotationIndex
  *   Ordered = implies an ordered index not necessarily AnnotationIndex
+ *   BI = bounded iterator (boundedBy or bounding)
  */
 public interface SelectFSs<T extends FeatureStructure> {
   
@@ -64,6 +65,9 @@ public interface SelectFSs<T extends FeatureStructure> {
   SelectFSs<T> endWithinBounds();  // AI known as "strict"
   SelectFSs<T> endWithinBounds(boolean endWithinBounds); // AI
   
+  SelectFSs<T> matchType();      // exact type match (no subtypes)
+  SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
+
 //  SelectFSs<T> useTypePriorities();
 //  SelectFSs<T> useTypePriorities(boolean useTypePriorities);
   
@@ -83,6 +87,12 @@ public interface SelectFSs<T extends FeatureStructure> {
   SelectFSs<T> backwards();                  // ignored if not ordered index
   SelectFSs<T> backwards(boolean backwards); // ignored if not ordered index
   
+  SelectFSs<T> positionUsesType();           // ignored if not ordered index
+  SelectFSs<T> positionUsesType(boolean positionUsesType); // ignored if not ordered index
+  
+  SelectFSs<T> skipEquals();                 // ignored if not ordered index
+  SelectFSs<T> skipEquals(boolean skipEquals); // ignored if not ordered index
+  
 //  SelectFSs<T> noSubtypes();
 //  SelectFSs<T> noSubtypes(boolean noSubtypes);
 
@@ -93,6 +103,19 @@ public interface SelectFSs<T extends FeatureStructure> {
   
   /*********************************
    * starting position specification
+   * 
+   * Variations, controlled by: 
+   *   * typePriority
+   *   * positionUsesType
+   *   
+   * The positional specs imply starting at the 
+   *   - left-most (if multiple) FS at that position, or
+   *   - if no FS at the position, the next higher FS
+   *   - if !typePriority, equal test is only begin/end 
+   *     -- types ignored or not depending on positionUsesType 
+   *    
+   * shifts, if any, occur afterwards
+   *   - can be positive or negative
    *********************************/
   SelectFSs<T> startAt(TOP fs);  // Ordered
   SelectFSs<T> startAt(int begin, int end);   // AI
@@ -102,12 +125,17 @@ public interface SelectFSs<T extends FeatureStructure> {
     
   /*********************************
    * subselection based on bounds
+   *   - uses 
+   *     -- typePriority, 
+   *     -- positionUsesType, 
+   *     -- skipEquals
    *********************************/
   SelectFSs<T> at(Annotation fs);  // AI
   SelectFSs<T> at(int begin, int end);  // AI
   
   SelectFSs<T> coveredBy(Annotation fs);       // AI
   SelectFSs<T> coveredBy(int begin, int end);       // AI
+  
   SelectFSs<T> covering(Annotation fs);      // AI
   SelectFSs<T> covering(int begin, int end);      // AI
   
@@ -117,12 +145,12 @@ public interface SelectFSs<T extends FeatureStructure> {
    * terminal operations
    * returning other than SelectFSs
    *********************************/
-  <T extends FeatureStructure> FSIterator<T> fsIterator();
-  <T extends FeatureStructure> Iterator<T> iterator();
-  <T extends FeatureStructure> List<T> asList();
-  <T extends FeatureStructure> Spliterator<T> spliterator();
-  <T extends FeatureStructure> T get();
-  <T extends FeatureStructure> T single();
+  FSIterator<T> fsIterator();
+  Iterator<T> iterator();
+  List<T> asList();
+  Spliterator<T> spliterator();
+  T get();
+  T single();
   
   /********************************************
    * The methods below are alternatives 
@@ -131,4 +159,20 @@ public interface SelectFSs<T extends FeatureStructure> {
    * concise forms using positional arguments
    ********************************************/
   
+  /**
+   * Semantics: the arg is used to position.
+   * The position is 
+   *   - if the arg is a match, then the next/previous one not matching (skip over matches)
+   *     -- uses typePriority, positionUsesType, and skipEqual for match cas
+   *   - if the arg is not a match, the first position > or < arg 
+   */
+  SelectFSs<T> following(Annotation fs);
+  SelectFSs<T> following(int begin, int end);
+  SelectFSs<T> following(Annotation fs, int offset);
+  SelectFSs<T> following(int begin, int end, int offset);
+
+  SelectFSs<T> preceding(Annotation fs);
+  SelectFSs<T> preceding(int begin, int end);
+  SelectFSs<T> preceding(Annotation fs, int offset);
+  SelectFSs<T> preceding(int begin, int end, int offset);
 }
