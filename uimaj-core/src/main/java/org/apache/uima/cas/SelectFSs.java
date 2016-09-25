@@ -35,42 +35,37 @@ import org.apache.uima.jcas.tcas.Annotation;
  */
 public interface SelectFSs<T extends FeatureStructure> {
   
-  /**
-   * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
-   */
-  SelectFSs<T> index(String indexName);  
-  SelectFSs<T> index(FSIndex<T> index);
+  // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
+    // Methods take their generic type from the variable to which they are assigned except for
+    // index(class) which takes it from its argument.
+  <N extends TOP> SelectFSs<N> index(String indexName);  
+  <N extends TOP> SelectFSs<N> index(FSIndex<N> index);
 
-  /**
-   * if not specified defaults to the index's uppermost type.  
-   */
-  SelectFSs<T> type(Type uimaType);
-  SelectFSs<T> type(String fullyQualifiedTypeName);
-  SelectFSs<T> type(int jcasClass_dot_type);
-  SelectFSs<T> type(Class<? extends TOP> jcasClass_dot_class);
+  // If not specified defaults to the index's uppermost type.
+  // Methods take their generic type from the variable to which they are assigned except for
+  // type(class) which takes it from its argument.
+  <N extends TOP> SelectFSs<N> type(Type uimaType);
+  <N extends TOP> SelectFSs<N> type(String fullyQualifiedTypeName);
+  <N extends TOP> SelectFSs<N> type(int jcasClass_dot_type);
+  <N extends TOP> SelectFSs<N> type(Class<N> jcasClass_dot_class);
     
 //  SelectFSs<T> shift(int amount); // incorporated into startAt 
   
-  /*********************************
-   * boolean operations
-   *********************************/
+  // ---------------------------------
+  // boolean operations
+  // ---------------------------------
 
   SelectFSs<T> matchType();      // exact type match (no subtypes)
   SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
   
-  /**
-   * only for AnnotationIndex
-   */
+  // only for AnnotationIndex
   SelectFSs<T> typePriority();
   SelectFSs<T> typePriority(boolean typePriority);
 
   SelectFSs<T> positionUsesType();           // ignored if not ordered index
   SelectFSs<T> positionUsesType(boolean positionUsesType); // ignored if not ordered index
   
-  /**
-   * Filters while iterating over Annotations
-   **/
-  
+  // Filters while iterating over Annotations
   SelectFSs<T> nonOverlapping();  // AI known as unambiguous
   SelectFSs<T> nonOverlapping(boolean nonOverlapping); // AI
   
@@ -80,10 +75,7 @@ public interface SelectFSs<T extends FeatureStructure> {
   SelectFSs<T> skipEquals();                 
   SelectFSs<T> skipEquals(boolean skipEquals);
   
-  /**
-   * Miscellaneous
-   **/
-  
+  // Miscellaneous
   SelectFSs<T> allViews();
   SelectFSs<T> allViews(boolean allViews);
   
@@ -99,40 +91,40 @@ public interface SelectFSs<T extends FeatureStructure> {
 //  SelectFSs<T> noSubtypes();
 //  SelectFSs<T> noSubtypes(boolean noSubtypes);
 
-  /*********************************
-   * bounding limits specified
-   * as part of subselection style
-   *********************************/
+  // ---------------------------------
+  // bounding limits specified
+  // as part of subselection style
+  // ---------------------------------
   
-  /*********************************
-   * starting position specification
-   * 
-   * Variations, controlled by: 
-   *   * typePriority
-   *   * positionUsesType
-   *   
-   * The positional specs imply starting at the 
-   *   - left-most (if multiple) FS at that position, or
-   *   - if no FS at the position, the next higher FS
-   *   - if !typePriority, equal test is only begin/end 
-   *     -- types ignored or not depending on positionUsesType 
-   *    
-   * shifts, if any, occur afterwards
-   *   - can be positive or negative
-   *********************************/
+  // ---------------------------------
+  // starting position specification
+  // 
+  // Variations, controlled by: 
+  //   * typePriority
+  //   * positionUsesType
+  //   
+  // The positional specs imply starting at the 
+  //   - left-most (if multiple) FS at that position, or
+  //   - if no FS at the position, the next higher FS
+  //   - if !typePriority, equal test is only begin/end 
+  //     -- types ignored or not depending on positionUsesType 
+  //    
+  // shifts, if any, occur afterwards
+  //   - can be positive or negative
+  // ---------------------------------
   SelectFSs<T> startAt(TOP fs);  // Ordered
   SelectFSs<T> startAt(int begin, int end);   // AI
   
   SelectFSs<T> startAt(TOP fs, int shift);        // Ordered
   SelectFSs<T> startAt(int begin, int end, int shift);   // AI
     
-  /*********************************
-   * subselection based on bounds
-   *   - uses 
-   *     -- typePriority, 
-   *     -- positionUsesType, 
-   *     -- skipEquals
-   *********************************/
+  // ---------------------------------
+  // subselection based on bounds
+  //   - uses 
+  //     -- typePriority, 
+  //     -- positionUsesType, 
+  //     -- skipEquals
+  // ---------------------------------
   SelectFSs<T> at(Annotation fs);  // AI
   SelectFSs<T> at(int begin, int end);  // AI
   
@@ -144,10 +136,10 @@ public interface SelectFSs<T extends FeatureStructure> {
   
   SelectFSs<T> between(Annotation fs1, Annotation fs2);  // AI implies a coveredBy style
   
-  /*********************************
-   * terminal operations
-   * returning other than SelectFSs
-   *********************************/
+  // ---------------------------------
+  // terminal operations
+  // returning other than SelectFSs
+  // ---------------------------------
   FSIterator<T> fsIterator();
   Iterator<T> iterator();
   List<T> asList();
@@ -155,20 +147,20 @@ public interface SelectFSs<T extends FeatureStructure> {
   T get();
   T single();
   
-  /********************************************
-   * The methods below are alternatives 
-   * to the methods above, that combine
-   * frequently used patterns into more
-   * concise forms using positional arguments
-   ********************************************/
+  // ---------------------------------
+  // The methods below are alternatives 
+  // to the methods above, that combine
+  // frequently used patterns into more
+  // concise forms using positional arguments
+  // ---------------------------------
   
-  /**
-   * Semantics: the arg is used to position.
-   * The position is 
-   *   - if the arg is a match, then the next/previous one not matching (skip over matches)
-   *     -- uses typePriority, positionUsesType, and skipEqual for match cas
-   *   - if the arg is not a match, the first position > or < arg 
-   */
+  // ---------------------------------
+  // Semantics: the arg is used to position.
+  // The position is 
+  //   - if the arg is a match, then the next/previous one not matching (skip over matches)
+  //     -- uses typePriority, positionUsesType, and skipEqual for match cas
+  //   - if the arg is not a match, the first position > or < arg 
+  // ---------------------------------
   SelectFSs<T> following(Annotation fs);
   SelectFSs<T> following(int begin, int end);
   SelectFSs<T> following(Annotation fs, int offset);
