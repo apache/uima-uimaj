@@ -169,7 +169,9 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    */
   default FSIterator<T> iterator(FeatureStructure fs) {
     FSIterator<T> it = (FSIterator<T>) iterator();
-    it.moveTo(fs);
+    if (fs != null) {
+      it.moveTo(fs);
+    }
     return it;
   }
 

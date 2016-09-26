@@ -154,25 +154,19 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    */
    void  moveTo(FeatureStructure fs);
 
-   /**
-    * A special version of moveTo for subtypes of AnnotationFS, which moves to a particular begin/end
-    * (no type priority). 
-    * 
-    * NOTE: This is not yet supported - it is intended for an additional kind of subiterator which doesn't use type priority
-    *
-    * @param begin the starting point (inclusive)
-    * @param end the ending point (inclusive)
-    */
-   default void moveTo(int begin, int end) {
-     throw new UnsupportedOperationException();
-   }
-
   /**
    * Copy this iterator.
    * 
    * @return A copy of this iterator, pointing at the same element.
    */
   FSIterator<T> copy();
+  
+  /**
+   * @return the type this iterator is over
+   */
+  default Type getType() {
+    return ((LowLevelIterator<T>)this).ll_getIndex().getType();
+  }
 
   /*****************************************************
    * DEFAULT implementations of Iterator interface

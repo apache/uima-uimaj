@@ -55,8 +55,8 @@ public interface SelectFSs<T extends FeatureStructure> {
   // boolean operations
   // ---------------------------------
 
-  SelectFSs<T> matchType();      // exact type match (no subtypes)
-  SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
+//  SelectFSs<T> matchType();      // exact type match (no subtypes)
+//  SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
   
   // only for AnnotationIndex
   SelectFSs<T> typePriority();

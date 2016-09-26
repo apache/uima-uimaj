@@ -24,6 +24,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationTree;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Implementation of annotation indexes.
@@ -51,14 +52,16 @@ public class FsIndex_annotation <T extends AnnotationFS>
     // return non-constrained, non-strict, unambiguous iterator
     boolean strict = false;  // https://issues.apache.org/jira/browse/UIMA-5063
     boolean isBounded = false;
-    return (FSIterator<T>) new Subiterator<T>(iterator(), 
+    return new Subiterator<T>(iterator(), 
                               null, 
-                              0, 
-                              0, 
                               ambiguous, 
                               strict, 
-                              isBounded, 
-                              this.getFsRepositoryImpl());
+                              isBounded,
+                              true, // type priority used
+                              true, // ignored
+                              true, // ignored
+                              this.getFsRepositoryImpl().getAnnotationFsComparator()
+                             ); 
   }
 
   /*
@@ -79,15 +82,16 @@ public class FsIndex_annotation <T extends AnnotationFS>
    */
   @Override
   public FSIterator<T> subiterator(AnnotationFS annot, boolean ambiguous, boolean strict) {
-    boolean isBounded = true;
-    return (FSIterator<T>) new Subiterator<T>(iterator(), 
-        annot,
-        0, 
-        0, 
+    return new Subiterator<T>(iterator(), 
+        (Annotation) annot,
         ambiguous, 
         strict, 
-        isBounded, 
-        this.getFsRepositoryImpl());
+        true,  // isBounded 
+        true,  // uses type priority
+        true,  // position uses type - ignored
+        true,  // skip returning results equal to annot
+        this.getFsRepositoryImpl().getAnnotationFsComparator()
+        );
   }
 
   /*
@@ -153,4 +157,27 @@ public class FsIndex_annotation <T extends AnnotationFS>
 //        new ProxySnapshotHandler());
 //  }
   
+  /*********************************************************
+   * Stream / SplitIterator support
+   * 
+   * Use:
+   *   myAnnotIndex.annotStream()
+   *      .reverse()
+   *      .boundedBy(fs)
+   *      .strict()
+   *      .unambiguous()
+   *      .noTypePriorities()
+   *      .stream()  // or   .splititerator()
+   *         ... stream operations;
+   *         
+   *********************************************************/
+//  public AnnotStream<T> annotStream() {
+//    return new AnnotStream<T>(this.fsIndex_singletype);
+//  }
+//  
+//  public Stream<T extends TOP> stream() {
+//    return StreamSupport.stream(, parallel)
+//    
+//  }
+//  
 }

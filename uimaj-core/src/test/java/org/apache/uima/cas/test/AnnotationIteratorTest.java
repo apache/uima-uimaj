@@ -237,7 +237,10 @@ public class AnnotationIteratorTest extends TestCase {
     AnnotationIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
     it = tokenIndex.subiterator(a1);
     assertCount("multi equal", 0, it);
-            
+    it = tokenIndex.subiterator(a1);
+    // make a new iterator that hasn't been converted to a list form internally
+    it.moveTo(cas.getDocumentAnnotation());
+    assertFalse(it.isValid());            
   }
   /**
    * The tests include:
