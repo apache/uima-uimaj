@@ -215,11 +215,11 @@ public class JCasPool {
     mdList.add(aMetaData);
     for (int i = 0; i < mNumInstances; i++) {
       JCas c;
-      try {
+//      try {
         c = CasCreationUtils.createCas(mdList).getJCas();
-      } catch (CASException e) {
-        throw new ResourceInitializationException(e);
-      }
+//      } catch (CASException e) {
+//        throw new ResourceInitializationException(e);
+//      }
       mAllInstances.add(c);
       mFreeInstances.add(c);
     }

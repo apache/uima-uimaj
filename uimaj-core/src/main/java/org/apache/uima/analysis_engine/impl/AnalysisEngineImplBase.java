@@ -239,11 +239,11 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#newJCas()
    */
   public JCas newJCas() throws ResourceInitializationException {
-    try {
+//    try {
       return newCAS().getJCas();
-    } catch (CASException e) {
-      throw new ResourceInitializationException(e);
-    }
+//    } catch (CASException e) {
+//      throw new ResourceInitializationException(e);
+//    }
   }
 
   /**
