@@ -457,11 +457,22 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
       }
     } else {
       // is ambiguous, may be strict, always bounded (either by annotation or begin / end
-      it.moveTo(fs);
+      it.moveTo(fs);  // moves to left-most
       if (isBeginEndCompare) {
         adjustAfterMoveToForBeginEndComparator(fsa);
       }
       adjustForStrictForward();
+    
+      if (it.isValid()) {
+        // mark invalid if end up outside of bounds after adjustments
+        if (it.getBegin() > boundingEnd) {
+          it.moveToLast();
+          it.moveToNext();  // make invalid
+        } else if (fsIndexRepo.getAnnotationFsComparator().compare(it.get(), boundingAnnotation) < 0) {
+          it.moveToFirst();
+          it.moveToPrevious(); // make invalid
+        } 
+      }
     }
   }
   
@@ -504,6 +515,17 @@ public class Subiterator<T extends AnnotationFS> extends FSIteratorImplBase<T> {
         it.moveToPrevious();  
       }
       adjustForStrictForward();
+      
+      if (it.isValid()) {
+        // mark invalid if end up outside of bounds after adjustments
+        if (it.getBegin() > boundingEnd) {
+          it.moveToLast();
+          it.moveToNext();  // make invalid
+        } else if (fsIndexRepo.getAnnotationFsComparator().compare(it.get(), boundingAnnotation) < 0) {
+          it.moveToFirst();
+          it.moveToPrevious(); // make invalid
+        } 
+      }
     }
     
     
