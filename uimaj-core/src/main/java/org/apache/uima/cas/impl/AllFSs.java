@@ -32,7 +32,8 @@ import org.apache.uima.jcas.cas.TOP;
 
 /**
  * support for collecting all FSs in a CAS
- *
+ *   -  over all views
+ *   -  both indexed, and reachable
  */
 class AllFSs {
   

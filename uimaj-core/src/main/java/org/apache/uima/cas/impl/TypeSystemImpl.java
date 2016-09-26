@@ -938,7 +938,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return The top type.
    */
   @Override
-  public Type getTopType() {
+  public TypeImpl getTopType() {
     return this.topType;
   }
   
