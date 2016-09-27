@@ -7,8 +7,10 @@ import java.util.Comparator;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * FsIndex_iicp (iicp)
@@ -483,4 +485,89 @@ class FsIndex_iicp<T extends FeatureStructure>
     return getCasImpl().indexRepository;
   }
 
+  /**
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#select() -
+   */
+  public <N extends TOP> SelectFSs<N> select() {
+    return fsIndex_singletype.select();
+  }
+
+  /**
+   * @param type -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#select(org.apache.uima.cas.Type)
+   */
+  public <N extends TOP> SelectFSs<N> select(Type type) {
+    return fsIndex_singletype.select(type);
+  }
+
+  /**
+   * @param clazz -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#select(java.lang.Class)
+   */
+  public <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
+    return fsIndex_singletype.select(clazz);
+  }
+
+  /**
+   * @param jcasType -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#select(int)
+   */
+  public <N extends TOP> SelectFSs<N> select(int jcasType) {
+    return fsIndex_singletype.select(jcasType);
+  }
+
+  /**
+   * @param fullyQualifiedTypeName -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#select(java.lang.String)
+   */
+  public <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return fsIndex_singletype.select(fullyQualifiedTypeName);
+  }
+
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.FSIndex#select()
+//   */
+//  @Override
+//  public SelectFSs<T> select() {
+//    return new SelectFSs_impl<>(getCasImpl()).index(this);
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.FSIndex#select(org.apache.uima.cas.Type)
+//   */
+//  @Override
+//  public <N extends TOP> SelectFSs<N> select(Type type) {
+//    return new SelectFSs_impl<>(getCasImpl()).index(this).type(type);
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.FSIndex#select(java.lang.Class)
+//   */
+//  @Override
+//  public <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
+//    return new SelectFSs_impl<>(getCasImpl()).index(this).type(clazz);
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.FSIndex#select(int)
+//   */
+//  @Override
+//  public <N extends TOP> SelectFSs<N> select(int jcasType) {
+//    return new SelectFSs_impl<>(getCasImpl()).index(this).type(jcasType);
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.FSIndex#select(java.lang.String)
+//   */
+//  @Override
+//  public <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
+//    return new SelectFSs_impl<>(getCasImpl()).index(this).type(fullyQualifiedTypeName);
+//  }
+
+  
 }

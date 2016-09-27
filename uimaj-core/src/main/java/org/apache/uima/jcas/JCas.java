@@ -36,6 +36,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FeatureValuePath;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
@@ -44,6 +45,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -672,5 +674,26 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException When <code>clazz</code> doesn't correspond to a subtype of the index's type.
    */
   <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz);
+  
+  
+  default <T extends TOP> SelectFSs<T> select() {
+    return new SelectFSs_impl<>(getCas());
+  }
+
+  default <N extends TOP> SelectFSs<N> select(Type type) {
+    return new SelectFSs_impl<>(getCasImpl()).type(type);
+  }
+
+  default <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
+    return new SelectFSs_impl<>(getCasImpl()).type(clazz);
+  }
+
+  default <N extends TOP> SelectFSs<N> select(int jcasType) {
+    return new SelectFSs_impl<>(getCasImpl()).type(jcasType);
+  }
+
+  default <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return new SelectFSs_impl<>(getCasImpl()).type(fullyQualifiedTypeName);
+  }
 
 }

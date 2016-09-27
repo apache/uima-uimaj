@@ -33,7 +33,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   Ordered = implies an ordered index not necessarily AnnotationIndex
  *   BI = bounded iterator (boundedBy or bounding)
  */
-public interface SelectFSs<T extends FeatureStructure> {
+public interface SelectFSs<T extends TOP> {
   
   // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
     // Methods take their generic type from the variable to which they are assigned except for

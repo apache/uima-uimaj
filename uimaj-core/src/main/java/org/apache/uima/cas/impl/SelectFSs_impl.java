@@ -38,7 +38,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * Comment codes:
  *   AI = implies AnnotationIndex
  */
-public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T> {
+public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   static enum BoundsUse {
     coveredBy,
     covering,
@@ -508,7 +508,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @param it
    * @return it positioned if needed
    */
-  public static <T extends FeatureStructure> FSIterator<T> maybePosition(
+  public static <T extends TOP> FSIterator<T> maybePosition(
       FSIterator<T> it,
       TOP startingFs,
       boolean isAnnotationIndex,

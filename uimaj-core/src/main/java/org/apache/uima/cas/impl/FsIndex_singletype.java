@@ -27,6 +27,7 @@ import java.util.WeakHashMap;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
@@ -425,4 +426,43 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     wr_cow = null;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIndex#select()
+   */
+  @Override
+  public <N extends TOP> SelectFSs<N> select() {
+    return new SelectFSs_impl<>(getCasImpl()).index((FsIndex_singletype<N>)this);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIndex#select(org.apache.uima.cas.Type)
+   */
+  @Override
+  public <N extends TOP> SelectFSs<N> select(Type type) {
+    return new SelectFSs_impl<>(getCasImpl()).index((FsIndex_singletype<N>)this).type(type);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIndex#select(java.lang.Class)
+   */
+  @Override
+  public <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
+    return new SelectFSs_impl<>(getCasImpl()).index((FsIndex_singletype<N>)this).type(clazz);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIndex#select(int)
+   */
+  @Override
+  public <N extends TOP> SelectFSs<N> select(int jcasType) {
+    return new SelectFSs_impl<>(getCasImpl()).index((FsIndex_singletype<N>)this).type(jcasType);
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIndex#select(java.lang.String)
+   */
+  @Override
+  public <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return new SelectFSs_impl<>(getCasImpl()).index((FsIndex_singletype<N>)this).type(fullyQualifiedTypeName);
+  }
 }

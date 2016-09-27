@@ -19,6 +19,10 @@
 
 package org.apache.uima.cas;
 
+import org.apache.uima.cas.impl.LowLevelIndex;
+import org.apache.uima.cas.impl.SelectFSs_impl;
+import org.apache.uima.jcas.cas.TOP;
+
 /**
  * Feature structure index access interface.
  * 
@@ -205,4 +209,13 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    */
   FSIndex<T> withSnapshotIterators();
 
+  <N extends TOP> SelectFSs<N> select();
+  
+  <N extends TOP> SelectFSs<N> select(Type type);
+  
+  <N extends TOP> SelectFSs<N> select(Class<N> clazz);
+  
+  <N extends TOP> SelectFSs<N> select(int jcasType);
+  
+  <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName);
 }

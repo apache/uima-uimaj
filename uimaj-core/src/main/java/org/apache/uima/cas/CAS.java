@@ -26,6 +26,7 @@ import java.util.ListIterator;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
+import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -1102,4 +1103,19 @@ public interface CAS extends AbstractCas {
    */
   void protectIndexes(Runnable runnable);
 
+  default <T extends TOP> SelectFSs<T> select() {
+    return new SelectFSs_impl<>(this);
+  }
+  default <T extends TOP> SelectFSs<T> select(Type type) {
+    return new SelectFSs_impl<>(this).type(type);
+  }
+  default <T extends TOP> SelectFSs<T> select(Class<T> clazz) {
+    return new SelectFSs_impl<>(this).type(clazz);
+  }
+  default <T extends TOP> SelectFSs<T> select(int jcasType) {
+    return new SelectFSs_impl<>(this).type(jcasType);
+  }
+  default <T extends TOP> SelectFSs<T> select(String fullyQualifiedTypeName) {
+    return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
+  }
 }

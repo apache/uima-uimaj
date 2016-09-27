@@ -22,7 +22,9 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Implementation of light-weight wrapper of normal indexes, which support special kinds of iterators
@@ -91,5 +93,49 @@ public class FsIndex_snapshot <T extends FeatureStructure> implements FSIndex<T>
    */
   @Override
   public int compare(FeatureStructure o1, FeatureStructure o2) { return wrapped.compare(o1,  o2); }
+
+  /**
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_iicp#select()
+   */
+  public <N extends TOP> SelectFSs<N> select() {
+    return wrapped.select();
+  }
+
+  /**
+   * @param type -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_iicp#select(org.apache.uima.cas.Type)
+   */
+  public <N extends TOP> SelectFSs<N> select(Type type) {
+    return wrapped.select(type);
+  }
+
+  /**
+   * @param clazz -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_iicp#select(java.lang.Class)
+   */
+  public <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
+    return wrapped.select(clazz);
+  }
+
+  /**
+   * @param jcasType -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_iicp#select(int)
+   */
+  public <N extends TOP> SelectFSs<N> select(int jcasType) {
+    return wrapped.select(jcasType);
+  }
+
+  /**
+   * @param fullyQualifiedTypeName -
+   * @return -
+   * @see org.apache.uima.cas.impl.FsIndex_iicp#select(java.lang.String)
+   */
+  public <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return wrapped.select(fullyQualifiedTypeName);
+  }
 
 }
