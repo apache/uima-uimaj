@@ -26,9 +26,9 @@ import java.util.Spliterator;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -435,7 +435,7 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   }
   
   
-  private FSIterator<T> plainFsIterator(FSIndex idx, CASImpl v) {
+  private FSIterator<T> plainFsIterator(FSIndex<T> idx, CASImpl v) {
     if (null == idx) { 
       // no bounds, not ordered
       // type could be null
@@ -445,34 +445,37 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
     final boolean isIndexOrdered = idx.getIndexingStrategy() == FSIndex.SORTED_INDEX;
     final boolean isAnnotationIndex = idx instanceof AnnotationIndex;
     final AnnotationIndex ai = isAnnotationIndex ? (AnnotationIndex)idx: null;
+    FSIterator<T> it;
     if (boundsUse == null) {
       if (!isIndexOrdered) {
-        return idx.iterator(startingFs);       
+        it = idx.iterator();       
       } else {
         // index is ordered but no bounds are being used - return plain fsIterator or maybe nonOverlapping version
-        FSIterator<T> it = (isAnnotationIndex && isNonOverlapping)
-                             ? ai.iterator(true)
-                             : (isUnordered && idx instanceof FsIndex_iicp) 
-                                 ? ((FsIndex_iicp<T>)idx).iteratorUnordered()
-                                 : idx.iterator(); 
-        return maybeShift(maybePosition(it, startingFs, isAnnotationIndex, isTypePriority, isPositionUsesType)); 
+        it = (isAnnotationIndex && isNonOverlapping)
+               ? ai.iterator(true)
+               : (isUnordered && idx instanceof FsIndex_iicp) 
+                   ? ((FsIndex_iicp<T>)idx).iteratorUnordered()
+                   : idx.iterator();
       }
-    }
+      if (null != startingFs) {
+        it.moveTo(startingFs);
+      }
+    } else {
     // bounds in use, index must be annotation index, is ordered
-    
-    return (FSIterator<T>) new Subiterator<>(
-        idx.iterator(),
-        boundingFs,
-        !isNonOverlapping, 
-        isEndWithinBounds,
-        true, // is bounded
+    it = (FSIterator<T>) new Subiterator<>(
+        (FSIterator<AnnotationFS>)idx.iterator(), 
+        boundingFs, 
+        !isNonOverlapping,  // ambiguous
+        isEndWithinBounds,  // strict 
+        true,               // isBounded
         isTypePriority, 
         isPositionUsesType, 
         isSkipEquals,
-        v.indexRepository.getAnnotationFsComparator());    
+        v.indexRepository.getAnnotationFsComparator());
+    }
+    return maybeShift(it);
   }
-  
-  
+    
   @Override
   public Iterator<T> iterator() {
     return null;
@@ -555,6 +558,7 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
     }
     return it;
   }
+  
   /********************************************
    * The methods below are alternatives 
    * to the methods above, that combine
