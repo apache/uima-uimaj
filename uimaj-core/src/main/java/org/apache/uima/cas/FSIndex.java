@@ -209,13 +209,13 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    */
   FSIndex<T> withSnapshotIterators();
 
-  <N extends TOP> SelectFSs<N> select();
+  <N extends FeatureStructure> SelectFSs<N> select();
   
-  <N extends TOP> SelectFSs<N> select(Type type);
+  <N extends FeatureStructure> SelectFSs<N> select(Type type);
   
-  <N extends TOP> SelectFSs<N> select(Class<N> clazz);
+  <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz);
   
-  <N extends TOP> SelectFSs<N> select(int jcasType);
+  <N extends FeatureStructure> SelectFSs<N> select(int jcasType);
   
-  <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName);
+  <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName);
 }

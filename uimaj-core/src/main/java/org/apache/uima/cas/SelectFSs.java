@@ -22,9 +22,10 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
+import java.util.stream.Stream;
 
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Collection of builder style methods to specify selection of FSs from indexes
@@ -33,21 +34,21 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   Ordered = implies an ordered index not necessarily AnnotationIndex
  *   BI = bounded iterator (boundedBy or bounding)
  */
-public interface SelectFSs<T extends TOP> {
+public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stream<T> {
   
   // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
     // Methods take their generic type from the variable to which they are assigned except for
     // index(class) which takes it from its argument.
-  <N extends TOP> SelectFSs<N> index(String indexName);  
-  <N extends TOP> SelectFSs<N> index(FSIndex<N> index);
+  <N extends FeatureStructure> SelectFSs<N> index(String indexName);  
+  <N extends FeatureStructure> SelectFSs<N> index(FSIndex<N> index);
 
   // If not specified defaults to the index's uppermost type.
   // Methods take their generic type from the variable to which they are assigned except for
   // type(class) which takes it from its argument.
-  <N extends TOP> SelectFSs<N> type(Type uimaType);
-  <N extends TOP> SelectFSs<N> type(String fullyQualifiedTypeName);
-  <N extends TOP> SelectFSs<N> type(int jcasClass_dot_type);
-  <N extends TOP> SelectFSs<N> type(Class<N> jcasClass_dot_class);
+  <N extends FeatureStructure> SelectFSs<N> type(Type uimaType);
+  <N extends FeatureStructure> SelectFSs<N> type(String fullyQualifiedTypeName);
+  <N extends FeatureStructure> SelectFSs<N> type(int jcasClass_dot_type);
+  <N extends FeatureStructure> SelectFSs<N> type(Class<N> jcasClass_dot_class);
     
 //  SelectFSs<T> shift(int amount); // incorporated into startAt 
   
@@ -118,6 +119,7 @@ public interface SelectFSs<T extends TOP> {
   SelectFSs<T> startAt(TOP fs, int shift);        // Ordered
   SelectFSs<T> startAt(int begin, int end, int shift);   // AI
     
+  SelectFSs<T> limit(int n); 
   // ---------------------------------
   // subselection based on bounds
   //   - uses 
@@ -125,27 +127,65 @@ public interface SelectFSs<T extends TOP> {
   //     -- positionUsesType, 
   //     -- skipEquals
   // ---------------------------------
-  SelectFSs<T> at(Annotation fs);  // AI
+  SelectFSs<T> at(AnnotationFS fs);  // AI
   SelectFSs<T> at(int begin, int end);  // AI
   
-  SelectFSs<T> coveredBy(Annotation fs);       // AI
+  SelectFSs<T> coveredBy(AnnotationFS fs);       // AI
   SelectFSs<T> coveredBy(int begin, int end);       // AI
   
-  SelectFSs<T> covering(Annotation fs);      // AI
+  SelectFSs<T> covering(AnnotationFS fs);      // AI
   SelectFSs<T> covering(int begin, int end);      // AI
   
-  SelectFSs<T> between(Annotation fs1, Annotation fs2);  // AI implies a coveredBy style
-  
+  SelectFSs<T> between(AnnotationFS fs1, AnnotationFS fs2);  // AI implies a coveredBy style
+ 
+  /* ---------------------------------
+  * Semantics: 
+  *   - following uimaFIT
+  *   - must be annotation subtype, annotation index
+  *   - following: move to first fs where begin > pos.end
+  *   - preceding: move to first fs where end < pos.begin
+  *   
+  *   - return the limit() or all
+  *   - for preceding, return in forward order (unless backward is specified)
+  *   - for preceding, skips FSs whose end >= begin (adjusted by offset)
+  * ---------------------------------*/
+  SelectFSs<T> following(TOP fs);
+  SelectFSs<T> following(int begin, int end);
+  SelectFSs<T> following(TOP fs, int offset);
+  SelectFSs<T> following(int begin, int end, int offset);
+
+  SelectFSs<T> preceding(TOP fs);
+  SelectFSs<T> preceding(int begin, int end);
+  SelectFSs<T> preceding(TOP fs, int offset);
+  SelectFSs<T> preceding(int begin, int end, int offset);
   // ---------------------------------
   // terminal operations
   // returning other than SelectFSs
+  // 
   // ---------------------------------
   FSIterator<T> fsIterator();
   Iterator<T> iterator();
   List<T> asList();
+  T[] asArray();
   Spliterator<T> spliterator();
-  T get();
-  T single();
+  
+  // returning one item
+  
+  T get();          // returns first element or null if empty
+  T single();       // throws if not exactly 1 element
+  T singleOrNull(); // throws if more than 1 element, returns single or null
+  T get(TOP fs);          // returns first element or null if empty
+  T single(TOP fs);       // throws if not exactly 1 element
+  T singleOrNull(TOP fs); // throws if more than 1 element, returns single or null
+  T get(TOP fs, int offset);          // returns first element or null if empty
+  T single(TOP fs, int offset);       // throws if not exactly 1 element
+  T singleOrNull(TOP fs, int offset); // throws if more than 1 element, returns single or null
+  T get(int begin, int end);          // returns first element or null if empty
+  T single(int begin, int end);       // throws if not exactly 1 element
+  T singleOrNull(int begin, int end); // throws if more than 1 element, returns single or null
+  T get(int begin, int end, int offset);          // returns first element or null if empty
+  T single(int begin, int end, int offset);       // throws if not exactly 1 element
+  T singleOrNull(int begin, int end, int offset); // throws if more than 1 element, returns single or null
   
   // ---------------------------------
   // The methods below are alternatives 
@@ -154,20 +194,7 @@ public interface SelectFSs<T extends TOP> {
   // concise forms using positional arguments
   // ---------------------------------
   
-  // ---------------------------------
-  // Semantics: the arg is used to position.
-  // The position is 
-  //   - if the arg is a match, then the next/previous one not matching (skip over matches)
-  //     -- uses typePriority, positionUsesType, and skipEqual for match cas
-  //   - if the arg is not a match, the first position > or < arg 
-  // ---------------------------------
-  SelectFSs<T> following(Annotation fs);
-  SelectFSs<T> following(int begin, int end);
-  SelectFSs<T> following(Annotation fs, int offset);
-  SelectFSs<T> following(int begin, int end, int offset);
-
-  SelectFSs<T> preceding(Annotation fs);
-  SelectFSs<T> preceding(int begin, int end);
-  SelectFSs<T> preceding(Annotation fs, int offset);
-  SelectFSs<T> preceding(int begin, int end, int offset);
+  static <N extends FeatureStructure> SelectFSs<N> sselect(FSIndex<N> index) {
+    return index.select();    
+  } 
 }

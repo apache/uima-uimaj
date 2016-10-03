@@ -1151,7 +1151,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   /**
    * Static method to get the corresponding Type for a JCas class object 
    */
-  private static int getTypeRegistryIndex(Class<? extends TOP> clazz) {
+  private static int getTypeRegistryIndex(Class<? extends FeatureStructure> clazz) {
     try {
       return clazz.getField("type").getInt(clazz);
     } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
@@ -1165,7 +1165,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @param clazz a JCas cover class
    * @return the corresponding UIMA Type object
    */
-  public Type getCasType(Class<? extends TOP> clazz) {
+  public Type getCasType(Class<? extends FeatureStructure> clazz) {
     return getCasType(getTypeRegistryIndex(clazz));
   }
 

@@ -21,6 +21,8 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
+import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
 
@@ -102,5 +104,39 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
       }
     };
   }
+  
+  /**
+   * @param ti type which is a subtype of this index's type
+   * @return the index but just over this subtype
+   */
+  default <U extends T> LowLevelIndex<U> getSubIndex(TypeImpl ti) {
+    return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(), (FSIndexComparatorImpl) getComparatorForIndexSpecs());
+  }
 
+  @Override
+  default SelectFSs<T> select() {
+    return getCasImpl().select().index(this);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
+    return select().type(type);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
+    return select().type(clazz);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
+    return select().type(jcasType);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return select().type(fullyQualifiedTypeName);
+  }
+  
+  
 }

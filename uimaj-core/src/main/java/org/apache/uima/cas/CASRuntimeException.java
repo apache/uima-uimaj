@@ -293,6 +293,14 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Multiply nested classloaders not supported.  Original base loader: {0}, current nested loader: {1}, trying to switch to loader: {2}.*/
   public static final String SWITCH_CLASS_LOADER_NESTED = "SWITCH_CLASS_LOADER_NESTED";
     
+  /** CAS does not contain any ''{0}'' instances{1}. */  // 1 is the position & offset info if available
+  public static final String SELECT_GET_NO_INSTANCES = "SELECT_GET_NO_INSTANCES";
+ 
+  /** CAS has more than 1 instance of ''{0}''{1}.*/
+  public static final String SELECT_GET_TOO_MANY_INSTANCES = "SELECT_GET_TOO_MANY_INSTANCES";
+
+  /** Index "{0}" must be an AnnotationIndex. */ 
+  public static final String ANNOTATION_INDEX_REQUIRED = "ANNOTATION_INDEX_REQUIRED";
   /**
    * The constructors are organized
    * 

@@ -19,36 +19,59 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Spliterator;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
+import java.util.stream.Collector;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Collection of builder style methods to specify selection of FSs from indexes
+ * shift handled in this routine
  * Comment codes:
  *   AI = implies AnnotationIndex
  */
-public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
-  static enum BoundsUse {
-    coveredBy,
-    covering,
-    sameBeginEnd,
-  }
+public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T> {
   
   private CASImpl view;
+  private JCasImpl jcas;
   private FSIndex<T> index; 
   private TypeImpl ti;
   private int shift; 
+  private int limit = -1;
   
   private boolean isTypePriority = false;
   private boolean isPositionUsesType = false;
@@ -59,17 +82,15 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   private boolean isNullOK = false;
   private boolean isUnordered = false;
   private boolean isBackwards = false;
-  private boolean isShift = false;
+  private boolean isAt = false;
+  private boolean isFollowing = false;
+  private boolean isPreceding = false;
   
   private BoundsUse boundsUse = null; 
   
   private TOP startingFs = null;
-  private Annotation boundingFs = null;
-  private int boundingBegin = -1;
-  private int boundingEnd   = -1;
+  private AnnotationFS boundingFs = null;
   
-  /** derived **/
-  private boolean isUseAnnotationIndex = false;  
   
   /************************************************
    * Constructors
@@ -81,6 +102,7 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    ************************************************/
   public SelectFSs_impl(CAS cas) {
     this.view = (CASImpl) cas.getLowLevelCAS();
+    this.jcas = (JCasImpl) view.getJCas();
   }
     
   public SelectFSs_impl(CAS cas, Type type) {
@@ -96,13 +118,13 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
    */
   @Override
-  public <N extends TOP> SelectFSs_impl<N> index(String indexName) {
+  public <N extends FeatureStructure> SelectFSs_impl<N> index(String indexName) {
     this.index = view.indexRepository.getIndex(indexName);
     return (SelectFSs_impl<N>) this;
   }
   
   @Override
-  public <N extends TOP> SelectFSs_impl<N> index(FSIndex<N> aIndex) {
+  public <N extends FeatureStructure> SelectFSs_impl<N> index(FSIndex<N> aIndex) {
     this.index = (FSIndex<T>) aIndex;
     return (SelectFSs_impl<N>) this;
   }
@@ -112,22 +134,22 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    * if not specified defaults to the index's uppermost type.  
    */
   @Override
-  public <N extends TOP> SelectFSs_impl<N> type(Type uimaType) {
+  public <N extends FeatureStructure> SelectFSs_impl<N> type(Type uimaType) {
     this.ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
   @Override
-  public <N extends TOP> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
+  public <N extends FeatureStructure> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
     this.ti = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
     return (SelectFSs_impl<N>) this;
   }
   @Override
-  public <N extends TOP> SelectFSs_impl<N> type(int jcasClass_dot_type) {
+  public <N extends FeatureStructure> SelectFSs_impl<N> type(int jcasClass_dot_type) {
     this.ti = (TypeImpl) view.getJCas().getCasType(jcasClass_dot_type);
     return (SelectFSs_impl<N>) this;
   }
   @Override
-  public <N extends TOP> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
+  public <N extends FeatureStructure> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
     this.ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
     return (SelectFSs_impl<N>) this;
   }  
@@ -288,7 +310,7 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   } 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end) {  // AI
-    this.startingFs = new Annotation(view.getJCas(), begin, end);
+    this.startingFs = new Annotation(jcas, begin, end);
     return this;
   } 
   
@@ -296,37 +318,42 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   public SelectFSs_impl<T> startAt(TOP fs, int offset) {  // Ordered
     this.startingFs = fs;
     this.shift = offset;
-    this.isShift = true;
     return this;
   } 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end, int offset) {  // AI
-    this.startingFs = new Annotation(view.getJCas(), begin, end);
+    this.startingFs = new Annotation(jcas, begin, end);
     this.shift = offset;
-    this.isShift = true;
     return this;
   }  
+  
+  @Override
+  public SelectFSs_impl<T> limit(int limit) {
+    this.limit = limit;
+    return this;
+  }
     
   /*********************************
    * subselection based on boundingFs
    *********************************/
   @Override
-  public SelectFSs_impl<T> coveredBy(Annotation fs) {       // AI
+  public SelectFSs_impl<T> coveredBy(AnnotationFS fs) {       // AI
     boundsUse = BoundsUse.coveredBy;
     this.boundingFs = fs;
+    this.isEndWithinBounds = true; //default
     return this;
   }
   
   @Override
   public SelectFSs_impl<T> coveredBy(int begin, int end) {       // AI
     boundsUse = BoundsUse.coveredBy;
-    this.boundingBegin = begin;
-    this.boundingEnd = end;
+    this.boundingFs = new Annotation(jcas, begin, end);
+    this.isEndWithinBounds = true; //default
     return this;
   }
 
   @Override
-  public SelectFSs_impl<T> covering(Annotation fs) {      // AI
+  public SelectFSs_impl<T> covering(AnnotationFS fs) {      // AI
     boundsUse = BoundsUse.covering;
     this.boundingFs = fs;
     return this;
@@ -335,22 +362,60 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   @Override
   public SelectFSs_impl<T> covering(int begin, int end) {      // AI
     boundsUse = BoundsUse.covering;
-    this.boundingBegin = begin;
-    this.boundingEnd = end;
+    this.boundingFs = new Annotation(jcas, begin, end);
     return this;
   }
 
   @Override
-  public SelectFSs_impl<T> between(Annotation fs1, Annotation fs2) {   // AI
+  public SelectFSs_impl<T> between(AnnotationFS fs1, AnnotationFS fs2) {   // AI
     final boolean reverse = fs1.getEnd() > fs2.getBegin();
     this.boundingFs = new Annotation(
-        view.getJCas(), 
+        jcas, 
         (reverse ? fs2 : fs1).getEnd(), 
         (reverse ? fs1 : fs2).getBegin());
     this.boundsUse = BoundsUse.coveredBy;
+    this.isBackwards = reverse;
+    this.isEndWithinBounds = true; // default    
+    return this;
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.SelectFSs#at(org.apache.uima.jcas.tcas.Annotation)
+   */
+  @Override
+  public SelectFSs<T> at(AnnotationFS fs) {
+    boundsUse = BoundsUse.sameBeginEnd;
+    boundingFs = fs;
     return this;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.SelectFSs#at(int, int)
+   */
+  @Override
+  public SelectFSs<T> at(int begin, int end) {
+    return at(new Annotation(jcas, begin, end));
+  }
+
+  private String maybeMsgPosition() {
+    StringBuilder sb = new StringBuilder();
+    if (startingFs != null) {
+      if (startingFs instanceof Annotation) {
+        Annotation a = (Annotation)startingFs;
+        sb.append(" at position begin: ").append(a.getBegin()).append(", end: ")
+          .append(a.getEnd());
+      } else {
+        sb.append(" at moveTo position given by Feature Structure:\n");
+        startingFs.prettyPrint(2, 2, sb, false);
+        sb.append("\n ");
+      }
+    }
+    if (shift != 0) {
+      sb.append(" shifted by: ").append(shift);
+    }
+    return sb.toString();
+  }
+  
   /**
    * prepare terminal operations
    */
@@ -360,9 +425,29 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    * 
    */
   private void prepareTerminalOp() {
-    isUseAnnotationIndex = !isAllViews && (
+    if (boundsUse == null) {
+      boundsUse = BoundsUse.notBounded;
+    }
+    
+    final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
-        isNonOverlapping || isEndWithinBounds || boundsUse != null);
+        isNonOverlapping || 
+        boundsUse != BoundsUse.notBounded;
+    
+    if (isUseAnnotationIndex) {
+      forceAnnotationIndex();  // throws if non-null index not an annotation index
+    }
+    
+    if (ti == null) {
+      if (index != null) {
+        ti = (TypeImpl) index.getType();
+      }
+    } else {
+      if (index != null &&
+          ((TypeImpl)index.getType()).subsumes(ti)) {
+        index = ((LowLevelIndex)index).getSubIndex(ti);
+      }
+    }
     
     if (isUseAnnotationIndex && null == ti) {
       ti = (TypeImpl) view.getAnnotationType();
@@ -372,12 +457,14 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
       ti = view.getTypeSystemImpl().getTopType();
     }
     
-    if (index == null && isUseAnnotationIndex) {
-      this.index = (FSIndex<T>) view.getAnnotationIndex(ti);
+  }
+  
+  private void incr(FSIterator<T> it) {
+    if (isBackwards) {
+      it.moveToPrevious();
+    } else {
+      it.moveToNext();
     }
-    
-    // index may still be null at this point.
-    
   }
   
   /*********************************
@@ -402,10 +489,13 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   @Override
   public FSIterator<T> fsIterator() {
     prepareTerminalOp();
-    if (isAllViews) {
-      return new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), null);
-    }
-    return plainFsIterator(index, view);
+    FSIterator<T> it = isAllViews 
+                      ? new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), null)
+                      : plainFsIterator(index, view);
+
+    maybePosition(it);
+    maybeShift(it);
+    return  (limit == -1) ? it : new FsIterator_limited<>(it, limit);
   }
   
   
@@ -420,6 +510,12 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
     return ita;
   }
   
+  /** 
+   * gets the index for a view that corresponds to the specified index
+   *   by matching the index specs and type code
+   * @param v -
+   * @return -
+   */
   private FSIndex<T> getIndexForView(CASImpl v) {
     if (index == null) {
       return null;
@@ -446,19 +542,16 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
     final boolean isAnnotationIndex = idx instanceof AnnotationIndex;
     final AnnotationIndex ai = isAnnotationIndex ? (AnnotationIndex)idx: null;
     FSIterator<T> it;
-    if (boundsUse == null) {
+    if (boundsUse == BoundsUse.notBounded) {
       if (!isIndexOrdered) {
         it = idx.iterator();       
       } else {
         // index is ordered but no bounds are being used - return plain fsIterator or maybe nonOverlapping version
         it = (isAnnotationIndex && isNonOverlapping)
-               ? ai.iterator(true)
+               ? ai.iterator(false)
                : (isUnordered && idx instanceof FsIndex_iicp) 
                    ? ((FsIndex_iicp<T>)idx).iteratorUnordered()
                    : idx.iterator();
-      }
-      if (null != startingFs) {
-        it.moveTo(startingFs);
       }
     } else {
     // bounds in use, index must be annotation index, is ordered
@@ -467,63 +560,277 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
         boundingFs, 
         !isNonOverlapping,  // ambiguous
         isEndWithinBounds,  // strict 
-        true,               // isBounded
+        boundsUse,
         isTypePriority, 
         isPositionUsesType, 
-        isSkipEquals,
+        isSkipEquals,              
         v.indexRepository.getAnnotationFsComparator());
     }
-    return maybeShift(it);
+    return it;
   }
     
   @Override
   public Iterator<T> iterator() {
-    return null;
+    return fsIterator();
   }
+  
+  
+  /**
+   * Initial simple impl, creates reified list
+   *   Better impl would be to use underlying fsIterator
+   * @return
+   */
   @Override
   public List<T> asList() {
-    return null;
+    T[] a = asArray();
+    return Arrays.asList(a);
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.SelectFSs#asArray()
+   */
+  @Override
+  public T[] asArray() {
+    List<T> al = new ArrayList<>();
+    FSIterator<T> it = fsIterator();
+    while (it.isValid()) {
+      al.add(it.getNvc());
+    }
+    return (T[]) al.toArray();
+  }
+
+  /**
+   * Iterator respects backwards
+   * 
+   * Sets the characteristics from the context:
+   *   IMMUTABLE / NONNULL / DISTINCT - always
+   *   CONCURRENT - never
+   *   ORDERED - unless unordered index or not SORTED_INDEX or SET_INDEX
+   *   SORTED - only for SORTED_INDEX (and not unordered?)
+   *   SIZED - if exact size is (easily) known, just from index.
+   *           false if bounded, unambiguous
+   *   SUBSIZED - if spliterator result from trysplit also is SIZED, set to true for now
+   * 
+   * trySplit impl: 
+   *   always returns null (no parallelism support for now) 
+   * @return the spliterator 
+   */
   @Override
   public Spliterator<T> spliterator() {
-    return null;
+    return new Spliterator<T>() {
+
+      private final FSIterator<T> it = fsIterator();
+      
+      private final int characteristics;
+      
+      private final Comparator<? super T> comparator;
+
+      { 
+        prepareTerminalOp();
+        // always set
+        int c = Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT;
+        
+        if (boundsUse == BoundsUse.notBounded && !isNonOverlapping) {
+          c |= Spliterator.SIZED | Spliterator.SUBSIZED;
+        }
+        
+        // set per indexing strategy
+        int kind = (null == index) ? -1 : index.getIndexingStrategy();
+        if (kind == FSIndex.SORTED_INDEX) {
+          c |= Spliterator.ORDERED | Spliterator.SORTED;
+          comparator = (Comparator<? super T>) index; 
+        } else {
+          comparator = null;
+        }
+        if (kind == FSIndex.SET_INDEX) {
+          c |= Spliterator.ORDERED;
+        }
+        
+        characteristics = c;
+        if (isBackwards) {
+          it.moveToLast();
+        }
+      }
+      
+      @Override
+      public boolean tryAdvance(Consumer<? super T> action) {
+        if (it.isValid()) {
+          action.accept(it.getNvc());
+          incr(it);
+          return true;
+        }
+        return false;
+      }
+
+      @Override
+      public Spliterator<T> trySplit() {
+        // return null for now
+        // could implement something based on type of fsIterator.
+        return null;
+      }
+
+      @Override
+      public long estimateSize() {
+        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED) ? index.size() : Long.MAX_VALUE;
+      }
+
+      @Override
+      public int characteristics() {
+        return characteristics;
+      }
+
+      @Override
+      public Comparator<? super T> getComparator() {
+        return (comparator == null) ? Spliterator.super.getComparator() : comparator;
+      }
+    };
   }
+  
+  /*
+   * returns the item the select is pointing to, or null 
+   * uses isNullOK 
+   * (non-Javadoc)
+   * @see org.apache.uima.cas.SelectFSs#get()
+   */
   @Override
   public T get() {
+    FSIterator<T> it = fsIterator();
+    if (it.isValid()) {
+      return it.getNvc();
+    }
+    if (!isNullOK) {
+      throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
+    }
     return null;
   }
+
+  /*
+   * like get() but throws if more than one item
+   * (non-Javadoc)
+   * @see org.apache.uima.cas.SelectFSs#single()
+   */
   @Override
   public T single() {
+    T v = singleOrNull();
+    if (v == null && !isNullOK) {
+      throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
+    }
+    return v;
+  }
+  
+  /*
+   * like get() but throws if more than 1 item, always OK to return null if none
+   * (non-Javadoc)
+   * @see org.apache.uima.cas.SelectFSs#singleOrNull()
+   */
+  @Override
+  public T singleOrNull() {
+    FSIterator<T> it = fsIterator();
+    if (it.isValid()) {
+      T v = it.getNvc();
+      it.moveToNext();
+      if (it.isValid()) {
+        throw new CASRuntimeException(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES, ti.getName(), maybeMsgPosition());
+      }
+      return v;
+    }
     return null;
   }
   
+  @Override
+  public T get(TOP fs) {
+    startAt(fs);
+    return get();
+  }
+
+  @Override
+  public T single(TOP fs) {
+    startAt(fs);
+    return single();
+  }
+
+  @Override
+  public T singleOrNull(TOP fs) {
+    startAt(fs);
+    return singleOrNull();
+  }
+
+  @Override
+  public T get(TOP fs, int offset) {
+    startAt(fs, offset);
+    return get();
+  }
+
+  @Override
+  public T single(TOP fs, int offset) {
+    startAt(fs, offset);
+    return single();
+  }
+
+  @Override
+  public T singleOrNull(TOP fs, int offset) {
+    startAt(fs, offset);
+    return singleOrNull();
+  }
+
+  @Override
+  public T get(int begin, int end) {
+    startAt(begin, end);
+    return get();
+  }
+
+  @Override
+  public T single(int begin, int end) {
+    startAt(begin, end);
+    return single();
+  }
+
+  @Override
+  public T singleOrNull(int begin, int end) {
+    startAt(begin, end);
+    return singleOrNull();
+  }
+
+  @Override
+  public T get(int begin, int end, int offset) {
+    startAt(begin, end, offset);
+    return get();
+  }
+
+  @Override
+  public T single(int begin, int end, int offset) {
+    startAt(begin, end, offset);
+    return single();
+  }
+
+  @Override
+  public T singleOrNull(int begin, int end, int offset) {
+    startAt(begin, end, offset);
+    return singleOrNull();
+  }
+
   /**
    * works for AnnotationIndex or general index
    * 
    * position taken from startingFs (not necessarily an Annotation subtype)
-   *   - goes to left-most "equal" using comparitor, or if none equal, to the first one > startingFs
+   *   - goes to left-most "equal" using comparator, or if none equal, to the first one > startingFs
    *     -- using moveTo(fs)
    * 
    * special processing for AnnotationIndex (only):
    *   - typePriority - use or ignore
    *     -- ignored: after moveTo(fs), moveToPrevious while begin && end ==
    *       --- and if isPositionUsesType types are == 
-   * @param it
+   * @param it iterator to position
    * @return it positioned if needed
    */
-  public static <T extends TOP> FSIterator<T> maybePosition(
-      FSIterator<T> it,
-      TOP startingFs,
-      boolean isAnnotationIndex,
-      boolean isTypePriority,
-      boolean isPositionUsesType) {
-    if (!it.isValid() || startingFs == null) {
+  public FSIterator<T> maybePosition(FSIterator<T> it) {
+    if (!it.isValid() || startingFs == null || boundsUse != BoundsUse.notBounded) {
       return it;
     }
     
     it.moveTo(startingFs);
     
-    if (isAnnotationIndex) {
+    if (index != null && index instanceof AnnotationIndex) {
       if (!isTypePriority) {
         int begin = ((Annotation)startingFs).getBegin();
         int end = ((Annotation)startingFs).getEnd();
@@ -541,11 +848,19 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
         it.moveToNext();
       }
     }
+    
+    // guaranteed by above not-bounded
+    if (isFollowing) {
+      it.moveToNext();
+    } else if (isPreceding) {
+      it.moveToPrevious();
+    }
+    
     return it;
   }
   
   private FSIterator<T> maybeShift(FSIterator<T> it) {
-    if (isShift) {
+    if (shift != 0) {
       int ps = Math.abs(shift);
       
       for (int i = 0; i < ps; i++) {
@@ -567,30 +882,11 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    ********************************************/
 
   /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#at(org.apache.uima.jcas.tcas.Annotation)
+   * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.cas.TOP)
    */
   @Override
-  public SelectFSs<T> at(Annotation fs) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#at(int, int)
-   */
-  @Override
-  public SelectFSs<T> at(int begin, int end) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.tcas.Annotation)
-   */
-  @Override
-  public SelectFSs<T> following(Annotation fs) {
-    // TODO Auto-generated method stub
-    return null;
+  public SelectFSs<T> following(TOP fs) {
+    return commonFollowing(fs, 0);
   }
 
   /* (non-Javadoc)
@@ -598,17 +894,15 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    */
   @Override
   public SelectFSs<T> following(int begin, int end) {
-    // TODO Auto-generated method stub
-    return null;
+    return commonFollowing(new Annotation(jcas, begin, end), 0);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.tcas.Annotation, int)
+   * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.cas.TOP, int)
    */
   @Override
-  public SelectFSs<T> following(Annotation fs, int offset) {
-    // TODO Auto-generated method stub
-    return null;
+  public SelectFSs<T> following(TOP fs, int offset) {
+    return commonFollowing(fs, offset);
   }
 
   /* (non-Javadoc)
@@ -616,17 +910,15 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    */
   @Override
   public SelectFSs<T> following(int begin, int end, int offset) {
-    // TODO Auto-generated method stub
-    return null;
+    return commonFollowing(new Annotation(jcas, begin, end), offset);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.tcas.Annotation)
+   * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.cas.TOP)
    */
   @Override
-  public SelectFSs<T> preceding(Annotation fs) {
-    // TODO Auto-generated method stub
-    return null;
+  public SelectFSs<T> preceding(TOP fs) {
+    return commonPreceding(fs, 0);
   }
 
   /* (non-Javadoc)
@@ -634,17 +926,15 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    */
   @Override
   public SelectFSs<T> preceding(int begin, int end) {
-    // TODO Auto-generated method stub
-    return null;
+    return commonPreceding(new Annotation(jcas, begin, end), 0);
   }
 
   /* (non-Javadoc)
-   * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.tcas.Annotation, int)
+   * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.cas.TOP, int)
    */
   @Override
-  public SelectFSs<T> preceding(Annotation fs, int offset) {
-    // TODO Auto-generated method stub
-    return null;
+  public SelectFSs<T> preceding(TOP fs, int offset) {
+    return commonPreceding(fs, offset);
   }
 
   /* (non-Javadoc)
@@ -652,10 +942,10 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
    */
   @Override
   public SelectFSs<T> preceding(int begin, int end, int offset) {
-    // TODO Auto-generated method stub
-    return null;
+    return commonPreceding(new Annotation(jcas, begin, end), offset);
   }
-  
+
+   
 
   
   /************************
@@ -669,7 +959,244 @@ public class SelectFSs_impl <T extends TOP> implements SelectFSs<T> {
   /**
    * validations
    *   isAnnotationIndex => startingFs is Annotation 
+   *   isAllViews:  doesn't support startAt, coveredBy and friends, backwards
+   *   isAllViews:  supports limit, shift
    */
+    
+//  private void validateSinglePosition(TOP fs, int offset) {
+//    if (startingFs != null) {
+//      /* Select - multiple starting positions not allowed */
+//      throw CASRuntimeException(CASRuntimeException.);
+//    }
+//    startingFs = fs;
+//    
+//    if (offset != 0) { 
+//      if (shift != 0) {
+//        /* Select - multiple offset shifting not allowed */
+//        throw  CASRuntimeException(CASRuntimeException.);
+//      }
+//      shift = offset;
+//    }
+//  }
   
+  private SelectFSs<T> commonFollowing(TOP fs, int offset) {
+//    validateSinglePosition(fs, offset);
+    isFollowing = true;
+    return this;
+  }
+
+  private SelectFSs<T> commonPreceding(TOP fs, int offset) {
+//    validateSinglePosition(fs, offset);
+    isPreceding = true;
+    isBackwards = true; // always iterate backwards
+    return this;
+  }
   
+  private void forceAnnotationIndex() {
+    if (index == null) {
+      index = (FSIndex<T>) view.getAnnotationIndex();
+    } else {
+      if (!(index instanceof AnnotationIndex)) {
+        /** Index "{0}" must be an AnnotationIndex. */ 
+        throw new CASRuntimeException(CASRuntimeException.ANNOTATION_INDEX_REQUIRED, index);
+      }
+    }
+  }
+  
+  private Stream<T> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+
+  
+  /* ***************************************
+   *   S T R E A M   methods
+   * these convert the result to a stream and apply the method
+   */
+  @Override
+  public Stream<T> filter(Predicate<? super T> predicate) {
+    return stream().filter(predicate);
+  }
+
+  @Override
+  public <R> Stream<R> map(Function<? super T, ? extends R> mapper) {
+    return stream().map(mapper);
+  }
+
+  @Override
+  public IntStream mapToInt(ToIntFunction<? super T> mapper) {
+    return stream().mapToInt(mapper);
+  }
+
+  @Override
+  public LongStream mapToLong(ToLongFunction<? super T> mapper) {
+    return stream().mapToLong(mapper);
+  }
+
+  @Override
+  public DoubleStream mapToDouble(ToDoubleFunction<? super T> mapper) {
+    return stream().mapToDouble(mapper);
+  }
+
+  @Override
+  public <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    return stream().flatMap(mapper);
+  }
+
+  @Override
+  public IntStream flatMapToInt(Function<? super T, ? extends IntStream> mapper) {
+    return stream().flatMapToInt(mapper);
+  }
+
+  @Override
+  public LongStream flatMapToLong(Function<? super T, ? extends LongStream> mapper) {
+    return stream().flatMapToLong(mapper);
+  }
+
+  @Override
+  public DoubleStream flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper) {
+    return stream().flatMapToDouble(mapper);
+  }
+
+  @Override
+  public Stream<T> distinct() {
+    return stream().distinct();
+  }
+
+  @Override
+  public Stream<T> sorted() {
+    return stream().sorted();
+  }
+
+  @Override
+  public Stream<T> sorted(Comparator<? super T> comparator) {
+    return stream().sorted(comparator);
+  }
+
+  @Override
+  public Stream<T> peek(Consumer<? super T> action) {
+    return stream().peek(action);
+  }
+
+  @Override
+  public Stream<T> limit(long maxSize) {
+    return stream().limit(maxSize);
+  }
+
+  @Override
+  public Stream<T> skip(long n) {
+    return stream().skip(n);
+  }
+
+  @Override
+  public void forEach(Consumer<? super T> action) {
+    stream().forEach(action);
+  }
+
+  @Override
+  public void forEachOrdered(Consumer<? super T> action) {
+    forEachOrdered(action);
+  }
+
+  @Override
+  public Object[] toArray() {
+    return stream().toArray();
+  }
+
+  @Override
+  public <A> A[] toArray(IntFunction<A[]> generator) {
+    return stream().toArray(generator);
+  }
+
+  @Override
+  public T reduce(T identity, BinaryOperator<T> accumulator) {
+    return stream().reduce(identity, accumulator);
+  }
+
+  @Override
+  public Optional<T> reduce(BinaryOperator<T> accumulator) {
+    return stream().reduce(accumulator);
+  }
+
+  @Override
+  public <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator,
+      BinaryOperator<U> combiner) {
+    return stream().reduce(identity, accumulator, combiner);
+  }
+
+  @Override
+  public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator,
+      BiConsumer<R, R> combiner) {
+    return stream().collect(supplier, accumulator, combiner);
+  }
+
+  @Override
+  public <R, A> R collect(Collector<? super T, A, R> collector) {
+    return stream().collect(collector);
+  }
+
+  @Override
+  public Optional<T> min(Comparator<? super T> comparator) {
+    return stream().min(comparator);
+  }
+
+  @Override
+  public Optional<T> max(Comparator<? super T> comparator) {
+    return stream().max(comparator);
+  }
+
+  @Override
+  public long count() {
+    return stream().count();
+  }
+
+  @Override
+  public boolean anyMatch(Predicate<? super T> predicate) {
+    return stream().anyMatch(predicate);
+  }
+
+  @Override
+  public boolean allMatch(Predicate<? super T> predicate) {
+    return stream().allMatch(predicate);
+  }
+
+  @Override
+  public boolean noneMatch(Predicate<? super T> predicate) {
+    return stream().noneMatch(predicate);
+  }
+
+  @Override
+  public Optional<T> findFirst() {
+    return stream().findFirst();
+  }
+
+  @Override
+  public Optional<T> findAny() {
+    return stream().findAny();
+  }
+
+  @Override
+  public boolean isParallel() {
+    return stream().isParallel();
+  }
+
+  @Override
+  public Stream<T> sequential() {
+    return stream().sequential();
+  }
+
+  @Override
+  public Stream<T> parallel() {
+    return stream().parallel();
+  }
+
+  @Override
+  public Stream<T> onClose(Runnable closeHandler) {
+    return stream().onClose(closeHandler);
+  }
+
+  @Override
+  public void close() {
+    stream().close();
+  }
+
 }

@@ -170,6 +170,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       this.generator = generator;
       this.jcasClass = jcasClass;
       this.jcasType = jcasType;    // typeId for jcas class, **NOT Typecode**
+      
+//      System.out.println("debug create jcci, class = " + jcasClass.getName() + ", typeint = " + jcasType);
     }
     
     boolean isCopydown(TypeImpl ti) {
@@ -375,6 +377,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     // this is done even after the class is first loaded, in case the type system changed.
     // don't set anything if copy down - otherwise was setting the copyed-down typeId ref to the 
     //   new ti
+//    System.out.println("debug set jcas regisered type " + jcci.jcasType + ",  type = " + ti.getName());
+
     if (jcci.jcasType >= 0 && ! isCopyDown) {
       ts.setJCasRegisteredType(jcci.jcasType, ti); 
     }
@@ -604,6 +608,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
                           ti.isArray(); 
     FsGenerator generator = noGenerator ? null : createGenerator(jcasClass);
     JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, generator, jcasType);
+//    System.out.println("debug creating jcci, classname = " + jcasClass.getName() + ", jcasTypeNumber: " + jcasType);
     return jcasClassInfo;
   }
   

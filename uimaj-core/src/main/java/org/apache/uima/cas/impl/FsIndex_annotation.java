@@ -21,6 +21,9 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
+import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.AnnotationTree;
@@ -56,10 +59,11 @@ public class FsIndex_annotation <T extends AnnotationFS>
                               null, 
                               ambiguous, 
                               strict, 
-                              isBounded,
+                              null, // no BoundsUse
                               true, // type priority used
                               true, // ignored
                               true, // ignored
+                              
                               this.getFsRepositoryImpl().getAnnotationFsComparator()
                              ); 
   }
@@ -86,7 +90,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
         (Annotation) annot,
         ambiguous, 
         strict, 
-        true,  // isBounded 
+        BoundsUse.coveredBy,  // isBounded 
         true,  // uses type priority
         true,  // position uses type - ignored
         true,  // skip returning results equal to annot
