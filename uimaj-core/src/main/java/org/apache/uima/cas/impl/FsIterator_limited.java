@@ -25,7 +25,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Wraps FSIterator<T>, limits results to n
+ * Wraps FSIterator<T>, limits results to n gets
  */
 class FsIterator_limited<T extends FeatureStructure>  
           implements LowLevelIterator<T> {
@@ -39,63 +39,60 @@ class FsIterator_limited<T extends FeatureStructure>
     this.limit = limit;
   }
 
-  private void makeInvalid() {
-    iterator.moveToFirst();
-    iterator.moveToPrevious();
+  private void maybeMakeInvalid() {
+    if (count == limit) {
+      iterator.moveToFirst();
+      iterator.moveToPrevious();
+    }
   }
   
   public T get() throws NoSuchElementException {
-    if (count == limit) {
-      makeInvalid();
-      throw new NoSuchElementException();
-    }
+    maybeMakeInvalid();
     T r = iterator.get();
-    count++;
-    if (count == limit) {
-      makeInvalid();
-    }    
+    count++;  
     return r;
   }
 
   public T getNvc() {
-    if (count == limit) {
-      makeInvalid();
-      throw new NoSuchElementException();
-    }
+    maybeMakeInvalid();
     T r = iterator.getNvc();
     count++;
-    if (count == limit) {
-      makeInvalid();
-    }    
     return r;
   }
 
   public void moveToNext() {
+    maybeMakeInvalid();
     iterator.moveToNext();
   }
 
   public void moveToNextNvc() {
+    maybeMakeInvalid();
     iterator.moveToNextNvc();
   }
 
   public void moveToPrevious() {
+    maybeMakeInvalid();
     iterator.moveToPrevious();
   }
 
   public void moveToPreviousNvc() {
+    maybeMakeInvalid();
     iterator.moveToPreviousNvc();
   }
 
   public void moveToFirst() {
     iterator.moveToFirst();
+    maybeMakeInvalid();
   }
 
   public void moveToLast() {
     iterator.moveToLast();
+    maybeMakeInvalid();
   }
 
   public void moveTo(FeatureStructure fs) {
     iterator.moveTo(fs);
+    maybeMakeInvalid();
   }
 
   public FSIterator<T> copy() {
@@ -103,6 +100,7 @@ class FsIterator_limited<T extends FeatureStructure>
   }
 
   public boolean isValid() {
+    maybeMakeInvalid();
     return iterator.isValid();
   }
 

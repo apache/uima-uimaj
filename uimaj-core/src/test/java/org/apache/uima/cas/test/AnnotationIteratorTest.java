@@ -299,6 +299,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Subiterator over annot with big bound, strict", 33, it);
     select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).endWithinBounds().fsIterator();
     assertCount("Subiterator select over annot with big bound, strict", 33, select_it);
+
+    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).limit(7).endWithinBounds().fsIterator();
+    assertCountLimit("Subiterator select limit 7 over annot with big bound, strict", 7, select_it);
+
     
     it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict
     assertCount("Subiterator over annot unambiguous strict", 3, it);
@@ -340,30 +344,10 @@ public class AnnotationIteratorTest extends TestCase {
   private String flatStateMsg(String s) {
     return s + (isSave ? "" : " with flattened index");
   }
-  
   private void assertCount(String msg, int expected,  FSIterator<? extends AnnotationFS> it) {
+    int fssStart = assertCountCmn(msg, expected, it);
     msg = flatStateMsg(msg);
-    int count = 0;
-    callCount  ++;
-    int fssStart;
-    if (isSave) {
-      fssStarts.add(fssStart = fss.size());
-    } else {
-      fssStart = fssStarts.get(callCount);
-    }
-    while (it.isValid()) {
-      ++count;
-      AnnotationFS fs = it.next();
-      if (showFSs) {
-        System.out.format("%d " + msg + " fs begin: %d end: %d type: %s%n", count, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
-      }
-      if (isSave) {
-        fss.add(fs);
-      } else {
-        assertEquals(msg, fss.get(fssStart + count -1).hashCode(), fs.hashCode());
-      }
-    }
-    assertEquals(msg, expected, count);
+    int count = expected;
     if (count > 0) {
       // test moveTo(fs) in middle, first, and last
       AnnotationFS posFs = fss.get(fssStart + (count >> 1));
@@ -400,6 +384,41 @@ public class AnnotationIteratorTest extends TestCase {
     }
     assertEquals(msg, expected, count);
   }
+  
+  private int assertCountCmn(String msg, int expected, FSIterator<? extends AnnotationFS> it) {
+    msg = flatStateMsg(msg);
+    int count = 0;
+    callCount  ++;
+    int fssStart;
+    if (isSave) {
+      fssStarts.add(fssStart = fss.size());
+    } else {
+      fssStart = fssStarts.get(callCount);
+    }
+    while (it.isValid()) {
+      ++count;
+      AnnotationFS fs = it.next();
+      if (showFSs) {
+        System.out.format("%d " + msg + " fs begin: %d end: %d type: %s%n", count, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+      }
+      if (isSave) {
+        fss.add(fs);
+      } else {
+        assertEquals(msg, fss.get(fssStart + count -1).hashCode(), fs.hashCode());
+      }
+    }
+    assertEquals(msg, expected, count);
+    return fssStart;
+  }
+  
+    
+  private void assertCountLimit(String msg, int expected,  FSIterator<? extends AnnotationFS> it) {
+    assertCountCmn(msg, expected, it);
+    it.moveToFirst();
+    assertFalse(it.isValid());
+  }
+  
+  
   
   public void testIncorrectIndexTypeException() {
     boolean caughtException = false;
