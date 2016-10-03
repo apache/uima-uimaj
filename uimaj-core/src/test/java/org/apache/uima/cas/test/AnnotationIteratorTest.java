@@ -276,6 +276,8 @@ public class AnnotationIteratorTest extends TestCase {
 //      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
     assertCount("Normal ambiguous annot iterator", annotCount, it);
     assertCount("Normal ambiguous select annot iterator", annotCount, select_it);
+    assertEquals(annotCount, SelectFSs.sselect(annotIndex).toArray().length);  // stream op
+    assertEquals(annotCount, SelectFSs.sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
     assertCount("Unambiguous annot iterator", 1, it);  // because of document Annotation - spans the whole range

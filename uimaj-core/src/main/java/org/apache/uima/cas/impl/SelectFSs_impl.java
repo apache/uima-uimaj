@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -581,8 +582,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @return
    */
   @Override
-  public List<T> asList() {
-    T[] a = asArray();
+  public List<T> asList(Class<T> clazz) {
+    T[] a = asArray(clazz);
     return Arrays.asList(a);
   }
   
@@ -590,13 +591,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#asArray()
    */
   @Override
-  public T[] asArray() {
+  public T[] asArray(Class<T> clazz) {
     List<T> al = new ArrayList<>();
     FSIterator<T> it = fsIterator();
     while (it.isValid()) {
       al.add(it.getNvc());
+      it.moveToNextNvc();
     }
-    return (T[]) al.toArray();
+    
+    T[] r = (T[]) Array.newInstance(clazz, al.size());
+    return al.toArray(r);
   }
 
   /**

@@ -165,8 +165,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   // ---------------------------------
   FSIterator<T> fsIterator();
   Iterator<T> iterator();
-  List<T> asList();
-  T[] asArray();
+  List<T> asList(Class<T> clazz);
+  T[] asArray(Class<T> clazz);
   Spliterator<T> spliterator();
   
   // returning one item
