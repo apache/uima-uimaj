@@ -567,6 +567,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isSkipEquals,              
         v.indexRepository.getAnnotationFsComparator());
     }
+    
+    it = isBackwards ? new FsIterator_backwards<>(it) : it;
+    if (isBackwards) {
+      it.moveToFirst();  
+    }
     return it;
   }
     

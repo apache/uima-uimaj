@@ -25,93 +25,91 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Wraps FSIterator<T>, limits results to n gets
+ * Wraps FSIterator<T>, runs it backwards
  */
-class FsIterator_limited<T extends FeatureStructure>  
+class FsIterator_backwards<T extends FeatureStructure>  
           implements LowLevelIterator<T> {
   
-  final private LowLevelIterator<T> iterator; // not just for single-type iterators
-  final private int limit;
-  private int count = 0;
+  final private LowLevelIterator<T> it; // not just for single-type iterators
     
-  FsIterator_limited(FSIterator<T> iterator, int limit) {
-    this.iterator = (LowLevelIterator<T>) iterator;
-    this.limit = limit;
+  FsIterator_backwards(FSIterator<T> iterator) {
+    this.it = (LowLevelIterator<T>) iterator;
   }
 
-  private void maybeMakeInvalid() {
-    if (count == limit) {
-      iterator.moveToFirst();
-      iterator.moveToPrevious();
-    }
-  }
-  
-  public T get() throws NoSuchElementException {
-    maybeMakeInvalid();
-    T r = iterator.get();
-    count++;  
-    return r;
+  public int ll_indexSize() {
+    return it.ll_indexSize();
   }
 
-  public T getNvc() {
-    maybeMakeInvalid();
-    T r = iterator.getNvc();
-    count++;
-    return r;
-  }
-
-  public void moveToNext() {
-    maybeMakeInvalid();
-    iterator.moveToNext();
-  }
-
-  public void moveToNextNvc() {
-    maybeMakeInvalid();
-    iterator.moveToNextNvc();
-  }
-
-  public void moveToPrevious() {
-    maybeMakeInvalid();
-    iterator.moveToPrevious();
-  }
-
-  public void moveToPreviousNvc() {
-    maybeMakeInvalid();
-    iterator.moveToPreviousNvc();
-  }
-
-  public void moveToFirst() {
-    iterator.moveToFirst();
-    maybeMakeInvalid();
-  }
-
-  public void moveToLast() {
-    iterator.moveToLast();
-    maybeMakeInvalid();
-  }
-
-  public void moveTo(FeatureStructure fs) {
-    iterator.moveTo(fs);
-    maybeMakeInvalid();
-  }
-
-  public FSIterator<T> copy() {
-    return new FsIterator_limited<T>(iterator.copy(), limit);
+  public LowLevelIndex<T> ll_getIndex() {
+    return it.ll_getIndex();
   }
 
   public boolean isValid() {
-    maybeMakeInvalid();
-    return iterator.isValid();
+    return it.isValid();
   }
 
-  @Override
-  public int ll_indexSize() {
-    return iterator.ll_indexSize();
+  public T get() throws NoSuchElementException {
+    return it.get();
   }
 
-  @Override
-  public LowLevelIndex<T> ll_getIndex() {
-    return iterator.ll_getIndex();
+  public T getNvc() {
+    return it.getNvc();
   }
+
+  public void moveToNext() {
+    it.moveToPrevious();
+  }
+
+  public void moveToNextNvc() {
+    it.moveToPreviousNvc();
+  }
+
+  public void moveToPrevious() {
+    it.moveToNext();
+  }
+
+  public void moveToPreviousNvc() {
+    it.moveToNextNvc();
+  }
+
+  public void moveToFirst() {
+    it.moveToLast();
+  }
+
+  public void moveToLast() {
+    it.moveToFirst();
+  }
+
+  public void moveTo(FeatureStructure fs) {
+    it.moveTo(fs);  // moves to left most of equal, or one greater
+    LowLevelIndex<T> lli = ll_getIndex();
+    if (isValid()) {
+      if (lli.compare(get(), fs) == 0) {
+        // move to right most
+        while (true) {
+          it.moveToNextNvc();
+          if (!isValid() || lli.compare(get(), fs) != 0) {
+            break;
+          }
+        };
+        if (isValid()) {
+          it.moveToPreviousNvc();
+        } else {
+          it.moveToLast();
+        }
+      } else {
+        // is valid, but not equal - went to wrong side
+        it.moveToPreviousNvc();
+      }
+    } else {
+      // moved to one past the end.  Backwards: would be at the (backwards) first position
+      it.moveToLast();
+    }
+  }
+
+  public FSIterator<T> copy() {
+    return new FsIterator_backwards<T>(it.copy());
+  }
+
 
 }

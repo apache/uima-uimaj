@@ -20,6 +20,8 @@
 package org.apache.uima.cas.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.uima.cas.CAS;
@@ -278,11 +280,16 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Normal ambiguous select annot iterator", annotCount, select_it);
     assertEquals(annotCount, SelectFSs.sselect(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, SelectFSs.sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
+    // backwards
+    select_it = SelectFSs.sselect(annotIndex).backwards().fsIterator();
+    assertCount("Normal select backwards ambiguous annot iterator", annotCount, select_it);
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
     assertCount("Unambiguous annot iterator", 1, it);  // because of document Annotation - spans the whole range
     select_it = cas.<AnnotationFS>select().nonOverlapping().fsIterator();
     assertCount("Unambiguous select annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
+    select_it = cas.<AnnotationFS>select().nonOverlapping().backwards(true).fsIterator();
+    assertCount("Unambiguous select backwards annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
     
     it = sentIndex.iterator(false);  //  false means create an unambiguous iterator
     assertCount("Unambigous sentence iterator", 5, it);
@@ -300,14 +307,25 @@ public class AnnotationIteratorTest extends TestCase {
     select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).endWithinBounds().fsIterator();
     assertCount("Subiterator select over annot with big bound, strict", 33, select_it);
 
-    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).limit(7).endWithinBounds().fsIterator();
+    select_it = cas.<AnnotationFS>select().coveredBy(bigBound).limit(7).endWithinBounds().fsIterator();
     assertCountLimit("Subiterator select limit 7 over annot with big bound, strict", 7, select_it);
 
+    Object[] o = cas.<AnnotationFS>select().coveredBy(bigBound).skip(3).toArray();
+    assertEquals(o.length, 30);
+    
+    Object[] o1 = cas.<AnnotationFS>select().coveredBy(bigBound).toArray();
+    List<AnnotationFS> l2 = cas.<AnnotationFS>select().coveredBy(bigBound).backwards().asList(AnnotationFS.class);
+    Collections.reverse(l2);
+    assertTrue(Arrays.equals(o1, l2.toArray()));
+    
     
     it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict
     assertCount("Subiterator over annot unambiguous strict", 3, it);
     select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).endWithinBounds().nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
+    select_it = cas.<AnnotationFS>select().backwards().coveredBy((Annotation) bigBound).endWithinBounds().nonOverlapping().fsIterator();
+    assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
+
 
     it = annotIndex.subiterator(bigBound, true, false);
     assertCount("Subiterator over annot ambiguous not-strict", 40, it);
