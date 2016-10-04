@@ -384,12 +384,43 @@ public class AnnotationIteratorTest extends TestCase {
         x= true;
       }
     }
+    assertTrue(x);
     assertTrue(cas.<AnnotationFS>select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
     
     select_it = cas.<AnnotationFS>select().nonOverlapping().fsIterator(); 
     assertCount("Unambiguous select annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
     select_it = cas.<AnnotationFS>select().nonOverlapping().backwards(true).fsIterator();
     assertCount("Unambiguous select backwards annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
+    assertNotNull(cas.<AnnotationFS>select().nonOverlapping().single());
+
+    x = false;
+    try {
+      cas.<AnnotationFS>select().coveredBy(3, 10).single();
+    } catch (CASRuntimeException e) {
+      if (e.hasMessageKey(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES)) {
+        x= true;
+      }
+    }
+    assertTrue(x);
+    x = false;
+    try {
+      cas.<AnnotationFS>select().coveredBy(3, 10).singleOrNull();
+    } catch (CASRuntimeException e) {
+      if (e.hasMessageKey(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES)) {
+        x= true;
+      }
+    }
+    assertTrue(x);
+    x = false;
+    try {
+      cas.<AnnotationFS>select().coveredBy(3, 5).single();
+    } catch (CASRuntimeException e) {
+      if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
+        x= true;
+      }
+    }
+    assertTrue(x);
+    cas.<AnnotationFS>select().coveredBy(3, 5).singleOrNull();
     
   }
   
