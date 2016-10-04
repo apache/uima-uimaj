@@ -80,8 +80,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   SelectFSs<T> allViews();
   SelectFSs<T> allViews(boolean allViews);
   
-  SelectFSs<T> nullOK();  // applies to get() and single()
-  SelectFSs<T> nullOK(boolean nullOk);  // applies to get() and single()
+  SelectFSs<T> nullOK();  // applies to get()
+  SelectFSs<T> nullOK(boolean nullOk);  // applies to get()
     
   SelectFSs<T> unordered();                  // ignored if not ordered index
   SelectFSs<T> unordered(boolean unordered); // ignored if not ordered index
@@ -92,10 +92,6 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
 //  SelectFSs<T> noSubtypes();
 //  SelectFSs<T> noSubtypes(boolean noSubtypes);
 
-  // ---------------------------------
-  // bounding limits specified
-  // as part of subselection style
-  // ---------------------------------
   
   // ---------------------------------
   // starting position specification
@@ -113,6 +109,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   // shifts, if any, occur afterwards
   //   - can be positive or negative
   // ---------------------------------
+  SelectFSs<T> shifted(int shiftAmount); 
+  
   SelectFSs<T> startAt(TOP fs);  // Ordered
   SelectFSs<T> startAt(int begin, int end);   // AI
   
@@ -171,10 +169,15 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   
   // returning one item
   
-  T get();          // returns first element or null if empty
-  T single();       // throws if not exactly 1 element
+  T get();          // returns first element or null if empty (unless nullOK(false) specified)
+  T single();       // throws if not exactly 1 element, throws if null
   T singleOrNull(); // throws if more than 1 element, returns single or null
-  T get(TOP fs);          // returns first element or null if empty
+   // next are positioning alternatives
+   // get(...) throws if null (unless nullOK specified)
+  T get(int offset);          // returns first element or null if empty after positioning
+  T single(int offset);       // throws if not exactly 1 element
+  T singleOrNull(int offset); // throws if more than 1 element, returns single or null  
+  T get(TOP fs);          // returns first element or null if empty after positioning
   T single(TOP fs);       // throws if not exactly 1 element
   T singleOrNull(TOP fs); // throws if more than 1 element, returns single or null
   T get(TOP fs, int offset);          // returns first element or null if empty

@@ -87,6 +87,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private boolean isFollowing = false;
   private boolean isPreceding = false;
   
+  private boolean isNullOkSpecified = false; // for complex defaulting of get(), get(n)
+  
   private BoundsUse boundsUse = null; 
   
   private TOP startingFs = null;
@@ -264,11 +266,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public SelectFSs_impl<T> nullOK() { // applies to get() and single()
     this.isNullOK = true;
+    this.isNullOkSpecified = true;
     return this;
   }  
   @Override
   public SelectFSs_impl<T> nullOK(boolean bNullOk) {  // applies to get() and single()
     this.isNullOK = bNullOk;
+    this.isNullOkSpecified = true;
     return this;
   }
     
@@ -304,6 +308,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   /*********************************
    * starting position
    *********************************/
+  
+  @Override
+  public SelectFSs_impl<T> shifted(int shiftAmount) {
+    this.shift = shiftAmount;
+    return this;
+  }
+  
   @Override
   public SelectFSs_impl<T> startAt(TOP fs) {  // Ordered
     this.startingFs = fs;
@@ -499,7 +510,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return  (limit == -1) ? it : new FsIterator_limited<>(it, limit);
   }
   
-  
   private FSIterator<T>[] getPlainIteratorsForAllViews() {
     final int nbrViews = view.getNumberOfViews();
     FSIterator<T>[] ita = new FSIterator[nbrViews];
@@ -630,12 +640,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       private final FSIterator<T> it = fsIterator();
       
+      private final Comparator<? super T> comparator = 
+          (index != null && index.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
+            ? (Comparator<? super T>)index : null;
+                                                          
       private final int characteristics;
-      
-      private final Comparator<? super T> comparator;
-
-      { 
-        prepareTerminalOp();
+      { // set the characteristics and comparator
         // always set
         int c = Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.DISTINCT;
         
@@ -644,21 +654,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         }
         
         // set per indexing strategy
-        int kind = (null == index) ? -1 : index.getIndexingStrategy();
-        if (kind == FSIndex.SORTED_INDEX) {
-          c |= Spliterator.ORDERED | Spliterator.SORTED;
-          comparator = (Comparator<? super T>) index; 
-        } else {
-          comparator = null;
-        }
-        if (kind == FSIndex.SET_INDEX) {
-          c |= Spliterator.ORDERED;
+        switch ((null == index) ? -1 : index.getIndexingStrategy()) {
+        case FSIndex.SORTED_INDEX: c |= Spliterator.ORDERED | Spliterator.SORTED; break;
+        case FSIndex.SET_INDEX: c |= Spliterator.ORDERED; break;
+        default: // do nothing
         }
         
-        characteristics = c;
-        if (isBackwards) {
-          it.moveToLast();
-        }
+        characteristics = c;        
       }
       
       @Override
@@ -697,20 +699,25 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   /*
    * returns the item the select is pointing to, or null 
-   * uses isNullOK 
+   * if nullOK(false) then throws on null
    * (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#get()
    */
   @Override
   public T get() {
+    return getNullChk(true);
+  }
+  
+  private T getNullChk(boolean isDoSetTest) {
     FSIterator<T> it = fsIterator();
     if (it.isValid()) {
       return it.getNvc();
     }
-    if (!isNullOK) {
+    if ((!isDoSetTest || isNullOkSpecified) && !isNullOK) {
       throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
     }
     return null;
+    
   }
 
   /*
@@ -721,7 +728,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T single() {
     T v = singleOrNull();
-    if (v == null && !isNullOK) {
+    if (v == null) {
       throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
     }
     return v;
@@ -746,10 +753,30 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return null;
   }
   
+  
+  
+  @Override
+  public T get(int offset) {
+    this.shift = offset;
+    return getNullChk(false);
+  }
+
+  @Override
+  public T single(int offset) {
+    this.shift = offset;
+    return single();
+  }
+
+  @Override
+  public T singleOrNull(int offset) {
+    this.shift = offset;
+    return singleOrNull();
+  }
+
   @Override
   public T get(TOP fs) {
     startAt(fs);
-    return get();
+    return getNullChk(false);
   }
 
   @Override
@@ -767,7 +794,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(TOP fs, int offset) {
     startAt(fs, offset);
-    return get();
+    return getNullChk(false);
   }
 
   @Override
@@ -785,7 +812,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(int begin, int end) {
     startAt(begin, end);
-    return get();
+    return getNullChk(false);
   }
 
   @Override
@@ -803,7 +830,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public T get(int begin, int end, int offset) {
     startAt(begin, end, offset);
-    return get();
+    return getNullChk(false);
   }
 
   @Override
@@ -1013,7 +1040,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   private Stream<T> stream() {
-    return StreamSupport.stream(spliterator(), false);
+    return StreamSupport.stream(spliterator(), false); // false = default not parallel
   }
 
   

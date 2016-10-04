@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -37,6 +38,8 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import junit.framework.TestCase;
+
+import static org.apache.uima.cas.SelectFSs.sselect;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.
@@ -278,10 +281,10 @@ public class AnnotationIteratorTest extends TestCase {
 //      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
     assertCount("Normal ambiguous annot iterator", annotCount, it);
     assertCount("Normal ambiguous select annot iterator", annotCount, select_it);
-    assertEquals(annotCount, SelectFSs.sselect(annotIndex).toArray().length);  // stream op
-    assertEquals(annotCount, SelectFSs.sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
+    assertEquals(annotCount, sselect(annotIndex).toArray().length);  // stream op
+    assertEquals(annotCount, sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
     // backwards
-    select_it = SelectFSs.sselect(annotIndex).backwards().fsIterator();
+    select_it = sselect(annotIndex).backwards().fsIterator();
     assertCount("Normal select backwards ambiguous annot iterator", annotCount, select_it);
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
@@ -297,7 +300,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Unambigous select sentence iterator", 5, select_it);
     select_it = sentIndex.<AnnotationFS>select().nonOverlapping().fsIterator();
     assertCount("Unambigous select sentence iterator", 5, select_it);
-    select_it = SelectFSs.sselect(sentIndex).nonOverlapping().fsIterator();
+    select_it = sselect(sentIndex).nonOverlapping().fsIterator();
     assertCount("Unambigous select sentence iterator", 5, select_it);
     
     
@@ -331,16 +334,16 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Subiterator over annot ambiguous not-strict", 40, it);
     
     // covered by implies endWithinBounds
-    select_it = SelectFSs.sselect(annotIndex).coveredBy(bigBound).fsIterator();
+    select_it = sselect(annotIndex).coveredBy(bigBound).fsIterator();
     assertCount("Subiterator select over annot ambiguous not-strict", 33, select_it);
     select_it = annotIndex.<AnnotationFS>select().coveredBy(bigBound).fsIterator();
     assertCount("Subiterator select over annot ambiguous not-strict", 33, select_it);
-    select_it = SelectFSs.sselect(annotIndex).coveredBy(bigBound).endWithinBounds(false).fsIterator();
+    select_it = sselect(annotIndex).coveredBy(bigBound).endWithinBounds(false).fsIterator();
     assertCount("Subiterator select over annot ambiguous not-strict", 40, select_it);
     
     it = annotIndex.subiterator(bigBound, false, false);  // unambiguous, not strict
     assertCount("Subiterator over annot, unambiguous, not-strict", 4, it);
-    select_it = SelectFSs.sselect(annotIndex).nonOverlapping().coveredBy(bigBound).endWithinBounds(false).fsIterator();
+    select_it = sselect(annotIndex).nonOverlapping().coveredBy(bigBound).endWithinBounds(false).fsIterator();
     assertCount("Subiterator select over annot unambiguous not-strict", 4, select_it);
     
     AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
@@ -357,6 +360,37 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Subiteratover over sent ambiguous", 5, it);
     it = sentIndex.subiterator(bigBound, false, false);
     assertCount("Subiteratover over sent unambiguous", 1, it); 
+    
+    // single, get, nullOK
+         
+    assertTrue(cas.<AnnotationFS>select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
+    boolean x = false;
+    try {
+      assertNull(cas.<AnnotationFS>select().nullOK(false).coveredBy(3, 3).get());
+    } catch (CASRuntimeException e) {
+      if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
+        x= true;
+      }
+    }
+    assertTrue(x);
+    assertNull(cas.<AnnotationFS>select().coveredBy(3, 3).get());
+    assertNotNull(cas.<AnnotationFS>select().get(3));
+    assertNull(cas.<AnnotationFS>select().nullOK().coveredBy(3, 5).get(3));
+    x = false;
+    try {
+      cas.<AnnotationFS>select().coveredBy(3, 5). get(3);
+    } catch (CASRuntimeException e) {
+      if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
+        x= true;
+      }
+    }
+    assertTrue(cas.<AnnotationFS>select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
+    
+    select_it = cas.<AnnotationFS>select().nonOverlapping().fsIterator(); 
+    assertCount("Unambiguous select annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
+    select_it = cas.<AnnotationFS>select().nonOverlapping().backwards(true).fsIterator();
+    assertCount("Unambiguous select backwards annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
+    
   }
   
   private String flatStateMsg(String s) {
