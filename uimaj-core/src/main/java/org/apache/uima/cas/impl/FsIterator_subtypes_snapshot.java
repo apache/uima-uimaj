@@ -41,7 +41,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
     this.is_unordered = flatIndex.getIndexingStrategy() != FSIndex.SORTED_INDEX;
   }
   
-  public FsIterator_subtypes_snapshot(T[] snapshot, LowLevelIndex<FeatureStructure> index, boolean is_unordered) {
+  public FsIterator_subtypes_snapshot(T[] snapshot, LowLevelIndex<T> index, boolean is_unordered) {
     this.indexForComparator = (LowLevelIndex<T>) index;
     this.snapshot = snapshot;
     this.is_unordered = is_unordered;
@@ -158,7 +158,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   @Override
   public FSIterator<T> copy() {
     FsIterator_subtypes_snapshot<T> it = new FsIterator_subtypes_snapshot<T>(
-        this.snapshot, (LowLevelIndex<FeatureStructure>) this.indexForComparator, this.is_unordered);
+        this.snapshot, (LowLevelIndex<T>) this.indexForComparator, this.is_unordered);
     it.pos = pos;
     return it;
   }

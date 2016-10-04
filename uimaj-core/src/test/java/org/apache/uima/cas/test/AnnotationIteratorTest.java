@@ -422,6 +422,10 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(x);
     cas.<AnnotationFS>select().coveredBy(3, 5).singleOrNull();
     
+    select_it = sselect(annotIndex).following(2, 39).limit(2).fsIterator();
+    assertCountLimit("Following", 2, select_it);
+    select_it = sselect(annotIndex).following(2, 39).backwards().limit(2).fsIterator();
+    assertCountLimit("Following", 2, select_it);
   }
   
   private String flatStateMsg(String s) {

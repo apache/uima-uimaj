@@ -83,7 +83,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private boolean isNullOK = false;
   private boolean isUnordered = false;
   private boolean isBackwards = false;
-  private boolean isAt = false;
   private boolean isFollowing = false;
   private boolean isPreceding = false;
   
@@ -444,7 +443,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
         isNonOverlapping || 
-        boundsUse != BoundsUse.notBounded;
+        boundsUse != BoundsUse.notBounded ||
+        isFollowing || isPreceding;
     
     if (isUseAnnotationIndex) {
       forceAnnotationIndex();  // throws if non-null index not an annotation index
@@ -479,6 +479,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     }
   }
   
+  private void decr(FSIterator<T> it) {
+    if (isBackwards) {
+      it.moveToNext();
+    } else {
+      it.moveToPrevious();
+    }
+  }
+  
   /*********************************
    * terminal operations
    * returning other than SelectFSs
@@ -496,10 +504,37 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   /**
    * F S I t e r a t o r
    * -------------------
-   * ignored: backwards (because the fsIterator explicitly goes forwards and backwards)
    */
   @Override
   public FSIterator<T> fsIterator() {
+    if (isFollowing && isBackwards) {
+      isBackwards = false;
+      T[] a = (T[]) asArray(fsIterator1());
+      FSIterator<T> it = new FsIterator_backwards<>(new FsIterator_subtypes_snapshot<T>(a, (LowLevelIndex<T>) index, false));
+      return (limit == 0)
+          ? it
+            // rewrap with limit - needs to be outer shell to get right invalid behavior
+          : new FsIterator_limited<>(it, limit);          
+    }
+    
+    if (isPreceding) {
+      boolean bkwd = isBackwards;
+      isBackwards = true;
+      T[] a = (T[]) asArray(fsIterator1());
+      FSIterator<T> it = new FsIterator_subtypes_snapshot<T>(a, (LowLevelIndex<T>) index, false);
+      if (!bkwd) {
+        it = new FsIterator_backwards<>(it); // because array is backwards
+      }
+      return (limit == 0) 
+          ? it
+            // rewrap with limit - needs to be outer shell to get right invalid behavior
+          : new FsIterator_limited<>(it, limit); 
+    }
+    
+    return fsIterator1();
+  }
+  
+  private FSIterator<T> fsIterator1() {
     prepareTerminalOp();
     FSIterator<T> it = isAllViews 
                       ? new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), null)
@@ -507,8 +542,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
     maybePosition(it);
     maybeShift(it);
-    return  (limit == -1) ? it : new FsIterator_limited<>(it, limit);
+    return (limit == -1) ? it : new FsIterator_limited<>(it, limit);    
   }
+  
+  
   
   private FSIterator<T>[] getPlainIteratorsForAllViews() {
     final int nbrViews = view.getNumberOfViews();
@@ -607,17 +644,28 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public T[] asArray(Class<T> clazz) {
-    List<T> al = new ArrayList<>();
-    FSIterator<T> it = fsIterator();
-    while (it.isValid()) {
-      al.add(it.getNvc());
-      it.moveToNextNvc();
-    }
-    
-    T[] r = (T[]) Array.newInstance(clazz, al.size());
-    return al.toArray(r);
+    return asArray(fsIterator(), clazz);
   }
 
+  private T[] asArray(FSIterator<T> it, Class<T> clazz) {
+    List<T> al = new ArrayList<>();
+    while (it.isValid()) {
+      al.add(it.getNvc());  // limit iterator might cause it to become invalid
+      it.moveToNext();
+    }    
+    T[] r = (T[]) Array.newInstance(clazz, al.size());
+    return al.toArray(r);    
+  }
+  
+  private FeatureStructure[] asArray(FSIterator<T> it) {
+    List<? super T> al = new ArrayList<>();
+    while (it.isValid()) {
+      al.add(it.getNvc());
+      it.moveToNext(); // limit iterator might cause it to become invalid
+    }    
+    FeatureStructure[] r = (FeatureStructure[]) Array.newInstance(FeatureStructure.class,  al.size());
+    return al.toArray(r);
+  }
   /**
    * Iterator respects backwards
    * 
@@ -866,7 +914,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     
     it.moveTo(startingFs);
     
-    if (index != null && index instanceof AnnotationIndex) {
+    if (index != null && index instanceof AnnotationIndex && !isFollowing && !isPreceding) {
       if (!isTypePriority) {
         int begin = ((Annotation)startingFs).getBegin();
         int end = ((Annotation)startingFs).getEnd();
@@ -885,11 +933,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       }
     }
     
-    // guaranteed by above not-bounded
     if (isFollowing) {
-      it.moveToNext();
+      final int end = ((Annotation)startingFs).getEnd();
+      while (it.isValid() && ((Annotation)it.get()).getBegin() < end) {
+        it.moveToNext();
+      }
     } else if (isPreceding) {
-      it.moveToPrevious();
+      final int begin = ((Annotation)startingFs).getBegin();
+      while (it.isValid() && ((Annotation)it.get()).getEnd() > begin) {
+        it.moveToPrevious();
+      }
     }
     
     return it;
@@ -1016,13 +1069,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //  }
   
   private SelectFSs<T> commonFollowing(TOP fs, int offset) {
-//    validateSinglePosition(fs, offset);
+    this.startingFs = fs;
+    this.shift = offset;
     isFollowing = true;
     return this;
   }
 
   private SelectFSs<T> commonPreceding(TOP fs, int offset) {
 //    validateSinglePosition(fs, offset);
+    this.startingFs = fs;
+    this.shift = offset;
     isPreceding = true;
     isBackwards = true; // always iterate backwards
     return this;

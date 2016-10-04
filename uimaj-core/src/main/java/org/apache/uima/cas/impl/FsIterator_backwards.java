@@ -34,6 +34,7 @@ class FsIterator_backwards<T extends FeatureStructure>
     
   FsIterator_backwards(FSIterator<T> iterator) {
     this.it = (LowLevelIterator<T>) iterator;
+    it.moveToLast();
   }
 
   public int ll_indexSize() {

@@ -34,7 +34,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 public class LLUnambiguousIteratorImpl<T extends FeatureStructure> extends FsIterator_subtypes_snapshot<T> {
 
   public LLUnambiguousIteratorImpl(LowLevelIterator<FeatureStructure> it) {
-    super((T[]) createItemsArray(it), it.ll_getIndex(), false);
+    super((T[]) createItemsArray(it), (LowLevelIndex<T>) it.ll_getIndex(), false);
   }
   
   private static Annotation[] createItemsArray(LowLevelIterator<FeatureStructure> it) {
