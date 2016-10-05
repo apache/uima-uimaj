@@ -20,6 +20,7 @@
 package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -89,10 +90,11 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   public TOP getHead() { return _getFeatureValueNc(_FI_head); }
 
   /* setter for head * */
-  public void setHead(TOP v) {
-    if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
+  public void setHead(FeatureStructure v) {
+    TOP vt = (TOP) v;
+    if (vt != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
-      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
     }
     _setFeatureValueNcWj(_FI_head, v); }
 
@@ -123,5 +125,19 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
   @Override
   public EmptyFSList getEmptyList() {
     return this._casView.getEmptyFSList();
+  }
+  
+  /**
+   * inserts the new item as a new NonEmpty FSList node following this item
+   * @param item to be inserted
+   * @return the NonEmptyFSList node created  
+   */
+  public NonEmptyFSList add(FeatureStructure item) {
+    FSList tail = getTail();
+    NonEmptyFSList node = createNonEmptyNode();
+    node.setHead(item);
+    node.setTail(tail);
+    setTail(node);
+    return node;
   }
 }

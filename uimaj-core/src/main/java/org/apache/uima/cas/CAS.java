@@ -1106,15 +1106,19 @@ public interface CAS extends AbstractCas {
   default <T extends FeatureStructure> SelectFSs<T> select() {
     return new SelectFSs_impl<>(this);
   }
+
   default <T extends FeatureStructure> SelectFSs<T> select(Type type) {
     return new SelectFSs_impl<>(this).type(type);
   }
+
   default <T extends FeatureStructure> SelectFSs<T> select(Class<T> clazz) {
     return new SelectFSs_impl<>(this).type(clazz);
   }
+
   default <T extends FeatureStructure> SelectFSs<T> select(int jcasType) {
     return new SelectFSs_impl<>(this).type(jcasType);
   }
+
   default <T extends FeatureStructure> SelectFSs<T> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
   }

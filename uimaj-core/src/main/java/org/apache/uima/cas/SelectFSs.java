@@ -200,4 +200,5 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   static <N extends FeatureStructure> SelectFSs<N> sselect(FSIndex<N> index) {
     return index.select();    
   } 
+
 }

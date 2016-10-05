@@ -33,8 +33,15 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import junit.framework.TestCase;
@@ -283,6 +290,18 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Normal ambiguous select annot iterator", annotCount, select_it);
     assertEquals(annotCount, sselect(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
+    
+    AnnotationFS[] tokensAndSentences = sselect(annotIndex).asArray(AnnotationFS.class);
+    JCas jcas = cas.getJCas();
+    FSArray fsa = FSArray.create(jcas, tokensAndSentences);
+    NonEmptyFSList fslhead = (NonEmptyFSList) FSList.create(jcas,  tokensAndSentences);
+    
+    select_it = fsa.<AnnotationFS>select().fsIterator();
+    assertCount("fsa ambiguous select annot iterator", annotCount, select_it);
+
+    select_it = fslhead.<AnnotationFS>select().fsIterator();
+    assertCount("fslhead ambiguous select annot iterator", annotCount, select_it);
+    
     // backwards
     select_it = sselect(annotIndex).backwards().fsIterator();
     assertCount("Normal select backwards ambiguous annot iterator", annotCount, select_it);
@@ -426,6 +445,14 @@ public class AnnotationIteratorTest extends TestCase {
     assertCountLimit("Following", 2, select_it);
     select_it = sselect(annotIndex).following(2, 39).backwards().limit(2).fsIterator();
     assertCountLimit("Following", 2, select_it);
+    
+    select_it = fsa.<AnnotationFS>select(sentenceType).fsIterator();
+    assertCount("select source array", 11, select_it);
+    select_it = fslhead.<AnnotationFS>select(sentenceType).fsIterator();
+    assertCount("select source array", 11, select_it);
+    
+
+    
   }
   
   private String flatStateMsg(String s) {

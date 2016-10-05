@@ -127,7 +127,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   public void moveTo(FeatureStructure fs) {
     if (is_unordered) {
       int i = 0;
-      while ((i < snapshot.length) && indexForComparator.compare(snapshot[i],  fs) < 0) {
+      while ((i < snapshot.length) && compare(snapshot[i],  fs) < 0) {
         i++;
       }
       pos = i;
@@ -144,7 +144,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
       } else {
         // found an equal.  need to move to leftmost
         c--;
-        while ((c >= 0) && indexForComparator.compare(snapshot[c],  fs) == 0) {
+        while ((c >= 0) && compare(snapshot[c],  fs) == 0) {
           c--;
         }
         pos = c + 1;
@@ -180,6 +180,8 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   }
   
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return this.indexForComparator.compare(fs1, fs2);
+    return (null == this.indexForComparator) 
+        ? (fs1.equals(fs2) ? 0 : -1)
+        : this.indexForComparator.compare(fs1, fs2);
   }
 }

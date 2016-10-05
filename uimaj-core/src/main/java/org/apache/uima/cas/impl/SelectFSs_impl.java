@@ -55,6 +55,10 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.Subiterator.BoundsUse;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
@@ -74,6 +78,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private int shift; 
   private int limit = -1;
   
+  private FSArray sourceFSArray = null;  // alternate source
+  private FSList  sourceFSList  = null;  // alternate source
+  
   private boolean isTypePriority = false;
   private boolean isPositionUsesType = false;
   private boolean isSkipEquals = false; // for boundsUse only
@@ -87,6 +94,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private boolean isPreceding = false;
   
   private boolean isNullOkSpecified = false; // for complex defaulting of get(), get(n)
+  private boolean isAltSource = false;
   
   private BoundsUse boundsUse = null; 
   
@@ -106,12 +114,19 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     this.view = (CASImpl) cas.getLowLevelCAS();
     this.jcas = (JCasImpl) view.getJCas();
   }
-    
-  public SelectFSs_impl(CAS cas, Type type) {
-    this(cas);
-    this.ti = (TypeImpl) type;
-  }
   
+  public SelectFSs_impl(FSArray source) {
+    this(source._casView);
+    isAltSource = true;
+    sourceFSArray = source;
+  }
+    
+  public SelectFSs_impl(FSList source) {
+    this(source._casView);
+    isAltSource = true;
+    sourceFSList = source;
+  }
+
   /************************************************
    * Builders
    ************************************************/
@@ -439,6 +454,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (boundsUse == null) {
       boundsUse = BoundsUse.notBounded;
     }
+
+    maybeValidateAltSource();
     
     final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
@@ -469,6 +486,20 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       ti = view.getTypeSystemImpl().getTopType();
     }
     
+  }
+  
+  private void maybeValidateAltSource() {
+    if (!isAltSource) return;
+    
+    if (index != null ||
+        boundsUse != BoundsUse.notBounded ||
+        isAllViews || 
+        isFollowing ||
+        isPreceding ||
+        startingFs != null) {
+      /** Select with FSList or FSArray may not specify bounds, starting position, following, or preceding. */
+      throw new CASRuntimeException(CASRuntimeException.SELECT_ALT_SRC_INVALID);
+    }
   }
   
   private void incr(FSIterator<T> it) {
@@ -583,7 +614,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (null == idx) { 
       // no bounds, not ordered
       // type could be null
-      return v.indexRepository.getAllIndexedFS(ti);  
+      // could be alternate source
+      
+      if (isAltSource) {
+        return altSourceIterator();
+      } else {
+        return v.indexRepository.getAllIndexedFS(ti);
+      }
     }
     
     final boolean isIndexOrdered = idx.getIndexingStrategy() == FSIndex.SORTED_INDEX;
@@ -622,6 +659,36 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return it;
   }
     
+  private FSIterator<T> altSourceIterator() {
+    T[] filtered;
+    if (sourceFSList != null) {
+      List<T> filteredItems = new ArrayList<T>();
+      FSList fsl = sourceFSList;
+      while (!(fsl instanceof EmptyFSList)) {
+        NonEmptyFSList nefsl = (NonEmptyFSList) fsl;
+        T item = (T) nefsl.getHead();
+        if ((isNullOK || null != item) &&
+            ti.subsumes((TypeImpl)item.getType())) {
+          filteredItems.add(item);
+        }
+        fsl = nefsl.getTail();
+      }
+      filtered = filteredItems.toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));          
+    } else {
+      List<T> filteredItems = new ArrayList<T>();
+      for (TOP item : sourceFSArray._getTheArray()) {
+        if (!isNullOK && null == item) {
+          continue;  // null items may be skipped
+        }
+        if (ti.subsumes((TypeImpl)item.getType())) {
+          filteredItems.add((T)item);
+        }
+      }
+      filtered = filteredItems.toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));                    
+    }        
+    return new FsIterator_subtypes_snapshot<T>(filtered, null, true);  // items not sorted 
+  }
+  
   @Override
   public Iterator<T> iterator() {
     return fsIterator();

@@ -298,7 +298,10 @@ public class CASRuntimeException extends UIMARuntimeException {
  
   /** CAS has more than 1 instance of ''{0}''{1}.*/
   public static final String SELECT_GET_TOO_MANY_INSTANCES = "SELECT_GET_TOO_MANY_INSTANCES";
-
+  
+  /** Select with FSList or FSArray may not specify bounds, starting position, following, or preceding. */
+  public static final String SELECT_ALT_SRC_INVALID = "SELECT_ALT_SRC_INVALID";
+  
   /** Index "{0}" must be an AnnotationIndex. */ 
   public static final String ANNOTATION_INDEX_REQUIRED = "ANNOTATION_INDEX_REQUIRED";
   /**
