@@ -37,50 +37,67 @@ class FsIterator_backwards<T extends FeatureStructure>
     it.moveToLast();
   }
 
+  @Override
   public int ll_indexSize() {
     return it.ll_indexSize();
   }
 
+  @Override
+  public int ll_maxAnnotSpan() {
+    return it.ll_maxAnnotSpan();
+  }
+  
+  @Override
   public LowLevelIndex<T> ll_getIndex() {
     return it.ll_getIndex();
   }
 
+  @Override
   public boolean isValid() {
     return it.isValid();
   }
 
+  @Override
   public T get() throws NoSuchElementException {
     return it.get();
   }
 
+  @Override
   public T getNvc() {
     return it.getNvc();
   }
 
+  @Override
   public void moveToNext() {
     it.moveToPrevious();
   }
 
+  @Override
   public void moveToNextNvc() {
     it.moveToPreviousNvc();
   }
 
+  @Override
   public void moveToPrevious() {
     it.moveToNext();
   }
 
+  @Override
   public void moveToPreviousNvc() {
     it.moveToNextNvc();
   }
 
+  @Override
   public void moveToFirst() {
     it.moveToLast();
   }
 
+  @Override
   public void moveToLast() {
     it.moveToFirst();
   }
 
+  @Override
   public void moveTo(FeatureStructure fs) {
     it.moveTo(fs);  // moves to left most of equal, or one greater
     LowLevelIndex<T> lli = ll_getIndex();
@@ -108,6 +125,7 @@ class FsIterator_backwards<T extends FeatureStructure>
     }
   }
 
+  @Override
   public FSIterator<T> copy() {
     return new FsIterator_backwards<T>(it.copy());
   }

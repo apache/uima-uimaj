@@ -426,7 +426,5 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     wr_cow = null;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIndex#select()
-   */
+
 }

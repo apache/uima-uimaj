@@ -41,7 +41,7 @@ public abstract class FsIterator_subtypes<T extends FeatureStructure> implements
   
   @Override
   public LowLevelIndex<T> ll_getIndex() {
-    return iicp.fsIndex_singletype;
+    return iicp;
   }
 
   /* (non-Javadoc)
@@ -49,9 +49,14 @@ public abstract class FsIterator_subtypes<T extends FeatureStructure> implements
    */
   @Override
   public int ll_indexSize() {
-    return ll_getIndex().size();
+    return iicp.size();
   }
-  
+
+  @Override
+  public int ll_maxAnnotSpan() {
+    return iicp.ll_maxAnnotSpan();
+  }
+
   @Override
   public String toString() {
     TypeImpl type = (TypeImpl) this.ll_getIndex().getType();

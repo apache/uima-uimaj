@@ -110,6 +110,11 @@ class FsIterator_limited<T extends FeatureStructure>
   }
 
   @Override
+  public int ll_maxAnnotSpan() {
+    return iterator.ll_maxAnnotSpan();
+  }
+
+  @Override
   public LowLevelIndex<T> ll_getIndex() {
     return iterator.ll_getIndex();
   }

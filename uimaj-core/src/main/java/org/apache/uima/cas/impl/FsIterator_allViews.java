@@ -169,6 +169,11 @@ public class FsIterator_allViews<T extends FeatureStructure>
     // TODO Auto-generated method stub
     return 0;
   }
+  
+  @Override
+  public int ll_maxAnnotSpan() {
+    return Integer.MAX_VALUE;
+  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_getIndex()

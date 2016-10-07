@@ -45,6 +45,8 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   final private FsIndex_iicp<T> iicp;
   
   final private Comparator<FeatureStructure> comparator;
+  
+  final private int maxAnnotSpan;
     
   FsIndex_flat(FsIndex_iicp<T> iicp) {
     super(iicp.getCasImpl(), iicp.fsIndex_singletype.getType(), iicp.fsIndex_singletype.getIndexingStrategy(),
@@ -52,6 +54,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
     this.iicp = iicp;
     indexedFSs = fillFlatArray();
     comparator = iicp.fsIndex_singletype;
+    maxAnnotSpan = iicp.ll_maxAnnotSpan();
   }  
   
   /**
@@ -193,6 +196,10 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
     Misc.internalError(); // should never be called
   }
   
+  @Override
+  public int ll_maxAnnotSpan() {
+    return maxAnnotSpan;
+  }
   
 
 }

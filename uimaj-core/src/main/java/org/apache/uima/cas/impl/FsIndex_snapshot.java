@@ -121,4 +121,8 @@ public class FsIndex_snapshot <T extends FeatureStructure> implements LowLevelIn
     return wrapped.getComparatorForIndexSpecs();
   }
 
+  @Override
+  public int ll_maxAnnotSpan() {
+    return wrapped.ll_maxAnnotSpan();
+  }
 }

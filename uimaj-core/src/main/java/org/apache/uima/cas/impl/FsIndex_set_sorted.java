@@ -32,6 +32,7 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Common index impl for set and sorted indexes.
@@ -55,83 +56,19 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 //   * This impl of sorted set interface allows using the bulk add operation implemented in Java's 
 //   * TreeSet - that tests if the argument being passed in is an instance of SortedSet and does a fast insert.
 //   */
-//  final private SortedSet<T> ss = new SortedSet<T>() {
-//    
-//    @Override
-//    public int size() { return itemsToBeAdded.size(); }
-//    @Override
-//    public boolean isEmpty() { return false; }
-//    @Override
-//    public boolean contains(Object o) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public Iterator<T> iterator() { return itemsToBeAdded.iterator(); }
-//    @Override
-//    public Object[] toArray() { throw new UnsupportedOperationException(); }
-//    @Override
-//    public <U> U[] toArray(U[] a) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public boolean add(T e) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public boolean remove(Object o) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public boolean containsAll(Collection<?> c) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public boolean addAll(Collection<? extends T> c) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public boolean retainAll(Collection<?> c) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public boolean removeAll(Collection<?> c) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public void clear() { throw new UnsupportedOperationException(); }
-//    @Override
-//    public Comparator<? super T> comparator() { return (Comparator<? super T>) comparatorWithID; }
-//    @Override
-//    public SortedSet<T> subSet(FeatureStructure fromElement, FeatureStructure toElement) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public SortedSet<T> headSet(FeatureStructure toElement) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public SortedSet<T> tailSet(FeatureStructure fromElement) { throw new UnsupportedOperationException(); }
-//    @Override
-//    public T first() { throw new UnsupportedOperationException(); }
-//    @Override
-//    public T last() { throw new UnsupportedOperationException(); }  
-//    
-//    
-//  };
 
 
   // The index, a NavigableSet. 
-//  final private TreeSet<FeatureStructure> indexedFSs;
-//  final private TreeSet<FeatureStructure> indexedFSs;
   final private OrderedFsSet_array indexedFSs;
   
-//  /**
-//   * Copy on write, initially null
-//   * Iterator creation initializes (if not null), and uses.
-//   * Modification to index:
-//   *    call cow.makeCopy();
-//   *    set cow = null
-//   *    do the modification
-//   * index clear/flush - set to null;
-//   * 
-//   * Weak ref so that after iterator is GC'd, and no ref's exist, this becomes null, so that
-//   * future mods no longer need to do extra work.
-//   */
-//  private WeakReference<CopyOnWriteOrderedFsSet_array> cow = null;
     
   final private Comparator<TOP> comparatorWithID;
   final private Comparator<TOP> comparatorWithoutID;
   
-//  final private Comparator<Object> comparatorO;
-  
-  // batching of adds
-//  final private ArrayList<T> itemsToBeAdded = new ArrayList<>();  // to batch the adds
-//  final private MethodHandle getItemsToBeAddedArray = Misc.getProtectedFieldGetter(ArrayList.class, "elementData");
-//
-//  private long lastTrimToSizeTime = System.nanoTime();
-  
-//  private T largestItemNotYetAdded = null;
-   
+  // only an optimization used for select.covering for AnnotationIndexes
+  private int maxAnnotSpan = -1;
+  public final boolean isAnnotIdx;
+     
   FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs, boolean useSorted) {
     super(cas, type, indexType, comparatorForIndexSpecs);
     FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
@@ -139,7 +76,9 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
     if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
       comparatorWithID = ir.getAnnotationFsComparatorWithId(); 
       comparatorWithoutID = ir.getAnnotationFsComparator();
+      isAnnotIdx = true;
     } else {
+      isAnnotIdx = false;
       comparatorWithoutID = (o1, o2) -> compare(o1,  o2);
       comparatorWithID = useSorted   
           ? (o1, o2) -> {
@@ -148,23 +87,6 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
               return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;} 
           : comparatorWithoutID;
     }          
-//    comparatorO = new Comparator() {
-//
-//      @Override
-//      public int compare(Object o1, Object o2) {
-//        return comparator.compare((FeatureStructure)o1, (FeatureStructure)o2);
-//      }
-//      
-//    };
-
-//    this.indexedFSs = new TreeSet<FeatureStructure>(comparator);
-//    Comparator<TOP> c = new Comparator<TOP>() {
-//
-//      @Override
-//      public int compare(TOP o1, TOP o2) {
-//        return comparatorWithID.compare(o1, o2);
-//      }      
-//    };
     
     this.indexedFSs = new OrderedFsSet_array(comparatorWithID, comparatorWithoutID);
   }
@@ -173,8 +95,6 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   public void flush() {
     super.flush();
     this.indexedFSs.clear();
-//    this.itemsToBeAdded.clear();
-//    this.largestItemNotYetAdded = null;
   }
 
   /**
@@ -194,38 +114,15 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   @Override
   void insert(T fs) {
     
-//    /**
-//     * The implementation tries for speedup for the initial loading of the treeset
-//     *   Taking advantage of the bulk addAll optimization implemented in TreeSet when the 
-//     *      items being added are sorted, and the tree set is initially empty
-//     */
-//    // measured - not efficient.
-//    if (indexedFSs.size() > 1024) {
-//      // optimize for insert at end
-//      TOP last = indexedFSs.last();
-//      if (indexedFSs.comparator().compare(last, fs) <= 0) {
-//        // insert at end fast path maybe
-//        return indexedFSs.tailSet(last, true).add(fs);
-//      }
-//    }
-//    if (indexedFSs.isEmpty()) {
-//      if (largestItemNotYetAdded == null ||
-//          comparatorWithID.compare((TOP)fs,  (TOP)largestItemNotYetAdded) > 0) {
-//        // batch the add
-//        itemsToBeAdded.add(fs);
-//        largestItemNotYetAdded = fs;
-//        return;
-//      }       
-////      maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
-//    }
-//    
     // past the initial load, or item is not > previous largest item to be added 
     maybeCopy();
+    if (isAnnotIdx) {
+      int span = ((Annotation)fs).getEnd() - ((Annotation)fs).getBegin();
+      if (span > maxAnnotSpan) {
+        maxAnnotSpan = span;
+      }
+    }
     indexedFSs.add((TOP)fs);
-//    // batch this add 
-//    largestItemNotYetAdded = fs;
-//    itemsToBeAdded.add(fs);
-//    return true;
   }
 
   /**
@@ -248,7 +145,6 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    */
   @Override
   public T find(FeatureStructure templateKey) {
-//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     if (null == templateKey || this.indexedFSs.isEmpty()) {
       return null;
     }
@@ -281,7 +177,6 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   }
 
   public T findLeftmost(TOP templateKey) {
-//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     // descending iterator over elements LessThan templateKey
     // iterator is over TOP, not T, to make compare easier
     Iterator<TOP> it = indexedFSs.headSet(templateKey, false).descendingIterator();
@@ -330,17 +225,11 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   
   @Override
   protected void bulkAddTo(List<T> v) {
-//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     v.addAll((Collection<? extends T>) indexedFSs);
   }
   
-//  @Override
-//  protected void bulkAddTo(IntVector v) {
-//    this.indexedFSs.stream().mapToInt(fs -> ((FeatureStructureImplC)fs).id()).forEach(v::add);
-//  }
   
   NavigableSet<T> getNavigableSet() { //used by FsIterator_set_sorted to compute various derivitive nav sets
-//    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     return (NavigableSet<T>) indexedFSs;
   }
    
@@ -357,69 +246,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
     return new CopyOnWriteOrderedFsSet_array(indexedFSs);
   }
   
-//  private void maybeCopy() {
-//    if (cow != null) { 
-//      CopyOnWriteOrderedFsSet_array v = cow.get();
-//      if (v != null) {
-//        v.makeCopy();    
-//      }
-//      cow = null;
-//    }
-//  }
-  
-//  public CopyOnWriteOrderedFsSet_array getNonNullCow() {
-//    if (cow != null) {
-//      CopyOnWriteOrderedFsSet_array n = cow.get();
-//      if (n != null) {
-//        return n;
-//      }
-//    }
-//    
-//    // null means index updated since iterator was created, need to make new cow and use it
-//    CopyOnWriteOrderedFsSet_array n = new CopyOnWriteOrderedFsSet_array(indexedFSs);
-//    cow = new WeakReference<>(n);
-//    return n;
-//  }
-  
-    
-//  synchronized void maybeProcessBulkAdds() {
-//    final int sz = itemsToBeAdded.size();
-//    if (sz > 0) {
-//      
-//      // debug
-//  //    if (sz > 1) {
-//  //      TOP prev = itemsToBeAdded.get(0);
-//  //      for (int i = 1; i < sz; i++) {
-//  //        TOP next = itemsToBeAdded.get(i);
-//  //        if (comparator.compare(next,  prev) <= 0) {
-//  //          System.out.println("debug");
-//  //        }
-//  //        prev = next;
-//  //      }
-//  //    }
-////      Object[] tba;
-////      try {
-////        tba =  (Object[])getItemsToBeAddedArray.invokeExact(itemsToBeAdded);
-////      } catch (Throwable e) {
-////        Misc.internalError(e);  // always throws
-////        return;  // only to get rid of compile issue
-////      }
-////      if (sz > 100) {
-////        Arrays.sort(tba, 0, sz, comparatorO);
-////      } else {
-////        Arrays.sort(tba, 0, sz, comparatorO);
-////      }
-////      
-////      FeatureStructure prev = null;
-////      indexedFSs.addAll(ss);
-//      for (FeatureStructure fs : itemsToBeAdded) {
-////        if (fs != prev) { // the itemsToBeAdded may contain duplicates
-//          indexedFSs.add((TOP)fs);   
-////          prev = fs;
-////        }
-//      }
-//      itemsToBeAdded.clear();
-//      itemsToBeAdded.trimToSize();
-//    }
-//  }  
+  public int ll_maxAnnotSpan() {
+    return maxAnnotSpan;
+  }
 }

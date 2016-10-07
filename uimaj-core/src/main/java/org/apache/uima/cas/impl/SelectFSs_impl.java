@@ -336,7 +336,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   } 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end) {  // AI
-    this.startingFs = new Annotation(jcas, begin, end);
+    this.startingFs = makePosAnnot(begin, end);
     return this;
   } 
   
@@ -348,7 +348,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   } 
   @Override
   public SelectFSs_impl<T> startAt(int begin, int end, int offset) {  // AI
-    this.startingFs = new Annotation(jcas, begin, end);
+    this.startingFs = makePosAnnot(begin, end);
     this.shift = offset;
     return this;
   }  
@@ -373,7 +373,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public SelectFSs_impl<T> coveredBy(int begin, int end) {       // AI
     boundsUse = BoundsUse.coveredBy;
-    this.boundingFs = new Annotation(jcas, begin, end);
+    this.boundingFs = makePosAnnot(begin, end);
     this.isEndWithinBounds = true; //default
     return this;
   }
@@ -388,15 +388,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public SelectFSs_impl<T> covering(int begin, int end) {      // AI
     boundsUse = BoundsUse.covering;
-    this.boundingFs = new Annotation(jcas, begin, end);
+    this.boundingFs = makePosAnnot(begin, end);
     return this;
   }
 
   @Override
   public SelectFSs_impl<T> between(AnnotationFS fs1, AnnotationFS fs2) {   // AI
     final boolean reverse = fs1.getEnd() > fs2.getBegin();
-    this.boundingFs = new Annotation(
-        jcas, 
+    this.boundingFs = makePosAnnot(
         (reverse ? fs2 : fs1).getEnd(), 
         (reverse ? fs1 : fs2).getBegin());
     this.boundsUse = BoundsUse.coveredBy;
@@ -420,7 +419,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> at(int begin, int end) {
-    return at(new Annotation(jcas, begin, end));
+    return at(makePosAnnot(begin, end));
   }
 
   private String maybeMsgPosition() {
@@ -733,6 +732,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     FeatureStructure[] r = (FeatureStructure[]) Array.newInstance(FeatureStructure.class,  al.size());
     return al.toArray(r);
   }
+  
+  private Annotation makePosAnnot(int begin, int end) {
+    if (end < begin) {
+      throw new IllegalArgumentException("End value must be >= Begin value");
+    }
+    return new Annotation(jcas, begin, end);
+  }
+  
   /**
    * Iterator respects backwards
    * 
@@ -755,9 +762,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       private final FSIterator<T> it = fsIterator();
       
+      private final FSIndex<T> localIndex = index;
+      
       private final Comparator<? super T> comparator = 
-          (index != null && index.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
-            ? (Comparator<? super T>)index : null;
+          (localIndex != null && localIndex.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
+            ? (Comparator<? super T>)localIndex 
+            : null;
                                                           
       private final int characteristics;
       { // set the characteristics and comparator
@@ -769,7 +779,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         }
         
         // set per indexing strategy
-        switch ((null == index) ? -1 : index.getIndexingStrategy()) {
+        switch ((null == localIndex) ? -1 : localIndex.getIndexingStrategy()) {
         case FSIndex.SORTED_INDEX: c |= Spliterator.ORDERED | Spliterator.SORTED; break;
         case FSIndex.SET_INDEX: c |= Spliterator.ORDERED; break;
         default: // do nothing
@@ -797,7 +807,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       @Override
       public long estimateSize() {
-        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED) ? index.size() : Long.MAX_VALUE;
+        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED) ? localIndex.size() : Long.MAX_VALUE;
       }
 
       @Override
@@ -807,7 +817,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       @Override
       public Comparator<? super T> getComparator() {
-        return (comparator == null) ? Spliterator.super.getComparator() : comparator;
+        if (comparator != null) {
+          return comparator;
+        }
+        if ((characteristics & Spliterator.SORTED) == Spliterator.SORTED) {
+          return null;
+        }
+        throw new IllegalStateException();
       }
     };
   }
@@ -1050,7 +1066,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(int begin, int end) {
-    return commonFollowing(new Annotation(jcas, begin, end), 0);
+    return commonFollowing(makePosAnnot(begin, end), 0);
   }
 
   /* (non-Javadoc)
@@ -1066,7 +1082,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(int begin, int end, int offset) {
-    return commonFollowing(new Annotation(jcas, begin, end), offset);
+    return commonFollowing(makePosAnnot(begin, end), offset);
   }
 
   /* (non-Javadoc)
@@ -1082,7 +1098,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(int begin, int end) {
-    return commonPreceding(new Annotation(jcas, begin, end), 0);
+    return commonPreceding(makePosAnnot(begin, end), 0);
   }
 
   /* (non-Javadoc)
@@ -1098,7 +1114,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(int begin, int end, int offset) {
-    return commonPreceding(new Annotation(jcas, begin, end), offset);
+    return commonPreceding(makePosAnnot(begin, end), offset);
   }
 
    
@@ -1253,7 +1269,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
   @Override
   public void forEachOrdered(Consumer<? super T> action) {
-    forEachOrdered(action);
+    stream().forEachOrdered(action);
   }
 
   @Override

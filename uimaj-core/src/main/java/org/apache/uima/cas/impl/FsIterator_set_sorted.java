@@ -237,6 +237,14 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     return navSet.size();
   }
   
+
+  @Override
+  public int ll_maxAnnotSpan() {
+    return fsSetSortIndex.isAnnotIdx 
+        ?   fsSetSortIndex.ll_maxAnnotSpan()
+        : Integer.MAX_VALUE;
+  }
+
   @Override
   public LowLevelIndex<T> ll_getIndex() {
     return fsSetSortIndex;

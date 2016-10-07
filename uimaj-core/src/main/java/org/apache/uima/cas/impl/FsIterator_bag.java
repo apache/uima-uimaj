@@ -156,9 +156,15 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
-   */  @Override
+   */  
+  @Override
   public int ll_indexSize() {
     return bag.size();
+  }
+
+  @Override
+  public int ll_maxAnnotSpan() {
+    return Integer.MAX_VALUE;
   }
 
   /* (non-Javadoc)

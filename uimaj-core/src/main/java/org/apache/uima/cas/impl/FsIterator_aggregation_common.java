@@ -193,6 +193,19 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     }
     return sum;
   }
+  
+  
+  public int ll_maxAnnotSpan() {
+    int span = -1;
+    for (int i = iterators.length - 1; i >=  0; i--) {
+      FSIterator<T> it = iterators[i];
+      int x = ((LowLevelIterator<T>)it).ll_maxAnnotSpan();
+      if (x > span) {
+        span = x;
+      }
+    }
+    return (span == -1) ? Integer.MAX_VALUE : span;
+  };
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#copy()

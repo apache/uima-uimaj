@@ -240,6 +240,21 @@ class FsIndex_iicp<T extends FeatureStructure>
     return size;
   }
   
+  public int ll_maxAnnotSpan() {
+    createIndexIteratorCache();  // does nothing if already created
+    int span = -1;
+    FsIndex_singletype<T> idx = getFsIndex_singleType();
+    if (idx instanceof FsIndex_set_sorted && ((FsIndex_set_sorted)idx).isAnnotIdx) {
+      for (FsIndex_singletype<FeatureStructure> subIndex : cachedSubFsLeafIndexes) {
+        int s = ((FsIndex_set_sorted)subIndex).ll_maxAnnotSpan(); 
+        if (s > span) {
+          span = s;
+        }
+      }
+    }
+    return (span == -1) ? Integer.MAX_VALUE : span;
+  }
+  
   public boolean isEmpty() {
     createIndexIteratorCache();  
     for (FsIndex_singletype<FeatureStructure> index : cachedSubFsLeafIndexes) {

@@ -113,6 +113,13 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
     return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(), (FSIndexComparatorImpl) getComparatorForIndexSpecs());
   }
 
+  /**
+   * @return for annotation indexes, an conservative estimate the maximum span between begin and end
+   * The value may be larger than actual.
+   */
+  int ll_maxAnnotSpan();  
+  
+  
   @Override
   default SelectFSs<T> select() {
     return getCasImpl().select().index(this);
@@ -137,6 +144,5 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
     return select().type(fullyQualifiedTypeName);
   }
-  
   
 }

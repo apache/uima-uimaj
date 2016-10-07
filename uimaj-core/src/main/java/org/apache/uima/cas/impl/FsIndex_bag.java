@@ -216,6 +216,11 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return new CopyOnWriteObjHashSet<TOP>(index);
   }
   
+  @Override
+  public int ll_maxAnnotSpan() {
+    return Integer.MAX_VALUE;
+  }
+  
 //  ObjHashSet<TOP> getObjHashSet() {
 //    return index;
 //  } 

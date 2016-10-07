@@ -120,25 +120,6 @@ public interface JCas extends AbstractCas {
    */
   Feature getRequiredFeature(Type t, String s) throws CASException;
 
-//  /*
-//   * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
-//   * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
-//   * 
-//   * DE suffix means "Deferred Exception"
-//   */
-//
-//  Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
-
-//  /*
-//   * Internal Use. 
-//   */
-//  void checkArrayBounds(int fsRef, int pos);
-//
-//  /*
-//   * Internal Use - throw missing feature exception at runtime.
-//   */
-//  void throwFeatMissing(String feat, String type);
-//  
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
@@ -676,23 +657,23 @@ public interface JCas extends AbstractCas {
   <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz);
   
   
-  default <T extends TOP> SelectFSs<T> select() {
+  default <T extends FeatureStructure> SelectFSs<T> select() {
     return new SelectFSs_impl<>(getCas());
   }
 
-  default <N extends TOP> SelectFSs<N> select(Type type) {
+  default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
     return new SelectFSs_impl<>(getCasImpl()).type(type);
   }
 
-  default <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
+  default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
     return new SelectFSs_impl<>(getCasImpl()).type(clazz);
   }
 
-  default <N extends TOP> SelectFSs<N> select(int jcasType) {
+  default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
     return new SelectFSs_impl<>(getCasImpl()).type(jcasType);
   }
 
-  default <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
+  default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(getCasImpl()).type(fullyQualifiedTypeName);
   }
 

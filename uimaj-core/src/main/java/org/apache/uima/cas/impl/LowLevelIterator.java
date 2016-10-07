@@ -73,6 +73,11 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   LowLevelIndex<T> ll_getIndex();
   
   /**
+   * @return an estimate of the maximum span over all annotations (end - begin)
+   */
+  int ll_maxAnnotSpan();
+  
+  /**
    * an empty iterator
    */
   static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator<FeatureStructure> () {
@@ -102,6 +107,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     public void moveTo(FeatureStructure fs) {}
     @Override
     public int ll_indexSize() { return 0; }
+    @Override
+    public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
     @Override
     public LowLevelIndex<FeatureStructure> ll_getIndex() { return null; }    
   };

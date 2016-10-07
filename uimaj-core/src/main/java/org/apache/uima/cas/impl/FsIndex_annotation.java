@@ -125,63 +125,9 @@ public class FsIndex_annotation <T extends AnnotationFS>
     }
   }
 
-//  /* ***********************************
-//   *  Support for withSnapshotIterators
-//   *  using proxy
-//   * ***********************************/
-//  private final static Class<?>[] proxyInterface = new Class<?>[] {FsIndex_annotation.class};
-//  
-//  private class ProxySnapshotHandler implements InvocationHandler {
-//    @Override
-//    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-//      if ("iterator".equals(method.getName())) {
-//        if (args == null || args.length == 0) {
-//          if (fsIndex_singletype.getIndexingStrategy() == FSIndex.SORTED_INDEX) {
-//            return iterator(IteratorExtraFunction.SNAPSHOT);
-//          }
-//          return iterator(IteratorExtraFunction.UNORDERED_SNAPSHOT);
-//        }
-//        // iterator call with an arg boolean ambiguous
-//        // TODO ambiguous/unambig with snapshot
-//      }
-//      
-//      // pass thru all other methods
-//      return method.invoke(args);
-//    }    
-//  }
-
   @Override
   public FSIndex<T> withSnapshotIterators() {
     return new FsIndex_snapshot<>(this);
   }
-//  public FSIndex<T> withSnapshotIterators() {
-//    return (FSIndex<T>) Proxy.newProxyInstance(
-//        FSIndex.class.getClassLoader(),  // class loader 
-//        proxyInterface,  
-//        new ProxySnapshotHandler());
-//  }
   
-  /*********************************************************
-   * Stream / SplitIterator support
-   * 
-   * Use:
-   *   myAnnotIndex.annotStream()
-   *      .reverse()
-   *      .boundedBy(fs)
-   *      .strict()
-   *      .unambiguous()
-   *      .noTypePriorities()
-   *      .stream()  // or   .splititerator()
-   *         ... stream operations;
-   *         
-   *********************************************************/
-//  public AnnotStream<T> annotStream() {
-//    return new AnnotStream<T>(this.fsIndex_singletype);
-//  }
-//  
-//  public Stream<T extends TOP> stream() {
-//    return StreamSupport.stream(, parallel)
-//    
-//  }
-//  
-}
+ }

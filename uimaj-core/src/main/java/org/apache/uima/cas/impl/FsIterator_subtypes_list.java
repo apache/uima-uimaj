@@ -80,4 +80,19 @@ public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  ext
     return sz;
   }
   
+  @Override
+  public int ll_maxAnnotSpan() {
+    int span = -1;
+    for (FsIterator_singletype<T> it : iterators) {
+      int s = ((LowLevelIterator)it).ll_maxAnnotSpan();
+      if (s == Integer.MAX_VALUE) {
+        return s;
+      }
+      if (s > span) {
+        span = s;
+      }
+    }
+    return (span == -1) ? Integer.MAX_VALUE : span;
+  }
+  
 }

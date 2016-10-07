@@ -170,6 +170,11 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
   public int ll_indexSize() {
     return snapshot.length;
   }
+  
+  @Override
+  public int ll_maxAnnotSpan() {
+    return indexForComparator.ll_maxAnnotSpan();   
+  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_getIndex()

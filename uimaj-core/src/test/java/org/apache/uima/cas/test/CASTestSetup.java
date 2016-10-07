@@ -36,6 +36,8 @@ public class CASTestSetup  implements AnnotatorInitializer {
 
   // Type system constants.
   public static final String TOKEN_TYPE = "Token";
+  
+  public static final String PHRASE_TYPE = "Phrase";
 
   public static final String TOKEN_TYPE_FEAT = "type";
 
@@ -130,6 +132,7 @@ public class CASTestSetup  implements AnnotatorInitializer {
    *   ArrayFSwithSubtype
    *   Annotation
    *     Sentence [SEN_LEN_FEAT(int)
+   *       Phrase (subtype of sentence)
    *     Token  TOKEN_TYPE [TOKEN_TYPE_FEAT(TOKEN_TYPE_TYPE), TOKEN_FLOAT_FEAT, LEMMA_FEAT(string), LEMMA_LIST_FEAT[stringArray]
    *   String
    *     Group1
@@ -143,7 +146,8 @@ public class CASTestSetup  implements AnnotatorInitializer {
     Type topType = tsm.getTopType();
     Type annotType = tsm.getType(CAS.TYPE_NAME_ANNOTATION);
     // assert(annotType != null);
-    tsm.addType(SENT_TYPE, annotType);
+    Type sentenceType = tsm.addType(SENT_TYPE, annotType);
+    tsm.addType(PHRASE_TYPE, sentenceType);
     Type tokenType = tsm.addType(TOKEN_TYPE, annotType);
     Type tokenTypeType = tsm.addType(TOKEN_TYPE_TYPE, topType);
     tsm.addType(WORD_TYPE, tokenTypeType);
