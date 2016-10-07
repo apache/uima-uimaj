@@ -184,9 +184,7 @@ public class CasWrapperForTstng implements CAS {
     return originalCAS.getIndexRepository();
   }
 
-  public JCas getJCas() 
-//      throws CASException 
-  {
+  public JCas getJCas() throws CASException {
     return originalCAS.getJCas();
   }
 

@@ -83,9 +83,9 @@ public class GrowingTheCasTest extends TestCase {
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       assertTrue(false);
-//    } catch (CASException e) {
-//      e.printStackTrace();
-//      assertTrue(false);
+    } catch (CASException e) {
+      e.printStackTrace();
+      assertTrue(false);
     }
 
   }

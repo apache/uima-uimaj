@@ -78,8 +78,8 @@ public class FlowContainer {
         ((JCasFlow_ImplBase)flow).setJCas(view.getJCas());
       }
       return new FlowContainer(flow, mFlowControllerContainer, newCAS);
-//    } catch (CASException e) {
-//      throw new AnalysisEngineProcessException(e);
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
     } finally {
       if (null != view) {
         ((CASImpl)view).restoreClassLoaderUnlockCas();

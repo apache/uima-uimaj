@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
@@ -311,7 +312,12 @@ public class AnnotationIteratorTest extends TestCase {
     assertEquals(annotCount, sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
     
     AnnotationFS[] tokensAndSentences = sselect(annotIndex).asArray(AnnotationFS.class);
-    JCas jcas = cas.getJCas();
+    JCas jcas = null;
+    try {
+      jcas = cas.getJCas();
+    } catch (CASException e) {
+      assertTrue(false);
+    }
     FSArray fsa = FSArray.create(jcas, tokensAndSentences);
     NonEmptyFSList fslhead = (NonEmptyFSList) FSList.create(jcas,  tokensAndSentences);
     

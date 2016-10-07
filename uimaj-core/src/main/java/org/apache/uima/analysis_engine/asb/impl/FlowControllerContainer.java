@@ -231,8 +231,8 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
         ((JCasFlow_ImplBase)flow).setJCas(view.getJCas());
       }
       return new FlowContainer(flow, this, aCAS);
-//    } catch (CASException e) {
-//      throw new AnalysisEngineProcessException(e);
+    } catch (CASException e) {
+      throw new AnalysisEngineProcessException(e);
     } finally {
       if (view != null) {
         ((CASImpl)view).restoreClassLoaderUnlockCas();

@@ -280,11 +280,11 @@ public class CasManager_impl implements CasManager {
     if (requiredInterface == CAS.class) {
       return cas;
     } else if (requiredInterface == JCas.class) {
-//      try {
+      try {
         return cas.getJCas();
-//      } catch (CASException e) {
-//        throw new UIMARuntimeException(e);
-//      }
+      } catch (CASException e) {
+        throw new UIMARuntimeException(e);
+      }
     } else if (requiredInterface.isInstance(cas)) // covers AbstractCas
     {
       return cas;
@@ -310,11 +310,11 @@ public class CasManager_impl implements CasManager {
     if (requiredInterface == CAS.class) {
       return (T) cas;
     } else if (requiredInterface == JCas.class) {
-//      try {
+      try {
         return (T) cas.getJCas();
-//      } catch (CASException e) {
-//        throw new UIMARuntimeException(e);
-//      }
+      } catch (CASException e) {
+        throw new UIMARuntimeException(e);
+      }
     } else if (requiredInterface.isInstance(cas)) // covers AbstractCas
     {
       return (T) cas;
