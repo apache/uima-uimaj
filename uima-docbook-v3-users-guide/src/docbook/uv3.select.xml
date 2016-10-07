@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/uima_v3_users_guide/select/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.select">
+  <title>The select framework for working with CAS data</title>
+  <titleabbrev>Select framework</titleabbrev>
+  
+  <para>The <emphasis>select</emphasis> framework provides a concise way to work with
+  data stored in the CAS. It is integrated with the Java 8 <emphasis>stream</emphasis>
+  framework, and provides additional capabilities supported by the underlying 
+  UIMA framework, including the ability to move both forwards and backwards while iterating,
+  moving to specific positions, and doing various kinds of specialized Annotation 
+  selection such as working with Annotation spanned by another annotation (think of a Paragraph
+  annotation, and the Sentences or Tokens within that).
+  </para>
+  
+  <para>There are 3 main parts:</para>
+  
+  <itemizedlist spacing="compact">
+    <listitem>
+      <para>The source
+      </para>
+    </listitem>
+    <listitem>
+      <para>what to select, ordering
+      </para>
+    </listitem>
+    <listitem>
+      <para>what to do
+      </para>
+    </listitem>
+  </itemizedlist>
+  
+  <figure id="uv3.select.big_picture">
+          <title>Select - the big picture</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata width="5.7in" format="PNG" fileref="&imgroot;select_big_pic.png"/>
+            </imageobject>
+            <textobject><phrase>Select composed of sources, what to select, and what to do</phrase>
+            </textobject>
+          </mediaobject>
+        </figure>
+  
+  <para>These are described in code using a builder pattern to specify the many options and parameters.
+  Some of the very common parameters are also available as positional arguments in some contexts.
+  </para>
+  
+  <section id="uv3.select.builder_pattern">
+    <title>Select&apos;s use of the builder pattern</title>
+    
+    <para>All of the various options and specifications may be specified using the builder pattern.
+    Each specification has a name, which is a Java method name, sometimes having further parameters.
+    These methods return an instance of SelectFSs; this instance is updated by each builder method.
+    A common approach is to chain these methods together.  When this is done, each subsequent method
+    updates the SelectFSs instance.  This means that the last method in case there are 
+    multiple method calls specifying the same specification is the one that is used.
+    </para>
+    
+    <para>For example, in 
+    <programlisting>a_cas.select().typePriority(true).typePriority(false).typePriority(true)
+    </programlisting>
+    would configure the select to be using typePriority (described later).</para>
+    
+    <para>Some often used parameters can also be passed as positional parameters.  A common one is a 
+    parameter that specifies a UIMA Type.  This can be specified using the builder method <code>type()</code>
+    or it can also be specified directly in the <code>select(type)</code> call as a positional argument.</para>
+  </section>
+  
+  <section id="uv3.select.sources">
+    <title>Sources of Feature Structures</title>
+    
+    <para>There are three sources of Feature Structures supported:</para>
+    <itemizedlist spacing="compact">
+    <listitem>
+      <para>The CAS
+      </para>
+    </listitem>
+    <listitem>
+      <para>Feature Structures in a UIMA FSArray instance
+      </para>
+    </listitem>
+    <listitem>
+      <para>Feature Structures in a UIMA FSList
+      </para>
+    </listitem>
+  </itemizedlist>
+  
+  <para>The CAS is the usual source, provides the most configurability, and comes in many variations, 
+  depending on UIMA Indexes, and whether a single view
+  or all views are included.  For example, you can specify one particular UIMA index (for example, a Set index) 
+  belonging to a particular view. Or you can specify all Feature Structures across all views (that is, the entire
+  contents of the CAS).  Here are the details.
+  </para>
+  
+  <para>To use a CAS as a source, you start with either a CAS view or a particular UIMA index instance (which belongs
+  to just one view).  The CAS and FSIndex APIs have new <code>select()</code> methods.  There are 4 varieties of these,
+  to allow additional positional specification of a UIMA type.  If a type is provided, then if an index is being used,
+  the type must be a subtype of the index&apos;s type.  The type is optional; if not provided, then the type specified
+  by the index (if an index is being used) is used; otherwise, all types are included. Here's some examples:
+  <programlisting>
+a_cas.select()            // no type specified
+a_cas.select(a_type)      // a_type is an instance of a UIMA type 
+                          //  (the class org.apache.uima.cas.Type)
+a_cas.select(Token.type)  // where Token is the name of a JCas class 
+                          //   for the UIMA type Token
+a_cas.select(Token.class) // you can pass a Java class object as well
+  </programlisting>
+  </para>
+  </section>
+  </chapter>
+    
+  
