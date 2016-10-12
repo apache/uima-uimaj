@@ -233,7 +233,7 @@ public class FeatureStructureTest extends TestCase {
     
     // set up some refs; these must be updated if the type changes in a way to require a new FS
     fsa.set(0, token);   // set the 0th  element of a FS Array to point to the "token"
-    fsl.setHead(token);  // set the head element of a FS Array to point to the "token"
+    fsl.setHead(token);  // set the head element of a FS List to point to the "token"
     int tokId = token._id();
     
     // set some feature values; some of these are copied (if there's room, etc.)
