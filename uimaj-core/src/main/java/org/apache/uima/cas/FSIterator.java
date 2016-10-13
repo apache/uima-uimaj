@@ -21,6 +21,7 @@ package org.apache.uima.cas;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -71,7 +72,7 @@ import org.apache.uima.cas.impl.LowLevelIterator;
  * 
  * 
  */
-public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
+public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> {
 
   /**
    * Check if this iterator is valid.
@@ -206,9 +207,45 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   default void remove() {
     throw new UnsupportedOperationException();
   } 
+  
+  @Override
+  default boolean hasPrevious() {
+    return isValid();
+  }
 
+  @Override
+  default T previous() {
+    T result = get();
+    moveToPrevious();
+    return result;
+
+  }
+
+  @Override
+  default int nextIndex() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  default int previousIndex() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  default void set(T e) {
+    throw new UnsupportedOperationException();
+    
+  }
+
+  @Override
+  default void add(T e) {
+    throw new UnsupportedOperationException();
+    
+  }
+  
   /**
-   * 
+   * Don't use this directly, use select()... spliterator instead where possible.
+   * Otherwise, insure the FSIterator instance can support sized/subsized.
    * @return a split iterator for this iterator, which has the following characteristics
    *   DISTINCT, SIZED, SUBSIZED
    *   
@@ -226,4 +263,6 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   default Stream<T> asStream() {
     return StreamSupport.stream(spliterator(),  false);
   }
+
+  
 }
