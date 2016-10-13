@@ -46,6 +46,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
+import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.SharedResourceObject;
 import org.apache.uima.resource.metadata.ExternalResourceBinding;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
@@ -712,5 +713,25 @@ public class ResourceManager_impl implements ResourceManager {
     }
     return Class.forName(name, true, cl);
   }
+  
+  public static Class<?> loadUserClass(String name, ResourceManager rm) throws ClassNotFoundException {
+    return (rm == null) 
+             ? Class.forName(name, true, ResourceManager_impl.class.getClassLoader())
+             : rm.loadUserClass(name);
+  }
+  
+  public static Class<?> loadUserClassOrThrow(String name, ResourceManager rm, ResourceSpecifier aSpecifier) 
+      throws ResourceInitializationException {
+    try {
+      return (rm == null) 
+               ? Class.forName(name, true, ResourceManager_impl.class.getClassLoader())
+               : rm.loadUserClass(name);
+    } catch (ClassNotFoundException e) {
+      throw new ResourceInitializationException(
+          ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { name,
+              aSpecifier.getSourceUrlString() }, e);
+    }
+  }
+  
 
 }

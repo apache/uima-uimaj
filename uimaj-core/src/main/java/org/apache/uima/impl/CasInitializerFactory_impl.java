@@ -29,6 +29,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 
 /**
  * Specialized Resource Factory for producing CasInitializers.
@@ -54,16 +55,8 @@ public class CasInitializerFactory_impl implements ResourceFactory {
       if (aAdditionalParams != null) {
         resourceManager = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
       }
-      if (resourceManager != null) {
-        cl = resourceManager.getExtensionClassLoader();
-      }
-      if (cl == null) {
-        cl = this.getClass().getClassLoader();
-      }
-
       try {
-        Class<?> implClass = Class.forName(className, true, cl);
-
+        Class<?> implClass = ResourceManager_impl.loadUserClassOrThrow(className,  resourceManager,  aSpecifier);
         // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
         if (!CasInitializer.class.isAssignableFrom(implClass)
                 && !CasDataInitializer.class.isAssignableFrom(implClass)) {
@@ -90,11 +83,8 @@ public class CasInitializerFactory_impl implements ResourceFactory {
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
-      }
+      
       // if an exception occurs, log it but do not throw it... yet
-      catch (ClassNotFoundException e) {
-        throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-                new Object[] { className, aSpecifier.getSourceUrlString() }, e);
       } catch (IllegalAccessException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,

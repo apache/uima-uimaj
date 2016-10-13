@@ -31,6 +31,7 @@ import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 
 /**
@@ -72,19 +73,8 @@ public class CasConsumerFactory_impl implements ResourceFactory {
           resourceManager = (ResourceManager) aAdditionalParams
                   .get(Resource.PARAM_RESOURCE_MANAGER);
         }
-        if (resourceManager != null) {
-          cl = resourceManager.getExtensionClassLoader();
-        }
-        if (cl == null) {
-          cl = this.getClass().getClassLoader();
-        }
-        try {
-          implClass = Class.forName(className, true, cl);
-        } catch (ClassNotFoundException e) {
-          throw new ResourceInitializationException(
-                  ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,
-                      aSpecifier.getSourceUrlString() }, e);
-        }
+        
+        implClass = ResourceManager_impl.loadUserClassOrThrow(className, resourceManager, aSpecifier);
 
         // check to see if this is a subclass of Cas[Data]Consumer and of aResourceClass
         if (!CasConsumer.class.isAssignableFrom(implClass)
