@@ -2779,7 +2779,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * remove a FS from indexes in this view
+   * remove a FS from all indexes in this view (except bag indexes, if isSkipBagIndex is true)
    * @param fs the fs to be removed
    * @param ir the view
    * @param toBeAdded the place to record how many times it was in the index, per view
@@ -4405,9 +4405,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
   @Override
   public String toString() {
-    String sofa =  (mySofaRef == null) ? (isBaseCas() ? "Base CAS" : "_InitialView or no Sofa") :
+    String sofa =  (mySofaRef == null) 
+                     ? (isBaseCas() 
+                          ? "Base CAS" 
+                          : "_InitialView or no Sofa") 
+                     : mySofaRef.getSofaID();
 //                 (mySofaRef == 0) ? "no Sofa" :
-                   mySofaRef.getSofaID();
+                       
     return this.getClass().getSimpleName() + ":" + getCasId() + "[view: " + sofa + "]";
   }
     
