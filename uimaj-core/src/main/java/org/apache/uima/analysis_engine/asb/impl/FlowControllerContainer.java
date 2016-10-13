@@ -309,13 +309,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
               new Object[] { aDescriptor.getSourceUrlString() });
     }
     // load FlowController class
-    Class<?> flowControllerClass = null;
-    try {
-      flowControllerClass= loadUserClass(flowControllerClassName);
-    } catch (ClassNotFoundException e) {
-      throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-              new Object[] { flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
-    }
+    Class<?> flowControllerClass = loadUserClassOrThrow(flowControllerClassName, aDescriptor);
 
     Object userObject;
     try {

@@ -26,6 +26,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -288,10 +289,11 @@ public abstract class Resource_ImplBase implements Resource {
   
   public Class<?> loadUserClass(String name) throws ClassNotFoundException {
     return getResourceManager().loadUserClass(name);
-//    ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
-//    if (null == cl) {
-//      cl = this.getClass().getClassLoader();
-//    }
-//    return Class.forName(name, true, cl);
   }
+  
+  public Class<?> loadUserClassOrThrow(String name, ResourceSpecifier aSpecifier) 
+      throws ResourceInitializationException {
+    return ResourceManager_impl.loadUserClassOrThrow(name, getResourceManager(), aSpecifier);
+  }
+  
 }

@@ -204,14 +204,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     }
 
     // load annotator class
-    Class<?> annotatorClass = null;
-    try {
-      annotatorClass = loadUserClass(annotatorClassName);
-    } catch (ClassNotFoundException e) {
-      throw new ResourceInitializationException(
-              ResourceInitializationException.ANNOTATOR_CLASS_NOT_FOUND, new Object[] {
-                  annotatorClassName, mDescription.getSourceUrlString() }, e);
-    }
+    Class<?> annotatorClass = loadUserClassOrThrow(annotatorClassName, mDescription);
 
     // Make sure the specified class can be adapter to an AnalysisComponent.
     if (!(AnalysisComponent.class.isAssignableFrom(annotatorClass))
