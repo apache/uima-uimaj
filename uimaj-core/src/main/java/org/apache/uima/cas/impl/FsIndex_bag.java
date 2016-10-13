@@ -185,10 +185,10 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return this.index.remove(fs);
   }
   
-  @Override
-  public boolean remove(int fsRef) {    
-    return deleteFS((T) casImpl.getFsFromId_checked(fsRef));
-  }
+//  @Override
+//  public boolean remove(int fsRef) {    
+//    return deleteFS((T) casImpl.getFsFromId_checked(fsRef));
+//  }
 
   @Override
   public int hashCode() {
