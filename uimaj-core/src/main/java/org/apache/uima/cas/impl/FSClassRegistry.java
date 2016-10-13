@@ -368,7 +368,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         // the "stored" version might have the wrong super class for this type system
         type2JCas.put(t2jcciKey, jcci = copyDownDefault_jcasClassInfo);
         
-      } else if (ti != ts.topType) {
+      } else if (!ti.isTopType()) {
         // strong test for non-copy-down case: supertype must match, with 2 exceptions
         validateSuperClass(jcci, ti);
       }

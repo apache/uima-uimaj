@@ -1036,6 +1036,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     staticMergedRefFeaturesList = v;
   }
 
+  public boolean isTopType() {
+    return superType == null;
+  }
 //  /**
 //   * @return the generator
 //   */
