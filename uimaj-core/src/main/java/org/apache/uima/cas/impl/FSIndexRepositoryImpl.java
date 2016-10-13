@@ -350,7 +350,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   // one bit per typeCode, indexed by typeCode
   //   This is only to speed up the test to skip adding an index to the set of "used" ones if it already is used.
-  final private boolean[] isUsed;
+  final private BitSet isUsed;
+  
+//  /**
+//   * Used for maintaining collection of all used iicp's for indexes
+//   * package scope for setting in index impl flush
+//   */
+//  boolean isUsedChanged = true;
+//  
+//  /**
+//   * iicps for all FSs
+//   */
+//  private List<FsIndex_iicp<?>> iicps4allFSs = null;
   
   // Monitor which indexes are iterated over, to allow resetting flatIndexes
 //  final private List<FsIndex_iicp<? extends FeatureStructure>> iteratedSortedIndexes = 
@@ -409,6 +420,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.indexUpdateOperation = null;
     this.usedIndexes = null;
     this.isUsed = null;
+//    this.isUsedChanged = true;
+//    this.iicps4allFSs = null;
   }
 
   /**
@@ -432,7 +445,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.logProcessed = false;
     this.indexArray = new IndexesForType[this.sii.tsi.getNumberOfTypes() + 1];
     this.usedIndexes = new IntVector();
-    this.isUsed = new boolean[numTypes];
+    this.isUsed = new BitSet(numTypes);
+//    this.isUsedChanged = true;
+//    this.iicps4allFSs = new ArrayList<>();
     init();
   }
 
@@ -460,8 +475,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     this.logProcessed = false;
     this.indexArray = new IndexesForType[numTypes];
     this.usedIndexes = new IntVector();
-    this.isUsed = new boolean[numTypes];
-
+    this.isUsed = new BitSet(numTypes);
+//    this.isUsedChanged = true;
+//    this.iicps4allFSs = new ArrayList<>();
     init();
     // cant do this here because need to have the CAS's ref to this instance set before this is done.
 //    baseIndexRepo.name2indexMap.keySet().stream().forEach(key -> createIndex(baseIndexRepo, key));
@@ -623,10 +639,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     
     annotationIndexes.clear();
-    
+    isUsed.clear();
+//    isUsedChanged = true;
+//    iicps4allFSs.clear();
     for (int i = 0; i < usedIndexes.size(); i++) {
       int used = this.usedIndexes.get(i);
-      isUsed[used] = false;
       for (FsIndex_iicp<?> iicp : indexArray[used].indexesForType) {
         iicp.fsIndex_singletype.flush();
       }
@@ -1318,9 +1335,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       ((FsIndex_singletype<T>)(indexes.get(indexes.size() - 1)).fsIndex_singletype).insert(fs);
     }
 
-    if (!this.isUsed[typeCode]) {
+    if (!this.isUsed.get(typeCode)) {
       // mark this type as being in some indexes
-      this.isUsed[typeCode] = true;
+      this.isUsed.set(typeCode);
+//      this.isUsedChanged = true;
       this.usedIndexes.add(typeCode);
     }
   }
@@ -1329,6 +1347,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     return "_" + type.getName() + "_DefaultBagGeneratedIndex";
   }
 
+  /**
+   * Common remove FS code; all remove operations call this, except bulk remove (flush and removeall...)
+   * Removes FS from all indexes in this view (except bag if skipBagIndexes is true)
+   * @param fs the fs to remove
+   * @param skipBagIndexes set true by protect-indexes style of temporary removal
+   * @return true if it was removed
+   */
   boolean removeFS_ret(TOP fs, boolean skipBagIndexes) {
     if (skipBagIndexes && !fs._inSetSortedIndex()) {
       return false;
@@ -1358,6 +1383,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
     }
     
+    /**
+     * Actual remove loop over all indexes for this type in this view
+     */
     for (FsIndex_iicp<TOP> iicp : indexes4type) {
       FsIndex_singletype<TOP> st = iicp.fsIndex_singletype;
       if (skipBagIndexes && !st.isSetOrSorted()) {
@@ -1377,10 +1405,13 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (this.cas.getCurrentMark() != null) {
         logIndexOperation(fs, ITEM_REMOVED_FROM_INDEX);
       }
-      if (skipBagIndexes ||              // means called for remove from all corruptable indexes 
-          fs instanceof AnnotationBase) {  // means only indexed in this index
-        fs._resetInSetSortedIndex();
-      } 
+      
+   // oops, might still be indexed in other views if not instance of AnnotationBase
+   // reset in caller (removeFromIndexAnyView)
+//      if (skipBagIndexes ||              // means called for remove only from all corruptable indexes 
+//          fs instanceof AnnotationBase) {  // means only indexed in this view 
+//        fs._resetInSetSortedIndex();     
+//      } 
     }
     return wasRemoved;    
   }
@@ -1396,7 +1427,25 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public <T extends FeatureStructure> LowLevelIterator<T> getAllIndexedFS(Type type) {
     final ArrayList<LowLevelIterator<T>> iteratorList = new ArrayList<>();
-    getAllIndexedFS(type, iteratorList);
+    
+//    TypeImpl ti = (TypeImpl) type;
+//    if (!isUsedChanged && ti.isTopType()) {  
+//      // reuse previously computed iicps4allFSs
+//      for (FsIndex_iicp<?> iicp : iicps4allFSs) {
+//        if (iicp.cachedSubFsLeafIndexes[0].size() != 0) {
+//          LowLevelIterator<T> it = (iicp.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
+//              ? (LowLevelIterator<T>)iicp.iteratorUnordered()
+//              : (LowLevelIterator<T>)iicp.iterator();
+//          iteratorList.add(it);
+//        }
+//      }
+//    } else {
+//      iicps4allFSs.clear();
+      getAllIndexedFS(type, iteratorList);
+//      this.isUsedChanged = false; // above call recomputed the cache  
+//    }    
+
+    
     final int iteratorListSize = iteratorList.size();
     if (iteratorListSize == 0) {
       return (LowLevelIterator<T>) LowLevelIterator.FS_ITERATOR_LOW_LEVEL_EMPTY;
@@ -1422,11 +1471,14 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     //   Note that a default bag index is guaranteed to exist if any FS of Type type were added to the indexes
     //     and only a SET index was defined, see https://issues.apache.org/jira/browse/UIMA-4111
 
-    // get all indexes for this type
+    
+    // get all indexes for this type and compute iicps4allFSs
+
     TypeImpl ti = (TypeImpl)type;
-    if (isUsed[ti.getCode()]) {
+    if (isUsed.get(ti.getCode())) {
       FsIndex_iicp<TOP> iicp = getIndexesForType(ti.getCode()).getNonSetIndex();  
       
+//      iicps4allFSs.add(iicp);
       if (null != iicp && !iicp.isEmpty()) {
         LowLevelIterator<T> it = (iicp.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
                                     ? (LowLevelIterator<T>)iicp.iteratorUnordered()

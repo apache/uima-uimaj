@@ -20,11 +20,13 @@
 package org.apache.uima.cas.impl;
 
 import java.lang.reflect.Array;
+import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.function.BiConsumer;
@@ -134,13 +136,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * INDEX
    * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
    */
-  @Override
+
   public <N extends FeatureStructure> SelectFSs_impl<N> index(String indexName) {
     this.index = view.indexRepository.getIndex(indexName);
     return (SelectFSs_impl<N>) this;
   }
   
-  @Override
   public <N extends FeatureStructure> SelectFSs_impl<N> index(FSIndex<N> aIndex) {
     this.index = (FSIndex<T>) aIndex;
     return (SelectFSs_impl<N>) this;
@@ -150,22 +151,22 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * TYPE
    * if not specified defaults to the index's uppermost type.  
    */
-  @Override
+  
   public <N extends FeatureStructure> SelectFSs_impl<N> type(Type uimaType) {
     this.ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
-  @Override
+  
   public <N extends FeatureStructure> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
     this.ti = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
     return (SelectFSs_impl<N>) this;
   }
-  @Override
+
   public <N extends FeatureStructure> SelectFSs_impl<N> type(int jcasClass_dot_type) {
     this.ti = (TypeImpl) view.getJCas().getCasType(jcasClass_dot_type);
     return (SelectFSs_impl<N>) this;
   }
-  @Override
+
   public <N extends FeatureStructure> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
     this.ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
     return (SelectFSs_impl<N>) this;
@@ -471,8 +472,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         ti = (TypeImpl) index.getType();
       }
     } else {
-      if (index != null &&
-          ((TypeImpl)index.getType()).subsumes(ti)) {
+      if (index != null && ((TypeImpl)index.getType()).subsumes(ti)) {
         index = ((LowLevelIndex)index).getSubIndex(ti);
       }
     }
@@ -618,6 +618,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       if (isAltSource) {
         return altSourceIterator();
       } else {
+        // idx is null after prepareTerminalOp has been called.
+        // guaranteed not annotationindex or any op that requires that
         return v.indexRepository.getAllIndexedFS(ti);
       }
     }
@@ -692,44 +694,52 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public Iterator<T> iterator() {
     return fsIterator();
   }
-  
-  
-  /**
-   * Initial simple impl, creates reified list
-   *   Better impl would be to use underlying fsIterator
-   * @return
-   */
+    
   @Override
-  public List<T> asList(Class<T> clazz) {
-    T[] a = asArray(clazz);
-    return Arrays.asList(a);
+  public <N extends T> List<N> asList() {
+    prepareTerminalOp();
+    
+    return new AbstractSequentialList<N>() {
+      
+      @Override
+      public ListIterator<N> listIterator(int index) {
+        return (ListIterator<N>) fsIterator();
+      }
+
+      @Override
+      public int size() {
+        return (index == null) ? -1 : index.size();
+      }
+      
+    };
   }
   
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#asArray()
    */
   @Override
-  public T[] asArray(Class<T> clazz) {
+  public <N extends T> N[] asArray(Class<N> clazz) {
     return asArray(fsIterator(), clazz);
   }
 
-  private T[] asArray(FSIterator<T> it, Class<T> clazz) {
-    List<T> al = new ArrayList<>();
-    while (it.isValid()) {
-      al.add(it.getNvc());  // limit iterator might cause it to become invalid
-      it.moveToNext();
-    }    
-    T[] r = (T[]) Array.newInstance(clazz, al.size());
+  private <N extends T> N[] asArray(FSIterator<T> it, Class<N> clazz) {
+    List<N> al = asArray1(it);    
+    N[] r = (N[]) Array.newInstance(clazz, al.size());
     return al.toArray(r);    
   }
   
-  private FeatureStructure[] asArray(FSIterator<T> it) {
-    List<? super T> al = new ArrayList<>();
+  private <N extends T> List<N> asArray1(FSIterator<T> it) {
+    List<N> al = new ArrayList<>();
     while (it.isValid()) {
-      al.add(it.getNvc());
-      it.moveToNext(); // limit iterator might cause it to become invalid
+      al.add((N) it.getNvc());  // limit iterator might cause it to become invalid
+      it.moveToNext();
     }    
-    FeatureStructure[] r = (FeatureStructure[]) Array.newInstance(FeatureStructure.class,  al.size());
+    return al;    
+  }
+  
+  private FeatureStructure[] asArray(FSIterator<T> it) {
+    List<? super T> al = asArray1(it);
+    FeatureStructure[] r = (FeatureStructure[]) Array.newInstance(FeatureStructure.class, al.size());
     return al.toArray(r);
   }
   
@@ -844,7 +854,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     if (it.isValid()) {
       return it.getNvc();
     }
-    if ((!isDoSetTest || isNullOkSpecified) && !isNullOK) {
+    if ((!isDoSetTest || isNullOkSpecified) && !isNullOK) {  // if not specified, isNullOK == false
       throw new CASRuntimeException(CASRuntimeException.SELECT_GET_NO_INSTANCES, ti.getName(), maybeMsgPosition());
     }
     return null;

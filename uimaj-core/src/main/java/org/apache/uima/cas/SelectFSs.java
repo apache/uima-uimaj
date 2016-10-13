@@ -36,19 +36,19 @@ import org.apache.uima.jcas.cas.TOP;
  */
 public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stream<T> {
   
-  // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
-    // Methods take their generic type from the variable to which they are assigned except for
-    // index(class) which takes it from its argument.
-  <N extends FeatureStructure> SelectFSs<N> index(String indexName);  
-  <N extends FeatureStructure> SelectFSs<N> index(FSIndex<N> index);
-
-  // If not specified defaults to the index's uppermost type.
-  // Methods take their generic type from the variable to which they are assigned except for
-  // type(class) which takes it from its argument.
-  <N extends FeatureStructure> SelectFSs<N> type(Type uimaType);
-  <N extends FeatureStructure> SelectFSs<N> type(String fullyQualifiedTypeName);
-  <N extends FeatureStructure> SelectFSs<N> type(int jcasClass_dot_type);
-  <N extends FeatureStructure> SelectFSs<N> type(Class<N> jcasClass_dot_class);
+//  // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
+//    // Methods take their generic type from the variable to which they are assigned except for
+//    // index(class) which takes it from its argument.
+//  <N extends FeatureStructure> SelectFSs<N> index(String indexName);  
+//  <N extends FeatureStructure> SelectFSs<N> index(FSIndex<N> index);
+//
+//  // If not specified defaults to the index's uppermost type.
+//  // Methods take their generic type from the variable to which they are assigned except for
+//  // type(class) which takes it from its argument.
+//  <N extends FeatureStructure> SelectFSs<N> type(Type uimaType);
+//  <N extends FeatureStructure> SelectFSs<N> type(String fullyQualifiedTypeName);
+//  <N extends FeatureStructure> SelectFSs<N> type(int jcasClass_dot_type);
+//  <N extends FeatureStructure> SelectFSs<N> type(Class<N> jcasClass_dot_class);
     
 //  SelectFSs<T> shift(int amount); // incorporated into startAt 
   
@@ -163,8 +163,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   // ---------------------------------
   FSIterator<T> fsIterator();
   Iterator<T> iterator();
-  List<T> asList(Class<T> clazz);
-  T[] asArray(Class<T> clazz);
+  <N extends T> List<N> asList();
+  <N extends T> N[] asArray(Class<N> clazz);
   Spliterator<T> spliterator();
   
   // returning one item
@@ -190,15 +190,27 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   T single(int begin, int end, int offset);       // throws if not exactly 1 element
   T singleOrNull(int begin, int end, int offset); // throws if more than 1 element, returns single or null
   
-  // ---------------------------------
-  // The methods below are alternatives 
-  // to the methods above, that combine
-  // frequently used patterns into more
-  // concise forms using positional arguments
-  // ---------------------------------
   
-  static <N extends FeatureStructure> SelectFSs<N> sselect(FSIndex<N> index) {
+  /**
+   * static methods that more effectively capture the generic argument
+   */
+  /**
+   * @param index
+   * @return
+   */
+  static <U extends FeatureStructure, V extends U> SelectFSs<V> sselect(FSIndex<U> index) {
     return index.select();    
   } 
+  
+//  /**
+//   * DON'T USE THIS, use index.select(XXX.class) instead
+//   * @param index the index to use
+//   * @param clazz the JCas class
+//   * @return a select instance for this index and type
+//   */
+//  static <U extends FeatureStructure, V extends U> SelectFSs<V> sselect(FSIndex<U> index, Class<V> clazz) {
+//    return index.select(clazz);
+//  }
+ 
 
 }

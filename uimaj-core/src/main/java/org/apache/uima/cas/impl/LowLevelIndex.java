@@ -121,28 +121,28 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   
   
   @Override
-  default SelectFSs<T> select() {
-    return getCasImpl().select().index(this);
+  default <N extends FeatureStructure> SelectFSs<N> select() {
+    return ((SelectFSs_impl)getCasImpl().select()).index(this);
   }
 
   @Override
   default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
-    return select().type(type);
+    return ((SelectFSs_impl)select()).type(type);
   }
 
   @Override
   default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
-    return select().type(clazz);
+    return ((SelectFSs_impl)select()).type(clazz);
   }
 
   @Override
   default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
-    return select().type(jcasType);
+    return ((SelectFSs_impl)select()).type(jcasType);
   }
 
   @Override
   default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
-    return select().type(fullyQualifiedTypeName);
+    return ((SelectFSs_impl)select()).type(fullyQualifiedTypeName);
   }
   
 }
