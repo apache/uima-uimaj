@@ -19,15 +19,18 @@
 
 package org.apache.uima.cas.test;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
@@ -309,7 +312,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertCount("Normal ambiguous annot iterator", annotCount, it);
     assertCount("Normal ambiguous select annot iterator", annotCount, select_it);
     assertEquals(annotCount, sselect(annotIndex).toArray().length);  // stream op
-    assertEquals(annotCount, sselect(annotIndex).asArray(AnnotationFS.class).length);  // select op
+    assertEquals(annotCount, sselect(annotIndex).asArray(Annotation.class).length);  // select op
     
     AnnotationFS[] tokensAndSentences = sselect(annotIndex).asArray(AnnotationFS.class);
     JCas jcas = null;
@@ -356,15 +359,26 @@ public class AnnotationIteratorTest extends TestCase {
 
     select_it = cas.<AnnotationFS>select().coveredBy(bigBound).limit(7).endWithinBounds().fsIterator();
     assertCountLimit("Subiterator select limit 7 over annot with big bound, strict", 7, select_it);
-
+    
+    FSIndex<Token> token_index = null;
+    // uncomment these to check compile-time generic arguments OK
+    // comment these out for running, because Token not a type
+//    FSIterator<Token> token_it = token_index.<Token>select().fsIterator();
+//    token_it = sselect(token_index).fsIterator();
+//    token_it = sselect(annotIndex, Token.class).fsIterator();
+//    FSIterator<Token> token_it = cas.select(Token.class).fsIterator();
+    
     Object[] o = cas.<AnnotationFS>select().coveredBy(bigBound).skip(3).toArray();
     assertEquals(35, o.length);
     
     Object[] o1 = cas.<AnnotationFS>select().coveredBy(bigBound).toArray();
-    List<AnnotationFS> l2 = cas.<AnnotationFS>select().coveredBy(bigBound).backwards().asList(AnnotationFS.class);
-    Collections.reverse(l2);
-    assertTrue(Arrays.equals(o1, l2.toArray()));
+    List<AnnotationFS> l2 = cas.<AnnotationFS>select().coveredBy(bigBound).backwards().asList();
+    Deque<AnnotationFS> l2r = new ArrayDeque<>();
+    for (AnnotationFS fs : l2) {
+      l2r.push(fs);
+    }
     
+    assertTrue(Arrays.equals(o1, l2r.toArray()));
     
     it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict
     assertCount("Subiterator over annot unambiguous strict", 3, it);
