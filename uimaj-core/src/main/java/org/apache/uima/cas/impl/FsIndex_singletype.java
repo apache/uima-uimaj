@@ -157,16 +157,16 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    */
   abstract void insert(T fs);  // not in upper interfaces because it's internal use only
 
-  /**
-   * @param fs - the Feature Structure to be removed.
-   *             Only this exact Feature Structure is removed (this is a stronger test than, for example,
-   *             what moveTo(fs) does, where the fs in that case is used as a template).  
-   *             It is not an error if this exact Feature Structure is not in an index.
-   * @return true if something was removed, false if not found
-   */
-  boolean remove(int fs) {
-    return deleteFS((T) getCasImpl().getFsFromId_checked(fs));
-  }
+//  /**
+//   * @param fs - the Feature Structure to be removed.
+//   *             Only this exact Feature Structure is removed (this is a stronger test than, for example,
+//   *             what moveTo(fs) does, where the fs in that case is used as a template).  
+//   *             It is not an error if this exact Feature Structure is not in an index.
+//   * @return true if something was removed, false if not found
+//   */
+//  boolean remove(int fs) {
+//    return deleteFS((T) getCasImpl().getFsFromId_checked(fs));
+//  }
    
   /**
    * @param fs - the Feature Structure to be removed.
@@ -424,6 +424,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   @Override
   public void flush() {
     wr_cow = null;
+//    casImpl.indexRepository.isUsedChanged = true;
   }
 
 
