@@ -28,7 +28,7 @@ under the License.
   <titleabbrev>Select framework</titleabbrev>
   
   <para>The <emphasis>select</emphasis> framework provides a concise way to work with
-  data stored in the CAS. It is integrated with the Java 8 <emphasis>stream</emphasis>
+  Feature Structure data stored in the CAS. It is integrated with the Java 8 <emphasis>stream</emphasis>
   framework, and provides additional capabilities supported by the underlying 
   UIMA framework, including the ability to move both forwards and backwards while iterating,
   moving to specific positions, and doing various kinds of specialized Annotation 
@@ -36,7 +36,7 @@ under the License.
   annotation, and the Sentences or Tokens within that).
   </para>
   
-  <para>There are 3 main parts:</para>
+  <para>There are 3 main parts to this framework:</para>
   
   <itemizedlist spacing="compact">
     <listitem>
@@ -93,70 +93,83 @@ under the License.
   <section id="uv3.select.sources">
     <title>Sources of Feature Structures</title>
     
-    <para>Feature Structures are kept in the CAS, and are accessed using UIMA Indexes.  There are separate sets of these
-    indexes per CAS view.  A common source is the Feature Structures belonging to a particular index, in a particular
-    CAS view.</para>
+    <para>Feature Structures are kept in the CAS, and are accessed using UIMA Indexes.  
+    Feature Structures may, additionally, be kept in <code>FSArrays</code> and <code>FSLists</code>.
+    All three of these sources may be used with <code>select</code>.</para>
     
-    <para>You can omit the index, in which case, the default is to start with all Feature Structures in a Cas View,
-    or, if the selection and ordering specifications require an AnnotationIndex, it defaults to that index.
-    There is a way to extend this to all Feature Structures in all views.</para>
+    <para>For CAS sources, there are separate sets of indexes per CAS view; a typical CAS source is    
+    the Feature Structures belonging to a particular index, in a particular
+    CAS view, perhaps filtered by UIMA Type.</para>
     
-    <para>If the index is omitted, Omitted index</para>
+    <para>You can omit the index; in that case, the default is 
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>all Feature Structures in a Cas View, or</para>
+      </listitem>
+      <listitem>
+        <para>(if the selection and ordering specifications require an AnnotationIndex), 
+        all Feature Structures in the view&apos;s AnnotationIndex.</para>
+      </listitem>
+    </itemizedlist></para>
+    
+    <para>You can extend any selection to be an aggregation over all the CAS views.</para>
     
     <para>A UIMA index is the usual source.  If a CAS is used, all Feature Structures that were added to the index in the
-  specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
-  because they are considered non-sorted, and therefore cannot be used for an operations which require a sorted order.</para>
+      specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
+      because they are considered non-sorted, and therefore cannot be used for an operations which require a sorted order.</para>
+      
     <para>There are 4 sources of Feature Structures supported:</para>
+
     <itemizedlist spacing="compact">
-    <listitem>
-      <para>a CAS view
-      </para>
-    </listitem>
-    <listitem>
-      <para>an Index over a CAS view
-      </para>
-    </listitem>
-    <listitem>
-      <para>Feature Structures in a UIMA FSArray instance
-      </para>
-    </listitem>
-    <listitem>
-      <para>Feature Structures in a UIMA FSList
-      </para>
-    </listitem>
-  </itemizedlist>
-  
-  <para>Each of these sources has a new API method, <code>select(...)</code>, which initiates the select specification.
-  The select method can take an optional  positional parameter, specifying the UIMA type to return.</para>
-  
-  <figure id="uv3.select.source_type">
-    <title>select method with type</title>
-    <mediaobject>
-      <imageobject>
-        <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_source_type.png"/>
-      </imageobject>
-      <textobject><phrase>Sources have select method, which has optional type argument</phrase>
-      </textobject>
-    </mediaobject>
-  </figure>
-  
-  <para>A UIMA index is the usual source.  If a CAS is used, all Feature Structures that were added to the index in the
-  specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
-  because they are considered non-sorted, and therefore cannot be used for an operations which require a sorted order.</para>
-  
-  <para>
-  The optional type argument for <code>select(...)</code> specifies a UIMA type.  This restricts the Feature Structures
-  to just those of the specified type or any of its subtypes.  If omitted, if an index is used as a source, 
-  its type specification is used; otherwise the TOP type is used (meaning all types).</para>
-  
-  <para>Type specifications may be specified in multiple ways.  
-  The best practice, if you have a JCas cover class
-  defined for the type, is to use the form <code>MyJCasClass.class</code>.  This has the advantage of setting the 
-  expected generic type of the select to that Java type.
-  </para>
-  
-  <para>The type may also be specified by using the actual UIMA type instance (useful if not using the 
-  JCas), using a fully qualified type name as a string, or using the JCas class static <code>type</code> field.</para>
+	    <listitem>
+	      <para>a CAS view: all the FSs that were added to the indexes for this view (in arbitrary order)
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>an Index over a CAS view
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>Feature Structures in a UIMA FSArray instance
+	      </para>
+	    </listitem>
+	    <listitem>
+	      <para>Feature Structures in a UIMA FSList
+	      </para>
+	    </listitem>
+	  </itemizedlist>
+	  
+	  <para>Each of these sources has a new API method, <code>select(...)</code>, which initiates the select specification.
+	  The select method can take an optional  positional parameter, specifying the UIMA type to return.</para>
+	  
+	  <figure id="uv3.select.source_type">
+	    <title>select method with type</title>
+	    <mediaobject>
+	      <imageobject>
+	        <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_source_type.png"/>
+	      </imageobject>
+	      <textobject><phrase>Sources have select method, which has optional type argument</phrase>
+	      </textobject>
+	    </mediaobject>
+	  </figure>
+	  
+	  <para>A UIMA index is the usual source.  If a CAS is used, all Feature Structures that were added to the index in the
+	  specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
+	  because they are considered non-sorted, and therefore cannot be used for an operations which require a sorted order.</para>
+	  
+	  <para>
+	  The optional type argument for <code>select(...)</code> specifies a UIMA type.  This restricts the Feature Structures
+	  to just those of the specified type or any of its subtypes.  If omitted, if an index is used as a source, 
+	  its type specification is used; otherwise the TOP type is used (meaning all types).</para>
+	  
+	  <para>Type specifications may be specified in multiple ways.  
+	  The best practice, if you have a JCas cover class
+	  defined for the type, is to use the form <code>MyJCasClass.class</code>.  This has the advantage of setting the 
+	  expected generic type of the select to that Java type.
+	  </para>
+	  
+	  <para>The type may also be specified by using the actual UIMA type instance (useful if not using the 
+	  JCas), using a fully qualified type name as a string, or using the JCas class static <code>type</code> field.</para>
   
   <section id="uv3.select.sources.generics">
     <title>Sources and generic typing</title>
@@ -293,20 +306,10 @@ FSIterator&lt;Token&gt; token_iterator = sselect(token_index).fsIterator();
 			      <code>allViews()</code>.
 			      </para>
 			      
-			      <para>When this is specified, it acts in one of two ways:
-				      <itemizedlist spacing="compact">
-				        <listitem>
-				          <para>as an aggregation, in no particular order, of the underlying selections, each over a single CAS view.
+			      <para>When this is specified, it acts 
+				          as an aggregation, in no particular order, of the underlying selections, one per view in the CAS.
 				          Because of this implementation, the items in the selection may not be unique - that is a single
-				          Feature Structure may be in multiple views.</para>
-				        </listitem>
-	              <listitem>
-	                <para>(when no index is specified, and AnnotationIndex is not otherwise implied) a special selection
-	                of all Feature Structures in the CAS in any view, guaranteed to be distinct.  This means only one
-	                instance of a Feature Structure is included, even if it is indexed in multiple CAS views.
-	                </para>
-	              </listitem>
-				      </itemizedlist>
+				          Feature Structure may be in multiple views.
             </para>
           </listitem>
         </varlistentry>
@@ -668,12 +671,11 @@ startAt(begin, end, shifted) // same as above,
       Variations may throw exceptions on empty or more than one item situations.</para>
       
       <para>These have no-argument forms as well as argument forms identical to <code>startAt</code> (see above).
-      When arguments are specified, they server to adjust the item returned by positioning within the index 
+      When arguments are specified, they adjust the item returned by positioning within the index 
       according to the arguments.</para>
         
       <note>
-        <para>If the positioning arguments is other than a simple shift or omitted, then the
-        underlying index must be an AnnotationIndex.
+        <para>Positioning arguments with a Feature Structure or begin and end require an Annotation Index.
         </para>
       </note>
       
