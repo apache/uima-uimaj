@@ -93,40 +93,63 @@ under the License.
   <section id="uv3.select.sources">
     <title>Sources of Feature Structures</title>
     
-    <para>Feature Structures are kept in the CAS, and are accessed using UIMA Indexes.  
+    <para>Feature Structures are kept in the CAS, and may be accessed using UIMA Indexes.
+    Note that not all Feature Structures in the CAS are in the UIMA indexes; only those that the 
+    user had "added to the indexes" are. Feature Structures not in the indexes are not 
+    included when using the CAS as the source for the select framework.</para>
+    
+    <para>  
     Feature Structures may, additionally, be kept in <code>FSArrays</code> and <code>FSLists</code>.
     All three of these sources may be used with <code>select</code>.</para>
     
-    <para>For CAS sources, there are separate sets of indexes per CAS view; a typical CAS source is    
-    the Feature Structures belonging to a particular index, in a particular
-    CAS view, perhaps filtered by UIMA Type.</para>
+    <para>For CAS sources, if Views are being used, there is a separate set of indexes per CAS view.
+    When there are multiple views, only one view's set of indexed Feature Structures is accessed - the
+    view implied by the CAS being used.  Note that there is a way to specify aggregating over all views; see
+    <code>allViews</code> described later.</para>
     
-    <para>You can omit the index; in that case, the default is 
+    <para>Users may specify all Feature Structures in a view, or restrict this in two ways:
     <itemizedlist spacing="compact">
       <listitem>
-        <para>all Feature Structures in a Cas View, or</para>
+        <para>specifying an index: Users may define their own indexes, in additional to the built in ones, and 
+        then specify which index to use.
+        </para>
       </listitem>
       <listitem>
-        <para>(if the selection and ordering specifications require an AnnotationIndex), 
-        all Feature Structures in the view&apos;s AnnotationIndex.</para>
+        <para>specifying a type: Only Feature Structures of this type (or its subtypes) are included.
+        </para>
+      </listitem>
+    </itemizedlist>
+    </para>
+    
+    <para>It is possible to specify both of these, using the form <code>myIndex.select(myType)</code>; 
+        in that case the type must be the type or a subtype of
+        the index's top most type.
+    </para>
+        
+    <para>If no index is specified, the default is 
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>to use all Feature Structures in a CAS View, or</para>
+      </listitem>
+      <listitem>
+        <para>to use all Feature Structures in the view&apos;s AnnotationIndex,
+        if the selection and ordering specifications require an AnnotationIndex.</para>
       </listitem>
     </itemizedlist></para>
     
-    <para>You can extend any selection to be an aggregation over all the CAS views.</para>
-    
-    <para>A UIMA index is the usual source.  If a CAS is used, all Feature Structures that were added to the index in the
-      specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
-      because they are considered non-sorted, and therefore cannot be used for an operations which require a sorted order.</para>
+    <para>Note that the FSArray and FSList sources are considered ordered, but non-sorted, 
+          and therefore cannot be used for an operations which require a sorted order.</para>
       
     <para>There are 4 sources of Feature Structures supported:</para>
 
     <itemizedlist spacing="compact">
 	    <listitem>
-	      <para>a CAS view: all the FSs that were added to the indexes for this view (in arbitrary order)
+	      <para>a CAS view: all the FSs that were added to the indexes for this view.
 	      </para>
 	    </listitem>
 	    <listitem>
-	      <para>an Index over a CAS view
+	      <para>an Index over a CAS view. Note that the AnnotationIndex is often implied by other 
+	            <code>select</code> specifications, so it is often not necessary to supply this.
 	      </para>
 	    </listitem>
 	    <listitem>
@@ -140,7 +163,10 @@ under the License.
 	  </itemizedlist>
 	  
 	  <para>Each of these sources has a new API method, <code>select(...)</code>, which initiates the select specification.
-	  The select method can take an optional  positional parameter, specifying the UIMA type to return.</para>
+	  The select method can take an optional parameter, specifying the UIMA type to return.
+	  If supplied, the type must must be the type or subtype of the index 
+	  (if one is specified or implied); it serves to further restrict the types selected beyond whatever the 
+	  index (if specified) has as its top-most type.</para>
 	  
 	  <figure id="uv3.select.source_type">
 	    <title>select method with type</title>
@@ -153,14 +179,18 @@ under the License.
 	    </mediaobject>
 	  </figure>
 	  
-	  <para>A UIMA index is the usual source.  If a CAS is used, all Feature Structures that were added to the index in the
+	  <para>A UIMA index is the usual source.  
+	  If a CAS is used, all Feature Structures that were added to the index in the
 	  specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
-	  because they are considered non-sorted, and therefore cannot be used for an operations which require a sorted order.</para>
+	  because they are considered non-sorted, 
+	  and therefore cannot be used for an operations which require a sorted order, such as
+	  the various bounding selections (e.g. <code>coveredBy</code>) 
+	  or positioning operations (e.g. <code>startAt</code>).</para>
 	  
 	  <para>
 	  The optional type argument for <code>select(...)</code> specifies a UIMA type.  This restricts the Feature Structures
 	  to just those of the specified type or any of its subtypes.  If omitted, if an index is used as a source, 
-	  its type specification is used; otherwise the TOP type is used (meaning all types).</para>
+	  its type specification is used; otherwise all types are included.</para>
 	  
 	  <para>Type specifications may be specified in multiple ways.  
 	  The best practice, if you have a JCas cover class
@@ -182,10 +212,10 @@ under the License.
     generically typed index variables.
     </para>
     
-    <para>A static version of the <code>select</code> method (named <code>sselect</code>) gets around this 
-    by providing the generically typed information as an argument, rather than having it come from the receiver.</para>
-    <programlisting>
-// this works
+    <para>There is also a static version of the <code>select</code> method which takes a 
+    generically typed index as an argument.</para>
+    <informalexample>  <?dbfo keep-together="always"?>  
+    <programlisting>// this works
 // the generic type for Token is passed as an argument to select
 FSIterator&lt;Token&gt; token_it = cas.select(Token.class).fsIterator();
 
@@ -197,18 +227,33 @@ FSIndex&lt;Token&gt; token_index = ... ; // generically typed
 FSIterator&lt;Token&gt; token_iterator = token_index.select().fsIterator();
 
 // You can overcome this in two ways:
-// explicitly set the generic type select() should use, like this:
-FSIterator&lt;Token&gt; token_iterator =
-    token_index.&lt;Token&gt;select().fsIterator();
+// pass in the type as an argument to select
+// using the JCas cover type.  
+FSIterator&lt;Token&gt; token_iterator = 
+    token_index.select(Token.class).fsIterator();
 
 // You can also use the static form of select
-FSIterator&lt;Token&gt; token_iterator = sselect(token_index).fsIterator();
-// Java makes use of the generic information from the index,
-// coming in as an argument
-    </programlisting>
+// to avoid repeating the type information
+FSIterator&lt;Token&gt; token_iterator = 
+    SelectFSs.select(token_index).fsIterator();
+
+// Finally, you can also explicitly set the generic type 
+// that select() should use, like a special kind of type cast, like this:
+FSIterator&lt;Token&gt; token_iterator =
+    token_index.&lt;Token&gt;select().fsIterator();
+</programlisting>
+</informalexample>
         
-    <para>The <code>sselect</code> method may be statically imported into code that uses it, to avoid repeatedly 
+    <para>Note: the static <code>select</code> method may be statically imported into code that uses it, to avoid repeatedly 
     qualifying this with its class, <code>SelectFSs</code>.</para>
+    
+  <para>Any specification of an index may be further restricted to just a subType (including that
+  subtype&apos;s subtypes, if any) of that index&apos;s type.
+  For example, an AnnotationIndex may be specialized to just Sentences (and their subtypes):
+  <programlisting>FSIterator&lt;Token&gt; token_iterator = 
+    annotation_index.select(Token.class).fsIterator();
+</programlisting>
+  </para>  
   </section>
 
   </section>  <!-- end of section "sources" -->
@@ -285,7 +330,7 @@ FSIterator&lt;Token&gt; token_iterator = sselect(token_index).fsIterator();
         <varlistentry>
           <term><emphasis role="strong">nullOk</emphasis></term>
           <listitem>
-            <para>changes the behavior for some processing actions, which would otherwise
+            <para>changes the behavior for some terminal_form actions, which would otherwise
       throw an exception if a null result happened.
             </para>
           </listitem>
@@ -307,9 +352,11 @@ FSIterator&lt;Token&gt; token_iterator = sselect(token_index).fsIterator();
 			      </para>
 			      
 			      <para>When this is specified, it acts 
-				          as an aggregation, in no particular order, of the underlying selections, one per view in the CAS.
-				          Because of this implementation, the items in the selection may not be unique - that is a single
-				          Feature Structure may be in multiple views.
+				          as an aggregation of the underlying selections, one per view in the CAS.
+				          The ordering among the views is arbitrary; the ordering within each view
+				          is the same as if this setting wasn't in force.
+				          Because of this implementation, the items in the selection may not be unique -- 
+				          Feature Structures in the underlying selections that are in multiple views will appear multiple times.
             </para>
           </listitem>
         </varlistentry>
@@ -318,9 +365,9 @@ FSIterator&lt;Token&gt; token_iterator = sselect(token_index).fsIterator();
     </section>
     
     <section id="uv3.select.ordered_index">
-      <title>Configuration for ordered indexes</title>
+      <title>Configuration for sort-ordered indexes</title>
 
-      <para>When an index is ordered, there are additional capabilities that can be configured, in particular positioning
+      <para>When an index is sort-ordered, there are additional capabilities that can be configured, in particular positioning
         to particular Feature Structures, and running various iterations backwards.
       </para>
 
@@ -341,8 +388,7 @@ FSIterator&lt;Token&gt; token_iterator = sselect(token_index).fsIterator();
             <para>position the starting point of any iteration.  
 			        <code>startAt(xxx)</code> takes two forms, each of which has, in turn 2 subforms.  
 			        The form using <code>begin, end</code> is only valid for Annotation Indexes.
-			        <programlisting>
-startAt(fs);          // fs specifies a feature structure 
+			        <programlisting>startAt(fs);          // fs specifies a feature structure 
                       // indicating the starting position
              
 startAt(fs, shifted); // same as above, but after positioning, 
@@ -375,28 +421,25 @@ startAt(begin, end, shifted) // same as above,
     <section id="uv3.select.annot.subselect">
       <title>Bounded sub-selection within an Annotation Index</title>
       
-      <para>When selecting Feature Structures to process, frequently you may want to select only those which have
-      a relation to a bounding Feature Structure.  A commonly done selection is to select all Feature Structures 
-      (of a particular type) within the span of another, bounding Feature Structure, such as all <code>Tokens</code>
+      <para>When selecting Annotations, frequently you may want to select only those which have
+      a relation to a bounding Annotation.  A commonly done selection is to select all Annotations 
+      (of a particular type) within the span of another, bounding Annotation, such as all <code>Tokens</code>
       within a <code>Sentence</code>.</para>
       
       <para>There are four varieties of sub-selection within an annotation index.  They all are based on a 
-      bounding Feature Structure (except the <code>between</code> which is based on two bounding Feature Structures).
+      bounding Annotation (except the <code>between</code> which is based on two bounding Annotations).
       </para>
       
-      <para>The bounding Feature Structures are specified using either a Annotation Feature Structure (or a subtype), or
-      by specifying the begin and end offsets that would be for the bounding Feature Structure.</para>
+      <para>The bounding Annotations are specified using either a Annotation (or a subtype), or
+      by specifying the begin and end offsets that would be for the bounding Annotation.</para>
       
-      <para>Leaving aside <code>between</code> as a special case, the bounding Feature Structure&apos;s 
+      <para>Leaving aside <code>between</code> as a special case, the bounding Annotation&apos;s 
       <code>begin</code> and <code>end</code>
       (and sometimes, its <code>type</code>) is used to specify where an iteration would start, where it would end, 
-      and possibly, which Feature Structures within those bounds would be filtered out.  There are many variations
+      and possibly, which Annotations within those bounds would be filtered out.  There are many variations
       possible; these are described in the next section.</para>
       
-      <para>The bounding information is specified either as an Annotation Feature Structure (or a subtype of Annotation),
-      or the begin and end can be directly specified.</para>
-      
-      <para>The returned Feature Structures exclude the one(s) which are <code>equal</code> to the bounding FS.  
+      <para>The returned Annotations exclude the one(s) which are <code>equal</code> to the bounding FS.  
       There are several 
       variations of how this <code>equal</code> test is done, discussed in the next section.</para>
             
@@ -404,31 +447,31 @@ startAt(begin, end, shifted) // same as above,
         <varlistentry>
           <term><emphasis role="strong">coveredBy</emphasis></term>
           <listitem>
-            <para>iterates over Feature Structures within the bound
+            <para>iterates over Annotations within the bound
             </para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis role="strong">covering</emphasis></term>
           <listitem>
-            <para>iterates over Feature Structures that span (or are equal to) the bound.
+            <para>iterates over Annotations that span (or are equal to) the bound.
             </para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis role="strong">at</emphasis></term>
           <listitem>
-            <para>iterates over Feature Structures that have the same span (i.e., begin and end) as the bound.
+            <para>iterates over Annotations that have the same span (i.e., begin and end) as the bound.
             </para>
           </listitem>
         </varlistentry>
         <varlistentry>
           <term><emphasis role="strong">between</emphasis></term>
           <listitem>
-            <para>uses two feature structures, and returns Feature Structures that are in between
+            <para>uses two Annotations, and returns Annotations that are in between
 				      the two bounds.  If the bounds are backwards, then they are automatically used in reverse order.
-				      The meaning of between is that an included Feature Structure's begin has to be &gt;= the earlier bound's <code>end</code>, 
-				      and the Feature Structure's end has to be &lt;= the later bound's <code>begin</code>.
+				      The meaning of between is that an included Annotation's begin has to be &gt;= the earlier bound's <code>end</code>, 
+				      and the Annotation's end has to be &lt;= the later bound's <code>begin</code>.
             </para>
           </listitem>
         </varlistentry>
@@ -457,7 +500,7 @@ startAt(begin, end, shifted) // same as above,
           <term><emphasis role="strong">positionUsesType</emphasis></term>
           <listitem>
             <para>When type priorities are not being used, Annotations with the same begin and end and type
-            will be together in the index.  The starting position, when there are many Feature Structures 
+            will be together in the index.  The starting position, when there are many Annotations 
             which might compare equal, is the left-most (earliest) one of these.  In this comparison for 
             equality, by default, the <code>type</code> of the bounding Annotation is ignored; 
             only its begin and end values are used. 
@@ -468,9 +511,9 @@ startAt(begin, end, shifted) // same as above,
         <varlistentry>
           <term><emphasis role="strong">nonOverlapping</emphasis></term>
           <listitem>
-            <para>This is also called <emphasis>unambiguous</emphasis> iteration.  If specified, then after
-            the iterator reaches a position, the <code>moveToNext()</code> operation moves to the next Annotation
-            which has a <code>begin</code> offset &gt;= to the previous Annotation's <code>end</code> position.
+            <para>Normally, all Annotations satisfying the bounds are returned.  If this is set, 
+            annotations whose <code>begin</code> position is not &gt;= the previous annotation&apos;s (going forwards)
+            <code>end</code> position are skipped.  This is also called <emphasis>unambiguous</emphasis> iteration.
             If the iterator is run backwards, it is first run forwards to locate all the items that would be in the
             forward iteration following the rules; and then those are traversed backwards.
             This variant is ignored for <code>covering</code> selection.
@@ -478,24 +521,28 @@ startAt(begin, end, shifted) // same as above,
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role="strong">endWithinBounds</emphasis></term>
+          <term><emphasis role="strong">includeAnnotationsWithEndBeyondBounds</emphasis></term>
           <listitem>
-            <para>This is also called <emphasis>strict</emphasis>.  For <code>coveredBy</code> selection, 
+            <para>The Subiterator <emphasis>strict</emphasis> configuration is equivalent to the opposite of this.
+            This only applied to the <code>coveredBy</code> selection; 
             if specified, then any Annotations whose
-            <code>end</code> position is &gt; the end position of the bounding Annotation is skipped.
-            The <code>between</code> selection always behaves as if this is set.
-            This variant is ignored for <code>covering</code> selection.
+            <code>end</code> position is &gt; the end position of the bounding Annotation are included;
+            normally they are skipped.
             </para>
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role="strong">skipEquals</emphasis></term>
+          <term><emphasis role="strong">useAnnotationEquals</emphasis></term>
           <listitem>
             <para>While doing bounded iteration, if the Annotation being returned is identical (has the same
-            _id()) with the bounding Annotation, it is skipped.  If this variant is specified, in addition to
+            _id()) with the bounding Annotation, it is always skipped.</para>
+            
+            <para>  
+            When this variant is specified, in addition to
             that, any Annotation which has the same begin, end, and (maybe) type is also skipped.  
             The <code>positionUsesType</code> setting is used to specify in this variant whether or not the 
-            type is included when doing the equals test.
+            type is included when doing the equals test.  Note that <code>typePriority</code> implies
+            <code>positionUsesType</code>.
             </para>
           </listitem>
         </varlistentry>
@@ -524,7 +571,7 @@ startAt(begin, end, shifted) // same as above,
           <varlistentry>
             <term><emphasis role="strong">positionUsesType</emphasis></term>
             <listitem>
-              <para>default: the type of the bounding Feature Structure is ignored 
+              <para>default: the type of the bounding Annotation is ignored 
                when determining bounds in bounded selects; only its begin and end position are used
               </para>
             </listitem>
@@ -532,26 +579,26 @@ startAt(begin, end, shifted) // same as above,
           <varlistentry>
             <term><emphasis role="strong">nonOverlapping</emphasis></term>
             <listitem>
-              <para>default: this mode is ignored. It corresponds to the "unambiguous" mode in Subiterators, so the 
-              default is "ambiguous".
+              <para>default: false; no Annotations are skipped because they overlap.
+              This corresponds to the "ambiguous" mode in Subiterators.
               </para>
             </listitem>
           </varlistentry>
           <varlistentry>
-            <term><emphasis role="strong">endWithinBounds</emphasis></term>
+            <term><emphasis role="strong">includeAnnotationsWithEndBeyondBounds</emphasis></term>
             <listitem>
-              <para>default: this mode is ignored. In any case, it only is used for <code>coveredBy</code> selections; 
-              the other subselect operations ignore it.  This corresponds to Subiterator&apos;s "strict" option, so the
-              default is "not strict".
+              <para>default: (only applies to <code>coveredBy</code> selections; 
+              The default is to skip Annotations whose end position lies outside of the bounds; 
+              this corresponds to Subiterator&apos;s "strict" option.
               </para>
             </listitem>
           </varlistentry>
           <varlistentry>
-            <term><emphasis role="strong">skipEquals</emphasis></term>
+            <term><emphasis role="strong">useAnnotationEquals</emphasis></term>
             <listitem>
-              <para>default: only the single Feature Structure with the same _id() is skipped when doing sub selecting.
-              Subiterators, in contrast, skip all Feature Structures which compare equal using the AnnotationIndex
-              comparator.
+              <para>default: only the single Annotation with the same _id() is skipped when doing sub selecting.
+                Use this setting to expand the set of skipped Annotations to include all those equal to the 
+                bound's begin and end (and maybe, type, if positionUsesType or typePriority specified).   
               </para>
             </listitem>
           </varlistentry>
@@ -562,20 +609,18 @@ startAt(begin, end, shifted) // same as above,
     <section id="uv3.select.annot.follow_precede">
       <title>Following or Preceding</title>
       
-      <para>For an Annotation Index, you can specify all Annotations following or preceding a position.
-      The position can be specified either as a Annotation, or by using begin and end values.
+      <para>For an sorted Index, you can specify all Feature Structures following or preceding a position.
+      The position can be specified either as a Feature Structure, or (for AnnotationIndexes only) 
+      by using begin and end values.
       The arguments are identical to those of the <code>startAt</code> specification, but are interpreted 
       differently.    
       </para>
-      
-      <para>The underlying iteration can be any of the kinds supported by the Annotation Index, 
-      except that <code>endWithinBounds</code> is forced on.</para> 
-      
+            
       <variablelist>
         <varlistentry>
           <term><emphasis role="strong">following</emphasis></term>
           <listitem>
-            <para>Position the iterator according to the argument, get that Feature Structure&apos;s <code>end</code>
+            <para>Position the iterator according to the argument, get that Annotation&apos;s <code>end</code>
             value, and then move the iterator forwards until
             the Annotation at that position has its begin value &gt;= to the saved end value.
             </para>
@@ -595,33 +640,42 @@ startAt(begin, end, shifted) // same as above,
     </section>  
   </section>
   
-  <section id="uv3.select.processing_actions">
-    <title>Processing actions</title>
+  <section id="uv3.select.terminal_form_actions">
+    <title>Terminal Form actions</title>
     
     <para>After the sources and selection and ordering options have been specified, one 
-    processing action may be specified.  This can be an iterator, something that converts to an array or list,
-    something that retrieves a single value with various extra checks, or a stream operation.  A stream operation
-    converts the object to a stream; from that point on, any stream operation may be used.</para>
+    terminal form action may be specified.  This can be an getting an iterator, array or list,
+    or a single value with various extra checks, or a Java stream.  Specifying any stream operation
+    (except limit) converts the object to a stream; from that point on, any stream operation may be used.</para>
     
-    <figure id="uv3.select.fig.processing_actions">
-      <title>Select Processing Actions</title>
+    <figure id="uv3.select.fig.terminal_form_actions">
+      <title>Select Terminal Form Actions</title>
       <mediaobject>
         <imageobject>
-          <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_processing_actions.png"/>
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_terminal_form_actions.png"/>
         </imageobject>
-        <textobject><phrase>Processing actions for select</phrase>
+        <textobject><phrase>Terminal form actions for select</phrase>
         </textobject>
       </mediaobject>
     </figure>
     
-    <section id="uv3.select.processing_actions.iterators">
+    <section id="uv3.select.terminal_form_actions.iterators">
       <title>Iterators</title>
       
       <variablelist>
         <varlistentry>
+          <term><emphasis role="strong">(Iterable)</emphasis></term>
+          <listitem>
+            <para>The <code>SelectFSs</code> object directly implements <code>Iterable</code>, so it may be 
+            used in the extended Java <code>for</code> loop.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
           <term><emphasis role="strong">fsIterator</emphasis></term>
           <listitem>
-            <para>returns a configured fsIterator or subIterator.  This iterator implements <code>ListIterator</code> as well.
+            <para>returns a configured fsIterator or subIterator.  
+            This iterator implements <code>ListIterator</code> as well (which, in turn,
+            implements Java <code>Iterator</code>).
             Modifications to the list using <code>add</code> or <code>set</code> are not supported.
             </para>
           </listitem>
@@ -645,7 +699,7 @@ startAt(begin, end, shifted) // same as above,
       </variablelist>
  
     </section>
-    <section id="uv3.select.processing_actions.arrays_lists">
+    <section id="uv3.select.terminal_form_actions.arrays_lists">
       <title>Arrays and Lists</title>
       <variablelist>
         <varlistentry>
@@ -665,7 +719,7 @@ startAt(begin, end, shifted) // same as above,
         </varlistentry>
       </variablelist>
     </section>
-    <section id="uv3.select.processing_actions.single_items">
+    <section id="uv3.select.terminal_form_actions.single_items">
       <title>Single Items</title>
       <para>These methods return just a single item, according to the previously specified select configuration.
       Variations may throw exceptions on empty or more than one item situations.</para>
@@ -675,7 +729,8 @@ startAt(begin, end, shifted) // same as above,
       according to the arguments.</para>
         
       <note>
-        <para>Positioning arguments with a Feature Structure or begin and end require an Annotation Index.
+        <para>Positioning arguments with a Annotation or begin and end require an Annotation Index.
+        Positioning using a Feature Structure, by contrast, only require that the index being use be sorted.
         </para>
       </note>
       
@@ -710,7 +765,7 @@ startAt(begin, end, shifted) // same as above,
         </varlistentry>
       </variablelist>
     </section>
-    <section id="uv3.select.processing_actions.streams">
+    <section id="uv3.select.terminal_form_actions.streams">
       <title>Streams</title>
       <variablelist>
         <varlistentry>
@@ -718,6 +773,31 @@ startAt(begin, end, shifted) // same as above,
           <listitem>
             <para>Select supports all the stream methods.  The first occurance of a stream method converts the select
             into a stream, using <code>spliterator</code>, and from then on, it behaves just like a stream object.
+            </para>
+            
+            <para>For example, here's a somewhat contrived example:  
+            you could do the following to collect the set of types appearing
+            within some bounding annotation, when considered in nonOverlapping style:
+            
+    <informalexample>  <?dbfo keep-together="always"?>
+<programlisting>Set&lt;Type&gt; foundTypes =
+    // items of MyType or subtypes 
+   myIndex.select(MyType.class)
+   .coveredBy(myBoundingAnnotation)
+   .nonOverlapping()
+   .map(fs -> fs.getType())
+   .collect(Collectors.toCollection(TreeSet::new));
+</programlisting>
+</informalexample>
+Or, to collect by category a set of frequency values:
+<informalexample>  <?dbfo keep-together="always"?>
+<programlisting>Map&lt;Category, Integer&gt; freqByCategory =
+   myIndex.select(MyType.class)
+   .collect(Collectors
+     .groupingBy(MyType::getCategory,
+                 Collectors.summingInt(MyType::getFreq)));
+</programlisting> 
+</informalexample>
             </para>
           </listitem>
         </varlistentry>
