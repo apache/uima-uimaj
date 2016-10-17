@@ -85,7 +85,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private boolean isTypePriority = false;
   private boolean isPositionUsesType = false;
-  private boolean isSkipEquals = false; // for boundsUse only
+  private boolean isUseAnnotationEquals = false; // for boundsUse only
   private boolean isNonOverlapping = false;
   private boolean isEndWithinBounds = false;
   private boolean isAllViews = false;
@@ -216,8 +216,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#skipEquals()
    */
   @Override
-  public SelectFSs<T> skipEquals() {
-    this.isSkipEquals = true;
+  public SelectFSs<T> useAnnotationEquals() {
+    this.isUseAnnotationEquals = true;
     return this;
   }
 
@@ -225,8 +225,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#skipEquals(boolean)
    */
   @Override
-  public SelectFSs<T> skipEquals(boolean aSkipEquals) {
-    this.isSkipEquals = aSkipEquals;
+  public SelectFSs<T> useAnnotationEquals(boolean useAnnotationEquals) {
+    this.isUseAnnotationEquals = useAnnotationEquals;
     return this;
   }
 
@@ -246,12 +246,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   } 
   
   @Override
-  public SelectFSs_impl<T> endWithinBounds() { // AI known as "strict"
+  public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds() { // AI known as "strict"
     isEndWithinBounds = true;
     return this;
   }  
   @Override
-  public SelectFSs_impl<T> endWithinBounds(boolean bEndWithinBounds) { // AI
+  public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds(boolean bEndWithinBounds) { // AI
     isEndWithinBounds = bEndWithinBounds;
     return this;
   } 
@@ -459,7 +459,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     
     final boolean isUseAnnotationIndex = 
         ((index != null) && (index instanceof AnnotationIndex)) ||
-        isNonOverlapping || 
+        isNonOverlapping ||
+        isPositionUsesType ||
+        isTypePriority ||
+        isEndWithinBounds || 
         boundsUse != BoundsUse.notBounded ||
         isFollowing || isPreceding;
     
@@ -467,6 +470,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       forceAnnotationIndex();  // throws if non-null index not an annotation index
     }
     
+    if (isTypePriority) {
+      isPositionUsesType = true;
+    }
+        
     if (ti == null) {
       if (index != null) {
         ti = (TypeImpl) index.getType();
@@ -649,7 +656,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         boundsUse,
         isTypePriority, 
         isPositionUsesType, 
-        isSkipEquals,              
+        isUseAnnotationEquals,              
         v.indexRepository.getAnnotationFsComparator());
     }
     

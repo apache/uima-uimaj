@@ -70,11 +70,11 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   SelectFSs<T> nonOverlapping();  // AI known as unambiguous
   SelectFSs<T> nonOverlapping(boolean nonOverlapping); // AI
   
-  SelectFSs<T> endWithinBounds();  // AI known as "strict"
-  SelectFSs<T> endWithinBounds(boolean endWithinBounds); // AI
+  SelectFSs<T> includeAnnotationsWithEndBeyondBounds();  // AI known as "strict"
+  SelectFSs<T> includeAnnotationsWithEndBeyondBounds(boolean endWithinBounds); // AI
 
-  SelectFSs<T> skipEquals();                 
-  SelectFSs<T> skipEquals(boolean skipEquals);
+  SelectFSs<T> useAnnotationEquals();                 
+  SelectFSs<T> useAnnotationEquals(boolean useAnnotationEquals);
   
   // Miscellaneous
   SelectFSs<T> allViews();
@@ -198,7 +198,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param index
    * @return
    */
-  static <U extends FeatureStructure, V extends U> SelectFSs<V> sselect(FSIndex<U> index) {
+  static <U extends FeatureStructure, V extends U> SelectFSs<V> select(FSIndex<U> index) {
     return index.select();    
   } 
   
