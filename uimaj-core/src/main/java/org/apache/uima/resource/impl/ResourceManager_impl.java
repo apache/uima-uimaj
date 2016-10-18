@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
@@ -59,6 +60,34 @@ import org.apache.uima.util.XMLizable;
  * 
  */
 public class ResourceManager_impl implements ResourceManager {
+
+  /**
+   * Ties an External Resource instance to
+   *   - its description 
+   *     -- name
+   *     -- textual description
+   *     -- a ResourceSpecifier describing how to create it
+   *     -- the String name of the Java class that implements the resource)
+   *   - its defining UIMA Context
+   *   
+   *   These are used to validate multiple declarations, and to get
+   *   a resource to tie it to a binding
+   */
+  static protected class ResourceRegistration { // make protected https://issues.apache.org/jira/browse/UIMA-2102
+    Resource resource;
+
+    ExternalResourceDescription description;
+
+    String definingContext;
+
+    public ResourceRegistration(Resource resource, ExternalResourceDescription description,
+            String definingContext) {
+      this.resource = resource;
+      this.description = description;
+      this.definingContext = definingContext;
+    }
+  }
+
   /**
    * resource bundle for log messages
    */
@@ -66,6 +95,7 @@ public class ResourceManager_impl implements ResourceManager {
   
   protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class; 
 
+  private AtomicBoolean isDestroyed = new AtomicBoolean(false);
   /**
    * a monitor lock for synchronizing get/set of casManager ref
    */
@@ -78,6 +108,7 @@ public class ResourceManager_impl implements ResourceManager {
 
   /**
    * Map from qualified key names (declared in resource dependency XML) to Resource objects.
+   * This map is many to one (multiple keys may refer to the same Resource object)
    * 
    * Can't be concurrentMap because it (currently) depends on storing nulls
    */
@@ -86,27 +117,37 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
    * objects. Used during initialization only.
+   * 
+   * This is a one-to-one map.
    */
   final protected Map<String, ResourceRegistration> mInternalResourceRegistrationMap;
 
   /**
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
    * implementation class corresponding to each resource name.
+   * 
+   * This is a many to one map; many keys may refer to the same class
+   * 
+   * key = aQualifiedContextName + the key name in an external resource binding
    */
   final protected Map<String, Class<?>> mParameterizedResourceImplClassMap;
 
   /**
-   * Internal map from resource names (declared in resource declaration XML) to Class objects. Used
+   * Internal map from resource names (declared in resource declaration XML) to Class objects
+   * for parameterized Resource.  These are potentially "customized" when referenced, by 
+   * parameter strings (such as language, for a Dictionary resource). Used
    * internally during resource initialization.
+   * 
+   * key = external resource declared name.
    */
   final protected Map<String, Class<?>> mInternalParameterizedResourceImplClassMap;
 
   /**
-   * Map from ParameterizedResourceKey to Resource objects. For
-   * ParameterizedResources only, stores the DataResources that have already been encountered, and
+   * Map from ParameterizedResourceKey to Resource objects. 
+   * For ParameterizedResources only, stores the DataResources that have already been encountered, and
    * the Resources that have been instantiated therefrom.
    */
-  final protected Map<List<Object>, Object> mParameterizedResourceInstanceMap;
+  final protected Map<List<Object>, Resource> mParameterizedResourceInstanceMap;
 
   /**
    * UIMA extension ClassLoader. ClassLoader is created if an extension classpath is specified at
@@ -159,7 +200,7 @@ public class ResourceManager_impl implements ResourceManager {
     mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
     mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
     mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
-    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Resource>();
     mRelativePathResolver = new RelativePathResolver_impl(); 
   }
 
@@ -173,7 +214,7 @@ public class ResourceManager_impl implements ResourceManager {
     mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
     mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
     mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
-    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Object>();
+    mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Resource>();
     mRelativePathResolver = new RelativePathResolver_impl(aClassLoader);
   }
 
@@ -185,7 +226,7 @@ public class ResourceManager_impl implements ResourceManager {
       Map<String, ResourceRegistration> internalResourceRegistrationMap,
       Map<String, Class<?>> parameterizedResourceImplClassMap,
       Map<String, Class<?>> internalParameterizedResourceImplClassMap,
-      Map<List<Object>, Object> parameterizedResourceInstanceMap) {
+      Map<List<Object>, Resource> parameterizedResourceInstanceMap) {
     mResourceMap = resourceMap;
     mInternalResourceRegistrationMap = internalResourceRegistrationMap;
     mParameterizedResourceImplClassMap =  parameterizedResourceImplClassMap;
@@ -216,6 +257,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(java.lang.String, boolean)
    */
+  @Override
   public synchronized void setExtensionClassPath(String classpath, boolean resolveResource)
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
@@ -231,6 +273,7 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#setExtensionClassPath(ClassLoader,java.lang.String,
    *      boolean)
    */
+  @Override
   public synchronized void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
@@ -245,6 +288,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
    */
+  @Override
   public ClassLoader getExtensionClassLoader() {
     return uimaCL;
   }
@@ -252,6 +296,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getDataPath()
    */
+  @Override
   public String getDataPath() {
     return getRelativePathResolver().getDataPath();
   }
@@ -259,6 +304,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#setDataPath(String)
    */
+  @Override
   public void setDataPath(String aPath) throws MalformedURLException {
     getRelativePathResolver().setDataPath(aPath);
   }
@@ -268,6 +314,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * @see org.apache.uima.resource.ResourceManager#resolveRelativePath(java.lang.String)
    */
+  @Override
   public URL resolveRelativePath(String aRelativePath) throws MalformedURLException {
     URL relativeUrl;
     try {
@@ -278,10 +325,18 @@ public class ResourceManager_impl implements ResourceManager {
     return getRelativePathResolver().resolveRelativePath(relativeUrl);
   }
 
+  private void checkDestroyed() {
+    if (isDestroyed.get()) {
+      throw new IllegalStateException("ResourceManager is destroyed");
+    }    
+  }
+  
   /**
    * @see org.apache.uima.resource.ResourceManager#getResource(String)
    */
+  @Override
   public Object getResource(String aName) throws ResourceAccessException {
+    checkDestroyed();
     Object r = mResourceMap.get(aName);
     // if this is a ParameterizedDataResource, it is an error
     if (r instanceof ParameterizedDataResource) {
@@ -294,12 +349,14 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getResource(java.lang.String, java.lang.String[])
    */
+  @Override
   public Object getResource(String aName, String[] aParams) throws ResourceAccessException {
     /* Multi-core design
      *   This may be called by user code sharing the same Resource Manager, and / or the same 
      *     uima context object.
      *   Do double-checked idiom to avoid locking where resource is already available, loaded   
      */
+    checkDestroyed();
     Object r = mResourceMap.get(aName);
 
     // if no resource found, return null
@@ -342,7 +399,7 @@ public class ResourceManager_impl implements ResourceManager {
         try {
           SharedResourceObject sro = (SharedResourceObject) sharedResourceObjectClass.newInstance();
           sro.load(dr);
-          mParameterizedResourceInstanceMap.put(nameAndResource, sro);
+          mParameterizedResourceInstanceMap.put(nameAndResource, (Resource) sro);
           return sro;
         } catch (InstantiationException e) {
           throw new ResourceAccessException(e);
@@ -363,6 +420,7 @@ public class ResourceManager_impl implements ResourceManager {
   /**
    * @see org.apache.uima.resource.ResourceManager#getResourceClass(java.lang.String)
    */
+  @Override
   @SuppressWarnings("unchecked")
   public Class<? extends Resource> getResourceClass(String aName) {
     Object r = mResourceMap.get(aName);
@@ -391,6 +449,7 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#getResourceAsStream(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public InputStream getResourceAsStream(String aKey, String[] aParams)
           throws ResourceAccessException {
     return getResourceAsStreamCommon(getResource(aKey, aParams));
@@ -401,11 +460,13 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * @see org.apache.uima.resource.ResourceManager#getResourceAsStream(java.lang.String)
    */
+  @Override
   public InputStream getResourceAsStream(String aKey) throws ResourceAccessException {
     return getResourceAsStreamCommon(getResource(aKey));
   }
 
   private InputStream getResourceAsStreamCommon(Object resource) throws ResourceAccessException {
+    checkDestroyed();
     try {
       if (resource != null && resource instanceof DataResource) {
         return ((DataResource) resource).getInputStream();
@@ -431,6 +492,7 @@ public class ResourceManager_impl implements ResourceManager {
    * @see org.apache.uima.resource.ResourceManager#getResourceURL(java.lang.String,
    *      java.lang.String[])
    */
+  @Override
   public URL getResourceURL(String aKey, String[] aParams) throws ResourceAccessException {
     return getResourceAsStreamCommonUrl(getResource(aKey, aParams));
   }
@@ -440,6 +502,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * @see org.apache.uima.resource.ResourceManager#getResourceURL(java.lang.String)
    */
+  @Override
   public URL getResourceURL(String aKey) throws ResourceAccessException {
     return getResourceAsStreamCommonUrl(getResource(aKey));
   }
@@ -447,13 +510,20 @@ public class ResourceManager_impl implements ResourceManager {
   /*
    * (non-Javadoc)
    * 
-   * @see org.apache.uima.resource.ResourceManager#initializeExternalResources(org.apache.uima.resource.metadata.ResourceManagerConfiguration,
-   *      java.lang.String, java.util.Map)
+   * This method is called during Resource Initialization, 
+   *   - only for resources which are "local", that is, instances of ResourceCreationSpecifier
+   *   - and therefore might have external resource declarations 
+   * 
+   * Compare with resolveAndValidateResourceDependencies, called for resource binding resolution.
+   * 
+   * @see ResourceManager#initializeExternalResources(ResourceManagerConfiguration, String, Map<String, Object>)
    */
+  @Override
   public synchronized void initializeExternalResources(ResourceManagerConfiguration aConfiguration,
           String aQualifiedContextName, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
     // register resources
+    checkDestroyed();
     ExternalResourceDescription[] resources = aConfiguration.getExternalResources();
     for (int i = 0; i < resources.length; i++) {
       String name = resources[i].getName();
@@ -502,15 +572,19 @@ public class ResourceManager_impl implements ResourceManager {
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.apache.uima.resource.ResourceManager#resolveAndValidateResourceDependencies(org.apache.uima.resource.ExternalResourceDependency[],
-   *      java.lang.String)
+   *   
+   * Called during resource initialization, when the resource has external resource bindings,
+   * to resolve those bindings                                              
+   *                                               
+   * @see ResourceManager#resolveAndValidateResourceDependencies(ExternalResourceDependency[], String)
    *      
    * Multi-threaded.  Partial avoidance of re-resolving, but if a resource fails to resolve, it will be 
    *   reattempted on every call
    */
+  @Override
   public synchronized void resolveAndValidateResourceDependencies(ExternalResourceDependency[] aDependencies,
           String aQualifiedContextName) throws ResourceInitializationException {
+    checkDestroyed();
     for (int i = 0; i < aDependencies.length; i++) {
       // get resource
       String qname = aQualifiedContextName + aDependencies[i].getKey();
@@ -578,7 +652,7 @@ public class ResourceManager_impl implements ResourceManager {
     boolean verificationMode = initParams.containsKey(AnalysisEngineImplBase.PARAM_VERIFICATION_MODE);
     
     // create the initial resource using the resource factory
-    Object r = UIMAFramework.produceResource(aResourceDescription.getResourceSpecifier(),
+    Resource r = UIMAFramework.produceResource(aResourceDescription.getResourceSpecifier(),
             initParams);
 
     // load implementation class (if any) and ensure that it implements
@@ -609,7 +683,7 @@ public class ResourceManager_impl implements ResourceManager {
           if (!verificationMode) {
             sro.load((DataResource) r);
           }
-          r = sro;
+          r = (Resource) sro;
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
@@ -649,6 +723,7 @@ public class ResourceManager_impl implements ResourceManager {
    * 
    * @see org.apache.uima.resource.ResourceManager#getCasManager()
    */
+  @Override
   public CasManager getCasManager() {
     //Optimization for case where mCasManager already created
     // Some sync contention was observed - this makes it less.  UIMA-4012
@@ -666,6 +741,7 @@ public class ResourceManager_impl implements ResourceManager {
   /* (non-Javadoc)
    * @see org.apache.uima.resource.ResourceManager#setCasManager(org.apache.uima.resource.CasManager)
    */
+  @Override
   public void setCasManager(CasManager aCasManager) {
     synchronized(casManagerMonitor) {
       if (mCasManager == null) {
@@ -683,21 +759,7 @@ public class ResourceManager_impl implements ResourceManager {
     return mRelativePathResolver;
   }
 
-  static protected class ResourceRegistration { // make protected https://issues.apache.org/jira/browse/UIMA-2102
-    Object resource;
-
-    ExternalResourceDescription description;
-
-    String definingContext;
-
-    public ResourceRegistration(Object resource, ExternalResourceDescription description,
-            String definingContext) {
-      this.resource = resource;
-      this.description = description;
-      this.definingContext = definingContext;
-    }
-  }
-
+  @Override
   public Map<String, XMLizable> getImportCache() {
     return importCache;
   }
@@ -706,6 +768,7 @@ public class ResourceManager_impl implements ResourceManager {
     return importUrlsCache;
   }
   
+  @Override
   public Class<?> loadUserClass(String name) throws ClassNotFoundException {
     ClassLoader cl = getExtensionClassLoader();
     if (cl == null) {
@@ -732,6 +795,29 @@ public class ResourceManager_impl implements ResourceManager {
               aSpecifier.getSourceUrlString() }, e);
     }
   }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.ResourceManager#destroy()
+   */
+  @Override
+  public void destroy() {
+    boolean alreadyDestroyed = isDestroyed.getAndSet(true);
+    if (alreadyDestroyed) {
+      return;
+    }
+    
+    for (ResourceRegistration r : mInternalResourceRegistrationMap.values()) {
+      r.resource.destroy();
+    }
+    
+    for (Resource r : mParameterizedResourceInstanceMap.values()) {
+      r.destroy();
+    }
+    
+    // no destroy of caspool at this time
+    
+  }
+  
   
 
 }

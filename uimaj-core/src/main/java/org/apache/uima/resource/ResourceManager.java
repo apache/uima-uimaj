@@ -324,4 +324,18 @@ public interface ResourceManager {
    * @throws ClassNotFoundException -
    */
   public Class<?> loadUserClass(String name) throws ClassNotFoundException;
+  
+  /**
+   * Frees all resources held by this ResourceManager, and marks the ResourceManager as having been destroyed.
+   * A destroyed ResourceManager will throw an exception if an attempt is made to continue using it.
+   * 
+   * Resources managed by a ResourceManager include all of the external shared Resources and a CAS Pool.
+   * The Resources managed by this manager will have their destroy() methods called, as part of the
+   * execution of this API.
+   * 
+   * The framework does not call this method; it is up to the containing application to decide if and when
+   * a ResourceManager instance should be destroyed.  This is because the containing application is the only
+   * knowledgeable source; for example a single ResourceManager might be used for multiple UIMA Pipelines.
+   */
+  public void destroy();
 }

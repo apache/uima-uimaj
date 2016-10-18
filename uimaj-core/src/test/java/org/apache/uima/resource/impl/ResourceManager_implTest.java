@@ -208,6 +208,14 @@ public class ResourceManager_implTest extends TestCase {
       URI expectedUri = expectedBaseUri.resolve("Test.dat");
       Assert.assertEquals(expectedUri, r3.getUri());
 
+      mManager.destroy();
+      boolean caught = false;
+      try {
+        mManager.getResource(TEST_CONTEXT_NAME + "myResourceWithSpaceInPathKey");
+      } catch (IllegalStateException e) {
+        caught = true;
+      }
+      assertTrue(caught);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
