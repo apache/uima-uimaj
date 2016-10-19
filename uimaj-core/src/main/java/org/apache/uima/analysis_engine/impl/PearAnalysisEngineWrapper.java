@@ -112,7 +112,7 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
        // could be null for top level Pear not in an aggregate
        rsrcMgr = UIMAFramework.newDefaultResourceManager();
      } else {
-       rsrcMgr = ((ResourceManager_impl) parentResourceManager).copy(true);
+       rsrcMgr = ((ResourceManager_impl) parentResourceManager).copy();
 //       newPearsParent.set((ResourceManager_impl) parentResourceManager);
 //       rsrcMgr = UIMAFramework.newDefaultResourceManagerPearWrapper();
 //       newPearsParent.remove();

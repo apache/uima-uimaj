@@ -193,7 +193,7 @@ public class ResourceManager_impl implements ResourceManager {
     mRelativePathResolver = new RelativePathResolver_impl(); 
   }
   
-  public ResourceManager_impl copy(boolean allowClassPathChange) {
+  public ResourceManager_impl copy() {
     ResourceManager_impl rm = new ResourceManager_impl(
         this.mResourceMap,
         this.mInternalResourceRegistrationMap,
@@ -203,10 +203,8 @@ public class ResourceManager_impl implements ResourceManager {
         );
     // non-final fields init
     rm.uimaCL = this.uimaCL;
-    if (!allowClassPathChange) {
-      rm.importCache = this.importCache;
-      rm.importUrlsCache = this.importUrlsCache;
-    }
+    rm.importCache = this.importCache;
+    rm.importUrlsCache = this.importUrlsCache;
     return rm; 
   }
   
