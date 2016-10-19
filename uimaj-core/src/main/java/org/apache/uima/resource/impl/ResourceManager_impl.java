@@ -184,13 +184,13 @@ public class ResourceManager_impl implements ResourceManager {
   //   Because internal users do a sync, only one thread at a time is using this
   //   (for internal calls) anyways, so there's no advantage to the extra overhead
   //   of making this a ConcurrentHashMap  (March 2014)
-  final private Map<String,XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
+  private Map<String, XMLizable> importCache = Collections.synchronizedMap(new HashMap<String,XMLizable>());
   
   /**
    * Cache of imported descriptor URLs from which the parsed objects in importCache
    * were created, so that these URLs are not re-parsed if the same URL is imported again.
    */
-  final private Map<String,Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<String,Set<String>>());
+  private Map<String, Set<String>> importUrlsCache = Collections.synchronizedMap(new HashMap<String,Set<String>>());
   
   /**
    * Creates a new <code>ResourceManager_impl</code>.
@@ -234,6 +234,24 @@ public class ResourceManager_impl implements ResourceManager {
     mParameterizedResourceInstanceMap =  parameterizedResourceInstanceMap;
     mRelativePathResolver = new RelativePathResolver_impl(); 
   }
+  
+  public ResourceManager_impl copy(boolean allowClassPathChange) {
+    ResourceManager_impl rm = new ResourceManager_impl(
+        this.mResourceMap,
+        this.mInternalResourceRegistrationMap,
+        this.mParameterizedResourceImplClassMap,
+        this.mInternalParameterizedResourceImplClassMap,
+        this.mParameterizedResourceInstanceMap
+        );
+    // non-final fields init
+    rm.uimaCL = this.uimaCL;
+    if (!allowClassPathChange) {
+      rm.importCache = this.importCache;
+      rm.importUrlsCache = this.importUrlsCache;
+    }
+    return rm; 
+  }
+  
   
  /**
   * Support reusing UIMA Class Loader instances to speed up

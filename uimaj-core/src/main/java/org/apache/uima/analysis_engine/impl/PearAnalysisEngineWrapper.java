@@ -101,7 +101,8 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
       return result;
    }
 
-   public static final ThreadLocal<ResourceManager_impl> newPearsParent = new ThreadLocal<ResourceManager_impl>();
+   // Threadlocal trick replaced with call to ResourceManager_impl copy(true)
+//   public static final ThreadLocal<ResourceManager_impl> newPearsParent = new ThreadLocal<ResourceManager_impl>();
    private synchronized ResourceManager createRM(StringPair sp, PackageBrowser pkgBrowser, ResourceManager parentResourceManager)
          throws MalformedURLException {
       // create UIMA resource manager and apply pear settings
@@ -111,12 +112,14 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
        // could be null for top level Pear not in an aggregate
        rsrcMgr = UIMAFramework.newDefaultResourceManager();
      } else {
-       newPearsParent.set((ResourceManager_impl) parentResourceManager);
-       rsrcMgr = UIMAFramework.newDefaultResourceManagerPearWrapper();
-       newPearsParent.remove();
+       rsrcMgr = ((ResourceManager_impl) parentResourceManager).copy(true);
+//       newPearsParent.set((ResourceManager_impl) parentResourceManager);
+//       rsrcMgr = UIMAFramework.newDefaultResourceManagerPearWrapper();
+//       newPearsParent.remove();
 //       ((ResourceManagerPearWrapper)rsrcMgr).initializeFromParentResourceManager(parentResourceManager);
      }
      rsrcMgr.setExtensionClassPath(sp.classPath, true);
+     rsrcMgr.setCasManager(parentResourceManager.getCasManager());  // shares the same merged type system
      UIMAFramework.getLogger(this.getClass()).logrb(
             Level.CONFIG,
             this.getClass().getName(),
