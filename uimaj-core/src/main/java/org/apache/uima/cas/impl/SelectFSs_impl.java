@@ -87,7 +87,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private boolean isPositionUsesType = false;
   private boolean isUseAnnotationEquals = false; // for boundsUse only
   private boolean isNonOverlapping = false;
-  private boolean isEndWithinBounds = false;
+  private boolean isIncludeAnnotBeyondBounds = false;
   private boolean isAllViews = false;
   private boolean isNullOK = false;
   private boolean isUnordered = false;
@@ -246,13 +246,13 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   } 
   
   @Override
-  public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds() { // AI known as "strict"
-    isEndWithinBounds = true;
+  public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds() { // AI known as "not strict"
+    isIncludeAnnotBeyondBounds = true;
     return this;
   }  
   @Override
-  public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds(boolean bEndWithinBounds) { // AI
-    isEndWithinBounds = bEndWithinBounds;
+  public SelectFSs_impl<T> includeAnnotationsWithEndBeyondBounds(boolean includeAnnotationsWithEndBeyondBounds) { // AI
+    isIncludeAnnotBeyondBounds = includeAnnotationsWithEndBeyondBounds;
     return this;
   } 
   
@@ -367,7 +367,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public SelectFSs_impl<T> coveredBy(AnnotationFS fs) {       // AI
     boundsUse = BoundsUse.coveredBy;
     this.boundingFs = fs;
-    this.isEndWithinBounds = true; //default
+//    this.isIncludeAnnotWithEndBeyondBounds = false; //default
     return this;
   }
   
@@ -375,7 +375,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public SelectFSs_impl<T> coveredBy(int begin, int end) {       // AI
     boundsUse = BoundsUse.coveredBy;
     this.boundingFs = makePosAnnot(begin, end);
-    this.isEndWithinBounds = true; //default
+//    this.isIncludeAnnotWithEndBeyondBounds = true; //default
     return this;
   }
 
@@ -401,7 +401,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         (reverse ? fs1 : fs2).getBegin());
     this.boundsUse = BoundsUse.coveredBy;
     this.isBackwards = reverse;
-    this.isEndWithinBounds = true; // default    
+//    this.isIncludeAnnotWithEndBeyondBounds = true; // default    
     return this;
   }
   
@@ -462,7 +462,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isNonOverlapping ||
         isPositionUsesType ||
         isTypePriority ||
-        isEndWithinBounds || 
+        isIncludeAnnotBeyondBounds || 
         boundsUse != BoundsUse.notBounded ||
         isFollowing || isPreceding;
     
@@ -652,7 +652,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         (FSIterator<AnnotationFS>)idx.iterator(), 
         boundingFs, 
         !isNonOverlapping,  // ambiguous
-        isEndWithinBounds,  // strict 
+        !isIncludeAnnotBeyondBounds,  // strict 
         boundsUse,
         isTypePriority, 
         isPositionUsesType, 

@@ -354,7 +354,7 @@ public class AnnotationIteratorTest extends TestCase {
     AnnotationFS bigBound = this.cas.createAnnotation(this.sentenceType, 10, 41);
     it = annotIndex.subiterator(bigBound, true, true);  // ambiguous, and strict
     assertCount("Subiterator over annot with big bound, strict", 38, it);
-    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds().fsIterator();
+    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
     assertCount("Subiterator select over annot with big bound, strict", 38, select_it);
 
     select_it = cas.<AnnotationFS>select().coveredBy(bigBound).limit(7).includeAnnotationsWithEndBeyondBounds().fsIterator();
@@ -383,9 +383,9 @@ public class AnnotationIteratorTest extends TestCase {
     
     it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict
     assertCount("Subiterator over annot unambiguous strict", 3, it);
-    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds().nonOverlapping().fsIterator();
+    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
-    select_it = cas.<AnnotationFS>select().backwards().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds().nonOverlapping().fsIterator();
+    select_it = cas.<AnnotationFS>select().backwards().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
 
 //    it = annotIndex.subiterator(bigBound, true, false);
@@ -399,15 +399,15 @@ public class AnnotationIteratorTest extends TestCase {
     
     // covered by implies endWithinBounds
     select_it = select(annotIndex).coveredBy(bigBound).fsIterator();
-    assertCount("Subiterator select over annot ambiguous not-strict", 38, select_it);
-    select_it = annotIndex.<AnnotationFS>select().coveredBy(bigBound).fsIterator();
-    assertCount("Subiterator select over annot ambiguous not-strict", 38, select_it);
-    select_it = select(annotIndex).coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
+    assertCount("Subiterator select over annot ambiguous strict", 38, select_it);
+    select_it = annotIndex.<AnnotationFS>select().coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
+    assertCount("Subiterator select over annot ambiguous strict", 38, select_it);
+    select_it = select(annotIndex).coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(true).fsIterator();
     assertCount("Subiterator select over annot ambiguous not-strict", 46, select_it);
     
     it = annotIndex.subiterator(bigBound, false, false);  // unambiguous, not strict
     assertCount("Subiterator over annot, unambiguous, not-strict", 4, it);
-    select_it = select(annotIndex).nonOverlapping().coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
+    select_it = select(annotIndex).nonOverlapping().coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(true).fsIterator();
     assertCount("Subiterator select over annot unambiguous not-strict", 4, select_it);
     
     AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
