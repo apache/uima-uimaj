@@ -74,15 +74,20 @@ public class ResourceManager_impl implements ResourceManager {
    *   a resource to tie it to a binding
    */
   static protected class ResourceRegistration { // make protected https://issues.apache.org/jira/browse/UIMA-2102
-    Resource resource;
+    /**
+     * For ParameterizedDataResources, is a Resource
+     * For DataResources, is the implementation object, which is 
+     *   an arbitrary Java class implementing SharedDataResource (which has the "load" method)
+     */
+    Resource resource;  
 
     ExternalResourceDescription description;
 
     String definingContext;
 
-    public ResourceRegistration(Resource resource, ExternalResourceDescription description,
+    public ResourceRegistration(Object resourceOrImplementation, ExternalResourceDescription description,
             String definingContext) {
-      this.resource = resource;
+      this.resource = (Resource) resourceOrImplementation;
       this.description = description;
       this.definingContext = definingContext;
     }
@@ -107,16 +112,23 @@ public class ResourceManager_impl implements ResourceManager {
   private final RelativePathResolver mRelativePathResolver;
 
   /**
-   * Map from qualified key names (declared in resource dependency XML) to Resource objects.
+   * Map from qualified key names (declared in resource dependency XML) to 
+   *   either DataResource objects or SharedResourceObjects that impl Resource.
+   *   
    * This map is many to one (multiple keys may refer to the same Resource object)
    * 
    * Can't be concurrentMap because it (currently) depends on storing nulls
+   * 
+   * Keeping the Map's 2nd argument as Object, although it could be Resource, 
+   * for backwards compatibility 
    */
   final protected Map<String, Object> mResourceMap;
   
   /**
    * Internal map from resource names (declared in resource declaration XML) to ResourceRegistration
-   * objects. Used during initialization only.
+   * objects. 
+   *   Uses: for detecting if multiple declarations are made for the same resource name
+   *         .values() for list of all resources that have been registered
    * 
    * This is a one-to-one map.
    */
@@ -124,28 +136,41 @@ public class ResourceManager_impl implements ResourceManager {
 
   /**
    * Map from String keys to Class objects. For ParameterizedResources only, stores the
-   * implementation class corresponding to each resource name.
+   * implementation class (not a Resource) corresponding to each resource name.
+   * 
+   * These class objects are not Resource instances, but rather "implementations" of Resources.
+   *   They may be arbitrary classes, except that they must implement SharedResourceObject.
    * 
    * This is a many to one map; many keys may refer to the same class
    * 
    * key = aQualifiedContextName + the key name in an external resource binding
    */
-  final protected Map<String, Class<?>> mParameterizedResourceImplClassMap;
+  final protected Map<String, Class<? extends Resource>> mParameterizedResourceImplClassMap;
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects
-   * for parameterized Resource.  These are potentially "customized" when referenced, by 
+   * for parameterized Resource. 
+   * 
+   *   These class objects are not Resource instances, but rather "implementations" of Resources.
+   *   They may be arbitrary classes, except that they must implement SharedResourceObject.
+   *   
+   * These are potentially "customized" when referenced, by 
    * parameter strings (such as language, for a Dictionary resource). Used
    * internally during resource initialization.
    * 
    * key = external resource declared name.
    */
-  final protected Map<String, Class<?>> mInternalParameterizedResourceImplClassMap;
+  final protected Map<String, Class<? extends Resource>> mInternalParameterizedResourceImplClassMap;
 
   /**
-   * Map from ParameterizedResourceKey to Resource objects. 
-   * For ParameterizedResources only, stores the DataResources that have already been encountered, and
-   * the Resources that have been instantiated therefrom.
+   * Map from ParameterizedResourceKey to SharedResourceObject or DataResource instances.
+   * 
+   *   Note: SharedResourceObjects are not "Resource" instances, but rather arbitrary Java classes that
+   *   are the "implementations" of Resources.  The only requirement on these Java classes is 
+   *   that they implement SharedResourceObject interface.
+   *   
+   * This map is for ParameterizedResources only, and 
+   * stores the SharedResourceObjects or DataResource objects that have already been instantiated and loaded.
    */
   final protected Map<List<Object>, Resource> mParameterizedResourceInstanceMap;
 
@@ -198,8 +223,8 @@ public class ResourceManager_impl implements ResourceManager {
   public ResourceManager_impl() {
     mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
     mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
-    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
-    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
+    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<? extends Resource>>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<? extends Resource>>();
     mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Resource>();
     mRelativePathResolver = new RelativePathResolver_impl(); 
   }
@@ -212,8 +237,8 @@ public class ResourceManager_impl implements ResourceManager {
   public ResourceManager_impl(ClassLoader aClassLoader) {
     mResourceMap = Collections.synchronizedMap(new HashMap<String, Object>());
     mInternalResourceRegistrationMap = new ConcurrentHashMap<String, ResourceRegistration>();
-    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<?>>();
-    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<?>>();
+    mParameterizedResourceImplClassMap =  new ConcurrentHashMap<String, Class<? extends Resource>>();
+    mInternalParameterizedResourceImplClassMap = new ConcurrentHashMap<String, Class<? extends Resource>>();
     mParameterizedResourceInstanceMap =  new ConcurrentHashMap<List<Object>, Resource>();
     mRelativePathResolver = new RelativePathResolver_impl(aClassLoader);
   }
@@ -224,8 +249,8 @@ public class ResourceManager_impl implements ResourceManager {
   public ResourceManager_impl(
       Map<String, Object> resourceMap,
       Map<String, ResourceRegistration> internalResourceRegistrationMap,
-      Map<String, Class<?>> parameterizedResourceImplClassMap,
-      Map<String, Class<?>> internalParameterizedResourceImplClassMap,
+      Map<String, Class<? extends Resource>> parameterizedResourceImplClassMap,
+      Map<String, Class<? extends Resource>> internalParameterizedResourceImplClassMap,
       Map<List<Object>, Resource> parameterizedResourceInstanceMap) {
     mResourceMap = resourceMap;
     mInternalResourceRegistrationMap = internalResourceRegistrationMap;
@@ -410,12 +435,12 @@ public class ResourceManager_impl implements ResourceManager {
       }
       // We haven't encountered this before. See if we need to instantiate a
       // SharedResourceObject
-      Class<?> sharedResourceObjectClass = mParameterizedResourceImplClassMap.get(aName);
+      Class<? extends Resource> sharedResourceObjectClass = mParameterizedResourceImplClassMap.get(aName);
       if (sharedResourceObjectClass != EMPTY_RESOURCE_CLASS) {
         try {
-          SharedResourceObject sro = (SharedResourceObject) sharedResourceObjectClass.newInstance();
-          sro.load(dr);
-          mParameterizedResourceInstanceMap.put(nameAndResource, (Resource) sro);
+          Resource sro = sharedResourceObjectClass.newInstance();
+          ((SharedResourceObject)sro).load(dr);
+          mParameterizedResourceInstanceMap.put(nameAndResource, sro);
           return sro;
         } catch (InstantiationException e) {
           throw new ResourceAccessException(e);
@@ -455,6 +480,7 @@ public class ResourceManager_impl implements ResourceManager {
       return customResourceClass;
     } else {
       // return r's Class
+      // could be, for 
       return (Class<? extends Resource>) r.getClass();
     }
   }
@@ -540,13 +566,24 @@ public class ResourceManager_impl implements ResourceManager {
           throws ResourceInitializationException {
     // register resources
     checkDestroyed();
+    
+    // set up aAdditionalParams to have this resource manager if not already set
+    // so that External Resource instances created from this use this creating/owning
+    // resource manager as the value returned from their getResourceManager call
+    // see https://issues.apache.org/jira/browse/UIMA-5148
+    if (null == aAdditionalParams) {
+      aAdditionalParams = new HashMap<String, Object>();
+    }
+    if (!aAdditionalParams.containsKey(Resource.PARAM_RESOURCE_MANAGER)) {
+      aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, this);
+    }
+    
     ExternalResourceDescription[] resources = aConfiguration.getExternalResources();
     for (int i = 0; i < resources.length; i++) {
       String name = resources[i].getName();
 
       // check for existing resource registration under this name
-      ResourceRegistration registration = mInternalResourceRegistrationMap
-              .get(name);
+      ResourceRegistration registration = mInternalResourceRegistrationMap.get(name);
       if (registration == null) {
         registerResource(name, resources[i], aQualifiedContextName, aAdditionalParams);
       } else {
@@ -580,7 +617,7 @@ public class ResourceManager_impl implements ResourceManager {
       }
       mResourceMap.put(aQualifiedContextName + bindings[i].getKey(), registration.resource);
       // record the link from key to resource class (for parameterized resources only)
-      Class<?> impl = mInternalParameterizedResourceImplClassMap.get(bindings[i].getResourceName()); 
+      Class<? extends Resource> impl = mInternalParameterizedResourceImplClassMap.get(bindings[i].getResourceName()); 
       mParameterizedResourceImplClassMap.put(aQualifiedContextName + bindings[i].getKey(),
                                              (impl == null) ? EMPTY_RESOURCE_CLASS : impl);
     }
@@ -604,7 +641,8 @@ public class ResourceManager_impl implements ResourceManager {
     for (int i = 0; i < aDependencies.length; i++) {
       // get resource
       String qname = aQualifiedContextName + aDependencies[i].getKey();
-      Object resource = mResourceMap.get(qname);
+      Resource resource = (Resource) mResourceMap.get(qname);
+      
       if (resource == null) {
         // no resource found
         // try to look up in classpath/datapath
@@ -623,14 +661,17 @@ public class ResourceManager_impl implements ResourceManager {
           mResourceMap.put(qname, resource);
         }
       }
-      if (resource == null) // still no resource found - throw exception if required
-      {
+      
+      if (resource == null) { // still no resource found - throw exception if required
+
         if (!aDependencies[i].isOptional()) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.RESOURCE_DEPENDENCY_NOT_SATISFIED, new Object[] {
                       aDependencies[i].getKey(), aDependencies[i].getSourceUrlString() });
         }
-      } else {
+
+      } else {  // resource not null
+
         // make sure resource exists and implements the correct interface
         try {
           String name = aDependencies[i].getInterfaceName();
@@ -674,7 +715,8 @@ public class ResourceManager_impl implements ResourceManager {
     // load implementation class (if any) and ensure that it implements
     // SharedResourceObject
     String implementationName = aResourceDescription.getImplementationName();
-    Class<?> implClass = null;
+    Class<? extends Resource> implClass = null;
+    Resource implInstance = r;  // what will be registered, might be the Resource, or its implementation
     if (implementationName != null && implementationName.length() > 0) {
       try {
         implClass = loadUserClass(implementationName);
@@ -695,11 +737,12 @@ public class ResourceManager_impl implements ResourceManager {
       // instantiate and load the resource object if there is one
       if (implClass != null) {
         try {
-          SharedResourceObject sro = (SharedResourceObject) implClass.newInstance();
+          Resource sro = implClass.newInstance();
           if (!verificationMode) {
-            sro.load((DataResource) r);
+            ((SharedResourceObject)sro).load((DataResource) r);
           }
           r = (Resource) sro;
+          implInstance = sro;   // so the implementation is registered, for DataResources
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] {
@@ -716,9 +759,8 @@ public class ResourceManager_impl implements ResourceManager {
       // we can't load the SharedResourceObject now, but we need to remember
       // which class it is for later when we get a request with parameters
       mInternalParameterizedResourceImplClassMap.put(aName, (null == implClass) ? EMPTY_RESOURCE_CLASS : implClass);
-    } else
+    } else {
     // it is some other type of Resource
-    {
       // it is an error to specify an implementation class in this case
       if (implClass != null) {
         throw new ResourceInitializationException(
@@ -728,8 +770,8 @@ public class ResourceManager_impl implements ResourceManager {
       }
     }
 
-    // put resource in internal map for later retrieval
-    ResourceRegistration registration = new ResourceRegistration(r, aResourceDescription,
+    // put resource or its implementation (for DataResources)  in internal map for later retrieval
+    ResourceRegistration registration = new ResourceRegistration(implInstance, aResourceDescription,
             aDefiningContext);
     mInternalResourceRegistrationMap.put(aName, registration);
   }
@@ -785,12 +827,12 @@ public class ResourceManager_impl implements ResourceManager {
   }
   
   @Override
-  public Class<?> loadUserClass(String name) throws ClassNotFoundException {
+  public <N> Class<N> loadUserClass(String name) throws ClassNotFoundException {
     ClassLoader cl = getExtensionClassLoader();
     if (cl == null) {
       cl = this.getClass().getClassLoader();
     }
-    return Class.forName(name, true, cl);
+    return (Class<N>) Class.forName(name, true, cl);
   }
   
   public static Class<?> loadUserClass(String name, ResourceManager rm) throws ClassNotFoundException {
@@ -823,7 +865,7 @@ public class ResourceManager_impl implements ResourceManager {
     }
     
     for (ResourceRegistration r : mInternalResourceRegistrationMap.values()) {
-      r.resource.destroy();
+        r.resource.destroy();
     }
     
     for (Resource r : mParameterizedResourceInstanceMap.values()) {
@@ -834,6 +876,24 @@ public class ResourceManager_impl implements ResourceManager {
     
   }
   
-  
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.ResourceManager#getExternalResources()
+   */
+  @Override
+  public List<Resource> getExternalResources() {
+    
+    List<Resource> rs = new ArrayList<>();
+    for (ResourceRegistration r : mInternalResourceRegistrationMap.values()) {
+      if (!(r instanceof ParameterizedDataResource)) {
+        rs.add(r.resource);
+      } 
+    }
+    
+    for (Resource r : mParameterizedResourceInstanceMap.values()) {
+      rs.add(r);
+    }
+      
+    return rs;
+  }
 
 }

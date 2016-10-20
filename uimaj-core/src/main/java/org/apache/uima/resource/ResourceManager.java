@@ -22,8 +22,8 @@ package org.apache.uima.resource;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.XMLizable;
@@ -73,13 +73,14 @@ public interface ResourceManager {
   public URL resolveRelativePath(String aRelativePath) throws MalformedURLException;
 
   /**
-   * Gets the Resource that has been registered under the specified name.
+   * Gets the instance of the implementation object for a resource that has been registered under the specified name.
+   * These objects all implement the Resource API.
    * 
    * @param aName
    *          the name of the resource to retrieve
    * 
-   * @return the Resource registered under <code>aName</code>, <code>null</code> if none
-   *         exists.
+   * @return the instance of the implementation object for the resource, registered under <code>aName</code>, 
+   *         <code>null</code> if none  exists.
    * 
    * @throws ResourceAccessException
    *           if the requested resource could not be initialized. A common cause is that it
@@ -90,16 +91,42 @@ public interface ResourceManager {
   public Object getResource(String aName) throws ResourceAccessException;
 
   /**
-   * Gets an instance of a parameterized Resource. An example of a parameterized Resource is a
-   * dictionary whose data depends on a specified language identifier.
+   * Returns one of two kinds of objects (or null):
+   *   * an instance of the implementation object for a resource, that has 
+   *     been loaded with a DataResource resource produced by the resource given the aParms
+   *     
+   *   * (if there is no implementation defined for this resource) 
+   *     returns an instance of the DataResource, itself, produced by the resource given the aParms
+   *    
+   *   An example of a parameterized Resource is a
+   *     dictionary whose data depend on a specified language identifier.
+   *   
+   *   If the implementation object class exists, but no instance has been 
+   *   created (yet) for the particular data resource corresponding to the parameters,
+   *   then this method will create and register a new instance and call its
+   *   load() api using the data resource corresponding to the parameters, and
+   *   return that.
    * 
    * @param aName
-   *          the name of the resource to retrieve
+   *          the name of the parameterized resource to retrieve
    * @param aParams
    *          the parameters determining which particular instance is returned
+   *          and specifying a particular DataResource instance to use in initializing
+   *          the implementation of the resource (if there is an implementation).
+   *          
+   *          If there is no implementation, the DataResource instance 
+   *          produced from the named Resource given these
+   *          parameters is returned instead.
    * 
-   * @return the requested Resource, <code>null</code> if there is no resource registered under
-   *         the name <code>aName</code>.
+   * @return one of two kinds of objects (or null):
+   *         an instance of the requested implementation of the named resource where that instance 
+   *         has been initialized by calling its load method with the DataResource instance produced
+   *         from the Resource given aParams,
+   *         
+   *         or, (if the named resource has no implementation) the DataResource instance 
+   *         corresponding to the named Resource, given aParams, 
+   * 
+   *         or if no resource with this name exists, <code>null</code>.  
    * 
    * @throws ResourceAccessException
    *           if there is a resource registered under <code>aName</code> but it could not be
@@ -110,6 +137,8 @@ public interface ResourceManager {
   /**
    * Gets the Class of the Resource that will be returned by a call to {@link #getResource(String)}
    * or {@link #getResource(String,String[])}.
+   * 
+   * For those resource specifications which include an implementation class, this call returns that class.
    * 
    * @param aName
    *          the name of a resource
@@ -209,8 +238,23 @@ public interface ResourceManager {
   /**
    * Initializes all external resources declared in a ResourceCreationSpecifier.
    * Multi-threading: may be called on multiple threads.  
+   * 
    *   Initialization should be done once, on the first call
    * 
+   * External resources have a Container class representing the resource, 
+   * which are instances of Resource, and they may also have implementation classes
+   * also instances of Resource, and often implementing SharedResourceObject.
+   * 
+   * As part of the initialization, the External Resource Bindings are processed to hook them up
+   * with defined External Resources.
+   * 
+   *   If a binding specifies a non-existing resource, the key is interpreted as a file name, 
+   *   and looked up using the current context for relative path resolution.  
+   *     - If found, a FilewResourceSpecifier is created using the file 
+   * 
+   *   If no resource can be found at all, then unless the dependency is marked "optional", 
+   *   an ResourceInitializationException is thrown.
+   *   
    * @param aConfiguration
    *          the ResourceManagerConfiguration containing resource declarations and bindings
    * @param aQualifiedContextName
@@ -227,8 +271,14 @@ public interface ResourceManager {
           throws ResourceInitializationException;
 
   /**
-   * Resolves a component's external resource dependencies using this resource manager. Throws an
-   * exception if any required dependencies are not satisfied.
+   * Resolves a component's external resource dependencies (bindings) using this resource manager. 
+   * 
+   *   If a binding specifies a non-existing resource, the key is interpreted as a file name, 
+   *   and looked up using the current context for relative path resolution.  
+   *     - If found, a FilewResourceSpecifier is created using the file 
+   * 
+   *   If no resource can be found at all, then unless the dependency is marked "optional", 
+   *   an ResourceInitializationException is thrown.
    * 
    * Multi-threading: may be called on multiple threads, repeatedly for the same set of resources.
    * Implementations should avoid wasting time do this work.
@@ -323,7 +373,7 @@ public interface ResourceManager {
    * @return the class
    * @throws ClassNotFoundException -
    */
-  public Class<?> loadUserClass(String name) throws ClassNotFoundException;
+  public <N> Class<N> loadUserClass(String name) throws ClassNotFoundException;
   
   /**
    * Frees all resources held by this ResourceManager, and marks the ResourceManager as having been destroyed.
@@ -338,4 +388,12 @@ public interface ResourceManager {
    * knowledgeable source; for example a single ResourceManager might be used for multiple UIMA Pipelines.
    */
   public void destroy();
+      
+  /**
+   * 
+   * @return a List of External Shared Resource instances instantiated by this Resource Manager.
+   *         For parameterized resources, those which have been asked for (having unique parameter sets) 
+   *         are included.
+   */
+  public List<Resource> getExternalResources();
 }
