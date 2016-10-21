@@ -1955,7 +1955,8 @@ uima.tcas.Annotation.</programlisting>
             <literal>produceAnalysisEngine</literal> method.  In this case the
             Java system property <emphasis>UimaExternalOverrides</emphasis> is ignored.
             <programlisting>  // Construct an analysis engine that uses two settings files
-  Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
+  Settings extSettings = 
+      UIMAFramework.getResourceSpecifierFactory().createSettings();
   for (String fname : new String[] { "externalOverride.settings", 
                                      "default.settings" }) {
     FileInputStream fis = new FileInputStream(fname);
