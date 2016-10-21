@@ -1028,8 +1028,8 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
     
     <para>The CAS APIs are organized into 3 Java packages: cas, cas.impl, and cas.text. Most
       of the APIs described here are in the cas package. The cas.impl package contains classes
-      used in serializing and deserializing (reading and writing to external strings) the
-      XCAS form of the CAS (XCAS is an XML serialization of the CAS). The XCAS form is used for
+      used in serializing and deserializing (reading and writing external representations) the
+      CAS in various formats, for
       transporting the CAS among local and remote annotators, or for storing the CAS in
       permanent storage. The cas.text contains the APIs that extend the CAS to support
       artifact (including <quote>text</quote>) analysis.</para>
@@ -1105,6 +1105,32 @@ FSIterator it = cas.createFilteredIterator(annotIt, nounTokenCons);</programlist
     Two different definitions can be merged even if their supertype definitions do not match, if
     one supertype subsumes the other supertype; otherwise an error is signaled.  Likewise, two types
     with the same name can be merged only if their features can be merged.
+    </para>
+    </section>
+    
+  <section id="ugr.ref.cas.limitedmultipleaccess">
+    <title>Limited multi-thread access to read-only CASs</title>
+    
+    <para>Some applications may find it useful to scale up pipelines and run these in parallel.</para>
+    <para>
+    Generally, CASs are not threadsafe, and only one thread at a time may operate on it.  In many
+    scenarios, a CAS may be initialized and then filled with Feature Structures, and after some point,
+    no more updates to that particular CAS will be done.</para>
+    
+    <para>
+    If a CAS is no longer going to be changed, it is possible to 
+    access it on multiple threads in a read-only mode, simultaneously, with some limitations.  Limitations 
+    arise because some UIMA Framework activities may update internal CAS data structures.</para>
+    
+    <para>Operational data is updated while running a pipeline when a PEAR is entered or exited, 
+    because PEARs establish new class loaders and can potentially switch the JCas classes being used
+    (This happens because the class loaders might define different JCas cover classes 
+    implementing the same UIMA type).
+    Because of this, you cannot have multiple pipelines accessing a CAS in read-only mode if one or more of those
+    pipelines contains a PEAR. There are other edge cases where this may happen as well; for example, if you are 
+    running a pipeline with an Extension Class Loader, 
+    and have a callback routine loaded under a different class loader, UIMA will switch the JCas classes when
+    calling the callback.
     </para>
     </section>
 </chapter>

@@ -112,7 +112,8 @@ under the License.
     This is all done under the covers by the UIMA-AS implementation.
     --> 
     </para>
-     
+    <para>In addition, the CasIOUtils class offers static load and save methods, which can be used with the SerialFormat
+    enum to serialize and deserialize to URLs or streams; see the Javadocs for details.</para> 
   </section>
 
   <section id="ugr.ref.compress.simple-deltas">
@@ -147,6 +148,8 @@ under the License.
           <programlisting>// set up an output stream.  In this example, an internal byte array.
 ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
 Serialization.serializeWithCompression(casSrc, baos);
+  // or
+CasIOUtls.save(casSrc, baos, SerialFormat.COMPRESSED);
 </programlisting>
  
       <para><emphasis role="strong">Deserialize from a stream into an existing CAS:</emphasis></para>
@@ -156,6 +159,8 @@ Serialization.serializeWithCompression(casSrc, baos);
 ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 // Deserialize into a cas having the identical type system
 Serialization.deserializeCAS(cas, bais);
+  // or
+CasIOUtils.load(bais, aCas);
 </programlisting>
 
 <para>Note that the <code>deserializeCAS(cas, inputStream)</code> method is a general way to
@@ -183,6 +188,15 @@ Serialization.serializeWithCompression(cas, out, tgtTypeSystem);
 </programlisting>
 
 <para><emphasis role="strong">Deserialize with type filtering:</emphasis></para>
+<para>There are 2 type systems involved here: one is the receiving CAS, and the other is the type system
+used to decode the serialized form.  This may optionally be stored with the serialized form:</para>
+<programlisting>CasIOUtils.save(cas, out, SerialFormat.COMPRESSED_FILTERED_TS);
+</programlisting>
+<para>and/or it can be supplied at load time.  Here's two examples of suppling this at load time:</para>
+<programlisting>CasIOUtils.load(input, cas, typeSystem); 
+CasIOUtils.load(input, type_system_serialized_form_input, cas);
+</programlisting>
+
 <para>The reuseInfo should be null unless 
 deserializing a delta CAS, in which case, it must be the reuse info captured when 
 the original CAS was serialized out. 

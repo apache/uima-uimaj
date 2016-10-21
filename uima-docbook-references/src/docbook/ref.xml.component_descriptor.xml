@@ -1510,20 +1510,20 @@ uima.tcas.Annotation.</programlisting>
           <para>Configuration Parameters are made available to annotator
             implementations and applications by the following interfaces:
             <itemizedlist spacing="compact" mark="circle">
-            <listitem>
+            <listitem><para>
             <literal>AnnotatorContext</literal> <footnote><para>Deprecated; use
             UimaContext instead.</para></footnote> (passed as an argument to the
-            initialize() method of a version 1 annotator)
+            initialize() method of a version 1 annotator)</para>
             </listitem>
-            <listitem>
+            <listitem><para>
             <literal>ConfigurableResource</literal> (every Analysis Engine
-            implements this interface)
+            implements this interface)</para>
             </listitem>
-            <listitem>
+            <listitem><para>
             <literal>UimaContext</literal> (passed
             as an argument to the initialize() method of a version 2 annotator) (you can get
             this from any resource, including Analysis Engines, using the method
-            <literal>getUimaContext</literal>()).
+            <literal>getUimaContext</literal>()).</para>
             </listitem>
             </itemizedlist></para>
           
@@ -1955,7 +1955,8 @@ uima.tcas.Annotation.</programlisting>
             <literal>produceAnalysisEngine</literal> method.  In this case the
             Java system property <emphasis>UimaExternalOverrides</emphasis> is ignored.
             <programlisting>  // Construct an analysis engine that uses two settings files
-  Settings extSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
+  Settings extSettings = 
+      UIMAFramework.getResourceSpecifierFactory().createSettings();
   for (String fname : new String[] { "externalOverride.settings", 
                                      "default.settings" }) {
     FileInputStream fis = new FileInputStream(fname);
@@ -1973,40 +1974,42 @@ uima.tcas.Annotation.</programlisting>
             file using the UTF-8 character encoding, and written in a style similar to that 
             of Java properties files.
             <itemizedlist spacing="compact" mark="circle">  
-            <listitem>
+            <listitem><para>
             Leading whitespace is ignored.
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             Comment lines start with '#' or '!'.
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             The key and value are separated by whitespace, '=' or ':'.
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             Keys must contain at least one character and only letters, digits, or the characters '. / - ~ _'.
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             If a line ends with '\' it is extended with the following line (after removing any
             leading whitespace.)
-            </listitem>
+            </para></listitem>
+            <listitem><para>
             Whitespace is trimmed from both keys and values.
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             Duplicate key values are ignored &ndash; once a value is assigned to a key it cannot be changed.  
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             Values may reference other settings using the syntax '${key}'.
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             Array values are represented as a list of strings separated by commas or line breaks,
             and bracketed by the '[ ]' characters.  The value must start with an '[' and is
             terminated by the first unescaped ']' which must be at the end of a line.
             The elements of an array (and hence the array size) may be indirectly specified using
             the '${key}' syntax but the brackets '[ ]' must be explicitly specified.
-            </listitem>
-            <listitem>
+            </para></listitem>
+            <listitem><para>
             In values the special characters '$ { } [ , ] \' are treated as regular characters if
             preceeded by the escape character '\'.
-            </listitem>
+            </para></listitem>
             </itemizedlist>
       <programlisting><![CDATA[
 key1  :  value1
