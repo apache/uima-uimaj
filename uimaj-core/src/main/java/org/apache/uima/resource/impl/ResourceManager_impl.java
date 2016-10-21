@@ -88,7 +88,7 @@ public class ResourceManager_impl implements ResourceManager {
 
     public ResourceRegistration(Object resourceOrImplementation, ExternalResourceDescription description,
             String definingContext) {
-      this.resource = (Resource) resourceOrImplementation;
+      this.resource = resourceOrImplementation;
       this.description = description;
       this.definingContext = definingContext;
     }
