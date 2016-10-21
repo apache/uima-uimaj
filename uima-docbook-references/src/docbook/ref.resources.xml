@@ -169,7 +169,7 @@ under the License.
     <title>External Resources support for multiple Parameterized Instances</title>
     <para>A typical external resource gets a single instantiation, shared with all users of a particular
     ResourceManager.
-    Sometimes, multiple instantions may be useful (of the same resource).  The framework supports this for 
+    Sometimes, multiple instantiations may be useful (of the same resource).  The framework supports this for 
     ParameterizedDataResources.  There's one kind supplied with UIMA - the fileLanguageResourceSpecifier.
     This works by having each call to getResource(name, extra_keys[]) use the extra keys to select a particular
     instance.  On the first call for a particular instance, the named resource uses the extra keys to 
