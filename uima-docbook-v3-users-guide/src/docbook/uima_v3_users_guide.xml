@@ -30,5 +30,4 @@ under the License.
   <!-- xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.migrating_jcas.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.backwards_compatibility.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.performance.xml"/-->
-  <!-- <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="ref.resources.xml"/> -->
 </book>
