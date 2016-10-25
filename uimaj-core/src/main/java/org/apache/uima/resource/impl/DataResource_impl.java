@@ -76,13 +76,7 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
     FileResourceSpecifier spec = (FileResourceSpecifier) aSpecifier;
 
     // Get Relative Path Resolver
-    RelativePathResolver relPathResolver = null;
-    if (aAdditionalParams != null) {
-      relPathResolver = (RelativePathResolver) aAdditionalParams.get(PARAM_RELATIVE_PATH_RESOLVER);
-    }
-    if (relPathResolver == null) {
-      relPathResolver = new RelativePathResolver_impl();
-    }
+    RelativePathResolver relPathResolver = getRelativePathResolver(aAdditionalParams);
       
     // Get the file URL, resolving relative path as necessary
     IOException ioEx = null;
@@ -128,14 +122,13 @@ public class DataResource_impl extends Resource_ImplBase implements DataResource
               ResourceInitializationException.COULD_NOT_ACCESS_DATA, new Object[] { spec
                       .getFileUrl() }, ioEx);
     }
+    
+    // call super initialize to set uima context from additional params if available
+    // this context is to allow getting access to the Resource Manager.
+    // https://issues.apache.org/jira/browse/UIMA-5153
+    super.initialize(aSpecifier, aAdditionalParams);
 
     return true;
-  }
-
-  /**
-   * @see org.apache.uima.resource.Resource#destroy()
-   */
-  public void destroy() {
   }
 
   /**

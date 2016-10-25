@@ -579,6 +579,11 @@ public class ResourceManager_impl implements ResourceManager {
       aAdditionalParams.put(Resource.PARAM_RESOURCE_MANAGER, this);
     }
     
+    // set up aAdditionalParams to have this resource manager if not already set
+    // so that External Resource instances created from this use this creating/owning
+    // UIMA Context so that getResourceManager works
+    // see https://issues.apache.org/jira/browse/UIMA-5153
+    
     ExternalResourceDescription[] resources = aConfiguration.getExternalResources();
     for (int i = 0; i < resources.length; i++) {
       String name = resources[i].getName();
