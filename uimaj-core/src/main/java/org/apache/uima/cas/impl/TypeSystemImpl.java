@@ -2570,5 +2570,26 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       return g;
     }
   }
+  
+//  /**
+//   * Get a list of types which have OID feature, filtered down to being just the top-most
+//   * (in the type hierarchy)
+//   */
+//  public List<TypeImpl> getTopOidTypes() {
+//    List<TypeImpl> r = new ArrayList<>();
+//    
+//   outer:
+//    for (TypeImpl t : types) {
+//      if (t.featUimaUID != null) {
+//        for (TypeImpl prev : r) {
+//          if (prev.subsumes(t)) {
+//            continue outer;
+//          }
+//        }
+//        r.add(t);
+//      }
+//    }
+//    return r;
+//  }
 
 }

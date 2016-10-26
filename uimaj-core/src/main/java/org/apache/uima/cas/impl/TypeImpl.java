@@ -82,6 +82,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   protected final boolean isLongOrDouble;  // for code generation
   
+  
   int nbrOfLongOrDoubleFeatures = 0; 
   
   /**
@@ -150,6 +151,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   // for journalling allocation: This is a 0-based offset for all features in feature order
   int highestOffset = -1;
   
+//  FeatureImpl featUimaUID = null;  // null or the feature named uimaUID with range type long
+
   private TypeImpl() {
     this.name = null;
     this.shortName = null;
@@ -543,6 +546,12 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
     staticMergedFeatures.put(fi.getShortName(), fi);
     staticMergedFeaturesIntroducedByThisType.add(fi);
+    
+//    if (fi.getShortName().equals(CAS.FEATURE_BASE_NAME_UIMA_UID) &&
+//        fi.getRangeImpl().getName().equals(CAS.TYPE_NAME_LONG)) {
+//      featUimaUID = fi;
+//    }
+    
 //    List<FeatureImpl> featuresSharingRange = getFeaturesSharingRange(fi.getRange());
 //    if (featuresSharingRange == null) {
 //      featuresSharingRange = new ArrayList<>();

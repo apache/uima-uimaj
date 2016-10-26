@@ -235,6 +235,12 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     if (traceFSs && !(this instanceof CommonArray)) {
       _casView.traceFSCreate(this);
     }
+    
+//    if (_typeImpl.featUimaUID != null) {
+//      final int id = _casView.getAndIncrUimaUID();
+//      _setLongValueNcNj(_typeImpl.featUimaUID, id);
+//      _casView.add2uid2fs(id, (TOP)this);
+//    }
   }
   
   private int[] _allocIntData() {
