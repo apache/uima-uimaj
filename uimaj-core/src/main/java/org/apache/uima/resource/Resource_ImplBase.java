@@ -26,13 +26,13 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.Settings;
-import org.apache.uima.util.impl.Settings_impl;
 
 /**
  * Implementation base class for {@link org.apache.uima.resource.Resource}s. Provides access to
@@ -84,31 +84,37 @@ public abstract class Resource_ImplBase implements Resource {
       mUimaContextAdmin = (UimaContextAdmin) aAdditionalParams.get(PARAM_UIMA_CONTEXT);
     }
     if (mUimaContextAdmin == null) {// no, we have to create one    
-      // get or create ResourceManager
-      ResourceManager resMgr = null;
-      if (aAdditionalParams != null) {
-        resMgr = (ResourceManager) aAdditionalParams.get(PARAM_RESOURCE_MANAGER);
-      }
-      if (resMgr == null) {
-        resMgr = UIMAFramework.newDefaultResourceManager();
-      }
+    
+      // skip this part if initializing an external resource
+      // https://issues.apache.org/jira/browse/UIMA-5153
+      if (!(aSpecifier instanceof ConfigurableDataResourceSpecifier) &&
+          !(aSpecifier instanceof FileLanguageResourceSpecifier) &&
+          !(aSpecifier instanceof FileResourceSpecifier)) {
+        // get or create ResourceManager
+        ResourceManager resMgr = null;
+        if (aAdditionalParams != null) {
+          resMgr = (ResourceManager) aAdditionalParams.get(PARAM_RESOURCE_MANAGER);
+        }
+        if (resMgr == null) {
+          resMgr = UIMAFramework.newDefaultResourceManager();
+        }
 
-      // get a Logger for this class and set its ResourceManager so that
-      // UIMA extension ClassLoader is used to locate message digests.
-      Logger logger = UIMAFramework.getLogger(this.getClass());
-      logger.setResourceManager(resMgr);
+        // get a Logger for this class and set its ResourceManager so that
+        // UIMA extension ClassLoader is used to locate message digests.
+        Logger logger = UIMAFramework.getLogger(this.getClass());
+        logger.setResourceManager(resMgr);
       
-      ConfigurationManager configMgr = null;
-      if (aAdditionalParams != null) {
-        configMgr = (ConfigurationManager)aAdditionalParams.get(PARAM_CONFIG_MANAGER);
-      }
-      if (configMgr == null) {
-        configMgr = UIMAFramework.newConfigurationManager();
-      }
+        ConfigurationManager configMgr = null;
+        if (aAdditionalParams != null) {
+          configMgr = (ConfigurationManager)aAdditionalParams.get(PARAM_CONFIG_MANAGER);
+        }
+        if (configMgr == null) {
+          configMgr = UIMAFramework.newConfigurationManager();
+        }
 
-      // create and initialize UIMAContext
-      mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
-
+        // create and initialize UIMAContext
+        mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
+      }
     } else {
       // configure logger of the UIMA context so that class-specific logging
       // levels and UIMA extension classLoader will work
@@ -191,8 +197,15 @@ public abstract class Resource_ImplBase implements Resource {
           }
         }
         // initializeExternalResources is synchronized
+        
+        // https://issues.apache.org/jira/browse/UIMA-5153
+        final HashMap<String, Object> aAdditionalParmsForExtResources = new HashMap<String, Object>(aAdditionalParams); // copy in case
+        if (aAdditionalParmsForExtResources.get(PARAM_UIMA_CONTEXT) == null) {
+          aAdditionalParmsForExtResources.put(PARAM_UIMA_CONTEXT, mUimaContextAdmin);
+        }
+        
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
-                mUimaContextAdmin.getQualifiedContextName(), aAdditionalParams);
+                mUimaContextAdmin.getQualifiedContextName(), aAdditionalParmsForExtResources);
       }
 
       // resolve and validate this component's external resource dependencies
@@ -294,6 +307,17 @@ public abstract class Resource_ImplBase implements Resource {
   public Class<?> loadUserClassOrThrow(String name, ResourceSpecifier aSpecifier) 
       throws ResourceInitializationException {
     return ResourceManager_impl.loadUserClassOrThrow(name, getResourceManager(), aSpecifier);
+  }
+    
+  public RelativePathResolver getRelativePathResolver(Map<String, Object> aAdditionalParams) {
+    RelativePathResolver relPathResolver = null;
+    if (aAdditionalParams != null) {
+      relPathResolver = (RelativePathResolver) aAdditionalParams.get(DataResource.PARAM_RELATIVE_PATH_RESOLVER);
+    }
+    if (relPathResolver == null) {
+      relPathResolver = new RelativePathResolver_impl();
+    }
+    return relPathResolver;
   }
   
 }
