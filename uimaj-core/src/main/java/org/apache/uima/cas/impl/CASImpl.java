@@ -4435,7 +4435,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //      System.out.println("debug out of sync id generator and id2fs size");
 //    }
 //    assert(l.size() == (2 + svd.fsIdGenerator));
-    return ++ svd.fsIdGenerator;
+    int p = svd.fsIdGenerator;
+    int r = ++ svd.fsIdGenerator;
+    if (r < p) { 
+      throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
+    }
+    return r;
   }
   
   /**
