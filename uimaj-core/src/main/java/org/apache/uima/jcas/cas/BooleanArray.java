@@ -67,6 +67,9 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(2); // space for length and ref
+    }     
   }
   
   /**
@@ -81,6 +84,9 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(2); // space for length and ref
+    }     
   }
 
   /**

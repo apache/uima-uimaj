@@ -63,6 +63,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(2); // space for length and ref
+    }     
   }
 
   /**
@@ -78,6 +81,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(2); // space for length and ref
+    }     
   }
   
   /**

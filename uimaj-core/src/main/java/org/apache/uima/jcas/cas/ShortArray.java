@@ -63,6 +63,9 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(2); // space for length and ref
+    }     
   }
 
   /**
@@ -78,7 +81,10 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
- }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(2); // space for length and ref
+    }     
+  }
 
   /**
    * @see org.apache.uima.cas.ShortArrayFS#get(int)

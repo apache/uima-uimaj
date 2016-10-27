@@ -126,6 +126,7 @@ import org.apache.uima.util.Level;
  */
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS, TypeSystemConstants {
   
+  public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
   private static final boolean trace = false; // debug
   public static final boolean traceFSs = false;  // debug - trace FS creation and update  
   private static final String traceFile = "traceFSs.log.txt";
@@ -439,7 +440,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     boolean disableAutoCorruptionCheck = false;
     
     // used to generate FSIDs, increments by 1 for each use.  First id == 1
+    /**
+     * The fsId of the last created FS
+     * used to generate FSIDs, increments by 1 for each use.  First id == 1
+     */
     private int fsIdGenerator = 0;
+    
+    /**
+     * The version 2 size on the main heap of the last created FS
+     */
+    private int lastFsV2Size = 1;
     
     /**
      * used to "capture" the fsIdGenerator value for a read-only CAS to be visible in
@@ -642,6 +652,33 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       previousJCasClassLoader = null;
       generators = baseGenerators;
       id2tramp = null;
+    }
+    
+    private int getNextFsId(TOP fs) {
+      if (reuseId != 0) {
+//      l.setStrongRef(fs, reuseId);
+      return reuseId;
+      } 
+      
+  //    l.add(fs);
+  //    if (id2fs.size() != (2 + fsIdGenerator.get())) {
+  //      System.out.println("debug out of sync id generator and id2fs size");
+  //    }
+  //    assert(l.size() == (2 + fsIdGenerator));
+      final int p = fsIdGenerator;
+      
+      final int r = fsIdGenerator += IS_USE_V2_IDS 
+                                       ? lastFsV2Size
+                                       : 1;
+      if (r < p) { 
+        throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
+      }
+      if (IS_USE_V2_IDS) {
+        // this computation is partial - misses length of arrays stored on heap
+        // because that info not yet available
+        lastFsV2Size = fs._getTypeImpl().getFsSpaceReq();
+      }
+      return r;
     }
   }
   
@@ -4424,23 +4461,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   final public int getNextFsId(TOP fs) {
-//    Id2FS l = svd.id2fs;
-    if (svd.reuseId != 0) {
-//      l.setStrongRef(fs, svd.reuseId);
-      return svd.reuseId;
-    } 
-    
-//    l.add(fs);
-//    if (svd.id2fs.size() != (2 + svd.fsIdGenerator.get())) {
-//      System.out.println("debug out of sync id generator and id2fs size");
-//    }
-//    assert(l.size() == (2 + svd.fsIdGenerator));
-    int p = svd.fsIdGenerator;
-    int r = ++ svd.fsIdGenerator;
-    if (r < p) { 
-      throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
-    }
-    return r;
+    return svd.getNextFsId(fs);
+  }
+  
+  public void adjustLastFsV2size(int arrayLength) {
+    svd.lastFsV2Size += 1 + arrayLength;  // 1 is for array length value
   }
   
   /**

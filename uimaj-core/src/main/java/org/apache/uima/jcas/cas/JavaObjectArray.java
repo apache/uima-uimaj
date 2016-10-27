@@ -66,6 +66,9 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(length);
+    }    
   }
   
   /**
@@ -81,6 +84,9 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(length);
+    }    
   }
 
 

@@ -72,6 +72,9 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(length);
+    }    
   }
   
   /**
@@ -89,6 +92,9 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     if (CASImpl.traceFSs) {
       _casView.traceFSCreate(this);
     }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(length);
+    }    
   }
 
 
