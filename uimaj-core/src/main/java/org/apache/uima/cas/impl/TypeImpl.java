@@ -675,7 +675,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return true if it is an array and is stored in the main heap (int, float, or string)
    */
   boolean isHeapStoredArray() {
-    return false; // overridden by array subtype, used for backward compatibility
+    return false; // overridden by some array subtypes, used for backward compatibility
   }
   
   /**
@@ -894,11 +894,17 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @return the main heap size for this FeatureStructure
    */
   public int getFsSpaceReq(int length) {
-    return isHeapStoredArray() ? (2 + length) : isArray() ? 3 : getFsSpaceReq();
+    return isHeapStoredArray() 
+             ? (2 + length) 
+             : isArray() 
+                 ? 3 
+                 : getFsSpaceReq();
   }
   
   public int getFsSpaceReq(TOP fs) {
-    return getFsSpaceReq(isHeapStoredArray() ? ((CommonArray)fs).size() : 0);
+    return getFsSpaceReq(isHeapStoredArray() 
+                          ? ((CommonArray)fs).size()  
+                          : 0);
   }  
 
   

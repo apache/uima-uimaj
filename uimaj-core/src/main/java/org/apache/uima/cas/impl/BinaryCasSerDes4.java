@@ -2937,14 +2937,18 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   }
   
   static CommonSerDesSequential getCsds(CASImpl cas, boolean isDelta) {
-    CommonSerDesSequential tmpCsds = isDelta ? cas.getCsds() : cas.newCsds();
-    if (null == tmpCsds || tmpCsds.isEmpty() ) {
-      // is delta but no csds
+    CommonSerDesSequential tmpCsds = cas.getCsds();
+    // 3 cases:
+      // is delta, have good csds - use it without getting a new one
+      // is delta, but existing csds is null or is empty - make a new one and set it up
+      // is not delta: make a nw one and set it up
+    
+    if (!isDelta || 
+        (null == tmpCsds || tmpCsds.isEmpty()) ) {
       tmpCsds = cas.newCsds();
       tmpCsds.setup(null, 1);
-    } else if (!isDelta) {
-      tmpCsds.setup(null, 1); // non delta case, starting with new one  
-    }
+    }  
+      
     return tmpCsds;
   }
   
