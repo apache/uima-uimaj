@@ -31,7 +31,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements CommonArray, ArrayFS {
+public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectViaCopyToArray {
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -69,7 +69,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     _casView.validateArraySize(length);
     theArray = new TOP[length];
 
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {
@@ -89,7 +89,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
     _casView.validateArraySize(length);
     theArray = new TOP[length];
     
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {
@@ -219,49 +219,11 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS {
   }
   
   /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @return a new instance of SelectFSs
+   * Convenience - create a FSArray from an existing FeatureStructure[]
+   * @param jcas -
+   * @param a -
+   * @return -
    */
-  public <T extends FeatureStructure> SelectFSs<T> select() {
-    return new SelectFSs_impl<>(this);
-  }
-
-  /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this type
-   * @return a new instance of SelectFSs
-   */
-  public <T extends FeatureStructure> SelectFSs<T> select(Type filterByType) {
-    return new SelectFSs_impl<>(this).type(filterByType);
-  }
-
-  /**
-   * Treat an FSArray as a source for SelectFSs.  
-   * @param filterByType only includes elements of this JCas class
-   * @return a new instance of SelectFSs
-   */
-  public <T extends FeatureStructure> SelectFSs<T> select(Class<T> filterByType) {
-    return new SelectFSs_impl<>(this).type(filterByType);
-  }
-  
-  /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this JCas class's type
-   * @return a new instance of SelectFSs
-   */
-  public <T extends FeatureStructure> SelectFSs<T> select(int filterByType) {
-    return new SelectFSs_impl<>(this).type(filterByType);
-  }
-  
-  /**
-   * Treat an FSArray as a source for SelectFSs. 
-   * @param filterByType only includes elements of this type (fully qualifined type name)
-   * @return a new instance of SelectFSs
-   */
-  public <T extends FeatureStructure> SelectFSs<T> select(String filterByType) {
-    return new SelectFSs_impl<>(this).type(filterByType);
-  }
-
   public static FSArray create(JCas jcas, FeatureStructure[] a) {
     FSArray fsa = new FSArray(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);
