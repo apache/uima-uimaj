@@ -64,7 +64,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     super(jcas);
     theArray = new boolean[length];
 
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) {  // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {
@@ -81,7 +81,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
   public BooleanArray(TypeImpl t, CASImpl c, int l) {
     super(t, c);
     theArray = new boolean[l];
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {

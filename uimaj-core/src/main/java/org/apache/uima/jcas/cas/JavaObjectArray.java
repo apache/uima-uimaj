@@ -63,7 +63,7 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
   public JavaObjectArray(JCas jcas, int length) {
     super(jcas);
     theArray = new Object[length];
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {
@@ -81,7 +81,7 @@ public final class JavaObjectArray extends TOP implements CommonPrimitiveArray {
   public JavaObjectArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new Object[length];
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {

@@ -60,7 +60,7 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
   public StringArray(JCas jcas, int length) {
     super(jcas);
     theArray = new String[length];
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {
@@ -78,7 +78,7 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
   public StringArray(TypeImpl t, CASImpl c, int length) {
     super(t, c);  
     theArray = new String[length];
-    if (CASImpl.traceFSs) {
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
     if (CASImpl.IS_USE_V2_IDS) {
