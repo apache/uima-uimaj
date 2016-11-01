@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.SerialFormat;
@@ -1492,7 +1493,9 @@ public class BinaryCasSerDes {
       default: Misc.internalError();
       } // end of switch
     } else {  // end of is-array
-      
+      if (fs instanceof UimaSerializable) {
+        ((UimaSerializable)fs)._save_to_cas_data();
+      }
       int i = pos + 1;
       for (FeatureImpl feat : type.getFeatureImpls()) {
         switch (feat.getSlotKind()) {
@@ -1557,6 +1560,7 @@ public class BinaryCasSerDes {
     CASImpl initialView = baseCas.getInitialView();  // creates if needed
     
     List<Runnable> fixups4forwardFsRefs = new ArrayList<>();
+    List<Runnable> fixups4UimaSerialization = new ArrayList<>();
 
     for (int heapIndex = startPos; heapIndex < heapsz; heapIndex += getFsSpaceReq(fs, type)) {
       type = tsi.getTypeForCode(heap.heap[heapIndex]);
@@ -1654,12 +1658,20 @@ public class BinaryCasSerDes {
             view.removeFromCorruptableIndexAnyView(fs, view.getAddbackSingle());
           } else {
             fs = view.createFS(type);
+            if (fs instanceof UimaSerializable) {
+              final UimaSerializable ufs = (UimaSerializable) fs;
+              fixups4UimaSerialization.add(() -> ufs._init_from_cas_data());
+            }
           }          
         } else if (type == tsi.sofaType) {
           fs = makeSofaFromHeap(heapIndex, stringHeap, csds, SOFA_IN_NORMAL_ORDER);  // creates Sofa if not already created due to annotationbase code above
           isSofa = true;
         } else {
           fs = initialView.createFS(type);
+          if (fs instanceof UimaSerializable) {
+            final UimaSerializable ufs = (UimaSerializable) fs;
+            fixups4UimaSerialization.add(() -> ufs._init_from_cas_data());
+          }
         }
         if (!isSofa) { // if it was a sofa, other code added or pended it
           csds.addFS(fs, heapIndex);
@@ -1713,6 +1725,10 @@ public class BinaryCasSerDes {
     } // end of loop over all fs in main array
     
     for (Runnable r : fixups4forwardFsRefs) {
+      r.run();
+    }
+    
+    for (Runnable r : fixups4UimaSerialization) {
       r.run();
     }
   }

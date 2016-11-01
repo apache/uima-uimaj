@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.uima.UimaContext;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.TypeSystem;
@@ -597,6 +598,9 @@ public class XCASSerializer {
     private void enqueueFeatures(TOP fs, int heapValue) {
       TypeImpl ti = fs._getTypeImpl();
       
+      if (fs instanceof UimaSerializable) {
+        ((UimaSerializable)fs)._save_to_cas_data();
+      }
       for (FeatureImpl fi : ti.getFeatureImpls()) {
         if (fi.getRangeImpl().isRefType) {
           TOP v = fs.getFeatureValue(fi);

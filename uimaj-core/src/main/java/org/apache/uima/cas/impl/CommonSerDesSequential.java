@@ -36,10 +36,12 @@ import org.apache.uima.jcas.cas.TOP;
  *   There is 0/1 instance per CAS, representing the FSs at some point in time in that CAS.
  *   
  *   Creation:  
- *     non-delta serialization
+ *     serialization (for delta serialization, 
+ *       the csds made when deserialization was done is reused, if available
+ *       Updates cannot add to the reachables).
  *     non-delta deserialization
- *     for delta serialization, a previous instance is used if available, otherwise a new csds is made
- *     
+ *     delta deserialization uses previous one
+ *         
  *   Reset: 
  *     CAS Reset
  *     API call (for optimization - used after all delta deserializations into a particular CAS are complete.

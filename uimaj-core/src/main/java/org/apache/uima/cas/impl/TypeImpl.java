@@ -143,6 +143,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private FeatureImpl[] staticMergedRefFeaturesList;
   
   /**
+   * Just the FS refs which are not sofa refs
+   */
+  private FeatureImpl[] staticMergedNonSofaFsRefs;
+  
+  /**
    * The number of used slots needed = total number of features minus those represented by fields in JCas cover classes
    */
   int nbrOfUsedIntDataSlots = -1;
@@ -908,7 +913,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   }  
 
   
-  void setOffset2Feat(List<FeatureImpl> tempIntFis, List<FeatureImpl> tempRefFis, FeatureImpl fi, int next) {
+  void setOffset2Feat(List<FeatureImpl> tempIntFis, 
+                      List<FeatureImpl> tempRefFis,
+                      List<FeatureImpl> tempNsr,
+                      FeatureImpl fi, 
+                      int next) {
     if (fi.isInInt) {     
       assert tempIntFis.size() == next;
       tempIntFis.add(fi);
@@ -918,12 +927,19 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     } else {
       assert tempRefFis.size() == next;
       tempRefFis.add(fi);
+      TypeImpl range = fi.getRangeImpl();
+        
+      if (range.isRefType && 
+          range.typeCode != TypeSystemConstants.sofaTypeCode) {
+        tempNsr.add(fi);
+      }
     }
   }
   
-  void initAdjOffset2FeatureMaps(List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis) {
+  void initAdjOffset2FeatureMaps(List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis, List<FeatureImpl> tmpNsr) {
     tmpIntFis.addAll(Arrays.asList(superType.staticMergedIntFeaturesList));
     tmpRefFis.addAll(Arrays.asList(superType.staticMergedRefFeaturesList));
+    tmpNsr   .addAll(Arrays.asList(superType.staticMergedNonSofaFsRefs));
   }
   
   FeatureImpl getFeatureByAdjOffset(int adjOffset, boolean isInInt) {
@@ -1050,7 +1066,18 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   void setStaticMergedRefFeaturesList(FeatureImpl[] v) {
     staticMergedRefFeaturesList = v;
   }
+  
+  void setStaticMergedNonSofaFsRefs(FeatureImpl[] v) {
+    staticMergedNonSofaFsRefs = v;
+  }
+  
+//  FeatureImpl[] getStaticMergedRefFeatures() {
+//    return staticMergedRefFeaturesList;
+//  }
 
+  FeatureImpl[] getStaticMergedNonSofaFsRefs() {
+    return staticMergedNonSofaFsRefs;
+  }
   public boolean isTopType() {
     return superType == null;
   }

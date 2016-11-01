@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UimaContext;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndexRepository;
@@ -264,6 +265,8 @@ public class XmiCasDeserializer {
      * Deferred Set of feature value assignments to do after all FSs are deserialized,
      */
     final private List<Runnable_withSaxException> fixupToDos = new ArrayList<>();
+    
+    final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
@@ -591,10 +594,18 @@ public class XmiCasDeserializer {
                   fs = casView.getDocumentAnnotation(); // gets existing one or creates a new one
                 } else {
                   fs = casView.createFS(currentType);  // not document annotation
+                  if (currentFs instanceof UimaSerializable) {
+                    UimaSerializable ufs = (UimaSerializable) currentFs;
+                    uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+                  }
                 }
               }
             } else {  // not annotationBase subtype
       		    fs = casBeingFilled.createFS(currentType);
+      		    if (currentFs instanceof UimaSerializable) {
+                UimaSerializable ufs = (UimaSerializable) currentFs;
+                uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+              }
             }
           }  // end of not a sofa, not an array
           readFS(fs, attrs, IS_NEW_FS);
@@ -1717,7 +1728,7 @@ public class XmiCasDeserializer {
       for (Runnable_withSaxException todo : fixupToDos) {
         todo.run();
       }
-      
+            
       // add FSs to indexes
       //   These come from the add list
       // https://issues.apache.org/jira/browse/UIMA-4099
@@ -1752,6 +1763,11 @@ public class XmiCasDeserializer {
     	  throw new CASRuntimeException(
     	      CASRuntimeException.DELTA_CAS_PREEXISTING_FS_DISALLOWED, "Preexisting FS view member encountered.");
       }
+      
+      for (Runnable r : uimaSerializableFixups) {
+        r.run();
+      }
+
     }
     
     private void finalizeRefValue(int xmiId, TOP fs, FeatureImpl fi) throws XCASParsingException {

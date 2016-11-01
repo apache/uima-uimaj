@@ -37,6 +37,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
@@ -866,6 +867,9 @@ public class CasSerializerSupport {
       
       boolean insideListNode = fs instanceof CommonList;
 
+      if (fs instanceof UimaSerializable) {
+        ((UimaSerializable)fs)._save_to_cas_data();
+      }
       for (FeatureImpl fi : fs._getTypeImpl().getFeatureImpls()) {
         if (isFiltering && filterTypeSystem_inner.getFeatureByFullName(fi.getName()) == null) { 
           // skip features that aren't in the target type system

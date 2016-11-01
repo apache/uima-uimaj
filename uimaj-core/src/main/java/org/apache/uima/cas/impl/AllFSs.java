@@ -21,9 +21,12 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.apache.uima.UimaSerializableFSs;
+import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.CommonArray;
@@ -132,16 +135,39 @@ class AllFSs {
     }
   
     final TypeImpl srcType = fs._getTypeImpl();
-    for (FeatureImpl srcFeat : srcType.getFeatureImpls()) {
-      if (typeMapper != null) {
-        FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
-        if (tgtFeat == null) {
-          continue;  // skip enqueue if not in target
-        }
-      } 
-      if (srcFeat.getRangeImpl().isRefType) {
-        enqueueFS(fs._getFeatureValueNc(srcFeat));
+    if (srcType.getStaticMergedNonSofaFsRefs().length > 0) {
+      if (fs instanceof UimaSerializableFSs) {
+        ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
       }
-    }   
+      for (FeatureImpl srcFeat : srcType.getStaticMergedNonSofaFsRefs()) {
+        if (typeMapper != null) {
+          FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
+          if (tgtFeat == null) {
+            continue;  // skip enqueue if not in target
+          }
+        }
+        enqueueFS(fs._getFeatureValueNc(srcFeat)); 
+      }
+    }
+    
+    
+//    
+//    if (srcType.hasRefFeature) {
+//      if (fs instanceof UimaSerializableFSs) {
+//        ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
+//      }
+//      for (FeatureImpl srcFeat : srcType.getStaticMergedRefFeatures()) {
+//        if (typeMapper != null) {
+//          FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
+//          if (tgtFeat == null) {
+//            continue;  // skip enqueue if not in target
+//          }
+//        } 
+//        if (srcFeat.getSlotKind() == SlotKind.Slot_HeapRef) {
+////        if (srcFeat.getRangeImpl().isRefType) {
+//          enqueueFS(fs._getFeatureValueNc(srcFeat));
+//        }
+//      }
+//    }
   }
 }

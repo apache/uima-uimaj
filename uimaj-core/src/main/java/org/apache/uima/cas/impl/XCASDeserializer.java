@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.UimaContext;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndexRepository;
@@ -145,6 +146,7 @@ public class XCASDeserializer {
     final private List<FSInfo> idLess;
 
     final private List<Runnable> fixupToDos = new ArrayList<>();
+    final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
     // What we expect next.
     private int state;
@@ -439,9 +441,17 @@ public class XCASDeserializer {
             cas.removeFromCorruptableIndexAnyView(fs, cas.getAddbackSingle());
           } else {
             fs = casView.createFS(type);
+            if (currentFs instanceof UimaSerializable) {
+              UimaSerializable ufs = (UimaSerializable) currentFs;
+              uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+            }
           }
         } else {  // not an annotation base
           fs = cas.createFS(type);
+          if (currentFs instanceof UimaSerializable) {
+            UimaSerializable ufs = (UimaSerializable) currentFs;
+            uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+          }
         }
       }
       
@@ -844,6 +854,9 @@ public class XCASDeserializer {
 //      for (int i = 0; i < views.size(); i++) {       
 //        ((CASImpl) views.get(i)).updateDocumentAnnotation();
 //      }
+      for (Runnable r : uimaSerializableFixups) {
+        r.run();
+      }
     }
 
     private void finalizeFS(FSInfo fsInfo) {

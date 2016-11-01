@@ -80,7 +80,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private int shift; 
   private int limit = -1;
   
-  private FSArray sourceFSArray = null;  // alternate source
+  private FeatureStructure[] sourceFSArray = null;  // alternate source
   private FSList  sourceFSList  = null;  // alternate source
   
   private boolean isTypePriority = false;
@@ -120,8 +120,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   public SelectFSs_impl(FSArray source) {
     this(source._casView);
     isAltSource = true;
-    sourceFSArray = source;
+    sourceFSArray = source._getTheArray();
   }
+  
+  public SelectFSs_impl(FeatureStructure[] source, CAS cas) {
+    this(cas);
+    isAltSource = true;
+    sourceFSArray = source;
+  } 
     
   public SelectFSs_impl(FSList source) {
     this(source._casView);
@@ -684,7 +690,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       filtered = filteredItems.toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));          
     } else {
       List<T> filteredItems = new ArrayList<T>();
-      for (TOP item : sourceFSArray._getTheArray()) {
+      for (FeatureStructure item : sourceFSArray) {
         if (!isNullOK && null == item) {
           continue;  // null items may be skipped
         }

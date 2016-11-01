@@ -245,6 +245,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   public final static ThreadLocal<TypeImpl> typeBeingLoadedThreadLocal = new ThreadLocal<TypeImpl>();
   
+  private final static FeatureImpl[] emptyFiArray = new FeatureImpl[0];
+  
   /******************************************
    *   I N S T A N C E   V A R I A B L E S  *
    ******************************************/
@@ -307,7 +309,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public final TypeImpl_list intNeListType;
   public final TypeImpl_list floatNeListType;
   public final TypeImpl_list stringNeListType;
-  public final TypeImpl_list fsNeListType;          
+  public final TypeImpl_list fsNeListType;  
+  
+  public final TypeImpl      fsArrayList;
+  public final TypeImpl      intArrayList;
           
 //  /**
 //   * List indexed by typecode
@@ -512,6 +517,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
     javaObjectType = new TypeImpl_javaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
     javaObjectArrayType = addArrayType(javaObjectType, null, HEAP_STORED_ARRAY, JavaObjectArray.class);
+    
+    fsArrayList = new TypeImpl(CAS.TYPE_NAME_FS_ARRAY_LIST, this, topType);
+    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsArrayList, fsArrayType);
+    
+    intArrayList = new TypeImpl(CAS.TYPE_NAME_INT_ARRAY_LIST, this, topType);
+    addFeature(CAS.FEATURE_BASE_NAME_INT_ARRAY, intArrayList, intArrayType);
     
     arrayName2ComponentType.put(CAS.TYPE_NAME_FS_ARRAY, topType);
     arrayName2ComponentType.put(CAS.TYPE_NAME_BOOLEAN_ARRAY, booleanType);
@@ -1344,13 +1355,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
     List<FeatureImpl> tempIntFis = new ArrayList<>();
     List<FeatureImpl> tempRefFis = new ArrayList<>();
+    List<FeatureImpl> tempNsr    = new ArrayList<>();
     if (ti != topType) {
-      ti.initAdjOffset2FeatureMaps(tempIntFis, tempRefFis);
+      ti.initAdjOffset2FeatureMaps(tempIntFis, tempRefFis, tempNsr);
     }
     
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
       fi.setAdjustedOffset(fi.isInInt ? nextI : nextR);
-      ti.setOffset2Feat(tempIntFis, tempRefFis, fi, fi.isInInt ? (nextI++) : (nextR++));
+      ti.setOffset2Feat(tempIntFis, tempRefFis, tempNsr, fi, fi.isInInt ? (nextI++) : (nextR++));
       if (((TypeImpl)fi.getRange()).isLongOrDouble) {
         nextI ++;
       }        
@@ -1359,8 +1371,15 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     ti.nbrOfUsedIntDataSlots = nextI;
     ti.nbrOfUsedRefDataSlots = nextR;
     
-    ti.setStaticMergedIntFeaturesList(tempIntFis.toArray(new FeatureImpl[tempIntFis.size()]));
-    ti.setStaticMergedRefFeaturesList(tempRefFis.toArray(new FeatureImpl[tempRefFis.size()]));
+    ti.setStaticMergedIntFeaturesList((tempIntFis.size() == 0) 
+        ? emptyFiArray 
+        : tempIntFis.toArray(new FeatureImpl[tempIntFis.size()]));
+    ti.setStaticMergedRefFeaturesList((tempRefFis.size() == 0) 
+        ? emptyFiArray 
+        : tempRefFis.toArray(new FeatureImpl[tempRefFis.size()]));
+    ti.setStaticMergedNonSofaFsRefs  ((tempNsr   .size() == 0) 
+        ? emptyFiArray 
+        : tempNsr   .toArray(new FeatureImpl[tempNsr   .size()]));
     
 //    ti.hasOnlyInts = ti.nbrOfUsedIntDataSlots > 0 && ti.nbrOfUsedRefDataSlots == 0;
 //    ti.hasOnlyRefs = ti.nbrOfUsedRefDataSlots > 0 && ti.nbrOfUsedIntDataSlots == 0;

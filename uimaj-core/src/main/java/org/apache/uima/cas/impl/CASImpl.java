@@ -48,6 +48,7 @@ import java.util.function.Predicate;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.AbstractCas_ImplBase;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -2947,13 +2948,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     //   all the slots were the same
     
     //
-    
+        
     boolean wasRemoved = removeFromIndexAnyView(fs, getAddbackSingle(), FSIndexRepositoryImpl.INCLUDE_BAG_INDEXES);
     if (!wasRemoved) {
       svd.fsTobeAddedbackSingleInUse = false;
     }
     TypeImpl newType = getTypeFromCode_checked(value);
-    
+    Class<?> newClass = newType.getJavaClass();
+    if ((fs instanceof UimaSerializable) ||
+        UimaSerializable.class.isAssignableFrom(newClass)) {
+      throw new UnsupportedOperationException("can't switch type to/from UimaSerializable");
+    }
+
     // Measurement - record which type gets switched to which other type
     //               count how many times
     //               record which JCas cover class goes with each type
@@ -2974,7 +2980,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
     }
 
-    if (newType.getJavaClass() == fs._getTypeImpl().getJavaClass() ||
+    if (newClass == fs._getTypeImpl().getJavaClass() ||
         newType.subsumes(fs._getTypeImpl())) {
       // switch in place
       fs._setTypeImpl(newType);
@@ -4745,6 +4751,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   
    ******************************************/
   /**
+   * Convert base FS to Pear equivalent
    * 3 cases:
    *   1) no trampoline needed, no conversion, return the original fs
    *   2) trampoline already exists - return that one
@@ -4766,6 +4773,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (T) view.pearConvert(fs, generator);
   }  
   
+  /**
+   * Inner method - after determining there is a generator
+   * First see if already have generated the pear version, and if so,
+   * use that.
+   * Otherwise, create the pear version and save in trampoline table  
+   * @param fs
+   * @param g
+   * @return
+   */
   private TOP pearConvert(TOP fs, FsGenerator g) {
     TOP r = svd.id2tramp.getReserve(fs._id);
     if (r != null) {
@@ -4774,11 +4790,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     
     svd.reuseId = fs._id;  // create new FS using base FS's ID
     pearBaseFs = fs;
+    // createFS below is modified because of pearBasFs non-null to 
+    // "share" the int and data arrays
     try {
       r = g.createFS(fs._getTypeImpl(), this);
     } finally {
       svd.reuseId = 0;
       pearBaseFs = null;
+    }
+    if (r instanceof UimaSerializable) {
+      throw new UnsupportedOperationException(
+          "Pears with Alternate implementations of JCas classes implementing UimaSerializable not supported.");
+//      ((UimaSerializable) fs)._save_to_cas_data();  // updates in r too
+//      ((UimaSerializable) r)._init_from_cas_data();
     }
     svd.id2tramp.put(r);
     return r;

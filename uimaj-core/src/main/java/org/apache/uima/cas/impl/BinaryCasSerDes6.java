@@ -54,6 +54,7 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
@@ -447,6 +448,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
   /** the "fixups" for relative heap refs */
   final private List<Runnable> fixupsNeeded = new ArrayList<>();
+  final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
 //  /** hold on to FS prior to getting them indexed to prevent them from being GC'd */
 //  final private List<TOP> preventFsGc = new ArrayList<>();
 
@@ -736,6 +738,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      *   including those FSs referenced  
      * For Delta Serialization - excludes those FSs below the line
      ******************************************************************/
+
+    /** 
+     * Skip this, and use the reuse-info, only for the case of:
+     *   - reuse info is provided, and its not a delta serialization.
+     *   - This should only happen if the same identical CAS is being 
+     *     serialized multiple times (being sent to multiple remote services, for instance)
+     */
     
     if (!reuseInfoProvided || isSerializingDelta) {
 //      long start = System.currentTimeMillis();
@@ -759,6 +768,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       // Add all strings to string optimizer. 
       //   Note: for delta cas, this only picks up strings 
       //   referenced by FSs above the line
+    
+      // Note: does the UimaSerializable _save_to_cas_data call for above the line items
    initSrcTgtIdMapsAndStrings();
     
     // add remaining strings for this case:
@@ -766,6 +777,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     //   use the deltaCasMod scanning
     final SerializeModifiedFSs smfs = isSerializingDelta ? new SerializeModifiedFSs() : null;
     if (isSerializingDelta) {
+      // Note: does the UimaSerializable _save_to_cas_data call for modified below the line items
       smfs.addModifiedStrings();
     }
     
@@ -1476,6 +1488,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
             }
           }
         } else {
+          if (fs instanceof UimaSerializable) {
+            ((UimaSerializable)fs)._save_to_cas_data();
+          }
           final BitSet featuresModified = changedFs.featuresModified;
           int next = featuresModified.nextSetBit(0);
           FeatureImpl[] feats = fs._getTypeImpl().getFeatureImpls();
@@ -1822,6 +1837,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           if (!srcTs.annotBaseType.subsumes(srcType) &&  // defer subtypes of AnnotationBase
               !(srcTs.sofaType == srcType)) {            // defer sofa types
             currentFs = cas.createFS(srcType);
+            if (currentFs instanceof UimaSerializable) {
+              UimaSerializable ufs = (UimaSerializable) currentFs;
+              uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+            }
           } else {
             currentFs = null;
             singleFsDefer.clear();
@@ -1864,6 +1883,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
               // would end up creating additional instances
             } else {
               currentFs = view.createFS(srcType);
+              if (currentFs instanceof UimaSerializable) {
+                UimaSerializable ufs = (UimaSerializable) currentFs;
+                uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+              }
             }
           }
           if (srcType.getCode() == TypeSystemConstants.docTypeCode) { 
@@ -1894,6 +1917,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
 
     for (Runnable r : fixupsNeeded) {
+      r.run();
+    }
+    
+    for (Runnable r : uimaSerializableFixups) {
       r.run();
     }
     
@@ -2956,6 +2983,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       fsStartIndexes.addItemId(fs, nextTgtId, isIncludedType);  // maps src heap to tgt seq
       
       if (isIncludedType) {
+        if (fs instanceof UimaSerializable) {
+          ((UimaSerializable)fs)._save_to_cas_data();
+        }
         // for features in type - 
         //    strings: accumulate those strings that are in the target, if optimizeStrings != null
         //      strings either in array, or in individual values

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.function.Consumer_T_withIOException;
@@ -151,6 +152,7 @@ public class CASSerializer implements Serializable {
    */
   public void addCAS(CASImpl cas, boolean addMetaData) {
     BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
+    // next call runs the setup, which scans all the reachables
     final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas
     bcsd.scanAllFSsForBinarySerialization(null, csds);  // no mark
     this.fsIndex = bcsd.getIndexedFSs(csds.fs2addr);  // must follow scanAll...
@@ -272,7 +274,9 @@ public class CASSerializer implements Serializable {
   public void addCAS(CASImpl cas, OutputStream ostream, boolean includeTsi) {
     final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
     
-    final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas, used for delta
+    // next call runs the setup, which scans all the reachables
+    // these may have changed since this was previously computed due to updates in the CAS    
+    final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), false);  // saves the csds in the cas, used for possible future delta deser
     bcsd.scanAllFSsForBinarySerialization(null, csds);  // no mark
     
     try {
@@ -449,18 +453,19 @@ public class CASSerializer implements Serializable {
       throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
     }
     MarkerImpl mark = (MarkerImpl) trackingMark;
-    final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
     
+    final BinaryCasSerDes bcsd = cas.getBinaryCasSerDes();
+    // next call runs the setup, which scans all the reachables
+    final CommonSerDesSequential csds = BinaryCasSerDes4.getCsds(cas.getBaseCAS(), true);  // saves the csds in the cas
     // because the output is only the new elements, this populates the arrays with only the new elements
     //   Note: all heaps reserve slot 0 for null, real data starts at position 1
-    final CommonSerDesSequential csds = cas.getCsds(); 
-//    if (csds.getHeapEnd() == 0) {
-//      System.out.println("debug");
-//    }
-    final Obj2IntIdentityHashMap<TOP> fs2auxOffset = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP._singleton);
-    
     List<TOP> all = bcsd.scanAllFSsForBinarySerialization(mark, csds);
-    
+
+    //  if (csds.getHeapEnd() == 0) {
+    //  System.out.println("debug");
+    //}
+    final Obj2IntIdentityHashMap<TOP> fs2auxOffset = new Obj2IntIdentityHashMap<TOP>(TOP.class, TOP._singleton);
+
     int byteOffset = 1;
     int shortOffset = 1;
     int longOffset = 1;
@@ -647,7 +652,7 @@ public class CASSerializer implements Serializable {
    * Scan the v3 fsChange info and produce
    * v2 style info into chgXxxAddr, chgXxxValue
    * 
-   * A prescan approach is needed in order to write the number of modifications preceeding the 
+   * A prescan approach is needed in order to write the number of modifications preceding the 
    *   write of the values (which unfortunately were written to the same stream in V2).
    * @param bcsd holds the model needed for v2 aux arrays
    * @param cas the cas to use for the delta serialization
@@ -746,6 +751,10 @@ public class CASSerializer implements Serializable {
         default: Misc.internalError();
         } // end of switch
       } else { // end of if-array
+        // 1 or more features modified
+        if (fs instanceof UimaSerializable) {
+          ((UimaSerializable)fs)._save_to_cas_data();
+        }
         BitSet fm = fsChange.featuresModified;
         int offset = fm.nextSetBit(0);
         while (offset >= 0) {

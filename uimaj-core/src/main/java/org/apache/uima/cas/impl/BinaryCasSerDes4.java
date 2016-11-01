@@ -44,6 +44,8 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import org.apache.uima.UIMASaxException;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Marker;
@@ -418,7 +420,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private boolean only1CommonString;  // true if only one common string
     
 //    final private CommonCompressedSerialization ccs; 
-    final private CommonSerDesSequential csds;
     
     // speedups
     
@@ -472,7 +473,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       this.baseCas = cas.getBaseCAS();
       this.bcsd = cas.getBinaryCasSerDes();
       this.isDelta = (mark != null);
-      this.csds = getCsds(baseCas, isDelta);
+//      this.csds = getCsds(baseCas, isDelta);
 //      this.ccs = new CommonCompressedSerialization(
 //          new CommonSerDesTypeMap(cas.getTypeSystemImpl(),  cas.getTypeSystemImpl()), // no type mapping
 //          mark);
@@ -541,6 +542,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //        sm.origAuxLongs = baseCas.getLongHeap().getSize() * 8;
 //        sm.totalTime = System.currentTimeMillis();
 //      }
+      final CommonSerDesSequential csds = getCsds(baseCas, isDelta);
       
       /************************
        * Write standard header
@@ -580,6 +582,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       for (TOP fs : localSortedFSs) {
         fs2seq.put(fs, seq);
         seq2fs.put(seq++, fs);
+        if (fs instanceof UimaSerializable) {
+          ((UimaSerializable)fs)._save_to_cas_data();
+        }
       }
       
       List<TOP> newSortedFSs = CASImpl.filterAboveMark(csds.getSortedFSs(), mark);  // returns all if mark not set            
@@ -598,6 +603,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
         // also add in all modified strings
         for (FsChange fsChange : fssModified) {
+          if (fsChange.fs instanceof UimaSerializable) {
+            ((UimaSerializable)fsChange.fs)._save_to_cas_data();
+          }
           extractStringsFromModifications(fsChange);
         }
       }
@@ -658,11 +666,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
 
       if (TRACE_SER) System.out.println("Form4Ser writing index info");
-      serializeIndexedFeatureStructures();
+      serializeIndexedFeatureStructures(csds);
 
       if (isDelta) {
         if (TRACE_SER) System.out.println("Form4Ser writing modified FSs");
-        (new SerializeModifiedFSs()).serializeModifiedFSs();
+        (new SerializeModifiedFSs(csds)).serializeModifiedFSs();
       }
 
       collectAndZip();
@@ -747,7 +755,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //      }
     }
     
-    private void serializeIndexedFeatureStructures() throws IOException {
+    private void serializeIndexedFeatureStructures(final CommonSerDesSequential csds) throws IOException {
       // fsIndexes already have the modelled address conversion
       int[] fsIndexes = isDelta ? bcsd.getDeltaIndexedFSs(mark, csds.fs2addr) : bcsd.getIndexedFSs(csds.fs2addr);
       if (doMeasurement) {
@@ -774,15 +782,15 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       }
        
       for (int vi = 0; vi < nbrViews; vi++) {
-        fi = compressFsxPart(fsIndexes, fi);    // added FSs
+        fi = compressFsxPart(fsIndexes, fi, csds);    // added FSs
         if (isDelta) {
-          fi = compressFsxPart(fsIndexes, fi);  // removed FSs
-          fi = compressFsxPart(fsIndexes, fi);  // reindexed FSs
+          fi = compressFsxPart(fsIndexes, fi, csds);  // removed FSs
+          fi = compressFsxPart(fsIndexes, fi, csds);  // reindexed FSs
         }
       }      
     }
 
-    private int compressFsxPart(int[] fsIndexes, int fsNdxStart) throws IOException {
+    private int compressFsxPart(int[] fsIndexes, int fsNdxStart, final CommonSerDesSequential csds) throws IOException {
       int ix = fsNdxStart;
       final int nbrEntries = fsIndexes[ix++];
       final int end = ix + nbrEntries;
@@ -1312,6 +1320,12 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       int vPrevModHeapRef = 0;
       short vPrevModShort = 0;
       long vPrevModLong = 0;
+      
+      final CommonSerDesSequential csds;
+      
+      public SerializeModifiedFSs(CommonSerDesSequential csds) {
+        this.csds = csds;
+      }
             
       private void serializeModifiedFSs() throws IOException {
         
@@ -1560,6 +1574,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
     /** the "fixups" for relative heap refs */
     final private List<Runnable> fixupsNeeded = new ArrayList<>();
+    final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
     final private StringHeap stringHeapObj = new StringHeap();
 //    private LongHeap longHeapObj;
@@ -1774,6 +1789,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
               !(ts.sofaType == type)) {            // defer sofa types
             currentFs = ivCas.createFS(type);
+            if (currentFs instanceof UimaSerializable) {
+              UimaSerializable ufs = (UimaSerializable) currentFs;
+              uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+            }
               
           } else {
             currentFs = null;
@@ -1810,6 +1829,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
               // would end up creating additional instances
             } else {
               currentFs = view.createFS(type);
+              if (currentFs instanceof UimaSerializable) {
+                UimaSerializable ufs = (UimaSerializable) currentFs;
+                uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+              }
             }
           }
           if (type.getCode() == TypeSystemConstants.docTypeCode) { 
@@ -1845,6 +1868,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         r.run();
       }
 
+      for (Runnable r : uimaSerializableFixups) {
+        r.run();
+      }
       
       if (TRACE_DES) System.out.println("Form4Deser indexing FSs");
       readIndexedFeatureStructures();
@@ -2951,6 +2977,27 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
     return tmpCsds;
   }
+  
+//  /**
+//   * Create and set up a new Csds for a CAS.
+//   *   Called whenever needed, after CAS has been updated 
+//   *   with possible new FSs via indexes or references, since previous csds was computed
+//   *   
+//   * This is not needed, because the existing method above would
+//   * compute new ones except for the case of a delta serialization with one computed already from the previous deserialization.
+//   *   - any new FSs are above the line and are found
+//   *   - the data in the csds are for data below the line, and that data is fixed
+//   *     -- because it includes all data below the line (referenced or not).
+//   *     -- there is no way to go from non-referenced to referenced via some update.
+//   *   
+//   * @param cas -
+//   * @return a newly computed csds with fs <-> addr tables, heapend number
+//   */
+//  static CommonSerDesSequential getNewCsds(CASImpl cas) {
+//    CommonSerDesSequential tmpCsds = cas.newCsds();
+//    tmpCsds.setup(null, 1);
+//    return tmpCsds;    
+//  }
   
 
 //  public String printCasInfo(CASImpl cas) {

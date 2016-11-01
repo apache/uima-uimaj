@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIterator;
@@ -734,6 +735,9 @@ public class CasCopier {
     // DocumentAnnotation - instead of creating a new instance, reuse the automatically created
     // instance in the destination view.
     if (isDocumentAnnotation(srcFs)) {
+      if (srcFs instanceof UimaSerializable) {
+        ((UimaSerializable)srcFs)._save_to_cas_data();
+      }
 //      Annotation da = (Annotation) srcFs;
 //      String destViewNamex = getDestSofaId(da.getView().getViewName());
 
@@ -757,6 +761,10 @@ public class CasCopier {
           Misc.internalError(e);
         }
       }
+      if (destDocAnnot instanceof UimaSerializable) {
+        ((UimaSerializable)destDocAnnot)._init_from_cas_data();
+      }
+
       // note not put into mFsMap, because each view needs a separate copy
       // and multiple creations (due to multiple refs) won't happen because
       //   the create is bypassed if it already exists
@@ -791,7 +799,15 @@ public class CasCopier {
     // add to map so we don't try to copy this more than once
     mFsMap.put((TOP)srcFs, tgtFs);
 
-    fsToDo.addLast(() -> copyFeatures(srcFs, tgtFs));
+    fsToDo.addLast(() -> {
+      if (srcFs instanceof UimaSerializable) {
+        ((UimaSerializable)srcFs)._save_to_cas_data();
+      }
+      copyFeatures(srcFs, tgtFs);
+      if (tgtFs instanceof UimaSerializable) {
+        ((UimaSerializable)tgtFs)._init_from_cas_data();
+      }
+    });
     return tgtFs;
   }
   
