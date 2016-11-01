@@ -21,6 +21,8 @@ package org.apache.uima.internal.util;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Like {@link java.util.Vector java.util.Vector}, but elements are <code>int</code>s. This is a
@@ -445,6 +447,16 @@ public class IntVector implements Serializable {
     return -1;
   }
 
+  public int lastIndexOf(int element) {
+    final int size = this.pos;
+    for (int i = size - 1; i >= 0; i--) {
+      if (element == this.array[i]) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  
   /**
    * Returns the index of some occurrence of the element specified in this vector.
    * optimization: 
@@ -513,6 +525,15 @@ public class IntVector implements Serializable {
     System.arraycopy(this.array, 0, r, 0, this.pos);
     return r;
   }
+  
+  public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
+    System.arraycopy(src, srcPos, this.array, destPos, length);
+  }
+  
+  public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
+    System.arraycopy(this.array, srcPos, dest, destPos, length);
+  }
+
 
   public String toString() {
     StringBuffer buf = new StringBuffer();
@@ -545,6 +566,76 @@ public class IntVector implements Serializable {
     }
     return sum;
   }
+  
+  public Iterator<Integer> iterator() {
+    return new Iterator<Integer>() {
+
+      int pos = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return pos < size();
+      }
+
+      @Override
+      public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return get(pos++);
+      }
+      
+    };
+  }
+  
+  public IntListIterator intListIterator() {
+    return new IntListIterator() {
+
+      private int pos = 0; 
+      
+      @Override
+      public boolean hasNext() {
+        return pos >= 0 && pos < size();
+      }
+
+      @Override
+      public int next() throws NoSuchElementException {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return get(pos++);
+      }
+
+      @Override
+      public boolean hasPrevious() {
+        return pos >= 0 && pos < size();  // same as has next
+      }
+
+      @Override
+      public int previous() {
+        if (!hasPrevious()) {
+          throw new NoSuchElementException();
+        }
+        return get(pos--);
+      }
+
+      @Override
+      public void moveToStart() {
+        pos = 0;
+      }
+
+      @Override
+      public void moveToEnd() {
+        pos = size() - 1;
+      }
+    };
+  }
+  
+  public void sort () {
+    Arrays.sort(this.array, 0, size());
+  }
+
+  
   // testing
 //  public static void main(String[] args) {
 //    IntVector iv = new IntVector();
