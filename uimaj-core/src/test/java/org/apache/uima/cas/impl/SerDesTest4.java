@@ -68,6 +68,7 @@ import junit.framework.TestCase;
  * for version 4 of Binary Compressed 
  * 
  * Has main method for creating resources to use in testing
+ *   will update resources in SerDes4.  If you do this by mistake, just revert those resources.
  */
 public class SerDesTest4 extends TestCase {
 
@@ -1296,4 +1297,10 @@ public class SerDesTest4 extends TestCase {
       }
     }
   }
+  
+  // disable to avoid accidentally overwriting test data
+  static public void main(String[] args) throws IOException {
+    (new SerDesTest4()).captureGenerated();
+  }
+
 }
