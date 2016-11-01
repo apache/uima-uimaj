@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/uima_v3_users_guide/backwards_compatibility/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.backwards_compatibility">
+  <title>Backwards Compatibility</title>
+  <titleabbrev>Backwards Compatibility</titleabbrev>
+  
+  <para>Version 3 is designed to be backwards compatibile, except for needing a new set of JCas classes (if these were
+  previously being used).</para>
+  
+  <section id="uv3.backwards_compatibility.serialization">  
+	  <title>Serialization forms</title>
+	  
+	  <para>
+	  The backwards compatibility extends to the serialized forms, so that it should be
+	  possible to have a UIMA-AS services working with a client, where the client is a version 3 instance, but the
+	  server is still a version 2 (or vice versa).  This compatibility is limited in that if new primitive extensions
+	  only available in version 3, these can't be received by a version 2 deserializer.
+	  </para>
+	  
+  </section>
+  
+  <section id="uv3.backards_compatibility.low_level_apis">
+    <title>Low Level APIs</title>
+    
+    <para>Version 2 had APIs called "low level"; these were designed to be used in situations where high performance
+    was needed, at the expense of being much more fragile.  Use of these APIs typically avoided creating Java objects,
+    and used, in many cases, untyped (and unchecked) plain <code>ints</code> as handles to Feature Structures.
+    </para>
+    
+    <para>In Version 3 these APIs are still supported, but are no longer higher performance, and should be avoided.
+    The APIs remain for backwards compatibility.  An example of this is the Binary Serialization protocol.  This 
+    remains, for backward compatibility, and because it's used for the <code>C/C++</code> interoperability layer, 
+    but that use requires modelling the exact layout of how Version 2 stored CASs and converting between these two
+    forms, so it is not particularly efficient.</para>
+    
+    <para>One consequence of the move toward storing Feature Structures as 
+    Java objects, is that the low level Feature Structure creation APIs (which return an int handle) 
+    must create an artificial reference to the Java object to keep it from being Garbage Collected (GC'd).
+    </para>
+  </section>
+  
+  <section id="uv3.backards_compatibility.PEARs">
+    <title>PEAR support</title>   
+    
+    <para>Pears are supported in Version 3.  If they use JCas, their JCas classes need to be migrated.
+    </para>
+  </section>
+  
+  <section id="uv3.backards_compatibility.typesystem_sharing">
+    <title>Type System sharing</title>   
+    
+    <para>Type System definitions are shared when they are equal.  After type systems 
+    have been built up from type definitions, and are committed, a check is made to see if an
+    identical type system already exists.  This is often the case when a UIMA application is
+    scaling up by adding multiple pipelines, all using the same type system.  
+    </para>
+    
+    <para>If an identical type system is already created, then the commit operation returns 
+    the already created one, and the one just built is discarded.  Normally, this is not an issue.
+    However, some application code (for example, test cases) may construct type systems
+    programmatically, and along the way save references to defined types and features.  These
+    references can then become invalid when the type system is created and perhaps replaced with
+    an already existing one.</para>
+    
+    <para>Application code should code around this by reacquiring references to type and feature
+    objects, if the type system returned from <code>commit</code> is not identical (==) to the
+    one being committed.</para>
+  </section>
+  </chapter>

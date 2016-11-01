@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/uima_v3_users_guide/overview/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.overview">
+  <title>Overview of UIMA Version 3</title>
+  <titleabbrev>Overview</titleabbrev>
+  
+  <para>UIMA Version 3 makes some major changes in how the Java version UIMA stores Feature Structures -
+  these are now stored as ordinary Java objects.  In contrast, version 2 stored these in special internal
+  arrays of <code>ints</code> and other data types.  Any Java object representations of Feature Structures in version 2
+  were merely forwarding references to these internal data representations.</para>
+  
+  <para>The benefits of version 3 include:
+	  <variablelist>
+	    <varlistentry>
+	      <term><emphasis role="strong">better performance</emphasis></term>
+	      <listitem>
+	        <para>The design follows recent trends in computer hardware 
+	        over the last 10-15 years; it adjusts the balance between space and time trade offs in favor of
+	        using more memory for better locality-of-reference, which improves performance.   
+	        </para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <!-- <varlistentry>
+	      <term><emphasis role="strong">new UIMA primitive collection objects</emphasis></term>
+	      <listitem>
+	        <para>3 new UIMA primitive feature types are supported:
+	        <variablelist>
+	          <varlistentry>
+	            <term><emphasis role="strong">ArrayList</emphasis></term>
+	            <listitem>
+	              <para>This is a variable length array, implemented using Java's ArrayList</para>
+	            </listitem>
+	          </varlistentry>
+	          <varlistentry>
+	            <term><emphasis role="strong">FSHashMap</emphasis></term>
+	            <listitem>
+	              <para>This is a Map containing Feature Structures, implemented using Java's HashMap</para>
+	            </listitem>
+	          </varlistentry>
+	          <varlistentry>
+	            <term><emphasis role="strong">FSHashSet</emphasis></term>
+	            <listitem>
+	              <para>This is a Set containing Feature Structures, implemented using Java's HashSet</para>
+	            </listitem>
+	          </varlistentry>
+	        </variablelist>   
+	        </para>
+	        <para>Serialization of these is supported, but (of course) these serialized forms may not be 
+	        read by Version 2 code.</para>
+	      </listitem>
+	    </varlistentry> -->
+	    
+	    <varlistentry>
+	      <term><emphasis role="strong">Automatic garbage collection of unreferenced Feature Structures</emphasis></term>
+	      <listitem>
+	        <para>This allows creating of temporary Feature Structures, and automatically reclaiming 
+	        space resources when they are no longer needed.</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><emphasis role="strong">Integration with Java 8</emphasis></term>
+	      <listitem>
+	        <para>Version 3 requires Java 8 as the minimum level.  It includes new facilities, such as the 
+	        <code>select</code> framework for accessing Feature Structures from CASs or other collections, which
+	        integrate with the new Java 8 language constructs, such as <code>Streams</code> and <code>Spliterators</code>.</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><emphasis role="strong">Mostly backwards compatible</emphasis></term>
+	      <listitem>
+	        <para>With the exception of needing to have new versions of any JCas classes an application may have defined,
+	        version 3 is intended to be backwards compatible - you should be able to run existing applications after 
+	        migrating the JCas classes.  Utilities are provided to do the JCas migration mostly automatically.</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term><emphasis role="strong">Elimination of ConcurrentModificationException while iterating over UIMA indexes</emphasis></term>
+	      <listitem>
+	        <para>The index and iteration mechanisms are improved; it is now allowed to modify the indexes while
+	        iterating over them (the iteration will be unaffected by the modification).</para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <!-- <varlistentry>
+        <term><emphasis role="strong">New facility: unique IDs for selected Feature Structures</emphasis></term>
+        <listitem>
+          <para>User defined Types can have use a special, reserved feature name, uimaOID, to store 
+          a unique ID which is generated by UIMA.  To enable this for a type, the user defines the
+          uimaOID feature; if present, UIMA will assign a
+          unique (for this CAS) OID to this feature when creating the Feature Structure.
+          This OID is composed of an incrementing number prefixed by the CAS's OID prefix. 
+          </para>
+          <para>When UIMA sends a CAS to a remote service, it generates an incremented prefix OID that is
+          unique for this CAS and sends that along with the CAS; this prefix OID is used by the remote
+          service when it needs to generate a unique OID.
+          </para>
+          
+          <para>A new CAS API allows retrieving indexed Feature Structures using this OID.  This capability
+          is built lazily on first use, as a special hash table mapping these ids to Feature Structures.  Note that
+          this table is built using Java WeakReferences and therefore will not block garbage collecting those
+          Feature Structures which are subsequently removed from the index and have no other references to them.
+          </para>
+        </listitem>
+      </varlistentry> -->
+	    
+	    <varlistentry>
+	      <term><emphasis role="strong">Type Systems reused</emphasis></term>
+	      <listitem>
+	        <para>Type system implementations are reused where possible, reducing the footprint in many scaled-out cases.</para>
+	      </listitem>
+	    </varlistentry>    
+	  </variablelist>
+  </para>
+  
+  <para>Just to give a small taste of the kinds of things Java 8 integration provides, 
+  here's an example of the new <code>select</code> framework, where the task is 
+  getting a set of all the found types in an index under some type "MyType" within a particular bounding Annotation 
+  that are nonOverlapping:
+  
+  <informalexample>  <?dbfo keep-together="always"?>
+<programlisting>
+Set&lt;Type&gt; foundTypes =
+   myIndex.select(MyType.class)
+   .coveredBy(myBoundingAnnotation)
+   .nonOverlapping()
+   .map(fs -> fs.getType())
+   .collect(Collectors.toCollection(TreeSet::new));
+</programlisting>
+</informalexample>
+Another example: to collect, by category, the average length of the annotations having that category.
+Here we assume that <code>MyType</code> is an <code>Annotation</code> and that it has
+a feature called <code>category</code> which returns a String denoting the category:
+<informalexample>  <?dbfo keep-together="always"?>
+<programlisting>Map&lt;String, Double&gt; freqByCategory =
+   myIndex.select(MyType.class)
+   .collect(Collectors
+     .groupingBy(MyType::getCategory,
+                 Collectors.averagingDouble(f -> 
+                   (double)(f.getEnd() - f.getBegin()))));
+</programlisting> 
+</informalexample>
+</para>
+
+<section id="uv3.overview.java8">
+  <title>Java 8 is required</title>
+  <para>Version 3 requires Java 8 or later JVM.</para>
+</section>      
+</chapter>
