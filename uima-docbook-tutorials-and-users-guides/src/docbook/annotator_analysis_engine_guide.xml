@@ -1312,17 +1312,13 @@ public void initialize(UimaContext aContext)
         that would iterate over all of the TimeAnnot annotations in the JCas:
         
         
-        <programlisting>FSIndex timeIndex = aJCas.getAnnotationIndex(TimeAnnot.type);
-Iterator timeIter = timeIndex.iterator();   
-while (timeIter.hasNext()) {
-  TimeAnnot time = (TimeAnnot)timeIter.next();
-
+        <programlisting>for (TimeAnnot : aJCas.&lt;TimeAnnot&gt;select(TimeAnnot.class)) {
   //do something
 }</programlisting></para>
       
       <note>
       <para>You can also use the method
-        <literal>JCAS.getJFSIndexRepository().getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
+        <literal>aJCas.getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
         over instances of <literal>YourClass</literal> in no particular order. 
         
         <!-- Fixed by UIMA-4111 But beware - if you've defined
@@ -1343,13 +1339,13 @@ while (timeIter.hasNext()) {
       <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"/>
         <olink targetdoc="&uima_docs_ref;"
           targetptr="ugr.ref.xml.component_descriptor.aes.index"/>, you can get an iterator over that
-        specific index by calling <literal>aJCas.getJFSIndexRepository().getIndex(label)</literal>.
-        The <literal>getIndex(...)</literal> method has also a 2 argument form; the second argument, 
-      if used, specialized the index to subtype of the type the index was declared to index.  For instance,
+        specific index by calling <literal>aJCas.getIndex(label, clazz)</literal>.
+        The <literal>getIndex(...)</literal> method's second argument 
+      specialized the index to subtype of the type the index was declared to index.  For instance,
       if you defined an index called "allEvents" over the type <literal>Event</literal>, and wanted 
       to get an index over just a particular subtype of event, say, <literal>TimeEvent</literal>,
       you can ask for that index using 
-        <literal>aJCas.getJFSIndexRepository().getIndex("allEvents", TimeEvent.type)</literal>.</para></note>
+        <literal>aJCas.getIndex("allEvents", TimeEvent.class)</literal>.</para></note>
       
       <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
         <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
