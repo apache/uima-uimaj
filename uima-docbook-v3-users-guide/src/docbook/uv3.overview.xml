@@ -44,35 +44,46 @@ under the License.
 	      </listitem>
 	    </varlistentry>
 	    
-	    <!-- <varlistentry>
-	      <term><emphasis role="strong">new UIMA primitive collection objects</emphasis></term>
+	    <varlistentry>
+	      <term><emphasis role="strong">Support for arbitrary Java objects in the CAS</emphasis></term>
 	      <listitem>
-	        <para>3 new UIMA primitive feature types are supported:
+	        <para>Support is added to allow users to define additional UIMA Types whose JCas implementation may 
+	        include Java objects, with serialization and deserialization performed using normal CAS transportable
+	        data.  Several new built-in UIMA types exploit this facility, adding things like adjustable arrays
+	        of Feature Structures. The chapter on Custom Java Objects describes this new facility.</para>
+	      </listitem>
+	    </varlistentry>
+	    
+	    <varlistentry>
+	      <term><emphasis role="strong">New UIMA built-in types built using the custom Java object support</emphasis></term>
+	      <listitem>
+	        <para>Several new built-in UIMA types are supported:
 	        <variablelist>
 	          <varlistentry>
-	            <term><emphasis role="strong">ArrayList</emphasis></term>
+	            <term><emphasis role="strong">FSArrayList</emphasis></term>
 	            <listitem>
 	              <para>This is a variable length array, implemented using Java's ArrayList</para>
 	            </listitem>
 	          </varlistentry>
 	          <varlistentry>
-	            <term><emphasis role="strong">FSHashMap</emphasis></term>
+	            <term><emphasis role="strong">IntegerArrayList</emphasis></term>
 	            <listitem>
-	              <para>This is a Map containing Feature Structures, implemented using Java's HashMap</para>
+	              <para>This is a variable length int array</para>
 	            </listitem>
 	          </varlistentry>
-	          <varlistentry>
+<!-- 	      <varlistentry>
 	            <term><emphasis role="strong">FSHashSet</emphasis></term>
 	            <listitem>
 	              <para>This is a Set containing Feature Structures, implemented using Java's HashSet</para>
 	            </listitem>
 	          </varlistentry>
-	        </variablelist>   
+ -->
+   	        </variablelist>   
 	        </para>
 	        <para>Serialization of these is supported, but (of course) these serialized forms may not be 
 	        read by Version 2 code.</para>
 	      </listitem>
-	    </varlistentry> -->
+	    </varlistentry>
 	    
 	    <varlistentry>
 	      <term><emphasis role="strong">Automatic garbage collection of unreferenced Feature Structures</emphasis></term>
