@@ -85,7 +85,7 @@ public class JCasTest extends TestCase {
 	public void setUp() throws Exception {
 		try {
 			try {
-				this.cas = CASInitializer.initCas(new CASTestSetup());
+				this.cas = CASInitializer.initCas(new CASTestSetup(), null);
 				this.ts = this.cas.getTypeSystem();
 				this.jcas = cas.getJCas();
 				endOfSentenceInstance = new EndOfSentence(jcas);
@@ -141,7 +141,7 @@ public class JCasTest extends TestCase {
 			boolean errFound = false;
 			try {
 			  // error happens during setup
-				localCas = CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS));
+				localCas = CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS), null);
 			} catch (CASRuntimeException e) {
 				assertTrue(e.getMessageKey().equals(CASException.JCAS_INIT_ERROR));
 			}
@@ -164,7 +164,7 @@ public class JCasTest extends TestCase {
 			JCas localJcas;
 			boolean errFound = false;
 			try {
-				localCas = CASInitializer.initCas(new CASTestSetup(testId));
+				localCas = CASInitializer.initCas(new CASTestSetup(testId), null);
 //				ts = this.cas.getTypeSystem();
 //				try {
 //					localJcas = localCas.getJCas();
@@ -443,7 +443,7 @@ public class JCasTest extends TestCase {
 	public void test2CASs() throws Exception {
 		try {
 			try {
-				CAS cas2 = CASInitializer.initCas(new CASTestSetup());
+				CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
 				TypeSystem ts2 = cas2.getTypeSystem();
 				JCas jcas2 = cas2.getJCas();
 				assertTrue(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
