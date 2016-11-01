@@ -386,9 +386,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
    * Besides the standard API call, other setter methods have suffixes and prefixes to the setter name
    *   - prefix is "_" to avoid conflicting with existing other names
    *   - suffixes are: 
-   *     -- Nfc:    skip feature validity checking, ( ! fv,   jrnl,   ic )  (int/Feat)
-   *     -- NcNj:   implies Nfc,                    ( ! fv, ! jrnl, ! ic )  (int/Feat)
-   *     -- NcWj:   implies Nfc,                    ( ! fv,   jrnl, ! ic )  (int)
+   *     -- Nfc:    skip feature validity checking, ( ! fv,   jrnl,   ci )  (int/Feat)
+   *     -- NcNj:   implies Nfc,                    ( ! fv, ! jrnl, ! ci )  (int/Feat)
+   *     -- NcWj:   implies Nfc,                    ( ! fv,   jrnl, ! ci )  (int)
    *          The is for setters where value checking might be needed (i.e., Java checking isn't sufficient)
    *     -- NcNjNv: implies Nfc, skips all checks
    *     
@@ -562,7 +562,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
    * @param v the FS to check
    * @return the FS or if it was a trampoline, the base FS
    */
-  protected TOP _maybeGetBaseForPearFs(TOP v) {
+  protected <N extends TOP> N _maybeGetBaseForPearFs(N v) {
     return (v == null) 
              ? null
              : v._isPearTrampoline() 
@@ -575,12 +575,17 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
    * @param v the FS to check
    * @return the FS or if we're in a Pear context, perhaps the trampoline (only some classes might have trampolines)
    */
-  protected TOP _maybeGetPearFs(TOP v) {
+  protected <N extends TOP> N _maybeGetPearFs(N v) {
     return (_casView.inPearContext()) 
-      ? _casView.pearConvert(v)
+      ? CASImpl.pearConvert(v)
       : v;
   }
   
+  /**
+   * Nc - no check, Wj = with journaling if needed
+   * @param adjOffset
+   * @param v
+   */
   public void _setFeatureValueNcWj(int adjOffset, FeatureStructure v) {
     _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), _maybeGetBaseForPearFs((TOP)v));
   }
@@ -817,6 +822,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
    *     
    * Subcases to handle:
    *   - arrays - these have no features.
+   *   
+   * Note: CasCopier doesn't call this because it needs to do a deep copy
+   *       This is not used by the framework
    *   
    * @return a new Feature Structure as a new instance of the same class, 
    *         with a new _id field, 
@@ -1423,6 +1431,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   }
  
   /**
+   * copy int and ref data for two instances, each having the exact same type
    * @param src the FS to copy features from
    */
   public void _copyIntAndRefArraysEqTypesFrom(FeatureStructureImplC src) {
