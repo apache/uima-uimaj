@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/uima_v3_users_guide/migration/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.migration">
+  <title>Migrating from Version 2 to 3</title>
+  <titleabbrev>Migrating</titleabbrev>
+  
+  <para>UIMA Version 3 changes how the Java version UIMA stores Feature Structures -
+	  these are now stored as ordinary Java objects.  In contrast, version 2 stored these in special internal
+	  arrays of <code>ints</code> and other data types.  The Java object representations of Feature Structures in version 2
+	  were merely forwarding wrappers into the int form of internal data representations.
+	</para>
+  
+  <para>Version 3 JCas class design drops the 2nd generated class ending in "_Type".  JCasGen is modified to generate
+    the new kind of class needed for version 3.
+  </para>
+  
+  <para>To migrate a UIMA application / pipeline to version 3, you need to replace the generated Version 2 JCas
+	  classes with version 3 classes.  This is done by running the migration tool (<code>runV3migrateJCas.sh or ...bat</code>).
+	  You must compile these classes and add them to your application's class path in place of the previous version 2
+	  classes.
+  </para>
+
+  <para>The migration tool scans multiple directory trees, looking for existing Java
+	  source (.java) or class (.class) files, even inside Jars and PEAR archives, and generates version 3 equivalent
+	  source files.  ".class" files are decompiled first; this process requires the classpath that the application
+	  uses in order to correctly decompile these.
+	</para>
+    
+  <para>The migration tool works by parsing the classes and changing just those parts which need changing.  
+    It also generates detailed reports detailing any issues encountered, by class. 
+    The next section describes how to run this tool.
+  </para>
+  
+	<section id="uv3.migration.tool_guide">
+	  <title>Migration tool guide</title>
+	  <para>The migration tool takes a set of inputs, migrates the Java classes found there, and outputs
+		   Java source code for the migrated classes. In addition,
+		   it produces multiple reports to enable the user to understand what it did, and any issues it
+		   encountered while attempting to migrate.
+		 </para>
+		  
+		<section id="uv3.migration.tool_guide.running">
+	    <title>Running the migration tool</title>
+	    <para>The tool is run using the convenience launcher <code>runV3migrateJCas</code>; there are two versions
+		    of this - one for windows (ending it ".bat") and one for linux / mac (ending in ".sh").
+		    If you run this without any arguments, it will show a brief help for the arguments.
+		  </para>
+	    
+	    <para>The input to the tool is one or more directory tree roots; the tool will scan the 
+		    file system under these roots, looking for definitions to migrate.  It uses a combination
+		    of heuristics to identify files which are JCas version 2 source or class files.</para>
+		    
+	      <blockquote><para>It can also be run with a list of specific JCas classes
+	      to migrate.</para></blockquote>
+		    
+	    <para>The output is written to the directory specified by the required parameter "-outputDirectory".
+      </para>
+	    
+	    <para>It operates using one of two modes, depending on what kind of arguments it is given:
+		    <variablelist>
+	
+		      <varlistentry>
+		        <term><emphasis role="strong">"-sourcesRoots"</emphasis></term>
+		        <listitem>
+		          <para>Migrates each candidate source file found in any of the file tree roots,
+		            skipping over non-JCas classes.</para>
+		        </listitem>
+		      </varlistentry>
+	
+	        <varlistentry>
+	          <term><emphasis role="strong">"-classesRoots" or "-classes"</emphasis></term>
+	          <listitem>
+	            <para>Migrates each candidate class file found in any of the file tree roots
+	              (skipping over non-JCas classes), or in the list of files specified.  
+	              This mode requires the parameter "-migrateClasspath", which specifies a Java classpath
+	              used by the decompiler.</para>
+	              
+	            <para> 
+	              The directory tree under "-classesRoots" is scanned, and/or 
+	              the individual classes specified in "-classes" are processed, as follows:
+		            <itemizedlist spacing="compact">
+		              <listitem>
+		                <para>When "-classesRoots" is used, walk the directory tree, excluding non JCas classes.</para>
+		              </listitem>
+		              <listitem>
+		                <para>For each candidate class, decompile the .class file into Java source code for the class.
+	                  </para>
+	 	              </listitem>
+		              <listitem>
+		                <para>Migrate that decompiled source.</para>
+		              </listitem>
+		            </itemizedlist>
+	            </para>
+	          </listitem>
+	        </varlistentry>
+	        
+		    </variablelist>  
+	    </para>
+	    	    
+	    <para>An optional parameter, "-skipTypeCheck", modifies the heuristic determination algorithm 
+	      by eliminating a pre-check filter that requires the candidate class have in the same directory a sister
+	      class of the same name plus the suffix "_Type". Normally this is the case, so this is a useful
+	      filter that can speed up processing.</para>
+	    
+	    <section id="uv3.migration.tool_guide.duplicates">
+	      <title>Handling duplicate definitions</title>
+	      <para>Sometimes, a classpath or directory tree may contain multiple instances of the same JCas class.
+	        These might be identical, or they might be different versions.  The migration utility detects this, 
+	        and migrates all non-identical instances, using a convention to store them in the output directory in a manner
+	        where different versions can be conveniently compared using tooling such as Eclipse's file compare.
+	      </para>
+	      <blockquote><para>When there are non-identical duplicate definitions, 
+	        the user must compare these and decide which version to use.</para></blockquote>
+	      
+	    </section>
+	  </section>  
+
+    <section id="uv3.migration.tool_guide.reports">
+      <title>Understanding the reports</title>
+      <para>A summary of results of running the migration tool is written to System.out.  
+        The output directory contains a logs directory with additional information.</para>
+        
+      <para>Each file translated has both a v2 source and a v3 source.  When the input is ".class" files, 
+        the v2 source is the result of the decompilation step, prior to any migration.</para>
+        
+      <para>In the case of non-identical duplicates, an increasing integer 
+        starting with 1 is inserted into the output directory tree
+        for each migrated class.</para>
+        
+      <para>The overall directory output directory tree looks like:
+        <programlisting>Directory structure, starting at -outputDirectory
+   converted/
+     v2/
+       x/y/z/javapath/.../Classname.java
+       x/y/z/javapath/.../Classname.java
+       ...
+     v3/
+       x/y/z/javapath/.../Classname.java
+       x/y/z/javapath/.../Classname.java
+       ...
+       
+       
+       1/     &lt;&lt; for non identical duplicates
+         x/y/z/javapath/.../Classname.java    
+         x/y/z/javapath/.../Classname.java  
+         ...                                    
+       2/     &lt;&lt; for non identical duplicates
+         x/y/z/javapath/.../Classname.java
+         x/y/z/javapath/.../Classname.java
+         ...
+       
+   not-converted/
+   logs/
+     processed.txt
+     failed.txt
+     skippedBuiltins.txt
+     NonJCasFiles.txt
+     workaroundDir.txt
+     deletedCheckModified.txt
+     manualInspection.txt
+     
+     ...</programlisting>
+        The converted subtree holds all the sources and migrated versions that were successfully migrated.
+        The not-converted subtree hold the sources that failed in some way the migration.
+        The logs contain many kinds of entries for different issues encountered:
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="strong">processed.txt</emphasis></term>
+            <listitem>
+              <para>List of successfully processed classes
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">failed.txt</emphasis></term>
+            <listitem>
+              <para>List of classes that failed to migrate
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">skippedBuiltins.txt</emphasis></term>
+            <listitem>
+              <para>List of classes representing built-ins that were skipped.  These need
+                manual inspection to see how to merge with new v3 built-ins.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">NonJCasFiles.txt</emphasis></term>
+            <listitem>
+              <para>List of files that appear to not be JCas files.  These need 
+                manual inspection to confirm.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">deletedCheckModified.txt</emphasis></term>
+            <listitem>
+              <para>List of class where a version 2 if statement doing the "featOkTst"
+                was apparently modified.  In the migrated code, this statement was deleted,
+                perhaps incorrectly. These need manual inspection to confirm.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">manualInspection.txt</emphasis></term>
+            <listitem>
+              <para>List of files where the migration found a get or set method, where
+                the version 2 code was accessing a casFeatCode with the 
+                feature name not matching.  These need manual inspection.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">workaroundDir.txt</emphasis></term>
+	          <listitem>
+	            <para>When running conversions on a windows system for files from a linux system,
+	              sometimes there's a clash caused by the fact that Windows doesn't recognize 
+	              upper vs lower case in file names.  When this happens, an entry is logged here,
+	              and the conflicting name is suffixed with a "_c".
+	            </para>
+	          </listitem>
+          </varlistentry>
+        </variablelist>    
+      </para>      
+    </section>  
+	</section>      
+</chapter>

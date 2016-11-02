@@ -27,17 +27,20 @@ under the License.
   <title>Backwards Compatibility</title>
   <titleabbrev>Backwards Compatibility</titleabbrev>
   
-  <para>Version 3 is designed to be backwards compatibile, except for needing a new set of JCas classes (if these were
+  <para>Version 3 is designed to be backwards compatible, except for needing a new set of JCas classes (if these were
   previously being used).</para>
   
   <section id="uv3.backwards_compatibility.serialization">  
 	  <title>Serialization forms</title>
 	  
 	  <para>
-	  The backwards compatibility extends to the serialized forms, so that it should be
+	  The backwards compatibility extends to many of the serialized forms, so that it should be
 	  possible to have a UIMA-AS services working with a client, where the client is a version 3 instance, but the
-	  server is still a version 2 (or vice versa).  This compatibility is limited in that if new primitive extensions
-	  only available in version 3, these can't be received by a version 2 deserializer.
+	  server is still a version 2 (or vice versa).</para>
+	  
+	  <para>Exception: Formats like Binary 
+	  and BinaryCompressedForm4 which require the type systems match exactly, are not compatible because Version 3 adds 
+	  some new built-in types, and as a consequence, the type systems do not match between version 2 and 3.
 	  </para>
 	  
   </section>
@@ -46,14 +49,15 @@ under the License.
     <title>Low Level APIs</title>
     
     <para>Version 2 had APIs called "low level"; these were designed to be used in situations where high performance
-    was needed, at the expense of being much more fragile.  Use of these APIs typically avoided creating Java objects,
+    was needed, at the expense of being much more susceptible to uncaught user errors.  
+    Use of these APIs typically avoided creating Java objects,
     and used, in many cases, untyped (and unchecked) plain <code>ints</code> as handles to Feature Structures.
     </para>
     
     <para>In Version 3 these APIs are still supported, but are no longer higher performance, and should be avoided.
-    The APIs remain for backwards compatibility.  An example of this is the Binary Serialization protocol.  This 
+    The APIs only remain for backwards compatibility.  An example of this is the Binary Serialization protocol.  This 
     remains, for backward compatibility, and because it's used for the <code>C/C++</code> interoperability layer, 
-    but that use requires modelling the exact layout of how Version 2 stored CASs and converting between these two
+    but that use requires modeling the exact layout of how Version 2 stored CASs and converting between these two
     forms, so it is not particularly efficient.</para>
     
     <para>One consequence of the move toward storing Feature Structures as 
