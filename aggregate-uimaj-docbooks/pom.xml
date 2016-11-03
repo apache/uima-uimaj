@@ -85,6 +85,7 @@
     <module>../uima-docbook-references</module>
     <module>../uima-docbook-tools</module>
     <module>../uima-docbook-tutorials-and-users-guides</module>
+    <module>../uima-docbook-v3-users-guide</module>
     <!--module>../../branches/mavenAlign/PearPackagingMavenPlugin</module>  not used - is old version of doc -->
   </modules>  
 </project>
