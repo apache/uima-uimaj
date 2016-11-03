@@ -63,7 +63,9 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
     stringBuilder.append(typeName);
     stringBuilder.append(" extends ");
     stringBuilder.append(jg.getJavaName(td.getSupertypeName()));
-    stringBuilder.append(" {\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = JCasRegistry.register(");
+    stringBuilder.append(" {\n \n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static String _TypeName = \"");
+    stringBuilder.append(jg.getJavaNameWithPkg(td.getName()));
+    stringBuilder.append("\";\n  \n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int typeIndexID = JCasRegistry.register(");
     stringBuilder.append(typeName);
     stringBuilder.append(".class);\n  /** @generated\n   * @ordered \n   */\n  @SuppressWarnings (\"hiding\")\n  public final static int type = typeIndexID;\n  /** @generated\n   * @return index of the type  \n   */\n  @Override\n  public              int getTypeIndexID() {return typeIndexID;}\n \n ");
    
@@ -88,12 +90,14 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      String rangeType = jg.getJavaRangeType(fd);
      String elemType = jg.getJavaRangeArrayElementType(fd);
      
-     localData.append("  private ").append(rangeType).append(" _F_").append(featName).append(";  // ").append(featDescCmt).append('\n');
+     localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      featRegistry.append("  public final static int _FI_").append(featName).append(" = TypeSystemImpl.getAdjustedFeatureOffset(\"")
                  .append(featName).append("\");\n");   
       
    } /* of Features iteration */ 
     stringBuilder.append("\n  /* *******************\n   *   Feature Offsets *\n   * *******************/ \n   \n");
+    stringBuilder.append(localData);
+    stringBuilder.append("\n\n");
     stringBuilder.append(featRegistry);
     stringBuilder.append("\n   \n  /** Never called.  Disable default constructor\n   * @generated */\n  protected ");
     stringBuilder.append(typeName);

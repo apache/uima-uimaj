@@ -51,6 +51,13 @@ import <%=(String)i.next()%>;
  * XML source: <%=jg.xmlSourceFileName%>
  * @generated */
 public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "<%=jg.getJavaNameWithPkg(td.getName())%>";
+  
   /** @generated
    * @ordered 
    */
@@ -89,7 +96,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
      String rangeType = jg.getJavaRangeType(fd);
      String elemType = jg.getJavaRangeArrayElementType(fd);
      
-     localData.append("  private ").append(rangeType).append(" _F_").append(featName).append(";  // ").append(featDescCmt).append('\n');
+     localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      featRegistry.append("  public final static int _FI_").append(featName).append(" = TypeSystemImpl.getAdjustedFeatureOffset(\"")
                  .append(featName).append("\");\n");   
       
@@ -99,6 +106,8 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
    *   Feature Offsets *
    * *******************/ 
    
+<%=localData%>
+
 <%=featRegistry%>
    
   /** Never called.  Disable default constructor
