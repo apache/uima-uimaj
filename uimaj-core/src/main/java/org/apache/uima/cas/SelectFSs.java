@@ -22,6 +22,7 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.text.AnnotationFS;
@@ -35,6 +36,14 @@ import org.apache.uima.jcas.cas.TOP;
  *   BI = bounded iterator (boundedBy or bounding)
  */
 public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stream<T> {
+  
+  // Stream and Iterable both define forEach, with Iterable supplying a default.
+  @Override
+  default void forEach(Consumer<? super T> action) {
+    Iterable.super.forEach(action);
+  }
+  
+  
   
 //  // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
 //    // Methods take their generic type from the variable to which they are assigned except for
