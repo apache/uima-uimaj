@@ -71,6 +71,8 @@ under the License.
     
     <para>Pears are supported in Version 3.  If they use JCas, their JCas classes need to be migrated.
     </para>
+    <para>The new Java Object support does not support multiple JCas class definitions for the same 
+      UIMA Type, inside and outside of the PEAR context.  When this is detected, an exception is thrown.</para>
   </section>
   
   <section id="uv3.backards_compatibility.typesystem_sharing">
@@ -89,7 +91,7 @@ under the License.
     references can then become invalid when the type system is created and perhaps replaced with
     an already existing one.</para>
     
-    <para>Application code should code around this by reacquiring references to type and feature
+    <para>Application code may code around this by re-acquiring references to type and feature
     objects, if the type system returned from <code>commit</code> is not identical (==) to the
     one being committed.</para>
   </section>

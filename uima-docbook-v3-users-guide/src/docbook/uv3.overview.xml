@@ -55,7 +55,7 @@ under the License.
 	    </varlistentry>
 	    
 	    <varlistentry>
-	      <term><emphasis role="strong">New UIMA built-in types built using the custom Java object support</emphasis></term>
+	      <term><emphasis role="strong">New UIMA built-in types, built using the custom Java object support</emphasis></term>
 	      <listitem>
 	        <para>Several new built-in UIMA types are supported:
 	        <variablelist>
@@ -80,8 +80,6 @@ under the License.
  -->
    	        </variablelist>   
 	        </para>
-	        <para>Serialization of these is supported, but (of course) these serialized forms may not be 
-	        read by Version 2 code.</para>
 	      </listitem>
 	    </varlistentry>
 	    

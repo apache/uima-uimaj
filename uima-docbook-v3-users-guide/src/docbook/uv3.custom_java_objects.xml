@@ -174,8 +174,19 @@ public void _save_to_cas_data() {
 	  
 	  <para>Some additional built-in UIMA types are defined in Version 3 using this new mechanism.  They work fully in
 	  Java, and are transported to non-Java frameworks as ordinary CAS objects.</para>
-
-	  <section id="uv3.custom_java_objects.builtin_arraylist_features">
+	  
+<!-- 	  <para>These are called "pre-built" rather than "built-in".  They are included in the normal type system by 
+	    default, but may be excluded in order to have the type system match UIMA V2's built-ins.  This would be
+	    needed, for instance, when an application needed to match typesystems with other instances, for example,
+	    to deserialize a binary-format serialization.</para>
+ 	    
+    <para>A new parameter, <code>TypeSystem.PARAM_EXCLUDE_PREBUILT_TYPES</code>, can be added as an additional
+      parameter to the "additionalParameters" map on any of the calls that produce type systems. 
+      <code>removePrebuiltTypes()</code> on a type system implementation object, 
+      before committing, removes these types.
+    </para>
+ -->   
+	  <section id="uv3.custom_java_objects.builtin_fsarraylist">
 	    <title>FSArrayList</title>
 	    <titleabbrev>FSArrayList</titleabbrev>
 	    
@@ -192,7 +203,7 @@ public void _save_to_cas_data() {
 	    can be used as a source for the <code>select</code> framework.</para> 
 	  </section>
 	  
-	  <section id="uv3.custom_java_objects.builtin_arraylist_ints">
+	  <section id="uv3.custom_java_objects.builtin_integerarraylists">
       <title>IntegerArrayList</title>
       <titleabbrev>IntegerArrayList</titleabbrev>
       
