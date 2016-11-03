@@ -50,7 +50,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
         TypeSystemDescription {
 
   static final long serialVersionUID = -3372766232454730201L;
-  
+    
   private String mName;
 
   private String mVersion;
@@ -62,7 +62,7 @@ public class TypeSystemDescription_impl extends MetaDataObject_impl implements
   private Import[] mImports = Import.EMPTY_IMPORTS;
 
   /** Descriptions of all Types in this type system. */
-  private TypeDescription[] mTypes = new TypeDescription[0];
+  private TypeDescription[] mTypes = TypeDescription.EMPTY_TYPE_DESCRIPTIONS;
 
   /**
    * Creates a new TypeSystemDescription_impl.

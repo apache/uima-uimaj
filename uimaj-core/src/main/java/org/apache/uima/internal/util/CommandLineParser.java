@@ -21,6 +21,8 @@ package org.apache.uima.internal.util;
 
 import java.util.HashMap;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * Simple command line parsing utility.
  * 
@@ -51,8 +53,6 @@ public class CommandLineParser {
 
   }
   
-  private final static String[] EMPTY_STRINGS = new String[0];
-
   private HashMap<String, CmdLineParam> paramMap = null;
 
   private HashMap<CmdLineParam, String> cmdLineMap = null;
@@ -146,7 +146,7 @@ public class CommandLineParser {
       }
       ++i;
     }
-    this.restArgs = EMPTY_STRINGS;
+    this.restArgs = Constants.EMPTY_STRING_ARRAY;
   }
 
   /**

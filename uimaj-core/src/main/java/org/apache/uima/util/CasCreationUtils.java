@@ -87,6 +87,10 @@ import org.apache.uima.resource.metadata.impl.ProcessingResourceMetaData_impl;
  */
 public class CasCreationUtils {
 
+  private final static AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
+  
+  private final static FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
+  
   /**
    * Creates a new CAS instance. Note this method does not work for Aggregate Analysis Engine
    * descriptors -- use {@link #createCas(AnalysisEngineDescription)} instead.
@@ -1243,7 +1247,7 @@ public class CasCreationUtils {
   private static AllowedValue[] getAllowedValues(TypeDescription type) {
     AllowedValue[] r = type.getAllowedValues();
     if (r == null) {
-      return new AllowedValue[0];
+      return EMPTY_ALLOWED_VALUE_ARRAY;
     }
     return r;
   }
@@ -1685,7 +1689,7 @@ public class CasCreationUtils {
       throws ResourceInitializationException {
     FeatureDescription[] existingFeatures = aType.getFeatures();
     if (existingFeatures == null) {
-      existingFeatures = new FeatureDescription[0];
+      existingFeatures = EMPTY_FEAT_DESC_ARRAY;
     }
 
     for (int i = 0; i < aFeatures.length; i++) {

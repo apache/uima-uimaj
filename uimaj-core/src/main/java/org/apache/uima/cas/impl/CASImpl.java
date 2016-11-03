@@ -73,7 +73,6 @@ import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.Marker;
-import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
@@ -81,6 +80,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
@@ -756,7 +756,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (externalTypeSystem) {
       ts = typeSystem;
     } else {
-      ts = new TypeSystemImpl(); // creates also new CASMetadata and
+      ts = (TypeSystemImpl) CASFactory.createTypeSystem(); // creates also new CASMetadata and
       // FSClassRegistry instances
     }
 
@@ -1094,10 +1094,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return new StringArray(getTypeSystemImpl().stringArrayType, this, length);
   }
   
-  public JavaObjectArray createJavaObjectArrayFS(int length) {
-    checkArrayPreconditions(length);
-    return new JavaObjectArray(getTypeSystemImpl().javaObjectArrayType, this, length);
-  }
+//  public JavaObjectArray createJavaObjectArrayFS(int length) {
+//    checkArrayPreconditions(length);
+//    return new JavaObjectArray(getTypeSystemImpl().javaObjectArrayType, this, length);
+//  }
 
 
   // return true if only one sofa and it is the default text sofa
@@ -1801,20 +1801,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     } else if (range.isStringOrStringSubtype()) {  // includes TypeImplSubString
       // is String or Substring
       fs.setStringValue(feat, (s == null) ? null : s);
-    } else if (range == getTypeSystemImpl().javaObjectType) {
-      fs.setJavaObjectValue(feat, (s == null) ? null : deserializeJavaObject(s));
+//    } else if (range == getTypeSystemImpl().javaObjectType) {
+//      fs.setJavaObjectValue(feat, (s == null) ? null : deserializeJavaObject(s));
     } else {
       Misc.internalError();
     }    
   }
 
-  private Object deserializeJavaObject(String s) {
-    throw new UnsupportedOperationException("Deserializing JavaObjects not yet implemented");
-  }
-
-  static String serializeJavaObject(Object s) {
-    throw new UnsupportedOperationException("Serializing JavaObjects not yet implemented");
-  }
+//  private Object deserializeJavaObject(String s) {
+//    throw new UnsupportedOperationException("Deserializing JavaObjects not yet implemented");
+//  }
+//
+//  static String serializeJavaObject(Object s) {
+//    throw new UnsupportedOperationException("Serializing JavaObjects not yet implemented");
+//  }
 
   /*
    * This should be the only place where the encoding of floats and doubles in terms of ints is specified

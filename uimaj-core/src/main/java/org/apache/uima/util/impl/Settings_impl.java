@@ -239,7 +239,7 @@ public class Settings_impl implements Settings {
     }
     value = value.substring(1, value.length() - 1);
     if (value.length() == 0) { // If an empty string create a 0-length array
-      return new String[0];
+      return Constants.EMPTY_STRING_ARRAY;
     }
     // Split on commas but rejoin tokens if a comma is escaped
     String[] tokens = value.split(",");

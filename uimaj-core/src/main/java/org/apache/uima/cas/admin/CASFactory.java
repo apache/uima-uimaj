@@ -108,8 +108,7 @@ public abstract class CASFactory {
    * @return A type system manager object that can be used to add more types.
    */
   public static TypeSystemMgr createTypeSystem() {
-    TypeSystemImpl ts = new TypeSystemImpl();
-    return ts;
+    return new TypeSystemImpl();
   }
 
 }

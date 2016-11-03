@@ -41,6 +41,7 @@ import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.impl.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -1133,7 +1134,7 @@ public class XCASDeserializer {
       String[] arrayVals;
       val = val.trim();
       if (emptyVal(val)) {
-        arrayVals = new String[0];
+        arrayVals = Constants.EMPTY_STRING_ARRAY;
       } else {
         arrayVals = val.split("\\s+");
       }

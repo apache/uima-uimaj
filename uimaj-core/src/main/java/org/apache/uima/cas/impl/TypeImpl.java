@@ -39,6 +39,7 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * The implementation of types in the type system.
@@ -504,7 +505,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private void computeStaticMergedFeaturesList() {
     synchronized (staticMergedFeaturesIntroducedByThisType) {
       if (null == superType) {  // is top type
-        staticMergedFeaturesList = new FeatureImpl[0];
+        staticMergedFeaturesList = Constants.EMPTY_FEATURE_ARRAY;
         return;
       }
       int length1 = superType.getFeatureImpls().length; 

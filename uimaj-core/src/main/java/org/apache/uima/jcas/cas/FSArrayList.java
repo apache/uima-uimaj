@@ -45,6 +45,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * An ArrayList type containing Feature Structures, for UIMA
@@ -65,7 +66,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
                                  UimaSerializableFSs, CommonArray, CommonArrayFS, SelectViaCopyToArray, 
                                  List<T>, RandomAccess, Cloneable {
 
-  private final static List<? extends TOP> EMPTY_LIST = (List<? extends TOP>) Arrays.asList(new TOP[0]);
+  private final static List<? extends TOP> EMPTY_LIST = (List<? extends TOP>) Arrays.asList(Constants.EMPTY_TOP_ARRAY);
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class

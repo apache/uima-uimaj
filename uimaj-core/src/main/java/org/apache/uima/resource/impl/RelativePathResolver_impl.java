@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.uima.resource.RelativePathResolver;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link RelativePathResolver}.
@@ -79,7 +80,7 @@ public class RelativePathResolver_impl implements RelativePathResolver {
     } catch (MalformedURLException e) {
       // initialize to empty path
       mDataPath = "";
-      mBaseUrls = new URL[0];
+      mBaseUrls = Constants.EMPTY_URL_ARRAY;
     }
     mClassLoader = aClassLoader;
   }

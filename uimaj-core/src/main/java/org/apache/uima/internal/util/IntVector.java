@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * Like {@link java.util.Vector java.util.Vector}, but elements are <code>int</code>s. This is a
  * bare-bones implementation. May add features as I need them.
@@ -65,7 +67,7 @@ public class IntVector implements Serializable {
    */
   public IntVector(int[] array) {
     if (array == null) {
-      array = new int[0];
+      array = Constants.EMPTY_INT_ARRAY;
     }
     this.pos = array.length;
     this.array = array;

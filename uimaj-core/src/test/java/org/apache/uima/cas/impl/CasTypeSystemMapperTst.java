@@ -27,6 +27,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
@@ -55,7 +56,7 @@ import junit.framework.TestCase;
 
 public class CasTypeSystemMapperTst extends TestCase {
   
-  private static TypeSystemImpl tsi = new TypeSystemImpl();  // just to get the built-ins
+  private static TypeSystemImpl tsi = (TypeSystemImpl) CASFactory.createTypeSystem();  // just to get the built-ins
   private static int t0 = tsi.getNumberOfTypes();
   private static int t1 = t0 + 1;
   private static int t2 = t0 + 2;

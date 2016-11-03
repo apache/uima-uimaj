@@ -22,6 +22,7 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
@@ -47,7 +48,7 @@ public class ResultSpecWithTypeSystemTest extends TestCase {
 	
 	// types
   
-  private static final TypeSystemMgr ts = new TypeSystemImpl();
+  private static final TypeSystemMgr ts = CASFactory.createTypeSystem();
   private static final Type t1 = ts.addType("T1", ts.getTopType());
   private static final Type t2 = ts.addType("T2", t1);
   private static final Type t3 = ts.addType("T3", t2);

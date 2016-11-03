@@ -23,6 +23,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * A map&lt;int, T&gt;
  * 
@@ -161,9 +163,7 @@ public class Int2ObjHashMap<T> {
   // set to true to collect statistics for tuning
   // you have to also put a call to showHistogram() at the end of the run
   private static final boolean TUNE = false;
-  
-  private final static int[] EMPTY_INT_ARRAY = new int[0];
- 
+   
   // this load factor gives, for array doubling strategy:
   //   between 1.5 * 8 bytes (2 words, one for key, one for value) = 12 and
   //           3   * 8                                               24 bytes per entry
@@ -405,7 +405,7 @@ public class Int2ObjHashMap<T> {
   public int[] getSortedKeys() {
     final int size = size();
     if (size == 0) {
-      return EMPTY_INT_ARRAY;
+      return Constants.EMPTY_INT_ARRAY;
     }
     final int[] r = new int[size];
     int i = 0;

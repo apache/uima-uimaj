@@ -22,6 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * A set of non-zero ints. 
  *   0 reserved internally to indicate "not in the map";
@@ -838,7 +840,7 @@ public class IntHashSet implements PositiveIntSet {
   public int[] toIntArray() {
     final int s = size();
     if (s == 0) {
-      return PositiveIntSet_impl.EMPTY_INT_ARRAY;
+      return Constants.EMPTY_INT_ARRAY;
     }
     final int[] r = new int[size()];
     int pos = moveToFirst();

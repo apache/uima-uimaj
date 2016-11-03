@@ -50,6 +50,7 @@ import org.apache.uima.pear.util.MessageRouter;
 import org.apache.uima.pear.util.StringUtil;
 import org.apache.uima.resource.PearSpecifier;
 import org.apache.uima.util.FileUtils;
+import org.apache.uima.util.impl.Constants;
 import org.xml.sax.SAXException;
 
 /**
@@ -408,7 +409,7 @@ public class InstallationController {
    * @return The string array of network parameters in the JVM format.
    */
   public static String[] buildArrayOfNetworkParams(InstallationDescriptor insdObject) {
-    String[] paramsArray = new String[0];
+    String[] paramsArray = Constants.EMPTY_STRING_ARRAY;
     List<String> paramsList = new ArrayList<String>();
     StringBuffer itemBuffer = new StringBuffer();
     Set<String> pNames = insdObject.getMainComponentNetworkParamNames();

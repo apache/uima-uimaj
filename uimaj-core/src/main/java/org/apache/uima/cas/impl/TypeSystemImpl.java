@@ -28,7 +28,6 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_DoubleRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Float;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_HeapRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Int;
-import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_JavaObjectRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_LongRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
@@ -76,7 +75,6 @@ import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.FloatList;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.IntegerList;
-import org.apache.uima.jcas.cas.JavaObjectArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.NonEmptyFloatList;
@@ -88,6 +86,7 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Type system implementation.
@@ -200,7 +199,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     slotKindsForNonArrays.put(CAS.TYPE_NAME_FLOAT, Slot_Float);
     slotKindsForNonArrays.put(CAS.TYPE_NAME_LONG, Slot_LongRef);
     slotKindsForNonArrays.put(CAS.TYPE_NAME_DOUBLE, Slot_DoubleRef);
-    slotKindsForNonArrays.put(CAS.TYPE_NAME_JAVA_OBJECT, Slot_JavaObjectRef);
   }
   
 
@@ -244,9 +242,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *   referenced from the TypeSystemImpl.getAdjustedFeatureOffset([featurename]) method.
    */
   public final static ThreadLocal<TypeImpl> typeBeingLoadedThreadLocal = new ThreadLocal<TypeImpl>();
-  
-  private final static FeatureImpl[] emptyFiArray = new FeatureImpl[0];
-  
+    
   /******************************************
    *   I N S T A N C E   V A R I A B L E S  *
    ******************************************/
@@ -295,8 +291,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public final TypeImpl      doubleType;
          final TypeImpl_array doubleArrayType;
          
-         final TypeImpl_javaObject javaObjectType;   // for Map, List, etc.
-         final TypeImpl_array javaObjectArrayType;   // for arrays of these
+//         final TypeImpl_javaObject javaObjectType;   // for Map, List, etc.
+//         final TypeImpl_array javaObjectArrayType;   // for arrays of these
          final TypeImpl      listBaseType;
   public final TypeImpl_list intListType;
   public final TypeImpl_list floatListType;
@@ -310,10 +306,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public final TypeImpl_list floatNeListType;
   public final TypeImpl_list stringNeListType;
   public final TypeImpl_list fsNeListType;  
-  
-  public final TypeImpl      fsArrayList;
-  public final TypeImpl      intArrayList;
-          
+            
 //  /**
 //   * List indexed by typecode
 //   * Value is an List<TypeImpl> of the directly subsumed types (just one level below)
@@ -515,14 +508,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     docType = new TypeImpl_annot(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType, Annotation.class);
     langFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringType, false);
     
-    javaObjectType = new TypeImpl_javaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
-    javaObjectArrayType = addArrayType(javaObjectType, null, HEAP_STORED_ARRAY, JavaObjectArray.class);
-    
-    fsArrayList = new TypeImpl(CAS.TYPE_NAME_FS_ARRAY_LIST, this, topType);
-    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsArrayList, fsArrayType);
-    
-    intArrayList = new TypeImpl(CAS.TYPE_NAME_INT_ARRAY_LIST, this, topType);
-    addFeature(CAS.FEATURE_BASE_NAME_INT_ARRAY, intArrayList, intArrayType);
+    addPrebuilt();
+//    javaObjectType = new TypeImpl_javaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
+//    javaObjectArrayType = addArrayType(javaObjectType, null, HEAP_STORED_ARRAY, JavaObjectArray.class);
     
     arrayName2ComponentType.put(CAS.TYPE_NAME_FS_ARRAY, topType);
     arrayName2ComponentType.put(CAS.TYPE_NAME_BOOLEAN_ARRAY, booleanType);
@@ -533,7 +521,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     arrayName2ComponentType.put(CAS.TYPE_NAME_LONG_ARRAY, longType);
     arrayName2ComponentType.put(CAS.TYPE_NAME_DOUBLE_ARRAY, doubleType);
     arrayName2ComponentType.put(CAS.TYPE_NAME_STRING_ARRAY, stringType);
-    arrayName2ComponentType.put(CAS.TYPE_NAME_JAVA_OBJECT_ARRAY,  javaObjectType);
+//    arrayName2ComponentType.put(CAS.TYPE_NAME_JAVA_OBJECT_ARRAY,  javaObjectType);
 
 //    // initialize the decompiler settings to read the class definition
 //    // from the classloader of this class.  Needs to be fixed to work with PEARs
@@ -601,7 +589,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     setTypeFinal(shortArrayType);
     setTypeFinal(longArrayType);
     setTypeFinal(doubleArrayType);
-    setTypeFinal(javaObjectArrayType);
+//    setTypeFinal(javaObjectArrayType);
     
     setTypeFinal(fsListType);
     setTypeFinal(floatListType);
@@ -659,7 +647,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
   }
 
-
+  public void addPrebuilt() {
+    TypeImpl fsArrayList = new TypeImpl(CAS.TYPE_NAME_FS_ARRAY_LIST, this, topType);
+    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsArrayList, fsArrayType);
+    
+    TypeImpl intArrayList = new TypeImpl(CAS.TYPE_NAME_INT_ARRAY_LIST, this, topType);
+    addFeature(CAS.FEATURE_BASE_NAME_INT_ARRAY, intArrayList, intArrayType);
+  }
  
   // Some implementation helpers for users of the type system.
   final int getSmallestType() {
@@ -834,7 +828,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *     arrays
    *     string subtypes
    *     primitives
-   *     JavaObjects
+   *     
    *   All of these have special addType methods
    * @param typeName
    *          The name of the new type.  
@@ -1372,13 +1366,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     ti.nbrOfUsedRefDataSlots = nextR;
     
     ti.setStaticMergedIntFeaturesList((tempIntFis.size() == 0) 
-        ? emptyFiArray 
+        ? Constants.EMPTY_FEATURE_ARRAY
         : tempIntFis.toArray(new FeatureImpl[tempIntFis.size()]));
     ti.setStaticMergedRefFeaturesList((tempRefFis.size() == 0) 
-        ? emptyFiArray 
+        ? Constants.EMPTY_FEATURE_ARRAY 
         : tempRefFis.toArray(new FeatureImpl[tempRefFis.size()]));
     ti.setStaticMergedNonSofaFsRefs  ((tempNsr   .size() == 0) 
-        ? emptyFiArray 
+        ? Constants.EMPTY_FEATURE_ARRAY 
         : tempNsr   .toArray(new FeatureImpl[tempNsr   .size()]));
     
 //    ti.hasOnlyInts = ti.nbrOfUsedIntDataSlots > 0 && ti.nbrOfUsedRefDataSlots == 0;

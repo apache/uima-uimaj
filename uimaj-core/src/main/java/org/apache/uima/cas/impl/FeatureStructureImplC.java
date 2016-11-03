@@ -1236,9 +1236,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       return getStringValue(feat);
     }
     
-    if (range.getCode() == TypeSystemConstants.javaObjectTypeCode) {
-      return CASImpl.serializeJavaObject(getJavaObjectValue(feat));
-    }
+//    if (range.getCode() == TypeSystemConstants.javaObjectTypeCode) {
+//      return CASImpl.serializeJavaObject(getJavaObjectValue(feat));
+//    }
     
     if (range.isRefType) {
       TOP ref = getFeatureValue(feat);

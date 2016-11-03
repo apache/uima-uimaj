@@ -31,6 +31,7 @@ import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.IntVector;
@@ -403,7 +404,7 @@ public class CASMgrSerializer implements Serializable {
   }
 
   public TypeSystemImpl getTypeSystem() {
-    final TypeSystemImpl ts = new TypeSystemImpl();
+    final TypeSystemImpl ts = (TypeSystemImpl) CASFactory.createTypeSystem();
     // First, add the top type.
 //    ts.addTopType(CAS.TYPE_NAME_TOP);  // does nothing, top type already there
     // HashMap nameMap = null;

@@ -22,6 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.BitSet;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * A set of non-zero positive ints.  
  *   
@@ -296,7 +298,7 @@ public class IntBitSet implements PositiveIntSet {
   public int[] toIntArray() {
     final int s = size();
     if (s == 0) {
-      return PositiveIntSet_impl.EMPTY_INT_ARRAY;
+      return Constants.EMPTY_INT_ARRAY;
     }
     final int[] r = new int[s];
     int pos = moveToFirst();
