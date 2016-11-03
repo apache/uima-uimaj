@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.internal.util.IntListIterator;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * a List API that returns ints instead of T
@@ -101,20 +102,17 @@ public interface List_of_ints extends Iterable<Integer> {
 
   public void sort();
   
-  public static int[] EMPTY_INT_ARRAY = new int[0];
-
-  
   public static List_of_ints EMPTY_LIST() {
     return new List_of_ints() {
       
       @Override
       public int[] toArray() {
-        return EMPTY_INT_ARRAY;
+        return Constants.EMPTY_INT_ARRAY;
       }
       
       @Override
       public int[] toArrayMinCopy() {
-        return EMPTY_INT_ARRAY;        
+        return Constants.EMPTY_INT_ARRAY;        
       }
       
       @Override
