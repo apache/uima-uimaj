@@ -162,18 +162,6 @@ public class FeatureImpl implements Feature {
 //    return (isGet ? "get" : "set")  + shortName1stLetterUpperCase;
 //  }
   
-  /**
-   * Note: you can only compare features from the same type system. If you compare features from
-   * different type systems, the result is undefined.
-   */
-  public int compareTo(Feature o) {
-    if (this == o) {
-      return 0;
-    }
-    FeatureImpl f = (FeatureImpl) o;
-    return (this.featureCode < f.featureCode) ? -1 : 1;
-  }
-
   public boolean isMultipleReferencesAllowed() {
     return this.isMultipleRefsAllowed;
   }
@@ -255,15 +243,44 @@ public class FeatureImpl implements Feature {
    */
   public final static FeatureImpl singleton = new FeatureImpl();
 
+  /**
+   * Hashcode and equals are used, possibly for features in different type systems, 
+   * where the features should be "equal".  Example: fitering during serialization.
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
+//    return this.featureCode;  // can't use this across different type systems
     result = prime * result + ((highestDefiningType == null) ? 0 : highestDefiningType.getName().hashCode());
     result = prime * result + (isMultipleRefsAllowed ? 1231 : 1237);
     result = prime * result + ((rangeType == null) ? 0 : rangeType.getName().hashCode());
     result = prime * result + ((shortName == null) ? 0 : shortName.hashCode());
     return result;
+  }
+
+  /**
+   * This should work across different type systems, for instance 
+   * when using filtered serialization
+   */
+  @Override
+  public int compareTo(Feature o) {
+    if (this == o) {
+      return 0;
+    }    
+    FeatureImpl other = (FeatureImpl) o;
+
+    int c;
+    c = this.shortName.compareTo(other.shortName);
+    if (c != 0) return c;
+    c = highestDefiningType.getName().compareTo(other.highestDefiningType.getName());
+    if (c != 0) return c;
+    c = Boolean.compare(this.isMultipleRefsAllowed, other.isMultipleRefsAllowed);
+    if (c != 0) return c;
+    c = rangeType.getName().compareTo(other.rangeType.getName());
+    if (c != 0) return c;
+
+    return 0;
   }
 
   @Override
@@ -273,6 +290,7 @@ public class FeatureImpl implements Feature {
     if (!(obj instanceof FeatureImpl)) return false;
     
     FeatureImpl other = (FeatureImpl) obj;
+//    return this.featureCode == other.featureCode;  // can't use this across different type systems
     if (!highestDefiningType.getName().equals(other.highestDefiningType.getName())) return false;
     if (isMultipleRefsAllowed != other.isMultipleRefsAllowed) return false;
     if (!rangeType.getName().equals(other.rangeType.getName())) return false;

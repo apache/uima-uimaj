@@ -406,22 +406,6 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return this.tsi;
   }
 
-
-
-  /**
-   * Note: you can only compare types from the same type system. If you compare types from different
-   * type systems, the result is undefined.
-   */
-  @Override
-  public int compareTo(TypeImpl t) {
-    if (this == t) {
-      return 0;
-    }
-
-    return Integer.compare(System.identityHashCode(this), 
-        System.identityHashCode(t));
-  }
-
   /**
    * @see org.apache.uima.cas.Type#getFeatureByBaseName(String)
    */
@@ -976,6 +960,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
   }
   
+  /**
+   * works across type systems
+   * @return -
+   */
   private int computeHashCode() {
     final int prime = 31;
     int result = 1;
@@ -994,6 +982,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   /**
    * Equal TypeImpl
+   * Works across type systems.
    */
   @Override
   public boolean equals(Object obj) {
@@ -1013,18 +1002,80 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     
     if (directSubtypes.size() != other.directSubtypes.size()) return false;
-    for (int i = 0; i < directSubtypes.size(); i++) {
-      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
-    }
     
     if (isFeatureFinal != other.isFeatureFinal) return false;
     if (isInheritanceFinal != other.isInheritanceFinal) return false;
     
+    if (this.getNumberOfFeatures() != other.getNumberOfFeatures()) return false;
+    
     final FeatureImpl[] fis1 = getFeatureImpls();
     final FeatureImpl[] fis2 = other.getFeatureImpls();
-    return Arrays.equals(fis1,  fis2);
+    if (!Arrays.equals(fis1,  fis2)) return false;
+    
+    for (int i = 0; i < directSubtypes.size(); i++) {
+      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
+    }
+    
+    return true;
   }
   
+  /**
+   * compareTo must return 0 for "equal" types
+   * 
+   * use the fully qualified names as the comparison
+   * Note: you can only compare types from the same type system. If you compare types from different
+   * type systems, the result is undefined.
+   */
+  @Override
+  public int compareTo(TypeImpl t) {
+    if (this == t) {
+      return 0;
+    }
+    
+    int c = this.name.compareTo(t.name);
+    if (c != 0) return c;
+        
+    c = Integer.compare(this.hashCode(), t.hashCode());
+    if (c != 0) return c;
+    
+    // if get here, we have two types of the same name, and same hashcode
+    //   may or may not be equal
+    //   check the parts.
+
+    if (this.superType == null || t.superType == null) {
+      Misc.internalError();
+    };
+    
+    c = this.superType.name.compareTo(t.superType.name);
+    if (c != 0) return c;
+    
+    c = Integer.compare(this.directSubtypes.size(), t.directSubtypes.size());
+    if (c != 0) return c;
+    
+    c = Integer.compare(this.getNumberOfFeatures(),  t.getNumberOfFeatures());
+    if (c != 0) return c;
+    
+    c = Boolean.compare(this.isFeatureFinal, t.isFeatureFinal);
+    if (c != 0) return c;      
+    c = Boolean.compare(this.isInheritanceFinal, t.isInheritanceFinal);
+    if (c != 0) return c;      
+
+    final FeatureImpl[] fis1 = getFeatureImpls();
+    final FeatureImpl[] fis2 = t.getFeatureImpls();
+    
+    for (int i = 0; i < fis1.length; i++) {
+      c = fis1[i].compareTo(fis2[i]);
+      if (c != 0) return c;      
+    }
+    
+    for (int i = 0; i < directSubtypes.size(); i++) {
+      c = this.directSubtypes.get(i).compareTo(t.directSubtypes.get(i));
+      if (c != 0) return c;      
+    }
+
+    return 0;
+  }
+
   boolean isPrimitiveArrayType() {
     if (!isArray()) {
       return false;
