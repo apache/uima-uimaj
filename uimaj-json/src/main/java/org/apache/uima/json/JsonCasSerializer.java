@@ -806,6 +806,10 @@ public class JsonCasSerializer {
         startedFeatureTypes = true;
       }
     }
+    
+    private SerializedString getShortFeatureName(FeatureImpl feat) {
+      return getSerializedString(feat.getShortName());
+    }
             
     /**
      * Add subtype information for used types limited to used subtypes
@@ -839,7 +843,10 @@ public class JsonCasSerializer {
              parent != null; 
              parent = (TypeImpl) parent.getSuperType()) {
           final int parentCode = parent.getCode();
-          if (Arrays.binarySearch(tiArray,  parent) < 0 ) {  // if parentCode not contained in tiArray
+          // next comparator must match the one used for sorting the tiArray
+          // https://issues.apache.org/jira/browse/UIMA-5171
+          // if parent not contained in tiArray 
+          if (Arrays.binarySearch(tiArray, parent, CasSerializerSupport.COMPARATOR_SHORT_TYPENAME) < 0 ) {  
             if (!parentTypesWithNoInstances.contains(parent)) {
               parentTypesWithNoInstances.add(parent);
             }
@@ -875,12 +882,18 @@ public class JsonCasSerializer {
     }
 
 
+    /*
+     * keep map from short type name to XmlElementName (full name, namespace, etc)
+     *   This map starts out empty
+     *     first use of type puts entry in
+     *     first use of type with different full name adds namespace to both
+     */
     @Override
     protected void checkForNameCollision(XmlElementName xmlElementName) {
       XmlElementName xel    = usedTypeName2XmlElementName.get(xmlElementName.localName);
       if (xel != null) {
         if (xel.nsUri.equals(xmlElementName.nsUri)) {  // nsUri is the fully qualified name
-          return;  // don't need name spaces yet
+          return;  // don't need name spaces yet, or have already added them for this item
         } else {
           addNameSpace(xel);
           addNameSpace(xmlElementName);
@@ -1047,7 +1060,7 @@ public class JsonCasSerializer {
     
     private void writeNumeric(FeatureImpl fi, long v) throws IOException {
       if (v == 0 && isOmitDefaultValues) return;
-      jg.writeFieldName(fi.getShortName());
+      jg.writeFieldName(getShortFeatureName(fi));
       jg.writeNumber(v);
     }
     
@@ -1056,7 +1069,7 @@ public class JsonCasSerializer {
       TOP array = fs._getFeatureValueNc(fi);
       if (array == null) return;
       
-      jg.writeFieldName(fi.getShortName());
+      jg.writeFieldName(getShortFeatureName(fi));
       if (isDynamicOrStaticMultiRef(fi, array)) {
         jg.writeNumber(cds.getXmiIdAsInt(array));
       } else {
@@ -1069,7 +1082,7 @@ public class JsonCasSerializer {
       TOP list = fs._getFeatureValueNc(fi);
       if (list == null) return;
       
-      jg.writeFieldName(fi.getShortName());
+      jg.writeFieldName(getShortFeatureName(fi));
       if (isDynamicOrStaticMultiRef(fi, list, isListAsFSs)) {
         jg.writeNumber(cds.getXmiIdAsInt(list));
       } else {
@@ -1113,11 +1126,11 @@ public class JsonCasSerializer {
     
     private void writeFsOrRef(TOP fs, FeatureImpl fi) throws IOException {
       if (fs == null || null == cds.multiRefFSs || cds.multiRefFSs.contains(fs)) {
-        jg.writeFieldName(fi.getShortName());
+        jg.writeFieldName(getShortFeatureName(fi));
         jg.writeNumber(cds.getXmiIdAsInt(fs));
       } else {
         jch.writeNlJustBeforeNext();
-        jg.writeFieldName(fi.getShortName());
+        jg.writeFieldName(getShortFeatureName(fi));
         isEmbeddedFromFsFeature = true;
         //  Use cases:  can write embed, which has embed, which has non-embed
         //     once hit non-embed, this flag would be turned off,

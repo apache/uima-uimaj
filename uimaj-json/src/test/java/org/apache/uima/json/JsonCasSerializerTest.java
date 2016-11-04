@@ -80,8 +80,8 @@ public class JsonCasSerializerTest extends TestCase {
    *********************************************************************/
   
   private static final boolean GENERATE_EXPECTED = false;
-  private static final String generateDir = "src/test/resources/CasSerialization/expected/";
-//  private static final String generateDir = "src/test/resources/CasSerialization/newExpected/";
+//  private static final String generateDir = "src/test/resources/CasSerialization/expected/";
+  private static final String generateDir = "src/test/resources/CasSerialization/newExpected/";
 
 
   private XMLParser parser = UIMAFramework.getXMLParser();
