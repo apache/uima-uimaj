@@ -12,7 +12,7 @@
   "_views" : {
     "_InitialView" : {
       "NonEmptyIntegerList" : [
-        {"head" : 11,  "tail" : 5 }, 
-        {"head" : 110,  "tail" : 5 } ] } }, 
+        {"tail" : 3,  "head" : 11 }, 
+        {"tail" : 3,  "head" : 110 } ] } }, 
   "_referenced_fss" : {
-    "5" : {"_type" : "NonEmptyIntegerList",  "head" : 22,  "tail" : [33 ] } } }
+    "3" : {"_type" : "NonEmptyIntegerList",  "tail" : [33 ],  "head" : 22 } } }
