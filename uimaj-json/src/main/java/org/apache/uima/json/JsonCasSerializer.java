@@ -554,7 +554,7 @@ public class JsonCasSerializer {
         jch.writeNlJustBeforeNext();
         String viewName = (0 == sofaAddr) ?  
             CAS.NAME_DEFAULT_SOFA :
-            cds.cas.getStringValue(sofaAddr, cds.tsi.sofaIdFeatCode);
+            cds.cas.getStringValue(sofaAddr, TypeSystemImpl.sofaIdFeatCode);
         jg.writeFieldName(viewName);  // view namne
         jg.writeStartObject();
         for (Integer fs : fssInView) {
@@ -836,7 +836,10 @@ public class JsonCasSerializer {
              parent != null; 
              parent = (TypeImpl) parent.getSuperType()) {
           final int parentCode = parent.getCode();
-          if (Arrays.binarySearch(tiArray,  parent) < 0 ) {  // if parentCode not contained in tiArray
+          // next comparator must match the one used for sorting the tiArray
+          // https://issues.apache.org/jira/browse/UIMA-5171
+          // if parent not contained in tiArray 
+          if (Arrays.binarySearch(tiArray, parent, CasSerializerSupport.COMPARATOR_SHORT_TYPENAME) < 0 ) {  
             if (!parentTypesWithNoInstances.contains(parentCode)) {
               parentTypesWithNoInstances.add(parentCode);
             }
@@ -872,12 +875,18 @@ public class JsonCasSerializer {
     }
 
 
+    /*
+     * keep map from short type name to XmlElementName (full name, namespace, etc)
+     *   This map starts out empty
+     *     first use of type puts entry in
+     *     first use of type with different full name adds namespace to both
+     */
     @Override
     protected void checkForNameCollision(XmlElementName xmlElementName) {
       XmlElementName xel    = usedTypeName2XmlElementName.get(xmlElementName.localName);
       if (xel != null) {
         if (xel.nsUri.equals(xmlElementName.nsUri)) {  // nsUri is the fully qualified name
-          return;  // don't need name spaces yet
+          return;  // don't need name spaces yet, or have already added them for this item
         } else {
           addNameSpace(xel);
           addNameSpace(xmlElementName);
