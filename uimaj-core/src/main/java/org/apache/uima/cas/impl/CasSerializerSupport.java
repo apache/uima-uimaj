@@ -132,7 +132,12 @@ public class CasSerializerSupport {
   
   public static AtomicInteger errorCount = new AtomicInteger(0);
   
-  final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
+  /**
+   * Comparator that just uses short name
+   * Public for access by JsonCasSerializer where it's needed for a binary search
+   * https://issues.apache.org/jira/browse/UIMA-5171
+   */
+  public final static Comparator<TypeImpl> COMPARATOR_SHORT_TYPENAME = new Comparator<TypeImpl>() {
     public int compare(TypeImpl object1, TypeImpl object2) {
       return object1.getShortName().compareTo(object2.getShortName());
     }
