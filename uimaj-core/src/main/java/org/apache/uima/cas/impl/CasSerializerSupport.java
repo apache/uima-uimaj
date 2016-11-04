@@ -423,6 +423,12 @@ public class CasSerializerSupport {
     public void serialize() throws Exception {    
       typeCode2namespaceNames = new XmlElementName[tsi.getLargestTypeCode() + 1];
       
+      // reset caches in case some things modified between calls to serialize for same instance of serializer
+      sortedUsedTypes = null;
+      typeUsed.clear();
+      Arrays.fill(indexedFSs, null);
+      queue.clear();
+           
       csss.initializeNamespaces();
               
       int iElementCount = 1; // start at 1 to account for special NULL object
