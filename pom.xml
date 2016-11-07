@@ -159,6 +159,11 @@
       <artifactId>uimaj-json</artifactId>
       <version>${project.version}</version>
     </dependency>    
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-v3migration-jcas</artifactId>
+      <version>${project.version}</version>
+    </dependency>    
   </dependencies>
 
   
@@ -188,8 +193,7 @@
             <goals>
               <goal>javadoc</goal>
             </goals>
-            <configuration>
-              <source>7</source> 
+            <configuration> 
               <groups>
                 <group>
                   <title>Packages</title>
