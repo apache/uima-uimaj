@@ -82,14 +82,21 @@
     </dependency>
     -->
     
-    <dependency>
+    <!-- needed for UimaDecompiler class-->
+    <dependency>  <!-- Apache v2 license  2016 checked -->
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
       <version>0.5.28</version>
     </dependency>
     
+    <dependency>  <!-- Apache v2 license  2016 checked. Also transitive include from above, listed here for bin inclusion -->
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.28</version>
+    </dependency>
+    
     <!-- for reading / transforming / generating JCas cover classes -->
-    <dependency>
+<!--     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
       <version>5.0.4</version>
@@ -100,17 +107,8 @@
       <artifactId>asm-tree</artifactId>
       <version>5.0.4</version>
     </dependency>
-		
-		<!-- This next dependency is used to enable findbug rule suppression annotations
-		     Currently commented out - till more thought given to this. 
-		     For instance, we don't want to accidentally distribute this dependency in builds
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>annotations</artifactId>
-			<version>2.0.0</version>
-			<scope>compile</scope>
-		</dependency>
-		 -->
+ -->		
+
 	</dependencies>
 	<build>
 		<finalName>uima-core</finalName>
