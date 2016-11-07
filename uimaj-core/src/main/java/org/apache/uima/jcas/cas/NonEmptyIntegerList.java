@@ -67,7 +67,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   /**
    * Generate a NonEmpty node with the specified head and tail
    * @param jcas -
-   * @param head -
+   * @param v -
    * @param tail -
    */
   public NonEmptyIntegerList(JCas jcas, int v, CommonList tail) {
@@ -79,7 +79,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   /**
    * Generate a NonEmpty node with the specified head with the empty node as the tail
    * @param jcas -
-   * @param head -
+   * @param v -
    */
   public NonEmptyIntegerList(JCas jcas, int v) {
     this(jcas, v, jcas.getCasImpl().getEmptyIntegerList());

@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 /**
- * The interface to the type system. Used to access information about existing
+ * <p>The interface to the type system. Used to access information about existing
  * {@link org.apache.uima.cas.Type types} and {@link org.apache.uima.cas.Feature features} using
  * their String identifiers.</p> 
  * 

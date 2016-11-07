@@ -370,6 +370,7 @@ public interface ResourceManager {
    * Loads a user class using either the UIMA extension class loader (if specified) or 
    * the loader the UIMA framework is running in.
    * @param name the class to load
+   * @param <N> generic class of class
    * @return the class
    * @throws ClassNotFoundException -
    */

@@ -65,7 +65,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   /**
    * Generate a NonEmpty node with the specified head and tail
    * @param jcas -
-   * @param head -
+   * @param v -
    * @param tail -
    */
   public NonEmptyFloatList(JCas jcas, float v, CommonList tail) {
@@ -77,7 +77,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   /**
    * Generate a NonEmpty node with the specified head with the empty node as the tail
    * @param jcas -
-   * @param head -
+   * @param v -
    */
   public NonEmptyFloatList(JCas jcas, float v) {
     this(jcas, v, jcas.getCasImpl().getEmptyFloatList());

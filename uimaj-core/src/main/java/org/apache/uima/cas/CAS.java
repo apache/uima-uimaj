@@ -830,7 +830,7 @@ public interface CAS extends AbstractCas {
 
   /**
    * Get iterator for all SofaFS in the CAS.
-   * 
+   * @param <T> generic type of sofa iterator
    * @return an iterator over SofaFS.
    */
   <T extends SofaFS> FSIterator<T> getSofaIterator();
@@ -1066,6 +1066,7 @@ public interface CAS extends AbstractCas {
    * and the index repository that contains metadata (annotations and other feature
    * structures) pertaining to that Sofa.
    * 
+   * @param <T> generic type of returned view
    * @return an iterator which returns all views.  Each object returned by
    *   the iterator is of type CAS or a subtype.
    */

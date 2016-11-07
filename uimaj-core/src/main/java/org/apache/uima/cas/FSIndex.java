@@ -141,7 +141,7 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * @param fs A Feature Structure used a template to match with the Feature Structures in the index.
    *           It must have the keys needed to do the compare as specified for the index that it's in.
    * @return A FS equal to the template argument, or <code>null</code> if no such FS exists.
-   * @see FSIterator#moveTo(T)
+   * @see FSIterator#moveTo(FeatureStructure)
    */
   T find(FeatureStructure fs);
 

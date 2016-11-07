@@ -243,7 +243,7 @@ public class XmiSerializationSharedData {
   /**
    * Records an out-of-typesystem attribute that belongs to an in-typesystem FS.
    * This will be added to the attributes when that FS is reserialized.
-   * @param addr CAS address of the FS 
+   * @param fs the FS 
    * @param featName name of the feature
    * @param featVal value of the feature, as a string
    */
@@ -259,7 +259,7 @@ public class XmiSerializationSharedData {
   /**
    * Records out-of-typesystem child elements that belong to an in-typesystem FS.
    * These will be added to the child elements when that FS is reserialized.
-   * @param addr CAS address of the FS 
+   * @param fs the FS 
    * @param featName name of the feature (element tag name)
    * @param featVals values of the feature, as a List of strings
    */
@@ -283,7 +283,7 @@ public class XmiSerializationSharedData {
   /**
    * Gets information about out-of-typesystem features that belong to an
    * in-typesystem FS.
-   * @param addr CAS address of the FS
+   * @param fs the FS
    * @return object containing information about out-of-typesystem features
    *   (both attributes and child elements)
    */
@@ -303,7 +303,7 @@ public class XmiSerializationSharedData {
   
   /**
    * Gets information about out-of-typesystem array elements.
-   * @param addr the CAS address of an FSArray
+   * @param fsarray an FSArray
    * @return a List of {@link org.apache.uima.cas.impl.XmiSerializationSharedData.XmiArrayElement} objects, each of which
    *   holds the index and xmi:id of an array element that is a
    *   reference to an out-of-typesystem FS.
@@ -319,7 +319,7 @@ public class XmiSerializationSharedData {
 
   /**
    * Records an out-of-typesystem array element in the XmiSerializationSharedData.
-   * @param addr CAS address of FSArray
+   * @param fsarray The FSArray
    * @param index index into array 
    * @param xmiId xmi:id of the out-of-typesystem element that is the value at the given index
    */
@@ -336,8 +336,8 @@ public class XmiSerializationSharedData {
    * Add mapping between the address of FS that is the value of a non-shared multi-valued
    * feature of a FeatureStructure. 
    * 
-   * @param nonsharedFSAddr - fs address of non-shared multi-valued feature value
-   * @param fsAddr - fs address of encompassing featurestructure
+   * @param nonsharedFS - The non-shared Feature Structure having a multi-valued feature value
+   * @param fs - the encompassing Feature Structure
    */
   public void addNonsharedRefToFSMapping(TOP nonsharedFS, TOP fs) {
 	this.nonsharedfeatureIdToFSId.put(nonsharedFS, fs);

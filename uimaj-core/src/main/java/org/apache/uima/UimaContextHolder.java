@@ -45,7 +45,7 @@ public class UimaContextHolder {
    * <p>
    * NOTE - Should be used only by the UIMA Framework.
    * 
-   * @param uimaContext
+   * @param uimaContext -
    */
   public static void setContext(UimaContext uimaContext) {
     threadLocalContext.set(uimaContext);;

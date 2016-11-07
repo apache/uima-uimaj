@@ -108,7 +108,6 @@ import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
-import org.apache.uima.jcas.cas.JavaObjectArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
@@ -1055,7 +1054,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       case longTypeCode: return new LongArray(array_type, this, arrayLength);
       case doubleTypeCode: return new DoubleArray(array_type, this, arrayLength);
       case stringTypeCode: return new StringArray(array_type, this, arrayLength);
-      case javaObjectTypeCode: return new JavaObjectArray(array_type, this, arrayLength);
+//      case javaObjectTypeCode: return new JavaObjectArray(array_type, this, arrayLength);
       default: Misc.internalError();
       }
 //      return tia.getGeneratorArray().createFS(type, this, arrayLength); 
@@ -4697,7 +4696,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     case floatTypeCode      : fsTgt._setFloatValueNcNj(     fiTgt, fsSrc._getFloatValueNc(     fiSrc)); break;
     case doubleTypeCode     : fsTgt._setDoubleValueNcNj(    fiTgt, fsSrc._getDoubleValueNc(    fiSrc)); break;
     case stringTypeCode     : fsTgt._setStringValueNcNj(    fiTgt, fsSrc._getStringValueNc(    fiSrc)); break;
-    case javaObjectTypeCode : fsTgt._setJavaObjectValueNcNj(fiTgt, fsSrc.getJavaObjectValue(fiSrc)); break;
+//    case javaObjectTypeCode : fsTgt._setJavaObjectValueNcNj(fiTgt, fsSrc.getJavaObjectValue(fiSrc)); break;
                // skip setting sofaRef - it's final and can't be set
     default: 
       if (fiSrc.getRangeImpl().isStringSubtype()) {

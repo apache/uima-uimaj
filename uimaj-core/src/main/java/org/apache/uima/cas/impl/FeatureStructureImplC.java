@@ -42,7 +42,6 @@ import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
-import org.apache.uima.jcas.cas.JavaObjectArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
@@ -590,18 +589,18 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), _maybeGetBaseForPearFs((TOP)v));
   }
 
-  @Override
-  public void setJavaObjectValue(Feature feat, Object v) { 
-    FeatureImpl fi = (FeatureImpl) feat;
-    
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
-    _setRefValueCJ(fi, v);
-  }
+//  @Override
+//  public void setJavaObjectValue(Feature feat, Object v) { 
+//    FeatureImpl fi = (FeatureImpl) feat;
+//    
+//    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+//    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
+//    _setRefValueCJ(fi, v);
+//  }
   
-  public void _setJavaObjectValueNcNj(FeatureImpl fi, Object v) { 
-    _setRefValueCommon(fi, v);
-  }
+//  public void _setJavaObjectValueNcNj(FeatureImpl fi, Object v) { 
+//    _setRefValueCommon(fi, v);
+//  }
 
   @Override
   public void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException {
@@ -785,16 +784,16 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     return _maybeGetPearFs((TOP) _refData[adjOffset /*+ _getRefDataArrayOffset()*/]);
   }
  
-  @Override
-  public Object getJavaObjectValue(Feature feat) { 
-    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    return _getJavaObjectValueNc((FeatureImpl) feat);
-  }
-
-  public Object _getJavaObjectValueNc(FeatureImpl fi) { return _getRefValueCommon(fi); }
-
-  public Object _getJavaObjectValueNc(int adjOffset) { return _getRefValueCommon(adjOffset); }
-
+//  @Override
+//  public Object getJavaObjectValue(Feature feat) { 
+//    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+//    return _getJavaObjectValueNc((FeatureImpl) feat);
+//  }
+//
+//  public Object _getJavaObjectValueNc(FeatureImpl fi) { return _getRefValueCommon(fi); }
+//
+//  public Object _getJavaObjectValueNc(int adjOffset) { return _getRefValueCommon(adjOffset); }
+//
   /**
    * @return the CAS view where this FS was created
    */
@@ -1385,8 +1384,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
       return v instanceof DoubleArray;
     case TypeSystemConstants.stringArrayTypeCode:
       return v instanceof StringArray;
-    case TypeSystemConstants.javaObjectArrayTypeCode:
-      return v instanceof JavaObjectArray;
+//    case TypeSystemConstants.javaObjectArrayTypeCode:
+//      return v instanceof JavaObjectArray;
     case TypeSystemConstants.fsArrayTypeCode:
       return v instanceof FSArray;
     }

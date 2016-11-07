@@ -20,6 +20,10 @@ public interface SelectViaCopyToArray {
   FeatureStructure[] toArray();
   CASImpl _getView(); 
   
+  /**
+   * @param <T> generic type being selected 
+   * @return a new instance of SelectFSs
+   */
   default <T extends FeatureStructure> SelectFSs_impl<T> select() {
     return new SelectFSs_impl<T>(toArray(), this._getView());
   }
@@ -27,6 +31,7 @@ public interface SelectViaCopyToArray {
   /**
    * Treat an FSArray as a source for SelectFSs. 
    * @param filterByType only includes elements of this type
+   * @param <T> generic type being selected
    * @return a new instance of SelectFSs
    */
   default <T extends FeatureStructure> SelectFSs<T> select(Type filterByType) {
@@ -36,6 +41,7 @@ public interface SelectViaCopyToArray {
   /**
    * Treat an FSArray as a source for SelectFSs.  
    * @param filterByType only includes elements of this JCas class
+   * @param <T> generic type being selected
    * @return a new instance of SelectFSs
    */
   default <T extends FeatureStructure> SelectFSs<T> select(Class<T> filterByType) {
@@ -45,6 +51,7 @@ public interface SelectViaCopyToArray {
   /**
    * Treat an FSArray as a source for SelectFSs. 
    * @param filterByType only includes elements of this JCas class's type
+   * @param <T> generic type being selected
    * @return a new instance of SelectFSs
    */
   default <T extends FeatureStructure> SelectFSs<T> select(int filterByType) {
@@ -54,6 +61,7 @@ public interface SelectViaCopyToArray {
   /**
    * Treat an FSArray as a source for SelectFSs. 
    * @param filterByType only includes elements of this type (fully qualifined type name)
+   * @param <T> generic type being selected
    * @return a new instance of SelectFSs
    */
   default <T extends FeatureStructure> SelectFSs<T> select(String filterByType) {

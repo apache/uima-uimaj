@@ -1776,7 +1776,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += type.getFsSpaceReq(arraySize)) {
         
         final int typeCode = readVnumber(typeCode_dis);
-        final int adjTypeCode = typeCode + ((isBeforeV3 && typeCode >= TypeSystemConstants.javaObjectTypeCode) ? 2 : 0);
+        final int adjTypeCode = typeCode + ((isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
+            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
+            : 0);
         type = ts.getTypeForCode(adjTypeCode);
         
         prevFs = prevFsByType[adjTypeCode]; // could be null;

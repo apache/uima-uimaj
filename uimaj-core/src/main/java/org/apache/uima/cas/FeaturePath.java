@@ -42,19 +42,21 @@ import org.apache.uima.cas.impl.LowLevelCAS;
  * 
  * <p>
  * After these calls the feature path value can be applied to a particular Feature Structure and a value can be 
- * extracted using the provided getter methods. <br>
- * <br>
+ * extracted using the provided getter methods.</p>
+ * <p>
  * The feature path elements are separated by "/". So a valid feature path is
- * /my/feature/path. <br>
- * <br>
+ * /my/feature/path. </p>
+ * <p>
  * The feature path syntax also allows some built-in functions on the last
  * feature path element. Built-in functions are added with a ":" followed by the
  * function name. E.g. "/my/path:fsId()". The allowed built-in functions are:
+ * </p>
  * <ul>
  * <li>coveredText()</li>
  * <li>fsId()</li>
  * <li>typeName()</li>
  * </ul>
+ * <p>
  * Built-in functions are only evaluated if getValueAsString() is called.
  * </p>
  * 
@@ -282,15 +284,15 @@ public interface FeaturePath {
     */
    public FeatureStructure getFSValue(FeatureStructure fs);
 
-   /**
-    * Returns the Java Object value of a JavaObject valued feature path.
-    * 
-    * @param fs
-    *           FeatureStructure to evaluate the feature path value
-    * 
-    * @return Returns the Java Object value of a JavaObject valued feature path
-    *         or null if the feature path was not set
-    */
-   public Object getJavaObjectValue(FeatureStructure fs);
+//   /**
+//    * Returns the Java Object value of a JavaObject valued feature path.
+//    * 
+//    * @param fs
+//    *           FeatureStructure to evaluate the feature path value
+//    * 
+//    * @return Returns the Java Object value of a JavaObject valued feature path
+//    *         or null if the feature path was not set
+//    */
+//   public Object getJavaObjectValue(FeatureStructure fs);
 
 }

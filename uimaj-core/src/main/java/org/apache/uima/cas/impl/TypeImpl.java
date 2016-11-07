@@ -93,7 +93,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   protected final boolean isCreatableAndNotBuiltinArray;
   
   /**
-   * false for primitives, strings, string subtypes, and JavaObjects
+   * false for primitives, strings, string subtypes
    */
   public final boolean isRefType;  // not a primitive, can be a FeatureStructure in the CAS, added to indexes etc.
   
@@ -826,8 +826,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     return (v == null && (isRefType || isStringOrStringSubtype())) ||
            (v instanceof String && isStringOrStringSubtype()) ||
            ((v instanceof FeatureStructureImplC) &&
-             subsumes( ((FeatureStructureImplC)v)._getTypeImpl())) ||
-           this.getCode() == TypeSystemConstants.javaObjectTypeCode;
+             subsumes( ((FeatureStructureImplC)v)._getTypeImpl())) 
+           ;
   }
   
   int computeDepthFirstCode(int level) {
@@ -1090,7 +1090,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     case TypeSystemConstants.longArrayTypeCode:
     case TypeSystemConstants.doubleArrayTypeCode:
     case TypeSystemConstants.stringArrayTypeCode:
-    case TypeSystemConstants.javaObjectArrayTypeCode:
+//    case TypeSystemConstants.javaObjectArrayTypeCode:
       return true;
     default: return false;
     }

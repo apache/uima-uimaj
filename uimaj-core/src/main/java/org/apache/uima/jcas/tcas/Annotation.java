@@ -117,6 +117,7 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
 
   /**
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
+   * @return -
    */
   public String getCoveredText() {
 
@@ -139,8 +140,8 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   
   /**
    * Compare two annotations, no type order
-   * @param other
-   * @return
+   * @param other -
+   * @return -
    */
   public int compareAnnotation(Annotation other) {
     int result = Integer.compare(_getIntValueNc(_FI_begin), other._getIntValueNc(_FI_begin));
@@ -152,8 +153,9 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   
   /**
    * Compare two annotations incl type order
-   * @param other
-   * @return
+   * @param other -
+   * @param lto -
+   * @return -
    */
   public int compareAnnotation(Annotation other, LinearTypeOrder lto) {
     int result = compareAnnotation(other);
@@ -165,8 +167,8 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
 
   /**
    * Compare two annotations, with type order, with id compare
-   * @param other
-   * @return
+   * @param other -
+   * @return -
    */
   public int compareAnnotationWithId(Annotation other) {
     int result = compareAnnotation(other);
@@ -176,8 +178,9 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   
   /**
    * Compare two annotations, with type order, with id compare
-   * @param other
-   * @return
+   * @param other -
+   * @param lto -
+   * @return -
    */
   public int compareAnnotationWithId(Annotation other, LinearTypeOrder lto) {
     int result = compareAnnotation(other, lto);

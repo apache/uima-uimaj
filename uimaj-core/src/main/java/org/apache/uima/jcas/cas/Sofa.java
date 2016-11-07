@@ -221,8 +221,8 @@ public class Sofa extends TOP implements SofaFS {
    * These getter methods are for creating method handle access
    * The getter name must match the feature name + transformation
    *   - used in generic pretty printing routines
+   * @return -
    */
-  
   public TOP getSofaArray() { return _getFeatureValueNc(_FI_sofaArray); }
   
   public String getSofaString() { return _getStringValueNc(_FI_sofaString); }

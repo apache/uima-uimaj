@@ -112,7 +112,6 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   /**
    * Make a new ArrayList 
    * @param jcas The JCas
-   * @param length initial size
    */
   public FSArrayList(JCas jcas) {
     super(jcas);
@@ -213,6 +212,10 @@ public final class FSArrayList <T extends TOP> extends TOP implements
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * @param src -
+   * @param srcPos -
+   * @param destPos -
+   * @param length -
    */
   public void copyFromArray(T[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -230,6 +233,10 @@ public final class FSArrayList <T extends TOP> extends TOP implements
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * @param srcPos -
+   * @param dest -
+   * @param destPos -
+   * @param length -
    */
   public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -317,6 +324,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    * Convenience - create a FSArrayList from an existing FeatureStructure[]
    * @param jcas -
    * @param a -
+   * @param <N> generic type of returned FS
    * @return -
    */
   public static <N extends TOP> FSArrayList<N> create(JCas jcas, N[] a) {
@@ -328,8 +336,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
   /**
-   * @param c
-   * @return
+   * @param c -
+   * @return -
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
    */
   public boolean containsAll(Collection<?> c) {
@@ -337,7 +345,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.ArrayList#isEmpty()
    */
   public boolean isEmpty() {
@@ -345,8 +353,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param o
-   * @return
+   * @param o -
+   * @return -
    * @see java.util.ArrayList#contains(java.lang.Object)
    */
   public boolean contains(Object o) {
@@ -354,8 +362,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param o
-   * @return
+   * @param o -
+   * @return -
    * @see java.util.ArrayList#indexOf(java.lang.Object)
    */
   public int indexOf(Object o) {
@@ -363,8 +371,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param o
-   * @return
+   * @param o -
+   * @return -
    * @see java.util.ArrayList#lastIndexOf(java.lang.Object)
    */
   public int lastIndexOf(Object o) {
@@ -372,8 +380,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param a
-   * @return
+   * @param a -
+   * @return -
    * @see java.util.ArrayList#toArray(java.lang.Object[])
    */
   public <T> T[] toArray(T[] a) {
@@ -381,7 +389,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.AbstractCollection#toString()
    */
   public String toString() {
@@ -389,8 +397,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param e
-   * @return
+   * @param e -
+   * @return -
    * @see java.util.ArrayList#add(java.lang.Object)
    */
   public boolean add(T e) {
@@ -420,8 +428,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param index
-   * @param element
+   * @param index -
+   * @param element -
    * @see java.util.ArrayList#add(int, java.lang.Object)
    */
   public void add(int index, T element) {
@@ -430,8 +438,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param index
-   * @return
+   * @param index -
+   * @return -
    * @see java.util.ArrayList#remove(int)
    */
   public T remove(int index) {
@@ -440,8 +448,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param o
-   * @return
+   * @param o -
+   * @return -
    * @see java.util.ArrayList#remove(java.lang.Object)
    */
   public boolean remove(Object o) {
@@ -474,8 +482,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param c
-   * @return
+   * @param c -
+   * @return -
    * @see java.util.ArrayList#addAll(java.util.Collection)
    */
   public boolean addAll(Collection<? extends T> c) {
@@ -484,9 +492,9 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param index
-   * @param c
-   * @return
+   * @param index -
+   * @param c -
+   * @return -
    * @see java.util.ArrayList#addAll(int, java.util.Collection)
    */
   public boolean addAll(int index, Collection<? extends T> c) {
@@ -495,8 +503,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param c
-   * @return
+   * @param c -
+   * @return -
    * @see java.util.ArrayList#removeAll(java.util.Collection)
    */
   public boolean removeAll(Collection<?> c) {
@@ -505,8 +513,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param c
-   * @return
+   * @param c -
+   * @return -
    * @see java.util.ArrayList#retainAll(java.util.Collection)
    */
   public boolean retainAll(Collection<?> c) {
@@ -515,7 +523,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.Collection#stream()
    */
   public Stream<T> stream() {
@@ -523,7 +531,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.Collection#parallelStream()
    */
   public Stream<T> parallelStream() {
@@ -531,8 +539,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param index
-   * @return
+   * @param index -
+   * @return -
    * @see java.util.ArrayList#listIterator(int)
    */
   public ListIterator<T> listIterator(int index) {
@@ -540,7 +548,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.ArrayList#listIterator()
    */
   public ListIterator<T> listIterator() {
@@ -548,7 +556,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.ArrayList#iterator()
    */
   public Iterator<T> iterator() {
@@ -556,9 +564,9 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param fromIndex
-   * @param toIndex
-   * @return
+   * @param fromIndex -
+   * @param toIndex -
+   * @return -
    * @see java.util.ArrayList#subList(int, int)
    */
   public List<T> subList(int fromIndex, int toIndex) {
@@ -566,7 +574,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param action
+   * @param action -
    * @see java.util.ArrayList#forEach(java.util.function.Consumer)
    */
   public void forEach(Consumer<? super T> action) {
@@ -574,7 +582,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.ArrayList#spliterator()
    */
   public Spliterator<T> spliterator() {
@@ -582,8 +590,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param filter
-   * @return
+   * @param filter -
+   * @return -
    * @see java.util.ArrayList#removeIf(java.util.function.Predicate)
    */
   public boolean removeIf(Predicate<? super T> filter) {
@@ -592,7 +600,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param operator
+   * @param operator -
    * @see java.util.ArrayList#replaceAll(java.util.function.UnaryOperator)
    */
   public void replaceAll(UnaryOperator<T> operator) {
@@ -601,7 +609,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @param c
+   * @param c -
    * @see java.util.ArrayList#sort(java.util.Comparator)
    */
   public void sort(Comparator<? super T> c) {

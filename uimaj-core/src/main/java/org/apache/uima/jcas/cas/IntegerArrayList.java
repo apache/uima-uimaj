@@ -52,7 +52,7 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /**
  * An ArrayList type containing ints, for UIMA
- *   - implements a subset of the List API, Iterable<Integer>, IntListIterator.
+ *   - implements a subset of the List API, Iterable&lt;Integer&gt;, IntListIterator.
  *   - it is adjustable, like ArrayList
  *   
  * Implementation notes:
@@ -115,7 +115,6 @@ public final class IntegerArrayList extends TOP implements
   /**
    * Make a new ArrayList 
    * @param jcas The JCas
-   * @param length initial size
    */
   public IntegerArrayList(JCas jcas) {
     super(jcas);
@@ -185,7 +184,10 @@ public final class IntegerArrayList extends TOP implements
     }
   }
   
-  /** return the indexed value from the corresponding Cas IntegerArray as a Java Model object. */
+  /**
+   * @param i -
+   * @return the indexed value from the corresponding Cas IntegerArray as a Java Model object.
+   */
   public int get(int i) {
     return (null == intArrayAsList)
       ? intArrayList.get(i)
@@ -194,6 +196,8 @@ public final class IntegerArrayList extends TOP implements
 
   /**
    * updates the i-th value of the FSArrayList
+   * @param i -
+   * @param v -
    */
   public void set(int i, int v) {
     if (null == intArrayAsList) {
@@ -212,6 +216,10 @@ public final class IntegerArrayList extends TOP implements
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * @param src -
+   * @param srcPos -
+   * @param destPos -
+   * @param length -
    */
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -231,6 +239,10 @@ public final class IntegerArrayList extends TOP implements
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * @param srcPos -
+   * @param dest -
+   * @param destPos -
+   * @param length -
    */
   public void copyToArray(int srcPos, int[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -250,6 +262,7 @@ public final class IntegerArrayList extends TOP implements
 
   /**
    * @see org.apache.uima.cas.ArrayFS#toArray()
+   * @return -
    */
   public int[] toArray() {
     int[] r = new int[size()];
@@ -259,6 +272,10 @@ public final class IntegerArrayList extends TOP implements
 
   /**
    * Not supported, will throw UnsupportedOperationException
+   * @param src -
+   * @param srcPos -
+   * @param destPos -
+   * @param length -
    */
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
@@ -329,7 +346,7 @@ public final class IntegerArrayList extends TOP implements
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
   /**
-   * @return
+   * @return -
    * @see java.util.ArrayList#isEmpty()
    */
   public boolean isEmpty() {
@@ -369,8 +386,8 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @param a
-   * @return
+   * @param a -
+   * @return -
    * @see java.util.ArrayList#toArray(java.lang.Object[])
    */
   public int[] toArray(int[] a) {
@@ -388,8 +405,8 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @param e
-   * @return
+   * @param e -
+   * @return true
    * @see java.util.ArrayList#add(java.lang.Object)
    */
   public boolean add(int e) {
@@ -419,8 +436,8 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @param index
-   * @param element
+   * @param index -
+   * @param element -
    * @see java.util.ArrayList#add(int, java.lang.Object)
    */
   public void add(int index, int element) {
@@ -429,9 +446,9 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @param index
-   * @return
-   * @see java.util.ArrayList#removeAt(int)
+   * @param index -
+   * @return -
+   * @see java.util.ArrayList#remove(int)
    */
   public int removeAt(int index) {
     maybeStartUsingIntegerArrayList();
@@ -454,7 +471,7 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.AbstractList#hashCode()
    */
   public int hashCode() {
@@ -477,7 +494,7 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @return
+   * @return -
    * @see java.util.ArrayList#iterator()
    */
   public Iterator<Integer> iterator() {

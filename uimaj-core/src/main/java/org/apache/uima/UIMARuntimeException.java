@@ -35,7 +35,7 @@ import java.util.Locale;
  * <p>
  * The thrower may specify the name of the <code>ResourceBundle</code> in which to find the
  * exception message. Any name may be used. If the name is omitted, the resource bundle identified
- * by {@link #STANDARD_MESSAGE_CATALOG} will be used. This contains the standard UIMA exception
+ * by {@link #resource_file} will be used. This contains the standard UIMA exception
  * messages.
  * 
  * 
@@ -217,7 +217,7 @@ public class UIMARuntimeException extends RuntimeException implements I18nExcept
   }
 
   /**
-   * Creates a new exception with a message from the {@link #STANDARD_MESSAGE_CATALOG}.
+   * Creates a new exception with a message from the {@link #resource_file}.
    * 
    * @param aMessageKey
    *          an identifier that maps to the message for this exception. The message may contain

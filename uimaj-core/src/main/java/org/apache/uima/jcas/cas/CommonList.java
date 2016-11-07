@@ -82,7 +82,6 @@ public interface CommonList extends FeatureStructure {
 	/**
 	 * length of a list, handling list loops.
 	 * returns the number of unique nodes in the list
-	 * @param fs - a list element
 	 * @return the number of items in the list
 	 */
 	default int getLength() {
@@ -189,7 +188,6 @@ public interface CommonList extends FeatureStructure {
    * 
    * Go thru a list, calling the ListOutput append method to append strings (to arrays, or string buffers)
    * Stop at the end node, or a null, or a loop (no error reported here)
-   * @param curNode - the current node in the list
    * @param sharedData - 
    * @param cds - 
    * @param out - a Consumer of strings

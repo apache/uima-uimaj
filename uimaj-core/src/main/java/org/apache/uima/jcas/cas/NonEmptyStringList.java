@@ -68,9 +68,9 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
    * @param head -
    * @param tail -
    */
-  public NonEmptyStringList(JCas jcas, String v, CommonList tail) {
+  public NonEmptyStringList(JCas jcas, String head, CommonList tail) {
     this(jcas);
-    setHead(v);
+    setHead(head);
     setTail(tail);
   }
   
@@ -79,8 +79,8 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
    * @param jcas -
    * @param head -
    */
-  public NonEmptyStringList(JCas jcas, String v) {
-    this(jcas, v, jcas.getCasImpl().getEmptyStringList());
+  public NonEmptyStringList(JCas jcas, String head) {
+    this(jcas, head, jcas.getCasImpl().getEmptyStringList());
   }
   
 // *------------------*

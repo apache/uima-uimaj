@@ -72,6 +72,7 @@ public interface FSIndexRepository {
   /**
    * Get all indexes in this repository.
    * 
+   * @param <T> the generic type of the FeatureStructures
    * @return All indexes.
    */
   <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes();
@@ -79,6 +80,7 @@ public interface FSIndexRepository {
   /**
    * Get all indexes in this repository as low level indexes
    * 
+   * @param <T> the generic type of the FeatureStructures
    * @return All indexes.
    */
   <T extends FeatureStructure> Iterator<LowLevelIndex<T>> ll_getIndexes();
@@ -95,6 +97,7 @@ public interface FSIndexRepository {
    * 
    * @param fs
    *          The FS to be added.
+   * @param <T> the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
@@ -105,6 +108,7 @@ public interface FSIndexRepository {
    * 
    * @param fs
    *          The FS to be removed.
+   * @param <T> the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
    */

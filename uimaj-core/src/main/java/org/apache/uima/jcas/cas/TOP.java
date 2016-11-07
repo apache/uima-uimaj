@@ -78,7 +78,7 @@ public class TOP extends FeatureStructureImplC {
 
 	/**
 	 * This version is used by user code new XXX(jcas)
-	 * @param jcas
+	 * @param jcas -
 	 */
 	public TOP(JCas jcas) {
 	  super((JCasImpl) jcas);	  

@@ -49,7 +49,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * Set the start position of the annotation as character offset into the text. The smallest
    * possible start position is <code>0</code>, the offset of the first character in the text.
    * 
-   * @param The start position.
+   * @param begin The start position.
    */
   void setBegin(int begin);
 
@@ -58,7 +58,7 @@ public interface AnnotationFS extends AnnotationBaseFS {
    * points at the first character after the annotation, such that
    * <code>(getEnd()-getBegin()) == getCoveredText().length()</code>.
    * 
-   * @param The end position position.
+   * @param end The end position position.
    */
   void setEnd(int end);
 

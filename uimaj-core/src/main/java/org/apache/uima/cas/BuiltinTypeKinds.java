@@ -27,7 +27,7 @@ public class BuiltinTypeKinds {
 
   /**
    *  These types can not be created with CAS.createFS().
-   *    Arrays can be created using CAS.create<XYZ>Array  XYZ = Boolean, Byte, etc.
+   *    Arrays can be created using CAS.create&lt;XYZ&gt;Array  XYZ = Boolean, Byte, etc.
    */
   public static final Set<String> nonCreatableTypesAndBuiltinArrays = new HashSet<String>();
   
@@ -89,10 +89,18 @@ public class BuiltinTypeKinds {
   
   /*****************  public getters and predicates *****************/
     
+  /**
+   * @param name -
+   * @return -
+   */
   public static boolean primitiveTypeNames_contains(String name) {
     return primitiveTypeNames.contains(name);
   }
   
+  /**
+   * @param name -
+   * @return -
+   */
   public static boolean nonCreatableTypesAndBuiltinArrays_contains(String name) {
     return nonCreatableTypesAndBuiltinArrays.contains(name);
   }

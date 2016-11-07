@@ -51,7 +51,7 @@ public interface LinearTypeOrder {
    * Compare two Feature Structure's types
    * @param fs1 first Feature Structure
    * @param fs2 second Feature Structure
-   * @return same as compare functions: -1 if fs1's type < fs2's type, etc.
+   * @return same as compare functions: -1 if fs1's type &lt; fs2's type, etc.
    */
   int compare(FeatureStructure fs1, FeatureStructure fs2);
 

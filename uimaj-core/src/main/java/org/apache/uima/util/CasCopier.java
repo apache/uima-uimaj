@@ -648,6 +648,7 @@ public class CasCopier {
    * View handling: ignores the view of the targetCas
    * 
    * @param aFS the Feature Structure to copy
+   * @param <T> the generic type of the returned Feature Structure
    * @return a deep copy of the Feature Structure - any referred to FSs will also be copied, or
    *         null if the target CAS doesn't define a corresponding type
    */

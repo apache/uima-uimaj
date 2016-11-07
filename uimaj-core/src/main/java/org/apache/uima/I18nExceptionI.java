@@ -45,8 +45,8 @@ public interface I18nExceptionI {
      * Due to the fact that superclass definitions override any
      * default methods, these next must be in the class definitions
      * as they override other supertype methods.
+     * @return -
      */
-
     String getMessage();
     String getLocalizedMessage();
 

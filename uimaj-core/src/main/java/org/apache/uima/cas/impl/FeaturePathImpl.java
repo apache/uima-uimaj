@@ -363,18 +363,18 @@ class FeaturePathImpl implements FeaturePath {
     return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getStringValue(targetFeature);
   }    
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.apache.uima.cas.FeaturePath#getJavaObjectValue(org.apache.uima.cas.
-   * FeatureStructure)
-   */
-  @Override
-  public Object getJavaObjectValue(FeatureStructure fs) {
-    TOP tgtFs = getTargetFs((TOP) fs); 
-    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getJavaObjectValue(targetFeature);
-  }    
+//  /*
+//   * (non-Javadoc)
+//   * 
+//   * @see
+//   * org.apache.uima.cas.FeaturePath#getJavaObjectValue(org.apache.uima.cas.
+//   * FeatureStructure)
+//   */
+//  @Override
+//  public Object getJavaObjectValue(FeatureStructure fs) {
+//    TOP tgtFs = getTargetFs((TOP) fs); 
+//    return (tgtFs == FEATURE_PATH_FAILED) ? null : tgtFs.getJavaObjectValue(targetFeature);
+//  }    
 
   /*
    * (non-Javadoc)

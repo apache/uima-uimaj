@@ -264,30 +264,7 @@ public interface FeatureStructure {
    *          The double value we're setting the feature to.
    * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
    */
-  void setDoubleValue(Feature feat, double i) throws CASRuntimeException;
-
-  /**
-   * Get the Java object value of a feature. This method will throw an exception if the feature is not
-   * double valued.
-   * 
-   * @param feat
-   *          The feature whose value we want to get.
-   * @return The Java object value of that feature
-   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
-   */
-  Object getJavaObjectValue(Feature feat) throws CASRuntimeException;
-
-  /**
-   * Set the java object value of a feature.
-   * 
-   * @param feat
-   *          The feature whose value we want to set.
-   * @param i
-   *          The Java object value we're setting the feature to.
-   * @exception CASRuntimeException If <code>feat</code> is not defined for the type of this FS
-   */
-  void setJavaObjectValue(Feature feat, Object object) throws CASRuntimeException;
-    
+  void setDoubleValue(Feature feat, double i) throws CASRuntimeException;    
   
   /**
    * Get the value of the feature as a string if the type of the feature is one of the primitive
@@ -351,8 +328,8 @@ public interface FeatureStructure {
 
   /**
    * return the unique (to this CAS) id of this feature structure
+   * @return the id
    */
-
   int _id();
   
   /**
