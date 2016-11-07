@@ -320,7 +320,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * @param cas
    *                a CAS instance
    * @return newly created and initialized JCas
-   * @throws CASException -
+//   * @throws CASException -
    */
   public static JCasImpl getJCas(CASImpl cas) {
     return getJCasImpl(cas);
@@ -588,12 +588,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 //    return f;
 //  }
 
-  /**
-   * Internal - throw missing feature exception at runtime
-   * 
-   * @param feat -
-   * @param type -
-   */
+//  /**
+//   * Internal - throw missing feature exception at runtime
+//   * 
+//   * @param feat -
+//   * @param type -
+//   */
 //  public void throwFeatMissing(String feat, String type) {
 //    CASRuntimeException e = new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT,
 //        new String[] { feat, type });

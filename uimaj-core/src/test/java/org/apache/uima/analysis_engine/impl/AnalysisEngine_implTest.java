@@ -92,7 +92,6 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
-import org.apache.uima.util.impl.Settings_impl;
 import org.xml.sax.ContentHandler;
 
 import junit.framework.TestCase;

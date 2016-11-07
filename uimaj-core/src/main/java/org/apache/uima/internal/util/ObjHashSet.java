@@ -316,14 +316,14 @@ public class ObjHashSet<T> implements Set<T> {
    * @return true if the key was present
    */
   @Override
-  public boolean remove(Object obj) {
-    if (obj == null) {
+  public boolean remove(Object rawKey) {
+    if (rawKey == null) {
       return false;
     }
     
-    final int pos = findPosition((T) obj);  // null or equal obj
+    final int pos = findPosition((T) rawKey);  // null or equal obj
     
-    return (obj.equals(keys[pos])) ? removeAtPosition(pos) : false;
+    return (rawKey.equals(keys[pos])) ? removeAtPosition(pos) : false;
   } 
   
   private boolean removeAtPosition(int pos) {

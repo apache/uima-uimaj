@@ -289,14 +289,14 @@ public class Obj2IntIdentityHashMap<T> {
    * @return the value previously associated with the key, or 0 if none
    */
 
-  public int remove(Object obj) {
-    if (obj == null) {
+  public int remove(Object rawKey) {
+    if (rawKey == null) {
       return 0;
     }
     
-    final int pos = findPosition((T) obj);  // null or equal obj
+    final int pos = findPosition((T) rawKey);  // null or equal obj
     
-    return (obj == keys[pos]) ? removeAtPosition(pos) : 0;
+    return (rawKey == keys[pos]) ? removeAtPosition(pos) : 0;
   } 
   
   private int removeAtPosition(int pos) { 

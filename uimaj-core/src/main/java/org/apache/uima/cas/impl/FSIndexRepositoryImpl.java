@@ -540,6 +540,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @param comp -
    * @param label -
    * @param indexType -
+   * @param <T> -
    * @return -
    */
   public <T extends FeatureStructure> 
@@ -958,6 +959,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * 
    * @param comp
    *          The comparator.
+   * @param <T> type of Feature Structure
    * @return An iterator over the labels.
    */
   public <T extends FeatureStructure> Iterator<String> getLabels(FSIndexComparator comp) {
@@ -1084,6 +1086,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * The order in which FSs occur in the array does not reflect the order in which they
    * were added to the repository. 
    * 
+   * @param <T> type of Feature Structure
    * @return a List of all FSs in any defined index, in this view.
    */
   public <T extends FeatureStructure> List<T> getIndexedFSs() {
@@ -1121,7 +1124,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   /**
    * For this view, walk the indexed FSs, sorted by id 
    *  (e.g. creation time)
-   * @param action
+   * @param action -
    */
   public void walkSortedIndexedFSs(Consumer<TOP> action) {
     List<TOP> fss = new ArrayList<>();
@@ -1796,9 +1799,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   /**
    * Get the FsIndex_iicp for a given typeCode, indexingStrategy, and comparator (type ignored)
-   * @param indexingStrategy
-   * @param comp
-   * @return
+   * @param indexingStrategy -
+   * @param comp -
+   * @param <T> type of Feature Structure
+   * @return -
    */
   public <T extends FeatureStructure> FsIndex_iicp<T> getIndexBySpec(int typeCode, int indexingStrategy, FSIndexComparatorImpl comp) {
     return getIndexesForType(typeCode).getIndexExcludingType(indexingStrategy, comp);

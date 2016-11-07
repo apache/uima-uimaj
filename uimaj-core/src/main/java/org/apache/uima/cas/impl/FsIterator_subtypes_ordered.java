@@ -34,7 +34,7 @@ import org.apache.uima.internal.util.Misc;
  * 
  * This class doesn't do concurrent mod checking - that's done by the individual iterators.
  *
- * @param <T>
+ * @param <T> result type
  */
 public class FsIterator_subtypes_ordered<T extends FeatureStructure> 
                     extends FsIterator_subtypes_list<T> {

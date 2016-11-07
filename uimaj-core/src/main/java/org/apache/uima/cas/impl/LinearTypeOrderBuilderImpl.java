@@ -342,9 +342,9 @@ public class LinearTypeOrderBuilderImpl implements LinearTypeOrderBuilder {
   /**
    * The constructor for the total type order, called by the other constructor and also when doing a 
    *   cas complete deserialization, or just deserializing the type system/index defs
-   * @param typeList
-   * @param ts
-   * @return
+   * @param typeList -
+   * @param ts -
+   * @return -
    */
   public static LinearTypeOrder createTypeOrder(int[] typeList, TypeSystem ts) {
     return new TotalTypeOrder(typeList, ts);

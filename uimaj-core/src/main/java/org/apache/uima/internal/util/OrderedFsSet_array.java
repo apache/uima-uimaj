@@ -42,7 +42,7 @@ import org.apache.uima.jcas.cas.TOP;
  * Entries kept in order in 1 big ArrayList
  * 
  * Adds optimized:
- *   - maintain high mark, if >, add to end
+ *   - maintain high mark, if &gt;, add to end
  *   - batch adds other than above
  *     -- do when reference needed
  *     -- sort the to be added

@@ -36,6 +36,7 @@ public interface LowLevelIndexRepository {
    * 
    * @param indexName
    *          The name of the index.
+   * @param <T> type of Feature Structure
    * @return The corresponding index, or <code>null</code> if no such index exists.
    */
   <T extends FeatureStructure> LowLevelIndex<T> ll_getIndex(String indexName);
@@ -48,6 +49,7 @@ public interface LowLevelIndexRepository {
    *          The name of the index.
    * @param typeCode
    *          The code of the desired subtype.
+   * @param <T> type of Feature Structure
    * @return The corresponding index, or <code>null</code> if no such index exists.
    * @exception LowLevelException
    *              If the type code argument is not a valid type code.

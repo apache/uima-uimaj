@@ -1429,23 +1429,23 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   /**
-   * @param typeCode for a type
+   * @param typecode for a type
    * @return true if type is AnnotationBase or a subtype of it
    */
   public boolean isAnnotationBaseOrSubtype(int typecode) {
-    return subsumes(annotBaseType, ll_getTypeForCode(typecode));
+    return isAnnotationBaseOrSubtype(ll_getTypeForCode(typecode));
   }
 
   public boolean isAnnotationBaseOrSubtype(Type type) {
-    return subsumes(annotBaseType, type);
+    return ((TypeImpl)type).isAnnotationBaseType();
   }
   
   /**
-   * @param typeCode for a type
+   * @param type a type
    * @return true if type is Annotation or a subtype of it
    */
   public boolean isAnnotationOrSubtype(Type type) {
-    return subsumes(annotType, type);
+    return ((TypeImpl)type).isAnnotationType();
   }  
 
   // dangerous, and not needed, not in any interface
@@ -1491,7 +1491,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   /**
-   * @see {@link TypeSystem#getArrayType(Type)}
+   * @see TypeSystem#getArrayType(Type)
    * @param componentType
    *          The type of the elements of the resulting array type. This can be any type, even
    *          another array type.
@@ -1574,16 +1574,16 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //  }
 
  
-  /**
-   * Used to support generic access to static-compiled features.
-   * Return ordered-by-offset array of FeatureImpls of a particular range class
-   * @param valueType - one of booleanType, booleanArrayType, stringType, topType, fsArrayType, etc.
-   *                    see list in allTypes1 in TypeSystemImpl. 
-   * @return a stream of FeatureImpls having a range of the specified type
-   */
-  public Stream<FeatureImpl> getTypeFeaturesByRangeType(TypeImpl type, TypeImpl range) {
-    return type.getFeaturesAsStream().filter(fi -> ((TypeImpl) fi.getRange()).consolidateType(topType, fsArrayType) == range);
-  }
+//  /**
+//   * Used to support generic access to static-compiled features.
+//   * Return ordered-by-offset array of FeatureImpls of a particular range class
+//   * @param valueType - one of booleanType, booleanArrayType, stringType, topType, fsArrayType, etc.
+//   *                    see list in allTypes1 in TypeSystemImpl. 
+//   * @return a stream of FeatureImpls having a range of the specified type
+//   */
+//  public Stream<FeatureImpl> getTypeFeaturesByRangeType(TypeImpl type, TypeImpl range) {
+//    return type.getFeaturesAsStream().filter(fi -> ((TypeImpl) fi.getRange()).consolidateType(topType, fsArrayType) == range);
+//  }
 
   private static void setTypeFinal(Type type) {
     TypeImpl t = (TypeImpl) type;
@@ -2091,7 +2091,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
 
   /**
-   * @see {@link LowLevelTypeSystem#ll_getArrayType(int)}
+   * @see LowLevelTypeSystem#ll_getArrayType(int)
    * @param componentTypeCode the type code of the components of the array
    * @return the type code of the requested Array type having components of componentTypeCode, or 0
    *     if the componentTypeCode is invalid.
@@ -2106,9 +2106,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   }
   
   /**
-   * @see {@link LowLevelTypeSystem#ll_isValidTypeCode(int)}
-   * @param typeCode to see if it's in range  
-   * @return if it is.  
+   * @see LowLevelTypeSystem#ll_isValidTypeCode(int)
    */
   @Override
   public boolean ll_isValidTypeCode(int typeCode) {
@@ -2536,6 +2534,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * It looks up the offset value in the type system (via a thread-local)
    *
    * hidden parameter: threadLocal value: referencing this type
+   * @param featName -
    * @return the offset in the int or ref data arrays for the named feature
    */
   public static synchronized int getAdjustedFeatureOffset(String featName) {
@@ -2570,7 +2569,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Called when switching or initializing CAS's shared-view-data instance of FsGenerator[]
    * @param cl the class loader
-   * @param baseGenerators null or the outside-of-PEARs (base) generators
+   * @param isPear -
    * @return the generators
    */
   public FsGenerator[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {

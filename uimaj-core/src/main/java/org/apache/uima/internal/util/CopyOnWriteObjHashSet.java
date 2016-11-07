@@ -109,7 +109,6 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   }
 
   /**
-   * @return modification count
    * @see org.apache.uima.internal.util.ObjHashSet#getModificationCount()
    */
   public int getModificationCount() {
@@ -117,7 +116,6 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   }
 
   /**
-   * @return
    * @see org.apache.uima.internal.util.ObjHashSet#getCapacity()
    */
   public int getCapacity() {
@@ -125,7 +123,6 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   }
 
   /**
-   * @return
    * @see org.apache.uima.internal.util.ObjHashSet#size()
    */
   public int size() {

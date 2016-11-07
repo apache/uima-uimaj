@@ -104,7 +104,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private AnnotationFS boundingFs = null;
   
   
-  /************************************************
+  /* **********************************************
    * Constructors
    *   always need the cas
    *   might also have the type
@@ -153,7 +153,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return (SelectFSs_impl<N>) this;
   }
 
-  /**
+  /*
    * TYPE
    * if not specified defaults to the index's uppermost type.  
    */
@@ -1011,6 +1011,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    *     -- ignored: after moveTo(fs), moveToPrevious while begin && end ==
    *       --- and if isPositionUsesType types are == 
    * @param it iterator to position
+   * @param <T> type of result
    * @return it positioned if needed
    */
   public FSIterator<T> maybePosition(FSIterator<T> it) {

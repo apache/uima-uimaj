@@ -186,7 +186,7 @@ public class Misc {
   /**
    * Writes a byte array output stream to a file
    * @param baos the array to write
-   * @param name the file
+   * @param file the file
    */
   public static void toFile(ByteArrayOutputStream baos, File file) {
     try (FileOutputStream fos = new FileOutputStream(file)) {
@@ -458,8 +458,8 @@ public class Misc {
   /**
    * Convert a JCas class name (fully qualified) to a UIMA type name 
    *   Normally this is the same, but for two prefixes, it's slightly different
-   * @param typeName the UIMA type name, fully qualified
-   * @return the fully qualified JCas class name 
+   * @param className the Java JCas class name for a UIMA type, fully qualified
+   * @return the fully qualified UIMA Type name 
    */
   public static String javaClassName2UimaTypeName(String className) {
     if (className.startsWith("org.apache.uima.jcas.cas.")) { 
