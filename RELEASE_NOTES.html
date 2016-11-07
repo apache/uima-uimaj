@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.8.1 Release Notes</title>
+  <title>Apache UIMA v3.0.0-alpha1 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.8.1 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-alpha1 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -81,30 +81,50 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<p>The flattened index support added in 2.8.0 has some edge cases where the
-flattened version needs to be invalidated.  In trading off complexity versus
-performance improvements, we decided to disable this feature for now. 
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4542">UIMA-4542</a>
+<p>Version 3 is a major reimplementation of the internals of UIMA,
+with many significant changes.  A migration step is required if 
+JCas cover classes are being used, as these have changed.  
+Please read the Version 3 users guide located in the docs directory
+for information on these changes and migration.
 </p>
 
-<p>A few bugs were fixed in the CasAnnotationViewer
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4533">UIMA-4533</a>, a name-clash was
-fixed in an internal method, which could clash with a JCas-generated name
-if there was a feature that happened to be named "TypeCode" 
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4534">UIMA-4534</a>,
-and the CasCopier code was improved to cover an additional use case
-<a target="_blank" href="https://issues.apache.org/jira/browse/UIMA-4541">UIMA-4541</a>
+<p>A very brief summary of Version 3:
+<ul><li>Feature Structures become Java Objects, 
+and may be Garbage Collected.</li>
+<li>Many performance improvements</li>
+<li>Iterating over indexes no longer throws 
+ConcurrentModificationException</li>
+<li>Support for arbitrary Java Objects in the CAS</li>
+<li>Using above, new built-ins for ArrayList style
+lists of Feature Structures and ints</li>
+<li>New "select" framework for flexible 
+access to Feature Structures</li>
+<li>Integration with Java 8 facilities such as Streams</li>
 </p>
+
+<p>Please read the overview section of the Version 3 
+users guide for more.</p>
  
- <h3>API changes</h3>
- <p> 
- There were no API changes that affect backward compatibility.
+<h3>API changes</h3>
+ <p>Many APIs were changed, typically by adding new capability.  
+ However, we attempt to preserve existing APIs, for backward compatibility. 
  </p>
  
-<h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
+<h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
-issues fixed in this release.  
+issues affecting this release.  
    
+<h2><a id="alpha">Alpha Release</a></h2>
+<p>Because this release makes major changes to UIMA internals,
+this is an alpha release of version 3.  It is being made to get 
+wider community involvement in testing and feedback.  
+The APIs may change, and features
+may be added or altered.<\p>
+
+<p>Please use the mailing lists 
+( http://uima.apache.org/mail-lists.html ) 
+for feedback.</p> 
+ 
 <h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 

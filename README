@@ -2,65 +2,16 @@
       Apache UIMA (Unstructured Information Management Architecture) 
       --------------------------------------------------------------
       
-This file applies to UIMA-SDK version 2.8.0 and subsequent versions.
+This file applies to UIMA-SDK version 3.0.0-alpha1 and subsequent versions.
 
 Backwards Compatibility
 -----------------------
 
-New releases strive to maintain backwards compatibility; in general you should
-expect that upgrading will not break existing UIMA pipelines.  
+Version 3 is a major new release, and many APIs have been augmented.
+The Version 3 users guide has a chapter on backwards compatibility.
+In general, existing pipelines, after having their JCas class migrated,
+will likely run with version 3.  
 
-From time to time, non-backward compatible changes are made, such as increased
-checking for error situations.  This may cause existing pipelines to fail. In 
-most cases, there are JVM -D properties that can be used to disable these changes
-until the underlying issues are corrected or accommodated.
-
-Out of the box,
-  it will do additional checking and fixups for some hard-to-find user errors; see
-  the first section above coping with backwards compatibility issues.
-  
-The JVM -D property names for these, and their meaning, are:
-        
-    -Duima.allow_duplicate_add_to_indexes
- 
-      Adding the same exact FS instance to the indexes multiple times no longer
-      results in duplicate entries in the indexes.  You may restore the previous
-      behavior using this flag.    
-    
-    -Duima.disable_auto_protect_indexes
- 
-      UIMA now checks and automatically protects indexes if users (after adding
-      a feature structure to the indexes) updates a feature which is being used
-      as a key.  For production runs, after insuring there are no such updates
-      going on, or explicitly protecting those that are being done using the 
-      protectIndexes() method,  you can disable this protection and checking, 
-      which may make things run slightly faster.
-      
-    -Duima.report_fs_update_corrupts_index
- 
-      See https://issues.apache.org/jira/browse/UIMA-4135. 
-      Updating Features which are used in Set and Sorted indexes 
-      as "keys" may corrupt the indexes, if the Feature Structure (FS) has been 
-      added to the indexes. To update these, you must first completely remove
-      the FS from the indexes in all views, then do the updates, and then add 
-      it back. UIMA now checks for this (unless specifically disabled), 
-      and if this property is set, will log WARN messages for each occurrence 
-      unless the user wraps these updates inside explicit protectIndexes
-      blocks.
- 
-      To scan the logs for these reports, search for instances of lines having 
-      the string     While FS was in the index, the feature     
-
-    -Duima.disable_enhanced_check_wrong_add_to_index
- 
-      See https://issues.apache.org/jira/browse/UIMA-4099. 
-      Feature Structures which are subtypes of AnnotationBase may only be 
-      added to the View corresponding to their Sofa reference. From version 
-      2.7.0, there is additional checking of this which can be disabled 
-      if needed for backward compatibility.
-
-  See the UIMA References http://uima.apache.org/d/uimaj-current/references.html#ugr.ref.config
-  for a table of these and other settings.
         
 Building from the Source Distribution
 -------------------------------------
@@ -90,12 +41,12 @@ What's New
 Supported Platforms
 --------------------
 
-Apache UIMA requires Java version 7 or later; it has been tested with Sun/Oracle Java SDK 7, and 8, 
-and IBM Java 7 and 8.
+Apache UIMA v3.0.0 requires Java version 8 or later; it has been tested with Sun/Oracle Java 8, 
+and IBM 8.
 
-Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 7 or later, as well.
+Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later, as well.
 
-The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (7+) 
+The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (8+) 
 implementations should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
@@ -141,6 +92,5 @@ Double-click on one of the documents to display the analysis results for that do
 Getting Started
 ----------------
 
-For an introduction to Apache UIMA and how to use it, please read the documentation 
-located in the docs subdirectory.  A good place to start is the overview_and_setup 
-book's first chapter, which has a brief guide to the documentation.
+Version 3 requires migration for existing Version 2 deployments that use JCas.  For instructions on this, please
+read the documentation for Version 3 located in the docs subdirectory.  
