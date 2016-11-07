@@ -162,6 +162,18 @@ under the License.
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
     </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.apache.uima:uimaj-v3migration-jcas</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+    
     
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
@@ -261,6 +273,13 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
+    <fileSet>
+      <directory>uima-docbook-v3-users-guide/target/site</directory>
+      <outputDirectory>docs</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
+    </fileSet>
+    
     
     <!-- examples -->
     <fileSet>
@@ -299,12 +318,12 @@ under the License.
   <files>
     <!-- copy bin distr license and notice -->
     <file>
-      <source>src/main/readme/LICENSE</source>
+      <source>src/main/bin_distr_license_notices/LICENSE</source>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>
     </file>
     <file> 
-      <source>src/main/readme/NOTICE</source>
+      <source>src/main/bin_distr_license_notices/NOTICE</source>
       <outputDirectory></outputDirectory>
       <fileMode>644</fileMode>    
     </file>
