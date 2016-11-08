@@ -153,6 +153,8 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @param is the input stream
    * @param f frame
+   * @param buffer -
+   * @param cbuffer -
    * @return key value 
    * @throws IOException passthru
    * 
@@ -189,6 +191,8 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @param is the input stream
    * @param f the Frame
+   * @param buffer -
+   * @param cbuffer -
    * @return key value
    * @throws IOException passthru
    * 
@@ -245,7 +249,9 @@ public class XTalkTransporter implements FrameTransporter {
    * @param f frame
    * @param field_count field count
    * @param marker marker
-   * @throws IOException passthru
+   * @param buffer -
+   * @param cbuffer -
+   * @throws IOException passthru 
    * 
    * @pre is != null
    * @pre f != null
@@ -408,6 +414,7 @@ public class XTalkTransporter implements FrameTransporter {
    * 
    * @param os output stream
    * @param f frame
+   * @param workbuf -
    * @throws IOException  passthru
    * 
    * @pre os != null

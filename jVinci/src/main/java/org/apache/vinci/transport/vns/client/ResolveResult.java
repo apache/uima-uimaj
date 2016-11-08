@@ -53,6 +53,8 @@ public class ResolveResult extends Frame {
    * Strip the qualifications from this qualified service name.
    * 
    * @pre service_name != null
+   * @param service_name -
+   * @return -
    */
   static public String unqualifiedName(String service_name) {
     if (isQualified(service_name)) {
@@ -69,6 +71,8 @@ public class ResolveResult extends Frame {
    * are explicitly specified.)
    * 
    * @pre service_name != null
+   * @param service_name -
+   * @return -
    */
   static public boolean isQualified(String service_name) {
     if (service_name.indexOf('[') != -1) {
@@ -82,6 +86,8 @@ public class ResolveResult extends Frame {
    * accepts either qualified or unqualified service names.
    * 
    * @pre service_name != null
+   * @param service_name -
+   * @return -
    */
   static public Frame composeQuery(String service_name) {
     VinciFrame query = new VinciFrame();
@@ -121,6 +127,9 @@ public class ResolveResult extends Frame {
    * unqualified service names.
    * 
    * @pre service_name != null
+   * @param service_name -
+   * @param mypriority -
+   * @return -
    */
   static public Frame composeQuery(String service_name, int mypriority) {
     VinciFrame query = (VinciFrame) composeQuery(service_name);
@@ -149,6 +158,7 @@ public class ResolveResult extends Frame {
 
   /**
    * Determine if there are more service listing to be fetched.
+   * @return -
    */
   public boolean hasMore() {
     return (current - begin < services.size());
@@ -158,6 +168,7 @@ public class ResolveResult extends Frame {
    * Fetch the next service listing.
    * 
    * @pre hasMore()
+   * @return -
    */
   public ServiceLocator getNext() {
     ServiceLocator return_me = (ServiceLocator) services.get(current % services.size());
@@ -197,8 +208,8 @@ public class ResolveResult extends Frame {
    * 
    * @pre key != null
    * @pre val != null
-   * @pre ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val instanceof
-   *      FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))
+   * @pre {@code ((val instanceof ServiceLocator && key.equals(VNSConstants.SERVER_KEY)) || (val
+   *      instanceof FrameLeaf && key.equals(VNSConstants.LEVEL_KEY)))}
    */
   public void add(String key, FrameComponent val) {
     if (key.equals(VNSConstants.SERVER_KEY)) {

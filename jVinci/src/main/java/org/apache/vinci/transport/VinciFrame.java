@@ -48,6 +48,7 @@ public class VinciFrame extends QueryableFrame {
 
   /**
    * Get a TransportableFactory that creates new VinciFrames.
+   * @return -
    */
   static public TransportableFactory getVinciFrameFactory() {
     return vinciFrameFactory;
@@ -64,6 +65,8 @@ public class VinciFrame extends QueryableFrame {
    * Create a VinciFrame that is a (deep) copy of the given transportable.
    * 
    * @pre t != null
+   * @param t -
+   * @return -
    */
   public static VinciFrame toVinciFrame(Transportable t) {
     return (VinciFrame) TransportableConverter.convert(t, getVinciFrameFactory());
@@ -159,6 +162,9 @@ public class VinciFrame extends QueryableFrame {
    * 
    * @pre key != null
    * @pre val != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, String val) {
     set(key, new FrameLeaf(val));
@@ -170,6 +176,9 @@ public class VinciFrame extends QueryableFrame {
    * doesn't exist, then the value is added.
    * 
    * @pre key != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, long val) {
     set(key, new FrameLeaf(val));
@@ -181,6 +190,9 @@ public class VinciFrame extends QueryableFrame {
    * doesn't exist, then the value is added.
    * 
    * @pre key != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, boolean val) {
     set(key, new FrameLeaf(val));
@@ -192,6 +204,9 @@ public class VinciFrame extends QueryableFrame {
    * doesn't exist, then the value is added.
    * 
    * @pre key != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, int val) {
     set(key, new FrameLeaf(val));
@@ -204,6 +219,9 @@ public class VinciFrame extends QueryableFrame {
    * 
    * @pre key != null
    * @pre val != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, int[] val) {
     set(key, new FrameLeaf(val));
@@ -218,6 +236,9 @@ public class VinciFrame extends QueryableFrame {
    *              if val is null.
    * 
    * @pre key != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, Frame val) {
     set(key, val);
@@ -229,6 +250,9 @@ public class VinciFrame extends QueryableFrame {
    * doesn't exist, then the value is added.
    * 
    * @pre key != null
+   * @param key -
+   * @param val -
+   * @return -
    */
   public VinciFrame fset(String key, double val) {
     set(key, new FrameLeaf(val));
@@ -244,6 +268,9 @@ public class VinciFrame extends QueryableFrame {
    * 
    * @pre key != null
    * @pre bin != null
+   * @param key -
+   * @param bin -
+   * @return -
    */
   public VinciFrame fset(String key, byte[] bin) {
     set(key, new FrameLeaf(bin, true));
@@ -260,6 +287,9 @@ public class VinciFrame extends QueryableFrame {
    * 
    * @pre key != null
    * @pre bin != null
+   * @param key -
+   * @param bin -
+   * @return -
    */
   public VinciFrame fsetTrueBinary(String key, byte[] bin) {
     set(key, new FrameLeaf(bin, false));
@@ -275,6 +305,8 @@ public class VinciFrame extends QueryableFrame {
    *              if val is null.
    * 
    * @pre key != null
+   * @param key -
+   * @param val -
    */
   protected void set(String key, FrameComponent val) {
     if (val != null) {

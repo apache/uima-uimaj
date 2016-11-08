@@ -197,6 +197,7 @@ public class BaseClient {
 
   /**
    * Get the hostname/ip address to which this client is connected.
+   * @return -
    */
   public String getHost() {
     return host;
@@ -208,6 +209,7 @@ public class BaseClient {
 
   /**
    * Get the socket used for the connection.
+   * @return -
    */
   protected Socket getSocket() {
     return socket;
@@ -216,6 +218,7 @@ public class BaseClient {
   /**
    * Get the default timeout value for the socket (0 indicates never timeout, which is the default,
    * but generally NOT a good setting).
+   * @return -
    */
   public int getSocketTimeout() {
     return socketTimeout;
@@ -235,6 +238,7 @@ public class BaseClient {
 
   /**
    * Set the transportable factory used by this client.
+   * @param f -
    */
   public void setTransportableFactory(TransportableFactory f) {
     factory = f;
@@ -328,13 +332,17 @@ public class BaseClient {
    * Same as sendAndReceive(Transportable) except the provided factory is used to create the return
    * document in place of the default factory.
    * 
-   * @param f
-   *          The factory to used to create the return document.
    * 
    * @pre f != null
    * @pre in != null
    * 
    * @pre getHost() != null
+   * @param in -
+   * @param f
+   *          The factory to used to create the return document.
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   public Transportable sendAndReceive(Transportable in, TransportableFactory f) throws IOException,
           ServiceException {
@@ -366,9 +374,12 @@ public class BaseClient {
    * Same as sendAndReceive(Transportable, timeout) except the provided factory is used to create
    * the return document in place of the default factory.
    * 
-   * @param in
+   * @param in -
    * @param f  The factory to used to create the return document.
-   * @param timeout
+   * @param timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    * @pre in != null
    * @pre f != null
    * @pre getHost() != null
@@ -408,6 +419,10 @@ public class BaseClient {
    * 
    * @pre query != null
    * @pre getHost() != null
+   * @param query -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   public VinciFrame rpc(Transportable query) throws IOException, ServiceException {
     return (VinciFrame) sendAndReceive(query);
@@ -417,8 +432,11 @@ public class BaseClient {
    * Same as sendAndReceive(Transportable, timeout) except for return type. Syntactic sugar method
    * for the case where return result is known to be VinciFrame (eliminates the need for casting in
    * the typical usage case).
-   * 
+   * @param query -
+   * @param timeout - 
    * @return A VinciFrame representing the service result.
+   * @throws IOException -
+   * @throws ServiceException -
    * 
    * @pre query != null
    * @pre getHost() != null
@@ -516,6 +534,7 @@ public class BaseClient {
    * Set connection restablishment on IOException to on/off, default is ON. This way, by default,
    * BaseClient attempts to reopen a connection at most once if it receives an IOException which can
    * happen, for example, from the connection timing out.
+   * @param to -
    */
   public void setRetry(boolean to) {
     retry = to;
@@ -523,6 +542,7 @@ public class BaseClient {
 
   /**
    * Fetch the header of the last Transportable received.
+   * @return -
    */
   public KeyValuePair getHeader() {
     return header;
@@ -535,6 +555,13 @@ public class BaseClient {
    * @pre f != null
    * @pre p &ge; 0
    * @pre p &lt; 65536
+   * @param in -
+   * @param host_name -
+   * @param p -
+   * @param f -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f) throws IOException, ServiceException {
@@ -555,6 +582,14 @@ public class BaseClient {
    * @pre f != null
    * @pre p &ge; 0
    * @pre p &lt; 65536
+   * @param in -
+   * @param host_name -
+   * @param p -
+   * @param f -
+   * @param socket_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f, int socket_timeout) throws IOException, ServiceException {
@@ -569,14 +604,23 @@ public class BaseClient {
   }
 
   /**
-   * Convenience method for "one-shot" or "single-query" connections with socket timeout support &
-   * connect timeout support.
+   * Convenience method for "one-shot" or "single-query" connections with socket timeout support 
+   * &amp; connect timeout support.
    * 
    * @pre in != null
    * @pre host_name != null
    * @pre f != null
    * @pre p &ge; 0
    * @pre p &lt; 65536
+   * @param in -
+   * @param host_name -
+   * @param p -
+   * @param f -
+   * @param socket_timeout -
+   * @param connect_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   static public Transportable sendAndReceive(Transportable in, String host_name, int p,
           TransportableFactory f, int socket_timeout, int connect_timeout) throws IOException,
@@ -599,6 +643,12 @@ public class BaseClient {
    * @pre host_name != null
    * @pre p &ge; 0
    * @pre p &lt; 65536
+   * @param in -
+   * @param host_name -
+   * @param p -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p) throws IOException,
           ServiceException {
@@ -613,6 +663,13 @@ public class BaseClient {
    * @pre in != null
    * @pre p &ge; 0
    * @pre p &lt; 65536
+   * @param in -
+   * @param host_name -
+   * @param p -
+   * @param socket_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout)
           throws IOException, ServiceException {
@@ -628,6 +685,14 @@ public class BaseClient {
    * @pre in != null
    * @pre p &ge; 0
    * @pre p &lt; 65536
+   * @param in -
+   * @param host_name -
+   * @param p -
+   * @param socket_timeout -
+   * @param connect_timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   static public VinciFrame rpc(Transportable in, String host_name, int p, int socket_timeout,
           int connect_timeout) throws IOException, ServiceException {
@@ -641,6 +706,11 @@ public class BaseClient {
    * @pre getHost() != null
    * @pre os != null
    * @pre is != null
+   * @param in -
+   * @param f -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   protected Transportable sendAndReceiveWork(Transportable in, TransportableFactory f)
           throws IOException, ServiceException {
@@ -658,6 +728,12 @@ public class BaseClient {
    * @pre in != null
    * @pre f != null
    * @pre socket != null
+   * @param in -
+   * @param f -
+   * @param timeout -
+   * @return -
+   * @throws IOException -
+   * @throws ServiceException -
    */
   protected Transportable sendAndReceiveWork(Transportable in, TransportableFactory f, int timeout)
           throws IOException, ServiceException {
@@ -673,6 +749,8 @@ public class BaseClient {
   /**
    * @pre e != null
    * @pre getHost() != null
+   * @param e -
+   * @throws IOException -
    */
   protected void reopen(Exception e) throws IOException {
     Debug.p("Trying to reopen connection due to exception: " + e.getMessage());
@@ -747,6 +825,8 @@ public class BaseClient {
 
   /**
    * Set the timeout value used by the underlying socket. Default is 2 minutes.
+   * @param millis -
+   * @throws IOException -
    */
   public void setSocketTimeout(int millis) throws IOException {
     if (socket != null) {

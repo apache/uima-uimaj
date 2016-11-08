@@ -60,6 +60,8 @@ public class VinciServer extends BaseServer {
    * 
    * @param host_name
    *          The DNS hostname of the machine running this server.
+   * @param service_name -
+   * @param servable -
    * 
    * @pre service_name != null
    * @pre host_name != null
@@ -73,6 +75,8 @@ public class VinciServer extends BaseServer {
    * Create a new server that reports the current machine's IP address as the host. This should not
    * be used for DHCP-based hosts since IP address can change.
    * 
+   * @param service_name -
+   * @param servable -
    * @throws UnknownHostException
    *           If there is an error determining machine IP address.
    * 
@@ -91,6 +95,11 @@ public class VinciServer extends BaseServer {
    * @pre servable != null
    * @pre myPriority &ge; -1
    * @pre myInstance &ge; 0
+   * @param service_name -
+   * @param host_name -
+   * @param servable -
+   * @param myPriority -
+   * @param myInstance -
    */
   public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority,
           int myInstance) {
@@ -106,6 +115,10 @@ public class VinciServer extends BaseServer {
    * @pre host_name != null
    * @pre servable != null
    * @pre myPriority &ge; -1
+   * @param service_name -
+   * @param host_name -
+   * @param servable -
+   * @param myPriority -
    */
   public VinciServer(String service_name, String host_name, VinciServable servable, int myPriority) {
     this(service_name, host_name, servable, myPriority, 0);
@@ -115,6 +128,10 @@ public class VinciServer extends BaseServer {
    * @pre service_name != null
    * @pre servable != null
    * @pre myPriority &ge; -1
+   * @param service_name -
+   * @param servable -
+   * @param myPriority -
+   * @throws UnknownHostException -
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority)
           throws UnknownHostException {
@@ -126,6 +143,11 @@ public class VinciServer extends BaseServer {
    * @pre servable != null
    * @pre myPriority &ge; -1
    * @pre myInstance &ge; 0
+   * @param service_name -
+   * @param servable -
+   * @param myPriority -
+   * @param myInstance -
+   * @throws UnknownHostException -
    */
   public VinciServer(String service_name, VinciServable servable, int myPriority, int myInstance)
           throws UnknownHostException {
@@ -134,6 +156,7 @@ public class VinciServer extends BaseServer {
 
   /**
    * servable != null
+   * @param servable -
    */
   public VinciServer(VinciServable servable) {
     super(servable);
@@ -142,6 +165,7 @@ public class VinciServer extends BaseServer {
   /**
    * Get the context associated with this server. By default clients use the global Vinci context,
    * though this can be overridden.
+   * @return -
    */
   public VinciContext getContext() {
     if (context == null) {
@@ -172,6 +196,7 @@ public class VinciServer extends BaseServer {
    * was negotiated with VNS on which to serve requests.
    * 
    * @since 2.0.15
+   * @return -
    */
   public int getServingPort() {
     return this.port;
@@ -180,6 +205,7 @@ public class VinciServer extends BaseServer {
   /**
    * Set the VinciContext to be used by this server. Set to null if you wish the global context to
    * be used.
+   * @param c -
    */
   public void setContext(VinciContext c) {
     context = c;
@@ -242,6 +268,8 @@ public class VinciServer extends BaseServer {
    * @param shutdown_message
    *          Should be used to pass a message explaining the shutdown, or in the future it may also
    *          include authentication information for password-protected shutdown.
+   * @param shutdown_message -
+   * @return -
    */
   public static Transportable createShutdownCommand(String shutdown_message) {
     return new VinciFrame().fadd(TransportConstants.SHUTDOWN_KEY, shutdown_message);
@@ -252,6 +280,8 @@ public class VinciServer extends BaseServer {
    * you want to stop the server call shutdownServing() -- this method should have probably been
    * declared "protected". You can override this method if you want the shutdown message to be
    * ignored in certain cases.
+   * @param shutdown_message -
+   * @return -
    */
   public boolean shutdown(String shutdown_message) {
     // Override this method if shutdown is to be ignored in certain cases (by returning
@@ -274,6 +304,9 @@ public class VinciServer extends BaseServer {
   }
 
   /**
+   * @return -
+   * @throws ServiceDownException -
+   * @throws VNSException -
    * @throws IllegalStateException
    *           if VNS host isn't specified.
    */

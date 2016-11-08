@@ -40,9 +40,11 @@ public class StreamMaterializer {
    * Bring the entire contents of the provided stream into a memory-resident byte array. Does NOT
    * close the stream.
    * 
+   * @param input_stream -
+   * @return -
+   * @throws IOException -
    * @exception IOException
    *              thrown by the input stream.
-   * 
    * @pre input_stream != null
    */
   public static final byte[] materialize(InputStream input_stream) throws IOException {

@@ -36,6 +36,7 @@ public final class VNSConfig {
    * before ever invoking any Vinci client code. Otherwise, you can set the hostname using the
    * setHost() method provided by this class.
    * 
+   * @return -
    * @deprecated Use VinciContext.getVNSHost() instead.
    * @throws IllegalStateException
    *           if no VNS host has been specified.
@@ -54,6 +55,7 @@ public String getHost() {
    * Otherwise, the port will default to 9000. You can override this default (or any
    * property-specified value) by calling the setPort() method provided by this class.
    * 
+   * @return -
    * @deprecated Use VinciContext.getVNSPort() instead.
    */
   @Deprecated
@@ -65,6 +67,7 @@ public int getPort() {
    * Set the VNS hostname. Explicitly setting the VNS hostname using this method will override any
    * hostname set via the VNS_HOST java property.
    * 
+   * @param h -
    * @deprecated Use VinciContext.setVNSHost() instead.
    */
   @Deprecated
@@ -76,6 +79,7 @@ public void setHost(String h) {
    * Set the VNS port. Explicitly setting the VNS hostname using this method will override any port
    * number set via the VNS_PORT java property.
    * 
+   * @param p -
    * @deprecated Use VinciContext.setVNSPort() instead.
    */
   @Deprecated

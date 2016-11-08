@@ -42,6 +42,7 @@ public class BaseServerRunnable implements Runnable {
   /**
    * Allows anyone in the calling chain of the 'run' method to get access to the socket being used
    * in the Vinci connection via the ThreadLocal variable.
+   * @return -
    */
   public static Socket getSocket() {
     return (Socket) THREAD_LOCAL_SOCKET.get();
@@ -50,6 +51,8 @@ public class BaseServerRunnable implements Runnable {
   /**
    * @pre c != null
    * @pre p != null
+   * @param c -
+   * @param p -
    */
   public BaseServerRunnable(Socket c, BaseServer p) {
     socket = c;

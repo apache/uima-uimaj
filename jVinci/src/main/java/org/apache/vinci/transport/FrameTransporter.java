@@ -32,12 +32,15 @@ import java.io.OutputStream;
  */
 public interface FrameTransporter {
   /**
-   * Marshall the frame to the input stream.
+   * Marshal the frame to the input stream.
    * 
    * @param is
    *          The stream where the Frame is written.
    * @param f
    *          The Frame to be marshalled.
+   * @return -
+   * @throws IOException -
+   * @throws EOFException -
    */
   KeyValuePair fromStream(InputStream is, Frame f) throws IOException, EOFException;
 
@@ -48,6 +51,7 @@ public interface FrameTransporter {
    *          The stream from where the data is read.
    * @param f
    *          The Frame to be populated from the stream.
+   * @throws IOException -
    */
   void toStream(OutputStream os, Frame f) throws IOException;
 }

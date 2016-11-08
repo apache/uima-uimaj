@@ -22,8 +22,8 @@ package org.apache.vinci.transport.util;
 import java.io.UTFDataFormatException;
 
 /**
- * Provides utility methods for Java string <==> UTF-8 conversion. We don't use the default Java
- * methods for UTF-8 since they are non-standard and not as efficient as this implementation.
+ * Provides utility methods for Java string &lt;==&gt; UTF-8 conversion. We don't use the default
+ * Java methods for UTF-8 since they are non-standard and not as efficient as this implementation.
  */
 public class UTFConverter {
   public static final String TRUE_VALUE = "true";
