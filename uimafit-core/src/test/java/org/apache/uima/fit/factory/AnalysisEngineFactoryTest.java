@@ -75,6 +75,8 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.TypePriorities;
 import org.apache.uima.resource.metadata.TypePriorityList;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Test;
 
 /**
@@ -557,6 +559,7 @@ public class AnalysisEngineFactoryTest extends ComponentTestBase {
     
     String actual = FileUtils.readFileToString(target, "UTF-8");
     String expected = FileUtils.readFileToString(reference, "UTF-8");
-    assertEquals(expected, actual);
+    XMLAssert.assertXMLEqual(expected, actual);
+//    assertEquals(expected, actual);
   }
 }
