@@ -583,7 +583,7 @@ public Object getLastCas() {
   /**
    * Returns true if maximum threshold for errors has been exceeded and the CasProcessor is
    * configured to force CPE shutdown. It looks at the value of the action attribute of the
-   * <errorRateThreshold> element in the cpe descriptor.
+   * &lt;errorRateThreshold&gt; element in the cpe descriptor.
    * 
    * @return - true if the CPE should stop processing, false otherwise
    */
@@ -1062,7 +1062,7 @@ public Object getLastCas() {
 
   /**
    * Returns CasProcessor configuration object. This object represents xml configuration defined in
-   * the <casProcessor> section of the cpe descriptor.
+   * the &lt;casProcessor&gt; section of the cpe descriptor.
    * 
    * @return {@link CasProcessorConfiguration} instance
    */
@@ -1230,7 +1230,8 @@ public boolean isIntegrated() {
 
   /**
    * Determines if instances of CasProcessor managed by this container are abortable. Abortable
-   * CasProcessor's action attribute in the <errorRateThreshold> element has a value of 'disable'.
+   * CasProcessor's action attribute in the &lt;errorRateThreshold&gt; element has a value of
+   * 'disable'.
    * 
    * @return true if CasProcessor can be disabled
    */

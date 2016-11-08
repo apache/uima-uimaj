@@ -68,10 +68,10 @@ import org.apache.vinci.transport.ServiceException;
  * {@link org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer} This
  * component enables the CPE to deploy Cas Processors running as a Vinci service. Two deployment
  * models are supported in the current implementation:
- * 
+ * <ul>
  * <li>managed deployment (aka local)</li>
  * <li>unmanaged deployment (aka remote)</li>
- * 
+ * </ul>
  * Managed deployment gives the CPE control over the life cycle of the Cas Processor. The CPE
  * starts, restarts and shuts down the Cas Processor running as a Vinci service. This service is
  * launched on the same machine as the CPE but in a seperate process.
@@ -117,7 +117,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   // Local VNS is a shared instance across all instances of VinciCasProcessorDeployer. It uses
   // shared
   // portQueue (defined below). VNS and the queue are instantiated once.
-  private static LocalVNS vns = null;
+  private static volatile LocalVNS vns = null;
 
   private int restartCount = 0;
 
@@ -1130,16 +1130,18 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
     }
 
-    if (vns == null) {
-      try {
-        vns = new LocalVNS(startPort, maxPort, vnsPort);
-        vns.setConnectionPool(portQueue);
-
-        localVNSThread = new Thread(vns);
-        localVNSThread.start();
-
-      } catch (Exception e) {
-        throw new CasProcessorDeploymentException(e);
+    synchronized (VinciCasProcessorDeployer.class) {
+      if (vns == null) {
+        try {
+          vns = new LocalVNS(startPort, maxPort, vnsPort);
+          vns.setConnectionPool(portQueue);
+  
+          localVNSThread = new Thread(vns);
+          localVNSThread.start();
+  
+        } catch (Exception e) {
+          throw new CasProcessorDeploymentException(e);
+        }
       }
     }
   }

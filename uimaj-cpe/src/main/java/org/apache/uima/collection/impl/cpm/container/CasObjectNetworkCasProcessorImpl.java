@@ -161,12 +161,10 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
   }
 
   /**
-   * Uses configured transport to delegate given CAS to the remote service
+   * Uses configured transport to delegate given CAS to the remote service.
    * 
-   * @param aCAS -
-   *          CAS to be analyzed
-   * 
-   * @throws ResourceInitializationException wraps Exception, SocketException
+   * @param aCAS CAS to be analyzed
+   * @throws ResourceProcessException wraps Exception, SocketException
    */
   public void processCas(CAS aCAS) throws ResourceProcessException {
     try {
@@ -184,7 +182,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @param aCASes - an array of CASes to be analyzed
    * 
-   * @throws ResourceInitializationException wraps SocketException, SocketTimeoutException
+   * @throws ResourceProcessException wraps SocketException, SocketTimeoutException
    */
   public void processCas(CAS[] aCASes) throws ResourceProcessException {
     try {

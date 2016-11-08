@@ -35,10 +35,10 @@ public interface ProcessControllerAdapter {
    * 
    * @param howMany - how many CasProcessor instances to deploy
    * 
-   * @return - URL[] - list of URLs containing endpoint info
+   * @return URL[] - list of URLs containing endpoint info
    * 
-   * @throws -
-   *           Exception-Failure to start fenced CasProcessor
+   * @throws
+   *           Exception Failure to start fenced CasProcessor
    */
   public URL[] deploy(String aCasProcessorName, int howMany) throws Exception;
 

@@ -44,13 +44,12 @@ public interface SocketTransport {
    * Creates a socket connection to a given endpoint. This method blocks until all Connections are
    * resolved or an error occurs.
    * 
-   * @param aURI - URI containing service endpoint info: host&port
-   * @param aTimeout - max time in millis to wait for response
+   * @param aURI URI containing service endpoint info: host &amp; port
+   * @param aTimeout max time in millis to wait for response
    * 
-   * @return - Socket bound to a given endpoint
+   * @return Socket bound to a given endpoint
    * 
-   * @throws -
-   *           SocketException - Failed to connect
+   * @throws SocketException Failed to connect
    */
   public Socket connect(URL aURI, long aTimeout) throws SocketException;
 
@@ -62,10 +61,10 @@ public interface SocketTransport {
    * 
    * @return - CAS - CAS returned from the fenced CasProcessor
    * 
-   * @throws -
+   * @throws
    *           SocketTimeoutException - Socket timesout before receiving response from the fenced
    *           CasProcessor
-   * @throws -
+   * @throws
    *           SocketException - connection broken
    * 
    */
