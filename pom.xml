@@ -268,7 +268,8 @@
                   <exclude>uimaj-bootstrap/**</exclude>
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
-                  <exclude>src/main/readme/NOTICE-without-jackson</exclude>
+                  <exclude>uimaj-v3migration-jcas/**</exclude>
+                  <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson</exclude>
                </excludes>
               </configuration>
             </execution>
