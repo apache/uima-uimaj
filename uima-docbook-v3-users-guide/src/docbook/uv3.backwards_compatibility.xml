@@ -34,13 +34,16 @@ under the License.
 	  <title>Serialization forms</title>
 	  
 	  <para>
-	  The backwards compatibility extends to many of the serialized forms, so that it should be
+	  The backwards compatibility extends to the serialized forms, so that it should be
 	  possible to have a UIMA-AS services working with a client, where the client is a version 3 instance, but the
 	  server is still a version 2 (or vice versa).</para>
 	  
-	  <para>Exception: Formats like Binary 
-	  and BinaryCompressedForm4 which require the type systems match exactly, are not compatible because Version 3 adds 
-	  some new built-in types, and as a consequence, the type systems do not match between version 2 and 3.
+	  <para>Exception: Formats like Binary and BinaryCompressedForm4 require the type systems match exactly.
+	  Version 3 adds some new built-in types, so the type systems won't match exactly.  An accommodation is made
+	  when the version 3 deserialization detects that the serialized CAS was serialized with version 2, so
+	  version 3 is able to load version 2 serialized CASs, even for binary formats.  A planned extension for 
+	  UIMA-AS will allow version 3 clients to detect when a service is running version 2 code, and have the 
+	  serialization altered to be compatible with version 2 (provided new built-in types are not being used).
 	  </para>
 	  
   </section>
