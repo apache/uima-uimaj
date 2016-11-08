@@ -125,8 +125,8 @@ public class CasTypeSystemMapper {
   }
   
   /**
-   * @param c -
-   * @return 0 if type doesn't have corresponding code in other type system
+   * @param srcType -
+   * @return Type in other type system, or this one if map is empty
    */
   public TypeImpl mapTypeSrc2Tgt(TypeImpl srcType) {
     return (tSrc2Tgt.size() == 0) ? srcType : tSrc2Tgt.get(srcType.getCode());
@@ -137,7 +137,7 @@ public class CasTypeSystemMapper {
 //  }
 
   /**
-   * @param c -
+   * @param tgtType -
    * @return 0 if type doesn't have corresponding code in other type system
    */
   public TypeImpl mapTypeTgt2Src(TypeImpl tgtType) {
@@ -150,7 +150,7 @@ public class CasTypeSystemMapper {
   
   /**
    * 
-   * @param c -
+   * @param type -
    * @param src2tgt -
    * @return 0 if type doesn't have corresponding code in other type system
    */
@@ -175,7 +175,7 @@ public class CasTypeSystemMapper {
   /**
    * Given a tgt type, return an array of source features in the order
    * they would appear in the target.
-   * @param tgtType 
+   * @param tgtType -
    * @return array of corresponding source features, in target type order
    */
   public FeatureImpl[] getSrcFeatures(TypeImpl tgtType) {

@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.FeatureStructure;
 
 /**
- * Delete  REplace with Comparator<FeatureStructure> or the like.
+ * Delete  REplace with Comparator&lt;FeatureStructure&gt; or the like.
  * Interface to compare two feature structures.
  * 
  */

@@ -244,7 +244,8 @@ public class Obj2IntIdentityHashMap<T> {
   
   /**
    * 
-   * @param obj - the object to add
+   * @param obj the key
+   * @param value the value
    * @return the previous value, or 0 if this map did not already contain the specified key
    */
   public int put(T obj, int value) {
@@ -355,7 +356,7 @@ public class Obj2IntIdentityHashMap<T> {
   
   /**
    * advance pos until it points to a non 0 or is 1 past end
-   * @param pos
+   * @param pos -
    * @return updated pos
    */
   public int moveToNextFilled(int pos) {
@@ -378,7 +379,7 @@ public class Obj2IntIdentityHashMap<T> {
    
   /**
    * decrement pos until it points to a non 0 or is -1
-   * @param pos
+   * @param pos -
    * @return updated pos
    */
   public int moveToPreviousFilled(int pos) {

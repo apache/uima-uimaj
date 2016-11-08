@@ -137,6 +137,7 @@ public class Misc {
    * Adds a collection of things (toString) separated by , and surrounded by [  ], to a StringBuilder
    * @param sb where the formatted collection results are appended to 
    * @param c the collection
+   * @param <T> the kind of elements in the collection
    * @return the StringBuilder for chaining
    */
   public static <T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c){
@@ -156,6 +157,8 @@ public class Misc {
    * Adds a collection of things (running an appender to append the result to the same sb) separated by , and surrounded by [  ], to a StringBuilder
    * @param sb where the formatted collection results are appended to 
    * @param c the collection
+   * @param appender the function for getting the value to append
+   * @param <T> the kind of elements in the collection
    * @return the StringBuilder for chaining
    */
   public static<T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c, Consumer<T> appender){
@@ -228,11 +231,11 @@ public class Misc {
    * Using that method handle is slow, but converting it to a lambda makes for
    * JIT-able fast access.
    * 
-   * @param clazz
-   * @param methodHandleAccessContext
-   * @param protectedMethod
-   * @param args
-   * @return
+   * @param clazz -
+   * @param methodHandleAccessContext -
+   * @param protectedMethod -
+   * @param args -
+   * @return -
    */
   static public MethodHandle getProtectedMethodHandle(Class<?> clazz, Lookup methodHandleAccessContext, String protectedMethod, Class<?> ... args) {
     try {
@@ -252,10 +255,10 @@ public class Misc {
    * 
    * Using that method handle is slow, but converting it to a lambda makes for
    * JIT-able fast access.
-   * @param clazz
-   * @param protectedMethod
-   * @param args
-   * @return
+   * @param clazz -
+   * @param protectedMethod -
+   * @param args -
+   * @return -
    */
   static public MethodHandle getProtectedMethodHandle(Class<?> clazz, String protectedMethod, Class<?> ... args) {
     return getProtectedMethodHandle(clazz, UIMAlookup, protectedMethod, args);
@@ -412,6 +415,7 @@ public class Misc {
    * Items in this "set" are held with weak references, so may be gc'd if no longer referenced anywhere.
    * @param obj - the object to use a cached substitute for, if one exists
    * @param cache - the cache
+   * @param <T> the type of the cached object
    * @return - the object or a cached version of it.
    */
   public static <T> T shareExisting(T obj, WeakHashMap<T, WeakReference<T>> cache) {

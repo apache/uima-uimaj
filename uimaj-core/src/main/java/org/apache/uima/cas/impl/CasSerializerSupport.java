@@ -235,7 +235,7 @@ public class CasSerializerSupport {
     
     /**
      * 
-     * @param addr -
+     * @param fs -
      * @param typeCode -
      * @return true if writing out referenced items (JSON)
      * @throws Exception -
@@ -1095,8 +1095,7 @@ public class CasSerializerSupport {
      *  a generated feature name, "@collection" whose value is 
      *  the list or array of values associated with that type.
      *   
-     * @param addr
-     *          The address to be encoded.
+     * @param fs the FS to be encoded.
      * @throws SAXException passthru
      */
     public void encodeFS(TOP fs) throws Exception {
@@ -1149,9 +1148,8 @@ public class CasSerializerSupport {
     /**
      * Get the XMI ID to use for an FS.
      * 
-     * @param addr
-     *          address of FS
-     * @return XMI ID. If addr == CASImpl.NULL, returns null
+     * @param fs the FS
+     * @return XMI ID or null
      */
     public String getXmiId(TOP fs) {
       int v = getXmiIdAsInt(fs);
@@ -1246,8 +1244,7 @@ public class CasSerializerSupport {
    * method can return one of the type codes TYPE_CLASS_INTLIST, TYPE_CLASS_FLOATLIST,
    * TYPE_CLASS_STRINGLIST, or TYPE_CLASS_FSLIST.
    * 
-   * @param typeCode
-   *          the type to classify
+   * @param ti the type to classify
    * @return one of the TYPE_CLASS codes defined on {@link LowLevelCAS} or on this interface.
    */
   public static final int classifyType(TypeImpl ti) {

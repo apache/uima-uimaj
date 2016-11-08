@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
+import org.apache.uima.internal.util.ObjHashSet;
 
 /**
  * implements ObjHashSet partially, for iterator use
@@ -109,21 +110,24 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   }
 
   /**
-   * @see org.apache.uima.internal.util.ObjHashSet#getModificationCount()
+   * @see ObjHashSet#getModificationCount()
+   * @return the modification count
    */
   public int getModificationCount() {
     return ohs.getModificationCount();
   }
 
   /**
-   * @see org.apache.uima.internal.util.ObjHashSet#getCapacity()
+   * @see ObjHashSet#getCapacity()
+   * @return the capacity &gt;= size
    */
   public int getCapacity() {
     return ohs.getCapacity();
   }
 
   /**
-   * @see org.apache.uima.internal.util.ObjHashSet#size()
+   * @see ObjHashSet#size()
+   * @return the size
    */
   public int size() {
     return ohs.size();

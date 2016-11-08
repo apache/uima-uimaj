@@ -154,7 +154,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
 
   /**
    * This is a silly method for bag indexes in V3, since dupl add to indexes is not allowed.
-   * @param fs
+   * @param fs -
    * @return null or the original fs if the fs is in the index
    */
   @Override

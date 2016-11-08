@@ -116,6 +116,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * @param cas -
    * @param type -
    * @param indexType -
+   * @param comparatorForIndexSpecs -
    */
   protected FsIndex_singletype(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super();
@@ -227,7 +228,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   }
     
   /**
-   * @see org.apache.uima.cas.FSIndex#compare(T, T)
+   * @see org.apache.uima.cas.FSIndex#compare(FeatureStructure, FeatureStructure)
    */    
   @Override
   public int compare(FeatureStructure afs1, FeatureStructure afs2) {
@@ -340,7 +341,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   }
 
   /**
-   * For serialization: get all the items in this index and bulk add to an List<T>
+   * For serialization: get all the items in this index and bulk add to an List&lt;T&gt;
    * @param v the set of items to add
    */
   protected abstract void bulkAddTo(List<T> v);

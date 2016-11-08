@@ -29,6 +29,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.uima.jcas.cas.TOP;
@@ -134,11 +135,17 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     this.lastRemovedPos = set.lastRemovedPos;
   }
 
+  /**
+   * @see SortedSet#comparator()
+   */
   @Override
   public Comparator<? super TOP> comparator() {
     return comparatorWithID;
   }
 
+  /**
+   * @see SortedSet#first()
+   */
   @Override
   public TOP first() {
     processBatch();
@@ -158,6 +165,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return null;
   }
 
+  /**
+   * @see SortedSet#last()
+   */
   @Override
   public TOP last() {
     processBatch();
@@ -177,17 +187,26 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return null;
   }
 
+  /**
+   * @see Set#size()
+   */
   @Override
   public int size() {
     processBatch();
     return size;
   }
 
+  /**
+   * @see Set#isEmpty()
+   */
   @Override
   public boolean isEmpty() {
     return size == 0 && batch.size() == 0;
   }
 
+  /**
+   * @see Set#contains(Object)
+   */
   @Override
   public boolean contains(Object o) {
     if (o == null) {
@@ -201,6 +220,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return find(fs) >= 0;
   }
 
+  /**
+   * @see Set#toArray()
+   */
   @Override
   public Object[] toArray() {
     Object [] r = new Object[size()];
@@ -226,6 +248,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return r;
   }
 
+  /**
+   * @see Set#toArray(Object[])
+   */
   @SuppressWarnings("unchecked")
   @Override
   public <T> T[] toArray(T[] a1) {
@@ -246,9 +271,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
 
   /**
    * Note: doesn't implement the return value; always returns true;
-   * @param fs -
-   * @return -
+   * @see Set#add(Object)
    */
+  
   @Override
   public boolean add(TOP fs) {
     if (highest == null) {
@@ -868,6 +893,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     }
   }
   
+  /**
+   * @see Set#remove(Object)
+   */
   @Override
   public boolean remove(Object o) {
     processBatch();
@@ -934,11 +962,17 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     lastRemovedPos = -1;
   }
   
+  /**
+   * @see Set#containsAll(Collection)
+   */
   @Override
   public boolean containsAll(Collection<?> c) {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * @see Set#addAll(Collection)
+   */
   @Override
   public boolean addAll(Collection<? extends TOP> c) {
     boolean changed = false;
@@ -948,16 +982,25 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return changed;
   }
   
+  /**
+   * @see Set#retainAll(Collection)
+   */
   @Override
   public boolean retainAll(Collection<?> c) {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * @see Set#removeAll(Collection)
+   */
   @Override
   public boolean removeAll(Collection<?> c) {
     throw new UnsupportedOperationException();
   }
   
+  /**
+   * @see Set#clear()
+   */
   @Override
   public void clear() {
     if (isEmpty()) {
@@ -990,6 +1033,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     lastRemovedPos = -1;
   }
 
+  /**
+   * @see NavigableSet#lower(Object)
+   */
   @Override
   public TOP lower(TOP fs) {
     int pos = lowerPos(fs);
@@ -1015,12 +1061,19 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
   }
 
 
+  /**
+   * @see NavigableSet#floor(Object)
+   */
   @Override
   public TOP floor(TOP fs) {
     int pos = floorPos(fs);
     return (pos < 0) ? null : a[pos];
   }
   
+  /**
+   * @param fs -
+   * @return -
+   */
   public int floorPos(TOP fs) {
     processBatch();
     int pos = find(fs);  // position of lowest item GE fs
@@ -1037,13 +1090,20 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return -1;
   }
 
+  /**
+   * @see NavigableSet#ceiling(Object)
+   */
   @Override
   public TOP ceiling(TOP fs) {
     int pos = ceilingPos(fs);
     return (pos < a_nextFreeslot) ? a[pos] : null;
   }
   
-  
+
+  /**
+   * @param fs -
+   * @return -
+   */
   public int ceilingPos(TOP fs) {
     processBatch();
     int pos = find(fs); // position of lowest item GE fs
@@ -1062,12 +1122,19 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return pos;
   }
 
+  /**
+   * @see NavigableSet#higher(Object)
+   */
   @Override
   public TOP higher(TOP fs) {
     int pos = higherPos(fs);
     return (pos < a_nextFreeslot) ? a[pos] : null;
   }
 
+  /**
+   * @param fs the Feature Structure to use for positioning
+   * @return the position that's higher
+   */
   public int higherPos(TOP fs) {
     processBatch();
     int pos = find(fs); // position of lowest item GE fs
@@ -1082,16 +1149,25 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return pos;
   }
 
+  /**
+   * @see NavigableSet#pollFirst()
+   */
   @Override
   public TOP pollFirst() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * @see NavigableSet#pollLast()
+   */
   @Override
   public TOP pollLast() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * @see Iterable#iterator()
+   */
   @Override
   public Iterator<TOP> iterator() {
     processBatch();
@@ -1135,11 +1211,17 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     };
   }
 
+  /**
+   * @see NavigableSet#descendingSet()
+   */
   @Override
   public NavigableSet<TOP> descendingSet() {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * @see NavigableSet#descendingIterator()
+   */
   @Override
   public Iterator<TOP> descendingIterator() {
     processBatch();
@@ -1179,11 +1261,17 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     };
   }
 
+  /**
+   * @see NavigableSet#subSet(Object, boolean, Object, boolean)
+   */
   @Override
   public NavigableSet<TOP> subSet(TOP fromElement, boolean fromInclusive, TOP toElement, boolean toInclusive) {
     return new SubSet(fromElement, fromInclusive, toElement, toInclusive, false, null);
   }
 
+  /**
+   * @see NavigableSet#headSet(Object, boolean)
+   */
   @Override
   public NavigableSet<TOP> headSet(TOP toElement, boolean inclusive) {
     if (isEmpty()) {
@@ -1192,6 +1280,9 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return subSet(first(), true, toElement, inclusive);     
   }
 
+  /**
+   * @see NavigableSet#tailSet(Object, boolean)
+   */  
   @Override
   public NavigableSet<TOP> tailSet(TOP fromElement, boolean inclusive) {
     if (isEmpty()) {
@@ -1200,16 +1291,25 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return subSet(fromElement, inclusive, last(), true);
   }
 
+  /**
+   * @see NavigableSet#subSet(Object, Object)
+   */
   @Override
   public SortedSet<TOP> subSet(TOP fromElement, TOP toElement) {
     return subSet(fromElement, true, toElement, false);
   }
 
+  /**
+   * @see NavigableSet#headSet(Object)
+   */
   @Override
   public SortedSet<TOP> headSet(TOP toElement) {
     return headSet(toElement, false);
   }
 
+  /**
+   * @see NavigableSet#tailSet(Object)
+   */
   @Override
   public SortedSet<TOP> tailSet(TOP fromElement) {
     return tailSet(fromElement, true);

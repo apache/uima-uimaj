@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.internal.util.OrderedFsSet_array;
 
 /**
  * implements OrderedFsSet_array partially, for iterator use
@@ -81,7 +82,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#comparator()
+   * @see OrderedFsSet_array#comparator()
    */
   @Override
   public Comparator<? super TOP> comparator() {
@@ -89,7 +90,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#first()
+   * @see OrderedFsSet_array#first()
    */
   @Override
   public TOP first() {
@@ -97,7 +98,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#last()
+   * @see OrderedFsSet_array#last()
    */
   @Override
   public TOP last() {
@@ -105,7 +106,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#size()
+   * @see OrderedFsSet_array#size()
    */
   @Override
   public int size() {
@@ -113,7 +114,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#isEmpty()
+   * @see OrderedFsSet_array#isEmpty()
    */
   @Override
   public boolean isEmpty() {
@@ -121,7 +122,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#contains(java.lang.Object)
+   * @see OrderedFsSet_array#contains(java.lang.Object)
    */
   @Override
   public boolean contains(Object o) {
@@ -129,7 +130,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#toArray()
+   * @see OrderedFsSet_array#toArray()
    */
   @Override
   public Object[] toArray() {
@@ -137,7 +138,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#toArray(java.lang.Object[])
+   * @see OrderedFsSet_array#toArray(java.lang.Object[])
    */
   @Override
   public <T> T[] toArray(T[] a1) {
@@ -145,7 +146,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#add(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#add(TOP)
    */
   @Override
   public boolean add(TOP fs) {
@@ -185,7 +186,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#remove(java.lang.Object)
+   * @see OrderedFsSet_array#remove(java.lang.Object)
    */
   @Override
   public boolean remove(Object o) {
@@ -193,7 +194,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#containsAll(java.util.Collection)
+   * @see OrderedFsSet_array#containsAll(java.util.Collection)
    */
   @Override
   public boolean containsAll(Collection<?> c) {
@@ -201,7 +202,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#addAll(java.util.Collection)
+   * @see OrderedFsSet_array#addAll(java.util.Collection)
    */
   @Override
   public boolean addAll(Collection<? extends TOP> c) {
@@ -209,7 +210,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#retainAll(java.util.Collection)
+   * @see OrderedFsSet_array#retainAll(java.util.Collection)
    */
   @Override
   public boolean retainAll(Collection<?> c) {
@@ -217,7 +218,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#removeAll(java.util.Collection)
+   * @see OrderedFsSet_array#removeAll(java.util.Collection)
    */
   @Override
   public boolean removeAll(Collection<?> c) {
@@ -226,7 +227,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
 
   /**
    * 
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#clear()
+   * @see OrderedFsSet_array#clear()
    */
   @Override
   public void clear() {
@@ -234,7 +235,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#lower(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#lower(TOP)
    */
   @Override
   public TOP lower(TOP fs) {
@@ -242,14 +243,16 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#lowerPos(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#lowerPos(TOP)
+   * @param fs the Feature Structure to use for positioning
+   * @return -
    */
   public int lowerPos(TOP fs) {
     return set.lowerPos(fs);
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#floor(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#floor(TOP)
    */
   @Override
   public TOP floor(TOP fs) {
@@ -257,14 +260,16 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#floorPos(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#floorPos(TOP)
+   * @param fs the Feature Structure to use for positioning
+   * @return -
    */
   public int floorPos(TOP fs) {
     return set.floorPos(fs);
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#ceiling(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#ceiling(TOP)
    */
   @Override
   public TOP ceiling(TOP fs) {
@@ -272,14 +277,16 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#ceilingPos(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#ceilingPos(TOP)
+   * @param fs the Feature Structure to use for positioning
+   * @return -
    */
   public int ceilingPos(TOP fs) {
     return set.ceilingPos(fs);
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#higher(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#higher(TOP)
    */
   @Override
   public TOP higher(TOP fs) {
@@ -287,14 +294,16 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#higherPos(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#higherPos(TOP)  
+   * @param fs the Feature Structure to use for positioning
+   * @return -
    */
   public int higherPos(TOP fs) {
     return set.higherPos(fs);
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#pollFirst()
+   * @see OrderedFsSet_array#pollFirst()
    */
   @Override
   public TOP pollFirst() {
@@ -302,7 +311,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#pollLast()
+   * @see OrderedFsSet_array#pollLast()
    */
   @Override
   public TOP pollLast() {
@@ -310,7 +319,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#iterator()
+   * @see OrderedFsSet_array#iterator()
    */
   @Override
   public Iterator<TOP> iterator() {
@@ -318,7 +327,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#descendingSet()
+   * @see OrderedFsSet_array#descendingSet()
    */
   @Override
   public NavigableSet<TOP> descendingSet() {
@@ -326,7 +335,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#descendingIterator()
+   * @see OrderedFsSet_array#descendingIterator()
    */
   @Override
   public Iterator<TOP> descendingIterator() {
@@ -334,7 +343,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#subSet(org.apache.uima.jcas.cas.TOP, boolean, org.apache.uima.jcas.cas.TOP, boolean)
+   * @see OrderedFsSet_array#subSet(TOP, boolean, TOP, boolean)
    */
   @Override
   public NavigableSet<TOP> subSet(TOP fromElement, boolean fromInclusive, TOP toElement,
@@ -343,7 +352,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#headSet(org.apache.uima.jcas.cas.TOP, boolean)
+   * @see OrderedFsSet_array#headSet(TOP, boolean)
    */
   @Override
   public NavigableSet<TOP> headSet(TOP toElement, boolean inclusive) {
@@ -351,7 +360,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#tailSet(org.apache.uima.jcas.cas.TOP, boolean)
+   * @see OrderedFsSet_array#tailSet(TOP, boolean)
    */
   @Override
   public NavigableSet<TOP> tailSet(TOP fromElement, boolean inclusive) {
@@ -359,7 +368,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#subSet(org.apache.uima.jcas.cas.TOP, org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#subSet(TOP, TOP)
    */
   @Override
   public SortedSet<TOP> subSet(TOP fromElement, TOP toElement) {
@@ -367,7 +376,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#headSet(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#headSet(TOP)
    */
   @Override
   public SortedSet<TOP> headSet(TOP toElement) {
@@ -375,7 +384,7 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#tailSet(org.apache.uima.jcas.cas.TOP)
+   * @see OrderedFsSet_array#tailSet(TOP)
    */
   @Override
   public SortedSet<TOP> tailSet(TOP fromElement) {
@@ -383,14 +392,14 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#getModificationCount()
+   * @return the modification count
    */
   public int getModificationCount() {
     return set.getModificationCount();
   }
 
   /**
-   * @see org.apache.uima.internal.util.OrderedFsSet_array#toString()
+   * @see OrderedFsSet_array#toString()
    */
   @Override
   public String toString() {

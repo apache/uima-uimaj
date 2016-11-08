@@ -1799,6 +1799,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
   /**
    * Get the FsIndex_iicp for a given typeCode, indexingStrategy, and comparator (type ignored)
+   * @param typeCode -
    * @param indexingStrategy -
    * @param comp -
    * @param <T> type of Feature Structure

@@ -92,7 +92,7 @@ public class CasSeqAddrMaps {
   /**
    * Add a new FS id - done during prescan of source during serialization
    * Must call in heap scan order
-   * @param srcId -
+   * @param srcFs -
    * @param tgtId -
    * @param inTarget true if this type is in the target
    */
@@ -105,7 +105,7 @@ public class CasSeqAddrMaps {
   
   /**
    * Called during deserialize to incrementally add 
-   * @param srcAddr -
+   * @param srcFs -
    * @param inSrc -
    */
   public void addSrcFsForTgt(TOP srcFs, boolean inSrc) {

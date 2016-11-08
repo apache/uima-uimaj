@@ -141,8 +141,10 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   /**
    * INDEX
    * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
+   * @param indexName -
+   * @param <N> type of returned Feature Structures
+   * @return -
    */
-
   public <N extends FeatureStructure> SelectFSs_impl<N> index(String indexName) {
     this.index = view.indexRepository.getIndex(indexName);
     return (SelectFSs_impl<N>) this;
@@ -1003,15 +1005,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * works for AnnotationIndex or general index
    * 
    * position taken from startingFs (not necessarily an Annotation subtype)
-   *   - goes to left-most "equal" using comparator, or if none equal, to the first one > startingFs
+   *   - goes to left-most "equal" using comparator, or if none equal, to the first one &gt; startingFs
    *     -- using moveTo(fs)
    * 
    * special processing for AnnotationIndex (only):
    *   - typePriority - use or ignore
-   *     -- ignored: after moveTo(fs), moveToPrevious while begin && end ==
+   *     -- ignored: after moveTo(fs), moveToPrevious while begin and end ==
    *       --- and if isPositionUsesType types are == 
    * @param it iterator to position
-   * @param <T> type of result
    * @return it positioned if needed
    */
   public FSIterator<T> maybePosition(FSIterator<T> it) {

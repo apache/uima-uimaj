@@ -83,10 +83,10 @@ import org.apache.uima.util.Logger;
  *       - These instances share the same int[] and Object[] and _typeImpl and _casView refs with the outer class loader's FS
  * 
  * Timing / life cycle
- *   Built-in classes loaded & initialized at first type system commit time.
- *   non-pear classes loaded & initialized at type system commit time (if not already loaded)
+ *   Built-in classes loaded and initialized at first type system commit time.
+ *   non-pear classes loaded and initialized at type system commit time (if not already loaded)
  *     - special checks for conformability if some types loaded later, due to requirements for computing feature offsets at load time
- *   pear classes loaded & initialized at first entry to Pear, for a given type system and class loader.        
+ *   pear classes loaded and initialized at first entry to Pear, for a given type system and class loader.        
  *
  *          
  *   At typeSystemCommit time, this class is created and initialized: 

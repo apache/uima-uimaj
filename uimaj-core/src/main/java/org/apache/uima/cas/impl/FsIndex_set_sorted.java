@@ -99,7 +99,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 
   /**
    * @see org.apache.uima.cas.FSIndex#contains(FeatureStructure)
-   * @param fs the feature structure
+   * @param templateKey the feature structure
    * @return true if the fs is contained
    */
   @Override
@@ -140,7 +140,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
    *     -- if it is GT, then the ones preceding it are LessThan (using cpx) the key.
    *           Do the same check as above to see if the last of the preceding ones is equal using cp.
    *   
-   * @param fs the matching fs template
+   * @param templateKey the matching fs template
    * @return an arbitrary fs that matches 
    */
   @Override

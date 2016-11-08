@@ -494,8 +494,9 @@ public class BinaryCasSerDes {
    * @param casLoadMode DEFAULT or REINIT. REINIT required with compressed form 6 to
    *                          reinitialize the cas's type system and index definition, for form 6.  
    * @param f6 only used for form 6 where an instance of BinaryCasSerDes6 has been initialized
-   * @param allowPreexistingFS only used for form 6 delta deserialization    
-   * @return -
+   * @param allowPreexistingFS only used for form 6 delta deserialization
+   * @param ts the type system  
+   * @return the format that was deserialized
    * @throws CASRuntimeException wraps IOException
    */
   public SerialFormat reinit(Header h, 

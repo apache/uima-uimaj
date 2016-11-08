@@ -93,7 +93,7 @@ public class ObjHashSet<T> implements Set<T> {
   
   /**
    * Copy constructor
-   * @param ohs
+   * @param ohs -
    */
   public ObjHashSet(ObjHashSet<T> ohs) {
     this.removedMarker = ohs.removedMarker;
@@ -129,7 +129,9 @@ public class ObjHashSet<T> implements Set<T> {
 //  public boolean wontExpand(int n) {
 //    return (size + nbrRemoved + n) < sizeWhichTriggersExpansion;  
 //  }
-  
+  /**
+   * @return the current capacity, &gt;= size
+   */
   public int getCapacity() {
     return keys.length;
   }
@@ -328,13 +330,17 @@ public class ObjHashSet<T> implements Set<T> {
   
   private boolean removeAtPosition(int pos) {
     // found, remove it
-    keys[pos] = (T) removedMarker;  // at runtime, this cast is a no-op    
+    keys[pos] = removedMarker;  // at runtime, this cast is a no-op    
     size --;
     modificationCount ++;
     nbrRemoved ++;
     return true;
   }
   
+
+  /**
+   * @see Set#size()
+   */
   @Override
   public int size() {
     return size;
@@ -382,7 +388,7 @@ public class ObjHashSet<T> implements Set<T> {
   
   /**
    * advance pos until it points to a non 0 or is 1 past end
-   * @param pos
+   * @param pos -
    * @return updated pos
    */
   public int moveToNextFilled(int pos) {
@@ -405,7 +411,7 @@ public class ObjHashSet<T> implements Set<T> {
    
   /**
    * decrement pos until it points to a non 0 or is -1
-   * @param pos
+   * @param pos -
    * @return updated pos
    */
   public int moveToPreviousFilled(int pos) {
@@ -590,7 +596,10 @@ public class ObjHashSet<T> implements Set<T> {
     }
     return anyChanged;
   }
-  
+
+  /**
+   * @return the modificiation count
+   */
   public int getModificationCount() {
     return modificationCount;
   }

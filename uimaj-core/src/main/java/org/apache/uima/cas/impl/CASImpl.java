@@ -1670,9 +1670,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   /**
    * This method called by setters in JCas gen'd classes when 
    * the setter must check for journaling
-   * @param fs
-   * @param fi
-   * @param setter
+   * @param fs -
+   * @param fi -
+   * @param setter -
    */
   public void setWithJournal(FeatureStructureImplC fs, FeatureImpl fi, Runnable setter) {
     setter.run();
@@ -1737,9 +1737,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * Only called from FeatureStructureImplC after determining 
    *   there is no local field to use
    * Is here because of 3 calls to things in this class
-   * @param fs      the feature structure
+   * @param fsIn      the feature structure
    * @param feat    the feature to set
-   * @param value -
+   * @param v -
    */
   public void setLongValue(FeatureStructureImplC fsIn, FeatureImpl feat, long v) {
     TOP fs = (TOP) fsIn;
@@ -2371,7 +2371,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
-   * @param arrayLength
+   * @param arrayLength -
    * @return the id of the created array
    */
   @Override
@@ -2382,7 +2382,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @param arrayLength
+   * @param arrayLength -
    * @return the id of the created array
    */
   @Override
@@ -2393,7 +2393,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @param arrayLength
+   * @param arrayLength -
    * @return the id of the created array
    */
   @Override
@@ -2404,7 +2404,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @param arrayLength
+   * @param arrayLength -
    * @return the id of the created array
    */
   @Override
@@ -2415,7 +2415,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @param arrayLength
+   * @param arrayLength -
    * @return the id of the created array
    */
   @Override
@@ -2426,7 +2426,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * @param arrayLength
+   * @param arrayLength -
    * @return the id of the created array
    */
   @Override
@@ -2480,9 +2480,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   feature range is int - normal
    *   feature range is a fs reference, return the id 
    *   feature range is a string: add the string if not already present to the string heap, return the int handle.
-   * @param fsRef
-   * @param featureCode
-   * @return
+   * @param fsRef -
+   * @param featureCode -
+   * @return -
    */
   @Override
   public final int ll_getIntValue(int fsRef, int featureCode) {
@@ -2763,10 +2763,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * Only called if there was something removed that needs to be added back
    * 
    * skip the addback (to defer it until later) if:
-   *   - running in block mode (you can tell this if svd.fssTobeAddedback.size() > 0) or
+   *   - running in block mode (you can tell this if svd.fssTobeAddedback.size() &gt; 0) or
    * if running in block mode, the add back is delayed until the end of the block
    *   
-   * @param fsRef the fs to add back
+   * @param fs the fs to add back
    */
   public void maybeAddback(TOP fs) {
     if (svd.fssTobeAddedback.size() == 0) {
@@ -3873,7 +3873,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   creates the document annotation if not present
    *   only works if not in the base cas
    *     
-   * @return the document annotation
    */
   public void updateDocumentAnnotation() {
     if (!mySofaIsValid() || this == this.svd.baseCAS) {
@@ -4475,7 +4474,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   /**
    * Test case use
-   * @param fs the fs to include in the id 2 fs map
+   * @param fss the FSs to include in the id 2 fs map
    */
   public void setId2FSs(FeatureStructure ... fss) {
     for (FeatureStructure fs : fss) {
@@ -4636,8 +4635,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   /**
    * Get an empty list from the type code of a list
-   * @param rangeCode
-   * @return
+   * @param rangeCode -
+   * @return -
    */
   public EmptyList getEmptyListFromTypeCode(int rangeCode) {
     switch (rangeCode) {
@@ -4819,7 +4818,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return (T) r;
   }
   
-  /******************************************
+  /* *****************************************
    * DEBUGGING and TRACING
    ******************************************/
   

@@ -162,7 +162,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   
   /** 
    * For use in creating search keys
-   * @param id
+   * @param id -
    */
   protected FeatureStructureImplC(int id) {
     _casView = null;
@@ -299,7 +299,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   
   /**
    * remove this FS from indexes in a specific view, perhaps different from the view where this was created.
-   * @param cas the Cas
+   * @param jcas the Cas
    */
   public void removeFromIndexes(JCas jcas) {
     jcas.removeFsFromIndexes(this);
@@ -559,6 +559,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   /**
    * Called when setting a FS value which might be a trampoline
    * @param v the FS to check
+   * @param <N> the type of the FS
    * @return the FS or if it was a trampoline, the base FS
    */
   protected <N extends TOP> N _maybeGetBaseForPearFs(N v) {
@@ -572,6 +573,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   /**
    * Called when getting a FS value which might need to return a Pear context's trampoline
    * @param v the FS to check
+   * @param <N> the type of the FS
    * @return the FS or if we're in a Pear context, perhaps the trampoline (only some classes might have trampolines)
    */
   protected <N extends TOP> N _maybeGetPearFs(N v) {
@@ -582,8 +584,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   
   /**
    * Nc - no check, Wj = with journaling if needed
-   * @param adjOffset
-   * @param v
+   * @param adjOffset -
+   * @param v -
    */
   public void _setFeatureValueNcWj(int adjOffset, FeatureStructure v) {
     _setRefValueCommonWj(_getFeatFromAdjOffset(adjOffset, false), _maybeGetBaseForPearFs((TOP)v));
@@ -642,7 +644,7 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   
   /**
    * 2 checks, no feature check
-   * @param fi - the feature
+   * @param adjOffset - the feature offset
    * @param v - the value
    */
   protected void _setIntValueNfcCJ(int adjOffset, int v) {
@@ -1166,9 +1168,9 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   /**
    * for compressed form 4 - for getting the prev value of int-like slots
    * Uses unchecked forms for feature access
-   * @param slotKind
-   * @param fi
-   * @param v
+   * @param slotKind -
+   * @param f -
+   * @return -
    */
   public int _getIntLikeValue(SlotKind slotKind, FeatureImpl f) {
     if (null == f) {

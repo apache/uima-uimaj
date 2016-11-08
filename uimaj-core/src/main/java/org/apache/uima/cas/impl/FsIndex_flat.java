@@ -154,7 +154,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   }
 
   /**
-   * @see org.apache.uima.cas.impl.FsIndex_singletype#deleteFS(T)
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#deleteFS(FeatureStructure)
    */
   @Override
   public boolean deleteFS(T fs) {
@@ -175,7 +175,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   }
   
   /**
-   * @see org.apache.uima.cas.FSIndex#compare(T, T)
+   * @see org.apache.uima.cas.FSIndex#compare(FeatureStructure, FeatureStructure)
    */    
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {

@@ -107,6 +107,7 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   
   /**
    * @param ti type which is a subtype of this index's type
+   * @param <U> the type the subindex is over
    * @return the index but just over this subtype
    */
   default <U extends T> LowLevelIndex<U> getSubIndex(TypeImpl ti) {

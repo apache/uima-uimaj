@@ -2635,7 +2635,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
   }
 
-  /********************************************************************
+  /* ******************************************************************
    * methods common to serialization / deserialization etc.
    ********************************************************************/
   
@@ -3199,7 +3199,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //    }
 //  }
   
-  /**
+  /*
    * debugging and dumping
    */
   

@@ -3030,7 +3030,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * If the type systems are different, construct a type mapper and use that
    *   to selectively ignore types or features not in other type system
    *   
-   * The Mapper is from CAS1 -> CAS2  
+   * The Mapper is from CAS1 -&gt; CAS2  
    * 
    * When computing the things to compare from CAS1, filter to remove
    * feature structures not reachable via indexes or refs
