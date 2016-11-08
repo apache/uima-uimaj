@@ -640,6 +640,17 @@ ae.destroy();</programlisting></para>
                 <entry>Yes</entry>
                 <entry>-</entry>
               </row>
+              <row>
+                <entry>optionally include embedded Type System and Indexes definition?</entry>
+                <entry>-</entry>
+                <entry>-</entry>
+                <entry>Just type system</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+                <entry>Yes</entry>
+              </row>
+              
             </tbody>
           </tgroup>
           
@@ -686,24 +697,32 @@ ae.destroy();</programlisting></para>
       Normally this causes an exception, but with the lenient flag turned on, these extra types and/or features are 
       skipped over and ignored, with no error indicated.</para>
       
+      <para>Some formats optionally allow embedded type system and indexes definition to be saved; 
+      loaders for these can use that information to
+      replace the CAS's type system and indexes definition, or (for compressed form 6) use the type system part
+      to decode the serialized data.  This is described in detail in the Javadocs for CasIOUtils.
+      JSON serialization has several alternatives for optionally including portions of the type system, described in
+      the reference document chapter on JSON.</para>
+      
       <para>To save an XMI representation of a CAS, use the <code>save</code> method in <code>CasIOUtils</code> or the 
         <literal>serialize</literal> method of the class
         <literal>org.apache.uima.util.XmlCasSerializer</literal>. To save an XCAS representation of a CAS,
-        use the <code>save</code> method in <code>CasIOUtils</code> class or see the <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
+        use the <code>save</code> method in <code>CasIOUtils</code> class or use the 
+        <literal>org.apache.uima.cas.impl.XCASSerializer</literal> instead; see the Javadocs
         for details.</para>
       
       <para>All the external serialized forms (except JSON and the inline CAS approximate serialization) 
         can be read back in using the <code>CasIOUtils load</code> methods.
-        The <code>CasIOUtils load</code> methods also support loading type system and index definition information
-        at the same time (usually from addition input sources).  Some variations of these will use the read type system
-        and indexes definition to replace those in the CAS.
+        The <code>CasIOUtils load</code> methods also have API forms that support 
+        loading type system and index definition information
+        at the same time (from addition input sources); there is also a form for loading compressed form 6 where
+        you can pass the type system to use for decoding, when it is different from that of the receiving CAS. 
         The XCAS and XMI external forms can also be read back in using the <literal>deserialize</literal> method of
         the class <literal>org.apache.uima.util.XmlCasDeserializer</literal>. All of these methods deserialize
         into a pre-existing CAS, which you must create ahead of time.  See the
         Javadocs for details.</para>
         
-      <para>The <code>CasIOUtils</code> class has a collection of static methods to load (deserialize) and save (serialize) CASes,
-      optionally with their type system and index definitions.
+      <para>        
       The <code>Serialization</code> class has various static methods for serializing and deserializing Java Object forms and 
       compressed forms, with finer control over available options.   
       See the Javadocs for that class for details.</para>
