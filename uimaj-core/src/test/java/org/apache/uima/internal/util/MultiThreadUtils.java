@@ -166,6 +166,9 @@ public class MultiThreadUtils extends TestCase {
         
           while (true) {
             synchronized (threadState[finalI]) {
+              if (threadState[finalI][0] == ThreadControl.TERMINATE) {
+                return;
+              }
               while (threadState[finalI][0] == ThreadControl.WAIT) {
                 try {
                   threadState[finalI].wait();
