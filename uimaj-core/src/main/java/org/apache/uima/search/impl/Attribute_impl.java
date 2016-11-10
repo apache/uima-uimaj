@@ -82,8 +82,8 @@ public class Attribute_impl extends MetaDataObject_impl implements Attribute {
    */
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    attrs.addAttribute("", "name", "name", null, getName());
-    attrs.addAttribute("", "value", "value", null, getValue());
+    attrs.addAttribute("", "name", "name", "", getName());
+    attrs.addAttribute("", "value", "value", "", getValue());
     return attrs;
   }
 

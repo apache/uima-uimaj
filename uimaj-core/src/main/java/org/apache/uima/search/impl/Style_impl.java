@@ -109,7 +109,7 @@ public class Style_impl extends MetaDataObject_impl implements Style {
    */
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
-    attrs.addAttribute("", "name", "name", null, getName());
+    attrs.addAttribute("", "name", "name", "", getName());
     return attrs;
   }
 

@@ -179,10 +179,10 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     String namespace = getXmlizationInfo().namespace;
     AttributesImpl attrs = new AttributesImpl();
     if (getName() != null) {
-      attrs.addAttribute("", "name", "name", null, getName());
+      attrs.addAttribute("", "name", "name", "", getName());
     }
     if (getLocation() != null) {
-      attrs.addAttribute("", "location", "location", null, getLocation());
+      attrs.addAttribute("", "location", "location", "", getLocation());
     }
     Node node = serializer.findMatchingSubElement("import");
     serializer.outputStartElement(node, namespace, "import", "import", attrs);

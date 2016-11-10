@@ -470,7 +470,7 @@ public final class ResultSpecification_impl extends MetaDataObject_impl implemen
    */
   @Override
   protected XmlizationInfo getXmlizationInfo() {
-    return new XmlizationInfo("resultSpecification", null,
+    return new XmlizationInfo("resultSpecification", "",
             new PropertyXmlInfo[] { new PropertyXmlInfo("resultTypesAndFeatures", null) });
   }
 

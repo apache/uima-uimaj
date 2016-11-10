@@ -74,10 +74,10 @@ class MetaDataObjectSerializer_plain implements MetaDataObject_impl.Serializer {
 
   @Override
   public void writeSimpleValueWithTag(String className, Object o, Node node) throws SAXException {
-    outputStartElement(node, null, className, className, EMPTY_ATTRIBUTES);
+    outputStartElement(node, "", className, className, EMPTY_ATTRIBUTES);
     String valStr = o.toString();
     ch.characters(valStr.toCharArray(),  0,  valStr.length());
-    outputEndElement(node, null,  className,  className);
+    outputEndElement(node, "",  className,  className);
   }
   
   @Override

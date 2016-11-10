@@ -863,7 +863,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     AttributesImpl attrs = getXMLAttributes();
     
     if (aWriteDefaultNamespaceAttribute && inf.namespace != null) {
-      attrs.addAttribute("", "xmlns", "xmlns", null, inf.namespace);
+      attrs.addAttribute("", "xmlns", "xmlns", "", inf.namespace);
     }
     
     // start element
@@ -1131,7 +1131,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
           // write a tag for the value, with a "key" attribute
           AttributesImpl attrs = new AttributesImpl();
-          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls OK?
+          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, "", key); // nulls not OK - must use ""
           Node innerMatchingNode = getMatchingNode(sc, aValueTagName);
           serializer.outputStartElement(innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);
 

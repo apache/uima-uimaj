@@ -727,8 +727,8 @@ public class XmiCasSerializer {
         endElement(xmlElementName);        
 
       } else {
-
-        workAttrs.addAttribute("", "", "elements", "CDATA", arrayToString(addr, typeClass));
+        // Saxon requirement? - can't omit (by using "") just one of localName & qName
+        workAttrs.addAttribute("", "elements", "elements", "CDATA", arrayToString(addr, typeClass));
         startElement(xmlElementName, workAttrs, 0);
         endElement(xmlElementName);      
       }
@@ -967,7 +967,7 @@ public class XmiCasSerializer {
         } // end of switch
         
         if (attrValue != null && featName != null) {
-          addAttribute(attrs, featName, attrValue, null);
+          addAttribute(attrs, featName, attrValue, "");
         }
       } // end of for loop over all features
       
