@@ -62,6 +62,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
+// TODO: Auto-generated Javadoc
 /**
  * Main thread that launches CPE and manages it. An application interacts with the running CPE via
  * this object. Through an API, an application may start, pause, resume, and stop a CPE.
@@ -69,30 +70,44 @@ import org.apache.uima.util.impl.ProcessTrace_impl;
  * 
  */
 public class BaseCPMImpl implements BaseCPM, Runnable {
+  
+  /** The default process trace. */
   private boolean defaultProcessTrace;
 
+  /** The cp engine. */
   private CPMEngine cpEngine = null;
 
+  /** The proc tr. */
   private ProcessTrace procTr = null;
 
+  /** The collection reader. */
   BaseCollectionReader collectionReader = null;
 
+  /** The checkpoint. */
   private Checkpoint checkpoint = null;
 
+  /** The checkpoint data. */
   private CheckpointData checkpointData = null;
 
+  /** The num 2 process. */
   private long num2Process = -1; // Default ALL
 
+  /** The killed. */
   private boolean killed = false;
 
+  /** The completed. */
   private boolean completed = false;
 
+  /** The cpe factory. */
   private CPEFactory cpeFactory = null;
 
+  /** The use jedii report. */
   private boolean useJediiReport = true;
 
+  /** The m event type map. */
   private Map mEventTypeMap;
 
+  /** The cpm thread group. */
   public CPMThreadGroup cpmThreadGroup = null;
 
   /**
@@ -110,13 +125,14 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   /**
    * Instantiates and initializes CPE Factory responsible for creating individual components that
    * are part of the processing pipeline.
-   * 
+   *
    * @param aDescriptor -
    *          parsed CPE descriptor
    * @param aResourceManager -
    *          ResourceManager instance to be used by the CPE
    * @param aDefaultProcessTrace -
    *          ProcessTrace instance to capture events and stats
+   * @param aProps the a props
    * @throws Exception -
    */
   public BaseCPMImpl(CpeDescription aDescriptor, ResourceManager aResourceManager,
@@ -128,15 +144,13 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   }
 
   /**
-   * Parses CPE descriptor
-   * 
+   * Parses CPE descriptor.
+   *
    * @param mode -
    *          indicates if the CPM should use a static descriptor or one provided
    * @param aDescriptor -
    *          provided descriptor path
-   * @param aResourceManager
-   *          ResourceManager to be used by CPM
-   * 
+   * @param aResourceManager          ResourceManager to be used by CPM
    * @throws Exception -
    */
   public BaseCPMImpl(Boolean mode, String aDescriptor, ResourceManager aResourceManager)
@@ -154,9 +168,9 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   }
 
   /**
-   * Plugs in custom perfomance tunning parameters
-   * 
-   * @param aPerformanceTuningSettings
+   * Plugs in custom perfomance tunning parameters.
+   *
+   * @param aPerformanceTuningSettings the new performance tuning settings
    */
   public void setPerformanceTuningSettings(Properties aPerformanceTuningSettings) {
     cpEngine.setPerformanceTuningSettings(aPerformanceTuningSettings);
@@ -177,8 +191,8 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * Sets Jedii-style reporting resources and sets the global flag to indicate what report-style to
    * use at the end of processing. Jedii-style reporting shows a summary for this run. The CPM
    * default report shows more detail information.
-   * 
-   * @param aUseJediiReport
+   *
+   * @param aUseJediiReport the new jedii report
    */
   public void setJediiReport(boolean aUseJediiReport) {
     mEventTypeMap = new HashMap();
@@ -190,9 +204,9 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
 
   /**
    * Instantiates and initializes a CPE.
-   * 
+   *
    * @param aDummyCasProcessor -
-   * 
+   * @param aProps the a props
    * @throws Exception -
    */
   public void init(boolean aDummyCasProcessor, Properties aProps) throws Exception {
@@ -310,36 +324,46 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   }
 
   /**
-   * Returns {@link CPEConfig} object holding current CPE configuration
-   * 
+   * Returns {@link CPEConfig} object holding current CPE configuration.
+   *
    * @return CPEConfig instance
-   * 
    * @throws Exception -
    */
   public CpeConfiguration getCPEConfig() throws Exception {
     return cpeFactory.getCPEConfig();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#getCasProcessors()
+   */
   /*
    * Returns All CasProcessors currently in the processing pipeline
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#getCasProcessors()
    */
+  @Override
   public CasProcessor[] getCasProcessors() {
     CasProcessor[] casProcs = cpEngine.getCasProcessors();
     return casProcs == null ? new CasProcessor[0] : casProcs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#addCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
+   */
   /*
    * Adds given CasProcessor to the processing pipeline. A new CasProcessor is appended to the
    * current list.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
+  @Override
   public void addCasProcessor(CasProcessor aCasProcessor) throws ResourceConfigurationException {
     cpEngine.addCasProcessor(aCasProcessor);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#addCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor, int)
+   */
   /*
    * Adds given CasProcessor to the processing pipeline. A new CasProcessor is inserted into a given
    * spot in the current list.
@@ -347,30 +371,44 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor,
    *      int)
    */
+  @Override
   public void addCasProcessor(CasProcessor aCasProcessor, int aIndex)
           throws ResourceConfigurationException {
     cpEngine.addCasProcessor(aCasProcessor, aIndex);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#removeCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
+   */
   /*
    * Removes given CasProcessor from the processing pipeline.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#removeCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
+  @Override
   public void removeCasProcessor(CasProcessor aCasProcessor) {
     cpEngine.removeCasProcessor(0);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#disableCasProcessor(java.lang.String)
+   */
   /*
    * Disables given CasProcessor in the existing processing pipeline.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#disableCasProcessor(org.apache.uima.collection.base_cpm.CasProcessor)
    */
+  @Override
   public void disableCasProcessor(String aCasProcessorName) {
 
     cpEngine.disableCasProcessor(aCasProcessorName);
   }
 
+  /**
+   * Enable cas processor.
+   *
+   * @param aCasProcessorName the a cas processor name
+   */
   /*
    * Disables given CasProcessor in the existing processing pipeline.
    * 
@@ -381,10 +419,14 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
     cpEngine.enableCasProcessor(aCasProcessorName);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#isSerialProcessingRequired()
+   */
   /*
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isSerialProcessingRequired()
    */
+  @Override
   public boolean isSerialProcessingRequired() {
     return false;
   }
@@ -394,46 +436,66 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#setSerialProcessingRequired(boolean)
    */
+  @Override
   public void setSerialProcessingRequired(boolean aRequired) {
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#isPauseOnException()
+   */
   /*
    * Returns true if this cpEngine pauses on exception. False otherwise.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isPauseOnException()
    */
+  @Override
   public boolean isPauseOnException() {
     return cpEngine.isPauseOnException();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#setPauseOnException(boolean)
+   */
   /*
    * Defines if cpEngine should pause on exception
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#setPauseOnException(boolean)
    */
+  @Override
   public void setPauseOnException(boolean aPause) {
     cpEngine.setPauseOnException(aPause);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#addStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
+   */
   /*
    * Adds Event Listener. Important events like, end of entity processing, exceptions, etc will be
    * sent to the registered listeners.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#addStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
    */
+  @Override
   public void addStatusCallbackListener(BaseStatusCallbackListener aListener) {
     cpEngine.addStatusCallbackListener(aListener);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#removeStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
+   */
   /*
    * Remoces named listener from the listener list.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#removeStatusCallbackListener(org.apache.uima.collection.base_cpm.BaseStatusCallbackListener)
    */
+  @Override
   public void removeStatusCallbackListener(BaseStatusCallbackListener aListener) {
     cpEngine.removeStatusCallbackListener(aListener);
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Runnable#run()
+   */
   /*
    * Starting point for the CPE. Before starting processing, the CPE must deploy all CasProcessors.
    * Once all are deployed the processing begins in Worker Thread called CPEngine. This thread
@@ -441,6 +503,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
    * 
    * @see java.lang.Runnable#run()
    */
+  @Override
   public void run() {
     long start, end;
     // name this thread
@@ -544,8 +607,7 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   }
 
   /**
-   * Called to cleanup CPE on shutdown
-   * 
+   * Called to cleanup CPE on shutdown.
    */
   public void finalizeIt() {
     // Do cleanup before terminating self
@@ -556,9 +618,11 @@ public class BaseCPMImpl implements BaseCPM, Runnable {
   /**
    * This method is called by an applications to begin CPM processing with a given Collection. It
    * just creates a new thread and starts it.
-   * 
+   *
+   * @param aCollectionReader the a collection reader
+   * @throws ResourceInitializationException the resource initialization exception
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
-   * @deprecated
+   * @deprecated 
    */
   @Deprecated
 public void process(BaseCollectionReader aCollectionReader)
@@ -578,12 +642,16 @@ public void process(BaseCollectionReader aCollectionReader)
     new Thread(this).start();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
+   */
   /*
    * This method is called by an application to begin processing given Collection. It creates a new
    * thread, adds it to a ThreadGroup and starts it.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process(org.apache.uima.collection.base_cpm.BaseCollectionReader)
    */
+  @Override
   public void process() throws ResourceInitializationException {
     // Retrieve number of entities to process from the CPM configuration
     try {
@@ -606,12 +674,14 @@ public void process(BaseCollectionReader aCollectionReader)
   }
 
   /**
-   * 
    * This method is called by an applications to begin CPM processing with a given Collection. It
    * just creates a new thread and starts it.
-   * 
+   *
+   * @param aCollectionReader the a collection reader
+   * @param aBatchSize the a batch size
+   * @throws ResourceInitializationException the resource initialization exception
    * @see org.apache.uima.collection.base_cpm.BaseCPM#process()
-   * @deprecated
+   * @deprecated 
    */
   @Deprecated
 public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
@@ -634,6 +704,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * @param aCollectionReader
    *          the collection reader
    */
+  @Override
   public void setCollectionReader(BaseCollectionReader aCollectionReader) {
     collectionReader = aCollectionReader;
     if (cpeFactory.isDefault()) {
@@ -646,6 +717,7 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
    * 
    * @return the collection reader
    */
+  @Override
   public BaseCollectionReader getCollectionReader() {
     try {
       if (this.collectionReader == null) {
@@ -657,21 +729,29 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#isProcessing()
+   */
   /*
    * Returns current state of the CPM.
    * 
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isProcessing()
    */
+  @Override
   public boolean isProcessing() {
     return cpEngine.isRunning();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#pause()
+   */
   /*
    * Pauses the CPM
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#pause()
    */
+  @Override
   public void pause() {
     cpEngine.pauseIt();
     if (checkpoint != null) {
@@ -680,29 +760,41 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#isPaused()
+   */
   /*
    * Returns true if the CPM is in pause state
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#isPaused()
    */
+  @Override
   public boolean isPaused() {
     return cpEngine.isPaused();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#resume(boolean)
+   */
   /*
    * Resumes the CPM
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#resume(boolean)
    */
+  @Override
   public void resume(boolean aRetryFailed) {
     resume();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#resume()
+   */
   /*
    * Resumes the CPM
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#resume()
    */
+  @Override
   public void resume() {
     cpEngine.resumeIt();
     if (checkpoint != null) {
@@ -736,12 +828,16 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.base_cpm.BaseCPM#stop()
+   */
   /*
    * Stops the CPM and all of its processing components. The CPM finishes processing of all CASes
    * that are in its queues.
    * 
    * @see org.apache.uima.collection.base_cpm.BaseCPM#stop()
    */
+  @Override
   public void stop() {
     if (UIMAFramework.getLogger().isLoggable(Level.WARNING)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.WARNING, this.getClass().getName(),
@@ -762,6 +858,9 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     }
   }
 
+  /**
+   * Asynch stop.
+   */
   /*
    * Stops/kills the CPM and all of its processing components.
    * 
@@ -789,6 +888,12 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     }
   }
 
+  /**
+   * Decode status.
+   *
+   * @param aStatus the a status
+   * @return the string
+   */
   /*
    * Returns a String describing a given CASProcessor state.
    * 
@@ -815,6 +920,14 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
     return Constants.UNKNOWN;
   }
 
+  /**
+   * Copy component events.
+   *
+   * @param aEvType the a ev type
+   * @param aList the a list
+   * @param aPTr the a P tr
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   /*
    * Copies events of a given type found in the list to a provided ProcessTrace instance
    * 
@@ -834,11 +947,10 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   }
 
   /**
-   * Helper method to display stats and totals
-   * 
+   * Helper method to display stats and totals.
+   *
    * @param aProcessTrace -
    *          trace containing stats
-   * 
    * @param aNumDocsProcessed -
    *          number of entities processed so far
    */
@@ -889,10 +1001,10 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   }
 
   /**
-   * Helper method to help build the CPM report
-   * 
-   * @param aEvent
-   * @param aTotalTime
+   * Helper method to help build the CPM report.
+   *
+   * @param aEvent the a event
+   * @param aTotalTime the a total time
    */
   public void buildEventTree(ProcessTraceEvent aEvent, int aTotalTime) {
     // Skip reporting the CPM time.This time has already been acquired by summing up
@@ -923,8 +1035,10 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
 
   /**
    * Returns PerformanceReport for the CPM. This report contains a snapshot of the CPM state.
-   * 
+   *
+   * @return the performance report
    */
+  @Override
   public ProcessTrace getPerformanceReport() {
     Map perfReport = cpEngine.getStats();
     Progress[] colReaderProgress = (Progress[]) perfReport.get("COLLECTION_READER_PROGRESS");
@@ -1101,9 +1215,11 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
   }
 
   /**
-   * @param processors
-   * @param procTr
-   * @param processTrace
+   * Creates the default process trace.
+   *
+   * @param aProcessors the a processors
+   * @param srcProcTr the src proc tr
+   * @param aProcessTrace the a process trace
    */
   private void createDefaultProcessTrace(CasProcessor[] aProcessors, ProcessTrace srcProcTr,
           ProcessTrace aProcessTrace) {
@@ -1125,18 +1241,21 @@ public void process(BaseCollectionReader aCollectionReader, int aBatchSize)
 
   /**
    * Returns current CPE progress. How many entities processed and bytes processed.
+   *
+   * @return the progress
    */
+  @Override
   public Progress[] getProgress() {
     return cpEngine.getProgress();
   }
 
   /**
-   * Returns a CPE descriptor as a String
-   * 
+   * Returns a CPE descriptor as a String.
+   *
    * @param aList -
    *          list of components
-   * 
    * @return - descriptor populated with a given components
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public String getDescriptor(List aList) throws ResourceConfigurationException {
     return cpeFactory.getDescriptor(aList);

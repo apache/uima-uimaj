@@ -54,7 +54,7 @@ public class NonJavaApplication extends RunnableApplication {
    * 
    * @param aCasProcessorConfiguration -
    *          access to Cas Processor configuration
-   * @param aCasProcessor
+   * @param aCasProcessor -
    * @throws ResourceConfigurationException passthru
    */
   protected void addApplicationInfo(CasProcessorConfiguration aCasProcessorConfiguration,
@@ -78,6 +78,7 @@ public class NonJavaApplication extends RunnableApplication {
    * @param aExecutable -
    *          name of the program to launch
    * @return - command line as array of Strings
+   * @throws ResourceConfigurationException -
    */
   protected String[] addApplicationCmdLineArguments(
           CasProcessorConfiguration aCasProcessorConfiguration, List argList, String aExecutable) 

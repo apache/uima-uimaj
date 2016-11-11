@@ -35,37 +35,47 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
+// TODO: Auto-generated Javadoc
 /**
  * Runing in a seperate thread creates a checkpoint file at predefined intervals.
  * 
  */
 public class Checkpoint implements Runnable {
+  
+  /** The file name. */
   private String fileName = null;
 
+  /** The stop. */
   private volatile boolean stop = false;  // volatile may be buggy in some JVMs apparently
                                           // consider changing to use synch
 
+  /** The checkpoint frequency. */
   private long checkpointFrequency = 3000;
 
   /**
-   * @GuardedBy(lockForPause)
+   * The pause.
+   *
+   * @GuardedBy(lockForPause) 
    */
   private boolean pause = false;
 
+  /** The lock for pause. */
   private final Object lockForPause = new Object();
 
+  /** The cpm. */
   // private boolean isRunning = false;
   private BaseCPMImpl cpm = null;
 
+  /** The synch point file name. */
   private String synchPointFileName = null;
 
   /**
    * Initialize the checkpoint with a reference to controlling cpe, the file where the checkpoint is
    * to be stored, and the frequency of checkpoints.
-   * 
-   * @param aCpm
-   * @param aFilename
-   * @param aCheckpointFrequency
+   *
+   * @param aCpm the a cpm
+   * @param aFilename the a filename
+   * @param aCheckpointFrequency the a checkpoint frequency
    */
   public Checkpoint(BaseCPMImpl aCpm, String aFilename, long aCheckpointFrequency) {
     fileName = aFilename;
@@ -78,16 +88,14 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Start the thread
-   * 
+   * Start the thread.
    */
   public void start() {
     new Thread(this).start();
   }
 
   /**
-   * Stops the checkpoint thread
-   * 
+   * Stops the checkpoint thread.
    */
   public void stop() {
     stop = true;
@@ -101,8 +109,9 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Starts the checkpoint thread and runs until the cpe tells it to stop
+   * Starts the checkpoint thread and runs until the cpe tells it to stop.
    */
+  @Override
   public void run() {
     Thread.currentThread().setName("CPM Checkpoint");
 
@@ -141,8 +150,7 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Deletes checkpoint file from the filesystem
-   * 
+   * Deletes checkpoint file from the filesystem.
    */
   public void delete() {
     try {
@@ -155,8 +163,7 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Pauses checkpoint thread
-   * 
+   * Pauses checkpoint thread.
    */
   public void pause() {
     synchronized (lockForPause) {
@@ -165,8 +172,7 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Resumes checkpoint thread
-   * 
+   * Resumes checkpoint thread.
    */
   public void resume() {
     synchronized (lockForPause) {
@@ -277,6 +283,11 @@ public class Checkpoint implements Runnable {
     currentFile.renameTo(backupFile);
   }
 
+  /**
+   * Prints the stats.
+   *
+   * @param prT the pr T
+   */
   public static void printStats(ProcessTrace prT) {
     if (UIMAFramework.getLogger().isLoggable(Level.FINEST)) {
       UIMAFramework.getLogger(Checkpoint.class).log(Level.FINEST,
@@ -338,8 +349,8 @@ public class Checkpoint implements Runnable {
   }
 
   /**
-   * Returns true if configured checkpoinjt file exists on disk
-   * 
+   * Returns true if configured checkpoinjt file exists on disk.
+   *
    * @return - true if file exists, false otherwise
    */
   public boolean exists() {

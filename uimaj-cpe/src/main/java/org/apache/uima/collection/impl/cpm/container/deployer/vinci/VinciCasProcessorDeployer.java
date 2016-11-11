@@ -63,6 +63,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.vinci.transport.ServiceDownException;
 import org.apache.vinci.transport.ServiceException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Reference implementation of
  * {@link org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer} This
@@ -90,51 +91,68 @@ import org.apache.vinci.transport.ServiceException;
  * 
  */
 public class VinciCasProcessorDeployer implements CasProcessorDeployer {
+  
+  /** The Constant LOCAL_VNS. */
   public static final String LOCAL_VNS = "LOCAL_VNS";
 
+  /** The Constant WAIT_TIME. */
   public static final int WAIT_TIME = 150;
 
+  /** The Constant MAX_WAIT_TRIES. */
   public static final int MAX_WAIT_TRIES = 5000;
 
+  /** The Constant CONN_RETRY_COUNT. */
   public static final String CONN_RETRY_COUNT = "CONN_RETRY_COUNT";
 
+  /** The Constant DEFAULT_VNS_PORT. */
   public static final String DEFAULT_VNS_PORT = "9005";
 
   // Define the range for ports. In terms of the first port
   // and the range. So the two constants below say that the
+  /** The Constant DEFAULT_SERVICE_PORT. */
   // first port is 10000 and the range is from 10000 to 13000.
   public static final int DEFAULT_SERVICE_PORT = 10000;
 
+  /** The Constant DEFAULT_SERVICE_PORT_RANGE. */
   public static final int DEFAULT_SERVICE_PORT_RANGE = 3000;
 
+  /** The Constant SLEEP_TIME. */
   public static final int SLEEP_TIME = 1000;
 
+  /** The cas processor pool. */
   private ServiceProxyPool casProcessorPool = null;
 
+  /** The local VNS thread. */
   // Thread for the local VNS
   private Thread localVNSThread = null;
 
   // Local VNS is a shared instance across all instances of VinciCasProcessorDeployer. It uses
   // shared
+  /** The vns. */
   // portQueue (defined below). VNS and the queue are instantiated once.
   private static volatile LocalVNS vns = null;
 
+  /** The restart count. */
   private int restartCount = 0;
 
   // Pool for port numbers assigned to Cas Processors running as vinci services deployed as managed
+  /** The port queue. */
   // Cas Processors
   private static BoundedWorkQueue portQueue = null;
 
+  /** The cpe factory. */
   private CPEFactory cpeFactory = null;
 
+  /** The monitor. */
   private final Object monitor = new Object();  // must be unique object, used for synch
 
+  /** The current service list. */
   private ArrayList currentServiceList = null;
 
   /**
    * Instantiaes the class and gives it access to CPE configuration.
-   * 
-   * @param aCpeFactory
+   *
+   * @param aCpeFactory the a cpe factory
    */
   public VinciCasProcessorDeployer(CPEFactory aCpeFactory) {
     cpeFactory = aCpeFactory;
@@ -145,11 +163,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * number of processing threads defined in the CPE descriptor. There is one instance per
    * processing thread created here. The <i>aCasProcessorList</i> contains instantiated Cas
    * Processors. These are instantiated by the CPEFactory.
-   * 
+   *
    * @param aCasProcessorList - list containing instantiated Cas Processors
+   * @param aEngine the a engine
    * @param redeploy - true when redeploying failed Cas Processor
-   * 
    * @return - ProcessingContainer containing pool of CasProcessors
+   * @throws ResourceConfigurationException the resource configuration exception
    */
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, CPMEngine aEngine,
           boolean redeploy) throws ResourceConfigurationException {
@@ -159,10 +178,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Deploys CasProcessor using configuration from provided container. This method is used for
    * re-launching failed Cas Processor.
-   * 
+   *
    * @param aProcessingContainer -
    *          container for deployed CasProcessor.
+   * @throws ResourceConfigurationException the resource configuration exception
    */
+  @Override
   public void deployCasProcessor(ProcessingContainer aProcessingContainer)
           throws ResourceConfigurationException {
     try {
@@ -195,13 +216,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * cpe descriptor. In case of managed Cas Processor, the deployment consists of launching the
    * vinci service and creating a connection to it. For un-managed Cas Processor the CPE establishes
    * the connection.
-   * 
+   *
    * @param aCasProcessorList -
    *          list of CasProcessors to deploy
    * @param redeploy -
    *          true if intent is to redeploy failed service
    * @return ProcessinContainer - instance of Container
+   * @throws ResourceConfigurationException the resource configuration exception
    */
+  @Override
   public ProcessingContainer deployCasProcessor(List aCasProcessorList, boolean redeploy)
           throws ResourceConfigurationException {
     String name = null;
@@ -414,8 +437,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   }
 
   /**
-   * Retrieve the metadata from the service and add it to the container
-   * 
+   * Retrieve the metadata from the service and add it to the container.
+   *
    * @param aProcessingContainer -
    *          container where the metadata will be saved
    */
@@ -443,7 +466,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Launches an application as a seperate process using java's Process object. Actually, it
    * launches as many copies of the application as given in the <i>howMany</i> parameter.
-   * 
+   *
+   * @param aProcessingContainer the a processing container
    * @param casProcessorConfig -
    *          Configuration containing start up command
    * @param redeploy -
@@ -590,9 +614,9 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * No-op for integrated deployment. Integrated CasProcessors are instantiated using UIMA framework
    * factory in the CPEFactory.
-   * 
-   * @param aProcessingContainer
-   * @param redeploy
+   *
+   * @param aProcessingContainer the a processing container
+   * @param redeploy the redeploy
    * @throws ResourceConfigurationException tbd
    */
   private void deployIntegrated(ProcessingContainer aProcessingContainer, boolean redeploy)
@@ -913,6 +937,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
     return succesfullConnections;
   }
 
+  /**
+   * Gets the next available.
+   *
+   * @param aServiceList the a service list
+   * @return the next available
+   */
   private VinciServiceInfo getNextAvailable(ArrayList aServiceList) {
     VinciServiceInfo serviceInfo = null;
 
@@ -930,14 +960,13 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   }
 
   /**
-   * Query configured VNS for a list of services with a given service URI
-   * 
+   * Query configured VNS for a list of services with a given service URI.
+   *
    * @param aServiceUri -
    *          named service endpoint
    * @param aCasProcessorConfig -
    *          Cas Processor configuration
    * @return - List of services provided by VNS
-   * 
    * @throws Exception passthru
    */
   private ArrayList getNewServiceList(String aServiceUri,
@@ -1049,9 +1078,9 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   }
 
   /**
-   * Returns URISpecifier
-   * 
-   * @param aFileName
+   * Returns URISpecifier.
+   *
+   * @param aDescriptorUrl the a descriptor url
    * @return URISpecifier
    * @throws ResourceConfigurationException if the resource specifier in the URI is not a URISpecifier
    */
@@ -1067,8 +1096,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   }
 
   /**
-   * Parses given service descriptor and returns initialized ResourceSpecifier
-   * 
+   * Parses given service descriptor and returns initialized ResourceSpecifier.
+   *
    * @param aUrl -
    *          URL of the descriptor
    * @return - ResourceSpecifier parsed from descriptor
@@ -1087,8 +1116,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   }
 
   /**
-   * Deploys internal VNS for use with local CasProcessor deployments
-   * 
+   * Deploys internal VNS for use with local CasProcessor deployments.
+   *
    * @param casProcessorConfig -
    *          CasProcessor configuration
    * @param redeploy -
@@ -1208,13 +1237,14 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   /**
    * Creates a proxy and connects it to Vinci service running on a given port. Once connected the
    * proxy is associated with Cas Processor.
-   * 
+   *
    * @param aCasProcessorConfig -
    *          CasProcessor configuration
-   * @param port -
-   *          port wher vinci service is listening
+   * @param aHost the a host
+   * @param aPort the a port
+   * @param aProcessingContainer the a processing container
+   * @param redeploy the redeploy
    * @return Connected proxy to service
-   * 
    * @throws ResourceConfigurationException wraps Exception
    * @throws Exception passthru
    */
@@ -1265,14 +1295,15 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
   /**
    * Creates a proxy and connects it to Vinci service. Uses VNS to locate service by name.
-   * 
+   *
    * @param aCasProcessorConfig -
    *          CasProcees configuration
    * @param aService -
    *          name of the vinci service
+   * @param aProcessingContainer the a processing container
+   * @param redeploy the redeploy
    * @return - connected Proxy
-   * 
-   * @throws Exception passthru 
+   * @throws Exception passthru
    */
   private synchronized boolean activateProcessor(CasProcessorConfiguration aCasProcessorConfig,
           String aService, ProcessingContainer aProcessingContainer, boolean redeploy) // throws
@@ -1466,9 +1497,12 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
   /**
    * Associates connected proxy with an instance of CasProcessor.
-   * 
+   *
    * @param aTap -
    *          connected proxy
+   * @param aProcessingContainer the a processing container
+   * @param redeploy the redeploy
+   * @throws Exception the exception
    */
   private void bindProxyToNetworkCasProcessor(VinciTAP aTap,
           ProcessingContainer aProcessingContainer, boolean redeploy) throws Exception {
@@ -1619,12 +1653,11 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
   }
 
   /**
-   * Creates and initializes proxy that will be used to connect to Vinci service
-   * 
+   * Creates and initializes proxy that will be used to connect to Vinci service.
+   *
    * @param aCasProcessorConfig -
    *          CasProcessor configuration
    * @return - new proxy (not yet connected to service)
-   * 
    * @throws ResourceConfigurationException wraps Exception
    */
   private VinciTAP getTextAnalysisProxy(CasProcessorConfiguration aCasProcessorConfig)
@@ -1743,7 +1776,8 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * whose ports are provided in the portQueue. Whenever a managed Cas Processor starts up, it
    * contacts local vns and is assigned a port to run on. The same port is added to the port queue
    * and used here for establishing a connection.
-   * 
+   *
+   * @param aProcessingContainer the a processing container
    * @param casProcessorConfig -
    *          CasProcessor configuration
    * @param redeploy -
@@ -1904,8 +1938,10 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
 
   /**
    * Shutdown local VNS.
-   * 
+   *
+   * @throws CasProcessorDeploymentException the cas processor deployment exception
    */
+  @Override
   public void undeploy() throws CasProcessorDeploymentException {
     if (vns != null) {
       vns.shutdown();
@@ -1918,6 +1954,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * 
    * @see org.apache.uima.collection.base_cpm.container.deployer.CasProcessorDeployer#undeploy()
    */
+  @Override
   public void undeploy(URL aURL) throws CasProcessorDeploymentException {
   }
 

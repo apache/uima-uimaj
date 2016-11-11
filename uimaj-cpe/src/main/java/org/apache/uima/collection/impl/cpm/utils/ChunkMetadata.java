@@ -85,7 +85,7 @@ public class ChunkMetadata {
   }
 
   /**
-   * @param b
+   * @param b true means timed out
    */
   public void setTimedOut(boolean b) {
     timedOut = b;

@@ -69,6 +69,7 @@ public class CasObjectNetworkCasProcessorImpl implements CasObjectProcessor {
    * 
    * @param aCasProcessor -
    *          Cas Process configuration from the CPE descriptor
+   * @throws ResourceConfigurationException
    */
   public CasObjectNetworkCasProcessorImpl(CpeCasProcessor aCasProcessor)
           throws ResourceConfigurationException {
