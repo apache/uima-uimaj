@@ -24,7 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -51,11 +54,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
+
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.UimaDecompiler;
 import org.apache.uima.internal.util.CommandLineParser;
 import org.apache.uima.internal.util.Misc;
+import org.apache.uima.internal.util.Pair;
+import org.apache.uima.internal.util.UIMAClassLoader;
+import org.apache.uima.pear.tools.PackageBrowser;
+import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.util.FileUtils;
 
 import com.github.javaparser.ASTHelper;
@@ -168,12 +181,94 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private static final String CLASSES = "-classes"; // individual classes to migrate, get from supplied classpath
   
+  /*****************
+   * Candidate
+   *****************/
+  private static final class Candidate {
+    /** 
+     * path to the .class or .java file
+     */
+    final Path p;
+    
+    /**
+     *  null or (if in a Pear), the pear's classpath (from installing and then getting the classpath)
+     *    - includes jars in lib/ dir and the bin/ classes
+     */
+    String pearClasspath;
+    Candidate(Path p) {
+      this.p = p;
+    }
+    
+    Candidate(Path p, String pearClasspath) {
+      this.p = p;
+      this.pearClasspath = pearClasspath;
+    }
+  }
+  
+  /*****************
+   *  P E A R 
+   *  
+   * Information for each PEAR that is processed
+   * Used when post-processing pears
+   *****************/
+  private static final class Pear {
+    
+    /**
+     * path to original .pear file among the roots
+     */
+    final Path pathToPear;
+    
+    /** 
+     * path to .class file in pear e.g. bin/org/apache/uima/examples/tutorial/Sentence.class
+     */
+    
+    final List<String> pathsToCandidateFiles = new ArrayList<>();
+        
+    Pear(Path pathToPear) {
+      this.pathToPear = pathToPear; 
+    }
+  }
+  
+  /**
+   * Map 
+   *   key
+   */
+  final List<String> classnames = new ArrayList<>();
+
   private Path tempDir = null;
     
   private boolean isSource = false;
   
-  private Path candidate;
-  private List<Path> candidates;
+  private Candidate candidate;
+  private List<Candidate> candidates;
+  
+  private Pear pear_current;
+  private List<Pear> pears = new ArrayList<>();
+  
+  /**
+   * current PEAR install path in a temp dir
+   */
+  private Path pearInstallPath;
+  
+  /**
+   * current Pear install path + 1 more dir in temp dir
+   * used in candidate generation to relativize the path to just the part inside the pear
+   */
+  private Path pearResolveStart;
+  
+  /**
+   * Map created when adding a pear's .class/.source file to candidates
+   *   Key: path string to .class or .java file in an installed Pear
+   *   Value: path part corresponding to inside pear - delete install dir + 1 more dir from front
+   */
+  private Map<String, String> path2InsidePearPath = new HashMap<>();
+  
+  /**
+   * Map created when adding a pear's .class/.source file to candidates
+   *   Key: path string to .class or .java file in an installed Pear
+   *   Value: path part corresponding to just the classname
+   */
+  private Map<String, String> path2classname = new HashMap<>();
   
   private String packageName;
   private String className;  // (omitting package)
@@ -239,6 +334,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private final List<ClassnameAndPath> skippedBuiltins = new ArrayList<>();  // class, path
   private final List<PathAndReason> deletedCheckModified = new ArrayList<>();  // path, deleted check string
   private final List<String1AndString2> pathWorkaround = new ArrayList<>(); // original, workaround
+  private final List<String1AndString2> pearClassReplace = new ArrayList<>(); // pear, classname
   private final List<PathAndReason> manualInspection = new ArrayList<>(); // path, reason
 //  private final List<PathAndPath> embeddedJars = new ArrayList<>(); // source, temp   
   
@@ -283,6 +379,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private String origSource;  // set by getSource()
   private String alreadyDone; // the slashifiedClassName
 
+
+
+
+
   public MigrateJCas() {
   }
 
@@ -315,13 +415,155 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       });
     }
 
-    report();
+    postProcessing();
+    
+    System.out.println("Migration finished");
   }
 
+  private boolean isOk(boolean v) {
+    return v;
+  }
+  
+  private void postProcessing() {
+    if (isOk(report()) && javaCompilerAvailable()) {
+      
+      compileV3sources();
+      try {
+        Path pearOutDir = Paths.get(outputDirectory, "pears");
+        FileUtils.deleteRecursive(pearOutDir.toFile());
+        Files.createDirectories(pearOutDir);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      
+      System.out.format("replacing .class files in %,d PEARs%n", pears.size());
+      for (Pear p : pears) {
+        pearPostProcessing(p);
+      }
+      try {
+        reportPaths("Reports of updated Pears", "pearFileUpdates.txt", pearClassReplace);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+  
+  private void pearPostProcessing(Pear pear) {
+    try {
+      // copy the pear so we don't change the original
+      Path pearCopy = Paths.get(outputDirectory, "pears", pear.pathToPear.getFileName().toString());
+     
+      Files.copy(pear.pathToPear, pearCopy);    
+
+      // put up a file system on the pear
+      FileSystem pfs = FileSystems.newFileSystem(pearCopy, null);
+    
+      // replace the .class files in this pear with corresponding v3 ones
+      for (int i = 0; i < pear.pathsToCandidateFiles.size(); i++) {
+        String candidatePath = pear.pathsToCandidateFiles.get(i);
+        String path_in_v3_classes = getPath_in_v3_classes(candidatePath);
+      
+        Path src = Paths.get(outputDirectory, "converted/v3-classes", path_in_v3_classes + ".class");
+        Path tgt = pfs.getPath("/", path2InsidePearPath.get(candidatePath));  // needs to be /bin/org/... etc
+        if (Files.exists(src)) {
+          Files.copy(src, tgt, StandardCopyOption.REPLACE_EXISTING);
+          reportPearClassReplace(pearCopy.toString(), path_in_v3_classes);
+        }
+      }
+      
+      pfs.close();     
+      
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
+  /**
+   * @param pathInPear a complete path to a class inside an (installed) pear
+   * @return the part starting after the top node of the install dir
+   */
+  private String getPath_in_v3_classes(String pathInPear) { 
+    return path2classname.get(pathInPear);  
+  }
+  
+  /**
+   * When running the compiler to compile v3 sources, we need a classpath that at a minimum
+   * includes uimaj-core.  The strategy is to use the invoker of this tool's classpath as
+   * specified from the application class loader
+   */
+  private void compileV3sources() {
+    if (c2ps.size() == 0) {
+      return;
+    }
+    System.out.format("Compiling converted %,d classes%n", c2ps.size());
+    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
+    Iterable<String> compilationUnitStrings = new Iterable<String>() {
+      @Override
+      public Iterator<String> iterator() {
+        return new Iterator<String>() {
+          int pos = 0;
+          @Override
+          public boolean hasNext() {
+            return pos < c2ps.size();
+          }
+          @Override
+          public String next() {
+            ClassnameAndPath classnameAndPath = c2ps.get(pos++);
+            return outDirConverted + "v3/" + classnameAndPath.classname + ".java";
+          }          
+        };
+      }  
+    };
+    Iterable<? extends JavaFileObject> compilationUnits = 
+        fileManager.getJavaFileObjectsFromStrings(compilationUnitStrings);
+    
+    // specify where the output classes go
+    String classesBaseDir = outDirConverted + "v3-classes";
+    try {
+      Files.createDirectories(Paths.get(classesBaseDir));
+    } catch (IOException e) {
+      throw new UIMARuntimeException(e);
+    }
+    // specify the classpath
+    String classpath = getAppClassPath();
+    Iterable<String> options = Arrays.asList("-d", classesBaseDir,
+        "-classpath", classpath);
+    compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();    
+  }
+  
+  /**
+   * @return the classpath to use in compiling the jcasgen'd sources
+   */
+  private String getAppClassPath() {
+    URL[] urls = ((URLClassLoader)MigrateJCas.class.getClassLoader()).getURLs();
+    StringBuilder cp = new StringBuilder();
+    for (URL url : urls) {
+      cp.append(url.getFile().toString());
+      cp.append(File.pathSeparatorChar);
+    }
+    if (null != migrateClasspath) {
+      cp.append(migrateClasspath);
+    }
+    System.out.println("debug: classpath = " + cp.toString());
+    return cp.toString();
+  }
+  
+  
+  private boolean javaCompilerAvailable() {
+    if (null == ToolProvider.getSystemJavaCompiler()) {
+      System.out.println("The migration tool would like to compile the migrated files, \n"
+          + "  but no Java compiler is available.\n"
+          + "  To make one available, run this tool using a Java JDK, not JRE");
+      return false;
+    }
+    return true;
+  }
+  
   private void processRootsCollection(String kind, String[] roots, CommandLineParser clp) {
     for (String root : roots) {
       processCollection("from " + kind + "  root: " + root, new Iterator<String>() { 
-        Iterator<Path> it = getCandidates(clp, root).iterator();
+        Iterator<Candidate> it = getCandidates(clp, root).iterator();
         public boolean hasNext() {return it.hasNext();}
         public String next() {
           return prepare(it.next());}
@@ -395,22 +637,22 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *   - see if it has already been decompiled; if so, return false
    *   
    * Side effect, set origSource and origBytes and alreadyDone
-   * @param path
+   * @param c
    * @return the source to maybe migrate
    */
-  private String getSource(Path path) {
+  private String getSource(Candidate c) {
     try {
       origSource = null;
       origBytes = null;
       if (isSource) {
-        origSource = FileUtils.reader2String(Files.newBufferedReader(path));
+        origSource = FileUtils.reader2String(Files.newBufferedReader(c.p));
         alreadyDone = origSourceToClassName.get(origSource);
 //        System.out.println("debug read " + s.length());
       } else {
-        origBytes = Files.readAllBytes(path);
+        origBytes = Files.readAllBytes(c.p);
         alreadyDone = origBytesToClassName.get(origBytes);
         if (null == alreadyDone) {
-          origSource = decompile(origBytes);
+          origSource = decompile(origBytes, c.pearClasspath);
         }
       }
       if (alreadyDone != null) {
@@ -541,7 +783,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     for (ConvertedSource cs : convertedSources) {
       if ((isSource && cs.rOrigSource.equals(origSource)) ||
           (!isSource && Arrays.equals(cs.rOrigBytes, origBytes))) {
-        cs.add(candidate);
+        cs.add(candidate.p);
         found = true;
         break;
       }
@@ -549,7 +791,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
     
     if (!found) {
-      ConvertedSource cs = new ConvertedSource(origSource, origBytes, candidate);
+      ConvertedSource cs = new ConvertedSource(origSource, origBytes, candidate.p);
       convertedSources.add(cs);
     }    
     
@@ -961,31 +1203,32 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *    java name, path  (sorted by java name)
    * duplicates:
    *    java name, path  (sorted by java name)
-   *
+   * @return true if it's likely everything converted OK.
    */
-  private void report() {
+  private boolean report() {
     System.out.println("\n\nMigration Summary");
     System.out.format("Output top directory: %s%n", outputDirectory);
     System.out.format("Date/time: %tc%n", new Date());
     pprintRoots("Sources", sourcesRoots);
     pprintRoots("Classes", classesRoots);
 
-   
+    boolean isOk = true;
     try {
-      reportPaths("Workaround Directories", "workaroundDir.txt", pathWorkaround);
-      reportPaths("Report of converted files where a deleted check was customized", "deletedCheckModified.txt", deletedCheckModified);
-      reportPaths("Report of converted files needing manual inspection", "manualInspection.txt", manualInspection);
-      reportPaths("Report of files which failed migration", "failed.txt", failedMigration);
-      reportPaths("Report of non-JCas files", "NonJCasFiles.txt", nonJCasFiles);
-      reportPaths("Builtin JCas classes - skipped - need manual checking to see if they are modified",
+      isOk = isOk && reportPaths("Workaround Directories", "workaroundDir.txt", pathWorkaround);
+      isOk = isOk && reportPaths("Reports of converted files where a deleted check was customized", "deletedCheckModified.txt", deletedCheckModified);
+      isOk = isOk && reportPaths("Reports of converted files needing manual inspection", "manualInspection.txt", manualInspection);
+      isOk = isOk && reportPaths("Reports of files which failed migration", "failed.txt", failedMigration);
+      isOk = isOk && reportPaths("Reports of non-JCas files", "NonJCasFiles.txt", nonJCasFiles);
+      isOk = isOk && reportPaths("Builtin JCas classes - skipped - need manual checking to see if they are modified",
           "skippedBuiltins.txt", skippedBuiltins);
-      
+      // can't do the pear report here - post processing not yet done.      
 //      computeDuplicates();
 //      reportPaths("Report of duplicates - not identical", "nonIdenticalDuplicates.txt", nonIdenticalDuplicates);
 //      reportPaths("Report of duplicates - identical", "identicalDuplicates.txt", identicalDuplicates);
-      reportDuplicates();
+      isOk = isOk && reportDuplicates();
       
       reportPaths("Report of processed files", "processed.txt", c2ps);
+      return isOk;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -1075,7 +1318,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return p;
   }
   
-  private void reportDuplicates() {
+  private boolean reportDuplicates() {
     List<Entry<String, List<ConvertedSource>>> nonIdenticals = new ArrayList<>();
     List<ConvertedSource> onlyIdenticals = new ArrayList<>();
     for (Entry<String, List<ConvertedSource>> e : classname2multiSources.entrySet()) {
@@ -1094,7 +1337,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     
     if (nonIdenticals.size() == 0) {
       if (onlyIdenticals.size() == 0) {
-        System.out.println("No duplicates found.");
+        System.out.println("There were no duplicates found.");
       } else {
         // report identical duplicates
         System.out.println("Identical duplicates (only):");
@@ -1104,6 +1347,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           }
         }
       }
+      return true;
     } else {
       System.out.println("Report of non-identical duplicates");
       for (Entry<String, List<ConvertedSource>> nonIdentical : nonIdenticals) {
@@ -1118,12 +1362,21 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         }
       }
     }
+    return false;
   }
   
-  private <T, U> void reportPaths(String title, String fileName, List<? extends Report2<T, U>> items) throws IOException {
+  /**
+   * 
+   * @param title -
+   * @param fileName -
+   * @param items -
+   * @return true if likely ok
+   * @throws IOException -
+   */
+  private <T, U> boolean reportPaths(String title, String fileName, List<? extends Report2<T, U>> items) throws IOException {
     if (items.size() == 0) {
-      System.out.println("No " + title);
-      return;  
+      System.out.println("There were no " + title);
+      return true;
     }
     System.out.println("\n" + title);
     for (int i = 0; i < title.length(); i++) System.out.print('=');
@@ -1148,6 +1401,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       }
       System.out.println("");
     } // end of try-with-resources
+    return false;
   }
   
   private String vWithFileSys(Object v) {
@@ -1185,14 +1439,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * @return list of Paths to walk
    * @throws IOException
    */
-  private List<Path> getCandidates(CommandLineParser clp, String root) {
+  private List<Candidate> getCandidates(CommandLineParser clp, String root) {
     isSkipTypeCheck  = clp.isInArgsList(SKIP_TYPE_CHECK);
     Path startPath = Paths.get(root);
     candidates = new ArrayList<>();
     
     try (Stream<Path> stream = Files.walk(startPath, FileVisitOption.FOLLOW_LINKS)) {  // needed to release file handles
         stream.forEachOrdered(
-          p -> getCandidates_processFile(p));
+          p -> getCandidates_processFile(p, null));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -1201,17 +1455,17 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    
     // the collection potentially includes inner class files
     
-    List<Path> c = new ArrayList<>();  // candidates
+    List<Candidate> c = new ArrayList<>();  // candidates
     final int nbrOfPaths = candidates.size();
     if (nbrOfPaths == 0) {
       return c;
     }
     for (int i = 0; i < nbrOfPaths; i++) {
-      
+     
       // skip files that end with _Type or 
       //   appear to be inner files: have names with a "$" char
       candidate = candidates.get(i);
-      String lastPartOfPath = candidate.getFileName().toString();
+      String lastPartOfPath = candidate.p.getFileName().toString();
       if (lastPartOfPath.endsWith(isSource ? "_Type.java" : "_Type.class")) {
         continue;  // skip the _Type files
       }
@@ -1236,10 +1490,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return c;  
   }
   
-  private final static Comparator<Path> pathComparator = new Comparator<Path>() {
+  private final static Comparator<Candidate> pathComparator = new Comparator<Candidate>() {
     @Override
-    public int compare(Path o1, Path o2) {
-      return o1.toString().compareTo(o2.toString());
+    public int compare(Candidate o1, Candidate o2) {
+      return o1.p.toString().compareTo(o2.p.toString());
     }
   };
   
@@ -1274,14 +1528,17 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *   - embedded Jars within Jars: 
    *     - not supported by Zip File System Provider (it only supports one level)
    *     - handle by extracting to a temp dir, and then using the Zip File System Provider
-   * @param path
+   * @param path the path to a .java or .class or .jar or .pear
+   * @param pearClasspath - a string representing a path to the pear's classpath if there is one, or null
    */
-  private void getCandidates_processFile(Path path) {
+  private void getCandidates_processFile(Path path, String pearClasspath) {
 //    System.out.println("debug processing " + path);
     try {
 //      URI pathUri = path.toUri();
       String pathString = path.toString();
-      if (pathString.endsWith(".jar") || pathString.endsWith(".pear")) {  // path.endsWith does not mean this !!
+      final boolean isPear = pathString.endsWith(".pear");
+            
+      if (pathString.endsWith(".jar") || isPear) {  // path.endsWith does not mean this !!
         if (!path.getFileSystem().equals(FileSystems.getDefault())) {        
           // embedded Jar: extract to temp
           Path out = getTempOutputPath(path);
@@ -1289,18 +1546,47 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //          embeddedJars.add(new PathAndPath(path, out));
           path = out;
         }
-        // experiment - see if this makes a copy
-        FileSystem jfs = FileSystems.newFileSystem(Paths.get(path.toUri()), null);
-        Path start = jfs.getPath("/");
+        
+        Path start;
+        final String localPearClasspath; 
+        if (isPear) {
+          if (pearClasspath != null) {
+            throw new UIMARuntimeException("Nested PEAR files not supported");
+          }
+          
+          pear_current = new Pear(path);
+          pears.add(pear_current);
+          // add pear classpath info
+          File pearInstallDir = Files.createTempDirectory(getTempDir(), "installedPear").toFile();
+          PackageBrowser ip = PackageInstaller.installPackage(pearInstallDir, path.toFile(), false);
+          localPearClasspath = ip.buildComponentClassPath();
+          String[] children = pearInstallDir.list();
+          if (children.length != 1) {
+            Misc.internalError();
+          }
+          pearResolveStart = Paths.get(pearInstallDir.getAbsolutePath(), children[0]);
+          
+          pearInstallPath = start = pearInstallDir.toPath();
+        } else {
+          localPearClasspath = pearClasspath;
+          FileSystem jfs = FileSystems.newFileSystem(Paths.get(path.toUri()), null);
+          start = jfs.getPath("/");
+        }
+        
         try (Stream<Path> stream = Files.walk(start)) {  // needed to release file handles
           stream.forEachOrdered(
-            p -> getCandidates_processFile(p));
-        }
+            p -> getCandidates_processFile(p, localPearClasspath));
+        }        
       } else {
         // is not a .jar file.  see if it's a jcas file
 //        System.out.println("debug path ends with java or class " + pathString.endsWith(isSource ? ".java" : ".class") + " " + pathString);
         if (pathString.endsWith(isSource ? ".java" : ".class")) {
-          candidates.add(path);
+          candidates.add(new Candidate(path, pearClasspath));
+          if (!isSource && null != pear_current) {
+            // inside a pear, which has been unzipped into pearInstallDir;
+            path2InsidePearPath.put(path.toString(), pearResolveStart.relativize(path).toString());                
+            pear_current.pathsToCandidateFiles.add(path.toString());           
+          }
         }
       }
     } catch (IOException e) {
@@ -1308,6 +1594,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     }
   }
   
+  /**
+   * 
+   * @param path used to get the last name from the path
+   * @return a temporary file in the local temp directory that has some name parts from the path's file, and ends in .jar
+   * @throws IOException -
+   */
   private Path getTempOutputPath(Path path) throws IOException {
     Path localTempDir = getTempDir();
     Path tempFile = Files.createTempFile(localTempDir, path.getFileName().toString(),  ".jar");
@@ -1321,20 +1613,20 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       tempDir.toFile().deleteOnExit();
     }
     return tempDir;
-  }  
+  } 
   
-  private boolean has_Type(Path cand, int start) {
+  private boolean has_Type(Candidate cand, int start) {
     if (start >= candidates.size()) {
       return false;
     }
 
-    String sc = cand.toString();
+    String sc = cand.p.toString();
     String sc_minus_suffix = sc.substring(0,  sc.length() - ( isSource ? ".java".length() : ".class".length())); 
     String sc_Type = sc_minus_suffix + ( isSource ? "_Type.java" : "_Type.class");
     // a string which sorts beyond the candidate + a suffix of "_"
     String s_end = sc_minus_suffix + (char) (((int)'_') + 1);
-    for (Path p : candidates.subList(start,  candidates.size())) {
-      String s = p.toString();
+    for (Candidate c : candidates.subList(start,  candidates.size())) {
+      String s = c.p.toString();
       if (s_end.compareTo(s) < 0) {
         return false;  // not found, we're already beyond where it would be found
       }
@@ -1396,14 +1688,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return true;
   }
   
-  private String decompile(byte[] b) {
-    ClassLoader cl = getClassLoader();
+  private String decompile(byte[] b, String pearClasspath) {
+    ClassLoader cl = getClassLoader(pearClasspath);
     UimaDecompiler ud = new UimaDecompiler(cl, null);
     return ud.decompile(b);
   }
   
   private String decompile(String classname) {
-    ClassLoader cl = getClassLoader();
+    ClassLoader cl = getClassLoader(null);
     UimaDecompiler ud = new UimaDecompiler(cl, null);
     return ud.decompileToString(classname);
   }
@@ -1414,13 +1706,28 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //    return ud.extractClassNameSlashes(b);    
 //  }
   
-  private ClassLoader getClassLoader() {
-    if (null == cachedMigrateClassLoader) {
-      cachedMigrateClassLoader = (migrateClasspath == null) 
-                      ? this.getClass().getClassLoader()
-                      : new URLClassLoader(Misc.classpath2urls(migrateClasspath));
+  /**
+   * The classloader to use, if it is provided, is one that delegates first
+   * to the parent.  This may need fixing for PEARs
+   * @return classloader to use for migrate decompiling
+   */
+  private ClassLoader getClassLoader(String pearClasspath) {
+    if (null == pearClasspath) {
+      if (null == cachedMigrateClassLoader) {
+        cachedMigrateClassLoader = (migrateClasspath == null) 
+                        ? this.getClass().getClassLoader()
+                        : new URLClassLoader(Misc.classpath2urls(migrateClasspath));
+      }
+      return cachedMigrateClassLoader;
+    } else {
+      try {
+        return new UIMAClassLoader((null == migrateClasspath) 
+                                     ? pearClasspath
+                                     : (pearClasspath + File.pathSeparator + migrateClasspath));
+      } catch (MalformedURLException e) {
+        throw new UIMARuntimeException(e);
+      }
     }
-    return cachedMigrateClassLoader;
   }
   
   private void addImport(String s) {
@@ -1594,6 +1901,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return null;
   }
   
+  /**
+   * Called on Annotation Decl, Class/intfc decl, empty type decl, enum decl
+   * Does nothing unless at top level of compilation unit
+   * 
+   * Otherwise, adds an entry to c2ps for the classname and package, plus full path
+   * 
+   * @param n type being declared
+   */
   private void updateClassName(TypeDeclaration n) {
     if (n.getParentNode() instanceof CompilationUnit) {
       className = n.getName();
@@ -1606,13 +1921,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       TypeImpl ti = TypeSystemImpl.staticTsi.getType(Misc.javaClassName2UimaTypeName(packageAndClassName));
       if (null != ti) {
         // is a built-in type
-        ClassnameAndPath p = new ClassnameAndPath(packageAndClassNameSlash, candidate);
+        ClassnameAndPath p = new ClassnameAndPath(packageAndClassNameSlash, candidate.p);
         skippedBuiltins.add(p);
         v3 = false;   // skip further processing of this class
         return;  
       }
 
-      c2ps.add(new ClassnameAndPath(packageAndClassNameSlash, candidate));
+      c2ps.add(new ClassnameAndPath(packageAndClassNameSlash, candidate.p));
+      path2classname.put(candidate.p.toString(), packageAndClassNameSlash);
       return;
     }
     return;
@@ -1668,7 +1984,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private void migrationFailed(String reason) {
-    failedMigration.add(new PathAndReason(candidate, reason));
+    failedMigration.add(new PathAndReason(candidate.p, reason));
     v3 = false;    
   }
   
@@ -1678,17 +1994,17 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private void reportV2Class() {
-    v2JCasFiles.add(candidate);
+    v2JCasFiles.add(candidate.p);
     v2 = true;
   }
   
   private void reportV3Class() {
-    v3JCasFiles.add(candidate);
+    v3JCasFiles.add(candidate.p);
     v3 = true;
   }
   
   private void reportNotJCasClass(String reason) {
-    nonJCasFiles.add(new PathAndReason(candidate, reason));
+    nonJCasFiles.add(new PathAndReason(candidate.p, reason));
     v3 = false;
   }
   
@@ -1697,11 +2013,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private void reportDeletedCheckModified(String m) {
-    deletedCheckModified.add(new PathAndReason(candidate, m));
+    deletedCheckModified.add(new PathAndReason(candidate.p, m));
   }
   
   private void reportMismatchedFeatureName(String m) {
-    manualInspection.add(new PathAndReason(candidate, "This getter/setter name doesn't match internal feature name: " + m));
+    manualInspection.add(new PathAndReason(candidate.p, "This getter/setter name doesn't match internal feature name: " + m));
   }
   
   private void reportUnrecognizedV2Code(String m) {
@@ -1710,6 +2026,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private void reportPathWorkaround(String orig, String modified) {
     pathWorkaround.add(new String1AndString2(orig, modified));
+  }
+  
+  private void reportPearClassReplace(String pear, String classname) {
+    pearClassReplace.add(new String1AndString2(pear, classname));
   }
   
   /***********************************************/
@@ -1748,12 +2068,13 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     System.out.println(
         "Usage: java org.apache.uima.migratev3.jcas.MigrateJCas \n"
         + "  [-sourcesRoots <One-or-more-directories-or-jars-separated-by-Path-separator>]\n"
-        + "  [-classesRoots <One-or-more-directories-or-jars-separated-by-Path-separator>]\n"
+        + "  [-classesRoots <One-or-more-directories-or-jars-or-pears-separated-by-Path-separator>]\n"
         + "  [-classes <one-or-more-fully-qualified-class-names-separated-by-Path-separator]\n"
         + "            example:  -classes mypkg.foo:pkg2.bar\n"
         + "  [-outputDirectory a-writable-directory-path (required)\n"
-        + "  [-migrateClasspath a-class-path to use in decompiling, required if -classesRoots is specified, or\n"
-        + "                     "
+        + "  [-migrateClasspath a-class-path to use in decompiling, used if -classesRoots is specified\n"
+        + "                     a default classpath of this tool's class path is used"
+        + "                     PEAR processing augments this with the PEAR's classpath information               "
         + "  [-skipTypeCheck if specified, skips validing a found item by looking for the corresponding _Type file"
         + "  NOTE: either -sourcesRoots or -classesRoots is required, but only one may be specified.\n"
         + "  NOTE: classesRoots are scanned for JCas classes, which are then decompiled, and the results processed like sourcesRoots\n"
@@ -1783,7 +2104,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   /**
    * prepare to migrate one class
    */
-  private String  prepare(Path c) {
+  private String  prepare(Candidate c) {
     candidate = c;
     packageName = null;
     className = null;
@@ -1793,7 +2114,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private String prepareIndividual(String classname) {
-    candidate = Paths.get(classname); // a pseudo path
+    candidate = new Candidate(Paths.get(classname)); // a pseudo path
     packageName = null;
     className = null;
     packageAndClassNameSlash = null;
