@@ -19,6 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
+// TODO: Auto-generated Javadoc
 /**
  * Convenience wrapper that is internally used by the CPM. Created in the OutputQueue this wrapper
  * contains the CAS and additional information needed to determine if the CAS contained has arrived
@@ -28,12 +29,18 @@ package org.apache.uima.collection.impl.cpm.utils;
  * 
  */
 public class QueueEntity {
+  
+  /** The timed out. */
   private boolean timedOut = false;
 
+  /** The entity. */
   private Object entity = null;
 
   /**
-   * Initialize the instance with the Entity (CAS) and the timeout
+   * Initialize the instance with the Entity (CAS) and the timeout.
+   *
+   * @param anEntity the an entity
+   * @param hasTimedOut the has timed out
    */
   public QueueEntity(Object anEntity, boolean hasTimedOut) {
     timedOut = hasTimedOut;
@@ -41,6 +48,8 @@ public class QueueEntity {
   }
 
   /**
+   * Gets the entity.
+   *
    * @return the entity
    */
   public Object getEntity() {
@@ -48,6 +57,8 @@ public class QueueEntity {
   }
 
   /**
+   * Checks if is timed out.
+   *
    * @return true if timed out
    */
   public boolean isTimedOut() {

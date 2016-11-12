@@ -25,22 +25,33 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.cpm.engine.CPMEngine;
 import org.apache.uima.util.Level;
 
+// TODO: Auto-generated Javadoc
 /**
  * Facilitates cleaning up resources associated with chunking/sequencing logic.
  * 
  */
 public class ExpirationTimer extends Thread {
+  
+  /** The time out. */
   private final long timeOut;
 
+  /** The map. */
   private final HashMap map;
 
+  /** The key. */
   private final String key;
 
+  /** The cpm. */
   CPMEngine cpm = null;
 
   /**
    * Constructs a Timer that expires after a given interval. It keeps the map from growing
    * indefinitely. Its main purpose is to remove entries from a given map using a provided key.
+   *
+   * @param aTimeout the a timeout
+   * @param aMap the a map
+   * @param aKey the a key
+   * @param aCpm the a cpm
    */
   public ExpirationTimer(long aTimeout, HashMap aMap, String aKey, CPMEngine aCpm) {
     super();
@@ -55,6 +66,7 @@ public class ExpirationTimer extends Thread {
    * HashMap using provided key. The map holds docId's that have been split into chunks.
    * 
    */
+  @Override
   public void run() {
     try {
       Thread.sleep(timeOut);

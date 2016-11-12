@@ -32,22 +32,34 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class CpeCollectionReaderCasInitializerImpl.
+ *
  * @deprecated As of v2.0, CAS Initializers are deprecated.
  */
 @Deprecated
 public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl implements
         CpeCollectionReaderCasInitializer {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6284616239685904940L;
 
+  /** The descriptor. */
   private CpeComponentDescriptor descriptor;
 
+  /** The configuration parameter settings. */
   private ConfigurationParameterSettings configurationParameterSettings;
 
+  /** The cfps. */
   private CasProcessorConfigurationParameterSettings cfps;
 
+  /** The sofa name mappings. */
   private CpeSofaMappings sofaNameMappings;
 
+  /**
+   * Instantiates a new cpe collection reader cas initializer impl.
+   */
   public CpeCollectionReaderCasInitializerImpl() {
   }
 
@@ -56,6 +68,7 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#setDescriptorPath(java.lang.String)
    */
+  @Override
   public void setDescriptor(CpeComponentDescriptor aDescriptor) {
     descriptor = aDescriptor;
   }
@@ -65,20 +78,28 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
    * 
    * @see org.apache.uima.collection.metadata.CpeCollectionReaderCasInitializer#getDescriptorPath()
    */
+  @Override
   public CpeComponentDescriptor getDescriptor() {
     return descriptor;
   }
 
   /**
    * Returns configuration parameter settings for this CasInitializer.
+   *
+   * @return the configuration parameter settings
    */
+  @Override
   public CasProcessorConfigurationParameterSettings getConfigurationParameterSettings() {
     return cfps;
   }
 
   /**
    * Sets configuration parameter settings for this CasInitializer.
+   *
+   * @param settings the new configuration parameter settings
+   * @throws CpeDescriptorException the cpe descriptor exception
    */
+  @Override
   public void setConfigurationParameterSettings(CasProcessorConfigurationParameterSettings settings)
           throws CpeDescriptorException {
     cfps = settings;
@@ -101,6 +122,8 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   }
 
   /**
+   * Gets the parameter settings.
+   *
    * @return the parameter settings
    */
   public ConfigurationParameterSettings getParameterSettings() {
@@ -121,7 +144,9 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
   }
 
   /**
-   * @param settings
+   * Sets the parameter settings.
+   *
+   * @param settings the new parameter settings
    */
   public void setParameterSettings(ConfigurationParameterSettings settings) {
     configurationParameterSettings = settings;
@@ -131,10 +156,15 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("casInitializer",
           new PropertyXmlInfo[] { new PropertyXmlInfo("descriptor", null),
               new PropertyXmlInfo("parameterSettings", null),
@@ -143,15 +173,21 @@ public class CpeCollectionReaderCasInitializerImpl extends MetaDataObject_impl i
           });
 
   /**
+   * Gets the sofa name mappings.
+   *
    * @return the sofa mappings
    */
+  @Override
   public CpeSofaMappings getSofaNameMappings() {
     return sofaNameMappings;
   }
 
   /**
-   * @param mappings
+   * Sets the sofa name mappings.
+   *
+   * @param mappings the new sofa name mappings
    */
+  @Override
   public void setSofaNameMappings(CpeSofaMappings mappings) {
     sofaNameMappings = mappings;
   }

@@ -30,15 +30,27 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CpeCheckpointImpl.
+ */
 public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpoint {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 9155094513948815121L;
 
+  /** The file. */
   private String file;
 
+  /** The time. */
   private String time;
 
+  /** The batch. */
   private int batch;
 
+  /**
+   * Instantiates a new cpe checkpoint impl.
+   */
   public CpeCheckpointImpl() {
   }
 
@@ -47,6 +59,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#setFilePath(java.lang.String)
    */
+  @Override
   public void setFilePath(String aCheckpointFilePath) throws CpeDescriptorException {
     file = aCheckpointFilePath;
   }
@@ -56,6 +69,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#getFilePath()
    */
+  @Override
   public String getFilePath() {
     return file;
   }
@@ -65,10 +79,17 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#setFrequency(int, boolean)
    */
+  @Override
   public void setFrequency(int aFrequency, boolean aTimeBased) {
     time = String.valueOf(aFrequency) + "ms";
   }
 
+  /**
+   * Convert 2 number.
+   *
+   * @param anObject the an object
+   * @return the int
+   */
   private int convert2Number(Object anObject) {
     int convertedTime = 1;
 
@@ -94,6 +115,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#getFrequency()
    */
+  @Override
   public int getFrequency() {
     return convert2Number(time);
   }
@@ -103,6 +125,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#isTimeBased()
    */
+  @Override
   public boolean isTimeBased() {
     return true;
   }
@@ -112,6 +135,7 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#setBatchSize(int)
    */
+  @Override
   public void setBatchSize(int aBatchSize) {
     batch = aBatchSize;
   }
@@ -121,16 +145,22 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
    * 
    * @see org.apache.uima.collection.metadata.CpeCheckpoint#getBatchSize()
    */
+  @Override
   public int getBatchSize() {
     return batch;
   }
 
   /**
    * Overridden to read Checkpoint attributes.
-   * 
+   *
+   * @param aElement the a element
+   * @param aParser the a parser
+   * @param aOptions the a options
+   * @throws InvalidXMLException the invalid XML exception
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#buildFromXMLElement(org.w3c.dom.Element,
    *      org.apache.uima.util.XMLParser, org.apache.uima.util.XMLParser.ParsingOptions)
    */
+  @Override
   public void buildFromXMLElement(Element aElement, XMLParser aParser, ParsingOptions aOptions)
           throws InvalidXMLException {
     setFile(aElement.getAttribute("file"));
@@ -144,9 +174,11 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
 
   /**
    * Overridden to handle Checkpoint attributes.
-   * 
+   *
+   * @return the XML attributes
    * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXMLAttributes()
    */
+  @Override
   protected AttributesImpl getXMLAttributes() {
     AttributesImpl attrs = super.getXMLAttributes();
     attrs.addAttribute("", "batch", "batch", "CDATA", String.valueOf(getBatch()));
@@ -159,14 +191,23 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
     return attrs;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.resource.metadata.impl.MetaDataObject_impl#getXmlizationInfo()
+   */
+  @Override
   protected XmlizationInfo getXmlizationInfo() {
     return XMLIZATION_INFO;
   }
 
+  /** The Constant XMLIZATION_INFO. */
   static final private XmlizationInfo XMLIZATION_INFO = new XmlizationInfo("checkpoint",
           new PropertyXmlInfo[0]);
 
-  /** METHODS CALLED BY THE PARSER * */
+  /**
+   *  METHODS CALLED BY THE PARSER *.
+   *
+   * @return the batch
+   */
   /**
    * @return the batch size
    */
@@ -175,6 +216,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   /**
+   * Gets the file.
+   *
    * @return a file
    */
   public String getFile() {
@@ -182,6 +225,8 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   /**
+   * Gets the time.
+   *
    * @return a time
    */
   public String getTime() {
@@ -189,21 +234,27 @@ public class CpeCheckpointImpl extends MetaDataObject_impl implements CpeCheckpo
   }
 
   /**
-   * @param i
+   * Sets the batch.
+   *
+   * @param i the new batch
    */
   public void setBatch(int i) {
     batch = i;
   }
 
   /**
-   * @param string
+   * Sets the file.
+   *
+   * @param string the new file
    */
   public void setFile(String string) {
     file = string;
   }
 
   /**
-   * @param i
+   * Sets the time.
+   *
+   * @param i the new time
    */
   public void setTime(String i) {
     time = i;

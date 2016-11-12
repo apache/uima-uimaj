@@ -43,7 +43,20 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLSerializer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DATACasUtils.
+ */
 public class DATACasUtils {
+  
+  /**
+   * Gets the XCA sas string.
+   *
+   * @param aCasData the a cas data
+   * @param keysToFilter the keys to filter
+   * @return the XCA sas string
+   * @throws Exception the exception
+   */
   public static String getXCASasString(CasData aCasData, String[] keysToFilter) throws Exception {
     CasDataToXCas generator = new CasDataToXCas();
     generator.setTypesToFilter(keysToFilter);
@@ -58,11 +71,12 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param dataCas
-   * @param featureType
-   * @param featureName
-   * @param featureValue
+   * Adds the feature structure.
+   *
+   * @param dataCas the data cas
+   * @param featureType the feature type
+   * @param featureName the feature name
+   * @param featureValue the feature value
    */
   public static void addFeatureStructure(CasData dataCas, String featureType, String featureName,
           String featureValue) {
@@ -74,8 +88,9 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aDataCas
+   * Checks if is cas empty.
+   *
+   * @param aDataCas the a data cas
    * @return true if the data cas is empty
    */
   public static boolean isCasEmpty(CasData aDataCas) {
@@ -87,11 +102,12 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param dataCas
-   * @param featureType
-   * @param featureName
-   * @param featureValue
+   * Adds the feature.
+   *
+   * @param dataCas the data cas
+   * @param featureType the feature type
+   * @param featureName the feature name
+   * @param featureValue the feature value
    */
   public static void addFeature(CasData dataCas, String featureType, String featureName,
           String featureValue) {
@@ -106,8 +122,9 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aDataCas
+   * Gets the byte count.
+   *
+   * @param aDataCas the a data cas
    * @return the byte count
    * @throws Exception -
    */
@@ -131,9 +148,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
-   * @param aFilterList
+   * Should analyze CAS.
+   *
+   * @param aCAS the a CAS
+   * @param aFilterList the a filter list
    * @return true if this cas should be analyzed
    */
   public static boolean shouldAnalyzeCAS(CasData aCAS, LinkedList aFilterList) {
@@ -184,9 +202,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aKey
-   * @param dropKeyList
+   * Drop it.
+   *
+   * @param aKey the a key
+   * @param dropKeyList the drop key list
    * @return true if this key is in the dropKeyList
    */
   public static boolean dropIt(String aKey, String[] dropKeyList) {
@@ -200,10 +219,11 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aKey
-   * @param typeList
-   * @return true if tbd 
+   * Checks if is valid type.
+   *
+   * @param aKey the a key
+   * @param typeList the type list
+   * @return true if tbd
    */
   public static boolean isValidType(String aKey, String[] typeList) {
 
@@ -227,9 +247,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
-   * @param featureName
+   * Checks for feature.
+   *
+   * @param aCAS the a CAS
+   * @param featureName the feature name
    * @return true if
    */
   public static boolean hasFeature(CasData aCAS, String featureName) {
@@ -248,9 +269,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
-   * @param aName
+   * Checks for feature structure.
+   *
+   * @param aCAS the a CAS
+   * @param aName the a name
    * @return true if tbd
    */
   public static boolean hasFeatureStructure(CasData aCAS, String aName) {
@@ -270,8 +292,9 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
+   * Dump features.
+   *
+   * @param aCAS the a CAS
    */
   public static void dumpFeatures(CasData aCAS) {
     Iterator it = aCAS.getFeatureStructures();
@@ -309,9 +332,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
-   * @param featureName
+   * Gets the feature value by type.
+   *
+   * @param aCAS the a CAS
+   * @param featureName the feature name
    * @return true if tbd
    */
   public static String getFeatureValueByType(CasData aCAS, String featureName) {
@@ -365,10 +389,11 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
-   * @param featureStructureName
-   * @param featureName
+   * Gets the feature structure values.
+   *
+   * @param aCAS the a CAS
+   * @param featureStructureName the feature structure name
+   * @param featureName the feature name
    * @return tbd
    */
   public static String[] getFeatureStructureValues(CasData aCAS, String featureStructureName,
@@ -401,10 +426,11 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCAS
-   * @param aFeatureStructure
-   * @param featureName
+   * Gets the feature value by type.
+   *
+   * @param aCAS the a CAS
+   * @param aFeatureStructure the a feature structure
+   * @param featureName the feature name
    * @return tbd
    */
   public static String getFeatureValueByType(CasData aCAS, String aFeatureStructure,
@@ -430,9 +456,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aDataCas
-   * @param aFeatureMap
+   * Remap feature types.
+   *
+   * @param aDataCas the a data cas
+   * @param aFeatureMap the a feature map
    */
   public static void remapFeatureTypes(CasData aDataCas, FeatureMap aFeatureMap) {
     ConfigurableFeature cf = null;
@@ -460,9 +487,10 @@ public class DATACasUtils {
   }
 
   /**
-   * 
-   * @param aCasData
-   * @param aFeatureStructureName
+   * Gets the cas data features.
+   *
+   * @param aCasData the a cas data
+   * @param aFeatureStructureName the a feature structure name
    * @return tbd
    */
   public static NameValuePair[] getCasDataFeatures(CasData aCasData, String aFeatureStructureName) {
