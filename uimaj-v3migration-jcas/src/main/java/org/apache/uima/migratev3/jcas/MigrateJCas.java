@@ -65,7 +65,6 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.impl.UimaDecompiler;
 import org.apache.uima.internal.util.CommandLineParser;
 import org.apache.uima.internal.util.Misc;
-import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
@@ -139,13 +138,13 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
  *         x/y/z/javapath/.../Classname.java
  *         x/y/z/javapath/.../Classname.java
  *         ...
- *         1/                                   << for duplicates, each set is for identical dups, different sets for non-identical
- *           x/y/z/javapath/.../Classname.java  << for duplicates, each set is for identical dups, different sets for non-identical  
- *           x/y/z/javapath/.../Classname.java  << for duplicates, each set is for identical dups, different sets for non-identical
+ *         1/                                   &lt;&lt; for duplicates, each set is for identical dups, different sets for non-identical
+ *           x/y/z/javapath/.../Classname.java  &lt;&lt; for duplicates, each set is for identical dups, different sets for non-identical  
+ *           x/y/z/javapath/.../Classname.java  &lt;&lt; for duplicates, each set is for identical dups, different sets for non-identical
  *           ...                                    
- *         2/                                   << for duplicates, each set is for identical dups, different sets for non-identical  
- *           x/y/z/javapath/.../Classname.java  << for duplicates, each set is for identical dups, different sets for non-identical
- *           x/y/z/javapath/.../Classname.java  << for duplicates, each set is for identical dups, different sets for non-identical
+ *         2/                                   &lt;&lt; for duplicates, each set is for identical dups, different sets for non-identical  
+ *           x/y/z/javapath/.../Classname.java  &lt;&lt; for duplicates, each set is for identical dups, different sets for non-identical
+ *           x/y/z/javapath/.../Classname.java  &lt;&lt; for duplicates, each set is for identical dups, different sets for non-identical
  *           ...
  *         
  *     not-converted/
@@ -244,12 +243,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private Pear pear_current;
   private List<Pear> pears = new ArrayList<>();
-  
-  /**
-   * current PEAR install path in a temp dir
-   */
-  private Path pearInstallPath;
-  
+    
   /**
    * current Pear install path + 1 more dir in temp dir
    * used in candidate generation to relativize the path to just the part inside the pear
@@ -379,6 +373,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private String origSource;  // set by getSource()
   private String alreadyDone; // the slashifiedClassName
 
+  private boolean isOk;
+
 
 
 
@@ -415,19 +411,20 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       });
     }
 
+    isOk = report();
+    
     postProcessing();
     
-    System.out.println("Migration finished");
-  }
-
-  private boolean isOk(boolean v) {
-    return v;
+    System.out.println("Migration finished " + 
+       (isOk 
+           ? "with no unusual conditions." 
+           : "with 1 or more unusual conditions that need manual checking."));
   }
   
   private void postProcessing() {
-    if (isOk(report()) && javaCompilerAvailable()) {
-      
+    if (javaCompilerAvailable()) {
       compileV3sources();
+    
       try {
         Path pearOutDir = Paths.get(outputDirectory, "pears");
         FileUtils.deleteRecursive(pearOutDir.toFile());
@@ -435,7 +432,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      
+        
       System.out.format("replacing .class files in %,d PEARs%n", pears.size());
       for (Pear p : pears) {
         pearPostProcessing(p);
@@ -533,19 +530,25 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   /**
+   * The classpath used to compile is
+   *   - the classpath for this migration app except the target/classes for this project
+   *   - any passed in migrate classpath
    * @return the classpath to use in compiling the jcasgen'd sources
    */
   private String getAppClassPath() {
     URL[] urls = ((URLClassLoader)MigrateJCas.class.getClassLoader()).getURLs();
     StringBuilder cp = new StringBuilder();
     for (URL url : urls) {
-      cp.append(url.getFile().toString());
-      cp.append(File.pathSeparatorChar);
+      String p = url.getFile().toString();
+      if (!p.endsWith("uimaj-v3migration-jcas/target/classes/")) {
+        cp.append(url.getFile().toString());
+        cp.append(File.pathSeparatorChar);
+      }   
     }
     if (null != migrateClasspath) {
       cp.append(migrateClasspath);
     }
-    System.out.println("debug: classpath = " + cp.toString());
+//    System.out.println("debug: classpath = " + cp.toString());
     return cp.toString();
   }
   
@@ -612,21 +615,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     
     return clp;
   }
-  
-  /***************
-   * set roots
-   * set isSource
-   ***************/
-  private void setRootsAndSource(CommandLineParser clp) {
-    if (clp.isInArgsList(CLASS_FILE_ROOTS)) {
-      classesRoots = getRoots(clp, CLASS_FILE_ROOTS);
-    }
     
-    if (clp.isInArgsList(SOURCE_FILE_ROOTS)) {
-      sourcesRoots = getRoots(clp, SOURCE_FILE_ROOTS);
-    }
-  }
-  
   private String[] getRoots(CommandLineParser clp, String kind) {
     return clp.getParamArgument(kind).split("\\" + File.pathSeparator);
   }
@@ -834,8 +823,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *   
    *   if class doesn't extend anything, not a JCas class.
    *   if class is enum, not a JCas class
-   * @param n
-   * @param ignore
+   * @param n -
+   * @param ignore -
    */
   @Override
   public void visit(ClassOrInterfaceDeclaration n, Object ignore) {
@@ -1566,7 +1555,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           }
           pearResolveStart = Paths.get(pearInstallDir.getAbsolutePath(), children[0]);
           
-          pearInstallPath = start = pearInstallDir.toPath();
+          start = pearInstallDir.toPath();
         } else {
           localPearClasspath = pearClasspath;
           FileSystem jfs = FileSystems.newFileSystem(Paths.get(path.toUri()), null);
