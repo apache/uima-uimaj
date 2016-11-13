@@ -145,8 +145,6 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
     <compat.level>NON_BACKWARD_COMPATIBLE</compat.level>
-    <compat.previous.version>2.8.1</compat.previous.version>
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
     <compat.previous.version>2.9.0</compat.previous.version>
 
     <!-- 
