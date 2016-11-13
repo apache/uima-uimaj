@@ -24,6 +24,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
@@ -33,18 +34,27 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 public class UimaMeeting extends Meeting {
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int typeIndexID = JCasRegistry.register(UimaMeeting.class);
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int type = typeIndexID;
 
-    /** @generated */
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
@@ -58,21 +68,35 @@ public class UimaMeeting extends Meeting {
     }
 
     /**
-   * Internal - constructor used by generator
-   *
-   * @generated
-   */
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
     public  UimaMeeting(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
         readObject();
     }
 
-    /** @generated */
+    /**
+     * Instantiates a new uima meeting.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
     public  UimaMeeting(JCas jcas) {
         super(jcas);
         readObject();
     }
 
+    /**
+     * Instantiates a new uima meeting.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
     public  UimaMeeting(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
@@ -81,14 +105,24 @@ public class UimaMeeting extends Meeting {
     }
 
     /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   *
-   * @generated modifiable
-   */
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
     private void readObject() {
     }
 
-    /** Custom constructor taking all parameters */
+    /**
+     *  Custom constructor taking all parameters.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     * @param room the room
+     * @param date the date
+     * @param startTime the start time
+     * @param endTime the end time
+     */
     public  UimaMeeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date, TimeAnnot startTime, TimeAnnot endTime) {
         super(jcas, start, end, room, date, startTime, endTime);
     }

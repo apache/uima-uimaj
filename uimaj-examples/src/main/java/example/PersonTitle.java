@@ -25,6 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * A Personal Title. Updated by JCasGen Mon May 23 17:48:43 EDT 2005 XML source:
  * c:\a\eclipse\301jxe\jedii_examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml
@@ -34,22 +35,32 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 public class PersonTitle extends Annotation {
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int typeIndexID = JCasRegistry.register(PersonTitle.class);
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int type = typeIndexID;
 
-    /** @generated */
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
 
+    /** The Constant _FI_Kind. */
     public static final int _FI_Kind = TypeSystemImpl.getAdjustedFeatureOffset("Kind");
 
     /**
@@ -61,21 +72,35 @@ public class PersonTitle extends Annotation {
     }
 
     /**
-   * Internal - constructor used by generator
-   *
-   * @generated
-   */
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
     public  PersonTitle(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
         readObject();
     }
 
-    /** @generated */
+    /**
+     * Instantiates a new person title.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
     public  PersonTitle(JCas jcas) {
         super(jcas);
         readObject();
     }
 
+    /**
+     * Instantiates a new person title.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
     public  PersonTitle(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
@@ -84,29 +109,31 @@ public class PersonTitle extends Annotation {
     }
 
     /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   *
-   * @generated modifiable
-   */
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
     private void readObject() {
     }
 
     // *--------------*
     // * Feature: Kind
     /**
-   * getter for Kind - gets The kind of title - Civilian, Military, or Government.
-   *
-   * @generated
-   */
+     * getter for Kind - gets The kind of title - Civilian, Military, or Government.
+     *
+     * @return the kind
+     * @generated 
+     */
     public String getKind() {
         return _getStringValueNc(_FI_Kind);
     }
 
     /**
-   * setter for Kind - sets The kind of title - Civilian, Military, or Government.
-   *
-   * @generated
-   */
+     * setter for Kind - sets The kind of title - Civilian, Military, or Government.
+     *
+     * @param v the new kind
+     * @generated 
+     */
     public void setKind(String v) {
         _setStringValueNfc(_FI_Kind, v);
     }

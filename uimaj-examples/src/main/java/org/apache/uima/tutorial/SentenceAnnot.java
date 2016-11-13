@@ -25,6 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
@@ -34,18 +35,27 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 public class SentenceAnnot extends Annotation {
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int typeIndexID = JCasRegistry.register(SentenceAnnot.class);
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int type = typeIndexID;
 
-    /** @generated */
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
@@ -59,21 +69,35 @@ public class SentenceAnnot extends Annotation {
     }
 
     /**
-   * Internal - constructor used by generator
-   *
-   * @generated
-   */
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
     public  SentenceAnnot(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
         readObject();
     }
 
-    /** @generated */
+    /**
+     * Instantiates a new sentence annot.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
     public  SentenceAnnot(JCas jcas) {
         super(jcas);
         readObject();
     }
 
+    /**
+     * Instantiates a new sentence annot.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
     public  SentenceAnnot(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
@@ -82,10 +106,10 @@ public class SentenceAnnot extends Annotation {
     }
 
     /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   *
-   * @generated modifiable
-   */
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
     private void readObject() {
     }
 }

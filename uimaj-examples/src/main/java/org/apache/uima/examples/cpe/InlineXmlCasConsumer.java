@@ -35,6 +35,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.CasToInlineXml;
 
+// TODO: Auto-generated Javadoc
 /**
  * A simple CAS consumer that generates inline XML and writes it to a file. UTF-8 encoding is used.
  * <p>
@@ -52,12 +53,18 @@ public class InlineXmlCasConsumer extends CasConsumer_ImplBase {
    */
   public static final String PARAM_OUTPUTDIR = "OutputDirectory";
 
+  /** The m output dir. */
   private File mOutputDir;
 
+  /** The cas 2 xml. */
   private CasToInlineXml cas2xml;
 
+  /** The m doc num. */
   private int mDocNum;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
+   */
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File(((String) getConfigParameterValue(PARAM_OUTPUTDIR)).trim());

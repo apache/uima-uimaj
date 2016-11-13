@@ -49,6 +49,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
 /**
  * A simple CAS consumer that generates XCAS (XML representation of the CAS) files in the
  * filesystem.
@@ -67,10 +68,15 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
    */
   public static final String PARAM_OUTPUTDIR = "OutputDirectory";
 
+  /** The m output dir. */
   private File mOutputDir;
 
+  /** The m doc num. */
   private int mDocNum;
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.collection.CasConsumer_ImplBase#initialize()
+   */
   public void initialize() throws ResourceInitializationException {
     mDocNum = 0;
     mOutputDir = new File((String) getConfigParameterValue(PARAM_OUTPUTDIR));
@@ -130,17 +136,12 @@ public class XCasWriterCasConsumer extends CasConsumer_ImplBase {
   }
 
   /**
-   * Serialize a CAS to a file in XCAS format
-   * 
-   * @param aCas
-   *          CAS to serialize
-   * @param name
-   *          output file
-   * 
-   * @throws IOException
-   *           if an I/O failure occurs
-   * @throws SAXException
-   *           if an error occurs generating the XML text
+   * Serialize a CAS to a file in XCAS format.
+   *
+   * @param aCas          CAS to serialize
+   * @param name          output file
+   * @throws IOException           if an I/O failure occurs
+   * @throws SAXException           if an error occurs generating the XML text
    */
   private void writeXCas(CAS aCas, File name) throws IOException, SAXException {
     FileOutputStream out = null;

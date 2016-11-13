@@ -25,6 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
@@ -34,22 +35,32 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 public class UimaAcronym extends Annotation {
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int typeIndexID = JCasRegistry.register(UimaAcronym.class);
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int type = typeIndexID;
 
-    /** @generated */
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
 
+    /** The Constant _FI_expandedForm. */
     public static final int _FI_expandedForm = TypeSystemImpl.getAdjustedFeatureOffset("expandedForm");
 
     /**
@@ -61,21 +72,35 @@ public class UimaAcronym extends Annotation {
     }
 
     /**
-   * Internal - constructor used by generator
-   *
-   * @generated
-   */
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
     public  UimaAcronym(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
         readObject();
     }
 
-    /** @generated */
+    /**
+     * Instantiates a new uima acronym.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
     public  UimaAcronym(JCas jcas) {
         super(jcas);
         readObject();
     }
 
+    /**
+     * Instantiates a new uima acronym.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
     public  UimaAcronym(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
@@ -84,34 +109,43 @@ public class UimaAcronym extends Annotation {
     }
 
     /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   *
-   * @generated modifiable
-   */
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
     private void readObject() {
     }
 
     // *--------------*
     // * Feature: expandedForm
     /**
-   * getter for expandedForm - gets
-   *
-   * @generated
-   */
+     * getter for expandedForm - gets.
+     *
+     * @return the expanded form
+     * @generated 
+     */
     public String getExpandedForm() {
         return _getStringValueNc(_FI_expandedForm);
     }
 
     /**
-   * setter for expandedForm - sets
-   *
-   * @generated
-   */
+     * setter for expandedForm - sets.
+     *
+     * @param v the new expanded form
+     * @generated 
+     */
     public void setExpandedForm(String v) {
         _setStringValueNfc(_FI_expandedForm, v);
     }
 
-    /** Custom constructor taking all parameters */
+    /**
+     *  Custom constructor taking all parameters.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     * @param expandedForm the expanded form
+     */
     public  UimaAcronym(JCas jcas, int start, int end, String expandedForm) {
         super(jcas, start, end);
         setExpandedForm(expandedForm);

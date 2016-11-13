@@ -33,6 +33,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.util.XMLInputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * A simple Multiple Subject of Analysis (multi-Sofa) test application. Creates a text Sofa with
  * English text, calls an annotator that creates a text Sofa with German text, then dumps all
@@ -41,9 +42,13 @@ import org.apache.uima.util.XMLInputSource;
  * The application takes no arguments.
  */
 public class SofaExampleApplication {
+  
   /**
-   * Main program
-   * 
+   * Main program.
+   *
+   * @param args the arguments
+   * @throws UIMAException the UIMA exception
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public static void main(String[] args) throws UIMAException, IOException {
     // parse AnalysisEngine descriptor

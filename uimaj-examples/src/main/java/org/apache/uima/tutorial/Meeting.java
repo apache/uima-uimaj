@@ -25,6 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
@@ -34,28 +35,41 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 public class Meeting extends Annotation {
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int typeIndexID = JCasRegistry.register(Meeting.class);
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int type = typeIndexID;
 
-    /** @generated */
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
 
+    /** The Constant _FI_room. */
     public static final int _FI_room = TypeSystemImpl.getAdjustedFeatureOffset("room");
 
+    /** The Constant _FI_date. */
     public static final int _FI_date = TypeSystemImpl.getAdjustedFeatureOffset("date");
 
+    /** The Constant _FI_startTime. */
     public static final int _FI_startTime = TypeSystemImpl.getAdjustedFeatureOffset("startTime");
 
+    /** The Constant _FI_endTime. */
     public static final int _FI_endTime = TypeSystemImpl.getAdjustedFeatureOffset("endTime");
 
     /**
@@ -67,21 +81,35 @@ public class Meeting extends Annotation {
     }
 
     /**
-   * Internal - constructor used by generator
-   *
-   * @generated
-   */
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
     public  Meeting(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
         readObject();
     }
 
-    /** @generated */
+    /**
+     * Instantiates a new meeting.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
     public  Meeting(JCas jcas) {
         super(jcas);
         readObject();
     }
 
+    /**
+     * Instantiates a new meeting.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
     public  Meeting(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
@@ -90,29 +118,31 @@ public class Meeting extends Annotation {
     }
 
     /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   *
-   * @generated modifiable
-   */
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
     private void readObject() {
     }
 
     // *--------------*
     // * Feature: room
     /**
-   * getter for room - gets
-   *
-   * @generated
-   */
+     * getter for room - gets.
+     *
+     * @return the room
+     * @generated 
+     */
     public RoomNumber getRoom() {
         return (RoomNumber) (_getFeatureValueNc(_FI_room));
     }
 
     /**
-   * setter for room - sets
-   *
-   * @generated
-   */
+     * setter for room - sets.
+     *
+     * @param v the new room
+     * @generated 
+     */
     public void setRoom(RoomNumber v) {
         _setFeatureValueNcWj(_FI_room, v);
     }
@@ -120,19 +150,21 @@ public class Meeting extends Annotation {
     // *--------------*
     // * Feature: date
     /**
-   * getter for date - gets
-   *
-   * @generated
-   */
+     * getter for date - gets.
+     *
+     * @return the date
+     * @generated 
+     */
     public DateAnnot getDate() {
         return (DateAnnot) (_getFeatureValueNc(_FI_date));
     }
 
     /**
-   * setter for date - sets
-   *
-   * @generated
-   */
+     * setter for date - sets.
+     *
+     * @param v the new date
+     * @generated 
+     */
     public void setDate(DateAnnot v) {
         _setFeatureValueNcWj(_FI_date, v);
     }
@@ -140,19 +172,21 @@ public class Meeting extends Annotation {
     // *--------------*
     // * Feature: startTime
     /**
-   * getter for startTime - gets
-   *
-   * @generated
-   */
+     * getter for startTime - gets.
+     *
+     * @return the start time
+     * @generated 
+     */
     public TimeAnnot getStartTime() {
         return (TimeAnnot) (_getFeatureValueNc(_FI_startTime));
     }
 
     /**
-   * setter for startTime - sets
-   *
-   * @generated
-   */
+     * setter for startTime - sets.
+     *
+     * @param v the new start time
+     * @generated 
+     */
     public void setStartTime(TimeAnnot v) {
         _setFeatureValueNcWj(_FI_startTime, v);
     }
@@ -160,24 +194,36 @@ public class Meeting extends Annotation {
     // *--------------*
     // * Feature: endTime
     /**
-   * getter for endTime - gets
-   *
-   * @generated
-   */
+     * getter for endTime - gets.
+     *
+     * @return the end time
+     * @generated 
+     */
     public TimeAnnot getEndTime() {
         return (TimeAnnot) (_getFeatureValueNc(_FI_endTime));
     }
 
     /**
-   * setter for endTime - sets
-   *
-   * @generated
-   */
+     * setter for endTime - sets.
+     *
+     * @param v the new end time
+     * @generated 
+     */
     public void setEndTime(TimeAnnot v) {
         _setFeatureValueNcWj(_FI_endTime, v);
     }
 
-    /** Custom constructor taking all parameters */
+    /**
+     *  Custom constructor taking all parameters.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     * @param room the room
+     * @param date the date
+     * @param startTime the start time
+     * @param endTime the end time
+     */
     public  Meeting(JCas jcas, int start, int end, RoomNumber room, DateAnnot date, TimeAnnot startTime, TimeAnnot endTime) {
         this(jcas, start, end);
         setRoom(room);
@@ -186,6 +232,9 @@ public class Meeting extends Annotation {
         setEndTime(endTime);
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.cas.impl.FeatureStructureImplC#toString()
+     */
     public String toString() {
         return "Meeting in " + getRoom().getCoveredText() + " on " + getDate().getCoveredText() + ", " + getStartTime().getCoveredText() + " - " + getEndTime().getCoveredText();
     }

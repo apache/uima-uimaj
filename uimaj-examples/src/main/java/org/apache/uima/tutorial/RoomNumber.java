@@ -25,6 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * Updated by JCasGen Mon Nov 29 15:02:37 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
@@ -34,22 +35,32 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 public class RoomNumber extends Annotation {
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int typeIndexID = JCasRegistry.register(RoomNumber.class);
 
     /**
-   * @generated
-   * @ordered
-   */
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
     public static final int type = typeIndexID;
 
-    /** @generated */
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
 
+    /** The Constant _FI_building. */
     public static final int _FI_building = TypeSystemImpl.getAdjustedFeatureOffset("building");
 
     /**
@@ -61,21 +72,35 @@ public class RoomNumber extends Annotation {
     }
 
     /**
-   * Internal - constructor used by generator
-   *
-   * @generated
-   */
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
     public  RoomNumber(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
         readObject();
     }
 
-    /** @generated */
+    /**
+     * Instantiates a new room number.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
     public  RoomNumber(JCas jcas) {
         super(jcas);
         readObject();
     }
 
+    /**
+     * Instantiates a new room number.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
     public  RoomNumber(JCas jcas, int begin, int end) {
         super(jcas);
         setBegin(begin);
@@ -84,29 +109,31 @@ public class RoomNumber extends Annotation {
     }
 
     /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   *
-   * @generated modifiable
-   */
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
     private void readObject() {
     }
 
     // *--------------*
     // * Feature: building
     /**
-   * getter for building - gets Building containing this room
-   *
-   * @generated
-   */
+     * getter for building - gets Building containing this room.
+     *
+     * @return the building
+     * @generated 
+     */
     public String getBuilding() {
         return _getStringValueNc(_FI_building);
     }
 
     /**
-   * setter for building - sets Building containing this room
-   *
-   * @generated
-   */
+     * setter for building - sets Building containing this room.
+     *
+     * @param v the new building
+     * @generated 
+     */
     public void setBuilding(String v) {
         _setStringValueNfc(_FI_building, v);
     }

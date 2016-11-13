@@ -40,6 +40,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * A simple example of how to extract information from the CAS. This example retrieves all
  * annotations of a specified type from a CAS and prints them (along with all of their features) to
@@ -230,6 +231,8 @@ public class PrintAnnotations {
    * Main program for testing this class. Ther are two required arguments - the path to the XML
    * descriptor for the TAE to run and an input file. Additional arguments are Type or Feature names
    * to be included in the ResultSpecification passed to the TAE.
+   *
+   * @param args the arguments
    */
   public static void main(String[] args) {
     try {

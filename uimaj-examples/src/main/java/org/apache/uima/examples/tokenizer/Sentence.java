@@ -25,29 +25,58 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Sentence.
+ */
 public class Sentence extends Annotation {
 
+    /** The Constant typeIndexID. */
     public static final int typeIndexID = JCasRegistry.register(Sentence.class);
 
+    /** The Constant type. */
     public static final int type = typeIndexID;
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.jcas.tcas.Annotation#getTypeIndexID()
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
 
+    /**
+     * Instantiates a new sentence.
+     */
     // Never called. Disable default constructor
     protected  Sentence() {
     }
 
-    /** Internal - Constructor used by generator */
+    /**
+     *  Internal - Constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     */
     public  Sentence(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
     }
 
+    /**
+     * Instantiates a new sentence.
+     *
+     * @param jcas the jcas
+     */
     public  Sentence(JCas jcas) {
         super(jcas);
     }
 
+    /**
+     * Instantiates a new sentence.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     */
     public  Sentence(JCas jcas, int start, int end) {
         super(jcas, start, end);
     }

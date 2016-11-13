@@ -25,29 +25,58 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Token.
+ */
 public class Token extends Annotation {
 
+    /** The Constant typeIndexID. */
     public static final int typeIndexID = JCasRegistry.register(Token.class);
 
+    /** The Constant type. */
     public static final int type = typeIndexID;
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.jcas.tcas.Annotation#getTypeIndexID()
+     */
     public int getTypeIndexID() {
         return typeIndexID;
     }
 
+    /**
+     * Instantiates a new token.
+     */
     // Never called. Disable default constructor
     protected  Token() {
     }
 
-    /** Internal - Constructor used by generator */
+    /**
+     *  Internal - Constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     */
     public  Token(TypeImpl type, CASImpl casImpl) {
         super(type, casImpl);
     }
 
+    /**
+     * Instantiates a new token.
+     *
+     * @param jcas the jcas
+     */
     public  Token(JCas jcas) {
         super(jcas);
     }
 
+    /**
+     * Instantiates a new token.
+     *
+     * @param jcas the jcas
+     * @param start the start
+     * @param end the end
+     */
     public  Token(JCas jcas, int start, int end) {
         super(jcas, start, end);
     }
