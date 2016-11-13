@@ -30,19 +30,26 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorInput;
 
+// TODO: Auto-generated Javadoc
 /**
  * Factory class to produce and lookup an appropriate document provider.
  */
 class CasDocumentProviderFactory {
 
+  /** The Constant CAS_EDITOR_EXTENSION. */
   // TODO: Change to: .documentProviders
   private static final String CAS_EDITOR_EXTENSION = "org.apache.uima.caseditor.editor";
 
+  /** The instance. */
   private static CasDocumentProviderFactory instance;
 
+  /** The document providers. */
   // map class_name to provider
   private Map<String, CasDocumentProvider> documentProviders = new HashMap<String, CasDocumentProvider>();
   
+  /**
+   * Instantiates a new cas document provider factory.
+   */
   CasDocumentProviderFactory() {
 
     IConfigurationElement[] config =
@@ -76,10 +83,9 @@ class CasDocumentProviderFactory {
    * Looks up a document provider for the provided editor input.
    * The editor input type must be cast-able to the specified inputType.
    * The implementation tries first to map class types, and then interface types.
-   * 
-   * @param input 
-   * 
-   * @return
+   *
+   * @param input the input
+   * @return the document provider
    */
   CasDocumentProvider getDocumentProvider(IEditorInput input) {
 
@@ -119,6 +125,11 @@ class CasDocumentProviderFactory {
     return provider;
   }
 
+  /**
+   * Instance.
+   *
+   * @return the cas document provider factory
+   */
   static CasDocumentProviderFactory instance() {
 
     if (instance == null) {

@@ -34,54 +34,79 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddFeatureDialog.
+ */
 public class AddFeatureDialog extends AbstractDialogKeyVerify {
 
+  /** The Constant ONLY_NON_PRIMITIVE_TYPES. */
   private static final int ONLY_NON_PRIMITIVE_TYPES = 0;
 
+  /** The Constant ALL_TYPES. */
   private static final int ALL_TYPES = 1;
 
+  /** The feature name UI. */
   private StyledText featureNameUI;
 
+  /** The feature range name UI. */
   private Text featureRangeNameUI;
 
+  /** The description UI. */
   private Text descriptionUI;
 
+  /** The feature name. */
   public String featureName;
 
+  /** The original feature name. */
   private String originalFeatureName;
 
+  /** The feature range name. */
   public String featureRangeName;
 
+  /** The description. */
   public String description;
 
+  /** The element range name. */
   public String elementRangeName;
 
+  /** The multi ref. */
   public Boolean multiRef;
 
+  /** The type section. */
   private TypeSection typeSection;
 
+  /** The td. */
   private TypeDescription td;
 
+  /** The existing fd. */
   private FeatureDescription existingFd;
 
+  /** The all types list. */
   private TypesWithNameSpaces allTypesList;
 
+  /** The multi ref composite. */
   private Composite multiRefComposite;
 
+  /** The multi ref UI. */
   private CCombo multiRefUI;
 
+  /** The element type composite. */
   private Composite elementTypeComposite;
 
+  /** The element range name UI. */
   private Text elementRangeNameUI;
 
+  /** The type filter. */
   private int typeFilter;
 
 
   /**
-   * 
-   * @param aSection
-   * @param aTd
-   * @param aExistingFd
+   * Instantiates a new adds the feature dialog.
+   *
+   * @param aSection the a section
+   * @param aTd the a td
+   * @param aExistingFd the a existing fd
    */
   public AddFeatureDialog(AbstractSection aSection, TypeDescription aTd,
           FeatureDescription aExistingFd) {
@@ -91,6 +116,10 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     existingFd = aExistingFd;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingFd);
     createWideLabel(mainArea, "The feature name must be unique within this type");
@@ -143,6 +172,9 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
+  /**
+   * Manage visible fields.
+   */
   private void manageVisibleFields() {
     String range = featureRangeNameUI.getText();
     if (AbstractSection.isArrayOrListType(range)) {
@@ -160,12 +192,20 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
   
   
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  @Override
   public void handleEvent(Event event) {
     super.handleEvent(event);
     if (event.type == SWT.Modify && event.widget == featureRangeNameUI)
       manageVisibleFields();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#getTypeSystemInfoList()
+   */
+  @Override
   public TypesWithNameSpaces getTypeSystemInfoList() {
     TypesWithNameSpaces result = super.getTypeSystemInfoList();
     Type[] allTypes = (Type[]) editor.allTypes.get().values().toArray(new Type[0]);
@@ -193,13 +233,17 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     featureName = featureNameUI.getText();
     description = nullIf0lengthString(descriptionUI.getText());
     featureRangeName = featureRangeNameUI.getText();
     multiRef = (1 == multiRefUI.getSelectionIndex()) ? Boolean.FALSE : (2 == multiRefUI
             .getSelectionIndex()) ? Boolean.TRUE : null;
-    if (TypeSection.isFSArrayOrListType(featureRangeName)) {
+    if (AbstractSection.isFSArrayOrListType(featureRangeName)) {
       elementRangeName = elementRangeNameUI.getText();
       if ("".equals(elementRangeName)) {
         elementRangeName = null;
@@ -209,6 +253,10 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogKeyVerify#verifyKeyChecks(org.eclipse.swt.events.VerifyEvent)
+   */
+  @Override
   public boolean verifyKeyChecks(VerifyEvent event) {
     if (event.keyCode == SWT.CR || event.keyCode == SWT.TAB)
       return true;
@@ -219,6 +267,10 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     return false;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
 
     if (featureName.length() == 0 || featureRangeName.length() == 0)
@@ -238,10 +290,18 @@ public class AddFeatureDialog extends AbstractDialogKeyVerify {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#textModifyCallback(org.eclipse.swt.widgets.Event)
+   */
+  @Override
   public void textModifyCallback(Event e) {
     manageVisibleFields();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(featureName.length() > 0 && featureRangeName.length() > 0);

@@ -56,35 +56,50 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AggregateSection.
+ */
 public class AggregateSection extends AbstractSection {
 
+  /** The files table. */
   private Table filesTable;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The add remote button. */
   private Button addRemoteButton;
 
+  /** The find analysis engine button. */
   private Button findAnalysisEngineButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The add to flow button. */
   private Button addToFlowButton;
 
+  /** The remove from flow button. */
   private Button removeFromFlowButton;
 
+  /**
+   * Gets the removes the from flow button.
+   *
+   * @return the removes the from flow button
+   */
   public Button getRemoveFromFlowButton() {
     return removeFromFlowButton;
   }
 
+  /** The b disable tool tip help. */
   private boolean bDisableToolTipHelp = false;
 
   /**
-   * Creates a section for aggregate specifiers to add their delegates
-   * 
-   * @param aEditor
-   *          backpointer to the main multipage editor
-   * @param parent
-   *          the Composite where this section lives
+   * Creates a section for aggregate specifiers to add their delegates.
+   *
+   * @param aEditor          backpointer to the main multipage editor
+   * @param parent          the Composite where this section lives
    */
   public AggregateSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Component Engines",
@@ -97,6 +112,7 @@ public class AggregateSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -157,6 +173,7 @@ public class AggregateSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     super.refresh();
 
@@ -213,6 +230,7 @@ public class AggregateSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == addButton)
       handleAdd();
@@ -250,6 +268,9 @@ public class AggregateSection extends AbstractSection {
     }
   }
 
+  /**
+   * Handle add.
+   */
   private void handleAdd() {
 
     MultiResourceSelectionDialogWithFlowOption dialog = new MultiResourceSelectionDialogWithFlowOption(
@@ -271,6 +292,14 @@ public class AggregateSection extends AbstractSection {
     }
   }
 
+  /**
+   * Produce key add delegate.
+   *
+   * @param shortName the short name
+   * @param fullPathFileName the full path file name
+   * @param addToFlow the add to flow
+   * @param isImportByName the is import by name
+   */
   private void produceKeyAddDelegate(String shortName, String fullPathFileName, boolean addToFlow,
           boolean isImportByName) {
     boolean bSuccess = false;
@@ -293,6 +322,9 @@ public class AggregateSection extends AbstractSection {
     }
   }
 
+  /**
+   * Handle remove.
+   */
   private void handleRemove() {
     // get the keyName to remove
     int nSelectionIndex = filesTable.getSelectionIndex();
@@ -375,6 +407,9 @@ public class AggregateSection extends AbstractSection {
     // removed delegate (if params dont appear elsewhere)
   }
 
+  /**
+   * Handle add to flow.
+   */
   private void handleAddToFlow() {
     String node = filesTable.getSelection()[0].getText(1);
     addNodeToFlow(node);
@@ -387,7 +422,9 @@ public class AggregateSection extends AbstractSection {
   }
 
   /**
-   * @param node
+   * Adds the node to flow.
+   *
+   * @param node the node
    */
   private void addNodeToFlow(String node) {
     FlowSection fs = editor.getAggregatePage().getFlowSection();
@@ -395,6 +432,9 @@ public class AggregateSection extends AbstractSection {
 //    fs.refresh();  // the fs.addNode does a refresh
   }
 
+  /**
+   * Handle remove from flow.
+   */
   private void handleRemoveFromFlow() {
     FlowSection fs = editor.getAggregatePage().getFlowSection();
     String selectedKey = fs.getFlowList().getSelection()[0].getText();
@@ -410,6 +450,7 @@ public class AggregateSection extends AbstractSection {
     }
   }
 
+  /** The Constant REMOTE_TEMPLATE. */
   private final static String REMOTE_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
           + "<uriSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
           + "  <resourceType>{0}</resourceType>\n" + // AnalysisEngine CasConsumer
@@ -418,6 +459,7 @@ public class AggregateSection extends AbstractSection {
           "  <timeout>{3}</timeout>" + "  {4}" + // <parameters> for VNS </parameters>
           "\n</uriSpecifier>";
   
+  /** The Constant REMOTE_JMS_TEMPLATE. */
   private final static String REMOTE_JMS_TEMPLATE = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" 
     + "<customResourceSpecifier xmlns=\"http://uima.apache.org/resourceSpecifier\">\n"
     + "  <resourceClassName>org.apache.uima.aae.jms_adapter.JmsAnalysisEngineServiceAdapter</resourceClassName>\n"
@@ -428,11 +470,14 @@ public class AggregateSection extends AbstractSection {
     + "  </parameters>\n"
     + "</customResourceSpecifier>";
 
+  /**
+   * Handle add remote.
+   */
   private void handleAddRemote() {
     String sDescriptorPath = editor.getFile().getParent().getLocation().toString() + '/';
     AddRemoteServiceDialog dialog = new AddRemoteServiceDialog(this, sDescriptorPath);
     dialog.open();
-    if (dialog.getReturnCode() == InputDialog.CANCEL)
+    if (dialog.getReturnCode() == Window.CANCEL)
       return;
 
     String sServiceType = dialog.getSelectedServiceTypeName();
@@ -497,6 +542,14 @@ public class AggregateSection extends AbstractSection {
     }
   }
   
+  /**
+   * Adds the param.
+   *
+   * @param sb the sb
+   * @param name the name
+   * @param value the value
+   * @return the string builder
+   */
   private StringBuilder addParam(StringBuilder sb, String name, String value) {
     if (value != null && value.length() > 0) {
       sb = sb.append("      <parameter name=\"").append(name).append("\" value=\"").append(value).append("\"/>\n");
@@ -504,9 +557,13 @@ public class AggregateSection extends AbstractSection {
     return sb;
   }
 
+  /** The Constant delegateComponentStringHeadersLC. */
   private static final String[] delegateComponentStringHeadersLC = new String[] {
       "<analysisenginedescription", "<casconsumerdescription", "<taedescription" };
 
+  /**
+   * Handle find analysis engine.
+   */
   private void handleFindAnalysisEngine() {
     FindComponentDialog dialog1 = new FindComponentDialog(
             this,
@@ -555,6 +612,11 @@ public class AggregateSection extends AbstractSection {
     finishAggregateChangeAction();
   }
 
+  /**
+   * Handle table context menu request.
+   *
+   * @param event the event
+   */
   private void handleTableContextMenuRequest(Event event) {
     TableItem item = filesTable.getItem(new Point(event.x, event.y));
     if (null == item) {
@@ -569,6 +631,11 @@ public class AggregateSection extends AbstractSection {
     bDisableToolTipHelp = false;
   }
 
+  /**
+   * Handle table hover help.
+   *
+   * @param event the event
+   */
   private void handleTableHoverHelp(Event event) {
     TableItem item = filesTable.getItem(new Point(event.x, event.y));
     String sDesc = "";
@@ -582,6 +649,15 @@ public class AggregateSection extends AbstractSection {
     filesTable.setToolTipText(sDesc);
   }
 
+  /**
+   * Adds the delegate.
+   *
+   * @param fileName the file name
+   * @param shortName the short name
+   * @param keyName the key name
+   * @param isImportByName the is import by name
+   * @return true, if successful
+   */
   private boolean addDelegate(String fileName, String shortName, String keyName,
           boolean isImportByName) {
     Import imp;
@@ -632,6 +708,12 @@ public class AggregateSection extends AbstractSection {
     return true;
   }
   
+  /**
+   * Checks if is new key.
+   *
+   * @param keyName the key name
+   * @return true, if is new key
+   */
   private boolean isNewKey(String keyName) {
     for (int i = 0; i < filesTable.getItemCount(); i++) {
       if (filesTable.getItem(i).getText(1).equals(keyName)) {
@@ -641,6 +723,11 @@ public class AggregateSection extends AbstractSection {
     return true;
   }
 
+  /**
+   * Adds the parameters for delegate.
+   *
+   * @param tae the tae
+   */
   public void addParametersForDelegate(AnalysisEngineDescription tae) {
     ConfigurationParameter[] candidateNewParams = tae.getAnalysisEngineMetaData()
             .getConfigurationParameterDeclarations().getConfigurationParameters();
@@ -719,6 +806,10 @@ public class AggregateSection extends AbstractSection {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
     boolean isPrimitive = isPrimitive();
     boolean bEnable = (filesTable.getSelectionIndex() > -1);
@@ -731,10 +822,10 @@ public class AggregateSection extends AbstractSection {
   }
 
   /**
-   * adds a tableItem to the table
-   * 
-   * @param fileName
-   * @param keyName
+   * adds a tableItem to the table.
+   *
+   * @param o the o
+   * @param keyName the key name
    */
   private void addFile(Object o, String keyName) {
     Import impItem = (Import) o;
@@ -748,6 +839,11 @@ public class AggregateSection extends AbstractSection {
     item.setText(1, keyName);
   }
 
+  /**
+   * Gets the table.
+   *
+   * @return the table
+   */
   public Table getTable() {
     return filesTable;
   }

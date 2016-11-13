@@ -25,16 +25,19 @@ import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
+// TODO: Auto-generated Javadoc
 /**
  * Deletes all selected annotations.
  */
 public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
+  
+  /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes the current instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public DeleteFeatureStructureAction(ICasEditor editor) {
     super("DeleteAction");
@@ -44,6 +47,9 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
     setEnabled(false);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
+   */
   @Override
   protected boolean updateSelection(IStructuredSelection selection) {
     FeatureStructureSelection featureStructures =

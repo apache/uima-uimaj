@@ -28,11 +28,15 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
+// TODO: Auto-generated Javadoc
 /**
  * Provides the labels for the edit view.
  */
 final class ValueColumnLabelProvider extends CellLabelProvider {
   
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+   */
   @Override
   public void update(ViewerCell cell) {
 

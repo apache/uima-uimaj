@@ -29,15 +29,26 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OutlinePageBook.
+ */
 public class OutlinePageBook extends CasEditorViewPage 
         implements IContentOutlinePage, ISelectionChangedListener {
 
+  /** The viewer. */
   private Viewer viewer;
   
+  /**
+   * Instantiates a new outline page book.
+   */
   public OutlinePageBook() {
     super("An outline it not available!");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.CasEditorViewPage#initializeAndShowPage(org.eclipse.ui.part.IPageBookViewPage)
+   */
   @Override
   protected void initializeAndShowPage(final IPageBookViewPage page) {
     
@@ -67,6 +78,11 @@ public class OutlinePageBook extends CasEditorViewPage
     }
   }
   
+  /**
+   * Gets the cas view page.
+   *
+   * @return the cas view page
+   */
   public IPageBookViewPage getCasViewPage() {
     return casViewPage;
   }

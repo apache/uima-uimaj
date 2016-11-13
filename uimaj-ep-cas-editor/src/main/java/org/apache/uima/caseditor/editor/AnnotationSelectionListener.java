@@ -26,14 +26,25 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
+
  */
 public abstract class AnnotationSelectionListener implements ISelectionListener {
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+   */
+  @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
   }
 
+  /**
+   * Selected annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void selectedAnnotation(Collection<AnnotationFS> annotations);
 
   /**

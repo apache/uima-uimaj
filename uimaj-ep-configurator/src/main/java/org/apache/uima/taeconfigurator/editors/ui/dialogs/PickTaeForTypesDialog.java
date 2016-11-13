@@ -37,32 +37,62 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.taeconfigurator.CDEpropertyPage;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PickTaeForTypesDialog.
+ */
 public class PickTaeForTypesDialog extends AbstractDialog {
+  
+  /** The m delegate component descriptions. */
   private java.util.List m_DelegateComponentDescriptors, m_delegateComponentDescriptions;
 
+  /** The m selected delegate component descriptors. */
   private String[] m_selectedDelegateComponentDescriptors;
 
+  /** The m aggregate file name. */
   // private boolean m_bAutoAddToFlow;
   private String m_aggregateFileName;
 
+  /** The delegate component description text. */
   private Text delegateComponentDescriptionText;
 
+  /** The delegate component list GUI. */
   List delegateComponentListGUI;
 
+  /** The input types list. */
   private List inputTypesList;
 
+  /** The output types list. */
   private List outputTypesList;
 
+  /** The dialog selection listener. */
   // private Button autoAddToFlowButton;
   private DialogSelectionListener dialogSelectionListener = new DialogSelectionListener();
 
+  /** The import by name UI. */
   private Button importByNameUI;
 
+  /** The import by location UI. */
   private Button importByLocationUI;
 
+  /** The is import by name. */
   public boolean isImportByName;
 
+  /**
+   * The listener interface for receiving dialogSelection events.
+   * The class that is interested in processing a dialogSelection
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addDialogSelectionListener</code> method. When
+   * the dialogSelection event occurs, that object's appropriate
+   * method is invoked.
+   */
   public class DialogSelectionListener implements SelectionListener {
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+     */
+    @Override
     public void widgetSelected(SelectionEvent e) {
       if (e.widget == delegateComponentListGUI) {
         update();
@@ -72,17 +102,22 @@ public class PickTaeForTypesDialog extends AbstractDialog {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+     */
+    @Override
     public void widgetDefaultSelected(SelectionEvent e) {
       // nothing to do in this case
     }
   }
 
   /**
-   * 
-   * @param aSection
-   * @param aggregateFileName
-   * @param delegateComponentDescriptors
-   * @param delegateComponentDescriptions
+   * Instantiates a new pick tae for types dialog.
+   *
+   * @param aSection the a section
+   * @param aggregateFileName the aggregate file name
+   * @param delegateComponentDescriptors the delegate component descriptors
+   * @param delegateComponentDescriptions the delegate component descriptions
    */
   public PickTaeForTypesDialog(AbstractSection aSection, String aggregateFileName,
           java.util.List delegateComponentDescriptors, java.util.List delegateComponentDescriptions) {
@@ -94,6 +129,10 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     m_delegateComponentDescriptions = delegateComponentDescriptions;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
     Label specialMsgLabel = new Label(composite, SWT.WRAP);
@@ -168,6 +207,9 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     return composite;
   }
 
+  /**
+   * Update.
+   */
   public void update() {
 
     int nSelectedAeIndex = delegateComponentListGUI.getSelectionIndices()[0];
@@ -204,6 +246,10 @@ public class PickTaeForTypesDialog extends AbstractDialog {
       enableOK();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     boolean bEnableOk = false;
     String[] selections = delegateComponentListGUI.getSelection();
@@ -216,8 +262,13 @@ public class PickTaeForTypesDialog extends AbstractDialog {
     okButton.setEnabled(bEnableOk);
   }
 
+  /**
+   * Gets the selected delegate component descriptors.
+   *
+   * @return the selected delegate component descriptors
+   */
   public String[] getSelectedDelegateComponentDescriptors() {
-    return (String[]) m_selectedDelegateComponentDescriptors.clone();
+    return m_selectedDelegateComponentDescriptors.clone();
   }
 
   // public boolean getAutoAddToFlow() {
@@ -229,6 +280,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     // this is where we do rollup and detect if we need any additional
     // types based on types of features and whether we are a supertype
@@ -260,6 +312,7 @@ public class PickTaeForTypesDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
+  @Override
   public boolean isValid() {
     return true;
   }

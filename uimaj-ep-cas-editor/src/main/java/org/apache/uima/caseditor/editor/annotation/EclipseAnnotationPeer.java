@@ -21,18 +21,20 @@ package org.apache.uima.caseditor.editor.annotation;
 
 import org.apache.uima.cas.text.AnnotationFS;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is used to provide additional information about the {@link AnnotationFS}
  * object to the custom drawing strategies.
  */
 public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotation {
 
+  /** The annotation. */
   private final AnnotationFS annotation;
 
   /**
    * Initializes a new instance.
    *
-   * @param annotation
+   * @param annotation the annotation
    */
   public EclipseAnnotationPeer(AnnotationFS annotation) {
     super(annotation.getType().getName(), false, "");
@@ -49,11 +51,17 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
     return annotation;
   }
   
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     return annotation.hashCode();
   }
   
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (obj == this) {
@@ -69,6 +77,9 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
     }
   }
   
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return annotation.toString();

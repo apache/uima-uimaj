@@ -27,14 +27,17 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Primitives.
+ */
 public class Primitives {
 
   /**
    * Retrieve the primitive java class for a primitive type.
-   * 
-   * @param ts
-   * @param type
-   * 
+   *
+   * @param ts the ts
+   * @param type the type
    * @return the primitive java class
    */
   public static Class<?> getPrimitiveClass(TypeSystem ts, Type type) {
@@ -78,7 +81,8 @@ public class Primitives {
   /**
    * Retrieves the {@link Class} for the current primitive.
    *
-   * @param f
+   * @param ts the ts
+   * @param f the f
    * @return the class
    */
   public static Class<?> getPrimitiveClass(TypeSystem ts, Feature f) {
@@ -88,8 +92,8 @@ public class Primitives {
   /**
    * Retrieves the primitive value.
    *
-   * @param structure
-   * @param feature
+   * @param structure the structure
+   * @param feature the feature
    * @return the primitive value as object
    */
   public static Object getPrimitive(FeatureStructure structure, Feature feature) {
@@ -127,6 +131,13 @@ public class Primitives {
     return result;
   }
   
+  /**
+   * Checks if is restricted by allowed values.
+   *
+   * @param ts the ts
+   * @param type the type
+   * @return true, if is restricted by allowed values
+   */
   public static boolean isRestrictedByAllowedValues(TypeSystem ts, Type type) {
     
     if (ts.getType(CAS.TYPE_NAME_STRING).equals(type) || 
@@ -143,6 +154,13 @@ public class Primitives {
     
   }
   
+  /**
+   * Gets the restricted values.
+   *
+   * @param ts the ts
+   * @param type the type
+   * @return the restricted values
+   */
   public static String[] getRestrictedValues(TypeSystem ts, Type type) {
     if (isRestrictedByAllowedValues(ts, type)) {
       throw new IllegalArgumentException("Type " + type.getName() + " does not defines allowed values!");

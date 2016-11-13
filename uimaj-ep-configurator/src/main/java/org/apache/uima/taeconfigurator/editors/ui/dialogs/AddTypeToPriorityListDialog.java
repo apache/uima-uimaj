@@ -33,20 +33,28 @@ import org.eclipse.swt.widgets.List;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddTypeToPriorityListDialog.
+ */
 public class AddTypeToPriorityListDialog extends AbstractDialog {
 
+  /** The m selected type names. */
   private String[] m_selectedTypeNames; // this is the selection
 
+  /** The m available type names. */
   private String[] m_availableTypeNames;
 
+  /** The type list. */
   private List typeList;
 
 
   /**
-   * 
-   * @param aSection
-   * @param allowableTypeNameHash
-   * @param typesInList
+   * Instantiates a new adds the type to priority list dialog.
+   *
+   * @param aSection the a section
+   * @param allowableTypeNameHash the allowable type name hash
+   * @param typesInList the types in list
    */
   public AddTypeToPriorityListDialog(AbstractSection aSection, Set allowableTypeNameHash,
           String[] typesInList) {
@@ -55,6 +63,13 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     m_availableTypeNames = getAvailableTypeNames(allowableTypeNameHash, typesInList);
   }
 
+  /**
+   * Gets the available type names.
+   *
+   * @param allowableTypeNameHash the allowable type name hash
+   * @param alreadyUsedTypes the already used types
+   * @return the available type names
+   */
   private String[] getAvailableTypeNames(Set allowableTypeNameHash, String[] alreadyUsedTypes) {
 
     Arrays.sort(alreadyUsedTypes);
@@ -76,6 +91,10 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     return availableTypeNames;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     // create composite
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -92,10 +111,19 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     return composite;
   }
 
+  /**
+   * Gets the selected type names.
+   *
+   * @return the selected type names
+   */
   public String[] getSelectedTypeNames() {
-    return (String[]) m_selectedTypeNames.clone();
+    return m_selectedTypeNames.clone();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     m_selectedTypeNames = new String[typeList.getSelectionCount()];
     for (int i = 0, j = 0; i < m_availableTypeNames.length; i++) {
@@ -105,6 +133,10 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     return true;
   }
@@ -114,6 +146,7 @@ public class AddTypeToPriorityListDialog extends AbstractDialog {
    * 
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     okButton.setEnabled(true);
   }

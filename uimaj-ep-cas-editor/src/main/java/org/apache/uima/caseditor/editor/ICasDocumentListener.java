@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import org.apache.uima.cas.FeatureStructure;
 
+// TODO: Auto-generated Javadoc
 /**
  * This interface is used to notifies clients about {@link FeatureStructure} changes.
  */
@@ -61,15 +62,15 @@ public interface ICasDocumentListener {
 
   /**
    * This method is called if the {@link FeatureStructure} changed.
-   * 
-   * @param featureStructure
+   *
+   * @param featureStructure the feature structure
    */
   void updated(FeatureStructure featureStructure);
 
   /**
    * This method is called if the {@link FeatureStructure}s changed.
-   * 
-   * @param featureStructure
+   *
+   * @param featureStructure the feature structure
    */
   void updated(Collection<FeatureStructure> featureStructure);
 
@@ -84,9 +85,9 @@ public interface ICasDocumentListener {
    * This method is called when the currently active view is changed in the document. A view changed
    * does not indicate a structural change, but usually feature structures must be completely
    * synchronized afterward.
-   * 
-   * @param oldViewName
-   * @param newViewName
+   *
+   * @param oldViewName the old view name
+   * @param newViewName the new view name
    */
   void viewChanged(String oldViewName, String newViewName);
 

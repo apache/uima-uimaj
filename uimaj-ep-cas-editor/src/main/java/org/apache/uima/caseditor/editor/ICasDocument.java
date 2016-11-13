@@ -26,6 +26,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
 
+// TODO: Auto-generated Javadoc
 /**
  * The {@link ICasDocument} represents texts with meta information.
  * 
@@ -41,15 +42,15 @@ public interface ICasDocument {
 
   /**
    * Adds a given change listener.
-   * 
-   * @param listener
+   *
+   * @param listener the listener
    */
   void addChangeListener(ICasDocumentListener listener);
 
   /**
    * Removes the given change listener.
-   * 
-   * @param listener
+   *
+   * @param listener the listener
    */
   void removeChangeListener(ICasDocumentListener listener);
 
@@ -70,8 +71,8 @@ public interface ICasDocument {
 
   /**
    * Adds the {@link FeatureStructure}s.
-   * 
-   * @param structures
+   *
+   * @param structures the structures
    */
   void addFeatureStructures(Collection<? extends FeatureStructure> structures);
 
@@ -85,22 +86,22 @@ public interface ICasDocument {
 
   /**
    * Removes the given {@link FeatureStructure}s.
-   * 
-   * @param structuresToRemove
+   *
+   * @param structuresToRemove the structures to remove
    */
   void removeFeatureStructures(Collection<? extends FeatureStructure> structuresToRemove);
 
   /**
    * Updates the given {@link FeatureStructure}.
-   * 
-   * @param structure
+   *
+   * @param structure the structure
    */
   void update(FeatureStructure structure);
 
   /**
    * Updates the given {@link FeatureStructure}s.
-   * 
-   * @param structures
+   *
+   * @param structures the structures
    */
   void updateFeatureStructure(Collection<? extends FeatureStructure> structures);
 
@@ -121,22 +122,22 @@ public interface ICasDocument {
 
   /**
    * Switches the view of the underlying CAS to the provided view name.
-   * 
-   * @param viewName
+   *
+   * @param viewName the view name
    */
   void switchView(String viewName);
 
   /**
    * Retrieves the requested type.
-   * 
-   * @param type
+   *
+   * @param type the type
    * @return the type
    */
   Type getType(String type);
 
   /**
-   * Retrieves the string representation of the applied type system
-   * 
+   * Retrieves the string representation of the applied type system.
+   *
    * @return the string representation of the applied type system
    */
   String getTypeSystemText();

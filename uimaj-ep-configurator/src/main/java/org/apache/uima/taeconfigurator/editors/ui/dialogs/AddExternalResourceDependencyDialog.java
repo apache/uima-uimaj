@@ -30,40 +30,60 @@ import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ResourceDependencySection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddExternalResourceDependencyDialog.
+ */
 public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerifyJavaNames {
 
+  /** The key name UI. */
   private StyledText keyNameUI;
 
+  /** The optional UI. */
   public Button optionalUI;
 
+  /** The interface name UI. */
   private StyledText interfaceNameUI;
 
+  /** The description UI. */
   private Text descriptionUI;
 
+  /** The key name. */
   public String keyName;
 
+  /** The original key name. */
   private String originalKeyName;
 
+  /** The optional. */
   public boolean optional;
 
+  /** The interface name. */
   public String interfaceName;
 
+  /** The description. */
   public String description;
 
+  /** The rd section. */
   private ResourceDependencySection rdSection;
 
+  /** The existing XRD. */
   private ExternalResourceDependency existingXRD;
 
+  /**
+   * Instantiates a new adds the external resource dependency dialog.
+   *
+   * @param aSection the a section
+   */
   public AddExternalResourceDependencyDialog(AbstractSection aSection) {
     super(aSection, "Add External Resource Dependency", "Add an External Resource Dependency");
     rdSection = (ResourceDependencySection) aSection;
   }
 
   /**
-   * Constructor for Editing an existing XRD
-   * 
-   * @param aSection
-   * @param aExistingXRD
+   * Constructor for Editing an existing XRD.
+   *
+   * @param aSection the a section
+   * @param aExistingXRD the a existing XRD
    */
   public AddExternalResourceDependencyDialog(AbstractSection aSection,
           ExternalResourceDependency aExistingXRD) {
@@ -71,6 +91,10 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     existingXRD = aExistingXRD;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingXRD);
     createWideLabel(
@@ -112,6 +136,10 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     return mainArea;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     keyName = keyNameUI.getText();
     optional = optionalUI.getSelection();
@@ -119,6 +147,10 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     interfaceName = nullIf0lengthString(interfaceNameUI.getText());
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     if (keyName.length() == 0)
       return false;
@@ -127,6 +159,10 @@ public class AddExternalResourceDependencyDialog extends AbstractDialogKeyVerify
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(keyName.length() > 0);

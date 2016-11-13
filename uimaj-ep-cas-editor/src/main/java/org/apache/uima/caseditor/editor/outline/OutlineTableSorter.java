@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
+// TODO: Auto-generated Javadoc
 /**
  * Sorts <code>AnnotationFS</code>s for a Viewer. This implementation is based on
  * <code>AnnotationComparator</code>.
@@ -33,14 +34,18 @@ import org.eclipse.jface.viewers.ViewerSorter;
  * @see AnnotationComparator
  */
 class OutlineTableSorter extends ViewerSorter {
+  
+  /** The m comperator. */
   private AnnotationComparator mComperator = new AnnotationComparator();
 
   /**
    * Uses <code>AnnotationComparator</code> to compare the both objects.
    *
+   * @param viewer the viewer
+   * @param aObject the a object
+   * @param bObject the b object
    * @return int the return value is if aObject &lt; bObject negative number, if aObject == bObject 0,
    *         aObject &gt; bObject a positive number or if both objects have different types 1.
-   *
    * @see ViewerSorter
    */
   @Override

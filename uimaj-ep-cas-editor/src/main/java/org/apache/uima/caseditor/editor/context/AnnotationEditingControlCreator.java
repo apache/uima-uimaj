@@ -27,21 +27,23 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.swt.widgets.Shell;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public class AnnotationEditingControlCreator implements IInformationControlCreator {
 
   /**
    * Creates the information control.
    *
-   * @param parent
-   *
+   * @param parent the parent
    * @return the new control
    */
+  @Override
   public IInformationControl createInformationControl(Shell parent) {
     final ICustomInformationControlContentHandler contentHandler = new ICustomInformationControlContentHandler() {
 
+      @Override
       public void setInput(CustomInformationControl control, Object input) {
         AnnotationEditingControl annotationEditControl = (AnnotationEditingControl) control
                 .getControl();

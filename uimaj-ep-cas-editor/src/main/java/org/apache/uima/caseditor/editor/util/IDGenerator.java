@@ -21,6 +21,7 @@ package org.apache.uima.caseditor.editor.util;
 
 import java.util.Random;
 
+// TODO: Auto-generated Javadoc
 /**
  * <p>
  * The IDGenerator generate unique IDs.
@@ -31,6 +32,8 @@ import java.util.Random;
  * </p>
  */
 public class IDGenerator {
+  
+  /** The s start value. */
   private long sStartValue;
 
   /**
@@ -55,10 +58,10 @@ public class IDGenerator {
   /**
    * Retrieve the next unique ID.
    *
+   * @return - the unique id
    * @throws IllegalStateException -
    *           if there are more than Long.MAX_VALUE calls to
    *           <code>IDGenerator.nextUniqueID()</code>
-   * @return - the unique id
    */
   public byte[] nextUniqueID() {
     if (sUniqueID == sStartValue) {

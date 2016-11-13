@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.IAdaptable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The {@link AnnotationTreeNode} is used to group annotations
  * by their type. Only the {@link TypeGroupedContentProvider} creates
@@ -32,28 +33,54 @@ import org.eclipse.core.runtime.IAdaptable;
  */
 class AnnotationTypeTreeNode implements IAdaptable {
 
+	/** The type. */
 	// annotation type
 	private Type type;
 	
+	/** The annotations. */
 	private List<AnnotationTreeNode> annotations = new ArrayList<AnnotationTreeNode>();
 	
+	/**
+	 * Instantiates a new annotation type tree node.
+	 *
+	 * @param type the type
+	 */
 	public AnnotationTypeTreeNode(Type type) {
 		this.type = type;
 	}
 	
+	/**
+	 * Adds the.
+	 *
+	 * @param annotation the annotation
+	 */
 	public void add(AnnotationTreeNode annotation) {
 		annotations.add(annotation);
 	}
 	
+	/**
+	 * Gets the annotations.
+	 *
+	 * @return the annotations
+	 */
 	public AnnotationTreeNode[] getAnnotations() {
 		return annotations.toArray(new AnnotationTreeNode[annotations.size()]);
 	}
 	
+	/**
+	 * Removes the.
+	 *
+	 * @param annotation the annotation
+	 */
 	public void remove(AnnotationTreeNode annotation) {
 		annotations.remove(annotation);
 	}
 	
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	@Override
+  public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		
 		if (Type.class.equals(adapter)) {
 			return type;
@@ -62,11 +89,17 @@ class AnnotationTypeTreeNode implements IAdaptable {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		return type.hashCode();
 	} 
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		
@@ -83,11 +116,19 @@ class AnnotationTypeTreeNode implements IAdaptable {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return type.getShortName() + " #chhildren = " + annotations.size();
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public Object getType() {
 		return type;
 	}

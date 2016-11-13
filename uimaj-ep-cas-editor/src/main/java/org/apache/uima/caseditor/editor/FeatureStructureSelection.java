@@ -30,14 +30,20 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FeatureStructureSelection.
+ */
 public class FeatureStructureSelection {
+  
+  /** The m feature structures. */
   private List<FeatureStructure> mFeatureStructures;
 
   /**
    * Initializes a the current instance with all FeatureStructure object that are contained in the
    * {@link StructuredSelection}.
    *
-   * @param selection
+   * @param selection the selection
    */
   public FeatureStructureSelection(IStructuredSelection selection) {
     mFeatureStructures = new ArrayList<FeatureStructure>(selection.size());

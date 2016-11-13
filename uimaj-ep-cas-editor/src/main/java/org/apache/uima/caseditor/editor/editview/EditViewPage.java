@@ -85,6 +85,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.Page;
 
+// TODO: Auto-generated Javadoc
 /**
  * The {@link EditViewPage} provides basic editing support for {@link FeatureStructure}s.
  * It shows always the selected {@link FeatureStructure}, but for editing a certain
@@ -98,11 +99,23 @@ import org.eclipse.ui.part.Page;
  */
 final class EditViewPage extends Page implements ISelectionListener {
 
+  /**
+   * The Class ValueEditingSupport.
+   */
   private final class ValueEditingSupport extends EditingSupport {
+    
+    /**
+     * Instantiates a new value editing support.
+     *
+     * @param viewer the viewer
+     */
     private ValueEditingSupport(ColumnViewer viewer) {
       super(viewer);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
+     */
     @Override
     protected boolean canEdit(Object element) {
 
@@ -133,6 +146,9 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
+     */
     @Override
     protected CellEditor getCellEditor(Object element) {
 
@@ -204,6 +220,9 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
+     */
     @Override
     protected Object getValue(Object element) {
 
@@ -238,6 +257,9 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object, java.lang.Object)
+     */
     @Override
     protected void setValue(Object element, Object value) {
 
@@ -286,14 +308,23 @@ final class EditViewPage extends Page implements ISelectionListener {
   }
 
 
+  /**
+   * The Class DeleteFeatureStructureValue.
+   */
   final class DeleteFeatureStructureValue extends BaseSelectionListenerAction {
 
+    /**
+     * Instantiates a new delete feature structure value.
+     */
     protected DeleteFeatureStructureValue() {
       super("Delete");
 
       setEnabled(false);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
     @Override
     public void run() {
       IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
@@ -319,6 +350,9 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
+     */
     @Override
     protected boolean updateSelection(IStructuredSelection selection) {
 
@@ -347,8 +381,14 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
   }
 
+  /**
+   * The Class CreateFeatureStructrueValue.
+   */
   private final class CreateFeatureStructrueValue extends BaseSelectionListenerAction {
 
+    /**
+     * Instantiates a new creates the feature structrue value.
+     */
     protected CreateFeatureStructrueValue() {
       super("Create");
 
@@ -356,6 +396,13 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
 
 
+    /**
+     * Creates the FS.
+     *
+     * @param type the type
+     * @param arraySize the array size
+     * @return the feature structure
+     */
     FeatureStructure createFS(Type type, int arraySize) {
 
       if (type.isPrimitive()) {
@@ -416,6 +463,9 @@ final class EditViewPage extends Page implements ISelectionListener {
       return fs;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
     @Override
     public void run() {
       IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
@@ -500,6 +550,9 @@ final class EditViewPage extends Page implements ISelectionListener {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
+     */
     @Override
     protected boolean updateSelection(IStructuredSelection selection) {
 
@@ -529,21 +582,41 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
   }
 
+  /**
+   * The Class PinAction.
+   */
   private static final class PinAction extends Action {
+    
+    /**
+     * Instantiates a new pin action.
+     */
     PinAction() {
       super("PinAction", IAction.AS_CHECK_BOX);
     }
   }
 
+  /** The viewer. */
   private TreeViewer viewer;
 
+  /** The document. */
   private ICasDocument document;
+  
+  /** The editor. */
   private ICasEditor editor;
 
+  /** The pin action. */
   private PinAction pinAction;
 
+  /** The edit view. */
   private final EditView editView;
 
+  /**
+   * Instantiates a new edits the view page.
+   *
+   * @param editView the edit view
+   * @param editor the editor
+   * @param document the document
+   */
   EditViewPage(EditView editView, ICasEditor editor, ICasDocument document) {
 
 	if (editView == null || document == null) {
@@ -556,6 +629,9 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   public void createControl(Composite parent) {
 
@@ -593,6 +669,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
     viewer.addDropSupport(DND.DROP_COPY, typesDropSupport, new DropTargetListener() {
 
+      @Override
       public void dragEnter(DropTargetEvent event) {
         // only the FeatureStructureTransfer is supported
         // set currentTransferType to FeatureStructureTransfer, if possible
@@ -604,12 +681,15 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void dragLeave(DropTargetEvent event) {
       }
 
+      @Override
       public void dragOperationChanged(DropTargetEvent event) {
       }
 
+      @Override
       public void dragOver(DropTargetEvent event) {
 
         // TODO: check range type during drag over, like its done in drop()
@@ -621,6 +701,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void drop(DropTargetEvent event) {
         if (FeatureStructureTransfer.getInstance().isSupportedType(event.currentDataType)) {
 
@@ -672,6 +753,7 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void dropAccept(DropTargetEvent event) {
       }
     });
@@ -684,6 +766,7 @@ final class EditViewPage extends Page implements ISelectionListener {
     source.addDragListener(new DragSourceListener() {
       TreeItem dragSourceItem = null;
 
+      @Override
       public void dragStart(DragSourceEvent event) {
 
         event.doit = false;
@@ -701,12 +784,14 @@ final class EditViewPage extends Page implements ISelectionListener {
         }
       }
 
+      @Override
       public void dragSetData(DragSourceEvent event) {
         IAdaptable adaptable = (IAdaptable) dragSourceItem.getData();
 
         event.data = adaptable.getAdapter(FeatureStructure.class);
       }
 
+      @Override
       public void dragFinished(DragSourceEvent event) {
         // not needed
       }
@@ -719,17 +804,25 @@ final class EditViewPage extends Page implements ISelectionListener {
 
   /**
    * Retrieves the main control of the edit view.
+   *
+   * @return the control
    */
   @Override
   public Control getControl() {
     return viewer.getControl();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.Page#setFocus()
+   */
   @Override
   public void setFocus() {
     viewer.getControl().setFocus();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.Page#setActionBars(org.eclipse.ui.IActionBars)
+   */
   @Override
   public void setActionBars(IActionBars actionBars) {
     // pin action
@@ -757,6 +850,10 @@ final class EditViewPage extends Page implements ISelectionListener {
             ActionFactory.DELETE.create(getSite().getWorkbenchWindow()));
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+   */
+  @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
     if (getSite().getPage().getActiveEditor() == editor) {
@@ -776,6 +873,9 @@ final class EditViewPage extends Page implements ISelectionListener {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.Page#dispose()
+   */
   @Override
   public void dispose() {
     getSite().getPage().removeSelectionListener(this);

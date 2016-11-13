@@ -50,8 +50,13 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AbstractDialog.
+ */
 public abstract class AbstractDialog extends Dialog implements Listener, StandardStrings {
  
+  /** The Constant contentAssistAvailable. */
   private final static boolean contentAssistAvailable;
   static {
     boolean contentAssistIsOK = false;
@@ -63,22 +68,30 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     contentAssistAvailable = contentAssistIsOK;
   }
  
+  /** The editor. */
   protected MultiPageEditor editor;
 
+  /** The section. */
   protected AbstractSection section;
 
+  /** The ok button. */
   protected Button okButton;
 
+  /** The error message UI. */
   protected Label errorMessageUI;
 
+  /** The title. */
   protected String title;
 
+  /** The dialog description. */
   protected String dialogDescription;
 
   /**
-   * @param section
-   * @param title
-   * @param description
+   * Instantiates a new abstract dialog.
+   *
+   * @param section the section
+   * @param title the title
+   * @param description the description
    */
   protected AbstractDialog(AbstractSection section, String title, String description) {
     // maintainers: don't use new shell; see comment in Dialog class
@@ -86,11 +99,25 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     commonInit(section, title, description);
   }
   
+  /**
+   * Instantiates a new abstract dialog.
+   *
+   * @param shell the shell
+   * @param title the title
+   * @param description the description
+   */
   protected AbstractDialog(Shell shell, String title, String description) {
     super(shell);
     commonInit(null, title, description);
   }
   
+  /**
+   * Common init.
+   *
+   * @param aSection the a section
+   * @param aTitle the a title
+   * @param aDescription the a description
+   */
   private void commonInit(AbstractSection aSection, String aTitle, String aDescription) {
     section = aSection;
     editor = (null == section)? null : section.editor;
@@ -99,13 +126,28 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     dialogDescription = aDescription;
   }
   
+  /**
+   * Sets the title.
+   *
+   * @param title the new title
+   */
   public void setTitle(String title) {
     this.title = title;
   }
 
+  /**
+   * Sets the message.
+   *
+   * @param msg the new message
+   */
   public void setMessage(String msg) {
     this.dialogDescription = msg;
   }
+  
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     // create composite
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -113,6 +155,13 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return composite;
   }
 
+  /**
+   * Creates the dialog area.
+   *
+   * @param parent the parent
+   * @param existing the existing
+   * @return the control
+   */
   protected Control createDialogArea(Composite parent, Object existing) {
     Composite composite = (Composite) super.createDialogArea(parent);
     createWideLabel(composite, dialogDescription);
@@ -121,11 +170,22 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+   */
+  @Override
   protected void configureShell(Shell shell) {
     super.configureShell(shell);
     shell.setText(title);
   }
 
+  /**
+   * Creates the wide label.
+   *
+   * @param parent the parent
+   * @param message the message
+   * @return the label
+   */
   protected Label createWideLabel(Composite parent, String message) {
     Label label = null;
 
@@ -137,34 +197,75 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return label;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected void createButtonsForButtonBar(Composite parent) {
     super.createButtonsForButtonBar(parent);
     okButton = getButton(IDialogConstants.OK_ID);
     okButton.setEnabled(false);
   }
 
+  /** The Constant stringArray0. */
   public static final String[] stringArray0 = new String[0];
 
+  /**
+   * Sets the text and tip.
+   *
+   * @param c the c
+   * @param label the label
+   * @param tip the tip
+   */
   protected void setTextAndTip(Button c, String label, String tip) {
     c.setText(label);
     c.setToolTipText(tip);
   }
 
+  /**
+   * Sets the text and tip.
+   *
+   * @param c the c
+   * @param label the label
+   * @param tip the tip
+   */
   protected void setTextAndTip(CCombo c, String label, String tip) {
     c.setText(label);
     c.setToolTipText(tip);
   }
 
+  /**
+   * Sets the text and tip.
+   *
+   * @param c the c
+   * @param label the label
+   * @param tip the tip
+   */
   protected void setTextAndTip(Label c, String label, String tip) {
     c.setText(label);
     c.setToolTipText(tip);
   }
   
+  /**
+   * Sets the text and tip.
+   *
+   * @param c the c
+   * @param label the label
+   * @param tip the tip
+   * @param horizStyle the horiz style
+   * @param horizGrab the horiz grab
+   */
   protected void setTextAndTip(Label c, String label, String tip, int horizStyle, boolean horizGrab) {
     setTextAndTip(c, label, tip);
     c.setLayoutData(new GridData(horizStyle, SWT.BEGINNING, horizGrab, false));
   }
 
+  /**
+   * New 2 column composite.
+   *
+   * @param parent the parent
+   * @return the composite
+   */
   protected Composite new2ColumnComposite(Composite parent) {
     Composite twoCol = new Composite(parent, SWT.NONE);
     twoCol.setLayout(new GridLayout(2, false)); // false = not equal width
@@ -174,6 +275,13 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return twoCol;
   }
 
+  /**
+   * New description.
+   *
+   * @param twoCol the two col
+   * @param tip the tip
+   * @return the text
+   */
   protected Text newDescription(Composite twoCol, String tip) {
     setTextAndTip(new Label(twoCol, SWT.NONE), S_DESCRIPTION, tip);
     Text t = new Text(twoCol, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
@@ -183,11 +291,26 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return t;
   }
 
+  /**
+   * New labeled C combo.
+   *
+   * @param parent the parent
+   * @param label the label
+   * @param tip the tip
+   * @return the c combo
+   */
   protected CCombo newLabeledCCombo(Composite parent, String label, String tip) {
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
     return newCCombo(parent, tip);
   }
 
+  /**
+   * New C combo.
+   *
+   * @param parent the parent
+   * @param tip the tip
+   * @return the c combo
+   */
   protected CCombo newCCombo(Composite parent, String tip) {
     final CCombo cc = new CCombo(parent, SWT.FLAT | SWT.BORDER | SWT.READ_ONLY);
     cc.setBackground(getShell().getDisplay().getSystemColor(SWT.COLOR_WHITE));
@@ -201,9 +324,11 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     cc.addKeyListener(new KeyListener() {
       private final StringBuffer b = new StringBuffer();
 
+      @Override
       public void keyPressed(KeyEvent e) {
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
         if (e.keyCode == SWT.BS) {
           if (b.length() > 0)
@@ -228,6 +353,15 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return cc;
   }
 
+  /**
+   * New button.
+   *
+   * @param parent the parent
+   * @param style the style
+   * @param name the name
+   * @param tip the tip
+   * @return the button
+   */
   protected Button newButton(Composite parent, int style, String name, String tip) {
     Button b = new Button(parent, style);
     setTextAndTip(b, name, tip);
@@ -235,6 +369,14 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return b;
   }
 
+  /**
+   * New text.
+   *
+   * @param parent the parent
+   * @param style the style
+   * @param tip the tip
+   * @return the text
+   */
   protected Text newText(Composite parent, int style, String tip) {
     Text t = new Text(parent, style | SWT.BORDER);
     t.setToolTipText(tip);
@@ -244,11 +386,27 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return t;
   }
 
+  /**
+   * New labeled text.
+   *
+   * @param parent the parent
+   * @param style the style
+   * @param label the label
+   * @param tip the tip
+   * @return the text
+   */
   protected Text newLabeledText(Composite parent, int style, String label, String tip) {
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
     return newText(parent, style, tip);
   }
 
+  /**
+   * New tree.
+   *
+   * @param parent the parent
+   * @param style the style
+   * @return the tree
+   */
   protected Tree newTree(Composite parent, int style) {
     Tree tree = new Tree(parent, style | SWT.BORDER);
     GridData gd = new GridData(GridData.FILL_BOTH);
@@ -258,9 +416,9 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
 
   /**
    * Styles = SWT.SINGLE / MULTI / CHECK / FULL_SELECTION / HIDE_SELECTION
-   * 
-   * @param parent
-   * @param style
+   *
+   * @param parent the parent
+   * @param style the style
    * @return the new table widget
    */
   protected Table newTable(Composite parent, int style) {
@@ -272,6 +430,13 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return table;
   }
 
+  /**
+   * Gets the hit column.
+   *
+   * @param item the item
+   * @param p the p
+   * @return the hit column
+   */
   public int getHitColumn(TableItem item, Point p) {
     for (int i = item.getParent().getColumnCount() - 1; i >= 0; i--) {
       Rectangle columnBounds = item.getBounds(i);
@@ -281,6 +446,12 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return -1;
   }
 
+  /**
+   * New button container.
+   *
+   * @param parent the parent
+   * @return the composite
+   */
   public Composite newButtonContainer(Composite parent) {
     Composite buttonContainer = new Composite(parent, SWT.NONE);
     buttonContainer.setLayout(new GridLayout());
@@ -289,6 +460,14 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return buttonContainer;
   }
 
+  /**
+   * New push button.
+   *
+   * @param parent the parent
+   * @param label the label
+   * @param tip the tip
+   * @return the button
+   */
   public Button newPushButton(Composite parent, String label, String tip) {
     Button button = new Button(parent, SWT.PUSH);
     button.setText(label);
@@ -300,10 +479,21 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return button;
   }
 
+  /**
+   * New error message.
+   *
+   * @param c the c
+   */
   protected void newErrorMessage(Composite c) {
     newErrorMessage(c, 1);
   }
 
+  /**
+   * New error message.
+   *
+   * @param twoCol the two col
+   * @param span the span
+   */
   protected void newErrorMessage(Composite twoCol, int span) {
     Label m = new Label(twoCol, SWT.WRAP);
     m.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -312,6 +502,11 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     errorMessageUI = m;
   }
 
+  /**
+   * Sets the error message.
+   *
+   * @param msg the new error message
+   */
   protected void setErrorMessage(String msg) {
     errorMessageUI.setText(msg);
     Composite shell = errorMessageUI.getParent();
@@ -320,7 +515,11 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     shell.setSize(shell.computeSize(-1, -1));
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+   */
   // subclasses override, and often use super.handleEvent to call this
+  @Override
   public void handleEvent(Event event) {
     if (okButton != null)  // may be null if handler called from 
                            // main area setText event, during construction
@@ -328,11 +527,20 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
       enableOK();
   }
 
+  /**
+   * Super button pressed.
+   *
+   * @param buttonId the button id
+   */
   protected void superButtonPressed(int buttonId) {
     super.buttonPressed(buttonId);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
+   */
   // overridden where needed
+  @Override
   protected void buttonPressed(int buttonId) {
     if (buttonId == IDialogConstants.OK_ID) {
       copyValuesFromGUI();
@@ -342,25 +550,51 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     super.buttonPressed(buttonId);
   }
 
+  /**
+   * Copy values from GUI.
+   */
   public abstract void copyValuesFromGUI();
 
+  /**
+   * Checks if is valid.
+   *
+   * @return true, if is valid
+   */
   public abstract boolean isValid();
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#createButtonBar(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createButtonBar(Composite c) {
     Control returnValue = super.createButtonBar(c);
     enableOK();
     return returnValue;
   }
 
+  /**
+   * Enable OK.
+   */
   public abstract void enableOK();
 
+  /**
+   * Use qualified types.
+   *
+   * @return true, if successful
+   */
   public boolean useQualifiedTypes() {
     return MultiPageEditorContributor.getUseQualifiedTypes();
   }
 
+  /**
+   * Gets the all types as sorted array.
+   *
+   * @return the all types as sorted array
+   */
   protected String[] getAllTypesAsSortedArray() {
     String[] allTypes = (String[]) section.editor.allTypes.get().keySet().toArray(stringArray0);
     Arrays.sort(allTypes, new Comparator() {
+      @Override
       public int compare(Object o1, Object o2) {
         String shortName1 = AbstractSection.getShortName((String) o1);
         String shortName2 = AbstractSection.getShortName((String) o2);
@@ -375,13 +609,26 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return allTypes;
   }
 
+  /**
+   * New labeled type input.
+   *
+   * @param aSection the a section
+   * @param parent the parent
+   * @param label the label
+   * @param tip the tip
+   * @return the text
+   */
   protected Text newLabeledTypeInput(AbstractSection aSection, Composite parent, String label, String tip) {
     setTextAndTip(new Label(parent, SWT.NONE), label, tip);
     return newTypeInput(aSection, parent);
   }
 
   /**
-   * @param twoCol
+   * New type input.
+   *
+   * @param aSection the a section
+   * @param twoCol the two col
+   * @return the text
    */
   protected Text newTypeInput(AbstractSection aSection, Composite twoCol) {
     Composite tc = new2ColumnComposite(twoCol);
@@ -416,6 +663,7 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     browseButton.removeListener(SWT.Selection, this);
     final AbstractSection finalSection = aSection;
     browseButton.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         errorMessageUI.setText("");
         SelectTypeDialog dialog = new SelectTypeDialog(finalSection, candidatesToPickFrom); 
@@ -458,14 +706,31 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return text;
   }
 
+  /**
+   * Text modify callback.
+   *
+   * @param e the e
+   */
   public void textModifyCallback(Event e) {
   }
  
+  /**
+   * Gets the type system info list.
+   *
+   * @return the type system info list
+   */
   // default implementation - always overridden when used
   public TypesWithNameSpaces getTypeSystemInfoList() {
     return new TypesWithNameSpaces();
   }
 
+  /**
+   * Type contained in type system info list.
+   *
+   * @param fullTypeName the full type name
+   * @param types the types
+   * @return true, if successful
+   */
   protected boolean typeContainedInTypeSystemInfoList(String fullTypeName, TypesWithNameSpaces types) {
     String key = AbstractSection.getShortName(fullTypeName);
     String nameSpace = AbstractSection.getNameSpace(fullTypeName);
@@ -481,8 +746,8 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
   /**
    * In XML, a 0 - length string is represented as &lt;xxx/&gt;, while a null value causes the
    * element to be omitted. Fix up values to be null if empty.
-   * 
-   * @param v
+   *
+   * @param v the v
    * @return null for 0 length string
    */
   public static String nullIf0lengthString(String v) {
@@ -491,6 +756,12 @@ public abstract class AbstractDialog extends Dialog implements Listener, Standar
     return v;
   }
 
+  /**
+   * Convert null.
+   *
+   * @param v the v
+   * @return the string
+   */
   public static String convertNull(String v) {
     if (null == v)
       return "";

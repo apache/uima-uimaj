@@ -61,24 +61,29 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * This is a lightweight popup dialog which creates an annotation of the chosen type.
  */
 class QuickTypeSelectionDialog extends PopupDialog {
 
+  /** The editor. */
   private final AnnotationEditor editor;
 
+  /** The filter text. */
   private Text filterText;
 
+  /** The shortcut type map. */
   private Map<Character, Type> shortcutTypeMap = new HashMap<Character, Type>();
 
+  /** The type shortcut map. */
   private Map<Type, Character> typeShortcutMap = new HashMap<Type, Character>();
 
   /**
    * Initializes the current instance.
-   * 
-   * @param parent
-   * @param editor
+   *
+   * @param parent the parent
+   * @param editor the editor
    */
   @SuppressWarnings("deprecation")
   QuickTypeSelectionDialog(Shell parent, AnnotationEditor editor) {
@@ -100,6 +105,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
     List<Type> types = new ArrayList<Type>();
     Collections.addAll(types, getTypes());
     Collections.sort(types, new Comparator<Type>() {
+      @Override
       public int compare(Type o1, Type o2) {
         return o1.getName().compareTo(o2.getName());
       }
@@ -153,11 +159,22 @@ class QuickTypeSelectionDialog extends PopupDialog {
     }
   }
 
+  /**
+   * Put shortcut.
+   *
+   * @param shortcut the shortcut
+   * @param type the type
+   */
   private void putShortcut(Character shortcut, Type type) {
     shortcutTypeMap.put(shortcut, type);
     typeShortcutMap.put(type, shortcut);
   }
 
+  /**
+   * Gets the types.
+   *
+   * @return the types
+   */
   private Type[] getTypes() {
 
     TypeSystem typeSystem = editor.getDocument().getCAS().getTypeSystem();
@@ -170,6 +187,11 @@ class QuickTypeSelectionDialog extends PopupDialog {
     return types.toArray(new Type[types.size()]);
   }
 
+  /**
+   * Annotate and close.
+   *
+   * @param annotationType the annotation type
+   */
   private void annotateAndClose(Type annotationType) {
     if (annotationType != null) {
       Point textSelection = editor.getSelection();
@@ -188,6 +210,9 @@ class QuickTypeSelectionDialog extends PopupDialog {
     QuickTypeSelectionDialog.this.close();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.PopupDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
@@ -211,6 +236,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
     filterText.addKeyListener(new KeyListener() {
 
+      @Override
       public void keyPressed(KeyEvent e) {
         if (e.keyCode == SWT.ARROW_DOWN || e.keyCode == SWT.ARROW_UP) {
           typeTree.getControl().setFocus();
@@ -224,6 +250,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
         }
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
         typeTree.refresh(false);
       }
@@ -231,25 +258,31 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
     typeTree.setContentProvider(new ITreeContentProvider() {
 
+      @Override
       public Object[] getChildren(Object parentElement) {
         return null;
       }
 
+      @Override
       public Object getParent(Object element) {
         return null;
       }
 
+      @Override
       public boolean hasChildren(Object element) {
         return false;
       }
 
+      @Override
       public Object[] getElements(Object inputElement) {
         return (Type[]) inputElement;
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       }
     });
@@ -267,10 +300,12 @@ class QuickTypeSelectionDialog extends PopupDialog {
 
     typeTree.setLabelProvider(new ILabelProvider() {
 
+      @Override
       public Image getImage(Object element) {
         return null;
       }
 
+      @Override
       public String getText(Object element) {
 
         Type type = (Type) element;
@@ -284,23 +319,28 @@ class QuickTypeSelectionDialog extends PopupDialog {
         }
       }
 
+      @Override
       public void addListener(ILabelProviderListener listener) {
 
       }
 
+      @Override
       public void dispose() {
       }
 
+      @Override
       public boolean isLabelProperty(Object element, String property) {
         return false;
       }
 
+      @Override
       public void removeListener(ILabelProviderListener listener) {
       }
     });
 
     typeTree.getControl().addKeyListener(new KeyListener() {
 
+      @Override
       public void keyPressed(KeyEvent e) {
         Type type = shortcutTypeMap.get(Character.toLowerCase(e.character));
 
@@ -309,12 +349,14 @@ class QuickTypeSelectionDialog extends PopupDialog {
         }
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
       }
     });
 
     typeTree.getControl().addMouseMoveListener(new MouseMoveListener() {
 
+      @Override
       public void mouseMove(MouseEvent e) {
 
         Tree tree = (Tree) typeTree.getControl();
@@ -331,6 +373,7 @@ class QuickTypeSelectionDialog extends PopupDialog {
     // because there is already a selection below the mouse
     typeTree.addOpenListener(new IOpenListener() {
 
+      @Override
       public void open(OpenEvent event) {
         StructuredSelection selection = (StructuredSelection) event.getSelection();
 
@@ -351,6 +394,9 @@ class QuickTypeSelectionDialog extends PopupDialog {
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.PopupDialog#getInitialSize()
+   */
   @Override
   protected Point getInitialSize() {
     return new Point(250, 300);

@@ -141,39 +141,53 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ParameterSection.
+ */
 public class ParameterSection extends AbstractSectionParm {
 
+  /** The Constant NEW_OVERRIDE. */
   public final static int NEW_OVERRIDE = -1;
 
+  /** The Constant REMOVE_FROM_GUI. */
   public final static boolean REMOVE_FROM_GUI = true;
 
+  /** The Constant GIVE_WARNING_MESSAGE. */
   public final static boolean GIVE_WARNING_MESSAGE = true;
 
+  /** The default group. */
   private Text defaultGroup;
 
+  /** The search strategy. */
   private CCombo searchStrategy;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The add group button. */
   private Button addGroupButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The using groups button. */
   private Button usingGroupsButton;
 
+  /** The grouping control. */
   private Composite groupingControl;
 
+  /** The first time. */
   private boolean firstTime = true;
 
   /**
-   * Creates a section to show a list of all parameters
-   * 
-   * @param editor
-   *          backpointer to the main multipage editor
-   * @param parent
-   *          the Composite where this section lives
+   * Creates a section to show a list of all parameters.
+   *
+   * @param editor          backpointer to the main multipage editor
+   * @param parent          the Composite where this section lives
    */
   public ParameterSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Configuration Parameters",
@@ -202,6 +216,10 @@ public class ParameterSection extends AbstractSectionParm {
   // both incrementally updated, so rebuild is not needed. This preserves
   // user-specified expansion of nodes.
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -255,6 +273,7 @@ public class ParameterSection extends AbstractSectionParm {
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
 
+  @Override
   public void refresh() {
     super.refresh(); // clears stale and dirty bits in AbstractFormPart
     // superclass
@@ -298,6 +317,7 @@ public class ParameterSection extends AbstractSectionParm {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     cpd = getAnalysisEngineMetaData().getConfigurationParameterDeclarations();
 
@@ -462,6 +482,12 @@ public class ParameterSection extends AbstractSectionParm {
     enable();
   }
 
+  /**
+   * Adds the or edit override.
+   *
+   * @param parmItem the parm item
+   * @param overrideIndex the override index
+   */
   private void addOrEditOverride(TreeItem parmItem, int overrideIndex) {
     ConfigurationParameter cp = getCorrespondingModelParm(parmItem);
     TreeItem groupItem = parmItem.getParentItem();
@@ -510,6 +536,13 @@ public class ParameterSection extends AbstractSectionParm {
   }
   
 
+  /**
+   * Removes the items.
+   *
+   * @param itemsToRemove the items to remove
+   * @param giveWarningMsg the give warning msg
+   * @return true, if successful
+   */
   private boolean removeItems(TreeItem[] itemsToRemove, boolean giveWarningMsg) {
     String[] namesToRemove = new String[itemsToRemove.length];
     boolean[] isGroup = new boolean[itemsToRemove.length];
@@ -579,6 +612,12 @@ public class ParameterSection extends AbstractSectionParm {
     return true;
   }
 
+  /**
+   * Removes the parameter.
+   *
+   * @param itemToRemove the item to remove
+   * @param nameToRemove the name to remove
+   */
   private void removeParameter(TreeItem itemToRemove, String nameToRemove) {
     TreeItem parentItem = itemToRemove.getParentItem();
     ConfigurationGroup cg = null;
@@ -603,6 +642,12 @@ public class ParameterSection extends AbstractSectionParm {
     }
   }
 
+  /**
+   * Removes the group.
+   *
+   * @param itemToRemove the item to remove
+   * @param nameToRemove the name to remove
+   */
   private void removeGroup(TreeItem itemToRemove, String nameToRemove) {
     if (nameToRemove.equals(COMMON_GROUP)) {
       removeCommonParmSettingsFromMultipleGroups();
@@ -631,6 +676,14 @@ public class ParameterSection extends AbstractSectionParm {
     }
   }
 
+  /**
+   * Adds the parm.
+   *
+   * @param name the name
+   * @param modelParm the model parm
+   * @param group the group
+   * @param override the override
+   */
   public void addParm(String name, ConfigurationParameter modelParm, ConfigGroup group,
           String override) {
     TreeItem parentGroup = getTreeItemGroup(group);
@@ -647,6 +700,12 @@ public class ParameterSection extends AbstractSectionParm {
     commonActionFinish();
   }
 
+  /**
+   * Gets the configuration group.
+   *
+   * @param groupName the group name
+   * @return the configuration group
+   */
   private ConfigurationGroup getConfigurationGroup(String groupName) {
     if (groupName.equals(COMMON_GROUP))
       throw new InternalErrorCDE("invalid call");
@@ -658,12 +717,26 @@ public class ParameterSection extends AbstractSectionParm {
     throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Removes the configuration group.
+   *
+   * @param groups the groups
+   * @param cg the cg
+   * @return the configuration group[]
+   */
   private ConfigurationGroup[] removeConfigurationGroup(ConfigurationGroup[] groups,
           ConfigurationGroup cg) {
     return (ConfigurationGroup[]) Utility.removeElementFromArray(groups, cg,
             ConfigurationGroup.class);
   }
 
+  /**
+   * Removes the configuration parameter.
+   *
+   * @param parms the parms
+   * @param nameToRemove the name to remove
+   * @return the configuration parameter[]
+   */
   private ConfigurationParameter[] removeConfigurationParameter(ConfigurationParameter[] parms,
           String nameToRemove) {
     ConfigurationParameter[] newParms = new ConfigurationParameter[parms.length - 1];
@@ -675,6 +748,13 @@ public class ParameterSection extends AbstractSectionParm {
     return newParms;
   }
 
+  /**
+   * Removes the override.
+   *
+   * @param cp the cp
+   * @param i the i
+   * @return the string[]
+   */
   private String[] removeOverride(ConfigurationParameter cp, int i) {
     String[] oldOverrides = cp.getOverrides();
     String[] newOverrides = new String[oldOverrides.length - 1];
@@ -686,10 +766,10 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   /**
-   * Called to add group to aggregate parm decl based on delegate group
-   * 
-   * @param group
-   *          the delegate group needing to be added to the aggregate
+   * Called to add group to aggregate parm decl based on delegate group.
+   *
+   * @param group          the delegate group needing to be added to the aggregate
+   * @return the config group
    */
   public ConfigGroup addGroup(ConfigGroup group) {
     String groupName = group.getName();
@@ -710,10 +790,13 @@ public class ParameterSection extends AbstractSectionParm {
 
   // existing, if not null, doesn't point to <Common> which can't be edited
   /**
+   * Adds the new or edit existing group.
+   *
    * @param names -
    *          a sequence of group names separated by blanks
    * @param existing -
    *          null or an existing tree item being edited
+   * @return true, if successful
    */
   private boolean addNewOrEditExistingGroup(String names, TreeItem existing) {
     valueChanged = true; // preset
@@ -779,6 +862,12 @@ public class ParameterSection extends AbstractSectionParm {
     return true;
   }
 
+  /**
+   * Fill in front of common.
+   *
+   * @param parms the parms
+   * @param settingsTreeGroup the settings tree group
+   */
   private void fillInFrontOfCommon(ConfigurationParameter[] parms, TreeItem settingsTreeGroup) {
     if (parms != null) {
       for (int i = parms.length - 1; i >= 0; i--) {
@@ -788,10 +877,10 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   /**
-   * Calculate s1 - s2 set
-   * 
-   * @param s1
-   * @param s2
+   * Calculate s1 - s2 set.
+   *
+   * @param s1 the s 1
+   * @param s2 the s 2
    * @return s1 - s2 set
    */
   private String[] setDiff(String[] s1, String[] s2) {
@@ -803,6 +892,13 @@ public class ParameterSection extends AbstractSectionParm {
     return (String[]) result.toArray(stringArray0);
   }
 
+  /**
+   * Sets the equal.
+   *
+   * @param s1 the s 1
+   * @param s2 the s 2
+   * @return true, if successful
+   */
   private boolean setEqual(String[] s1, String[] s2) {
     if (null == s1 && null == s2)
       return true;
@@ -816,20 +912,20 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   /**
-   * Called from ParameterDelegatesSection to add an override
-   * 
-   * @param parmInGroup
-   * @param override
+   * Called from ParameterDelegatesSection to add an override.
+   *
+   * @param parmInGroup the parm in group
+   * @param override the override
    */
   public void addOverride(ConfigurationParameter parmInGroup, String override) {
     addOverride(override, getTreeItemParm(parmInGroup), parmInGroup);
   }
 
   /**
-   * add an override item
-   * 
-   * @param parent
-   * @param override
+   * add an override item.
+   *
+   * @param parent the parent
+   * @param override the override
    */
   private void addOverrideToGUI(TreeItem parent, String override) {
     // addOverride(dialog.overrideSpec, parent, cp);
@@ -839,11 +935,12 @@ public class ParameterSection extends AbstractSectionParm {
 
   /**
    * Called by addNewConfigurationParameter, and fill (via refresh) to add overrides to the tree
-   * list
-   * 
-   * @param parent
-   * @param modelCP
+   * list.
+   *
+   * @param parent the parent
+   * @param modelCP the model CP
    */
+  @Override
   protected void fillOverrides(TreeItem parent, ConfigurationParameter modelCP) {
     if (isAggregate()) {
       String[] overrides = modelCP.getOverrides();
@@ -857,11 +954,11 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   /**
-   * called from add Override action
-   * 
-   * @param dialog
-   * @param parent
-   * @param cp
+   * called from add Override action.
+   *
+   * @param override the override
+   * @param parent the parent
+   * @param cp the cp
    */
   private void addOverride(String override, TreeItem parent, ConfigurationParameter cp) {
     cp.setOverrides(addOverrideToArray(cp.getOverrides(), override));
@@ -870,6 +967,12 @@ public class ParameterSection extends AbstractSectionParm {
     commonActionFinish();
   }
 
+  /**
+   * Alter existing configuration parameter.
+   *
+   * @param dialog the dialog
+   * @param existingTreeItem the existing tree item
+   */
   private void alterExistingConfigurationParameter(AddParameterDialog dialog,
           TreeItem existingTreeItem) {
     ConfigurationParameter existingCP = getCorrespondingModelParm(existingTreeItem);
@@ -895,6 +998,13 @@ public class ParameterSection extends AbstractSectionParm {
     commonParmUpdate(existingTreeItem, existingCP, previousCP.getName());
   }
 
+  /**
+   * Common parm update.
+   *
+   * @param existingTreeItem the existing tree item
+   * @param existingCP the existing CP
+   * @param prevName the prev name
+   */
   private void commonParmUpdate(TreeItem existingTreeItem, ConfigurationParameter existingCP,
           String prevName) {
     updateParmInSettingsGUI(existingCP, existingTreeItem, prevName);
@@ -922,9 +1032,9 @@ public class ParameterSection extends AbstractSectionParm {
   /**
    * Fills in the model Configuration Parm from the Add/Edit dialog. called from
    * addNewConfigurationParameter, and alterExistingConfigurationParameter
-   * 
-   * @param dialog
-   * @param existingCP
+   *
+   * @param dialog the dialog
+   * @param existingCP the existing CP
    */
   private void fillModelParm(AddParameterDialog dialog, ConfigurationParameter existingCP) {
     valueChanged = false;
@@ -942,10 +1052,11 @@ public class ParameterSection extends AbstractSectionParm {
 
   /**
    * Called from UI when adding a new Configuraton Parameter Called from refresh when filling params
-   * Called when adding override to new parm
-   * 
-   * @param dialog
-   * @param group
+   * Called when adding override to new parm.
+   *
+   * @param dialog the dialog
+   * @param group the group
+   * @return the configuration parameter
    */
   private ConfigurationParameter addNewConfigurationParameter(AddParameterDialog dialog,
           TreeItem group) {
@@ -969,6 +1080,11 @@ public class ParameterSection extends AbstractSectionParm {
     return newCP;
   }
 
+  /**
+   * Adds the group to model.
+   *
+   * @param newCg the new cg
+   */
   private void addGroupToModel(ConfigurationGroup newCg) {
     ConfigurationGroup[] oldCgs = cpd.getConfigurationGroups();
     ConfigurationGroup[] newCgs;
@@ -982,6 +1098,13 @@ public class ParameterSection extends AbstractSectionParm {
     cpd.setConfigurationGroups(newCgs);
   }
 
+  /**
+   * Adds the override to array.
+   *
+   * @param overrides the overrides
+   * @param newOverride the new override
+   * @return the string[]
+   */
   private String[] addOverrideToArray(String[] overrides, String newOverride) {
     if (null == overrides)
       return new String[] { newOverride };
@@ -991,6 +1114,13 @@ public class ParameterSection extends AbstractSectionParm {
     return newOverrides;
   }
 
+  /**
+   * Adds the parm to array.
+   *
+   * @param cps the cps
+   * @param newCP the new CP
+   * @return the configuration parameter[]
+   */
   private ConfigurationParameter[] addParmToArray(ConfigurationParameter[] cps,
           ConfigurationParameter newCP) {
 
@@ -1004,8 +1134,9 @@ public class ParameterSection extends AbstractSectionParm {
   }
 
   /**
-   * 
-   * @param names
+   * Group name already defined.
+   *
+   * @param names the names
    * @return true if there is a group whose names are the same set
    */
   private boolean groupNameAlreadyDefined(String[] names) {
@@ -1019,6 +1150,13 @@ public class ParameterSection extends AbstractSectionParm {
     return false;
   }
 
+  /**
+   * Parameter name already defined no msg.
+   *
+   * @param name the name
+   * @param pCpd the cpd
+   * @return true, if successful
+   */
   public static boolean parameterNameAlreadyDefinedNoMsg(String name,
           ConfigurationParameterDeclarations pCpd) {
     if (pCpd.getCommonParameters() != null) {
@@ -1048,6 +1186,7 @@ public class ParameterSection extends AbstractSectionParm {
    *
    * @param name  - Parameter name
    * @param cgset - Group-set (may be not-in-any, common, or a named set)
+   * @return true, if successful
    */
   public boolean parameterNameAlreadyDefinedNoMsg(String name, ConfigGroup cgset) {
     if (cgset.getKind() == ConfigGroup.NOT_IN_ANY_GROUP) {
@@ -1069,6 +1208,13 @@ public class ParameterSection extends AbstractSectionParm {
     return false;
   }
   
+  /**
+   * Have shared group.
+   *
+   * @param set1 the set 1
+   * @param set2 the set 2
+   * @return true, if successful
+   */
   /*
    * Check if arrays have an element in common
    */
@@ -1083,6 +1229,13 @@ public class ParameterSection extends AbstractSectionParm {
     return false;
   }
   
+  /**
+   * Parameter name already defined.
+   *
+   * @param name the name
+   * @param cgset the cgset
+   * @return true, if successful
+   */
   public boolean parameterNameAlreadyDefined(String name, ConfigGroup cgset) {
     boolean alreadyDefined = parameterNameAlreadyDefinedNoMsg(name, cgset);
     if (alreadyDefined) {
@@ -1095,6 +1248,13 @@ public class ParameterSection extends AbstractSectionParm {
     return alreadyDefined;
   }
 
+  /**
+   * Parameter in array.
+   *
+   * @param name the name
+   * @param cps the cps
+   * @return true, if successful
+   */
   private static boolean parameterInArray(String name, ConfigurationParameter[] cps) {
     for (int i = 0; i < cps.length; i++) {
       if (name.equals(cps[i].getName()))
@@ -1103,6 +1263,9 @@ public class ParameterSection extends AbstractSectionParm {
     return false;
   }
 
+  /**
+   * Common action finish.
+   */
   private void commonActionFinish() {
     valueChanged = true;
     commonActionFinishDirtyIfChange();
@@ -1119,6 +1282,10 @@ public class ParameterSection extends AbstractSectionParm {
     enable();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm#enable()
+   */
+  @Override
   public void enable() {
 
     usingGroupsButton.setEnabled(!isAggregate());
@@ -1139,6 +1306,11 @@ public class ParameterSection extends AbstractSectionParm {
                             && isGroupSelection() && !isCommonGroupSelection())));
   }
 
+  /**
+   * Gets the tree.
+   *
+   * @return the tree
+   */
   public Tree getTree() {
     return tree;
   }
@@ -1147,8 +1319,8 @@ public class ParameterSection extends AbstractSectionParm {
    * Given a ConfigurationParameter, find the corresponding item in the tree. Note: parameters with
    * the same name can exist in different groups, so we don't match using the parm name, but rather
    * do an "EQ" test
-   * 
-   * @param p
+   *
+   * @param p the p
    * @return the tree item corresponding to the configuration parameter
    */
   private TreeItem getTreeItemParm(ConfigurationParameter p) {
@@ -1166,8 +1338,8 @@ public class ParameterSection extends AbstractSectionParm {
   /**
    * Given a ConfigGroup - find the corresponding tree item. Match is done against the display form
    * of the name(s), with special casing for the not-in-any-group and common.
-   * 
-   * @param g
+   *
+   * @param g the g
    * @return the tree itme corresponding to a configuration group
    */
   private TreeItem getTreeItemGroup(ConfigGroup g) {
@@ -1185,6 +1357,12 @@ public class ParameterSection extends AbstractSectionParm {
     throw new InternalErrorCDE("invalid state");
   }
 
+  /**
+   * Gets the settings tree group.
+   *
+   * @param groupName the group name
+   * @return the settings tree group
+   */
   private TreeItem getSettingsTreeGroup(String groupName) {
     TreeItem[] items = settingsTree.getItems();
     for (int i = 0; i < items.length; i++) {

@@ -19,12 +19,17 @@
 
 package org.apache.uima.caseditor.editor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface ICustomInformationControlContentHandler.
+ */
 public interface ICustomInformationControlContentHandler {
+  
   /**
    * Sets the input object.
    *
-   * @param control
-   * @param input
+   * @param control the control
+   * @param input the input
    */
   void setInput(CustomInformationControl control, Object input);
 }

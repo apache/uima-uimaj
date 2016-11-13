@@ -38,6 +38,7 @@ import org.eclipse.ui.IWorkbench;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
+// TODO: Auto-generated Javadoc
 /**
  * Wizard to edit the PEAR Installation Descriptor.
  * 
@@ -46,15 +47,20 @@ import org.apache.uima.pear.tools.InstallationDescriptorHandler;
  */
 public class EditInstallationDescriptorWizard extends Wizard implements IWizard, InsdConstants {
 
+  /** The current project. */
   private IProject currentProject;
 
+  /** The insd. */
   private InstallationDescriptor insd;
 
+  /** The wizard data. */
   private Hashtable wizardData = new Hashtable();
 
+  /** The component page. */
   // WIZARD PAGES
   private INSDComponentPage componentPage;
 
+  /** The environment page. */
   private INSDEnvironmentPage environmentPage;
 
   /**
@@ -99,6 +105,7 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
    * 
    * @see org.eclipse.jface.wizard.IWizard#addPages()
    */
+  @Override
   public void addPages() {
     try {
       componentPage = new INSDComponentPage(currentProject, insd, wizardData);
@@ -118,10 +125,11 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
 
   /**
    * This method is called when 'Finish' button is pressed in the wizard.
-   * 
+   *
+   * @return true, if successful
    * @see org.eclipse.jface.wizard.IWizard#performFinish()
-   * 
    */
+  @Override
   public boolean performFinish() {
     try {
       editInstallationDescriptor();
@@ -134,6 +142,12 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
     return true;
   }
 
+  /**
+   * Edits the installation descriptor.
+   *
+   * @throws CoreException the core exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   private void editInstallationDescriptor() throws CoreException, IOException {
     handleComponentInformation();
     addEnvOptions();
@@ -141,6 +155,9 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
     PearInstallationDescriptor.saveInstallationDescriptor(currentProject, insd);
   }
 
+  /**
+   * Handle component information.
+   */
   private void handleComponentInformation() {
     insd.setMainComponent(componentPage.compID);
     insd
@@ -148,6 +165,9 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
                     .addMacro(componentPage.compDescriptorPath));
   }
 
+  /**
+   * Adds the env options.
+   */
   private void addEnvOptions() {
     insd.clearOSSpecs();
     insd.clearToolkitsSpecs();
@@ -163,6 +183,9 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
 
   }
 
+  /**
+   * Adds the env vars.
+   */
   private void addEnvVars() {
     insd.deleteInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
     Iterator envVarsItr = environmentPage.envVarList.tableRows.iterator();
@@ -185,7 +208,10 @@ public class EditInstallationDescriptorWizard extends Wizard implements IWizard,
   }
 
   /**
-   * See IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+   * See IWorkbenchWizard#init(IWorkbench, IStructuredSelection).
+   *
+   * @param workbench the workbench
+   * @param selection the selection
    */
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     // this.workbench = workbench;

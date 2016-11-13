@@ -33,17 +33,35 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SelectTypeDialog.
+ */
 public class SelectTypeDialog extends AbstractDialog {
 
+  /** The type name UI. */
   private Text typeNameUI;
+  
+  /** The matching types UI. */
   private Table matchingTypesUI;
+  
+  /** The name spaces UI. */
   private Table nameSpacesUI;
+  
+  /** The type name. */
   public String typeName = "error-TypeName-never-set";
+  
+  /** The name space name. */
   public String nameSpaceName = "error-NameSpaceName-never-set";
+  
+  /** The types. */
   private TypesWithNameSpaces types;
+  
   /**
-   * @param section
-   * @param types
+   * Instantiates a new select type dialog.
+   *
+   * @param section the section
+   * @param types the types
    */
   public SelectTypeDialog(AbstractSection section, TypesWithNameSpaces types) {
     super(section, "Select Type Name", "Select an Existing CAS Type name from the set of defined types");
@@ -60,6 +78,7 @@ public class SelectTypeDialog extends AbstractDialog {
    * Create a list output area labeled: NameSpaces:
    * Bottom gets normal OK / Cancel buttons
    */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite)super.createDialogArea(parent);
     createWideLabel(mainArea, "Type Name:");
@@ -86,6 +105,11 @@ public class SelectTypeDialog extends AbstractDialog {
     return mainArea;
   }
    
+  /**
+   * Display filtered types.
+   *
+   * @param aTypeName the a type name
+   */
   private void displayFilteredTypes(String aTypeName) {
     matchingTypesUI.setRedraw(false);
     matchingTypesUI.removeAll();
@@ -110,6 +134,11 @@ public class SelectTypeDialog extends AbstractDialog {
     matchingTypesUI.setRedraw(true);    
   }
 
+  /**
+   * Display name spaces for selected item.
+   *
+   * @param entry the entry
+   */
   private void displayNameSpacesForSelectedItem(Map.Entry entry) {
     Set nameSpaces = (Set)entry.getValue();
     nameSpacesUI.removeAll();
@@ -127,6 +156,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == typeNameUI && event.type == SWT.Modify) {
       typeName = typeNameUI.getText(); 
@@ -143,6 +173,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
    */
+  @Override
   public void copyValuesFromGUI() {
     if (0 < matchingTypesUI.getSelectionCount()) {
       typeName = matchingTypesUI.getSelection()[0].getText();
@@ -155,6 +186,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
    */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled( (0 < nameSpacesUI.getSelectionCount()) &&
@@ -164,6 +196,7 @@ public class SelectTypeDialog extends AbstractDialog {
   /* (non-Javadoc)
    * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
    */
+  @Override
   public boolean isValid() {
     return true;
   }

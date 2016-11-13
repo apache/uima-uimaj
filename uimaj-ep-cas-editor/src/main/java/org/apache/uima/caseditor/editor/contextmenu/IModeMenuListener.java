@@ -21,12 +21,22 @@ package org.apache.uima.caseditor.editor.contextmenu;
 
 import org.apache.uima.cas.Type;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The listener interface for receiving IModeMenu events.
+ * The class that is interested in processing a IModeMenu
+ * event implements this interface, and the object created
+ * with that class is registered with a component using the
+ * component's <code>addIModeMenuListener</code> method. When
+ * the IModeMenu event occurs, that object's appropriate
+ * method is invoked.
+ */
 public interface IModeMenuListener {
 	
 	/**
 	 * Mode was changed to a new mode. 
-	 * 
-	 * @param newMode
+	 *
+	 * @param newMode the new mode
 	 */
 	void modeChanged(Type newMode);
 }

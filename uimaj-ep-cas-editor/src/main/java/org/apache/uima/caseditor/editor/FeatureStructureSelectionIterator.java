@@ -27,19 +27,22 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
+// TODO: Auto-generated Javadoc
 /**
  * Iterates over all selected {@link FeatureStructure}s.
  */
 public class FeatureStructureSelectionIterator implements Iterator<FeatureStructure> {
 
+  /** The m selection iterator. */
   private Iterator<?> mSelectionIterator;
 
+  /** The m next. */
   private FeatureStructure mNext;
 
   /**
    * Initializes the current instance.
    *
-   * @param selection
+   * @param selection the selection
    */
   public FeatureStructureSelectionIterator(IStructuredSelection selection) {
     mSelectionIterator = selection.iterator();
@@ -50,6 +53,7 @@ public class FeatureStructureSelectionIterator implements Iterator<FeatureStruct
    *
    * @return true if there is one more element.
    */
+  @Override
   public boolean hasNext() {
     while (mSelectionIterator.hasNext() && mNext == null) {
       Object item = mSelectionIterator.next();
@@ -67,6 +71,7 @@ public class FeatureStructureSelectionIterator implements Iterator<FeatureStruct
    *
    * @return the next element.
    */
+  @Override
   public FeatureStructure next() {
     if (!hasNext()) {
       throw new NoSuchElementException();
@@ -83,6 +88,7 @@ public class FeatureStructureSelectionIterator implements Iterator<FeatureStruct
    *
    * @throws UnsupportedOperationException -
    */
+  @Override
   public void remove() {
     throw new UnsupportedOperationException();
   }

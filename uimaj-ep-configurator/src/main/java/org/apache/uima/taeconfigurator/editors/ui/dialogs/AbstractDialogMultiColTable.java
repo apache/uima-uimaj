@@ -30,8 +30,18 @@ import org.eclipse.swt.widgets.Widget;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AbstractDialogMultiColTable.
+ */
 public abstract class AbstractDialogMultiColTable extends AbstractDialog {
 
+  /**
+   * Checked indicator.
+   *
+   * @param col the col
+   * @return the string
+   */
   protected String checkedIndicator(int col) {
     if (col == 1)
       return "In";
@@ -39,20 +49,36 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
       return "Out";
   }
 
+  /** The Constant UNCHECKED. */
   protected static final String UNCHECKED = "";
 
+  /** The table. */
   Table table;
 
+  /** The enable col 1. */
   protected boolean enableCol1 = true;
 
+  /** The enable col 2. */
   protected boolean enableCol2 = true;
 
+  /** The number checked. */
   protected int numberChecked = 0;
 
+  /**
+   * Instantiates a new abstract dialog multi col table.
+   *
+   * @param aSection the a section
+   * @param title the title
+   * @param description the description
+   */
   protected AbstractDialogMultiColTable(AbstractSection aSection, String title, String description) {
     super(aSection, title, description);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  @Override
   public void handleEvent(Event event) {
     if (event.type == SWT.MouseDown && event.widget == table) {
       Point mousePosition = new Point(event.x, event.y);
@@ -81,12 +107,23 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
     super.handleEvent(event);
   }
 
+  /**
+   * Jit how to.
+   *
+   * @param w the w
+   */
   private void jitHowTo(Widget w) {
     Utility.popMessage(w, "Where to mouse click",
             "Please click the mouse in the input or output columns to toggle the selection.",
             MessageDialog.INFORMATION);
   }
 
+  /**
+   * Toggle value.
+   *
+   * @param item the item
+   * @param col the col
+   */
   protected void toggleValue(TableItem item, int col) {
     item.setText(col, item.getText(col).equals(checkedIndicator(col)) ? UNCHECKED
             : checkedIndicator(col));
@@ -96,15 +133,30 @@ public abstract class AbstractDialogMultiColTable extends AbstractDialog {
       numberChecked--;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     errorMessageUI.setText("");
     okButton.setEnabled(numberChecked > 0);
   }
 
+  /**
+   * Sets the checked.
+   *
+   * @param item the item
+   * @param col the col
+   * @param value the value
+   */
   protected void setChecked(TableItem item, int col, boolean value) {
     boolean prevChecked = checkedIndicator(col).equals(item.getText(col));
     item.setText(col, value ? checkedIndicator(col) : UNCHECKED);

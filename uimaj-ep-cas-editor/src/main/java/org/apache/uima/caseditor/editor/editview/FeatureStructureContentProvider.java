@@ -37,13 +37,24 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FeatureStructureContentProvider.
+ */
 final class FeatureStructureContentProvider extends AbstractDocumentListener
         implements ITreeContentProvider {
 
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /** The viewer. */
   private Viewer viewer;
 
+  /**
+   * Instantiates a new feature structure content provider.
+   *
+   * @param document the document
+   */
   FeatureStructureContentProvider(ICasDocument document) {
 
     if (document == null) {
@@ -53,6 +64,12 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     mDocument = document;
   }
 
+  /**
+   * Array size.
+   *
+   * @param value the value
+   * @return the int
+   */
   private int arraySize(FeatureStructure value) {
 
     if (!value.getType().isArray()) {
@@ -80,6 +97,10 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     return size;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+   */
+  @Override
   public Object[] getElements(Object inputElement) {
 
     if (inputElement != null) {
@@ -115,16 +136,25 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+   */
+  @Override
   public void dispose() {
     if (mDocument != null)
       mDocument.removeChangeListener(this);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+   */
+  @Override
   public void inputChanged(final Viewer viewer, Object oldInput, Object newInput) {
     this.viewer = viewer;
 
     if (newInput != null) {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           viewer.refresh();
         }
@@ -132,22 +162,39 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#added(java.util.Collection)
+   */
+  @Override
   public void added(Collection<FeatureStructure> newFeatureStructure) {
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
+   */
+  @Override
   public void viewChanged(String oldViewName, String newViewName) {
     changed();
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
+   */
+  @Override
   public void changed() {
 
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         viewer.setInput(null);
       }
     });
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#removed(java.util.Collection)
+   */
+  @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
     for(FeatureStructure fs : deletedFeatureStructure) {
       if (viewer.getInput() == fs) {
@@ -158,8 +205,13 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#updated(java.util.Collection)
+   */
+  @Override
   public void updated(Collection<FeatureStructure> featureStructure) {
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         viewer.setSelection(viewer.getSelection());
         viewer.refresh();
@@ -167,6 +219,10 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     });
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+   */
+  @Override
   public Object[] getChildren(Object parentElement) {
 
     if (parentElement instanceof FeatureValue) {
@@ -192,10 +248,20 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+   */
+  @Override
   public Object getParent(Object element) {
     return null;
   }
 
+  /**
+   * Checks for children.
+   *
+   * @param value the value
+   * @return true, if successful
+   */
   private boolean hasChildren(FeatureStructure value) {
 
     boolean result;
@@ -216,6 +282,10 @@ final class FeatureStructureContentProvider extends AbstractDocumentListener
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+   */
+  @Override
   public boolean hasChildren(Object element) {
 
     if (element instanceof FeatureValue) {

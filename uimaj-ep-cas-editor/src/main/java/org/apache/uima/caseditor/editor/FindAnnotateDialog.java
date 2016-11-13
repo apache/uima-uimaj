@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+// TODO: Auto-generated Javadoc
 /**
  * A dialog to find and annotate a piece of text in the document.
  * 
@@ -58,24 +59,49 @@ import org.eclipse.swt.widgets.Shell;
  */
 class FindAnnotateDialog extends Dialog {
 
+  /** The Constant FIND_BUTTON. */
   private static final int FIND_BUTTON = 100;
+  
+  /** The Constant ANNOTATE_FIND_BUTTON. */
   private static final int ANNOTATE_FIND_BUTTON = 101;
+  
+  /** The Constant ANNOTATE_BUTTON. */
   private static final int ANNOTATE_BUTTON = 102;
+  
+  /** The Constant ANNOTATE_ALL_BUTTON. */
   private static final int ANNOTATE_ALL_BUTTON = 103;
+  
+  /** The close button. */
   private static int CLOSE_BUTTON = 104;
   
+  /** The find replace target. */
   private final IFindReplaceTarget findReplaceTarget;
+  
+  /** The document. */
   private final ICasDocument document;
+  
+  /** The mode type. */
   private final Type modeType;
   
+  /** The find field. */
   private Combo findField;
+  
+  /** The type field. */
   private TypeCombo typeField;
   
+  /** The wide left side button. */
   private Button wideLeftSideButton;
+  
+  /** The lower left side button. */
   private Button lowerLeftSideButton;
+  
+  /** The lower right side button. */
   private Button lowerRightSideButton;
+  
+  /** The wide right side button. */
   private Button wideRightSideButton;
   
+  /** The forward radio button. */
   private Button forwardRadioButton;
   
   /**
@@ -85,6 +111,14 @@ class FindAnnotateDialog extends Dialog {
    */
   private AnnotationFS currentAnnotation;
   
+  /**
+   * Instantiates a new find annotate dialog.
+   *
+   * @param parentShell the parent shell
+   * @param document the document
+   * @param findReplaceTarget the find replace target
+   * @param modeType the mode type
+   */
   FindAnnotateDialog(Shell parentShell, ICasDocument document, IFindReplaceTarget findReplaceTarget, Type modeType) {
     super(parentShell);
     this.document = document;
@@ -92,6 +126,9 @@ class FindAnnotateDialog extends Dialog {
     this.modeType = modeType;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#create()
+   */
   @Override
   public void create() {
     // calls createContents first
@@ -106,10 +143,9 @@ class FindAnnotateDialog extends Dialog {
 
   /**
    * Creates the search string input field.
-   * 
-   * @param parent
-   * 
-   * @return
+   *
+   * @param parent the parent
+   * @return the composite
    */
   private Composite createInputPanel(Composite parent) {
     Composite panel= new Composite(parent, SWT.NULL);
@@ -155,10 +191,9 @@ class FindAnnotateDialog extends Dialog {
 
   /**
    * Creates the group to specify the direction of the search.
-   * 
-   * @param parent
-   * 
-   * @return
+   *
+   * @param parent the parent
+   * @return the composite
    */
   private Composite createDirectionGroup(Composite parent) {
     Composite panel = new Composite(parent, SWT.NONE);
@@ -184,6 +219,11 @@ class FindAnnotateDialog extends Dialog {
     return panel;
   }
 
+  /**
+   * Creates the annotation buttons.
+   *
+   * @param parent the parent
+   */
   private void createAnnotationButtons(Composite parent) {
     Composite panel = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout();
@@ -204,10 +244,12 @@ class FindAnnotateDialog extends Dialog {
     wideLeftSideButton.setEnabled(false);
     
     wideLeftSideButton.addSelectionListener(new SelectionListener(){
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         WideLeftAnnotationSideAction.wideLeftAnnotationSide(document, currentAnnotation);
       }
@@ -218,10 +260,12 @@ class FindAnnotateDialog extends Dialog {
             Images.LOWER_LEFT_SIDE).createImage());
     lowerLeftSideButton.setEnabled(false);
     lowerLeftSideButton.addSelectionListener(new SelectionListener(){
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         LowerLeftAnnotationSideAction.lowerLeftAnnotationSide(document, currentAnnotation);
       }
@@ -232,10 +276,12 @@ class FindAnnotateDialog extends Dialog {
             Images.LOWER_RIGHT_SIDE).createImage());
     lowerRightSideButton.setEnabled(false);
     lowerRightSideButton.addSelectionListener(new SelectionListener(){
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         LowerRightAnnotationSideAction.lowerRightAnnotationSide(document, currentAnnotation);
       }
@@ -246,16 +292,21 @@ class FindAnnotateDialog extends Dialog {
             Images.WIDE_RIGHT_SIDE).createImage());
     wideRightSideButton.setEnabled(false);
     wideRightSideButton.addSelectionListener(new SelectionListener(){
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // never called, do not implement
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         WideRightAnnotationSideAction.wideRightAnnotationSide(document, currentAnnotation);
       }
     });
   }
 
+  /**
+   * Update annotation buttons.
+   */
   private void updateAnnotationButtons() {
 
     boolean areButtonsEnabled = currentAnnotation != null;
@@ -267,10 +318,9 @@ class FindAnnotateDialog extends Dialog {
 
   /**
    * Creates the find and annotate buttons.
-   * 
-   * @param parent
-   * 
-   * @return
+   *
+   * @param parent the parent
+   * @return the composite
    */
   private Composite createButtonSection(Composite parent) {
     Composite panel = new Composite(parent, SWT.NONE);
@@ -295,6 +345,12 @@ class FindAnnotateDialog extends Dialog {
     return panel;
   }
 
+  /**
+   * Creates the status and close button.
+   *
+   * @param parent the parent
+   * @return the composite
+   */
   private Composite createStatusAndCloseButton(Composite parent) {
 
     Composite panel= new Composite(parent, SWT.NULL);
@@ -319,6 +375,9 @@ class FindAnnotateDialog extends Dialog {
     return panel;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#createContents(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   protected Control createContents(Composite parent) {
 
@@ -381,6 +440,11 @@ class FindAnnotateDialog extends Dialog {
     }
   }
 
+  /**
+   * Annotate selection.
+   *
+   * @return the annotation FS
+   */
   private AnnotationFS annotateSelection() {
     Point selection = findReplaceTarget.getSelection();
 
@@ -392,6 +456,9 @@ class FindAnnotateDialog extends Dialog {
     return newAnnotation;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
+   */
   @Override
   protected void buttonPressed(int buttonID) {
 

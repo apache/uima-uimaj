@@ -27,24 +27,42 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EditorAnnotationPropertyPage.
+ */
 public class EditorAnnotationPropertyPage extends AnnotationPropertyPage {
 
+  /**
+   * Gets the editor.
+   *
+   * @return the editor
+   */
   AnnotationEditor getEditor() {
     AnnotationTypeNode typeNode = (AnnotationTypeNode) getElement().getAdapter(AnnotationTypeNode.class);
     
     return typeNode.getEditor();
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage#getAnnotationStyle(org.apache.uima.cas.Type)
+   */
   @Override
   protected AnnotationStyle getAnnotationStyle(Type type) {
     return getEditor().getAnnotationStyle(type);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage#getTypeSystem()
+   */
   @Override
   protected TypeSystem getTypeSystem() {
     return getEditor().getDocument().getCAS().getTypeSystem();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage#saveChanges(java.util.Collection)
+   */
   @Override
   protected boolean saveChanges(Collection<AnnotationStyle> changedStyles) {
     

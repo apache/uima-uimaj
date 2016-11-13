@@ -39,35 +39,56 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.CapabilitySection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddCapabilityFeatureDialog.
+ */
 public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
 
+  /** The features. */
   public String[] features; // this is the selection
 
+  /** The inputs. */
   public boolean[] inputs;
 
+  /** The outputs. */
   public boolean[] outputs;
 
+  /** The all features input. */
   public boolean allFeaturesInput = false;
 
+  /** The all features output. */
   public boolean allFeaturesOutput = false;
 
+  /** The all features. */
   private Feature[] allFeatures;
 
+  /** The capability. */
   private Capability capability;
 
+  /** The selected type. */
   private Type selectedType;
 
+  /** The input not allowed. */
   private boolean inputNotAllowed = true;
 
+  /** The feature array 0. */
   private static Feature[] featureArray0 = new Feature[0];
 
+  /**
+   * Instantiates a new adds the capability feature dialog.
+   *
+   * @param aSection the a section
+   * @param aSelectedType the a selected type
+   * @param c the c
+   */
   public AddCapabilityFeatureDialog(AbstractSection aSection, Type aSelectedType, Capability c) {
     super(
             aSection,
             "Specify features input and / or output",
             "Designate by mouse clicking one or more features in the Input and/or Output column, to designate as Input and/or Output press \"OK\"");
     selectedType = aSelectedType;
-    allFeatures = (Feature[]) selectedType.getFeatures().toArray(featureArray0);
+    allFeatures = selectedType.getFeatures().toArray(featureArray0);
     Arrays.sort(allFeatures);
 
     capability = c;
@@ -83,6 +104,10 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
 
@@ -96,10 +121,10 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
 
     TableItem item = new TableItem(table, SWT.NONE);
     item.setText(0, CapabilitySection.ALL_FEATURES);
-    TypeOrFeature tof = CapabilitySection.getTypeOrFeature(capability.getInputs(), selectedType
+    TypeOrFeature tof = AbstractSection.getTypeOrFeature(capability.getInputs(), selectedType
             .getName());
     setChecked(item, 1, null == tof ? false : tof.isAllAnnotatorFeatures());
-    tof = CapabilitySection.getTypeOrFeature(capability.getOutputs(), selectedType.getName());
+    tof = AbstractSection.getTypeOrFeature(capability.getOutputs(), selectedType.getName());
     setChecked(item, 2, null == tof ? false : tof.isAllAnnotatorFeatures());
 
     for (int i = 0; i < allFeatures.length; i++) {
@@ -117,15 +142,19 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
   }
 
   /**
-   * return the actual type name : short-feature-name
-   * 
-   * @param feature
+   * return the actual type name : short-feature-name.
+   *
+   * @param feature the feature
    * @return the actual type name : short-feature-name
    */
   protected String getTypeFeature(Feature feature) {
     return selectedType.getName() + ':' + feature.getShortName();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialogMultiColTable#toggleValue(org.eclipse.swt.widgets.TableItem, int)
+   */
+  @Override
   protected void toggleValue(TableItem item, int col) {
     if (1 == col && inputNotAllowed) {
       Utility.popMessage("Input not allowed",
@@ -141,6 +170,11 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
         setChecked(table.getItem(0), col, false); // uncheck all-features
   }
 
+  /**
+   * Uncheck all other features.
+   *
+   * @param column the column
+   */
   private void uncheckAllOtherFeatures(int column) {
     TableItem[] items = table.getItems();
     for (int i = 1; i < items.length; i++) {
@@ -148,6 +182,10 @@ public class AddCapabilityFeatureDialog extends AbstractDialogMultiColTable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     List names = new ArrayList();
     List ins = new ArrayList();

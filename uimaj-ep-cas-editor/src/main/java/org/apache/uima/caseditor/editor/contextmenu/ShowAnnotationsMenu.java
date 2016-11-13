@@ -34,11 +34,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates the show annotations context sub menu.
  */
 public class ShowAnnotationsMenu extends TypeMenu {
 
+	/** The listeners. */
 	private Set<IShowAnnotationsListener> listeners = new HashSet<IShowAnnotationsListener>();
 
 	/**
@@ -56,9 +58,9 @@ public class ShowAnnotationsMenu extends TypeMenu {
 
 	/**
 	 * Initializes a new instance.
-	 * 
-	 * @param typeSystem
-	 * @param shownTypes
+	 *
+	 * @param typeSystem the type system
+	 * @param shownTypes the shown types
 	 */
 	public ShowAnnotationsMenu(TypeSystem typeSystem, Collection<Type> shownTypes) {
 		super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
@@ -68,14 +70,27 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		}
 	}
 
+	/**
+	 * Adds the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void addListener(IShowAnnotationsListener listener) {
 		listeners.add(listener);
 	}
 
+	/**
+	 * Removes the listener.
+	 *
+	 * @param listener the listener
+	 */
 	public void removeListener(IShowAnnotationsListener listener) {
 		listeners.remove(listener);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.uima.caseditor.editor.contextmenu.TypeMenu#insertAction(org.apache.uima.cas.Type, org.eclipse.swt.widgets.Menu)
+	 */
 	@Override
 	protected void insertAction(final Type type, Menu parentMenu) {
 		final MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
@@ -93,7 +108,8 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		// TODO: move this to an action
 		// do not access mTypesToDisplay directly !!!
 		actionItem.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			@Override
+      public void handleEvent(Event e) {
 				if (actionItem.getSelection()) {
 					typesToDisplay.add(type);
 
@@ -106,6 +122,11 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		});
 	}
 
+	/**
+	 * Gets the selected types.
+	 *
+	 * @return the selected types
+	 */
 	public Collection<Type> getSelectedTypes() {
 		Collection<Type> selectedTypes = new LinkedList<Type>();
 
@@ -120,12 +141,21 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		return Collections.unmodifiableCollection(selectedTypes);
 	}
 
+	/**
+	 * Fire changed.
+	 */
 	private void fireChanged() {
 	   for (IShowAnnotationsListener listener : listeners) {
 	      listener.selectionChanged(getSelectedTypes());
 	    }
 	}
 	
+	/**
+	 * Sets the selected type.
+	 *
+	 * @param type the type
+	 * @param isShown the is shown
+	 */
 	public void setSelectedType(Type type, boolean isShown) {
 	  
 	  if (typesToDisplay.contains(type)) {
@@ -142,6 +172,11 @@ public class ShowAnnotationsMenu extends TypeMenu {
 	  }
 	}
 	
+	/**
+	 * Sets the selected types.
+	 *
+	 * @param types the new selected types
+	 */
 	public void setSelectedTypes(Collection<Type> types) {
 		typesToDisplay = new HashSet<Type>();
 
@@ -154,6 +189,11 @@ public class ShowAnnotationsMenu extends TypeMenu {
 		}
 	}
 
+	/**
+	 * Sets the editor annotation mode.
+	 *
+	 * @param newMode the new editor annotation mode
+	 */
 	public void setEditorAnnotationMode(Type newMode) {
 
 		if (typesToDisplay.contains(newMode)) {

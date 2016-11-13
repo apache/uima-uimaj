@@ -24,10 +24,13 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public class CellEditorValidatorFacotory {
+  
+  /** The s validator map. */
   private static Map<Class<?>, ICellEditorValidator> sValidatorMap = 
 	  	new HashMap<Class<?>, ICellEditorValidator>();
 
@@ -39,6 +42,9 @@ public class CellEditorValidatorFacotory {
     sValidatorMap.put(Float.class, new FloatCellEditorValidator());
   }
 
+  /**
+   * Instantiates a new cell editor validator facotory.
+   */
   private CellEditorValidatorFacotory() {
     // must not be instantiated
   }
@@ -47,8 +53,7 @@ public class CellEditorValidatorFacotory {
    * Retrieves the appropriate {@link ICellEditorValidator} for the given class or none if not
    * available.
    *
-   * @param type
-   *
+   * @param type the type
    * @return {@link ICellEditorValidator} or null
    */
   public static ICellEditorValidator createValidator(Class<?> type) {

@@ -23,6 +23,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.swt.widgets.Display;
 
+// TODO: Auto-generated Javadoc
 /**
  * An Action to open the Find/Annotate Dialog.
  * 
@@ -30,14 +31,26 @@ import org.eclipse.swt.widgets.Display;
  */
 public class FindAnnotateAction extends Action {
 
+  /** The editor. */
   private AnnotationEditor editor;
+  
+  /** The target. */
   private IFindReplaceTarget target;
 
+  /**
+   * Instantiates a new find annotate action.
+   *
+   * @param editor the editor
+   * @param target the target
+   */
   FindAnnotateAction(AnnotationEditor editor, IFindReplaceTarget target) {
     this.editor = editor;
     this.target = target;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.action.Action#run()
+   */
   @Override
   public void run() {
     FindAnnotateDialog dialog = new FindAnnotateDialog(

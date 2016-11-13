@@ -41,52 +41,71 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is responsible to read and write {@link DotCorpus} objects from or to a byte stream.
  */
 public class DotCorpusSerializer {
 
+  /** The Constant CONFIG_ELEMENT. */
   private static final String CONFIG_ELEMENT = "config";
 
+  /** The Constant CORPUS_ELEMENT. */
   private static final String CORPUS_ELEMENT = "corpus";
 
+  /** The Constant CORPUS_FOLDER_ATTRIBUTE. */
   private static final String CORPUS_FOLDER_ATTRIBUTE = "folder";
 
+  /** The Constant STYLE_ELEMENT. */
   private static final String STYLE_ELEMENT = "style";
 
+  /** The Constant STYLE_TYPE_ATTRIBUTE. */
   private static final String STYLE_TYPE_ATTRIBUTE = "type";
 
+  /** The Constant STYLE_STYLE_ATTRIBUTE. */
   private static final String STYLE_STYLE_ATTRIBUTE = "style";
 
+  /** The Constant STYLE_COLOR_ATTRIBUTE. */
   private static final String STYLE_COLOR_ATTRIBUTE = "color";
 
+  /** The Constant STYLE_LAYER_ATTRIBUTE. */
   private static final String STYLE_LAYER_ATTRIBUTE = "layer";
   
+  /** The Constant STYLE_CONFIG_ATTRIBUTE. */
   private static final String STYLE_CONFIG_ATTRIBUTE = "config";
 
+  /** The Constant TYPESYSTEM_ELEMENT. */
   private static final String TYPESYSTEM_ELEMENT = "typesystem";
 
+  /** The Constant TYPESYTEM_FILE_ATTRIBUTE. */
   private static final String TYPESYTEM_FILE_ATTRIBUTE = "file";
 
+  /** The Constant CAS_PROCESSOR_ELEMENT. */
   private static final String CAS_PROCESSOR_ELEMENT = "processor";
 
+  /** The Constant CAS_PROCESSOR_FOLDER_ATTRIBUTE. */
   private static final String CAS_PROCESSOR_FOLDER_ATTRIBUTE = "folder";
 
+  /** The Constant EDITOR_ELEMENT. */
   private static final String EDITOR_ELEMENT = "editor";
 
+  /** The Constant EDITOR_LINE_LENGTH_ATTRIBUTE. */
   private static final String EDITOR_LINE_LENGTH_ATTRIBUTE = "line-length-hint";
 
+  /** The Constant SHOWN_ELEMENT. */
   private static final String SHOWN_ELEMENT = "shown";
   
+  /** The Constant SHOWN_TYPE_ATTRIBUTE. */
   private static final String SHOWN_TYPE_ATTRIBUTE = "type";
   
+  /** The Constant SHOWN_IS_VISISBLE_ATTRIBUTE. */
   private static final String SHOWN_IS_VISISBLE_ATTRIBUTE = "visible";
   
   
   /**
    * Creates a {@link DotCorpus} object from a given {@link InputStream}.
-   * 
-   * @param dotCorpusStream
+   *
+   * @param dotCorpusStream the dot corpus stream
    * @return the {@link DotCorpus} instance.
    * @throws CoreException -
    */

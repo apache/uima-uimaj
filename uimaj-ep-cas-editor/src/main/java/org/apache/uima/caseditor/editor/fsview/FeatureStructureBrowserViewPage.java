@@ -60,24 +60,40 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
+// TODO: Auto-generated Javadoc
 /**
  * The actual view page which contains the ui code for this view.
  */
 public final class FeatureStructureBrowserViewPage extends Page {
   
+  /** The Constant LAST_SELECTED_FS_TYPE. */
   private static final String LAST_SELECTED_FS_TYPE = "lastSelectedFeatureStructureBrowserViewType";
   
+  /**
+   * The Class FeatureStructureTreeContentProvider.
+   */
   final class FeatureStructureTreeContentProvider extends AbstractAnnotationDocumentListener
           implements ITreeContentProvider {
 
+    /** The m document. */
     private ICasDocument mDocument;
 
+    /** The m current type. */
     private Type mCurrentType;
 
+    /**
+     * Instantiates a new feature structure tree content provider.
+     *
+     * @param document the document
+     */
     FeatureStructureTreeContentProvider(ICasDocument document) {
       mDocument = document;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+     */
+    @Override
     public Object[] getElements(Object inputElement) {
       if (mCurrentType == null) {
         return new Object[] {};
@@ -103,11 +119,19 @@ public final class FeatureStructureBrowserViewPage extends Page {
       return featureStructureArray;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+     */
+    @Override
     public void dispose() {
       if (mDocument != null)
         mDocument.removeChangeListener(this);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+     */
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
       if (oldInput != null) {
@@ -125,6 +149,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
       mDocument.addChangeListener(this);
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           mFSList.refresh();
         }
@@ -134,9 +159,10 @@ public final class FeatureStructureBrowserViewPage extends Page {
     /**
      * Retrieves children for a FeatureStrcuture and for FeatureValues if they have children.
      *
-     * @param parentElement
+     * @param parentElement the parent element
      * @return the children
      */
+    @Override
     public Object[] getChildren(Object parentElement) {
       Collection<Object> childs = new LinkedList<Object>();
 
@@ -165,10 +191,18 @@ public final class FeatureStructureBrowserViewPage extends Page {
       return childs.toArray();
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+     */
+    @Override
     public Object getParent(Object element) {
       return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+     */
+    @Override
     public boolean hasChildren(Object element) {
       if (element instanceof IAdaptable
               && ((IAdaptable) element).getAdapter(FeatureStructure.class) != null) {
@@ -204,6 +238,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#addedAnnotation(java.util.Collection)
+     */
     @Override
     protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
@@ -217,12 +254,16 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           mFSList.add(featureStrucutreList.toArray());
         }
       });
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#added(java.util.Collection)
+     */
     @Override
     public void added(Collection<FeatureStructure> structres) {
       final LinkedList<ModelFeatureStructure> featureStrucutreList =
@@ -235,12 +276,16 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           mFSList.add(featureStrucutreList.toArray());
         }
       });
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#removedAnnotation(java.util.Collection)
+     */
     @Override
     protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
@@ -254,6 +299,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           mFSList.remove(featureStrucutreList.toArray());
         }
@@ -261,6 +307,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#removed(java.util.Collection)
+     */
     @Override
     public void removed(Collection<FeatureStructure> structres) {
       final LinkedList<ModelFeatureStructure> featureStrucutreList =
@@ -273,27 +322,46 @@ public final class FeatureStructureBrowserViewPage extends Page {
       }
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           mFSList.remove(featureStrucutreList.toArray());
         }
       });
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#updatedAnnotation(java.util.Collection)
+     */
     @Override
     protected void updatedAnnotation(Collection<AnnotationFS> annotations) {
       // ignore
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
+     */
+    @Override
     public void viewChanged(String oldViewName, String newViewName) {
       changed();
     }
     
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
+     */
+    @Override
     public void changed() {
       mFSList.refresh();
     }
   }
 
+  /**
+   * The Class CreateAction.
+   */
   private class CreateAction extends Action {
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
     // TOOD: extract it and add setType(...)
     @Override
     public void run() {
@@ -313,7 +381,14 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
   }
 
+  /**
+   * The Class SelectAllAction.
+   */
   private class SelectAllAction extends Action {
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
     @Override
     public void run() {
       mFSList.getList().selectAll();
@@ -321,27 +396,35 @@ public final class FeatureStructureBrowserViewPage extends Page {
     }
   }
 
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /** The m cas editor. */
   private ICasEditor mCasEditor;
   
+  /** The m FS list. */
   private ListViewer mFSList;
 
+  /** The m instance composite. */
   private Composite mInstanceComposite;
 
+  /** The m current type. */
   private Type mCurrentType;
 
+  /** The m delete action. */
   private DeleteFeatureStructureAction mDeleteAction;
 
+  /** The m select all action. */
   private Action mSelectAllAction;
 
+  /** The filter types. */
   private Collection<Type> filterTypes;
 
 
   /**
    * Initializes a new instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public FeatureStructureBrowserViewPage(ICasEditor editor) {
 
@@ -396,6 +479,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
     filterTypes.add(ts.getType(CAS.TYPE_NAME_STRING_LIST));
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.Page#createControl(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   public void createControl(Composite parent) {
     mInstanceComposite = new Composite(parent, SWT.NONE);
@@ -445,6 +531,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     
     typeCombo.addListener(new ITypePaneListener() {
       
+      @Override
       public void typeChanged(Type newType) {
         store.setValue(LAST_SELECTED_FS_TYPE, newType.getName());
       }
@@ -463,6 +550,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
     mFSList.setUseHashlookup(true);
 
     typeCombo.addListener(new ITypePaneListener() {
+      @Override
       public void typeChanged(Type newType) {
         mCurrentType = newType;
 
@@ -477,7 +565,7 @@ public final class FeatureStructureBrowserViewPage extends Page {
   }
 
   /**
-   * Retrieves the control
+   * Retrieves the control.
    *
    * @return the control
    */
@@ -490,9 +578,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
    * Adds the following actions to the toolbar: {@link FeatureStructureBrowserViewPage.CreateAction}
    * DeleteAction
    *
-   * @param menuManager
-   * @param toolBarManager
-   * @param statusLineManager
+   * @param menuManager the menu manager
+   * @param toolBarManager the tool bar manager
+   * @param statusLineManager the status line manager
    */
   @Override
   public void makeContributions(IMenuManager menuManager, IToolBarManager toolBarManager,
@@ -508,9 +596,9 @@ public final class FeatureStructureBrowserViewPage extends Page {
   }
 
   /**
-   * Sets global action handlers for: delete select all
+   * Sets global action handlers for: delete select all.
    *
-   * @param actionBars
+   * @param actionBars the new action bars
    */
   @Override
   public void setActionBars(IActionBars actionBars) {

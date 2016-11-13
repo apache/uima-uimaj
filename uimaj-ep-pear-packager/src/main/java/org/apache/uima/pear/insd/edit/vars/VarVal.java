@@ -19,6 +19,7 @@
 
 package org.apache.uima.pear.insd.edit.vars;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * Represents a table row in a two column table (of environment varibles).
@@ -28,24 +29,28 @@ package org.apache.uima.pear.insd.edit.vars;
  */
 public class VarVal {
 
+  /** The Constant VAR_NAME. */
   // Set the table column property names
   public static final String VAR_NAME = "Variable_Name";
 
+  /** The Constant VAR_VALUE. */
   public static final String VAR_VALUE = "Variable_Value";
 
+  /** The Constant fieldNames. */
   // Set column names
   public static final String[] fieldNames = new String[] { VAR_NAME, VAR_VALUE };
 
+  /** The var name. */
   private String varName = "";
 
+  /** The var value. */
   private String varValue = "";
 
   /**
-   * 
-   * Create a VarVal instance
-   * 
-   * @param varName
-   * @param varValue
+   * Create a VarVal instance.
+   *
+   * @param varName the var name
+   * @param varValue the var value
    */
   public VarVal(String varName, String varValue) {
     super();
@@ -54,8 +59,8 @@ public class VarVal {
   }
 
   /**
-   * Return field names
-   * 
+   * Return field names.
+   *
    * @return String[] An arry of column field names
    */
   public static String[] getFieldNames() {
@@ -63,8 +68,8 @@ public class VarVal {
   }
 
   /**
-   * Returns the variable name
-   * 
+   * Returns the variable name.
+   *
    * @return the variable name
    */
   public String getVarName() {
@@ -72,8 +77,8 @@ public class VarVal {
   }
 
   /**
-   * Returns the variable value
-   * 
+   * Returns the variable value.
+   *
    * @return the variable value
    */
   public String getVarValue() {
@@ -81,20 +86,18 @@ public class VarVal {
   }
 
   /**
-   * Sets the variable name
-   * 
-   * @param string
-   *          the variable name
+   * Sets the variable name.
+   *
+   * @param string          the variable name
    */
   public void setVarName(String string) {
     varName = string;
   }
 
   /**
-   * Sets the variable value
-   * 
-   * @param string
-   *          the variable value
+   * Sets the variable value.
+   *
+   * @param string          the variable value
    */
   public void setVarValue(String string) {
     varValue = string;

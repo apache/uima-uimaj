@@ -34,23 +34,36 @@ import org.apache.uima.taeconfigurator.Messages;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MultiResourceSelectionDialogWithFlowOption.
+ */
 public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSelectionDialog {
 
+  /** The auto add to flow button. */
   private Button autoAddToFlowButton;
 
+  /** The m b auto add to flow. */
   private boolean m_bAutoAddToFlow = true;
 
   /**
-   * @param parentShell
-   * @param rootElement
-   * @param message
-   * @param excludeDescriptor
+   * Instantiates a new multi resource selection dialog with flow option.
+   *
+   * @param parentShell the parent shell
+   * @param rootElement the root element
+   * @param message the message
+   * @param excludeDescriptor the exclude descriptor
+   * @param editor the editor
    */
   public MultiResourceSelectionDialogWithFlowOption(Shell parentShell, IAdaptable rootElement,
           String message, IPath excludeDescriptor, MultiPageEditor editor) {
     super(parentShell, rootElement, message, excludeDescriptor, editor);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.files.MultiResourceSelectionDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite composite = (Composite) super.createDialogArea(parent);
 
@@ -69,12 +82,21 @@ public class MultiResourceSelectionDialogWithFlowOption extends MultiResourceSel
     return composite;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+   */
+  @Override
   protected void okPressed() {
     m_bAutoAddToFlow = autoAddToFlowButton.getSelection();
     CDEpropertyPage.setAddToFlow(editor.getProject(), m_bAutoAddToFlow ? "true" : "false");
     super.okPressed();
   }
 
+  /**
+   * Gets the auto add to flow.
+   *
+   * @return the auto add to flow
+   */
   public boolean getAutoAddToFlow() {
     return m_bAutoAddToFlow;
   }

@@ -25,14 +25,16 @@ import java.util.Collection;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public class UimaUtil {
+  
   /**
    * Casts a {@link FeatureStructure} collection to an {@link AnnotationFS} collection.
    *
-   * @param annotations
+   * @param annotations the annotations
    * @return the {@link AnnotationFS} collection
    */
   public static Collection<FeatureStructure> cast(Collection<AnnotationFS> annotations) {

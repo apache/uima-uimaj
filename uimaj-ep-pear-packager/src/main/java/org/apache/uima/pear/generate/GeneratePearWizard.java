@@ -46,6 +46,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
+// TODO: Auto-generated Javadoc
 /**
  * Wizard to generate a PEAR file.
  * 
@@ -53,22 +54,31 @@ import org.apache.uima.pear.tools.InstallationDescriptorHandler;
  * 
  */
 public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants {
+  
+  /** The current container. */
   private IContainer currentContainer;
 
+  /** The insd. */
   private InstallationDescriptor insd;
 
+  /** The wizard data. */
   private Hashtable wizardData = new Hashtable();
 
   // WIZARD PAGES
+  /** The component page. */
   // private WizardNewProjectCreationPage projectPage;
   private INSDComponentPage componentPage;
 
+  /** The environment page. */
   private INSDEnvironmentPage environmentPage;
 
+  /** The pear export page. */
   private PearFileResourceExportPage pearExportPage;
 
   /**
-   * Constructor
+   * Constructor.
+   *
+   * @param container the container
    */
   public GeneratePearWizard(IContainer container) {
     super();
@@ -116,6 +126,7 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
    * 
    * @see org.eclipse.jface.wizard.IWizard#addPages()
    */
+  @Override
   public void addPages() {
     try {
       componentPage = new INSDComponentPage(currentContainer, insd, wizardData);
@@ -137,10 +148,11 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
 
   /**
    * This method is called when 'Finish' button is pressed in the wizard.
-   * 
+   *
+   * @return true, if successful
    * @see org.eclipse.jface.wizard.IWizard#performFinish()
-   * 
    */
+  @Override
   public boolean performFinish() {
     try {
       // currentContainer.refreshLocal(IResource.DEPTH_INFINITE,null);
@@ -160,6 +172,12 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
     }
   }
 
+  /**
+   * Edits the installation descriptor.
+   *
+   * @throws CoreException the core exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   private void editInstallationDescriptor() throws CoreException, IOException {
     handleComponentInformation();
     addEnvOptions();
@@ -167,6 +185,9 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
     PearInstallationDescriptor.saveInstallationDescriptor(currentContainer, insd);
   }
 
+  /**
+   * Handle component information.
+   */
   private void handleComponentInformation() {
     insd.setMainComponent(componentPage.compID);
     insd
@@ -174,6 +195,9 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
                     .addMacro(componentPage.compDescriptorPath));
   }
 
+  /**
+   * Adds the env options.
+   */
   private void addEnvOptions() {
     insd.clearOSSpecs();
     insd.clearToolkitsSpecs();
@@ -189,6 +213,9 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
 
   }
 
+  /**
+   * Adds the env vars.
+   */
   private void addEnvVars() {
     insd.deleteInstallationActions(InstallationDescriptor.ActionInfo.SET_ENV_VARIABLE_ACT);
     Iterator envVarsItr = environmentPage.envVarList.tableRows.iterator();
@@ -210,6 +237,12 @@ public class GeneratePearWizard extends Wizard implements IWizard, InsdConstants
     }
   }
 
+  /**
+   * Inits the.
+   *
+   * @param workbench the workbench
+   * @param selection the selection
+   */
   /*
    * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
    *      org.eclipse.jface.viewers.IStructuredSelection)

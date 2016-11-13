@@ -19,8 +19,15 @@
 
 package org.apache.uima.caseditor.editor.outline;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OutlineStyles.
+ */
 public enum OutlineStyles {
 
+	/** The mode. */
 	MODE,
+	
+	/** The type. */
 	TYPE
 }

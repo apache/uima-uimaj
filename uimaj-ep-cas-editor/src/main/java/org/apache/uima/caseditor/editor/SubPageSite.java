@@ -28,54 +28,107 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.part.IPageSite;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SubPageSite.
+ */
 public class SubPageSite implements IPageSite {
 
+  /** The site. */
   private final IPageSite site;
   
+  /** The sub action bars. */
   private SubActionBars subActionBars; 
+  
+  /** The selection provider. */
   private ISelectionProvider selectionProvider;
 
+  /**
+   * Instantiates a new sub page site.
+   *
+   * @param site the site
+   */
   public SubPageSite(IPageSite site) {
     this.site = site;
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.services.IServiceLocator#hasService(java.lang.Class)
+   */
+  @Override
   public boolean hasService(@SuppressWarnings("rawtypes") Class api) {
     return site.hasService(api);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.services.IServiceLocator#getService(java.lang.Class)
+   */
+  @Override
   public Object getService(@SuppressWarnings("rawtypes") Class api) {
     return site.getService(api);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+   */
+  @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     return site.getAdapter(adapter);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchSite#setSelectionProvider(org.eclipse.jface.viewers.ISelectionProvider)
+   */
+  @Override
   public void setSelectionProvider(ISelectionProvider provider) {
     selectionProvider = provider;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchSite#getWorkbenchWindow()
+   */
+  @Override
   public IWorkbenchWindow getWorkbenchWindow() {
     return site.getWorkbenchWindow();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchSite#getShell()
+   */
+  @Override
   public Shell getShell() {
     return site.getShell();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchSite#getSelectionProvider()
+   */
+  @Override
   public ISelectionProvider getSelectionProvider() {
     return selectionProvider;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchSite#getPage()
+   */
+  @Override
   public IWorkbenchPage getPage() {
     return site.getPage();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.IPageSite#registerContextMenu(java.lang.String, org.eclipse.jface.action.MenuManager, org.eclipse.jface.viewers.ISelectionProvider)
+   */
+  @Override
   public void registerContextMenu(String menuId, MenuManager menuManager,
           ISelectionProvider selectionProvider) {
     site.registerContextMenu(menuId, menuManager, selectionProvider);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.IPageSite#getActionBars()
+   */
+  @Override
   public IActionBars getActionBars() {
     
     if (subActionBars == null) {

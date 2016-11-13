@@ -23,17 +23,16 @@ import java.io.File;
 
 import org.apache.uima.pear.PearException;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * A util class for PEAR export operations
- * 
- * 
- * 
+ * A util class for PEAR export operations.
  */
 public class PearExport {
 
   /**
-   * @param targetFile
+   * Ensure target file is valid.
+   *
+   * @param targetFile the target file
    * @return true
    * @throws PearException -
    */

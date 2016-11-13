@@ -28,12 +28,16 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public class CasEditorPlugin extends AbstractUIPlugin {
+  
+  /** The Constant ID. */
   public static final String ID = "org.apache.uima.caseditor";
 
+  /** The Constant ICONS_PATH. */
   private static final String ICONS_PATH = "icons/";
 
   /**
@@ -47,6 +51,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   private ResourceBundle mResourceBundle;
 
   
+  /** The show migration dialog. */
   private boolean showMigrationDialog = false;
   
   /**
@@ -59,9 +64,9 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * This method is called upon plug-in activation
+   * This method is called upon plug-in activation.
    *
-   * @param context
+   * @param context the context
    * @throws Exception -
    */
   @Override
@@ -72,7 +77,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   /**
    * This method is called when the plug-in is stopped.
    *
-   * @param context
+   * @param context the context
    * @throws Exception -
    */
   @Override
@@ -95,7 +100,7 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   /**
    * Returns the string from the plugin's resource bundle, or 'key' if not found.
    *
-   * @param key
+   * @param key the key
    * @return resource string
    */
   public static String getResourceString(String key) {
@@ -128,16 +133,27 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   /**
    * Log the throwable.
    *
-   * @param t
+   * @param t the t
    */
   public static void log(Throwable t) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, t.getMessage(), t));
   }
   
+  /**
+   * Log.
+   *
+   * @param message the message
+   * @param t the t
+   */
   public static void log(String message, Throwable t) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, IStatus.OK, message, t));
   }
 
+  /**
+   * Log error.
+   *
+   * @param message the message
+   */
   public static void logError(String message) {
     getDefault().getLog().log(new Status(IStatus.ERROR, ID, message));
   }
@@ -145,17 +161,25 @@ public class CasEditorPlugin extends AbstractUIPlugin {
   /**
    * Retrieves an image.
    *
-   * @param image
+   * @param image the image
    * @return the requested image if not available null
    */
   public static ImageDescriptor getTaeImageDescriptor(Images image) {
     return imageDescriptorFromPlugin(ID, ICONS_PATH + image.getPath());
   }
   
+  /**
+   * Sets the show migration dialog.
+   */
   public void setShowMigrationDialog() {
     showMigrationDialog = true;
   }
   
+  /**
+   * Gets the and clear show migration dialog flag.
+   *
+   * @return the and clear show migration dialog flag
+   */
   public boolean getAndClearShowMigrationDialogFlag() {
     if (showMigrationDialog) {
       showMigrationDialog = false;

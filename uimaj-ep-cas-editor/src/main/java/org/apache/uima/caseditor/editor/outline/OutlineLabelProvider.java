@@ -26,15 +26,25 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+// TODO: Auto-generated Javadoc
 /**
  * This <code>OutlineLabelProvider</code> returns the covered text of an <code>AnnotationFS</code>.
  */
 class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider {
+  
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+   */
+  @Override
   public Image getColumnImage(Object element, int columnIndex) {
     // no image available, just return null
     return null;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+   */
+  @Override
   public String getColumnText(Object element, int columnIndex) {
     // there is only one column, if column index something
     // else than 0, then there is an error
@@ -61,6 +71,12 @@ class OutlineLabelProvider extends LabelProvider implements ITableLabelProvider 
     return "Unkown type";
   }
 
+  /**
+   * Gets the string without new line.
+   *
+   * @param string the string
+   * @return the string without new line
+   */
   private static String getStringWithoutNewLine(String string) {
     StringBuilder stringBuilder = new StringBuilder(string.length());
 

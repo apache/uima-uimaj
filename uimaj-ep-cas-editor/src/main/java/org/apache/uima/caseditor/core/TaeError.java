@@ -19,17 +19,19 @@
 
 package org.apache.uima.caseditor.core;
 
+// TODO: Auto-generated Javadoc
 /**
  * A general {@link RuntimeException} which is thrown if something unexpected happens.
  */
 public class TaeError extends RuntimeException {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
   /**
    * Initializes the current instance.
-   * 
-   * @param message
+   *
+   * @param message the message
    */
   public TaeError(String message) {
     super(message);
@@ -37,9 +39,9 @@ public class TaeError extends RuntimeException {
 
   /**
    * Initializes the current instance.
-   * 
-   * @param message
-   * @param cause
+   *
+   * @param message the message
+   * @param cause the cause
    */
   public TaeError(String message, Throwable cause) {
     super(message, cause);

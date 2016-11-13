@@ -27,14 +27,22 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
+// TODO: Auto-generated Javadoc
 /**
    * This <code>OutlineContentProvider</code> synchronizes the <code>AnnotationFS</code>s with
    * the <code>TableViewer</code>.
    */
   class ModeSensitiveContentProvider extends OutlineContentProviderBase {
 	  
+    /** The m annotation node list. */
     private AnnotationTreeNodeList mAnnotationNodeList;
 
+    /**
+     * Instantiates a new mode sensitive content provider.
+     *
+     * @param editor the editor
+     * @param viewer the viewer
+     */
     protected ModeSensitiveContentProvider(AnnotationEditor editor, TreeViewer viewer) {
     	super(editor, viewer);
     	this.viewer = viewer;
@@ -43,7 +51,7 @@ import org.eclipse.swt.widgets.Display;
     /**
      * Adds the added annotations to the viewer.
      *
-     * @param annotations
+     * @param annotations the annotations
      */
     @Override
     public void addedAnnotation(Collection<AnnotationFS> annotations) {
@@ -59,6 +67,7 @@ import org.eclipse.swt.widgets.Display;
         // mAnnotationNodeList.buildTree();
 
         Display.getDefault().syncExec(new Runnable() {
+          @Override
           public void run() {
         	  viewer.add(annotationNode.getParent() != null ? annotationNode.getParent()
                     : mInputDocument, annotationNode);
@@ -70,7 +79,7 @@ import org.eclipse.swt.widgets.Display;
     /**
      * Removes the removed annotations from the viewer.
      *
-     * @param deletedAnnotations
+     * @param deletedAnnotations the deleted annotations
      */
     @Override
     public void removedAnnotation(Collection<AnnotationFS> deletedAnnotations) {
@@ -88,16 +97,25 @@ import org.eclipse.swt.widgets.Display;
 
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
         	viewer.remove(items);
         }
       });
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
+     */
+    @Override
     public void viewChanged(String oldViewName, String newViewName) {
     	changed();
     }
     
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
+     */
+    @Override
     public void changed() {
 
       Collection<AnnotationFS> annotations = mEditor.getDocument().getAnnotations(
@@ -107,6 +125,7 @@ import org.eclipse.swt.widgets.Display;
               .getDocument(), annotations) : null;
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
         	viewer.refresh();
         }
@@ -122,7 +141,8 @@ import org.eclipse.swt.widgets.Display;
 	 *          
 	 * @return the nlp-projects and non-nlp projects
 	 */
-	public Object[] getElements(Object inputElement) {
+	@Override
+  public Object[] getElements(Object inputElement) {
 	  if (mAnnotationNodeList == null) {
 	    return new Object[0];
 	  }
@@ -130,19 +150,31 @@ import org.eclipse.swt.widgets.Display;
 	  return mAnnotationNodeList.getElements().toArray();
 	}
 
-	public Object getParent(Object element) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+	 */
+	@Override
+  public Object getParent(Object element) {
 	  AnnotationTreeNode node = (AnnotationTreeNode) element;
 	
 	  return node.getParent();
 	}
 
-	public boolean hasChildren(Object element) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+	 */
+	@Override
+  public boolean hasChildren(Object element) {
 	  AnnotationTreeNode node = (AnnotationTreeNode) element;
 	
 	  return node.getChildren().size() > 0;
 	}
 
-	public Object[] getChildren(Object parentElement) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+	 */
+	@Override
+  public Object[] getChildren(Object parentElement) {
       AnnotationTreeNode node = (AnnotationTreeNode) parentElement;
 
       return node.getChildren().toArray();

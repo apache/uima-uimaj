@@ -56,40 +56,38 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.model.WorkbenchViewerSorter;
 
+// TODO: Auto-generated Javadoc
 /**
- * 
- * Wizard page for exporting resource to a PEAR file
+ * Wizard page for exporting resource to a PEAR file.
  */
 public class PearFileResourceExportPage extends WizardPage implements InsdConstants {
 
-  /** Preference store key for the last pear file export location */
+  /**  Preference store key for the last pear file export location. */
   protected static final String PEAR_FILE = "pear_file"; //$NON-NLS-1$
 
-  /** Plugins preference store */
+  /**  Plugins preference store. */
   protected final IPreferenceStore fPreferenceStore;
 
-  /** Folder or Project that contains the Pear structure */
+  /**  Folder or Project that contains the Pear structure. */
   protected final IContainer fCurrentContainer;
 
-  /** Initial selection for the TreeViewer */
+  /**  Initial selection for the TreeViewer. */
   protected final IStructuredSelection fSelection;
 
-  /** TreeViewer that shows resources to export */
+  /**  TreeViewer that shows resources to export. */
   protected ContainerCheckedTreeViewer fTreeViewer;
 
-  /** Text input for the */
+  /**  Text input for the. */
   protected Text fDestinationFileInput;
 
-  /** Checkbox for choosing whether pear file should be compressed */
+  /**  Checkbox for choosing whether pear file should be compressed. */
   protected Button fCompressCheckbox;
 
   /**
-   * constructor
-   * 
-   * @param selection
-   *          Initial selection for the export TreeViewer
-   * @param currentContainer
-   *          Container (project or folder) with Pear structure
+   * constructor.
+   *
+   * @param selection          Initial selection for the export TreeViewer
+   * @param currentContainer          Container (project or folder) with Pear structure
    */
   public PearFileResourceExportPage(final IStructuredSelection selection,
           final IContainer currentContainer) {
@@ -103,7 +101,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
-   * Update buttons and messages
+   * Update buttons and messages.
    */
   protected void pageStateChanged() {
     // check whether the metadata folder is included for export
@@ -147,6 +145,8 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
+   * Checks if is metadata included.
+   *
    * @return <code>true</code> if all files in the metadata folder are selected for export or the
    *         members cannot be determined, <code>false</code> otherwise
    */
@@ -161,7 +161,9 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
-   * @param checked
+   * Checks if is metadata included.
+   *
+   * @param checked the checked
    * @return <code>true</code> if all files in the metadata folder are selected for export or the
    *         members cannot be determined, <code>false</code> otherwise
    */
@@ -183,7 +185,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
 
   /**
    * Opens a file selection dialog to select a pear file as export location and sets the chosen
-   * value to the input field
+   * value to the input field.
    */
   protected void handleDestinationBrowseButtonPressed() {
     final FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
@@ -203,7 +205,9 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
-   * Stores the Pear filename in the preference store
+   * Stores the Pear filename in the preference store.
+   *
+   * @param filename the filename
    */
   protected void saveDestinationValue(final String filename) {
     fPreferenceStore.setValue(PEAR_FILE, filename);
@@ -211,6 +215,8 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
+   * Gets the destination value.
+   *
    * @return The value of the Pear file export destination as chosen by the user, or the last used
    *         one if the widget was not created yet
    */
@@ -227,6 +233,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
    * 
    * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
    */
+  @Override
   public void createControl(final Composite parent) {
     final Composite container = new Composite(parent, SWT.NONE);
     container.setLayout(new GridLayout());
@@ -242,10 +249,9 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
-   * Create the options group with the compression checkbox
-   * 
-   * @param parent
-   *          the parent composite
+   * Create the options group with the compression checkbox.
+   *
+   * @param parent          the parent composite
    */
   protected void createOptionsGroup(final Composite parent) {
     final Group group = new Group(parent, SWT.NONE);
@@ -261,10 +267,9 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
 
   /**
    * Create the TreeViewer for selection of files to export in the Pear file and select/deselect all
-   * buttons
-   * 
-   * @param parent
-   *          the parent composite
+   * buttons.
+   *
+   * @param parent          the parent composite
    */
   protected void createSourceControl(final Composite parent) {
     final Composite container = new Composite(parent, SWT.NONE);
@@ -275,6 +280,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     fTreeViewer.setInput(fCurrentContainer);
     fTreeViewer.setCheckedElements(fSelection.toArray());
     fTreeViewer.addCheckStateListener(new ICheckStateListener() {
+      @Override
       public void checkStateChanged(final CheckStateChangedEvent event) {
         pageStateChanged();
       }
@@ -286,6 +292,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     final Button selectAllButton = new Button(buttonsComposite, SWT.PUSH);
     selectAllButton.setText(PearExportMessages.getString("PearFileResourceExportPage.SelectAll")); //$NON-NLS-1$
     selectAllButton.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         setAllChecked(fTreeViewer.getTree().getItems(), true);
         pageStateChanged(); // above doesn't trigger a checkStateChanged
@@ -297,6 +304,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     deselectAllButton.setText(PearExportMessages
             .getString("PearFileResourceExportPage.DeselectAll")); //$NON-NLS-1$
     deselectAllButton.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         setAllChecked(fTreeViewer.getTree().getItems(), false);
         pageStateChanged(); // above doesn't trigger a checkStateChanged
@@ -306,10 +314,10 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
-   * @param items
-   *          A set of TreeItems that should be (un)checked, including their children
-   * @param checked
-   *          <code>true</code> to check all items, <code>false</code> to uncheck all items
+   * Sets the all checked.
+   *
+   * @param items          A set of TreeItems that should be (un)checked, including their children
+   * @param checked          <code>true</code> to check all items, <code>false</code> to uncheck all items
    */
   protected void setAllChecked(final TreeItem[] items, final boolean checked) {
     for (int i = 0; i < items.length; i++) {
@@ -337,6 +345,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     fDestinationFileInput.setText(fPreferenceStore.getString(PEAR_FILE));
     fDestinationFileInput.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false));
     fDestinationFileInput.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(final ModifyEvent e) {
         pageStateChanged();
         saveDestinationValue(fDestinationFileInput.getText());
@@ -347,6 +356,7 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
     destinationBrowseButton.setText(PearExportMessages
             .getString("PearFileResourceExportPage.Browse")); //$NON-NLS-1$
     destinationBrowseButton.addSelectionListener(new SelectionAdapter() {
+      @Override
       public void widgetSelected(final SelectionEvent e) {
         handleDestinationBrowseButtonPressed();
       }
@@ -354,8 +364,9 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
-   * @param parent
-   *          the parent composite
+   * Creates the tree viewer.
+   *
+   * @param parent          the parent composite
    * @return TreeViewer that shows uses Workbench Content- and LabelProvider
    */
   protected ContainerCheckedTreeViewer createTreeViewer(Composite parent) {
@@ -373,6 +384,8 @@ public class PearFileResourceExportPage extends WizardPage implements InsdConsta
   }
 
   /**
+   * Gets the export runnable.
+   *
    * @return An {@link IRunnableWithProgress} that will export the files chosen in the TreeViewer to
    *         the file chosen in the destination input field when run
    */

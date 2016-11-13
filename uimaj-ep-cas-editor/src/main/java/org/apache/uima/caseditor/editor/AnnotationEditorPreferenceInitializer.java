@@ -23,9 +23,17 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AnnotationEditorPreferenceInitializer.
+ */
 public class AnnotationEditorPreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public void initializeDefaultPreferences() {
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	 */
+	@Override
+  public void initializeDefaultPreferences() {
 		IPreferenceStore store = CasEditorPlugin.getDefault().getPreferenceStore();
 		store.setDefault(AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT, 80);
 		store.setDefault(AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE, 13);

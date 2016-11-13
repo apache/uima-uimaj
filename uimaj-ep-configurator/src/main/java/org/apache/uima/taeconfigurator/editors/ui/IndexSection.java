@@ -42,43 +42,72 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.forms.IManagedForm;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IndexSection.
+ */
 public class IndexSection extends AbstractSection {
 
+  /** The Constant ANNOTATION_INDEX_BUILT_IN. */
   public static final String ANNOTATION_INDEX_BUILT_IN = "Annotation Index (Built-in)";
 
+  /** The Constant INDEX_NAME_COL. */
   public final static int INDEX_NAME_COL = 0;
 
+  /** The Constant INDEX_TYPE_COL. */
   public final static int INDEX_TYPE_COL = 1;
 
+  /** The Constant ASC_DES_COL. */
   public final static int ASC_DES_COL = 1;
 
+  /** The Constant INDEX_KIND_COL. */
   public final static int INDEX_KIND_COL = 2;
 
+  /** The tt. */
   public TableTree tt; // accessed by inner class
 
+  /** The add index button. */
   private Button addIndexButton;
 
+  /** The add key button. */
   private Button addKeyButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The m built in index description. */
   FsIndexDescription m_builtInIndexDescription = null;
 
+  /** The export button. */
   private Button exportButton;
 
+  /** The index import section. */
   private IndexImportSection indexImportSection;
 
+  /**
+   * Instantiates a new index section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public IndexSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Indexes",
             "The following indexes are defined on the type system for this engine.");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -115,6 +144,7 @@ public class IndexSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     if (null == indexImportSection)
       indexImportSection = editor.getIndexesPage().getIndexImportSection();
@@ -135,6 +165,12 @@ public class IndexSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Update index spec.
+   *
+   * @param item the item
+   * @param ndx the ndx
+   */
   private void updateIndexSpec(TableTreeItem item, FsIndexDescription ndx) {
     item.setText(INDEX_NAME_COL, ndx.getLabel());
     item.setText(INDEX_TYPE_COL, formatName(ndx.getTypeName()));
@@ -148,6 +184,12 @@ public class IndexSection extends AbstractSection {
       }
   }
 
+  /**
+   * Update key spec.
+   *
+   * @param item the item
+   * @param key the key
+   */
   private void updateKeySpec(TableTreeItem item, FsIndexKeyDescription key) {
     String name = key.getFeatureName();
     item.setText(INDEX_NAME_COL, null == name ? "TYPE PRIORITY" : name);
@@ -156,10 +198,20 @@ public class IndexSection extends AbstractSection {
     item.setData(key);
   }
 
+  /**
+   * Creates the fs index key description.
+   *
+   * @return the fs index key description
+   */
   public FsIndexKeyDescription createFsIndexKeyDescription() {
     return UIMAFramework.getResourceSpecifierFactory().createFsIndexKeyDescription();
   }
 
+  /**
+   * Gets the built in index description.
+   *
+   * @return the built in index description
+   */
   public FsIndexDescription getBuiltInIndexDescription() {
     if (m_builtInIndexDescription == null) {
       m_builtInIndexDescription = UIMAFramework.getResourceSpecifierFactory()
@@ -184,6 +236,12 @@ public class IndexSection extends AbstractSection {
     return m_builtInIndexDescription;
   }
 
+  /**
+   * Not allowed.
+   *
+   * @param message the message
+   * @return true, if successful
+   */
   private boolean notAllowed(String message) {
     if (isIndexDescriptor() && !editor.getIsContextLoaded()) {
       Utility
@@ -201,6 +259,7 @@ public class IndexSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
 
     if (event.widget == addIndexButton) {
@@ -328,6 +387,12 @@ public class IndexSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Fooling around with annotation index.
+   *
+   * @param item the item
+   * @return true, if successful
+   */
   private boolean foolingAroundWithAnnotationIndex(TableTreeItem item) {
     while (null != item.getParentItem())
       item = item.getParentItem();
@@ -341,6 +406,12 @@ public class IndexSection extends AbstractSection {
     return false;
   }
 
+  /**
+   * Adds the fs index key description.
+   *
+   * @param fsid the fsid
+   * @param key the key
+   */
   public void addFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     FsIndexKeyDescription[] prevKeys = fsid.getKeys();
     FsIndexKeyDescription[] newKeys = new FsIndexKeyDescription[prevKeys == null ? 1
@@ -351,6 +422,11 @@ public class IndexSection extends AbstractSection {
     fsid.setKeys(newKeys);
   }
 
+  /**
+   * Adds the fs index description.
+   *
+   * @param fsid the fsid
+   */
   public void addFsIndexDescription(FsIndexDescription fsid) {
     FsIndexDescription[] oldFsIndexes = getAnalysisEngineMetaData().getFsIndexes();
     FsIndexDescription[] newFsIndexes = new FsIndexDescription[oldFsIndexes == null ? 1
@@ -361,17 +437,34 @@ public class IndexSection extends AbstractSection {
     getAnalysisEngineMetaData().setFsIndexes(newFsIndexes);
   }
 
+  /**
+   * Removes the fs index description.
+   *
+   * @param fsid the fsid
+   */
   public void removeFsIndexDescription(FsIndexDescription fsid) {
     getAnalysisEngineMetaData().setFsIndexes(
             (FsIndexDescription[]) Utility.removeElementFromArray(getAnalysisEngineMetaData()
                     .getFsIndexes(), fsid, FsIndexDescription.class));
   }
 
+  /**
+   * Removes the fs index key description.
+   *
+   * @param fsid the fsid
+   * @param key the key
+   */
   public void removeFsIndexKeyDescription(FsIndexDescription fsid, FsIndexKeyDescription key) {
     fsid.setKeys((FsIndexKeyDescription[]) Utility.removeElementFromArray(fsid.getKeys(), key,
             FsIndexKeyDescription.class));
   }
 
+  /**
+   * Gets the already used features.
+   *
+   * @param ndx the ndx
+   * @return the already used features
+   */
   public List getAlreadyUsedFeatures(FsIndexDescription ndx) {
     List result = new ArrayList();
     FsIndexKeyDescription[] items = ndx.getKeys();
@@ -383,6 +476,13 @@ public class IndexSection extends AbstractSection {
     return result;
   }
 
+  /**
+   * Adds the or edit index key.
+   *
+   * @param dialog the dialog
+   * @param key the key
+   * @return the fs index key description
+   */
   public FsIndexKeyDescription addOrEditIndexKey(AddIndexKeyDialog dialog, FsIndexKeyDescription key) {
     if (dialog.open() == Window.CANCEL) {
       return null;
@@ -401,9 +501,10 @@ public class IndexSection extends AbstractSection {
   }
 
   /**
-   * This has to check the resolvedImports, mergedWithDelegates version of the fsindexes
-   * 
-   * @param indexLabel
+   * This has to check the resolvedImports, mergedWithDelegates version of the fsindexes.
+   *
+   * @param indexLabel the index label
+   * @return true, if is duplicate index label
    */
   public boolean isDuplicateIndexLabel(String indexLabel) {
     FsIndexDescription[] indexes = getAnalysisEngineMetaData().getFsIndexes();
@@ -418,6 +519,10 @@ public class IndexSection extends AbstractSection {
     return false;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
     boolean selected = tt.getSelectionCount() == 1;
     TableTreeItem item = null;

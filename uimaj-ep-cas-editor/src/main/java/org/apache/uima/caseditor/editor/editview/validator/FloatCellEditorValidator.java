@@ -21,6 +21,7 @@ package org.apache.uima.caseditor.editor.editview.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
+// TODO: Auto-generated Javadoc
 /**
  * This {@link ICellEditorValidator} validates {@link String} values which represents a
  * {@link Float}.
@@ -28,12 +29,14 @@ import org.eclipse.jface.viewers.ICellEditorValidator;
  * For validation {@link Float#parseFloat(String)} is used.
  */
 class FloatCellEditorValidator implements ICellEditorValidator {
+  
   /**
    * Checks if the given value is a valid {@link Float}.
    *
-   * @param value
+   * @param value the value
    * @return null if valid otherwise an error message
    */
+  @Override
   public String isValid(Object value) {
     assert value instanceof String;
 

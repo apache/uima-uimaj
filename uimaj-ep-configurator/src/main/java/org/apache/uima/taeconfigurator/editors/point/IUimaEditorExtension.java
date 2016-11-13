@@ -24,9 +24,9 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 
+// TODO: Auto-generated Javadoc
 /**
- * The interface implemented by an external editor
- *
+ * The interface implemented by an external editor.
  */
 public interface IUimaEditorExtension {
   

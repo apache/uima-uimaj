@@ -24,6 +24,7 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Feature Structure Browser View displays a list of feature structures which
  * belong to the selected type.
@@ -34,10 +35,16 @@ public final class FeatureStructureBrowserView extends CasEditorView {
    */
   public static final String ID = "org.apache.uima.caseditor.fsview";
 
+  /**
+   * Instantiates a new feature structure browser view.
+   */
   public FeatureStructureBrowserView() {
     super("The instance view is currently not available.");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.CasEditorView#doCreatePage(org.apache.uima.caseditor.editor.ICasEditor)
+   */
   @Override
   protected IPageBookViewPage doCreatePage(ICasEditor editor) {
 

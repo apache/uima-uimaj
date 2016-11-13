@@ -29,19 +29,22 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
+// TODO: Auto-generated Javadoc
 /**
  * Widens the left side of the currently selected annotation by one.
  */
 public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAction {
   
+  /** The Constant ID. */
   public static final String ID = "WideLeftAnnotationSide";
   
+  /** The editor. */
   private ICasEditor editor;
 
   /**
    * Initializes a new instance.
    *
-   * @param editor
+   * @param editor the editor
    */
   public WideLeftAnnotationSideAction(ICasEditor editor) {
     super("WideLeftAnnotationSside");
@@ -51,6 +54,9 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
     setEnabled(false);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.actions.BaseSelectionListenerAction#updateSelection(org.eclipse.jface.viewers.IStructuredSelection)
+   */
   @Override
   protected boolean updateSelection(IStructuredSelection selection) {
     AnnotationSelection annotation = new AnnotationSelection(selection);
@@ -61,9 +67,9 @@ public final class WideLeftAnnotationSideAction extends BaseSelectionListenerAct
   /**
    * Widens the annotation and sends and sends an update notification
    * to the provided document.
-   * 
-   * @param document
-   * @param annotation
+   *
+   * @param document the document
+   * @param annotation the annotation
    */
   public static void wideLeftAnnotationSide(ICasDocument document, AnnotationFS annotation) {
     Type annotationType = annotation.getType();

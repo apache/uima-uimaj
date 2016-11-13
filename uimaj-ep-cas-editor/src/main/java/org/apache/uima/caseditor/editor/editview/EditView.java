@@ -24,8 +24,9 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public final class EditView extends CasEditorView {
   
@@ -33,12 +34,20 @@ public final class EditView extends CasEditorView {
 	 * The ID of the feature structure view.
 	 */
 	public static final String ID = "org.apache.uima.caseditor.editview";
+	
+	/** The Constant ID_2. */
 	public static final String ID_2 = "org.apache.uima.caseditor.editview2";
 
+	/**
+	 * Instantiates a new edits the view.
+	 */
 	public EditView() {
 		super("The edit view is currently not available.");
 	}
   
+	/* (non-Javadoc)
+	 * @see org.apache.uima.caseditor.editor.CasEditorView#doCreatePage(org.apache.uima.caseditor.editor.ICasEditor)
+	 */
 	@Override
 	protected IPageBookViewPage doCreatePage(ICasEditor editor) {
 

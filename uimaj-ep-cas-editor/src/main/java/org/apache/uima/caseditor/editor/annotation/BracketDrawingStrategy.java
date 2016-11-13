@@ -27,22 +27,26 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
+// TODO: Auto-generated Javadoc
 /**
  * Draws brackets arround an annotation.
  */
 public class BracketDrawingStrategy implements IDrawingStrategy {
+  
+  /** The Constant BRACKET_WIDTH. */
   private static final int BRACKET_WIDTH = 3;
 
   /**
    * Draws an opening bracket to the begin and a closing bracket to the end of the given annotation.
    *
-   * @param annotation
-   * @param gc
-   * @param textWidget
-   * @param offset
-   * @param length
-   * @param color
+   * @param annotation the annotation
+   * @param gc the gc
+   * @param textWidget the text widget
+   * @param offset the offset
+   * @param length the length
+   * @param color the color
    */
+  @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {
     if (length > 0) {

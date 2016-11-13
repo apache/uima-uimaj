@@ -26,10 +26,16 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
+// TODO: Auto-generated Javadoc
 /**
+ * The Class TextColorDrawingStrategy.
  */
 public class TextColorDrawingStrategy implements IDrawingStrategy {
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy#draw(org.eclipse.jface.text.source.Annotation, org.eclipse.swt.graphics.GC, org.eclipse.swt.custom.StyledText, int, int, org.eclipse.swt.graphics.Color)
+   */
+  @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length, Color color) {
     if (length > 0) {
       if (annotation instanceof EclipseAnnotationPeer) {

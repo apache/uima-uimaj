@@ -35,6 +35,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
+// TODO: Auto-generated Javadoc
 /**
  * A combo box which contains UIMA Types.
  * 
@@ -43,14 +44,23 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TypeCombo extends Composite {
   
+  /** The listeners. */
   private Set<ITypePaneListener> listeners = new HashSet<ITypePaneListener>();
 
+  /** The type system. */
   private TypeSystem typeSystem;
 
+  /** The type combo. */
   private Combo typeCombo;
   
+  /** The type name list. */
   private List<String> typeNameList;
   
+  /**
+   * Instantiates a new type combo.
+   *
+   * @param parent the parent
+   */
   public TypeCombo(Composite parent) {
     super(parent, SWT.NONE);
 
@@ -59,6 +69,7 @@ public class TypeCombo extends Composite {
     typeCombo = new Combo(this, SWT.READ_ONLY | SWT.DROP_DOWN | SWT.BORDER);
     
     typeCombo.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         Type newType = getType();
 
@@ -69,6 +80,13 @@ public class TypeCombo extends Composite {
     });
   }
   
+  /**
+   * Sets the input.
+   *
+   * @param superType the super type
+   * @param typeSystem the type system
+   * @param filterTypes the filter types
+   */
   public void setInput(Type superType, TypeSystem typeSystem,
           Collection<Type> filterTypes) {
     this.typeSystem = typeSystem;
@@ -90,6 +108,12 @@ public class TypeCombo extends Composite {
     typeCombo.select(0);
   }
   
+  /**
+   * Sets the input.
+   *
+   * @param superType the super type
+   * @param typeSystem the type system
+   */
   public void setInput(Type superType, TypeSystem typeSystem) {
     setInput(superType, typeSystem, Collections.<Type>emptyList());
   }
@@ -97,8 +121,8 @@ public class TypeCombo extends Composite {
   /**
    * Selects the given type or does nothing if the
    * type is not listed.
-   * 
-   * @param type
+   *
+   * @param type the type
    */
   public void select(Type type) {
     Integer typeIndex = typeNameList.indexOf(type.getName());
@@ -118,10 +142,20 @@ public class TypeCombo extends Composite {
     return typeSystem.getType(typeCombo.getText());
   }
   
+  /**
+   * Adds the listener.
+   *
+   * @param listener the listener
+   */
   public void addListener(ITypePaneListener listener) {
     listeners.add(listener);
   }
   
+  /**
+   * Removes the listener.
+   *
+   * @param listener the listener
+   */
   public void removeListener(ITypePaneListener listener) {
     listeners.remove(listener);
   }

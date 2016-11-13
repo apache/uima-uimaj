@@ -60,51 +60,113 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 
+// TODO: Auto-generated Javadoc
 /**
  * This is the <code>AnnotationPropertyPage</code>. this page configures the project dependent
  * and type dependent annotation appearance in the <code>AnnotationEditor</code>.
  */
 public abstract class AnnotationPropertyPage extends PropertyPage {
 
+  /**
+   * The listener interface for receiving customStyleConfigChange events.
+   * The class that is interested in processing a customStyleConfigChange
+   * event implements this interface, and the object created
+   * with that class is registered with a component using the
+   * component's <code>addCustomStyleConfigChangeListener</code> method. When
+   * the customStyleConfigChange event occurs, that object's appropriate
+   * method is invoked.
+   *
+   * @see CustomStyleConfigChangeEvent
+   */
   private static interface CustomStyleConfigChangeListener {
+    
+    /**
+     * Style changed.
+     *
+     * @param configuration the configuration
+     */
     void styleChanged(String configuration);
   }
   
+  /**
+   * The Class CustomStyleConfigWidget.
+   */
   private static abstract class CustomStyleConfigWidget extends Composite {
     
+    /** The listeners. */
     private Set<CustomStyleConfigChangeListener> listeners =
         new HashSet<CustomStyleConfigChangeListener>();
     
+    /**
+     * Instantiates a new custom style config widget.
+     *
+     * @param parent the parent
+     */
     public CustomStyleConfigWidget(Composite parent) {
       super(parent, SWT.NONE);
     }
     
+    /**
+     * Notify change.
+     *
+     * @param newConfig the new config
+     */
     protected void notifyChange(String newConfig) {
       for (CustomStyleConfigChangeListener listener : listeners) {
         listener.styleChanged(newConfig);
       }
     }
     
+    /**
+     * Adds the listener.
+     *
+     * @param listener the listener
+     */
     void addListener(CustomStyleConfigChangeListener listener) {
       listeners.add(listener);
     }
     
+    /**
+     * Removes the listener.
+     *
+     * @param listener the listener
+     */
     void removeListener(CustomStyleConfigChangeListener listener) {
       listeners.remove(listener);
     }
     
+    /**
+     * Sets the style.
+     *
+     * @param style the style
+     * @param selectedType the selected type
+     */
     void setStyle(AnnotationStyle style, Type selectedType) {
     }
     
+    /**
+     * Gets the configuration.
+     *
+     * @return the configuration
+     */
     abstract String getConfiguration();
   }
   
   // TODO: If there is more than one config widget, do a little refactoring ...
+  /**
+   * The Class TagStyleConfigWidget.
+   */
   // TODO: needs one label plus combo to select the combinded drawing style
   private static class TagStyleConfigWidget extends CustomStyleConfigWidget {
     
+    /** The feature combo. */
     private Combo featureCombo;
     
+    /**
+     * Instantiates a new tag style config widget.
+     *
+     * @param parent the parent
+     */
     TagStyleConfigWidget(Composite parent) {
       super(parent);
       
@@ -136,10 +198,12 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       
       featureCombo.addSelectionListener(new SelectionListener() {
         
+        @Override
         public void widgetSelected(SelectionEvent e) {
           notifyChange(featureCombo.getText());
         }
         
+        @Override
         public void widgetDefaultSelected(SelectionEvent e) {
           // called when enter is pressed, not needed
         }
@@ -148,6 +212,10 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       group.pack();
     }
     
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage.CustomStyleConfigWidget#getConfiguration()
+     */
+    @Override
     String getConfiguration() {
       String configString = featureCombo.getText();
       
@@ -157,6 +225,9 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
         return configString;
     }
     
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.ui.property.AnnotationPropertyPage.CustomStyleConfigWidget#setStyle(org.apache.uima.caseditor.editor.AnnotationStyle, org.apache.uima.cas.Type)
+     */
     @Override
     void setStyle(AnnotationStyle style, Type selectedType) {
       featureCombo.removeAll();
@@ -183,21 +254,35 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     }
   }
   
+  /** The is type system present. */
   private boolean isTypeSystemPresent = true;
   
+  /** The m style combo. */
   private Combo mStyleCombo;
 
+  /** The m color selector. */
   private ColorSelector mColorSelector;
 
+  /** The m type list. */
   private TableViewer mTypeList;
 
+  /** The move layer up button. */
   private Button moveLayerUpButton;
+  
+  /** The move layer down button. */
   private Button moveLayerDownButton;
   
+  /** The style configuration widget. */
   private CustomStyleConfigWidget styleConfigurationWidget;
   
+  /** The changed styles. */
   private Map<Type, AnnotationStyle> changedStyles = new HashMap<Type, AnnotationStyle>();
 
+  /**
+   * Gets the selected type.
+   *
+   * @return the selected type
+   */
   private Type getSelectedType() {
 
     IStructuredSelection selection = (IStructuredSelection) mTypeList.getSelection();
@@ -205,8 +290,20 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     return (Type) selection.getFirstElement();
   }
 
+  /**
+   * Gets the annotation style.
+   *
+   * @param type the type
+   * @return the annotation style
+   */
   protected abstract AnnotationStyle getAnnotationStyle(Type type);
   
+  /**
+   * Gets the working copy annotation style.
+   *
+   * @param type the type
+   * @return the working copy annotation style
+   */
   private final AnnotationStyle getWorkingCopyAnnotationStyle(Type type) {
     AnnotationStyle style = changedStyles.get(type);
     
@@ -219,13 +316,29 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   // does not make sense, just give it a list with new annotation styles,
   // to save them and notify other about the chagne
   
+  /**
+   * Sets the annotation style.
+   *
+   * @param style the new annotation style
+   */
   protected final void setAnnotationStyle(AnnotationStyle style) {
     changedStyles.put(getSelectedType(), style);
   }
   
+  /**
+   * Gets the type system.
+   *
+   * @return the type system
+   */
   protected abstract TypeSystem getTypeSystem();
   
   // Depending on active style, enable custom configuration widget
+  /**
+   * Update custom style control.
+   *
+   * @param style the style
+   * @param selectedType the selected type
+   */
   // and update the annotation style with custom control defaults
   private void updateCustomStyleControl(AnnotationStyle style, Type selectedType) {
     if (Style.TAG.equals(style.getStyle())) {
@@ -237,6 +350,9 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     }
   }
   
+  /**
+   * Item selected.
+   */
   private void itemSelected() {
     IStructuredSelection selection = (IStructuredSelection) mTypeList.getSelection();
 
@@ -278,6 +394,9 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
   
   /**
    * Creates the annotation property page controls.
+   *
+   * @param parent the parent
+   * @return the control
    */
   @Override
   protected Control createContents(Composite parent) {
@@ -362,6 +481,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     
     mTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
 
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
         itemSelected();
       }
@@ -382,6 +502,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     mStyleCombo = new Combo(settingsComposite, SWT.READ_ONLY | SWT.DROP_DOWN);
     mStyleCombo.setEnabled(false);
     mStyleCombo.addSelectionListener(new SelectionListener() {
+      @Override
       public void widgetSelected(SelectionEvent e) {
         
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
@@ -405,6 +526,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
       }
         
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         // called when enter is pressed, not needed
       }
@@ -423,6 +545,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     mColorSelector = new ColorSelector(settingsComposite);
     mColorSelector.setEnabled(false);
     mColorSelector.addListener(new IPropertyChangeListener() {
+      @Override
       public void propertyChange(PropertyChangeEvent event) {
         AnnotationStyle style = getWorkingCopyAnnotationStyle( getSelectedType());
 
@@ -441,9 +564,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     GridDataFactory.fillDefaults().span(2, 1).applyTo(moveLayerUpButton);
     moveLayerUpButton.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
 
@@ -461,9 +586,11 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
 
     moveLayerDownButton.addSelectionListener(new SelectionListener() {
 
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
@@ -483,6 +610,7 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     GridDataFactory.fillDefaults().span(2, 1).applyTo(styleConfigurationWidget);
     styleConfigurationWidget.setVisible(false);
     styleConfigurationWidget.addListener(new CustomStyleConfigChangeListener() {
+      @Override
       public void styleChanged(String configuration) {
         AnnotationStyle style = getWorkingCopyAnnotationStyle(getSelectedType());
         
@@ -501,10 +629,18 @@ public abstract class AnnotationPropertyPage extends PropertyPage {
     return base;
   }
 
+  /**
+   * Save changes.
+   *
+   * @param changedStyles the changed styles
+   * @return true, if successful
+   */
   protected abstract boolean saveChanges(Collection<AnnotationStyle> changedStyles);
   
   /**
    * Executed after the OK button was pressed.
+   *
+   * @return true, if successful
    */
   @Override
   public boolean performOk() {

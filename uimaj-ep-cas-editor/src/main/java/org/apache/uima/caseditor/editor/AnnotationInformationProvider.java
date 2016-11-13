@@ -29,23 +29,32 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.swt.graphics.Point;
 
+// TODO: Auto-generated Javadoc
 /**
  * TODO: move this class to external file.
  */
 class AnnotationInformationProvider implements IInformationProvider, IInformationProviderExtension {
+  
+  /** The m editor. */
   private AnnotationEditor mEditor;
 
+  /**
+   * Instantiates a new annotation information provider.
+   *
+   * @param editor the editor
+   */
   AnnotationInformationProvider(AnnotationEditor editor) {
     mEditor = editor;
   }
 
   /**
-   * TODO: add comment
+   * TODO: add comment.
    *
-   * @param textViewer
-   * @param offset
+   * @param textViewer the text viewer
+   * @param offset the offset
    * @return the region
    */
+  @Override
   public IRegion getSubject(ITextViewer textViewer, int offset) {
     Point selection = textViewer.getTextWidget().getSelection();
 
@@ -54,23 +63,25 @@ class AnnotationInformationProvider implements IInformationProvider, IInformatio
   }
 
   /**
-   * TODO: add comment
+   * TODO: add comment.
    *
-   * @param textViewer
-   * @param subject
+   * @param textViewer the text viewer
+   * @param subject the subject
    * @return null
    */
+  @Override
   public String getInformation(ITextViewer textViewer, IRegion subject) {
     return null;
   }
 
   /**
-   * TODO: add comment
+   * TODO: add comment.
    *
-   * @param textViewer
-   * @param subject
+   * @param textViewer the text viewer
+   * @param subject the subject
    * @return the selected annotation
    */
+  @Override
   public Object getInformation2(ITextViewer textViewer, IRegion subject) {
     List<AnnotationFS> selection = mEditor.getSelectedAnnotations();
 

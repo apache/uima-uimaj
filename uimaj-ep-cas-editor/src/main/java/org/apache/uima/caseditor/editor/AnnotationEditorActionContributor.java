@@ -25,6 +25,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * The <code>AnnotationEditor</code> action contributor.
  *
@@ -36,14 +37,16 @@ public class AnnotationEditorActionContributor extends EditorActionBarContributo
    */
   public static final String ID = "org.apache.uima.caseditor.editor.mode.status";
 
+  /** The m active editor part. */
   private AnnotationEditor mActiveEditorPart;
 
+  /** The m status line mode item. */
   private StatusLineContributionItem mStatusLineModeItem;
 
   /**
    * Sets the active editor.
    *
-   * @param part
+   * @param part the new active editor
    */
   @Override
   public void setActiveEditor(IEditorPart part) {
@@ -65,7 +68,7 @@ public class AnnotationEditorActionContributor extends EditorActionBarContributo
   /**
    * Contributes the status item to the status line.
    *
-   * @param statusLineManager
+   * @param statusLineManager the status line manager
    */
   @Override
   public void contributeToStatusLine(IStatusLineManager statusLineManager) {

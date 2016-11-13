@@ -32,15 +32,27 @@ import org.eclipse.swt.graphics.Rectangle;
 
 
 
+// TODO: Auto-generated Javadoc
 // TODO: Check if its possible to increase the space between characters,
+/**
+ * The Class TagDrawingStrategy.
+ */
 //       or suggest to use mono space font for long tags ...
 class TagDrawingStrategy implements IDrawingStrategy {
 
+  /** The Constant TAG_FONT_SIZE. */
   private static final int TAG_FONT_SIZE = 11;
+  
+  /** The Constant MAX_LEFT_TAG_OVERLAP. */
   private static final int MAX_LEFT_TAG_OVERLAP = 1;
+  
+  /** The Constant MAX_RIGHT_TAG_OVERLAP. */
   private static final int MAX_RIGHT_TAG_OVERLAP = 1;
+  
+  /** The Constant TAG_OVERLAP. */
   private static final int TAG_OVERLAP = MAX_LEFT_TAG_OVERLAP + MAX_RIGHT_TAG_OVERLAP;
   
+  /** The annotation drawing style. */
   private IDrawingStrategy annotationDrawingStyle = new BoxDrawingStrategy();
   
   /**
@@ -48,6 +60,11 @@ class TagDrawingStrategy implements IDrawingStrategy {
    */
   private final String featureName;
   
+  /**
+   * Instantiates a new tag drawing strategy.
+   *
+   * @param featureName the feature name
+   */
   TagDrawingStrategy(String featureName) {
     
     if (featureName == null)
@@ -56,6 +73,10 @@ class TagDrawingStrategy implements IDrawingStrategy {
     this.featureName = featureName;
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy#draw(org.eclipse.jface.text.source.Annotation, org.eclipse.swt.graphics.GC, org.eclipse.swt.custom.StyledText, int, int, org.eclipse.swt.graphics.Color)
+   */
+  @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {
     

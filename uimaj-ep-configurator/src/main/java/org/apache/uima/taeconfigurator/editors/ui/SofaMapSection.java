@@ -47,29 +47,49 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SofaMapSection.
+ */
 public class SofaMapSection extends AbstractSection {
 
+  /** The section client. */
   private Composite sectionClient;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The edit button. */
   private Button editButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The tree. */
   private Tree tree;
 
+  /** The Constant INPUTS. */
   private static final String INPUTS = "Inputs";
 
+  /** The Constant OUTPUTS. */
   private static final String OUTPUTS = "Outputs";
 
+  /** The Constant INPUT. */
   private static final boolean INPUT = true;
 
+  /** The Constant OUTPUT. */
   private static final boolean OUTPUT = false;
 
+  /** The Constant titleMsg. */
   private static final String titleMsg = "This section shows all defined Sofas for an Aggregate and their mappings to the component Sofas.\n"
           + "Add Aggregate Sofa Names using the Capabilities section; Select an Aggregate Sofa Name and Add/Edit mappings for that Sofa in this section.\n";
 
+  /**
+   * Instantiates a new sofa map section.
+   *
+   * @param aEditor the a editor
+   * @param parent the parent
+   */
   public SofaMapSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, "Sofa Mappings (Only used in aggregate Descriptors)", titleMsg);
   }
@@ -80,6 +100,7 @@ public class SofaMapSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
+  @Override
   public void initialize(IManagedForm form) {
 
     super.initialize(form);
@@ -104,6 +125,7 @@ public class SofaMapSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     super.refresh();
     tree.removeAll();
@@ -138,6 +160,13 @@ public class SofaMapSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Gets the aggr sofas.
+   *
+   * @param inputCapabilityNames the input capability names
+   * @param outputCapabilityNames the output capability names
+   * @return the aggr sofas
+   */
   private String[] getAggrSofas(String[] inputCapabilityNames, String[] outputCapabilityNames) {
     SofaMapping[] allMappings = getSofaMappings();
     Set names = new TreeSet();
@@ -163,6 +192,12 @@ public class SofaMapSection extends AbstractSection {
     return (String[]) names.toArray(stringArray0);
   }
 
+  /**
+   * Fill map.
+   *
+   * @param aggrKeys the aggr keys
+   * @param isInput the is input
+   */
   private void fillMap(String[] aggrKeys, boolean isInput) {
 
     TreeItem d = new TreeItem(tree, SWT.NONE);
@@ -176,6 +211,12 @@ public class SofaMapSection extends AbstractSection {
     d.setExpanded(true);
   }
 
+  /**
+   * Fill bindings.
+   *
+   * @param parent the parent
+   * @param aggrSofa the aggr sofa
+   */
   private void fillBindings(TreeItem parent, String aggrSofa) {
     // bindings are a string of key-name / sofa-name or "<default>"
     String[] bindings = getSofaBindingsForAggrSofa(aggrSofa);
@@ -185,6 +226,12 @@ public class SofaMapSection extends AbstractSection {
     }
   }
 
+  /**
+   * Gets the sofa bindings for aggr sofa.
+   *
+   * @param aggrSofa the aggr sofa
+   * @return the sofa bindings for aggr sofa
+   */
   private String[] getSofaBindingsForAggrSofa(String aggrSofa) {
     SofaMapping[] sofaMappings = getSofaMappings();
     if (null == sofaMappings)
@@ -209,6 +256,7 @@ public class SofaMapSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     // Note: to add aggrSofa names, use capabilitySection.
     // Updates there are propagated here.
@@ -246,8 +294,14 @@ public class SofaMapSection extends AbstractSection {
     enable();
   }
 
+  /** The Constant AVAIL_ONLY. */
   private static final boolean AVAIL_ONLY = true;
 
+  /**
+   * Edits the aggr map.
+   *
+   * @param selected the selected
+   */
   private void editAggrMap(TreeItem selected) {
     // pop up window: shows all available component mappings
     // plus current mappings for this aggrSofa
@@ -278,6 +332,11 @@ public class SofaMapSection extends AbstractSection {
     setFileDirty();
   }
 
+  /**
+   * Adds the aggr map.
+   *
+   * @param selected the selected
+   */
   private void addAggrMap(TreeItem selected) {
     // pop up window: shows all available component mappings
     // minus current mappings for this aggrSofa
@@ -304,6 +363,14 @@ public class SofaMapSection extends AbstractSection {
     setFileDirty();
   }
 
+  /**
+   * Adds the sofas to all component sofa map.
+   *
+   * @param allComponentSofas the all component sofas
+   * @param key the key
+   * @param delegate the delegate
+   * @param isInput the is input
+   */
   private void addSofasToAllComponentSofaMap(Map allComponentSofas, String key,
           ResourceSpecifier delegate, boolean isInput) {
     // delegates can be AnalysisEngines, CasConsmers, flowControllers, or remotes
@@ -326,8 +393,10 @@ public class SofaMapSection extends AbstractSection {
   }
 
   /**
-   * 
-   * @param aggrSofa
+   * Gets the avail and bound sofas.
+   *
+   * @param aggrSofa the aggr sofa
+   * @param availOnly the avail only
    * @return a Map, keys = component/sofaname, value = aggrsofa or null
    */
   private Map getAvailAndBoundSofas(String aggrSofa, boolean availOnly) {
@@ -375,6 +444,12 @@ public class SofaMapSection extends AbstractSection {
     return allComponentSofas;
   }
 
+  /**
+   * Checks if is input.
+   *
+   * @param sofaName the sofa name
+   * @return true, if is input
+   */
   private boolean isInput(String sofaName) {
     String[][] sns = getCapabilitySofaNames();
     for (int i = 0; i < sns[0].length; i++) {
@@ -384,6 +459,12 @@ public class SofaMapSection extends AbstractSection {
     return false;
   }
 
+  /**
+   * Adds the aggr.
+   *
+   * @param aggrSofa the aggr sofa
+   * @param sofaNames the sofa names
+   */
   private void addAggr(String aggrSofa, String[] sofaNames) {
     SofaMapping[] newSofas = new SofaMapping[sofaNames.length];
     for (int i = 0; i < sofaNames.length; i++) {
@@ -399,8 +480,14 @@ public class SofaMapSection extends AbstractSection {
     editor.getAeDescription().setSofaMappings(result);
   }
 
+  /**
+   * Removes the aggr.
+   *
+   * @param aggrSofa the aggr sofa
+   */
   private void removeAggr(String aggrSofa) {
     Comparator comparator = new Comparator() {
+      @Override
       public int compare(Object aggrSofaName, Object o2) {
         SofaMapping sofaMapping = (SofaMapping) o2;
         if (sofaMapping.getAggregateSofaName().equals(aggrSofaName))
@@ -414,6 +501,11 @@ public class SofaMapSection extends AbstractSection {
                     SofaMapping.class, comparator));
   }
 
+  /**
+   * Removes the aggr.
+   *
+   * @param selected the selected
+   */
   private void removeAggr(TreeItem selected) {
     if (Window.CANCEL == Utility
             .popOkCancel(
@@ -428,12 +520,13 @@ public class SofaMapSection extends AbstractSection {
 
   /**
    * Removes a delegate map from a particular aggr sofa mapping.
-   * 
-   * @param selected
+   *
+   * @param selected the selected
    */
   private void removeComponentFromAggr(TreeItem selected) {
     final String aggrName = selected.getParentItem().getText();
     Comparator comparator = new Comparator() {
+      @Override
       public int compare(Object componentAndSofa, Object o2) {
         SofaMapping sofaMapping = (SofaMapping) o2;
         if (!sofaMapping.getAggregateSofaName().equals(aggrName))
@@ -465,10 +558,10 @@ public class SofaMapSection extends AbstractSection {
   /**
    * Called when removing a delegate from the aggr. Removes from the sofaMappings, any and all
    * mappings associated with the delegate.
-   * 
-   * @param componentKey
-   * @param delegate
-   * @param pEditor
+   *
+   * @param componentKey the component key
+   * @param delegate the delegate
+   * @param pEditor the editor
    */
    public static void removeSofaMappings(String componentKey, ResourceSpecifier delegate,
           MultiPageEditor pEditor) {
@@ -477,6 +570,7 @@ public class SofaMapSection extends AbstractSection {
       inOut[0].addAll(inOut[1]);
       final Set allDelegateComponentSofas = inOut[0];
       Comparator comparator = new Comparator() {
+        @Override
         public int compare(Object ignore, Object elementOfArray) {
           SofaMapping sofaMapping = (SofaMapping) elementOfArray;
           String key = sofaMapping.getComponentKey();
@@ -495,6 +589,12 @@ public class SofaMapSection extends AbstractSection {
     }
   }
 
+  /**
+   * Gets the sofa only.
+   *
+   * @param componentAndSofa the component and sofa
+   * @return the sofa only
+   */
   private String getSofaOnly(String componentAndSofa) {
     int locOfSlash = componentAndSofa.indexOf('/');
     if (locOfSlash < 0)
@@ -502,6 +602,12 @@ public class SofaMapSection extends AbstractSection {
     return componentAndSofa.substring(locOfSlash + 1);
   }
 
+  /**
+   * Gets the component only.
+   *
+   * @param componentAndSofa the component and sofa
+   * @return the component only
+   */
   private String getComponentOnly(String componentAndSofa) {
     int locOfSlash = componentAndSofa.indexOf('/');
     if (locOfSlash < 0)
@@ -509,6 +615,10 @@ public class SofaMapSection extends AbstractSection {
     return componentAndSofa.substring(0, locOfSlash);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
     boolean oneSelected = tree.getSelectionCount() == 1;
     boolean topLevelSelected = false;

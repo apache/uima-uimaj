@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * This is the generic exception used to handle exceptions related to PEAR.
@@ -34,37 +35,53 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class PearException extends Exception {
 
+  /** The Constant PLUGIN_ID. */
   public static final String PLUGIN_ID = "org.apache.uima.pear"; //$NON-NLS-1$
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
   
+  /**
+   * Instantiates a new pear exception.
+   */
   public PearException() {
     super();
   }
 
   /**
-   * @param message
+   * Instantiates a new pear exception.
+   *
+   * @param message the message
    */
   public PearException(String message) {
     super(message);
   }
 
   /**
-   * @param cause
+   * Instantiates a new pear exception.
+   *
+   * @param cause the cause
    */
   public PearException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * @param message
-   * @param cause
+   * Instantiates a new pear exception.
+   *
+   * @param message the message
+   * @param cause the cause
    */
   public PearException(String message, Throwable cause) {
     super(message, cause);
   }
 
+  /**
+   * Gets the custom stack trace.
+   *
+   * @return the custom stack trace
+   */
   IStatus[] getCustomStackTrace() {
     Object[] o = getCustomStackTrace(getCause()).toArray();
     if (o != null) {
@@ -76,6 +93,12 @@ public class PearException extends Exception {
       return new IStatus[0];
   }
 
+  /**
+   * Gets the custom stack trace.
+   *
+   * @param e the e
+   * @return the custom stack trace
+   */
   synchronized ArrayList getCustomStackTrace(Throwable e) {
     ArrayList a = new ArrayList();
     if (e != null) {
@@ -96,8 +119,8 @@ public class PearException extends Exception {
 
   /**
    * opens an ErrorDialog with details about this exception.
-   * 
-   * @param shell
+   *
+   * @param shell the shell
    */
   public void openErrorDialog(Shell shell) {
     try {

@@ -26,22 +26,34 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+// TODO: Auto-generated Javadoc
 /**
  * Preference page to manage preferences for the Annotation Editor.
  */
 public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage {
 
+  /** The m editor line length hint. */
   private IntegerFieldEditor mEditorLineLengthHint;
+  
+  /** The m editor text size. */
   private IntegerFieldEditor mEditorTextSize;
+  
+  /** The m editor partial typeystem. */
   private BooleanFieldEditor mEditorPartialTypeystem;
   
+  /**
+   * Instantiates a new annotation editor preference page.
+   */
   public AnnotationEditorPreferencePage() {
     setPreferenceStore(CasEditorPlugin.getDefault().getPreferenceStore());
     setDescription("UIMA Annotation Editor Preferences.");
   }
   
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+   */
   @Override
   protected void createFieldEditors() {
     // editor line length hint
@@ -64,9 +76,16 @@ public class AnnotationEditorPreferencePage extends FieldEditorPreferencePage
     
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+   */
+  @Override
   public void init(IWorkbench workbench) {
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.preference.FieldEditorPreferencePage#checkState()
+   */
   @Override
   protected void checkState() {
     super.checkState();

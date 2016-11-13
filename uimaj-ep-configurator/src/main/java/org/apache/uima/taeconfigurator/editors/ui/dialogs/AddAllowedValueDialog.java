@@ -27,22 +27,32 @@ import org.eclipse.swt.widgets.Text;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddAllowedValueDialog.
+ */
 public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
+  
+  /** The allowed value UI. */
   private StyledText allowedValueUI;
 
+  /** The description UI. */
   private Text descriptionUI;
 
+  /** The allowed value. */
   public String allowedValue;
 
+  /** The description. */
   public String description;
 
+  /** The existing av. */
   private AllowedValue existingAv;
 
   /**
    * Constructor for Adding or Editing an Allowed Value.
-   * 
-   * @param aSection
-   * @param aExistingAv
+   *
+   * @param aSection the a section
+   * @param aExistingAv the a existing av
    */
   public AddAllowedValueDialog(AbstractSection aSection, AllowedValue aExistingAv) {
     super(aSection, "Add an Allowed Value for a String subtype",
@@ -50,6 +60,10 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     existingAv = aExistingAv;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
+  @Override
   protected Control createDialogArea(Composite parent) {
     Composite mainArea = (Composite) super.createDialogArea(parent, existingAv);
 
@@ -73,17 +87,29 @@ public class AddAllowedValueDialog extends AbstractDialogKeyVerify {
     return mainArea;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#copyValuesFromGUI()
+   */
+  @Override
   public void copyValuesFromGUI() {
     allowedValue = allowedValueUI.getText();
     description = nullIf0lengthString(descriptionUI.getText());
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#isValid()
+   */
+  @Override
   public boolean isValid() {
     if (allowedValue.length() == 0)
       return false;
     return true;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.dialogs.AbstractDialog#enableOK()
+   */
+  @Override
   public void enableOK() {
     copyValuesFromGUI();
     okButton.setEnabled(allowedValue.length() > 0);

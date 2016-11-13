@@ -25,12 +25,19 @@ import java.util.Collection;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
+// TODO: Auto-generated Javadoc
 /**
  * This listener listens only for {@link AnnotationFS} change events. All other change events for
  * {@link FeatureStructure}s are filtered.
  */
 public abstract class AbstractAnnotationDocumentListener extends AbstractDocumentListener {
 
+  /**
+   * Filter annotations.
+   *
+   * @param strcutres the strcutres
+   * @return the collection
+   */
   private Collection<AnnotationFS> filterAnnotations(Collection<FeatureStructure> strcutres) {
     Collection<AnnotationFS> annotations = new ArrayList<AnnotationFS>(strcutres.size());
 
@@ -45,7 +52,10 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
 
   /**
    * Add notification.
+   *
+   * @param structres the structres
    */
+  @Override
   public void added(Collection<FeatureStructure> structres) {
     Collection<AnnotationFS> annotations = filterAnnotations(structres);
 
@@ -56,7 +66,10 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
 
   /**
    * Remove notification.
+   *
+   * @param structres the structres
    */
+  @Override
   public void removed(Collection<FeatureStructure> structres) {
     Collection<AnnotationFS> annotations = filterAnnotations(structres);
 
@@ -67,7 +80,10 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
 
   /**
    * Update notification.
+   *
+   * @param structres the structres
    */
+  @Override
   public void updated(Collection<FeatureStructure> structres) {
     Collection<AnnotationFS> annotations = filterAnnotations(structres);
 
@@ -76,9 +92,24 @@ public abstract class AbstractAnnotationDocumentListener extends AbstractDocumen
     }
   }
 
+  /**
+   * Added annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void addedAnnotation(Collection<AnnotationFS> annotations);
 
+  /**
+   * Removed annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void removedAnnotation(Collection<AnnotationFS> annotations);
 
+  /**
+   * Updated annotation.
+   *
+   * @param annotations the annotations
+   */
   protected abstract void updatedAnnotation(Collection<AnnotationFS> annotations);
 }

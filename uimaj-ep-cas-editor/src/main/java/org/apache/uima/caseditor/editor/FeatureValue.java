@@ -27,17 +27,24 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FeatureValue.
+ */
 public final class FeatureValue implements IAdaptable {
+  
+  /** The m structure. */
   private FeatureStructure mStructure;
 
+  /** The m feature. */
   private Feature mFeature;
 
   /**
    * Initializes a new instance.
    *
-   * @param document
-   * @param structure
-   * @param feature
+   * @param document the document
+   * @param structure the structure
+   * @param feature the feature
    */
   public FeatureValue(ICasDocument document, FeatureStructure structure, Feature feature) {
     Assert.isNotNull(document);
@@ -50,10 +57,20 @@ public final class FeatureValue implements IAdaptable {
     mStructure = structure;
   }
 
+  /**
+   * Gets the feature structure.
+   *
+   * @return the feature structure
+   */
   public FeatureStructure getFeatureStructure() {
     return mStructure;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   public Object getValue() {
     if (mFeature.getRange().isPrimitive()) {
       return Primitives.getPrimitive(mStructure, mFeature);
@@ -62,6 +79,10 @@ public final class FeatureValue implements IAdaptable {
     return mStructure.getFeatureValue(mFeature);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+   */
+  @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     if (AnnotationFS.class.equals(adapter)) {
       if (getValue() instanceof AnnotationFS) {
@@ -78,6 +99,9 @@ public final class FeatureValue implements IAdaptable {
     return null;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object object) {
     boolean result = false;
@@ -94,6 +118,9 @@ public final class FeatureValue implements IAdaptable {
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     return mStructure.hashCode() | mFeature.hashCode();

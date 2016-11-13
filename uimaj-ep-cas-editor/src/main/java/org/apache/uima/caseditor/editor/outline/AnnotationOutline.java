@@ -65,6 +65,7 @@ import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
+// TODO: Auto-generated Javadoc
 /**
  * This outline view displays all <code>AnnotationFS</code>s of the current
  * mode/type from the binded editor.
@@ -79,14 +80,19 @@ public final class AnnotationOutline extends ContentOutlinePage
 
     /**
      * Called if the editor annotation mode was changed.
-     * 
-     * @param newMode
+     *
+     * @param newMode the new mode
      */
+    @Override
     public void annotationModeChanged(Type newMode) {
       changeAnnotationMode();
       mTableViewer.refresh();
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.IAnnotationEditorModifyListener#showAnnotationsChanged(java.util.Collection)
+     */
+    @Override
     public void showAnnotationsChanged(Collection<Type> shownAnnotationTypes) {
       mTableViewer.refresh();
     }
@@ -106,12 +112,16 @@ public final class AnnotationOutline extends ContentOutlinePage
     }
   }
 
+  /** The editor change listener. */
   private IAnnotationEditorModifyListener editorChangeListener;
   
+  /** The style. */
   private OutlineStyles style = OutlineStyles.TYPE;
   
+  /** The m outline composite. */
   private Composite mOutlineComposite;
 
+  /** The m table viewer. */
   private TreeViewer mTableViewer;
 
   /**
@@ -132,7 +142,7 @@ public final class AnnotationOutline extends ContentOutlinePage
   /**
    * Creates the outline table control.
    *
-   * @param parent
+   * @param parent the parent
    */
   @Override
   public void createControl(Composite parent) {
@@ -157,6 +167,7 @@ public final class AnnotationOutline extends ContentOutlinePage
     source.addDragListener(new DragSourceListener() {
       TreeItem dragSourceItem = null;
 
+      @Override
       public void dragStart(DragSourceEvent event) {
         TreeItem[] selection = mTableViewer.getTree().getSelection();
 
@@ -168,12 +179,14 @@ public final class AnnotationOutline extends ContentOutlinePage
         }
       }
 
+      @Override
       public void dragSetData(DragSourceEvent event) {
         IAdaptable adaptable = (IAdaptable) dragSourceItem.getData();
 
         event.data = adaptable.getAdapter(FeatureStructure.class);
       }
 
+      @Override
       public void dragFinished(DragSourceEvent event) {
         // not needed
       }
@@ -192,9 +205,9 @@ public final class AnnotationOutline extends ContentOutlinePage
 
   /**
    * Adds the these actions to the global action handler: {@link DeleteFeatureStructureAction}
-   * SelectAllAction
+   * SelectAllAction.
    *
-   * @param actionBars
+   * @param actionBars the new action bars
    */
   @Override
   public void setActionBars(IActionBars actionBars) {
@@ -274,10 +287,20 @@ public final class AnnotationOutline extends ContentOutlinePage
     super.setActionBars(actionBars);
   }
 
+  /**
+   * Current style.
+   *
+   * @return the outline styles
+   */
   OutlineStyles currentStyle() {
 	  return style;
   }
   
+  /**
+   * Switch style.
+   *
+   * @param style the style
+   */
   void switchStyle(OutlineStyles style) {
 	  
 	  this.style = style;
@@ -303,11 +326,19 @@ public final class AnnotationOutline extends ContentOutlinePage
     mOutlineComposite.setFocus();
   }
 
+  /**
+   * Change annotation mode.
+   */
   private void changeAnnotationMode() {
     mTableViewer.setInput(editor.getDocument());
     mTableViewer.refresh();
   }
 
+  /**
+   * Creates the table viewer.
+   *
+   * @param parent the parent
+   */
   private void createTableViewer(Composite parent) {
     int style = SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION;
 
@@ -370,6 +401,10 @@ public final class AnnotationOutline extends ContentOutlinePage
     // set input element here ... this is the document
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.ISelectionListener#selectionChanged(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+   */
+  @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
     
     boolean isForeignSelection = true;
@@ -399,6 +434,9 @@ public final class AnnotationOutline extends ContentOutlinePage
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.Page#dispose()
+   */
   @Override
   public void dispose() {
     
@@ -410,6 +448,11 @@ public final class AnnotationOutline extends ContentOutlinePage
     editor.removeAnnotationListener(editorChangeListener);
   }
 
+  /**
+   * Gets the viewer.
+   *
+   * @return the viewer
+   */
   Viewer getViewer() {
     return mTableViewer;
   }

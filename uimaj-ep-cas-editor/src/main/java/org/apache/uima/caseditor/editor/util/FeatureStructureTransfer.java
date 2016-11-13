@@ -19,12 +19,15 @@
 
 package org.apache.uima.caseditor.editor.util;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class is able to transfer a {@link org.apache.uima.cas.FeatureStructure}
  * objects.
  */
 public class FeatureStructureTransfer extends ObjectTransfer
 {
+    
+    /** The s feature structure transfer. */
     private static FeatureStructureTransfer sFeatureStructureTransfer;
 
     /**

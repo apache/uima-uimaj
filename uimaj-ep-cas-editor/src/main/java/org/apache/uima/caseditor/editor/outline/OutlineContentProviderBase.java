@@ -32,23 +32,37 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OutlineContentProviderBase.
+ */
 abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentListener
 		implements ITreeContentProvider {
 	
+	/** The m editor. */
 	protected AnnotationEditor mEditor;
 	  
+	/** The m input document. */
 	protected ICasDocument mInputDocument;
 
+    /** The viewer. */
     protected TreeViewer viewer;
 
+    /**
+     * Instantiates a new outline content provider base.
+     *
+     * @param editor the editor
+     * @param viewer the viewer
+     */
     protected OutlineContentProviderBase(AnnotationEditor editor, TreeViewer viewer) {
     	this.viewer = viewer;
     	this.mEditor = editor;
     }
     
     /**
-     * not implemented
+     * not implemented.
      */
+    @Override
     public void dispose() {
       // currently not implemented
     }
@@ -57,11 +71,12 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	 * Gets called if the viewer input was changed. In this case, this only happens once if the
 	 * {@link AnnotationOutline} is initialized.
 	 *
-	 * @param viewer
-	 * @param oldInput
-	 * @param newInput
+	 * @param viewer the viewer
+	 * @param oldInput the old input
+	 * @param newInput the new input
 	 */
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	@Override
+  public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	  if (oldInput != null) {
 	    ((ICasDocument) oldInput).removeChangeListener(this);
 	  }
@@ -78,7 +93,7 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	/**
 	 * Updates the given annotation in the viewer.
 	 *
-	 * @param featureStructres
+	 * @param featureStructres the feature structres
 	 */
 	@Override
 	protected void updatedAnnotation(Collection<AnnotationFS> featureStructres) {
@@ -98,7 +113,8 @@ abstract class OutlineContentProviderBase extends AbstractAnnotationDocumentList
 	  }
 	
 	  Display.getDefault().syncExec(new Runnable() {
-	    public void run() {
+	    @Override
+      public void run() {
 	    	viewer.update(items, null);
 	    }
 	  });

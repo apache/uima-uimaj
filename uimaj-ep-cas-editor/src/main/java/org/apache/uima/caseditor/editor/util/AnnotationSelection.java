@@ -31,6 +31,7 @@ import org.apache.uima.caseditor.editor.FeatureStructureSelectionIterator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
+// TODO: Auto-generated Javadoc
 /**
  * The annotation collection contains only {@link AnnotationFS}s objects which are selected by a
  * {@link IStructuredSelection}.
@@ -39,12 +40,13 @@ import org.eclipse.jface.viewers.StructuredSelection;
  */
 public class AnnotationSelection {
 
+  /** The m annotations. */
   private List<AnnotationFS> mAnnotations;
 
   /**
    * Initializes the current instance.
    *
-   * @param structures
+   * @param structures the structures
    */
   public AnnotationSelection(Collection<FeatureStructure> structures) {
     mAnnotations = new ArrayList<AnnotationFS>(structures.size());
@@ -61,11 +63,11 @@ public class AnnotationSelection {
   /**
    * Initializes a the current instance with all AnnotationFS object that are contained in the
    * {@link StructuredSelection}.
-   *
+   * 
    * Note: {@link AnnotationFS} instances will be sorted in this selection, the natural oder of
    * the selection is destroyed
    *
-   * @param selection
+   * @param selection the selection
    */
   public AnnotationSelection(IStructuredSelection selection) {
 
@@ -128,9 +130,8 @@ public class AnnotationSelection {
   /**
    * Retrieves an ordered list of {@link AnnotationFS} objects.
    *
-   * @see AnnotationComparator is used for ordering the annotations
-   *
    * @return all selected {@link AnnotationFS} objects
+   * @see AnnotationComparator is used for ordering the annotations
    */
   public List<AnnotationFS> toList() {
     return mAnnotations;

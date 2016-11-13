@@ -53,45 +53,63 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FlowSection.
+ */
 public class FlowSection extends AbstractSection {
 
+  /** The Constant FIXED_FLOW. */
   public static final String FIXED_FLOW = "Fixed Flow"; //$NON-NLS-1$
 
+  /** The Constant CAPABILITY_LANGUAGE_FLOW. */
   public static final String CAPABILITY_LANGUAGE_FLOW = "Capability Language Flow"; //$NON-NLS-1$
 
+  /** The Constant USER_DEFINED_FLOW. */
   public static final String USER_DEFINED_FLOW = "User-defined Flow";
 
+  /** The flow controller choice. */
   private CCombo flowControllerChoice;
 
+  /** The flow list. */
   Table flowList; // need access from inner class
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The flow controller GUI. */
   private Label flowControllerGUI;
 
+  /** The specify flow controller import button. */
   private Button specifyFlowControllerImportButton;
 
+  /** The find flow controller descriptor button. */
   private Button findFlowControllerDescriptorButton;
 
+  /** The flow controller label. */
   private Label flowControllerLabel;
 
+  /** The flow controller key label. */
   private Label flowControllerKeyLabel;
 
+  /** The flow controller key GUI. */
   private Label flowControllerKeyGUI;
 
+  /** The flow choice label. */
   // private Label flowControllerSpecifierLabel;
   private Label flowChoiceLabel;
 
+  /** The b disable tool tip help. */
   private boolean bDisableToolTipHelp;
 
   /**
-   * creates a section only for aggregate specifiers to define the flow of their delegates
-   * 
-   * @param aEditor
-   *          the referenced multipage editor
-   * @param parent         
+   * creates a section only for aggregate specifiers to define the flow of their delegates.
+   *
+   * @param aEditor          the referenced multipage editor
+   * @param parent the parent
    */
   public FlowSection(MultiPageEditor aEditor, Composite parent) {
     super(aEditor, parent, Messages.getString("FlowSection.ComponentEngineFlowTitle"), //$NON-NLS-1$
@@ -104,6 +122,7 @@ public class FlowSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
    */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -178,6 +197,7 @@ public class FlowSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     super.refresh();
 
@@ -199,7 +219,7 @@ public class FlowSection extends AbstractSection {
       // add them to the list
       for (int i = 0; i < nodes.length; i++) {
         TableItem item = new TableItem(flowList, SWT.NONE);
-        item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR) //$NON-NLS-1$
+        item.setImage(TAEConfiguratorPlugin.getImage(TAEConfiguratorPlugin.IMAGE_ANNOTATOR) 
                 );
         item.setText(0, nodes[i]);
       }
@@ -229,6 +249,11 @@ public class FlowSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Refresh fcd.
+   *
+   * @param fcd the fcd
+   */
   private void refreshFcd(FlowControllerDeclaration fcd) {
     enableFlowControllerGUI(true);
     String keyName;
@@ -256,6 +281,11 @@ public class FlowSection extends AbstractSection {
     flowControllerGUI.getParent().redraw();
   }
 
+  /**
+   * Enable flow controller GUI.
+   *
+   * @param enableState the enable state
+   */
   private void enableFlowControllerGUI(boolean enableState) {
     flowControllerLabel.setEnabled(enableState);
     flowControllerGUI.setEnabled(enableState);
@@ -271,6 +301,8 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
+   * Gets the model flow.
+   *
    * @return the flow constraints
    */
   private FlowConstraints getModelFlow() {
@@ -282,6 +314,7 @@ public class FlowSection extends AbstractSection {
    * 
    * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
    */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == flowControllerChoice) {
       String flowTypeGUI = flowControllerChoice.getText();
@@ -385,6 +418,11 @@ public class FlowSection extends AbstractSection {
     }
   }
 
+  /**
+   * Handle hover help.
+   *
+   * @param event the event
+   */
   private void handleHoverHelp(Event event) {
     String sDesc = "";
     FlowControllerDeclaration fcd = editor.getResolvedFlowControllerDeclaration();
@@ -395,6 +433,11 @@ public class FlowSection extends AbstractSection {
     flowControllerGUI.setToolTipText(sDesc);
   }
 
+  /**
+   * Handle context menu request.
+   *
+   * @param event the event
+   */
   private void handleContextMenuRequest(Event event) {
     Import imp = getFlowControllerDeclaration().getImport();
 
@@ -403,11 +446,17 @@ public class FlowSection extends AbstractSection {
     bDisableToolTipHelp = false;
   }
 
+  /**
+   * Finish flow action.
+   */
   private void finishFlowAction() {
     setFileDirty();
     refresh(); // calls enable
   }
 
+  /**
+   * Handle remove.
+   */
   public void handleRemove() {
     // get node to remove
     int removedItemIndex = flowList.getSelectionIndex();
@@ -431,10 +480,9 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
-   * Adds a node to the flowList
-   * 
-   * @param node
-   *          the key of the delegate
+   * Adds a node to the flowList.
+   *
+   * @param node          the key of the delegate
    */
   public void addNode(String node) {
     FlowConstraints flowConstraints = getModelFlow();
@@ -465,6 +513,7 @@ public class FlowSection extends AbstractSection {
    * Enables and disables section, enables and disables buttons after content.
    * 
    */
+  @Override
   public void enable() {
 
     // if annotator is primitive disable whole section
@@ -499,9 +548,9 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
-   * Proofs if a node is contained in the list of nodes
-   * 
-   * @param node
+   * Proofs if a node is contained in the list of nodes.
+   *
+   * @param node the node
    * @return whether the node is in the list or not
    */
   public boolean containsNode(String node) {
@@ -517,6 +566,8 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
+   * Gets the down button.
+   *
    * @return the down button
    */
   public Button getDownButton() {
@@ -524,6 +575,8 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
+   * Gets the flow list.
+   *
    * @return the flow list
    */
   public Table getFlowList() {
@@ -531,12 +584,17 @@ public class FlowSection extends AbstractSection {
   }
 
   /**
+   * Gets the up button.
+   *
    * @return the up button
    */
   public Button getUpButton() {
     return upButton;
   }
 
+  /**
+   * Removes the all.
+   */
   public void removeAll() {
     FlowConstraints flow = getModelFlow();
     if (flow != null) {
@@ -546,6 +604,7 @@ public class FlowSection extends AbstractSection {
     }
   }
 
+  /** The Constant flowControllerHeadersLC. */
   private static final String[] flowControllerHeadersLC = new String[] { "<flowcontrollerdescription" }; // don't
 
   // end
@@ -557,6 +616,9 @@ public class FlowSection extends AbstractSection {
   // a
   // cr/lf
 
+  /**
+   * Handle find flow controller.
+   */
   private void handleFindFlowController() {
     FindComponentDialog dialog1 = new FindComponentDialog(this, "Find a Flow Controller",
             "Specify a name pattern and/or other constraints, and then push the Search button",
@@ -599,6 +661,13 @@ public class FlowSection extends AbstractSection {
     }
   }
 
+  /**
+   * Produce key add flow controller.
+   *
+   * @param shortName the short name
+   * @param fullPathFileName the full path file name
+   * @param isImportByName the is import by name
+   */
   private void produceKeyAddFlowController(String shortName, String fullPathFileName,
           boolean isImportByName) {
     Import imp = createImport(fullPathFileName, isImportByName);
@@ -645,6 +714,9 @@ public class FlowSection extends AbstractSection {
     refresh(); // refresh every time to capture the order of items added
   }
 
+  /**
+   * Handle specify flow controller.
+   */
   private void handleSpecifyFlowController() {
     MultiResourceSelectionDialog dialog = new MultiResourceSelectionDialog(getSection().getShell(),
             editor.getFile().getProject().getParent(), "Flow Controller Selection", editor
@@ -662,6 +734,12 @@ public class FlowSection extends AbstractSection {
     }
   }
 
+  /**
+   * Check for one selection.
+   *
+   * @param numberSelected the number selected
+   * @return true, if successful
+   */
   private boolean checkForOneSelection(int numberSelected) {
     if (numberSelected > 1) {
       Utility.popMessage("Error - Multiple selection",

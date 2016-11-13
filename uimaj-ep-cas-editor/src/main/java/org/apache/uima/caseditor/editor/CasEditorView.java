@@ -34,6 +34,7 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
+// TODO: Auto-generated Javadoc
 /**
  * Base class for views which show information about the {@link CAS} opened
  * in the editor.
@@ -47,14 +48,22 @@ import org.eclipse.ui.part.PageBookView;
  */
 public abstract class CasEditorView extends PageBookView {
 
+  /** The editor not available message. */
   private final String editorNotAvailableMessage;
 
+  /** The editor listener map. */
   private Map<ICasEditor, ICasEditorInputListener> editorListenerMap =
           new HashMap<ICasEditor, ICasEditorInputListener>();
   
+  /** The document listener map. */
   private Map<ICasEditor, ICasDocumentListener> documentListenerMap =
           new HashMap<ICasEditor, ICasDocumentListener>();
   
+  /**
+   * Instantiates a new cas editor view.
+   *
+   * @param editorNotAvailableMessage the editor not available message
+   */
   public CasEditorView(String editorNotAvailableMessage) {
     this.editorNotAvailableMessage = editorNotAvailableMessage;
   }
@@ -76,6 +85,9 @@ public abstract class CasEditorView extends PageBookView {
     return false;
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.PageBookView#createDefaultPage(org.eclipse.ui.part.PageBook)
+   */
   @Override
   protected IPage createDefaultPage(PageBook book) {
     MessagePage page = new MessagePage();
@@ -86,9 +98,21 @@ public abstract class CasEditorView extends PageBookView {
   }
 
   // Creates a new page if document is available and CAS view is compatible
+  /**
+   * Do create page.
+   *
+   * @param editor the editor
+   * @return the i page book view page
+   */
   // Will be recreated on view switch (need a flag to disable that) and input cas switch
   protected abstract IPageBookViewPage doCreatePage(ICasEditor editor);
 
+  /**
+   * Creates the view page.
+   *
+   * @param casViewPageBookedPage the cas view page booked page
+   * @param editor the editor
+   */
   private void createViewPage( CasEditorViewPage casViewPageBookedPage, ICasEditor editor) {
     
     IPageBookViewPage page = doCreatePage(editor);
@@ -106,6 +130,9 @@ public abstract class CasEditorView extends PageBookView {
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.PageBookView#doCreatePage(org.eclipse.ui.IWorkbenchPart)
+   */
   @Override
   protected final PageRec doCreatePage(final IWorkbenchPart part) {
 
@@ -134,6 +161,7 @@ public abstract class CasEditorView extends PageBookView {
       
       ICasEditorInputListener inputListener = new ICasEditorInputListener() {
         
+        @Override
         public void casDocumentChanged(IEditorInput oldInput, ICasDocument oldDocument,
                 IEditorInput newInput, ICasDocument newDocument) {
           
@@ -169,11 +197,17 @@ public abstract class CasEditorView extends PageBookView {
     return result;
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.PageBookView#getBootstrapPart()
+   */
   @Override
   protected IWorkbenchPart getBootstrapPart() {
     return getSite().getPage().getActiveEditor();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.PageBookView#doDestroyPage(org.eclipse.ui.IWorkbenchPart, org.eclipse.ui.part.PageBookView.PageRec)
+   */
   @Override
   protected void doDestroyPage(IWorkbenchPart part, PageRec pageRecord) {
     
@@ -197,6 +231,9 @@ public abstract class CasEditorView extends PageBookView {
     pageRecord.dispose();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.PageBookView#isImportant(org.eclipse.ui.IWorkbenchPart)
+   */
   @Override
   protected boolean isImportant(IWorkbenchPart part) {
     // only interested in annotation editors
@@ -206,13 +243,16 @@ public abstract class CasEditorView extends PageBookView {
   /**
    * Look at {@link IPartListener#partBroughtToTop(IWorkbenchPart)}.
    *
-   * @param part
+   * @param part the part
    */
   @Override
   public void partBroughtToTop(IWorkbenchPart part) {
     partActivated(part);
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.part.PageBookView#dispose()
+   */
   @Override
   public void dispose() {
     

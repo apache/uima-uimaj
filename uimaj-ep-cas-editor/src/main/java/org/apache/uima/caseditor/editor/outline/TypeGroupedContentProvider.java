@@ -37,6 +37,7 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
+// TODO: Auto-generated Javadoc
 /**
  * The content provider for the type grouped annotation outline.
  * 
@@ -46,14 +47,24 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 
+	/** The name annotation type node map. */
 	// map of AnnotationTypeTreeNode
 	private Map<String, AnnotationTypeTreeNode> nameAnnotationTypeNodeMap = 
 			new HashMap<String, AnnotationTypeTreeNode>();
 
+	/**
+	 * Instantiates a new type grouped content provider.
+	 *
+	 * @param editor the editor
+	 * @param viewer the viewer
+	 */
 	TypeGroupedContentProvider(AnnotationEditor editor, TreeViewer viewer) {
 		super(editor, viewer);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#addedAnnotation(java.util.Collection)
+	 */
 	@Override
 	protected void addedAnnotation(Collection<AnnotationFS> annotations) {
 
@@ -70,6 +81,9 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.apache.uima.caseditor.editor.AbstractAnnotationDocumentListener#removedAnnotation(java.util.Collection)
+	 */
 	@Override
 	protected void removedAnnotation(Collection<AnnotationFS> annotations) {
 
@@ -94,12 +108,20 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		viewer.remove(removeAnnotations.toArray());
 	}
 
-	public Object[] getElements(Object inputElement) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+	 */
+	@Override
+  public Object[] getElements(Object inputElement) {
 	
 		return nameAnnotationTypeNodeMap.values().toArray();
 	}
 
-	public Object getParent(Object element) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+	 */
+	@Override
+  public Object getParent(Object element) {
 	
 		if (element instanceof AnnotationTreeNode) {
 			AnnotationTreeNode annotation = (AnnotationTreeNode) element;
@@ -126,7 +148,11 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 	}
 
-	public boolean hasChildren(Object element) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+	 */
+	@Override
+  public boolean hasChildren(Object element) {
 		if (element instanceof AnnotationTypeTreeNode) {
 			AnnotationTypeTreeNode treeNode = (AnnotationTypeTreeNode) element;
 			
@@ -136,18 +162,30 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 	}
 
-	public Object[] getChildren(Object parentElement) {
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+	 */
+	@Override
+  public Object[] getChildren(Object parentElement) {
 
 		AnnotationTypeTreeNode typeNode = (AnnotationTypeTreeNode) parentElement;
 
 		return typeNode.getAnnotations();
 	}
 
-	public void viewChanged(String oldViewName, String newViewName) {
+	/* (non-Javadoc)
+	 * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
+	 */
+	@Override
+  public void viewChanged(String oldViewName, String newViewName) {
 		changed();
 	}
 	
-	public void changed() {
+	/* (non-Javadoc)
+	 * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
+	 */
+	@Override
+  public void changed() {
 		nameAnnotationTypeNodeMap.clear();
 		
 		TypeSystem typeSystem = mInputDocument.getCAS().getTypeSystem();
@@ -177,6 +215,7 @@ public class TypeGroupedContentProvider extends OutlineContentProviderBase {
 		}
 
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
         	viewer.refresh();
         }

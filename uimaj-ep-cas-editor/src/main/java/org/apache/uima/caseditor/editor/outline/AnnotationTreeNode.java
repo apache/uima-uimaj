@@ -27,18 +27,30 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public class AnnotationTreeNode implements IAdaptable {
+  
+  /** The m parent. */
   private AnnotationTreeNode mParent;
 
+  /** The m children. */
   private final AnnotationTreeNodeList mChildren;
 
+  /** The m annotation. */
   private final AnnotationFS mAnnotation;
 
+  /** The m document. */
   private final ICasDocument mDocument;
 
+  /**
+   * Instantiates a new annotation tree node.
+   *
+   * @param document the document
+   * @param annotation the annotation
+   */
   AnnotationTreeNode(ICasDocument document, AnnotationFS annotation) {
     Assert.isNotNull(document);
     mDocument = document;
@@ -49,14 +61,29 @@ public class AnnotationTreeNode implements IAdaptable {
     mChildren = new AnnotationTreeNodeList(mDocument);
   }
 
+  /**
+   * Gets the parent.
+   *
+   * @return the parent
+   */
   AnnotationTreeNode getParent() {
     return mParent;
   }
 
+  /**
+   * Gets the children.
+   *
+   * @return the children
+   */
   List<AnnotationTreeNode> getChildren() {
     return mChildren.getElements();
   }
 
+  /**
+   * Gets the annotation.
+   *
+   * @return the annotation
+   */
   AnnotationFS getAnnotation() {
     return mAnnotation;
   }
@@ -64,7 +91,7 @@ public class AnnotationTreeNode implements IAdaptable {
   /**
    * Checks if the given node is completly contained by the current node instance.
    *
-   * @param node
+   * @param node the node
    * @return true if completly contained otherwise false
    */
   boolean isChild(AnnotationTreeNode node) {
@@ -72,6 +99,11 @@ public class AnnotationTreeNode implements IAdaptable {
             && getAnnotation().getEnd() >= node.getAnnotation().getEnd();
   }
 
+  /**
+   * Adds the child.
+   *
+   * @param node the node
+   */
   void addChild(AnnotationTreeNode node) {
     node.mParent = this;
 
@@ -80,6 +112,10 @@ public class AnnotationTreeNode implements IAdaptable {
     mChildren.buildTree();
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+   */
+  @Override
   public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
     // TODO:
     // use ModelFeatureStructure
@@ -94,6 +130,9 @@ public class AnnotationTreeNode implements IAdaptable {
     }
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     
@@ -106,6 +145,9 @@ public class AnnotationTreeNode implements IAdaptable {
     return mAnnotation.hashCode();
   }
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     

@@ -26,6 +26,7 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 
+// TODO: Auto-generated Javadoc
 /**
  * A factory for drawing styles.
  * 
@@ -33,6 +34,7 @@ import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
  */
 public class DrawingStyle {
 
+  /** The stateless styles. */
   private static Map<AnnotationStyle.Style, IDrawingStrategy> statelessStyles =
       new HashMap<AnnotationStyle.Style, IDrawingStrategy>();
   
@@ -48,12 +50,16 @@ public class DrawingStyle {
     statelessStyles.put(Style.BRACKET, new BracketDrawingStrategy());
   }
 
+  /**
+   * Instantiates a new drawing style.
+   */
   private DrawingStyle() {
   }
 
   /**
    * Retrieves the {@link IDrawingStrategy}.
    *
+   * @param style the style
    * @return the {@link IDrawingStrategy} or null if does not exist.
    */
   public static IDrawingStrategy createStrategy(AnnotationStyle style) {

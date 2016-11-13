@@ -35,30 +35,53 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PriorityListSection.
+ */
 public class PriorityListSection extends AbstractSection {
 
+  /** The Constant PRIORITY_LIST. */
   public static final String PRIORITY_LIST = "<Priority List>";
 
+  /** The tree. */
   private Tree tree;
 
+  /** The add set button. */
   private Button addSetButton;
 
+  /** The add button. */
   private Button addButton;
 
+  /** The remove button. */
   private Button removeButton;
 
+  /** The up button. */
   private Button upButton;
 
+  /** The down button. */
   private Button downButton;
 
+  /** The type priority import section. */
   private TypePriorityImportSection typePriorityImportSection;
 
+  /** The export button. */
   private Button exportButton;
 
+  /**
+   * Instantiates a new priority list section.
+   *
+   * @param editor the editor
+   * @param parent the parent
+   */
   public PriorityListSection(MultiPageEditor editor, Composite parent) {
     super(editor, parent, "Priority Lists", "This section shows the defined Prioirity Lists");
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#initialize(org.eclipse.ui.forms.IManagedForm)
+   */
+  @Override
   public void initialize(IManagedForm form) {
     super.initialize(form);
 
@@ -87,6 +110,7 @@ public class PriorityListSection extends AbstractSection {
    * 
    * @see org.eclipse.ui.forms.IFormPart#refresh()
    */
+  @Override
   public void refresh() {
     if (null == typePriorityImportSection)
       typePriorityImportSection = editor.getIndexesPage().getTypePriorityImportSection();
@@ -116,12 +140,22 @@ public class PriorityListSection extends AbstractSection {
     enable();
   }
 
+  /**
+   * Gets the type priority list from tree item.
+   *
+   * @param item the item
+   * @return the type priority list from tree item
+   */
   public TypePriorityList getTypePriorityListFromTreeItem(TreeItem item) {
     TypePriorityList[] typePriorityLists = getAnalysisEngineMetaData().getTypePriorities()
             .getPriorityLists();
     return typePriorityLists[tree.indexOf(item)];
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+   */
+  @Override
   public void handleEvent(Event event) {
     if (event.widget == addSetButton) {
       TypePriorityList typePriorityList = UIMAFramework.getResourceSpecifierFactory()
@@ -252,6 +286,10 @@ public class PriorityListSection extends AbstractSection {
     enable();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.taeconfigurator.editors.ui.AbstractSection#enable()
+   */
+  @Override
   public void enable() {
 
     if (tree.getSelectionCount() == 1) {

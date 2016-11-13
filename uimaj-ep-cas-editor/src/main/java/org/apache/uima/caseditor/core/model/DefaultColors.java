@@ -32,6 +32,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility to assign default colors to the annotation types in the
  * TypeSystem.
@@ -39,9 +40,11 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
 public class DefaultColors {
 
   // colors to use for highlighting annotations
+  /** The Constant BRIGHT. */
   // (use high brightness for best contrast against black text)
   private static final float BRIGHT = 0.95f;
   
+  /** The Constant COLORS. */
   public static final Color[] COLORS = new Color[] {
     // low saturation colors are best, so put them first
     Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
@@ -83,9 +86,10 @@ public class DefaultColors {
    * Assigns color to the annotation types in the provided <code>TypeSystem</code>.
    * If a user provides an already existing mapping these will not be changed
    * and taken into account when mapping the not assigned types.
-   * 
+   *
    * @param ts the <code>TypeSystem</code>
    * @param styles already existing styles which map an annotation to a color
+   * @return the collection
    */
   public static Collection<AnnotationStyle> assignColors(TypeSystem ts, Collection<AnnotationStyle> styles) {
     

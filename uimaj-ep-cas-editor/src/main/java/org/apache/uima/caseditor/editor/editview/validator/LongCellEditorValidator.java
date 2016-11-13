@@ -21,6 +21,7 @@ package org.apache.uima.caseditor.editor.editview.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
+// TODO: Auto-generated Javadoc
 /**
  * This {@link ICellEditorValidator} validates {@link String} values which represents a {@link Long}.
  *
@@ -31,9 +32,10 @@ public class LongCellEditorValidator implements ICellEditorValidator {
   /**
    * Checks if the given value is a valid {@link Long}.
    *
-   * @param value
+   * @param value the value
    * @return null if valid otherwise an error message
    */
+  @Override
   public String isValid(Object value) {
     assert value instanceof String;
 

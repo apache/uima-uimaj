@@ -32,34 +32,50 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates the mode context sub menu.
  */
 public class ModeMenu extends TypeMenu {
 	
+  /** The editor. */
   private AnnotationEditor editor;
   
+  /** The listeners. */
   private Set<IModeMenuListener> listeners = new HashSet<IModeMenuListener>();
 
   /**
    * Initializes a new instance.
    *
-   * @param typeSystem
-   * @param editor
+   * @param typeSystem the type system
+   * @param editor the editor
    */
   public ModeMenu(TypeSystem typeSystem, AnnotationEditor editor) {
     super(typeSystem.getType(CAS.TYPE_NAME_ANNOTATION), typeSystem);
     this.editor = editor;
   }
 
+  /**
+   * Adds the listener.
+   *
+   * @param listener the listener
+   */
   public void addListener(IModeMenuListener listener) {
 	  listeners.add(listener);
   }
   
+  /**
+   * Removes the listener.
+   *
+   * @param listener the listener
+   */
   public void removeListener(IModeMenuListener listener) {
 	  listeners.remove(listener);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.contextmenu.TypeMenu#insertAction(org.apache.uima.cas.Type, org.eclipse.swt.widgets.Menu)
+   */
   @Override
   protected void insertAction(final Type type, Menu parentMenu) {
     MenuItem actionItem = new MenuItem(parentMenu, SWT.CHECK);
@@ -69,6 +85,7 @@ public class ModeMenu extends TypeMenu {
         actionItem.setSelection(true);
     
     actionItem.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event e) {
 
     	for (IModeMenuListener listener : listeners) {

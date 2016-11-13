@@ -30,6 +30,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 
+// TODO: Auto-generated Javadoc
 /**
  * The <code>AnnotationDocument</code> adapts the annotation document to the eclipse Document
  * (needed for the editor).
@@ -38,10 +39,15 @@ import org.eclipse.jface.text.DocumentEvent;
  */
 class AnnotationDocument extends Document implements ICasDocument {
 
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /** The line length hint. */
   private int lineLengthHint;
 
+  /**
+   * Instantiates a new annotation document.
+   */
   public AnnotationDocument() {
     IPreferenceStore prefStore = CasEditorPlugin.getDefault().getPreferenceStore();
     lineLengthHint = prefStore.getInt(AnnotationEditorPreferenceConstants.EDITOR_LINE_LENGTH_HINT);
@@ -50,6 +56,12 @@ class AnnotationDocument extends Document implements ICasDocument {
       lineLengthHint = 80;
   }
 
+  /**
+   * Transform text.
+   *
+   * @param text the text
+   * @return the string
+   */
   private String transformText(String text) {
     if (lineLengthHint != 0 && text != null) {
       return wrapWords(text, lineLengthHint);
@@ -86,7 +98,9 @@ class AnnotationDocument extends Document implements ICasDocument {
   // }
 
   /**
-   * @param element
+   * Sets the document.
+   *
+   * @param element the new document
    */
   public void setDocument(ICasDocument element) {
     mDocument = element;
@@ -94,15 +108,21 @@ class AnnotationDocument extends Document implements ICasDocument {
     set(getText());
   }
 
+  /**
+   * Gets the document.
+   *
+   * @return the document
+   */
   public ICasDocument getDocument() {
     return mDocument;
   }
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param annotation
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void addFeatureStructure(FeatureStructure annotation) {
     mDocument.addFeatureStructure(annotation);
 
@@ -111,9 +131,10 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param annotations
+   *
+   * @param annotations the annotations
    */
+  @Override
   public void addFeatureStructures(Collection<? extends FeatureStructure> annotations) {
     mDocument.addFeatureStructures(annotations);
 
@@ -122,9 +143,10 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param annotation
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void removeFeatureStructure(FeatureStructure annotation) {
     mDocument.removeFeatureStructure(annotation);
 
@@ -133,9 +155,10 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param annotationsToRemove
+   *
+   * @param annotationsToRemove the annotations to remove
    */
+  @Override
   public void removeFeatureStructures(Collection<? extends FeatureStructure> annotationsToRemove) {
     mDocument.removeFeatureStructures(annotationsToRemove);
 
@@ -144,9 +167,10 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param annotation
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void update(FeatureStructure annotation) {
     mDocument.update(annotation);
 
@@ -155,9 +179,10 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param annotations
+   *
+   * @param annotations the annotations
    */
+  @Override
   public void updateFeatureStructure(Collection<? extends FeatureStructure> annotations) {
     mDocument.updateFeatureStructure(annotations);
 
@@ -167,6 +192,7 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Called to notify that the whole document has been changed and must now synchronized.
    */
+  @Override
   public void changed() {
     mDocument.changed();
 
@@ -175,28 +201,31 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param type
+   *
+   * @param type the type
    * @return the annotations
    */
+  @Override
   public Collection<AnnotationFS> getAnnotations(Type type) {
     return mDocument.getAnnotations(type);
   }
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param listener
+   *
+   * @param listener the listener
    */
+  @Override
   public void addChangeListener(ICasDocumentListener listener) {
     mDocument.addChangeListener(listener);
   }
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param listener
+   *
+   * @param listener the listener
    */
+  @Override
   public void removeChangeListener(ICasDocumentListener listener) {
     mDocument.removeChangeListener(listener);
   }
@@ -204,9 +233,9 @@ class AnnotationDocument extends Document implements ICasDocument {
   /**
    * Wrap words at next space after lineLengthHint chars in a line. If the line is shorter than
    * lineLengthHint nothing happens. The space char is replaced with an line feed char.
-   * 
-   * @param textString
-   * @param lineLengthHint
+   *
+   * @param textString the text string
+   * @param lineLengthHint the line length hint
    * @return input text with line breaks
    */
   private String wrapWords(String textString, int lineLengthHint) {
@@ -237,20 +266,26 @@ class AnnotationDocument extends Document implements ICasDocument {
    * 
    * @return the {@link CAS}
    */
+  @Override
   public CAS getCAS() {
     return mDocument.getCAS();
   }
 
   /**
    * Call is forwarded to the set document.
-   * 
-   * @param type
+   *
+   * @param type the type
    * @return the type
    */
+  @Override
   public Type getType(String type) {
     return mDocument.getType(type);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocument#switchView(java.lang.String)
+   */
+  @Override
   public void switchView(String viewName) {
 
     // TODO: Optimize the text retrieval and update notification handling
@@ -270,6 +305,10 @@ class AnnotationDocument extends Document implements ICasDocument {
 
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocument#getTypeSystemText()
+   */
+  @Override
   public String getTypeSystemText() {
     if(mDocument != null) {
       return mDocument.getTypeSystemText();

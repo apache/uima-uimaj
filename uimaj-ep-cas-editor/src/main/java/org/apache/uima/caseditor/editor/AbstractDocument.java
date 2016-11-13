@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 
+// TODO: Auto-generated Javadoc
 /**
  * Abstract base class for document implementations.
  */
@@ -38,26 +39,28 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Registers a change listener.
-   * 
-   * @param listener
+   *
+   * @param listener the listener
    */
+  @Override
   public void addChangeListener(final ICasDocumentListener listener) {
     mListener.add(listener);
   }
 
   /**
    * Unregisters a change listener.
-   * 
-   * @param listener
+   *
+   * @param listener the listener
    */
+  @Override
   public void removeChangeListener(ICasDocumentListener listener) {
     mListener.remove(listener);
   }
 
   /**
    * Sends an added message to registered listeners.
-   * 
-   * @param annotation
+   *
+   * @param annotation the annotation
    */
   protected void fireAddedFeatureStructure(final FeatureStructure annotation) {
     
@@ -65,6 +68,7 @@ public abstract class AbstractDocument implements ICasDocument {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.added(annotation);
         }
@@ -74,8 +78,8 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an added message to registered listeners.
-   * 
-   * @param annotations
+   *
+   * @param annotations the annotations
    */
   protected void fireAddedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
     for (Object listener : mListener.getListeners()) {
@@ -83,6 +87,7 @@ public abstract class AbstractDocument implements ICasDocument {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.added(Collections.unmodifiableCollection(annotations));
         }
@@ -92,8 +97,8 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends a removed message to registered listeners.
-   * 
-   * @param annotation
+   *
+   * @param annotation the annotation
    */
   protected void fireRemovedFeatureStructure(final FeatureStructure annotation) {
     for (Object listener : mListener.getListeners()) {
@@ -101,6 +106,7 @@ public abstract class AbstractDocument implements ICasDocument {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.removed(annotation);
         }
@@ -110,8 +116,8 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends a removed message to registered listeners.
-   * 
-   * @param annotations
+   *
+   * @param annotations the annotations
    */
   protected void fireRemovedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
     for (Object listener : mListener.getListeners()) {
@@ -119,6 +125,7 @@ public abstract class AbstractDocument implements ICasDocument {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.removed(Collections.unmodifiableCollection(annotations));
         }
@@ -128,8 +135,8 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an updated message to registered listeners.
-   * 
-   * @param annotation
+   *
+   * @param annotation the annotation
    */
   protected void fireUpdatedFeatureStructure(final FeatureStructure annotation) {
     for (Object listener : mListener.getListeners()) {
@@ -137,6 +144,7 @@ public abstract class AbstractDocument implements ICasDocument {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.updated(annotation);
         }
@@ -146,8 +154,8 @@ public abstract class AbstractDocument implements ICasDocument {
 
   /**
    * Sends an updated message to registered listeners.
-   * 
-   * @param annotations
+   *
+   * @param annotations the annotations
    */
   protected void fireUpdatedFeatureStructure(final Collection<? extends FeatureStructure> annotations) {
     for (Object listener : mListener.getListeners()) {
@@ -155,6 +163,7 @@ public abstract class AbstractDocument implements ICasDocument {
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.updated(Collections.unmodifiableCollection(annotations));
         }
@@ -162,12 +171,16 @@ public abstract class AbstractDocument implements ICasDocument {
     }
   }
 
+  /**
+   * Fire changed.
+   */
   protected void fireChanged() {
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.changed();
         }
@@ -175,12 +188,19 @@ public abstract class AbstractDocument implements ICasDocument {
     }
   }
 
+  /**
+   * Fire view changed.
+   *
+   * @param oldViewName the old view name
+   * @param newViewName the new view name
+   */
   protected void fireViewChanged(final String oldViewName, final String newViewName) {
     for (Object listener : mListener.getListeners()) {
       
       final ICasDocumentListener documentListener = (ICasDocumentListener) listener;
       
       SafeRunner.run(new SafeRunnable() {
+        @Override
         public void run() {
           documentListener.viewChanged(oldViewName, newViewName);
         }
@@ -188,6 +208,10 @@ public abstract class AbstractDocument implements ICasDocument {
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocument#getTypeSystemText()
+   */
+  @Override
   public String getTypeSystemText() {
     return null;
   }

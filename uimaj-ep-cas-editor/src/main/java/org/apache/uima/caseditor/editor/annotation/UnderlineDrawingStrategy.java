@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+// TODO: Auto-generated Javadoc
 /**
  * Draws an line under an annotation.
  */
@@ -35,13 +36,14 @@ public class UnderlineDrawingStrategy implements IDrawingStrategy {
   /**
    * Draws a line under under a given annotation.
    *
-   * @param annotation
-   * @param gc
-   * @param textWidget
-   * @param offset
-   * @param length
-   * @param color
+   * @param annotation the annotation
+   * @param gc the gc
+   * @param textWidget the text widget
+   * @param offset the offset
+   * @param length the length
+   * @param color the color
    */
+  @Override
   public void draw(Annotation annotation, GC gc, StyledText textWidget, int offset, int length,
           Color color) {
     if (gc != null) {

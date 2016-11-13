@@ -28,29 +28,23 @@ import java.util.Set;
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class contains all project specific configuration parameters. Note: Use DotCorpusSerialzer
  * to read or write an instance of this class to or from a byte stream.
  */
 public class DotCorpus {
-  /**
-   * The default value for editor line length hint
-   */
+  
+  /** The default value for editor line length hint. */
   public static final int EDITOR_LINE_LENGTH_HINT_DEFAULT = 80;
 
-  /**
-   * Name of the type system file
-   */
+  /** Name of the type system file. */
   private String mTypeSystemFileName;
 
-  /**
-   * names of the corpus folders
-   */
+  /** names of the corpus folders. */
   private Set<String> mCorpusFolders = new HashSet<String>();
 
-  /**
-   * Names of the configuration source folders
-   */
+  /** Names of the configuration source folders. */
   private Set<String> mCasProcessorFolders = new HashSet<String>();
 
   /**
@@ -110,15 +104,20 @@ public class DotCorpus {
     mCasProcessorFolders.add(folder);
   }
 
+  /**
+   * Removes the cas processor folder.
+   *
+   * @param folder the folder
+   */
   @Deprecated
   public void removeCasProcessorFolder(String folder) {
     mCasProcessorFolders.remove(folder);
   }
 
   /**
-   * Adds a corpus folder
-   * 
-   * @param name
+   * Adds a corpus folder.
+   *
+   * @param name the name
    */
   @Deprecated
   public void addCorpusFolder(String name) {
@@ -127,8 +126,8 @@ public class DotCorpus {
 
   /**
    * Removes the given corpus folder.
-   * 
-   * @param name
+   *
+   * @param name the name
    */
   @Deprecated
   public void removeCorpusFolder(String name) {
@@ -159,9 +158,8 @@ public class DotCorpus {
 
   /**
    * Sets the editor line length hint parameter.
-   * 
-   * @param lineLengthHint
-   * 
+   *
+   * @param lineLengthHint the new editor line length
    * @deprecated setting was moved to preference store
    */
   @Deprecated
@@ -178,22 +176,37 @@ public class DotCorpus {
     return Collections.unmodifiableCollection(mStyleMap.values());
   }
   
+  /**
+   * Gets the shown types.
+   *
+   * @return the shown types
+   */
   public Collection<String> getShownTypes() {
     return Collections.unmodifiableCollection(shownTypes);
   }
   
+  /**
+   * Sets the shown type.
+   *
+   * @param type the new shown type
+   */
   public void setShownType(String type) {
     shownTypes.add(type);
   }
   
+  /**
+   * Removes the shown type.
+   *
+   * @param type the type
+   */
   public void removeShownType(String type) {
     shownTypes.remove(type);
   }
   
   /**
    * Adds an AnnotationStyle. TODO: move style stuff to nlp project
-   * 
-   * @param style
+   *
+   * @param style the new style
    */
   public void setStyle(AnnotationStyle style) {
 
@@ -210,8 +223,8 @@ public class DotCorpus {
 
   /**
    * Removes an AnnotationStyle for the given name, does nothing if not existent.
-   * 
-   * @param name
+   *
+   * @param name the name
    */
   public void removeStyle(String name) {
     mStyleMap.remove(name);
@@ -219,8 +232,8 @@ public class DotCorpus {
 
   /**
    * Retrieves the AnnotationStyle for the given type or null if not available.
-   * 
-   * @param type
+   *
+   * @param type the type
    * @return the requested style or null if none
    */
   public AnnotationStyle getAnnotation(Type type) {
@@ -236,6 +249,8 @@ public class DotCorpus {
 
   /**
    * Always returns hash code 0.
+   *
+   * @return the int
    */
   @Override
   public int hashCode() {
@@ -244,6 +259,9 @@ public class DotCorpus {
   
   /**
    * Checks if the given object is equal to the current instance.
+   *
+   * @param obj the obj
+   * @return true, if successful
    */
   @Override
   public boolean equals(Object obj) {

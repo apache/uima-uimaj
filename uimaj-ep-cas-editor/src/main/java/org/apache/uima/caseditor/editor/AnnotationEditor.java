@@ -143,14 +143,22 @@ import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.eclipse.ui.texteditor.StatusTextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+// TODO: Auto-generated Javadoc
 /**
  * An editor to annotate text.
  */
 public final class AnnotationEditor extends StatusTextEditor implements ICasEditor, ISelectionListener {
   
+  /**
+   * The Class AbstractAnnotateAction.
+   */
   private abstract class AbstractAnnotateAction extends Action
       implements ISelectionChangedListener {
   
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+     */
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
       setEnabled(AnnotationEditor.this.getSelection().y - 
           AnnotationEditor.this.getSelection().x > 0);
@@ -162,14 +170,16 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private class QuickAnnotateAction extends AbstractAnnotateAction {
     
+    /** The Constant ID. */
     private static final String ID = "QuickAnnotate";
     
+    /** The m text widget. */
     private StyledText mTextWidget;
 
     /**
      * Initializes a new instance.
      *
-     * @param textWidget
+     * @param textWidget the text widget
      */
     QuickAnnotateAction(StyledText textWidget) {
       mTextWidget = textWidget;
@@ -204,15 +214,27 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       }
     }
 
+    /**
+     * Gets the document.
+     *
+     * @return the document
+     */
     ICasDocument getDocument() {
       return AnnotationEditor.this.getDocument();
     }
   }
 
+  /**
+   * The Class SmartAnnotateAction.
+   */
   private class SmartAnnotateAction extends AbstractAnnotateAction {
 
+    /** The Constant ID. */
     private static final String ID = "Annotate";
     
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#run()
+     */
     @Override
     public void run() {
 
@@ -231,6 +253,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * Shows the annotation editing context for the active annotation.
    */
   private class ShowAnnotationContextEditAction extends Action {
+    
+    /** The m presenter. */
     private InformationPresenter mPresenter;
 
     /**
@@ -279,13 +303,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * This <code>IDocumentChangeListener</code> is responsible to synchronize annotation in the
    * document with the annotations in eclipse.
+   *
+   * @see DocumentEvent
    */
   private class DocumentListener extends AbstractAnnotationDocumentListener {
     
     /**
      * Adds a collection of annotations.
      *
-     * @param annotations
+     * @param annotations the annotations
      */
     @Override
     public void addedAnnotation(Collection<AnnotationFS> annotations) {
@@ -304,7 +330,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     /**
      * Removes a collection of annotations.
      *
-     * @param deletedAnnotations
+     * @param deletedAnnotations the deleted annotations
      */
     @Override
     public void removedAnnotation(Collection<AnnotationFS> deletedAnnotations) {
@@ -329,8 +355,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
 
     /**
+     * Updated annotation.
      *
-     * @param annotations
+     * @param annotations the annotations
      */
     @Override
     public void updatedAnnotation(Collection<AnnotationFS> annotations) {
@@ -345,12 +372,20 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       selectionChanged(getSite().getPage().getActivePart(), mFeatureStructureSelectionProvider.getSelection());
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#changed()
+     */
+    @Override
     public void changed() {
       mFeatureStructureSelectionProvider.clearSelection();
 
       syncAnnotations();
     }
     
+    /* (non-Javadoc)
+     * @see org.apache.uima.caseditor.editor.AbstractDocumentListener#viewChanged(java.lang.String, java.lang.String)
+     */
+    @Override
     public void viewChanged(String oldViewName, String newViewName) {
       // TODO: Currently do nothing ... 
     }
@@ -358,14 +393,25 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   /**
    * Sometimes the wrong annotation is selected ... ????
+   *
+   * @see FeatureStructureDragEvent
    */
   private class FeatureStructureDragListener implements DragSourceListener {
+    
+    /** The m is active. */
     private boolean mIsActive;
 
+    /** The m candidate. */
     private AnnotationFS mCandidate;
 
+    /**
+     * Instantiates a new feature structure drag listener.
+     *
+     * @param textWidget the text widget
+     */
     FeatureStructureDragListener(final StyledText textWidget) {
       textWidget.addKeyListener(new KeyListener() {
+        @Override
         public void keyPressed(KeyEvent e) {
           if (e.keyCode == SWT.ALT) {
             mIsActive = true;
@@ -374,6 +420,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           }
         }
 
+        @Override
         public void keyReleased(KeyEvent e) {
           if (e.stateMask == SWT.ALT) {
             mIsActive = false;
@@ -384,6 +431,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
       textWidget.addMouseMoveListener(new MouseMoveListener() {
 
+        @Override
         public void mouseMove(MouseEvent e) {
           if (mIsActive) {
             // try to get the position inside the text
@@ -412,6 +460,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       });
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.dnd.DragSourceListener#dragStart(org.eclipse.swt.dnd.DragSourceEvent)
+     */
+    @Override
     public void dragStart(DragSourceEvent event) {
       if (mIsActive) {
         event.doit = mCandidate != null;
@@ -420,28 +472,55 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.dnd.DragSourceListener#dragSetData(org.eclipse.swt.dnd.DragSourceEvent)
+     */
+    @Override
     public void dragSetData(DragSourceEvent event) {
       event.data = mCandidate;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.swt.dnd.DragSourceListener#dragFinished(org.eclipse.swt.dnd.DragSourceEvent)
+     */
+    @Override
     public void dragFinished(DragSourceEvent event) {
     }
   }
 
+  /**
+   * The Class AnnotationAccess.
+   */
   private class AnnotationAccess implements IAnnotationAccess, IAnnotationAccessExtension {
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccess#getType(org.eclipse.jface.text.source.Annotation)
+     */
+    @Override
     public Object getType(Annotation annotation) {
       return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccess#isMultiLine(org.eclipse.jface.text.source.Annotation)
+     */
+    @Override
     public boolean isMultiLine(Annotation annotation) {
       return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccess#isTemporary(org.eclipse.jface.text.source.Annotation)
+     */
+    @Override
     public boolean isTemporary(Annotation annotation) {
       return false;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccessExtension#getLayer(org.eclipse.jface.text.source.Annotation)
+     */
+    @Override
     public int getLayer(Annotation annotation) {
 
       if (annotation instanceof EclipseAnnotationPeer) {
@@ -461,14 +540,26 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccessExtension#getSupertypes(java.lang.Object)
+     */
+    @Override
     public Object[] getSupertypes(Object annotationType) {
       return new Object[0];
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccessExtension#getTypeLabel(org.eclipse.jface.text.source.Annotation)
+     */
+    @Override
     public String getTypeLabel(Annotation annotation) {
       return null;
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccessExtension#isPaintable(org.eclipse.jface.text.source.Annotation)
+     */
+    @Override
     public boolean isPaintable(Annotation annotation) {
       assert false : "Should never be called";
 
@@ -478,7 +569,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     /**
      * This implementation imitates the behavior without the
      * {@link IAnnotationAccessExtension}.
+     *
+     * @param annotationType the annotation type
+     * @param potentialSupertype the potential supertype
+     * @return true, if is subtype
      */
+    @Override
     public boolean isSubtype(Object annotationType, Object potentialSupertype) {
 
       Type type = getDocument().getCAS().getTypeSystem().getType((String) annotationType);
@@ -487,20 +583,36 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
           getAnnotationMode().equals(type);
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.IAnnotationAccessExtension#paint(org.eclipse.jface.text.source.Annotation, org.eclipse.swt.graphics.GC, org.eclipse.swt.widgets.Canvas, org.eclipse.swt.graphics.Rectangle)
+     */
+    @Override
     public void paint(Annotation annotation, GC gc, Canvas canvas, Rectangle bounds) {
       assert false : "Should never be called";
     }
   }
 
+  /**
+   * The Class CasViewMenu.
+   */
   // TODO: Move to external class
   static class CasViewMenu extends ContributionItem {
     
+    /** The cas editor. */
     private AnnotationEditor casEditor;
     
+    /**
+     * Instantiates a new cas view menu.
+     *
+     * @param casEditor the cas editor
+     */
     public CasViewMenu(AnnotationEditor casEditor) {
       this.casEditor = casEditor;
     } 
     
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.ContributionItem#fill(org.eclipse.swt.widgets.Menu, int)
+     */
     @Override
     public void fill(Menu parentMenu, int index) {
       
@@ -530,6 +642,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         
         // TODO: move this to an action
         actionItem.addListener(SWT.Selection, new Listener() {
+          @Override
           public void handleEvent(Event e) {
             // Trigger only if view is really changed
             // TODO: Move this check to the document itself ...
@@ -542,6 +655,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
   
+  /** The m annotation mode. */
   private Type mAnnotationMode;
 
   /**
@@ -549,33 +663,43 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    */
   private OutlinePageBook mOutlinePage = new OutlinePageBook();
 
+  /** The m editor listener. */
   private Set<IAnnotationEditorModifyListener> mEditorListener = new HashSet<IAnnotationEditorModifyListener>();
 
+  /** The m editor input listener. */
   private ListenerList mEditorInputListener = new ListenerList();
   
-  /**
-   * TODO: Do we really need this position variable ?
-   */
+  /** TODO: Do we really need this position variable ?. */
   private int mCursorPosition;
 
+  /** The m is something highlighted. */
   boolean mIsSomethingHighlighted = false;
 
+  /** The m current style range. */
   private StyleRange mCurrentStyleRange;
 
+  /** The m feature structure selection provider. */
   private FeatureStructureSelectionProvider mFeatureStructureSelectionProvider;
 
+  /** The m painter. */
   private AnnotationPainter mPainter;
 
+  /** The m show annotations menu. */
   private ShowAnnotationsMenu mShowAnnotationsMenu;
 
+  /** The m annotation synchronizer. */
   private DocumentListener mAnnotationSynchronizer;
 
+  /** The m annotation style listener. */
   private AnnotationStyleChangeListener mAnnotationStyleListener;
   
+  /** The shown annotation types. */
   private Collection<Type> shownAnnotationTypes = new HashSet<Type>();
   
+  /** The preference store change listener. */
   private IPropertyChangeListener preferenceStoreChangeListener;
   
+  /** The cas document provider. */
   private CasDocumentProvider casDocumentProvider;
 
   /**
@@ -584,6 +708,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   public AnnotationEditor() {
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.AbstractTextEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+   */
   @Override
   public void init(IEditorSite site, IEditorInput input) throws PartInitException {
     casDocumentProvider =
@@ -594,6 +721,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     super.init(site, input);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasEditor#getCasDocumentProvider()
+   */
+  @Override
   public CasDocumentProvider getCasDocumentProvider() {
     return casDocumentProvider;
   }
@@ -624,7 +755,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Retrieves annotation editor adapters.
    *
-   * @param adapter
+   * @param adapter the adapter
    * @return an adapter or null
    */
   @Override
@@ -642,6 +773,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.AbstractTextEditor#createSourceViewer(org.eclipse.swt.widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
+   */
   @Override
   protected ISourceViewer createSourceViewer(Composite parent,
           org.eclipse.jface.text.source.IVerticalRuler ruler, int styles) {
@@ -656,6 +790,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     return sourceViewer;
   }
 
+  /**
+   * Sets the text size.
+   *
+   * @param newSize the new text size
+   */
   private void setTextSize(int newSize) {
     Font font = getSourceViewer().getTextWidget().getFont();
     
@@ -668,8 +807,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   /**
    * Configures the editor.
-   * 
-   * @param parent
+   *
+   * @param parent the parent
    */
   @Override
   public void createPartControl(Composite parent) {
@@ -691,6 +830,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // that are key and mouse listeners.
     
     getSourceViewer().getTextWidget().addKeyListener(new KeyListener() {
+      @Override
       public void keyPressed(KeyEvent e) {
         int newCaretOffset = getSourceViewer().getTextWidget().getCaretOffset();
 
@@ -700,6 +840,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
         // not implemented
       }
@@ -707,6 +848,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     });
 
     getSourceViewer().getTextWidget().addMouseListener(new MouseListener() {
+      @Override
       public void mouseDown(MouseEvent e) {
         int newCaretOffset = getSourceViewer().getTextWidget().getCaretOffset();
 
@@ -716,10 +858,12 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         }
       }
 
+      @Override
       public void mouseDoubleClick(MouseEvent e) {
         // not needed
       }
 
+      @Override
       public void mouseUp(MouseEvent e) {
         int newCaretOffset = getSourceViewer().getTextWidget().getCaretOffset();
         
@@ -741,6 +885,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     // Changed again to ensure that also selection from the find dialog
     // can be detected
     getSourceViewer().getSelectionProvider().addSelectionChangedListener(new ISelectionChangedListener() {
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
         mFeatureStructureSelectionProvider.setSelection(new AnnotationEditorSelection((ITextSelection) event.getSelection(), 
                 new StructuredSelection(ModelFeatureStructure.create(getDocument(), getSelectedAnnotations()))));
@@ -771,6 +916,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     
     preferenceStoreChangeListener = (new IPropertyChangeListener() {
       
+      @Override
       public void propertyChange(PropertyChangeEvent event) {
         if (AnnotationEditorPreferenceConstants.ANNOTATION_EDITOR_TEXT_SIZE.equals(event.getProperty())) {
           Integer textSize = (Integer) event.getNewValue();
@@ -793,6 +939,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     initiallySynchronizeUI();
   }
 
+  /**
+   * Refresh selection.
+   */
   private void refreshSelection() {
     mFeatureStructureSelectionProvider.setSelection(getDocument(), getSelectedAnnotations());
   }
@@ -810,7 +959,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
 
   /**
-   * Used to inform about input changes
+   * Used to inform about input changes.
    */
   @Override
   protected void handleElementContentReplaced() {
@@ -818,6 +967,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     setInput(getEditorInput());
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.StatusTextEditor#doSetInput(org.eclipse.ui.IEditorInput)
+   */
   @Override
   protected void doSetInput(final IEditorInput input) throws CoreException {
     final IEditorInput oldInput = getEditorInput();
@@ -839,6 +991,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     if (CasEditorPlugin.getDefault().
             getAndClearShowMigrationDialogFlag()) {
       getSite().getShell().getDisplay().asyncExec(new Runnable() {
+          @Override
           public void run() {
               MessageDialog.openInformation(getSite().getShell(),"Cas Editor Project Removed",
                       "The Cas Editor Project support was removed from this release and" +
@@ -919,6 +1072,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
                 (ICasEditorInputListener) listener;
         
         SafeRunner.run(new SafeRunnable() {
+          @Override
           public void run() {
             inputListener.casDocumentChanged(oldInput, oldDocument, input, newDocument);
           }
@@ -929,6 +1083,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   // The editor status support is abused to display different control than the
   // text control when displaying text is not possible, e.g. because the sofa
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.StatusTextEditor#isErrorStatus(org.eclipse.core.runtime.IStatus)
+   */
   // is not a text sofa or not set at all
   @Override
   protected boolean isErrorStatus(IStatus status) {
@@ -947,6 +1104,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
               getDocument().getCAS().getTypeSystem(), shownAnnotationTypes);
       mShowAnnotationsMenu.addListener(new IShowAnnotationsListener() {
 
+        @Override
         public void selectionChanged(Collection<Type> selection) {
           // compute change sets and apply changes:
 
@@ -1011,6 +1169,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.AbstractTextEditor#editorContextMenuAboutToShow(org.eclipse.jface.action.IMenuManager)
+   */
   @Override
   protected void editorContextMenuAboutToShow(IMenuManager menu) {
     super.editorContextMenuAboutToShow(menu);
@@ -1019,7 +1180,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, new Separator());
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(SmartAnnotateAction.ID));
     menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(QuickAnnotateAction.ID));
-    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(ITextEditorActionDefinitionIds.DELETE));
+    menu.appendToGroup(IWorkbenchActionConstants.MB_ADDITIONS, getAction(IWorkbenchActionDefinitionIds.DELETE));
     
     TypeSystem typeSytem = getDocument().getCAS().getTypeSystem();
 
@@ -1030,6 +1191,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     ModeMenu modeMenu = new ModeMenu(typeSytem, this);
     modeMenu.addListener(new IModeMenuListener(){
 
+    @Override
     public void modeChanged(Type newMode) {
       IAction actionToExecute = new ChangeModeAction(newMode, newMode.getShortName(),
               AnnotationEditor.this);
@@ -1069,10 +1231,15 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    *
    * @return current <code>AnnotationDocument</code>
    */
+  @Override
   public ICasDocument getDocument() {
     return (ICasDocument) getDocumentProvider().getDocument(getEditorInput());
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasEditor#reopenEditorWithNewTypeSystem()
+   */
+  @Override
   public void reopenEditorWithNewTypeSystem() {
     setInput(getEditorInput());
   }
@@ -1089,7 +1256,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Sets the new annotation type.
    *
-   * @param type
+   * @param type the new annotation mode
    */
   public void setAnnotationMode(Type type) {
     // TODO: check if this type is a subtype of Annotation
@@ -1113,20 +1280,38 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mShowAnnotationsMenu.setEditorAnnotationMode(type);
   }
 
+  /**
+   * Gets the shown annotation types.
+   *
+   * @return the shown annotation types
+   */
   public Collection<Type> getShownAnnotationTypes() {
     return Collections.unmodifiableCollection(shownAnnotationTypes);
   }
   
+  /**
+   * Sets the shown annotation type.
+   *
+   * @param type the type
+   * @param isShown the is shown
+   */
   public void setShownAnnotationType(Type type, boolean isShown) {
     mShowAnnotationsMenu.setSelectedType(type, isShown);
   }
 
+  /**
+   * Sets the shown annotation types.
+   *
+   * @param types the new shown annotation types
+   */
   public void setShownAnnotationTypes(Collection<Type> types) {
     mShowAnnotationsMenu.setSelectedTypes(types);
   }
 
   /**
-   * @param type
+   * Fire annotation type changed.
+   *
+   * @param type the type
    */
   private void fireAnnotationTypeChanged(Type type) {
     if (mEditorListener != null) {
@@ -1138,7 +1323,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Retrieves an <code>AnnotationStyle</code> from the underlying storage.
    *
-   * @param type
+   * @param type the type
+   * @return the annotation style
    */
   public AnnotationStyle getAnnotationStyle(Type type) {
     if (type == null)
@@ -1155,8 +1341,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
    * Sets an annotation style.
    * 
    * Note: Internal usage only!
-   * 
-   * @param style
+   *
+   * @param style the new annotation style
    */
   // TODO: Disk must be accessed for every changed annotation style
   // add a second method which can take all changed styles
@@ -1169,8 +1355,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   /**
    * Set the shown annotation status of a type.
-   * 
-   * @param type
+   *
+   * @param type the type
    * @param isVisible if true the type is shown, if false the type
    * it not shown
    */
@@ -1241,12 +1427,18 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     mPainter.paint(IPainter.CONFIGURATION);
   }
 
+  /**
+   * Removes the all annotations.
+   */
   private void removeAllAnnotations() {
     // Remove all annotation from the model
     IAnnotationModel annotationModel = getDocumentProvider().getAnnotationModel(getEditorInput());
     ((IAnnotationModelExtension) annotationModel).removeAllAnnotations();
   }
   
+  /**
+   * Sync annotations.
+   */
   private void syncAnnotations() {
     
     removeAllAnnotations();
@@ -1273,20 +1465,35 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   }
   
   /**
-   * @param listener
+   * Adds the annotation listener.
+   *
+   * @param listener the listener
    */
   public void addAnnotationListener(IAnnotationEditorModifyListener listener) {
     mEditorListener.add(listener);
   }
   
+  /**
+   * Removes the annotation listener.
+   *
+   * @param listener the listener
+   */
   public void removeAnnotationListener(IAnnotationEditorModifyListener listener) {
     mEditorListener.remove(listener);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasEditor#addCasEditorInputListener(org.apache.uima.caseditor.editor.ICasEditorInputListener)
+   */
+  @Override
   public void addCasEditorInputListener(ICasEditorInputListener listener) {
     mEditorInputListener.add(listener);
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasEditor#removeCasEditorInputListener(org.apache.uima.caseditor.editor.ICasEditorInputListener)
+   */
+  @Override
   public void removeCasEditorInputListener(ICasEditorInputListener listener) {
     mEditorInputListener.remove(listener);
   }
@@ -1304,8 +1511,8 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Highlights the given range in the editor.
    *
-   * @param start
-   * @param length
+   * @param start the start
+   * @param length the length
    */
   private void highlight(int start, int length) {
     ISourceViewer sourceViewer = getSourceViewer();
@@ -1380,6 +1587,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     return getSourceViewer().getTextWidget().getCaretOffset();
   }
   
+  /**
+   * Show view.
+   *
+   * @param viewName the view name
+   */
   public void showView(String viewName) {
     
     // TODO: Check if set view is compatible .. if not display some message!
@@ -1445,6 +1657,7 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
       if (mAnnotationStyleListener == null) {
         mAnnotationStyleListener = new AnnotationStyleChangeListener() {
           
+          @Override
           public void annotationStylesChanged(Collection<AnnotationStyle> styles) {
             // TODO: Only sync changed types
             syncAnnotationTypes();
@@ -1492,9 +1705,10 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   /**
    * Notifies the current instance about selection changes in the workbench.
    *
-   * @param part
-   * @param selection
+   * @param part the part
+   * @param selection the selection
    */
+  @Override
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
     if (selection instanceof StructuredSelection) {
       
@@ -1545,6 +1759,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     }
   }
 
+  /**
+   * Checks if is something selected.
+   *
+   * @return true, if is something selected
+   */
   private boolean isSomethingSelected() {
     // TODO: sometimes we get a NPE here ...
     // getSourceViewer() returns null here ... but why ?
@@ -1577,11 +1796,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
 
   /**
    * Creates custom annotation actions:
-   *
+   * 
    * Annotate Action
    * Smart Annotate Action
    * Delete Annotations Action
-   * Find Annotate Action
+   * Find Annotate Action.
    */
   @Override
   protected void createActions() {
@@ -1652,6 +1871,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     getSite().getSelectionProvider().addSelectionChangedListener(wideRightAnnotationSideAction);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.AbstractTextEditor#dispose()
+   */
   @Override
   public void dispose() {
     // remove selection listener
@@ -1679,12 +1901,19 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     super.dispose();
   }
 
+  /**
+   * Sets the annotation selection.
+   *
+   * @param annotation the new annotation selection
+   */
   void setAnnotationSelection(AnnotationFS annotation) {
     mFeatureStructureSelectionProvider.setSelection(getDocument(), annotation);
   }
 
   /**
    * Creates a list of all {@link AnnotationEditor} which are currently opened.
+   *
+   * @return the annotation editors
    */
   public static AnnotationEditor[] getAnnotationEditors() {
 
@@ -1710,6 +1939,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
     return dirtyParts.toArray(new AnnotationEditor[dirtyParts.size()]);
   }
   
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.texteditor.StatusTextEditor#createStatusControl(org.eclipse.swt.widgets.Composite, org.eclipse.core.runtime.IStatus)
+   */
   @Override
   protected Control createStatusControl(Composite parent, IStatus status) {
 
@@ -1762,11 +1994,13 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
         
         switchView.addSelectionListener(new SelectionListener() {
           
+          @Override
           public void widgetSelected(SelectionEvent e) {
             // TODO; Switch to selected view in combo ...
             showView(viewSelectionCombo.getText());
           }
           
+          @Override
           public void widgetDefaultSelected(SelectionEvent e) {
           }
         });
@@ -1783,6 +2017,11 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   /**
    * Retrieves the annotations in the given span.
+   *
+   * @param cas the cas
+   * @param type the type
+   * @param span the span
+   * @return the annotation
    */
   static Collection<AnnotationFS> getAnnotation(CAS cas, Type type, Span span) {
     ConstraintFactory cf = cas.getConstraintFactory();
@@ -1821,6 +2060,9 @@ public final class AnnotationEditor extends StatusTextEditor implements ICasEdit
   
   /**
    * Retrieves the view map.
+   *
+   * @param annotationType the annotation type
+   * @return the view
    */
   private Map<Integer, AnnotationFS> getView(Type annotationType) {
     Collection<AnnotationFS> annotations = getDocument().getAnnotations(annotationType);

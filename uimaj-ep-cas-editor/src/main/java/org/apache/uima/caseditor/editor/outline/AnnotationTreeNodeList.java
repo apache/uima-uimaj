@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.ICasDocument;
 
+// TODO: Auto-generated Javadoc
 /**
  * The {@link AnnotationTreeNodeList} class can build a tree of
  * {@link AnnotationTreeNode} objects.
@@ -37,14 +38,28 @@ import org.apache.uima.caseditor.editor.ICasDocument;
  * TODO: Rename this class
  */
 public class AnnotationTreeNodeList {
+  
+  /** The m elements. */
   private List<AnnotationTreeNode> mElements = new ArrayList<AnnotationTreeNode>();
 
+  /** The m document. */
   private ICasDocument mDocument;
 
+  /**
+   * Instantiates a new annotation tree node list.
+   *
+   * @param document the document
+   */
   AnnotationTreeNodeList(ICasDocument document) {
     mDocument = document;
   }
 
+  /**
+   * Instantiates a new annotation tree node list.
+   *
+   * @param document the document
+   * @param annotations the annotations
+   */
   AnnotationTreeNodeList(ICasDocument document, Collection<AnnotationFS> annotations) {
     mDocument = document;
 
@@ -55,14 +70,29 @@ public class AnnotationTreeNodeList {
     // buildTree();
   }
 
+  /**
+   * Gets the elements.
+   *
+   * @return the elements
+   */
   List<AnnotationTreeNode> getElements() {
     return mElements;
   }
 
+  /**
+   * Adds the.
+   *
+   * @param node the node
+   */
   void add(AnnotationTreeNode node) {
     mElements.add(node);
   }
 
+  /**
+   * Removes the.
+   *
+   * @param node the node
+   */
   void remove(AnnotationTreeNode node) {
     if (mElements.contains(node)) {
       // insert children in the list
@@ -75,6 +105,9 @@ public class AnnotationTreeNodeList {
     mElements.remove(node);
   }
 
+  /**
+   * Builds the tree.
+   */
   void buildTree() {
     for (Iterator<AnnotationTreeNode> it = mElements.iterator(); it.hasNext();) {
       AnnotationTreeNode aNode = it.next();

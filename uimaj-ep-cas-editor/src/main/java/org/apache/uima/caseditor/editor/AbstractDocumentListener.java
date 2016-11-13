@@ -24,17 +24,25 @@ import java.util.Collection;
 
 import org.apache.uima.cas.FeatureStructure;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO: add javadoc here
+ * TODO: add javadoc here.
  */
 public abstract class AbstractDocumentListener implements ICasDocumentListener {
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocumentListener#added(java.util.Collection)
+   */
+  @Override
   public void added(Collection<FeatureStructure> newFeatureStructure) {
   }
   
   /**
    * Forwards the call.
+   *
+   * @param newAnnotation the new annotation
    */
+  @Override
   public void added(FeatureStructure newAnnotation) {
     Collection<FeatureStructure> structures = new ArrayList<FeatureStructure>(1);
 
@@ -43,12 +51,19 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
     added(structures);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocumentListener#removed(java.util.Collection)
+   */
+  @Override
   public void removed(Collection<FeatureStructure> deletedFeatureStructure) {
   }
   
   /**
    * Forwards the call.
+   *
+   * @param deletedAnnotation the deleted annotation
    */
+  @Override
   public void removed(FeatureStructure deletedAnnotation) {
     Collection<FeatureStructure> structures = new ArrayList<FeatureStructure>(1);
 
@@ -57,12 +72,19 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
     removed(structures);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocumentListener#updated(java.util.Collection)
+   */
+  @Override
   public void updated(Collection<FeatureStructure> featureStructure) {
   }
   
   /**
    * Forwards the call.
+   *
+   * @param annotation the annotation
    */
+  @Override
   public void updated(FeatureStructure annotation) {
     Collection<FeatureStructure> structures = new ArrayList<FeatureStructure>(1);
 
@@ -71,9 +93,17 @@ public abstract class AbstractDocumentListener implements ICasDocumentListener {
     updated(structures);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocumentListener#changed()
+   */
+  @Override
   public void changed() {
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.caseditor.editor.ICasDocumentListener#viewChanged(java.lang.String, java.lang.String)
+   */
+  @Override
   public void viewChanged(String oldViewName, String newViewName) {
   }
 }

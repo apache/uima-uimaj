@@ -39,32 +39,48 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CreateFeatureStructureDialog.
+ */
 public class CreateFeatureStructureDialog extends IconAndMessageDialog {
 
+  /** The title. */
   private final String title;
 
+  /** The size label. */
   private Label sizeLabel;
 
+  /** The size text. */
   private Text sizeText;
 
+  /** The array size. */
   private int arraySize;
 
+  /** The type system. */
   private final TypeSystem typeSystem;
 
+  /** The super type. */
   private final Type superType;
 
+  /** The is array size displayed. */
   private boolean isArraySizeDisplayed;
 
+  /** The type selection. */
   private TypeCombo typeSelection;
 
+  /** The selected type. */
   private Type selectedType;
 
+  /** The filter types. */
   private Collection<Type> filterTypes;
 
   /**
    * Initializes a the current instance.
    *
-   * @param parentShell
+   * @param parentShell the parent shell
+   * @param superType the super type
+   * @param typeSystem the type system
    */
   protected CreateFeatureStructureDialog(Shell parentShell, Type superType, TypeSystem typeSystem) {
 
@@ -98,11 +114,19 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
   }
 
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+   */
   @Override
   protected void configureShell(Shell newShell) {
     newShell.setText(title);
   }
 
+  /**
+   * Enable size enter.
+   *
+   * @param parent the parent
+   */
   private void enableSizeEnter(Composite parent) {
 
     if (!isArraySizeDisplayed) {
@@ -122,6 +146,7 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
       sizeText.setLayoutData(sizeTextData);
 
       sizeText.addModifyListener(new ModifyListener() {
+        @Override
         public void modifyText(ModifyEvent event) {
           try {
             arraySize = Integer.parseInt(sizeText.getText());
@@ -135,6 +160,9 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     }
   }
 
+  /**
+   * Disable size enter.
+   */
   private void disableSizeEnter() {
 
     if (isArraySizeDisplayed) {
@@ -144,6 +172,9 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+   */
   @Override
   protected Control createDialogArea(final Composite parent) {
 
@@ -181,6 +212,7 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
       typeSelection.setLayoutData(typeSelectionData);
 
       typeSelection.addListener(new ITypePaneListener() {
+        @Override
         public void typeChanged(Type newType) {
           selectedType = newType;
 
@@ -202,21 +234,37 @@ public class CreateFeatureStructureDialog extends IconAndMessageDialog {
     return labelAndText;
   }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     */
     @Override
   protected void createButtonsForButtonBar(Composite parent) {
     createButton(parent, IDialogConstants.OK_ID, "Create", true);
     createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.jface.dialogs.IconAndMessageDialog#getImage()
+   */
   @Override
   protected Image getImage() {
     return getShell().getDisplay().getSystemImage(SWT.ICON_QUESTION);
   }
 
+  /**
+   * Gets the array size.
+   *
+   * @return the array size
+   */
   int getArraySize() {
     return arraySize;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   Type getType() {
     return selectedType;
   }
