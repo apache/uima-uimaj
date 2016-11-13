@@ -26,6 +26,7 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 
+// TODO: Auto-generated Javadoc
 /**
  * Insert comment for enclosing_type here.
  * 
@@ -33,29 +34,46 @@ import org.apache.uima.cas.Type;
  */
 public class FeatureTableModel extends AbstractTableModel {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -6010925680514336742L;
 
+  /** The Constant columnHeaders. */
   static final String[] columnHeaders = { "Feature", "Value Type", "Defined On" };
 
+  /** The type. */
   private Type type = null;
 
+  /**
+   * Instantiates a new feature table model.
+   */
   public FeatureTableModel() {
     super();
   }
 
   /**
    * Constructor for FeatureTableModel.
+   *
+   * @param type the type
    */
   public FeatureTableModel(Type type) {
     super();
     this.type = type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(Type type) {
     this.type = type;
     fireTableDataChanged();
   }
 
+  /* (non-Javadoc)
+   * @see javax.swing.table.AbstractTableModel#getColumnName(int)
+   */
+  @Override
   public String getColumnName(int i) {
     if (i < 0 || i >= columnHeaders.length) {
       return "";
@@ -64,8 +82,12 @@ public class FeatureTableModel extends AbstractTableModel {
   }
 
   /**
+   * Gets the row count.
+   *
+   * @return the row count
    * @see javax.swing.table.TableModel#getRowCount()
    */
+  @Override
   public int getRowCount() {
     if (this.type == null) {
       return 0;
@@ -74,15 +96,25 @@ public class FeatureTableModel extends AbstractTableModel {
   }
 
   /**
+   * Gets the column count.
+   *
+   * @return the column count
    * @see javax.swing.table.TableModel#getColumnCount()
    */
+  @Override
   public int getColumnCount() {
     return 3;
   }
 
   /**
+   * Gets the value at.
+   *
+   * @param rowIndex the row index
+   * @param columnIndex the column index
+   * @return the value at
    * @see javax.swing.table.TableModel#getValueAt(int, int)
    */
+  @Override
   public Object getValueAt(int rowIndex, int columnIndex) {
     if (this.type == null) {
       return null;

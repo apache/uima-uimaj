@@ -37,23 +37,30 @@ import org.apache.uima.cas.impl.TypeImpl_string;
 import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.jcas.cas.TOP;
 
+// TODO: Auto-generated Javadoc
 /**
- * Swing Tree Model for Feature Structures
+ * Swing Tree Model for Feature Structures.
  */
 
 public class FSTreeModel implements TreeModel {
 
+  /** The root. */
   private FSTreeNode root;
 
+  /** The cas. */
   private CASImpl cas;
 
+  /** The tree model listeners. */
   private List<TreeModelListener> treeModelListeners = new ArrayList<TreeModelListener>();
 
+  /** The fss. */
   private List<FSNode> fss;
 
+  /** The Constant defaultRootString. */
   private static final String defaultRootString = "<html><b>" + MainFrame.htmlGrayColor
           + "FS List - no selection</b></html>";
 
+  /** The root string. */
   private String rootString = defaultRootString;
 
   /**
@@ -65,6 +72,13 @@ public class FSTreeModel implements TreeModel {
     this.root.setChildren(new ArrayList<FSTreeNode>());
   }
 
+  /**
+   * Update.
+   *
+   * @param indexName the index name
+   * @param index the index
+   * @param cas1 the cas 1
+   */
   public void update(String indexName, FSIndex index, CAS cas1) {
     // this.indexName = indexName;
     this.cas = (CASImpl) cas1;
@@ -90,6 +104,9 @@ public class FSTreeModel implements TreeModel {
     }
   }
 
+  /**
+   * Reset.
+   */
   public void reset() {
     this.root.removeAllChildren();
     this.rootString = defaultRootString;
@@ -102,20 +119,35 @@ public class FSTreeModel implements TreeModel {
 
   }
 
+  /**
+   * Gets the f ss.
+   *
+   * @return the f ss
+   */
   public List<FSNode> getFSs() {
     return this.fss;
   }
 
   /**
+   * Gets the root.
+   *
+   * @return the root
    * @see javax.swing.tree.TreeModel#getRoot()
    */
+  @Override
   public Object getRoot() {
     return this.root;
   }
 
   /**
+   * Gets the child.
+   *
+   * @param parent the parent
+   * @param index the index
+   * @return the child
    * @see javax.swing.tree.TreeModel#getChild(java.lang.Object, int)
    */
+  @Override
   public Object getChild(Object parent, int index) {
     FSTreeNode node = (FSTreeNode) parent;
     node.initChildren();
@@ -150,7 +182,13 @@ public class FSTreeModel implements TreeModel {
 //    return FSNode.STD_FS;
 //  }
 
-  int getNodeType(Type type) {
+  /**
+ * Gets the node type.
+ *
+ * @param type the type
+ * @return the node type
+ */
+int getNodeType(Type type) {
     if (type instanceof TypeImpl_string) {
       return FSNode.STRING_FS;
     } else {
@@ -169,30 +207,51 @@ public class FSTreeModel implements TreeModel {
   }
 
   /**
+   * Gets the child count.
+   *
+   * @param parent the parent
+   * @return the child count
    * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
    */
+  @Override
   public int getChildCount(Object parent) {
     return ((FSTreeNode) parent).getChildCount();
   }
 
   /**
+   * Checks if is leaf.
+   *
+   * @param node the node
+   * @return true, if is leaf
    * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
    */
+  @Override
   public boolean isLeaf(Object node) {
     return (getChildCount(node) == 0);
   }
 
   /**
+   * Value for path changed.
+   *
+   * @param path the path
+   * @param newValue the new value
    * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,
    *      java.lang.Object)
    */
+  @Override
   public void valueForPathChanged(TreePath path, Object newValue) {
     // Does nothing.
   }
 
   /**
+   * Gets the index of child.
+   *
+   * @param parent the parent
+   * @param child the child
+   * @return the index of child
    * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object, java.lang.Object)
    */
+  @Override
   public int getIndexOfChild(Object parent, Object child) {
     FSTreeNode node = (FSTreeNode) parent;
     node.initChildren();
@@ -200,20 +259,30 @@ public class FSTreeModel implements TreeModel {
   }
 
   /**
+   * Adds the tree model listener.
+   *
+   * @param arg0 the arg 0
    * @see javax.swing.tree.TreeModel#addTreeModelListener(javax.swing.event.TreeModelListener)
    */
+  @Override
   public void addTreeModelListener(TreeModelListener arg0) {
     this.treeModelListeners.add(arg0);
   }
 
   /**
+   * Removes the tree model listener.
+   *
+   * @param arg0 the arg 0
    * @see javax.swing.tree.TreeModel#removeTreeModelListener(javax.swing.event.TreeModelListener)
    */
+  @Override
   public void removeTreeModelListener(TreeModelListener arg0) {
     this.treeModelListeners.remove(arg0);
   }
 
   /**
+   * Gets the cas.
+   *
    * @return CASImpl
    */
   CASImpl getCas() {
@@ -221,12 +290,23 @@ public class FSTreeModel implements TreeModel {
   }
 
   /**
+   * Gets the root string.
+   *
    * @return String
    */
   String getRootString() {
     return this.rootString;
   }
 
+  /**
+   * Creates the array children.
+   *
+   * @param start the start
+   * @param end the end
+   * @param array the array
+   * @param model the model
+   * @return the list
+   */
   static List<FSTreeNode> createArrayChildren(int start, int end, List<FSNode> array, FSTreeModel model) {
     ArrayList<FSTreeNode> kids = new ArrayList<FSTreeNode>();
     final int size = end - start;
@@ -265,6 +345,12 @@ public class FSTreeModel implements TreeModel {
     return kids;
   }
 
+  /**
+   * Path to node.
+   *
+   * @param fsNum the fs num
+   * @return the tree path
+   */
   public TreePath pathToNode(int fsNum) {
     List<FSTreeNode> p = new ArrayList<FSTreeNode>();
     p.add(this.root);
@@ -273,6 +359,14 @@ public class FSTreeModel implements TreeModel {
     return path;
   }
 
+  /**
+   * Gets the path to node.
+   *
+   * @param n the n
+   * @param dtrs the dtrs
+   * @param path the path
+   * @return the path to node
+   */
   private void getPathToNode(int n, List<FSTreeNode> dtrs, List<FSTreeNode> path) {
     // Do a linear search. The branching factor is small, so this should not
     // be a problem.

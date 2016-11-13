@@ -21,6 +21,10 @@ package org.apache.uima.tools.stylemap;
 
 import java.awt.Color;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class StyleMapEntry.
+ */
 public class StyleMapEntry {
   /**
    * The name of the annotation type to which this style map entry applies.
@@ -49,10 +53,16 @@ public class StyleMapEntry {
    */
   private Color background;
 
+  /** The is checked. */
   private boolean isChecked; // true if element is to be checked
 
+  /** The is hidden. */
   private boolean isHidden;
 
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
   public String toString() {
     return "(" + annotationTypeName + ";" + label + ";" + featureValue + ";"
             + Integer.toHexString(foreground.getRGB()) + ";"
@@ -61,18 +71,38 @@ public class StyleMapEntry {
             + ")";
   }
 
+  /**
+   * Gets the hidden.
+   *
+   * @return the hidden
+   */
   public boolean getHidden() {
     return isHidden;
   }
 
+  /**
+   * Sets the hidden.
+   *
+   * @param hid the new hidden
+   */
   public void setHidden(Boolean hid) {
     isHidden = hid.booleanValue();
   }
 
+  /**
+   * Gets the checked.
+   *
+   * @return the checked
+   */
   public boolean getChecked() {
     return isChecked;
   }
 
+  /**
+   * Sets the checked.
+   *
+   * @param chk the new checked
+   */
   public void setChecked(Boolean chk) {
     isChecked = chk.booleanValue();
   }
@@ -81,6 +111,8 @@ public class StyleMapEntry {
    * This method returns a pattern representing either simply an annotation type or else an
    * annotation type/feature value. In the case of the latter: e.g.
    * SYNTAX_ANNOT_TYPE[@SYNTAXLABEL_STRING='NP']
+   *
+   * @return the pattern
    */
 
   public String getPattern() {
@@ -95,6 +127,8 @@ public class StyleMapEntry {
   }
 
   /**
+   * Gets the background.
+   *
    * @return Returns the background.
    */
   public Color getBackground() {
@@ -102,14 +136,17 @@ public class StyleMapEntry {
   }
 
   /**
-   * @param background
-   *          The background to set.
+   * Sets the background.
+   *
+   * @param background          The background to set.
    */
   public void setBackground(Color background) {
     this.background = background;
   }
 
   /**
+   * Gets the feature value.
+   *
    * @return Returns the featureValue.
    */
   public String getFeatureValue() {
@@ -117,14 +154,17 @@ public class StyleMapEntry {
   }
 
   /**
-   * @param featureValue
-   *          The featureValue to set.
+   * Sets the feature value.
+   *
+   * @param featureValue          The featureValue to set.
    */
   public void setFeatureValue(String featureValue) {
     this.featureValue = featureValue;
   }
 
   /**
+   * Gets the foreground.
+   *
    * @return Returns the foreground.
    */
   public Color getForeground() {
@@ -132,14 +172,17 @@ public class StyleMapEntry {
   }
 
   /**
-   * @param foreground
-   *          The foreground to set.
+   * Sets the foreground.
+   *
+   * @param foreground          The foreground to set.
    */
   public void setForeground(Color foreground) {
     this.foreground = foreground;
   }
 
   /**
+   * Gets the label.
+   *
    * @return Returns the label.
    */
   public String getLabel() {
@@ -147,14 +190,17 @@ public class StyleMapEntry {
   }
 
   /**
-   * @param label
-   *          The label to set.
+   * Sets the label.
+   *
+   * @param label          The label to set.
    */
   public void setLabel(String label) {
     this.label = label;
   }
 
   /**
+   * Gets the annotation type name.
+   *
    * @return Returns the annotationTypeName.
    */
   public String getAnnotationTypeName() {
@@ -162,8 +208,9 @@ public class StyleMapEntry {
   }
 
   /**
-   * @param annotationTypeName
-   *          The annotationTypeName to set.
+   * Sets the annotation type name.
+   *
+   * @param annotationTypeName          The annotationTypeName to set.
    */
   public void setAnnotationTypeName(String annotationTypeName) {
     this.annotationTypeName = annotationTypeName;

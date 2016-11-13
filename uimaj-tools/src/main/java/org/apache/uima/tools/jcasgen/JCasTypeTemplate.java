@@ -23,8 +23,16 @@ import java.util.Iterator;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.FeatureDescription;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JCasTypeTemplate.
+ */
 public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.jcasgen.Jg.IJCasTypeTemplate#generate(java.lang.Object)
+   */
+  @Override
   public String generate(Object argument) {
     StringBuilder stringBuilder = new StringBuilder();
 

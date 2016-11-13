@@ -34,6 +34,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * Utility class for deploying Resources as Axis (SOAP) services. This class mantains a map between
  * Axis service names and the {@link ResourceService_impl} classes that provide the implementation
@@ -82,12 +83,11 @@ public class AxisResourceServiceManager {
    * {@link ResourceService_impl} object already exists for that service name, that object will be
    * returned. Otherwise, a new <code>ResourceService_impl</code> object will be created from the
    * information in the MessageContext.
-   * 
-   * @param aServiceImplClass
-   *          the class that will be instantiated when a new <code>ResourceService_impl</code> is
+   *
+   * @param aServiceImplClass          the class that will be instantiated when a new <code>ResourceService_impl</code> is
    *          to be created. This must be a subclass of ResourceService_impl.
-   * @throws AxisFault
-   *           if the configuration information could not be read
+   * @return the service impl
+   * @throws AxisFault           if the configuration information could not be read
    */
   public static ResourceService_impl getServiceImpl(Class aServiceImplClass) throws AxisFault {
     try {

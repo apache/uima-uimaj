@@ -31,6 +31,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -63,6 +64,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -97,6 +99,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.tools.viewer.EntityResolver.Entity;
 
+// TODO: Auto-generated Javadoc
 /**
  * A Swing component that displays annotations in a text pane with highlighting. There is also a
  * tree view for display details of annotations on which the user clicks. This class extends
@@ -126,17 +129,28 @@ import org.apache.uima.tools.viewer.EntityResolver.Entity;
  * </ul>
  */
 public class CasAnnotationViewer extends JPanel {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 3559118488371946999L;
 
+  /** The Constant MODE_ANNOTATIONS. */
   // Mode constants
   private static final short MODE_ANNOTATIONS = 0;
+  
+  /** The Constant MODE_ENTITIES. */
   private static final short MODE_ENTITIES = 1;
+  
+  /** The Constant MODE_FEATURES. */
   private static final short MODE_FEATURES = 2;
 
+  /** The default hidden features. */
   private static String[] DEFAULT_HIDDEN_FEATURES = { "sofa" };
   // colors to use for highlighting annotations
+  /** The Constant BRIGHT. */
   // (use high brightness for best contrast against black text)
   private static final float BRIGHT = 0.95f;
+  
+  /** The Constant COLORS. */
   private static final Color[] COLORS = new Color[] {
       // low saturation colors are best, so put them first
       Color.getHSBColor(55f / 360, 0.25f, BRIGHT), // butter yellow?
@@ -172,58 +186,153 @@ public class CasAnnotationViewer extends JPanel {
       Color.getHSBColor(160f / 360, 0.75f, BRIGHT),
       Color.getHSBColor(250f / 360, 0.75f, BRIGHT) };
 
+  /** The cas. */
   private CAS cas;
+  
+  /** The type system. */
   private TypeSystem typeSystem;
+  
+  /** The string type. */
   private Type stringType;
+  
+  /** The fs array type. */
   private Type fsArrayType;
+  
+  /** The use consistent colors. */
   private boolean useConsistentColors = true;
+  
+  /** The high frequency types. */
   private List<String> highFrequencyTypes = new ArrayList<String>();
+  
+  /** The bold face key words. */
   private String[] boldFaceKeyWords = new String[0];
+  
+  /** The bold face spans. */
   private int[] boldFaceSpans = new int[0];
+  
+  /** The hidden feature names. */
   private Set<String> hiddenFeatureNames = new HashSet<String>();
+  
+  /** The hidden type names. */
   private Set<String> hiddenTypeNames = new HashSet<String>();
+  
+  /** The displayed type names. */
   private Set<String> displayedTypeNames;
+  
+  /** The initially selected type names. */
   private Set<String> initiallySelectedTypeNames;
+  
+  /** The hide unselected check boxes. */
   private boolean hideUnselectedCheckBoxes;
+  
+  /** The user types. */
   private List<String> userTypes = new ArrayList<String>();
+  
+  /** The types not checked. */
   private Set<String> typesNotChecked = new HashSet<String>();
+  
+  /** The type color map. */
   private Map<String, Color> typeColorMap = new HashMap<String, Color>();
+  
+  /** The feature color map. */
   private Map<String, Color> featureColorMap = new HashMap<String, Color>();
+  
+  /** The entity resolver. */
   private EntityResolver entityResolver = new DefaultEntityResolver();
 
+  /** The view mode. */
   private short viewMode = MODE_ANNOTATIONS;
+  
+  /** The type to check box map. */
   // GUI components
   private Map<Type, JCheckBox> typeToCheckBoxMap = new HashMap<Type, JCheckBox>();
+  
+  /** The entity to check box map. */
   private Map<Entity, JCheckBox> entityToCheckBoxMap = new HashMap<Entity, JCheckBox>();
+  
+  /** The horizontal split pane. */
   private JSplitPane horizontalSplitPane;
+  
+  /** The vertical split pane. */
   private JSplitPane verticalSplitPane;
+  
+  /** The text pane. */
   private JTextPane textPane;
+  
+  /** The text scroll pane. */
   private JScrollPane textScrollPane;
+  
+  /** The type radio button map. */
   private Map<Type, JRadioButton> typeRadioButtonMap = new HashMap<Type, JRadioButton>();
+  
+  /** The feature radio button map. */
   private Map<String, JRadioButton> featureRadioButtonMap = new HashMap<String, JRadioButton>();
+  
+  /** The feature value check box map. */
   private Map<String, JCheckBox> featureValueCheckBoxMap = new HashMap<String, JCheckBox>();
+  
+  /** The feature value color map. */
   private Map<String, Color> featureValueColorMap = new HashMap<String, Color>();
+  
+  /** The show hide unselected button. */
   private JButton showHideUnselectedButton;
+  
+  /** The selected annotation tree. */
   private JTree selectedAnnotationTree;
+  
+  /** The selected annotation tree model. */
   private DefaultTreeModel selectedAnnotationTreeModel;
+  
+  /** The annotation mode button. */
   private JRadioButton annotationModeButton;
+  
+  /** The entity mode button. */
   private JRadioButton entityModeButton;
+  
+  /** The feature mode button. */
   private JRadioButton featureModeButton;
+  
+  /** The sofa selection panel. */
   private JPanel sofaSelectionPanel;
+  
+  /** The sofa selection combo box. */
   @SuppressWarnings("rawtypes")
   private JComboBox sofaSelectionComboBox;
+  
+  /** The disable sofa selection combo box state change action. */
   private boolean disableSofaSelectionComboBoxStateChangeAction = false;
 
+  /** The tabbed choice pane. */
   private JTabbedPane tabbedChoicePane;
+  
+  /** The type check box scroll pane. */
   private JScrollPane typeCheckBoxScrollPane;
+  
+  /** The type check box vertical scroll panel. */
   private VerticallyScrollablePanel typeCheckBoxVerticalScrollPanel;
+  
+  /** The entity check box scroll pane. */
   private JScrollPane entityCheckBoxScrollPane;
+  
+  /** The entity check box vertical scroll panel. */
   private VerticallyScrollablePanel entityCheckBoxVerticalScrollPanel;
+  
+  /** The type radio button scroll pane. */
   private JScrollPane typeRadioButtonScrollPane;
+  
+  /** The type radio button vertical scroll panel. */
   private VerticallyScrollablePanel typeRadioButtonVerticalScrollPanel;
+  
+  /** The feature radio button scroll pane. */
   private JScrollPane featureRadioButtonScrollPane;
+  
+  /** The feature radio button vertical scroll panel. */
   private VerticallyScrollablePanel featureRadioButtonVerticalScrollPanel;
+  
+  /** The feature value check box scroll pane. */
   private JScrollPane featureValueCheckBoxScrollPane;
+  
+  /** The feature value check box vertical scroll panel. */
   private VerticallyScrollablePanel featureValueCheckBoxVerticalScrollPanel;
 
   /**
@@ -245,6 +354,11 @@ public class CasAnnotationViewer extends JPanel {
     this.hiddenFeatureNames.addAll(Arrays.asList(DEFAULT_HIDDEN_FEATURES));
   }
 
+  /**
+   * Creates the control panel.
+   *
+   * @return the j panel
+   */
   private JPanel createControlPanel() {
     JPanel controlPanel = new JPanel();
     controlPanel.setLayout(new BorderLayout());
@@ -253,6 +367,11 @@ public class CasAnnotationViewer extends JPanel {
     return controlPanel;
   }
 
+  /**
+   * Creates the select button panel.
+   *
+   * @return the j panel
+   */
   private JPanel createSelectButtonPanel() {
     JPanel selectButtonPanel = new JPanel();
     selectButtonPanel.add(this.createSelectAllButton());
@@ -262,6 +381,11 @@ public class CasAnnotationViewer extends JPanel {
     return selectButtonPanel;
   }
 
+  /**
+   * Creates the view panel.
+   *
+   * @return the j panel
+   */
   private JPanel createViewPanel() {
     JPanel viewPanel = new JPanel();
     viewPanel.setLayout(new BorderLayout());
@@ -271,6 +395,11 @@ public class CasAnnotationViewer extends JPanel {
     return viewPanel;
   }
 
+  /**
+   * Creates the view mode panel.
+   *
+   * @return the j panel
+   */
   private JPanel createViewModePanel() {
     JPanel viewModePanel = new JPanel();
     viewModePanel.add(new JLabel("Mode: "));
@@ -287,6 +416,9 @@ public class CasAnnotationViewer extends JPanel {
     return viewModePanel;
   }
 
+  /**
+   * Creates the feature mode button.
+   */
   private void createFeatureModeButton() {
     this.featureModeButton = new JRadioButton("Features", (this.viewMode == MODE_FEATURES));
     this.featureModeButton.addActionListener(new ActionListener() {
@@ -305,6 +437,9 @@ public class CasAnnotationViewer extends JPanel {
     });
   }
 
+  /**
+   * Creates the entity mode button.
+   */
   private void createEntityModeButton() {
     this.entityModeButton = new JRadioButton("Entities", this.viewMode == MODE_ENTITIES);
     this.entityModeButton.addActionListener(new ActionListener() {
@@ -323,6 +458,9 @@ public class CasAnnotationViewer extends JPanel {
     });
   }
 
+  /**
+   * Creates the annotation mode button.
+   */
   private void createAnnotationModeButton() {
     this.annotationModeButton = new JRadioButton("Annotations", this.viewMode == MODE_ANNOTATIONS);
     this.annotationModeButton.addActionListener(new ActionListener() {
@@ -341,6 +479,9 @@ public class CasAnnotationViewer extends JPanel {
     });
   }
 
+  /**
+   * Creates the sofa selection panel.
+   */
   private void createSofaSelectionPanel() {
     this.sofaSelectionPanel = new JPanel();
     this.sofaSelectionPanel.add(new JLabel("Sofa:"));
@@ -348,6 +489,9 @@ public class CasAnnotationViewer extends JPanel {
     this.sofaSelectionPanel.add(this.sofaSelectionComboBox);
   }
 
+  /**
+   * Creates the sofa selection combo box.
+   */
   @SuppressWarnings("rawtypes")
   private void createSofaSelectionComboBox() {
     this.sofaSelectionComboBox = new JComboBox();
@@ -370,6 +514,9 @@ public class CasAnnotationViewer extends JPanel {
     });
   }
 
+  /**
+   * Creates the show hide unselected button.
+   */
   private void createShowHideUnselectedButton() {
     this.showHideUnselectedButton = new JButton("Hide Unselected");
     this.showHideUnselectedButton.addActionListener(new ActionListener() {
@@ -440,6 +587,11 @@ public class CasAnnotationViewer extends JPanel {
     });
   }
 
+  /**
+   * Creates the deselect all button.
+   *
+   * @return the j button
+   */
   private JButton createDeselectAllButton() {
     JButton deselectAllButton = new JButton("Deselect All");
     deselectAllButton.addActionListener(new ActionListener() {
@@ -504,6 +656,11 @@ public class CasAnnotationViewer extends JPanel {
     return deselectAllButton;
   }
 
+  /**
+   * Creates the select all button.
+   *
+   * @return the j button
+   */
   private JButton createSelectAllButton() {
     JButton selectAllButton = new JButton("Select All");
     selectAllButton.addActionListener(new ActionListener() {
@@ -607,6 +764,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Creates the horizontal split pane.
+   */
   private void createHorizontalSplitPane() {
     this.horizontalSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
     this.horizontalSplitPane.setResizeWeight(0.6);
@@ -617,6 +777,11 @@ public class CasAnnotationViewer extends JPanel {
     this.horizontalSplitPane.setRightComponent(this.createTreePanel());
   }
 
+  /**
+   * Creates the tree panel.
+   *
+   * @return the j panel
+   */
   private JPanel createTreePanel() {
     JPanel treePanel = new JPanel();
     treePanel.setLayout(new BorderLayout());
@@ -626,11 +791,15 @@ public class CasAnnotationViewer extends JPanel {
     return treePanel;
   }
 
+  /**
+   * Creates the selected annotation tree.
+   */
   private void createSelectedAnnotationTree() {
     this.selectedAnnotationTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Annotations"));
     this.selectedAnnotationTree = new JTree(this.selectedAnnotationTreeModel) {
       private static final long serialVersionUID = -7882967150283952907L;
 
+      @Override
       public Dimension getPreferredScrollableViewportSize() {
         return new Dimension(230, 500);
       }
@@ -688,6 +857,9 @@ public class CasAnnotationViewer extends JPanel {
     });
   }
 
+  /**
+   * Creates the vertical split pane.
+   */
   private void createVerticalSplitPane() {
     this.verticalSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
     this.verticalSplitPane.setResizeWeight(0.8);
@@ -701,6 +873,11 @@ public class CasAnnotationViewer extends JPanel {
     this.verticalSplitPane.setBottomComponent(this.createTabbedChoicePane());
   }
 
+  /**
+   * Creates the tabbed choice pane.
+   *
+   * @return the j tabbed pane
+   */
   private JTabbedPane createTabbedChoicePane() {
     this.tabbedChoicePane = new JTabbedPane();
     // Create the pane to hold check boxes for the annotation types in annotation view.
@@ -744,51 +921,69 @@ public class CasAnnotationViewer extends JPanel {
     return this.tabbedChoicePane;
   }
 
+  /**
+   * Creates the feature value check box pane.
+   */
   private void createFeatureValueCheckBoxPane() {
     this.featureValueCheckBoxVerticalScrollPanel = new VerticallyScrollablePanel();
     this.featureValueCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
 
     this.featureValueCheckBoxScrollPane = new JScrollPane();
-    this.featureValueCheckBoxScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.featureValueCheckBoxScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     this.featureValueCheckBoxScrollPane.setViewportView(this.featureValueCheckBoxVerticalScrollPanel);
   }
 
+  /**
+   * Creates the feature radio button pane.
+   */
   private void createFeatureRadioButtonPane() {
     this.featureRadioButtonVerticalScrollPanel = new VerticallyScrollablePanel();
     this.featureRadioButtonVerticalScrollPanel.setLayout(new GridLayout(0, 5));
 
     this.featureRadioButtonScrollPane = new JScrollPane();
-    this.featureRadioButtonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.featureRadioButtonScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
   this.featureRadioButtonScrollPane.setViewportView(this.featureRadioButtonVerticalScrollPanel);
   }
 
+  /**
+   * Creates the type radio button pane.
+   */
   private void createTypeRadioButtonPane() {
     this.typeRadioButtonVerticalScrollPanel = new VerticallyScrollablePanel();
     this.typeRadioButtonVerticalScrollPanel.setLayout(new GridLayout(0, 5));
 
     this.typeRadioButtonScrollPane = new JScrollPane();
-    this.typeRadioButtonScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.typeRadioButtonScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     this.typeRadioButtonScrollPane.setViewportView(this.typeRadioButtonVerticalScrollPanel);
   }
 
+  /**
+   * Creates the entity check box pane.
+   */
   private void createEntityCheckBoxPane() {
     this.entityCheckBoxVerticalScrollPanel = new VerticallyScrollablePanel();
     this.entityCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
 
     this.entityCheckBoxScrollPane = new JScrollPane();
-    this.entityCheckBoxScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.entityCheckBoxScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     this.entityCheckBoxScrollPane.setViewportView(this.entityCheckBoxVerticalScrollPanel);
   }
 
+  /**
+   * Creates the type check box pane.
+   */
   private void createTypeCheckBoxPane() {
     this.typeCheckBoxVerticalScrollPanel = new VerticallyScrollablePanel();
     this.typeCheckBoxVerticalScrollPanel.setLayout(new GridLayout(0, 5));
 
     this.typeCheckBoxScrollPane = new JScrollPane();
-    this.typeCheckBoxScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.typeCheckBoxScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     this.typeCheckBoxScrollPane.setViewportView(this.typeCheckBoxVerticalScrollPanel);
   }
 
+  /**
+   * Creates the text scroll pane.
+   */
   private void createTextScrollPane() {
     this.textPane = new JTextPane();
     this.textPane.setEditable(false);
@@ -827,7 +1022,7 @@ public class CasAnnotationViewer extends JPanel {
       @Override
       public void keyPressed(KeyEvent ke) {
         if (ke != null && ke.getKeyCode() == KeyEvent.VK_C &&
-            (ke.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+            (ke.getModifiers() & InputEvent.CTRL_MASK) != 0) {
           String selection = textPane.getSelectedText();
           if (selection != null && selection.length() > 0) {
             Clipboard clipboard = getToolkit().getSystemClipboard();
@@ -847,6 +1042,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
+   * Instantiates a new cas annotation viewer.
+   *
+   * @param aEntityViewEnabled the a entity view enabled
    * @deprecated use the zero-argument constructor
    */
   @Deprecated
@@ -855,6 +1053,8 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
+   * Gets the user types.
+   *
    * @return Returns the userTypes.
    */
   public List<String> getUserTypes() {
@@ -862,8 +1062,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * @param userTypes
-   *          The userTypes to set.
+   * Sets the user types.
+   *
+   * @param userTypes          The userTypes to set.
    */
   public void setUserTypes(List<String> userTypes) {
     this.userTypes = userTypes;
@@ -942,8 +1143,8 @@ public class CasAnnotationViewer extends JPanel {
     Iterator<Map.Entry<Type, JCheckBox>> iterator = this.typeToCheckBoxMap.entrySet().iterator();
     while (iterator.hasNext()) {
       Map.Entry<Type, JCheckBox> entry = iterator.next();
-      String type = ((Type) entry.getKey()).getName();
-      JCheckBox checkbox = (JCheckBox) entry.getValue();
+      String type = entry.getKey().getName();
+      JCheckBox checkbox = entry.getValue();
       checkbox.setSelected(typeNamesContains(this.initiallySelectedTypeNames, type));
     }
 
@@ -1012,8 +1213,8 @@ public class CasAnnotationViewer extends JPanel {
    * Sets whether unselected (unchecked) checkboxes will be hidden entirely from the legend. This
    * mode makes for a cleaner legend at the expense of making it more difficult to toggle which
    * types are selected. There's also a button in the GUI that lets the user change this setting.
-   * 
-   * @param aHideUnselected
+   *
+   * @param aHideUnselected the new hide unselected checkboxes
    */
   public void setHideUnselectedCheckboxes(boolean aHideUnselected) {
     this.hideUnselectedCheckBoxes = aHideUnselected;
@@ -1041,6 +1242,9 @@ public class CasAnnotationViewer extends JPanel {
     this.display();
   }
 
+  /**
+   * Initialize sofa selection panel.
+   */
   @SuppressWarnings("unchecked")
   private void initializeSofaSelectionPanel() {
     // Populate sofa combo box with the names of all text Sofas in the CAS
@@ -1085,6 +1289,9 @@ public class CasAnnotationViewer extends JPanel {
     // display();
   }
 
+  /**
+   * Reset.
+   */
   private void reset() {
     // clear type to color map if color consistency is off
     this.resetTypeColorMap();
@@ -1107,6 +1314,9 @@ public class CasAnnotationViewer extends JPanel {
     this.boldFaceSpans = new int[0];
   }
 
+  /**
+   * Reset selected annotation tree.
+   */
   private void resetSelectedAnnotationTree() {
     if (this.selectedAnnotationTreeModel != null) {
       DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.selectedAnnotationTreeModel.getRoot();
@@ -1116,6 +1326,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Reset entity check box panel.
+   */
   private void resetEntityCheckBoxPanel() {
     if (this.entityToCheckBoxMap.size() > 0) {
       this.entityToCheckBoxMap.clear();
@@ -1125,6 +1338,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Reset type check box panel.
+   */
   private void resetTypeCheckBoxPanel() {
     // clear checkbox panel so it will be repopulated
     if (this.typeToCheckBoxMap.size() > 0) {
@@ -1135,6 +1351,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Reset feature value panel.
+   */
   private void resetFeatureValuePanel() {
     if (this.featureValueColorMap.size() > 0) {
       this.featureValueColorMap.clear();
@@ -1147,6 +1366,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Reset feature panel.
+   */
   private void resetFeaturePanel() {
     if (this.featureColorMap.size() > 0) {
       this.featureColorMap.clear();
@@ -1159,6 +1381,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Reset type radio button panel.
+   */
   private void resetTypeRadioButtonPanel() {
     if (this.typeRadioButtonMap.size() > 0) {
       this.typeRadioButtonMap.clear();
@@ -1168,6 +1393,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Reset type color map.
+   */
   private void resetTypeColorMap() {
     if (!this.useConsistentColors) {
       if (this.typeColorMap.size() > 0) {
@@ -1252,9 +1480,9 @@ public class CasAnnotationViewer extends JPanel {
     // System.out.println(typeList);
     // System.out.println(keywordList);
 
-    setInitiallySelectedTypes((String[]) typeList.toArray(new String[0]));
+    setInitiallySelectedTypes(typeList.toArray(new String[0]));
     display();
-    applyBoldfaceToKeywords((String[]) keywordList.toArray(new String[0]));
+    applyBoldfaceToKeywords(keywordList.toArray(new String[0]));
   }
 
   /**
@@ -1272,10 +1500,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * Assign initially checked to the specified types, pairing up down the lists
-   * 
-   * @param aNotChecked
-   *          list of types not to be initially checked JMP
+   * Assign initially checked to the specified types, pairing up down the lists.
+   *
+   * @param aNotChecked          list of types not to be initially checked JMP
    */
   public void assignCheckedFromList(List<String> aNotChecked) {
     if (aNotChecked == null || aNotChecked.size() == 0) {
@@ -1285,12 +1512,10 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * Assign colors to the specified types, pairing up down the lists
-   * 
-   * @param aColors
-   *          list of colors
-   * @param aTypeNames
-   *          list of type names JMP
+   * Assign colors to the specified types, pairing up down the lists.
+   *
+   * @param aColors          list of colors
+   * @param aTypeNames          list of type names JMP
    */
   public void assignColorsFromList(List<Color> aColors, List<String> aTypeNames) {
     // populate mTypeNameToColorMap
@@ -1329,10 +1554,9 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * Assign colors to the specified types
-   * 
-   * @param aTypeNames
-   *          list of type names
+   * Assign colors to the specified types.
+   *
+   * @param aTypeNames          list of type names
    */
   private void assignTypeColors(List<String> aTypeNames) {
     // populate mTypeNameToColorMap
@@ -1451,6 +1675,9 @@ public class CasAnnotationViewer extends JPanel {
     this.textPane.setDocument(doc);
   }
 
+  /**
+   * Adds the feature value check boxes.
+   */
   private void addFeatureValueCheckBoxes() {
     if (this.featureValueCheckBoxMap.size() == 0) {
       return;
@@ -1472,6 +1699,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Adds the feature radio buttons.
+   */
   private void addFeatureRadioButtons() {
     if (this.featureRadioButtonMap.size() == 0) {
       return;
@@ -1494,6 +1724,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Adds the type radio buttons.
+   */
   private void addTypeRadioButtons() {
     if (this.typeRadioButtonMap.size() == 0) {
       return;
@@ -1539,11 +1772,10 @@ public class CasAnnotationViewer extends JPanel {
   /**
    * Examine an annotation and add type/feature/value-related controls if
    * necessary.
-   * 
-   * @param doc
-   * @param annotation
-   * @param firstType
-   *            If true, the annotation being examined has the first
+   *
+   * @param doc the doc
+   * @param annotation the annotation
+   * @param firstType            If true, the annotation being examined has the first
    *            type-related radio button that needs to be created and also
    *            set as selected.
    * @return If true, the annotation being examined has its type being
@@ -1615,12 +1847,12 @@ public class CasAnnotationViewer extends JPanel {
   /**
    * Examine one feature of the given annotation and create the
    * feature-related controls.
-   * 
-   * @param doc
-   * @param annotation
-   * @param feature
-   * @param firstFeature
-   * @return
+   *
+   * @param doc the doc
+   * @param annotation the annotation
+   * @param feature the feature
+   * @param firstFeature the first feature
+   * @return true, if successful
    */
   private boolean processOneFeature(StyledDocument doc, Annotation annotation,
       Feature feature, boolean firstFeature) {
@@ -1679,11 +1911,11 @@ public class CasAnnotationViewer extends JPanel {
   /**
    * Examine one feature of the given annotation and create the
    * feature-value-related controls.
-   * 
-   * @param doc
-   * @param annotation
-   * @param feature
-   * @return
+   *
+   * @param doc the doc
+   * @param annotation the annotation
+   * @param feature the feature
+   * @return true, if successful
    */
   private boolean processOneFeatureValue(StyledDocument doc,
       Annotation annotation, Feature feature) {
@@ -1770,6 +2002,9 @@ public class CasAnnotationViewer extends JPanel {
     this.textPane.setDocument(doc);
   }
 
+  /**
+   * Adds the type check boxes.
+   */
   private void addTypeCheckBoxes() {
     if (this.typeToCheckBoxMap.size() == 0) {
       return;
@@ -1814,6 +2049,12 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Process one annotation in annotation view.
+   *
+   * @param doc the doc
+   * @param annotation the annotation
+   */
   private void processOneAnnotationInAnnotationView(StyledDocument doc, AnnotationFS annotation) {
     Type type = annotation.getType();
     String typeName = type.getName();
@@ -1925,6 +2166,12 @@ public class CasAnnotationViewer extends JPanel {
     this.textPane.setDocument(doc);
   }
 
+  /**
+   * Process one annotation in entity view.
+   *
+   * @param doc the doc
+   * @param annotation the annotation
+   */
   private void processOneAnnotationInEntityView(StyledDocument doc, Annotation annotation) {
     // find out what entity this annotation represents
     Entity entity = this.entityResolver.getEntity(annotation);
@@ -2025,9 +2272,9 @@ public class CasAnnotationViewer extends JPanel {
   /**
    * Check if an annotation matches the filters set by the user. If true, the
    * annotation will be added to the annotation tree display panel.
-   * 
-   * @param annotation
-   * @return
+   *
+   * @param annotation the annotation
+   * @return true, if is match
    */
   private boolean isMatch(Annotation annotation) {
     Type type = annotation.getType();
@@ -2110,6 +2357,12 @@ public class CasAnnotationViewer extends JPanel {
     this.addFeatureTreeNodes(annotationNode, aAnnotation);
   }
 
+  /**
+   * Adds the feature tree nodes.
+   *
+   * @param aParentNode the a parent node
+   * @param aFS the a FS
+   */
   private void addFeatureTreeNodes(DefaultMutableTreeNode aParentNode, FeatureStructure aFS) {
     List<Feature> features = aFS.getType().getFeatures();
     if (features == null || features.size() == 0) {
@@ -2173,10 +2426,10 @@ public class CasAnnotationViewer extends JPanel {
   /**
    * Get feature value in string, if value is not another annotation and not
    * an array of annotations.
-   * 
-   * @param aFS
-   * @param feature
-   * @return
+   *
+   * @param aFS the a FS
+   * @param feature the feature
+   * @return the feature value in string
    */
   private String getFeatureValueInString(FeatureStructure aFS, Feature feature) {
     if (this.cas == null || this.typeSystem == null || this.stringType == null || this.fsArrayType == null) {
@@ -2221,11 +2474,11 @@ public class CasAnnotationViewer extends JPanel {
    * Check if a string is null or longer than specified limit. If null, use
    * default value. If longer than specified limit, take only the leading
    * substring that would fit in the limit.
-   * 
-   * @param stringValue
-   * @param defaultIfNull
-   * @param maxLength
-   * @return
+   *
+   * @param stringValue the string value
+   * @param defaultIfNull the default if null
+   * @param maxLength the max length
+   * @return the string
    */
   private static String checkString(String stringValue, String defaultIfNull, int maxLength) {
     if (stringValue == null) {
@@ -2300,8 +2553,12 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
+   * Sets the size.
+   *
+   * @param d the new size
    * @see java.awt.Component#setSize(Dimension)
    */
+  @Override
   public void setSize(Dimension d) {
     super.setSize(d);
     Insets insets = getInsets();
@@ -2322,6 +2579,9 @@ public class CasAnnotationViewer extends JPanel {
     this.doBoldFaceBySpans();
   }
 
+  /**
+   * Do bold face by spans.
+   */
   private void doBoldFaceBySpans() {
     if (this.boldFaceSpans == null || this.boldFaceSpans.length == 0) {
       return;
@@ -2342,6 +2602,9 @@ public class CasAnnotationViewer extends JPanel {
     }
   }
 
+  /**
+   * Do bold face by key words.
+   */
   private void doBoldFaceByKeyWords() {
     if (this.boldFaceKeyWords == null || this.boldFaceKeyWords.length == 0) {
       return;
@@ -2405,9 +2668,11 @@ public class CasAnnotationViewer extends JPanel {
     /* (non-Javadoc)
      * @see org.apache.uima.tools.viewer.EntityResolver#getCanonicalForm(org.apache.uima.jcas.tcas.Annotation)
      */
+    @Override
     public Entity getEntity(final Annotation inAnnotation) {
       return new Entity() {
         
+        @Override
         public String getCanonicalForm() {
           return inAnnotation.getCoveredText();
         }
@@ -2430,19 +2695,34 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * Inner class containing data for a tree node representing a Type
+   * Inner class containing data for a tree node representing a Type.
    */
   private static class TypeTreeNodeObject {
+    
+    /** The type. */
     private Type type;
 
+    /**
+     * Instantiates a new type tree node object.
+     *
+     * @param inType the in type
+     */
     public TypeTreeNodeObject(Type inType) {
       this.type = inType;
     }
 
+    /**
+     * Gets the type.
+     *
+     * @return the type
+     */
     public Type getType() {
       return this.type;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
       return this.type.getShortName();
@@ -2450,13 +2730,25 @@ public class CasAnnotationViewer extends JPanel {
   }
 
   /**
-   * Inner class containing data for a tree node representing a FeatureStructure
+   * Inner class containing data for a tree node representing a FeatureStructure.
    */
   private static class FsTreeNodeObject {
+    
+    /** The feature structure. */
     private FeatureStructure featureStructure;
+    
+    /** The feature name. */
     private String featureName;
+    
+    /** The caption. */
     private String caption;
 
+    /**
+     * Instantiates a new fs tree node object.
+     *
+     * @param inFeatureStructure the in feature structure
+     * @param inFeatureName the in feature name
+     */
     public FsTreeNodeObject(FeatureStructure inFeatureStructure, String inFeatureName) {
       this.featureStructure = inFeatureStructure;
       this.featureName = inFeatureName;
@@ -2472,17 +2764,30 @@ public class CasAnnotationViewer extends JPanel {
       }
     }
 
+    /**
+     * Gets the feature structure.
+     *
+     * @return the feature structure
+     */
     public FeatureStructure getFeatureStructure() {
       return this.featureStructure;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
       return this.caption;
     }
   }
 
+  /**
+   * The Class AnnotationTreeCellRenderer.
+   */
   private class AnnotationTreeCellRenderer extends DefaultTreeCellRenderer {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -8661556785397184756L;
 
     /*
@@ -2522,7 +2827,7 @@ public class CasAnnotationViewer extends JPanel {
         @Override
         public void keyPressed(KeyEvent ke) {
           if (ke == null || ke.getKeyCode() != KeyEvent.VK_C ||
-              (ke.getModifiers() & KeyEvent.CTRL_MASK) == 0) {
+              (ke.getModifiers() & InputEvent.CTRL_MASK) == 0) {
             return;
           }
           String selection = ((DefaultMutableTreeNode) value).getUserObject().toString();
@@ -2551,6 +2856,8 @@ public class CasAnnotationViewer extends JPanel {
    * 
    */
   private static class VerticallyScrollablePanel extends JPanel implements Scrollable {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1009744410018634511L;
 
     /*

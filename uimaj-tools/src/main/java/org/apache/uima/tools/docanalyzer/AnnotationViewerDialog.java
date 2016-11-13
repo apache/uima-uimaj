@@ -59,6 +59,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -92,6 +93,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Dialog that loads analyzed documents stored in XMI or XCAS format and allows them to be viewed
  * using the Java-based CAS viewer or a web browser, in either an HTML/Javascript format or in the
@@ -100,63 +102,73 @@ import org.xml.sax.SAXException;
  */
 public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -7259891069111863433L;
 
+  /** The temp dir. */
   private File tempDir = createTempDir();
 
+  /** The annotation view generator. */
   protected AnnotationViewGenerator annotationViewGenerator; // JMP
 
+  /** The style map editor. */
   private StyleMapEditor styleMapEditor;
 
+  /** The med 1. */
   private PrefsMediator med1;
 
+  /** The style map file. */
   private File styleMapFile;
 
+  /** The analyzed results list. */
   JList analyzedResultsList;
 
+  /** The input dir path. */
   String inputDirPath = null;
 
+  /** The type system. */
   TypeSystem typeSystem = null;
 
+  /** The types to display. */
   String[] typesToDisplay = null;
 
+  /** The java viewer RB. */
   JRadioButton javaViewerRB = null;
 
+  /** The java viewer UCRB. */
   JRadioButton javaViewerUCRB = null;
 
+  /** The html RB. */
   JRadioButton htmlRB = null;
 
+  /** The xml RB. */
   JRadioButton xmlRB = null;
 
+  /** The cas. */
   private CAS cas;
 
+  /** The processed style map. */
   private boolean processedStyleMap = false;
   
+  /** The default cas view name. */
   private String defaultCasViewName = CAS.NAME_DEFAULT_SOFA;
 
   /**
-   * Create an AnnotationViewer Dialog
-   * 
-   * @param aParentFrame
-   *          frame containing this panel
-   * @param aDialogTitle
-   *          title to display for the dialog
-   * @param med
-   *         
-   * @param aStyleMapFile
-   *          filename of style map to be used to view files in HTML
-   * @param aPerformanceStats
-   *          string representaiton of performance statistics, optional.
-   * @param aTypeSystem
-   *          the CAS Type System to which the XCAS files must conform.
-   * @param aTypesToDisplay
-   *          array of types that should be highlighted in the viewer. This can be set to the output
+   * Create an AnnotationViewer Dialog.
+   *
+   * @param aParentFrame          frame containing this panel
+   * @param aDialogTitle          title to display for the dialog
+   * @param med the med
+   * @param aStyleMapFile          filename of style map to be used to view files in HTML
+   * @param aPerformanceStats          string representaiton of performance statistics, optional.
+   * @param aTypeSystem          the CAS Type System to which the XCAS files must conform.
+   * @param aTypesToDisplay          array of types that should be highlighted in the viewer. This can be set to the output
    *          types of the Analysis Engine. A value of null means to display all types.
-   * @param interactiveTempFN
-   * @param javaViewerRBisSelected
-   * @param javaViewerUCRBisSelected
-   * @param xmlRBisSelected
-   * @param cas
+   * @param interactiveTempFN the interactive temp FN
+   * @param javaViewerRBisSelected the java viewer R bis selected
+   * @param javaViewerUCRBisSelected the java viewer UCR bis selected
+   * @param xmlRBisSelected the xml R bis selected
+   * @param cas the cas
    */
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
@@ -173,6 +185,19 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
             tempDir);
   }
 
+  /**
+   * Instantiates a new annotation viewer dialog.
+   *
+   * @param aParentFrame the a parent frame
+   * @param aDialogTitle the a dialog title
+   * @param med the med
+   * @param aStyleMapFile the a style map file
+   * @param aPerformanceStats the a performance stats
+   * @param aTypeSystem the a type system
+   * @param aTypesToDisplay the a types to display
+   * @param generatedStyleMap the generated style map
+   * @param cas the cas
+   */
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
           final String[] aTypesToDisplay, boolean generatedStyleMap, CAS cas) {
@@ -280,6 +305,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     if (performanceStats != null) {
       JButton perfStatsButton = new JButton("Performance Stats");
       perfStatsButton.addActionListener(new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent ae) {
           JOptionPane.showMessageDialog((Component) ae.getSource(), performanceStats, null,
                   JOptionPane.PLAIN_MESSAGE);
@@ -300,13 +326,14 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
     // event for the closeButton button
     closeButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent ae) {
         AnnotationViewerDialog.this.setVisible(false);
       }
     });
 
     // event for analyzedResultsDialog window closing
-    this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     setLF(); // set default look and feel
     analyzedResultsList.setCellRenderer(new MyListCellRenderer());
 
@@ -322,7 +349,11 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
   // unwound from small anonymous inner class
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     // read style map XML file if it exists
     String styleMapXml = null;
@@ -359,9 +390,14 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   }
 
   /**
-   * Filter to not show the two interactive-mode directories in the file list
+   * Filter to not show the two interactive-mode directories in the file list.
    */
   static class InteractiveFilter implements FilenameFilter {
+    
+    /* (non-Javadoc)
+     * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
+     */
+    @Override
     public boolean accept(File dir, String name) {
       if (name.equals("interactive_temp"))
         return false;
@@ -374,6 +410,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Gets the name of the CAS View that will be displayed first in 
    * the annotation viewer.
+   *
+   * @return the default cas view name
    */
   public String getDefaultCasViewName() {
     return defaultCasViewName;
@@ -382,6 +420,8 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Sets the name of the CAS View that will be displayed first in 
    * the annotation viewer.  It not set, defaults to {@link CAS#NAME_DEFAULT_SOFA}.
+   *
+   * @param defaultCasViewName the new default cas view name
    */
   public void setDefaultCasViewName(String defaultCasViewName) {
     this.defaultCasViewName = defaultCasViewName;
@@ -391,6 +431,19 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   // Interactive modes
   // JMP
 
+  /**
+   * Launch that viewer.
+   *
+   * @param inputDirPath the input dir path
+   * @param fileName the file name
+   * @param typeSystem the type system
+   * @param aTypesToDisplay the a types to display
+   * @param javaViewerRBisSelected the java viewer R bis selected
+   * @param javaViewerUCRBisSelected the java viewer UCR bis selected
+   * @param xmlRBisSelected the xml R bis selected
+   * @param styleMapFile the style map file
+   * @param viewerDirectory the viewer directory
+   */
   public void launchThatViewer(String inputDirPath, String fileName, TypeSystem typeSystem,
           final String[] aTypesToDisplay, boolean javaViewerRBisSelected,
           boolean javaViewerUCRBisSelected, boolean xmlRBisSelected, File styleMapFile,
@@ -486,6 +539,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   /**
    * Assumes node has a text field and extracts its value. JMP
+   *
+   * @param node the node
+   * @return the text value
    */
   static public String getTextValue(Node node) {
     Node first = node.getFirstChild();
@@ -498,6 +554,10 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   /**
    * Gets the first child with a given name. JMP
+   *
+   * @param node the node
+   * @param name the name
+   * @return the first child by name
    */
   static public Node getFirstChildByName(Node node, String name) {
     NodeList children = node.getChildNodes();
@@ -512,6 +572,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * Reads in annotation-color associations from stylemap file. JMP Also reads checked value if
    * present.
+   *
+   * @param viewer the viewer
+   * @param aStyleMapFile the a style map file
    */
 
   public void getColorsForTypesFromFile(CasAnnotationViewer viewer, File aStyleMapFile) {
@@ -664,8 +727,11 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   /**
    * If the current AE filename is not know ask for it. Then parse the selected file and return the
    * AnalysisEngineDescription object.
-   * 
+   *
    * @return the selected AnalysisEngineDescription, null if the user cancelled
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws InvalidXMLException the invalid XML exception
+   * @throws ResourceInitializationException the resource initialization exception
    */
   protected AnalysisEngineDescription promptForAE() throws IOException, InvalidXMLException,
           ResourceInitializationException {
@@ -690,7 +756,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     }
   }
 
-  /** set default look and feel */
+  /**
+   *  set default look and feel.
+   */
   private static void setLF() {
     // Force SwingApp to come up in the System L&F
     String laf = UIManager.getSystemLookAndFeelClassName();
@@ -703,6 +771,11 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     }
   }
   
+  /**
+   * Creates the temp dir.
+   *
+   * @return the file
+   */
   private File createTempDir() {
     File temp = new File(System.getProperty("java.io.tmpdir"), System.getProperty("user.name"));
     temp.mkdir();
@@ -710,14 +783,26 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
   }
 
   // create and call the list cell renderer to set the selected color and
+  /**
+   * The Class MyListCellRenderer.
+   */
   // image icon
   static class MyListCellRenderer extends JLabel implements ListCellRenderer {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 7231915634689270693L;
 
+    /**
+     * Instantiates a new my list cell renderer.
+     */
     public MyListCellRenderer() {
       setOpaque(true);
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+     */
+    @Override
     public Component getListCellRendererComponent(JList analyzedResultsList, Object value,
             int index, boolean isSelected, boolean cellHasFocus) {
       ImageIcon xmlIcon = Images.getImageIcon(Images.XML_DOC);
@@ -729,8 +814,15 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
     }
   }
 
+  /**
+   * The Class ListMouseAdapter.
+   */
   class ListMouseAdapter extends MouseAdapter {
 
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
+     */
+    @Override
     public void mouseClicked(MouseEvent e) {
       try {
         if (e.getClickCount() == 2) {

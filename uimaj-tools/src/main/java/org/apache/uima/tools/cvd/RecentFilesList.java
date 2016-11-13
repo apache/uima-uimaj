@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
 /**
  * List of recently used files.
  * 
@@ -33,9 +34,11 @@ import java.util.List;
  */
 public class RecentFilesList {
 
+  /** The list. */
   // The internal list
   private final List<File> list;
 
+  /** The max. */
   // The maximum size to which this list can grow
   private final int max;
   
@@ -98,6 +101,9 @@ public class RecentFilesList {
     }
   }
 
+  /**
+   * Shift right.
+   */
   private final void shiftRight() {
     if (this.list.size() < this.max) {
       // If max has not been reached, duplicate last file

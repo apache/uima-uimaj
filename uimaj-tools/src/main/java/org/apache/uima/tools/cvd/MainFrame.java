@@ -159,6 +159,7 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * Class comment for MainFrame.java goes here.
  * 
@@ -166,8 +167,10 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class MainFrame extends JFrame {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -1357410768440678886L;
 
+  /** The log levels. */
   public static List<Level> logLevels = new ArrayList<Level>(9);
   static {
     logLevels.add(Level.OFF);
@@ -181,235 +184,342 @@ public class MainFrame extends JFrame {
     logLevels.add(Level.ALL);
   }
 
+  /** The Constant loggerPropertiesFileName. */
   private static final String loggerPropertiesFileName = "org/apache/uima/tools/annot_view/Logger.properties";
 
+  /** The Constant defaultText. */
   private static final String defaultText =
   "Load or edit text here.";
 
+  /** The Constant titleText. */
   private static final String titleText = "CAS Visual Debugger (CVD)";
 
+  /** The Constant htmlGrayColor. */
   static final String htmlGrayColor = "<font color=#808080>";
 
+  /** The Constant indexReposRootLabel. */
   private static final String indexReposRootLabel = "<html><b>CAS Index Repository</b></html>";
 
+  /** The Constant noIndexReposLabel. */
   private static final String noIndexReposLabel = "<html><b>" + htmlGrayColor
       + "CAS Index Repository</b></html>";
 
+  /** The text area. */
   // The content areas.
   private JTextArea textArea;
 
+  /** The index tree. */
   private JTree indexTree;
 
+  /** The fs tree. */
   private JTree fsTree;
 
+  /** The status panel. */
   private JPanel statusPanel;
 
+  /** The status bar. */
   private JTextField statusBar;
 
+  /** The file status. */
   private JTextField fileStatus;
 
+  /** The ae status. */
   private JTextField aeStatus;
 
+  /** The caret status. */
   private JTextField caretStatus;
 
+  /** The text title border. */
   private Border textTitleBorder;
 
+  /** The is dirty. */
   // Dirty flag for the editor.
   private boolean isDirty;
 
+  /** The text scroll pane. */
   // The scroll panels.
   private JScrollPane textScrollPane;
 
+  /** The index tree scroll pane. */
   private JScrollPane indexTreeScrollPane;
 
+  /** The fs tree scroll pane. */
   private JScrollPane fsTreeScrollPane;
 
+  /** The file menu. */
   // Menus
   private JMenu fileMenu = null;
 
+  /** The file save item. */
   private JMenuItem fileSaveItem = null;
 
+  /** The edit menu. */
   private JMenu editMenu;
 
+  /** The undo item. */
   private JMenuItem undoItem;
 
+  /** The undo mgr. */
   private UndoMgr undoMgr;
 
+  /** The cut action. */
   private Action cutAction;
 
+  /** The copy action. */
   private Action copyAction;
 
+  /** The all annotation viewer item. */
   private JMenuItem allAnnotationViewerItem;
 
+  /** The acd item. */
   private JMenuItem acdItem;
 
+  /** The ts viewer item. */
   private JMenuItem tsViewerItem;
 
+  /** The re run menu. */
   private JMenuItem reRunMenu;
 
+  /** The run CPC menu. */
   private JMenuItem runCPCMenu;
 
+  /** The run on cas menu item. */
   private JMenuItem runOnCasMenuItem;
 
+  /** The show perf report item. */
   private JMenuItem showPerfReportItem;
 
+  /** The text popup. */
   private JPopupMenu textPopup;
 
+  /** The xcas read item. */
   private JMenuItem xcasReadItem;
 
+  /** The xcas write item. */
   private JMenuItem xcasWriteItem;
 
+  /** The xmi cas read item. */
   private JMenuItem xmiCasReadItem;
 
+  /** The xmi cas write item. */
   private JMenuItem xmiCasWriteItem;
 
+  /** The type system write item. */
   private JMenuItem typeSystemWriteItem;
 
+  /** The type system read item. */
   private JMenuItem typeSystemReadItem;
 
+  /** The recent text file menu. */
   private JMenu recentTextFileMenu;
 
+  /** The recent desc file menu. */
   private JMenu recentDescFileMenu;
 
+  /** The ini file. */
   // Ini file
   private File iniFile = null;
 
   // Code pages
 
+  /** The code pages. */
   private List<String> codePages = null;
 
+  /** The code page. */
   private String codePage = null;
 
+  /** The cp menu. */
   private JMenu cpMenu;
 
+  /** The cp buttons. */
   private ButtonGroup cpButtons;
 
+  /** The language prefs list. */
   // Language support
   String languagePrefsList = null;
 
+  /** The languages. */
   // private String defaultLanguagePref = null;
   private List<String> languages = null;
 
+  /** The lang menu. */
   private JMenu langMenu;
 
+  /** The lang buttons. */
   private ButtonGroup langButtons;
 
+  /** The Constant LANGUAGE_DEFAULT. */
   private static final String LANGUAGE_DEFAULT = "en";
 
+  /** The language. */
   private String language;
 
+  /** The Constant defaultLanguages. */
   private static final String defaultLanguages = "de,en,fr,ja,ko-kr,pt-br,zh-cn,zh-tw,x-unspecified";
 
+  /** The text file. */
   private File textFile = null;
 
+  /** The file open dir. */
   private File fileOpenDir = null;
 
+  /** The annot open dir. */
   private File annotOpenDir = null;
 
+  /** The xcas file open dir. */
   private File xcasFileOpenDir = null;
 
+  /** The color settings dir. */
   private File colorSettingsDir = null;
 
+  /** The index label. */
   // Selected index
   private String indexLabel = null;
 
+  /** The index. */
   private FSIndex index = null;
 
+  /** The is annotation index. */
   private boolean isAnnotationIndex = false;
 
+  /** The cas. */
   private CAS cas = null;
 
+  /** The ae descriptor file. */
   private File aeDescriptorFile = null;
 
+  /** The ae. */
   private AnalysisEngine ae = null;
 
+  /** The log file. */
   private File logFile = null;
 
+  /** The log. */
   private Logger log = null;
 
+  /** The color setting file. */
   private File colorSettingFile;
 
+  /** The Constant selectionColor. */
   private static final Color selectionColor = Color.orange;
 
+  /** The preferences. */
   private Properties preferences;
 
+  /** The last run process trace. */
   private ProcessTrace lastRunProcessTrace = null;
 
+  /** The Constant textDirPref. */
   public static final String textDirPref = "dir.open.text";
 
+  /** The Constant aeDirPref. */
   public static final String aeDirPref = "dir.open.tae";
 
+  /** The Constant xcasDirPref. */
   public static final String xcasDirPref = "dir.open.xcas";
 
+  /** The Constant textSizePref. */
   public static final String textSizePref = "textArea.size";
 
+  /** The Constant indexTreeSizePref. */
   public static final String indexTreeSizePref = "indexTree.size";
 
+  /** The Constant fsTreeSizePref. */
   public static final String fsTreeSizePref = "fsTree.size";
 
+  /** The Constant tsWindowSizePref. */
   public static final String tsWindowSizePref = "tsWindow.size";
 
+  /** The Constant annotViewSizePref. */
   public static final String annotViewSizePref = "annotViewWindow.size";
 
+  /** The Constant logViewSizePref. */
   public static final String logViewSizePref = "logViewWindow.size";
 
+  /** The Constant widthSuffix. */
   public static final String widthSuffix = ".width";
 
+  /** The Constant heightSuffix. */
   public static final String heightSuffix = ".height";
 
+  /** The Constant colorFilePref. */
   private static final String colorFilePref = "colors.file";
 
+  /** The Constant colorDirPref. */
   private static final String colorDirPref = "colors.dir";
 
+  /** The Constant cpCurrentPref. */
   private static final String cpCurrentPref = "cp.selected";
 
+  /** The Constant langCurrentPref. */
   private static final String langCurrentPref = "lang.selected";
 
+  /** The Constant langListPref. */
   private static final String langListPref = "lang.list";
 
+  /** The Constant textFileListPref. */
   private static final String textFileListPref = "file.text.list";
 
+  /** The Constant descFileListPref. */
   private static final String descFileListPref = "file.desc.list";
 
+  /** The Constant dataPathPref. */
   private static final String dataPathPref = "datapath";
 
+  /** The Constant textDimensionDefault. */
   private static final Dimension textDimensionDefault = new Dimension(500, 400);
 
+  /** The Constant fsTreeDimensionDefault. */
   private static final Dimension fsTreeDimensionDefault = new Dimension(200, 200);
 
+  /** The Constant logFileDimensionDefault. */
   private static final Dimension logFileDimensionDefault = new Dimension(500, 600);
 
+  /** The Constant DEFAULT_STYLE_NAME. */
   public static final String DEFAULT_STYLE_NAME = "defaultStyle";
 
+  /** The style map. */
   private Map<String, Style> styleMap = new HashMap<String, Style>();
 
+  /** The Constant maxRecentSize. */
   // For recently used text and descriptor files.
   private static final int maxRecentSize = 8;
 
+  /** The recent text files. */
   private final RecentFilesList recentTextFiles = new RecentFilesList(maxRecentSize);
 
+  /** The text file name list. */
   private final List<String> textFileNameList = new ArrayList<String>();
 
+  /** The recent desc files. */
   private final RecentFilesList recentDescFiles = new RecentFilesList(maxRecentSize);
 
+  /** The desc file name list. */
   private final List<String> descFileNameList = new ArrayList<String>();
 
+  /** The cursor owning components. */
   // For cursor handling (busy cursor). Is there a better way?
   private List<Component> cursorOwningComponents = new ArrayList<Component>();
 
+  /** The cursor cache. */
   private List<Cursor> cursorCache = null;
 
+  /** The data path name. */
   private String dataPathName;
 
+  /** The sofa selection combo box. */
   private JComboBox sofaSelectionComboBox;
 
+  /** The sofa selection panel. */
   private JPanel sofaSelectionPanel;
 
+  /** The exit on close. */
   private boolean exitOnClose = true;
 
   /**
    * Constructor for MainFrame.
-   * 
+   *
+   * @param iniFile the ini file
    * @throws HeadlessException -
    */
   public MainFrame(File iniFile) {
@@ -418,6 +528,11 @@ public class MainFrame extends JFrame {
     init();
   }
 
+  /**
+   * Run AE.
+   *
+   * @param doCasReset the do cas reset
+   */
   public void runAE(boolean doCasReset) {
     setStatusbarMessage("Running Annotator.");
     Timer timer = new Timer();
@@ -436,6 +551,9 @@ public class MainFrame extends JFrame {
     this.runOnCasMenuItem.setEnabled(true);
   }
 
+  /**
+   * Run CPC.
+   */
   public void runCPC() {
     setStatusbarMessage("Running CollectionProcessComplete.");
     Timer timer = new Timer();
@@ -459,10 +577,20 @@ public class MainFrame extends JFrame {
     this.runOnCasMenuItem.setEnabled(true);
   }
 
+  /**
+   * Sets the data path.
+   *
+   * @param dataPath the new data path
+   */
   public void setDataPath(String dataPath) {
     this.dataPathName = dataPath;
   }
 
+  /**
+   * Load AE descriptor.
+   *
+   * @param descriptorFile the descriptor file
+   */
   public void loadAEDescriptor(File descriptorFile) {
     addRecentDescFile(descriptorFile);
     setWaitCursor();
@@ -511,11 +639,22 @@ public class MainFrame extends JFrame {
     resetCursor();
   }
 
+  /**
+   * Handle exception.
+   *
+   * @param e the e
+   */
   public void handleException(Throwable e) {
     StringBuffer msg = new StringBuffer();
     handleException(e, msg);
   }
 
+  /**
+   * Handle exception.
+   *
+   * @param e the e
+   * @param msg the msg
+   */
   protected void handleException(Throwable e, StringBuffer msg) {
     msg.append(e.getClass().getName() + ": ");
     if (e.getMessage() != null) {
@@ -538,10 +677,18 @@ public class MainFrame extends JFrame {
 
   }
 
+  /**
+   * Show error.
+   *
+   * @param msg the msg
+   */
   private void showError(String msg) {
     JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
   }
 
+  /**
+   * Load file.
+   */
   public void loadFile() {
     try {
       if (this.textFile.exists() && this.textFile.canRead()) {
@@ -567,6 +714,11 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Load xmi file.
+   *
+   * @param xmiCasFile the xmi cas file
+   */
   public void loadXmiFile(File xmiCasFile) {
     try {
       setXcasFileOpenDir(xmiCasFile.getParentFile());
@@ -591,6 +743,12 @@ public class MainFrame extends JFrame {
   }
 
 
+  /**
+   * Gets the mnemonic.
+   *
+   * @param i the i
+   * @return the mnemonic
+   */
   private static final int getMnemonic(int i) {
     switch (i) {
     case 1:
@@ -616,6 +774,13 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Creates the recent text file item.
+   *
+   * @param num the num
+   * @param file the file
+   * @return the j menu item
+   */
   private final JMenuItem createRecentTextFileItem(int num, File file) {
     String fileShortName = file.getName();
     JMenuItem item = new JMenuItem(num + " " + fileShortName, getMnemonic(num));
@@ -624,6 +789,11 @@ public class MainFrame extends JFrame {
     return item;
   }
 
+  /**
+   * Adds the recent text file.
+   *
+   * @param file the file
+   */
   private void addRecentTextFile(File file) {
     this.recentTextFiles.addFile(file);
     this.recentTextFileMenu.removeAll();
@@ -634,6 +804,13 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Creates the recent desc file item.
+   *
+   * @param num the num
+   * @param file the file
+   * @return the j menu item
+   */
   private final JMenuItem createRecentDescFileItem(int num, File file) {
     String fileShortName = file.getName();
     JMenuItem item = new JMenuItem(num + " " + fileShortName, getMnemonic(num));
@@ -642,6 +819,11 @@ public class MainFrame extends JFrame {
     return item;
   }
 
+  /**
+   * Adds the recent desc file.
+   *
+   * @param file the file
+   */
   private void addRecentDescFile(File file) {
     this.recentDescFiles.addFile(file);
     this.recentDescFileMenu.removeAll();
@@ -675,6 +857,11 @@ public class MainFrame extends JFrame {
     loadFile();
   }
 
+  /**
+   * Sets the text no title.
+   *
+   * @param text the new text no title
+   */
   // Set the text.
   public void setTextNoTitle(String text) {
     this.textArea.setText(text);
@@ -682,6 +869,9 @@ public class MainFrame extends JFrame {
     this.isDirty = false;
   }
 
+  /**
+   * Sets the title.
+   */
   public void setTitle() {
     StringBuffer buf = new StringBuffer();
     buf.append(titleText);
@@ -694,6 +884,11 @@ public class MainFrame extends JFrame {
     this.setTitle(buf.toString());
   }
 
+  /**
+   * Save file.
+   *
+   * @return true, if successful
+   */
   public boolean saveFile() {
     if (this.textFile.exists() && !this.textFile.canWrite()) {
       showError("File is not writable: " + this.textFile.getAbsolutePath());
@@ -730,6 +925,12 @@ public class MainFrame extends JFrame {
     return true;
   }
   
+  /**
+   * Confirm overwrite.
+   *
+   * @param f the f
+   * @return true, if successful
+   */
   public boolean confirmOverwrite(File f) {
     if (f.exists()) {
       Object[] options = {"Yes, Overwrite.",
@@ -750,6 +951,9 @@ public class MainFrame extends JFrame {
     return true;
   }
 
+  /**
+   * Creates the text area.
+   */
   private void createTextArea() {
     try {
       this.textArea = new JTextArea();
@@ -774,6 +978,9 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Populate edit menu.
+   */
   private void populateEditMenu() {
     this.undoItem = new JMenuItem("Undo");
     this.undoItem.addActionListener(this.undoMgr);
@@ -811,6 +1018,11 @@ public class MainFrame extends JFrame {
     this.editMenu.add(pasteItem);
   }
 
+  /**
+   * Creates the edit action map.
+   *
+   * @return the hash map
+   */
   private HashMap<Object, Action> createEditActionMap() {
     HashMap<Object, Action> map = new HashMap<Object, Action>();
     Action[] ar = this.textArea.getActions();
@@ -821,6 +1033,11 @@ public class MainFrame extends JFrame {
     return map;
   }
 
+  /**
+   * Creates the menu bar.
+   *
+   * @return the j menu bar
+   */
   private JMenuBar createMenuBar() {
     JMenuBar menuBar = new JMenuBar();
     createFileMenu();
@@ -832,6 +1049,11 @@ public class MainFrame extends JFrame {
     return menuBar;
   }
 
+  /**
+   * Creates the edit menu.
+   *
+   * @return the j menu
+   */
   private JMenu createEditMenu() {
     this.editMenu = new JMenu("Edit");
     this.editMenu.setMnemonic(KeyEvent.VK_E);
@@ -839,6 +1061,11 @@ public class MainFrame extends JFrame {
     return this.editMenu;
   }
 
+  /**
+   * Creates the help menu.
+   *
+   * @return the j menu
+   */
   private JMenu createHelpMenu() {
     JMenu helpMenu = new JMenu("Help");
     helpMenu.setMnemonic(KeyEvent.VK_H);
@@ -858,6 +1085,9 @@ public class MainFrame extends JFrame {
     return helpMenu;
   }
 
+  /**
+   * Creates the file menu.
+   */
   private void createFileMenu() {
     this.fileMenu = new JMenu("File");
 
@@ -933,6 +1163,9 @@ public class MainFrame extends JFrame {
     setEnableCasFileReadingAndWriting();
   }
 
+  /**
+   * Sets the enable cas file reading and writing.
+   */
   public final void setEnableCasFileReadingAndWriting() {
     final boolean enable = this.cas != null;
     this.xcasReadItem.setEnabled(enable);
@@ -941,10 +1174,18 @@ public class MainFrame extends JFrame {
     this.xmiCasWriteItem.setEnabled(enable);
   }
 
+  /**
+   * Adds the cursor owning component.
+   *
+   * @param comp the comp
+   */
   private final void addCursorOwningComponent(Component comp) {
     this.cursorOwningComponents.add(comp);
   }
 
+  /**
+   * Sets the wait cursor.
+   */
   private final void setWaitCursor() {
     this.setEnabled(false);
     this.cursorCache = new ArrayList<Cursor>();
@@ -955,6 +1196,9 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Reset cursor.
+   */
   public final void resetCursor() {
     if (this.cursorCache == null) {
       return;
@@ -966,6 +1210,9 @@ public class MainFrame extends JFrame {
     this.setEnabled(true);
   }
 
+  /**
+   * Creates the code pages.
+   */
   public void createCodePages() {
     // Get supported encodings from JVM
     Map<String, Charset> charsetMap = Charset.availableCharsets();
@@ -986,16 +1233,25 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Reset trees.
+   */
   public void resetTrees() {
     updateIndexTree(false);
   }
 
+  /**
+   * Creates the CP menu.
+   */
   private void createCPMenu() {
     createCodePages();
     this.cpMenu = new AutoFoldingMenu("Code Page", 20);
     resetCPMenu();
   }
 
+  /**
+   * Reset CP menu.
+   */
   public void resetCPMenu() {
     this.cpMenu.removeAll();
     this.cpButtons = new ButtonGroup();
@@ -1014,6 +1270,11 @@ public class MainFrame extends JFrame {
     
   }
 
+  /**
+   * Adds the language.
+   *
+   * @param language1 the language 1
+   */
   public void addLanguage(String language1) {
     this.language = language1;
     if (!this.languages.contains(language1)) {
@@ -1022,12 +1283,18 @@ public class MainFrame extends JFrame {
     resetLangMenu();
   }
 
+  /**
+   * Creates the lang menu.
+   */
   private void createLangMenu() {
     createLanguages();
     this.langMenu = new JMenu("Language");
     resetLangMenu();
   }
 
+  /**
+   * Reset lang menu.
+   */
   public void resetLangMenu() {
     this.langMenu.removeAll();
     this.langButtons = new ButtonGroup();
@@ -1059,6 +1326,9 @@ public class MainFrame extends JFrame {
     this.langMenu.add(restoreDefaultsItem);
   }
 
+  /**
+   * Creates the languages.
+   */
   public void createLanguages() {
     this.languages = new ArrayList<String>();
     if (this.languagePrefsList == null) {
@@ -1077,6 +1347,11 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Creates the run menu.
+   *
+   * @return the j menu
+   */
   private JMenu createRunMenu() {
     JMenu runMenu = new JMenu("Run");
     runMenu.setMnemonic(KeyEvent.VK_R);
@@ -1102,6 +1377,7 @@ public class MainFrame extends JFrame {
     this.showPerfReportItem = new JMenuItem("Performance report");
     this.showPerfReportItem.setEnabled(false);
     this.showPerfReportItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         if (MainFrame.this.lastRunProcessTrace == null) {
           MainFrame.this.showError("No performance report to show.");
@@ -1129,6 +1405,11 @@ public class MainFrame extends JFrame {
     return runMenu;
   }
 
+  /**
+   * Creates the tools menu.
+   *
+   * @return the j menu
+   */
   private JMenu createToolsMenu() {
     JMenu toolsMenu = new JMenu("Tools");
     toolsMenu.setMnemonic(KeyEvent.VK_T);
@@ -1169,6 +1450,7 @@ public class MainFrame extends JFrame {
     JMenuItem logViewer = new JMenuItem("View Log File", KeyEvent.VK_L);
     logViewer.addActionListener(new ActionListener() {
 
+      @Override
       public void actionPerformed(ActionEvent event) {
         LogFileViewer viewer = new LogFileViewer("Log file: "
             + MainFrame.this.logFile.getAbsolutePath());
@@ -1185,6 +1467,9 @@ public class MainFrame extends JFrame {
     return toolsMenu;
   }
 
+  /**
+   * Creates the status bar.
+   */
   private void createStatusBar() {
     this.statusPanel = new JPanel();
     // statusPanel.setBorder(BorderFactory.createLineBorder(Color.gray));
@@ -1231,6 +1516,12 @@ public class MainFrame extends JFrame {
     setAEStatusMessage();
   }
 
+  /**
+   * Sets the caret status.
+   *
+   * @param dot the dot
+   * @param mark the mark
+   */
   public void setCaretStatus(final int dot, final int mark) {
     if (dot == mark) {
       this.caretStatus.setText("Cursor: " + dot);
@@ -1251,6 +1542,9 @@ public class MainFrame extends JFrame {
     this.copyAction.setEnabled(enable);
   }
 
+  /**
+   * Sets the file status message.
+   */
   public void setFileStatusMessage() {
     Border textBorder;
     if (this.textFile == null) {
@@ -1264,6 +1558,9 @@ public class MainFrame extends JFrame {
     this.textScrollPane.revalidate();
   }
 
+  /**
+   * Sets the AE status message.
+   */
   private void setAEStatusMessage() {
     if (this.ae == null || this.aeDescriptorFile == null) {
       this.aeStatus.setText("(No AE Loaded)");
@@ -1276,6 +1573,11 @@ public class MainFrame extends JFrame {
     this.statusPanel.revalidate();
   }
 
+  /**
+   * Sets the statusbar message.
+   *
+   * @param message the new statusbar message
+   */
   public void setStatusbarMessage(String message) {
     // Date date = new Date();
     Calendar calendar = Calendar.getInstance();
@@ -1305,6 +1607,9 @@ public class MainFrame extends JFrame {
     this.statusPanel.revalidate();
   }
 
+  /**
+   * Initialize logging.
+   */
   private void initializeLogging() {
 
     // set log file path
@@ -1339,6 +1644,9 @@ public class MainFrame extends JFrame {
     this.log = UIMAFramework.getLogger();
   }
 
+  /**
+   * Inits the.
+   */
   private void init() {
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
@@ -1427,6 +1735,9 @@ public class MainFrame extends JFrame {
     setStatusbarMessage("Ready.");
   }
 
+  /**
+   * Inits the file lists.
+   */
   private final void initFileLists() {
     int numFiles = this.textFileNameList.size();
     int max = numFiles < maxRecentSize ? numFiles : maxRecentSize;
@@ -1444,6 +1755,12 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Setup AE.
+   *
+   * @param aeFile the ae file
+   * @return true, if successful
+   */
   protected boolean setupAE(File aeFile) {
     try {
       ResourceManager rsrcMgr = null;
@@ -1508,11 +1825,19 @@ public class MainFrame extends JFrame {
     return true;
   }
 
+  /**
+   * Inits the cas.
+   */
   private final void initCas() {
     this.cas.setDocumentLanguage(this.language);
     this.cas.setDocumentText(this.textArea.getText());
   }
 
+  /**
+   * Internal run AE.
+   *
+   * @param doCasReset the do cas reset
+   */
   protected void internalRunAE(boolean doCasReset) {
     try {
       if (doCasReset) {
@@ -1557,6 +1882,9 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Inits the IR tree.
+   */
   private void initIRTree() {
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(noIndexReposLabel);
     DefaultTreeModel model = new DefaultTreeModel(root);
@@ -1574,6 +1902,9 @@ public class MainFrame extends JFrame {
     this.indexTree.setCellRenderer(cellRenderer);
   }
 
+  /**
+   * Inits the FS tree.
+   */
   private void initFSTree() {
     FSTreeModel treeModel = new FSTreeModel();
     this.fsTree = new JTree(treeModel);
@@ -1591,10 +1922,18 @@ public class MainFrame extends JFrame {
     this.fsTree.setCellRenderer(cellRenderer);
   }
 
+  /**
+   * Delete FS tree.
+   */
   private void deleteFSTree() {
     ((FSTreeModel) this.fsTree.getModel()).reset();
   }
 
+  /**
+   * Update index tree.
+   *
+   * @param useCAS the use CAS
+   */
   @SuppressWarnings("unchecked")
   public void updateIndexTree(boolean useCAS) {
     deleteFSTree();
@@ -1632,11 +1971,24 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Update FS tree.
+   *
+   * @param indexName the index name
+   * @param index1 the index 1
+   */
   public void updateFSTree(String indexName, FSIndex index1) {
     FSTreeModel treeModel = (FSTreeModel) this.fsTree.getModel();
     treeModel.update(indexName, index1, this.cas);
   }
 
+  /**
+   * Gets the annotations at pos.
+   *
+   * @param pos the pos
+   * @param annots the annots
+   * @return the annotations at pos
+   */
   private ArrayList<FSNode> getAnnotationsAtPos(int pos, List<FSNode> annots) {
     ArrayList<FSNode> res = new ArrayList<FSNode>();
     FSNode annot;
@@ -1653,6 +2005,15 @@ public class MainFrame extends JFrame {
     return res;
   }
 
+  /**
+   * Creates the type tree.
+   *
+   * @param type the type
+   * @param ts the ts
+   * @param label the label
+   * @param ir the ir
+   * @return the default mutable tree node
+   */
   private DefaultMutableTreeNode createTypeTree(org.apache.uima.cas.Type type, TypeSystem ts,
           String label, FSIndexRepository ir) {
     int size = ir.getIndex(label, type).size();
@@ -1672,6 +2033,11 @@ public class MainFrame extends JFrame {
     return node;
   }
 
+  /**
+   * Load program preferences.
+   *
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   private void loadProgramPreferences() throws IOException {
     if (this.iniFile == null) {
       File home = new File(System.getProperty("user.home"));
@@ -1735,11 +2101,23 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Sets the preferred size.
+   *
+   * @param comp the comp
+   * @param propPrefix the prop prefix
+   */
   public void setPreferredSize(JComponent comp, String propPrefix) {
     // assert(comp != null);
     comp.setPreferredSize(getDimension(propPrefix));
   }
 
+  /**
+   * Gets the dimension.
+   *
+   * @param propPrefix the prop prefix
+   * @return the dimension
+   */
   public Dimension getDimension(String propPrefix) {
     if (this.preferences == null) {
       return null;
@@ -1763,6 +2141,12 @@ public class MainFrame extends JFrame {
     return d;
   }
 
+  /**
+   * String list to string.
+   *
+   * @param list the list
+   * @return the string
+   */
   private static final String stringListToString(List<String> list) {
     if (list.size() < 1) {
       return "";
@@ -1776,6 +2160,12 @@ public class MainFrame extends JFrame {
     return buf.toString();
   }
 
+  /**
+   * String to array list.
+   *
+   * @param s the s
+   * @return the list
+   */
   private static final List<String> stringToArrayList(String s) {
     List<String> list = new ArrayList<String>();
     if (s.length() > 0) {
@@ -1787,6 +2177,11 @@ public class MainFrame extends JFrame {
     return list;
   }
 
+  /**
+   * Save program preferences.
+   *
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public void saveProgramPreferences() throws IOException {
     // File open dialog preferences.
     if (this.preferences == null) {
@@ -1844,6 +2239,12 @@ public class MainFrame extends JFrame {
     this.preferences.store(out, "Automatically generated preferences file for Annotation Viewer");
   }
 
+  /**
+   * Save color preferences.
+   *
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public void saveColorPreferences(File file) throws IOException {
     Properties prefs1 = new Properties();
     Iterator<String> it = this.styleMap.keySet().iterator();
@@ -1861,6 +2262,12 @@ public class MainFrame extends JFrame {
     prefs1.store(out, "Color preferences for annotation viewer.");
   }
 
+  /**
+   * Load color preferences.
+   *
+   * @param file the file
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public void loadColorPreferences(File file) throws IOException {
     Style parent = this.styleMap.get(CAS.TYPE_NAME_ANNOTATION);
     StyleContext sc = StyleContext.getDefaultStyleContext();
@@ -1890,6 +2297,9 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Inits the key map.
+   */
   private void initKeyMap() {
     // Create a key map for focussing the index repository tree panel.
     Action focusIRAction = new FocusIRAction(this);
@@ -1917,6 +2327,12 @@ public class MainFrame extends JFrame {
     this.textArea.getActionMap().put(textContextActionName, textContextAction);
   }
 
+  /**
+   * Show text popup.
+   *
+   * @param x the x
+   * @param y the y
+   */
   @SuppressWarnings("unchecked")
   public void showTextPopup(int x, int y) {
     final int pos = this.textArea.getCaretPosition();
@@ -1938,115 +2354,251 @@ public class MainFrame extends JFrame {
     this.textPopup.show(this.textArea, x, y);
   }
 
+  /**
+   * Gets the index tree.
+   *
+   * @return the index tree
+   */
   public JTree getIndexTree() {
     return this.indexTree;
   }
 
+  /**
+   * Gets the fs tree.
+   *
+   * @return the fs tree
+   */
   public JTree getFsTree() {
     return this.fsTree;
   }
 
+  /**
+   * Gets the text area.
+   *
+   * @return the text area
+   */
   public JTextArea getTextArea() {
     return this.textArea;
   }
 
+  /**
+   * Gets the cas.
+   *
+   * @return the cas
+   */
   public CAS getCas() {
     return this.cas;
   }
 
+  /**
+   * Checks if is dirty.
+   *
+   * @return true, if is dirty
+   */
   public boolean isDirty() {
     return this.isDirty;
   }
 
+  /**
+   * Sets the dirty.
+   *
+   * @param isDirty the new dirty
+   */
   public void setDirty(boolean isDirty) {
     this.isDirty = isDirty;
   }
 
+  /**
+   * Gets the preferences.
+   *
+   * @return the preferences
+   */
   public Properties getPreferences() {
     return this.preferences;
   }
 
+  /**
+   * Gets the index label.
+   *
+   * @return the index label
+   */
   public String getIndexLabel() {
     return this.indexLabel;
   }
 
+  /**
+   * Gets the index.
+   *
+   * @return the index
+   */
   public FSIndex getIndex() {
     return this.index;
   }
 
+  /**
+   * Gets the style map.
+   *
+   * @return the style map
+   */
   public Map<String, Style> getStyleMap() {
     return this.styleMap;
   }
 
+  /**
+   * Gets the ae.
+   *
+   * @return the ae
+   */
   public AnalysisEngine getAe() {
     return this.ae;
   }
 
+  /**
+   * Sets the index label.
+   *
+   * @param indexLabel the new index label
+   */
   public void setIndexLabel(String indexLabel) {
     this.indexLabel = indexLabel;
   }
 
+  /**
+   * Checks if is annotation index.
+   *
+   * @return true, if is annotation index
+   */
   public boolean isAnnotationIndex() {
     return this.isAnnotationIndex;
   }
 
+  /**
+   * Sets the annotation index.
+   *
+   * @param isAnnotationIndex the new annotation index
+   */
   public void setAnnotationIndex(boolean isAnnotationIndex) {
     this.isAnnotationIndex = isAnnotationIndex;
   }
 
+  /**
+   * Sets the index.
+   *
+   * @param index the new index
+   */
   public void setIndex(FSIndex index) {
     this.index = index;
   }
 
+  /**
+   * Sets the all annotation viewer item enable.
+   *
+   * @param enabled the new all annotation viewer item enable
+   */
   public void setAllAnnotationViewerItemEnable(boolean enabled) {
     this.allAnnotationViewerItem.setEnabled(enabled);
   }
 
+  /**
+   * Gets the file open dir.
+   *
+   * @return the file open dir
+   */
   public File getFileOpenDir() {
     return this.fileOpenDir;
   }
 
+  /**
+   * Sets the file open dir.
+   *
+   * @param fileOpenDir the new file open dir
+   */
   public void setFileOpenDir(File fileOpenDir) {
     this.fileOpenDir = fileOpenDir;
   }
 
+  /**
+   * Gets the text file.
+   *
+   * @return the text file
+   */
   public File getTextFile() {
     return this.textFile;
   }
 
+  /**
+   * Sets the text file.
+   *
+   * @param textFile the new text file
+   */
   public void setTextFile(File textFile) {
     this.textFile = textFile;
   }
 
+  /**
+   * Sets the save text file enable.
+   *
+   * @param enabled the new save text file enable
+   */
   public void setSaveTextFileEnable(boolean enabled) {
     this.fileSaveItem.setEnabled(enabled);
   }
 
+  /**
+   * Gets the undo mgr.
+   *
+   * @return the undo mgr
+   */
   public UndoMgr getUndoMgr() {
     return this.undoMgr;
   }
 
+  /**
+   * Sets the undo enabled.
+   *
+   * @param enabled the new undo enabled
+   */
   public void setUndoEnabled(boolean enabled) {
     this.undoItem.setEnabled(enabled);
   }
 
+  /**
+   * Gets the xcas file open dir.
+   *
+   * @return the xcas file open dir
+   */
   public File getXcasFileOpenDir() {
     return this.xcasFileOpenDir;
   }
 
+  /**
+   * Sets the xcas file open dir.
+   *
+   * @param xcasFileOpenDir the new xcas file open dir
+   */
   public void setXcasFileOpenDir(File xcasFileOpenDir) {
     this.xcasFileOpenDir = xcasFileOpenDir;
   }
 
+  /**
+   * Sets the cas.
+   *
+   * @param cas the new cas
+   */
   public void setCas(CAS cas) {
     this.cas = cas;
   }
 
+  /**
+   * Sets the run on cas enabled.
+   */
   public void setRunOnCasEnabled() {
     // Enable the "Run on CAS" menu item when we have both an AE and a CAS.
     this.runOnCasMenuItem.setEnabled(this.ae != null && this.cas != null);
   }
 
+  /**
+   * Destroy ae.
+   */
   public void destroyAe() {
     this.cas = null;
     if (this.ae != null) {
@@ -2055,80 +2607,173 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Sets the rerun enabled.
+   *
+   * @param enabled the new rerun enabled
+   */
   public void setRerunEnabled(boolean enabled) {
     this.reRunMenu.setEnabled(enabled);
     this.runCPCMenu.setEnabled(enabled);
   }
 
+  /**
+   * Sets the type system viewer enabled.
+   *
+   * @param enabled the new type system viewer enabled
+   */
   public void setTypeSystemViewerEnabled(boolean enabled) {
     this.tsViewerItem.setEnabled(enabled);
   }
 
+  /**
+   * Gets the color settings dir.
+   *
+   * @return the color settings dir
+   */
   public File getColorSettingsDir() {
     return this.colorSettingsDir;
   }
 
+  /**
+   * Sets the color settings dir.
+   *
+   * @param colorSettingsDir the new color settings dir
+   */
   public void setColorSettingsDir(File colorSettingsDir) {
     this.colorSettingsDir = colorSettingsDir;
   }
 
+  /**
+   * Gets the color setting file.
+   *
+   * @return the color setting file
+   */
   public File getColorSettingFile() {
     return this.colorSettingFile;
   }
 
+  /**
+   * Sets the color setting file.
+   *
+   * @param colorSettingFile the new color setting file
+   */
   public void setColorSettingFile(File colorSettingFile) {
     this.colorSettingFile = colorSettingFile;
   }
 
+  /**
+   * Gets the annot open dir.
+   *
+   * @return the annot open dir
+   */
   public File getAnnotOpenDir() {
     return this.annotOpenDir;
   }
 
+  /**
+   * Sets the annot open dir.
+   *
+   * @param annotOpenDir the new annot open dir
+   */
   public void setAnnotOpenDir(File annotOpenDir) {
     this.annotOpenDir = annotOpenDir;
   }
 
+  /**
+   * Gets the data path name.
+   *
+   * @return the data path name
+   */
   public String getDataPathName() {
     return this.dataPathName;
   }
 
+  /**
+   * Sets the data path name.
+   *
+   * @param dataPathName the new data path name
+   */
   public void setDataPathName(String dataPathName) {
     this.dataPathName = dataPathName;
   }
 
+  /**
+   * Gets the code page.
+   *
+   * @return the code page
+   */
   public String getCodePage() {
     return this.codePage;
   }
 
+  /**
+   * Sets the code page.
+   *
+   * @param codePage the new code page
+   */
   public void setCodePage(String codePage) {
     this.codePage = codePage;
   }
 
+  /**
+   * Gets the code pages.
+   *
+   * @return the code pages
+   */
   public List<String> getCodePages() {
     return this.codePages;
   }
 
+  /**
+   * Gets the language.
+   *
+   * @return the language
+   */
   public String getLanguage() {
     return this.language;
   }
 
+  /**
+   * Sets the language.
+   *
+   * @param language the new language
+   */
   public void setLanguage(String language) {
     this.language = language;
   }
 
+  /**
+   * Gets the languages.
+   *
+   * @return the languages
+   */
   public List<String> getLanguages() {
     return this.languages;
   }
 
+  /**
+   * Gets the language prefs list.
+   *
+   * @return the language prefs list
+   */
   public String getLanguagePrefsList() {
     return this.languagePrefsList;
   }
 
+  /**
+   * Sets the language prefs list.
+   *
+   * @param languagePrefsList the new language prefs list
+   */
   public void setLanguagePrefsList(String languagePrefsList) {
     this.languagePrefsList = languagePrefsList;
   }
 
   
+  /**
+   * Handle sofas.
+   */
   public void handleSofas() {
     // Populate sofa combo box with the names of all text
     // Sofas in the CAS
@@ -2180,6 +2825,11 @@ public class MainFrame extends JFrame {
     }
   }
 
+  /**
+   * Checks if is exit on close.
+   *
+   * @return true, if is exit on close
+   */
   public boolean isExitOnClose() {
     return this.exitOnClose;
   }
@@ -2188,8 +2838,8 @@ public class MainFrame extends JFrame {
    * Set exit-on-close behavior. Normally, CVD will shut down the JVM it's running in when it's main
    * window is being closed. Calling <code>setExitOnClose(false)</code> prevents that. It is then
    * the caller's task to shut down the JVM.
-   * 
-   * @param exitOnClose
+   *
+   * @param exitOnClose the new exit on close
    */
   public void setExitOnClose(boolean exitOnClose) {
     this.exitOnClose = exitOnClose;

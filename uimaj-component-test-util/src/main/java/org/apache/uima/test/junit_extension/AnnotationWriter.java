@@ -42,6 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.ProcessTrace;
 
+// TODO: Auto-generated Javadoc
 /**
  * The AnnotationWriter class writes specified annotations to an output file.
  * The encoding of the output file is UTF-8
@@ -49,15 +50,24 @@ import org.apache.uima.util.ProcessTrace;
 
 public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsumer
 {
+	
+	/** The out file. */
 	//output file
 	private File outFile;
+	
+	/** The file writer. */
 	//output file writer
 	private OutputStreamWriter fileWriter;
+	
+	/** The tofs. */
 	//respected annotations
 	private String[] tofs;
+	
+	/** The reconfig. */
 	//check if reconfigure must be called
 	private boolean reconfig = false;
 	
+	/** The Constant featureOnlyKey. */
 	private final static String featureOnlyKey = "feature";
 
 	/**
@@ -67,7 +77,8 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 	 * @throws ResourceInitializationException if there is error in 
 	 * initializing the resources
 	 */
-	public void initialize() throws ResourceInitializationException
+	@Override
+  public void initialize() throws ResourceInitializationException
 	{
 
 		// extract configuration parameter settings
@@ -110,9 +121,9 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 
 	/**
 	 * processTofs() writes als specified types an features to a HashMap.
-	 * 
+	 *
 	 * @param aCAS a CAS with a TypeSystem
-	 * @param tofs respected tofs
+	 * @param someTofs the some tofs
 	 * @return HashMap - Map with all types an features.
 	 */
 	private HashMap processTofs(CAS aCAS, String[] someTofs)
@@ -172,7 +183,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 		return types;
 	}
 
-	public synchronized void processCas(CAS aCAS) throws ResourceProcessException
+	/* (non-Javadoc)
+	 * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS)
+	 */
+	@Override
+  public synchronized void processCas(CAS aCAS) throws ResourceProcessException
 	{
 		if (this.reconfig == true)
 		{
@@ -298,12 +313,20 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 
 	}
 
-	public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
+	/* (non-Javadoc)
+	 * @see org.apache.uima.collection.CasConsumer_ImplBase#batchProcessComplete(org.apache.uima.util.ProcessTrace)
+	 */
+	@Override
+  public void batchProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
 	{
 		 // nothing to do here 	
 	}
 
-	public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
+	/* (non-Javadoc)
+	 * @see org.apache.uima.collection.CasConsumer_ImplBase#collectionProcessComplete(org.apache.uima.util.ProcessTrace)
+	 */
+	@Override
+  public void collectionProcessComplete(ProcessTrace aTrace) throws ResourceProcessException, IOException
 	{
 		if (this.fileWriter != null)
 		{
@@ -311,7 +334,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 		}
 	}
 
-	public void reconfigure() throws ResourceConfigurationException
+	/* (non-Javadoc)
+	 * @see org.apache.uima.collection.CasConsumer_ImplBase#reconfigure()
+	 */
+	@Override
+  public void reconfigure() throws ResourceConfigurationException
 	{
 		//reset reconfiguration - is done
 		this.reconfig = false;
@@ -354,7 +381,11 @@ public class AnnotationWriter extends CasConsumer_ImplBase implements CasConsume
 
 	}
 
-	public void destroy()
+	/* (non-Javadoc)
+	 * @see org.apache.uima.collection.CasConsumer_ImplBase#destroy()
+	 */
+	@Override
+  public void destroy()
 	{
 		if (this.fileWriter != null)
 		{

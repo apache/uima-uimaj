@@ -41,6 +41,7 @@ import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.FormPanel;
 import org.apache.uima.tools.util.gui.ListSelector;
 
+// TODO: Auto-generated Javadoc
 /**
  * 
  * A dynamically generated form panel with components generated from configuration parameters
@@ -51,21 +52,39 @@ import org.apache.uima.tools.util.gui.ListSelector;
  */
 
 public class MetaDataPanel extends FormPanel {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 2002216386886772644L;
 
+  /** The meta data. */
   ResourceMetaData metaData;
 
+  /** The fields list. */
   ArrayList fieldsList = new ArrayList();
 
   // Contains ConfigFields
 
+  /**
+   * Instantiates a new meta data panel.
+   */
   public MetaDataPanel() {
   }
 
+  /**
+   * Instantiates a new meta data panel.
+   *
+   * @param nrColumns the nr columns
+   */
   public MetaDataPanel(int nrColumns) {
     super(nrColumns);
   }
 
+  /**
+   * Populate.
+   *
+   * @param md the md
+   * @param overrides the overrides
+   */
   public void populate(ResourceMetaData md, CasProcessorConfigurationParameterSettings overrides) {
     metaData = md;
 
@@ -146,19 +165,29 @@ public class MetaDataPanel extends FormPanel {
     }
   }
 
+  /**
+   * Gets the meta data.
+   *
+   * @return the meta data
+   */
   public ResourceMetaData getMetaData() {
     return metaData;
   }
 
+  /**
+   * Gets the values.
+   *
+   * @return the values
+   */
   public List getValues() {
     return fieldsList;
   }
 
   /**
-   * @param fieldName
-   *          Configuration parameter field name
-   * @param fieldValue
-   *          Field value
+   * Sets the value.
+   *
+   * @param fieldName          Configuration parameter field name
+   * @param fieldValue          Field value
    */
   public void setValue(String fieldName, Object fieldValue) {
     // Find fieldName in fieldList:
@@ -171,7 +200,9 @@ public class MetaDataPanel extends FormPanel {
     }
   }
 
-  /** Removes all fields */
+  /**
+   *  Removes all fields.
+   */
   public void clearAll() {
     Component components[] = gridBagPanel.getComponents();
     for (int i = (components.length - 1); i >= 0; i--) {
@@ -184,6 +215,8 @@ public class MetaDataPanel extends FormPanel {
   /**
    * Returns whether this panel has been modified from its original configuration. Note that this is
    * not affected by saves. For that, use isDirty().
+   *
+   * @return true, if is modified
    */
   public boolean isModified() {
     List fields = getValues();

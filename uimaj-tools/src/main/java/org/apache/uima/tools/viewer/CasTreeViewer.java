@@ -62,6 +62,7 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * A GUI that displays annotation results in a Swing tree viewer. This class extends {@link JPanel}
  * and so can be reused within any Swing application.
@@ -69,13 +70,14 @@ import org.apache.uima.util.XMLInputSource;
  */
 public class CasTreeViewer extends JPanel {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -674412767134245565L;
 
   /**
    * Creates a CAS Tree Viewer.
-   * 
-   * @param aCAS
-   *          the CAS containing the annotations to be displayed in the tree viewer GUI
+   *
+   * @param aCAS          the CAS containing the annotations to be displayed in the tree viewer GUI
+   * @throws CASException the CAS exception
    */
   public CasTreeViewer(CAS aCAS) throws CASException {
     super();
@@ -108,6 +110,7 @@ public class CasTreeViewer extends JPanel {
 
     // add an event handler to catch tree selection changes and update the table
     tree.addTreeSelectionListener(new TreeSelectionListener() {
+      @Override
       public void valueChanged(TreeSelectionEvent aEvent) {
         TreePath selPath = tree.getSelectionPath();
         if (selPath != null) {
@@ -228,11 +231,10 @@ public class CasTreeViewer extends JPanel {
 
   /**
    * Builds a tree from a CAS.
-   * 
-   * @param aRootNode
-   *          an existing root node for the tree
-   * @param aCAS
-   *          CAS from which annotations will be extracted
+   *
+   * @param aCAS          CAS from which annotations will be extracted
+   * @return the tree node
+   * @throws CASException the CAS exception
    */
   private TreeNode buildTree(CAS aCAS) throws CASException {
     // get iterator over all annotations
@@ -357,6 +359,7 @@ public class CasTreeViewer extends JPanel {
         frame.pack();
         frame.show();
         frame.addWindowListener(new WindowAdapter() {
+          @Override
           public void windowClosing(WindowEvent e) {
             System.exit(0);
           }
@@ -372,11 +375,9 @@ public class CasTreeViewer extends JPanel {
    * Gets text to be processed by the TAE. If the document contains XML tags named TEXT like this:
    * <code>&lt;TEXT%gt;Process this text.&lt;/TEXT%gt;</code>, then only the text within those
    * tags is returned. Otherwise the whole document is returned.
-   * 
-   * @param aFile
-   *          file to process
-   * @param aTAE
-   *          Text Analysis Engine that will process the file
+   *
+   * @param text the text
+   * @return the text
    */
   static private String getText(String text) {
     int start = text.indexOf("<TEXT>");
@@ -397,8 +398,12 @@ public class CasTreeViewer extends JPanel {
   }
 
   /**
+   * Sets the size.
+   *
+   * @param d the new size
    * @see java.awt.Component#setSize(Dimension)
    */
+  @Override
   public void setSize(Dimension d) {
     super.setSize(d);
     Insets insets = getInsets();
@@ -409,23 +414,35 @@ public class CasTreeViewer extends JPanel {
     splitPane.setSize(paneSize);
   }
 
+  /** The split pane. */
   // GUI components
   private JSplitPane splitPane;
 
+  /** The tree. */
   private JTree tree;
 
+  /** The right panel. */
   private JPanel rightPanel;
 
+  /** The annotation type label. */
   private JLabel annotationTypeLabel;
 
+  /** The annotation text pane. */
   private JTextPane annotationTextPane;
 
+  /** The feature table. */
   private JTable featureTable;
 
   /**
    * Inner class containing data for a node in the tree.
    */
   static class AnnotationTreeNodeObject {
+    
+    /**
+     * Instantiates a new annotation tree node object.
+     *
+     * @param aAnnotation the a annotation
+     */
     public AnnotationTreeNodeObject(AnnotationFS aAnnotation) {
       mAnnotation = aAnnotation;
       mCaption = aAnnotation.getCoveredText();
@@ -434,16 +451,27 @@ public class CasTreeViewer extends JPanel {
 
     }
 
+    /**
+     * Gets the annotation.
+     *
+     * @return the annotation
+     */
     public AnnotationFS getAnnotation() {
       return mAnnotation;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
     public String toString() {
       return mCaption;
     }
 
+    /** The m annotation. */
     private AnnotationFS mAnnotation;
 
+    /** The m caption. */
     private String mCaption;
   }
 

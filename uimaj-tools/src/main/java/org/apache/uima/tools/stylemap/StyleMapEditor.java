@@ -52,6 +52,7 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.ImageButton;
 import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
 
+// TODO: Auto-generated Javadoc
 /**
  * A GUI for editing style maps for the annotation viewer.
  * <p>
@@ -70,50 +71,73 @@ import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
  * 
  */
 public class StyleMapEditor extends JDialog implements ActionListener {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -7774771368169207250L;
 
+  /** The button press. */
   private boolean buttonPress = false;
 
+  /** The populated. */
   private boolean populated;
 
+  /** The annotation features viewer. */
   private AnnotationFeaturesViewer annotationFeaturesViewer;
 
+  /** The add table entry button. */
   private ImageButton addTableEntryButton;
 
+  /** The table model. */
   private StyleMapTableModel tableModel;
 
+  /** The annotations table. */
   private StyleMapTable annotationsTable;
 
+  /** The style list. */
   private ArrayList styleList;
 
+  /** The remove table row button. */
   private ImageButton removeTableRowButton;
 
+  /** The move row up button. */
   private ImageButton moveRowUpButton;
 
+  /** The move row down button. */
   private ImageButton moveRowDownButton;
 
+  /** The ok button. */
   private JButton okButton = new JButton("Save");
 
+  /** The cancel button. */
   private JButton cancelButton = new JButton("Cancel");
 
+  /** The reset button. */
   private JButton resetButton = new JButton("Reset");
 
+  /** The style map editor dialog. */
   private JDialog styleMapEditorDialog;
 
+  /** The color name map. */
   private HashMap colorNameMap;
 
+  /** The analysis engine meta data. */
   private AnalysisEngineMetaData analysisEngineMetaData;
 
+  /** The ae. */
   private AnalysisEngineDescription ae;
 
+  /** The med. */
   private TableGUIMediator med;
 
+  /** The data. */
   // data for data model
   Object[][] data;
 
   /**
-   * 
    * Creates a new `Editor.
+   *
+   * @param aOwner the a owner
+   * @param cas the cas
    */
   public StyleMapEditor(final JFrame aOwner, CAS cas) {
     super(aOwner, "Style Map Editor", true);
@@ -214,6 +238,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
     // Style Edit OK Button event handle
     okButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         Vector vn = new Vector();
         for (int row = 0; row < styleList.size(); row++) {
@@ -250,6 +275,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
     // Style Edit Exit Button Event Handling
     cancelButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent evt) {
         buttonPress = false;
         styleMapEditorDialog.setVisible(false);
@@ -261,6 +287,10 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     pack();
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.Container#getPreferredSize()
+   */
+  @Override
   public Dimension getPreferredSize() {
     Dimension screenSize = getToolkit().getScreenSize();
     Dimension d = super.getPreferredSize();
@@ -270,6 +300,9 @@ public class StyleMapEditor extends JDialog implements ActionListener {
   }
 
   /**
+   * Sets the text analysis engine.
+   *
+   * @param tae the new text analysis engine
    * @deprecated use {@link #setAnalysisEngine(AnalysisEngineDescription)} instead.
    */
   @Deprecated
@@ -277,6 +310,11 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     this.ae = tae;
   }
 
+  /**
+   * Sets the analysis engine.
+   *
+   * @param ae the new analysis engine
+   */
   public void setAnalysisEngine(AnalysisEngineDescription ae) {
     this.ae = ae;
   }
@@ -284,15 +322,13 @@ public class StyleMapEditor extends JDialog implements ActionListener {
   /**
    * Displays the StyleMapEditor GUI and allows the user to edit a style map. When the user has
    * finished, the new style map is returned.
-   * 
-   * @param aAnalysisEngineMetaData
-   *          Metadata for the AnalysisEngine whose style map is to be edited. This contains the
+   *
+   * @param aAnalysisEngineMetaData          Metadata for the AnalysisEngine whose style map is to be edited. This contains the
    *          AE's capabilities and type system definition, which are needed by the editor.
-   * @param aStyleMapXml
-   *          An existing style map XML document that will be loaded into the editor. This is
+   * @param aStyleMapXml          An existing style map XML document that will be loaded into the editor. This is
    *          optional, if null is passed in, a default style map will be automatically generated
    *          from the AE metadata.
-   * 
+   * @param cas the cas
    * @return a new style map XML document. If the user cancels, null is returned.
    */
   public String launchEditor(AnalysisEngineMetaData aAnalysisEngineMetaData, String aStyleMapXml,
@@ -339,6 +375,12 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     return parseStyleList(aStyleMapXml);
   }
 
+  /**
+   * Parses the style list.
+   *
+   * @param aStyleMapXml the a style map xml
+   * @return the array list
+   */
   public ArrayList parseStyleList(String aStyleMapXml) {
     StyleMapXmlParser smxp = new StyleMapXmlParser(aStyleMapXml);
     // System.out.println(aStyleMapXml );
@@ -363,6 +405,10 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     return styleList;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent evt) {
     JComponent source = (JComponent) evt.getSource();
 
@@ -453,17 +499,21 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     }
   }
 
+  /**
+   * Gets the annotations table.
+   *
+   * @return the annotations table
+   */
   protected StyleMapTable getAnnotationsTable() {
     return this.annotationsTable;
   }
 
   /**
    * Displays the Style Map Editor GUI and allows the user to interact with it.
-   * 
-   * @param aStyleList
-   *          an ArrayList containing the style map entries to be edited. When the user modifies a
+   *
+   * @param aStyleList          an ArrayList containing the style map entries to be edited. When the user modifies a
    *          setting in the GUI, the elements of this List will be updated.
-   * 
+   * @param cas the cas
    * @return true if the user exits the dialog by clicking the OK button, false if the user has
    *         clicked the Cancel button.
    */
@@ -528,12 +578,18 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     return buttonPress;
   }
 
+  /**
+   * Sets the up color editor.
+   *
+   * @param table the new up color editor
+   */
   private void setUpColorEditor(JTable table) {
     final JTable tbl = table;
     // First, set up the button that brings up the dialog.
     final JButton button = new JButton("") {
       private static final long serialVersionUID = 3955120051470642157L;
 
+      @Override
       public void setText(String s) {
         // Button never shows text -- only color.
       }
@@ -560,6 +616,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     // colorChooser.setChooserPanels(preferredPanels);
 
     ActionListener okListener = new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         colorEditor.currentColor = colorChooser.getColor();
         Color newColor = colorEditor.currentColor;
@@ -578,6 +635,7 @@ public class StyleMapEditor extends JDialog implements ActionListener {
 
     // Here's the code that brings up the dialog.
     button.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         button.setBackground(colorEditor.currentColor);
         colorChooser.setColor(colorEditor.currentColor);
@@ -675,6 +733,11 @@ public class StyleMapEditor extends JDialog implements ActionListener {
     return newStyleMap;
   }
 
+  /**
+   * Adds the row.
+   *
+   * @param typeName the type name
+   */
   public void addRow(String typeName) {
 
     // Check for duplicate annotation types that are not feature values:

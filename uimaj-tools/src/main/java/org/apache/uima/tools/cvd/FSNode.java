@@ -42,6 +42,7 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
+// TODO: Auto-generated Javadoc
 /**
  * A node in the FS Tree Model
  * 
@@ -49,54 +50,81 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   - an Feature Structure array
  *     -- elements may be other nodes
  *   - a primitive value, including Strings
- *   - a Feature Structure
+ *   - a Feature Structure.
  */
 
 public class FSNode extends FSTreeNode {
 
+  /** The Constant maxStringLength. */
   private static final int maxStringLength = 100;
   
+  /** The s tree model. */
   private final FSTreeModel fSTreeModel;
 
+  /** The Constant INT_FS. */
   static final int INT_FS = 0;
 
+  /** The Constant FLOAT_FS. */
   static final int FLOAT_FS = 1;
 
+  /** The Constant STRING_FS. */
   static final int STRING_FS = 2;
 
+  /** The Constant ARRAY_FS. */
   static final int ARRAY_FS = 3;
 
+  /** The Constant STD_FS. */
   static final int STD_FS = 4;
 
+  /** The Constant DISPLAY_NODE. */
   static final int DISPLAY_NODE = 5;
 
+  /** The Constant BYTE_FS. */
   static final int BYTE_FS = 6;
 
+  /** The Constant BOOL_FS. */
   static final int BOOL_FS = 7;
 
+  /** The Constant SHORT_FS. */
   static final int SHORT_FS = 8;
 
+  /** The Constant LONG_FS. */
   static final int LONG_FS = 9;
 
+  /** The Constant DOUBLE_FS. */
   static final int DOUBLE_FS = 10;
 
+  /** The node class. */
   private final int nodeClass;
 
+  /** The int or long like value. */
   private final long intOrLongLikeValue;
   
+  /** The fs. */
   private final TOP fs;
   
+  /** The string. */
   private final String string;
 
+  /** The feat. */
   private final Feature feat;
 
+  /** The array elem idx. */
   private final int arrayElemIdx;
 
+  /** The is array elem. */
   private final boolean isArrayElem;
   
+  /** The is shortened string. */
   // Remember if we're displaying a shortened string.
   private boolean isShortenedString = false;
   
+  /**
+   * K 2 nc.
+   *
+   * @param kind the kind
+   * @return the int
+   */
   private int k2nc(SlotKind kind) {
     switch(kind) {
     case Slot_Boolean: 
@@ -115,6 +143,15 @@ public class FSNode extends FSTreeNode {
     }
   }
 
+  /**
+   * Instantiates a new FS node.
+   *
+   * @param fSTreeModel the f S tree model
+   * @param nodeClass the node class
+   * @param fsOrString the fs or string
+   * @param intOrLongLikeValue the int or long like value
+   * @param feat the feat
+   */
   FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue, Feature feat) {
     super();
     this.fSTreeModel = fSTreeModel;
@@ -127,6 +164,15 @@ public class FSNode extends FSTreeNode {
     this.isArrayElem = false;
   }
 
+  /**
+   * Instantiates a new FS node.
+   *
+   * @param fSTreeModel the f S tree model
+   * @param nodeClass the node class
+   * @param fsOrString the fs or string
+   * @param intOrLongLikeValue the int or long like value
+   * @param elementIndex the element index
+   */
   FSNode(FSTreeModel fSTreeModel, int nodeClass, Object fsOrString, long intOrLongLikeValue, int elementIndex) {
     super();
     this.fSTreeModel = fSTreeModel;
@@ -139,10 +185,19 @@ public class FSNode extends FSTreeNode {
     this.isArrayElem = true;
   }
 
+  /**
+   * Gets the node class.
+   *
+   * @return the node class
+   */
   int getNodeClass() {
     return this.nodeClass;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.cvd.FSTreeNode#initChildren()
+   */
+  @Override
   protected void initChildren() {
     if (this.children != null) {
       return;
@@ -260,6 +315,12 @@ public class FSNode extends FSTreeNode {
     }
   }
 
+  /**
+   * Make nodes.
+   *
+   * @param arrayNodes the array nodes
+   * @param newFSNode the new FS node
+   */
   private void makeNodes(List<FSNode> arrayNodes, IntFunction<FSNode> newFSNode) {
     final int size = arrayNodes.size();
     for (int idx = 0; idx < size; idx++) {
@@ -267,6 +328,10 @@ public class FSNode extends FSTreeNode {
     }
   }  
   
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
   public String toString() {
     if (this.nodeClass == DISPLAY_NODE) {
       return this.fSTreeModel.getRootString();
@@ -286,12 +351,18 @@ public class FSNode extends FSTreeNode {
     return buf.toString();
   }
 
+  /**
+   * Gets the feature string.
+   *
+   * @return the feature string
+   */
   private String getFeatureString() {
     return "<i>" + this.feat.getShortName() + "</i>";
   }
   
   /**
-   * 
+   * Checks if is shortened string.
+   *
    * @return if this is a string node displaying a shortened string
    */
   boolean isShortenedString() {
@@ -308,6 +379,11 @@ public class FSNode extends FSTreeNode {
     return this.string;
   }
 
+  /**
+   * Gets the value string.
+   *
+   * @return the value string
+   */
   private String getValueString() {
     
     switch (this.nodeClass) {
@@ -356,6 +432,12 @@ public class FSNode extends FSTreeNode {
     return null;
   }
 
+  /**
+   * Shorten string.
+   *
+   * @param s the s
+   * @return the string
+   */
   private static final String shortenString(String s) {
     if (s.length() <= maxStringLength) {
       return s;
@@ -366,6 +448,12 @@ public class FSNode extends FSTreeNode {
     return buf.toString();
   }
   
+  /**
+   * Escape lt.
+   *
+   * @param s the s
+   * @return the string
+   */
   private static final String escapeLt(String s) {
     final int max = s.length();
     int i = 0;
@@ -390,26 +478,56 @@ public class FSNode extends FSTreeNode {
     return buf.toString();
   }
   
+  /**
+   * Gets the null string.
+   *
+   * @return the null string
+   */
   private String getNullString() {
     return "&lt;null&gt;";
   }
 
+  /**
+   * Gets the array pos.
+   *
+   * @return the array pos
+   */
   int getArrayPos() {
     return this.arrayElemIdx;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   TypeImpl getType() {
     return fs._getTypeImpl();
   }
 
+  /**
+   * Checks if is annotation.
+   *
+   * @return true, if is annotation
+   */
   public boolean isAnnotation() {
     return fs != null && fs instanceof Annotation;
   }
 
+  /**
+   * Gets the start.
+   *
+   * @return the start
+   */
   public int getStart() {
     return isAnnotation() ? ((Annotation)fs).getBegin() : -1;
   }
 
+  /**
+   * Gets the end.
+   *
+   * @return the end
+   */
   public int getEnd() {
     return isAnnotation() ? ((Annotation)fs).getEnd() : -1;
   }

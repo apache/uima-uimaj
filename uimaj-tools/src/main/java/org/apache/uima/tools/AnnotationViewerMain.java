@@ -69,6 +69,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
+// TODO: Auto-generated Javadoc
 /**
  * Main Annotation Viewer GUI. Allows user to choose directory of XCAS or XMI files, then
  * launches the AnnotationViewerDialog.
@@ -76,8 +77,11 @@ import org.apache.uima.util.XMLInputSource;
  * 
  */
 public class AnnotationViewerMain extends JFrame {
+  
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -3201723535833938833L;
 
+  /** The Constant HELP_MESSAGE. */
   private static final String HELP_MESSAGE = "Instructions for using Annotation Viewer:\n\n"
           + "1) In the \"Input Directory\" field, either type or use the browse\n"
           + "button to select a directory containing the analyzed documents\n "
@@ -92,17 +96,22 @@ public class AnnotationViewerMain extends JFrame {
           + "or XML.  The Java annotation viewer is recommended.\n\n"
           + "5) Double-click on a document to view it.\n";
 
+  /** The uima home dir. */
   private File uimaHomeDir;
 
+  /** The input file selector. */
   private FileSelector inputFileSelector;
 
+  /** The tae descriptor file selector. */
   private FileSelector taeDescriptorFileSelector;
 
+  /** The view button. */
   private JButton viewButton;
 
+  /** The about dialog. */
   private JDialog aboutDialog;
 
-  /** Stores user preferences */
+  /**  Stores user preferences. */
   private Preferences prefs = Preferences.userRoot().node("org/apache/uima/tools/AnnotationViewer");
 
   /**
@@ -192,6 +201,7 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handlling of "Exit" Menu Item
     exitMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent ae) {
         savePreferences();
         System.exit(0);
@@ -200,6 +210,7 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handlling of "About" Menu Item
     aboutMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent ae) {
         aboutDialog.setVisible(true);
       }
@@ -207,6 +218,7 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handlling of "Help" Menu Item
     helpMenuItem.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent ae) {
         JOptionPane.showMessageDialog(AnnotationViewerMain.this, HELP_MESSAGE,
                 "Annotation Viewer Help", JOptionPane.PLAIN_MESSAGE);
@@ -233,6 +245,7 @@ public class AnnotationViewerMain extends JFrame {
 
     // Event Handling of view Button
     viewButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent ee) {
         try {
           viewDocuments();
@@ -248,6 +261,13 @@ public class AnnotationViewerMain extends JFrame {
     }
   }
 
+  /**
+   * View documents.
+   *
+   * @throws InvalidXMLException the invalid XML exception
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ResourceInitializationException the resource initialization exception
+   */
   public void viewDocuments() throws InvalidXMLException, IOException,
           ResourceInitializationException {
     File descriptorFile = new File(taeDescriptorFileSelector.getSelected());
@@ -296,8 +316,10 @@ public class AnnotationViewerMain extends JFrame {
   }
 
   /**
-   * @param tad 
-   * @param descFileName
+   * Gets the style map file.
+   *
+   * @param tad the tad
+   * @param descFileName the desc file name
    * @return the style map file
    * @throws IOException -
    */
@@ -317,8 +339,10 @@ public class AnnotationViewerMain extends JFrame {
   }
 
   /**
-   * @param tsd
-   * @param descFileName
+   * Gets the style map file.
+   *
+   * @param tsd the tsd
+   * @param descFileName the desc file name
    * @return the style map file
    * @throws IOException -
    */
@@ -338,6 +362,9 @@ public class AnnotationViewerMain extends JFrame {
 
   /**
    * Gets the name of the style map file for the given AE or TypeSystem descriptor filename.
+   *
+   * @param aDescriptorFileName the a descriptor file name
+   * @return the style map file name
    */
   public File getStyleMapFileName(String aDescriptorFileName) {
     String baseName;
@@ -350,10 +377,16 @@ public class AnnotationViewerMain extends JFrame {
     return new File(baseName + "StyleMap.xml");
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     final AnnotationViewerMain frame = new AnnotationViewerMain();
 
     frame.addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         frame.savePreferences();
         System.exit(0);
@@ -453,6 +486,7 @@ public class AnnotationViewerMain extends JFrame {
    * 
    * @see java.awt.Component#getPreferredSize()
    */
+  @Override
   public Dimension getPreferredSize() {
     return new Dimension(640, 200);
   }  
