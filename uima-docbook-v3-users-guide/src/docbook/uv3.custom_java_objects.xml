@@ -27,35 +27,36 @@ under the License.
   <title>Defining CAS transported custom Java objects</title>
   <titleabbrev>CAS Java Objects</titleabbrev>
   
-  <para>One of the goals of v3 is to support more of the Java collection framework,
+  <para>One of the goals of v3 is to support more of the Java collection framework within the CAS,
   to enable users to conveniently build more complex models that could be transported by the CAS.
-  For example, a user might want to store as the value of a feature, a Java "Set" object with
-  their own particular definition of set-equals.  Or a user might find it most convenient and efficient
-  to have a feature hold an adjustable array, like Java's ArrayList.  Or, a user might want to 
-  establish some kind of mapping, say between Feature Structures, and store that map as the value of a Feature.
+  For example, a user might want to store a Java "Set" object, representing a set of Feature Structures.
+  Or a user might want to use an adjustable array, like Java's ArrayList.
   </para>
   
   <para>With the current version 2 implementation of JCas, users already may add arbitrary Java objects to their
   JCas class definitions as fields, but these do not get transported with the CAS (for instance, during 
   serialization).  Furthermore, in version 2, the actual JCas instance you get when accessing a Feature Structure
-  in some edge cases may need to be regenerated as a fresh instance. Version 3 changes this &mdash; 
-  you always get the identical JCas class instance for a feature structure 
+  in some edge cases may be a fresh instance, losing any previously computed value held as a Java field. 
+  In contrast, each Feature Structure in a CAS is represented as the same unique Java Object 
   (because that's the only way a Feature Structure is stored).
   </para>
   
-  <para>Version 3 adds a capability that enables converting arbitrary Java objects 
+  <para>Version 3 has a new a capability that enables converting arbitrary Java objects 
   that might be part of a 
   JCas class definition, into "ordinary" CAS values that can be transported with the CAS. 
-  These conventions include
+  This is done using a set of conventions which the framework follows, and which developers writing these
+  classes make use of; they include
   two kinds of marker Java interfaces, and 2 methods that are called when serializing and deserializing.
-  The marker interfaces identify those JCas classes which need these extra methods called.  The extra methods are 
-  methods implemented by the creator of these JCas classes, which marshal/unmarshal CAS feature data to/from the 
-  Java Object this class is supporting.
+  <blockquote><para>
+	  The marker interfaces identify those JCas classes which need these extra methods called.  The extra methods are 
+	  methods implemented by the creator of these JCas classes, which marshal/unmarshal CAS feature data to/from the 
+	  Java Object this class is supporting.
+  </para></blockquote>
   </para>
 
   <para>
   Storing the Java Object data as the value of a normal CAS Feature means that they get "transported" in a portable
-  way with the CAS - they can be saved to disk and read in later, or sent to remote services, etc.
+  way with the CAS - they can be saved to external storage and read back in later, or sent to remote services, etc.
   </para>
   
   <section id="uv3.custom_java_objects.tutorial">
@@ -164,7 +165,7 @@ public void _save_to_cas_data() {
     </variablelist>
     </para>
     
-    <para>For more examples, please see the implmentations of the built-in classes described in the
+    <para>For more examples, please see the implementations of the built-in classes described in the
     following section.</para>
   </section>
   
@@ -175,17 +176,6 @@ public void _save_to_cas_data() {
 	  <para>Some additional built-in UIMA types are defined in Version 3 using this new mechanism.  They work fully in
 	  Java, and are transported to non-Java frameworks as ordinary CAS objects.</para>
 	  
-<!-- 	  <para>These are called "pre-built" rather than "built-in".  They are included in the normal type system by 
-	    default, but may be excluded in order to have the type system match UIMA V2's built-ins.  This would be
-	    needed, for instance, when an application needed to match typesystems with other instances, for example,
-	    to deserialize a binary-format serialization.</para>
- 	    
-    <para>A new parameter, <code>TypeSystem.PARAM_EXCLUDE_PREBUILT_TYPES</code>, can be added as an additional
-      parameter to the "additionalParameters" map on any of the calls that produce type systems. 
-      <code>removePrebuiltTypes()</code> on a type system implementation object, 
-      before committing, removes these types.
-    </para>
- -->   
 	  <section id="uv3.custom_java_objects.builtin_fsarraylist">
 	    <title>FSArrayList</title>
 	    <titleabbrev>FSArrayList</titleabbrev>
@@ -224,6 +214,26 @@ public void _save_to_cas_data() {
       boxing.</para> 
        
     </section>
+    
+    <section id="uv3.custom_java_objects.builtin_FSHashSet">
+      <title>FSHashSet</title>
+      <titleabbrev>FSHashSet</titleabbrev>
+      
+      <para>This type stores Feature Structures in a HashSet, using whatever is defined
+      as the Feature Structure's <code>equals</code> and <code>hashcode</code>.
+      
+      <blockquote>
+	      <para>You may customize the particular equals and hashcode by creating a wrapper class that
+	      is a subclass of the type of interest which forwards to the underlying Feature Structure, but
+	      has its own definition of <code>equals</code> and <code>hashcode</code>. 
+	      </para>
+      </blockquote>
+      </para>
+            
+      <para>The CAS data form is held in an FSArray consisting of the members of the set.</para>
+            
+    </section>
+    
   </section>
      
 </chapter>

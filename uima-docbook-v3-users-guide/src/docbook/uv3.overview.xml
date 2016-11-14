@@ -27,19 +27,60 @@ under the License.
   <title>Overview of UIMA Version 3</title>
   <titleabbrev>Overview</titleabbrev>
   
-  <para>UIMA Version 3 makes some major changes in how the Java version UIMA stores Feature Structures -
-  these are now stored as ordinary Java objects.  In contrast, version 2 stored these in special internal
-  arrays of <code>ints</code> and other data types.  Any Java object representations of Feature Structures in version 2
-  were merely forwarding references to these internal data representations.</para>
+  <para>UIMA Version 3 adds significant new functionality for the Java SDK, while remaining 
+  backward compatible with Version 2.  Much of this new function is enabled by a shift in the 
+  internal details of how Feature Structures are represented.  In Version 3, these are represented
+  internally as ordinary Java objects, and subject to garbage collection.</para>
+  <blockquote><para>
+	  In contrast, version 2 stored Feature Structure data in special internal
+	  arrays of <code>ints</code> and other data types.  
+	  Any Java object representation of Feature Structures in version 2
+	  was merely forwarding references to these internal data representations.
+  </para>
+  </blockquote>    
   
-  <para>The benefits of version 3 include:
+  <para>If JCas is being used in an application, the JCas classes must be migrated, but this can often
+  be done automatically.  In Version 3, the JCas classes ending in "_Type" are no longer used, and the 
+  main JCas class definitions are much simplified.</para>
+  
+  <blockquote><para>
+  If an application doesn't use JCas classes, then nothing need be done for migration.
+  Otherwise, the JCas classes can be migrated in several ways:
+  <variablelist>
+	  <varlistentry>
+		  <term><emphasis role="strong">automatically, when starting the application</emphasis></term>
+		  <listitem><para>This is the easiest, and works for normal JCas classes, but incurs a migration cost
+		  at every startup.</para></listitem>
+	  </varlistentry>
+    <varlistentry>
+      <term><emphasis role="strong">running the migration utility</emphasis></term>
+      <listitem><para>This does the work of migrating and produces new versions of the JCas classes, which
+      need to replace the existing ones.  It allows complex existing JCas classes to migrated, perhaps
+      with developer assistance as needed.  Once done, the application has no migration startup cost.</para>
+      <para>The migration tool is capabile of using existing source or compiled JCas classes as input, and 
+      can migrate classes contained within Jars or PEARs.
+      </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><emphasis role="strong">regenerating the JCas classes using the JCasGen tool</emphasis></term>
+      <listitem><para>The JCasGen tool (available as a Eclipse or Maven plugin, or a stand-alone application) 
+      generates Version 3 JCas classes from the XML descriptors.</para></listitem>
+    </varlistentry>
+  </variablelist>
+  </para></blockquote>
+  
+  <para>The major improvements in version 3 include:
 	  <variablelist>
 	    <varlistentry>
 	      <term><emphasis role="strong">better performance</emphasis></term>
 	      <listitem>
-	        <para>The design follows recent trends in computer hardware 
-	        over the last 10-15 years; it adjusts the balance between space and time trade offs in favor of
-	        using more memory for better locality-of-reference, which improves performance.   
+	        <para>The internal design details have been extensively reworked to align
+	        with  recent trends in computer hardware 
+	        over the last 10-15 years.  In particular, space and time tradeoffs are adjusted in favor of
+	        using more memory for better locality-of-reference, which improves performance.
+	        In addition, the many internal algorithms (such as managing Feature Structure indexes) have
+	        been improved.   
 	        </para>
 	      </listitem>
 	    </varlistentry>
@@ -49,8 +90,9 @@ under the License.
 	      <listitem>
 	        <para>Support is added to allow users to define additional UIMA Types whose JCas implementation may 
 	        include Java objects, with serialization and deserialization performed using normal CAS transportable
-	        data.  Several new built-in UIMA types exploit this facility, adding things like adjustable arrays
-	        of Feature Structures. The chapter on Custom Java Objects describes this new facility.</para>
+	        data.  Several new built-in UIMA types exploit this facility, adding new built-in types
+	        to UIMA such as adjustable arrays of Feature Structures. 
+	        The chapter on Custom Java Objects describes this new facility.</para>
 	      </listitem>
 	    </varlistentry>
 	    
@@ -71,13 +113,13 @@ under the License.
 	              <para>This is a variable length int array</para>
 	            </listitem>
 	          </varlistentry>
-<!-- 	      <varlistentry>
+    	      <varlistentry>
 	            <term><emphasis role="strong">FSHashSet</emphasis></term>
 	            <listitem>
 	              <para>This is a Set containing Feature Structures, implemented using Java's HashSet</para>
 	            </listitem>
 	          </varlistentry>
- -->
+ 
    	        </variablelist>   
 	        </para>
 	      </listitem>
@@ -87,23 +129,24 @@ under the License.
 	      <term><emphasis role="strong">Automatic garbage collection of unreferenced Feature Structures</emphasis></term>
 	      <listitem>
 	        <para>This allows creating of temporary Feature Structures, and automatically reclaiming 
-	        space resources when they are no longer needed.</para>
+	        space resources when they are no longer needed.  In version 2, space was reclaimed only when a 
+	        CAS was reset at the end of processing.</para>
 	      </listitem>
 	    </varlistentry>
 	    <varlistentry>
 	      <term><emphasis role="strong">Integration with Java 8</emphasis></term>
 	      <listitem>
-	        <para>Version 3 requires Java 8 as the minimum level.  It includes new facilities, such as the 
-	        <code>select</code> framework for accessing Feature Structures from CASs or other collections, which
+	        <para>Version 3 requires Java 8 as the minimum level.  Some of version 3's new facilities, such as the 
+	        <code>select</code> framework for accessing Feature Structures from CASs or other collections, 
 	        integrate with the new Java 8 language constructs, such as <code>Streams</code> and <code>Spliterators</code>.</para>
 	      </listitem>
 	    </varlistentry>
 	    <varlistentry>
-	      <term><emphasis role="strong">Mostly backwards compatible</emphasis></term>
+	      <term><emphasis role="strong">Backwards compatible</emphasis></term>
 	      <listitem>
-	        <para>With the exception of needing to have new versions of any JCas classes an application may have defined,
-	        version 3 is intended to be backwards compatible - you should be able to run existing applications after 
-	        migrating the JCas classes.  Utilities are provided to do the JCas migration mostly automatically.</para>
+	        <para>Version 3 is intended to be backwards compatible - the goal is that you should be able to run 
+	        existing applications, with minimal adjustment initially.  If the application uses custom JCas 
+	        class implementations, utilities are provided to help do the necessary JCas migration mostly automatically.</para>
 	      </listitem>
 	    </varlistentry>
 	    <varlistentry>
@@ -136,24 +179,33 @@ under the License.
         </listitem>
       </varlistentry> -->
 	    
-	    <varlistentry>
+	    <!-- varlistentry>
 	      <term><emphasis role="strong">Type Systems reused</emphasis></term>
 	      <listitem>
 	        <para>Type system implementations are reused where possible, reducing the footprint in many scaled-out cases.</para>
 	      </listitem>
-	    </varlistentry>    
+	    </varlistentry-->    
 	  </variablelist>
   </para>
   
   <para>Just to give a small taste of the kinds of things Java 8 integration provides, 
-  here's an example of the new <code>select</code> framework, where the task is 
-  getting a set of all the found types in an index under some type "MyType" within a particular bounding Annotation 
-  that are nonOverlapping:
+  here's an example of the new <code>select</code> framework, where the task is to compute
+  <itemizedlist>
+  <listitem><para>a Set of all the found types
+  <itemizedlist>
+  <listitem><para>in a UIMA index</para></listitem>
+  <listitem><para>under some top-most type "MyType"</para></listitem>
+  <listitem><para>occurring as Annotations within a particular bounding Annotation</para></listitem>
+  <listitem><para>that are nonOverlapping</para></listitem>
+  </itemizedlist>
+  </para></listitem>
+  </itemizedlist>
+  Here is the Java code using the new <code>select</code> framework together with Java 8 streaming functions:
   
   <informalexample>  <?dbfo keep-together="always"?>
 <programlisting>
 Set&lt;Type&gt; foundTypes =
-   myIndex.select(MyType.class)
+   myIndex.select(MyType.class) 
    .coveredBy(myBoundingAnnotation)
    .nonOverlapping()
    .map(fs -> fs.getType())
@@ -176,6 +228,6 @@ a feature called <code>category</code> which returns a String denoting the categ
 
 <section id="uv3.overview.java8">
   <title>Java 8 is required</title>
-  <para>Version 3 requires Java 8 or later JVM.</para>
+  <para>The UIMA Java SDK Version 3 requires Java 8 or later.</para>
 </section>      
 </chapter>
