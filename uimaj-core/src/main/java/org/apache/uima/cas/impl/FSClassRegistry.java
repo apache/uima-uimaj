@@ -49,7 +49,6 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
