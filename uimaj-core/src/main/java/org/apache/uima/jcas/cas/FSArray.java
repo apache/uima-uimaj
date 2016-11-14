@@ -161,6 +161,8 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectVi
     copyToArray(0, r, 0, size());
     return r;
   }
+  
+  public FeatureStructure[] _toArrayForSelect() { return toArray(); }
 
   /**
    * Not supported, will throw UnsupportedOperationException

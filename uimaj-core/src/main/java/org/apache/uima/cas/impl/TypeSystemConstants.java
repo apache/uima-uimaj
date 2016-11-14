@@ -76,8 +76,9 @@ public interface TypeSystemConstants {
   // new v3 type codes.. Above codes match v2
   static final int fsArrayListTypeCode = 37;
   static final int intArrayListTypeCode = 38;
+  static final int fsHashSetTypeCode = 39;
 
-  static final int numberOfNewBuiltInsSinceV2 = 2;
+  static final int numberOfNewBuiltInsSinceV2 = 3;
 
 //  static final int javaObjectTypeCode = 37;
 //  static final int javaObjectArrayTypeCode = 38;

@@ -27,7 +27,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 
 /** 
- * Classes which provide a toArray() method that returns 
+ * Classes which provide a toArrayForSelect() method that returns 
  * a FeatureStructure[] can implement this to enable the 
  * class to be used as a "select" source
  */
@@ -36,7 +36,7 @@ import org.apache.uima.cas.impl.SelectFSs_impl;
 
 public interface SelectViaCopyToArray {
   
-  FeatureStructure[] toArray();
+  FeatureStructure[] _toArrayForSelect();
   CASImpl _getView(); 
   
   /**
@@ -44,7 +44,7 @@ public interface SelectViaCopyToArray {
    * @return a new instance of SelectFSs
    */
   default <T extends FeatureStructure> SelectFSs_impl<T> select() {
-    return new SelectFSs_impl<T>(toArray(), this._getView());
+    return new SelectFSs_impl<T>(_toArrayForSelect(), this._getView());
   }
 
   /**

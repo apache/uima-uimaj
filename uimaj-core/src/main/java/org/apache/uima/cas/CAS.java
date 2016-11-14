@@ -196,10 +196,9 @@ public interface CAS extends AbstractCas {
   static final String TYPE_NAME_DOUBLE_ARRAY = UIMA_CAS_PREFIX + "DoubleArray";
 
   /**
-   * JavaObject array type
+   * FSHashSet type
    */
-  static final String TYPE_NAME_JAVA_OBJECT_ARRAY = UIMA_CAS_PREFIX + "JavaObjectArray";
-  
+  static final String TYPE_NAME_FS_HASH_SET = UIMA_CAS_PREFIX +  "FSHashSet"; 
   /**
    * Sofa type.
    */
@@ -245,6 +244,7 @@ public interface CAS extends AbstractCas {
 
   /**
    * Base name of FSArrayList fsArray feature.
+   * Base name of FSHashSet   fsArray feature.
    */
   static final String FEATURE_BASE_NAME_FS_ARRAY = "fsArray";
 

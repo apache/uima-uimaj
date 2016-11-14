@@ -47,7 +47,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -185,7 +184,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_LONG, CAS.TYPE_NAME_LONG_ARRAY);
     builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_DOUBLE, CAS.TYPE_NAME_DOUBLE_ARRAY);
     builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_STRING, CAS.TYPE_NAME_STRING_ARRAY);
-    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_JAVA_OBJECT, CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
+//    builtInArrayComponentName2ArrayTypeName.put(CAS.TYPE_NAME_JAVA_OBJECT, CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
     
   }
 
@@ -204,36 +203,37 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
 //  private static final Object GLOBAL_TYPESYS_LOCK = new Object();
              
-  private static final Set<String> builtInsWithAltNames = new HashSet<String>();
-  static {Misc.addAll(builtInsWithAltNames, 
-           CAS.TYPE_NAME_TOP,
-           CAS.TYPE_NAME_STRING_ARRAY,
-           CAS.TYPE_NAME_BOOLEAN_ARRAY,
-           CAS.TYPE_NAME_BYTE_ARRAY,
-           CAS.TYPE_NAME_SHORT_ARRAY,
-           CAS.TYPE_NAME_INTEGER_ARRAY,
-           CAS.TYPE_NAME_LONG_ARRAY,
-           CAS.TYPE_NAME_FS_ARRAY,
-           CAS.TYPE_NAME_FLOAT_ARRAY,
-           CAS.TYPE_NAME_DOUBLE_ARRAY,
-           CAS.TYPE_NAME_EMPTY_FLOAT_LIST,
-           CAS.TYPE_NAME_EMPTY_FS_LIST,
-           CAS.TYPE_NAME_EMPTY_INTEGER_LIST,
-           CAS.TYPE_NAME_EMPTY_STRING_LIST,
-           CAS.TYPE_NAME_FLOAT_LIST,
-           CAS.TYPE_NAME_FS_LIST,
-           CAS.TYPE_NAME_INTEGER_LIST,
-           CAS.TYPE_NAME_STRING_LIST,
-           CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST,
-           CAS.TYPE_NAME_NON_EMPTY_FS_LIST,
-           CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST,
-           CAS.TYPE_NAME_NON_EMPTY_STRING_LIST,
-           CAS.TYPE_NAME_SOFA,
-           CAS.TYPE_NAME_ANNOTATION_BASE,
-           CAS.TYPE_NAME_ANNOTATION,
-           CAS.TYPE_NAME_DOCUMENT_ANNOTATION,
-           CAS.TYPE_NAME_JAVA_OBJECT_ARRAY);
-  }
+//  private static final Set<String> builtInsWithAltNames = new HashSet<String>();
+//  static {Misc.addAll(builtInsWithAltNames, 
+//           CAS.TYPE_NAME_TOP,
+//           CAS.TYPE_NAME_STRING_ARRAY,
+//           CAS.TYPE_NAME_BOOLEAN_ARRAY,
+//           CAS.TYPE_NAME_BYTE_ARRAY,
+//           CAS.TYPE_NAME_SHORT_ARRAY,
+//           CAS.TYPE_NAME_INTEGER_ARRAY,
+//           CAS.TYPE_NAME_LONG_ARRAY,
+//           CAS.TYPE_NAME_FS_ARRAY,
+//           CAS.TYPE_NAME_FLOAT_ARRAY,
+//           CAS.TYPE_NAME_DOUBLE_ARRAY,
+//           CAS.TYPE_NAME_EMPTY_FLOAT_LIST,
+//           CAS.TYPE_NAME_EMPTY_FS_LIST,
+//           CAS.TYPE_NAME_EMPTY_INTEGER_LIST,
+//           CAS.TYPE_NAME_EMPTY_STRING_LIST,
+//           CAS.TYPE_NAME_FLOAT_LIST,
+//           CAS.TYPE_NAME_FS_LIST,
+//           CAS.TYPE_NAME_INTEGER_LIST,
+//           CAS.TYPE_NAME_STRING_LIST,
+//           CAS.TYPE_NAME_NON_EMPTY_FLOAT_LIST,
+//           CAS.TYPE_NAME_NON_EMPTY_FS_LIST,
+//           CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST,
+//           CAS.TYPE_NAME_NON_EMPTY_STRING_LIST,
+//           CAS.TYPE_NAME_SOFA,
+//           CAS.TYPE_NAME_ANNOTATION_BASE,
+//           CAS.TYPE_NAME_ANNOTATION,
+//           CAS.TYPE_NAME_DOCUMENT_ANNOTATION
+////           CAS.TYPE_NAME_JAVA_OBJECT_ARRAY
+//           );
+//  }
     
   final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections.synchronizedMap(new WeakHashMap<>());
   
@@ -653,6 +653,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
     TypeImpl intArrayList = new TypeImpl(CAS.TYPE_NAME_INT_ARRAY_LIST, this, topType);
     addFeature(CAS.FEATURE_BASE_NAME_INT_ARRAY, intArrayList, intArrayType);
+    
+    TypeImpl fsHashSet = new TypeImpl(CAS.TYPE_NAME_FS_HASH_SET, this, topType);
+    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsHashSet, fsArrayType);
   }
  
   // Some implementation helpers for users of the type system.
@@ -2377,8 +2380,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param ti the UIMA type
    */
   void setJCasRegisteredType(int typeIndexID, TypeImpl ti) {
-//    if (typeIndexID == 0 && !ti.getShortName().equals("TOP")) {
-//      System.out.println("debug");
+//    if (typeIndexID == 23) {
+//      System.out.format("debug typeIndexId = 23, typeImpl = %s%n", ti.getName());
 //    }
     synchronized (jcasRegisteredTypes) {
       TypeImpl existing = Misc.getWithExpand(jcasRegisteredTypes,  typeIndexID);

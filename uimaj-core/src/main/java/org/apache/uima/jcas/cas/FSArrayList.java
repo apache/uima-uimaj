@@ -261,6 +261,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     return r;
   }
 
+  public FeatureStructure[] _toArrayForSelect() { return toArray(); }
+
   /**
    * Not supported, will throw UnsupportedOperationException
    */

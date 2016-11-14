@@ -691,15 +691,30 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
       }
       filtered = filteredItems.toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));          
     } else {
+      
+      // skip filtering if nullOK and no subsumption test needed because type = TOP or higher
+      boolean noTypeFilter = ti == view.getTypeSystemImpl().topType;
+      if (!isNullOK && noTypeFilter) {
+        return new FsIterator_subtypes_snapshot<T>((T[]) sourceFSArray, null, true); 
+      }
+      
       List<T> filteredItems = new ArrayList<T>();
+      boolean noNullsWereFiltered = true;
       for (FeatureStructure item : sourceFSArray) {
         if (!isNullOK && null == item) {
+          noNullsWereFiltered = false;
           continue;  // null items may be skipped
         }
-        if (ti.subsumes((TypeImpl)item.getType())) {
+        
+        if (noTypeFilter || ti.subsumes((TypeImpl)item.getType())) {
           filteredItems.add((T)item);
         }
       }
+      
+      if (noTypeFilter && !noNullsWereFiltered) {
+        return new FsIterator_subtypes_snapshot<T>((T[]) sourceFSArray, null, true);         
+      }
+      
       filtered = filteredItems.toArray((T[]) Array.newInstance(FeatureStructure.class, filteredItems.size()));                    
     }        
     return new FsIterator_subtypes_snapshot<T>(filtered, null, true);  // items not sorted 
