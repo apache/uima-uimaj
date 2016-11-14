@@ -99,15 +99,29 @@ under the License.
     included when using the CAS as the source for the select framework.</para>
     
     <para>  
-    Feature Structures may, additionally, be kept in <code>FSArrays</code> and <code>FSLists</code>.
-    All three of these sources may be used with <code>select</code>.</para>
+    Feature Structures may, additionally, be kept in <code>FSArrays</code>, <code>FSLists</code>,
+    and many additional collection-style objects that implement <code>SelectViaCopyToArray</code> interface.
+    This interface is implemented by the new built-in types <code>FSArrayList</code> and <code>FSHashSet</code>;
+    user-defined JCas classes for user types may also choose to implement this.
+    All of these sources may be used with <code>select</code>.</para>
     
+    <figure id="uv3.select.source_type">
+      <title>select method with type</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_source_type.png"/>
+        </imageobject>
+        <textobject><phrase>Sources have select method, which has optional type argument</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+  
     <para>For CAS sources, if Views are being used, there is a separate set of indexes per CAS view.
     When there are multiple views, only one view's set of indexed Feature Structures is accessed - the
     view implied by the CAS being used.  Note that there is a way to specify aggregating over all views; see
     <code>allViews</code> described later.</para>
     
-    <para>Users may specify all Feature Structures in a view, or restrict this in two ways:
+    <para>For CAS sources, users may specify all Feature Structures in a view, or restrict this in two ways:
     <itemizedlist spacing="compact">
       <listitem>
         <para>specifying an index: Users may define their own indexes, in additional to the built in ones, and 
@@ -137,10 +151,10 @@ under the License.
       </listitem>
     </itemizedlist></para>
     
-    <para>Note that the FSArray and FSList sources are considered ordered, but non-sorted, 
+    <para>Note that the non-CAS collection sources (e.g. the FSArray and FSList sources are considered ordered, but non-sorted, 
           and therefore cannot be used for an operations which require a sorted order.</para>
       
-    <para>There are 4 sources of Feature Structures supported:</para>
+    <para>There are 4 kinds of sources of Feature Structures supported:</para>
 
     <itemizedlist spacing="compact">
 	    <listitem>
@@ -153,40 +167,30 @@ under the License.
 	      </para>
 	    </listitem>
 	    <listitem>
-	      <para>Feature Structures in a UIMA FSArray instance
+	      <para>Feature Structures from a built-in UIMA Collection instance, such as instances of the types
+	      <code>FSArray, FSArrayList, FSHashSet,</code> etc.
 	      </para>
 	    </listitem>
 	    <listitem>
-	      <para>Feature Structures in a UIMA FSList
+	      <para>Feature Structures from a user-defined UIMA Collection instance.
 	      </para>
 	    </listitem>
 	  </itemizedlist>
 	  
+    <para>UIMA Collection sources have somewhat limited configurability,
+    because they are considered non-sorted, 
+    and therefore cannot be used for an operations which require a sorted order, such as
+    the various bounding selections (e.g. <code>coveredBy</code>) 
+    or positioning operations (e.g. <code>startAt</code>).</para>
+
 	  <para>Each of these sources has a new API method, <code>select(...)</code>, which initiates the select specification.
 	  The select method can take an optional parameter, specifying the UIMA type to return.
 	  If supplied, the type must must be the type or subtype of the index 
 	  (if one is specified or implied); it serves to further restrict the types selected beyond whatever the 
 	  index (if specified) has as its top-most type.</para>
-	  
-	  <figure id="uv3.select.source_type">
-	    <title>select method with type</title>
-	    <mediaobject>
-	      <imageobject>
-	        <imagedata width="5.5in" format="PNG" fileref="&imgroot;select_source_type.png"/>
-	      </imageobject>
-	      <textobject><phrase>Sources have select method, which has optional type argument</phrase>
-	      </textobject>
-	    </mediaobject>
-	  </figure>
-	  
-	  <para>A UIMA index is the usual source.  
-	  If a CAS is used, all Feature Structures that were added to the index in the
-	  specified CAS view are used as the source.  The FSArray and FSList sources have more limited configurability,
-	  because they are considered non-sorted, 
-	  and therefore cannot be used for an operations which require a sorted order, such as
-	  the various bounding selections (e.g. <code>coveredBy</code>) 
-	  or positioning operations (e.g. <code>startAt</code>).</para>
-	  
+	    
+  <section id="uv3.select.sources.type">
+    <title>Use of Type in selection of sources</title>
 	  <para>
 	  The optional type argument for <code>select(...)</code> specifies a UIMA type.  This restricts the Feature Structures
 	  to just those of the specified type or any of its subtypes.  If omitted, if an index is used as a source, 
@@ -200,6 +204,7 @@ under the License.
 	  
 	  <para>The type may also be specified by using the actual UIMA type instance (useful if not using the 
 	  JCas), using a fully qualified type name as a string, or using the JCas class static <code>type</code> field.</para>
+  </section>
   
   <section id="uv3.select.sources.generics">
     <title>Sources and generic typing</title>
