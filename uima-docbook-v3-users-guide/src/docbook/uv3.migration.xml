@@ -42,20 +42,20 @@ under the License.
     If all is OK, the migration will say that it "finished with no unusual conditions", at the end.
   </para></blockquote> 	  
 
-  <para>To complete the migration, do any packaging you wish to the converted JCas files (perhaps putting them into a JAR),
-    and then update your UIMA application to use these classes in place of the version 2 JCas classes.
+  <para>To complete the migration, do any packaging you wish to the converted JCas files
+    and update your UIMA application to use these classes in place of the version 2 JCas classes.
   </para>
     
   <para>The migration tool is able to scan multiple directory trees, looking for existing Java
 	  source (.java) or class (.class) files, even inside Jars and PEAR archives. If compiled class files
-	  are used as input, a Java decompiler is used to decompile these to source; 
-	  this process requires the classpath that the application uses in order to correctly decompile these.
-	  For PEARs, it replaces the migrated and compiled classes in the PEAR.
+	  are used as input, a Java decompiler is used to decompile these to source.
+	  For PEARs and Jars, it replaces the migrated and compiled classes in copies of the PEARs and Jars.
 	</para>
 	
 	<para>  
-	  The migration tool parses the source files, and replaces those parts which are version 2 specific with the equivalent
-	  version 3 code, in a source-to-source transformation.
+	  The actual migration step is a source-to-source transformation, done using a Java parse of the source files.
+	  The parts in the source which are version 2 specific with the equivalent
+	  version 3 code.
 	  Only those parts which need updating are modified;
     other code and comments which are part of the source file are left unchanged.  
     Detailed reports detailing any issues encountered are written to log files. 
@@ -79,7 +79,7 @@ under the License.
   </section>
  --> 
  		 
-		 <note><para>The compilation step requires that a Java compiler is available 
+		 <note><para>The compilation step (done after the source-to-source transformation) requires that a Java compiler is available 
 		   (which is the case if you're running with a Java JDK, not a JRE).
 		 </para></note>
 		 
@@ -102,7 +102,8 @@ under the License.
 		  </para>
 	    
 	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
-	      the tool will scan the file system under these roots, looking for definitions to migrate.  
+	      the tool will scan the file system under these roots (including inside Jars and PEARs), 
+	      looking for definitions to migrate.  
 	    </para>
 		    
 	      <blockquote><para>It can also be run with a list of specific JCas classes
@@ -146,7 +147,7 @@ under the License.
 	      <para>A classpath is required for the proper operation of the decompiling and compiling steps of 
 	        the migration.  This is provided using the argument <code>-migrateClasspath</code>.
 	        The Eclipse launcher "UIMA run V3 migrate JCas from classes roots" sets this argument using
-	        the Eclipse project's classpath.
+	        the selected Eclipse project's classpath.
 	        When migrating within a PEAR, the migration tool automatically adds the PEAR classes to the 
 	        classpath.
 	      </para>
@@ -217,8 +218,12 @@ under the License.
      workaroundDir.txt
      deletedCheckModified.txt
      manualInspection.txt
+     pearsFileUpdates.txt
+     jarsFileUpdates.txt
    pears/
      xyz_converted_pear.pear  
+     ...
+   jars/
      ...</programlisting>
      
         The converted subtree holds all the sources and migrated versions that were successfully migrated.
@@ -284,6 +289,20 @@ under the License.
 	            </para>
 	          </listitem>
           </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">jarsFileUpdates.txt</emphasis></term>
+            <listitem>
+              <para>List of Jar files and classes which were replace in them.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">pearsFileUpdates.txt</emphasis></term>
+            <listitem>
+              <para>List of Pear files and classes which were replace in them.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>    
       </para>
       
@@ -308,7 +327,8 @@ bin/runV3migrateJCas.sh
       
       <para>Run the Eclipse launcher:</para>
       
-      <programlisting>Load Eclipse workspace containing the project to be migrated.
+      <programlisting>Load Eclipse workspace containing the project to be migrated,
+  and the version 3 uimaj-migration project.
       
 Select the Java project having the classpath used when running.
 
