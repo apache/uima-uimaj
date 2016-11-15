@@ -431,7 +431,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * Called at TypeSystemCommit for non-built-in types
    *   Runs the static initializers in the loaded JCas classes - doing resolve
    *   
-   * Synchronization: each unique name
+   * Synchronization: done outside this class
    *   
    * @param typeName -
    * @param cl the class loader to use
