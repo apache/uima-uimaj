@@ -114,9 +114,7 @@
               <id>default-cli</id>
               <configuration>
                 <excludes>
-                  <exclude>release.properties</exclude> <!-- release generated artifact -->
                   <exclude>src/main/data/*.txt</exclude> <!-- sample data -->
-                  <exclude>src/main/run_configuration/*.launch</exclude> <!-- generated Eclipse launch files -->
                   <exclude>src/main/eclipseProject/*readme.txt</exclude> <!-- readme -->
                   <exclude>src/main/resources/org/apache/uima/tutorial/ex6/*.txt</exclude> <!-- sample data -->
                 </excludes>              

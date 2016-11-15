@@ -256,6 +256,22 @@
           <!-- version 2.3.7 failing in some projects  -->
           <version>3.0.1</version>
         </plugin>
+        
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes>
+                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                  <exclude>src/main/run_configuration/*.launch</exclude> <!-- generated Eclipse launch files -->
+                </excludes>              
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>       
       </plugins>
     </pluginManagement>
     <plugins>
