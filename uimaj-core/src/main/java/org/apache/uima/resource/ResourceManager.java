@@ -74,7 +74,6 @@ public interface ResourceManager {
 
   /**
    * Gets the instance of the implementation object for a resource that has been registered under the specified name.
-   * These objects all implement the Resource API.
    * 
    * @param aName
    *          the name of the resource to retrieve
@@ -92,10 +91,10 @@ public interface ResourceManager {
 
   /**
    * Returns one of two kinds of objects (or null):
-   *   * an instance of the implementation object for a resource, that has 
+   *   - an instance of the implementation object for a resource, that has 
    *     been loaded with a DataResource resource produced by the resource given the aParms
    *     
-   *   * (if there is no implementation defined for this resource) 
+   *   - (if there is no implementation defined for this resource) 
    *     returns an instance of the DataResource, itself, produced by the resource given the aParms
    *    
    *   An example of a parameterized Resource is a
@@ -146,7 +145,7 @@ public interface ResourceManager {
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.
    */
-  public Class<? extends Resource> getResourceClass(String aName);
+  public <N> Class<N> getResourceClass(String aName);
 
   /**
    * Retrieves the URL to the named resource. This can be used, for example, to locate configuration
@@ -242,19 +241,16 @@ public interface ResourceManager {
    *   Initialization should be done once, on the first call
    * 
    * External resources have a Container class representing the resource, 
-   * which are instances of Resource, and they may also have implementation classes
-   * also instances of Resource, and often implementing SharedResourceObject.
+   * which are instances of Resource.
    * 
-   * As part of the initialization, the External Resource Bindings are processed to hook them up
-   * with defined External Resources.
+   * This may act as the implementation class, or they may also have a
+   * separately specified implementation class, which may or may not implement Resource.
    * 
-   *   If a binding specifies a non-existing resource, the key is interpreted as a file name, 
-   *   and looked up using the current context for relative path resolution.  
-   *     - If found, a FilewResourceSpecifier is created using the file 
-   * 
-   *   If no resource can be found at all, then unless the dependency is marked "optional", 
-   *   an ResourceInitializationException is thrown.
-   *   
+   * As part of the initialization of the Container class, 
+   * by default, External Resource Bindings are processed to hook them up
+   * with defined External Resources, using the default implementation
+   * of resolveAndValidateResourceDependencies.
+   *     
    * @param aConfiguration
    *          the ResourceManagerConfiguration containing resource declarations and bindings
    * @param aQualifiedContextName
@@ -271,17 +267,21 @@ public interface ResourceManager {
           throws ResourceInitializationException;
 
   /**
-   * Resolves a component's external resource dependencies (bindings) using this resource manager. 
+   * Resolves a component's external resource dependencies (bindings) using this resource manager.
    * 
-   *   If a binding specifies a non-existing resource, the key is interpreted as a file name, 
-   *   and looked up using the current context for relative path resolution.  
-   *     - If found, a FilewResourceSpecifier is created using the file 
+   * The default implementation has special defaulting logic:
+   * 
+   *   If a binding specifies a non-existing resource, 
+   *   an attempt is made to interpret the key as a file name, looked up 
+   *   using the current context for relative path resolution.  
+   *     - If successfully found, a FileResourceSpecifier is created using the file
+   *       and used as the implementing class. 
    * 
    *   If no resource can be found at all, then unless the dependency is marked "optional", 
    *   an ResourceInitializationException is thrown.
    * 
    * Multi-threading: may be called on multiple threads, repeatedly for the same set of resources.
-   * Implementations should avoid wasting time do this work.
+   * Implementations should recognize this and skip repeated resolutions.
    * 
    * @param aDependencies
    *          declarations of a component's dependencies on external resources
@@ -396,5 +396,5 @@ public interface ResourceManager {
    *         For parameterized resources, those which have been asked for (having unique parameter sets) 
    *         are included.
    */
-  public List<Resource> getExternalResources();
+  public List<Object> getExternalResources();
 }
