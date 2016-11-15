@@ -37,11 +37,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -203,28 +205,29 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       this.pearClasspath = pearClasspath;
     }
   }
-  
+    
   /*****************
-   *  P E A R 
+   *  P E A R or J A R 
    *  
-   * Information for each PEAR that is processed
+   * Information for each PEAR or JAR that is processed
    * Used when post-processing pears
    *****************/
-  private static final class Pear {
+  private static final class PearOrJar {
     
     /**
-     * path to original .pear file among the roots
+     * path to original .pear or .jar file among the roots
      */
-    final Path pathToPear;
+    final Path pathToPearOrJar;
     
     /** 
      * path to .class file in pear e.g. bin/org/apache/uima/examples/tutorial/Sentence.class
+     *                  or in jar  e.g. org/apache/uima/examples/tutorial/Sentence.class 
      */
     
     final List<String> pathsToCandidateFiles = new ArrayList<>();
         
-    Pear(Path pathToPear) {
-      this.pathToPear = pathToPear; 
+    PearOrJar(Path pathToPearOrJar) {
+      this.pathToPearOrJar = pathToPearOrJar; 
     }
   }
   
@@ -241,9 +244,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private Candidate candidate;
   private List<Candidate> candidates;
   
-  private Pear pear_current;
-  private List<Pear> pears = new ArrayList<>();
-    
+  private PearOrJar pear_current;
+  private Deque<PearOrJar> jar_current_stack = new ArrayDeque<>();  
+  private List<PearOrJar> pears = new ArrayList<>();
+  private List<PearOrJar> jars = new ArrayList<>();
+  
   /**
    * current Pear install path + 1 more dir in temp dir
    * used in candidate generation to relativize the path to just the part inside the pear
@@ -255,7 +260,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *   Key: path string to .class or .java file in an installed Pear
    *   Value: path part corresponding to inside pear - delete install dir + 1 more dir from front
    */
-  private Map<String, String> path2InsidePearPath = new HashMap<>();
+  private Map<String, String> path2InsidePearOrJarPath = new HashMap<>();
   
   /**
    * Map created when adding a pear's .class/.source file to candidates
@@ -329,6 +334,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private final List<PathAndReason> deletedCheckModified = new ArrayList<>();  // path, deleted check string
   private final List<String1AndString2> pathWorkaround = new ArrayList<>(); // original, workaround
   private final List<String1AndString2> pearClassReplace = new ArrayList<>(); // pear, classname
+  private final List<String1AndString2> jarClassReplace  = new ArrayList<>(); // jar, classname
+  
   private final List<PathAndReason> manualInspection = new ArrayList<>(); // path, reason
 //  private final List<PathAndPath> embeddedJars = new ArrayList<>(); // source, temp   
   
@@ -424,47 +431,81 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private void postProcessing() {
     if (javaCompilerAvailable()) {
       compileV3sources();
-    
-      try {
-        Path pearOutDir = Paths.get(outputDirectory, "pears");
-        FileUtils.deleteRecursive(pearOutDir.toFile());
-        Files.createDirectories(pearOutDir);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-        
-      System.out.format("replacing .class files in %,d PEARs%n", pears.size());
-      for (Pear p : pears) {
-        pearPostProcessing(p);
-      }
-      try {
-        reportPaths("Reports of updated Pears", "pearFileUpdates.txt", pearClassReplace);
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      
+      postProcessPearsOrJars("jars" , jars ,  jarClassReplace);
+      postProcessPearsOrJars("pears", pears, pearClassReplace);
+      
+//    
+//      try {
+//        Path pearOutDir = Paths.get(outputDirectory, "pears");
+//        FileUtils.deleteRecursive(pearOutDir.toFile());
+//        Files.createDirectories(pearOutDir);
+//      } catch (IOException e) {
+//        throw new RuntimeException(e);
+//      }
+//        
+//      System.out.format("replacing .class files in %,d PEARs%n", pears.size());
+//      for (PearOrJar p : pears) {
+//        pearOrJarPostProcessing(p);
+//      }
+//      try {
+//        reportPaths("Reports of updated Pears", "pearFileUpdates.txt", pearClassReplace);
+//      } catch (IOException e) {
+//        throw new RuntimeException(e);
+//      }
     }
   }
   
-  private void pearPostProcessing(Pear pear) {
+  private void postProcessPearsOrJars(String kind, List<PearOrJar> pearsOrJars, List<String1AndString2> classReplace) {  // pears or jars
     try {
-      // copy the pear so we don't change the original
-      Path pearCopy = Paths.get(outputDirectory, "pears", pear.pathToPear.getFileName().toString());
+      Path outDir = Paths.get(outputDirectory, kind);
+      FileUtils.deleteRecursive(outDir.toFile());
+      Files.createDirectories(outDir);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+      
+    System.out.format("replacing .class files in %,d %s%n", pearsOrJars.size(), kind);
+    for (PearOrJar p : pearsOrJars) {
+      pearOrJarPostProcessing(p, kind);
+    }
+    try {
+      reportPaths("Reports of updated " + kind, kind + "FileUpdates.txt", classReplace);
      
-      Files.copy(pear.pathToPear, pearCopy);    
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    
+  }
+  
+  private void pearOrJarPostProcessing(PearOrJar pearOrJar, String kind) { // pears or jars
+    try {
+      final boolean isPear = kind.equals("pears");
+      // copy the pear so we don't change the original
+      Path pearOrJarCopy = Paths.get(outputDirectory, kind, pearOrJar.pathToPearOrJar.getFileName().toString());
+     
+      Files.copy(pearOrJar.pathToPearOrJar, pearOrJarCopy);    
 
-      // put up a file system on the pear
-      FileSystem pfs = FileSystems.newFileSystem(pearCopy, null);
+      // put up a file system on the pear or jar
+      FileSystem pfs = FileSystems.newFileSystem(pearOrJarCopy, null);
     
       // replace the .class files in this pear with corresponding v3 ones
-      for (int i = 0; i < pear.pathsToCandidateFiles.size(); i++) {
-        String candidatePath = pear.pathsToCandidateFiles.get(i);
-        String path_in_v3_classes = getPath_in_v3_classes(candidatePath);
+      for (int i = 0; i < pearOrJar.pathsToCandidateFiles.size(); i++) {
+        String candidatePath = pearOrJar.pathsToCandidateFiles.get(i);
+        String path_in_v3_classes = isPear
+                                      ? getPath_in_v3_classes(candidatePath)
+                                      : candidatePath;
       
-        Path src = Paths.get(outputDirectory, "converted/v3-classes", path_in_v3_classes + ".class");
-        Path tgt = pfs.getPath("/", path2InsidePearPath.get(candidatePath));  // needs to be /bin/org/... etc
+        Path src = Paths.get(outputDirectory, "converted/v3-classes", path_in_v3_classes 
+            + (isPear ? ".class" : ""));
+        Path tgt = pfs.getPath(
+            "/", 
+            isPear 
+              ? path2InsidePearOrJarPath.get(candidatePath) // needs to be bin/org/... etc
+              : candidatePath);  // needs to be org/... etc
         if (Files.exists(src)) {
           Files.copy(src, tgt, StandardCopyOption.REPLACE_EXISTING);
-          reportPearClassReplace(pearCopy.toString(), path_in_v3_classes);
+          reportPearOrJarClassReplace(pearOrJarCopy.toString(), path_in_v3_classes, kind);
         }
       }
       
@@ -1526,8 +1567,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //      URI pathUri = path.toUri();
       String pathString = path.toString();
       final boolean isPear = pathString.endsWith(".pear");
+      final boolean isJar = pathString.endsWith(".jar");
             
-      if (pathString.endsWith(".jar") || isPear) {  // path.endsWith does not mean this !!
+      if (isJar || isPear) {  // path.endsWith does not mean this !!
         if (!path.getFileSystem().equals(FileSystems.getDefault())) {        
           // embedded Jar: extract to temp
           Path out = getTempOutputPath(path);
@@ -1543,7 +1585,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             throw new UIMARuntimeException("Nested PEAR files not supported");
           }
           
-          pear_current = new Pear(path);
+          pear_current = new PearOrJar(path);
           pears.add(pear_current);
           // add pear classpath info
           File pearInstallDir = Files.createTempDirectory(getTempDir(), "installedPear").toFile();
@@ -1557,6 +1599,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           
           start = pearInstallDir.toPath();
         } else {
+          if (isJar) {
+            PearOrJar jarInfo = new PearOrJar(path);
+            jar_current_stack.push(jarInfo);
+            jars.add(jarInfo);
+          }
+          
           localPearClasspath = pearClasspath;
           FileSystem jfs = FileSystems.newFileSystem(Paths.get(path.toUri()), null);
           start = jfs.getPath("/");
@@ -1565,16 +1613,23 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         try (Stream<Path> stream = Files.walk(start)) {  // needed to release file handles
           stream.forEachOrdered(
             p -> getCandidates_processFile(p, localPearClasspath));
-        }        
+        }
+        jar_current_stack.pop();
       } else {
-        // is not a .jar file.  see if it's a jcas file
+        // is not a .jar or .pear file.  add .java or .class files to initial candidate set
+        //    will be filtered additionally later
 //        System.out.println("debug path ends with java or class " + pathString.endsWith(isSource ? ".java" : ".class") + " " + pathString);
         if (pathString.endsWith(isSource ? ".java" : ".class")) {
           candidates.add(new Candidate(path, pearClasspath));
           if (!isSource && null != pear_current) {
             // inside a pear, which has been unzipped into pearInstallDir;
-            path2InsidePearPath.put(path.toString(), pearResolveStart.relativize(path).toString());                
+            path2InsidePearOrJarPath.put(path.toString(), pearResolveStart.relativize(path).toString());                
             pear_current.pathsToCandidateFiles.add(path.toString());           
+          }
+          
+          if (!isSource && jar_current_stack.size() > 0) {
+            // inside a jar, not contained in a pear                
+            jar_current_stack.getFirst().pathsToCandidateFiles.add(path.toString());    
           }
         }
       }
@@ -2017,8 +2072,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     pathWorkaround.add(new String1AndString2(orig, modified));
   }
   
-  private void reportPearClassReplace(String pear, String classname) {
-    pearClassReplace.add(new String1AndString2(pear, classname));
+  private void reportPearOrJarClassReplace(String pearOrJar, String classname, String kind) { // pears or jars
+    if (kind.equals("pears")) {
+      pearClassReplace.add(new String1AndString2(pearOrJar, classname));
+    } else {
+      jarClassReplace.add(new String1AndString2(pearOrJar, classname));
+    }
   }
   
   /***********************************************/
@@ -2062,7 +2121,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         + "            example:  -classes mypkg.foo:pkg2.bar\n"
         + "  [-outputDirectory a-writable-directory-path (required)\n"
         + "  [-migrateClasspath a-class-path to use in decompiling, used if -classesRoots is specified\n"
-        + "                     a default classpath of this tool's class path is used"
+        + "                     also used when compiling the migrated classes.\n"
         + "                     PEAR processing augments this with the PEAR's classpath information               "
         + "  [-skipTypeCheck if specified, skips validing a found item by looking for the corresponding _Type file"
         + "  NOTE: either -sourcesRoots or -classesRoots is required, but only one may be specified.\n"
