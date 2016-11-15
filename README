@@ -8,9 +8,11 @@ Backwards Compatibility
 -----------------------
 
 Version 3 is a major new release, and many APIs have been augmented.
-The Version 3 users guide has a chapter on backwards compatibility.
-In general, existing pipelines, after having their JCas class migrated,
-will likely run with version 3.  
+Existing version 2 UIMA Pipelines are expected to run with Version 3,
+after any JCas classes have been migrated.  
+
+The documentation contains a new book, "UIMA Version 3 User's Guide",
+which explains the new features, and the migration process and tool.
 
         
 Building from the Source Distribution
@@ -45,6 +47,8 @@ Apache UIMA v3.0.0 requires Java version 8 or later; it has been tested with Sun
 and IBM 8.
 
 Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later, as well.
+
+Running the migration tool requires running with a Java JDK, not a Java JRE.
 
 The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (8+) 
 implementations should work, but have not been significantly tested.

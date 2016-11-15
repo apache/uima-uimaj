@@ -82,10 +82,10 @@
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
 <p>Version 3 is a major reimplementation of the internals of UIMA,
-with many significant changes.  A migration step is required if 
-JCas cover classes are being used, as these have changed.  
+with many significant changes.  A one-time migration step is required if 
+JCas cover classes are being used.  
 Please read the Version 3 users guide located in the docs directory
-for information on these changes and migration.
+for information on these changes and the migration tool.
 </p>
 
 <p>A very brief summary of Version 3:
@@ -96,7 +96,7 @@ and may be Garbage Collected.</li>
 ConcurrentModificationException</li>
 <li>Support for arbitrary Java Objects in the CAS</li>
 <li>Using above, new built-ins for ArrayList style
-lists of Feature Structures and ints</li>
+lists of Feature Structures and ints, and a FSHashSet</li>
 <li>New "select" framework for flexible 
 access to Feature Structures</li>
 <li>Integration with Java 8 facilities such as Streams</li>
