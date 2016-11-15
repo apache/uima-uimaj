@@ -24,7 +24,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="uv3.custom_java_objects">
-  <title>Defining CAS transported custom Java objects</title>
+  <title>Defining CAS-transported custom Java objects</title>
   <titleabbrev>CAS Java Objects</titleabbrev>
   
   <para>One of the goals of v3 is to support more of the Java collection framework within the CAS,
