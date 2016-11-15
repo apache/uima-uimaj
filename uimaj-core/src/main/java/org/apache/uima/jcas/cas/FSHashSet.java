@@ -36,13 +36,16 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
+// TODO: Auto-generated Javadoc
 /**
  * A HashSet type containing Feature Structures,
  *   - Has all the methods of HashSet
  *   - Implements the select(...) APIs 
  *   
  * Implementation notes:
- *   - Uses UimaSerializable APIs *       
+ *   - Uses UimaSerializable APIs *
+ *
+ * @param <T> the generic type
  */
 public final class FSHashSet <T extends FeatureStructure> extends TOP implements 
                                  UimaSerializableFSs, SelectViaCopyToArray, 
@@ -54,11 +57,12 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
    */
   public final static int typeIndexID = JCasRegistry.register(FSHashSet.class);
 
+  /** The Constant type. */
   public final static int type = typeIndexID;
 
   /**
-   * used to obtain reference to the _Type instance
-   * 
+   * used to obtain reference to the _Type instance.
+   *
    * @return the type array index
    */
   // can't be factored - refs locally defined field
@@ -66,16 +70,15 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
     return typeIndexID;
   }
 
-  /**
-   * lifecycle
-   *   - starts as empty array list
-   *   - becomes non-empty when updated (add)
-   *       -- used from that point on
-   */
+  /** lifecycle   - starts as empty array list   - becomes non-empty when updated (add)       -- used from that point on. */
   private final HashSet<T> fsHashSet;
    
+  /** The Constant _FI_fsArray. */
   public static final int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
   
+  /**
+   * Instantiates a new FS hash set.
+   */
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private FSHashSet() {
@@ -83,7 +86,8 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * Make a new ArrayList 
+   * Make a new ArrayList .
+   *
    * @param jcas The JCas
    */
   public FSHashSet(JCas jcas) {
@@ -96,7 +100,8 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * Make a new ArrayList with an initial size 
+   * Make a new ArrayList with an initial size .
+   *
    * @param jcas The JCas
    * @param length initial size
    */
@@ -112,9 +117,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   
   /**
    * used by generator
-   * Make a new FSArrayList
-   * @param c -
+   * Make a new FSArrayList.
+   *
    * @param t -
+   * @param c -
    */
   public FSHashSet(TypeImpl t, CASImpl c) {
     super(t, c);  
@@ -127,13 +133,26 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
 
   // *------------------*
   // * Feature: fsArray
+  /**
+   * Gets the fs array.
+   *
+   * @return the fs array
+   */
   /* getter for fsArray */
   private FSArray getFsArray() { return (FSArray) _getFeatureValueNc(_FI_fsArray); }
 
+  /**
+   * Sets the fs array.
+   *
+   * @param v the new fs array
+   */
   /* setter for fsArray */
   private void setFsArray(FSArray v) {
     _setFeatureValueNcWj(_FI_fsArray, v); }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
+   */
   public void _init_from_cas_data() {
     fsHashSet.clear();
     FSArray a = getFsArray();
@@ -142,6 +161,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
     }
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaSerializable#_save_to_cas_data()
+   */
   public void _save_to_cas_data() {
     FSArray a = getFsArray();
     if (a == null || a.size() != fsHashSet.size()) {
@@ -151,6 +173,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
     fsHashSet.toArray(a._getTheArray());
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.SelectViaCopyToArray#_toArrayForSelect()
+   */
   public FeatureStructure[] _toArrayForSelect() { return (FeatureStructure[]) toArray(); }
 
   /* (non-Javadoc)
@@ -161,8 +186,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   
   
   /**
-   * @param o
-   * @return
+   * Equals.
+   *
+   * @param o the o
+   * @return true, if successful
    * @see java.util.AbstractSet#equals(java.lang.Object)
    */
   public boolean equals(Object o) {
@@ -170,7 +197,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * Hash code.
+   *
+   * @return the int
    * @see java.util.AbstractSet#hashCode()
    */
   public int hashCode() {
@@ -178,7 +207,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * To array.
+   *
+   * @return the feature structure[]
    * @see java.util.AbstractCollection#toArray()
    */
   public FeatureStructure[] toArray() {
@@ -186,8 +217,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param c
-   * @return
+   * Removes the all.
+   *
+   * @param c the c
+   * @return true, if successful
    * @see java.util.AbstractSet#removeAll(java.util.Collection)
    */
   public boolean removeAll(Collection<?> c) {
@@ -195,8 +228,11 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param a
-   * @return
+   * To array.
+   *
+   * @param <T> the generic type
+   * @param a the a
+   * @return the t[]
    * @see java.util.AbstractCollection#toArray(java.lang.Object[])
    */
   public <T> T[] toArray(T[] a) {
@@ -204,7 +240,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * Iterator.
+   *
+   * @return the iterator
    * @see java.util.HashSet#iterator()
    */
   public Iterator<T> iterator() {
@@ -212,7 +250,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * Size.
+   *
+   * @return the int
    * @see java.util.HashSet#size()
    */
   public int size() {
@@ -220,7 +260,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * Checks if is empty.
+   *
+   * @return true, if is empty
    * @see java.util.HashSet#isEmpty()
    */
   public boolean isEmpty() {
@@ -228,8 +270,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param o
-   * @return
+   * Contains.
+   *
+   * @param o the o
+   * @return true, if successful
    * @see java.util.HashSet#contains(java.lang.Object)
    */
   public boolean contains(Object o) {
@@ -237,8 +281,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param e
-   * @return
+   * Adds the.
+   *
+   * @param e the e
+   * @return true, if successful
    * @see java.util.HashSet#add(java.lang.Object)
    */
   public boolean add(T e) {
@@ -246,8 +292,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param o
-   * @return
+   * Removes the.
+   *
+   * @param o the o
+   * @return true, if successful
    * @see java.util.HashSet#remove(java.lang.Object)
    */
   public boolean remove(Object o) {
@@ -255,7 +303,8 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * 
+   * Clear.
+   *
    * @see java.util.HashSet#clear()
    */
   public void clear() {
@@ -266,8 +315,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
 
 
   /**
-   * @param c
-   * @return
+   * Contains all.
+   *
+   * @param c the c
+   * @return true, if successful
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
    */
   public boolean containsAll(Collection<?> c) {
@@ -275,8 +326,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param c
-   * @return
+   * Adds the all.
+   *
+   * @param c the c
+   * @return true, if successful
    * @see java.util.AbstractCollection#addAll(java.util.Collection)
    */
   public boolean addAll(Collection<? extends T> c) {
@@ -284,7 +337,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * Spliterator.
+   *
+   * @return the spliterator
    * @see java.util.HashSet#spliterator()
    */
   public Spliterator<T> spliterator() {
@@ -292,8 +347,10 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @param c
-   * @return
+   * Retain all.
+   *
+   * @param c the c
+   * @return true, if successful
    * @see java.util.AbstractCollection#retainAll(java.util.Collection)
    */
   public boolean retainAll(Collection<?> c) {
@@ -301,7 +358,9 @@ public final class FSHashSet <T extends FeatureStructure> extends TOP implements
   }
 
   /**
-   * @return
+   * To string.
+   *
+   * @return the string
    * @see java.util.AbstractCollection#toString()
    */
   public String toString() {
