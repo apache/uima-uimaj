@@ -1614,7 +1614,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           stream.forEachOrdered(
             p -> getCandidates_processFile(p, localPearClasspath));
         }
-        jar_current_stack.pop();
+        if (isJar) {
+          jar_current_stack.pop();
+        }
+        if (isPear) {
+          pear_current = null;
+        }
       } else {
         // is not a .jar or .pear file.  add .java or .class files to initial candidate set
         //    will be filtered additionally later
