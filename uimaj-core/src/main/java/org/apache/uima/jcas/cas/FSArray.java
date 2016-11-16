@@ -22,10 +22,7 @@ package org.apache.uima.jcas.cas;
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.SelectFSs;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
@@ -204,12 +201,12 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectVi
   }
 
   // internal use
-  // used by serializers
+  // used by serializers, other impls (e.g. FSHashSet)
   // no conversion to Pear trampolines done
   public TOP[] _getTheArray() {
     return theArray;
   }
-  
+    
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    * no conversion to Pear trampolines done
