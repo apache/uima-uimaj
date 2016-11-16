@@ -47,6 +47,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.util.impl.Constants;
 
+// TODO: Auto-generated Javadoc
 /**
  * An ArrayList type containing Feature Structures, for UIMA
  *   - Has all the methods of List
@@ -60,12 +61,15 @@ import org.apache.uima.util.impl.Constants;
  *       --- switches to ArrayList, resetting the original FSArray to null
  *       
  *   - This enables operation without creating the Java Object in use cases of deserializing and
- *     referencing when updating is not being used.  
+ *     referencing when updating is not being used.
+ *
+ * @param <T> the generic type
  */
 public final class FSArrayList <T extends TOP> extends TOP implements 
                                  UimaSerializableFSs, CommonArray, CommonArrayFS, SelectViaCopyToArray, 
                                  List<T>, RandomAccess, Cloneable {
 
+  /** The Constant EMPTY_LIST. */
   private final static List<? extends TOP> EMPTY_LIST = (List<? extends TOP>) Arrays.asList(Constants.EMPTY_TOP_ARRAY);
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -73,11 +77,12 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    */
   public final static int typeIndexID = JCasRegistry.register(FSArrayList.class);
 
+  /** The Constant type. */
   public final static int type = typeIndexID;
 
   /**
-   * used to obtain reference to the _Type instance
-   * 
+   * used to obtain reference to the _Type instance.
+   *
    * @return the type array index
    */
   // can't be factored - refs locally defined field
@@ -85,24 +90,18 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     return typeIndexID;
   }
 
-  /**
-   * lifecycle
-   *   - starts as empty array list
-   *   - becomes non-empty when updated (add)
-   *       -- used from that point on
-   */
+  /** lifecycle   - starts as empty array list   - becomes non-empty when updated (add)       -- used from that point on. */
   private final List<T> fsArrayList;
   
-  /**
-   * lifecycle
-   *   - starts as the empty list
-   *   - set when _init_from_cas_data()
-   *   - set to null when update (add/remove) happens
-   */
+  /** lifecycle   - starts as the empty list   - set when _init_from_cas_data()   - set to null when update (add/remove) happens. */
   private List<T> fsArrayAsList = (List<T>) EMPTY_LIST;
   
+  /** The Constant _FI_fsArray. */
   public static final int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
   
+  /**
+   * Instantiates a new FS array list.
+   */
   // never called. Here to disable default constructor
   @SuppressWarnings("unused")
   private FSArrayList() {
@@ -110,7 +109,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * Make a new ArrayList 
+   * Make a new ArrayList .
+   *
    * @param jcas The JCas
    */
   public FSArrayList(JCas jcas) {
@@ -123,7 +123,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * Make a new ArrayList with an initial size 
+   * Make a new ArrayList with an initial size .
+   *
    * @param jcas The JCas
    * @param length initial size
    */
@@ -139,9 +140,10 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   
   /**
    * used by generator
-   * Make a new FSArrayList
-   * @param c -
+   * Make a new FSArrayList.
+   *
    * @param t -
+   * @param c -
    */
   public FSArrayList(TypeImpl t, CASImpl c) {
     super(t, c);  
@@ -154,47 +156,97 @@ public final class FSArrayList <T extends TOP> extends TOP implements
 
   // *------------------*
   // * Feature: fsArray
+  /**
+   * Gets the fs array.
+   *
+   * @return the fs array
+   */
   /* getter for fsArray */
   private FSArray getFsArray() { return (FSArray) _getFeatureValueNc(_FI_fsArray); }
 
+  /**
+   * Sets the fs array.
+   *
+   * @param v the new fs array
+   */
   /* setter for fsArray */
   private void setFsArray(FSArray v) {
     _setFeatureValueNcWj(_FI_fsArray, v); }
 
+  /**
+   * Maybe start using array list.
+   */
   private void maybeStartUsingArrayList() {
     if (fsArrayAsList != null) {
       fsArrayList.clear();
       fsArrayList.addAll(fsArrayAsList);
       fsArrayAsList = null;  // stop using this one
-      setFsArray(null);      // clear
     }
   }
   
+  /**
+   * Gta.
+   *
+   * @return the TO p[]
+   */
+  private TOP[] gta() {
+    FSArray fsa = getFsArray();
+    if (null == fsa) {
+      return Constants.EMPTY_TOP_ARRAY;
+    }
+    return fsa._getTheArray();
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
+   */
   public void _init_from_cas_data() {
-    fsArrayAsList = (List<T>) Arrays.asList(getFsArray());
+    fsArrayAsList = (List<T>) Arrays.asList(gta());
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaSerializable#_save_to_cas_data()
+   */
   public void _save_to_cas_data() {
-    if (getFsArray() == null) {
-      FSArray a = new FSArray(_casView.getExistingJCas(), fsArrayList.size());
-      setFsArray(a);
-      fsArrayList.toArray(a._getTheArray());
+    // if fsArraysAsList is not null, then the cas data form is still valid, do nothing
+    if (null != fsArrayAsList) return;
+    
+    // reallocate fsArray if wrong size
+    int sz = size();
+    FSArray fsa = getFsArray();
+    if (fsa == null || fsa.size() != sz) {
+      setFsArray(fsa = new FSArray(_casView.getExistingJCas(), sz));
     }
+    
+    // use the toArray(arg) method with the arg the correct size to set the values into the array
+    // from the fsArrayList    
+    fsArrayList.toArray(fsa._getTheArray());
   }
   
+  /**
+   * Gl.
+   *
+   * @return the list
+   */
   private List<T> gl () {
     return (null == fsArrayAsList) 
       ? fsArrayList
       : fsArrayAsList;
   }
   
-  /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
+  /* (non-Javadoc)
+   * @see java.util.List#get(int)
+   */
   public T get(int i) {
-    return (T) _maybeGetPearFs(gl().get(i));
+    return (T) gl().get(i);
   }
 
   /**
-   * updates the i-th value of the FSArrayList
+   * updates the i-th value of the FSArrayList.
+   *
+   * @param i the i
+   * @param v the v
+   * @return the t
    */
   public T set(int i, T v) {
     
@@ -202,20 +254,26 @@ public final class FSArrayList <T extends TOP> extends TOP implements
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
-    return gl().set(i, _maybeGetBaseForPearFs(v));
+    return gl().set(i, v);
   }
   
-  /** return the size of the array. */
+  /**
+   *  return the size of the array.
+   *
+   * @return the int
+   */
   public int size() {
     return gl().size();
   }
 
   /**
-   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * Copy from array.
+   *
    * @param src -
    * @param srcPos -
    * @param destPos -
    * @param length -
+   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   public void copyFromArray(T[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -232,11 +290,13 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * Copy to array.
+   *
    * @param srcPos -
    * @param dest -
    * @param destPos -
    * @param length -
+   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
   public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -248,11 +308,14 @@ public final class FSArrayList <T extends TOP> extends TOP implements
           String.format("FSArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     for (;srcPos < srcEnd && destPos < destEnd;) {
-      dest[destPos++] = _maybeGetPearFs(get(srcPos++));
+      dest[destPos++] = get(srcPos++);
     }
   }
 
   /**
+   * Note: doesn't convert to pear trampolines!.
+   *
+   * @return the feature structure[]
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   public FeatureStructure[] toArray() {
@@ -261,10 +324,18 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     return r;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.SelectViaCopyToArray#_toArrayForSelect()
+   */
   public FeatureStructure[] _toArrayForSelect() { return toArray(); }
 
   /**
-   * Not supported, will throw UnsupportedOperationException
+   * Not supported, will throw UnsupportedOperationException.
+   *
+   * @param src the src
+   * @param srcPos the src pos
+   * @param destPos the dest pos
+   * @param length the length
    */
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
@@ -289,12 +360,16 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    */
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(size(), srcPos, length);
-    for (int i = 0; i < length; i++) {
-      FeatureStructure fs = _maybeGetPearFs(get(i + srcPos));
+    int i = 0;
+    for (T fs : this) {
       dest[i + destPos] = (fs == null) ? null : fs.toString();
+      i++;
     }
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#toStringArray()
+   */
   public String[] toStringArray() {
     final int size = size();
     String[] strArray = new String[size];
@@ -323,10 +398,11 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
   
   /**
-   * Convenience - create a FSArrayList from an existing FeatureStructure[]
+   * Convenience - create a FSArrayList from an existing FeatureStructure[].
+   *
+   * @param <N> generic type of returned FS
    * @param jcas -
    * @param a -
-   * @param <N> generic type of returned FS
    * @return -
    */
   public static <N extends TOP> FSArrayList<N> create(JCas jcas, N[] a) {
@@ -335,9 +411,14 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     return fsa;
   }
   
+  /* (non-Javadoc)
+   * @see org.apache.uima.UimaSerializable#_superClone()
+   */
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
   /**
+   * Contains all.
+   *
    * @param c -
    * @return -
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
@@ -347,6 +428,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Checks if is empty.
+   *
    * @return -
    * @see java.util.ArrayList#isEmpty()
    */
@@ -355,33 +438,48 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Contains.
+   *
    * @param o -
    * @return -
    * @see java.util.ArrayList#contains(java.lang.Object)
    */
   public boolean contains(Object o) {
-    return gl().contains(o);
+    if (!(o instanceof TOP)) return false;
+    TOP fs = (TOP) o;    
+    return gl().contains(fs);
   }
 
   /**
+   * Index of.
+   *
    * @param o -
    * @return -
    * @see java.util.ArrayList#indexOf(java.lang.Object)
    */
   public int indexOf(Object o) {
-    return gl().indexOf(o);
+    if (!(o instanceof TOP)) return -1;
+    TOP fs = (TOP) o;    
+    return gl().indexOf(fs);
   }
 
   /**
+   * Last index of.
+   *
    * @param o -
    * @return -
    * @see java.util.ArrayList#lastIndexOf(java.lang.Object)
    */
   public int lastIndexOf(Object o) {
-    return gl().lastIndexOf(o);
+    if (!(o instanceof TOP)) return -1;
+    TOP fs = (TOP) o;    
+    return gl().lastIndexOf(fs);
   }
 
   /**
+   * To array.
+   *
+   * @param <T> the generic type
    * @param a -
    * @return -
    * @see java.util.ArrayList#toArray(java.lang.Object[])
@@ -390,15 +488,26 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     return gl().toArray(a);
   }
 
-  /**
-   * @return -
-   * @see java.util.AbstractCollection#toString()
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
    */
+  @Override
   public String toString() {
-    return gl().toString();
+    final int maxLen = 10;
+    return "FSArrayList [size="
+        + size()
+        + ", fsArrayList="
+        + (fsArrayList != null ? fsArrayList.subList(0, Math.min(fsArrayList.size(), maxLen))
+            : null)
+        + ", fsArrayAsList=" + (fsArrayAsList != null
+            ? fsArrayAsList.subList(0, Math.min(fsArrayAsList.size(), maxLen)) : null)
+        + "]";
   }
 
   /**
+   * Adds the.
+   *
    * @param e -
    * @return -
    * @see java.util.ArrayList#add(java.lang.Object)
@@ -409,27 +518,27 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * want equals to mean equal items, regardless of what format
+   * equals means equal items, same order.
+   *
    * @param o -
    * @return -
    * @see java.util.AbstractList#equals(java.lang.Object)
    */
   public boolean equals(Object o) {
-    if (o instanceof FSArrayList) {
-      FSArrayList other = (FSArrayList) o;
-      if (size() == other.size()) {
-        for (int i = size() - 1; i >= 0; i--) {
-          if (!get(i).equals(other.get(i))) {
-            return false;
-          }
-        }
-        return true;
-      }
+    if (!(o instanceof FSArrayList)) return false;
+    FSArrayList<T> other = (FSArrayList<T>) o;
+    if (size() != other.size()) return false;
+    
+    Iterator<T> it_other = other.iterator();
+    for (T item : this) {
+      if (!item.equals(it_other.next())) return false;
     }
-    return false;
+    return true;
   }
 
   /**
+   * Adds the.
+   *
    * @param index -
    * @param element -
    * @see java.util.ArrayList#add(int, java.lang.Object)
@@ -440,6 +549,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Removes the.
+   *
    * @param index -
    * @return -
    * @see java.util.ArrayList#remove(int)
@@ -450,6 +561,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Removes the.
+   *
    * @param o -
    * @return -
    * @see java.util.ArrayList#remove(java.lang.Object)
@@ -460,22 +573,23 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * want hashcode to depend only on equal items, regardless of what format
+   * want hashcode to depend only on equal items, regardless of what format.
+   *
    * @return -
    * @see java.util.AbstractList#hashCode()
    */
   public int hashCode() {
     int hc = 1;
     final int prime = 31;
-    for (int i = size() - 1; i >= 0; i++) {
-      hc = hc * prime + i;
-      hc = hc * prime + get(i).hashCode();
+    for (T item : this) {
+      hc = hc * prime + item.hashCode();
     }
     return hc;
   }
 
   /**
-   * 
+   * Clear.
+   *
    * @see java.util.ArrayList#clear()
    */
   public void clear() {
@@ -484,6 +598,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Adds the all.
+   *
    * @param c -
    * @return -
    * @see java.util.ArrayList#addAll(java.util.Collection)
@@ -494,6 +610,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Adds the all.
+   *
    * @param index -
    * @param c -
    * @return -
@@ -505,6 +623,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Removes the all.
+   *
    * @param c -
    * @return -
    * @see java.util.ArrayList#removeAll(java.util.Collection)
@@ -515,6 +635,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Retain all.
+   *
    * @param c -
    * @return -
    * @see java.util.ArrayList#retainAll(java.util.Collection)
@@ -525,6 +647,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Stream.
+   *
    * @return -
    * @see java.util.Collection#stream()
    */
@@ -533,6 +657,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Parallel stream.
+   *
    * @return -
    * @see java.util.Collection#parallelStream()
    */
@@ -541,6 +667,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * List iterator.
+   *
    * @param index -
    * @return -
    * @see java.util.ArrayList#listIterator(int)
@@ -550,6 +678,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * List iterator.
+   *
    * @return -
    * @see java.util.ArrayList#listIterator()
    */
@@ -558,6 +688,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Iterator.
+   *
    * @return -
    * @see java.util.ArrayList#iterator()
    */
@@ -566,6 +698,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Sub list.
+   *
    * @param fromIndex -
    * @param toIndex -
    * @return -
@@ -576,6 +710,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * For each.
+   *
    * @param action -
    * @see java.util.ArrayList#forEach(java.util.function.Consumer)
    */
@@ -584,6 +720,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Spliterator.
+   *
    * @return -
    * @see java.util.ArrayList#spliterator()
    */
@@ -592,6 +730,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Removes the if.
+   *
    * @param filter -
    * @return -
    * @see java.util.ArrayList#removeIf(java.util.function.Predicate)
@@ -602,6 +742,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Replace all.
+   *
    * @param operator -
    * @see java.util.ArrayList#replaceAll(java.util.function.UnaryOperator)
    */
@@ -611,6 +753,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * Sort.
+   *
    * @param c -
    * @see java.util.ArrayList#sort(java.util.Comparator)
    */

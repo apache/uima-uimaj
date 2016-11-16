@@ -36,6 +36,7 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * A HashSet type containing Feature Structures,
@@ -45,6 +46,8 @@ import org.apache.uima.jcas.JCasRegistry;
  * Implementation notes:
  *   - Uses UimaSerializable APIs 
  *
+ * No PEAR trampoline conversions are done
+ * 
  * @param <T> the generic type
  */
 public final class FSHashSet <T extends TOP> extends TOP implements 
@@ -69,9 +72,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   public int getTypeIndexID() {
     return typeIndexID;
   }
-  
-  public final TOP[] emptyArray = new TOP[0];
-  
+    
   /** lifecycle   
    *   - starts as empty array list   
    *   - becomes non-empty when updated (add)       
@@ -210,12 +211,9 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   private TOP[] gta() {
     FSArray fsa = getFsArray();
     if (null == fsa) {
-      return emptyArray;
+      return Constants.EMPTY_TOP_ARRAY;
     }
-    TOP[] a = fsa._getTheArray();
-    return (null == a) 
-        ? emptyArray
-        : a;
+    return fsa._getTheArray();
   }
   
   /**
