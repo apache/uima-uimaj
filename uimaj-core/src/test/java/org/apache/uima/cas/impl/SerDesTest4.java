@@ -55,8 +55,6 @@ import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.test.AnnotatorInitializer;
 import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.Misc;
-import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
