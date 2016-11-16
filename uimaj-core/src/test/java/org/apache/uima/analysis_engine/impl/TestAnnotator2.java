@@ -19,13 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
@@ -39,7 +35,6 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UimaContextHolderTest;
-import org.apache.uima.util.impl.Settings_impl;
 
 import junit.framework.Assert;
 

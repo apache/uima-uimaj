@@ -19,13 +19,13 @@
 
 package org.apache.uima.cas.test;
 
+import static org.apache.uima.cas.SelectFSs.select;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -37,20 +37,15 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import junit.framework.TestCase;
-
-import static org.apache.uima.cas.SelectFSs.select;
 
 /**
  * Class comment for FilteredIteratorTest.java goes here.

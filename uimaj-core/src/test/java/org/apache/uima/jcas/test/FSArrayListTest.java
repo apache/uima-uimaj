@@ -20,10 +20,8 @@
 package org.apache.uima.jcas.test;
 
 import java.util.Iterator;
-import java.util.Spliterator;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;

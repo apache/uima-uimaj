@@ -20,20 +20,15 @@
 package org.apache.uima.jcas.test;
 
 import java.util.Iterator;
-import java.util.Spliterator;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.FSArrayList;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.IntegerArrayList;
 
 import junit.framework.TestCase;
 import x.y.z.EndOfSentence;
-import x.y.z.Token;
 
 /**
  * Test FSArrayList

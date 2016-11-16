@@ -1,7 +1,5 @@
 package org.apache.uima.cas.test;
 
-import static org.junit.Assert.*;
-
 import org.apache.uima.cas.Type;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

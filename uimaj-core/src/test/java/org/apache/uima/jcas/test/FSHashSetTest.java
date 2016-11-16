@@ -20,10 +20,8 @@
 package org.apache.uima.jcas.test;
 
 import java.util.Iterator;
-import java.util.Spliterator;
 
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
@@ -65,23 +63,23 @@ public class FSHashSetTest extends TestCase {
 	}
 
 	public void testBasic() {
-	  FSHashSet<Token> al = new FSHashSet<>(jcas);
+	  FSHashSet<Token> set = new FSHashSet<>(jcas);
 	  Token t1 = new Token(jcas);
     Token t2 = new Token(jcas);
-	  al.add(t1);
-	  al.add(t2);
-	  al.remove(t1);
+	  set.add(t1);
+	  set.add(t2);
+	  set.remove(t1);
 	  
-	  assertEquals(1, al.size());
+	  assertEquals(1, set.size());
 	  
-    Iterator<Token> it = al.iterator();
+    Iterator<Token> it = set.iterator();
     Token k = null;
 	  while (it.hasNext()) {
 	    assertNotNull(k = it.next());
 	  }
 	  assertNotNull(k);
-	  al._save_fsRefs_to_cas_data();
-	  FSArray fa = (FSArray) al.getFeatureValue(al.getType().getFeatureByBaseName("fsArray"));
+	  set._save_fsRefs_to_cas_data();
+	  FSArray fa = (FSArray) set.getFeatureValue(set.getType().getFeatureByBaseName("fsArray"));
 	  assertNotNull(fa);
 	  assertEquals(fa.get(0), k);
 	}

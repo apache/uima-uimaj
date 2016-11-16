@@ -28,16 +28,11 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
-import org.apache.uima.cas.impl.TypeSystemConstants;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
 import junit.framework.TestCase;
