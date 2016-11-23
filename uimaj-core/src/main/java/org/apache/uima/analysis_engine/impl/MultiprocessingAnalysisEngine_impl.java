@@ -175,17 +175,29 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
   }
   
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
-    enterProcess(); // start timer for collecting performance stats
-    AnalysisEngine ae = null;
-    try {
-      ae = getAeFromPool();
-      return ae.processAndOutputNewCASes(aCAS);
-    } finally {
-      if (ae != null) {
-        mPool.releaseAnalysisEngine(ae);
-      }
-      exitProcess(); // stop timer for collecting performance stats
-    }
+    // https://issues.apache.org/jira/browse/UIMA-5191
+    final long startTime = System.currentTimeMillis();    
+    final AnalysisEngine ae = getAeFromPool();
+    final CasIterator it_inner = ae.processAndOutputNewCASes(aCAS);
+    final AnalysisEnginePool localMPool = mPool;
+    CasIterator it_outer = new CasIterator() {
+
+      @Override
+      public boolean hasNext() throws AnalysisEngineProcessException {
+        boolean r = it_inner.hasNext();
+        if (!r) {
+          localMPool.releaseAnalysisEngine(ae);
+          getMBean().reportAnalysisTime(System.currentTimeMillis() - startTime);
+        }
+        return r;      }
+
+      @Override
+      public CAS next() throws AnalysisEngineProcessException { return it_inner.next(); }
+      @Override
+      public void release() { it_inner.release(); }
+    };
+    
+    return it_outer;
   }
 
   /* (non-Javadoc)
@@ -263,17 +275,29 @@ public class MultiprocessingAnalysisEngine_impl extends AnalysisEngineImplBase i
    */
   @Override
   public JCasIterator processAndOutputNewCASes(JCas aJCas) throws AnalysisEngineProcessException {
-    enterProcess(); // start timer for collecting performance stats
-    AnalysisEngine ae = null;
-    try {
-      ae = getAeFromPool();
-      return ae.processAndOutputNewCASes(aJCas);
-    } finally {
-      if (ae != null) {
-        mPool.releaseAnalysisEngine(ae);
+    // https://issues.apache.org/jira/browse/UIMA-5191
+    final long startTime = System.currentTimeMillis();    
+    final AnalysisEngine ae = getAeFromPool();
+    final JCasIterator it_inner = ae.processAndOutputNewCASes(aJCas);
+    final AnalysisEnginePool localMPool = mPool;
+    JCasIterator it_outer = new JCasIterator() {
+      
+      @Override
+      public boolean hasNext() throws AnalysisEngineProcessException {
+        boolean r = it_inner.hasNext();
+        if (!r) {
+          localMPool.releaseAnalysisEngine(ae);
+          getMBean().reportAnalysisTime(System.currentTimeMillis() - startTime);
+        }
+        return r;
       }
-      exitProcess(); // stop timer for collecting performance stats
-    }
+
+      @Override
+      public JCas next() throws AnalysisEngineProcessException { return it_inner.next(); }
+      @Override
+      public void release() { it_inner.release(); }
+    };
+    return it_outer;
   }
 
 
