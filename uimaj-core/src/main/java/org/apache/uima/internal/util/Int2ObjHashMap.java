@@ -21,6 +21,7 @@ package org.apache.uima.internal.util;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.util.impl.Constants;
@@ -309,98 +310,97 @@ public class Int2ObjHashMap<T> {
   * @param key -
   * @return the probeAddr in keys array - might have a 0 value, or the key value if found
   */
- private int find(final int key) {
-   if (key == 0) {
-     throw new IllegalArgumentException("0 is an invalid key");
-   }
-   
-   final int hash = Misc.hashInt(key);
+  private int find(final int key) {
+    if (key == 0) {
+      throw new IllegalArgumentException("0 is an invalid key");
+    }
 
-   final int[] localKeys = keys;
-   final int bitMask = localKeys.length - 1;
-   int probeAddr = hash & bitMask;
-   
-   // fast paths
-   final int testKey = localKeys[probeAddr];
-   if (testKey == 0 || testKey == key) {
-     if (TUNE) {
-       updateHistogram(1);
-     }
-     return probeAddr;
-   }
-   
-   return find2(localKeys, key, probeAddr);
- }
- 
- 
- private int find2(final int[] localKeys, final int key, int probeAddr) { 
-   final int bitMask = localKeys.length - 1;
-   int nbrProbes = 2;   
-   int probeDelta = 1;
-   probeAddr = bitMask & (probeAddr + (probeDelta++));
+    final int hash = Misc.hashInt(key);
 
-   while (true) {
-     final int testKey = localKeys[probeAddr];
-     if (testKey == 0 || testKey == key) { 
-       break;
-     }
-     nbrProbes++;
-     probeAddr = bitMask & (probeAddr + (probeDelta++));
-   }
-   
-   if (TUNE) { 
-     final int pv = histogram[nbrProbes];
-     
-     histogram[nbrProbes] = 1 + pv;
-     if (maxProbe < nbrProbes) {
-       maxProbe = nbrProbes;
-     }
-   }
-   return probeAddr;
- }
+    final int[] localKeys = keys;
+    final int bitMask = localKeys.length - 1;
+    int probeAddr = hash & bitMask;
 
- private void updateHistogram(int nbrProbes) {
-   histogram[nbrProbes] = 1 + histogram[nbrProbes];
-   if (maxProbe < nbrProbes) {
-     maxProbe = nbrProbes;
-   }
- }
+    // fast paths
+    final int testKey = localKeys[probeAddr];
+    if (testKey == 0 || testKey == key) {
+      if (TUNE) {
+        updateHistogram(1);
+      }
+      return probeAddr;
+    }
 
- public T get(int key) {
-   return (key == 0) ? null : values[find(key)];
- }
+    return find2(localKeys, key, probeAddr);
+  } 
  
- public boolean containsKey(int key) {
-   int probeAddr = find(key);
-   return probeAddr != 0 && keys[probeAddr] != 0;
- }
- 
- public boolean isKeyValid(int position) {
-   return (position != 0) && (keys[position] != 0);
- }
+  private int find2(final int[] localKeys, final int key, int probeAddr) {
+    final int bitMask = localKeys.length - 1;
+    int nbrProbes = 2;
+    int probeDelta = 1;
+    probeAddr = bitMask & (probeAddr + (probeDelta++));
 
- public T put(int key, T value) {
-   final int i = find(key);
-   final boolean keyNotFound = keys[i] == 0;
-   final T prevValue = values[i];
-   keys[i] = key;
-   values[i] = value;
-   if (keyNotFound) {
-     incrementSize();
-   }
-   return prevValue;
- }
+    while (true) {
+      final int testKey = localKeys[probeAddr];
+      if (testKey == 0 || testKey == key) {
+        break;
+      }
+      nbrProbes++;
+      probeAddr = bitMask & (probeAddr + (probeDelta++));
+    }
+
+    if (TUNE) {
+      final int pv = histogram[nbrProbes];
+
+      histogram[nbrProbes] = 1 + pv;
+      if (maxProbe < nbrProbes) {
+        maxProbe = nbrProbes;
+      }
+    }
+    return probeAddr;
+  }
+
+  private void updateHistogram(int nbrProbes) {
+    histogram[nbrProbes] = 1 + histogram[nbrProbes];
+    if (maxProbe < nbrProbes) {
+      maxProbe = nbrProbes;
+    }
+  }
+
+  public T get(int key) {
+    return (key == 0) ? null : values[find(key)];
+  }
+
+  public boolean containsKey(int key) {
+    int probeAddr = find(key);
+    return probeAddr != 0 && keys[probeAddr] != 0;
+  }
  
- public void putInner(int key, T value) {
-   final int i = find(key);
-   assert(keys[i] == 0);
-   keys[i] = key;
-   values[i] = value;
- }
-  
- public int size() {
-   return size;
- }
+  public boolean isKeyValid(int position) {
+    return (position != 0) && (keys[position] != 0);
+  }
+
+  public T put(int key, T value) {
+    final int i = find(key);
+    final boolean keyNotFound = keys[i] == 0;
+    final T prevValue = values[i];
+    keys[i] = key;
+    values[i] = value;
+    if (keyNotFound) {
+      incrementSize();
+    }
+    return prevValue;
+  }
+
+  public void putInner(int key, T value) {
+    final int i = find(key);
+    assert (keys[i] == 0);
+    keys[i] = key;
+    values[i] = value;
+  }
+
+  public int size() {
+    return size;
+  }
   
   public int[] getSortedKeys() {
     final int size = size();
@@ -429,6 +429,48 @@ public class Int2ObjHashMap<T> {
 
   public IntKeyValueIterator keyValueIterator(int aKey) {
     throw new UnsupportedOperationException();// only makes sense for sorted things
+  }
+  
+  public Iterator<T> values() {
+    return new Iterator<T>() {
+      
+      /**
+       * Keep this always pointing to a non-0 entry, or
+       * if not valid, outside the range
+       */
+      private int curPosition = 0;
+      { moveToNextFilled(); }  // non-static initializer
+      
+
+      @Override
+      public boolean hasNext() {
+        return curPosition < keys.length;
+      }
+
+      @Override
+      public T next() {
+        try {
+          final T r = values[curPosition++];
+          moveToNextFilled();
+          return r;
+        } catch (IndexOutOfBoundsException e) {
+          throw new NoSuchElementException();
+        }
+      }
+      
+      private void moveToNextFilled() {      
+        final int max = keys.length;
+        while (true) {
+          if (curPosition >= max) {
+            return;
+          }
+          if (keys[curPosition] != 0) {
+            return;
+          }
+          curPosition ++;
+        }
+      }
+    };
   }
 
   public void showHistogram() {
