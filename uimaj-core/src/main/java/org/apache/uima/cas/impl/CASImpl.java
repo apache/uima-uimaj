@@ -90,6 +90,7 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
+import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
@@ -3773,7 +3774,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   public int ll_createAnnotation(int typeCode, int begin, int end) {
     TOP fs = createAnnotation(getTypeFromCode(typeCode), begin, end);
-//    setId2fs(fs);
+    svd.id2fs.put(fs); // to prevent gc from reclaiming
     return fs._id();
   }
   
@@ -4481,6 +4482,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       svd.id2fs.put((TOP)fs);
     }
   }
+  
+//  Not currently used
+//  public Int2ObjHashMap<TOP> getId2FSs() {
+//    return svd.id2fs.getId2fs();
+//  }
   
 //  final private int getNextFsId() {
 //    return ++ svd.fsIdGenerator;
