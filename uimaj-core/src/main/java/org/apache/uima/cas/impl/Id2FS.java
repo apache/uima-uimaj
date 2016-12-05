@@ -37,6 +37,7 @@ import org.apache.uima.jcas.cas.TOP;
  *      won't prevent the FS from being GC'd.  
  * 
  * Removes not supported; they happen when the map is reset / cleared
+ * This corresponds to the v2 property of "once created, a FS cannot be reclaimed (until reset)"
  */
 public class Id2FS {
   static final boolean MEASURE = false;
@@ -66,6 +67,10 @@ public class Id2FS {
     assert prev == null;
   }
   
+  /**
+   * Skips the assert that the item wasn't already present
+   * @param fs the fs to add
+   */
   void putUnconditionally(TOP fs) {
     id2fs.put(fs._id, fs);
   }
