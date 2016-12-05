@@ -565,9 +565,18 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
   protected <N extends TOP> N _maybeGetBaseForPearFs(N v) {
     return (v == null) 
              ? null
-             : v._isPearTrampoline() 
-                 ? v._casView.getBaseFsFromTrampoline(v)
-                 : v;
+             : v._maybeGetBaseForPearFs();
+  }
+  
+  /**
+   * Called to convert to the base FS from a Pear version
+   * @param <N> the type of the FS
+   * @return the FS or if it was a trampoline, the base FS
+   */
+  public <N extends TOP> N _maybeGetBaseForPearFs() {
+    return this._isPearTrampoline() 
+             ? _casView.getBaseFsFromTrampoline((N) this)
+             : (N) this;
   }
   
   /**
@@ -580,6 +589,17 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
     return (_casView.inPearContext()) 
       ? CASImpl.pearConvert(v)
       : v;
+  }
+ 
+  /**
+   * @param <N> the type of the FS
+   * @return the FS or if we're in a Pear context and  
+   *    the PEAR defines a different version, the PEAR version.
+   */
+  public <N extends TOP> N _maybeGetPearFs() {
+    return (_casView.inPearContext()) 
+        ? CASImpl.pearConvert((N) this)
+        : (N) this;
   }
   
   /**
