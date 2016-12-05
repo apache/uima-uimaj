@@ -261,10 +261,10 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   }
 
   /**
-   * Removes all elements matching c
+   * Removes all elements matching c.
    *
    * @param c the elements to remove
-   * @return true, if set changed 
+   * @return true, if set changed
    * @see java.util.AbstractSet#removeAll(java.util.Collection)
    */
   public boolean removeAll(Collection<?> c) {
@@ -277,9 +277,9 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   /**
    * To array.
    *
-   * @param <T> the generic type
+   * @param <N> the generic type
    * @param a the a
-   * @return the T[]
+   * @return the N[]
    * @see java.util.AbstractCollection#toArray(T[])
    */
   public <N> N[] toArray(N[] a) {
@@ -343,7 +343,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   }
 
   /**
-   * Adds the element to the set
+   * Adds the element to the set.
    *
    * @param e the element to add
    * @return true, if the set didn't already contain this element
@@ -357,7 +357,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   }
 
   /**
-   * Removes the element
+   * Removes the element.
    *
    * @param o the o
    * @return true, if the set contained the element
@@ -395,7 +395,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   }
 
   /**
-   * Adds all the elements 
+   * Adds all the elements .
    *
    * @param c the c
    * @return true, if set changed
@@ -444,6 +444,13 @@ public final class FSHashSet <T extends TOP> extends TOP implements
         + ", fsHashSet=" + (fsHashSet != null ? toString(fsHashSet, maxLen) : null) + "]";
   }
 
+  /**
+   * To string.
+   *
+   * @param collection the collection
+   * @param maxLen the max len
+   * @return the string
+   */
   private String toString(Collection<?> collection, int maxLen) {
     StringBuilder builder = new StringBuilder();
     builder.append("[");
