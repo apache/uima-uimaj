@@ -253,8 +253,10 @@
           <!-- version 2.3.4 eliminates spurious warning messages -->
           <!-- version 2.5 has accidental dependency on Java 6 -->
           <!-- version 2.5.0 gives error - default pkg '.' not permitted, o.a.u.cas.impl -->
-          <!-- version 2.3.7 failing in some projects  -->
-          <version>3.0.1</version>
+          <!-- version 2.3.7 failing in some projects  -->  <!-- doesnt support java 8 -->
+             <!-- currently only overridden in uimaj-ep-configuration because otherwise, that is excluded from 
+                  update site plugins/ folder -->
+          <version>3.0.1</version>        
         </plugin>
         
         <plugin>
