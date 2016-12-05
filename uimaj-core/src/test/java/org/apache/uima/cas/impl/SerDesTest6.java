@@ -35,9 +35,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import junit.framework.TestCase;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
@@ -63,12 +60,13 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
+
 /**
  * Serializer and Deserializer testing
  * 
  * 
  */
-public class SerDesTest6 extends TestCase {
+public class SerDesTest6 extends SerDesTstCommon {
 
   enum TypeSystems {
     TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures,
@@ -89,9 +87,6 @@ public class SerDesTest6 extends TestCase {
   private CASImpl casSrc;
   private TTypeSystem[] alternateTTypeSystems;
   
-  private  Random random;
-  private long seed;
-
   public class CASTestSetup implements AnnotatorInitializer {
 
     
@@ -103,7 +98,8 @@ public class SerDesTest6 extends TestCase {
       this.kind = kind;
     }
     
-    //     TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, NoFeatures,
+    // TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures,
+    // OneTypeSubsetFeatures, NoFeatures,
     public void initTypeSystem(TypeSystemMgr tsm) {
       if (kind == EqTwoTypes) {
         throw new RuntimeException();
@@ -126,7 +122,7 @@ public class SerDesTest6 extends TestCase {
       switch (kind) {
       case TwoTypes: 
       case TwoTypesSubsetFeatures: 
-      case TwoTypesNoFeatures: {
+      case TwoTypesNoFeatures:
         m.addType(Akof2.name(),"Top");
         if (kind != TwoTypesNoFeatures) {
           for (String fn : featureNameRoots) {
@@ -137,8 +133,8 @@ public class SerDesTest6 extends TestCase {
           }
         }
         break;
-        }
-      }
+      default: // skip the other cases
+      } // end of switch
     }
     
     void addBuiltins() {
@@ -175,15 +171,16 @@ public class SerDesTest6 extends TestCase {
   
   static class TTypeSystem {
     final TypeSystems kind;
-    final TypeSystemMgr tsm;
+    TypeSystemMgr tsm;
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
     Map<String, Type> mapString2Type = new HashMap<String, Type>();
     public TypeSystemImpl ts;
-    public CASImpl cas;  // the Cas setup as part of initialization
+    public CASImpl cas;  // the Cas setup as part of initialization                                                                    // the
     
     public TTypeSystem(TypeSystemMgr tsm, TypeSystems kind) {
       this.tsm = tsm;
       this.kind = kind;
+      this.ts = (TypeSystemImpl) tsm;
     }
 
     void addType(Type type, String shortName) {
@@ -205,7 +202,8 @@ public class SerDesTest6 extends TestCase {
     void add(Type type, String featNameRoot) {
       String typeName = type.getShortName();
       int i2 = featureNameRoots.indexOf(featNameRoot);
-      featureTable[Types.valueOf(typeName).ordinal()][i2] = tsm.addFeature(typeName + featNameRoot, type, mapString2Type.get(featNameRoot));          
+      featureTable[Types.valueOf(typeName).ordinal()][i2] = tsm.addFeature(typeName + featNameRoot,
+          type, mapString2Type.get(featNameRoot));
     }
     
     void add(Types typeKind, String featNameRoot) {
@@ -220,36 +218,39 @@ public class SerDesTest6 extends TestCase {
       Type t = fs.getType();
       return getFeature(Types.valueOf(t.getShortName()), featNameRoot);
     }
-  }
 
-  // Constructor
-  public SerDesTest6() {
-    setRandom(/*seed = 1994207594477441796L*/);
-    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed);
-   }
-  
-  private void setRandom() {
-    Random sg = new Random();
-    seed = sg.nextLong();
-//    seed =  2934127305128325787L;
-    random = new Random(seed);
-  }
-  
-  private void setRandom(long seed) {
-    random = new Random(seed);
+    void updateAfterCommit() { // needed for v3 only, but doesn't hurt for v2
+      ts = cas.getTypeSystemImpl();
+      tsm = ts;
+      for (String typename : mapString2Type.keySet()) {
+        TypeImpl ti = (TypeImpl) ts.getType(typename);
+        mapString2Type.put(typename, ti);
+      }
+
+      for (Types typeKind : Types.values()) {
+        Type ti = tsm.getType(typeKind.name());
+        if (ti != null) {
+          Feature[] features = featureTable[typeKind.ordinal()];
+          for (int i = 0; i < features.length; i++) {
+            features[i] = ti.getFeatureByBaseName(ti.getShortName() + featureNameRoots.get(i));
+          }
+        }
+      }
+    }
   }
   
   public TTypeSystem setupTTypeSystem(TypeSystems kind) {
     if (kind == EqTwoTypes) {
       TTypeSystem m = new TTypeSystem(mSrc.tsm, kind);
-      m.ts = mSrc.cas.getTypeSystemImpl();
+      m.cas = mSrc.cas;
+      // m.ts = mSrc.cas.getTypeSystemImpl();
       return mSrc;
     }
     CASTestSetup setup = new CASTestSetup(kind);
     CASImpl cas = (CASImpl) CASInitializer.initCas(setup);
     TTypeSystem m = setup.m;
     m.cas = cas;
-    m.ts = cas.getTypeSystemImpl();
+    m.updateAfterCommit();
     return m;
   }
   
@@ -297,9 +298,8 @@ public class SerDesTest6 extends TestCase {
     }
   }
 
-  
-  public void testDocText() throws Exception
-  {
+  public void testDocText() {
+    try {
       CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
       cas.setDocumentLanguage("latin");
       cas.setDocumentText("test");
@@ -314,6 +314,9 @@ public class SerDesTest6 extends TestCase {
 
       assertEquals("latin", cas2.getDocumentLanguage());
       assertEquals("test", cas2.getDocumentText());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
   
   public void testDocumentText() {
@@ -322,13 +325,13 @@ public class SerDesTest6 extends TestCase {
     casSrc.reset();
     casSrc.setDocumentText(testDocText);
     loadCas(casSrc, mSrc);  
-    verify(remoteCas);
+    verify(remoteCas, "DocumentText");
     assertEquals(remoteCas.getDocumentText(), testDocText);
     
     // test case where serialization is done without type filtering,
     //   and deserialization is done with filtering
     remoteCas.reset();
-    verifyDeserFilter(remoteCas); 
+    verifyDeserFilter(remoteCas, "WithDeserFilterDocumentText");
     assertEquals(remoteCas.getDocumentText(), testDocText);
   }
   
@@ -339,22 +342,26 @@ public class SerDesTest6 extends TestCase {
   
   public void testAllKinds() {
     if (doPlain) {
-      serdesSimple(getTT(EqTwoTypes));
+      serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
     } else {
+      int i = 0;
       for (TTypeSystem m : alternateTTypeSystems) {
         switch (m.kind){
         // note: case statements *not* grouped in order to faclitate debugging
         case OneTypeSubsetFeatures:
-          serdesSimple(m);
+          serdesSimple(m, "OneTypeSubsetFeatures" + m.kind.toString());
           break;
         case TwoTypesSubsetFeatures:
-          serdesSimple(m);
+          serdesSimple(m, "TwoTypesSubsetFeatures" + m.kind.toString());
           break;
         case TwoTypes:
+          i++;
+          serdesSimple(m, "OtherAllKinds" + m.kind.toString() + Integer.toString(i));
+          break;
         case EqTwoTypes:
         case OneType:
         case TwoTypesNoFeatures:
-          serdesSimple(m);
+          serdesSimple(m, "OtherAllKinds" + m.kind.toString());
           break;
         }
       }
@@ -370,26 +377,31 @@ public class SerDesTest6 extends TestCase {
   //   T1 fsArray ref -> T2 -> T1 (new) (indexed)
   //   T1         ref -> T2 -> T1 (new) (indexed)
 
-  public void testRefThroughFilteredType() throws IOException {
-    reftft (OneType);
+  public void testRefThroughFilteredType() {
+    reftft(OneType, 0);
     for (int i = 0; i < 10; i++) {
-      reftft (TwoTypesSubsetFeatures);
+      reftft(TwoTypesSubsetFeatures, i);
     }
-    reftft(TwoTypesNoFeatures);
+    reftft(TwoTypesNoFeatures, 0);
   }
   
-  private void reftft(TypeSystems tskind) {
-    reftft(tskind, true);
-    reftft(tskind, false);
+  private void reftft(TypeSystems tskind, int i) {
+    reftft(tskind, true, i);
+    reftft(tskind, false, i);
   }
   
-  private void reftft(TypeSystems tskind, boolean indexed) {
+  /**
+   * Inner part of test of refs through filtered type
+   * 
+   * @param tskind -
+   * @param indexed -
+   */
+  private void reftft(TypeSystems tskind, boolean indexed, int i) {
     lfs.clear();
     
     TTypeSystem m = getTT(tskind);
     remoteCas = setupCas(m);
-    
-    TTypeSystem mSrc = getTT(TwoTypes);
+    // casSrc.reset();
     makeFeaturesForAkof(casSrc, mSrc, Akof1);
     
     FeatureStructure otherTsFs = casSrc.createFS(mSrc.getType(Akof2));
@@ -403,10 +415,13 @@ public class SerDesTest6 extends TestCase {
       casSrc.addFsToIndexes(ts1Fs);
     }
     
-    verify(remoteCas);   
+    verify(remoteCas, "refThroughFilteredType" 
+       + (indexed ? "Indexed" : "NotIndexed") 
+       + tskind.toString() + Integer.toString(i));
+    
   }
   // broken out special instances of random tests
-  public void testDeltaWithStringArrayMod() throws IOException {
+  public void testDeltaWithStringArrayMod() {
     // casSrc -> remoteCas,remoteCas updated, serialized back to srcCas
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -426,13 +441,15 @@ public class SerDesTest6 extends TestCase {
         verifyDelta(marker, ri);
         break;
       }
-      setRandom();
+      // setRandom();
       setUp();
+      long seed = random.nextLong();
+      random.setSeed(seed);
       System.out.println(" testDelta w/ String array mod random = " + seed + ", i = " + i);
     }
   }
 
-  public void testDeltaWithDblArrayMod() throws IOException {
+  public void testDeltaWithDblArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
@@ -451,13 +468,15 @@ public class SerDesTest6 extends TestCase {
         verifyDelta(marker, ri);
         break;
       }      
-      setRandom();
+      // setRandom();
       setUp();
+      long seed = random.nextLong();
+      random.setSeed(seed);
       System.out.println(" testDelta w/ dbl array mod random = " + seed + ", i = " + i);
     }
   }
   
-  public void testDeltaWithByteArrayMod() throws IOException {
+  public void testDeltaWithByteArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
@@ -478,13 +497,13 @@ public class SerDesTest6 extends TestCase {
         verifyDelta(marker, ri);
         break;
       }
-      setRandom();  // retry with different random number
+      // setRandom(); // retry with different random number
       setUp();
       System.out.println("  testDelta w byte array mod retrying, i = " + i);
     }
   }
 
-  public void testDeltaWithStrArrayMod() throws IOException {
+  public void testDeltaWithStrArrayMod() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
@@ -502,17 +521,16 @@ public class SerDesTest6 extends TestCase {
     verifyDelta(marker, ri);
   }
   
-  
-  private void serdesSimple(TTypeSystem m) {
+  private void serdesSimple(TTypeSystem m, String kind) {
     remoteCas = setupCas(m);
     casSrc.reset();
     loadCas(casSrc, mSrc);  
-    verify(remoteCas);  
+    verify(remoteCas, kind);
     
     // test case where serialization is done without type filtering,
     //   and deserialization is done with filtering
     remoteCas.reset();
-    verifyDeserFilter(remoteCas); 
+    verifyDeserFilter(remoteCas, "WithDeserFilter" + kind);
   }
   
   /**
@@ -553,13 +571,15 @@ public class SerDesTest6 extends TestCase {
   }
   
   private void serdesDelta(TTypeSystem m) {
-    remoteCas = setupCas(m);
+    remoteCas = setupCas(m); // create empty new CAS with specified type system from m.ts
 //    casSrc.reset();
-    loadCas(casSrc, mSrc);
+    loadCas(casSrc, mSrc); // load up the src cas using mSrc spec
+    // src -> serialize -> deserialize -> rmt
     ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
     
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    loadCas(remoteCas, m);
+    loadCas(remoteCas, m); // load some changes into remote
+    // rmt -> serialize(full ts) -> deserialize(2 ts) -> src, then compare src & rmt
     verifyDelta(marker, ri); 
   }
   
@@ -591,8 +611,9 @@ public class SerDesTest6 extends TestCase {
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
     
-    lfs = getIndexedFSs(remoteCas, m);
+    lfs = getIndexedFSs(remoteCas, m); // get list of all "Akof1" FS
     FeatureStructure fs = remoteCas.createFS(m.getType(Akof1));
+    // set the lfs.get(0) featurestructure's feature "Fs" to the new fs
     maybeSetFeatureKind( lfs.get(0), m, "Fs", fs);
     
     verifyDelta(marker, ri);
@@ -644,9 +665,7 @@ public class SerDesTest6 extends TestCase {
 
   }
   
-
-  
-  public void testDeltaWithIndexMods() throws IOException {
+  public void testDeltaWithIndexMods() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
@@ -682,15 +701,88 @@ public class SerDesTest6 extends TestCase {
     testArrayAux();
   }
 
+  private void runCaptureSet() {
+    //  Java 8 style
+//    setupRunTeardown(this::testDocText);
+//    setupRunTeardown(this::testDocumentText);
+//    setupRunTeardown(this::testAllKinds);
+//    setupRunTeardown(this::testRefThroughFilteredType);
+//    setupRunTeardown(this::testDeltaWithStringArrayMod);
+//    setupRunTeardown(this::testDeltaWithDblArrayMod);
+//    setupRunTeardown(this::testDeltaWithByteArrayMod);
+//    setupRunTeardown(this::testDeltaWithStrArrayMod);
+//    setupRunTeardown(this::testDelta);
+//    setupRunTeardown(this::testDeltaWithRefsBelow);
+//    setupRunTeardown(this::testDeltaWithMods);
+//    setupRunTeardown(this::testDeltaWithIndexMods);
+//    setupRunTeardown(this::testArrayAux);
+    
+    // Java 7 style
+    setupRunTeardown(new Runnable() {public void run() {testDocText();}});     
+    setupRunTeardown(new Runnable() {public void run() {testDocumentText();}});
+    setupRunTeardown(new Runnable() {public void run() {testAllKinds();}});
+    setupRunTeardown(new Runnable() {public void run() {testRefThroughFilteredType();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithStringArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithDblArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithByteArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithStrArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDelta();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithRefsBelow();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithMods();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithIndexMods();}});
+    setupRunTeardown(new Runnable() {public void run() {testArrayAux();}});
+
+  }
+
+  public void captureGenerated() {
+    capture = true;
+    initWriteSavedInts();
+    runCaptureSet();
+    try {
+      savedIntsOutStream.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    capture = false;
+
+  }
+
+  /**
+   * See if can read Version 2 serialized things and deserialize them Note:
+   * Delta won't work unless the previous v2 test case indexed or ref'd all the
+   * FSs, because otherwise, some FSs will be "deleted" by the modelling V3 does
+   * for the CAS layout because they're not findable during scanning, and
+   * therefore, delta mods won't be correct.
+   */
+  public void testWithPrevGenerated() {
+    isKeep = true; // forces all akof fss to be indexed
+    usePrevData = true;
+    initReadSavedInts();
+    runCaptureSet();
+    isKeep = false;
+    usePrevData = false;
+    try {
+      savedIntsStream.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void setupRunTeardown(Runnable tst) {
+    setUp();
+    tst.run();
+    tearDown();
+  }
+
   public void testArrayAux() {
-    ArrayList<FeatureStructure> fsl = new ArrayList<FeatureStructure>();
+    ArrayList<FeatureStructure> fsList = new ArrayList<FeatureStructure>();
     /**
      * Strings, non-array Long/Double:
      * Make equal items,
      * ser/deser, update one of the equal items, insure other not updated
      */
-    FeatureStructure fsAt1 = newAkof(casSrc, mSrc, Akof1, fsl);
-    FeatureStructure fsAt2 = newAkof(casSrc, mSrc, Akof1, fsl);
+    FeatureStructure fsAt1 = newAkof(casSrc, mSrc, Akof1, fsList);
+    FeatureStructure fsAt2 = newAkof(casSrc, mSrc, Akof1, fsList);
     casSrc.addFsToIndexes(fsAt1);
     casSrc.addFsToIndexes(fsAt2);
 
@@ -698,7 +790,7 @@ public class SerDesTest6 extends TestCase {
     createStringA(casSrc, mSrc, fsAt2, "at");
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
-    verify(remoteCas);
+    verify(remoteCas, "ArrayAuxString");
     
     FSIterator<FeatureStructure> it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     FeatureStructure fsAt1d = it.next();
@@ -711,15 +803,15 @@ public class SerDesTest6 extends TestCase {
     
     casSrc.reset();
     
-    fsAt1 = newAkof(casSrc, mSrc, Akof1, fsl);
-    fsAt2 = newAkof(casSrc, mSrc, Akof1, fsl);
+    fsAt1 = newAkof(casSrc, mSrc, Akof1, fsList);
+    fsAt2 = newAkof(casSrc, mSrc, Akof1, fsList);
     casSrc.addFsToIndexes(fsAt1);
     casSrc.addFsToIndexes(fsAt2);
 
     createLongA(casSrc, mSrc, fsAt1, 9);
     createLongA(casSrc, mSrc, fsAt2, 9);
     remoteCas.reset();
-    verify(remoteCas);
+    verify(remoteCas, "ArrayAuxLong");
     
     it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     fsAt1d = it.next();
@@ -805,7 +897,8 @@ public class SerDesTest6 extends TestCase {
 //    c2.reinit(bais);
 //  }
   
-  private FeatureStructure newAkof(CASImpl cas, TTypeSystem m, Types typeKind, List<FeatureStructure> fsl) {
+  private FeatureStructure newAkof(CASImpl cas, TTypeSystem m, Types typeKind,
+      List<FeatureStructure> fsl) {
     FeatureStructure fs = cas.createFS(m.getType(typeKind.name()));
     fsl.add(fs);
     return fs;
@@ -947,6 +1040,8 @@ public class SerDesTest6 extends TestCase {
     case TwoTypesSubsetFeatures:
     case TwoTypesNoFeatures:
       makeFeaturesForAkof(cas, m, Akof2);
+      break;
+    default:
     }
   }
   
@@ -1196,12 +1291,14 @@ public class SerDesTest6 extends TestCase {
     makeRandomFss(cas, m, typeKind, 15);
   }
 
-  private void verify(CASImpl casTgt) {
+  private void verify(CASImpl casTgt, String fname) {
     // no delta case:
     // casSrc -> deserCas 
     BinaryCasSerDes6 bcs = null;
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+      ByteArrayInputStream bais;
+      if (!usePrevData) {
       if (doPlain) {
         (new CASSerializer()).addCAS(casSrc, baos);      
       } else {
@@ -1212,8 +1309,15 @@ public class SerDesTest6 extends TestCase {
 //        if (null != sm) {
 //          System.out.println(sm);
 //        }
+          if (capture) {
+            writeout(baos, fname);
       }
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        }
+        bais = new ByteArrayInputStream(baos.toByteArray());
+      } else {
+        bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
+        bais = new ByteArrayInputStream(readIn(fname));
+      }
       casTgt.reinit(bais);
       if (doPlain) {
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, casTgt));
@@ -1229,7 +1333,7 @@ public class SerDesTest6 extends TestCase {
     }    
   }
   
-  private void verifyDeserFilter(CASImpl casTgt) {
+  private void verifyDeserFilter(CASImpl casTgt, String fname) {
     // serialize w/o filter
     BinaryCasSerDes6 bcs = null;
     try {
@@ -1239,8 +1343,14 @@ public class SerDesTest6 extends TestCase {
       } else {      
         bcs = new BinaryCasSerDes6(casSrc, (ReuseInfo) null);
         bcs.serialize(baos);
+        if (capture) {
+          writeout(baos, fname);
       }
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      }
+      ByteArrayInputStream bais = (!usePrevData || fname == null) 
+          ? new ByteArrayInputStream(baos.toByteArray())
+          : new ByteArrayInputStream(readIn(fname));
+          
       Serialization.deserializeCAS(casTgt, bais, casSrc.getTypeSystemImpl(), null);
 
       bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
@@ -1255,10 +1365,7 @@ public class SerDesTest6 extends TestCase {
   }
 
   // casSrc -> remoteCas
-  private ReuseInfo[] serializeDeserialize(
-      CASImpl casSrc, 
-      CASImpl casTgt, 
-      ReuseInfo ri, 
+  private ReuseInfo[] serializeDeserialize(CASImpl casSrc, CASImpl casTgt, ReuseInfo ri,
       MarkerImpl mark) {
     ReuseInfo[] riToReturn = new ReuseInfo[2];
     try {
@@ -1272,7 +1379,9 @@ public class SerDesTest6 extends TestCase {
       } else {
         BinaryCasSerDes6 bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
         SerializationMeasures sm = bcs.serialize(baos);
-        if (sm != null) {System.out.println(sm);}
+        if (sm != null) {
+          System.out.println(sm);
+        }
         riToReturn[0] = bcs.getReuseInfo();
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
@@ -1298,14 +1407,17 @@ public class SerDesTest6 extends TestCase {
       } else {
         BinaryCasSerDes6 bcs = new BinaryCasSerDes6(remoteCas, mark, null, ri[1]);
         SerializationMeasures sm = bcs.serialize(baos);
-        if (sm != null) {System.out.println(sm);}
+        if (sm != null) {
+          System.out.println(sm);
+        }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       if (doPlain) {
         casSrc.reinit(bais);
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, remoteCas));
       } else {
-          BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais, remoteCas.getTypeSystemImpl(), ri[0]);
+        BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais,
+            remoteCas.getTypeSystemImpl(), ri[0]);
           assertTrue(bcsDeserialize.compareCASes(casSrc, remoteCas));
       }      
     } catch (IOException e) {
@@ -1448,4 +1560,15 @@ public class SerDesTest6 extends TestCase {
     }
     return lfs;
   }
+
+  @Override
+  protected String getTestRootName() {
+    return "SerDes6";
+  }
+
+  // disable to avoid accidentally overwriting test data
+  static public void main(String[] args) throws IOException {
+    new SerDesTest6().captureGenerated();
+  }
+
 }

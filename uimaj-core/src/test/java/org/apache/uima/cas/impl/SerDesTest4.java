@@ -64,58 +64,9 @@ import org.apache.uima.util.impl.SerializationMeasures;
  * 
  * Has main method for creating resources to use in testing
  */
-public class SerDesTest4 extends TestCase {
-  
-  class MyRandom extends Random {
-
-    @Override
-    public int nextInt(int n) {
-      int r = usePrevData ? readNextSavedInt() : super.nextInt(n);
-      if (capture) writeSavedInt(r);
-      return r;
-    }
-
-    @Override
-    public int nextInt() {
-      int r = usePrevData ? readNextSavedInt() : super.nextInt();
-      if (capture) writeSavedInt(r);
-      return r;
-    }
-
-    @Override
-    public long nextLong() {
-      int r = usePrevData ? readNextSavedInt() : super.nextInt();
-      if (capture) writeSavedInt(r);      
-      return r;
-    }
-
-    @Override
-    public boolean nextBoolean() {
-      int r = usePrevData ? readNextSavedInt() : super.nextInt(2);
-      if (capture) writeSavedInt(r);      
-      return r == 0;
-    }
-
-    @Override
-    public float nextFloat() {
-      int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
-      if (capture) writeSavedInt(r);
-      return Float.intBitsToFloat(r);
-    }
-
-    @Override
-    public double nextDouble() {
-      int r = usePrevData ? readNextSavedInt() : super.nextInt(0x7ffff);
-      if (capture) writeSavedInt(r);
-      return Double.longBitsToDouble((long) r);
-    }
-  }
-  
-  private final Random random = new MyRandom();
-  private long seed;
-  private char[] sbSavedInts = new char[20];
-  private BufferedReader savedIntsStream;
-  private OutputStreamWriter savedIntsOutStream;
+public class SerDesTest4 extends SerDesTstCommon {
+    
+//  private long seed;
 
   private Type akof;
   private Type topType;
@@ -166,10 +117,6 @@ public class SerDesTest4 extends TestCase {
   private TypeSystemImpl ts;
   private List<FeatureStructure> lfs;
   
-  private boolean doPlain = false;
-  private boolean capture = false; // capture the serialized output
-  private boolean usePrevData = false;
-
   public class CASTestSetup  implements AnnotatorInitializer {
 
     /** 
@@ -241,7 +188,7 @@ public class SerDesTest4 extends TestCase {
 
   public SerDesTest4() {
     Random sg = new Random();
-    seed = sg.nextLong();
+    long seed = sg.nextLong();
     random.setSeed(seed);
   }
   
@@ -582,9 +529,6 @@ public class SerDesTest4 extends TestCase {
   
   private String randomString(Random r) {
     int i = r.nextInt(7);
-//    if (i >= 7) {
-//      System.out.println("debug");
-//    }
     return stringValues[i];
   }
 
@@ -892,80 +836,7 @@ public class SerDesTest4 extends TestCase {
       throw new RuntimeException(e);
     }
   }
-  
-  private void writeout(ByteArrayOutputStream baos, String fname) throws IOException {
-    if (null == fname) {
-      return;
-    }
-    BufferedOutputStream fos = setupFileOut(fname);
-    fos.write(baos.toByteArray());
-    fos.close();
-  }
-  
-  private byte[] readIn(String fname) throws IOException {
-    File f = new File("src/test/resources/SerDes4/" + fname + ".binary");
-    int len = (int)f.length();
-    byte[] buffer = new byte[len];
-    BufferedInputStream inStream = 
-      new BufferedInputStream(
-          new FileInputStream(f));
-    int br = inStream.read(buffer);
-    if (br != len) {
-      assertTrue(false);
-    }
-    inStream.close();
-    return buffer;
-  }
-  
-  private BufferedOutputStream setupFileOut(String fname) throws IOException {
-    if (null == fname) {
-      return null;
-    }
-    File dir = new File("src/test/resources/SerDes4/");
-    if (!dir.exists()) {
-      dir.mkdirs();
-    }
-    
-    return
-      new BufferedOutputStream(
-        new FileOutputStream(
-          new File("src/test/resources/SerDes4/" + fname + ".binary")));
-    
-  }
-  
-  private void initWriteSavedInts() {
-    try {
-      savedIntsOutStream = new OutputStreamWriter(setupFileOut("SavedInts"));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  
-  private void initReadSavedInts() {
-    try {
-      savedIntsStream = new BufferedReader(new FileReader("src/test/resources/SerDes4/SavedInts.binary"));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  
-  private void writeSavedInt(int i) {
-    try {
-      savedIntsOutStream.write(Integer.toString(i) + '\n');
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  
-  private int readNextSavedInt() {
-    try {
-      String s = savedIntsStream.readLine();
-      return Integer.parseInt(s);
-   } catch (IOException e) {
-      throw new RuntimeException(e);
-   }
-  }
-  
+              
   private void makeRandomUpdatesBelowMark(List<FeatureStructure> fs, int belowMarkSize, Random r) {
     for (int i = 0; i < belowMarkSize; i++ ) {
       makeRandomUpdate(lfs.get(i), r);
@@ -1090,6 +961,11 @@ public class SerDesTest4 extends TestCase {
     }      
   }
 
+  @Override
+  protected String getTestRootName() {
+    return "SerDes4";
+  }
+  
   // disable to avoid accidentally overwriting test data
 //  static public void main(String[] args) throws IOException {
 //    (new SerDesTest4()).captureGenerated();
