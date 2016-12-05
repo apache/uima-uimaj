@@ -21,12 +21,10 @@ package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.uima.UimaSerializableFSs;
-import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.CommonArray;
@@ -77,7 +75,7 @@ class AllFSs {
   
   /**
    * simpler version, no mark info, no filter or type mapper
-   * @param cas
+   * @param cas -
    */
   AllFSs(CASImpl cas) {
     this.cas = cas;
@@ -95,6 +93,17 @@ class AllFSs {
     for (int i = 0; i < toBeScanned.size(); i++) {
       enqueueFeatures(toBeScanned.get(i));
     }
+    
+//    // add FSs that are in the CAS and held-on-to explicitly
+     // maybe needed for a test case - SerDesTest4 for delta CAS with previous v2 data ?
+//    Int2ObjHashMap<TOP> allKeptFSs = cas.getId2FSs();
+//    if (null != allKeptFSs && allKeptFSs.size() > 0) {
+//      Iterator<TOP> it = allKeptFSs.values();
+//      while (it.hasNext()) {
+//        enqueueFS(it.next());
+//      }
+//    }
+
   }
   
   private void getFSsForView(Stream<TOP> fss) {
