@@ -36,7 +36,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -492,6 +491,9 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   private DataInputStream control_dis;
   private DataInputStream strSeg_dis;
 
+  // used when reading v2 style 
+  private int lastArrayLength;
+
 
   /**
    * Setup to serialize or deserialize using binary compression, with (optional) type mapping and only processing reachable Feature Structures
@@ -721,7 +723,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     CommonSerDes.createHeader()
     .form6()
     .delta(isSerializingDelta)
-    .seqVer(0)
+    .seqVer(2) // 2 == version 3 (or later)
     .v3()
     .typeSystemIncluded(isTsIncluded)
     .typeSystemIndexDefIncluded(isTsiIncluded)
@@ -1752,7 +1754,13 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     /***************************
      * Prepare to walk main heap
      ***************************/
-    int nbrNewFSsInTarget = readVnumber(control_dis);  // is nbr of FSs serialized (excluding mods) in v3         
+    int nbrNewFSsInTarget = readVnumber(control_dis);  
+    // is nbr of FSs serialized (excluding mods) in v3
+    // is totalMappedHeapSize in v2
+    int totalMappedHeapSize = bcsd.isBeforeV3 ? nbrNewFSsInTarget : -1;
+    if (bcsd.isBeforeV3) {
+      nbrNewFSsInTarget = -1;  // for safety
+    }
     
 //    stringTableOffset = isReadingDelta ? (stringHeapObj.getSize() - 1) : 0;
     nextFsId = isReadingDelta ? (cas.getLastUsedFsId() + 1) : 0;
@@ -1787,13 +1795,27 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
     fixupsNeeded.clear();
 //    preventFsGc.clear();
+    // these two values are used when incrementing to the next before v3 heap addr
+    TypeImpl tgtType;
+    lastArrayLength = 0;
     /**********************************************************
      * Read in new FSs being deserialized and add them to heap
      **********************************************************/
-    for (int currentFsId = nextFsId, nbrFSs = 0; nbrFSs < nbrNewFSsInTarget; nbrFSs++) {
+    // currentFsId used when debugging, only
+    for (int currentFsId = nextFsId, nbrFSs = 0, nextFsAddr = 1; 
+         this.bcsd.isBeforeV3 
+           ? nextFsAddr < totalMappedHeapSize
+           : nbrFSs < nbrNewFSsInTarget; 
+         nbrFSs++,
+         nextFsAddr += this.bcsd.isBeforeV3 
+                         ? tgtType.getFsSpaceReq(lastArrayLength)
+                         : 0) {
       final int tgtTypeCode = readVnumber(typeCode_dis); // get type code
-      final TypeImpl tgtType = (isTypeMapping ? tgtTs : srcTs).getTypeForCode(tgtTypeCode); 
-      final TypeImpl srcType = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tgtTypeCode) : tgtType;
+      final int adjTgtTypeCode = tgtTypeCode + ((this.bcsd.isBeforeV3 && tgtTypeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
+          ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
+          : 0);
+      tgtType = (isTypeMapping ? tgtTs : srcTs).getTypeForCode(adjTgtTypeCode); 
+      final TypeImpl srcType = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(adjTgtTypeCode) : tgtType;
       
       final boolean storeIt = (srcType != null);
       // A receiving client from a service always
@@ -1819,8 +1841,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //      fsStartIndexes.addSrcAddrForTgt(currentFsId, storeIt);
  
       if (TRACE_DES) {
-        System.out.format("Des: fsnbr %,4d fsid %,4d tgtTypeCode: %,3d %13s srcTypeCode: %s%n", 
-            nbrFSs, cas.getLastUsedFsId() + 1, tgtTypeCode, tgtType.getShortName(),  (null == srcType) ? "<null>" : Integer.toString(srcType.getCode()));
+        System.out.format("Des: fsnbr %,4d fsid %,4d adjTgtTypeCode: %,3d %13s srcTypeCode: %s%n", 
+            nbrFSs, cas.getLastUsedFsId() + 1, adjTgtTypeCode, tgtType.getShortName(),  (null == srcType) ? "<null>" : Integer.toString(srcType.getCode()));
       }
 
       if (tgtType.isArray()) {
@@ -1946,6 +1968,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    */
   private void readArray(boolean storeIt, TypeImpl srcType, TypeImpl tgtType) throws IOException {
     final int length = readArrayLength();
+    lastArrayLength = length;
     final SlotKind slotKind = tgtType.getComponentSlotKind();
 
     final TOP fs = storeIt ? cas.createArray(srcType, length) : null;
