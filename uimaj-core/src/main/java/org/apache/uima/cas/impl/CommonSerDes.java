@@ -54,9 +54,10 @@ public class CommonSerDes {
    *     - bit in 0x10 position: on means type system (only) included
    *     - bits  0xF0 reserved
    *     
-   *     - byte in 0xFF 00 position: incrementing (starting w/ 0) version
+   *     - byte in 0xFF 00 position: 
+   *               a sequential version number, incrementing (starting w/ 0)
    *     
-   *         Form 4:  0 = original (UIMA v2)
+   *                  0 = original (UIMA v2)
    *                  1 = fixes to original found during V3 development
    *                  2 = V3
    *                       
@@ -70,12 +71,11 @@ public class CommonSerDes {
   public static class Header {
     boolean isDelta;
     boolean isCompressed;
-    boolean isV3style;
     boolean form4;
     boolean form6;
     boolean typeSystemIncluded;  // for form 6, TS only
     boolean typeSystemIndexDefIncluded;
-    byte seqVersionNbr;
+    byte seqVersionNbr = 2;  // safety, might be changed to write v2 style 
     boolean isV3;
     boolean swap;
     int v;      // for error messages
@@ -83,6 +83,7 @@ public class CommonSerDes {
     
     Reading reading;
     
+    /* **********  BUILDERS ************/
     public Header delta() {isDelta = true;  return this; }
     public Header delta(boolean v2) {isDelta = v2;  return this; }
     public Header form4() {isCompressed = form4 = true; form6 = false; return this; }
@@ -94,6 +95,11 @@ public class CommonSerDes {
     
     
     public void write(DataOutputStream dos) throws IOException {
+      if (isV3) {
+        assert seqVersionNbr >= 2; 
+      } else {
+        assert seqVersionNbr < 2;
+      }
       v = (!isCompressed && !isDelta) ? 1 : 0;
       if (isDelta) v |= 0x02;
       if (isCompressed) v |= 0x04;
@@ -119,16 +125,14 @@ public class CommonSerDes {
       }
       
     }
-    
+
+    /* ******** Header Properties **********/
     public boolean isDelta() {
       return isDelta;
     }
     public boolean isCompressed() {
       return isCompressed;
     }
-    public boolean isV3style() {
-      return isV3style;
-  }
     public boolean isForm4() {
       return form4;
     }
@@ -198,6 +202,7 @@ public class CommonSerDes {
     h.typeSystemIndexDefIncluded = (v & 8) != 0;
     h.typeSystemIncluded = (v & 16) != 0;
     h.seqVersionNbr = (byte) ((v & 0xFF00) >> 8);
+    h.isV3 = (v & 0x010000) != 0;
    
     if (h.isCompressed) {
       v = r.readInt();
