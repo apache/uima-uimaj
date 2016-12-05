@@ -63,13 +63,14 @@ import org.apache.uima.util.CasLoadMode;
 
 /**
  * Binary (mostly non compressed) CAS deserialization
- * The methods in this class were originally part of the CASImpl, and were moved here to this class for v3
+ * The methods in this class were originally part of the CASImpl, 
+ * and were moved here to this class for v3
  * 
- * Binary non compressed CAS serialization is in class CASSerializer, but that class uses routines and data structures
- * in this class.
+ * Binary non compressed CAS serialization is in class CASSerializer, 
+ * but that class uses routines and data structures in this class.
  * 
- * There is one instance of this class per CAS (shared by all views of that CAS), created at the same time the 
- * CAS is created. 
+ * There is one instance of this class per CAS (shared by all views of that CAS), 
+ * created at the same time the CAS is created. 
  * 
  * This instance also holds data needed for binary serialization, and deserialization.
  * For binary delta deserialization, it uses the data computed on a previous serialization, 
@@ -195,6 +196,13 @@ public class BinaryCasSerDes {
   final private Int2ObjHashMap<TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
   final private Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);      
   
+  /**
+   * If true, adjust type codes in serialized forms
+   * to allow v2 type codes to be correctly read by v3 impls,
+   * because v3 impls have a greater number of built-in types 
+   */
+  boolean isBeforeV3 = false;  
+
   public BinaryCasSerDes(CASImpl baseCAS) {
     this.baseCas = baseCAS;
   }
@@ -509,6 +517,12 @@ public class BinaryCasSerDes {
   
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
 
+    if (!h.isV3) {
+      if (h.getSeqVersionNbr() < 2) {
+        isBeforeV3 = true; // adjusts binary type numbers 
+      }
+    }
+    
     CASMgrSerializer embeddedCasMgrSerializer = maybeReadEmbeddedTSI(h, dis);
     
     if (!h.isForm6() || casLoadMode == CasLoadMode.REINIT)  {
@@ -526,6 +540,12 @@ public class BinaryCasSerDes {
     try {
       final boolean delta = h.isDelta;
       
+      if (h.getSeqVersionNbr() < 2 && delta) { // is version 2 and delta
+        /** Deserializing a Version 2 Delta Cas into UIMA Version 3 not supported. */
+        throw new CASRuntimeException(CASRuntimeException.DESERIALIZING_V2_DELTA_V3);
+      }
+
+      
       if (!delta) {
         baseCas.resetNoQuestions();
       }
@@ -537,7 +557,7 @@ public class BinaryCasSerDes {
         }
         if (h.form4) {
           (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
-            .deserialize(baseCas, dis, delta, h.v);
+            .deserialize(baseCas, dis, delta, h);
           return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
         } else {
           CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
@@ -1564,6 +1584,10 @@ public class BinaryCasSerDes {
     List<Runnable> fixups4UimaSerialization = new ArrayList<>();
 
     for (int heapIndex = startPos; heapIndex < heapsz; heapIndex += getFsSpaceReq(fs, type)) {
+      int typecode = heap.heap[heapIndex];
+      if (isBeforeV3 && typecode > TypeSystemConstants.lastBuiltinV2TypeCode) {
+        typecode = typecode + TypeSystemConstants.numberOfNewBuiltInsSinceV2;
+      }
       type = tsi.getTypeForCode(heap.heap[heapIndex]);
       if (type == null) {
         throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, Integer.valueOf(heap.heap[heapIndex]));
