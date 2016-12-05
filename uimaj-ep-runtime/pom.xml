@@ -221,7 +221,12 @@
                    org.apache.uima.adapter.soap,
                    org.apache.uima.adapter.soap.axis11,
                  -->
-                <Import-Package>org.apache.log4j;resolution:=optional,*
+                <Import-Package>org.apache.log4j;resolution:=optional,
+                   !com.strobel.assembler,
+                   !com.strobel.assembler.metadata,
+                   !com.strobel.decompiler,
+                   !javax.annotation.meta,
+                   *
                 </Import-Package>
                 <!-- causes the other Jars from the maven
                      dependencies, at the proper version, to be

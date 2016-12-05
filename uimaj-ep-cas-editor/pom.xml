@@ -216,7 +216,7 @@
               <instructions>
                 <Bundle-SymbolicName>org.apache.uima.caseditor;singleton:=true</Bundle-SymbolicName>
                 <Bundle-Activator>org.apache.uima.caseditor.CasEditorPlugin</Bundle-Activator>
-                <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+                <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
                 <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                 <Export-Package>
                   org.apache.uima.caseditor.*
