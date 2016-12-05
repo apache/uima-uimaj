@@ -41,6 +41,7 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
@@ -64,62 +65,55 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
 import junit.framework.TestCase;
+
 /**
  * Serializer and Deserializer testing
  * 
  * 
  */
-public class SerDesTest6 extends TestCase {
+public class SerDesTest6 extends SerDesTstCommon {
 
   enum TypeSystems {
     TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, TwoTypesNoFeatures,
   }
-  
+
   enum Types {
     Akof1, Akof2,
   }
 
-  private static long seed;
-  // -8,093,220,039,004,886,811
-//  final private static Random random = setRandom(seed = -8093220039004886811L);
-//  final private static Random random = setRandom(seed = -7_080_877_499_529_731_700L);
-//  final private static Random random = setRandom(seed = 5_688_205_586_965_564_941L);
-  final private static Random random = setRandom();
-  static {    System.out.format("SerDesTest6 RandomSeed: %,d%n", seed); }
-  private final String testDocText = "test document text";
-  private CASImpl remoteCas;
+  private final String           testDocText = "test document text";
+  private CASImpl                remoteCas;
 
   private List<FeatureStructure> lfs;
-  
-  private boolean doPlain = false;
-//  private TypeSystemMgr tsmSrc, tsmTgt;
-  private TTypeSystem mSrc;
-  private CASImpl casSrc;
-  private TTypeSystem[] alternateTTypeSystems;
-  
+
+  private boolean                doPlain     = false;
+  // private TypeSystemMgr tsmSrc, tsmTgt;
+  private TTypeSystem            mSrc;
+  private CASImpl                casSrc;
+  private TTypeSystem[]          alternateTTypeSystems;
 
   public class CASTestSetup implements AnnotatorInitializer {
 
-    
-    public TTypeSystem m; 
+    public TTypeSystem   m;
     public TypeSystemMgr tsm;
-    final TypeSystems kind;
-    
+    final TypeSystems    kind;
+
     public CASTestSetup(TypeSystems kind) {
       this.kind = kind;
     }
-    
-    //     TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, NoFeatures,
+
+    // TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures,
+    // OneTypeSubsetFeatures, NoFeatures,
     public void initTypeSystem(TypeSystemMgr tsm) {
       if (kind == EqTwoTypes) {
         throw new RuntimeException();
       }
-    
+
       this.tsm = tsm;
       m = new TTypeSystem(tsm, kind);
       addBuiltins();
-      
-      m.addType(Akof1.name(),"Top");
+
+      m.addType(Akof1.name(), "Top");
       if (kind != TwoTypesNoFeatures) {
         for (String fn : featureNameRoots) {
           if (kind != OneTypeSubsetFeatures ||
@@ -128,17 +122,17 @@ public class SerDesTest6 extends TestCase {
           }
         }
       }
-      
+
       switch (kind) {
-      case TwoTypes: 
-      case TwoTypesSubsetFeatures: 
-      case TwoTypesNoFeatures: 
-        m.addType(Akof2.name(),"Top");
+      case TwoTypes:
+      case TwoTypesSubsetFeatures:
+      case TwoTypesNoFeatures:
+        m.addType(Akof2.name(), "Top");
         if (kind != TwoTypesNoFeatures) {
           for (String fn : featureNameRoots) {
             if (kind != TwoTypesSubsetFeatures ||
                 random.nextInt(3) < 2) { 
-            m.add(Akof2, fn);
+              m.add(Akof2, fn);
             }
           }
         }
@@ -146,11 +140,11 @@ public class SerDesTest6 extends TestCase {
       default: // skip the other cases
       } // end of switch
     }
-    
+
     void addBuiltins() {
-   // Add new types and features.
+      // Add new types and features.
       m.addType(tsm.getTopType(), "Top");
-      
+
       m.addType(tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY), "Aint");
       m.addType(tsm.getType(CAS.TYPE_NAME_FS_ARRAY), "Afs");
       m.addType(tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY), "Afloat");
@@ -160,7 +154,7 @@ public class SerDesTest6 extends TestCase {
       m.addType(tsm.getType(CAS.TYPE_NAME_BYTE_ARRAY), "Abyte");
       m.addType(tsm.getType(CAS.TYPE_NAME_BOOLEAN_ARRAY), "Aboolean");
       m.addType(tsm.getType(CAS.TYPE_NAME_STRING_ARRAY), "Astring");
-      
+
       m.addType(tsm.getType(CAS.TYPE_NAME_INTEGER), "Int");
       m.addType(tsm.getType(CAS.TYPE_NAME_FLOAT), "Float");
       m.addType(tsm.getType(CAS.TYPE_NAME_DOUBLE), "Double");
@@ -177,17 +171,17 @@ public class SerDesTest6 extends TestCase {
   }
   static final List<String> featureNameRoots = Arrays.asList(new String[] { 
     "Int", "Fs", "Float", "Double", "Long", "Short", "Byte", "Boolean", "String", 
-    "Aint", "Afs", "Afloat", "Adouble", "Along", "Ashort", "Abyte", "Aboolean", "Astring"});
-  
+          "Aint", "Afs", "Afloat", "Adouble", "Along", "Ashort", "Abyte", "Aboolean", "Astring" });
+
   static class TTypeSystem {
-    final TypeSystems kind;
+    final TypeSystems     kind;
     TypeSystemMgr tsm;
     Feature[][] featureTable = new Feature[Types.values().length][featureNameRoots.size()];
-    Map<String, Type> mapString2Type = new HashMap<String, Type>();
+    Map<String, Type>     mapString2Type      = new HashMap<String, Type>();
     public TypeSystemImpl ts;
-    public CASImpl cas;  // the Cas setup as part of initialization
-    private boolean isUpdateAfterCommit = false;
-    
+    public CASImpl cas;  // the Cas setup as part of initialization                                                                    // the
+    private boolean isUpdateAfterCommit = false; // only needed for v3, ignored for v2
+
     public TTypeSystem(TypeSystemMgr tsm, TypeSystems kind) {
       this.tsm = tsm;
       this.kind = kind;
@@ -197,15 +191,15 @@ public class SerDesTest6 extends TestCase {
     void addType(Type type, String shortName) {
       mapString2Type.put(shortName, type);
     }
-    
+
     void addType(String type, String superType) {
       addType(tsm.addType(type, getType(superType)), type);
     }
-    
+
     Type getType(String shortName) {
       return mapString2Type.get(shortName);
     }
-    
+
     Type getType(Types type) {
       return getType(type.name());
     }
@@ -213,22 +207,23 @@ public class SerDesTest6 extends TestCase {
     void add(Type type, String featNameRoot) {
       String typeName = type.getShortName();
       int i2 = featureNameRoots.indexOf(featNameRoot);
-      featureTable[Types.valueOf(typeName).ordinal()][i2] = tsm.addFeature(typeName + featNameRoot, type, mapString2Type.get(featNameRoot));          
+      featureTable[Types.valueOf(typeName).ordinal()][i2] = tsm.addFeature(typeName + featNameRoot,
+          type, mapString2Type.get(featNameRoot));
     }
-    
+
     void add(Types typeKind, String featNameRoot) {
       add(getType(typeKind.name()), featNameRoot);
     }
-    
+
     Feature getFeature(Types typeKind, String featNameRoot) {
       return featureTable[typeKind.ordinal()][featureNameRoots.indexOf(featNameRoot)];
     }
-    
+
     Feature getFeature(FeatureStructure fs, String featNameRoot) {
       Type t = fs.getType();
       return getFeature(Types.valueOf(t.getShortName()), featNameRoot);
     }
-    
+
     void updateAfterCommit() {
       ts = cas.getTypeSystemImpl();
       tsm = ts;
@@ -236,13 +231,13 @@ public class SerDesTest6 extends TestCase {
         TypeImpl ti = ts.getType(typename);
         mapString2Type.put(typename, ti);
       }
-      
+
       for (Types typeKind : Types.values()) {
         Type ti = tsm.getType(typeKind.name());
         if (ti != null) {
           Feature[] features = featureTable[typeKind.ordinal()];
           for (int i = 0; i < features.length; i++) {
-            features[i] = ti.getFeatureByBaseName(ti.getShortName() + featureNameRoots.get(i)); 
+            features[i] = ti.getFeatureByBaseName(ti.getShortName() + featureNameRoots.get(i));
           }
         }
       }
@@ -250,29 +245,11 @@ public class SerDesTest6 extends TestCase {
     }
   }
 
-  // Constructor
-  public SerDesTest6() {
-    
-//    setRandom();
-
-   }
-  
-  private static Random setRandom() {
-    Random sg = new Random();
-    seed = sg.nextLong();
-//    seed =  1096269913061953477L;
-    return new Random(seed);
-  }
-  
-  private static Random setRandom(long seed) {
-    return new Random(seed);
-  }
-  
   public TTypeSystem setupTTypeSystem(TypeSystems kind) {
     if (kind == EqTwoTypes) {
       TTypeSystem m = new TTypeSystem(mSrc.tsm, kind);
       m.cas = mSrc.cas;
-//      m.ts = mSrc.cas.getTypeSystemImpl();
+      // m.ts = mSrc.cas.getTypeSystemImpl();
       return mSrc;
     }
     CASTestSetup setup = new CASTestSetup(kind);
@@ -282,19 +259,19 @@ public class SerDesTest6 extends TestCase {
     m.updateAfterCommit();
     return m;
   }
-  
+
   public void setUp() {
     mSrc = setupTTypeSystem(TwoTypes);
     casSrc = mSrc.cas;
     final TypeSystems[] tss = TypeSystems.values();
     final int nbrAltTs = tss.length;
     alternateTTypeSystems = new TTypeSystem[nbrAltTs];
-    for (int i = 0; i < nbrAltTs; i++){
+    for (int i = 0; i < nbrAltTs; i++) {
       alternateTTypeSystems[i] = setupTTypeSystem(tss[i]);
     }
     lfs = new ArrayList<FeatureStructure>();
   }
-  
+
   public void tearDown() {
     remoteCas = null;
     lfs = null;
@@ -303,18 +280,18 @@ public class SerDesTest6 extends TestCase {
     alternateTTypeSystems = null;
     // don't reset random
   }
-  
-//  void setupTgtTs(String kind) {
-//    CASTestSetup setupTgt = new CASTestSetup(kind);
-//    casTgt = (CASImpl) CASInitializer.initCas(setupTgt);
-//    mTgt = setupTgt.m;
-//    mTgt.ts = casTgt.getTypeSystemImpl();   
-//  }
-  
+
+  // void setupTgtTs(String kind) {
+  // CASTestSetup setupTgt = new CASTestSetup(kind);
+  // casTgt = (CASImpl) CASInitializer.initCas(setupTgt);
+  // mTgt = setupTgt.m;
+  // mTgt.ts = casTgt.getTypeSystemImpl();
+  // }
+
   TTypeSystem getTT(TypeSystems kind) {
     return alternateTTypeSystems[kind.ordinal()];
   }
-  
+
   CASImpl setupCas(TTypeSystem m) {
     return createCAS(m.ts);
   }
@@ -327,115 +304,131 @@ public class SerDesTest6 extends TestCase {
     }
   }
 
-  
-  public void testDocText() throws Exception
-  {
+  public void testDocText() {
+    try {
       CAS cas = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
       cas.setDocumentLanguage("latin");
       cas.setDocumentText("test");
 
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-      
+
       Serialization.serializeWithCompression(cas, baos, cas.getTypeSystem());
-      
+
       CAS cas2 = CasCreationUtils.createCas((TypeSystemDescription) null, null, null);
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-      Serialization.deserializeCAS(cas2, bais); 
+      Serialization.deserializeCAS(cas2, bais);
 
       assertEquals("latin", cas2.getDocumentLanguage());
       assertEquals("test", cas2.getDocumentText());
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
-  
+
   public void testDocumentText() {
-//     serdesSimple(getTT(EqTwoTypes));
+    // serdesSimple(getTT(EqTwoTypes));
     remoteCas = setupCas(getTT(EqTwoTypes));
     casSrc.reset();
     casSrc.setDocumentText(testDocText);
-    loadCas(casSrc, mSrc);  
-    verify(remoteCas);
+    loadCas(casSrc, mSrc);
+    verify(remoteCas, "DocumentText");
     assertEquals(remoteCas.getDocumentText(), testDocText);
-    
+
     // test case where serialization is done without type filtering,
-    //   and deserialization is done with filtering
+    // and deserialization is done with filtering
     remoteCas.reset();
-    verifyDeserFilter(remoteCas); 
+    verifyDeserFilter(remoteCas, "WithDeserFilterDocumentText");
     assertEquals(remoteCas.getDocumentText(), testDocText);
   }
-  
+
   /**
    * Make one of each kind of artifact, including arrays
    * serialize to byte stream, deserialize into new cas, compare
    */
-  
+
   public void testAllKinds() {
     if (doPlain) {
-      serdesSimple(getTT(EqTwoTypes));
+      serdesSimple(getTT(EqTwoTypes), "EqTwoTypes");
     } else {
+      int i = 0;
       for (TTypeSystem m : alternateTTypeSystems) {
-        switch (m.kind){
+       
+        switch (m.kind) {
         // note: case statements *not* grouped in order to faclitate debugging
         case OneTypeSubsetFeatures:
-          serdesSimple(m);
+          serdesSimple(m, "OneTypeSubsetFeatures" + m.kind.toString());
           break;
         case TwoTypesSubsetFeatures:
-          serdesSimple(m);
+          serdesSimple(m, "TwoTypesSubsetFeatures" + m.kind.toString());
           break;
         case TwoTypes:
+          i++;
+          serdesSimple(m, "OtherAllKinds" + m.kind.toString() + Integer.toString(i));
+          break;
         case EqTwoTypes:
         case OneType:
         case TwoTypesNoFeatures:
-          serdesSimple(m);
+          serdesSimple(m, "OtherAllKinds" + m.kind.toString());
           break;
         }
       }
     }
   }
 
-  
   // Test chains going through filtered type
-  //   Repeat below with OneType, and TwoTypes with filtered slot == fsRef
-  
-  //   T1 fsArray ref -> T2 -> T1 (new) (not indexed)
-  //   T1         ref -> T2 -> T1 (new) (not indexed)
-  //   T1 fsArray ref -> T2 -> T1 (new) (indexed)
-  //   T1         ref -> T2 -> T1 (new) (indexed)
+  // Repeat below with OneType, and TwoTypes with filtered slot == fsRef
 
-  public void testRefThroughFilteredType() throws IOException {
-    reftft (OneType);
+  // T1 fsArray ref -> T2 -> T1 (new) (not indexed)
+  // T1 ref -> T2 -> T1 (new) (not indexed)
+  // T1 fsArray ref -> T2 -> T1 (new) (indexed)
+  // T1 ref -> T2 -> T1 (new) (indexed)
+
+  public void testRefThroughFilteredType() {
+    reftft(OneType, 0);
     for (int i = 0; i < 10; i++) {
-      reftft (TwoTypesSubsetFeatures);
+      reftft(TwoTypesSubsetFeatures, i);
     }
-    reftft(TwoTypesNoFeatures);
+    reftft(TwoTypesNoFeatures, 0);
   }
-  
-  private void reftft(TypeSystems tskind) {
-    reftft(tskind, true);
-    reftft(tskind, false);
+
+  private void reftft(TypeSystems tskind, int i) {
+    reftft(tskind, true, i);
+    reftft(tskind, false, i);
   }
-  
-  private void reftft(TypeSystems tskind, boolean indexed) {
+
+  /**
+   * Inner part of test of refs through filtered type
+   * 
+   * @param tskind -
+   * @param indexed -
+   */
+  private void reftft(TypeSystems tskind, boolean indexed, int i) {
     lfs.clear();
-    
+
     TTypeSystem m = getTT(tskind);
     remoteCas = setupCas(m);
-//    casSrc.reset();
+    // casSrc.reset();
     makeFeaturesForAkof(casSrc, mSrc, Akof1);
-    
+
     FeatureStructure otherTsFs = casSrc.createFS(mSrc.getType(Akof2));
     FeatureStructure fsOrig = lfs.get(0);
     fsOrig.setFeatureValue(mSrc.getFeature(fsOrig, "Fs"), otherTsFs);
-    
+
     FeatureStructure ts1Fs = casSrc.createFS(mSrc.getType(Akof1));
     otherTsFs.setFeatureValue(mSrc.getFeature(otherTsFs, "Fs"), ts1Fs);
-    
+
     if (indexed) {
       casSrc.addFsToIndexes(ts1Fs);
     }
+
+    verify(remoteCas, "refThroughFilteredType" 
+       + (indexed ? "Indexed" : "NotIndexed") 
+       + tskind.toString() + Integer.toString(i));
     
-    verify(remoteCas);   
   }
+
   // broken out special instances of random tests
-  public void testDeltaWithStringArrayMod() throws IOException {
+  public void testDeltaWithStringArrayMod() {
     // casSrc -> remoteCas,remoteCas updated, serialized back to srcCas
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
@@ -446,22 +439,24 @@ public class SerDesTest6 extends TestCase {
       lfs = getIndexedFSs(remoteCas, m);
       FeatureStructure fs = lfs.get(10);
       StringArrayFS sa = (StringArrayFS) maybeGetFeatureKind(fs, m, "Astring");
-      if (sa == null) {  // could happen because features are randomly omitted
+      if (sa == null) { // could happen because features are randomly omitted
         System.out.println("    Astring feature omitted, retrying");
       } else if (sa.size() == 0) {
-        System.out.println("    Astring feature array has 0 length, retrying");    
+        System.out.println("    Astring feature array has 0 length, retrying");
       } else {
         sa.set(0, "change2");
         verifyDelta(marker, ri);
         break;
       }
-//      setRandom();
+      // setRandom();
       setUp();
+      long seed = random.nextLong();
+      random.setSeed(seed);
       System.out.println(" testDelta w/ String array mod random = " + seed + ", i = " + i);
     }
   }
 
-  public void testDeltaWithDblArrayMod() throws IOException {
+  public void testDeltaWithDblArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
@@ -469,57 +464,59 @@ public class SerDesTest6 extends TestCase {
       ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
       MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
       lfs = getIndexedFSs(remoteCas, m);
-      FeatureStructure fs = lfs.get(10);  /* has double array length 2 */
+      FeatureStructure fs = lfs.get(10); /* has double array length 2 */
       DoubleArrayFS d = (DoubleArrayFS) maybeGetFeatureKind(fs, m, "Adouble");
-      if (d == null) {  // could happen because features are randomly omitted
+      if (d == null) { // could happen because features are randomly omitted
         System.out.println("    Adouble feature omitted, retrying");
       } else if (d.size() == 0) {
-        System.out.println("    Adouble feature array has 0 length, retrying");    
+        System.out.println("    Adouble feature array has 0 length, retrying");
       } else {
         d.set(0, 12.34D);
         verifyDelta(marker, ri);
         break;
-      }      
-//      setRandom();
+      }
+      // setRandom();
       setUp();
+      long seed = random.nextLong();
+      random.setSeed(seed);
       System.out.println(" testDelta w/ dbl array mod random = " + seed + ", i = " + i);
     }
   }
-  
-  public void testDeltaWithByteArrayMod() throws IOException {
+
+  public void testDeltaWithByteArrayMod() {
     for (int i = 0; i < 10; i++) {
       TTypeSystem m = getTT(EqTwoTypes);
       remoteCas = setupCas(m);
       loadCas(casSrc, mSrc);
       ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
       MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-      
+
       lfs = getIndexedFSs(remoteCas, m); // gets FSs below the line
-  
+
       FeatureStructure fs = lfs.get(10);
       ByteArrayFS sfs = (ByteArrayFS) maybeGetFeatureKind(fs, m, "Abyte");
-      if (sfs == null) {  // could happen because features are randomly omitted
+      if (sfs == null) { // could happen because features are randomly omitted
         System.out.println("    Abyte feature omitted, retrying");
       } else if (sfs.size() == 0) {
-        System.out.println("    Abyte feature array has 0 length, retrying");    
+        System.out.println("    Abyte feature array has 0 length, retrying");
       } else {
-        sfs.set(0, (byte)21);
+        sfs.set(0, (byte) 21);
         verifyDelta(marker, ri);
         break;
       }
-//      setRandom();  // retry with different random number
+      // setRandom(); // retry with different random number
       setUp();
       System.out.println("  testDelta w byte array mod retrying, i = " + i);
     }
   }
 
-  public void testDeltaWithStrArrayMod() throws IOException {
+  public void testDeltaWithStrArrayMod() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
     ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    
+
     lfs = getIndexedFSs(remoteCas, m);
 
     FeatureStructure fs = lfs.get(10);
@@ -530,20 +527,19 @@ public class SerDesTest6 extends TestCase {
 
     verifyDelta(marker, ri);
   }
-  
-  
-  private void serdesSimple(TTypeSystem m) {
+
+  private void serdesSimple(TTypeSystem m, String kind) {
     remoteCas = setupCas(m);
     casSrc.reset();
-    loadCas(casSrc, mSrc);  
-    verify(remoteCas);  
-    
+    loadCas(casSrc, mSrc);
+    verify(remoteCas, kind);
+
     // test case where serialization is done without type filtering,
-    //   and deserialization is done with filtering
+    // and deserialization is done with filtering
     remoteCas.reset();
-    verifyDeserFilter(remoteCas); 
+    verifyDeserFilter(remoteCas, "WithDeserFilter" + kind);
   }
-  
+
   /**
    * 1) create a base cas with some data
    * 2) serialize it out and then back into a remoteCas
@@ -563,7 +559,7 @@ public class SerDesTest6 extends TestCase {
       serdesDelta(getTT(EqTwoTypes));
     } else {
       for (TTypeSystem m : alternateTTypeSystems) {
-        switch (m.kind){
+        switch (m.kind) {
         case TwoTypesSubsetFeatures:
           serdesDelta(m);
           break;
@@ -580,18 +576,20 @@ public class SerDesTest6 extends TestCase {
       }
     }
   }
-  
+
   private void serdesDelta(TTypeSystem m) {
-    remoteCas = setupCas(m);  // create empty new CAS with specified type system from m.ts
-    casSrc.reset();
-    loadCas(casSrc, mSrc);    // load up the src cas using mSrc spec
-    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null);    //src -> serialize -> deserialize -> rmt 
-    
+    remoteCas = setupCas(m); // create empty new CAS with specified type system from m.ts
+//    casSrc.reset();
+    loadCas(casSrc, mSrc); // load up the src cas using mSrc spec
+    // src -> serialize -> deserialize -> rmt
+    ReuseInfo[] ri = serializeDeserialize(casSrc, remoteCas, null, null); 
+
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    loadCas(remoteCas, m);  // load some changes into remote
-    verifyDelta(marker, ri);  // rmt -> serialize(full ts) -> deserialize(2 ts) -> src, then compare src & rmt
+    loadCas(remoteCas, m); // load some changes into remote
+    // rmt -> serialize(full ts) -> deserialize(2 ts) -> src, then compare src & rmt
+    verifyDelta(marker, ri); 
   }
-  
+
   public void testDeltaWithRefsBelow() {
     lfs.clear();
     TTypeSystem m = getTT(EqTwoTypes);
@@ -599,7 +597,7 @@ public class SerDesTest6 extends TestCase {
     loadCas(casSrc, mSrc);
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    
+
     lfs = getIndexedFSs(remoteCas, m);
     FeatureStructure fs = remoteCas.createFS(m.getType(Akof1));
     maybeSetFeature(fs, m, lfs.get(0));
@@ -608,7 +606,7 @@ public class SerDesTest6 extends TestCase {
     fsafs.set(2, lfs.get(2));
     fsafs.set(3, lfs.get(3));
     maybeSetFeatureKind(fs, m, "Afs", fsafs);
-    
+
     verifyDelta(marker, ri);
   }
 
@@ -619,35 +617,30 @@ public class SerDesTest6 extends TestCase {
     loadCas(casSrc, mSrc);
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    
-    lfs = getIndexedFSs(remoteCas, m);  // get list of all "Akof1" FS
+
+    lfs = getIndexedFSs(remoteCas, m); // get list of all "Akof1" FS
     FeatureStructure fs = remoteCas.createFS(m.getType(Akof1));
-    maybeSetFeatureKind( lfs.get(0), m, "Fs", fs); // set the lfs.get(0) featurestructure's feature "Fs" to the new fs
-    
+    // set the lfs.get(0) featurestructure's feature "Fs" to the new fs
+    maybeSetFeatureKind(lfs.get(0), m, "Fs", fs); 
+
     verifyDelta(marker, ri);
   }
-  
+
   /**
    * Variations to cover:
    *   all kinds of slots
    *   multiple sets of values
    *     test diffs
-   *   multiple orders (try reverse and random order)
-   *   
+   * multiple orders (try reverse and random order)
+   * 
    * Driver for random values
    *   pick among random and "interesting" edge case values
-   *     
-   *   
+   * 
+   * 
    */
   public void testDeltaWithAllMods() {
 
-    for (int i = 0; i < 100; i ++ ) {
-//      if (i == 53) {
-//        BinaryCasSerDes6.TRACE_SER = true;
-//        BinaryCasSerDes6.TRACE_DES = true;
-//        BinaryCasSerDes6.TRACE_MOD_SER = true;
-//        BinaryCasSerDes6.TRACE_MOD_DES = true;
-//      }
+    for (int i = 0; i < 100; i++) {
       checkDeltaWithAllMods();
       tearDown();
       setUp();
@@ -661,9 +654,9 @@ public class SerDesTest6 extends TestCase {
     loadCas(casSrc, mSrc);
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    
+
     lfs = getIndexedFSs(remoteCas, m);
-    
+
     makeRandomFss(remoteCas, m, Akof1, 8);
 
     int i = 0;
@@ -672,25 +665,23 @@ public class SerDesTest6 extends TestCase {
         maybeSetFeature(fs, m, lfs.get(random.nextInt(lfs.size())));
       }
     }
-    
+
     makeRandomUpdatesBelowMark(remoteCas, m, Akof1);
-    
+
     verifyDelta(marker, ri);
 
   }
-  
 
-  
-  public void testDeltaWithIndexMods() throws IOException {
+  public void testDeltaWithIndexMods() {
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
     loadCas(casSrc, mSrc);
     ReuseInfo ri[] = serializeDeserialize(casSrc, remoteCas, null, null);
     MarkerImpl marker = (MarkerImpl) remoteCas.createMarker();
-    
+
     lfs = new ArrayList<FeatureStructure>();
     loadCas(remoteCas, m);
-    
+
     List<FeatureStructure> lfs2 = getIndexedFSs(remoteCas, m);
 
     remoteCas.getIndexRepository().removeFS(lfs2.get(0));
@@ -699,22 +690,95 @@ public class SerDesTest6 extends TestCase {
 
     remoteCas.getIndexRepository().removeFS(lfs.get(0));
     remoteCas.getIndexRepository().removeFS(lfs.get(1));
-    remoteCas.getIndexRepository().addFS(lfs.get(1)); 
+    remoteCas.getIndexRepository().addFS(lfs.get(1));
 
     verifyDelta(marker, ri);
   }
-  
+
   public void testWithOtherSerializer() {
     doPlain = true;
     testDeltaWithMods();
     tearDown(); setUp();
     testDeltaWithRefsBelow();
     tearDown(); setUp();
-//    testDeltaWithAllMods();
+    // testDeltaWithAllMods();
     tearDown(); setUp();
     testAllKinds();
     tearDown(); setUp();
     testArrayAux();
+  }
+
+  private void runCaptureSet() {
+    //  Java 8 style
+//    setupRunTeardown(this::testDocText);
+//    setupRunTeardown(this::testDocumentText);
+//    setupRunTeardown(this::testAllKinds);
+//    setupRunTeardown(this::testRefThroughFilteredType);
+//    setupRunTeardown(this::testDeltaWithStringArrayMod);
+//    setupRunTeardown(this::testDeltaWithDblArrayMod);
+//    setupRunTeardown(this::testDeltaWithByteArrayMod);
+//    setupRunTeardown(this::testDeltaWithStrArrayMod);
+//    setupRunTeardown(this::testDelta);
+//    setupRunTeardown(this::testDeltaWithRefsBelow);
+//    setupRunTeardown(this::testDeltaWithMods);
+//    setupRunTeardown(this::testDeltaWithIndexMods);
+//    setupRunTeardown(this::testArrayAux);
+    
+    // Java 7 style
+    setupRunTeardown(new Runnable() {public void run() {testDocText();}});     
+    setupRunTeardown(new Runnable() {public void run() {testDocumentText();}});
+    setupRunTeardown(new Runnable() {public void run() {testAllKinds();}});
+    setupRunTeardown(new Runnable() {public void run() {testRefThroughFilteredType();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithStringArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithDblArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithByteArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithStrArrayMod();}});
+    setupRunTeardown(new Runnable() {public void run() {testDelta();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithRefsBelow();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithMods();}});
+    setupRunTeardown(new Runnable() {public void run() {testDeltaWithIndexMods();}});
+    setupRunTeardown(new Runnable() {public void run() {testArrayAux();}});
+
+  }
+
+  public void captureGenerated() {
+    capture = true;
+    initWriteSavedInts();
+    runCaptureSet();
+    try {
+      savedIntsOutStream.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    capture = false;
+
+  }
+
+  /**
+   * See if can read Version 2 serialized things and deserialize them Note:
+   * Delta won't work unless the previous v2 test case indexed or ref'd all the
+   * FSs, because otherwise, some FSs will be "deleted" by the modelling V3 does
+   * for the CAS layout because they're not findable during scanning, and
+   * therefore, delta mods won't be correct.
+   */
+  public void testWithPrevGenerated() {
+    isKeep = true; // forces all akof fss to be indexed
+    usePrevData = true;
+    initReadSavedInts();
+    runCaptureSet();
+    isKeep = false;
+    usePrevData = false;
+    try {
+      savedIntsStream.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public void setupRunTeardown(Runnable tst) {
+    setUp();
+    tst.run();
+    tearDown();
   }
 
   public void testArrayAux() {
@@ -733,9 +797,9 @@ public class SerDesTest6 extends TestCase {
     createStringA(casSrc, mSrc, fsAt2, "at");
     TTypeSystem m = getTT(EqTwoTypes);
     remoteCas = setupCas(m);
-    verify(remoteCas);
-    
-    FSIterator<TOP> it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
+    verify(remoteCas, "ArrayAuxString");
+
+    FSIterator<FeatureStructure> it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     FeatureStructure fsAt1d = it.next();
     FeatureStructure fsAt2d = it.next();
     StringArrayFS sa1 = (StringArrayFS) maybeGetFeatureKind(fsAt1d, m, "Astring");
@@ -743,9 +807,9 @@ public class SerDesTest6 extends TestCase {
     sa1.set(1, "def");
     assertEquals(sa2.get(1), "abcat");
     assertEquals(sa1.get(1), "def");
-    
+
     casSrc.reset();
-    
+
     fsAt1 = newAkof(casSrc, mSrc, Akof1, fsList);
     fsAt2 = newAkof(casSrc, mSrc, Akof1, fsList);
     casSrc.addFsToIndexes(fsAt1);
@@ -754,8 +818,8 @@ public class SerDesTest6 extends TestCase {
     createLongA(casSrc, mSrc, fsAt1, 9);
     createLongA(casSrc, mSrc, fsAt2, 9);
     remoteCas.reset();
-    verify(remoteCas);
-    
+    verify(remoteCas, "ArrayAuxLong");
+
     it = remoteCas.indexRepository.getAllIndexedFS(m.getType(Akof1));
     fsAt1d = it.next();
     fsAt2d = it.next();
@@ -765,26 +829,23 @@ public class SerDesTest6 extends TestCase {
     assertEquals(la2.get(2), -45 + 9);
     assertEquals(la1.get(2), 123);
   }
-  
-  
-  
-//  /*******************************
-//   * Helper functions
-//   * @throws IOException 
-//   *******************************/
-//  private ReuseInfo getReuseInfo() {
-//    BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas); 
-//    ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-//    try {
-//      bcs.serialize(baos);
-//    } catch (IOException e) {
-//      // TODO Auto-generated catch block
-//      e.printStackTrace();
-//    }
-//    return bcs.getReuseInfo();
-//  }
-  
-  
+
+  // /*******************************
+  // * Helper functions
+  // * @throws IOException
+  // *******************************/
+  // private ReuseInfo getReuseInfo() {
+  // BinaryCasSerDes6 bcs = new BinaryCasSerDes6(cas);
+  // ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
+  // try {
+  // bcs.serialize(baos);
+  // } catch (IOException e) {
+  // // TODO Auto-generated catch block
+  // e.printStackTrace();
+  // }
+  // return bcs.getReuseInfo();
+  // }
+
   private void createStringA(CASImpl cas, TTypeSystem m, FeatureStructure fs, String x) {
     StringArrayFS strafs = cas.createStringArrayFS(5);
     strafs.set(3, null);
@@ -794,19 +855,19 @@ public class SerDesTest6 extends TestCase {
     strafs.set(4, "def" + x);
     maybeSetFeatureKind(fs, m, "Astring", strafs);
   }
-  
-  private void createIntA (CASImpl cas, TTypeSystem m, FeatureStructure fs, int x) {
+
+  private void createIntA(CASImpl cas, TTypeSystem m, FeatureStructure fs, int x) {
     IntArrayFS iafs = cas.createIntArrayFS(4 + x);
     iafs.set(0, Integer.MAX_VALUE - x);
     iafs.set(1, Integer.MIN_VALUE + x);
     iafs.set(2, 17 + 100 * x);
     maybeSetFeatureKind(fs, m, "Aint", iafs);
   }
-  
-  private void createFloatA (CASImpl cas, TTypeSystem m, FeatureStructure fs, float x) {
+
+  private void createFloatA(CASImpl cas, TTypeSystem m, FeatureStructure fs, float x) {
     FloatArrayFS fafs = cas.createFloatArrayFS(6);
     fafs.set(0, Float.MAX_VALUE - x);
-//    fafs.set(1, Float.MIN_NORMAL + x);
+    // fafs.set(1, Float.MIN_NORMAL + x);
     fafs.set(2, Float.MIN_VALUE + x);
     fafs.set(3, Float.NaN);
     fafs.set(4, Float.NEGATIVE_INFINITY);
@@ -814,10 +875,10 @@ public class SerDesTest6 extends TestCase {
     maybeSetFeatureKind(fs, m, "Afloat", fafs);
   }
 
-  private void createDoubleA (CASImpl cas, TTypeSystem m, FeatureStructure fs, double x) {
+  private void createDoubleA(CASImpl cas, TTypeSystem m, FeatureStructure fs, double x) {
     DoubleArrayFS fafs = cas.createDoubleArrayFS(6);
     fafs.set(0, Double.MAX_VALUE - x);
-//    fafs.set(1, Double.MIN_NORMAL + x);
+    // fafs.set(1, Double.MIN_NORMAL + x);
     fafs.set(2, Double.MIN_VALUE + x);
     fafs.set(3, Double.NaN);
     fafs.set(4, Double.NEGATIVE_INFINITY);
@@ -825,40 +886,41 @@ public class SerDesTest6 extends TestCase {
     maybeSetFeatureKind(fs, m, "Adouble", fafs);
   }
 
-  private void createLongA (CASImpl cas, TTypeSystem m, FeatureStructure fs, long x) {
+  private void createLongA(CASImpl cas, TTypeSystem m, FeatureStructure fs, long x) {
     LongArrayFS lafs = cas.createLongArrayFS(4);
     lafs.set(0, Long.MAX_VALUE - x);
     lafs.set(1, Long.MIN_VALUE + x);
     lafs.set(2, -45 + x);
     maybeSetFeatureKind(fs, m, "Along", lafs);
   }
-  
-//  private void binaryCopyCas(CASImpl c1, CASImpl c2) {
-//    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//    Serialization.serializeCAS(cas, baos);
-//    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-//    c2.reinit(bais);
-//  }
-  
-  private FeatureStructure newAkof(CASImpl cas, TTypeSystem m, Types typeKind, List<FeatureStructure> fsl) {
+
+  // private void binaryCopyCas(CASImpl c1, CASImpl c2) {
+  // ByteArrayOutputStream baos = new ByteArrayOutputStream();
+  // Serialization.serializeCAS(cas, baos);
+  // ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+  // c2.reinit(bais);
+  // }
+
+  private FeatureStructure newAkof(CASImpl cas, TTypeSystem m, Types typeKind,
+      List<FeatureStructure> fsl) {
     FeatureStructure fs = cas.createFS(m.getType(typeKind.name()));
     fsl.add(fs);
     return fs;
   }
-  
+
   // make an instance of akof with all features set
   private FeatureStructure makeAkof(CASImpl cas, TTypeSystem m, Types typeKind) {
     FeatureStructure fs = cas.createFS(m.getType(Akof1));
     maybeSetBoolean(fs, m, random.nextBoolean());
-    maybeSetByte(fs, m, (byte)random.nextInt());
-    maybeSetShort(fs, m, (short)random.nextInt());
+    maybeSetByte(fs, m, (byte) random.nextInt());
+    maybeSetShort(fs, m, (short) random.nextInt());
     maybeSetInt(fs, m, random.nextInt());
     maybeSetFloat(fs, m, random.nextFloat());
     maybeSetLong(fs, m, random.nextLong());
     maybeSetDouble(fs, m, random.nextDouble());
-    maybeSetString(fs, m,  randomString());
+    maybeSetString(fs, m, randomString());
     maybeSetFeature(fs, m, fs);
-    
+
     maybeSetFeatureKind(fs, m, "Aint", randomIntA(cas));
     maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(1));
     maybeSetFeatureKind(fs, m, "Afloat", randomFloatA(cas));
@@ -869,9 +931,9 @@ public class SerDesTest6 extends TestCase {
     maybeSetFeatureKind(fs, m, "Aboolean", cas.createBooleanArrayFS(2));
     maybeSetFeatureKind(fs, m, "Astring", randomStringA(cas));
 
-    return fs;    
+    return fs;
   }
-    
+
   private static final String[] stringValues = {
     "abc", "abcdef", null, "", "ghijklm", "a", "b"
   };
@@ -888,7 +950,6 @@ public class SerDesTest6 extends TestCase {
     return fs;
   }
 
-  
   private IntArrayFS randomIntA(CASImpl cas) {
     int length = random.nextInt(2) + 1;
     IntArrayFS fs = cas.createIntArrayFS(length);
@@ -897,10 +958,10 @@ public class SerDesTest6 extends TestCase {
     }
     return fs;
   }
-  
+
   private static final byte[] byteValues = {
     1, 0, -1, Byte.MAX_VALUE, Byte.MIN_VALUE, 9, -9  };
-  
+
   private ByteArrayFS randomByteA(CASImpl cas) {
     int length = random.nextInt(2) + 1;
     ByteArrayFS fs = cas.createByteArrayFS(length);
@@ -912,7 +973,7 @@ public class SerDesTest6 extends TestCase {
 
   private static final long[] longValues = {
     1L, 0L, -1L, Long.MAX_VALUE, Long.MIN_VALUE, 11L, -11L  };
-  
+
   private LongArrayFS randomLongA(CASImpl cas) {
     int length = random.nextInt(2) + 1;
     LongArrayFS fs = cas.createLongArrayFS(length);
@@ -924,7 +985,7 @@ public class SerDesTest6 extends TestCase {
 
   private static final short[] shortValues = {
     1, 0, -1, Short.MAX_VALUE, Short.MIN_VALUE, 22, -22  };
-  
+
   private ShortArrayFS randomShortA(CASImpl cas) {
     int length = random.nextInt(2) + 1;
     ShortArrayFS fs = cas.createShortArrayFS(length);
@@ -936,7 +997,7 @@ public class SerDesTest6 extends TestCase {
 
   private static final double[] doubleValues = {
     1d, 0d, -1d, Double.MAX_VALUE, /*Double.MIN_NORMAL,*/ Double.MIN_VALUE, 33d, -33.33d  };
-  
+
   private DoubleArrayFS randomDoubleA(CASImpl cas) {
     int length = random.nextInt(2) + 1;
     DoubleArrayFS fs = cas.createDoubleArrayFS(length);
@@ -948,7 +1009,7 @@ public class SerDesTest6 extends TestCase {
 
   private static final float[] floatValues = {
     1f, 0f, -1f, Float.MAX_VALUE, /*Float.MIN_NORMAL,*/ Float.MIN_VALUE, 17f, -22.33f  };
-  
+
   private FloatArrayFS randomFloatA(CASImpl cas) {
     int length = random.nextInt(2) + 1;
     FloatArrayFS fs = cas.createFloatArrayFS(length);
@@ -957,7 +1018,7 @@ public class SerDesTest6 extends TestCase {
     }
     return fs;
   }
-  
+
   private void makeRandomFss(CASImpl cas, TTypeSystem m, Types typeKind, int n) {
     List<FeatureStructure> lfss = new ArrayList<FeatureStructure>();
     for (int i = 0; i < n; i++) {
@@ -972,27 +1033,28 @@ public class SerDesTest6 extends TestCase {
       maybeSetFeature(fs, m, lfss.get(random.nextInt(lfss.size())));
     }
   }
-  
+
   private void loadCas(CASImpl cas, TTypeSystem m) {
     makeFeaturesForAkof(cas, m, Akof1);
     // TwoTypes, EqTwoTypes, OneType, TwoTypesSubsetFeatures, OneTypeSubsetFeatures, NoFeatures,
-    switch (m.kind){
+    switch (m.kind) {
     case TwoTypes:
     case EqTwoTypes:
     case TwoTypesSubsetFeatures:
     case TwoTypesNoFeatures:
-      makeFeaturesForAkof(cas, m, Akof2); break;
+      makeFeaturesForAkof(cas, m, Akof2);
+      break;
     default:
     }
   }
-  
+
   private void maybeSetBoolean(FeatureStructure fs, TTypeSystem m, boolean value) {
     Feature f = m.getFeature(fs, "Boolean");
     if (f != null) {
       fs.setBooleanValue(f, value);
     }
   }
-  
+
   private void maybeSetByte(FeatureStructure fs, TTypeSystem m, byte value) {
     Feature f = m.getFeature(fs, "Byte");
     if (f != null) {
@@ -1052,31 +1114,30 @@ public class SerDesTest6 extends TestCase {
   /**********
    * ARRAYS
    **********/
-  
+
   private void maybeSetFeature(FeatureStructure fs, Feature f, FeatureStructure value) {
     if (f != null) {
       fs.setFeatureValue(f, value);
-    }    
+    }
   }
-  
+
   private void maybeSetFeatureKind(FeatureStructure fs, TTypeSystem m, String kind, FeatureStructure value) {
     maybeSetFeature(fs, m.getFeature(fs, kind), value);
   }
-  
+
   private FeatureStructure maybeGetFeatureKind(FeatureStructure fs, TTypeSystem m, String kind) {
     Feature f = m.getFeature(fs, kind);
     return (f == null) ? null : fs.getFeatureValue(f);
   }
-  
 
   private void makeFeaturesForAkof(CASImpl cas, TTypeSystem m, Types typeKind) {
     /* lfs index: 0 */
     FeatureStructure fs = newAkof(cas, m, typeKind, lfs);
-      
+
     maybeSetBoolean(fs, m, true);
-    maybeSetByte(fs, m, (byte)109);
+    maybeSetByte(fs, m, (byte) 109);
     maybeSetShort(fs, m, (short) 23);
-    maybeSetInt(fs, m,  2345);
+    maybeSetInt(fs, m, 2345);
     maybeSetFloat(fs, m, 123f);
     maybeSetLong(fs, m, 345L);
     maybeSetDouble(fs, m, 334455.6677d);
@@ -1084,8 +1145,8 @@ public class SerDesTest6 extends TestCase {
     maybeSetFeature(fs, m, fs);
     cas.addFsToIndexes(fs);
     FeatureStructure fs1 = fs;
-    
-    //extreme or unusual values
+
+    // extreme or unusual values
     /* lfs index: 1 */
     fs = newAkof(cas, m, typeKind, lfs);
     maybeSetBoolean(fs, m, false);
@@ -1107,14 +1168,14 @@ public class SerDesTest6 extends TestCase {
     maybeSetFloat(fs, m, Float.MIN_VALUE);
     maybeSetLong(fs, m, Long.MIN_VALUE);
     maybeSetDouble(fs, m, Double.MIN_VALUE);
-    maybeSetString(fs, m,  null);
+    maybeSetString(fs, m, null);
     maybeSetFeature(fs, m, fs1);
     cas.addFsToIndexes(fs);
     FeatureStructure fs3 = fs;
 
     /* lfs index: 3 */
     fs = newAkof(cas, m, typeKind, lfs);
-    maybeSetByte(fs, m, (byte)0);
+    maybeSetByte(fs, m, (byte) 0);
     maybeSetShort(fs, m, (short) 0);
     maybeSetInt(fs, m, 0);
     maybeSetFloat(fs, m, 0f);
@@ -1122,24 +1183,24 @@ public class SerDesTest6 extends TestCase {
     maybeSetDouble(fs, m, 0D);
     maybeSetFeature(fs, m, fs1);
     cas.addFsToIndexes(fs);
-    maybeSetFeature(fs3, m, fs);  // make a forward ref
+    maybeSetFeature(fs3, m, fs); // make a forward ref
     FeatureStructure fs4 = fs;
 
     /* lfs index: 4 */
     fs = newAkof(cas, m, typeKind, lfs);
-    maybeSetByte(fs, m, (byte)1);
-    maybeSetShort(fs, m, (short)1);
+    maybeSetByte(fs, m, (byte) 1);
+    maybeSetShort(fs, m, (short) 1);
     maybeSetInt(fs, m, 1);
     maybeSetFloat(fs, m, 1.0f);
     maybeSetLong(fs, m, 1L);
     maybeSetDouble(fs, m, 1.0D);
     cas.addFsToIndexes(fs);
-    
-//    fs = newAkof(cas, m, lfs);
-//    maybeSetFloat(fs, m, Float.MIN_NORMAL);
-//    maybeSetDouble(fs, m, Double.MIN_NORMAL);
-//    cas.addFsToIndexes(fs);
-    
+
+    // fs = newAkof(cas, m, lfs);
+    // maybeSetFloat(fs, m, Float.MIN_NORMAL);
+    // maybeSetDouble(fs, m, Double.MIN_NORMAL);
+    // cas.addFsToIndexes(fs);
+
     /* lfs index: 5 */
     fs = newAkof(cas, m, typeKind, lfs);
     maybeSetFloat(fs, m, Float.MIN_VALUE);
@@ -1164,12 +1225,11 @@ public class SerDesTest6 extends TestCase {
     maybeSetDouble(fs, m, Double.NEGATIVE_INFINITY);
     cas.addFsToIndexes(fs);
 
-    
     // test arrays
     /* lfs index: 9 */
     fs = newAkof(cas, m, typeKind, lfs);
     maybeSetFeatureKind(fs, m, "Aint", cas.createIntArrayFS(0));
-    maybeSetFeatureKind(fs, m, "Afs",  cas.createArrayFS(0));
+    maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(0));
     maybeSetFeatureKind(fs, m, "Afloat", cas.createFloatArrayFS(0));
     maybeSetFeatureKind(fs, m, "Adouble", cas.createDoubleArrayFS(0));
     maybeSetFeatureKind(fs, m, "Along", cas.createLongArrayFS(0));
@@ -1182,8 +1242,8 @@ public class SerDesTest6 extends TestCase {
 
     /* lfs index: 10 */
     fs = newAkof(cas, m, typeKind, lfs);
-    maybeSetFeatureKind(fs, m, "Aint",  cas.createIntArrayFS(2));
-    maybeSetFeatureKind(fs, m, "Afs",  cas.createArrayFS(2));
+    maybeSetFeatureKind(fs, m, "Aint", cas.createIntArrayFS(2));
+    maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(2));
     maybeSetFeatureKind(fs, m, "Afloat", cas.createFloatArrayFS(2));
     maybeSetFeatureKind(fs, m, "Adouble", cas.createDoubleArrayFS(2));
     maybeSetFeatureKind(fs, m, "Along", cas.createLongArrayFS(2));
@@ -1192,69 +1252,78 @@ public class SerDesTest6 extends TestCase {
     maybeSetFeatureKind(fs, m, "Aboolean", cas.createBooleanArrayFS(2));
     maybeSetFeatureKind(fs, m, "Astring", cas.createStringArrayFS(2));
     cas.addFsToIndexes(fs);
-    
+
     /* lfs index: 11 */
     fs = newAkof(cas, m, typeKind, lfs);
     cas.addFsToIndexes(fs);
-    
+
     createIntA(cas, m, fs, 0);
-    
+
     // feature structure array
     /* lfs index: 12 */
     ArrayFS fsafs = cas.createArrayFS(4);
     fsafs.set(1, fs8);
     fsafs.set(2, fs1);
     fsafs.set(3, fs4);
-    maybeSetFeatureKind(fs, m, "Afs",  fsafs);
-    
+    maybeSetFeatureKind(fs, m, "Afs", fsafs);
+
     createFloatA(cas, m, fs, 0f);
     createDoubleA(cas, m, fs, 0d);
     createLongA(cas, m, fs, 0L);
-    
+
     ShortArrayFS safs = cas.createShortArrayFS(4);
     safs.set(0, Short.MAX_VALUE);
     safs.set(1, Short.MIN_VALUE);
-    safs.set(2, (short)-485);
+    safs.set(2, (short) -485);
     maybeSetFeatureKind(fs, m, "Ashort", safs);
-    
+
     ByteArrayFS bafs = cas.createByteArrayFS(4);
     bafs.set(0, Byte.MAX_VALUE);
     bafs.set(1, Byte.MIN_VALUE);
     bafs.set(2, (byte) 33);
     maybeSetFeatureKind(fs, m, "Abyte", bafs);
-    
+
     BooleanArrayFS booafs = cas.createBooleanArrayFS(4);
     booafs.set(0, true);
     booafs.set(1, false);
     maybeSetFeatureKind(fs, m, "Aboolean", booafs);
-    
+
     createStringA(cas, m, fs, "");
     makeRandomFss(cas, m, typeKind, 15);
   }
 
-  private void verify(CASImpl casTgt) {
+  private void verify(CASImpl casTgt, String fname) {
     // no delta case:
-    // casSrc -> deserCas 
+    // casSrc -> deserCas
     BinaryCasSerDes6 bcs = null;
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
-      if (doPlain) {
-        (new CASSerializer()).addCAS(casSrc, baos);      
+      ByteArrayInputStream bais;
+      if (!usePrevData) {
+        if (doPlain) {
+          (new CASSerializer()).addCAS(casSrc, baos);
+        } else {
+          bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
+          Serialization.serializeWithCompression(casSrc, baos, casTgt.getTypeSystemImpl());
+          // bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
+          // SerializationMeasures sm = bcs.serialize(baos);
+          // if (null != sm) {
+          // System.out.println(sm);
+          // }
+          if (capture) {
+            writeout(baos, fname);
+          }
+        }
+        bais = new ByteArrayInputStream(baos.toByteArray());
       } else {
         bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
-        Serialization.serializeWithCompression(casSrc, baos, casTgt.getTypeSystemImpl());
-//        bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
-//        SerializationMeasures sm = bcs.serialize(baos);
-//        if (null != sm) {
-//          System.out.println(sm);
-//        }
+        bais = new ByteArrayInputStream(readIn(fname));
       }
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       casTgt.getBinaryCasSerDes().reinit(bais);
       if (doPlain) {
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, casTgt));
       } else {
-        // have to reuse the bcs instance with the type system mappings        
+        // have to reuse the bcs instance with the type system mappings
         assertTrue(bcs.compareCASes(casSrc, casTgt));
       }
     } catch (IOException e) {
@@ -1262,21 +1331,27 @@ public class SerDesTest6 extends TestCase {
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       fail();
-    }    
+    }
   }
-  
-  private void verifyDeserFilter(CASImpl casTgt) {
+
+  private void verifyDeserFilter(CASImpl casTgt, String fname) {
     // serialize w/o filter
     BinaryCasSerDes6 bcs = null;
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
       if (doPlain) {
-        return;   
-      } else {      
+        return;
+      } else {
         bcs = new BinaryCasSerDes6(casSrc, (ReuseInfo) null);
         bcs.serialize(baos);
+        if (capture) {
+          writeout(baos, fname);
+        }
       }
-      ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+      ByteArrayInputStream bais = (!usePrevData || fname == null) 
+          ? new ByteArrayInputStream(baos.toByteArray())
+          : new ByteArrayInputStream(readIn(fname));
+          
       Serialization.deserializeCAS(casTgt, bais, casSrc.getTypeSystemImpl(), null);
 
       bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
@@ -1286,15 +1361,12 @@ public class SerDesTest6 extends TestCase {
     } catch (ResourceInitializationException e) {
       e.printStackTrace();
       fail();
-    }    
-   
+    }
+
   }
 
   // casSrc -> remoteCas
-  private ReuseInfo[] serializeDeserialize(
-      CASImpl casSrc, 
-      CASImpl casTgt, 
-      ReuseInfo ri, 
+  private ReuseInfo[] serializeDeserialize(CASImpl casSrc, CASImpl casTgt, ReuseInfo ri,
       MarkerImpl mark) {
     ReuseInfo[] riToReturn = new ReuseInfo[2];
     try {
@@ -1308,7 +1380,9 @@ public class SerDesTest6 extends TestCase {
       } else {
         BinaryCasSerDes6 bcs = new BinaryCasSerDes6(casSrc, casTgt.getTypeSystemImpl());
         SerializationMeasures sm = bcs.serialize(baos);
-        if (sm != null) {System.out.println(sm);}
+        if (sm != null) {
+          System.out.println(sm);
+        }
         riToReturn[0] = bcs.getReuseInfo();
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
@@ -1325,7 +1399,7 @@ public class SerDesTest6 extends TestCase {
     }
     return riToReturn;
   }
-  
+
   private void verifyDelta(MarkerImpl mark, ReuseInfo[] ri) {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(1024);
@@ -1334,16 +1408,19 @@ public class SerDesTest6 extends TestCase {
       } else {
         BinaryCasSerDes6 bcs = new BinaryCasSerDes6(remoteCas, mark, null, ri[1]);
         SerializationMeasures sm = bcs.serialize(baos);
-        if (sm != null) {System.out.println(sm);}
+        if (sm != null) {
+          System.out.println(sm);
+        }
       }
       ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
       if (doPlain) {
         casSrc.getBinaryCasSerDes().reinit(bais);
         assertTrue(new BinaryCasSerDes6(casSrc).compareCASes(casSrc, remoteCas));
       } else {
-          BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais, remoteCas.getTypeSystemImpl(), ri[0]);
-          assertTrue(bcsDeserialize.compareCASes(casSrc, remoteCas));
-      }      
+        BinaryCasSerDes6 bcsDeserialize = Serialization.deserializeCAS(casSrc, bais,
+            remoteCas.getTypeSystemImpl(), ri[0]);
+        assertTrue(bcsDeserialize.compareCASes(casSrc, remoteCas));
+      }
     } catch (IOException e) {
       throw new RuntimeException(e);
     } catch (ResourceInitializationException e) {
@@ -1351,7 +1428,7 @@ public class SerDesTest6 extends TestCase {
       fail();
     }
   }
-  
+
   private void makeRandomUpdatesBelowMark(CASImpl cas, TTypeSystem m, Types typeKind) {
     for (FeatureStructure fs : lfs) {
       makeRandomUpdate(cas, m, typeKind, fs);
@@ -1360,16 +1437,16 @@ public class SerDesTest6 extends TestCase {
 
   private void makeRandomUpdate(CASImpl cas, TTypeSystem m, Types typeKind, FeatureStructure fs) {
     int n = random.nextInt(3);
-    for (int i = 0 ; i < n; i++) {
+    for (int i = 0; i < n; i++) {
       switch (random.nextInt(26)) {
       case 0:
         maybeSetBoolean(fs, m, random.nextBoolean());
         break;
       case 1:
-        maybeSetByte(fs, m, (byte)random.nextInt());
+        maybeSetByte(fs, m, (byte) random.nextInt());
         break;
       case 2:
-        maybeSetShort(fs, m, (short)random.nextInt());
+        maybeSetShort(fs, m, (short) random.nextInt());
         break;
       case 3:
         maybeSetInt(fs, m, random.nextInt());
@@ -1384,7 +1461,7 @@ public class SerDesTest6 extends TestCase {
         maybeSetDouble(fs, m, random.nextDouble());
         break;
       case 7:
-        maybeSetString(fs, m,  randomString());
+        maybeSetString(fs, m, randomString());
         break;
       case 8:
         maybeSetFeature(fs, m, fs);
@@ -1393,7 +1470,7 @@ public class SerDesTest6 extends TestCase {
         maybeSetFeatureKind(fs, m, "Aint", randomIntA(cas));
         break;
       case 10:
-        maybeSetFeatureKind(fs, m, "Afs",  cas.createArrayFS(1));
+        maybeSetFeatureKind(fs, m, "Afs", cas.createArrayFS(1));
         break;
       case 11:
         maybeSetFeatureKind(fs, m, "Afloat", randomFloatA(cas));
@@ -1413,75 +1490,86 @@ public class SerDesTest6 extends TestCase {
       case 16:
         maybeSetFeatureKind(fs, m, "Aboolean", cas.createBooleanArrayFS(2));
         break;
-      case 17: 
+      case 17:
         maybeSetFeatureKind(fs, m, "Astring", randomStringA(cas));
         break;
       case 18: {
-          IntArrayFS sfs = (IntArrayFS) maybeGetFeatureKind(fs, m, "Aint");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, 1);
-          }
+        IntArrayFS sfs = (IntArrayFS) maybeGetFeatureKind(fs, m, "Aint");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, 1);
         }
+      }
         break;
-      case 19:{
-          StringArrayFS sfs = (StringArrayFS) maybeGetFeatureKind(fs, m, "Astring");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, "change");
-          }
+      case 19: {
+        StringArrayFS sfs = (StringArrayFS) maybeGetFeatureKind(fs, m, "Astring");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, "change");
         }
+      }
         break;
       case 20: {
-          FloatArrayFS sfs = (FloatArrayFS) maybeGetFeatureKind(fs, m, "Afloat");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, 1F);
-          }
+        FloatArrayFS sfs = (FloatArrayFS) maybeGetFeatureKind(fs, m, "Afloat");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, 1F);
         }
+      }
         break;
       case 21: {
-          DoubleArrayFS sfs = (DoubleArrayFS) maybeGetFeatureKind(fs, m, "Adouble");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, 1D);
-          }
+        DoubleArrayFS sfs = (DoubleArrayFS) maybeGetFeatureKind(fs, m, "Adouble");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, 1D);
         }
+      }
         break;
       case 22: {
-          LongArrayFS sfs = (LongArrayFS) maybeGetFeatureKind(fs, m, "Along");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, 1L);
-          }
+        LongArrayFS sfs = (LongArrayFS) maybeGetFeatureKind(fs, m, "Along");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, 1L);
         }
+      }
         break;
       case 23: {
-          ShortArrayFS sfs = (ShortArrayFS) maybeGetFeatureKind(fs, m, "Ashort");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, (short)1);
-          }
+        ShortArrayFS sfs = (ShortArrayFS) maybeGetFeatureKind(fs, m, "Ashort");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, (short) 1);
         }
+      }
         break;
       case 24: {
-          ByteArrayFS sfs = (ByteArrayFS) maybeGetFeatureKind(fs, m, "Abyte");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, (byte)1);
-          }
+        ByteArrayFS sfs = (ByteArrayFS) maybeGetFeatureKind(fs, m, "Abyte");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, (byte) 1);
         }
+      }
         break;
       case 25: {
-          ArrayFS sfs = (ArrayFS) maybeGetFeatureKind(fs, m, "Afs");
-          if ((null != sfs) && (0 < sfs.size())) {
-            sfs.set(0, lfs.get(random.nextInt(lfs.size())));
-          }
+        ArrayFS sfs = (ArrayFS) maybeGetFeatureKind(fs, m, "Afs");
+        if ((null != sfs) && (0 < sfs.size())) {
+          sfs.set(0, lfs.get(random.nextInt(lfs.size())));
         }
-      break;
+      }
+        break;
       }
     }
   }
 
   private List<FeatureStructure> getIndexedFSs(CASImpl cas, TTypeSystem m) {
-    FSIterator<TOP> it = cas.getIndexRepository().getAllIndexedFS(m.getType(Akof1));
+    FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(m.getType(Akof1));
     List<FeatureStructure> lfs = new ArrayList<FeatureStructure>();
     while (it.hasNext()) {
       lfs.add(it.next());
     }
     return lfs;
   }
+
+  @Override
+  protected String getTestRootName() {
+    return "SerDes6";
+  }
+
+  // disable to avoid accidentally overwriting test data
+//  static public void main(String[] args) throws IOException {
+//    new SerDesTest6().captureGenerated();
+//  }
+
 }
