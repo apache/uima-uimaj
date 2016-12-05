@@ -251,6 +251,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   /** Deserializing compressed binary other than form 4 not supported by this method */
   public static final String DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED = "DESERIALIZING_COMPRESSED_BINARY_UNSUPPORTED";
 
+  /** Deserializing a Version 2 Delta Cas into UIMA Version 3 not supported. */
+  public static final String DESERIALIZING_V2_DELTA_V3 = "DESERIALIZING_V2_DELTA_V3";
+  
   /** Dereferencing a FeatureStructure of a CAS in a different CAS's context.
    *  This can happen if you try to set a feature structure reference to a value of a feature structure belonging to 
    *  an entirely different CAS.
