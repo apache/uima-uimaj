@@ -288,7 +288,7 @@ public class CASSerializer implements Serializable {
 
       // output the key and version number
       CommonSerDes.createHeader()
-        .seqVer(1)  // 0 original, 1 UIMA-4743
+        .seqVer(2)  // 0 original, 1 UIMA-4743 2 for uima v3
         .typeSystemIndexDefIncluded(includeTsi)
         .v3()
         .write(dos);
@@ -511,7 +511,7 @@ public class CASSerializer implements Serializable {
  
       CommonSerDes.createHeader()
         .delta()
-        .seqVer(1)  // 1 for UIMA-4743
+        .seqVer(2)  // 1 for UIMA-4743 2 for uima v3
         .v3()
         .write(dos);
       
