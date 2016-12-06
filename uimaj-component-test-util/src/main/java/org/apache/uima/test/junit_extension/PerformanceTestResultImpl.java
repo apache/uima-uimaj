@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 
 import org.apache.uima.internal.util.TimeSpan;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * PerformanceTestResultImpl implements the PerformanceTestResult interface and provides the results of a performance
  * test run.

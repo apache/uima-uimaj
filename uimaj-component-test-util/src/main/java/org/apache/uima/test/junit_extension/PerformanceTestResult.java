@@ -23,7 +23,7 @@ import java.io.File;
 
 import org.apache.uima.internal.util.TimeSpan;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * PerformanceTestResult interfance contains all the methods to access the performance test results.
  * 

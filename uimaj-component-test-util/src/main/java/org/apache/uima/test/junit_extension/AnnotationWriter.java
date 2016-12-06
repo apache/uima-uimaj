@@ -42,7 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.ProcessTrace;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The AnnotationWriter class writes specified annotations to an output file.
  * The encoding of the output file is UTF-8

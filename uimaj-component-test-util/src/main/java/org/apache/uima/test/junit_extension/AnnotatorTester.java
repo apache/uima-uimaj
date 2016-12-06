@@ -46,7 +46,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * AnnotatorTester is the helper class to test annotators.
  */

@@ -37,7 +37,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * AnnotatorPerfTester is a helper class to execute annotator performance tests. The performance
  * test results are returned as {@link PerformanceTestResultImpl} object.
