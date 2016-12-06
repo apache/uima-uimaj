@@ -40,7 +40,7 @@ import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A simple example of how to extract information from the CAS. This example retrieves all
  * annotations of a specified type from a CAS and prints them (along with all of their features) to

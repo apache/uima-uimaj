@@ -34,7 +34,7 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Main Class that runs the Collection Processing Manager (CPM). This class reads descriptor files
  * and initiailizes the following components:

@@ -28,7 +28,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An example annotator that annotates Tokens and Sentences.
  */

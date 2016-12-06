@@ -31,7 +31,7 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Main Class that runs a Collection Processing Engine (CPE). This class reads a CPE Descriptor as a
  * command-line argument and instantiates the CPE. It also registers a callback listener with the

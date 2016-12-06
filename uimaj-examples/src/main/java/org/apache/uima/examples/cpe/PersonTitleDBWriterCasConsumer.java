@@ -39,7 +39,7 @@ import org.apache.uima.util.ProcessTrace;
 
 import example.PersonTitle;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A simple CAS consumer that creates a Derby (Cloudscape) database in the file system. You can
  * obtain this database from http://incubator.apache.org/derby/ *

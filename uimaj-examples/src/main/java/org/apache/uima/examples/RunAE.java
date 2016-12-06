@@ -46,7 +46,7 @@ import org.apache.uima.tools.components.InlineXmlCasConsumer;
 import org.apache.uima.tools.components.XmlDetagger;
 import org.apache.uima.util.AnalysisEnginePerformanceReports;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An example application that reads documents from the file system, sends them though an Analysis
  * Engine(AE), and produces XML files with inline annotations. This application uses a

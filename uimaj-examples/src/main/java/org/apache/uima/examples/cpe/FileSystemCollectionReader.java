@@ -36,7 +36,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Progress;
 import org.apache.uima.util.ProgressImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A simple collection reader that reads documents from a directory in the filesystem. It can be
  * configured with the following parameters:

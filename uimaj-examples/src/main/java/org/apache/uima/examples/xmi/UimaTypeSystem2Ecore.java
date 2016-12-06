@@ -54,7 +54,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Converts a UIMA TypeSystemDescription to an Ecore model.
  */

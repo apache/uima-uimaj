@@ -49,7 +49,7 @@ import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A simple CAS consumer that generates XCAS (XML representation of the CAS) files in the
  * filesystem.

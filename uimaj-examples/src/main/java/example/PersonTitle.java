@@ -25,7 +25,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A Personal Title. Updated by JCasGen Mon May 23 17:48:43 EDT 2005 XML source:
  * c:\a\eclipse\301jxe\jedii_examples\descriptors\analysis_engine\NamesAndPersonTitles_TAE.xml
