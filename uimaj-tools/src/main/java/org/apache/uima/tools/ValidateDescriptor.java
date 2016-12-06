@@ -24,7 +24,7 @@ import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Command-line utility for validating a descriptor. Supports CollectionReader, CasInitializer,
  * AnalysisEngine, and CasConsumer descriptors.

@@ -32,7 +32,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Pop-up event adapter for string valued features in the FS display.  Displays a pop-up for string
  * values that were shortened for display purposes.  Users can display long strings in a separate

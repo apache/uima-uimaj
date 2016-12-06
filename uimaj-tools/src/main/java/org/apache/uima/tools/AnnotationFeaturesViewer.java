@@ -39,7 +39,7 @@ import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.resource.metadata.Capability;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A tree view of Annotations and associated features.
  * 

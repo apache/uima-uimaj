@@ -21,7 +21,7 @@ package org.apache.uima.tools.cvd;
 
 import javax.swing.text.Style;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AnnotationExtent.
  */

@@ -26,7 +26,7 @@ import org.apache.uima.tools.cvd.FSNode;
 import org.apache.uima.tools.cvd.FSTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Handle selection of annotations in annotation frame. If selected node represents an annotation,
  * highlight the corresponding extent in the text.

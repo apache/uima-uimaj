@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A simple SAX parser for Style Map XML documents. A GUI for editing style maps for the annotation
  * viewer.

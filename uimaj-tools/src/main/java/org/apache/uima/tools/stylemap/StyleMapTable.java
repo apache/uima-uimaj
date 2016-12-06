@@ -26,7 +26,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Data structure used by the editor, which represents an entry in the style map.
  */

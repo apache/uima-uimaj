@@ -24,7 +24,7 @@ import java.awt.event.ItemListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving sofaSelection events.
  * The class that is interested in processing a sofaSelection

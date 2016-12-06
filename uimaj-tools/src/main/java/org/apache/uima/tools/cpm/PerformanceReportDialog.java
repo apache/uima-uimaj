@@ -38,7 +38,7 @@ import javax.swing.tree.DefaultTreeModel;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Mock-up of dialog for reporting performance stats.
  * 

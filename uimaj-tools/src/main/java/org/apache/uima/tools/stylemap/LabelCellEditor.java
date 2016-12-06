@@ -25,7 +25,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class LabelCellEditor.
  */

@@ -32,7 +32,7 @@ import org.apache.uima.tools.cvd.IndexTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.TypeTreeNode;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving indexPopup events.
  * The class that is interested in processing a indexPopup

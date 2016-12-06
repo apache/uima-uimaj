@@ -19,7 +19,7 @@
 
 package org.apache.uima.tools.util.gui;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving transportControl events.
  * The class that is interested in processing a transportControl

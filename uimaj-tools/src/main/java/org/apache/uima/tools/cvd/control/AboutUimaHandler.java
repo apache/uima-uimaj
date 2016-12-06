@@ -26,7 +26,7 @@ import java.awt.event.ActionListener;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AboutUimaHandler.
  */

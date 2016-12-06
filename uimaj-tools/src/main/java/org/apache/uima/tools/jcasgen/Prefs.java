@@ -21,7 +21,7 @@ package org.apache.uima.tools.jcasgen;
 
 import java.util.prefs.Preferences;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Prefs.
  */

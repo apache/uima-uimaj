@@ -24,7 +24,7 @@ import java.text.NumberFormat;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.NumberFormatter;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class IntegerField.
  */

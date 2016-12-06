@@ -159,7 +159,7 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Class comment for MainFrame.java goes here.
  * 

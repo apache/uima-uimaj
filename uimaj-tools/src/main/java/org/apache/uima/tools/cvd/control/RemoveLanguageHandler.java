@@ -27,7 +27,7 @@ import javax.swing.JMenuItem;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class RemoveLanguageHandler.
  */

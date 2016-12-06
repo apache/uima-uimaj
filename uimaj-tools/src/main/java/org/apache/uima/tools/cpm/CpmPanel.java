@@ -101,7 +101,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UriUtils;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpmPanel.
  */

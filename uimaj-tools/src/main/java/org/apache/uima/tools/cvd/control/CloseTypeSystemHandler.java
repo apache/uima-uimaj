@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CloseTypeSystemHandler.
  */

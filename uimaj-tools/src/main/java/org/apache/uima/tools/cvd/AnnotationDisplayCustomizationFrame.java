@@ -50,7 +50,7 @@ import javax.swing.tree.TreeModel;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add type comment for <code>AnnotationDisplayCustomizationFrame</code>.
  * 

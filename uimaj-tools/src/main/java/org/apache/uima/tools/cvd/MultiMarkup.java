@@ -30,7 +30,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.text.AnnotationFS;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add type comment for <code>MultiMarkup</code>.
  * 

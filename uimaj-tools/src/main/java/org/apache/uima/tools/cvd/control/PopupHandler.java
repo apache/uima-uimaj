@@ -27,7 +27,7 @@ import javax.swing.tree.TreePath;
 import org.apache.uima.tools.cvd.FSTreeModel;
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Action handler for text pop-up menu items.  Select chosen annotation in FS tree, make visible.
  */

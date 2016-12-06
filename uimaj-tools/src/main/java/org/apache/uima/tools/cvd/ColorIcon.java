@@ -25,7 +25,7 @@ import java.awt.Graphics;
 
 import javax.swing.Icon;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add type comment for <code>ColorIcon</code>.
  * 

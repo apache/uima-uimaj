@@ -93,7 +93,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Dialog that loads analyzed documents stored in XMI or XCAS format and allows them to be viewed
  * using the Java-based CAS viewer or a web browser, in either an HTML/Javascript format or in the

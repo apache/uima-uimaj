@@ -27,7 +27,7 @@ import javax.swing.JRadioButtonMenuItem;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SetLanguageHandler.
  */

@@ -28,7 +28,7 @@ import javax.swing.WindowConstants;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ShowTypesystemHandler.
  */

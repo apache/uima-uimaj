@@ -48,7 +48,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.CASMgr;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Insert comment for enclosing_type here.
  * 

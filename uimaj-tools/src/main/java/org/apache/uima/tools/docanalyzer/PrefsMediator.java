@@ -29,7 +29,7 @@ import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PrefsMediator.
  */

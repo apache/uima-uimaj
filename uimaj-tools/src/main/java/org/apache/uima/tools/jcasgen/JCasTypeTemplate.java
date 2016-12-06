@@ -23,7 +23,7 @@ import java.util.Iterator;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.FeatureDescription;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class JCasTypeTemplate.
  */

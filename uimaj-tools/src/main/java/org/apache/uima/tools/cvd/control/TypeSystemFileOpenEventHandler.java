@@ -34,7 +34,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Load a type system file.  Need to load type system before one can load XCAS.
  */

@@ -28,7 +28,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.MultiAnnotViewerFrame;
 import org.apache.uima.tools.cvd.MultiMarkup;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Show the multi-annotation text window. Is anybody even using this? This is handled much better in
  * the DocumentAnalyzer.

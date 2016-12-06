@@ -19,7 +19,7 @@
 
 package org.apache.uima.tools.stylemap;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class StyleConstants.
  */

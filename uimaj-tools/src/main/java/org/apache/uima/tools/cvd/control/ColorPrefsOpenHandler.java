@@ -29,7 +29,7 @@ import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ColorPrefsOpenHandler.
  */

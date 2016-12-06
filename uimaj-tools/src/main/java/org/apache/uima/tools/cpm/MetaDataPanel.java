@@ -41,7 +41,7 @@ import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.FormPanel;
 import org.apache.uima.tools.util.gui.ListSelector;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * A dynamically generated form panel with components generated from configuration parameters

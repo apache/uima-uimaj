@@ -99,7 +99,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.tools.viewer.EntityResolver.Entity;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A Swing component that displays annotations in a text pane with highlighting. There is also a
  * tree view for display details of annotations on which the user clicks. This class extends

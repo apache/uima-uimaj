@@ -36,7 +36,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FormPanel.
  */

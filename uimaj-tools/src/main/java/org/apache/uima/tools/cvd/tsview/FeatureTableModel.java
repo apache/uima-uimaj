@@ -26,7 +26,7 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Insert comment for enclosing_type here.
  * 

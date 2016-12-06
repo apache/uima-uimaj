@@ -22,7 +22,7 @@ package org.apache.uima.tools.jcasgen;
 import java.io.File;
 import java.io.IOException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface IMerge.
  */

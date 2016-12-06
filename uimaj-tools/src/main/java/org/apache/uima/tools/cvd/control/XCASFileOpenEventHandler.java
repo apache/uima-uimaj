@@ -32,7 +32,7 @@ import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Load an XCAS file.
  */

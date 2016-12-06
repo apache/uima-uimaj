@@ -38,7 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Composite component to allow file or directory input or selection. Comprises a JTextField, and a
  * browse button associated with a JFileChooser.

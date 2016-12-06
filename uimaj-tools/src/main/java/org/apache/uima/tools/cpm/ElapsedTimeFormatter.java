@@ -19,7 +19,7 @@
 
 package org.apache.uima.tools.cpm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ElapsedTimeFormatter.
  */

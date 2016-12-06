@@ -22,7 +22,7 @@ package org.apache.uima.tools.cvd;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add type comment for <code>FSTreeNode</code>.
  * 

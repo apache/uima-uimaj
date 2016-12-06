@@ -24,7 +24,7 @@ import org.apache.uima.tools.jcasgen.Jg.ErrorExit;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class LogThrowErrorImpl.
  */

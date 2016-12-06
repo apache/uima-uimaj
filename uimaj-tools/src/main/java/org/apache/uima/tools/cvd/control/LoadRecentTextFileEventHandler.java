@@ -26,7 +26,7 @@ import java.io.File;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class LoadRecentTextFileEventHandler.
  */

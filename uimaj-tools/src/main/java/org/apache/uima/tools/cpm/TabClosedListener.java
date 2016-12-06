@@ -19,7 +19,7 @@
 
 package org.apache.uima.tools.cpm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Callback interface used in conjunction with JTabbedPaneWithCloseIcons.
  *

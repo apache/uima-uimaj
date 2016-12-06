@@ -26,7 +26,7 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.pear.tools.PackageInstallerException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class InstallPearCli.
  */

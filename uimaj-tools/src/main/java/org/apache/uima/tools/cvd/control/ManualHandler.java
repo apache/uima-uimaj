@@ -38,7 +38,7 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import org.apache.uima.tools.cvd.CVD;
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Show the CVD manual in a Swing html widget.  Unfortunately, the html we currently produce from
  * our docbook source is too advanced for the the simple html widget, and is virtually unreadable.

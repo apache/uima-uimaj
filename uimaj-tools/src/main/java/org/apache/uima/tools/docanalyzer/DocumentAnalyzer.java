@@ -99,7 +99,7 @@ import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A simple GUI for the RunTextAnalysis application library. Note that currently this will only run
  * under Windows since it relies on Windows-specific commands for invoking a web browser to view the

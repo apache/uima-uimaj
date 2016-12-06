@@ -21,7 +21,7 @@ package org.apache.uima.tools.cvd;
 
 import org.apache.uima.cas.Type;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Class comment for IndexTreeNode.java goes here.
  * 

@@ -42,7 +42,7 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A node in the FS Tree Model
  * 

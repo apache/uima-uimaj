@@ -24,7 +24,7 @@ import javax.swing.event.CaretListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Caret change handler. Enable/disable cut/copy actions, depending on whether there's a non-empty
  * text selection.

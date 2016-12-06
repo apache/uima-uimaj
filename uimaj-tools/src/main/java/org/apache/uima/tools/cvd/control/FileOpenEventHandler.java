@@ -27,7 +27,7 @@ import javax.swing.JFileChooser;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FileOpenEventHandler.
  */

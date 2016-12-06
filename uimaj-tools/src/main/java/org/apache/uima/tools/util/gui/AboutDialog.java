@@ -38,7 +38,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Dialog showing standard UIMA splash screen and OK button. To be used for "About" menu item in
  * GUIs.

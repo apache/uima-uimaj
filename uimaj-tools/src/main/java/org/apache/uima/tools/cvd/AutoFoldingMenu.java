@@ -22,7 +22,7 @@ package org.apache.uima.tools.cvd;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Auto-folding menu. It overrides the add(JMenuItem) method only.
  * 

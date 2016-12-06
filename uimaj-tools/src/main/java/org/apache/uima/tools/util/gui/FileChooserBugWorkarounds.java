@@ -25,7 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Workarounds for JFileChooser bugs on Windows Look and Feel.
  * 

@@ -41,7 +41,7 @@ import javax.swing.text.DefaultEditorKit;
 
 import org.apache.uima.util.FileUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Simple file viewer for viewing log files.
  * 

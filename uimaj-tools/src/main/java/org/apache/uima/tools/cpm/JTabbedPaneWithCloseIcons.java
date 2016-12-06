@@ -29,7 +29,7 @@ import java.awt.event.MouseListener;
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A JTabbedPane which has a close ('X') icon on each tab. To add a tab, use the method
  * addTab(String, Component) To have an extra icon on each tab (e.g. showing the file type) use the

@@ -37,7 +37,7 @@ import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.internal.util.SerializationUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The CasTreeViewer as an Applet.
  * 

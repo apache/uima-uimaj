@@ -31,7 +31,7 @@ import org.apache.uima.impl.UimaVersion;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AboutHandler.
  */

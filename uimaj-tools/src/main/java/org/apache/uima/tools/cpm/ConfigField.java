@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import org.apache.uima.tools.util.gui.FileSelector;
 import org.apache.uima.tools.util.gui.ListSelector;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Configuration Field class used for representation of resource parameters in dynamically created
  * MetaDataPanels.

@@ -29,7 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ColorEditor.
  */

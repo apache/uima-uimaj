@@ -34,7 +34,7 @@ import javax.swing.border.BevelBorder;
 
 import org.apache.uima.tools.images.Images;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TransportControlPanel.
  */

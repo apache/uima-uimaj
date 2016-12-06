@@ -46,7 +46,7 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.FileChooserBugWorkarounds;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpmFrame.
  */

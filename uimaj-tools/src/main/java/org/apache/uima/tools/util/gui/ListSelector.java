@@ -43,7 +43,7 @@ import javax.swing.border.Border;
 
 import org.apache.uima.tools.images.Images;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * A composite component comprising a JList and associated controls used to add and remove list

@@ -73,7 +73,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLizable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Class holds type plugin-wide collections and static methods. Also implements the runnable that is
  * called to do the processing

@@ -29,7 +29,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import org.apache.uima.tools.images.Images;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class MyCellRenderer.
  */

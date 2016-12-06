@@ -22,7 +22,7 @@ package org.apache.uima.tools.docanalyzer;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class tells the Mediator to check the lenght of the 3 text fields and adjust whether the 3
  * buttons are enabeld or not.

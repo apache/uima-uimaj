@@ -30,7 +30,7 @@ import org.apache.uima.tools.cvd.IndexTreeNode;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.cvd.TypeTreeNode;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Change the display of the FSTree if a type in an index is selected.
  *

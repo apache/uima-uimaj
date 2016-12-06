@@ -69,7 +69,7 @@ import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Main Annotation Viewer GUI. Allows user to choose directory of XCAS or XMI files, then
  * launches the AnnotationViewerDialog.

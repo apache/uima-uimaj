@@ -21,7 +21,7 @@ package org.apache.uima.tools.docanalyzer;
 
 import javax.swing.JComponent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * * This class tells the Mediator to check the length of the 3 text fields and adjust whether the 3
  * buttons are enabeld or not.

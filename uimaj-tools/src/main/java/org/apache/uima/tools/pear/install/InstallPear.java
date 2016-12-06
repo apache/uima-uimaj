@@ -68,7 +68,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.AboutDialog;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This GUI is used to install a pear file locally in a directory chosen by the user and then run
  * the installed AE in CVD. <br>

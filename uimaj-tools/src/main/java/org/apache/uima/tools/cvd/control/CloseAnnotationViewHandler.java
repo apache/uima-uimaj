@@ -28,7 +28,7 @@ import javax.swing.JFrame;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Window closing handler for annotation viewer.  Remember window position on close.
  */

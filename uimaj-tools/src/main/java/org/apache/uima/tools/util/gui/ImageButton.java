@@ -25,7 +25,7 @@ import javax.swing.JButton;
 
 import org.apache.uima.tools.images.Images;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ImageButton.
  */

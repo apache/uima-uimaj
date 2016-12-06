@@ -26,7 +26,7 @@ import javax.swing.AbstractAction;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Text pop-up action (for keyboard accessibility).
  */

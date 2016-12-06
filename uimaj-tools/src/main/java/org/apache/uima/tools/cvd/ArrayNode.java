@@ -19,7 +19,7 @@
 
 package org.apache.uima.tools.cvd;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add type comment for <code>ArrayNode</code>.
  * 

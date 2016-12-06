@@ -19,7 +19,7 @@
 
 package org.apache.uima.tools.cvd;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents an element in a list of markup extents. Knows about the length of the extent, as well
  * as the depth of markup. Depth of markup means, how many annotations cover this extent?

@@ -34,7 +34,7 @@ import org.apache.uima.cas.impl.TypeSystem2Xml;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class XCASSaveTSHandler.
  */

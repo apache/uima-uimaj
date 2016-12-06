@@ -28,7 +28,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SetLogConfigHandler.
  */

@@ -26,7 +26,7 @@ import java.awt.event.FocusListener;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TreeFocusHandler.
  */

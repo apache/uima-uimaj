@@ -27,7 +27,7 @@ import javax.swing.Action;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Action handler for focus in index repository frame.
  */

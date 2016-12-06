@@ -24,7 +24,7 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Listener for changes in text frame. When the text is changed, the CAS is removed as the text from
  * the CAS does no longer correspond to the text that is displayed in the frame, hence annotation

@@ -62,7 +62,7 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A GUI that displays annotation results in a Swing tree viewer. This class extends {@link JPanel}
  * and so can be reused within any Swing application.

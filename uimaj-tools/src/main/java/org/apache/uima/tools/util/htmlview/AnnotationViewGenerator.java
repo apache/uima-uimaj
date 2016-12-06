@@ -45,7 +45,7 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility that uses XSL stylesheets to produce an HTML view (w/ Javascript) of an annotated
  * document.

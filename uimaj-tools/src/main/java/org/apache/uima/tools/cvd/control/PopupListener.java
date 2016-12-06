@@ -24,7 +24,7 @@ import java.awt.event.MouseEvent;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Handle text pop-up (mouse) events. The actual logic for creating the text pop-up menu is not
  * here.

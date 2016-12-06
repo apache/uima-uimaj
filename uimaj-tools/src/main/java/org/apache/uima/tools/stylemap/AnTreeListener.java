@@ -22,7 +22,7 @@ package org.apache.uima.tools.stylemap;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Listens for tree selections and tells the mediator it is OK to enable the class selction button.
  *

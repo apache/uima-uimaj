@@ -37,7 +37,7 @@ import org.apache.uima.cas.impl.CASCompleteSerializer;
 import org.apache.uima.cas.impl.Serialization;
 import org.apache.uima.internal.util.SerializationUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The CasAnnotationViewer as an Applet.
  * 

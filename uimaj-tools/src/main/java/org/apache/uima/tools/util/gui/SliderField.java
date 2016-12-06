@@ -28,7 +28,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SliderField.
  */

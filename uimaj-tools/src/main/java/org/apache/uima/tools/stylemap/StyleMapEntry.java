@@ -21,7 +21,7 @@ package org.apache.uima.tools.stylemap;
 
 import java.awt.Color;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class StyleMapEntry.
  */

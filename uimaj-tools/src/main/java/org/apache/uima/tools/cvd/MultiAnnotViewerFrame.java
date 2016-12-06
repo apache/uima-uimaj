@@ -31,7 +31,7 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Class comment for MultiAnnotViewerFrame goes here.
  * 

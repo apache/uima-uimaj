@@ -27,7 +27,7 @@ import javax.swing.JFileChooser;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Load a CAS from an XMI file.
  */

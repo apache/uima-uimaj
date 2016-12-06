@@ -24,7 +24,7 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetContext;
 import java.awt.dnd.DropTargetDropEvent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TableDropAdapter.
  */

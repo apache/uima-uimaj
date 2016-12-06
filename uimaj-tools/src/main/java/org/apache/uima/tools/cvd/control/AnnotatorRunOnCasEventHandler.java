@@ -25,7 +25,7 @@ import java.awt.event.ActionListener;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AnnotatorRunOnCasEventHandler.
  */

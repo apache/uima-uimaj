@@ -23,7 +23,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ColorParser.
  */

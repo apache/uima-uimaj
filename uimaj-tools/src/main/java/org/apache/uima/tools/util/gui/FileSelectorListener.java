@@ -21,7 +21,7 @@ package org.apache.uima.tools.util.gui;
 
 import javax.swing.JComponent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving fileSelector events.
  * The class that is interested in processing a fileSelector

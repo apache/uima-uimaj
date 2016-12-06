@@ -22,7 +22,7 @@ package org.apache.uima.tools.stylemap;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving tableSelection events.
  * The class that is interested in processing a tableSelection

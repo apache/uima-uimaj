@@ -52,7 +52,7 @@ import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.util.gui.ImageButton;
 import org.apache.uima.tools.util.htmlview.AnnotationViewGenerator;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A GUI for editing style maps for the annotation viewer.
  * <p>

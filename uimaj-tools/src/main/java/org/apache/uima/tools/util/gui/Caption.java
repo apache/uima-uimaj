@@ -22,7 +22,7 @@ package org.apache.uima.tools.util.gui;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * 

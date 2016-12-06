@@ -37,7 +37,7 @@ import org.apache.uima.cas.impl.TypeImpl_string;
 import org.apache.uima.cas.impl.TypeSystemConstants;
 import org.apache.uima.jcas.cas.TOP;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Swing Tree Model for Feature Structures.
  */

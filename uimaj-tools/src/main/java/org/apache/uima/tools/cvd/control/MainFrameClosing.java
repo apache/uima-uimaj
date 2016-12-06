@@ -26,7 +26,7 @@ import java.io.IOException;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Save preferences on closing CVD.
  */

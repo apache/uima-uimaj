@@ -28,7 +28,7 @@ import javax.swing.undo.UndoableEdit;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Undo manager for text area.
  */

@@ -28,7 +28,7 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ColorRenderer.
  */

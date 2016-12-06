@@ -33,7 +33,7 @@ import org.apache.uima.tools.cvd.MainFrame;
 import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Save CAS to disk as XMI.
  */

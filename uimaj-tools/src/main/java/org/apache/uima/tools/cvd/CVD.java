@@ -30,7 +30,7 @@ import org.apache.uima.internal.util.CommandLineParser;
 import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.tools.images.Images;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The main class for the CAS Visual Debugger.
  * 

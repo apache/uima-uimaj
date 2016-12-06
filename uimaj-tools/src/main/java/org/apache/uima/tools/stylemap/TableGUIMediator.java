@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionEvent;
 
 import org.apache.uima.tools.util.gui.ImageButton;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Mediates GI elements in StyleMapEditor keeping buttons enabled or disabled depending on whether a
  * row is selected.

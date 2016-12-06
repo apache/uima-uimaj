@@ -23,7 +23,7 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * File filter to accept only xml files (.xml extension)
  */
