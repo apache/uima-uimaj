@@ -92,7 +92,7 @@ under the License.
     <para>Step 4 is to run JCasGen on this class to get an initial version of the class.  Of course, it will be missing
     the Java Hashmap, but we'll add that in the next step.</para>
     
-    <para>Step 5: modify the generated JCas class in 3 ways.
+    <para>Step 5: modify 3 aspects of the generated JCas class.
     <variablelist>
        <varlistentry>
           <term>Mark the class with one of two interfaces:</term>
@@ -158,7 +158,7 @@ public void _save_to_cas_data() {
             case (but one which might occur frequently), and in that case having the
             _save_to_cas_data operation do nothing, since the original CAS data is still valid.</para>
             
-            <para>One additional method is required for all of these classes:            
+            <para>One additional "boilderplate" method is required for all of these classes:            
             <blockquote><para>public FeatureStructureImplC _superClone() {return clone();}</para></blockquote></para>
           </listitem>
        </varlistentry>
@@ -235,7 +235,17 @@ public void _save_to_cas_data() {
     </section>
     
   </section>
-     
+  
+  <section id="uv3.custom_java_objects.design">
+      <title>Design for reuse</title>
+      
+      <para>While it is possible to have a single custom JCas class implement multiple Java Objects, this is 
+        typically not a good design practice, as it reduces reusability.  It is usually better to 
+        implement one custom Java object per JCas class, with an associated UIMA type, and have that as
+        the reusable entity.
+      </para>
+  </section>
+
 </chapter>
     
   
