@@ -38,4 +38,5 @@ public interface Constants {
   static File[] EMPTY_FILE_ARRAY = new File[0];
   static URL[] EMPTY_URL_ARRAY = new URL[0];
   static ConfigurationParameter[] EMPTY_CONFIG_PARM_ARRAY = new ConfigurationParameter[0];
+  static Object[] EMPTY_OBJ_ARRAY = new Object[0];
 }

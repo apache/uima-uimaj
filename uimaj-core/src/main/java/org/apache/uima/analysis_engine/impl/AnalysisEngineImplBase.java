@@ -97,23 +97,19 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
    * @see org.apache.uima.analysis_engine.AnalysisEngine#batchProcessComplete()
    */
   public void batchProcessComplete() throws AnalysisEngineProcessException {
-    // TODO Auto-generated method stub
-    
+ 
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_engine.AnalysisEngine#collectionProcessComplete()
    */
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
-    // TODO Auto-generated method stub
-    
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.analysis_engine.AnalysisEngine#processAndOutputNewCASes(org.apache.uima.cas.CAS)
    */
   public CasIterator processAndOutputNewCASes(CAS aCAS) throws AnalysisEngineProcessException {
-    // TODO Auto-generated method stub
     return null;
   }
 

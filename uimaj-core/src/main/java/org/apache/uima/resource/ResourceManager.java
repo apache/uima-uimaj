@@ -141,6 +141,8 @@ public interface ResourceManager {
    * 
    * @param aName
    *          the name of a resource
+   *          
+   * @param <N> the type of the Class
    * 
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.

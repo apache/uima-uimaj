@@ -1624,8 +1624,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
             vPrevModHeapRef = writeDiff(heapRef_i, v, vPrevModHeapRef); break;
           }
           case Slot_StrRef: writeString(((StringArray)fs).get(index)); break;
-
-          case Slot_JavaObjectRef: throw new UnsupportedOperationException();
           
           default: 
             Misc.internalError();
@@ -1679,7 +1677,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           }
           break;
         case Slot_StrRef: writeString(fs._getStringValueNc(fi)); break;
-        case Slot_JavaObjectRef: throw new UnsupportedOperationException(); 
         default: Misc.internalError();
         } // end of Switch
         offset = bs.nextSetBit(offset + 1);
@@ -2060,7 +2057,6 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
         break;
 
-      case Slot_JavaObjectRef: throw new UnsupportedOperationException();
       default: Misc.internalError();
     } // end of switch
   }

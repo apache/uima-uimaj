@@ -280,7 +280,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @param <N> the generic type
    * @param a the a
    * @return the N[]
-   * @see java.util.AbstractCollection#toArray(T[])
+   * @see java.util.AbstractCollection#toArray(Object[])
    */
   public <N> N[] toArray(N[] a) {
     if (isSaveNeeded) {

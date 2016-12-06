@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Like string heap, but keeps strings in a set
+ * Like string heap, but keeps strings in a hashmap (for quick testing) and an array list.
+ * This is used to emulate how v2 keeps strings, to support backwards compatibility for low-level access
  * 
  */
 final class StringSet {

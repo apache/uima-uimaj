@@ -217,8 +217,13 @@ public class Int2ObjHashMap<T> {
    * @param clazz
    * @param initialCapacity
    */
-  private Int2ObjHashMap(Class<T> clazz, int initialCapacity,
-    int sizeWhichTriggersExpansion, int size, int[] keys, T [] values) {
+  private Int2ObjHashMap(
+      Class<T> clazz, 
+      int initialCapacity,
+      int sizeWhichTriggersExpansion, 
+      int size, 
+      int[] keys, 
+      T[] values) {
     this.componentType = clazz;
     this.initialCapacity = Misc.nextHigherPowerOf2(initialCapacity);
     this.sizeWhichTriggersExpansion = sizeWhichTriggersExpansion;
@@ -229,6 +234,7 @@ public class Int2ObjHashMap<T> {
   }
         
   private void newTableKeepSize(int capacity) {
+    // minimum size is 16
     capacity = Math.max(16, Misc.nextHigherPowerOf2(capacity));
     keys = new int[capacity];
     values = (T[]) Array.newInstance(componentType, capacity);

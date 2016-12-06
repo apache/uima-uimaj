@@ -47,7 +47,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.util.impl.Constants;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An ArrayList type containing Feature Structures, for UIMA
  *   - Has all the methods of List

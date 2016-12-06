@@ -126,8 +126,6 @@ public class SlotKinds {
     Slot_Boolean(             !  CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
     // next used to capture original heap size
     Slot_MainHeap(               IGNORED,         4, !IN_MAIN_HEAP),
-    //TODO fix this 
-    Slot_JavaObjectRef(          CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP);
   
     ;
     public final boolean canBeNegative;

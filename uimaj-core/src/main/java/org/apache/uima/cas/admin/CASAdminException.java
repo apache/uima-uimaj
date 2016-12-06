@@ -122,7 +122,6 @@ public class CASAdminException extends UIMARuntimeException {
    */
   @Override
   public String getResourceBundleName() {
-    // TODO Auto-generated method stub
     return resourceBundleName;
   }
 

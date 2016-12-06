@@ -510,11 +510,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private boolean traceFSisCreate;
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
     private int nextId2Addr = 1;  // only for tracing, to convert id's to v2 addresses
-    
+    final private int initialHeapSize;
     
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
       this.tsi = tsi;
+      this.initialHeapSize = initialHeapSize;
       bcsd = new BinaryCasSerDes(baseCAS);
       id2fs = new Id2FS(initialHeapSize);
       if (traceFSs) id2addr.add(0);
@@ -5131,6 +5132,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   private void restorePearContext() {
     svd.previousJCasClassLoader = svd.suspendPreviousJCasClassLoader;
+  }
+  
+  /**
+   * 
+   * @return the initial heap size specified or defaulted
+   */
+  public int getInitialHeapSize() {
+    return this.svd.initialHeapSize;
   }
 
 //  int allocIntData(int sz) {

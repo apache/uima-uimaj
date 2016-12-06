@@ -146,7 +146,7 @@ public final class Heap {
     }
     // Set position and max.
     this.pos = shortHeap.length;
-//    this.max = this.initialSize;  // TODO fix me  
+//    this.max = this.initialSize;    
     this.max = this.heap.length;   // heap could be repl by short heap
   }
 
