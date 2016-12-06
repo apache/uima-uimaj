@@ -21,7 +21,7 @@ package org.apache.uima.taeconfigurator.editors.point;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This interface is used to redirect the editing functions from CDE
  * to the external editor for a new type of Resource Specifier.

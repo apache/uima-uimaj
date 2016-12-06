@@ -29,7 +29,7 @@ import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Model part: names of the defined types, augmented with their supertypes This means that some of
  * the built-ins (those in the super chain) will be included.

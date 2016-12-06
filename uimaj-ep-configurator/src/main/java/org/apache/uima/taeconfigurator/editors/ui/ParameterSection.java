@@ -141,7 +141,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ParameterSection.
  */

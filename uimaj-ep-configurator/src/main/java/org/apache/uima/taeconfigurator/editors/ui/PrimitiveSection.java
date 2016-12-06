@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class is misnamed - refers really to Runtime Information.
  */

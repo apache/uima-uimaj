@@ -27,7 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class HeaderPageWithSash.
  */

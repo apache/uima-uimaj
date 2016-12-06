@@ -42,7 +42,7 @@ import org.apache.uima.taeconfigurator.PreferencePage;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.xml.XMLEditor;
 
-// TODO: Auto-generated Javadoc
+
 // import org.eclipse.jdt.launching.IVMRunner;
 
 // import org.apache.uima.jcas.jcasgen.Prefs;

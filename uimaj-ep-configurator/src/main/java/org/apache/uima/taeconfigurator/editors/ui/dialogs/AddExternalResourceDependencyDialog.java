@@ -30,7 +30,7 @@ import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ResourceDependencySection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddExternalResourceDependencyDialog.
  */

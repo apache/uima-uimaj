@@ -27,7 +27,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ImportResBindSection.
  */

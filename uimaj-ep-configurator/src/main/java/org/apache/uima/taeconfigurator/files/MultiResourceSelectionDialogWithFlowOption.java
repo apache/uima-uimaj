@@ -34,7 +34,7 @@ import org.apache.uima.taeconfigurator.Messages;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class MultiResourceSelectionDialogWithFlowOption.
  */

@@ -23,7 +23,7 @@ import org.apache.uima.analysis_engine.metadata.CapabilityLanguageFlow;
 import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Instances of this class model the varients of flow nodes in a uniform way.
  * 

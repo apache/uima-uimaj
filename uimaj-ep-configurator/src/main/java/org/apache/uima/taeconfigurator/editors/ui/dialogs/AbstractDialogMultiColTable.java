@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Widget;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractDialogMultiColTable.
  */

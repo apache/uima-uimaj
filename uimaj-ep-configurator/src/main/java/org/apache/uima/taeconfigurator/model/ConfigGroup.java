@@ -26,7 +26,7 @@ import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSectionParm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Instances of this class model the 3 varients of configuration parameter sets.
  * 

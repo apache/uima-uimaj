@@ -28,7 +28,7 @@ import org.apache.uima.taeconfigurator.model.BuiltInTypes;
 import org.eclipse.swt.custom.TableTreeItem;
 import org.eclipse.swt.widgets.Composite;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractImportablePartSection.
  */

@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AggregateSection.
  */

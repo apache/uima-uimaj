@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CapabilitySection.
  */

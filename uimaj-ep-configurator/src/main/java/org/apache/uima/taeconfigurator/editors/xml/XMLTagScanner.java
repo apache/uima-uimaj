@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.editors.xml;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.rules.*;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class XMLTagScanner.
  */

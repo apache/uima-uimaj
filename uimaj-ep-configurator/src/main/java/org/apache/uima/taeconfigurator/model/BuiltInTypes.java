@@ -40,7 +40,7 @@ import org.apache.uima.resource.metadata.impl.TypeDescription_impl;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.util.CasCreationUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Gets and caches an array list of all the built-in tcas types.
  */

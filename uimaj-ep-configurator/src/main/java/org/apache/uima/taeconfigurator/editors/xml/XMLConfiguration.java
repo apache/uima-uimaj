@@ -31,7 +31,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 
 import org.apache.uima.taeconfigurator.editors.MultiPageEditorContributor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class XMLConfiguration.
  */

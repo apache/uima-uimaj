@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.model;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Instances of this class model the varients of getting and setting metadata.
  * 

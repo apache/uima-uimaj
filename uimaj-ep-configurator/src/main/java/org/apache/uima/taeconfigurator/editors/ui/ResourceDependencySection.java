@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Declaration of primitive external resource dependencies A 4 col table: bound/unbound, keys, opt
  * flag, and interface name.

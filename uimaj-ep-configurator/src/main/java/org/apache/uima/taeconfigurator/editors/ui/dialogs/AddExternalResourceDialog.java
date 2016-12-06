@@ -35,7 +35,7 @@ import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.ExtnlResBindSection;
 import org.apache.uima.taeconfigurator.editors.ui.Utility;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddExternalResourceDialog.
  */

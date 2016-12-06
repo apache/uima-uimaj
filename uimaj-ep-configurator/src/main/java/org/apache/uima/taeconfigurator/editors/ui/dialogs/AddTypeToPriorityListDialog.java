@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.List;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddTypeToPriorityListDialog.
  */

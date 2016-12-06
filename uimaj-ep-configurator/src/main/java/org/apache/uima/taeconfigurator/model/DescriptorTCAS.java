@@ -27,7 +27,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Model part: CAS corresponding to the descriptor being edited.
  */

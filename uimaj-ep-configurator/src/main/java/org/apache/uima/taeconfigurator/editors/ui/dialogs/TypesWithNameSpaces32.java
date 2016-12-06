@@ -30,7 +30,7 @@ import java.util.SortedMap;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 
-// TODO: Auto-generated Javadoc
+
 /*
  * This class forwards to TypesWithNameSpaces
  * Purpose: provide content assist under Eclipse 3.2

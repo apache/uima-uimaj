@@ -47,7 +47,7 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class XMLEditor.
  */

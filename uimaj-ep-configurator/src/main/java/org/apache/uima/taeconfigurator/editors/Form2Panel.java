@@ -21,7 +21,7 @@ package org.apache.uima.taeconfigurator.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 3 element return value for 2 panel forms.
  */

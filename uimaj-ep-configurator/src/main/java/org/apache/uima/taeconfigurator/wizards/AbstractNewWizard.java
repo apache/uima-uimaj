@@ -52,7 +52,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.apache.uima.taeconfigurator.InternalErrorCDE;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Create a new file resource in the provided container. If the container resource (a folder or a
  * project) is selected in the workspace when the wizard is opened, it will accept it as the target

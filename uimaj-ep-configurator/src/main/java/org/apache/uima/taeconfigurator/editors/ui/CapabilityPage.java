@@ -24,7 +24,7 @@ import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CapabilityPage.
  */

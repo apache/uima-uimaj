@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.IManagedForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * display parameters on the settings page. If groups, show by groups (using Tree metaphor) Note:
  * The tree displayed here is an expanded version of the ParameterSection Tree. It differs in 3

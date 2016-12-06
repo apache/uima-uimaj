@@ -160,7 +160,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Main class implementing the multi page editor. In Eclipse 3, we extend FormEditor, which extends
  * in turn MultiPageEditorPart.

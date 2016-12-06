@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.editors.ui;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FileAndShortName.
  */

@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddIndexDialog.
  */

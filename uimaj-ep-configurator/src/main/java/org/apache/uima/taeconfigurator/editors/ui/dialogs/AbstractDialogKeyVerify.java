@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Label;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractDialogKeyVerify.
  */

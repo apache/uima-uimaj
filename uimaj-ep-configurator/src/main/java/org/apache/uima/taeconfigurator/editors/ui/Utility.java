@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Utility.
  */

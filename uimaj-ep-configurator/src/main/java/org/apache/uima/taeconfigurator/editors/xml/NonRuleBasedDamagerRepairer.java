@@ -32,7 +32,7 @@ import org.eclipse.jface.text.presentation.IPresentationRepairer;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.custom.StyleRange;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class NonRuleBasedDamagerRepairer.
  */

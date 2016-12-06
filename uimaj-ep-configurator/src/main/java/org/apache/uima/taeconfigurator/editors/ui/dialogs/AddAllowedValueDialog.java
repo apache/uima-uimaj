@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Text;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddAllowedValueDialog.
  */

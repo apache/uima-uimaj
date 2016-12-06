@@ -28,7 +28,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Model part: Map of all defined types Key = string = typename, fully qualified Value = CAS
  * TypeSystem Type object.

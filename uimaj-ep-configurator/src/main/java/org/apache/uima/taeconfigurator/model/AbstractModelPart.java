@@ -24,7 +24,7 @@ import java.util.Properties;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractModelPart.
  */

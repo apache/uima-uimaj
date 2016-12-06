@@ -37,7 +37,7 @@ import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.resource.metadata.FsIndexKeyDescription;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddIndexKeyDialog.
  */

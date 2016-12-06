@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FindComponentDialog.
  */

@@ -25,7 +25,7 @@ import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.DefaultPartitioner;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class XMLDocumentProvider.
  */

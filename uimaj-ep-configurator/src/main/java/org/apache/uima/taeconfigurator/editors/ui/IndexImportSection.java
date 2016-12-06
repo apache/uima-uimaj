@@ -32,7 +32,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.eclipse.swt.widgets.Composite;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class IndexImportSection.
  */

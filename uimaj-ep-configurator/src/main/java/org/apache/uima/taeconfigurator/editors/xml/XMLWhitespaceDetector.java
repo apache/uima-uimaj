@@ -21,7 +21,7 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import org.eclipse.jface.text.rules.IWhitespaceDetector;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class XMLWhitespaceDetector.
  */

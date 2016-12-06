@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractDialogKeyVerifyJavaNames.
  */

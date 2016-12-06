@@ -21,7 +21,7 @@ package org.apache.uima.taeconfigurator.editors.xml;
 
 import org.eclipse.swt.graphics.RGB;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface IXMLColorConstants.
  */

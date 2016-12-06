@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Control;
 
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CommonInputDialog.
  */

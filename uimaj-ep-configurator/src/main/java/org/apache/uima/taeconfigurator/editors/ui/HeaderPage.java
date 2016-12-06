@@ -40,7 +40,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Common part of most pages.
  */

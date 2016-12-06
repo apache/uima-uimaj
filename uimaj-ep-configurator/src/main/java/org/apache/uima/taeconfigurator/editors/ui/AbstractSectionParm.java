@@ -44,7 +44,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractSectionParm.
  */

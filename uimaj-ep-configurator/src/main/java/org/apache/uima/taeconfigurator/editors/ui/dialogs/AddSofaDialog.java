@@ -33,7 +33,7 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.taeconfigurator.editors.ui.AbstractSection;
 import org.apache.uima.taeconfigurator.editors.ui.CapabilitySection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AddSofaDialog.
  */

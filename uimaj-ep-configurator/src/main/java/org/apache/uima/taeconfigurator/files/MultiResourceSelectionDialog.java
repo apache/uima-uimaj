@@ -58,7 +58,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class MultiResourceSelectionDialog.
  */

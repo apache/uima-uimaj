@@ -27,7 +27,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PreferencePage.
  */

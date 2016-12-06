@@ -22,7 +22,7 @@ package org.apache.uima.taeconfigurator.editors.ui.dialogs;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Display;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SearchMonitoringThread.
  */

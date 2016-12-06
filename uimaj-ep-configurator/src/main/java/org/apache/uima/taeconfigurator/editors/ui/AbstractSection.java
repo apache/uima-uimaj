@@ -118,7 +118,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractSection.
  */

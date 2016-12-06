@@ -43,7 +43,7 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import org.apache.uima.taeconfigurator.TAEConfiguratorPlugin;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractNewWizardPage.
  */

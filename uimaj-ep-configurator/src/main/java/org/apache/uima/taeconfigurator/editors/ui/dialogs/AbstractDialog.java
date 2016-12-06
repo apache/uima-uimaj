@@ -50,7 +50,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractDialog.
  */

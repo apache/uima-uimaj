@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SelectTypeDialog.
  */
