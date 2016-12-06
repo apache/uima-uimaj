@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-<!ENTITY imgroot "images/uima_v3_users_guide/backwards_compatibility/">
+<!ENTITY imgroot "images/version_3_users_guide/backwards_compatibility/">
 <!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
 %uimaents;
 ]>

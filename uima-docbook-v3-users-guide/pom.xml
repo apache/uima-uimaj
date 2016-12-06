@@ -55,7 +55,7 @@
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <!-- next property is the name of the top file under src/docbook without trailing .xml -->
-    <bookNameRoot>uima_v3_users_guide</bookNameRoot>
+    <bookNameRoot>version_3_users_guide</bookNameRoot>
   </properties>
  	
 </project>
