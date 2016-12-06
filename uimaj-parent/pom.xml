@@ -266,10 +266,9 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
-                  <exclude>release.properties</exclude> <!-- release generated artifact -->
-                  <exclude>src/main/run_configuration/*.launch</exclude> <!-- generated Eclipse launch files -->
-                </excludes>              
+                <excludes combine.children="append">
+                  <exclude>src/main/run_configuration/*.launch</exclude>
+                </excludes>    
               </configuration>
             </execution>
           </executions>
