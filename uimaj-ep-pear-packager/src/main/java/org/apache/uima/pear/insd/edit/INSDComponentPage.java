@@ -48,7 +48,7 @@ import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
 import org.apache.uima.pear.tools.InstallationDescriptor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This is wizard page to edit UIMA component basic information.
  */

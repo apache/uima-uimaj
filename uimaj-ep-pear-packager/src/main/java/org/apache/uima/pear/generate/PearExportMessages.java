@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility class which helps managing messages.
  */

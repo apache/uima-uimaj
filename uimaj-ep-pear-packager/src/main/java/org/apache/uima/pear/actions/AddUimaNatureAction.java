@@ -34,7 +34,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import org.apache.uima.pear.tools.InstallationDescriptor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class handles the "Add UIMA Nature" action, which appear in the context menu of a project.
  */

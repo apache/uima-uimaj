@@ -29,7 +29,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AbstractVarValViewerHandler.
  */

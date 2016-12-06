@@ -22,7 +22,7 @@ package org.apache.uima.pear.insd.edit.vars;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class implements an ICellModifier An ICellModifier is called when the user modifes a cell in
  * the tableViewer.

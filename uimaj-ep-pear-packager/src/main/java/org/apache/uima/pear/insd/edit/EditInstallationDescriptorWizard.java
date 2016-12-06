@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbench;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Wizard to edit the PEAR Installation Descriptor.
  * 

@@ -46,7 +46,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Wizard to generate a PEAR file.
  * 

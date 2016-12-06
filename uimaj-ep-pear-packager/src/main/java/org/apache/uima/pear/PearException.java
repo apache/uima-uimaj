@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * This is the generic exception used to handle exceptions related to PEAR.

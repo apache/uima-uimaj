@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * Handles the PEAR installation descriptor (install.xml)

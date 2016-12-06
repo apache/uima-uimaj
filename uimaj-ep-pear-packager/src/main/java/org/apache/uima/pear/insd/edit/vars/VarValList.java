@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Represents a list of environment variable to be displayed in a table.
  */

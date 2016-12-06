@@ -23,7 +23,7 @@ import java.io.File;
 
 import org.apache.uima.pear.PearException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A util class for PEAR export operations.
  */

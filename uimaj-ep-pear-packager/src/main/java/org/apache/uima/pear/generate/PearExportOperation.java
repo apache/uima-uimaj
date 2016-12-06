@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * {@link IRunnableWithProgress} that creates a zip file containing a given set of resources *.
  */

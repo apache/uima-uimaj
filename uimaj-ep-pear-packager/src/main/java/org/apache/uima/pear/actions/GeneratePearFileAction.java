@@ -38,7 +38,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * This class handles the "Generate PEAR" action, which appear in the context menu of a project with

@@ -22,7 +22,7 @@ package org.apache.uima.pear.insd.edit.vars;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This sorter supports three sort criteria:
  * <p>

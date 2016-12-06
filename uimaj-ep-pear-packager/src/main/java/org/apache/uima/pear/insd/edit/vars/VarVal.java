@@ -19,7 +19,7 @@
 
 package org.apache.uima.pear.insd.edit.vars;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * Represents a table row in a two column table (of environment varibles).

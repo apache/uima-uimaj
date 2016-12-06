@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.apache.uima.pear.tools.InstallationDescriptor;
 import org.apache.uima.pear.tools.InstallationDescriptorHandler;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This is wizard page to edit PEAR Installation Environment parameters.
  */

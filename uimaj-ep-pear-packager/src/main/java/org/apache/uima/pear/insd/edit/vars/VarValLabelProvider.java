@@ -23,7 +23,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Label provider for the VarValViewerHandler.
  *

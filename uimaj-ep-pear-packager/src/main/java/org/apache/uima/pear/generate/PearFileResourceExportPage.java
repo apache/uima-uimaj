@@ -56,7 +56,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.model.WorkbenchViewerSorter;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Wizard page for exporting resource to a PEAR file.
  */

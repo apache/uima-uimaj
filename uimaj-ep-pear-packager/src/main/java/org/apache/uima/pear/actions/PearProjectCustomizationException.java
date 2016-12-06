@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PearProjectCustomizationException.
  */
