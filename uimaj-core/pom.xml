@@ -130,22 +130,19 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
-                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                <excludes combine.children="append">
                   <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/data/moby.txt</exclude>
                   <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/pearTests/*.pear</exclude> <!-- test pear files -->
                   <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
                   <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
-                  <exclude>src/test/resources/SerDes4/SavedInts.binary</exclude> <!-- test data -->
+                  <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude> <!-- test data -->
                   <exclude>src/test/java/aa/*.java</exclude> <!-- jcas classes generated -->
                   <exclude>src/test/java/org/apache/uima/cas/test/*.java</exclude> <!-- jcas classes generated -->
                   <exclude>src/test/java/org/apache/lang/LanguagePair.java</exclude> <!-- jcas classes generated -->
                   <exclude>src/test/java/sofa/test/CrossAnnotation.java</exclude> <!-- jcas classes generated -->
                   <exclude>src/test/java/x/y/z/*.java</exclude> <!-- jcas classes generated -->
-                  
-                  <exclude>marker-file-identifying-*</exclude>
                 </excludes>              
               </configuration>
             </execution>
