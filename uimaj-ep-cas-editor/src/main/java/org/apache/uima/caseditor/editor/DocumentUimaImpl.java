@@ -71,7 +71,7 @@ import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This document implementation is based on an uima cas object.
  */

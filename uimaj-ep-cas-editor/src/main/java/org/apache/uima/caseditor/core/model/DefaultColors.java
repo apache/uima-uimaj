@@ -32,7 +32,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility to assign default colors to the annotation types in the
  * TypeSystem.

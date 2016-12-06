@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor;
 
 import org.eclipse.ui.IEditorInput;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving ICasEditorInput events.
  * The class that is interested in processing a ICasEditorInput

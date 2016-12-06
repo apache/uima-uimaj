@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IEditorInput;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Factory class to produce and lookup an appropriate document provider.
  */

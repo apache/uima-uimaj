@@ -19,7 +19,7 @@
 
 package org.apache.uima.caseditor.editor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A general {@link RuntimeException} which is thrown if something unexpected happens.
  */

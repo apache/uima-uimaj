@@ -27,7 +27,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
-// TODO: Auto-generated Javadoc
+
 /**
    * This <code>OutlineContentProvider</code> synchronizes the <code>AnnotationFS</code>s with
    * the <code>TableViewer</code>.

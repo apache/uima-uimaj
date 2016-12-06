@@ -22,7 +22,7 @@ package org.apache.uima.caseditor.editor.outline;
 import org.apache.uima.caseditor.editor.CasEditorError;
 import org.eclipse.jface.action.Action;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This action triggers the switch of the outline style.
  */

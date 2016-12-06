@@ -25,7 +25,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;
 import org.eclipse.ui.texteditor.StatusLineContributionItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The <code>AnnotationEditor</code> action contributor.
  *

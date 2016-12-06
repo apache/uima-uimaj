@@ -30,7 +30,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FeatureStructureSelection.
  */

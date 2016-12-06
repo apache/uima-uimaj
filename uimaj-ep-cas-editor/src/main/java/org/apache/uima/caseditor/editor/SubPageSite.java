@@ -28,7 +28,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.SubActionBars;
 import org.eclipse.ui.part.IPageSite;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class SubPageSite.
  */

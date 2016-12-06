@@ -25,7 +25,7 @@ import org.apache.uima.caseditor.editor.FeatureValue;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FeatureColumnLabelProvider.
  */

@@ -25,7 +25,7 @@ import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Deletes all selected annotations.
  */

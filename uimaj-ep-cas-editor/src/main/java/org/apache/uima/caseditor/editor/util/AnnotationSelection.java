@@ -31,7 +31,7 @@ import org.apache.uima.caseditor.editor.FeatureStructureSelectionIterator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The annotation collection contains only {@link AnnotationFS}s objects which are selected by a
  * {@link IStructuredSelection}.

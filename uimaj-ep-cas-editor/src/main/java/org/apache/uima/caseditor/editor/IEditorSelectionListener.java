@@ -19,7 +19,7 @@
 
 package org.apache.uima.caseditor.editor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving IEditorSelection events.
  * The class that is interested in processing a IEditorSelection

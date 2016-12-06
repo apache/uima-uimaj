@@ -29,7 +29,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class OutlinePageBook.
  */

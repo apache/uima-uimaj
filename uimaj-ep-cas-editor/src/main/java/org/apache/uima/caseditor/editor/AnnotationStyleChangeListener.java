@@ -25,7 +25,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Annotation Style Change Listener base class which converts annotation style change events from
  * a Preference Store to AnnotationStyle object change events.

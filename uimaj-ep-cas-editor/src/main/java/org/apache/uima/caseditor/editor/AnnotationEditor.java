@@ -143,7 +143,7 @@ import org.eclipse.ui.texteditor.IWorkbenchActionDefinitionIds;
 import org.eclipse.ui.texteditor.StatusTextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An editor to annotate text.
  */

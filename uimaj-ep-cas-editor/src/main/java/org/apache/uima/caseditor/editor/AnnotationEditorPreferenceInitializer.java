@@ -23,7 +23,7 @@ import org.apache.uima.caseditor.CasEditorPlugin;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AnnotationEditorPreferenceInitializer.
  */

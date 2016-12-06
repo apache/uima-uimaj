@@ -27,7 +27,7 @@ import org.apache.uima.caseditor.core.model.DefaultColors;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The <code>AnnotationStyle</code> describes the look of an certain annotation type in the
  * <code>AnnotationEditor</code>.

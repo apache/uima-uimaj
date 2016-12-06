@@ -26,7 +26,7 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Filters out all annotations which are not contained by one of the provided
  * annotations.

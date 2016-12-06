@@ -29,7 +29,7 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Lowers the right side of the currently selected annotation by one.
  */

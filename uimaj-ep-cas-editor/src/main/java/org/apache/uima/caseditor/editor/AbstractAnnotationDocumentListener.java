@@ -25,7 +25,7 @@ import java.util.Collection;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This listener listens only for {@link AnnotationFS} change events. All other change events for
  * {@link FeatureStructure}s are filtered.

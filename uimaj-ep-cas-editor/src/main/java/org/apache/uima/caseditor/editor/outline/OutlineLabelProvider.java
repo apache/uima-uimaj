@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This <code>OutlineLabelProvider</code> returns the covered text of an <code>AnnotationFS</code>.
  */

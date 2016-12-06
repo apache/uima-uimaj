@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AnnotationEditorPreferenceConstants.
  */

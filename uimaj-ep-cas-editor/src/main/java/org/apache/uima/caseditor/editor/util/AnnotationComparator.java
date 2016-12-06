@@ -24,7 +24,7 @@ import java.util.Comparator;
 
 import org.apache.uima.cas.text.AnnotationFS;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Checks two annotations for equality.
  */

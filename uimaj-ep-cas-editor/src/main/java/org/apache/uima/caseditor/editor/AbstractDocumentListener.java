@@ -24,7 +24,7 @@ import java.util.Collection;
 
 import org.apache.uima.cas.FeatureStructure;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add javadoc here.
  */

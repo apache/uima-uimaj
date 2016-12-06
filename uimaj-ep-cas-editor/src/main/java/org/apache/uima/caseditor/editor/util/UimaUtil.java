@@ -25,7 +25,7 @@ import java.util.Collection;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.text.AnnotationFS;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add javadoc here.
  */

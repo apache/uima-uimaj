@@ -25,7 +25,7 @@ import java.util.List;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AnnotationEditorSelection.
  */

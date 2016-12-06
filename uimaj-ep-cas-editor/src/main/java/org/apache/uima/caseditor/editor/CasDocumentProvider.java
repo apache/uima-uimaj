@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Provides the {@link org.apache.uima.caseditor.editor.ICasDocument} for the
  * {@link AnnotationEditor}.

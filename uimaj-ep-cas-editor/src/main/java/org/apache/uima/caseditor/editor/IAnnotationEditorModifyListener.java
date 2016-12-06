@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.apache.uima.cas.Type;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving IAnnotationEditorModify events.
  * The class that is interested in processing a IAnnotationEditorModify

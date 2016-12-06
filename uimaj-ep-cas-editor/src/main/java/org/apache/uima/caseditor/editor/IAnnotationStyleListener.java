@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor;
 
 import java.util.Collection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving IAnnotationStyle events.
  * The class that is interested in processing a IAnnotationStyle

@@ -22,7 +22,7 @@ package org.apache.uima.caseditor.editor;
 import org.apache.uima.cas.Type;
 import org.eclipse.jface.action.Action;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The {@link ChangeModeAction} changes the editor annotation mode to the newly selected one.
  */

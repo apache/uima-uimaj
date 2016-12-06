@@ -60,7 +60,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This is the <code>AnnotationPropertyPage</code>. this page configures the project dependent
  * and type dependent annotation appearance in the <code>AnnotationEditor</code>.

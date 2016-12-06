@@ -26,7 +26,7 @@ import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.AnnotationStyle.Style;
 import org.eclipse.jface.text.source.AnnotationPainter.IDrawingStrategy;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A factory for drawing styles.
  * 

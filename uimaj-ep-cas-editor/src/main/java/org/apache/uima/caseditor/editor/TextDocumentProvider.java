@@ -28,7 +28,7 @@ import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TextDocumentProvider.
  */

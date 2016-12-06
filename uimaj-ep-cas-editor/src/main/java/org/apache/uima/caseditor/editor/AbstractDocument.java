@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.util.SafeRunnable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Abstract base class for document implementations.
  */

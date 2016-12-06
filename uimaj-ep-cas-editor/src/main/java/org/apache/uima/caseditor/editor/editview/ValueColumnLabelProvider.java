@@ -28,7 +28,7 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Provides the labels for the edit view.
  */

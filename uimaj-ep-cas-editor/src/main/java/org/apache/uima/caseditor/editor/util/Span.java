@@ -19,7 +19,7 @@
 
 package org.apache.uima.caseditor.editor.util;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class usually specifies an continous are of text. This area has an start and end index. The
  * difference of the end and start is the length of the area.

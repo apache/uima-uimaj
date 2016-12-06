@@ -37,7 +37,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Display;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FeatureStructureContentProvider.
  */

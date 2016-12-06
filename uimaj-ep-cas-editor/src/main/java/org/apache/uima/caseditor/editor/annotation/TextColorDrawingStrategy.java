@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TextColorDrawingStrategy.
  */

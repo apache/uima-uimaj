@@ -27,7 +27,7 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add javadoc here.
  */

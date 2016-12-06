@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor.fsview;
 
 import org.apache.uima.cas.Type;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Notifies clients about type changes.
  */

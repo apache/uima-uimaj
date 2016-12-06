@@ -37,7 +37,7 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The content provider for the type grouped annotation outline.
  * 

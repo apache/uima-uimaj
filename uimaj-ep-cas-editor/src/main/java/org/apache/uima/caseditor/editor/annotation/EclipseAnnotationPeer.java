@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor.annotation;
 
 import org.apache.uima.cas.text.AnnotationFS;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class is used to provide additional information about the {@link AnnotationFS}
  * object to the custom drawing strategies.

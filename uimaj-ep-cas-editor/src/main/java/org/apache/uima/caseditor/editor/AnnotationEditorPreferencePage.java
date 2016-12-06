@@ -26,7 +26,7 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Preference page to manage preferences for the Annotation Editor.
  */

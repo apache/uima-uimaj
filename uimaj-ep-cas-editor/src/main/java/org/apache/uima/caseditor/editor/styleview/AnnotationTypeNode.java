@@ -23,7 +23,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.eclipse.core.runtime.IAdaptable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AnnotationTypeNode.
  */

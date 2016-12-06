@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Creates the show annotations context sub menu.
  */

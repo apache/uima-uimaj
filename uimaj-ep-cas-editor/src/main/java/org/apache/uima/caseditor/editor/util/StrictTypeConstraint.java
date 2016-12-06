@@ -24,7 +24,7 @@ import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Matches all annoations of an added type.
  */

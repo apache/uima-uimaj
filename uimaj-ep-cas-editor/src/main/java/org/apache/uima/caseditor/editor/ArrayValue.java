@@ -32,7 +32,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ArrayValue.
  */

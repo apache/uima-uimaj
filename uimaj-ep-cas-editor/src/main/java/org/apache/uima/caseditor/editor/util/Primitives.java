@@ -27,7 +27,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Primitives.
  */

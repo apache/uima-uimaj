@@ -23,7 +23,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.text.IFindReplaceTarget;
 import org.eclipse.swt.widgets.Display;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An Action to open the Find/Annotate Dialog.
  * 

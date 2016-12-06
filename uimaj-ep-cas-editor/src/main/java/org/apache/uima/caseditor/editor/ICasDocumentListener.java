@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import org.apache.uima.cas.FeatureStructure;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This interface is used to notifies clients about {@link FeatureStructure} changes.
  */

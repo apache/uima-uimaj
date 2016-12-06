@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor.contextmenu;
 
 import org.apache.uima.cas.Type;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The listener interface for receiving IModeMenu events.
  * The class that is interested in processing a IModeMenu

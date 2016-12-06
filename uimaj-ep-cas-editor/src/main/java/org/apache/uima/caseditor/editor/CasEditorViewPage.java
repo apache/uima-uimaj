@@ -42,7 +42,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CasEditorViewPage.
  */

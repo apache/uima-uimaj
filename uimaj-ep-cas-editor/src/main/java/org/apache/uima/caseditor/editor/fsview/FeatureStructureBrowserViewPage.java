@@ -60,7 +60,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.Page;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The actual view page which contains the ui code for this view.
  */

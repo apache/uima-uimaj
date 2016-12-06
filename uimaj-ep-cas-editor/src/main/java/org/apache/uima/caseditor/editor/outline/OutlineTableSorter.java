@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Sorts <code>AnnotationFS</code>s for a Viewer. This implementation is based on
  * <code>AnnotationComparator</code>.

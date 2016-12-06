@@ -24,7 +24,7 @@ import org.apache.uima.caseditor.editor.CasEditorView;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-// TODO: Auto-generated Javadoc
+
 // Tree Table, one column contains a tree, representing the tree structure
 /**
  * The Class AnnotationStyleView.

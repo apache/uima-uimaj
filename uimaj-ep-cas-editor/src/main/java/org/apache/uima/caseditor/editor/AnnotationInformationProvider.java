@@ -29,7 +29,7 @@ import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.IInformationProviderExtension;
 import org.eclipse.swt.graphics.Point;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: move this class to external file.
  */

@@ -33,7 +33,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class is a {@link ISelectionProvider} and informs its listeners about the currently selected
  * {@link FeatureStructure}s.

@@ -24,7 +24,7 @@ import org.apache.uima.caseditor.editor.ICasDocument;
 import org.apache.uima.caseditor.editor.ICasEditor;
 import org.eclipse.ui.part.IPageBookViewPage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Feature Structure Browser View displays a list of feature structures which
  * belong to the selected type.

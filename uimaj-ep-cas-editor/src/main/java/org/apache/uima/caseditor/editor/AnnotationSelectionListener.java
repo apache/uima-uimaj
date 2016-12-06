@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add javadoc here.
 

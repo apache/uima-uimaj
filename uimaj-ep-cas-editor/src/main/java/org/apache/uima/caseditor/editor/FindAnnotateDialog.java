@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A dialog to find and annotate a piece of text in the document.
  * 

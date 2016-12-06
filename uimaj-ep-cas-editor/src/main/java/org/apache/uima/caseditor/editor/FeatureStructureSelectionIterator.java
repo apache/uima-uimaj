@@ -27,7 +27,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Iterates over all selected {@link FeatureStructure}s.
  */

@@ -27,7 +27,7 @@ import org.apache.uima.caseditor.editor.util.Primitives;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class FeatureValue.
  */

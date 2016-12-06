@@ -29,7 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Abstract base class for menus which display the type hierarchy.
  */

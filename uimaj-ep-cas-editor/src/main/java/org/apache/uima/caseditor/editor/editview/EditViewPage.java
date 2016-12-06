@@ -85,7 +85,7 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 import org.eclipse.ui.part.Page;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The {@link EditViewPage} provides basic editing support for {@link FeatureStructure}s.
  * It shows always the selected {@link FeatureStructure}, but for editing a certain

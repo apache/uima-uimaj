@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Rectangle;
 
 
 
-// TODO: Auto-generated Javadoc
+
 // TODO: Check if its possible to increase the space between characters,
 /**
  * The Class TagDrawingStrategy.

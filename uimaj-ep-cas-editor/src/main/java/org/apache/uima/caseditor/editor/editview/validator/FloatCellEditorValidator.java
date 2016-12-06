@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor.editview.validator;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This {@link ICellEditorValidator} validates {@link String} values which represents a
  * {@link Float}.

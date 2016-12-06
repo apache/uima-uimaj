@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.ICellEditorValidator;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add javadoc here.
  */

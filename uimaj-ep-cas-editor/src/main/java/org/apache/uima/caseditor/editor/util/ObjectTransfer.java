@@ -24,7 +24,7 @@ import java.util.Arrays;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class is able to transfer an {@link Object} object. The object gets
  * saved and only an Id is transfered.

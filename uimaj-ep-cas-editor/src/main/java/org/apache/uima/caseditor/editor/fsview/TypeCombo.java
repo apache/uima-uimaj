@@ -35,7 +35,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A combo box which contains UIMA Types.
  * 

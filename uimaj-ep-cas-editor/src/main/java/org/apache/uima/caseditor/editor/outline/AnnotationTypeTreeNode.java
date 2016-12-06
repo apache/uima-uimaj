@@ -25,7 +25,7 @@ import java.util.List;
 import org.apache.uima.cas.Type;
 import org.eclipse.core.runtime.IAdaptable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The {@link AnnotationTreeNode} is used to group annotations
  * by their type. Only the {@link TypeGroupedContentProvider} creates

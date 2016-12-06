@@ -28,7 +28,7 @@ import java.util.Set;
 import org.apache.uima.cas.Type;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class contains all project specific configuration parameters. Note: Use DotCorpusSerialzer
  * to read or write an instance of this class to or from a byte stream.

@@ -65,7 +65,7 @@ import org.eclipse.ui.part.IPage;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This outline view displays all <code>AnnotationFS</code>s of the current
  * mode/type from the binded editor.

@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.caseditor.editor.ICasDocument;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The {@link AnnotationTreeNodeList} class can build a tree of
  * {@link AnnotationTreeNode} objects.

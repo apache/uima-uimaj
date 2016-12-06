@@ -25,7 +25,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO: add javadoch here.
  */

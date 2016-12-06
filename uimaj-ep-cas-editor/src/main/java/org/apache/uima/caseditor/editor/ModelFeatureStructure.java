@@ -28,7 +28,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * TODO:
  * set feature value to null

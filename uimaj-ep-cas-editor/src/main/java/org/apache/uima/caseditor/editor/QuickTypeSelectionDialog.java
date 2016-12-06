@@ -61,7 +61,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This is a lightweight popup dialog which creates an annotation of the chosen type.
  */

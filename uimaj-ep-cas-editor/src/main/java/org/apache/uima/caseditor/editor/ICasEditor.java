@@ -22,7 +22,7 @@ package org.apache.uima.caseditor.editor;
 import org.apache.uima.cas.CAS;
 import org.eclipse.ui.IEditorPart;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A Cas Editor is an extension to the {@link IEditorPart} interface and 
  * is responsible to view and edit a {@link CAS} object.

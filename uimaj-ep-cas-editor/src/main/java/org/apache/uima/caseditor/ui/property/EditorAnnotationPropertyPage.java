@@ -27,7 +27,7 @@ import org.apache.uima.caseditor.editor.AnnotationEditor;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
 import org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class EditorAnnotationPropertyPage.
  */

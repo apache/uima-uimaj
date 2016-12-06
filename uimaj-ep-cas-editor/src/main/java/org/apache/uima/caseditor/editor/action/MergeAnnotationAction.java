@@ -28,7 +28,7 @@ import org.apache.uima.caseditor.editor.util.AnnotationSelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.BaseSelectionListenerAction;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Merges two or more annotations.
  *

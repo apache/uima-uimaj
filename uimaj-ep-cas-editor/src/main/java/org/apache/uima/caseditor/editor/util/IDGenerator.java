@@ -21,7 +21,7 @@ package org.apache.uima.caseditor.editor.util;
 
 import java.util.Random;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * <p>
  * The IDGenerator generate unique IDs.

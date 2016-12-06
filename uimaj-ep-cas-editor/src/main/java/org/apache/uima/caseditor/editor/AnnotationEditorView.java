@@ -27,7 +27,7 @@ import org.eclipse.ui.part.MessagePage;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.part.PageBookView;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Base view for views which show information about the {@link CAS} opened
  * in the editor.

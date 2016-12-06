@@ -65,7 +65,7 @@ import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.internal.dialogs.PropertyDialog;
 import org.eclipse.ui.part.Page;
 
-// TODO: Auto-generated Javadoc
+
 // TODO: Subscribe to style change events
 /**
  * The Class AnnotationStyleViewPage.
