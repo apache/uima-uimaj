@@ -46,7 +46,7 @@
   </scm>
   
   <properties>
-    <uimaScmProject>uimaj-jcas</uimaScmProject>
+    <uimaScmProject>uimaj-v3migration-jcas</uimaScmProject>
   </properties>
 
   <dependencies>
