@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 import org.apache.uima.util.UimaTimer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class JavaTimer.
  *

@@ -26,10 +26,11 @@ import org.apache.uima.collection.StatusCallbackListener;
 import org.apache.uima.collection.base_cpm.BaseStatusCallbackListener;
 import org.apache.uima.collection.impl.EntityProcessStatusImpl;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This component catches uncaught errors in the CPM. All critical threads in the CPM are part of
  * this ThreadGroup. If OutOfMemory Error is thrown this component is notified by the JVM and its
@@ -89,7 +90,7 @@ public class CPMThreadGroup extends ThreadGroup {
    */
   @Override
   public void uncaughtException(Thread t, Throwable e) {
-    System.out.println("ThreadGroup.uncaughtException()-Got Error");
+    System.out.println("debug");  e.printStackTrace(System.out);
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unhandled_error__SEVERE",

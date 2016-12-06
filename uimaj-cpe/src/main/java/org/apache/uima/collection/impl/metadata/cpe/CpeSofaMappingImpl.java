@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.helpers.AttributesImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeSofaMappingImpl.
  */

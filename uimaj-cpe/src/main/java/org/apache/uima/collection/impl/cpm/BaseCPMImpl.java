@@ -62,7 +62,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Main thread that launches CPE and manages it. An application interacts with the running CPE via
  * this object. Through an API, an application may start, pause, resume, and stop a CPE.

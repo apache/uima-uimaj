@@ -33,7 +33,7 @@ import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.document.AFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Vinci.
  */

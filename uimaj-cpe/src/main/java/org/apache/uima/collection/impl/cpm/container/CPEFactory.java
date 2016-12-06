@@ -89,7 +89,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Component responsible for generating objects representing cpe descriptor configuration. Provides
  * various ways to instantiate object model representing cpe configuration. In the simplest form it

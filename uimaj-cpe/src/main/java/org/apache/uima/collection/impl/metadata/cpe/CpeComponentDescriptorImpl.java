@@ -33,7 +33,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.apache.uima.util.InvalidXMLException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeComponentDescriptorImpl.
  */

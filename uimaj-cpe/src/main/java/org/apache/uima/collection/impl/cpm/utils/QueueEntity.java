@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Convenience wrapper that is internally used by the CPM. Created in the OutputQueue this wrapper
  * contains the CAS and additional information needed to determine if the CAS contained has arrived

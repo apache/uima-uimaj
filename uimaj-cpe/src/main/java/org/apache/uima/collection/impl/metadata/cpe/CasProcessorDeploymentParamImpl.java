@@ -26,7 +26,7 @@ import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 import org.xml.sax.helpers.AttributesImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CasProcessorDeploymentParamImpl.
  */

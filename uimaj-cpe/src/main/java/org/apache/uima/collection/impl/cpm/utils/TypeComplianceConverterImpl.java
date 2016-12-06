@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Component providing conversion service. It replaces all occurances of provided String patterns
  * with provided replacement String.

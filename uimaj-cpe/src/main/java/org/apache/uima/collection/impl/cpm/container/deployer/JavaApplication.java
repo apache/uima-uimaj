@@ -34,7 +34,7 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UriUtils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Component responsible for configuring command line for java based CasProcessor. Each CasProcessor
  * is configured via CPE descriptor either statically (xml file) or dynamically by means of APIs. In

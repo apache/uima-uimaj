@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Contains command line and environment for launching a seperate process.
  * 

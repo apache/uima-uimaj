@@ -21,7 +21,7 @@ package org.apache.uima.collection.impl.cpm.container.deployer.socket;
 
 import java.net.URL;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Interface for the custom deployer component responsible for launching and terminating fenced
  * CasProcessors.

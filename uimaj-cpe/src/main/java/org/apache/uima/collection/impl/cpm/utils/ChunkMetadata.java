@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.cpm.utils;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Convenience class that is used to hold metadata associated with chunking and sequencing of
  * documents. It allows the OutputQueue to manage sequencing of chunks destined for the CasConsumer.

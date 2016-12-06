@@ -23,7 +23,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ConsumerCasUtils.
  */

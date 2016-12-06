@@ -28,7 +28,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface SocketTransport.
  */

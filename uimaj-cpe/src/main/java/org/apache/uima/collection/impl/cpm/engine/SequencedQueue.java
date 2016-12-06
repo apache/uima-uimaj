@@ -32,7 +32,7 @@ import org.apache.uima.collection.impl.cpm.utils.ChunkMetadata;
 import org.apache.uima.collection.impl.cpm.utils.ExpirationTimer;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This component extends the Bound Queue by guaranteeing delivery of CASes in sequential order.
  * Large documents may be split into smaller chunks and and each is processed asynchronously. Since

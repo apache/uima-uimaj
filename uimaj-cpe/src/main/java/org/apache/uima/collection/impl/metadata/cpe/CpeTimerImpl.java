@@ -22,7 +22,7 @@ package org.apache.uima.collection.impl.metadata.cpe;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeTimer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This class provides an API to plug in custom timers.
  * 

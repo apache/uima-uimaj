@@ -46,7 +46,7 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Implementation of the {@link CasObjectProcessor} interface used for both Local and Remote
  * CasObjectProcessors. This objects plugs in a transport object defined in the CPE Descriptor and

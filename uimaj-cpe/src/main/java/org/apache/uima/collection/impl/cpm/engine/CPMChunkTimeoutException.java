@@ -22,7 +22,7 @@ package org.apache.uima.collection.impl.cpm.engine;
 import org.apache.uima.resource.ResourceProcessException;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CPMChunkTimeoutException.
  */

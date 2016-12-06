@@ -61,7 +61,7 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.context.VinciContext;
 import org.apache.vinci.transport.document.AFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Vinci Proxy to remote Cas Processor vinci service. This component is used for both local(
  * managed) and remote ( unmanaged) Cas Processors. Its main purpose is to invoke remote APIs on Cas

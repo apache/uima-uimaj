@@ -19,7 +19,7 @@
 
 package org.apache.uima.collection.impl.metadata.cpe;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeObject.
  */

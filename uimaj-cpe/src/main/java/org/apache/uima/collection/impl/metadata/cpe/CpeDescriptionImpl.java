@@ -38,7 +38,7 @@ import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeDescriptionImpl.
  */

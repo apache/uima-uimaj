@@ -57,7 +57,7 @@ import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class NonThreadedProcessingUnit.
  */

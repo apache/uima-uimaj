@@ -31,7 +31,7 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeCollectionReaderIteratorImpl.
  */

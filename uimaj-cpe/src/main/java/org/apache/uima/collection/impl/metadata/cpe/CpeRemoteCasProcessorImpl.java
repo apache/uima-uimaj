@@ -22,7 +22,7 @@ package org.apache.uima.collection.impl.metadata.cpe;
 import org.apache.uima.collection.metadata.CasProcessorDeploymentParams;
 import org.apache.uima.collection.metadata.CpeRemoteCasProcessor;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeRemoteCasProcessorImpl.
  */

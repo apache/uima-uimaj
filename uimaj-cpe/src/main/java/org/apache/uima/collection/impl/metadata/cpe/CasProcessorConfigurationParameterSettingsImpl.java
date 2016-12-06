@@ -25,7 +25,7 @@ import org.apache.uima.collection.metadata.CasProcessorConfigurationParameterSet
 import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.resource.metadata.ConfigurationParameterSettings;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CasProcessorConfigurationParameterSettingsImpl.
  */

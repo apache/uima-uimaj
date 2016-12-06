@@ -25,7 +25,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.impl.cpm.engine.CPMEngine;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Facilitates cleaning up resources associated with chunking/sequencing logic.
  * 

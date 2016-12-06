@@ -30,7 +30,7 @@ import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Implements object pooling mechanism to limit number of CAS instances. Cas'es are checked out,
  * used and checked back in when done. 

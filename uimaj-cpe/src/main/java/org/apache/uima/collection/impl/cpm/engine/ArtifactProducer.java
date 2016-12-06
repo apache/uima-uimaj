@@ -49,7 +49,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Component responsible for continuously filling a work queue with bundles containing Cas'es. The
  * queue is shared with a Processing Pipeline that consumes bundles of Cas. As soon as the the

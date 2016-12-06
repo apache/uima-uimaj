@@ -33,7 +33,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class OFSocketTransportImpl.
  */

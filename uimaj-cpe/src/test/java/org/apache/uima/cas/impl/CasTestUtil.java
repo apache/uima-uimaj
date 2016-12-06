@@ -25,11 +25,11 @@ import org.apache.uima.cas.CAS;
 public class CasTestUtil {
 
   /**
-   * @param aCAS
-   * @return
+   * @param aCAS -  
+   * @return -
    */
   public static int getHeapSize(CAS aCAS) {
-    return ((CASImpl) aCAS).getLastUsedFsId() << 3;  // an approximation
+    return ((CASImpl) aCAS).getInitialHeapSize();
   }
 }
 

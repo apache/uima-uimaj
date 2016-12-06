@@ -46,7 +46,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Implements {@link CasProcessorDeployer}. Used to instantiate integrated Cas Processor.
  */

@@ -38,7 +38,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CasProcessorDeploymentParamsImpl.
  */

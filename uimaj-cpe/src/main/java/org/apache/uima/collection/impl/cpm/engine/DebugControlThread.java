@@ -29,7 +29,7 @@ import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.util.FileUtils;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class DebugControlThread.
  */

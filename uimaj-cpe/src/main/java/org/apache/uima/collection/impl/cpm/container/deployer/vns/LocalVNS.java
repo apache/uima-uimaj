@@ -35,7 +35,7 @@ import org.apache.vinci.transport.VinciFrame;
 import org.apache.vinci.transport.VinciServableAdapter;
 import org.apache.vinci.transport.VinciServer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * 
  * LOCAL Vinci Naming Service. Used by locally deployed TAEs. Locally, meaning TAEs running on the

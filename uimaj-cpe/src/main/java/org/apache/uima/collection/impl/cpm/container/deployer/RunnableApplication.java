@@ -37,7 +37,7 @@ import org.apache.uima.internal.util.SystemEnvReader;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class RunnableApplication.
  */

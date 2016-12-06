@@ -88,7 +88,7 @@ import org.apache.uima.util.Progress;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Responsible for creating and initializing processing threads. This instance manages the lifecycle
  * of the CPE components. It exposes API for plugging in components programmatically instead of

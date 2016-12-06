@@ -25,7 +25,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.UimaTimer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Creates an instance of UimaTimer.
  */

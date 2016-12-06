@@ -42,7 +42,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Reference implementation of the {@link CasProcessorDeployer} component responsible for launch and
  * termination of the fenced CasProcessor. It uses a plug-in {@link ProcessControllerAdapter} object

@@ -31,7 +31,7 @@ import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeLocalCasProcessor;
 import org.apache.uima.collection.metadata.NameValuePair;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CpeLocalCasProcessorImpl.
  */

@@ -21,7 +21,7 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import org.apache.uima.util.UimaTimer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface Timer.
  *

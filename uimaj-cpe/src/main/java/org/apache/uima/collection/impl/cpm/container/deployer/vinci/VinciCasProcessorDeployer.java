@@ -63,7 +63,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.vinci.transport.ServiceDownException;
 import org.apache.vinci.transport.ServiceException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Reference implementation of
  * {@link org.apache.uima.collection.impl.base_cpm.container.deployer.CasProcessorDeployer} This

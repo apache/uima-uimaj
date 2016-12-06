@@ -28,7 +28,7 @@ import org.apache.uima.collection.impl.cpm.vinci.DATACasUtils;
 import org.apache.uima.resource.metadata.NameValuePair;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CasMetaData.
  */

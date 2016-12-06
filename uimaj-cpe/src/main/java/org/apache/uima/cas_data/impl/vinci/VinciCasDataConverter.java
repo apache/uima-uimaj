@@ -33,7 +33,7 @@ import org.apache.uima.cas_data.impl.CasDataUtils;
 import org.apache.uima.cas_data.impl.XCasToCasDataSaxHandler;
 import org.apache.vinci.transport.document.AFrame;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utilities for converting a VinciFrame to and from a CasData.
  * 

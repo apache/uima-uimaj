@@ -43,7 +43,7 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.XMLSerializer;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class DATACasUtils.
  */

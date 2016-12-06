@@ -25,7 +25,7 @@ import org.apache.uima.collection.metadata.CasProcessorExecArg;
 import org.apache.uima.collection.metadata.CasProcessorExecArgs;
 import org.apache.uima.collection.metadata.CpeDescriptorException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CasProcessorExecArgsImpl.
  */

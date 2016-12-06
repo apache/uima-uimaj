@@ -51,7 +51,7 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Base class for all CpeCasProcessor objects in the reference implementation. Provides support for
  * getting and setting common configuration settings shared by all CpeCasProcessor objects

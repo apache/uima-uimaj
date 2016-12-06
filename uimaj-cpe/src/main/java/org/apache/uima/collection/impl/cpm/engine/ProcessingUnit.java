@@ -54,6 +54,7 @@ import org.apache.uima.collection.impl.cpm.utils.ChunkMetadata;
 import org.apache.uima.collection.impl.cpm.utils.CpmLocalizedMessage;
 import org.apache.uima.collection.impl.cpm.vinci.DATACasUtils;
 import org.apache.uima.collection.metadata.CpeConfiguration;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.Level;
@@ -61,7 +62,7 @@ import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * This component executes the processing pipeline. Running in a seperate thread it continuously
  * reads bundles of Cas from the Work Queue filled by {@link ArtifactProducer} and sends it through

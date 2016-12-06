@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Parses the filter expression associated with a Cas Processor in the cpe descriptor.
  */

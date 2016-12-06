@@ -26,7 +26,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.impl.cpm.utils.CPMUtils;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Implementation of a Bounded Queue, a queue with a fixed number of slots. Used primarily to feed
  * data to Processing Units, it is filled by a producer like ArtifactProducer and consumed by

@@ -42,7 +42,7 @@ import org.apache.uima.util.UimaTimer;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CPMUtils.
  */

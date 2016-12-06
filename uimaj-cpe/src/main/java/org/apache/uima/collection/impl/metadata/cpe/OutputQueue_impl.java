@@ -29,7 +29,7 @@ import org.apache.uima.util.XMLParser.ParsingOptions;
 import org.w3c.dom.Element;
 import org.xml.sax.helpers.AttributesImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class OutputQueue_impl.
  */

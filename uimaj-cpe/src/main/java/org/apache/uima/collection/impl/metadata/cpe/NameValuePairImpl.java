@@ -21,7 +21,7 @@ package org.apache.uima.collection.impl.metadata.cpe;
 
 import org.apache.uima.collection.metadata.NameValuePair;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class NameValuePairImpl.
  */

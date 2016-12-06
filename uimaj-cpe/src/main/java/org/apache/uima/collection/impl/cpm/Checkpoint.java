@@ -35,7 +35,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.ProcessTraceEvent;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Runing in a seperate thread creates a checkpoint file at predefined intervals.
  * 

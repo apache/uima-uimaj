@@ -22,7 +22,7 @@ package org.apache.uima.collection.impl.cpm.engine;
 import org.apache.uima.cas.CAS;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class WorkUnit.
  */

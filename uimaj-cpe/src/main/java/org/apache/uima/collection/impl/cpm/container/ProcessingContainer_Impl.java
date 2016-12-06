@@ -66,7 +66,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.impl.ProcessTrace_impl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Manages a pool of CasProcessor instances. Provides access to CasProcessor instance to Processing
  * Thread. Processing threads check out an instance of Cas Processor and when done invoking its

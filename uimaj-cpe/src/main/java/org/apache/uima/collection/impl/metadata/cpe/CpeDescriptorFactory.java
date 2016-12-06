@@ -56,7 +56,7 @@ import org.apache.uima.collection.metadata.NameValuePair;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Factory class for creating CpeDescriptors and their constituent objects.
  * 

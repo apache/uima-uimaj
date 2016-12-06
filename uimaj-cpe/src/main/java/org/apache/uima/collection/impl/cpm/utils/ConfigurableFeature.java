@@ -21,7 +21,7 @@ package org.apache.uima.collection.impl.cpm.utils;
 
 import java.util.ArrayList;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ConfigurableFeature.
  */
