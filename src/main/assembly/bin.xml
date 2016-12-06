@@ -294,6 +294,17 @@ under the License.
         <include>run_configuration/**</include>
       </includes>
     </fileSet>
+
+    <fileSet>
+      <directory>uimaj-v3migration-jcas/src/main</directory>
+      <outputDirectory>examples</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>
+      <includes>
+        <include>run_configuration/**</include>
+      </includes>
+    </fileSet>
+    
     <fileSet>
       <directory>uimaj-examples/src/main/java</directory>
       <outputDirectory>examples/src</outputDirectory>
