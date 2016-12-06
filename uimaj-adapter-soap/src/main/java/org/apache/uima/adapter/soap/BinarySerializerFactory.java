@@ -29,7 +29,7 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.SerializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinarySerializer_Axis11;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An Axis serializer factory that constructs instances of {@link BinarySerializer}.
  * 

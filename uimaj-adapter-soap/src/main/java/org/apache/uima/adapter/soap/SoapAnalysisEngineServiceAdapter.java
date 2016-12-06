@@ -29,7 +29,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.URISpecifier;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Reference implementation of {@link AnalysisEngineServiceAdapter} for SOAP.
  * 

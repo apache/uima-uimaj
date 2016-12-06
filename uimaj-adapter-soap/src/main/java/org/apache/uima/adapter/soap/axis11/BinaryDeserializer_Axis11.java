@@ -38,7 +38,6 @@ import org.apache.uima.internal.util.SerializationUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
 /**
  * An Axis deserializer for {@link Serializable} objects. The serialized bytes are Base-64 encoded
  * for transport via SOAP.

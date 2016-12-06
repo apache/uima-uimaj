@@ -41,7 +41,7 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.ResourceServiceStub;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Proxy to an {@link AnalysisEngineService_impl} that makes use of Axis SOAP to communicate with the
  * service.

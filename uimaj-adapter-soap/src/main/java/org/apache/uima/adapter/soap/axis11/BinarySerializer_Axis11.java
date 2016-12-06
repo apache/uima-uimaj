@@ -41,7 +41,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
-// TODO: Auto-generated Javadoc
 /**
  * An Axis serializer for {@link Serializable} objects. The serialized bytes are Base-64 encoded for
  * transport via SOAP.

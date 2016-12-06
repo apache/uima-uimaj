@@ -34,7 +34,7 @@ import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Utility class for deploying Resources as Axis (SOAP) services. This class mantains a map between
  * Axis service names and the {@link ResourceService_impl} classes that provide the implementation

@@ -27,7 +27,7 @@ import org.apache.axis.Version;
 import org.apache.axis.encoding.DeserializerFactory;
 import org.apache.uima.adapter.soap.axis11.BinaryDeserializer_Axis11;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An Axis deserializer factory that constructs instances of {@link BinaryDeserializer}.
  * 

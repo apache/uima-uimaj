@@ -33,7 +33,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.LocatorImpl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * An Axis deserializer for any {@link XMLizable} object.
  * 

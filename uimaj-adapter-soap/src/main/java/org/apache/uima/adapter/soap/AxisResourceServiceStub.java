@@ -32,7 +32,7 @@ import org.apache.uima.resource.ResourceServiceStub;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.resource.service.impl.ResourceService_impl;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * Proxy to a {@link ResourceService_impl} that uses Axis SOAP to communicate with the service.
  * 

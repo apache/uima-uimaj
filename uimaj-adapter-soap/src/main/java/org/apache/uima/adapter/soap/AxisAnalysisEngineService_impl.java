@@ -28,7 +28,7 @@ import org.apache.uima.resource.ResourceServiceException;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * A class used to deploy a {@link AnalysisEngineService_impl} as an Axis (SOAP) service.
  */
