@@ -90,7 +90,6 @@ public class CPMThreadGroup extends ThreadGroup {
    */
   @Override
   public void uncaughtException(Thread t, Throwable e) {
-    System.out.println("debug");  e.printStackTrace(System.out);
     if (UIMAFramework.getLogger().isLoggable(Level.SEVERE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.SEVERE, this.getClass().getName(),
               "process", CPMUtils.CPM_LOG_RESOURCE_BUNDLE, "UIMA_CPM_unhandled_error__SEVERE",
