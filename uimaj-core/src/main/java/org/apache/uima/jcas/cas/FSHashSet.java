@@ -69,6 +69,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -163,6 +164,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
    */
+  @Override
   public void _init_from_cas_data() {
     isPendingInit = true;
   }
@@ -185,6 +187,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_save_to_cas_data()
    */
+  @Override
   public void _save_to_cas_data() {
     if (isSaveNeeded) {
       isSaveNeeded = false;
@@ -200,7 +203,10 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.cas.SelectViaCopyToArray#_toArrayForSelect()
    */
-  public FeatureStructure[] _toArrayForSelect() { return (FeatureStructure[]) toArray(); }
+  @Override
+  public T[] _toArrayForSelect() {
+    return toArray(); 
+  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_superClone()
@@ -223,6 +229,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if successful
    * @see java.util.AbstractSet#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object o) {
     if (!(o instanceof FSHashSet)) return false;
     FSHashSet other = (FSHashSet) o;
@@ -242,6 +249,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the int
    * @see java.util.AbstractSet#hashCode()
    */
+  @Override
   public int hashCode() {
     return isSaveNeeded
         ? fsHashSet.hashCode()
@@ -254,10 +262,14 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the feature structure[]
    * @see java.util.AbstractCollection#toArray()
    */
-  public Object[] toArray() {    
-    return isSaveNeeded
-        ? fsHashSet.toArray()
-        : gta().clone();
+  @Override
+  public T[] toArray() {
+    if (isSaveNeeded) {
+      T[] r = (T[]) new TOP[size()];
+      fsHashSet.toArray(r);
+      return r;
+    }
+    return (T[]) gta().clone();
   }
 
   /**
@@ -267,6 +279,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if set changed
    * @see java.util.AbstractSet#removeAll(java.util.Collection)
    */
+  @Override
   public boolean removeAll(Collection<?> c) {
     maybeLazyInit();
     boolean r = fsHashSet.removeAll(c); 
@@ -282,6 +295,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the N[]
    * @see java.util.AbstractCollection#toArray(Object[])
    */
+  @Override
   public <N> N[] toArray(N[] a) {
     if (isSaveNeeded) {
       return fsHashSet.toArray(a);
@@ -302,6 +316,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the iterator
    * @see java.util.HashSet#iterator()
    */
+  @Override
   public Iterator<T> iterator() {  
     return isSaveNeeded 
         ? fsHashSet.iterator()
@@ -314,6 +329,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the int
    * @see java.util.HashSet#size()
    */
+  @Override
   public int size() {
     return isSaveNeeded 
         ? fsHashSet.size()
@@ -326,6 +342,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if is empty
    * @see java.util.HashSet#isEmpty()
    */
+  @Override
   public boolean isEmpty() {
     return size() == 0;
   }
@@ -337,6 +354,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if successful
    * @see java.util.HashSet#contains(java.lang.Object)
    */
+  @Override
   public boolean contains(Object o) {
     maybeLazyInit();
     return fsHashSet.contains(o);
@@ -349,6 +367,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if the set didn't already contain this element
    * @see java.util.HashSet#add(java.lang.Object)
    */
+  @Override
   public boolean add(T e) {
     maybeLazyInit();
     boolean r = fsHashSet.add(e); 
@@ -363,6 +382,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if the set contained the element
    * @see java.util.HashSet#remove(java.lang.Object)
    */
+  @Override
   public boolean remove(Object o) {
     maybeLazyInit();
     boolean r = fsHashSet.remove(o);
@@ -375,6 +395,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    *
    * @see java.util.HashSet#clear()
    */
+  @Override
   public void clear() {
     if (size() == 0) return;
     maybeLazyInit();
@@ -389,6 +410,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if set contains all of the elements in c
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
    */
+  @Override
   public boolean containsAll(Collection<?> c) {
     maybeLazyInit();
     return fsHashSet.containsAll(c);
@@ -401,6 +423,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if set changed
    * @see java.util.AbstractCollection#addAll(java.util.Collection)
    */
+  @Override
   public boolean addAll(Collection<? extends T> c) {
     maybeLazyInit();
     boolean r = fsHashSet.addAll(c);
@@ -414,6 +437,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return the spliterator
    * @see java.util.HashSet#spliterator()
    */
+  @Override
   public Spliterator<T> spliterator() {
     return isSaveNeeded
         ? fsHashSet.spliterator()
@@ -427,6 +451,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @return true, if collection changed
    * @see java.util.AbstractCollection#retainAll(java.util.Collection)
    */
+  @Override
   public boolean retainAll(Collection<?> c) {
     maybeLazyInit();
     boolean r = fsHashSet.retainAll(c);

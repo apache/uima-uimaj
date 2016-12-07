@@ -19,26 +19,10 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.RandomAccess;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Stream;
-
 import org.apache.uima.List_of_ints;
 import org.apache.uima.UimaSerializable;
-import org.apache.uima.UimaSerializableFSs;
-import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
@@ -46,7 +30,6 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -84,6 +67,7 @@ public final class IntegerArrayList extends TOP implements
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -172,10 +156,12 @@ public final class IntegerArrayList extends TOP implements
     }
   }
   
+  @Override
   public void _init_from_cas_data() {
     intArrayAsList = List_of_ints.newInstance(getIntegerArray()._getTheArray());
   }
   
+  @Override
   public void _save_to_cas_data() {
     if (getIntegerArray() == null) {
       IntegerArray a = new IntegerArray(_casView.getExistingJCas(), intArrayList.size());
@@ -208,6 +194,7 @@ public final class IntegerArrayList extends TOP implements
   }
   
   /** return the size of the array. */
+  @Override
   public int size() {
     return (null == intArrayAsList) 
         ? intArrayList.size()
@@ -304,6 +291,7 @@ public final class IntegerArrayList extends TOP implements
     }
   }
 
+  @Override
   public String[] toStringArray() {
     final int size = size();
     String[] strArray = new String[size];
@@ -343,6 +331,7 @@ public final class IntegerArrayList extends TOP implements
     return ial;
   }
   
+  @Override
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
   /**
@@ -400,6 +389,7 @@ public final class IntegerArrayList extends TOP implements
    * @return -
    * @see java.util.AbstractCollection#toString()
    */
+  @Override
   public String toString() {
     return String.format("IntegerArrayList[size: %,d]", size());
   }
@@ -420,6 +410,7 @@ public final class IntegerArrayList extends TOP implements
    * @return  true if all elements are the same, and in same order, and same number
    * @see java.util.AbstractList#equals(java.lang.Object)
    */
+  @Override
   public boolean equals(Object o) {
     if (o instanceof IntegerArrayList) {
       IntegerArrayList other = (IntegerArrayList) o;
@@ -474,6 +465,7 @@ public final class IntegerArrayList extends TOP implements
    * @return -
    * @see java.util.AbstractList#hashCode()
    */
+  @Override
   public int hashCode() {
     int hc = 1;
     final int prime = 31;
@@ -497,6 +489,7 @@ public final class IntegerArrayList extends TOP implements
    * @return -
    * @see java.util.ArrayList#iterator()
    */
+  @Override
   public Iterator<Integer> iterator() {
     return (null == intArrayAsList) 
         ? intArrayList.iterator()
