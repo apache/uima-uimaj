@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="org.eclipse.ui.externaltools.ProgramLaunchConfigurationType">
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LAUNCH_CONFIGURATION_BUILD_SCOPE" value="${none}"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${env_var:UIMA_HOME}/bin/runV3migrateJCas.bat"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-classesRoots &quot;${folder_prompt:the root directory or PEAR or Jar}&quot; -migrationClasspath &quot;${project_classpath}&quot; -outputDirectory &quot;${folder_prompt:output folder, eg. /temp/migrate_out}&quot;"/>
-</launchConfiguration>

@@ -626,7 +626,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       if ((i % 50) == 0) System.out.format("%4d%s", Integer.valueOf(i), "\r");
       i++;
     }
-    System.out.format("%4d%n", Integer.valueOf(i));   
+    System.out.format("%4d%n", Integer.valueOf(i - 1));   
   }
   
   /**
