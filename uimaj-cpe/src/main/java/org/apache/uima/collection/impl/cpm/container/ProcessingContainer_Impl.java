@@ -1615,7 +1615,7 @@ public boolean isIntegrated() {
   public Object getStat(String aStatName) {
     synchronized (statMap) {
       if (statMap.containsKey(aStatName)) {
-        statMap.get(aStatName);
+        return statMap.get(aStatName);
       }
     }
     return null;
