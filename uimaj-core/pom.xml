@@ -89,7 +89,9 @@
       <version>0.5.28</version>
     </dependency>
     
-    <dependency>  <!-- Apache v2 license  2016 checked. Also transitive include from above, listed here for bin inclusion -->
+    <!-- Apache v2 license  2016 checked. Also transitive include from above, 
+         listed here so that binary assembly for distribution includes the jar -->
+    <dependency>  
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-core</artifactId>
       <version>0.5.28</version>
@@ -110,6 +112,7 @@
  -->		
 
 	</dependencies>
+	
 	<build>
 		<finalName>uima-core</finalName>
     <pluginManagement>
