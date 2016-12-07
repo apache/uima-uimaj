@@ -323,8 +323,8 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   @Override
-  public FeatureStructure[] toArray() {
-    FeatureStructure[] r = new FeatureStructure[size()];
+  public T[] toArray() {
+    T[] r = (T[]) new TOP[size()];
     copyToArray(0, r, 0, size());
     return r;
   }
