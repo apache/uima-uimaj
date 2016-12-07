@@ -1592,7 +1592,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           PackageBrowser ip = PackageInstaller.installPackage(pearInstallDir, path.toFile(), false);
           localPearClasspath = ip.buildComponentClassPath();
           String[] children = pearInstallDir.list();
-          if (children.length != 1) {
+          if (children == null || children.length != 1) {
             Misc.internalError();
           }
           pearResolveStart = Paths.get(pearInstallDir.getAbsolutePath(), children[0]);
