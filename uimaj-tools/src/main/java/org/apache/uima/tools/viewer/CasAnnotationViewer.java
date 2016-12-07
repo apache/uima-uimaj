@@ -1649,6 +1649,7 @@ public class CasAnnotationViewer extends JPanel {
     jcas = this.cas.getJCas();
   } catch (CASException e) {
     e.printStackTrace();
+    throw new RuntimeException(e);
   }
     AnnotationIndex<Annotation> annotationIndex = jcas.getAnnotationIndex();
     if (annotationIndex == null) {
