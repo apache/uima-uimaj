@@ -25,8 +25,17 @@ import org.apache.uima.util.FileUtils;
 import org.apache.vinci.transport.VinciClient;
 import org.apache.vinci.transport.VinciFrame;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class VinciTAEClient.
+ */
 public class VinciTAEClient {
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
   public static void main(String[] args) {
     System.out.println("Invoking the service...");
     try {
