@@ -273,6 +273,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
     @Override
     public boolean equals(Object obj) {
+      if (obj == null || !(obj instanceof FsChange))
+        return false;
       return ((FsChange)obj).fs._id == fs._id;
     }
   }

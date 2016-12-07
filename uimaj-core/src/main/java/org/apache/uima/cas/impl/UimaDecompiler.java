@@ -178,7 +178,7 @@ public class UimaDecompiler {
    */
   
   public String decompile(byte[] b) {
-    PlainTextOutput pto = new PlainTextOutput();
+//    PlainTextOutput pto = new PlainTextOutput();
     
     String classNameSlashes = extractClassNameSlashes(b);
 //    setDecompilerSettingsForByteArray(classNameSlashes, b);

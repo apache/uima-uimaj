@@ -520,6 +520,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       this.prevFsByType = new TOP[ts.getTypeArraySize()];
       csds = getCsds(baseCas, isDelta);
+      assert null != csds;
     }
     
     /**
@@ -2994,7 +2995,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         (null == tmpCsds || tmpCsds.isEmpty()) ) {
       tmpCsds = cas.newCsds();
       tmpCsds.setup(null, 1);
-    }  
+    } else {
+      assert null != tmpCsds;
+    }
+    
       
     return tmpCsds;
   }
