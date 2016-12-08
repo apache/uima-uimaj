@@ -110,8 +110,7 @@
             <execution>
               <id>default-cli</id>
               <configuration>
-                <excludes>
-                  <exclude>release.properties</exclude> <!-- release generated artifact -->
+                <excludes combine.children="append">
                   <exclude>src/test/resources/CASTests/*.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/data/moby.txt</exclude>
                   <exclude>src/test/resources/org/apache/uima/resource/impl/ResourceInClasspath.txt</exclude> <!-- test data -->
@@ -119,7 +118,6 @@
                   <exclude>src/test/resources/pearTests/encodingTests/*</exclude> <!-- test data, RAT can't reliably read these -->
                   <exclude>src/test/resources/SequencerTest/*.txt</exclude> <!-- test data -->
                   <exclude>src/test/resources/SerDes*/SavedInts.binary</exclude> <!-- test data -->
-                  <exclude>marker-file-identifying-*</exclude>
                 </excludes>              
               </configuration>
             </execution>
