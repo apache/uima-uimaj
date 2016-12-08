@@ -162,9 +162,35 @@ under the License.
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
     </dependencySet>
+    
     <dependencySet>
       <includes>
         <include>org.apache.uima:uimaj-v3migration-jcas</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputFileNameMapping>uimaj-v3migration-jcas.jar</outputFileNameMapping>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+
+    <dependencySet>
+      <includes>
+        <include>org.bitbucket.mstrobel:procyon-compilertools</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
+
+    <dependencySet>
+      <includes>
+        <include>org.bitbucket.mstrobel:procyon-core</include>
       </includes>
       <unpack>false</unpack>
       <scope>runtime</scope>
@@ -174,6 +200,17 @@ under the License.
       <directoryMode>755</directoryMode>        
     </dependencySet>
     
+     <dependencySet>
+      <includes>
+        <include>com.github.javaparser:javaparser-core</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
     
     <!-- Copy each eclipse plugin into the /eclipsePlugins dir of the distribution -->
     <dependencySet>
@@ -291,16 +328,6 @@ under the License.
         <include>deploy/**</include>
         <include>descriptors/**</include>
         <include>resources/**</include>
-        <include>run_configuration/**</include>
-      </includes>
-    </fileSet>
-
-    <fileSet>
-      <directory>uimaj-v3migration-jcas/src/main</directory>
-      <outputDirectory>examples</outputDirectory>
-      <fileMode>644</fileMode>
-      <directoryMode>755</directoryMode>
-      <includes>
         <include>run_configuration/**</include>
       </includes>
     </fileSet>

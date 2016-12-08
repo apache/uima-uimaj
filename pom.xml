@@ -163,7 +163,23 @@
       <groupId>org.apache.uima</groupId>
       <artifactId>uimaj-v3migration-jcas</artifactId>
       <version>${project.version}</version>
-    </dependency>    
+    </dependency>  
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.28</version>
+    </dependency>  
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-compilertools</artifactId>
+      <version>0.5.28</version>
+    </dependency>  
+    <dependency>    <!-- apache v2 license  2016 checked -->
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+      
   </dependencies>
 
   
