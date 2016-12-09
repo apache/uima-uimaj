@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.9.0 Release Notes</title>
+  <title>Apache UIMA v2.10.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.9.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -80,36 +80,14 @@
 			</p>
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
-<p><ul>
-<li>Two new features were added.
-<ul><li>CasIOUtls - a collection of general-purpose CAS load/save utilities, with support for
-including the type system and index definition information along with the Feature Structures.</li>
-<li>A new set of APIs allowing use of the external shared settings files to be used directly, rather than only by 
-overriding UIMA configuration parameters. These APIs give direct access by the external settings file's key names to the 
-key values.</li>
-</ul>
-</li>
-<li>many bugs were fixed, including:
-<ul>
-<li>A regression which broke the unambiguous AnnotationIndex iterator in some cases.</li>
-<li>Updates to the Eclipse plugins to work with the latest Eclipse (4.6, Neon) version.</li>
-<li>Sofa mapping support for flow controllers.</li>
-<li>fixing a stack overflow error in AnnotationViewer when switching Sofas.</li>
-<li>fixing 2 JSON serialization issues: mishandling of arrays of FeatureStructures having null entries,
-and mishandling of namespaces for uninstantiated types found as supertypes.</li>
-</ul>
-</li>
-</ul>
-</p>
- 
- <h3>API changes</h3>
- <p> 
- There were no User API changes that affect backward compatibility.   
- New classes org.apache.uima.util.CasIOUtils, org.apache.uima.util.CasLoadMode were added, and additions were made to 
- the SerialFormat enum (not disturbing previous values) and to the
- CasRuntimeException list of exceptions.
- </p>
- 
+<p>This is mainly a bug fix release.</p>
+
+<p>A new chapter on External Resources was added to the UIMA Reference book.</p>
+
+<p>Some new methods to better manage External Resources were added to the ResourceManager,
+including a destroy() method that may be called by users to destroy external resources that
+are being managed by a particular ResourceManager.</p>  
+  
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
 issues fixed in this release.  
