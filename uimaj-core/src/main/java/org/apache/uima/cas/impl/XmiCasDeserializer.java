@@ -1819,7 +1819,7 @@ public class XmiCasDeserializer {
      */
     private void addOutOfTypeSystemFeature(OotsElementData ootsElem, String featName, List<String> featVals) {
       Iterator<String> iter = featVals.iterator();
-      XmlElementName elemName = new XmlElementName(null,featName,featName);
+      XmlElementName elemName = new XmlElementName("",featName,featName);
       while (iter.hasNext()) {
         ootsElem.childElements.add(new XmlElementNameAndContents(elemName, iter.next()));
       }

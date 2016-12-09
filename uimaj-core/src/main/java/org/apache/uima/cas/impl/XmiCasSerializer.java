@@ -686,7 +686,7 @@ public class XmiCasSerializer {
      */
     void writeNullObject() throws SAXException {
       workAttrs.clear();
-      addAttribute(workAttrs, ID_ATTR_NAME, "0");
+      addIdAttribute(workAttrs, "0");
       XmlElementName elemName = uimaTypeName2XmiElementName("uima.cas.NULL");
       startElement(elemName, workAttrs, 0);
       endElement(elemName);
@@ -801,7 +801,7 @@ public class XmiCasSerializer {
         OotsElementData oed = it.next();
         workAttrs.clear();
         // Add ID attribute
-        addAttribute(workAttrs, ID_ATTR_NAME, oed.xmiId);
+        addIdAttribute(workAttrs, oed.xmiId);
 
         // Add other attributes
         Iterator<XmlAttribute> attrIt = oed.attributes.iterator();
@@ -953,7 +953,7 @@ public class XmiCasSerializer {
 //                reportWarning("Warning: multiple references to a ListFS.  Reference identity will not be preserved.");
 //              }
             for (String string : listOfStrings) {
-              childElements.add(new XmlElementNameAndContents(new XmlElementName(null, featName,
+              childElements.add(new XmlElementNameAndContents(new XmlElementName("", featName,
                       featName), string));
             }
             attrValue = null;
@@ -1129,7 +1129,7 @@ public class XmiCasSerializer {
       int pos = cds.cas.getArrayStartAddress(addr);
       for (int j = 0; j < size; j++) {
         String s = cds.cas.getStringForCode(cds.cas.getHeapValue(pos));
-        resultList.add(new XmlElementNameAndContents(new XmlElementName(null, featName, featName),
+        resultList.add(new XmlElementNameAndContents(new XmlElementName("", featName, featName),
                 s));
         ++pos;
       }
@@ -1190,12 +1190,11 @@ public class XmiCasSerializer {
     
     private void startElement(XmlElementName name, Attributes attrs, int aNumChildren)
         throws SAXException {
-//      numChildren = aNumChildren;
-      // don't include NS URI here. That causes XMI serializer to
-      // include the xmlns attribute in every element. Instead we
-      // explicitly added these attributes to the root element.
+      // Previously the NS URI was omitted, claiming:	
+      //    >>> That causes XMI serializer to include the xmlns attribute in every element <<<
+      // But without it Saxon omits process namespaces
       ch.startElement(
-          ""/* name.nsUri */, 
+          name.nsUri, 
           name.localName, 
           name.qName, 
           attrs);
@@ -1217,10 +1216,19 @@ public class XmiCasSerializer {
     //   http://www.w3.org/TR/xmlschema-2/
     //     decimal string boolean 
     private void addAttribute(AttributesImpl attrs, String attrName, String attrValue, String type) {
-      final int index = attrName.lastIndexOf(':') + 1;
-      attrs.addAttribute("", attrName.substring(index), attrName, type, attrValue);
+      // Provide identical values for the qName & localName (although Javadocs indicate that both can be omitted!)
+      attrs.addAttribute("", attrName, attrName, type, attrValue);
+      // Saxon throws an exception if either omitted:
+      //     "Saxon requires an XML parser that reports the QName of each element"
+      //     "Parser configuration problem: namespsace reporting is not enabled"
+      // The IBM JRE implementation produces bad xml if the qName is omitted,
+      //     but handles a missing localName correctly
     }
 
+    private void addIdAttribute(AttributesImpl attrs, String attrValue) {
+      attrs.addAttribute(XMI_NS_URI, "id", ID_ATTR_NAME, CDATA_TYPE, attrValue);
+    }
+    
     private void addText(String text) throws SAXException {
       ch.characters(text.toCharArray(), 0, text.length());
     }
@@ -1234,7 +1242,7 @@ public class XmiCasSerializer {
     @Override
     protected boolean writeFsStart(int addr, int typeCode /* ignored */) {
       workAttrs.clear();
-      addAttribute(workAttrs, ID_ATTR_NAME, cds.getXmiId(addr));
+      addIdAttribute(workAttrs, cds.getXmiId(addr));
       return false;  // ignored
     }
    

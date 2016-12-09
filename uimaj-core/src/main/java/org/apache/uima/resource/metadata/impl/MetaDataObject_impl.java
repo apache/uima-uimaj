@@ -863,7 +863,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     AttributesImpl attrs = getXMLAttributes();
     
     if (aWriteDefaultNamespaceAttribute && inf.namespace != null) {
-      attrs.addAttribute("", "xmlns", "xmlns", "", inf.namespace);
+      attrs.addAttribute("", "xmlns", "xmlns", "", inf.namespace);  // NOTE:  Saxon appears to ignore this ??
     }
     
     // start element

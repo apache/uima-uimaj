@@ -21,123 +21,125 @@
     Descriptor for testing the editing and copying of an aggregate.
     
     Note: Blank lines outside comments in this first section are not preserved
+    
+    Note: The indent-amount is now 3 so the testManyDelagates JUnit test almost works with Saxon!
 -->
 <analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
 
-  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <primitive>false</primitive>
+   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+   <primitive>false</primitive>
 
-  <!-- Test that order of declarations is preserved when re-written  -->
-  <delegateAnalysisEngineSpecifiers>
-    <delegateAnalysisEngine key="D">
-      <import location="TestPrimitiveTae2.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="C">
-      <import location="TestPrimitiveTae2.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="B">
-      <import location="TestPrimitiveTae2.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="A">
-      <import location="TestPrimitiveTae2.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="F">
-      <import location="TestPrimitiveTae2.xml"/>
-    </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="E">
-      <import location="TestPrimitiveTae2.xml"/>
-    </delegateAnalysisEngine>
-  </delegateAnalysisEngineSpecifiers>
-  <!-- The above declaration order should be preserved when the UIMA APIs are used to parse and -->
-  <!-- serialize back to disk  -->
-  <analysisEngineMetaData>
-    <name>AggregateWithManyDelegates</name>
-    <version>1.0</version>
-    <configurationParameters searchStrategy="language_fallback">
-      <configurationParameter>              <!-- First parameter -->
-        <name>StringParam</name>
-        <description>This is a string parameter</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-        <overrides>
-          <parameter>A/StringParam</parameter>
-          <parameter>B/StringParam</parameter>
-        </overrides>
-      </configurationParameter>
-      <configurationParameter>
-        <name>IntArrayParam</name>
-        <description>Array of integers</description>
-        <type>Integer</type>
-        <multiValued>true</multiValued>
-        <mandatory>false</mandatory>
-        <overrides>
-          <parameter>A/IntArrayParam</parameter>
-        </overrides>
-      </configurationParameter>
-      <configurationParameter>
-        <name>IntArrayParam1</name>
-        <description>Array of integers</description>
-        <type>Integer</type>
-        <multiValued>true</multiValued>
-        <mandatory>false</mandatory>
-        <overrides>
-          <parameter>B/IntArrayParam</parameter>
-        </overrides>
-      </configurationParameter>
-    </configurationParameters>
+   <!-- Test that order of declarations is preserved when re-written  -->
+   <delegateAnalysisEngineSpecifiers>
+      <delegateAnalysisEngine key="D">
+         <import location="TestPrimitiveTae2.xml"/>
+      </delegateAnalysisEngine>
+      <delegateAnalysisEngine key="C">
+         <import location="TestPrimitiveTae2.xml"/>
+      </delegateAnalysisEngine>
+      <delegateAnalysisEngine key="B">
+         <import location="TestPrimitiveTae2.xml"/>
+      </delegateAnalysisEngine>
+      <delegateAnalysisEngine key="A">
+         <import location="TestPrimitiveTae2.xml"/>
+      </delegateAnalysisEngine>
+      <delegateAnalysisEngine key="F">
+         <import location="TestPrimitiveTae2.xml"/>
+      </delegateAnalysisEngine>
+      <delegateAnalysisEngine key="E">
+         <import location="TestPrimitiveTae2.xml"/>
+      </delegateAnalysisEngine>
+   </delegateAnalysisEngineSpecifiers>
+   <!-- The above declaration order should be preserved when the UIMA APIs are used to parse and -->
+   <!-- serialize back to disk  -->
+   <analysisEngineMetaData>
+      <name>AggregateWithManyDelegates</name>
+      <version>1.0</version>
+      <configurationParameters searchStrategy="language_fallback">
+         <configurationParameter>              <!-- First parameter -->
+            <name>StringParam</name>
+            <description>This is a string parameter</description>
+            <type>String</type>
+            <multiValued>false</multiValued>
+            <mandatory>false</mandatory>
+            <overrides>
+               <parameter>A/StringParam</parameter>
+               <parameter>B/StringParam</parameter>
+            </overrides>
+         </configurationParameter>
+         <configurationParameter>
+            <name>IntArrayParam</name>
+            <description>Array of integers</description>
+            <type>Integer</type>
+            <multiValued>true</multiValued>
+            <mandatory>false</mandatory>
+            <overrides>
+               <parameter>A/IntArrayParam</parameter>
+            </overrides>
+         </configurationParameter>
+         <configurationParameter>
+            <name>IntArrayParam1</name>
+            <description>Array of integers</description>
+            <type>Integer</type>
+            <multiValued>true</multiValued>
+            <mandatory>false</mandatory>
+            <overrides>
+               <parameter>B/IntArrayParam</parameter>
+            </overrides>
+         </configurationParameter>
+      </configurationParameters>
 
-    <!-- Start of parameter settings -->
+      <!-- Start of parameter settings -->
 
-    <configurationParameterSettings>
-      <nameValuePair>
-        <name>StringParam</name>
-        <value>
-          <string>this is a string</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>IntArrayParam</name>
-        <value>
-          <array>           <!-- an array of 2 integers -->
-            <integer>1</integer>
-            <integer>2</integer>
-          </array>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>IntArrayParam1</name>
-        <value>
-          <array>
-            <integer>3</integer>
-            <integer>4</integer>
-          </array>
-        </value>
-      </nameValuePair>
-    </configurationParameterSettings>
-    <flowConstraints>
-      <fixedFlow>
-        <node>A</node>
-        <node>B</node>
-        <node>C</node>
-        <node>D</node>
-        <node>E</node>
-        <node>F</node>
-      </fixedFlow>
-    </flowConstraints>
-    <fsIndexCollection/>
-    <capabilities>
-      <capability>
-        <inputs/>
-        <outputs/>
-        <languagesSupported/>
-      </capability>
-    </capabilities>
-    <operationalProperties>
-      <modifiesCas>true</modifiesCas>
-      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
-      <outputsNewCASes>false</outputsNewCASes>
-    </operationalProperties>
-  </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+      <configurationParameterSettings>
+         <nameValuePair>
+            <name>StringParam</name>
+            <value>
+               <string>this is a string</string>
+            </value>
+         </nameValuePair>
+         <nameValuePair>
+            <name>IntArrayParam</name>
+            <value>
+               <array>           <!-- an array of 2 integers -->
+                  <integer>1</integer>
+                  <integer>2</integer>
+               </array>
+            </value>
+         </nameValuePair>
+         <nameValuePair>
+            <name>IntArrayParam1</name>
+            <value>
+               <array>
+                  <integer>3</integer>
+                  <integer>4</integer>
+               </array>
+            </value>
+         </nameValuePair>
+      </configurationParameterSettings>
+      <flowConstraints>
+         <fixedFlow>
+            <node>A</node>
+            <node>B</node>
+            <node>C</node>
+            <node>D</node>
+            <node>E</node>
+            <node>F</node>
+         </fixedFlow>
+      </flowConstraints>
+      <fsIndexCollection/>
+      <capabilities>
+         <capability>
+            <inputs/>
+            <outputs/>
+            <languagesSupported/>
+         </capability>
+      </capabilities>
+      <operationalProperties>
+         <modifiesCas>true</modifiesCas>
+         <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+         <outputsNewCASes>false</outputsNewCASes>
+      </operationalProperties>
+   </analysisEngineMetaData>
+   <resourceManagerConfiguration/>
 </analysisEngineDescription>

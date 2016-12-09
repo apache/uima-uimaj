@@ -246,7 +246,7 @@ public class XmiSerializationSharedData {
       this.ootsFeatures.put(key, oed);
     }
     Iterator<String> iter = featVals.iterator();
-    XmlElementName elemName = new XmlElementName(null,featName,featName);
+    XmlElementName elemName = new XmlElementName("",featName,featName);
     while (iter.hasNext()) {
       oed.childElements.add(new XmlElementNameAndContents(elemName, iter.next()));
     }

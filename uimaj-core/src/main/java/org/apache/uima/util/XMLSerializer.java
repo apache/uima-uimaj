@@ -49,6 +49,13 @@ import org.xml.sax.ext.LexicalHandler;
  * Utility class that generates XML output from SAX events or DOM nodes.
  */
 public class XMLSerializer {
+
+  // See Javadocs for javax.xml.transform.TransformerFactory for details on how the TransformerFactory is found:
+  //  the class specified in the system property: javax.xml.transform.TransformerFactory 
+  //  or the value of this property in <jre>/lib/jaxp.properties
+  //  or the class found in any jar that has an entry: META-INF/service/javax.xml.transform.TransformerFactory
+  //  or a platform default.
+  
   private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
           .newInstance();
 
@@ -73,6 +80,10 @@ public class XMLSerializer {
         mTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
         mTransformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
         mTransformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+        //   Saxon appears to ignore the above and use a default of 3 unless the following is used
+        //mTransformer.setOutputProperty("{http://saxon.sf.net/}indent-spaces", "4");
+        //   But this fails on Saxon9-HE with:
+        //     net.sf.saxon.trans.LicenseException: Requested feature (custom serialization) requires Saxon-PE
         mTransformer.setOutputProperty(OutputKeys.METHOD, "xml");
       }
 

@@ -21,6 +21,8 @@ package org.apache.uima.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
@@ -41,6 +43,20 @@ import org.apache.uima.testTypeSystem_arrays.OfStrings;
 public class CasToInlineXmlTest extends TestCase {
 
   private final String EOL = System.getProperty("line.separator");
+  
+  private final String IND = saxonVersion() == null ? "    " : "   ";   // Saxon defaults to an indent of 3
+  
+  private String saxonVersion() {
+    String version = null;
+    try {
+      Class<?> saxonVersionClass = Class.forName("net.sf.saxon.Version");
+      Method versionMethod = saxonVersionClass.getMethod("getProductVersion");
+      version = (String) versionMethod.invoke(null);
+      return version;
+    } catch (Exception e) {
+      return null;
+    }
+  }
 
   public void testCAStoString() throws Exception {
     // create a source CAS by deserializing from XCAS
@@ -64,9 +80,9 @@ public class CasToInlineXmlTest extends TestCase {
     String formattedXml = transformer.generateXML(cas, null);
 //    System.out.println(formattedXml);
     // start compare at <Document> because some impls put a nl in front of it (Linux), others don't (Windows)
-    assertTrue(formattedXml.contains("<Document>"+EOL+"    <uima.tcas.DocumentAnnotation"));
+    assertTrue(formattedXml.contains("<Document>"+EOL+IND+"<uima.tcas.DocumentAnnotation"));
     assertTrue(formattedXml.contains("confidence=\"0.0\">" + EOL
-            + "            <org.apache.uima.testTypeSystem.Owner"));
+            + IND+IND+IND+"<org.apache.uima.testTypeSystem.Owner"));
     assertTrue(formattedXml.contains("</uima.tcas.DocumentAnnotation>"+EOL+"</Document>"));
     
     // Check unformatted output does not add whitespace or line breaks
@@ -121,9 +137,9 @@ public class CasToInlineXmlTest extends TestCase {
     int s = result.indexOf("<Document>");
     result = result.substring(s);
     String expected = "<Document>" + EOL +
-        "    <uima.tcas.DocumentAnnotation sofa=\"Sofa\" begin=\"0\" end=\"17\" language=\"x-unspecified\">" + EOL +
-        "        <org.apache.uima.testTypeSystem_arrays.OfStrings sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Strings=\"[0s,1s,2s]\"/>" + EOL +
-        "        <org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>1 2 3 4 5 6 7 8 9</uima.tcas.DocumentAnnotation>" + EOL +
+        IND+"<uima.tcas.DocumentAnnotation sofa=\"Sofa\" begin=\"0\" end=\"17\" language=\"x-unspecified\">" + EOL +
+        IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfStrings sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Strings=\"[0s,1s,2s]\"/>" + EOL +
+        IND+IND+"<org.apache.uima.testTypeSystem_arrays.OfShorts sofa=\"Sofa\" begin=\"0\" end=\"0\" f1Shorts=\"[0,1,2]\"/>1 2 3 4 5 6 7 8 9</uima.tcas.DocumentAnnotation>" + EOL +
         "</Document>";
     for (int i = 0; i < result.length(); i++ ) {
       if (result.charAt(i) != expected.charAt(i)) {

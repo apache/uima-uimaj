@@ -163,6 +163,7 @@ public class XMLParser_impl implements XMLParser {
         
       XMLReader reader = parser.getXMLReader();
       reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+      // reader.setFeature("http://xml.org/sax/features/namespaces", true);  // Is this needed?
 
       // enable validation if requested
       if (mSchemaValidationEnabled && aNamespaceForSchema != null && aSchemaUrl != null) {
