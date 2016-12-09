@@ -44,8 +44,8 @@ public class UimaContextHolder {
    * Sets the UimaContext for the current thread.
    * <p>
    * NOTE - Should be used only by the UIMA Framework.
-   * 
-   * @param uimaContext
+   * </p>
+   * @param uimaContext -
    */
   public static void setContext(UimaContext uimaContext) {
     threadLocalContext.set(uimaContext);;

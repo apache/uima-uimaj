@@ -141,6 +141,7 @@ public interface ResourceManager {
    * 
    * @param aName
    *          the name of a resource
+   * @param <N> The generic type for the returned class
    * 
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.
@@ -370,6 +371,7 @@ public interface ResourceManager {
    * Loads a user class using either the UIMA extension class loader (if specified) or 
    * the loader the UIMA framework is running in.
    * @param name the class to load
+   * @param <N> the generic type for the returned class
    * @return the class
    * @throws ClassNotFoundException -
    */
