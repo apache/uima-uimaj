@@ -61,8 +61,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.5</version>
-      <scope>test</scope>
 		</dependency>
 
 		<!-- UIMA dependencies -->
@@ -231,7 +229,7 @@
                   org.eclipse.core.runtime,
                   org.eclipse.core.resources,
                   org.eclipse.jdt.core,
-                  org.junit4;bundle-version="4.5.0";resolution:=optional
+                  org.junit4;resolution:=optional
                 </Require-Bundle>
                 <Import-Package>
                   !org.eclipse.jface.text,
