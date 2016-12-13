@@ -19,6 +19,7 @@
 
 package org.apache.uima.resource.metadata.impl;
 
+import org.apache.uima.util.XMLSerializer.CharacterValidatingContentHandler;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -96,6 +97,13 @@ class MetaDataObjectSerializer_plain implements MetaDataObject_impl.Serializer {
       return;
     }
     ch.startElement(aNamespace, localname, qname, attributes);
+  }
+
+  // only used for default prefix, passing "" as prefix
+  // if ever used for others, need to add endPrefixMapping(String prefix) as well
+  // https://issues.apache.org/jira/browse/UIMA-5177 
+  public void startPrefixMapping(String prefix, String uri) throws SAXException {
+    ch.startPrefixMapping(prefix, uri);
   }
   
   @Override

@@ -80,14 +80,15 @@
 		          Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
 	    -->
 
-		<!-- 
+   <!--
 		<dependency>
 		  <groupId>net.sf.saxon</groupId>
 		  <artifactId>Saxon-HE</artifactId>
-		  <version>9.4</version>
+		  <version>9.7.0-14</version>
 		  <scope>test</scope>
 		</dependency>
-		
+    	
+ 
 		<dependency>
 		  <groupId>net.sf.saxon</groupId>
     	  <artifactId>saxon</artifactId>
@@ -100,14 +101,13 @@
     	  <version>8.7</version>
     	  <scope>test</scope>
 		</dependency>
-		-->
-		
-		<!-- dependency>
+
+		<dependency>    jackson stuff moved to uimaj-json project
 			<groupId>com.fasterxml.jackson.core</groupId>
 	    <artifactId>jackson-core</artifactId>
 	    <version>2.4.2</version>
-		</dependency-->
-		
+		</dependency>
+      -->		
 		<!-- This next dependency is used to enable findbug rule suppression annotations
 		     Currently commented out - till more thought given to this. 
 		     For instance, we don't want to accidentally distribute this dependency in builds

@@ -863,7 +863,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     AttributesImpl attrs = getXMLAttributes();
     
     if (aWriteDefaultNamespaceAttribute && inf.namespace != null) {
-      attrs.addAttribute("", "xmlns", "xmlns", "", inf.namespace);  // NOTE:  Saxon appears to ignore this ??
+//      attrs.addAttribute("", "xmlns", "xmlns", "xs:string", inf.namespace);  // NOTE:  Saxon appears to ignore this ??
+      // this is the way to add a default namespace, correctly.  Works with Saxon and non-Saxon
+      ((MetaDataObjectSerializer_plain)serializer).startPrefixMapping("", inf.namespace); 
     }
     
     // start element
