@@ -19,10 +19,13 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyStringList extends StringList {
+public class NonEmptyStringList extends StringList implements Iterable<String> {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyStringList.class);
 
@@ -83,5 +86,35 @@ public class NonEmptyStringList extends StringList {
       this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyStringList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyStringList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
+  }
+
+  @Override
+  public Iterator<String> iterator() {
+    return new Iterator<String>() {
+
+      StringList node = NonEmptyStringList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyStringList;
+      }
+
+      @Override
+      public String next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyStringList nn = (NonEmptyStringList) node;
+        String r = nn.getHead();
+        node = nn.getTail();
+        return r;
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
   }
 }

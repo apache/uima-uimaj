@@ -19,10 +19,13 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyFSList extends FSList {
+public class NonEmptyFSList extends FSList implements Iterable<TOP> {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFSList.class);
 
@@ -79,5 +82,35 @@ public class NonEmptyFSList extends FSList {
       this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFSList");
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFSList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
+  }
+
+  @Override
+  public Iterator<TOP> iterator() {
+    return new Iterator<TOP>() {
+
+      FSList node = NonEmptyFSList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyFSList;
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyFSList nn = (NonEmptyFSList) node;
+        TOP r = nn.getHead();
+        node = nn.getTail();
+        return r;
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
   }
 }

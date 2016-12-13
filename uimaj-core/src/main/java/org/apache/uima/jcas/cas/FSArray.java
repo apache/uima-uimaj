@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
@@ -27,7 +30,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements ArrayFS {
+public final class FSArray extends TOP implements Iterable<FeatureStructure>, ArrayFS {
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -170,6 +173,31 @@ public final class FSArray extends TOP implements ArrayFS {
     String[] strArray = new String[size];
     copyToArray(0, strArray, 0, size);
     return strArray;
+  }
+
+  @Override
+  public Iterator<FeatureStructure> iterator() {
+    return new Iterator<FeatureStructure>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public FeatureStructure next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
   }
 
 }

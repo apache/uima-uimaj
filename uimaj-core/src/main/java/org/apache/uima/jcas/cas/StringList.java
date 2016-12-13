@@ -19,11 +19,14 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class StringList extends org.apache.uima.jcas.cas.TOP {
+public class StringList extends org.apache.uima.jcas.cas.TOP implements Iterable<String> {
 
 	public final static int typeIndexID = JCasRegistry.register(StringList.class);
 
@@ -73,4 +76,9 @@ public class StringList extends org.apache.uima.jcas.cas.TOP {
 			cg = c.getTail();
 		}
 	}
+
+  @Override
+  public Iterator<String> iterator() {
+    return Collections.emptyIterator();  // NonEmptyStringList overrides
+  }
 }
