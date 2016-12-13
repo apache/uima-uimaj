@@ -19,10 +19,13 @@
 package org.apache.uima.util.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +34,7 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceConfigurationException;
+import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 
@@ -128,20 +132,35 @@ public class Settings_impl implements Settings {
   /**
    * Load properties from the comma-separated list of files specified in the system property 
    *   UimaExternalOverrides
-   * Files are loaded in order --- so in descending priority.
-   * Any existing entries are removed first.
+   * Files are loaded in list order.  Duplicate properties are ignored so entries in a file override any in following files.
+   * The filesystem is searched first, and if not found and a relative name the datapath and classpath are searched.
    * 
    * @throws ResourceConfigurationException wraps IOException
    */
   public void loadSystemDefaults() throws ResourceConfigurationException {
     String fnames = System.getProperty("UimaExternalOverrides");
     if (fnames != null) {
+      RelativePathResolver_impl relativePathResolver = new RelativePathResolver_impl();
       for (String fname : fnames.split(",")) {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "loadSystemDefaults",
                 LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
                 new Object[] { fname });
+        File f = new File(fname);
         try {
-          FileInputStream is = new FileInputStream(fname);
+          InputStream is = null; 
+          if (f.exists()) {
+            is = new FileInputStream(fname);
+          } else if (f.isAbsolute()) {
+            throw new FileNotFoundException(fname + " - not in filesystem.");
+          } else {  // Look in datapath & classpath if a relative entry not in the filesystem
+            URL relativeUrl = new URL("file", "", fname);
+            URL relPath = relativePathResolver.resolveRelativePath(relativeUrl);
+            if (relPath != null) {
+              is = relPath.openStream();
+            } else {
+              throw new FileNotFoundException(fname + " - not found in directory " + System.getProperty("user.dir") + " or in the datapath or classpath.");
+            }
+          }
           try {
             load(is);
           } finally {
