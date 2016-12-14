@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
@@ -27,7 +30,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyFSList extends FSList implements NonEmptyList {
+public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyList {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFSList.class);
 
@@ -139,5 +142,30 @@ public class NonEmptyFSList extends FSList implements NonEmptyList {
     node.setTail(tail);
     setTail(node);
     return node;
+  }
+
+  @Override
+  public Iterator<TOP> iterator() {
+    return new Iterator<TOP>() {
+
+      FSList node = NonEmptyFSList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyFSList;
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyFSList nn = (NonEmptyFSList)node; 
+        TOP element = nn.getHead();
+        node = nn.getTail();
+        return element;
+      }
+      
+    };
   }
 }

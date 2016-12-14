@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -26,7 +29,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
-public final class StringArray extends TOP implements CommonPrimitiveArray, StringArrayFS {
+public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray, StringArrayFS {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -106,6 +109,7 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
    */
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   /**
@@ -146,6 +150,7 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
   public void copyValuesFrom(CommonArray v) {
     StringArray bv = (StringArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
   /* (non-Javadoc)
@@ -154,6 +159,27 @@ public final class StringArray extends TOP implements CommonPrimitiveArray, Stri
   @Override
   public void setArrayValueFromString(int i, String v) {
     set(i, v);    
+  }
+
+  @Override
+  public Iterator<String> iterator() {
+    return new Iterator<String>() {
+
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public String next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return get(i++);
+      }      
+    };
   }
 
 }

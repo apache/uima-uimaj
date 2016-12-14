@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
@@ -28,7 +31,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectViaCopyToArray {
+public final class FSArray extends TOP implements Iterable<TOP>, CommonArray, ArrayFS, SelectViaCopyToArray {
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -128,6 +131,9 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectVi
       throw new ArrayIndexOutOfBoundsException(
           String.format("FSArray.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
+    
+    // doing this element by element to get pear conversions done if needed, and 
+    // to get journaling done
     for (;srcPos < srcEnd && destPos < destEnd;) {
       set(destPos++, src[srcPos++]);
     }
@@ -215,6 +221,7 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectVi
   public void copyValuesFrom(CommonArray v) {
     FSArray bv = (FSArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
   
   /**
@@ -227,5 +234,25 @@ public final class FSArray extends TOP implements CommonArray, ArrayFS, SelectVi
     FSArray fsa = new FSArray(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);
     return fsa;
+  }
+
+  @Override
+  public Iterator<TOP> iterator() {
+    return new Iterator<TOP>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return get(i++);  // does trampoline conversion
+      }
+    };
   }
 }

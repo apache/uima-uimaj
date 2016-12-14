@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -26,7 +29,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyStringList extends StringList implements NonEmptyList {
+public class NonEmptyStringList extends StringList implements Iterable<String>, NonEmptyList {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyStringList.class);
 
@@ -135,5 +138,30 @@ public class NonEmptyStringList extends StringList implements NonEmptyList {
   @Override
   public EmptyStringList getEmptyList() {
     return this._casView.getEmptyStringList();
+  }
+
+  @Override
+  public Iterator<String> iterator() {
+    return new Iterator<String>() {
+
+      StringList node = NonEmptyStringList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyStringList;
+      }
+
+      @Override
+      public String next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyStringList nn = (NonEmptyStringList)node; 
+        String element = nn.getHead();
+        node = nn.getTail();
+        return element;
+      }
+      
+    };
   }
 }

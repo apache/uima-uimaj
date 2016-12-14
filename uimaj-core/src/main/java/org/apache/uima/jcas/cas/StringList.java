@@ -19,13 +19,24 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
-public abstract class StringList extends TOP implements CommonList {
+public abstract class StringList extends TOP implements CommonList, Iterable<String> {
 
-	// Never called.
+	/* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<String> iterator() {
+    return Collections.emptyIterator(); // overridden by NonEmptyStringList
+  }
+
+  // Never called.
 	protected StringList() { // Disable default constructor
 	}
 

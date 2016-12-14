@@ -19,9 +19,11 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -201,7 +203,26 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public void _init_from_cas_data() {
-    fsArrayAsList = (List<T>) Arrays.asList(gta());
+    // special handling to have getter and setter honor pear trampolines
+//    fsArrayAsList = (List<T>) Arrays.asList(gta());
+    final FSArray fsa = getFsArray();
+    if (null == fsa) {
+      fsArrayAsList = Collections.emptyList();
+    } else {
+    
+      fsArrayAsList = new AbstractList<T>() {
+        int i = 0;
+        @Override
+        public T get(int index) {
+          return (T) fsa.get(i);
+        }
+  
+        @Override
+        public int size() {
+          return fsa.size();
+        }      
+      };
+    }
   }
   
   /* (non-Javadoc)
@@ -210,18 +231,28 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   @Override
   public void _save_to_cas_data() {
     // if fsArraysAsList is not null, then the cas data form is still valid, do nothing
-    if (null != fsArrayAsList) return;
+    if (null != fsArrayAsList) {
+      return;
+    }
     
     // reallocate fsArray if wrong size
-    int sz = size();
+    final int sz = size();
     FSArray fsa = getFsArray();
     if (fsa == null || fsa.size() != sz) {
       setFsArray(fsa = new FSArray(_casView.getExistingJCas(), sz));
     }
     
-    // use the toArray(arg) method with the arg the correct size to set the values into the array
-    // from the fsArrayList    
-    fsArrayList.toArray(fsa._getTheArray());
+    // using element by element instead of bulk operations to
+    //   pick up any pear trampoline conversion and 
+    //   in case fsa was preallocated and right size, may need journaling
+    int i = 0;
+    for (TOP fs : fsArrayList) {
+      TOP currentValue = fsa.get(i);
+      if (currentValue != fs) {
+        fsa.set(i, fs); // done this way to record for journaling for delta CAS
+      }
+      i++;
+    }
   }
   
   /**

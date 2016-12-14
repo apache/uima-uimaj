@@ -19,16 +19,18 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 
-public abstract class FSList extends TOP implements CommonList {
+public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
  
 	// Never called.
 	protected FSList() {// Disable default constructor
@@ -112,4 +114,14 @@ public abstract class FSList extends TOP implements CommonList {
     last.setTail(jcas.getCasImpl().getEmptyFSList());
     return fslhead.getTail();
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<TOP> iterator() {
+    return Collections.emptyIterator();  // overridden by NonEmptyFSList
+  }
+  
+  
 }
