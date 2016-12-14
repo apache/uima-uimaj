@@ -63,7 +63,12 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>compile</scope>
-		</dependency>		
+			<scope>compile</scope>  <!-- is normally test scope, so need to be explicit -->
+		</dependency>	
+    <dependency>
+      <groupId>xmlunit</groupId>
+      <artifactId>xmlunit</artifactId>
+      <version>1.6</version>
+    </dependency>
 	</dependencies>
 </project>

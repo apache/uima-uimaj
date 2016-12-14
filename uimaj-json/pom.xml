@@ -58,12 +58,7 @@
       <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-    	<groupId>xmlunit</groupId>
-    	<artifactId>xmlunit</artifactId>
-    	<version>1.5</version>
-    	<scope>test</scope>
-    </dependency>
+
   </dependencies>
   
   <build>
