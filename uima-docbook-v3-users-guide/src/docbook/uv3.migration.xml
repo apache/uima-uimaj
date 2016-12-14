@@ -106,8 +106,8 @@ under the License.
 	      looking for definitions to migrate.  
 	    </para>
 		    
-	      <blockquote><para>It can also be run with a list of specific JCas classes
-	      to migrate.</para></blockquote>
+	      <!-- <blockquote><para>It can also be run with a list of specific JCas classes
+	      to migrate.</para></blockquote> -->
 		    	    
 	    <section id="uv3.migration.tool_guide.running.inputs">
 	      <title>Specifying input sources</title>
@@ -341,7 +341,8 @@ In the second prompt,
   enter a path to where you want the output, e.g. /temp/migrateJCas
 </programlisting>
     
-    <para>Read the console output summarization to see if everything went OK.</para>
+    <para>Please read the console output summarization to see about any 
+      conditions found during migration which need manual inspection and fixup.</para>
     </section>
     
 </chapter>
