@@ -265,6 +265,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         arrayUpdates.add(v++);
       }
     }
+    
+    void addArrayData(PositiveIntSet indexesPlus1) {
+      indexesPlus1.forAllInts(i -> arrayUpdates.add(i - 1));
+    }
 
     @Override
     public int hashCode() {
@@ -1579,7 +1583,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /**
-   * 
    * @param fs the Feature Structure being updated
    * @param fi the Feature of fs being updated, or null if fs is an array 
    * @param arrayIndexStart
@@ -1602,7 +1605,25 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       change.addFeatData(fi.getOffset());  
     }
   }
+
+  /**
+   * @param fs the Feature Structure being updated
+   * @param arrayIndexStart
+   * @param nbrOfConsecutive
+   */
+  private void logFSUpdate(TOP fs, PositiveIntSet indexesPlus1) {
+   
+    //log the FS
     
+    final Map<TOP, FsChange> changes = this.svd.modifiedPreexistingFSs;
+    
+    //create or use last FsChange element
+    
+    FsChange change = changes.computeIfAbsent(fs, key -> new FsChange(key));
+          
+    change.addArrayData(indexesPlus1);
+  }
+
   private void logFSUpdate(TOP fs, FeatureImpl fi) {
     logFSUpdate(fs, fi, -1, -1); // indicate non-array call
   }
@@ -1683,26 +1704,51 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     maybeLogUpdate(fs, fi);
   }
   
-  /**
-   * 
+  public boolean isLoggingNeeded(FeatureStructureImplC fs) {
+    return this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id);
+  }
+  
+  /** 
    * @param fs the Feature Structure being updated
    * @param feat the feature of fs being updated, or null if fs is a primitive array
    * @param i the index being updated
    */
   final public void maybeLogArrayUpdate(FeatureStructureImplC fs, FeatureImpl feat, int i) {
-    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id)) {
+    if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat, i, 1);
     }    
   }
   
+  /** 
+   * @param fs the Feature Structure being updated
+   * @param indexesPlus1 - a set of indexes (plus 1) that have been update
+   */
+  final public void maybeLogArrayUpdates(FeatureStructureImplC fs, PositiveIntSet indexesPlus1) {
+    if (isLoggingNeeded(fs)) {
+      this.logFSUpdate((TOP) fs, indexesPlus1);
+    }    
+  }
+  
+  /**
+   * @param fs a primitive array FS
+   * @param startingIndex -
+   * @param length number of consequtive items
+   */
+  public void maybeLogArrayUpdates(FeatureStructureImplC fs, int startingIndex, int length) {
+    if (isLoggingNeeded(fs)) {
+      this.logFSUpdate((TOP) fs, null, startingIndex, length);
+    }
+  }
+
+  
   final public void maybeLogUpdate(FeatureStructureImplC fs, FeatureImpl feat) {
-    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id)) {
+    if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, feat);
     }
   }
   
   final public void maybeLogUpdate(FeatureStructureImplC fs, int featCode) {
-    if (this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id)) {
+    if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP)fs, getFeatFromCode_checked(featCode));
     }
   }
