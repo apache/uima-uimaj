@@ -84,6 +84,7 @@ import org.apache.uima.resource.metadata.impl.FsIndexKeyDescription_impl;
 import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
+import org.apache.uima.test.junit_extension.FileCompare;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
@@ -92,6 +93,7 @@ import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.impl.ProcessTrace_impl;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.xml.sax.ContentHandler;
 
 import junit.framework.TestCase;
@@ -1567,6 +1569,7 @@ public class AnalysisEngine_implTest extends TestCase {
     // set the amount to a value which will show up if used
     // indent should not be used because we're using a parser mode which preserves
     // comments and ignorable white space.
+    // NOTE: Saxon appears to force the indent to be 3 - which is what the input file now uses.
     xmlSerializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
     ContentHandler contentHandler = xmlSerializer.getContentHandler();
     contentHandler.startDocument();
@@ -1574,10 +1577,15 @@ public class AnalysisEngine_implTest extends TestCase {
     contentHandler.endDocument();
     os.close();
     
+    String inXml = FileCompare.file2String(inFile);
+    String cloneXml = FileCompare.file2String(cloneFile);
+    XMLAssert.assertXMLEqual(inXml,  cloneXml);
     // When building from a source distribution the descriptor may not have
     // appropriate line-ends so compute the length as if always 1 byte.
     int diff = fileLength(cloneFile) - fileLength(inFile);
     // One platform inserts a blank line and a final newline, so don't insist on perfection
+    // NOTE:  This fails with Saxon as it omits the xmlns attribute (why?) and omits the newlines between adjacent comments.
+    // It also produces many differences in indentation if the input is not indented by 3
     assertTrue("File size changed by "+diff+" should be no more than 2", diff >= -2 && diff <= 2);
 
     // Initialize all delegates and check the initialization order (should be declaration order)

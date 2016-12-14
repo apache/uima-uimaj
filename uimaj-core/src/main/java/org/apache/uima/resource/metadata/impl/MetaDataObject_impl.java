@@ -863,7 +863,9 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
     AttributesImpl attrs = getXMLAttributes();
     
     if (aWriteDefaultNamespaceAttribute && inf.namespace != null) {
-      attrs.addAttribute("", "xmlns", "xmlns", null, inf.namespace);
+//      attrs.addAttribute("", "xmlns", "xmlns", "xs:string", inf.namespace);  // NOTE:  Saxon appears to ignore this ??
+      // this is the way to add a default namespace, correctly.  Works with Saxon and non-Saxon
+      ((MetaDataObjectSerializer_plain)serializer).startPrefixMapping("", inf.namespace); 
     }
     
     // start element
@@ -1131,7 +1133,7 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
           // write a tag for the value, with a "key" attribute
           AttributesImpl attrs = new AttributesImpl();
-          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, null, key); // are these nulls OK?
+          attrs.addAttribute("", aKeyXmlAttribute, aKeyXmlAttribute, "", key); // nulls not OK - must use ""
           Node innerMatchingNode = getMatchingNode(sc, aValueTagName);
           serializer.outputStartElement(innerMatchingNode, aNamespace, aValueTagName, aValueTagName, attrs);
 

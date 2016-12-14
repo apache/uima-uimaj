@@ -113,7 +113,7 @@ public class Filter_impl extends MetaDataObject_impl implements Filter {
           throws SAXException {
     // write the element's start tag
     AttributesImpl attrs = new AttributesImpl();
-    attrs.addAttribute("", "syntax", "syntax", null, getSyntax());
+    attrs.addAttribute("", "syntax", "syntax", "", getSyntax());
 
     // start element
     aContentHandler.startElement("", "filter", "filter", attrs);

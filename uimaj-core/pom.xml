@@ -56,6 +56,7 @@
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
+    <maven.surefire.heap>650M</maven.surefire.heap>
   </properties>
   
 	<dependencies>
@@ -72,6 +73,34 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+				<!--  Uncomment one of these to add Saxon8 or 9 to the classpath for JUnit tests. 
+		      1 fails due to different formatting and a dropped xmlns attribute, 
+		      5 work when run separately or by mvn, but fail when running all tests from Eclipse:
+		          Caused by: org.xml.sax.SAXParseException: cvc-elt.1: Cannot find the declaration of element '....'
+	    -->
+
+   <!--
+		<dependency>
+		  <groupId>net.sf.saxon</groupId>
+		  <artifactId>Saxon-HE</artifactId>
+		  <version>9.7.0-14</version>
+		  <scope>test</scope>
+		</dependency>
+    	
+ 
+		<dependency>
+		  <groupId>net.sf.saxon</groupId>
+    	  <artifactId>saxon</artifactId>
+    	  <version>8.7</version>
+    	  <scope>test</scope>
+		</dependency>
+		<dependency>
+		  <groupId>net.sf.saxon</groupId>
+    	  <artifactId>saxon-dom</artifactId>
+    	  <version>8.7</version>
+    	  <scope>test</scope>
+		</dependency>
+  -->
 		
     <!-- For decompiling recompiling jcas experiments -->
     <!--

@@ -122,7 +122,7 @@ public class ConfigurationGroup_impl extends MetaDataObject_impl implements Conf
     for (int i = 1; i < names.length; i++) {
       buf.append(' ').append(names[i]);
     }
-    attrs.addAttribute("", "names", "names", null, buf.toString());
+    attrs.addAttribute("", "names", "names", "", buf.toString());
     return attrs;
   }
 

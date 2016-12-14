@@ -318,7 +318,8 @@ public class XCASSerializer {
 
     private void startElement(String tag, Attributes attrs, int num) throws SAXException {
       numChildren = num;
-      ch.startElement("", "", tag, attrs);
+      // Saxon requirement? Can't set just one of localName & qName to ""
+      ch.startElement("", tag, tag, attrs);
     }
 
     private void endElement(String tag) throws SAXException {

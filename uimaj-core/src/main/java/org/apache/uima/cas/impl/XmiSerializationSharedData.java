@@ -274,7 +274,7 @@ public class XmiSerializationSharedData {
   
   public static void addOutOfTypeSystemFeature(OotsElementData oed, String featName, List<String> featVals) {
     oed.multiValuedFeatures.add(new NameMultiValue(featName, featVals));
-    XmlElementName elemName = new XmlElementName(null,featName,featName);
+    XmlElementName elemName = new XmlElementName("",featName,featName);
     for (String val : featVals) {
       oed.childElements.add(new XmlElementNameAndContents(elemName, val));
     }    

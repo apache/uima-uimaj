@@ -97,6 +97,9 @@ public class CasIOUtilsTest extends TestCase{
     FileOutputStream docOS = new FileOutputStream(casFile);
     CasIOUtils.save(cas, docOS, SerialFormat.XMI);
     docOS.close();
+    // NOTE - when Saxon saves the cas it omits the prefixes. 
+    //   e.g. produces: <NULL id="0"/>   instead of:    <cas:NULL xmi:id="0"/>
+    // This causes JUnit test failure "unknown type NULL"
     
     // Use a CAS initialized with the "correct" type system or with a different type system?
     CAS casToUse = leniently ? cas2 : cas;

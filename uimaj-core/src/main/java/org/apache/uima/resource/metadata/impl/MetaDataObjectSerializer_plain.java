@@ -74,10 +74,10 @@ class MetaDataObjectSerializer_plain implements MetaDataObject_impl.Serializer {
 
   @Override
   public void writeSimpleValueWithTag(String className, Object o, Node node) throws SAXException {
-    outputStartElement(node, null, className, className, EMPTY_ATTRIBUTES);
+    outputStartElement(node, "", className, className, EMPTY_ATTRIBUTES);
     String valStr = o.toString();
     ch.characters(valStr.toCharArray(),  0,  valStr.length());
-    outputEndElement(node, null,  className,  className);
+    outputEndElement(node, "",  className,  className);
   }
   
   @Override
@@ -96,6 +96,13 @@ class MetaDataObjectSerializer_plain implements MetaDataObject_impl.Serializer {
       return;
     }
     ch.startElement(aNamespace, localname, qname, attributes);
+  }
+
+  // only used for default prefix, passing "" as prefix
+  // if ever used for others, need to add endPrefixMapping(String prefix) as well
+  // https://issues.apache.org/jira/browse/UIMA-5177 
+  public void startPrefixMapping(String prefix, String uri) throws SAXException {
+    ch.startPrefixMapping(prefix, uri);
   }
   
   @Override

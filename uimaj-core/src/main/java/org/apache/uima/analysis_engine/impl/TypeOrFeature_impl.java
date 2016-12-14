@@ -143,7 +143,7 @@ public class TypeOrFeature_impl extends MetaDataObject_impl implements TypeOrFea
       // if allAnnotatorFeatures is true, write that as an attribute
       if (isAllAnnotatorFeatures()) {
         AttributesImpl attrs = new AttributesImpl();
-        attrs.addAttribute("", "allAnnotatorFeatures", "allAnnotatorFeatures", null, "true");
+        attrs.addAttribute("", "allAnnotatorFeatures", "allAnnotatorFeatures", "", "true");
         serializer.outputStartElement(node, namespace, "type", "type", attrs);
 //        aContentHandler.startElement(getXmlizationInfo().namespace, "type", "type", attrs);
       } else {
