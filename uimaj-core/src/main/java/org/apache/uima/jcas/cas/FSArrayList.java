@@ -425,16 +425,17 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    */
   @Override
   public void copyValuesFrom(CommonArray v) {
-    T[] a;
-    
+    clear();
+    Spliterator<T> si;
     if (v instanceof FSArrayList) {
-      a = (T[]) ((FSArrayList<T>)v).toArray();
+      si = ((FSArrayList<T>) v).spliterator();
     } else if (v instanceof FSArray) {
-      a = (T[]) ((FSArray)v)._getTheArray();
+      si = (Spliterator<T>) ((FSArray)v).spliterator();
     } else {
       throw new ClassCastException("argument must be of class FSArray or FSArrayList");
     } 
-    copyFromArray(a, 0, 0, a.length);
+    
+    si.forEachRemaining(fs -> add(fs));
   }
   
   /**

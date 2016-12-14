@@ -20,6 +20,10 @@ package org.apache.uima.internal.util;
 
 import java.util.function.IntConsumer;
 
+/**
+ * An set of non-zero integers, ability to iterate over them (possibly in a sorted way),
+ * with O(1) operations for adding, removing, and testing for contains.   
+ */
 public interface PositiveIntSet {
 
   /**

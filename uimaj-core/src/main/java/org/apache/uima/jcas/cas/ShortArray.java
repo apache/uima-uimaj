@@ -106,6 +106,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
    */
   public void copyFromArray(short[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   /**
@@ -145,6 +146,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
     for (int i = 0; i < length; i++) {
       theArray[i + destPos] = Short.parseShort(src[i + srcPos]);
     }
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   public String[] toStringArray() {
@@ -166,6 +168,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
   public void copyValuesFrom(CommonArray v) {
     ShortArray bv = (ShortArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
   // used by deserializers

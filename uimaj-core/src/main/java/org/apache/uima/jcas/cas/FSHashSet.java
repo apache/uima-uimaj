@@ -22,11 +22,15 @@ package org.apache.uima.jcas.cas;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.Set;
 import java.util.Spliterator;
+
+import javax.xml.crypto.NoSuchMechanismException;
 
 import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.FeatureStructure;
@@ -180,7 +184,10 @@ public final class FSHashSet <T extends TOP> extends TOP implements
     fsHashSet.clear();
     FSArray a = getFsArray();
     if (a != null) {
-      fsHashSet.addAll((Collection<? extends T>) Arrays.asList(a));
+      // do element by element to pick up pear trampoline conversion
+      for (TOP fs : a) {
+        fsHashSet.add((T) fs);
+      }
     }
   }
     
@@ -191,12 +198,24 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   public void _save_to_cas_data() {
     if (isSaveNeeded) {
       isSaveNeeded = false;
-      FSArray a = getFsArray();
-      if (a == null || a.size() != fsHashSet.size()) {
-        a = new FSArray(_casView.getExistingJCas(), fsHashSet.size());
-        setFsArray(a);
+      FSArray fsa = getFsArray();
+      if (fsa == null || fsa.size() != fsHashSet.size()) {
+        fsa = new FSArray(_casView.getExistingJCas(), fsHashSet.size());
+        setFsArray(fsa);
       }
-      fsHashSet.toArray(a._getTheArray());
+ 
+      // using element by element instead of bulk operations to
+      //   pick up any pear trampoline conversion and
+      //   in case fsa was preallocated and right size, may need journaling
+      
+      int i = 0;
+      for (TOP fs : fsHashSet) {
+        TOP currentValue = fsa.get(i);
+        if (currentValue != fs) {
+          fsa.set(i, fs); // done this way to record for journaling for delta CAS
+        }
+        i++;
+      }
     }
   }
 
@@ -317,10 +336,18 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    * @see java.util.HashSet#iterator()
    */
   @Override
-  public Iterator<T> iterator() {  
+  public Iterator<T> iterator() {
+    if (size() == 0) {
+      return Collections.emptyIterator();
+    }
+    
     return isSaveNeeded 
         ? fsHashSet.iterator()
-        : (Iterator<T>) Arrays.asList(gta()).iterator();
+        : gtaIterator();
+  }
+  
+  private Iterator<T> gtaIterator() {
+    return (Iterator<T>) getFsArray().iterator(); 
   }
 
   /**

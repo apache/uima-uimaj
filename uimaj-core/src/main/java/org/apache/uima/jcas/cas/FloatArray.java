@@ -19,6 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Spliterator;
+
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -123,6 +125,7 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
    */
   public void copyFromArray(float[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   /**
@@ -165,7 +168,8 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     _casView.checkArrayBounds(theArray.length, destOffset, length);
     for (int i = 0; i < length; i++) {
-      theArray[i + destOffset] = Float.parseFloat(src[i + srcOffset]);
+      // use "set" to get proper journaling
+      set(i + destOffset, Float.parseFloat(src[i + srcOffset]));
     }
   }
 
@@ -191,6 +195,7 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
   public void copyValuesFrom(CommonArray v) {
     FloatArray bv = (FloatArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
   /* (non-Javadoc)
@@ -200,6 +205,4 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
   public void setArrayValueFromString(int i, String v) {
     set(i, Float.parseFloat(v));    
   }
-
-  
 }

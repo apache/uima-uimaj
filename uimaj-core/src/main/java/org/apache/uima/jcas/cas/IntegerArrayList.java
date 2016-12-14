@@ -19,8 +19,11 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.RandomAccess;
+import java.util.Spliterator;
+
 import org.apache.uima.List_of_ints;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.FeatureStructure;
@@ -158,16 +161,22 @@ public final class IntegerArrayList extends TOP implements
   
   @Override
   public void _init_from_cas_data() {
-    intArrayAsList = List_of_ints.newInstance(getIntegerArray()._getTheArray());
+    
   }
   
   @Override
   public void _save_to_cas_data() {
-    if (getIntegerArray() == null) {
-      IntegerArray a = new IntegerArray(_casView.getExistingJCas(), intArrayList.size());
-      setIntegerArray(a);
-      a.copyFromArray(intArrayList.getArray(), 0,  0, size());
+    if (null != intArrayAsList) {
+      return;  // nothing to do
     }
+    IntegerArray ia = getIntegerArray();
+    final int size = intArrayList.size();
+    if (ia == null || ia.size() != size) {
+      ia = new IntegerArray(_casView.getExistingJCas(), size);
+      setIntegerArray(ia);
+    }
+    ia.copyFromArray(intArrayList.getArray(), 0,  0, size());
+    intArrayAsList = List_of_ints.newInstance(getIntegerArray()._getTheArray());
   }
   
   /**
@@ -306,17 +315,18 @@ public final class IntegerArrayList extends TOP implements
    */
   @Override
   public void copyValuesFrom(CommonArray v) {
-    int[] a;
+    clear();
+    Spliterator.OfInt si;
     
     if (v instanceof IntegerArrayList) {
-      a = ((IntegerArrayList)v).intArrayList.getArray();
+      si = ((IntegerArrayList) v).spliterator();
     } else if (v instanceof IntegerArray) {
-      a = ((IntegerArray)v)._getTheArray();
+      si = ((IntegerArray) v).spliterator();
     } else {
       throw new ClassCastException("argument must be of class IntegerArray or IntegerArrayList");
     }
-    
-    copyFromArray(a, 0, 0, a.length);
+      
+    si.forEachRemaining((int i) -> add(i));      
   }
   
   /**
@@ -508,6 +518,12 @@ public final class IntegerArrayList extends TOP implements
     } else {
       intArrayAsList.sort();
     }
+  }
+  
+  public Spliterator.OfInt spliterator() {
+    return (null == intArrayAsList) 
+        ? Arrays.spliterator(intArrayList.toIntArray())
+        : Arrays.spliterator(getIntegerArray()._getTheArray());
   }
 
 }

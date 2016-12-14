@@ -19,6 +19,10 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
+import java.util.Spliterator;
+import java.util.function.LongConsumer;
+
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -106,6 +110,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
    */
   public void copyFromArray(long[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   /**
@@ -145,6 +150,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     for (int i = 0; i < length; i++) {
       theArray[i + destPos] = Long.parseLong(src[i + srcPos]);
     }
+    _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
   public String[] toStringArray() {
@@ -166,6 +172,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   public void copyValuesFrom(CommonArray v) {
     LongArray bv = (LongArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
   /* (non-Javadoc)
@@ -175,5 +182,9 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   public void setArrayValueFromString(int i, String v) {
     set(i, Long.parseLong(v));
   }
-
+  
+  public Spliterator.OfLong spliterator() {
+    return Arrays.spliterator(theArray);
+  }
+  
 }

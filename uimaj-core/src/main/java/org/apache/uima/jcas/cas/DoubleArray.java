@@ -19,6 +19,11 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.DoubleConsumer;
+
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -176,6 +181,9 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   public void setArrayValueFromString(int i, String v) {
     set(i, Double.parseDouble(v));    
   }
-
+  
+  public Spliterator.OfDouble spliterator() {
+    return Arrays.spliterator(theArray);
+  }
   
 }

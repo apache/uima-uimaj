@@ -19,6 +19,11 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
+import java.util.Spliterator;
+import java.util.function.IntConsumer;
+
+import org.apache.uima.List_of_ints;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -107,6 +112,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    */
   public void copyFromArray(int[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
+    _casView.maybeLogArrayUpdates(this, destPos,  length);
   }
 
   /**
@@ -144,7 +150,8 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
     _casView.checkArrayBounds(theArray.length, srcOffset, length);
     for (int i = 0; i < length; i++) {
-      theArray[i + destOffset] = Integer.parseInt(src[i + srcOffset]);
+      // use set to get proper logging
+      set(i + destOffset, Integer.parseInt(src[i + srcOffset]));
     }
   }
 
@@ -170,6 +177,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   public void copyValuesFrom(CommonArray v) {
     IntegerArray bv = (IntegerArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
   }
 
   /* (non-Javadoc)
@@ -180,5 +188,12 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     set(i, Integer.parseInt(v));
   }
 
+  public Spliterator.OfInt spliterator() {
+    return Arrays.spliterator(theArray);
+  }
+  
+  public List_of_ints asListOfInts() {
+    return List_of_ints.newInstance(theArray);
+  }
   
 }
