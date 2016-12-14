@@ -150,7 +150,33 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>         
+        </plugin> 
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>enforce-compatibility</id>
+              <phase>verify</phase>
+              <configuration>
+                <rules>
+                  <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
+                    <previousVersion>${compat.previous.version}</previousVersion>
+                    <dumpDetails>true</dumpDetails>
+                    <compatibilityType>${compat.level}</compatibilityType>
+                    <excludes combine.children="append">
+                      <exclude>org/apache/uima/jcas/cas/FSArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/FSList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/NonEmptyFSList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/StringArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/StringList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/NonEmptyStringList</exclude>
+                    </excludes>
+                  </requireBackwardCompatibility>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>        
       </plugins>
     </pluginManagement>
     
