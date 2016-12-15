@@ -189,9 +189,9 @@ public class XTalkToSAX {
     for (int i = 0; i < attribute_count; i++) {
       String attrName = consumeString();
       String attrValue = consumeString();
-      workAttributes.addAttribute(null, null, attrName, cdataType, attrValue);
+      workAttributes.addAttribute("", attrName, attrName, cdataType, attrValue);
     }
-    handler.startElement(null, null, tagName, workAttributes);
+    handler.startElement("", tagName, tagName, workAttributes);
     int field_count = XTalkTransporter.readInt(is);
     for (int i = 0; i < field_count; i++) {
       int marker = is.read();
