@@ -176,7 +176,7 @@ public interface FeaturePath {
     * @return Returns the type class of the feature path or null if the feature
     *         path is not set
     */
-   public TypeClass getTypeClass(FeatureStructure fs);
+   public TypeClass getTypClass(FeatureStructure fs);
 
    /**
     * Returns the feature path as string.

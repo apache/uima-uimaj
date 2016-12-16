@@ -395,7 +395,7 @@ class FeaturePathImpl implements FeaturePath {
    * FeatureStructure)
    */
   @Override
-  public TypeClass getTypeClass(FeatureStructure fs) {
+  public TypeClass getTypClass(FeatureStructure fs) {
     TypeImpl type = (TypeImpl) getType(fs); 
     return (type == null) ? null : TypeClass.values()[TypeSystemImpl.getTypeClass(type)];
   }    
