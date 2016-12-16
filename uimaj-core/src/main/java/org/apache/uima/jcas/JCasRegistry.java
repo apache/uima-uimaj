@@ -44,7 +44,9 @@ import org.apache.uima.jcas.cas.TOP;
  *      -- multiple instances of pipelines running in one JVM each with different type systems 
  * 
  */
-public abstract class JCasRegistry {  // abstract to insure no instances are made
+public class JCasRegistry {
+  
+  private JCasRegistry() {};  // never instantiated.
   
   /**
    * A WeakReference class holding 
