@@ -27,6 +27,7 @@ under the License.
   
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.overview.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.backwards_compatibility.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.new_or_extended_apis.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.select.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.custom_java_objects.xml"/> 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.migration.xml"/>

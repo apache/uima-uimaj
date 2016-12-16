@@ -110,19 +110,19 @@ under the License.
 	          <varlistentry>
 	            <term><emphasis role="strong">FSArrayList</emphasis></term>
 	            <listitem>
-	              <para>a Java ArrayList of Feature Structures</para>
+	              <para>a Java ArrayList of Feature Structures.  The JCas class implements the List API.</para>
 	            </listitem>
 	          </varlistentry>
 	          <varlistentry>
 	            <term><emphasis role="strong">IntegerArrayList</emphasis></term>
 	            <listitem>
-	              <para>a variable length int array</para>
+	              <para>a variable length int array.  Supports OfInt iterators.</para>
 	            </listitem>
 	          </varlistentry>
     	      <varlistentry>
 	            <term><emphasis role="strong">FSHashSet</emphasis></term>
 	            <listitem>
-	              <para>a Java HashSet containing Feature Structures</para>
+	              <para>a Java HashSet containing Feature Structures. This JCas class implements the Set API.</para>
 	            </listitem>
 	          </varlistentry>
  

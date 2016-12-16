@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/version_3_users_guide/new_extended_apis/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.new_extended_apis">
+  <title>New and Extended APIs</title>
+  <titleabbrev>New/Extended APIs</titleabbrev>
+  
+  <section id="uv3.new_extended_apis.java8">
+    <title>Java 8 integrations</title>
+    
+    <para>Several of the the JCas cover classes provide additional
+      integrations with Java 8 facilities.</para>
+      
+    <section id="uv3.new_extended_apis.java8.lists">
+      <title>Built-in UIMA Arrays and Lists integration with Java 8</title>
+      
+      <para>The <code>iterator()</code> methods for <code>IntegerList
+        IntegerArrayList, IntegerArray, 
+        DoubleArray,</code> and <code>LongArray</code> return
+        an <code>OfInt / OfDouble / OfLong</code> instances.  These are a subtype of 
+        <code>Iterator</code> with an additional methods nextInt / nextLong / nextDouble which avoid the
+        boxing of the normal iterator.
+      </para>
+      
+      <para>The built-in collection types support a <code>stream()</code> method
+      returning a Stream or a type-specialized sub interface of Stream for primitives 
+      (IntStream, LongStream, DoubleStream) 
+      over the objects in the collection.</para>
+      
+      <para>The new <code>select</code> framework supports stream operations; see the "select" chapter for details.
+      </para> 
+           
+    </section>
+
+    <section id="uv3.new_extended_apis.fsiterator_implements_list">
+      <title>UIMA FSIterators improvements</title>
+      
+      <para>To enable more seamless integration with popular Java idioms, the UIMA iterators for iterating 
+      over UIMA Indexes (the FSIterator interface) now implements the Java List Interface.
+      </para>
+      
+      <para>The iterators over indexes no longer throw concurrent modification exceptions if the index is modified
+      while it is being iterated over.  Instead, the iterators use a lazily-created copy-on-write approach that, when
+      some portion of the index is updated, prior to the update, copies the original state of that portion, and continues
+      to iterate over that.  While this is helpful if you are explicitly modifying the indexes in a loop, it 
+      can be especially helpful when modifying Feature Structures as you iterate, because
+      the UIMA support for detecting and avoiding possible index corruption if you modify some feature being used by 
+      some index as a key, is automatically (under the covers) temporarily removing the Feature Structure from indexes, 
+      doing the modification, and then adding it back.
+      </para>
+    </section>
+
+    <section id="uv3.new_extended_apis.select">
+      <title>New Select API</title>
+      
+      <para>A versatile new Select framework for accessing and acting on Feature Structures 
+      selected from the CAS or from Indexes or from other collection objects is documented in
+      a separate chapter.  This API is integrated with Java 8's Stream facility.
+      </para>
+    </section>
+    
+    <section id="uv3.new_extended_apis.custom_java_objects">
+      <title>New custom Java objects in the CAS framework</title>
+      
+      <para>There is a new framework that supports allowing you to add your own custom Java objects as
+        objects transportable in the CAS.  The following chapter describes this facility, and some new
+        built-in types that make use of it.
+      </para>
+    </section>  
+  </section>      
+</chapter>

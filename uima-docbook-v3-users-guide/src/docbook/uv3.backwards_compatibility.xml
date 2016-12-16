@@ -72,23 +72,38 @@ under the License.
   </section>
   
   <section id="uv3.backards_compatibility.low_level_apis">
-    <title>Low Level APIs</title>
+    <title>APIs for creating and modifying Feature Structures</title>
     
-    <para>Version 2 had APIs called "low level"; these were designed to be used in situations where high performance
-    was needed, at the expense of being much more susceptible to uncaught user errors.  
-    Use of these APIs typically avoided creating Java objects,
-    and used, in many cases, untyped (and unchecked) plain <code>ints</code> as handles to Feature Structures.
+    <para>There are 3 sets of APIs for creating and modifying Feature Structures.
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>Using the JCas classes</para>
+      </listitem>
+      <listitem>
+        <para>Using the normal CAS interface with Type and Feature objects</para>
+      </listitem>
+      <listitem>
+        <para>Using the low level CAS interface with int codes for Types and Features</para>
+      </listitem>
+    </itemizedlist>
     </para>
     
-    <para>In Version 3 these APIs are still supported, but are no longer higher performance, and should be avoided.
-    The APIs only remain for backwards compatibility.  An example of this is the Binary Serialization protocol.  This 
-    remains, for backward compatibility, and because it's used for the <code>C/C++</code> interoperability layer.
+    <para>Version 3 retains all 3 sets, to enable backward compatibility.</para>
+    <para>The low level CAS interface was originally provided to enable a extra-high-performance
+      (but without type safety checks) mode.  In Version 3, this mode is actually somewhat slower than the others,
+      and no longer has any advantages.      
+    </para>
+    <para>Using the low level CAS interface also blocks one of the new features of Version 3 - namely, automatic
+    garbage collection of unreachable Feature Structures.  This is because creating a Feature Structure using the
+    low level API creates the Java object for that Feature Structure, but returns an "int" handle to it.  
+    In order to be able to find the Feature Structure, given that int handle, an entry is made in an internal map.
+    This map holds a reference to this Feature Structure, which prevents it from being garbage collected (until of coursse,
+    the CAS is reset).
     </para>
     
-    <para>One consequence of the representing Feature Structures as 
-    Java objects is that the low level Feature Structure creation APIs (which return an int handle) 
-    must create an artificial reference to the Java object to keep it from being Garbage Collected (GC'd).
-    </para>
+    <para>The normal CAS APIs allow writing Annotators where the type system is unknown at compile time; these 
+    are fully supported.</para>    
+    
   </section>
   
   <section id="uv3.backards_compatibility.PEARs">
