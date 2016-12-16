@@ -281,6 +281,14 @@ under the License.
     
     <para>The <literal>uima.cas.FSArray</literal> type is an array whose elements are
       arbitrary other feature structures (instances of non-primitive types).</para>
+      
+    <para>The JCas cover classes for the array types support the Iterable API, so you may
+    write extended for loops over instances of these.  For example:
+    <programlisting>FSArray myArray = ...
+for (TOP fs : myArray) {
+  somemethod(fs);
+}</programlisting>
+    </para>
     
     <para>There are 3 built-in types associated with the artifact being analyzed:
       
@@ -363,6 +371,25 @@ under the License.
       <literal>head</literal> and <literal>tail</literal>. The head feature holds the
       particular value for that part of the list. The tail refers to the next list object
       (either a non-empty one or the empty version to indicate the end of the list).</para>
+    
+    <para>For JCas users, the new operator for the NonEmptyXyzList classes includes a 3 argument version
+    where you may specify the head and tail values as part of the constructor.  The JCas 
+    cover classes for these implement
+    a <code>push(item)</code> method which creates a new non-empty node, sets the <code>head</code> value
+    to <code>item</code>, and the tail to the node it is called on, and returns the new node.
+    These classes also implement Iterable, so you can use the enhanced Java <code>for</code> operator.
+    The iterator stops when it gets to the end of the list, determined by either the tail being null or 
+    the element being one of the EmptyXXXList elements.
+    Here's a StringList example:
+    <programlisting>StringList sl = new EmptyStringList(jcas);
+sl = sl.push("2");
+sl = sl.push("1");
+
+for (String s : sl) {
+  someMethod(s);  // some sample use
+}</programlisting>
+    
+    </para>
     
     <para>There are no other built-in types. Users are free to define their own type systems,
       building upon these types.</para>
