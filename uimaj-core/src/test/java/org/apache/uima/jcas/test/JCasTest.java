@@ -21,6 +21,7 @@ package org.apache.uima.jcas.test;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.PrimitiveIterator.OfInt;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -48,6 +49,7 @@ import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.FloatList;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.IntegerArrayList;
 import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
@@ -865,6 +867,21 @@ public class JCasTest extends TestCase {
       assertEquals(expectedIna[i++], v);
     }
     
+    IntegerArrayList inal = new IntegerArrayList(jcas, 2);
+    inal.add(15);
+    inal.add(22);
+    
+    OfInt ialit = inal.iterator();
+    i = 0;
+    while (ialit.hasNext()) {
+      assertEquals(expectedIna[i++], ialit.nextInt());
+    }
+    
+    i = 0;
+    for (int v : inal) {
+      assertEquals(expectedIna[i++], v);
+    }
+    
     LongArray loa = new LongArray(jcas, 2);
     loa.set(0, (long)15);
     loa.set(1, (long)22);
@@ -873,6 +890,8 @@ public class JCasTest extends TestCase {
     for (long v : loa) {
       assertEquals(expectedLoa[i++], v);
     }
+    
+    
 
     DoubleArray doa = new DoubleArray(jcas, 2);
     doa.set(0, (double)15);

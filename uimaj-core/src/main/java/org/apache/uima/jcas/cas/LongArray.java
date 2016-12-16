@@ -22,6 +22,9 @@ package org.apache.uima.jcas.cas;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfLong;
+import java.util.stream.DoubleStream;
+import java.util.stream.LongStream;
 import java.util.Spliterator;
 
 import org.apache.uima.cas.LongArrayFS;
@@ -189,8 +192,8 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   }
   
   @Override
-  public Iterator<Long> iterator() {
-    return new Iterator<Long>() {
+  public OfLong iterator() {
+    return new OfLong() {
       int i = 0;
       
       @Override
@@ -204,7 +207,21 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
           throw new NoSuchElementException();
         return get(i++);
       }
+
+      @Override
+      public long nextLong() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
    };
   }
   
+  /**
+   * @return an LongStream over the elements of the array
+   */
+  public LongStream stream() {
+    return Arrays.stream(theArray);
+  }
+
 }

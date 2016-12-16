@@ -19,8 +19,12 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -254,5 +258,14 @@ public final class FSArray extends TOP implements Iterable<TOP>, CommonArray, Ar
         return get(i++);  // does trampoline conversion
       }
     };
+  }
+  
+  @Override
+  public Spliterator<TOP> spliterator() {
+    return Arrays.spliterator(theArray);
+  }
+  
+  public <T extends TOP> Stream<T> stream() {
+    return (Stream<T>) StreamSupport.stream(spliterator(), false);
   }
 }

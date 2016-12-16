@@ -22,7 +22,10 @@ package org.apache.uima.jcas.cas;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.PrimitiveIterator.OfDouble;
 import java.util.Spliterator;
+import java.util.stream.DoubleStream;
 
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -187,8 +190,8 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   }
   
   @Override
-  public Iterator<Double> iterator() {
-    return new Iterator<Double>() {
+  public OfDouble iterator() {
+    return new OfDouble() {
       int i = 0;
       
       @Override
@@ -202,7 +205,20 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
           throw new NoSuchElementException();
         return get(i++);
       }
+
+      @Override
+      public double nextDouble() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
     };
   }
   
+  /**
+   * @return an DoubleStream over the elements of the array
+   */
+  public DoubleStream stream() {
+    return Arrays.stream(theArray);
+  }
 }

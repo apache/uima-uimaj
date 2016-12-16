@@ -22,7 +22,11 @@ package org.apache.uima.jcas.cas;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.Spliterator;
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.apache.uima.List_of_ints;
 import org.apache.uima.cas.IntArrayFS;
@@ -189,6 +193,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     set(i, Integer.parseInt(v));
   }
 
+  @Override
   public Spliterator.OfInt spliterator() {
     return Arrays.spliterator(theArray);
   }
@@ -198,9 +203,21 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   }
   
   @Override
-  public Iterator<Integer> iterator() {
-    return new Iterator<Integer>() {
+  public OfInt iterator() {
+    return new OfInt() {
+      
       int i = 0;
+      
+      /* (non-Javadoc)
+       * @see java.util.PrimitiveIterator.OfInt#forEachRemaining(java.util.function.IntConsumer)
+       */
+      @Override
+      public void forEachRemaining(IntConsumer action) {
+        final int sz = size();
+        for (; i < sz; i++) {
+          action.accept(theArray[i]);
+        }
+      }
       
       @Override
       public boolean hasNext() {
@@ -213,7 +230,20 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
           throw new NoSuchElementException();
         return get(i++);
       }
+
+      @Override
+      public int nextInt() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
     };
   }
   
+  /**
+   * @return an IntStream over the elements of the array
+   */
+  public IntStream stream() {
+    return Arrays.stream(theArray);
+  }
 }

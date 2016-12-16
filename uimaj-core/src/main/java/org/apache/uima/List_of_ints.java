@@ -22,6 +22,7 @@ package org.apache.uima;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfInt;
 
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.util.impl.Constants;
@@ -108,7 +109,7 @@ public interface List_of_ints extends Iterable<Integer> {
 
   public List_of_ints subList(int fromIndex, int toIndex);
   
-  public Iterator<Integer> iterator();
+  public OfInt iterator();
   
   public IntListIterator intListIterator();
   
@@ -191,12 +192,14 @@ public interface List_of_ints extends Iterable<Integer> {
       }
 
       @Override
-      public Iterator<Integer> iterator() {
-        return new Iterator<Integer>() {
+      public OfInt iterator() {
+        return new OfInt() {
           @Override
           public boolean hasNext() {return false;}
           @Override
           public Integer next() {throw new NoSuchElementException();}
+          @Override
+          public int nextInt() {throw new NoSuchElementException();}
         };
       }
       
@@ -320,8 +323,8 @@ public interface List_of_ints extends Iterable<Integer> {
       }
 
       @Override
-      public Iterator<Integer> iterator() {
-        return new Iterator<Integer> () {
+      public OfInt iterator() {
+        return new OfInt () {
           int pos = 0;
           @Override
           public boolean hasNext() {
@@ -330,6 +333,14 @@ public interface List_of_ints extends Iterable<Integer> {
 
           @Override
           public Integer next() {
+            if (!hasNext()) {
+              throw new NoSuchElementException();
+            }
+            return ia[pos++];
+          }
+
+          @Override
+          public int nextInt() {
             if (!hasNext()) {
               throw new NoSuchElementException();
             }

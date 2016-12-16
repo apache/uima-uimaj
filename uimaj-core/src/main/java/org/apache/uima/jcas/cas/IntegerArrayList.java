@@ -20,9 +20,11 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.RandomAccess;
 import java.util.Spliterator;
+import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.List_of_ints;
 import org.apache.uima.UimaSerializable;
@@ -500,7 +502,7 @@ public final class IntegerArrayList extends TOP implements
    * @see java.util.ArrayList#iterator()
    */
   @Override
-  public Iterator<Integer> iterator() {
+  public OfInt iterator() {
     return (null == intArrayAsList) 
         ? intArrayList.iterator()
         : intArrayAsList.iterator();
@@ -526,4 +528,11 @@ public final class IntegerArrayList extends TOP implements
         : Arrays.spliterator(getIntegerArray()._getTheArray());
   }
 
+  /**
+   * @return a stream over the integers
+   */
+  public IntStream stream() {
+    return StreamSupport.intStream(spliterator(), false);
+  }
+  
 }

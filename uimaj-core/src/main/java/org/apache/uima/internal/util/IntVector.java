@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfInt;
 
 import org.apache.uima.util.impl.Constants;
 
@@ -569,8 +570,8 @@ public class IntVector implements Serializable {
     return sum;
   }
   
-  public Iterator<Integer> iterator() {
-    return new Iterator<Integer>() {
+  public OfInt iterator() {
+    return new OfInt() {
 
       int pos = 0;
       
@@ -581,6 +582,14 @@ public class IntVector implements Serializable {
 
       @Override
       public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return get(pos++);
+      }
+
+      @Override
+      public int nextInt() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }

@@ -21,6 +21,10 @@ package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
@@ -122,7 +126,7 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
   public Iterator<TOP> iterator() {
     return Collections.emptyIterator();  // overridden by NonEmptyFSList
   }
-  
+    
   /**
    * pushes item onto front of this list
    * @param item the item to push onto the list
@@ -132,5 +136,11 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
     return new NonEmptyFSList(_casView.getExistingJCas(), item, this);
   }
 
-  
+  /**
+   * @param <T> generic type being returned
+   * @return a stream over this FSList
+   */
+  public <T extends TOP> Stream<T> stream() {
+    return (Stream<T>) StreamSupport.stream(spliterator(), false);
+  }
 }

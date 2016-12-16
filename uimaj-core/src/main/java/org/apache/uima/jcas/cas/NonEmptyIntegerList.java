@@ -22,6 +22,8 @@ package org.apache.uima.jcas.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.PrimitiveIterator.OfInt;
 
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
@@ -142,8 +144,8 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   }
   
   @Override
-  public Iterator<Integer> iterator() {
-    return new Iterator<Integer>() {
+  public OfInt iterator() {
+    return new OfInt() {
 
       IntegerList node = NonEmptyIntegerList.this;
       
@@ -162,8 +164,18 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
         node = nn.getTail();
         return element;
       }
+
+      @Override
+      public int nextInt() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyIntegerList nn = (NonEmptyIntegerList)node; 
+        int element = nn.getHead();
+        node = nn.getTail();
+        return element;
+      }
       
     };
   }
-
 }
