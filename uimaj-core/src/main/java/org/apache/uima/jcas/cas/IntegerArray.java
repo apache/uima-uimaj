@@ -19,12 +19,15 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
-public final class IntegerArray extends TOP implements IntArrayFS {
+public final class IntegerArray extends TOP implements IntArrayFS, Iterable<Integer> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -159,5 +162,30 @@ public final class IntegerArray extends TOP implements IntArrayFS {
     String[] strArray = new String[size];
     copyToArray(0, strArray, 0, size);
     return strArray;
+  }
+  
+  @Override
+  public Iterator<Integer> iterator() {
+    return new Iterator<Integer>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Integer next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
   }
 }

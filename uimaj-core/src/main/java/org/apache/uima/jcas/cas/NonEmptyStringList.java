@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyStringList extends StringList implements Iterable<String> {
+public class NonEmptyStringList extends StringList {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyStringList.class);
 
@@ -46,6 +46,17 @@ public class NonEmptyStringList extends StringList implements Iterable<String> {
 
   public NonEmptyStringList(JCas jcas) {
     super(jcas);
+  }
+  
+  /**
+   * @param jcas the JCas create the new Feature Structure in
+   * @param s the head item
+   * @param tail the tail item
+   */
+  public NonEmptyStringList(JCas jcas, String s, StringList tail) {
+    this(jcas);
+    setHead(s);
+    setTail(tail);
   }
 
   // *------------------*
@@ -116,5 +127,5 @@ public class NonEmptyStringList extends StringList implements Iterable<String> {
       }
       
     };
-  }
+  }  
 }

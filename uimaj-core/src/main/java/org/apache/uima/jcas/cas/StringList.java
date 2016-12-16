@@ -81,4 +81,13 @@ public class StringList extends org.apache.uima.jcas.cas.TOP implements Iterable
   public Iterator<String> iterator() {
     return Collections.emptyIterator();  // NonEmptyStringList overrides
   }
+ 
+  /**
+   * pushes a String onto front of this list
+   * @param s the String to push
+   * @return the new list, with this String as the first element's head value
+   */
+  public NonEmptyStringList push(String s) {
+    return new NonEmptyStringList(this.jcasType.jcas, s, this);
+  }
 }

@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyFSList extends FSList implements Iterable<TOP> {
+public class NonEmptyFSList extends FSList {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFSList.class);
 
@@ -46,6 +46,17 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP> {
 
   public NonEmptyFSList(JCas jcas) {
     super(jcas);
+  }
+  
+  /**
+   * @param jcas the JCas create the new Feature Structure in
+   * @param item the head item
+   * @param tail the tail item
+   */
+  public NonEmptyFSList(JCas jcas, TOP item, FSList tail) {
+    this(jcas);
+    setHead(item);
+    setTail(tail); 
   }
 
   // *------------------*

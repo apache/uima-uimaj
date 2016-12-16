@@ -19,10 +19,13 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyIntegerList extends IntegerList {
+public class NonEmptyIntegerList extends IntegerList implements Iterable<Integer> {
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyIntegerList.class);
 
@@ -43,6 +46,17 @@ public class NonEmptyIntegerList extends IntegerList {
 
   public NonEmptyIntegerList(JCas jcas) {
     super(jcas);
+  }
+  
+  /**
+   * @param jcas the jcas to create this Feature Structure in
+   * @param i the head value
+   * @param tail the tail
+   */
+  public NonEmptyIntegerList(JCas jcas, int i, IntegerList tail) {
+    this(jcas);
+    setHead(i);
+    setTail(tail);
   }
 
   // *------------------*
@@ -83,4 +97,35 @@ public class NonEmptyIntegerList extends IntegerList {
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyIntegerList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
   }
+  
+  @Override
+  public Iterator<Integer> iterator() {
+    return new Iterator<Integer>() {
+
+      IntegerList node = NonEmptyIntegerList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyIntegerList;
+      }
+
+      @Override
+      public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyIntegerList nn = (NonEmptyIntegerList) node;
+        Integer r = nn.getHead();
+        node = nn.getTail();
+        return r;
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+      
+  }
+
 }

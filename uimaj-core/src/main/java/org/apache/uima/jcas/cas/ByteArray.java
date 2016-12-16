@@ -19,12 +19,15 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ByteArray */
-public final class ByteArray extends TOP implements ByteArrayFS {
+public final class ByteArray extends TOP implements ByteArrayFS, Iterable<Byte> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -139,5 +142,30 @@ public final class ByteArray extends TOP implements ByteArrayFS {
     String[] strArray = new String[size];
     copyToArray(0, strArray, 0, size);
     return strArray;
+  }
+  
+  @Override
+  public Iterator<Byte> iterator() {
+    return new Iterator<Byte>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Byte next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
   }
 }

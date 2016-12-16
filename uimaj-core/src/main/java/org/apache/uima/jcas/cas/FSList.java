@@ -79,4 +79,13 @@ public class FSList extends org.apache.uima.jcas.cas.TOP implements Iterable<TOP
   public Iterator<TOP> iterator() {
     return Collections.emptyIterator(); // NonEmptyFSList overrides
   }
+  
+  /**
+   * pushes item onto front of this list
+   * @param item the item to push onto the list
+   * @return the new list, with this item as the head value of the first element
+   */
+  public NonEmptyFSList push(TOP item) {
+    return new NonEmptyFSList(this.jcasType.jcas, item, this);
+  }
 }

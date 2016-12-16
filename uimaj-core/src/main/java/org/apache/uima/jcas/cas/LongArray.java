@@ -19,12 +19,15 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements LongArrayFS {
+public final class LongArray extends TOP implements LongArrayFS, Iterable<Long> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -140,4 +143,30 @@ public final class LongArray extends TOP implements LongArrayFS {
     copyToArray(0, strArray, 0, size);
     return strArray;
   }
+  
+  @Override
+  public Iterator<Long> iterator() {
+    return new Iterator<Long>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Long next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+    };
+  }
+
 }

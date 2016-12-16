@@ -19,11 +19,14 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class FloatList extends org.apache.uima.jcas.cas.TOP {
+public class FloatList extends org.apache.uima.jcas.cas.TOP implements Iterable<Float> {
 
 	public final static int typeIndexID = JCasRegistry.register(FloatList.class);
 
@@ -72,4 +75,19 @@ public class FloatList extends org.apache.uima.jcas.cas.TOP {
 			cg = c.getTail();
 		}
 	}
+	
+	 /**
+   * pushes item onto front of this list
+   * @param item the item to push onto the list
+   * @return the new list, with this item as the head value of the first element
+   */
+  public NonEmptyFloatList push(float item) {
+    return new NonEmptyFloatList(this.jcasType.jcas, item, this);
+  }
+  
+  @Override
+  public Iterator<Float> iterator() {
+    return Collections.emptyIterator(); // NonEmptyList overrides
+  }
+
 }

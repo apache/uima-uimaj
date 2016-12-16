@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -43,6 +46,17 @@ public class NonEmptyFloatList extends FloatList {
 
   public NonEmptyFloatList(JCas jcas) {
     super(jcas);
+  }
+
+  /**
+   * @param jcas the JCas create the new Feature Structure in
+   * @param item the head item
+   * @param tail the tail item
+   */
+  public NonEmptyFloatList(JCas jcas, float item, FloatList tail) {
+    this(jcas);
+    setHead(item);
+    setTail(tail); 
   }
 
   // *------------------*
@@ -83,4 +97,35 @@ public class NonEmptyFloatList extends FloatList {
     jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail,
             jcasType.ll_cas.ll_getFSRef(v));
   }
+
+  @Override
+  public Iterator<Float> iterator() {
+    return new Iterator<Float>() {
+
+      FloatList node = NonEmptyFloatList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyFloatList;
+      }
+
+      @Override
+      public Float next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyFloatList nn = (NonEmptyFloatList) node;
+        Float r = nn.getHead();
+        node = nn.getTail();
+        return r;
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+      
+  }
+  
 }
