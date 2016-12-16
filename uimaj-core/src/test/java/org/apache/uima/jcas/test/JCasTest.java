@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.test;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.uima.cas.CAS;
@@ -35,18 +36,28 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
 import org.apache.uima.jcas.cas.EmptyIntegerList;
 import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.FloatList;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.IntegerList;
+import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
 import org.apache.uima.jcas.cas.NonEmptyFloatList;
 import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.jcas.cas.NonEmptyStringList;
+import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.StringList;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
@@ -302,6 +313,14 @@ public class JCasTest extends TestCase {
       r1.setArrayFloat(2, 321.4F);
       assertEquals(1247.3F, r1.getPlainFloat());
       assertEquals(321.4F, r1.getArrayFloat(2));
+      
+      // double values
+      r1 = new Root(jcas);
+      r1.setPlainDouble(2247.3D);
+      r1.setArrayDouble(new DoubleArray(jcas, 3));
+      r1.setArrayDouble(2, 421.4D);
+      assertEquals(2247.3D, r1.getPlainDouble());
+      assertEquals(421.4D, r1.getArrayDouble(2));
       
 			// null values
 			r2.setArrayString(0, null);
@@ -727,6 +746,145 @@ public class JCasTest extends TestCase {
 		}
 	}
   
+	public void testStringListAPI() {
+	  StringList sl = new EmptyStringList(jcas);
+	  sl = sl.push("2");
+	  sl = sl.push("1");
+	  
+	  String[] sa = new String[2];
+	  int i = 0;
+	  for (String s : sl) {
+	    sa[i++] = s;
+	  }
+	  
+	  String[] expected = {"1",  "2"};
+	  assert(Arrays.equals(expected, sa));
+	}
+	
+	public void testStringArrayAPI() {
+	  StringArray sa = new StringArray(jcas, 3);
+	  String[] values = {"1", "2", "3"}; 
+	  sa.copyFromArray(values, 0, 0, 3);
+	  
+    int i = 0;
+    for (String s : sa) {
+      assert(s.equals(values[i++]));
+    }
+	}
+
+  public void testFSListAPI() {
+    FSList sl = new EmptyFSList(jcas);
+    TOP fs1 = new TOP(jcas);
+    TOP fs2 = new TOP(jcas);
+    sl = sl.push(fs2);
+    sl = sl.push(fs1);
+   
+    TOP[] fss = new TOP[2];
+    int i = 0;
+    for (TOP s : sl) {
+      fss[i++] = s;
+    }
+    
+    TOP[] expected = {fs1, fs2};
+    assert(Arrays.equals(expected, fss));
+  }
+	  
+  public void testFSArrayAPI() {
+    FSArray sa = new FSArray(jcas, 2);
+    TOP fs1 = new TOP(jcas);
+    TOP fs2 = new TOP(jcas);
+    TOP[] values = {fs1, fs2}; 
+    sa.copyFromArray(values, 0, 0, 2);
+    
+    int i = 0;
+    for (FeatureStructure s : sa) {
+      assert(s.equals(values[i++]));
+    }
+  }
+  
+  public void testOtherListAPI() {
+    // float and integer
+    IntegerList sl = new EmptyIntegerList(jcas);
+    sl = sl.push(2);
+    sl = sl.push(1);
+   
+    int[] fss = new int[2];
+    int i = 0;
+    for (int s : sl) {
+      fss[i++] = s;
+    }
+    
+    int[] expected = {1, 2};
+    assert(Arrays.equals(expected, fss));
+
+    FloatList fl = new EmptyFloatList(jcas);
+    fl = fl.push(2.0F);
+    fl = fl.push(1.0F);
+    float[] fls = new float[2];
+    i = 0;
+    for (float f : fl) {
+      fls[i++] = f;
+    }
+    
+    float[] expectedFloats = {1.0f, 2.0f};
+    assert(Arrays.equals(expectedFloats, fls));
+    
+    BooleanArray boa = new BooleanArray(jcas, 2);
+    boa.set(0, true);
+    boa.set(1, false);
+    boolean[] expectedBa = {true, false};
+    i = 0;
+    for (boolean bov : boa) {
+      assertEquals(expectedBa[i++], bov);
+    }
+
+    ByteArray bya = new ByteArray(jcas, 2);
+    bya.set(0, (byte)15);
+    bya.set(1, (byte)22);
+    byte[] expectedBya = {15, 22};
+    i = 0;
+    for (byte v : bya) {
+      assertEquals(expectedBya[i++], v);
+    }
+
+    ShortArray sha = new ShortArray(jcas, 2);
+    sha.set(0, (short)15);
+    sha.set(1, (short)22);
+    short[] expectedSha = {15, 22};
+    i = 0;
+    for (short v : sha) {
+      assertEquals(expectedSha[i++], v);
+    }
+
+    IntegerArray ina = new IntegerArray(jcas, 2);
+    ina.set(0, (int)15);
+    ina.set(1, (int)22);
+    int[] expectedIna = {15, 22};
+    i = 0;
+    for (int v : ina) {
+      assertEquals(expectedIna[i++], v);
+    }
+    
+    LongArray loa = new LongArray(jcas, 2);
+    loa.set(0, (long)15);
+    loa.set(1, (long)22);
+    long[] expectedLoa = {15, 22};
+    i = 0;
+    for (long v : loa) {
+      assertEquals(expectedLoa[i++], v);
+    }
+
+    DoubleArray doa = new DoubleArray(jcas, 2);
+    doa.set(0, (double)15);
+    doa.set(1, (double)22);
+    Double[] expectedDoa = {15d, 22d};
+    i = 0;
+    for (double v : doa) {
+      assertEquals(expectedDoa[i++], v);
+    }
+    
+  }
+
   public void testUndefinedType() throws Exception {
     //create jcas with no type system
     JCas jcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();

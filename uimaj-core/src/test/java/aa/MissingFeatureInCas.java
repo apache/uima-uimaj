@@ -1,23 +1,32 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class MissingFeatureInCas extends TOP {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "aa.MissingFeatureInCas";
+  
   /** @generated
    * @ordered 
    */
@@ -39,6 +48,11 @@ public class MissingFeatureInCas extends TOP {
    *   Feature Offsets *
    * *******************/ 
    
+  public final static String _FeatName_haveThisOne = "haveThisOne";
+  public final static String _FeatName_missingThisOne = "missingThisOne";
+  public final static String _FeatName_changedFType = "changedFType";
+
+
   /* Feature Adjusted Offsets */
   public final static int _FI_haveThisOne = TypeSystemImpl.getAdjustedFeatureOffset("haveThisOne");
   public final static int _FI_missingThisOne = TypeSystemImpl.getAdjustedFeatureOffset("missingThisOne");
@@ -66,6 +80,7 @@ public class MissingFeatureInCas extends TOP {
     super(jcas);
     readObject();   
   } 
+
 
   /** 
    * <!-- begin-user-doc -->

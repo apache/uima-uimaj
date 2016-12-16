@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -26,7 +29,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ShortArray */
-public final class ShortArray extends TOP implements CommonPrimitiveArray, ShortArrayFS {
+public final class ShortArray extends TOP implements CommonPrimitiveArray, ShortArrayFS, Iterable<Short> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -174,5 +177,24 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
   // used by deserializers
   public void setArrayValueFromString(int i, String v) {
     set(i, Short.parseShort(v));
+  }
+  
+  @Override
+  public Iterator<Short> iterator() {
+    return new Iterator<Short>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Short next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+    };
   }
 }

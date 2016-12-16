@@ -1,24 +1,33 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Mon Mar 07 09:21:36 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
 
 package x.y.z;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Mon Mar 07 09:21:36 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Token extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "x.y.z.Token";
+  
   /** @generated
    * @ordered 
    */
@@ -40,6 +49,12 @@ public class Token extends Annotation {
    *   Feature Offsets *
    * *******************/ 
    
+  public final static String _FeatName_ttype = "ttype";
+  public final static String _FeatName_tokenFloatFeat = "tokenFloatFeat";
+  public final static String _FeatName_lemma = "lemma";
+  public final static String _FeatName_lemmaList = "lemmaList";
+
+
   /* Feature Adjusted Offsets */
   public final static int _FI_ttype = TypeSystemImpl.getAdjustedFeatureOffset("ttype");
   public final static int _FI_tokenFloatFeat = TypeSystemImpl.getAdjustedFeatureOffset("tokenFloatFeat");
@@ -68,6 +83,19 @@ public class Token extends Annotation {
     super(jcas);
     readObject();   
   } 
+
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
+  public Token(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
 
   /** 
    * <!-- begin-user-doc -->

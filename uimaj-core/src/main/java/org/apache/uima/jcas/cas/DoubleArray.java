@@ -20,9 +20,9 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.function.DoubleConsumer;
 
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -31,7 +31,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for DoubleArray */
-public final class DoubleArray extends TOP implements CommonPrimitiveArray, DoubleArrayFS {
+public final class DoubleArray extends TOP implements CommonPrimitiveArray, DoubleArrayFS, Iterable<Double> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -184,6 +184,25 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   
   public Spliterator.OfDouble spliterator() {
     return Arrays.spliterator(theArray);
+  }
+  
+  @Override
+  public Iterator<Double> iterator() {
+    return new Iterator<Double>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Double next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+    };
   }
   
 }

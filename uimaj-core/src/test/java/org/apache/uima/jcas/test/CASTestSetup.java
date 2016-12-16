@@ -130,9 +130,13 @@ public class CASTestSetup implements AnnotatorInitializer {
     Type typeArrayInt = tsm.getType(CAS.TYPE_NAME_INTEGER_ARRAY);
     Type typeArrayRef = tsm.getType(CAS.TYPE_NAME_FS_ARRAY);
     Type typeArrayFloat = tsm.getType(CAS.TYPE_NAME_FLOAT_ARRAY);
+    Type typeArrayLong = tsm.getType(CAS.TYPE_NAME_LONG_ARRAY);
+    Type typeArrayDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE_ARRAY);
     Type typeArrayString = tsm.getType(CAS.TYPE_NAME_STRING_ARRAY);
     Type typeInteger = tsm.getType(CAS.TYPE_NAME_INTEGER);
     Type typeFloat = tsm.getType(CAS.TYPE_NAME_FLOAT);
+    Type typeDouble = tsm.getType(CAS.TYPE_NAME_DOUBLE);
+    Type typeLong = tsm.getType(CAS.TYPE_NAME_LONG);
     Type typeString = tsm.getType(CAS.TYPE_NAME_STRING);
     Type typeRef = tsm.getType(CAS.TYPE_NAME_TOP);
     // assert(annotType != null);
@@ -170,9 +174,13 @@ public class CASTestSetup implements AnnotatorInitializer {
     tsm.addFeature("arrayInt", typeRoot, typeArrayInt);
     tsm.addFeature("arrayRef", typeRoot, typeArrayRef);
     tsm.addFeature("arrayFloat", typeRoot, typeArrayFloat);
+    tsm.addFeature("arrayLong", typeRoot, typeArrayLong);
+    tsm.addFeature("arrayDouble", typeRoot, typeArrayDouble);
     tsm.addFeature("arrayString", typeRoot, typeArrayString);
     tsm.addFeature("plainInt", typeRoot, typeInteger);
     tsm.addFeature("plainFloat", typeRoot, typeFloat);
+    tsm.addFeature("plainDouble", typeRoot, typeDouble);
+    tsm.addFeature("plainLong", typeRoot, typeLong);
     tsm.addFeature("plainString", typeRoot, typeString);
 //    tsm.addFeature("plainRef", typeRoot, typeRef);
     tsm.addFeature("plainRef", typeRoot, typeRoot);

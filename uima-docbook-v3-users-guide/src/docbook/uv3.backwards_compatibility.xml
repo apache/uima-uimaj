@@ -34,7 +34,9 @@ under the License.
   
   <para>To this end, version 3 is designed to be backwards compatible, except for needing a new set of JCas classes (if these were
   previously being used).  There is a migration tool to handle the upgrading of the JCas classes, described in
-  a later chapter.</para>
+  a later chapter.  The JCas class changes include no longer needing, using, or supporting the <code>Xyz_Type</code>
+  sister classes for each main JCas class.  Methods in the JCas API that gave access to these class instances
+  have been removed.</para>
   
   <section id="uv3.backwards_compatibility.serialization">  
 	  <title>Serialization forms</title>

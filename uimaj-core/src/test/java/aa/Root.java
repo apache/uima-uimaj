@@ -1,27 +1,38 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
+import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
-import org.apache.uima.jcas.cas.IntegerArray;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.IntegerArray;
 
 
 /** 
- * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Root extends TOP {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "aa.Root";
+  
   /** @generated
    * @ordered 
    */
@@ -43,6 +54,20 @@ public class Root extends TOP {
    *   Feature Offsets *
    * *******************/ 
    
+  public final static String _FeatName_arrayInt = "arrayInt";
+  public final static String _FeatName_arrayRef = "arrayRef";
+  public final static String _FeatName_arrayFloat = "arrayFloat";
+  public final static String _FeatName_arrayString = "arrayString";
+  public final static String _FeatName_plainInt = "plainInt";
+  public final static String _FeatName_plainFloat = "plainFloat";
+  public final static String _FeatName_plainString = "plainString";
+  public final static String _FeatName_plainRef = "plainRef";
+  public final static String _FeatName_plainLong = "plainLong";
+  public final static String _FeatName_plainDouble = "plainDouble";
+  public final static String _FeatName_arrayLong = "arrayLong";
+  public final static String _FeatName_arrayDouble = "arrayDouble";
+
+
   /* Feature Adjusted Offsets */
   public final static int _FI_arrayInt = TypeSystemImpl.getAdjustedFeatureOffset("arrayInt");
   public final static int _FI_arrayRef = TypeSystemImpl.getAdjustedFeatureOffset("arrayRef");
@@ -52,6 +77,10 @@ public class Root extends TOP {
   public final static int _FI_plainFloat = TypeSystemImpl.getAdjustedFeatureOffset("plainFloat");
   public final static int _FI_plainString = TypeSystemImpl.getAdjustedFeatureOffset("plainString");
   public final static int _FI_plainRef = TypeSystemImpl.getAdjustedFeatureOffset("plainRef");
+  public final static int _FI_plainLong = TypeSystemImpl.getAdjustedFeatureOffset("plainLong");
+  public final static int _FI_plainDouble = TypeSystemImpl.getAdjustedFeatureOffset("plainDouble");
+  public final static int _FI_arrayLong = TypeSystemImpl.getAdjustedFeatureOffset("arrayLong");
+  public final static int _FI_arrayDouble = TypeSystemImpl.getAdjustedFeatureOffset("arrayDouble");
 
    
   /** Never called.  Disable default constructor
@@ -75,6 +104,7 @@ public class Root extends TOP {
     super(jcas);
     readObject();   
   } 
+
 
   /** 
    * <!-- begin-user-doc -->
@@ -305,6 +335,116 @@ public class Root extends TOP {
     _setFeatureValueNcWj(_FI_plainRef, v);
   }    
     
+   
+    
+  //*--------------*
+  //* Feature: plainLong
+
+  /** getter for plainLong - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public long getPlainLong() { return _getLongValueNc(_FI_plainLong);}
+    
+  /** setter for plainLong - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setPlainLong(long v) {
+    _setLongValueNfc(_FI_plainLong, v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: plainDouble
+
+  /** getter for plainDouble - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public double getPlainDouble() { return _getDoubleValueNc(_FI_plainDouble);}
+    
+  /** setter for plainDouble - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setPlainDouble(double v) {
+    _setDoubleValueNfc(_FI_plainDouble, v);
+  }    
+    
+   
+    
+  //*--------------*
+  //* Feature: arrayLong
+
+  /** getter for arrayLong - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public LongArray getArrayLong() { return (LongArray)(_getFeatureValueNc(_FI_arrayLong));}
+    
+  /** setter for arrayLong - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setArrayLong(LongArray v) {
+    _setFeatureValueNcWj(_FI_arrayLong, v);
+  }    
+    
+    
+  /** indexed getter for arrayLong - gets an indexed value - 
+   * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
+   */
+  public long getArrayLong(int i) {
+     return ((LongArray)(_getFeatureValueNc(_FI_arrayLong))).get(i);} 
+
+  /** indexed setter for arrayLong - sets an indexed value - 
+   * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
+   */
+  public void setArrayLong(int i, long v) {
+    ((LongArray)(_getFeatureValueNc(_FI_arrayLong))).set(i, v);
+  }  
+   
+    
+  //*--------------*
+  //* Feature: arrayDouble
+
+  /** getter for arrayDouble - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public DoubleArray getArrayDouble() { return (DoubleArray)(_getFeatureValueNc(_FI_arrayDouble));}
+    
+  /** setter for arrayDouble - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setArrayDouble(DoubleArray v) {
+    _setFeatureValueNcWj(_FI_arrayDouble, v);
+  }    
+    
+    
+  /** indexed getter for arrayDouble - gets an indexed value - 
+   * @generated
+   * @param i index in the array to get
+   * @return value of the element at index i 
+   */
+  public double getArrayDouble(int i) {
+     return ((DoubleArray)(_getFeatureValueNc(_FI_arrayDouble))).get(i);} 
+
+  /** indexed setter for arrayDouble - sets an indexed value - 
+   * @generated
+   * @param i index in the array to set
+   * @param v value to set into the array 
+   */
+  public void setArrayDouble(int i, double v) {
+    ((DoubleArray)(_getFeatureValueNc(_FI_arrayDouble))).set(i, v);
+  }  
   }
 
     

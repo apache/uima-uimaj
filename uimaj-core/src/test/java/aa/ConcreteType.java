@@ -1,24 +1,31 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
 
 package aa;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
 
 
 
 
 /** 
- * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class ConcreteType extends AbstractType {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "aa.ConcreteType";
+  
   /** @generated
    * @ordered 
    */
@@ -40,6 +47,9 @@ public class ConcreteType extends AbstractType {
    *   Feature Offsets *
    * *******************/ 
    
+  public final static String _FeatName_concreteString = "concreteString";
+
+
   /* Feature Adjusted Offsets */
   public final static int _FI_concreteString = TypeSystemImpl.getAdjustedFeatureOffset("concreteString");
 
@@ -65,6 +75,7 @@ public class ConcreteType extends AbstractType {
     super(jcas);
     readObject();   
   } 
+
 
   /** 
    * <!-- begin-user-doc -->

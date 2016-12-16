@@ -20,8 +20,9 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Spliterator;
-import java.util.function.LongConsumer;
 
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -30,7 +31,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFS {
+public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFS, Iterable<Long> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -185,6 +186,25 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
   
   public Spliterator.OfLong spliterator() {
     return Arrays.spliterator(theArray);
+  }
+  
+  @Override
+  public Iterator<Long> iterator() {
+    return new Iterator<Long>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Long next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+   };
   }
   
 }

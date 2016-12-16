@@ -19,8 +19,6 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.util.Spliterator;
-
 import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;

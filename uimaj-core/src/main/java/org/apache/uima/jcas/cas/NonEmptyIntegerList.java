@@ -19,7 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
@@ -138,4 +140,30 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   public EmptyIntegerList getEmptyList() {
     return this._casView.getEmptyIntegerList();
   }
+  
+  @Override
+  public Iterator<Integer> iterator() {
+    return new Iterator<Integer>() {
+
+      IntegerList node = NonEmptyIntegerList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyIntegerList;
+      }
+
+      @Override
+      public Integer next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyIntegerList nn = (NonEmptyIntegerList)node; 
+        Integer element = nn.getHead();
+        node = nn.getTail();
+        return element;
+      }
+      
+    };
+  }
+
 }

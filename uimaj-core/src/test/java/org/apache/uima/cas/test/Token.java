@@ -1,22 +1,32 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:45:02 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
 
 package org.apache.uima.cas.test;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Mar 02 13:45:02 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Token extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.cas.test.Token";
+  
   /** @generated
    * @ordered 
    */
@@ -38,6 +48,8 @@ public class Token extends Annotation {
    *   Feature Offsets *
    * *******************/ 
    
+
+
   /* Feature Adjusted Offsets */
 
    
@@ -62,6 +74,19 @@ public class Token extends Annotation {
     super(jcas);
     readObject();   
   } 
+
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
+  public Token(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
 
   /** 
    * <!-- begin-user-doc -->

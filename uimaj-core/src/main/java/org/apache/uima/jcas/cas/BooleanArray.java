@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -26,7 +29,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for BooleanArray */
-public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFS {
+public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFS, Iterable<Boolean> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -181,5 +184,25 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
   public void setArrayValueFromString(int i, String v) {
     set(i, Boolean.parseBoolean(v));
   }
+  
+  @Override
+  public Iterator<Boolean> iterator() {
+    return new Iterator<Boolean>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Boolean next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+    
+    };
+  }  
   
 }

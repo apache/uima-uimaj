@@ -64,4 +64,8 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
     return node;
   }  
   
+  public NonEmptyStringList push(String item) {
+    return new NonEmptyStringList(this._casView.getExistingJCas(), item, this);
+  }   
+  
 }

@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -26,7 +29,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ByteArray */
-public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFS {
+public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFS, Iterable<Byte> {
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -177,6 +180,25 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
   @Override
   public void setArrayValueFromString(int i, String v) {
     set(i, Byte.parseByte(v));    
+  }
+
+  @Override
+  public Iterator<Byte> iterator() {
+    return new Iterator<Byte>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Byte next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+    };
   }
 
 }

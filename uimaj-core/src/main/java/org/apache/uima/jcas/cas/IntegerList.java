@@ -19,11 +19,14 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
-public abstract class IntegerList extends TOP implements CommonList {
+public abstract class IntegerList extends TOP implements CommonList, Iterable<Integer> {
 
 	// Never called.
 	protected IntegerList() { // Disable default constructor
@@ -51,6 +54,23 @@ public abstract class IntegerList extends TOP implements CommonList {
   public NonEmptyIntegerList createNonEmptyNode() {
     NonEmptyIntegerList node = new NonEmptyIntegerList(this._casView.getTypeSystemImpl().intNeListType, this._casView);
     return node;
+  }
+  
+  /* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<Integer> iterator() {
+    return Collections.emptyIterator();  // overridden by NonEmptyXxList
+  }
+
+  /**
+   * pushes item onto front of this list
+   * @param item the item to push onto the list
+   * @return the new list, with this item as the head value of the first element
+   */
+  public NonEmptyIntegerList push(int item) {
+    return new NonEmptyIntegerList(_casView.getExistingJCas(), item, this);
   }
    
 }

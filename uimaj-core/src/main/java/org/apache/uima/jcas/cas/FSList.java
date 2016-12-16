@@ -123,5 +123,14 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
     return Collections.emptyIterator();  // overridden by NonEmptyFSList
   }
   
+  /**
+   * pushes item onto front of this list
+   * @param item the item to push onto the list
+   * @return the new list, with this item as the head value of the first element
+   */
+  public NonEmptyFSList push(TOP item) {
+    return new NonEmptyFSList(_casView.getExistingJCas(), item, this);
+  }
+
   
 }

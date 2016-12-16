@@ -252,7 +252,27 @@
 <description>TokenType testMissingImport;</description>
 <rangeTypeName>aa.Root</rangeTypeName>
 </featureDescription>
-</features>
+<featureDescription>
+          <name>plainLong</name>
+          <description/>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>plainDouble</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>arrayLong</name>
+          <description/>
+          <rangeTypeName>uima.cas.LongArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>arrayDouble</name>
+          <description/>
+          <rangeTypeName>uima.cas.DoubleArray</rangeTypeName>
+        </featureDescription>
+      </features>
 </typeDescription>
 <typeDescription>
 <name>aa.MissingInCas</name>

@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -131,4 +134,30 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   public EmptyFloatList getEmptyList() {
     return this._casView.getEmptyFloatList();
   }
+  
+  @Override
+  public Iterator<Float> iterator() {
+    return new Iterator<Float>() {
+
+      FloatList node = NonEmptyFloatList.this;
+      
+      @Override
+      public boolean hasNext() {
+        return node instanceof NonEmptyFloatList;
+      }
+
+      @Override
+      public Float next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        NonEmptyFloatList nn = (NonEmptyFloatList)node; 
+        Float element = nn.getHead();
+        node = nn.getTail();
+        return element;
+      }
+      
+    };
+  }
+
 }
