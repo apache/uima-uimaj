@@ -2845,7 +2845,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
       processFSsForView(true,  // is enqueue
         isSerializingDelta 
           ? view.indexRepository.getAddedFSs().stream()
-          : view.indexRepository.<TOP>getAllIndexedFS(topType).asStream());
+          : view.indexRepository.<TOP>getAllIndexedFS(topType).stream());
       if (isSerializingDelta) {
         // for write/delta, write out (but don't enqueue) the deleted/reindexed FSs
         processFSsForView(false, view.indexRepository.getDeletedFSs().stream());

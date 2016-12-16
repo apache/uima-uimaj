@@ -260,7 +260,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
         Spliterator.SUBSIZED);
   }
   
-  default Stream<T> asStream() {
+  default Stream<T> stream() {
     return StreamSupport.stream(spliterator(),  false);
   }
 

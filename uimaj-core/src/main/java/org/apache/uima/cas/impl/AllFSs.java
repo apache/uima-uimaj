@@ -89,7 +89,7 @@ class AllFSs {
   void getAllIndexedFSsAllViews() {
     cas.forAllSofas(sofa -> enqueueFS(sofa));
     cas.forAllViews(view -> 
-       getFSsForView(view.indexRepository.<TOP>getAllIndexedFS(cas.getTypeSystemImpl().topType).asStream()));
+       getFSsForView(view.indexRepository.<TOP>getAllIndexedFS(cas.getTypeSystemImpl().topType).stream()));
     for (int i = 0; i < toBeScanned.size(); i++) {
       enqueueFeatures(toBeScanned.get(i));
     }
