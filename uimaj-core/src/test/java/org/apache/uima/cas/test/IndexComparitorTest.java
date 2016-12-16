@@ -46,11 +46,6 @@ import junit.framework.TestCase;
  */
 public class IndexComparitorTest extends TestCase {
 
-  static {
-    // only works if test run by itself, otherwise some other test loads the CASImpl class
-    // which inits itself then without this property being used.
-    System.setProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
-  }
   CAS cas;
 
   TypeSystem ts;
@@ -539,9 +534,12 @@ public class IndexComparitorTest extends TestCase {
     FeatureStructure fs = it.get();
     boolean ok = false;
     try {
+      System.setProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS, "true");
       fs.setBooleanValue(type1UsedBoolean, ! fs.getBooleanValue(type1UsedBoolean));  // should cause protection
     } catch (Exception e) {
       ok = true;
+    } finally {
+      System.clearProperty(CASImpl.THROW_EXCEPTION_FS_UPDATES_CORRUPTS);
     }
     assertTrue(CASImpl.IS_THROW_EXCEPTION_CORRUPT_INDEX ? ok : !ok);
   }
