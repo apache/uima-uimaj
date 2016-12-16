@@ -58,9 +58,24 @@ public abstract class CASFactory {
    * @return A new CASMgr object.
    */
   public static CASMgr createCAS(int initialHeapSize) {
-    return createCAS();
+    return new CASImpl(null, initialHeapSize);
   }
-  
+
+  /**
+   * @param initialHeapSize
+   *          The initial size of the internal CAS heap. If you choose this number too small, it can
+   *          have a major performance impact. As a very rough guideline, this number should not be
+   *          smaller than the number of characters in documents you are processing.
+   * @param useJcasCache - ignored in v3
+   * @return A new CASMgr object.
+   * @deprecated use createCas(int initialHeapSize)
+   */
+  @Deprecated
+  public static CASMgr createCAS(int initialHeapSize, boolean useJcasCache) {
+    return createCAS(initialHeapSize);
+  }
+
+
   /**
    * Create a new CASMgr object from a give type system.
    * 
