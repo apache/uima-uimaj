@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.cas.function;
+package org.apache.uima.internal.util.function;
 
-import org.apache.uima.cas.impl.CASImpl;
+import java.io.IOException;
 
 @FunctionalInterface
-public interface DeserBinaryIndexes {
-  int apply(int loopIndex, CASImpl view);
+public interface IntConsumer_withIOException {
+  void accept(int i) throws IOException;
 }

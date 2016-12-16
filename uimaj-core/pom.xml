@@ -57,6 +57,15 @@
     <uimaScmProject>${project.artifactId}</uimaScmProject>
     <postNoticeText>${ibmNoticeText}</postNoticeText>
     <maven.surefire.heap>650M</maven.surefire.heap>
+    
+    <!-- 
+     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
+     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
+     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
+     -->
+    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
+    <compat.previous.version>2.10.0-SNAPSHOT</compat.previous.version>
+    
   </properties>
   
 	<dependencies>
@@ -155,6 +164,7 @@
             <compilerArgument>-Xlint:unchecked</compilerArgument>
           </configuration>
         </plugin-->
+                
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>

@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.function.Runnable_withException;
+import org.apache.uima.internal.util.function.Runnable_withException;
 
 public class Misc {
 

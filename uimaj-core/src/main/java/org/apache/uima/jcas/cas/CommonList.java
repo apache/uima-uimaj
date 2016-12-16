@@ -29,12 +29,12 @@ import java.util.function.Consumer;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.function.Consumer_withSaxException;
 import org.apache.uima.cas.impl.CasSerializerSupport;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.XmiSerializationSharedData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.XmlAttribute;
+import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.xml.sax.SAXException;
 
 /**

@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/**
- * Custom Functional Interfaces used by various UIMA methods
- *   - generators and by
- *   - de/serializers
- */
-package org.apache.uima.cas.function;
+package org.apache.uima.internal.util.function;
+
+@FunctionalInterface
+public interface Runnable_withException {
+  void run() throws Exception;
+}

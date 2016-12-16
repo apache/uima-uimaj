@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.cas.function;
+package org.apache.uima.internal.util.function;
 
 import org.xml.sax.SAXException;
 
 @FunctionalInterface
-public interface Runnable_withSaxException {
-  void run() throws SAXException;
+public interface Consumer_withSaxException<T> {
+  void accept(T t) throws SAXException;
 }
