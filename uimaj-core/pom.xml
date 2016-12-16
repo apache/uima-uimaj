@@ -170,6 +170,17 @@
                       <exclude>org/apache/uima/jcas/cas/StringArray</exclude>
                       <exclude>org/apache/uima/jcas/cas/StringList</exclude>
                       <exclude>org/apache/uima/jcas/cas/NonEmptyStringList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/IntegerArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/IntegerList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/NonEmptyIntegerList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/FloatArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/FloatList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/NonEmptyFloatList</exclude>
+                      <exclude>org/apache/uima/jcas/cas/BooleanArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/ByteArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/ShortArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/LongArray</exclude>
+                      <exclude>org/apache/uima/jcas/cas/DoubleArray</exclude>
                     </excludes>
                   </requireBackwardCompatibility>
                 </rules>
