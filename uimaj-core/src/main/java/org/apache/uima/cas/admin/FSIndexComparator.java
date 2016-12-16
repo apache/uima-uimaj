@@ -91,7 +91,7 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
    *          The number of the key.
    * @return The corresponding feature, if it exists; <code>null</code>, else.
    */
-  FeatureImpl getKeyFeature(int key);
+  Feature getKeyFeature(int key);
 
   /**
    * Get the comparator for this key.
