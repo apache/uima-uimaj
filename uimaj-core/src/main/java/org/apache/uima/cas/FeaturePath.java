@@ -175,8 +175,21 @@ public interface FeaturePath {
     * 
     * @return Returns the type class of the feature path or null if the feature
     *         path is not set
+    * @deprecated use getTypeClass (spelling fix)
     */
+   @Deprecated
    public TypeClass getTypClass(FeatureStructure fs);
+
+   /**
+    * Returns the type class of the feature path.
+    * 
+    * @param fs
+    *           FeatureStructure to evaluate the feature path type class
+    * 
+    * @return Returns the type class of the feature path or null if the feature
+    *         path is not set
+    */
+   public TypeClass getTypeClass(FeatureStructure fs);
 
    /**
     * Returns the feature path as string.
