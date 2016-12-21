@@ -197,6 +197,12 @@ public class FileUtils {
     }
   }
 
+  /**
+   * Efficiently Writes string data as UTF-8 characters to path
+   *   added for backwards compatibility with v2
+   * @param path where to write to, creating a new file if it doesn't already exist
+   * @param data the data to write
+   */
   public static void writeToFile(Path path, String data) {   
     // try with resources, closes bw at end
     try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {  
