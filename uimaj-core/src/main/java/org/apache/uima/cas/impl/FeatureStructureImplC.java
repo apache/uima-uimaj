@@ -68,7 +68,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
  *     -- can't be static - may be multiple type systems in use
  * 
  */
-public class FeatureStructureImplC implements FeatureStructure, Cloneable {
+public class FeatureStructureImplC extends FeatureStructureImpl implements FeatureStructure, Cloneable {
 
   // note: these must be enabled to make the test cases work
   public static final String DISABLE_RUNTIME_FEATURE_VALIDATION = "uima.disable_runtime_feature_validation";
@@ -881,8 +881,8 @@ public class FeatureStructureImplC implements FeatureStructure, Cloneable {
 
   // ///////////////////////////////////////////////////////////////////////////
   // Pretty printing.
-
-  private static class PrintReferences {
+  // public for use by superclass for backwards compatibility
+  public static class PrintReferences {
 
     static final int NO_LABEL = 0;
 
