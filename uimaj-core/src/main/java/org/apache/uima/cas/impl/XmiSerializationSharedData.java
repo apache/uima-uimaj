@@ -263,7 +263,7 @@ public class XmiSerializationSharedData {
    * @param featName name of the feature (element tag name)
    * @param featVals values of the feature, as a List of strings
    */
-  public void addOutOfTypeSystemChildElements(TOP fs, String featName, List<String> featVals) {
+  public void addOutOfTypeSystemChildElements(TOP fs, String featName, ArrayList<String> featVals) {
     OotsElementData oed = this.ootsFeatures.get(fs);
     if (oed == null) {
       oed = new OotsElementData(null, null, -1, -1);
@@ -272,7 +272,7 @@ public class XmiSerializationSharedData {
     addOutOfTypeSystemFeature(oed, featName, featVals);
   }
   
-  public static void addOutOfTypeSystemFeature(OotsElementData oed, String featName, List<String> featVals) {
+  public static void addOutOfTypeSystemFeature(OotsElementData oed, String featName, ArrayList<String> featVals) {
     oed.multiValuedFeatures.add(new NameMultiValue(featName, featVals));
     XmlElementName elemName = new XmlElementName("",featName,featName);
     for (String val : featVals) {
@@ -423,7 +423,7 @@ public class XmiSerializationSharedData {
      */
     final List<XmlElementNameAndContents> childElements = new ArrayList<>();
     
-    final List<NameMultiValue> multiValuedFeatures = new ArrayList<>();
+    final ArrayList<NameMultiValue> multiValuedFeatures = new ArrayList<>();
     
     final int lineNumber;
     
@@ -517,8 +517,8 @@ public class XmiSerializationSharedData {
   
   public static class NameMultiValue {
     public final String name;
-    public final List<String> values;
-    NameMultiValue(String name, List<String> values) {
+    public final ArrayList<String> values;
+    NameMultiValue(String name, ArrayList<String> values) {
       this.name = name;
       this.values = values;
     }

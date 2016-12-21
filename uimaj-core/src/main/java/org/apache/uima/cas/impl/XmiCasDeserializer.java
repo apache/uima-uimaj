@@ -62,9 +62,15 @@ import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.FloatList;
+import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.NonEmptyFloatList;
+import org.apache.uima.jcas.cas.NonEmptyIntegerList;
 import org.apache.uima.jcas.cas.NonEmptyList;
+import org.apache.uima.jcas.cas.NonEmptyStringList;
 import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 import org.xml.sax.Attributes;
@@ -168,7 +174,7 @@ public class XmiCasDeserializer {
     // Used for keeping track of multi-valued features read from subelements.
     // Keys are feature names, values are ArrayLists of strings,
     // where each String is one of the values to be assigned to the feature.
-    private Map<String, List<String>> multiValuedFeatures = new TreeMap<String, List<String>>();
+    private Map<String, ArrayList<String>> multiValuedFeatures = new TreeMap<>();
 
     // Store IndexRepositories in a vector;
     private List<FSIndexRepository> indexRepositories;
@@ -452,7 +458,7 @@ public class XmiCasDeserializer {
               //the integer value, which will be interpreted as a reference later.
               //NOTE: this will end up causing it to be reserialized as an attribute
               //rather than an element, but that is not in violation of the XMI spec.
-              List<String> valueList = this.multiValuedFeatures.get(qualifiedName);
+              ArrayList<String> valueList = this.multiValuedFeatures.get(qualifiedName);
               if (valueList == null) {
                 valueList = new ArrayList<String>();
                 this.multiValuedFeatures.put(qualifiedName, valueList);
@@ -958,7 +964,9 @@ public class XmiCasDeserializer {
         else {
           // this logic mimics the way version 2 did this.
           if (isDoingDeferredChildElements) {
-            sharedData.addOutOfTypeSystemChildElements(fs, featName, Collections.singletonList(featVal));
+            ArrayList<String> featValAsArrayList = new ArrayList<String>(1);
+            featValAsArrayList.add(featVal);
+            sharedData.addOutOfTypeSystemChildElements(fs, featName, featValAsArrayList);
           } else {
             sharedData.addOutOfTypeSystemAttribute(fs, featName, featVal);
           }
@@ -993,7 +1001,7 @@ public class XmiCasDeserializer {
      * @return the feature code of the featName arg, or -1 if feature not found (oots) and lenient
      * @throws SAXException
      */
-    private int handleFeatMultiValueFromName(final Type type, TOP fs, String featName, List<String> featVals) throws SAXException {
+    private int handleFeatMultiValueFromName(final Type type, TOP fs, String featName, ArrayList<String> featVals) throws SAXException {
       final FeatureImpl feat = (FeatureImpl) type.getFeatureByBaseName(featName);
       if (feat == null) {
         if (!this.lenient) {
@@ -1390,7 +1398,7 @@ public class XmiCasDeserializer {
           }
           
           NonEmptyFSList neNode = (NonEmptyFSList) node;
-          maybeSetFsListHead(values, i, neNode);
+          maybeSetFsListHead(values.get(i), neNode);
           
           prevNode = (NonEmptyFSList) node;
           node = prevNode.getTail();
@@ -1440,8 +1448,7 @@ public class XmiCasDeserializer {
       }
     }
 
-    private void maybeSetFsListHead(List<String> values, int i, NonEmptyFSList neNode) {
-      String featVal = values.get(i);  
+    private void maybeSetFsListHead(String featVal, NonEmptyFSList neNode) {
       if (emptyVal(featVal)) { // can be empty if JSON
         neNode.setHead(null);
       } else {      
@@ -1484,21 +1491,57 @@ public class XmiCasDeserializer {
       /** List is created backwards, from end, so
        *    last created node is the head of the list
        */
-      CommonList lastCreatedNode = (CommonList) emptyNode;
-      for (int i = stringValues.size() - 1; i >= startPos; i--) {
-        CommonList node = lastCreatedNode.createNonEmptyNode();
-        node.setTail(lastCreatedNode);
-        lastCreatedNode = node;
-        if (node instanceof FSList) {
-          maybeSetFsListHead(stringValues, i, (NonEmptyFSList) node);
-        } else {
-          node.set_headFromString(stringValues.get(i));  
+      
+      if (emptyNode instanceof FSList) {
+        
+        FSList n = (FSList) emptyNode;
+        
+        for (int i = stringValues.size() - 1; i >= startPos; i--) {
+          final String v = stringValues.get(i);
+          final NonEmptyFSList nn = n.pushNode();
+          maybeSetFsListHead(v, nn);
+          n = nn;
         }
+        return n;
+  
+      } else if (emptyNode instanceof IntegerList) {
+        
+        IntegerList n = (IntegerList) emptyNode;
+        
+        for (int i = stringValues.size() - 1; i >= startPos; i--) {
+          final String v = stringValues.get(i);
+          final NonEmptyIntegerList nn = n.push(Integer.parseInt(v));
+          n = nn;
+        }
+        return n;
+        
+      } else if (emptyNode instanceof FloatList) {
+
+        FloatList n = (FloatList) emptyNode;
+        
+        for (int i = stringValues.size() - 1; i >= startPos; i--) {
+          final String v = stringValues.get(i);
+          final NonEmptyFloatList nn = n.push(Float.parseFloat(v));
+          n = nn;
+        }
+        return n;
+
+      } else {
+        
+        StringList n = (StringList) emptyNode;
+        
+        for (int i = stringValues.size() - 1; i >= startPos; i--) {
+          final String v = stringValues.get(i);
+          final NonEmptyStringList nn = n.push(v);
+          n = nn;
+        }
+        return n;
+        
       }
-      return lastCreatedNode;
+      
     }
-    
-    /**
+        
+        /**
      * Create a byte array in the CAS.
      * 
      * Treatment of null and empty.  
@@ -1628,7 +1671,7 @@ public class XmiCasDeserializer {
         case FEAT_CONTENT_STATE: {
           // We have just processed one of possibly many values for a feature.
           // Store this value in the multiValuedFeatures map for later use.
-          List<String> valueList = this.multiValuedFeatures.get(qualifiedName);
+          ArrayList<String> valueList = this.multiValuedFeatures.get(qualifiedName);
           if (valueList == null) {
             valueList = new ArrayList<String>();
             this.multiValuedFeatures.put(qualifiedName, valueList);
@@ -1648,9 +1691,9 @@ public class XmiCasDeserializer {
           // encoded as subelements
           if (this.outOfTypeSystemElement != null || this.deferredFsElement != null) {
             if (!this.multiValuedFeatures.isEmpty()) {
-              for (Map.Entry<String, List<String>> entry : this.multiValuedFeatures.entrySet()) {
+              for (Map.Entry<String, ArrayList<String>> entry : this.multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
-                List<String> featVals = entry.getValue();
+                ArrayList<String> featVals = entry.getValue();
                 XmiSerializationSharedData.addOutOfTypeSystemFeature(
                     (outOfTypeSystemElement == null) ? deferredFsElement : outOfTypeSystemElement, 
                     featName, 
@@ -1677,9 +1720,9 @@ public class XmiCasDeserializer {
               createOrUpdateArray(currentType, currentArrayElements, currentArrayId, null);
               
             } else if (!this.multiValuedFeatures.isEmpty()) {
-              for (Map.Entry<String, List<String>> entry : this.multiValuedFeatures.entrySet()) {
+              for (Map.Entry<String, ArrayList<String>> entry : this.multiValuedFeatures.entrySet()) {
                 String featName = entry.getKey();
-                List<String> featVals = entry.getValue();
+                ArrayList<String> featVals = entry.getValue();
                 int featcode = handleFeatMultiValueFromName(currentType, currentFs, featName, featVals);
                 if (featcode != -1 && this.featsSeen != null ) {
                 	this.featsSeen.add(featcode);
