@@ -31,6 +31,9 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyFloatList extends FloatList implements NonEmptyList {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.NonEmptyFloatList";
+
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFloatList.class);
 
   public final static int type = typeIndexID;
@@ -128,11 +131,6 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   @Override
   public void set_headFromString(String v) {
     setHead(Float.parseFloat(v));
-  }
-   
-  @Override
-  public EmptyFloatList getEmptyList() {
-    return this._casView.getEmptyFloatList();
   }
   
   @Override

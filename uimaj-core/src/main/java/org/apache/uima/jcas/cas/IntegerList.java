@@ -56,6 +56,14 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
     return node;
   }
   
+  public NonEmptyIntegerList pushNode() {
+    NonEmptyIntegerList n = createNonEmptyNode();
+    n.setTail(this);
+    return n;
+  }
+    
+
+  
   /* (non-Javadoc)
    * @see java.lang.Iterable#iterator()
    */
@@ -70,7 +78,25 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    * @return the new list, with this item as the head value of the first element
    */
   public NonEmptyIntegerList push(int item) {
-    return new NonEmptyIntegerList(_casView.getExistingJCas(), item, this);
+    return new NonEmptyIntegerList(_casView.getJCasImpl(), item, this);
   }
    
+  @Override
+  public EmptyIntegerList getEmptyList() {
+    return this._casView.getEmptyIntegerList();
+  }
+
+  /**
+   * Create an IntegerList from an existing array of ints
+   * @param jcas the JCas to use
+   * @param a the array of ints to populate the list with
+   * @return an IntegerList, with the elements from the array
+   */
+  public static IntegerList createFromArray(JCas jcas, int[] a) {
+    IntegerList integerList = jcas.getCasImpl().getEmptyIntegerList();   
+    for (int i = a.length - 1; i >= 0; i--) {
+      integerList = integerList.push(a[i]);
+    }   
+    return integerList;
+  }
 }

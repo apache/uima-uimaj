@@ -34,6 +34,9 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.NonEmptyIntegerList";
+
   public final static int typeIndexID = JCasRegistry.register(NonEmptyIntegerList.class);
 
   public final static int type = typeIndexID;
@@ -137,11 +140,6 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
   public void set_headFromString(String v) {
     setHead(Integer.parseInt(v));
   }  
-
-  @Override
-  public EmptyIntegerList getEmptyList() {
-    return this._casView.getEmptyIntegerList();
-  }
   
   @Override
   public OfInt iterator() {

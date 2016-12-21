@@ -27,6 +27,9 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class EmptyFSList extends FSList implements EmptyList {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.EmptyFSList";
+  
   public final static int typeIndexID = JCasRegistry.register(EmptyFSList.class);
 
   public final static int type = typeIndexID;
@@ -59,8 +62,4 @@ public class EmptyFSList extends FSList implements EmptyList {
     super(t, c);
   }
 
-  @Override
-  public EmptyFSList getEmptyList() {
-    return this;
-  }
 }

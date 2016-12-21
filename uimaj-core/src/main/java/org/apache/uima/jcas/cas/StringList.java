@@ -65,7 +65,26 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   }  
   
   public NonEmptyStringList push(String item) {
-    return new NonEmptyStringList(this._casView.getExistingJCas(), item, this);
-  }   
+    return new NonEmptyStringList(this._casView.getJCasImpl(), item, this);
+  } 
+  
+  @Override
+  public EmptyStringList getEmptyList() {
+    return this._casView.getEmptyStringList();
+  }
+
+  /**
+   * Create an StringList from an existing array of Strings
+   * @param jcas the JCas to use
+   * @param a the array of Strings to populate the list with
+   * @return an StringList, with the elements from the array
+   */
+  public static StringList createFromArray(JCas jcas, String[] a) {
+    StringList stringList = jcas.getCasImpl().getEmptyStringList();   
+    for (int i = a.length - 1; i >= 0; i--) {
+      stringList = stringList.push(a[i]);
+    }   
+    return stringList;
+  }
   
 }

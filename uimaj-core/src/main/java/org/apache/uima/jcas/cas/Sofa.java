@@ -32,6 +32,15 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class Sofa extends TOP implements SofaFS {
   
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
+  public final static String _FeatName_sofaNum    = "sofaNum";
+  public final static String _FeatName_sofaID     = "sofaID";
+  public final static String _FeatName_mimeType   = "mimeType";
+  public final static String _FeatName_sofaArray  = "sofaArray";
+  public final static String _FeatName_sofaString = "sofaString";
+  public final static String _FeatName_sofaURI    = "sofaURI";
+
 	public final static int typeIndexID = JCasRegistry.register(Sofa.class);
 
 	public final static int type = typeIndexID;

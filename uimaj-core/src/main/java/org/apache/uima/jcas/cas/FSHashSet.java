@@ -58,6 +58,9 @@ public final class FSHashSet <T extends TOP> extends TOP implements
                                  UimaSerializableFSs, SelectViaCopyToArray, 
                                  Set<T>, RandomAccess, Cloneable {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.FSHashSet";
+
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -200,7 +203,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
       isSaveNeeded = false;
       FSArray fsa = getFsArray();
       if (fsa == null || fsa.size() != fsHashSet.size()) {
-        fsa = new FSArray(_casView.getExistingJCas(), fsHashSet.size());
+        fsa = new FSArray(_casView.getJCasImpl(), fsHashSet.size());
         setFsArray(fsa);
       }
  

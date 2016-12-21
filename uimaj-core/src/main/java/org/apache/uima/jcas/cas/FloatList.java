@@ -22,6 +22,7 @@ package org.apache.uima.jcas.cas;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
@@ -54,8 +55,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   
   @Override
   public NonEmptyFloatList createNonEmptyNode() {
-    NonEmptyFloatList node = new NonEmptyFloatList(this._casView.getTypeSystemImpl().floatNeListType, this._casView);
-    return node;
+    return new NonEmptyFloatList(this._casView.getJCasImpl());
   }
   
   /**
@@ -64,7 +64,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   * @return the new list, with this item as the head value of the first element
   */
  public NonEmptyFloatList push(float item) {
-   return new NonEmptyFloatList(_casView.getExistingJCas(), item, this);
+   return new NonEmptyFloatList(_casView.getJCasImpl(), item, this);
  }
 
   /* (non-Javadoc)
@@ -74,4 +74,24 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   public Iterator<Float> iterator() {
     return Collections.emptyIterator();  // overridden by NonEmptyXxList
   }
+  
+  @Override
+  public EmptyFloatList getEmptyList() {
+    return this._casView.getEmptyFloatList();
+  }
+  
+  /**
+   * Create an FloatList from an existing array of Feature Structures
+   * @param jcas the JCas to use
+   * @param a the array of Floats to populate the list with
+   * @return an FloatList, with the elements from the array
+   */
+  public static FloatList createFromArray(JCas jcas, Float[] a) {
+    FloatList floatList = jcas.getCasImpl().getEmptyFloatList();   
+    for (int i = a.length - 1; i >= 0; i--) {
+      floatList = floatList.push(a[i]);
+    }   
+    return floatList;
+  }
+
 }

@@ -35,6 +35,8 @@ import org.apache.uima.jcas.impl.JCasImpl;
  */
 public class TOP extends FeatureStructureImplC {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.TOP";
 	/**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class

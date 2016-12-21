@@ -30,6 +30,10 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for BooleanArray */
 public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFS, Iterable<Boolean> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.BooleanArray";
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -205,4 +209,14 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     };
   }  
   
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static BooleanArray createFromArray(JCas jcas, boolean[] a) {
+    BooleanArray booleanArray = new BooleanArray(jcas, a.length);
+    booleanArray.copyFromArray(a, 0, 0, a.length);
+    return booleanArray;
+  }
 }

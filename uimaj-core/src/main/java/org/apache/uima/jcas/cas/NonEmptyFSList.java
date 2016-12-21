@@ -32,6 +32,9 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyList {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.NonEmptyFSList";
+
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFSList.class);
 
   public final static int type = typeIndexID;
@@ -124,12 +127,7 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
   public TOP getNthElement(int i) {
     return ((NonEmptyFSList)getNonEmptyNthNode(i)).getHead();
   }
-  
-  @Override
-  public EmptyFSList getEmptyList() {
-    return this._casView.getEmptyFSList();
-  }
-  
+
   /**
    * inserts the new item as a new NonEmpty FSList node following this item
    * @param item to be inserted
@@ -137,9 +135,7 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
    */
   public NonEmptyFSList add(FeatureStructure item) {
     FSList tail = getTail();
-    NonEmptyFSList node = createNonEmptyNode();
-    node.setHead(item);
-    node.setTail(tail);
+    NonEmptyFSList node = tail.push((TOP) item);
     setTail(node);
     return node;
   }

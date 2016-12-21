@@ -35,6 +35,10 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for DoubleArray */
 public final class DoubleArray extends TOP implements CommonPrimitiveArray, DoubleArrayFS, Iterable<Double> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.DoubleArray";
+  
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -221,4 +225,16 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   public DoubleStream stream() {
     return Arrays.stream(theArray);
   }
+  
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static DoubleArray createFromArray(JCas jcas, double[] a) {
+    DoubleArray doubleArray = new DoubleArray(jcas, a.length);
+    doubleArray.copyFromArray(a, 0, 0, a.length);
+    return doubleArray;
+  }
+
 }

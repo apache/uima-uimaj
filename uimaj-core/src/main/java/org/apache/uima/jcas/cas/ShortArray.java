@@ -30,6 +30,10 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ShortArray */
 public final class ShortArray extends TOP implements CommonPrimitiveArray, ShortArrayFS, Iterable<Short> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.ShortArray";
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -197,4 +201,16 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
       }
     };
   }
+  
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static ShortArray createFromArray(JCas jcas, short[] a) {
+    ShortArray shortArray = new ShortArray(jcas, a.length);
+    shortArray.copyFromArray(a, 0, 0, a.length);
+    return shortArray;
+  }
+
 }

@@ -43,6 +43,9 @@ import org.xml.sax.SAXException;
  */
 public interface CommonList extends FeatureStructure {
 
+  public final static String _FeatName_head = "head";
+  public final static String _FeatName_tail = "tail";
+
   static final List<String> EMPTY_LIST_STRING = Collections.emptyList();
 
   /**
@@ -144,6 +147,16 @@ public interface CommonList extends FeatureStructure {
 	  setTail(newNode);
 	  newNode.setTail(tail);
 	  return newNode;	  
+	}
+	
+	/**
+	 * Creates a new node and pushes it onto the front of the existing node
+	 * @return the new node
+	 */
+	default CommonList pushNode() {
+	  CommonList newNode = createNonEmptyNode();
+	  newNode.setTail(this);
+	  return newNode;
 	}
 
 	/**

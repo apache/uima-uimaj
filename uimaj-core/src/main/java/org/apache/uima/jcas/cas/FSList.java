@@ -26,6 +26,7 @@ import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
@@ -55,9 +56,22 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
      super(t, c);
    }
 	
+   public TOP getNthElement(int i) {
+     CommonList node = getNthNode(i);
+     if (node instanceof EmptyFSList) {
+       throw new CASRuntimeException(CASRuntimeException.JCAS_GET_NTH_PAST_END, Integer.toString(i));
+     }
+     return ((NonEmptyFSList)node).getHead();
+   } 
+   
   public NonEmptyFSList createNonEmptyNode() {
-    NonEmptyFSList node = new NonEmptyFSList(this._casView.getTypeSystemImpl().fsNeListType, this._casView);
-    return node;
+   return new NonEmptyFSList(this._casView.getJCasImpl());
+  }
+  
+  public NonEmptyFSList pushNode() {
+    NonEmptyFSList n = createNonEmptyNode();
+    n.setTail(this);
+    return n;
   }
     
   /**
@@ -109,14 +123,18 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
     return new SelectFSs_impl<>(this).type(filterByType);
   }
   
-  public static FSList create(JCas jcas, FeatureStructure[] a) {
-    NonEmptyFSList fslhead = new NonEmptyFSList(jcas);
-    NonEmptyFSList last = fslhead;
-    for (FeatureStructure item : a) {
-      last = last.add(item);
-    }
-    last.setTail(jcas.getCasImpl().getEmptyFSList());
-    return fslhead.getTail();
+  /**
+   * Create an FSList from an existing array of Feature Structures
+   * @param jcas the JCas to use
+   * @param a the array of Feature Structures to populate the list with
+   * @return an FSList, with the elements from the array
+   */
+  public static FSList createFromArray(JCas jcas, FeatureStructure[] a) {
+    FSList fsl = jcas.getCasImpl().getEmptyFSList();   
+    for (int i = a.length - 1; i >= 0; i--) {
+      fsl = fsl.push((TOP) a[i]);
+    }   
+    return fsl;
   }
 
   /* (non-Javadoc)
@@ -133,7 +151,7 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
    * @return the new list, with this item as the head value of the first element
    */
   public NonEmptyFSList push(TOP item) {
-    return new NonEmptyFSList(_casView.getExistingJCas(), item, this);
+    return new NonEmptyFSList(_casView.getJCasImpl(), item, this);
   }
 
   /**
@@ -142,5 +160,10 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
    */
   public <T extends TOP> Stream<T> stream() {
     return (Stream<T>) StreamSupport.stream(spliterator(), false);
+  }
+  
+  @Override
+  public EmptyFSList getEmptyList() {
+    return this._casView.getEmptyFSList();
   }
 }

@@ -27,6 +27,9 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class EmptyIntegerList extends IntegerList implements EmptyList {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.EmptyIntegerList";
+
   public final static int typeIndexID = JCasRegistry.register(EmptyIntegerList.class);
 
   public final static int type = typeIndexID;
@@ -58,8 +61,4 @@ public class EmptyIntegerList extends IntegerList implements EmptyList {
     super(t, c);
   }
   
-  @Override
-  public EmptyIntegerList getEmptyList() {
-    return this;
-  }
 }

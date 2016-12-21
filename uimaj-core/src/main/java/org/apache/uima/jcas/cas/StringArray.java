@@ -30,6 +30,10 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
 public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray, StringArrayFS {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.StringArray";
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -180,6 +184,17 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
         return get(i++);
       }      
     };
+  }
+
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static StringArray createFromArray(JCas jcas, String[] a) {
+    StringArray stringArray = new StringArray(jcas, a.length);
+    stringArray.copyFromArray(a, 0, 0, a.length);
+    return stringArray;
   }
 
 }

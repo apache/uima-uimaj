@@ -37,6 +37,10 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
 public final class IntegerArray extends TOP implements CommonPrimitiveArray, IntArrayFS, Iterable<Integer> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.IntegerArray";
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -197,11 +201,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   public Spliterator.OfInt spliterator() {
     return Arrays.spliterator(theArray);
   }
-  
-  public List_of_ints asListOfInts() {
-    return List_of_ints.newInstance(theArray);
-  }
-  
+    
   @Override
   public OfInt iterator() {
     return new OfInt() {
@@ -246,4 +246,16 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
   public IntStream stream() {
     return Arrays.stream(theArray);
   }
+  
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static IntegerArray createFromArray(JCas jcas, int[] a) {
+    IntegerArray intArray = new IntegerArray(jcas, a.length);
+    intArray.copyFromArray(a, 0, 0, a.length);
+    return intArray;
+  }
+
 }

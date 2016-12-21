@@ -37,6 +37,9 @@ import org.apache.uima.jcas.JCasRegistry;
 /** Java Class model for Cas FSArray type */
 public final class FSArray extends TOP implements Iterable<TOP>, CommonArray, ArrayFS, SelectViaCopyToArray {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.FSArray";
+
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class

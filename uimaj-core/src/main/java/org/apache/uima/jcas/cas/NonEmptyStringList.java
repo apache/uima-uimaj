@@ -31,6 +31,9 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class NonEmptyStringList extends StringList implements Iterable<String>, NonEmptyList {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.NonEmptyStringList";
+
   public final static int typeIndexID = JCasRegistry.register(NonEmptyStringList.class);
 
   public final static int type = typeIndexID;
@@ -135,11 +138,6 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
     setHead(v);
   }
   
-  @Override
-  public EmptyStringList getEmptyList() {
-    return this._casView.getEmptyStringList();
-  }
-
   @Override
   public Iterator<String> iterator() {
     return new Iterator<String>() {

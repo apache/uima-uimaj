@@ -30,6 +30,10 @@ import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ByteArray */
 public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFS, Iterable<Byte> {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.ByteArray";
+
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -199,6 +203,17 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
         return get(i++);
       }
     };
+  }
+
+  /**
+   * @param jcas Which CAS to create the array in
+   * @param a the source for the array's initial values
+   * @return a newly created and populated array
+   */
+  public static ByteArray createFromArray(JCas jcas, byte[] a) {
+    ByteArray byteArray = new ByteArray(jcas, a.length);
+    byteArray.copyFromArray(a, 0, 0, a.length);
+    return byteArray;
   }
 
 }

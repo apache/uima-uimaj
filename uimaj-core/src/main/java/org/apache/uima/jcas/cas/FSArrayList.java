@@ -239,7 +239,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     final int sz = size();
     FSArray fsa = getFsArray();
     if (fsa == null || fsa.size() != sz) {
-      setFsArray(fsa = new FSArray(_casView.getExistingJCas(), sz));
+      setFsArray(fsa = new FSArray(_casView.getJCasImpl(), sz));
     }
     
     // using element by element instead of bulk operations to
@@ -448,7 +448,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    */
   public static <N extends TOP> FSArrayList<N> create(JCas jcas, N[] a) {
     FSArrayList<N> fsa = new FSArrayList<>(jcas, a.length);
-    fsa.copyFromArray(a, 0, 0, a.length);
+    fsa.copyFromArray(a, 0, 0, a.length);  // does pear and journaling actions as needed
     return fsa;
   }
   

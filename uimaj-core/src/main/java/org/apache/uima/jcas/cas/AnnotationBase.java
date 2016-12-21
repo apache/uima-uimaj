@@ -52,6 +52,10 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 public class AnnotationBase extends TOP implements AnnotationBaseFS {
 
+  /* public static strings for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.AnnotationBase";
+  public final static String _FeatName_sofa = "sofa";
+
   public final static int typeIndexID = JCasRegistry.register(AnnotationBase.class);
 
   public final static int type = typeIndexID;
@@ -62,7 +66,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseFS {
   }
   
   // private final static int _FI_sofa = JCasRegistry.registerFeature();  // only for journal-able or corruptable feature slots
-
+  
   /* local data */
   public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
   

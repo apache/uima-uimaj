@@ -58,6 +58,9 @@ public final class IntegerArrayList extends TOP implements
                                  UimaSerializable, CommonArray, 
                                  RandomAccess, Cloneable {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.IntegerArrayList";
+
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
    * class or class instance to the corresponding instance of the _Type class
@@ -174,7 +177,7 @@ public final class IntegerArrayList extends TOP implements
     IntegerArray ia = getIntegerArray();
     final int size = intArrayList.size();
     if (ia == null || ia.size() != size) {
-      ia = new IntegerArray(_casView.getExistingJCas(), size);
+      ia = new IntegerArray(_casView.getJCasImpl(), size);
       setIntegerArray(ia);
     }
     ia.copyFromArray(intArrayList.getArray(), 0,  0, size());
