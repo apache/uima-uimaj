@@ -35,6 +35,11 @@ import org.apache.uima.jcas.cas.AnnotationBase;
  */
 public class Annotation extends AnnotationBase implements AnnotationFS {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.Annotation";
+  public final static String _FeatName_begin = "begin";
+  public final static String _FeatName_end = "end";
+
   public final static int typeIndexID = JCasRegistry.register(Annotation.class);
 
   public final static int type = typeIndexID;
