@@ -945,13 +945,13 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
     getPrintRefs(printRefs, this);
   }
 
-  private final void getPrintRefs(PrintReferences printRefs, FeatureStructure fs) {
+  private final void getPrintRefs(PrintReferences printRefs, FeatureStructureImplC fs) {
     boolean seenBefore = printRefs.addReference(fs);
     if (seenBefore) {
       return;
     }
     
-    final TypeImpl ti = this._typeImpl;
+    final TypeImpl ti = fs._typeImpl;
     if (ti != null) { // null for REMOVED marker
       if (ti.isArray() && (fs instanceof FSArray)) {
         for (TOP item : ((FSArray)fs)._getTheArray()) {
@@ -960,7 +960,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
       } else {
         ti.getFeaturesAsStream()
           .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
-          .map(fi -> this.getFeatureValue(fi)) // get the feature value
+          .map(fi -> fs.getFeatureValue(fi)) // get the feature value
           .filter(refFs -> refFs != null)            // skip null ones
           .forEachOrdered(refFs -> getPrintRefs(printRefs, refFs));
       }
@@ -1090,7 +1090,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
       
       if (!range.isPrimitive()) {   
         // not primitive
-        FeatureStructure val = null;
+        FeatureStructureImplC val = null;
         boolean hadException = false;
         try {
           val = getFeatureValue(fi);
@@ -1099,8 +1099,8 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
           hadException = true;
         }
         if (!hadException) {
-          if (val != null && !fi.getName().equals(CAS.TYPE_NAME_SOFA)) {
-            ((FeatureStructureImplC) val).prettyPrint(indent, incr, buf, useShortNames, null, printRefs);
+          if (val != null && !val._typeImpl.getName().equals(CAS.TYPE_NAME_SOFA)) {
+            val.prettyPrint(indent, incr, buf, useShortNames, null, printRefs);
           } else {
             buf.append((val == null) ? "<null>\n" : ((SofaFS) val).getSofaID() + '\n'); 
           }

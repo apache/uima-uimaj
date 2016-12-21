@@ -748,7 +748,6 @@ public class ResourceManager_impl implements ResourceManager {
           if (!verificationMode) {
             sro.load((DataResource) r);
           }
-          r = (Resource) sro;
           implInstance = sro;   // so the implementation is registered, for DataResources
         } catch (InstantiationException e) {
           throw new ResourceInitializationException(
