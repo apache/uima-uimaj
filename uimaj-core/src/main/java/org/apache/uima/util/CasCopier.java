@@ -975,6 +975,20 @@ public class CasCopier {
   public boolean alreadyCopied(TOP aFS) {
     return mFsMap.get(aFS) != null;
   }
+  
+  /**
+   * Note: only for backwards compatibility
+   * Note: if lenient is in effect, this method will return false for
+   * FSs which are not copied because the target doesn't have that type.
+   * It also returns false for sofa FSs and the documentAnnotation FS.
+   * @param aFS a feature structure
+   * @return true if the given FS has already been copied using this CasCopier.
+   */
+  public boolean alreadyCopied(int aFS) {
+    TOP fs = originalSrcCas.getFsFromId(aFS);
+    return mFsMap.get(fs) != null;
+  }
+
 
   /**
    * @param arrayFS
