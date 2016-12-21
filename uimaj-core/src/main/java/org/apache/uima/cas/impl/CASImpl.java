@@ -73,6 +73,7 @@ import org.apache.uima.cas.FloatArrayFS;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.Marker;
+import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
@@ -2017,19 +2018,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (this.jcas == null) {
       this.jcas = JCasImpl.getJCas(this);
     }
-    return (JCasImpl) this.jcas;
-  }
-
-
-  /**
-   * Internal use only
-   * 
-   * @return corresponding JCas, assuming it exists
-   */
-  public JCas getExistingJCas() {
     return this.jcas;
   }
 
+
+//  /**
+//   * Internal use only
+//   * 
+//   * @return corresponding JCas, assuming it exists
+//   */
+//  public JCas getExistingJCas() {
+//    return this.jcas;
+//  }
+//
   // Create JCas view of aSofa
   @Override
   public JCas getJCas(SofaFS aSofa) throws CASException {
@@ -4681,6 +4682,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.emptyStringList;
   }
   
+  /**
+   * @param rangeCode special codes for serialization use only
+   * @return the empty list (shared) corresponding to the type
+   */
   public EmptyList getEmptyList(int rangeCode) {
     return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? getEmptyIntegerList() :
            (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? getEmptyFloatList() :
@@ -5190,6 +5195,46 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return this.svd.initialHeapSize;
   }
 
+  // backwards compatibility - reinit calls
+  // just the public apis
+  /**
+   * Deserializer for Java-object serialized instance of CASSerializer
+   *   Used by Soap
+   * @param ser - The instance to convert back to a CAS
+   */
+  public void reinit(CASSerializer ser) {
+    svd.bcsd.reinit(ser);
+  }
+  
+  /**
+   * Deserializer for CASCompleteSerializer instances - includes type system and index definitions
+   * Never delta
+   * @param casCompSer -
+   */
+  public void reinit(CASCompleteSerializer casCompSer) {
+    svd.bcsd.reinit(casCompSer);
+  }
+  
+  /**
+   * --------------------------------------------------------------------- 
+   * see Blob Format in CASSerializer
+   * 
+   * This reads in and deserializes CAS data from a stream. Byte swapping may be
+   * needed if the blob is from C++ -- C++ blob serialization writes data in
+   * native byte order.
+   * 
+   * Supports delta deserialization.  For that, the the csds from the serialization event must be used.
+   *  
+   * @param istream -
+   * @return - the format of the input stream detected
+   * @throws CASRuntimeException wraps IOException
+   */
+
+  public SerialFormat reinit(InputStream istream) throws CASRuntimeException {
+    return svd.bcsd.reinit(istream);
+  }
+  
+  
 //  int allocIntData(int sz) {
 //    
 //    if (sz > INT_DATA_FOR_ALLOC_SIZE / 4) {
