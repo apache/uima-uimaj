@@ -12,7 +12,8 @@ Existing version 2 UIMA Pipelines are expected to run with Version 3,
 after any JCas classes have been migrated.  
 
 The documentation contains a new book, "UIMA Version 3 User's Guide",
-which explains the new features, and the migration process and tool.
+which explains the new features, the migration process and tool,
+and more details about backwards compatibility.
 
         
 Building from the Source Distribution
