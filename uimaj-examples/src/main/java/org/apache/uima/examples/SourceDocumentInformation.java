@@ -34,13 +34,19 @@ import org.apache.uima.jcas.tcas.Annotation;
 /** 
  * Stores detailed information about the original source document from which the current CAS was initialized. 
  * All information (like size) refers to the source document and not to the document in the CAS 
- * which may be converted and filtered by a CAS Initializer. 
- *   For example this information will be written to the Semantic Search index so that the original document contents 
- *   can be retrieved by queries.
- * Updated by JCasGen Wed Mar 02 13:42:57 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-examples/src/main/resources/org/apache/uima/examples/SourceDocumentInformation.xml
+ *  which may be converted and filtered by a CAS Initializer. 
+ * For example this information will be written to the Semantic Search index so that 
+ *  the original document contents can be retrieved by queries.
+ * Updated by JCasGen Wed Dec 21 14:40:40 EST 2016
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-examples/src/main/resources/org/apache/uima/examples/SourceDocumentInformation.xml
  * @generated */
 public class SourceDocumentInformation extends Annotation {
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.examples.SourceDocumentInformation";
+  
   /** @generated
    * @ordered 
    */
@@ -58,6 +64,16 @@ public class SourceDocumentInformation extends Annotation {
   public              int getTypeIndexID() {return typeIndexID;}
  
  
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_uri = "uri";
+  public final static String _FeatName_offsetInSource = "offsetInSource";
+  public final static String _FeatName_documentSize = "documentSize";
+  public final static String _FeatName_lastSegment = "lastSegment";
+
+
   /* *******************
    *   Feature Offsets *
    * *******************/ 
@@ -90,6 +106,19 @@ public class SourceDocumentInformation extends Annotation {
     super(jcas);
     readObject();   
   } 
+
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
+  public SourceDocumentInformation(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
 
   /** 
    * <!-- begin-user-doc -->
