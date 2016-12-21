@@ -91,7 +91,6 @@ import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.cas.text.Language;
-import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
@@ -623,7 +622,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
 
       trackingMark = null;
-      if (null != modifiedPreexistingFSs) modifiedPreexistingFSs.clear();
+      if (null != modifiedPreexistingFSs) {
+        modifiedPreexistingFSs.clear();
+      }
+      
+      trackingMarkList = null;
     }
     
     void switchClassLoader(ClassLoader newClassLoader) {
@@ -4460,7 +4463,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   			this);
   	if (this.svd.modifiedPreexistingFSs == null) {
   	  this.svd.modifiedPreexistingFSs = new IdentityHashMap<>();
-  	} else {errorMultipleMarkers();}
+  	}
+  	if (this.svd.modifiedPreexistingFSs.size() > 0) {
+  	  errorMultipleMarkers();
+  	}
 
   	if (this.svd.trackingMarkList == null) {
   	  this.svd.trackingMarkList = new ArrayList<MarkerImpl>();

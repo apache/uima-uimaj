@@ -946,6 +946,9 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
   }
 
   private final void getPrintRefs(PrintReferences printRefs, FeatureStructureImplC fs) {
+    if (null == fs) {
+      return;
+    }
     boolean seenBefore = printRefs.addReference(fs);
     if (seenBefore) {
       return;
