@@ -34,9 +34,30 @@ under the License.
   
   <para>To this end, version 3 is designed to be backwards compatible, except for needing a new set of JCas classes (if these were
   previously being used).  There is a migration tool to handle the upgrading of the JCas classes, described in
-  a later chapter.  The JCas class changes include no longer needing, using, or supporting the <code>Xyz_Type</code>
-  sister classes for each main JCas class.  Methods in the JCas API that gave access to these class instances
-  have been removed.</para>
+  a later chapter.
+  </para>
+  
+  <section id="uv3.backwards_compatibility.jcas">  
+    <title>JCas and non-JCas APIs</title>
+
+    <para>The JCas class changes include no longer needing, using, or supporting the <code>Xyz_Type</code>
+      sister classes for each main JCas class.  Methods in the JCas API that gave access to these class instances
+      have been removed.  New internal-use methods and fields have been added to the JCas classes.  The 
+      names for these have been carefully designed to reduce the likelihood of collision with previously
+      existing user code names; the usual technique is to start the names with a leading underscore character.
+      Users should consider these methods as internal use and subject to change with new releases.
+    </para>
+    
+    <para>The specialized non-JCas Java cover classes for built-in types have been removed; 
+      these were unlikely to have been used. If used, the update is to replace these with their
+      JCas class equivalents.  For example, if you used <code>AnnotationImpl</code>, replace with
+      <code>Annotation</code>.
+    </para>
+    
+    
+    
+  </section>
+  
   
   <section id="uv3.backwards_compatibility.serialization">  
 	  <title>Serialization forms</title>
@@ -164,5 +185,24 @@ under the License.
     <para>Application code may code around this by re-acquiring references to type and feature
     objects, if the type system returned from <code>commit</code> is not identical (==) to the
     one being committed.</para>
+  </section>
+  
+  <section id="uv3.backards_compatibility.checking">
+    <title>Some checks moved to native Java</title>   
+    
+    <para>In the interest of performance, some duplicate checks, such as whether an array index is within bounds, 
+    have been removed from UIMA when they are already being checked by the underlying Java runtime.  
+    This has affected some of the internal APIs, such as the JCas's <code>checkArrayBounds</code>
+    which was removed because it was no longer being used.
+    </para>
+  </section>
+  
+  <section id="uv3.backards_compatibility.class_hierarchy">
+    <title>Some class hierarchies have been modified</title>   
+    
+    <para>The various JCas Classes implementing the built-ins for arrays have some additional
+      interfaces added, grouping them into <code>CommonPrimitiveArray</code> or 
+      <code>CommonArray</code>.  These changes are internal, and should not affect users.
+    </para>
   </section>
   </chapter>

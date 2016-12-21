@@ -24,8 +24,8 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="uv3.migration">
-  <title>Migrating from Version 2 to 3</title>
-  <titleabbrev>Migrating</titleabbrev>
+  <title>Migrating JCas classes from Version 2 to 3</title>
+  <titleabbrev>Migrating JCas</titleabbrev>
   
   <para>To migrate a UIMA application / pipeline to version 3, you need to replace the Version 2 JCas
 	  classes with version 3 classes.  This is best done by running the migration tool, which is available
@@ -42,8 +42,7 @@ under the License.
     If all is OK, the migration will say that it "finished with no unusual conditions", at the end.
   </para></blockquote> 	  
 
-  <para>To complete the migration, do any packaging you wish to the converted JCas files
-    and update your UIMA application to use these classes in place of the version 2 JCas classes.
+  <para>To complete the migration, update your UIMA application to use these classes in place of the version 2 JCas classes.
   </para>
     
   <para>The migration tool is able to scan multiple directory trees, looking for existing Java
@@ -80,11 +79,12 @@ under the License.
  --> 
  		 
 		 <note><para>The compilation step (done after the source-to-source transformation) requires that a Java compiler is available 
-		   (which is the case if you're running with a Java JDK, not a JRE).
+		   (which will be the case if you're running with a Java JDK, not a JRE).
 		 </para></note>
 		 
-		 <note><para>After running the tool, it is important to confirm that the migration completed without any unusual conditions, by
-		   examining the console output and logs.
+		 <note><para>After running the tool, it is important to examining the console output and logs.
+       You can confirm that the migration completed without any unusual conditions, or, if something 
+       unusual was encountered, you can take corrective action.
 		 </para></note>
 		  
 		<section id="uv3.migration.tool_guide.running">
@@ -94,65 +94,97 @@ under the License.
 		    If you run this without any arguments, it will show a brief help for the arguments.
 		  </para>
 		  
-		  <para>There is also an Eclipse launch configuration, which is available if you have the uimaj-examples project
-		    in your Eclipse workspace.  This is used by selecting a project whose class path is the one needed by the
-		    JCas definitions to be migrated, and then launching "UIMA run V3 migrate JCas from classes roots" and following
-		    the two prompts - one to enter a directory which is the root directory of the JCas classes to be converted, and 
-		    another directory to use as the output directory; these two inputs are "prompted" for by this Eclipse launcher.
-		  </para>
-	    
-	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
-	      the tool will scan the file system under these roots (including inside Jars and PEARs), 
-	      looking for definitions to migrate.  
-	    </para>
+		  <para>There are also a pair of Eclipse launch configuration, which are available if you have the uimaj-examples project
+        (included in the binary distribution of UIMA) in your Eclipse workspace.
+      </para>
+      
+      <section id="uv3.migration.tool_guide.running.eclipse">
+      <title>Using Eclipse to run the migration tool</title>
+      
+        <para>There are two Eclipse launch configurations; one works with source code, the other with compiled classes
+          or Jars or PEARs.  The launch configurations are named:
+          <itemizedlist spacing="compact">
+            <listitem><para>UIMA Run V3 migrate JCas from sources roots</para></listitem>
+            <listitem><para>UIMA Run V3 migrate JCas from classes roots</para></listitem>
+          </itemizedlist>
+          When running from classes roots, the classes must not have compile errors, and may contain Jars and PEARs. 
+        </para>
+      
+        <para>
+          To use these launchers,
+            <itemizedlist spacing="compact">
+              <listitem><para>First select the eclipse project; this project's "build path" will supply the 
+                classpath used during migration for decompiling and compiling the sources.</para></listitem>
+              <listitem><para>run the launcher - it will prompt for two values:
+                <itemizedlist spacing="compact">
+                  <listitem><para>the root directory to scan recursively looking for JCas sources or classes/Jars/Pears to be converted</para></listitem>
+                  <listitem><para>an output directory - a writable folder, such as /temp/migrate</para></listitem>
+                </itemizedlist>
+              </para></listitem>
+            </itemizedlist>
+  		  </para>
+  	    
+  	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
+  	      the tool will scan the file system under these roots (including inside Jars and PEARs when running from
+          compiled classes), looking for definitions to migrate.  
+  	    </para>
 		    
 	      <!-- <blockquote><para>It can also be run with a list of specific JCas classes
 	      to migrate.</para></blockquote> -->
-		    	    
-	    <section id="uv3.migration.tool_guide.running.inputs">
-	      <title>Specifying input sources</title>
-	    
-	    <para>Input is specified using these arguments:
-		    <variablelist>
-	
-		      <varlistentry>
-		        <term><emphasis role="strong">"-sourcesRoots"</emphasis></term>
-		        <listitem>
-		          <para>a list of one or more directories, separated by the
-		            a path separator character (";" for Windows, ":" for others). 
-		          </para>
-		          <para>Migrates each candidate source file found in any of the file tree roots,
-		            skipping over non-JCas classes.</para>
-		        </listitem>
-		      </varlistentry>
-	
-	        <varlistentry>
-	          <term><emphasis role="strong">"-classesRoots"</emphasis></term>
-	          <listitem>
-              <para>a list of one or more directories or Jars or PEARs, separated by the
-                a path separator character (";" for Windows, ":" for others). 
-              </para>
-	            <para>Decompiles, then migrates each candidate class file found in any of the file tree roots
-	              (skipping over non-JCas classes).  
-	            </para>	              
-	          </listitem>
-	        </varlistentry>
-	        
-		    </variablelist>  
-	    </para>
+        
       </section>
-      	    
-	    <section id="uv3.migration.tool_guide.classpath">
-	      <title>Specifying a classpath for the migration</title>
-	      <para>A classpath is required for the proper operation of the decompiling and compiling steps of 
-	        the migration.  This is provided using the argument <code>-migrateClasspath</code>.
-	        The Eclipse launcher "UIMA run V3 migrate JCas from classes roots" sets this argument using
-	        the selected Eclipse project's classpath.
-	        When migrating within a PEAR, the migration tool automatically adds the PEAR classes to the 
-	        classpath.
-	      </para>
-	    </section>
-	    	    	    
+		  
+      
+      <section id="uv3.migration.tool_guide.running.cmd_line">
+      <title>Running from the command line</title>
+      
+  	    <section id="uv3.migration.tool_guide.running.inputs">
+  	      <title>Command line: Specifying input sources</title>
+  	    
+  	    <para>Input is specified using these arguments:
+  		    <variablelist>
+  	
+  		      <varlistentry>
+  		        <term><emphasis role="strong">"-sourcesRoots"</emphasis></term>
+  		        <listitem>
+  		          <para>a list of one or more directories, separated by the
+  		            a path separator character (";" for Windows, ":" for others). 
+  		          </para>
+  		          <para>Migrates each candidate source file found in any of the file tree roots,
+  		            skipping over non-JCas classes.</para>
+  		        </listitem>
+  		      </varlistentry>
+  	
+  	        <varlistentry>
+  	          <term><emphasis role="strong">"-classesRoots"</emphasis></term>
+  	          <listitem>
+                <para>a list of one or more directories
+                  containing class files or Jars or PEARs, separated by the
+                  a path separator character (";" for Windows, ":" for others). 
+                </para>
+  	            <para>Decompiles, then migrates each candidate class file found in any of the file tree roots
+  	              (skipping over non-JCas classes).  
+  	            </para>	              
+  	          </listitem>
+  	        </varlistentry>
+  	        
+  		    </variablelist>  
+  	    </para>
+        </section>
+        	    
+  	    <section id="uv3.migration.tool_guide.classpath">
+  	      <title>Command line: Specifying a classpath for the migration</title>
+  	      <para>A classpath is required for the proper operation of the decompiling and compiling steps of 
+  	        the migration.  This is provided using the argument <code>-migrateClasspath</code>.
+  	        The Eclipse launcher "UIMA run V3 migrate JCas from classes roots" sets this argument using
+  	        the selected Eclipse project's classpath.
+  	        When migrating within a PEAR, the migration tool automatically adds the PEAR classes to the 
+  	        classpath.
+  	      </para>
+  	    </section>
+
+      </section>
+      	    	    	    
 	    <section id="uv3.migration.tool_guide.duplicates">
 	      <title>Handling duplicate definitions</title>
 	      <para>Sometimes, a classpath or directory tree may contain multiple instances of the same JCas class.
@@ -177,7 +209,7 @@ under the License.
       </para>
       
       <blockquote><para>
-        These are arranged in parallel directories, allowing Eclipse's "compare" to work on both directory
+        These are arranged in parallel directories, allowing Eclipse's multi-file directory "compare" to work on both directory
         collections and conveniently show for all the migrated files the change details.
       </para></blockquote>
         

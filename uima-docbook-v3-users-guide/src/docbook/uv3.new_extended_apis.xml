@@ -27,6 +27,25 @@ under the License.
   <title>New and Extended APIs</title>
   <titleabbrev>New/Extended APIs</titleabbrev>
   
+  <section id="uv3.new_extended_apis.jcas_static_fields">
+    <title>JCas additional static fields</title>
+    
+    <para>(Also in UIMA Version 2 after release 2.10.0) Static final string fields are declared for each JCas cover class
+      and for each feature that is part of that UIMA type.  The fields look like
+      this example, taken from the Sofa class:
+      <programlisting>public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
+public final static String _FeatName_sofaNum    = "sofaNum";
+public final static String _FeatName_sofaID     = "sofaID";
+public final static String _FeatName_mimeType   = "mimeType";
+public final static String _FeatName_sofaArray  = "sofaArray";
+public final static String _FeatName_sofaString = "sofaString";
+public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
+       Each string has a generated name corresponding to the name of the type or the feature, and
+       a string value constant which of the type or feature name. These can be useful in
+       Java Annotations.
+    </para>
+  </section>
+  
   <section id="uv3.new_extended_apis.java8">
     <title>Java 8 integrations</title>
     
@@ -53,41 +72,109 @@ under the License.
       </para> 
            
     </section>
-
-    <section id="uv3.new_extended_apis.fsiterator_implements_list">
-      <title>UIMA FSIterators improvements</title>
-      
-      <para>To enable more seamless integration with popular Java idioms, the UIMA iterators for iterating 
-      over UIMA Indexes (the FSIterator interface) now implements the Java List Interface.
-      </para>
-      
-      <para>The iterators over indexes no longer throw concurrent modification exceptions if the index is modified
-      while it is being iterated over.  Instead, the iterators use a lazily-created copy-on-write approach that, when
-      some portion of the index is updated, prior to the update, copies the original state of that portion, and continues
-      to iterate over that.  While this is helpful if you are explicitly modifying the indexes in a loop, it 
-      can be especially helpful when modifying Feature Structures as you iterate, because
-      the UIMA support for detecting and avoiding possible index corruption if you modify some feature being used by 
-      some index as a key, is automatically (under the covers) temporarily removing the Feature Structure from indexes, 
-      doing the modification, and then adding it back.
-      </para>
-    </section>
-
-    <section id="uv3.new_extended_apis.select">
-      <title>New Select API</title>
-      
-      <para>A versatile new Select framework for accessing and acting on Feature Structures 
-      selected from the CAS or from Indexes or from other collection objects is documented in
-      a separate chapter.  This API is integrated with Java 8's Stream facility.
-      </para>
-    </section>
+  </section>
+  
+  <section id="uv3.new_extended_apis.fsiterator_implements_list">
+    <title>UIMA FSIterators improvements</title>
     
-    <section id="uv3.new_extended_apis.custom_java_objects">
-      <title>New custom Java objects in the CAS framework</title>
+    <para>To enable more seamless integration with popular Java idioms, the UIMA iterators for iterating 
+    over UIMA Indexes (the FSIterator interface) now implements the Java ListIterator Interface.
+    </para>
+    
+    <para>The iterators over indexes no longer throw concurrent modification exceptions if the index is modified
+    while it is being iterated over.  Instead, the iterators use a lazily-created copy-on-write approach that, when
+    some portion of the index is updated, prior to the update, copies the original state of that portion, and continues
+    to iterate over that.  While this is helpful if you are explicitly modifying the indexes in a loop, it 
+    can be especially helpful when modifying Feature Structures as you iterate, because
+    the UIMA support for detecting and avoiding possible index corruption if you modify some feature being used by 
+    some index as a key, is automatically (under the covers) temporarily removing the Feature Structure from indexes, 
+    doing the modification, and then adding it back.
+    </para>
+  </section>
+
+  <section id="uv3.new_extended_apis.select">
+    <title>New Select API</title>
+    
+    <para>A versatile new Select framework for accessing and acting on Feature Structures 
+    selected from the CAS or from Indexes or from other collection objects is documented in
+    a separate chapter.  This API is integrated with Java 8's Stream facility.
+    </para>
+  </section>
+  
+  <section id="uv3.new_extended_apis.custom_java_objects">
+    <title>New custom Java objects in the CAS framework</title>
+    
+    <para>There is a new framework that supports allowing you to add your own custom Java objects as
+      objects transportable in the CAS.  The following chapter describes this facility, and some new
+      built-in types that make use of it.
+    </para>
+  </section>  
+  
+  <section id="uv3.new_extended_apis.lists_and_arrays">
+    <title>Built-in lists and arrays</title>
+    
+    <para>
+      A new set of static methods on UIMA built-in lists and arrays, <code>create(jcas, array_source)</code>
+      is available; these take a Java array of items, and creates
+      a corresponding UIMA built-in list or array populated with items from the array_source.
+    </para>
+    
+    <para>For lists, new static methods <code>getEmptyList(JCas jcas)</code> on each of the 4
+      kinds of built-in lists (FS, Integer, Float, and String) retrieve a 
+      shared, common instance of the EmptyXxxList for a CAS.
+    </para>
+    
+    <para>For lists, a new <code>push(item)</code> API on an existing list node creates a new
+      non-empty node, sets its head to <code>item</code> and its tail to the existing list node.
+      This allows easy construction of a list in backwards order.
+      There is also a <code>pushNode()</code> which just creates and links in a new node to the front of the list.
+      And finally, there's a <code>createNonEmptyNode()</code>, which just creates a node of the 
+      same type, in the same CAS, without linking it.</para>
       
-      <para>There is a new framework that supports allowing you to add your own custom Java objects as
-        objects transportable in the CAS.  The following chapter describes this facility, and some new
-        built-in types that make use of it.
+    <section id="uv3.new_extended_apis.reorganized.lists_and_arrays">
+      <title>Built-in lists and arrays have common super classes / interfaces</title>
+        <para>Some methods common to multiple implements were moved to the super classes,
+          some classes were made abstract (to prevent them from being instantiated, which would be an error).
+          For arrays, a new method common to all arrays, <code>copyValuesFrom()</code> copies values from arrays of the same type.
+        </para>
+    </section> 
+  </section>     
+  
+  <section id="uv3.new_extended_apis.annotation">
+    <title>Annotation comparator methods</title>
+    
+    <para>The built-in type Annotation has multiple new methods to allow comparing two annotations.
+      The first method uses
+      the standard annotation comparator (two keys: begin (ascending) and end (descending)). 
+      A second method adds a 3rd key, the linear type order.
+      Another two methods extend these two methods with an additional key - the Annotation's ID.
+      All of these return the standard Java compare result allowing discrimination between equal, &gt;, and &lt;.
       </para>
-    </section>  
-  </section>      
+  </section>
+
+  <section id="uv3.new_extended_apis.reorganized">
+    <title>Reorganized APIs</title>
+    
+    <para>Some APIs were reorganized.  Some of the reorganizations include altering the super class
+      and implements hierarchies, making some classes abstract, making use of Java 8's new
+      <code>default</code> mechanisms to supply default implementations in interfaces, 
+      and moving methods to more common places.  Users of these APIs
+      should not be affected by these reorganizations.
+    </para>
+
+  </section>
+  
+  <section id="uv3.new_extended_apis.other">
+    <title>Other changes</title>
+    
+    <para>The utility class <code>org.apache.uima.util.FileUtils</code> has a new method
+      <code>writeToFile(path, string)</code>, which efficiently writes a string using UTF-8 encoding to 
+      <code>path</code>.
+    </para>
+    
+    <para>Many error messages were changed or added, causing changes to localization classes.
+      For coding efficiency, some of the structure of the internal error reporting calls was changed
+      to make use of Java's variable number of arguments syntax.</para>
+  </section> 
+   
 </chapter>
