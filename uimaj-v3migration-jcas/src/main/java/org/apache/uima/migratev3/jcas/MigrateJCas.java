@@ -204,6 +204,19 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       this.p = p;
       this.pearClasspath = pearClasspath;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+      String pear = (pearClasspath == null) ? "" :
+                      ", pearClasspath=" + pearClasspath;
+      return "Candidate [p=" + p + pear + "]";
+      
+    }
+    
+    
   }
     
   /*****************
@@ -1756,7 +1769,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //  }
   
   /**
-   * The classloader to use, if it is provided, is one that delegates first
+   * The classloader to use in decompiling, if it is provided, is one that delegates first
    * to the parent.  This may need fixing for PEARs
    * @return classloader to use for migrate decompiling
    */
