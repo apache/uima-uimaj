@@ -25,9 +25,9 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.uima.UimaSerializableFSs;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -139,7 +139,7 @@ class AllFSs {
     }
     
     // not an FS Array
-    if (fs instanceof CommonArray) {
+    if (fs instanceof CommonArrayFS) {
       return;  // no refs
     }
   

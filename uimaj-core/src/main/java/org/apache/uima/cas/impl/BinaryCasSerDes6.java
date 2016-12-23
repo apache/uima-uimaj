@@ -56,6 +56,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.CASImpl.FsChange;
@@ -71,7 +72,6 @@ import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -820,7 +820,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 
       writeVnumber(typeCode_dos, tgtType.getCode());
 
-      if (fs instanceof CommonArray) {
+      if (fs instanceof CommonArrayFS) {
         serializeArray(fs);
       } else {
         if (isTypeMapping) {
@@ -861,7 +861,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           
   private void serializeArray(TOP fs) throws IOException {
     final TypeImpl_array arrayType = (TypeImpl_array) fs._getTypeImpl();
-    CommonArray a = (CommonArray) fs;
+    CommonArrayFS a = (CommonArrayFS) fs;
     final SlotKind arrayElementKind = arrayType.getComponentSlotKind();
 
     final int length = serializeArrayLength(a);
@@ -1003,7 +1003,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     } // end of switch
   }
     
-  private int serializeArrayLength(CommonArray array) throws IOException {
+  private int serializeArrayLength(CommonArrayFS array) throws IOException {
     final int length = array.size();
     writeVnumber(arrayLength_i, length);
     return length;
@@ -2964,7 +2964,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
     
     // not an FS Array
-    if (fs instanceof CommonArray) {
+    if (fs instanceof CommonArrayFS) {
       return;
     }
   
@@ -3242,8 +3242,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
       
     private boolean compareFssArray() {
-      CommonArray a1 = (CommonArray) fs1;
-      CommonArray a2 = (CommonArray) fs2;
+      CommonArrayFS a1 = (CommonArrayFS) fs1;
+      CommonArrayFS a2 = (CommonArrayFS) fs2;
       int len1 = a1.size();
       int len2 = a2.size();
       if (len1 != len2) {
@@ -3539,8 +3539,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     } // end of sort compare
       
     private int sortArray(TOP afs1, TOP afs2) {
-      int sz1 = ((CommonArray)afs1).size();
-      int sz2 = ((CommonArray)afs2).size();
+      int sz1 = ((CommonArrayFS)afs1).size();
+      int sz2 = ((CommonArrayFS)afs2).size();
       int c = Integer.compare(sz1, sz2);
       if (c != 0) return c;
       

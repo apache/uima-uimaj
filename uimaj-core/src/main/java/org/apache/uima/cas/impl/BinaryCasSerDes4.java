@@ -47,6 +47,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.impl.CASImpl.FsChange;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
@@ -59,7 +60,6 @@ import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -900,16 +900,16 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private int getPrevArray0HeapRef() {
-      if (isNoPrevArrayValue((CommonArray)prevFs)) return 0;      
+      if (isNoPrevArrayValue((CommonArrayFS)prevFs)) return 0;      
       return fs2seq(((FSArray)prevFs).get(0));
     }
     
     private int getPrevArray0Int() {
-      if (isNoPrevArrayValue((CommonArray)prevFs)) return 0;      
+      if (isNoPrevArrayValue((CommonArrayFS)prevFs)) return 0;      
       return ((IntegerArray)prevFs).get(0);      
     }
 
-    private boolean isNoPrevArrayValue(CommonArray prevCommonArray) {
+    private boolean isNoPrevArrayValue(CommonArrayFS prevCommonArray) {
       return prevCommonArray == null || prevCommonArray.size() == 0;
     }
                 
@@ -963,7 +963,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     }
     
     private int serializeArrayLength(TOP fs) throws IOException {
-      int length = ((CommonArray)fs).size();
+      int length = ((CommonArrayFS)fs).size();
       writeVnumber(arrayLength_i, length);
       return length;
     }
@@ -1795,7 +1795,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
         if (type.isArray()) {
           currentFs = readArray(iHeap, type);
-          arraySize = ((CommonArray)currentFs).size();
+          arraySize = ((CommonArrayFS)currentFs).size();
         } else {
           if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
               !(ts.sofaType == type)) {            // defer sofa types

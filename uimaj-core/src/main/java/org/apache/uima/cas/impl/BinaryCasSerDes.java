@@ -35,6 +35,7 @@ import java.util.function.IntFunction;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.CommonSerDes.Reading;
@@ -48,7 +49,6 @@ import org.apache.uima.internal.util.function.Consumer_T_int_withIOException;
 import org.apache.uima.internal.util.function.DeserBinaryIndexes;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -1440,7 +1440,7 @@ public class BinaryCasSerDes {
     if (type.isArray()) {
       
       // next slot is the length
-      final int length = ((CommonArray)fs).size();
+      final int length = ((CommonArrayFS)fs).size();
       heap.heap[pos + arrayLengthFeatOffset] = length;
       // next slot are the values
       int i = pos + arrayContentOffset;
