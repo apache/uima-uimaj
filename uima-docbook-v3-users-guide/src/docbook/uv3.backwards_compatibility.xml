@@ -48,14 +48,8 @@ under the License.
       Users should consider these methods as internal use and subject to change with new releases.
     </para>
     
-    <para>The specialized non-JCas Java cover classes for built-in types have been removed; 
-      these were unlikely to have been used. If used, the update is to replace these with their
-      JCas class equivalents.  For example, if you used <code>AnnotationImpl</code>, replace with
-      <code>Annotation</code>.
-    </para>
-    
-    
-    
+    <para>The non-JCas Java cover classes for the built-in UIMA types remain, for backwards compatibility.
+      </para>
   </section>
   
   
@@ -163,6 +157,17 @@ under the License.
       different JCas class definitions for the same 
       UIMA Type, inside and outside of the PEAR context.  
       If this is detected, a runtime exception is thrown.
+    </para>
+  </section>
+  
+  <section id="uv3.backards_compatibility.toString">
+    <title>toString()</title>   
+    
+    <para>
+      The formatting of various UIMA artifacts, including Feature Structures,
+      has changed somewhat, to be more informative.  This may impact 
+      situations such as testing, where the exact string representations
+      are being compared.
     </para>
   </section>
   
