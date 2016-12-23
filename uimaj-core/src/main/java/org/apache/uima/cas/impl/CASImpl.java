@@ -99,7 +99,6 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
@@ -1082,7 +1081,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   private ArrayFS createArrayFS(TypeImpl type, int length) {
     checkArrayPreconditions(length);
-    return (ArrayFS) new FSArray(type, this, length);         
+    return new FSArray(type, this, length);         
 //        getTypeSystemImpl().fsArrayType.getGeneratorArray()         // (((FsGeneratorArray)getFsGenerator(fsArrayTypeCode))
 //        .createFS(type, this, length);
   }
@@ -4772,9 +4771,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return true;
   }
 
-  public static CommonArray copyArray(TOP srcArray) {
-    CommonArray srcCA = (CommonArray) srcArray;
-    CommonArray copy = (CommonArray) srcArray._casView.createArray(srcArray._getTypeImpl(), srcCA.size());
+  public static CommonArrayFS copyArray(TOP srcArray) {
+    CommonArrayFS srcCA = (CommonArrayFS) srcArray;
+    CommonArrayFS copy = (CommonArrayFS) srcArray._casView.createArray(srcArray._getTypeImpl(), srcCA.size());
     copy.copyValuesFrom(srcCA); 
     return copy;
   }
@@ -4899,7 +4898,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     traceFSfs(fs);
     svd.traceFSisCreate = true;
     if (fs._getTypeImpl().isArray()) {
-      b.append(" l:").append(((CommonArray)fs).size());
+      b.append(" l:").append(((CommonArrayFS)fs).size());
     }
   }
   
