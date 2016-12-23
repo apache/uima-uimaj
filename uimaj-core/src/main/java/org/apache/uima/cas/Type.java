@@ -22,8 +22,6 @@ package org.apache.uima.cas;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.uima.cas.impl.FeatureImpl;
-
 /**
  * The interface describing types in the type system.
  * 

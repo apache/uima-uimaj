@@ -22,8 +22,6 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.stream.Stream;
-
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 /**
