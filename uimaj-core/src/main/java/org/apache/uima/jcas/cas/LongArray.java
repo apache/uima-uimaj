@@ -20,21 +20,21 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfLong;
-import java.util.stream.DoubleStream;
-import java.util.stream.LongStream;
 import java.util.Spliterator;
+import java.util.stream.LongStream;
 
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.LongArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.LongArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFS, Iterable<Long> {
+public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFSImpl, Iterable<Long> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.LongArray";
@@ -162,13 +162,6 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-  
   // internal use
   public long[] _getTheArray() {
     return theArray;
@@ -178,7 +171,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     LongArray bv = (LongArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

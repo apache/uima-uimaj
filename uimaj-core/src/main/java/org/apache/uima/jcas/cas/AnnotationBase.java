@@ -50,7 +50,7 @@ import org.apache.uima.jcas.JCasRegistry;
  * (which is view-specific),
  * it should be a subtype of this base type.
  */
-public class AnnotationBase extends TOP implements AnnotationBaseFS {
+public class AnnotationBase extends TOP implements AnnotationBaseImpl {
 
   /* public static strings for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.AnnotationBase";

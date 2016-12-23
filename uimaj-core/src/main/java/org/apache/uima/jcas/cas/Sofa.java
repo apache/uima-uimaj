@@ -24,13 +24,13 @@ import java.io.InputStream;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.SofaFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class Sofa extends TOP implements SofaFS {
+public class Sofa extends TOP implements SofaFSImpl {
   
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
@@ -243,7 +243,6 @@ public class Sofa extends TOP implements SofaFS {
 	  throw new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);
 	}
 
-	// override setFeatureValue for SofaFS to prohibit setting in this manner!
 	@Override
   public void setFeatureValue(Feature feat, FeatureStructure fs) {
 		throw new CASRuntimeException(CASRuntimeException.PROTECTED_SOFA_FEATURE);

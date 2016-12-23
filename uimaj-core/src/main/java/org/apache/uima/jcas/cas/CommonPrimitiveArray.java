@@ -19,11 +19,13 @@
 
 package org.apache.uima.jcas.cas;
 
+import org.apache.uima.cas.CommonArrayFS;
+
 /**
  * This interface is implemented by arrays of non-FeatureStructure components 
  *   boolean, byte, short, int, long, float, double, String, JavaObject
  */
-public interface CommonPrimitiveArray extends CommonArray {
+public interface CommonPrimitiveArray extends CommonArrayFS {
   
   /**
    * Set an array value from a string representation

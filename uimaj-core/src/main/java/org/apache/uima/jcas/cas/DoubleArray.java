@@ -20,21 +20,21 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfDouble;
 import java.util.Spliterator;
 import java.util.stream.DoubleStream;
 
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.DoubleArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for DoubleArray */
-public final class DoubleArray extends TOP implements CommonPrimitiveArray, DoubleArrayFS, Iterable<Double> {
+public final class DoubleArray extends TOP implements CommonPrimitiveArray, DoubleArrayFSImpl, Iterable<Double> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.DoubleArray";
@@ -159,13 +159,6 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
       theArray[i + destPos] = Double.parseDouble(src[i + srcPos]);
     }
   }
-
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
   
   // internal use
   public double[] _getTheArray() {
@@ -176,7 +169,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     DoubleArray bv = (DoubleArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
   }

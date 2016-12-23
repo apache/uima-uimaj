@@ -81,11 +81,10 @@ public interface LongArrayFS extends CommonArrayFS {
    */
   void copyFromArray(long[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
-
   /**
    * Creates a new array the this array is copied to.
    * 
    * @return A Java array copy of this FS array.
    */
-  long[] toArray();
+  long[] toArray();  
 }

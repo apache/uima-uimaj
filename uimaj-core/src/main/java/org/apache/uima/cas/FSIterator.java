@@ -20,7 +20,6 @@
 package org.apache.uima.cas;
 
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -178,6 +177,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * 
    * @see java.util.Iterator#hasNext()
    */
+  @Override
   default boolean hasNext() {
     return isValid();
   }
@@ -187,6 +187,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * 
    * @see java.util.Iterator#next()
    */
+  @Override
   default T next() {
     T result = get();
     moveToNext();
@@ -204,6 +205,7 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * 
    * @see java.util.Iterator#remove()
    */
+  @Override
   default void remove() {
     throw new UnsupportedOperationException();
   } 

@@ -46,7 +46,7 @@ public interface IntArrayFS extends CommonArrayFS {
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>index</code> is out of bounds.
    */
-  void set(int index, int value) throws ArrayIndexOutOfBoundsException;
+  void set(int index, int value);
 
   /**
    * Copy the contents of the array from <code>start</code> to <code>end</code> to the
@@ -81,11 +81,12 @@ public interface IntArrayFS extends CommonArrayFS {
    */
   void copyFromArray(int[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
-
+  
   /**
    * Create a Java array that is a copy of the internal CAS array.
    * 
    * @return An array copy.
    */
   int[] toArray();
+
 }

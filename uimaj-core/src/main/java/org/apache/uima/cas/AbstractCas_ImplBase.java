@@ -30,6 +30,7 @@ public abstract class AbstractCas_ImplBase implements AbstractCas {
    * Default implementation that returns this CAS to its CasManager by calling
    * {@link CasOwner#releaseCas(AbstractCas)}.
    */
+  @Override
   public void release() {
     if (mOwner != null) {
       mOwner.releaseCas(this);

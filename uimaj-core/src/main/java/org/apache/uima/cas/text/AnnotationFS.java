@@ -20,6 +20,8 @@
 package org.apache.uima.cas.text;
 
 import org.apache.uima.cas.AnnotationBaseFS;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.FeatureStructureImplC;
 
 /**
  * Interface for Annotation Feature Structures.
@@ -72,4 +74,4 @@ public interface AnnotationFS extends AnnotationBaseFS {
    */
   String getCoveredText();
 
-}
+ }

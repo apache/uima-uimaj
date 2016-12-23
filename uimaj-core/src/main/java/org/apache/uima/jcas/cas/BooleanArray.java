@@ -23,13 +23,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.BooleanArrayFS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.impl.BooleanArrayFSImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for BooleanArray */
-public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFS, Iterable<Boolean> {
+public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFSImpl, Iterable<Boolean> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.BooleanArray";
@@ -159,13 +161,6 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-  
   // internal use
   public boolean[] _getTheArray() {
     return theArray;
@@ -175,7 +170,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     BooleanArray bv = (BooleanArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

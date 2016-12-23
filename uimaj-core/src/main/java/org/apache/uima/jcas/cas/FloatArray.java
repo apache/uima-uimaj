@@ -19,14 +19,15 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.FloatArrayFS;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FloatArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Cas model for Cas FloatArray. */
-public final class FloatArray extends TOP implements CommonPrimitiveArray, FloatArrayFS {
+public final class FloatArray extends TOP implements CommonPrimitiveArray, FloatArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.FloatArray";
@@ -173,16 +174,6 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
       set(i + destOffset, Float.parseFloat(src[i + srcOffset]));
     }
   }
-
-  /**
-   * @see org.apache.uima.cas.FloatArrayFS#toStringArray()
-   */
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
   
   // internal use only
   public float[] _getTheArray() {
@@ -193,7 +184,7 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     FloatArray bv = (FloatArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

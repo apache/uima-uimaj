@@ -22,14 +22,16 @@ package org.apache.uima.jcas.cas;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
-public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray, StringArrayFS {
+public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray, StringArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.jcas.cas.StringArray";
@@ -135,13 +137,6 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
     return theArray.length;
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-  
   // internal use
   public String[] _getTheArray() {
     return theArray;
@@ -151,7 +146,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     StringArray bv = (StringArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

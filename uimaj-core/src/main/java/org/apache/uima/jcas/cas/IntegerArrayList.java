@@ -28,6 +28,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.uima.List_of_ints;
 import org.apache.uima.UimaSerializable;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
@@ -55,7 +56,7 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 public final class IntegerArrayList extends TOP implements 
                                  Iterable<Integer>,
-                                 UimaSerializable, CommonArray, 
+                                 UimaSerializable, CommonArrayFS, 
                                  RandomAccess, Cloneable {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
@@ -305,21 +306,13 @@ public final class IntegerArrayList extends TOP implements
     }
   }
 
-  @Override
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-  
   /* 
    * 
    * (non-Javadoc)
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     clear();
     Spliterator.OfInt si;
     

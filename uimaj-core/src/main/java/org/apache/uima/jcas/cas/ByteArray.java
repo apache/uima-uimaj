@@ -23,13 +23,15 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.ByteArrayFS;
+import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.impl.ByteArrayFSImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ByteArray */
-public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFS, Iterable<Byte> {
+public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFSImpl, Iterable<Byte> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.ByteArray";
@@ -156,13 +158,6 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
     _casView.maybeLogArrayUpdates(this, destPos, length);
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-  
   // internal use
   public byte[] _getTheArray() {
     return theArray;
@@ -172,7 +167,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     ByteArray bv = (ByteArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

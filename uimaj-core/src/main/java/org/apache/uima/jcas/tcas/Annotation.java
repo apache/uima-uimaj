@@ -27,13 +27,14 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
+import org.apache.uima.jcas.cas.AnnotationImpl;
 
 /**
  * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features
  * indicating the begin and end of the span being annotated. There is also a method to retrieve the
  * spanned text as a string.
  */
-public class Annotation extends AnnotationBase implements AnnotationFS {
+public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.jcas.cas.Annotation";

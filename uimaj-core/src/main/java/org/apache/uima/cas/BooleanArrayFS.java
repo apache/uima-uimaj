@@ -88,4 +88,5 @@ public interface BooleanArrayFS extends CommonArrayFS {
    */
   void copyFromArray(boolean[] src, int srcOffset, int destOffset, int length)
           throws ArrayIndexOutOfBoundsException;
+
 }

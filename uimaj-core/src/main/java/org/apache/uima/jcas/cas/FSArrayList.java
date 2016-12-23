@@ -66,7 +66,7 @@ import org.apache.uima.util.impl.Constants;
  * @param <T> the generic type
  */
 public final class FSArrayList <T extends TOP> extends TOP implements 
-                                 UimaSerializableFSs, CommonArray, CommonArrayFS, SelectViaCopyToArray, 
+                                 UimaSerializableFSs, CommonArrayFS, SelectViaCopyToArray, 
                                  List<T>, RandomAccess, Cloneable {
 
   /** The Constant EMPTY_LIST. */
@@ -405,17 +405,6 @@ public final class FSArrayList <T extends TOP> extends TOP implements
       i++;
     }
   }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.cas.CommonArray#toStringArray()
-   */
-  @Override
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
   
   /* 
    * 
@@ -424,7 +413,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    * no conversion to Pear trampolines done
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     clear();
     Spliterator<T> si;
     if (v instanceof FSArrayList) {

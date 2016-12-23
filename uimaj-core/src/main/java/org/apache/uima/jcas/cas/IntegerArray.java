@@ -20,23 +20,21 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.Spliterator;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import org.apache.uima.List_of_ints;
-import org.apache.uima.cas.IntArrayFS;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.IntArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
-public final class IntegerArray extends TOP implements CommonPrimitiveArray, IntArrayFS, Iterable<Integer> {
+public final class IntegerArray extends TOP implements CommonPrimitiveArray, IntArrayFSImpl, Iterable<Integer> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.IntegerArray";
@@ -164,16 +162,6 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     }
   }
 
-  /**
-   * @see org.apache.uima.cas.IntArrayFS#toStringArray()
-   */
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-  
   // internal use only
   public int[] _getTheArray() {
     return theArray;
@@ -183,7 +171,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     IntegerArray bv = (IntegerArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

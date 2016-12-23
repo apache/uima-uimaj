@@ -26,8 +26,8 @@ import java.util.Spliterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -35,7 +35,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements Iterable<TOP>, CommonArray, ArrayFS, SelectViaCopyToArray {
+public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, SelectViaCopyToArray {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = "org.apache.uima.cas.jcas.FSArray";
@@ -206,13 +206,6 @@ public final class FSArray extends TOP implements Iterable<TOP>, CommonArray, Ar
     }
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
-  }
-
   // internal use
   // used by serializers, other impls (e.g. FSHashSet)
   // no conversion to Pear trampolines done
@@ -225,7 +218,7 @@ public final class FSArray extends TOP implements Iterable<TOP>, CommonArray, Ar
    * no conversion to Pear trampolines done
    */
   @Override
-  public void copyValuesFrom(CommonArray v) {
+  public void copyValuesFrom(CommonArrayFS v) {
     FSArray bv = (FSArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());

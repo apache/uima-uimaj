@@ -19,10 +19,6 @@
 
 package org.apache.uima.cas;
 
-import org.apache.uima.cas.impl.LowLevelIndex;
-import org.apache.uima.cas.impl.SelectFSs_impl;
-import org.apache.uima.jcas.cas.TOP;
-
 /**
  * Feature structure index access interface.
  * 
@@ -172,7 +168,7 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * @return An iterator positioned at <code>fs</code>, if it exists; else, an invalid iterator.
    */
   default FSIterator<T> iterator(FeatureStructure fs) {
-    FSIterator<T> it = (FSIterator<T>) iterator();
+    FSIterator<T> it = iterator();
     if (fs != null) {
       it.moveTo(fs);
     }
@@ -184,8 +180,9 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * return the first item in the index.
    * If the index is empty, the iterator position will be marked as invalid.
    * 
-   * @return An iterator positioned at the beginning, or an invalid iterator.
+   * @return An FSIterator positioned at the beginning, or an invalid iterator.
    */
+  @Override
   FSIterator<T> iterator();
   
   /**
