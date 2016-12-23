@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.TypeSystem;
@@ -52,7 +53,6 @@ import org.apache.uima.internal.util.function.IntConsumer_withIOException;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -1169,7 +1169,7 @@ public class JsonCasSerializer {
       }
       
       cds.visited_not_yet_written.remove(array);
-      CommonArray ca = (CommonArray) array;
+      CommonArrayFS ca = (CommonArrayFS) array;
       final int array_size = ca.size();
 
       if (arrayType == LowLevelCAS.TYPE_CLASS_BYTEARRAY) {
