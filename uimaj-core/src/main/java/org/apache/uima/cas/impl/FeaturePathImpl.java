@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
@@ -32,7 +33,6 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeClass;
 import org.apache.uima.cas.impl.TypeSystemUtils.PathValid;
 import org.apache.uima.cas.text.AnnotationFS;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -471,7 +471,7 @@ class FeaturePathImpl implements FeaturePath {
       if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
         return evaluateBuiltInFunction(tgtFs);
       }
-      return ((CommonArray)tgtFs).getValuesAsCommaSeparatedString();
+      return ((CommonArrayFS)tgtFs).getValuesAsCommaSeparatedString();
     
     case LowLevelCAS.TYPE_CLASS_FS: 
       if (tgtFs == null) {
