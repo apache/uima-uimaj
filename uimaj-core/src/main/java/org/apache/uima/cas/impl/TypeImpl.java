@@ -31,13 +31,13 @@ import java.util.stream.Stream;
 
 import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
@@ -893,7 +893,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   public int getFsSpaceReq(TOP fs) {
     return getFsSpaceReq(isHeapStoredArray() 
-                          ? ((CommonArray)fs).size()  
+                          ? ((CommonArrayFS)fs).size()  
                           : 0);
   }  
 

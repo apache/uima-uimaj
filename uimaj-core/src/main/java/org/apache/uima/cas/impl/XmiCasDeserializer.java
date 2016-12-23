@@ -40,6 +40,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.SofaFS;
@@ -56,7 +57,6 @@ import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.internal.util.function.Runnable_withSaxException;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.EmptyList;
@@ -1185,8 +1185,8 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_LONGARRAY:
         case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
         case LowLevelCAS.TYPE_CLASS_FSARRAY: {
-          CommonArray existingArray = (CommonArray) fs.getFeatureValue(fi);
-          CommonArray casArray = createOrUpdateArray(fi.getRangeImpl(), featVals, -1, existingArray);
+          CommonArrayFS existingArray = (CommonArrayFS) fs.getFeatureValue(fi);
+          CommonArrayFS casArray = createOrUpdateArray(fi.getRangeImpl(), featVals, -1, existingArray);
           if (existingArray != casArray) {
             fs.setFeatureValue(fi, casArray);
           }
@@ -1258,18 +1258,18 @@ public class XmiCasDeserializer {
      * @return the new or updated-existing FS for the array
      * @throws XCASParsingException 
      */
-    private CommonArray createOrUpdateArray(TypeImpl arrayType, List<String> values, int xmiId, CommonArray existingArray) throws XCASParsingException {
+    private CommonArrayFS createOrUpdateArray(TypeImpl arrayType, List<String> values, int xmiId, CommonArrayFS existingArray) throws XCASParsingException {
       if (values == null) {
         return null;
       }
     
       final int arrayLen = values.size();
-      final CommonArray resultArray;
+      final CommonArrayFS resultArray;
             
       if (existingArray != null) {  // values are local to feature (nonshared), preexisting
         if (arrayLen == 0) {
           resultArray = (existingArray.size() == 0) ? existingArray 
-                                                    : (CommonArray) casBeingFilled.createArray(arrayType,  0);
+                                                    : (CommonArrayFS) casBeingFilled.createArray(arrayType,  0);
         } else {
           if (existingArray.size() == arrayLen) {
             updateExistingArray(values, existingArray);
@@ -1284,7 +1284,7 @@ public class XmiCasDeserializer {
         resultArray = createNewArray(arrayType, values);
         
       } else {                      // values are with FS, below the line
-        existingArray = (CommonArray) getFsForXmiId(xmiId);
+        existingArray = (CommonArrayFS) getFsForXmiId(xmiId);
         if (existingArray.size() == arrayLen) {
           updateExistingArray(values, existingArray);
           resultArray = existingArray;
@@ -1307,9 +1307,9 @@ public class XmiCasDeserializer {
      *      List of strings, each containing the value of an element of the array.
      * @return a reference to the array FS
      */
-    private CommonArray createNewArray(TypeImpl type, List<String> values) {
+    private CommonArrayFS createNewArray(TypeImpl type, List<String> values) {
       final int sz = values.size();
-      CommonArray fs = (CommonArray) casBeingFilled.createArray(type, sz);
+      CommonArrayFS fs = (CommonArrayFS) casBeingFilled.createArray(type, sz);
       if (fs instanceof FSArray) {
         final FSArray fsArray = (FSArray) fs;
         for (int i = 0; i < sz; i++) {
@@ -1330,7 +1330,7 @@ public class XmiCasDeserializer {
      * @param values
      * @param existingArray
      */
-    private void updateExistingArray(List<String> values, CommonArray existingArray) {
+    private void updateExistingArray(List<String> values, CommonArrayFS existingArray) {
       final int sz = values.size();
       
       if (existingArray instanceof FSArray) {

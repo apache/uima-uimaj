@@ -30,6 +30,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
@@ -42,7 +43,6 @@ import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
@@ -1018,7 +1018,7 @@ public class XmiCasSerializer {
       }
 
       StringBuilder buf = new StringBuilder();
-      CommonArray fs = (CommonArray) fsIn;
+      CommonArrayFS fs = (CommonArrayFS) fsIn;
       String elemStr = null;
       
       // FS arrays: handle shared data items
