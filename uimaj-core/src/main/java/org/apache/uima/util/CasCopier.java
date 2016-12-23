@@ -28,6 +28,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
@@ -41,7 +42,6 @@ import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.AnnotationBase;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
@@ -773,7 +773,7 @@ public class CasCopier {
     }
 
     // Arrays - need to be created a populated differently than "normal" FS
-    if (srcFs instanceof CommonArray) {
+    if (srcFs instanceof CommonArrayFS) {
       copy = copyArray(srcFs);
       if (copy != null) { // can be null if trying to copy MyFs[] and type doesn't exist in target type system
         mFsMap.put(srcFs, copy);
@@ -995,7 +995,7 @@ public class CasCopier {
    * @return a copy of the array
    */
   private TOP copyArray(TOP srcFS) {
-    final CommonArray srcCA = (CommonArray) srcFS;
+    final CommonArrayFS srcCA = (CommonArrayFS) srcFS;
     final int size = srcCA.size();
     final TypeImpl tgtTi = getTargetType(((TOP)srcFS)._getTypeImpl());  // could be null for src = e.g. Annotation[]
     
@@ -1004,7 +1004,7 @@ public class CasCopier {
     }
     
     if (srcFS instanceof CommonPrimitiveArray) {
-      CommonArray copy = (CommonArray) tgtCasViewImpl.createArray(tgtTi, size);
+      CommonArrayFS copy = (CommonArrayFS) tgtCasViewImpl.createArray(tgtTi, size);
       copy.copyValuesFrom(srcCA);
       return (TOP) copy;
     }

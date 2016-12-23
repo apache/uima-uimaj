@@ -32,6 +32,7 @@ import org.apache.uima.cas.ArrayFS;
 import org.apache.uima.cas.BooleanArrayFS;
 import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
@@ -51,7 +52,6 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.FSArray;
@@ -214,8 +214,8 @@ public class CasComparer {
       }
 
       if (t1.isArray()) {
-        final int len1 = ((CommonArray)fs1).size();
-        if (0 != (r = Integer.compare(len1, ((CommonArray)fs2).size()))) {
+        final int len1 = ((CommonArrayFS)fs1).size();
+        if (0 != (r = Integer.compare(len1, ((CommonArrayFS)fs2).size()))) {
           return r;
         }
         
@@ -384,8 +384,8 @@ public class CasComparer {
   // returns true if the items were arrays
   private int compareArrayFSs(TOP arrayFS1fs, Feature feat1, TOP arrayFS2fs, Feature feat2, Set<TOP> visited) {
   
-    CommonArray arrayFS1 = (CommonArray)arrayFS1fs.getFeatureValue(feat1);
-    CommonArray arrayFS2 = (CommonArray)arrayFS2fs.getFeatureValue(feat2);
+    CommonArrayFS arrayFS1 = (CommonArrayFS)arrayFS1fs.getFeatureValue(feat1);
+    CommonArrayFS arrayFS2 = (CommonArrayFS)arrayFS2fs.getFeatureValue(feat2);
     
     if (null == arrayFS1 && null == arrayFS2)return 0; // are equal
     if (null == arrayFS1) return chkEqual(-1,  "Array FS1 is null, but Array FS2 is not");
@@ -451,7 +451,7 @@ public class CasComparer {
     return 0;  // all were equal
   }
     
-  private ARRAY_TYPE getArrayType(CommonArray c) {
+  private ARRAY_TYPE getArrayType(CommonArrayFS c) {
     if (c instanceof ArrayFS) return ARRAY_TYPE.FS; 
     if (c instanceof StringArrayFS) return ARRAY_TYPE.STRING; 
     if (c instanceof BooleanArrayFS) return ARRAY_TYPE.BOOLEAN; 
@@ -464,7 +464,7 @@ public class CasComparer {
     return null;
   }
   
-  private int validateSameType(CommonArray a1, CommonArray a2) {
+  private int validateSameType(CommonArrayFS a1, CommonArrayFS a2) {
     if (a1.getClass() == a2.getClass()) {
       return 0;
     }
