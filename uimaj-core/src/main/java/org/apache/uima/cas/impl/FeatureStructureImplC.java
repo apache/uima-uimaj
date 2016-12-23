@@ -25,8 +25,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.IntFunction;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
@@ -37,7 +39,6 @@ import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -68,7 +69,7 @@ import org.apache.uima.jcas.impl.JCasImpl;
  *     -- can't be static - may be multiple type systems in use
  * 
  */
-public class FeatureStructureImplC extends FeatureStructureImpl implements FeatureStructure, Cloneable {
+public class FeatureStructureImplC implements FeatureStructureImpl {
 
   // note: these must be enabled to make the test cases work
   public static final String DISABLE_RUNTIME_FEATURE_VALIDATION = "uima.disable_runtime_feature_validation";
@@ -197,7 +198,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
     }
 
     
-    if (traceFSs && !(this instanceof CommonArray)) {
+    if (traceFSs && !(this instanceof CommonArrayFS)) {
       _casView.traceFSCreate(this);
     }
   }
@@ -231,7 +232,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
       _refData = _allocRefData();
     }
     
-    if (traceFSs && !(this instanceof CommonArray)) {
+    if (traceFSs && !(this instanceof CommonArrayFS)) {
       _casView.traceFSCreate(this);
     }
     
@@ -316,6 +317,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
    * NOTE: Possible name collision
    * @return the internal id of this fs - unique to this CAS, a positive int
    */
+  @Override
   public final int getAddress() { return _id; };
 
   @Override
@@ -761,7 +763,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
      * 0 out those bits before or-ing in the high order 32 bits.
      */
 //    final int offset = adjOffset + _getIntDataArrayOffset();
-    return (((long)_intData[adjOffset]) & 0x00000000ffffffffL) | (((long)_intData[adjOffset + 1]) << 32); 
+    return ((_intData[adjOffset]) & 0x00000000ffffffffL) | (((long)_intData[adjOffset + 1]) << 32); 
   }
   
   @Override
@@ -856,8 +858,8 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
   public FeatureStructureImplC clone() throws CASRuntimeException { 
         
     if (_typeImpl.isArray()) {
-      CommonArray original = (CommonArray) this;
-      CommonArray copy = (CommonArray) _casView.createArray(_typeImpl, original.size());
+      CommonArrayFS original = (CommonArrayFS) this;
+      CommonArrayFS copy = (CommonArrayFS) _casView.createArray(_typeImpl, original.size());
       copy.copyValuesFrom(original);      
       return (FeatureStructureImplC) copy;
     }
@@ -929,7 +931,8 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
     }
 
     int printInfo(FeatureStructure ref) {
-      if (this.tree.get(ref) == null) {
+      String k = this.tree.get(ref);
+      if (k == null || k.equals("seen once")) {
         return NO_LABEL;
       }
       if (this.seen.contains(ref)) {
@@ -975,22 +978,58 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
     return toString(3);
   }
 
+  @Override
   public String toString(int indent) {
     StringBuilder buf = new StringBuilder();
     prettyPrint(0, indent, buf, true, null);
     return buf.toString();
   }
 
+  /* 
+   * This next bit is to remain backward compatible with callers using StringBuilders or
+   * StringBuffers.
+   * (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FeatureStructureImpl#prettyPrint(int, int, java.lang.StringBuilder, boolean)
+   */
+  @Override
   public void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames) {
     prettyPrint(indent, incr, buf, useShortNames, null);
   }
 
+  @Override
+  public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames) {
+    prettyPrint(indent, incr, buf, useShortNames, null);
+  }
+
+  @Override
+  public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames, String s) {
+    PrintReferences printRefs = new PrintReferences();
+    getPrintRefs(printRefs);
+    prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
+  }
+  
+  @Override
   public void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames, String s) {
     PrintReferences printRefs = new PrintReferences();
     getPrintRefs(printRefs);
     prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
   }
 
+  public void prettyPrint(
+      int indent, 
+      int incr, 
+      StringBuffer buf, 
+      boolean useShortNames, 
+      String s, 
+      PrintReferences printRefs) {
+   
+    StringBuilder b2 = new StringBuilder(buf);
+    prettyPrint(indent, incr, b2, useShortNames, s, printRefs);
+    
+    buf.setLength(0);
+    buf.append(b2.toString());
+  }
+  
   public void prettyPrint(
       int indent, 
       int incr, 
@@ -1150,7 +1189,7 @@ public class FeatureStructureImplC extends FeatureStructureImpl implements Featu
   }
   
   public int getTypeIndexID() {
-    throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR); // dummy, always overridden
+    throw new CASRuntimeException(UIMARuntimeException.INTERNAL_ERROR); // dummy, always overridden
   }
   
   /**
