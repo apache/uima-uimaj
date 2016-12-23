@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Marker;
 import org.apache.uima.cas.impl.CASImpl.FsChange;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
@@ -37,7 +38,6 @@ import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.internal.util.function.Consumer_T_withIOException;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -475,8 +475,8 @@ public class CASSerializer implements Serializable {
       if (trackingMark.isNew(fs)) {
         break;
       }
-      if (fs instanceof CommonArray) {
-        CommonArray ca = (CommonArray) fs;
+      if (fs instanceof CommonArrayFS) {
+        CommonArrayFS ca = (CommonArrayFS) fs;
         SlotKind kind = fs._getTypeImpl().getComponentSlotKind();
         switch (kind) {
         case Slot_BooleanRef:
