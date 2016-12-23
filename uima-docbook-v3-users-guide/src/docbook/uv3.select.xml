@@ -378,7 +378,7 @@ FSIterator&lt;Token&gt; token_iterator =
 
       <variablelist>
         <varlistentry>
-          <term><emphasis role="strong">unordered</emphasis></term>
+          <term><emphasis role="strong">orderNotNeeded</emphasis></term>
           <listitem>
             <para>relaxes any iteration by allowing it to proceed in an unordered manner.  Specifying
 				      this may improve performance in some cases.  When this is specified, 

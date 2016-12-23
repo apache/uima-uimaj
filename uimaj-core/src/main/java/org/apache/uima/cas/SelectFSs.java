@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -92,8 +91,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   SelectFSs<T> nullOK();  // applies to get()
   SelectFSs<T> nullOK(boolean nullOk);  // applies to get()
     
-  SelectFSs<T> unordered();                  // ignored if not ordered index
-  SelectFSs<T> unordered(boolean unordered); // ignored if not ordered index
+  SelectFSs<T> orderNotNeeded();                  // ignored if not ordered index
+  SelectFSs<T> orderNotNeeded(boolean unordered); // ignored if not ordered index
   
   SelectFSs<T> backwards();                  // ignored if not ordered index
   SelectFSs<T> backwards(boolean backwards); // ignored if not ordered index
@@ -171,10 +170,10 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   // 
   // ---------------------------------
   FSIterator<T> fsIterator();
-  Iterator<T> iterator();
+//  Iterator<T> iterator();  // inherited, not needed here
   <N extends T> List<N> asList();
   <N extends T> N[] asArray(Class<N> clazz);
-  Spliterator<T> spliterator();
+//  Spliterator<T> spliterator(); // inherited, not needed here 
   
   // returning one item
   
@@ -200,6 +199,14 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   T singleOrNull(int begin, int end, int offset); // throws if more than 1 element, returns single or null
   
   
+  @Override
+  default Spliterator<T> spliterator() {
+    // TODO Auto-generated method stub
+    return Iterable.super.spliterator();
+  }
+
+
+
   /**
    * static methods that more effectively capture the generic argument  
    * @param index -

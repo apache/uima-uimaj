@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import java.lang.reflect.Array;
 import java.util.AbstractSequentialList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -140,7 +139,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    ************************************************/
   /**
    * INDEX
-   * If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
+   * If not specified, defaults to all FSs (orderNotNeeded) unless AnnotationIndex implied
    * @param indexName -
    * @param <N> type of returned Feature Structures
    * @return -
@@ -300,12 +299,12 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
     
   @Override
-  public SelectFSs_impl<T> unordered() {   // ignored if not ordered index
+  public SelectFSs_impl<T> orderNotNeeded() {   // ignored if not ordered index
     this.isUnordered = true;
     return this;
   }                
   @Override
-  public SelectFSs_impl<T> unordered(boolean bUnordered) { // ignored if not ordered index
+  public SelectFSs_impl<T> orderNotNeeded(boolean bUnordered) { // ignored if not ordered index
     this.isUnordered = bUnordered;
     return this;
   } 
@@ -786,8 +785,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * Sets the characteristics from the context:
    *   IMMUTABLE / NONNULL / DISTINCT - always
    *   CONCURRENT - never
-   *   ORDERED - unless unordered index or not SORTED_INDEX or SET_INDEX
-   *   SORTED - only for SORTED_INDEX (and not unordered?)
+   *   ORDERED - unless orderNotNeeded index or not SORTED_INDEX or SET_INDEX
+   *   SORTED - only for SORTED_INDEX (and not orderNotNeeded?)
    *   SIZED - if exact size is (easily) known, just from index.
    *           false if bounded, unambiguous
    *   SUBSIZED - if spliterator result from trysplit also is SIZED, set to true for now
@@ -1412,6 +1411,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   @Override
   public void close() {
     stream().close();
+  }
+
+  @Override
+  public Stream<T> unordered() {
+    return stream().unordered();
   }
 
 }
