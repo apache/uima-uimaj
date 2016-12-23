@@ -23,15 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntFunction;
 
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureImpl;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
-import org.apache.uima.jcas.cas.CommonArray;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -213,7 +213,7 @@ public class FSNode extends FSTreeNode {
     TypeImpl type = getType();
 //    CASImpl cas = this.fSTreeModel.getCas();
     if (type.isArray()) {
-      int arrayLength = ((CommonArray)fs).size();
+      int arrayLength = ((CommonArrayFS)fs).size();
 //      if (arrayLength > 20) {
 //        arrayLength = 20;
 //      }
@@ -420,7 +420,7 @@ public class FSNode extends FSTreeNode {
           return getNullString();
         }
         return "<font color=blue>" + getType().getName() + "</font>["
-                + ((CommonArray)fs).size() + "]";
+                + ((CommonArrayFS)fs).size() + "]";
       }
       case STD_FS: {
         if (fs == null) {
