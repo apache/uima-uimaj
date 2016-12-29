@@ -52,6 +52,7 @@ import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
@@ -97,6 +98,28 @@ public interface JCas extends AbstractCas {
 
   /* internal use */
   LowLevelCAS getLowLevelCas();
+
+  /**
+   * Backwards Compatibility only - throws unsupported operation exception
+   * 
+   * get the JCas _Type instance for a particular CAS type constant
+   * 
+   * @param i
+   *          the CAS type constant, written as Foo.type
+   * @return the instance of the JCas xxx_Type object for the specified type
+   */
+  public abstract TOP_Type getType(int i);
+  
+  /**
+   * get the JCas x_Type instance for a particular Java instance of a type
+   * 
+   * @param instance instance
+   * @return the associated xxx_Type instance
+   * @deprecated use instance.jcasType instead - faster
+   */
+  @Deprecated
+  public abstract TOP_Type getType(TOP instance);
+
 
   /**
    * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which

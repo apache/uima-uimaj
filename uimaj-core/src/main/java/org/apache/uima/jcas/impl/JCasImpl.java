@@ -61,6 +61,7 @@ import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 // *********************************
@@ -244,6 +245,25 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   TypeSystemImpl getTypeSystemImpl() {
     return casImpl.getTypeSystemImpl();
   }
+  
+  /*
+   * @see org.apache.uima.jcas.JCas#getType(int)
+   */
+  public TOP_Type getType(final int i) {
+    throw new UnsupportedOperationException("UIMA V2 operation not supported in V3");
+//    if (i >= typeArray.length || null == typeArray[i]) {
+//      getTypeInit(i); 
+//    }
+//    return typeArray[i];
+  }
+
+  /*
+   * @see org.apache.uima.jcas.JCas#getType(org.apache.uima.jcas.cas.TOP)
+   */
+  public TOP_Type getType(TOP instance) {
+    return getType(instance.getTypeIndexID());
+  }
+
   
   /*
    * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which
