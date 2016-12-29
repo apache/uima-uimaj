@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.jcas.cas;
+package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.cas.AnnotationBaseFS;
 
 /**
- * For backwards compatibility only with V2
+ * For backwards compatibility only with V2 *
+ * @deprecated use AnnotationBase instead
  */
-public interface AnnotationImpl extends AnnotationFS {
+@Deprecated
+public interface AnnotationBaseImpl extends AnnotationBaseFS {
 
 }

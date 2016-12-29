@@ -20,6 +20,7 @@
 package org.apache.uima.jcas.tcas;
 
 import org.apache.uima.cas.admin.LinearTypeOrder;
+import org.apache.uima.cas.impl.AnnotationImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -27,7 +28,6 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
-import org.apache.uima.jcas.cas.AnnotationImpl;
 
 /**
  * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features

@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.jcas.cas;
+package org.apache.uima.cas.impl;
 
-import org.apache.uima.cas.CommonArrayFS;
+import org.apache.uima.cas.text.AnnotationFS;
 
 /**
- * For v2 backwards compatibility
+ * For backwards compatibility only with V2
+ * @deprecated
  */
-public interface CommonArrayFSImpl extends CommonArrayFS {
-  
+@Deprecated
+public interface AnnotationImpl extends AnnotationFS {
+
 }

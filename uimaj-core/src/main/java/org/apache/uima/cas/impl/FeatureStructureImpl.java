@@ -26,7 +26,9 @@ import org.apache.uima.cas.FeatureStructure;
  * Methods here downcast to FeatureStructureImplC
  * 
  * Methods here - only those not in v2's FeatureStructure
+ * @deprecated use TOP instead
  */
+@Deprecated
 public interface FeatureStructureImpl extends FeatureStructure {
 
   int getAddress(); 

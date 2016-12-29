@@ -22,8 +22,10 @@ import org.apache.uima.cas.BooleanArrayFS;
 
 /**
  * V2 compatibility only
- * The non-JCas cover class for String Array
+ * The non-JCas cover class for Boolean Array
+ * @deprecated use BooleanARray instead
  */
+@Deprecated
 public interface BooleanArrayFSImpl extends BooleanArrayFS {
   
 }

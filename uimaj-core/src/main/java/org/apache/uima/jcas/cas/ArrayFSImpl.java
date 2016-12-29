@@ -23,7 +23,9 @@ import org.apache.uima.cas.ArrayFS;
 /**
  * For backwards compatibility with V2, only
  * Only has methods not in ArrayFS or CommonArrayFSImpl
+ * @deprecated use FSArray instead
  */
+@Deprecated
 public interface ArrayFSImpl extends ArrayFS {
   
 }
