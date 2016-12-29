@@ -27,28 +27,36 @@ under the License.
   <title>Backwards Compatibility</title>
   <titleabbrev>Backwards Compatibility</titleabbrev>
   
-  <para>The UIMA project realizes that many users have made substantial investment in developing
-  applications using this framework.  One of our goals is to protect this investment, by enabling
+  <para>Because users have made substantial investment in developing
+  applications using the UIMA framework, a goal is to protect this investment, by enabling
   Annotators and applications developed under previous versions to be able to be used in 
   subsequent versions of the framework.</para>
   
-  <para>To this end, version 3 is designed to be backwards compatible, except for needing a new set of JCas classes (if these were
-  previously being used).  There is a migration tool to handle the upgrading of the JCas classes, described in
-  a later chapter.
+  <para>To this end, version 3 is designed to be backwards compatible, 
+  except for needing a new set of JCas classes (if these were
+  previously being used).  The creation of this new set of JCas classes is mostly automated via a 
+  migration tool that handles converting the existing JCas classes, described in a later chapter.
   </para>
   
   <section id="uv3.backwards_compatibility.jcas">  
     <title>JCas and non-JCas APIs</title>
 
-    <para>The JCas class changes include no longer needing, using, or supporting the <code>Xyz_Type</code>
-      sister classes for each main JCas class.  Methods in the JCas API that gave access to these class instances
-      have been removed.  New internal-use methods and fields have been added to the JCas classes.  The 
+    <para>The JCas class changes include no longer needing or using the <code>Xyz_Type</code>
+      sister classes for each main JCas class.  User code is unlikely to access these sister classes.
+      The JCas API method to access this sister class now throws a UnsupportedOperation exception.
+    </para>
+    
+    <para>
+      New internal-use methods and fields have been added to the JCas classes.  The 
       names for these have been carefully designed to reduce the likelihood of collision with previously
       existing user code names; the usual technique is to start the names with a leading underscore character.
       Users should consider these methods as internal use and subject to change with new releases.
     </para>
     
     <para>The non-JCas Java cover classes for the built-in UIMA types remain, for backwards compatibility.
+      So, if you have code that casts a Feature Structure instance to AnnotationImpl (a now deprecated 
+      version 2 non-JCas Java cover class), that will continue to work.
+      
       </para>
   </section>
   
