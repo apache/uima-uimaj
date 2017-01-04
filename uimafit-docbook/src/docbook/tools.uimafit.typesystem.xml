@@ -62,6 +62,13 @@
     </note>
   </section>
   <section>
+    <title>Making index definitions and type priorities auto-detectable</title>
+    <para>Auto-detection also works for index definitions and type priority definitions. For
+    index definitions, the respective file where to register the index definition XML files is
+    <filename>META-INF/org.apache.uima.fit/fsindexes.txt</filename> and for type priorities, it
+    is <filename>META-INF/org.apache.uima.fit/typepriorities.txt</filename>.</para>
+  </section>
+  <section>
     <title>Using type auto-detection </title>
     <para>The auto-detected type system can be obtained from the
         <classname>TypeSystemDescriptionFactory</classname>:</para>
@@ -72,7 +79,7 @@
   </section>
   <section>
     <title>Multiple META-INF/org.apache.uima.fit/types.txt files</title>
-    <para>uimaFIT supports multiple `types.txt` files in the classpath (e.g. in differnt JARs). The
+    <para>uimaFIT supports multiple <filename>types.txt</filename> files in the classpath (e.g. in differnt JARs). The
         <filename>types.txt</filename> files are located via Spring using the classpath search
       pattern: </para>
     <programlisting>TYPE_MANIFEST_PATTERN = "classpath*:META-INF/org.apache.uima.fit/types.txt" </programlisting>
