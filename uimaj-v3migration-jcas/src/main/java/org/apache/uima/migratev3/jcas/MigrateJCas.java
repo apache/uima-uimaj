@@ -477,16 +477,20 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-      
-    System.out.format("replacing .class files in %,d %s%n", pearsOrJars.size(), kind);
-    for (PearOrJar p : pearsOrJars) {
-      pearOrJarPostProcessing(p, kind);
-    }
-    try {
-      reportPaths("Reports of updated " + kind, kind + "FileUpdates.txt", classReplace);
-     
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    
+    if (pearsOrJars.size() == 0) {
+      System.out.format("No .class files were replaced in %s%n.", kind);
+    } else {
+      System.out.format("replacing .class files in %,d %s%n", pearsOrJars.size(), kind);
+      for (PearOrJar p : pearsOrJars) {
+        pearOrJarPostProcessing(p, kind);
+      }
+      try {
+        reportPaths("Reports of updated " + kind, kind + "FileUpdates.txt", classReplace);
+       
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
     
   }
