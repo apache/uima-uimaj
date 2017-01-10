@@ -56,7 +56,7 @@ public class EclipseAnnotationPeer extends org.eclipse.jface.text.source.Annotat
    */
   @Override
   public int hashCode() {
-    return annotation.hashCode();
+    return annotation._id();
   }
   
   /* (non-Javadoc)

@@ -142,7 +142,7 @@ public class AnnotationTreeNode implements IAdaptable {
 //    result = PRIME * result + (mChildren == null ? 0 : mChildren.hashCode());
 //    result = PRIME * result + (mParent == null ? 0 : mParent.hashCode());
     
-    return mAnnotation.hashCode();
+    return mAnnotation._id();
   }
 
   /* (non-Javadoc)

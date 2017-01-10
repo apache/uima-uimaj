@@ -67,7 +67,7 @@ public final class FeatureStructureLabelProvider implements ILabelProvider {
       }
 
       return structure.getType().getShortName() + " (id=" +
-      		((TOP) structure).getAddress() + ")";
+      		((TOP) structure)._id() + ")";
     }
     else {
       assert false : "Unexpected element!";
