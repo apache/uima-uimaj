@@ -307,6 +307,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   
   /** Index "{0}" must be an AnnotationIndex. */ 
   public static final String ANNOTATION_INDEX_REQUIRED = "ANNOTATION_INDEX_REQUIRED";
+  
+  /** Subiterator {0} has bound type: {1}, begin: {2}, end: {3}, for coveredBy, not using type priorities, matching FS with same begin end and different type {4}, cannot order these*/
+  public static final String SUBITERATOR_AMBIGUOUS_POSITION_DIFFERENT_TYPES = "SUBITERATOR_AMBIGUOUS_POSITION_DIFFERENT_TYPES";
   /**
    * The constructors are organized
    * 
