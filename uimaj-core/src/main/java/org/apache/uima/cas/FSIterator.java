@@ -94,7 +94,9 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * Throws various unchecked exceptions, if the iterator is not valid
    * @return The structure the iterator is pointing at.
    */
-  T getNvc();
+  default T getNvc() {
+    return get();
+  }
   
   /**
    * Advance the iterator. This may invalidate the iterator.
@@ -105,7 +107,9 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   /**
    * version of moveToNext which bypasses the isValid check - call only if you've just done this check yourself
    */
-  void moveToNextNvc();
+  default void moveToNextNvc() {
+    moveToNext();
+  }
   
   /**
    * Move the iterator one element back. This may invalidate the iterator.
@@ -116,7 +120,9 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   /**
    * version of moveToPrevious which bypasses the isValid check - call only if you've just done this check yourself
    */
-  void moveToPreviousNvc();
+  default void moveToPreviousNvc() {
+    moveToPrevious();
+  }
 
   /**
    * Move the iterator to the first element. The iterator will be valid iff the underlying
