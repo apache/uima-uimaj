@@ -130,8 +130,7 @@ public interface FSIndexRepository {
   
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
-   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
-   * are not removed.
+   * subtypes).  The elements are returned in arbitrary order.
    *
    * Generics: T is the Java class for aType.
    * @param aType
