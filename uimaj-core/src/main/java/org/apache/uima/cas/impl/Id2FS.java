@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.impl.JCasHashMap;
 
 /**
  * A map from ints representing FS id's (or "addresses") to those FSs
@@ -38,6 +38,8 @@ import org.apache.uima.jcas.cas.TOP;
  * 
  * Removes not supported; they happen when the map is reset / cleared
  * This corresponds to the v2 property of "once created, a FS cannot be reclaimed (until reset)"
+ * 
+ * Threading: to support read-only views, concurrent with updates, needs to be thread safe
  */
 public class Id2FS {
   static final boolean MEASURE = false;
@@ -54,12 +56,12 @@ public class Id2FS {
 //  public static final boolean IS_DISABLE_FS_GC =   // true || // disabled due to performance
 //      Misc.getNoValueSystemProperty(DISABLE_FS_GC);
   
-  final private Int2ObjHashMap<TOP> id2fs;
+  final private JCasHashMap id2fs;
   final private int initialSize;
     
   public Id2FS(int initialHeapSize) {
     this.initialSize = Math.max(32, initialHeapSize >> 4);  // won't shrink below this
-    id2fs = new Int2ObjHashMap(TOP.class, initialSize); 
+    id2fs = new JCasHashMap(initialSize); 
   }
 
   void put(int id, TOP fs) {
@@ -118,13 +120,9 @@ public class Id2FS {
 //  }
        
   int size() {
-    return id2fs.size(); 
+    return id2fs.getApproximateSize(); 
   }
-  
-  Int2ObjHashMap<TOP> getId2fs() {
-    return id2fs;
-  }
-  
+    
   /**
    * adjusts the underlying array down in size if grew beyond the reset heap size value
    */
