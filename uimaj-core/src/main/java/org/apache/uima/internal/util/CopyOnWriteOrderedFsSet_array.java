@@ -30,7 +30,6 @@ import java.util.stream.Stream;
 
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.internal.util.OrderedFsSet_array;
 
 /**
  * implements OrderedFsSet_array partially, for iterator use
@@ -51,10 +50,11 @@ public class CopyOnWriteOrderedFsSet_array implements NavigableSet<TOP>, CopyOnW
 
   /**
    * Called by index when about to make an update
+   * This copy captures the state of things before the update happens
    */
   @Override
-  public void makeCopy() {
-    set = new OrderedFsSet_array(set);
+  public void makeReadOnlyCopy() {
+    set = new OrderedFsSet_array(set, true); // true = make read only copy
   }
 
   /**

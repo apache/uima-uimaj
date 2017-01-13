@@ -41,8 +41,8 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
    * Called by index when about to make an update
    */
   @Override
-  public void makeCopy() {
-    ohs = new ObjHashSet<>(ohs);
+  public void makeReadOnlyCopy() {
+    ohs = new ObjHashSet<>(ohs, true); // true - read-only copy
   }
   
   /*****************************************************
