@@ -5610,4 +5610,20 @@ public Marker createMarker() {
     }
     return b;
   }
+  
+  static {
+
+    // this is definitely needed
+    if (traceFSs) {
+      Runtime.getRuntime().addShutdownHook(new Thread(null, new Runnable() {
+          @Override
+          public void run() {
+            System.out.println("closing traceOut");
+            traceOut.close();
+          }
+        }, "close trace output"));
+    }
+  }
+  
+  
 }
