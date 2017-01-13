@@ -64,6 +64,7 @@ public class ObjHashSet<T> implements Set<T> {
   
   // the actual Object table, operated as a hashtable
   private T [] keys;
+  private T [] emptyKeyArray = null;  
 
   private boolean secondTimeShrinkable = false;
   
@@ -109,7 +110,31 @@ public class ObjHashSet<T> implements Set<T> {
     this.modificationCount = ohs.modificationCount;
   }
   
+
+  public ObjHashSet(ObjHashSet<T> ohs, boolean readOnly) {
+    if (!readOnly) Misc.internalError();
+    this.removedMarker = ohs.removedMarker;
+    this.clazz = ohs.clazz;
+    this.initialCapacity = ohs.initialCapacity;
+    this.histogram = ohs.histogram;
+    this.maxProbe = ohs.maxProbe;
+    this.sizeWhichTriggersExpansion = ohs.sizeWhichTriggersExpansion;
+    this.size = ohs.size;
+    this.nbrRemoved = ohs.nbrRemoved;
+    this.keys = (size == 0) ? emptyKeyArray() : ohs.keys.clone();
+    this.secondTimeShrinkable = ohs.secondTimeShrinkable;
+    this.modificationCount = ohs.modificationCount;
+  }
+
+  private T[] emptyKeyArray() {
+    if (emptyKeyArray == null) {
+      emptyKeyArray = (T[]) Array.newInstance(clazz, 1);
+    }
+    return emptyKeyArray;
+  }
+  
   private void newTableKeepSize(int capacity) {
+    capacity = Misc.nextHigherPowerOf2(capacity);
     keys = (T[]) Array.newInstance(clazz, capacity);
     sizeWhichTriggersExpansion = (int)(capacity * loadFactor);
     nbrRemoved = 0;
@@ -451,6 +476,9 @@ public class ObjHashSet<T> implements Set<T> {
 
     @Override
     public final T next() {
+      if (curPosition >= getCapacity()) {
+        throw new NoSuchElementException();
+      }
       try {
         T r = get(curPosition);
         curPosition = moveToNextFilled(curPosition + 1);
@@ -523,7 +551,7 @@ public class ObjHashSet<T> implements Set<T> {
     final int s = size();
     if (s == 0) {
       if (a.length >= 1) { 
-        a[0] = null;
+        a[0] = null;  // part of the contract of toArray, where the array a size is > 
       }
       return a;
     }
@@ -535,7 +563,7 @@ public class ObjHashSet<T> implements Set<T> {
       pos = moveToNextFilled(pos + 1);
     }
     if (a.length > s) {
-      r[s] = null;
+      r[s] = null; // part of the contract of toArray, where the array a size is > 
     }
     return r;
   }
