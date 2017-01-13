@@ -37,7 +37,7 @@ import org.apache.uima.internal.util.Misc;
  *  
  * @param <T> the Java class type for this index
  */
-public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> implements CopyOnWriteIndexPart {
+public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype<T> {
 
   // The index, an array.
   final private FeatureStructure[] indexedFSs;
@@ -185,16 +185,16 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
     Misc.internalError();  // should never be called
-    return this;
+    return null;  // no copy on write index part implemented for this kind
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#makeCopy()
-   */
-  @Override
-  public void makeCopy() {
-    Misc.internalError(); // should never be called
-  }
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#makeCopy()
+//   */
+//  @Override
+//  public void makeReadOnlyCopy() {
+//    Misc.internalError(); // should never be called
+//  }
   
   @Override
   public int ll_maxAnnotSpan() {

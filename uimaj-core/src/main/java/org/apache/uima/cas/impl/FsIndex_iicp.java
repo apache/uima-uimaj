@@ -459,7 +459,7 @@ class FsIndex_iicp<T extends FeatureStructure>
            ? (FSIterator<T>) fsIndex_singletype.iterator()
            : fsIndex_singletype.isSorted()
              ? new FsIterator_subtypes_ordered<T>(this)
-             : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).iterators, fsIndex_singletype);
+             : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype);
   } 
   
   public FSIterator<T> iteratorUnordered() {
@@ -467,7 +467,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     
     return (cachedSubFsLeafIndexes.length == 1)
            ? (FSIterator<T>) fsIndex_singletype.iterator()
-           : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).iterators, fsIndex_singletype); 
+           : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype); 
   }
 
   /**

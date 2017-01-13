@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
@@ -38,7 +39,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   // in UIMA we can use, say an Annotation instance as a moveTo arg, for a navSet of some subtype of Annotation.
   private NavigableSet<TOP> navSet;  // == fsSortIndex.getNavigableSet()
   
-  final protected FsIndex_set_sorted<T> fsSetSortIndex;  // only for ll_getIndex, backwards compatibility
+  final protected FsIndex_set_sorted<T> fsSetSortIndex;  // for copy-on-write management, ll_getIndex, backwards compatibility
   
   private T currentElement;
   
@@ -99,14 +100,14 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
       if (isCurrentElementFromLastGet) {
         isCurrentElementFromLastGet = false;
       } else {
-        checkConcurrentModification();
+        maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
         currentElement = iterator.next();
         // leave isCurrentElementFromLastGet false because we just moved to next, but haven't retrieved that value
       } 
     } else {
       //reverse direction
       if (!isCurrentElementFromLastGet) {
-        checkConcurrentModification();
+        maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
         currentElement = iterator.next();  // need current value to do reverse iterator starting point
       }
       assert(currentElement != null);
@@ -132,14 +133,14 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
       if (isCurrentElementFromLastGet) {
         isCurrentElementFromLastGet = false;
       } else {
-        checkConcurrentModification();
+        maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
         currentElement = iterator.next();
         // leave isCurrentElementFromLastGet false
       } 
     } else {
       //reverse direction
       if (!isCurrentElementFromLastGet) {
-        checkConcurrentModification();
+        maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
         currentElement = iterator.next();  // need current value to do reverse iterator starting point
       }
       assert(currentElement != null);
@@ -154,18 +155,18 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     if (!isValid()) {
       throw new NoSuchElementException();
     }
-    if (!isCurrentElementFromLastGet) {
-      checkConcurrentModification(); 
+    if (!isCurrentElementFromLastGet) {      
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
     }
+    maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet); 
     return currentElement;
   }
 
   @Override
   public T getNvc() {
     if (!isCurrentElementFromLastGet) {
-      checkConcurrentModification();
+      maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
     }
@@ -231,7 +232,7 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
     resetConcurrentModification(); // follow create of iterator, which, in turn, does any pending batch processing
     return;
   }
-  
+    
   @Override
   public int ll_indexSize() {
     return navSet.size();
@@ -254,5 +255,14 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   protected int getModificationCountFromIndex() {
     return ((CopyOnWriteOrderedFsSet_array)navSet).getModificationCount();
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
+   */
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return navSet != fsSetSortIndex.getCopyOnWriteIndexPart();
+  }
+
 }
 

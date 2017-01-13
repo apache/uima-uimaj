@@ -213,6 +213,9 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
+    if (CASImpl.traceCow) {
+      this.casImpl.traceCowCopy(this);
+    }
     return new CopyOnWriteObjHashSet<TOP>(index);
   }
   

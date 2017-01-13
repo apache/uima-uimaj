@@ -189,4 +189,13 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
         ? (fs1.equals(fs2) ? 0 : -1)
         : this.indexForComparator.compare(fs1, fs2);
   }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
+   */
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return false;
+  }
+
 }

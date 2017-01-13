@@ -24,7 +24,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.internal.util.Misc;
 
 /**
  * Performs an ordered iteration among a set of iterators, each one corresponding to
@@ -52,7 +51,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp) {
     super(iicp);
     this.comparator = iicp.fsIndex_singletype;
-    moveToFirst();
+    moveToStart();
   } 
   
   /**
@@ -61,13 +60,22 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   @Override
   public void moveToFirst() {
+    if (firstChangedEmptyIterator() >= 0) {
+      this.nonEmptyIterators = initIterators();
+    }
+    // no need to call isIndexesHaveBeenUpdated because
+    // there's no state in this iterator that needs updating.
+    moveToStart();
+  }
+  
+  private void moveToStart() {
     
-    int lvi = this.iterators.length - 1;
+    int lvi = this.nonEmptyIterators.length - 1;
     // Need to consider all iterators.
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
-      final FsIterator_singletype<T> it = this.iterators[i];
+      final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
       it.moveToFirst();
       if (it.isValid()) {
         heapify_up(it, i, 1);
@@ -75,8 +83,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       } else {
         // swap this iterator with the last possibly valid one
         // lvi might be equal to i, this will not be a problem
-        this.iterators[i] = this.iterators[lvi];
-        this.iterators[lvi] = it;
+        this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
+        this.nonEmptyIterators[lvi] = it;
         --lvi;
       }
     }
@@ -87,12 +95,18 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   @Override
   public void moveToLast() {
-    int lvi = this.iterators.length - 1;
+    if (firstChangedEmptyIterator() >= 0) {
+      this.nonEmptyIterators = initIterators();
+    }
+    // no need to call isIndexesHaveBeenUpdated because
+    // there's no state in this iterator that needs updating.
+    
+    int lvi = this.nonEmptyIterators.length - 1;
     // Need to consider all iterators.
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
-      final FsIterator_singletype<T> it = this.iterators[i];
+      final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
       it.resetConcurrentModification();
       it.moveToLast();
       if (it.isValid()) {
@@ -101,8 +115,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       } else {
         // swap this iterator with the last possibly valid one
         // lvi might be equal to i, this will not be a problem
-        this.iterators[i] = this.iterators[lvi];
-        this.iterators[lvi] = it;
+        this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
+        this.nonEmptyIterators[lvi] = it;
         --lvi;
       }
     }
@@ -117,10 +131,10 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       return;
     }
 
-    final FsIterator_singletype<T> it0 = iterators[0].checkConcurrentModification();
+    final FsIterator_singletype<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
 
     if (this.wentForward) {
-      it0.moveToNext();
+      it0.moveToNextNvc();
       heapify_down(it0, 1);
     } else {
       moveToNextCmn(it0);
@@ -129,7 +143,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 
   @Override
   public void moveToNextNvc() {
-    final FsIterator_singletype<T> it0 = iterators[0].checkConcurrentModification();
+    final FsIterator_singletype<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
 
     if (this.wentForward) {
       it0.moveToNextNvc();
@@ -141,13 +155,13 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 
   private void moveToNextCmn(final FsIterator_singletype<T> it0) {
     // We need to increment everything.
-    int lvi = this.iterators.length - 1;
+    int lvi = this.nonEmptyIterators.length - 1;
     int i = 1;
     while (i <= lvi) {
       // Any iterator other than the current one needs to be
       // incremented until it's pointing at something that's
       // greater than the current element.
-      final FsIterator_singletype<T> it = iterators[i].checkConcurrentModification();
+      final FsIterator_singletype<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
       // If the iterator we're considering is not valid, we
       // set it to the first element. This should be it for this iterator...
       if (!it.isValid()) {
@@ -166,8 +180,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       } else {
         // swap this iterator with the last possibly valid one
         // lvi might be equal to i, this will not be a problem
-        this.iterators[i] = this.iterators[lvi];
-        this.iterators[lvi] = it;
+        this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
+        this.nonEmptyIterators[lvi] = it;
         --lvi;
       }
     }
@@ -191,20 +205,20 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   @Override
   public void moveToPreviousNvc() {
-    final FsIterator_singletype<T> it0 = iterators[0].checkConcurrentModification();
+    final FsIterator_singletype<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
     if (!this.wentForward) {
-      it0.moveToPrevious();
+      it0.moveToPreviousNvc();
       // this also takes care of invalid iterators
       heapify_down(it0, -1);
     } else {
       // We need to decrement everything.
-      int lvi = this.iterators.length - 1;
+      int lvi = this.nonEmptyIterators.length - 1;
       int i = 1;
       while (i <= lvi) {
         // Any iterator other than the current one needs to be
         // decremented until it's pointing at something that's
         // smaller than the current element.
-        final FsIterator_singletype<T> it = iterators[i].checkConcurrentModification();
+        final FsIterator_singletype<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
         // If the iterator we're considering is not valid, we
         // set it to the last element. This should be it for this iterator...
         if (!it.isValid()) {
@@ -223,8 +237,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
         } else {
           // swap this iterator with the last possibly valid one
           // lvi might be equal to i, this will not be a problem
-          this.iterators[i] = this.iterators[lvi];
-          this.iterators[lvi] = it;
+          this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
+          this.nonEmptyIterators[lvi] = it;
           --lvi;
         }
       }
@@ -287,25 +301,25 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 
     while (idx > SORTED_SECTION) {
       nidx = (idx + SORTED_SECTION - 1) >> 1;
-      if (!is_before(it, this.iterators[nidx], dir)) {
-        this.iterators[idx] = it;
+      if (!is_before(it, this.nonEmptyIterators[nidx], dir)) {
+        this.nonEmptyIterators[idx] = it;
         return;
       }
-      this.iterators[idx] = this.iterators[nidx];
+      this.nonEmptyIterators[idx] = this.nonEmptyIterators[nidx];
       idx = nidx;
     }
 
     while (idx > 0) {
       nidx = idx - 1;
-      if (!is_before(it, this.iterators[nidx], dir)) {
-        this.iterators[idx] = it;
+      if (!is_before(it, this.nonEmptyIterators[nidx], dir)) {
+        this.nonEmptyIterators[idx] = it;
         return;
       }
-      this.iterators[idx] = this.iterators[nidx];
+      this.nonEmptyIterators[idx] = this.nonEmptyIterators[nidx];
       idx = nidx;
     }
 
-    this.iterators[idx] = it;
+    this.nonEmptyIterators[idx] = it;
   }
 
   /**
@@ -323,20 +337,20 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 //    }
 
     if (!it.isValid()) {
-      final FsIterator_singletype<T> itl = this.iterators[this.lastValidIndex].checkConcurrentModification();
-      this.iterators[this.lastValidIndex] = it;
-      this.iterators[0] = itl;
+      final FsIterator_singletype<T> itl = this.nonEmptyIterators[this.lastValidIndex]/*.checkConcurrentModification()*/;
+      this.nonEmptyIterators[this.lastValidIndex] = it;
+      this.nonEmptyIterators[0] = itl;
       --this.lastValidIndex;
       it = itl;
     }
 
     final int num = this.lastValidIndex;
-    if ((num < 1) || !is_before(this.iterators[1].checkConcurrentModification(), it, dir)) {
+    if ((num < 1) || !is_before(this.nonEmptyIterators[1]/*.checkConcurrentModification()*/, it, dir)) {
       return;
     }
 
     int idx = 1;
-    this.iterators[0] = this.iterators[1];
+    this.nonEmptyIterators[0] = this.nonEmptyIterators[1];
     final int end = Math.min(num, SORTED_SECTION);
     int nidx = idx + 1;
 
@@ -345,11 +359,11 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // in case of a concurrent modification
     try {
       while (nidx <= end) {
-        if (!is_before(this.iterators[nidx].checkConcurrentModification(), it, dir)) {
+        if (!is_before(this.nonEmptyIterators[nidx]/*.checkConcurrentModification()*/, it, dir)) {
           return; // passes through finally
         }
 
-        this.iterators[idx] = this.iterators[nidx];
+        this.nonEmptyIterators[idx] = this.nonEmptyIterators[nidx];
         idx = nidx;
         nidx = idx + 1;
       }
@@ -357,21 +371,21 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       nidx = SORTED_SECTION + 1;
       while (nidx <= num) {
         if ((nidx < num)
-            && is_before(this.iterators[nidx+1].checkConcurrentModification(),
-                this.iterators[nidx].checkConcurrentModification(), dir)) {
+            && is_before(this.nonEmptyIterators[nidx+1]/*.checkConcurrentModification()*/,
+                this.nonEmptyIterators[nidx]/*.checkConcurrentModification()*/, dir)) {
           ++nidx;
         }
 
-        if (!is_before(this.iterators[nidx], it, dir)) {
+        if (!is_before(this.nonEmptyIterators[nidx], it, dir)) {
           return;
         }
 
-        this.iterators[idx] = this.iterators[nidx];
+        this.nonEmptyIterators[idx] = this.nonEmptyIterators[nidx];
         idx = nidx;
         nidx = (nidx << 1) - (SORTED_SECTION - 1);
       }
     } finally {
-      this.iterators[idx] = it;
+      this.nonEmptyIterators[idx] = it;
     }
   }
 
@@ -391,7 +405,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     if (!isValid()) {
       throw new NoSuchElementException();
     }
-    return iterators[0].checkConcurrentModification().get();
+    return getNvc();
   }
 
   /* (non-Javadoc)
@@ -399,7 +413,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public T getNvc() throws NoSuchElementException {
-    return iterators[0].checkConcurrentModification().get();
+    return nonEmptyIterators[0]/*.checkConcurrentModification()*/.get();
   }
 
   /* (non-Javadoc)
@@ -407,12 +421,18 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public void moveTo(FeatureStructure fs) {
-    int lvi = this.iterators.length - 1;
+    if (firstChangedEmptyIterator() >= 0) {
+      this.nonEmptyIterators = initIterators();
+    }
+    // no need to call isIndexesHaveBeenUpdated because
+    // there's no state in this iterator that needs updating.
+
+    int lvi = this.nonEmptyIterators.length - 1;
     // Need to consider all iterators.
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
-      final FsIterator_singletype<T> it = this.iterators[i];
+      final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
       it.moveTo(fs);
       if (it.isValid()) {
         heapify_up(it, i, 1);
@@ -420,8 +440,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       } else {
         // swap this iterator with the last possibly valid one
         // lvi might be equal to i, this will not be a problem
-        this.iterators[i] = this.iterators[lvi];
-        this.iterators[lvi] = it;
+        this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
+        this.nonEmptyIterators[lvi] = it;
         --lvi;
       }
     }

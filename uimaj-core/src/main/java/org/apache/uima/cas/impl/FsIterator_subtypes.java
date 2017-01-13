@@ -44,14 +44,6 @@ public abstract class FsIterator_subtypes<T extends FeatureStructure> implements
     return iicp;
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
-   */
-  @Override
-  public int ll_indexSize() {
-    return iicp.size();
-  }
-
   @Override
   public int ll_maxAnnotSpan() {
     return iicp.ll_maxAnnotSpan();

@@ -243,6 +243,9 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
+    if (CASImpl.traceCow) {
+      this.casImpl.traceCowCopy(this);
+    }
     return new CopyOnWriteOrderedFsSet_array(indexedFSs);
   }
   

@@ -58,12 +58,20 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
 
   protected abstract int getModificationCountFromIndex();
   
-  final protected <I extends FSIterator<T>> I checkConcurrentModification() {
-    if (modificationSnapshot != getModificationCountFromIndex()) {
-//    if ((null != detectIllegalIndexUpdates) && (modificationSnapshot != detectIllegalIndexUpdates[typeCode])) {
-      throw new ConcurrentModificationException();
+//  final protected <I extends FSIterator<T>> I checkConcurrentModification() {
+//    if (modificationSnapshot != getModificationCountFromIndex()) {
+////    if ((null != detectIllegalIndexUpdates) && (modificationSnapshot != detectIllegalIndexUpdates[typeCode])) {
+//      throw new ConcurrentModificationException();
+//    }
+//    return (I) this;
+//  }
+  
+  protected void maybeTraceCowUsingCopy(FsIndex_singletype<?> idx, CopyOnWriteIndexPart iteratorCopy) {
+    if (CASImpl.traceCow) {
+      if (idx.getCopyOnWriteIndexPart() != iteratorCopy) {
+        idx.casImpl.traceCowCopyUse(idx);
+      }
     }
-    return (I) this;
   }
   
   protected void resetConcurrentModification() {  

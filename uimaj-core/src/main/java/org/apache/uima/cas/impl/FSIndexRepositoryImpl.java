@@ -1215,6 +1215,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public void removeFS(FeatureStructure fs) {
     removeFS_ret((TOP) fs, INCLUDE_BAG_INDEXES);
+    if (fs instanceof AnnotationBase) {
+      // fs can only be in 1 view, and has been removed from *all* indexes in that view
+      ((FeatureStructureImplC)fs)._resetInSetSortedIndex(); 
+    }
   }
 
   public void removeFS(int fsRef) {
@@ -1272,6 +1276,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     // https://issues.apache.org/jira/browse/UIMA-4099
     // skip test for wrong view if addback, etc.
+    
+    if (CASImpl.traceCow) {
+      fs._casView.traceIndexMod(true, fs, isAddback);
+    }
  
     if (!isAddback && (!IS_DISABLE_ENHANCED_WRONG_INDEX_CHECK) && ti.isAnnotationBaseType()) {
       Sofa sofa = ((AnnotationBase)fs).getSofa();
@@ -1415,6 +1423,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //          fs instanceof AnnotationBase) {  // means only indexed in this view 
 //        fs._resetInSetSortedIndex();     
 //      } 
+    }
+    if (CASImpl.traceCow) {
+      this.cas.traceIndexMod(false, fs, skipBagIndexes);
     }
     return wasRemoved;    
   }

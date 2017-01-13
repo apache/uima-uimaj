@@ -119,4 +119,12 @@ class FsIterator_limited<T extends FeatureStructure>
     return iterator.ll_getIndex();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
+   */
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return iterator.isIndexesHaveBeenUpdated();
+  }
+
 }

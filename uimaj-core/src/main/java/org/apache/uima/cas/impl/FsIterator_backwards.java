@@ -130,5 +130,12 @@ class FsIterator_backwards<T extends FeatureStructure>
     return new FsIterator_backwards<T>(it.copy());
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
+   */
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return it.isIndexesHaveBeenUpdated();
+  }
 
 }

@@ -54,7 +54,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public T get() {
-    checkConcurrentModification();
+//    checkConcurrentModification();
     if (isValid()) {
       return (T) bag.get(position);
     }
@@ -63,7 +63,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   @Override
   public T getNvc() {
-    checkConcurrentModification();
+//    checkConcurrentModification();
     return (T) bag.get(position);
   }
 
@@ -95,7 +95,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToNext() {
-    checkConcurrentModification(); 
+//    checkConcurrentModification(); 
     if (isValid()) {
       isGoingForward = true;
       position = bag.moveToNextFilled(++position);
@@ -104,7 +104,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
   
   @Override
   public void moveToNextNvc() {
-    checkConcurrentModification(); 
+//    checkConcurrentModification(); 
     isGoingForward = true;
     position = bag.moveToNextFilled(++position);
   }
@@ -115,7 +115,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToPrevious() {
-    checkConcurrentModification();
+//    checkConcurrentModification();
     if (isValid()) {
       isGoingForward = false;
       position = bag.moveToPreviousFilled(--position);
@@ -124,7 +124,7 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
 
   @Override
   public void moveToPreviousNvc() {
-    checkConcurrentModification();
+//    checkConcurrentModification();
     isGoingForward = false;
     position = bag.moveToPreviousFilled(--position);
   }
@@ -183,6 +183,13 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return bag.getModificationCount();
   }
 
-  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#isIndexesHaveBeenUpdated()
+   */
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    return bag != fsBagIndex.getCopyOnWriteIndexPart();
+  }
+
 }
 

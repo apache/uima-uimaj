@@ -27,7 +27,6 @@ import java.util.WeakHashMap;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.LinearTypeOrder;
@@ -78,7 +77,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   
   /**
    * common copy on write instance or null; starts out as null
-   * Iterator creation initializes (if not null).
+   * Iterator creation initializes (if null).
    * A subsequent Modification to index, if this is not null:
    *    call cow.makeCopy();
    *    set wr_cow = null
@@ -94,9 +93,10 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   @Override
   public String toString() {
     String kind = (indexType >= 0 && indexType < 4) ? indexTypes[indexType] : "Invalid";     
-    return this.getClass().getSimpleName() + " [type=" + type.getName() + ", kind=" + kind + "(" + indexType + ")]";
+    return this.getClass().getSimpleName() + 
+             "(" + kind + ")[" + type.getShortName() + "]";
   }
-
+  
   // never called
   // declared private to block external calls
   @SuppressWarnings("unused")
@@ -391,17 +391,32 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   }
 
   protected CopyOnWriteIndexPart getNonNullCow() {
+    CopyOnWriteIndexPart n = getCopyOnWriteIndexPart();
+    if (n != null) {
+      if (CASImpl.traceCow) {
+        this.casImpl.traceCowReinit("reuse", this);
+      }
+      return n;
+    }
+    
+    if (CASImpl.traceCow) {
+      this.casImpl.traceCowReinit("getNew", this);
+    }
+
+    // null means index updated since iterator was created, need to make new cow and use it
+    n = createCopyOnWriteIndexPart();  //new CopyOnWriteObjHashSet<TOP>(index);
+    wr_cow = new WeakReference<>(n);
+    return n;
+  }
+  
+  protected CopyOnWriteIndexPart getCopyOnWriteIndexPart() {
     if (wr_cow != null) {
       CopyOnWriteIndexPart n = wr_cow.get();
       if (n != null) {
         return n;
       }
     }
-    
-    // null means index updated since iterator was created, need to make new cow and use it
-    CopyOnWriteIndexPart n = createCopyOnWriteIndexPart();  //new CopyOnWriteObjHashSet<TOP>(index);
-    wr_cow = new WeakReference<>(n);
-    return n;
+    return null;
   }
   
   protected abstract CopyOnWriteIndexPart createCopyOnWriteIndexPart();
@@ -416,7 +431,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     if (wr_cow != null) {
       CopyOnWriteIndexPart v = wr_cow.get();
       if (v != null) {
-        v.makeCopy();
+        v.makeReadOnlyCopy();
       }
       wr_cow = null;
     }
@@ -424,6 +439,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   
   @Override
   public void flush() {
+    maybeCopy();
     wr_cow = null;
 //    casImpl.indexRepository.isUsedChanged = true;
   }

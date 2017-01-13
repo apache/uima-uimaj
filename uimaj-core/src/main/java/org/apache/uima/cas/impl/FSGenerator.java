@@ -19,14 +19,18 @@
 
 package org.apache.uima.cas.impl;
 
-import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.cas.FeatureStructure;
 
 /**
- * A Functional Interface for generating Java Feature Structures
+ * For backwards compatibility with Version 2 - unused in v3
+ * V3 has a functional interface equivalent, called FsGenerator3, 
+ * with a V3 style signature for createFS
+ * @param <T>
+ * @deprecated
  */
-@FunctionalInterface
-public interface FsGenerator {
-  
-  TOP createFS(TypeImpl typeImpl, CASImpl casImpl);
-  
+@Deprecated
+public interface FSGenerator<T extends FeatureStructure> {
+
+  T createFS(int addr, CASImpl cas);
+
 }
