@@ -598,7 +598,7 @@ public class IteratorTest extends TestCase {
           // types must be different
           assertFalse(a.getType().getName().equals(b.getType().getName()));
         }
-        if (a.hashCode() == b.hashCode()) {
+        if (a._id() == b._id()) {
           System.err.format("set Iterator: should not have 2 identical elements%n%s%n", it);
           assertTrue(false);
         }
@@ -611,11 +611,11 @@ public class IteratorTest extends TestCase {
 //       sb.append(String.format("%d %d debug: n=%d, type=%s, start=%d, end-%d%n",
 //           threadNumber,
 //           ii++,
-//           a.hashCode(),
+//           a._id(),
 //           a.getType().getName(),
 //           a.getBegin(),
 //           a.getEnd()));
-      v.add(it.get().hashCode());
+      v.add(it.get()._id());
       it.moveToNext();
     }
     // System.out.println("Number of annotations: " + v.size());
@@ -636,7 +636,7 @@ public class IteratorTest extends TestCase {
       // System.out.println(
       // a.getType().getName() + " - " + a.getStart() + " - " +
       // a.getEnd());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToPrevious();
       --current;
     }
@@ -654,13 +654,13 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
+      assertTrue(it.get()._id() == v.get(current + 1));
       it.moveToPrevious();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       ++current;
     }
 
@@ -668,7 +668,7 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = setIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
+      assertEquals(javaIt.next()._id(), v.get(current++));
     }
   }
   
@@ -814,7 +814,7 @@ public class IteratorTest extends TestCase {
         assertTrue(sortedIndex.compare(b, a) <= 0);
       }
       b = a;
-      int hc = a.hashCode();
+      int hc = a._id();
       v.add(hc);
 //      if ((hc % 2) == 1) {
         Thread.yield();
@@ -847,7 +847,7 @@ public class IteratorTest extends TestCase {
     // System.out.println(it.get());
     // for (int i = v.size() - 1; i >= 0; i--) {
     // assertTrue(it.isValid());
-    // assertTrue(it.get().hashCode() == v.get(i));
+    // assertTrue(it.get()._id() == v.get(i));
     // it.moveToPrevious();
     // }
 
@@ -862,13 +862,13 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
+      assertTrue(it.get()._id() == v.get(current + 1));
       it.moveToPrevious();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       ++current;
     }
 
@@ -876,7 +876,7 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = sortedIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
+      assertEquals(javaIt.next()._id(), v.get(current++));
     }
   
   }
@@ -905,7 +905,7 @@ public class IteratorTest extends TestCase {
 //        assertTrue(bagIndex.compare(b, a) <= 0);
 //      }
       b = a;
-      v.add(a.hashCode());
+      v.add(a._id());
       it.moveToNext();
     }
     assertTrue(bagIndex.size() == v.size());
@@ -917,7 +917,7 @@ public class IteratorTest extends TestCase {
 //        System.out.println("debug");
 //      }
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(i));
+      assertTrue(it.get()._id() == v.get(i));
       it.moveToPrevious();
     }
 
@@ -932,16 +932,16 @@ public class IteratorTest extends TestCase {
     while (current < (v.size() - 1)) {
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       it.moveToNext();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current + 1));
+      assertTrue(it.get()._id() == v.get(current + 1));
 //      if (current == 19) {
 //        System.out.println("debug");
 //      }
       it.moveToPrevious();
       assertTrue(it.isValid());
-      assertTrue(it.get().hashCode() == v.get(current));
+      assertTrue(it.get()._id() == v.get(current));
       ++current;
     }
 
@@ -949,7 +949,7 @@ public class IteratorTest extends TestCase {
     Iterator<FeatureStructure> javaIt = bagIndex.iterator();
     current = 0;
     while (javaIt.hasNext()) {
-      assertEquals(javaIt.next().hashCode(), v.get(current++));
+      assertEquals(javaIt.next()._id(), v.get(current++));
     }
 
     // Test iterator copy.
@@ -1128,7 +1128,23 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subbagIt, true);
     verifyMoveToFirst(subsortedIt, true);
     
+    // copy on write should prevent any change
+    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSize());
+    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSize());
+    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSize());
+    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSize());
+    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSize());
+    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSize());
+
     ir.removeAllIncludingSubtypes(sentenceType);
+    
+    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSize());
+    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSize());
+    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSize());
+    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSize());
+    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSize());
+    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSize());
+    
     verifyConcurrantModificationDetected(setIt);
     verifyConcurrantModificationDetected(bagIt);
     verifyConcurrantModificationDetected(sortedIt);
@@ -1188,10 +1204,13 @@ public class IteratorTest extends TestCase {
     } catch (Exception e) {
       caught = true;
     }
-    if (it.isValid()) {
-      it.isValid(); // debug
-      assertTrue(caught);  // v3: it becomes invalid
-    }
+    
+    assertFalse(caught); // because of copy-on-write
+    
+//    if (it.isValid()) {
+//      it.isValid(); // debug
+//      assertTrue(caught);  // v3: it becomes invalid
+//    }
 //    if (caught != true) {
 //      System.out.println("Debug");
 //    }
