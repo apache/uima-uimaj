@@ -24,6 +24,6 @@ package org.apache.uima.cas.impl;
  */
 public interface CopyOnWriteIndexPart {
   
-  void makeCopy();
+  void makeReadOnlyCopy();
   
 }
