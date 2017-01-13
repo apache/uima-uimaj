@@ -120,7 +120,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   /**
    * The callsite has the return type, followed by capture arguments
    */
-  private static final MethodType callsiteFsGenerator      = methodType(FsGenerator.class);
+  private static final MethodType callsiteFsGenerator      = methodType(FsGenerator3.class);
 //  private static final MethodType callsiteFsGeneratorArray = methodType(FsGeneratorArray.class);  // NO LONGER USED
   
   private static final MethodType fsGeneratorType      = methodType(TOP.class, TypeImpl.class, CASImpl.class);
@@ -151,7 +151,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    */
   public static class JCasClassInfo {
     
-    final FsGenerator generator;
+    final FsGenerator3 generator;
    
     /**
      * The corresponding loaded JCas Class
@@ -165,7 +165,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
      */
     final int jcasType;
         
-    JCasClassInfo(Class<?> jcasClass, FsGenerator generator, int jcasType) {
+    JCasClassInfo(Class<?> jcasClass, FsGenerator3 generator, int jcasType) {
       this.generator = generator;
       this.jcasClass = jcasClass;
       this.jcasType = jcasType;    // typeId for jcas class, **NOT Typecode**
@@ -460,7 +460,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @return a Functional Interface whose createFS method takes a casImpl 
    *         and when subsequently invoked, returns a new instance of the class
    */
-  private static FsGenerator createGenerator(Class<?> jcasClass) {
+  private static FsGenerator3 createGenerator(Class<?> jcasClass) {
     try {
       
       MethodHandle mh = lookup.findConstructor(jcasClass, findConstructorJCasCoverType);
@@ -473,7 +473,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           fsGeneratorType,  // samMethodType signature and return type of method impl by function object 
           mh,  // method handle to constructor 
           mtThisGenerator);
-      return (FsGenerator) callSite.getTarget().invokeExact();
+      return (FsGenerator3) callSite.getTarget().invokeExact();
     } catch (Throwable e) {
       if (e instanceof NoSuchMethodException) {
         String classname = jcasClass.getName();
@@ -605,7 +605,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     boolean noGenerator = ti.getCode() == TypeSystemConstants.sofaTypeCode ||
                           Modifier.isAbstract(jcasClass.getModifiers()) ||
                           ti.isArray(); 
-    FsGenerator generator = noGenerator ? null : createGenerator(jcasClass);
+    FsGenerator3 generator = noGenerator ? null : createGenerator(jcasClass);
     JCasClassInfo jcasClassInfo = new JCasClassInfo(jcasClass, generator, jcasType);
 //    System.out.println("debug creating jcci, classname = " + jcasClass.getName() + ", jcasTypeNumber: " + jcasType);
     return jcasClassInfo;
@@ -799,13 +799,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param tsi the type system being used
    * @return the generators for that set, as an array indexed by type code
    */
-  static FsGenerator[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear, TypeSystemImpl tsi) {
+  static FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear, TypeSystemImpl tsi) {
     synchronized(cl2type2JCas) {
       // This is the first time this class loader is being used - load the classes for this type system, or
       // This is the first time this class loader is being used with this particular type system
       loadAtTypeSystemCommitTime(tsi, true, cl);      
 
-      FsGenerator[] r = new FsGenerator[tsi.getTypeArraySize()];
+      FsGenerator3[] r = new FsGenerator3[tsi.getTypeArraySize()];
                           
       Map<String, JCasClassInfo> t2jcci = cl2type2JCas.get(cl);
       // can't use values alone because many types have the same value (due to copy-down)
@@ -817,15 +817,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         JCasClassInfo jcci = e.getValue();
         
         if (!isPear || jcci.isPearOverride(cl)) {
-          r[ti.getCode()] = (FsGenerator) jcci.generator;
+          r[ti.getCode()] = (FsGenerator3) jcci.generator;
         }      
       }
       return r;
     }   
   }
   
-  private static boolean isAllNull(FsGenerator[] r) {
-    for (FsGenerator v : r) {
+  private static boolean isAllNull(FsGenerator3[] r) {
+    for (FsGenerator3 v : r) {
       if (v != null)
         return false;
     }
