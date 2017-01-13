@@ -35,6 +35,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -467,7 +468,12 @@ public class JCasTest extends TestCase {
 				CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
 				TypeSystem ts2 = cas2.getTypeSystem();
 				JCas jcas2 = cas2.getJCas();
-				assertTrue(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
+				if (TypeSystemImpl.IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
+  				assertTrue(jcas.getCasType(Annotation.type).equals(jcas2.getCasType(Annotation.type)));
+  				assertFalse(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
+				} else {
+          assertTrue(jcas.getCasType(Annotation.type) == jcas2.getCasType(Annotation.type));
+				}
 			} catch (Exception e) {
 				checkOkMissingImport(e);
 			}
