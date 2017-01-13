@@ -61,6 +61,7 @@ public class JCasHashMapCompareTest extends TestCase {
     int numberOfThreads =  Utilities.numberOfCores; 
     numberOfThreads = Math.min(8, Utilities.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.
     System.out.format("test JCasHashMapComp with %d threads%n", numberOfThreads);
+    for (int i = 0; i < 3; i++) {
     runCustom(numberOfThreads);
     runConCur(numberOfThreads);
     runCustom(numberOfThreads*2);
@@ -75,7 +76,7 @@ public class JCasHashMapCompareTest extends TestCase {
       assertEquals(e.getValue().getAddress(), (int)(e.getKey()));
       ints.add(e.getKey());
     }
-    
+    }
 //    System.out.println("Found " + i);
     
     // launch yourkit profiler and look at retained sizes for both
