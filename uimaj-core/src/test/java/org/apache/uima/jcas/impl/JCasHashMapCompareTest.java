@@ -45,6 +45,9 @@ public class JCasHashMapCompareTest extends TestCase {
 //  private static final int SIZEm1 = SIZE - 1;
 //  private JCasHashMap jhm;
   private ConcurrentMap<Integer, TOP> concurrentMap;
+  
+  private long custAcc = 0;
+  private long custNbr = 0;
 
   
   public void testComp() throws Exception {
@@ -52,21 +55,29 @@ public class JCasHashMapCompareTest extends TestCase {
     int numberOfThreads =  Utilities.numberOfCores; 
     numberOfThreads = Math.min(8, Utilities.nextHigherPowerOf2(numberOfThreads));  // avoid too big slowdown on giant machines.
     System.out.format("test JCasHashMapComp with %d threads%n", numberOfThreads);
-    runCustom(numberOfThreads);
+    for (int i = 0; i < 3; i++) {
+//      for (int j = 0; j < 10000; j++) {
+//      for (int j = 0; j < 10000; j++) {
+    runCustom(numberOfThreads); 
+//      }
+//      for (int j = 0; j < 10000; j++) {
     runConCur(numberOfThreads);
+//      }
+//      }
     runCustom(numberOfThreads*2);
     runConCur(numberOfThreads*2);
     runCustom(numberOfThreads*4);
     runConCur(numberOfThreads*4);
+    
 //    stats("custom", runCustom(numberOfThreads));  // not accurate, use yourkit retained size instead
 //    stats("concur", runConCur(numberOfThreads));
     Set<Integer> ints = new HashSet<Integer>();
     for (Entry<Integer, TOP> e : concurrentMap.entrySet()) {
       assertFalse(ints.contains(Integer.valueOf(e.getKey())));
-      assertEquals(e.getValue().getAddress(), (int)(e.getKey()));
+      assertEquals(e.getValue()._id(), (int)(e.getKey()));
       ints.add(e.getKey());
     }
-    
+    }
 //    System.out.println("Found " + i);
     
     // launch yourkit profiler and look at retained sizes for both
@@ -90,38 +101,39 @@ public class JCasHashMapCompareTest extends TestCase {
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
           final int key = hash(i, threadNumber) / 2;
           final Object waiter = waiters[key & (numberOfWaiters - 1)];
-          TOP fs = m.putIfAbsent(key, TOP._createJCasHashMapReserve(key));
-          while (fs != null && fs._isJCasHashMapReserve()) {
-            // someone else reserved this
-
-            // wait for notify
-            synchronized (waiter) {
-              fs = m.get(key);
-              if (fs._isJCasHashMapReserve()) {
-                try {
-                  waiter.wait();
-                } catch (InterruptedException e) {
-                }
-              }
-            }
-          }
-            
-//          TOP fs = m.get(key);
-          if (null == fs) {
-//            puts ++;
-            TOP prev = m.put(key,  TOP._createSearchKey(key));
-            if (prev._isJCasHashMapReserve()) {
-              synchronized (waiter) {
-                waiter.notifyAll();
-              }
-            }
-//              puts --;  // someone beat us 
-//              founds ++;
-          }
-          
-        }
-//        System.out.println("concur Puts = " + puts + ", founds = " + founds);
-      }
+          TOP newFs = TOP._createSearchKey(key);
+          TOP fs = m.putIfAbsent(key, newFs);
+//          while (fs != null && fs._isJCasHashMapReserve()) {
+//            // someone else reserved this
+//
+//            // wait for notify
+//            synchronized (waiter) {
+//              fs = m.get(key);
+//              if (fs._isJCasHashMapReserve()) {
+//                try {
+//                  waiter.wait();
+//                } catch (InterruptedException e) {
+//                }
+//              }
+//            }
+//          }
+//            
+////          TOP fs = m.get(key);
+//          if (null == fs) {
+////            puts ++;
+//            TOP prev = m.put(key,  TOP._createSearchKey(key));
+//            if (prev._isJCasHashMapReserve()) {
+//              synchronized (waiter) {
+//                waiter.notifyAll();
+//              }
+//            }
+////              puts --;  // someone beat us 
+////              founds ++;
+//          }
+//          
+        } // end of for loop
+////        System.out.println("concur Puts = " + puts + ", founds = " + founds);
+      }  
     };  
     long start = System.currentTimeMillis();
     MultiThreadUtils.tstMultiThread("JCasHashMapTestCompConcur",  numberOfThreads, 10, run2isb,
@@ -129,7 +141,7 @@ public class JCasHashMapCompareTest extends TestCase {
           public void run() {
             m.clear();
         }});
-    System.out.format("JCasCompTest - using ConcurrentHashMap, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
+    System.out.format("JCasCompTest - using ConcurrentHashMap, threads = %d, time = %,f seconds%n", numberOfThreads, ((double)(System.currentTimeMillis() - start)) / 1000.d);
     return m.size();
   }
   
@@ -141,18 +153,18 @@ public class JCasHashMapCompareTest extends TestCase {
       public void call(int threadNumber, int repeatNumber, StringBuilder sb) {
 //        int founds = 0, puts = 0;
         for (int i = 0; i < sizeOfTest*threadNumber; i++) {
-          final int key = hash(i, threadNumber
-              ) / 2;
+          final int key = hash(i, threadNumber) / 2;
+          m.putIfAbsent(key, TOP::_createSearchKey);
 //          if (key == 456551)
 //            System.out.println("debug");
-          TOP fs = m.getReserve(key);
+//          TOP fs = m.getReserve(key);
 
-          if (null == fs) {
-//            puts++;
-            m.put(TOP._createSearchKey(key));
-          } else {
+//          if (null == fs) {
+//            puts++
+//            m.put(TOP._createSearchKey(key));
+//          } else {
 //            founds ++;
-          }
+//          }
         }
 //        System.out.println("custom Puts = " + puts + ", founds = " + founds);
       }
@@ -163,7 +175,17 @@ public class JCasHashMapCompareTest extends TestCase {
           public void run() {
             m.clear();
         }});
-    System.out.format("JCasCompTest - using JCasHashMap, threads = %d, time = %,f seconds%n", numberOfThreads, (System.currentTimeMillis() - start) / 1000.f);
+    long el = System.currentTimeMillis() - start;
+    if (custNbr == 100) {
+      custNbr = 1;
+      custAcc = el;
+    } else {
+      custAcc += el;
+      custNbr ++;
+    }
+    
+    
+    System.out.format("JCasCompTest - using JCasHashMap, threads = %d, time = %,f seconds avg = %,f%n", numberOfThreads, ((double)el) / 1000.d, (((double)custAcc)/custNbr) / 1000.d);
     m.showHistogram();
     return m.getApproximateSize();
   }

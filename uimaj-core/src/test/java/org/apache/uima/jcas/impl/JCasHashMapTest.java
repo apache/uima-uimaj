@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
@@ -51,6 +52,8 @@ public class JCasHashMapTest extends TestCase {
       addrs[ir] = temp;
     }
   }
+  
+  private final AtomicBoolean okToProceed = new AtomicBoolean(); 
    
   public void testBasic() {
     JCasHashMap m;
@@ -102,10 +105,12 @@ public class JCasHashMapTest extends TestCase {
           for (int k = 0; k < 4; k++) {
             for (int i = 0; i < SIZE / 4; i++) {
               final int key = addrs[random.nextInt(SIZE / 16)];
-              TOP fs = m.getReserve(key);
-              if (null == fs) {
-                m.put(TOP._createSearchKey(key));
-              }
+              m.putIfAbsent(key, x -> TOP._createSearchKey(x));
+//              TOP fs = m.getReserve(key);
+//              if (null == fs) {
+//            
+//                m.put(TOP._createSearchKey(key));
+//              }
             }
             try {
               Thread.sleep(0, random.nextInt(1000));
@@ -127,15 +132,16 @@ public class JCasHashMapTest extends TestCase {
 
   public void testMultiThreadCompare() throws Exception {
     final Random random = new Random();
+    random.setSeed(1234L);  // debug
     int numberOfThreads = Misc.numberOfCores;    
     System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
 
-    final ConcurrentMap<Integer, TOP> check = 
+    final ConcurrentMap<Integer, TOP> check = // one check map, run on multiple threads
         new ConcurrentHashMap<Integer, TOP>(SIZE, .5F, numberOfThreads * 2);
     
     for (int th = 2; th <= numberOfThreads; th *= 2) {
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
-      final JCasHashMap m = new JCasHashMap(200);  
+      final JCasHashMap m = new JCasHashMap(200);  // one JCasHashMap run on multiple threads  
   
       MultiThreadUtils.Run2isb run2isb = new MultiThreadUtils.Run2isb() {
         
@@ -143,17 +149,22 @@ public class JCasHashMapTest extends TestCase {
           for (int k = 0; k < 4; k++) {
             for (int i = 0; i < SIZE / 4; i++) {
               final int key = addrs[random.nextInt(SIZE / 16)];
-              TOP fs = m.getReserve(key);
-              if (null == fs) {
-                fs = TOP._createSearchKey(key);
-                check.put(key, fs);  
-                m.put(fs);
+              final TOP[] createdFS = new TOP[1];
+              TOP fs = m.putIfAbsent(key, x -> {
+                TOP tmp = createdFS[0] = TOP._createSearchKey(x);
+                check.put(key,  tmp);
+                return tmp;
+              });
+
+              
+              if (createdFS[0] != null) {
+//                check.put(key, createdFS[0]);  
               } else {
                 TOP fscheck = check.get(key);
                 if (fscheck == null || fscheck != fs) {
                   String msg = String.format("JCasHashMapTest miscompare, repeat=%,d, count=%,d key=%,d"
                       + ", checkKey=%s JCasHashMapKey=%,d",
-                      k, i, key, (null == fscheck) ? "null" : Integer.toString(fscheck.getAddress()), fs.getAddress());
+                      k, i, key, (null == fscheck) ? "null" : Integer.toString(fscheck._id()), fs._id());
                   System.err.println(msg);
                   throw new RuntimeException(msg);
                 }
@@ -180,12 +191,16 @@ public class JCasHashMapTest extends TestCase {
   }
   /**
    * Create situation
-   *   make a set of indexed fs instances, no JCas
-   *   on multiple threads, simultaneously, attempt to get the jcas cover object for this
-   *     one getReserve should succeed, but reserve, and the others should "wait".
-   *     then put
-   *     then the others should "wakeup" and return the same instance 
-   *   
+//   *   make a set of indexed fs instances, no JCas
+//   *   on multiple threads, simultaneously, attempt to get the jcas cover object for this
+//   *     one getReserve should succeed, but reserve, and the others should "wait".
+//   *     then put
+//   *     then the others should "wakeup" and return the same instance 
+   *   on multiple threads, attempt to putIfAbsent a special search key instance, simultaneously
+   *     one thread should succeed, the others should block while the succeeding one is
+   *     awaiting an external "go" signal.  
+   *     Once that go signal happens, the other threads should succeed, and return the 
+   *     == fs to the first one.   
    * @throws Exception
    */
   public void testMultiThreadCollide() throws Exception {
@@ -208,13 +223,40 @@ public class JCasHashMapTest extends TestCase {
     for (int i = 0; i < numberOfThreads; i++) {
       final int finalI = i;
       threads[i] = new MultiThreadUtils.ThreadM() {
+            /**
+             * for thread 0 -> nbr of threads -1:
+             * wait,
+             * sleep,
+             * do a putIfAbsent of "fs" - first one will succeed, others should wait till success
+             * set found[thread#] to m.putIfAbsent(hashkey);
+             * 
+             * loop above until terminate thread
+             */
             public void run() {
               while (true) {
+//                System.err.println("in loop about to wait4go " + this.getName() );
                 if (!MultiThreadUtils.wait4go(this)) {
                   break;
                 }
                 MultiThreadUtils.sleep(r.nextInt(500000)); // 0-500 microseconds 
-                found[finalI] = m.getReserve(hashKey);
+                found[finalI] = m.putIfAbsent(hashKey, k -> {
+                  // k is ignored, hashKey is final, the fs returned is constant
+                  threads[finalI].utilBoolean.set(true);
+                  try {
+                    while (true) {
+                      try {
+                        if (okToProceed.get() == true) {
+                          break;
+                        }
+                        Thread.sleep(5); // 5 milli
+                      } catch (InterruptedException e) {
+                      } 
+                    }
+                    return fs;
+                  } finally {
+                    threads[finalI].utilBoolean.set(false);
+                  }
+                });
               }
             }
           };
@@ -225,33 +267,42 @@ public class JCasHashMapTest extends TestCase {
     for (int loopCount = 0; loopCount < 10; loopCount ++) {
       System.out.println("  JCasHashMap collide loop count is " + loopCount);
   
-      // create threads and start them
+      // release the threads
       for (int th = 2; th <= numberOfThreads; th *= 2) {
         JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
         Arrays.fill(found,  null);
         m.clear();
         
+//        System.out.println("debug kickoffthreads");
         MultiThreadUtils.kickOffThreads(threads);  
 
-        Thread.sleep(20); 
-        // verify that one thread finished, others are waiting, because of the reserve.
-        // this assumes that all the threads got to run.
-        int numberWaiting = 0;
-        int threadFinished = -1;
-        for (int i = 0; i < numberOfThreads; i++) {
-          if (threads[i].state == MultiThreadUtils.THREAD_RUNNING) {
-            numberWaiting ++;
-          } else {
-            threadFinished = i;
+        // verify that one thread holds the lock, the others are waiting on that lock
+        int numberWaiting;
+        while (true) {  // may take a while for threads to get going
+          Thread.sleep(5);
+          numberWaiting = 0;
+          int threadHoldingLock = -1;
+          for (int i = 0; i < numberOfThreads; i++) {
+            if (threads[i].utilBoolean.get()) { 
+              threadHoldingLock = i;
+            } else {
+              numberWaiting ++;
+            }
+          }
+          if (threadHoldingLock != -1) {
+            break;
           }
         }
-        
-        assertEquals(numberOfThreads - 1, numberWaiting);  // expected 7 but was 8
-        m.put(fs);
-        found[threadFinished] = fs;
+//        System.out.println("debug thread holding lock is " + threadHoldingLock);
+        // all threads except one should be in synch lock wait 
+        // one thread should be in wait in while loop.
+        assertEquals(numberOfThreads - 1, numberWaiting);    
+                                                        
+        okToProceed.set(true);
+//        found[threadHoldingLock] = fs;
         
         MultiThreadUtils.waitForAllReady(threads);
-   
+        okToProceed.set(false);
 //        // loop a few times to give enough time for the other threads to finish.
 //        long startOfWait = System.currentTimeMillis();
 //        while (System.currentTimeMillis() - startOfWait < 30000) { // wait up to 30 seconds in case of machine stall
@@ -316,11 +367,12 @@ public class JCasHashMapTest extends TestCase {
     long start = System.currentTimeMillis();
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = TOP._createSearchKey(key);
+      m.putIfAbsent(key, k -> TOP._createSearchKey(k));
 //      TOP v = m.get(fs.getAddress());
 //      if (null == v) {
 //        m.get(7 * i);
-        m.put(fs);
+//        m.getReserve(key);
+//        m.put(fs);
 //      }
     }
     
@@ -337,18 +389,22 @@ public class JCasHashMapTest extends TestCase {
     
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = TOP._createSearchKey(key);
+      m.putIfAbsent(key, k -> TOP._createSearchKey(k));
+
+//      TOP fs = TOP._createSearchKey(key);
+      
 //      TOP v = m.get(fs.getAddress());
 //      if (null == v) {
 //        m.get(7 * i);
 //        m.findEmptySlot(key);
-        m.put(fs);
+//        m.getReserve(key);
+//        m.put(fs);
 //      }
     }
     
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = (TOP) m.getReserve(key);
+      TOP fs = (TOP) m.get(key);
       if (fs == null) {  // for debugging
         System.out.println("stop");
       }
@@ -374,8 +430,10 @@ public class JCasHashMapTest extends TestCase {
       System.out.print("JCasHashMapTest: after fill to switch point: ");
       assertTrue(checkSubsCapacity(m, sub_capacity));
       System.out.print("JCasHashMapTest: after 1 past switch point:  ");
-      int key = addrs[switchpoint + 1];
-      m.put(TOP._createSearchKey(key));
+      final int key = addrs[switchpoint + 1];
+      m.putIfAbsent(key, k -> TOP._createSearchKey(k));
+//      m.getReserve(key);
+//      m.put(TOP._createSearchKey(key));
       assertTrue(checkSubsCapacity(m, sub_capacity));
       
       m.clear();
@@ -386,8 +444,11 @@ public class JCasHashMapTest extends TestCase {
       fill(switchpoint, m);
       System.out.print("JCasHashMapTest: after fill to switch point: ");
       assertTrue(checkSubsCapacity(m, sub_capacity));
-      key = addrs[switchpoint + 1];
-      m.put(TOP._createSearchKey(key));
+      final int key2 = addrs[switchpoint + 1];
+//      m.putIfAbsent(key, k -> TOP._createSearchKey(key2));  // k is ignored
+      m.putIfAbsent(key2,  k -> TOP._createSearchKey(k));
+//      m.getReserve(key);
+//      m.put(TOP._createSearchKey(key));
       System.out.print("JCasHashMapTest: after 1 past switch point:  ");
       assertTrue(checkSubsCapacity(m, sub_capacity));
   
@@ -446,7 +507,7 @@ public class JCasHashMapTest extends TestCase {
   private String intList(TOP[] a) {
     StringBuilder sb = new StringBuilder();
     for (TOP i : a) {
-      sb.append(i == null ? "null" : i.getAddress()).append(", ");
+      sb.append(i == null ? "null" : i._id()).append(", ");
     }
     return sb.toString();
   }
@@ -454,8 +515,11 @@ public class JCasHashMapTest extends TestCase {
   private void fill (int n, JCasHashMap m) {
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
-      TOP fs = TOP._createSearchKey(key);
-      m.put(fs);
+      m.putIfAbsent(key, k -> TOP._createSearchKey(k));
+//
+//      TOP fs = TOP._createSearchKey(key);
+//      m.getReserve(key);
+//      m.put(fs);
 //      System.out.format("JCasHashMapTest fill %s%n",  intList(m.getCapacities()));
     }
   }
