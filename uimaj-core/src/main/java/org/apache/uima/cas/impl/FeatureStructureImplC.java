@@ -77,10 +77,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   public static final String DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION = "uima.disable_runtime_feature_value_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION);
-
-  public static final String DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION = "uima.disable_runtime_feature_range_validation";
-  public static final boolean IS_ENABLE_RUNTIME_FEATURE_RANGE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_RANGE_VALIDATION);
-  
+ 
   private  static final boolean traceFSs = CASImpl.traceFSs;
     
   // next is for experiment (Not implemented) of allocating multiple int arrays for different fss
@@ -201,6 +198,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (traceFSs && !(this instanceof CommonArrayFS)) {
       _casView.traceFSCreate(this);
     }
+    
+    _casView.maybeHoldOntoFS(this);
   }
 
   /**
@@ -236,6 +235,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       _casView.traceFSCreate(this);
     }
     
+    _casView.maybeHoldOntoFS(this);
+
 //    if (_typeImpl.featUimaUID != null) {
 //      final int id = _casView.getAndIncrUimaUID();
 //      _setLongValueNcNj(_typeImpl.featUimaUID, id);
@@ -318,7 +319,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @return the internal id of this fs - unique to this CAS, a positive int
    */
   @Override
-  public final int getAddress() { return _id; };
+  public final int getAddress() {
+    return  _casView.ll_getFSRef(this);  // adds this fs to the internal map if needed
+  };
 
   @Override
   public final int _id() {return _id; };
@@ -514,7 +517,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public void setStringValue(Feature feat, String v) {
 //    if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);  // done by _setRefValueCJ
-    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v); // verifies feat can take a string
+//    if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v); // verifies feat can take a string
     subStringRangeCheck(feat, v);
     _setRefValueCJ((FeatureImpl) feat, v);
   }
@@ -1015,6 +1018,17 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
   }
 
+  // old version from v2 using StringBuffer
+  /**
+   * 
+   * @param indent -
+   * @param incr -
+   * @param buf -
+   * @param useShortNames -
+   * @param s -
+   * @param printRefs -
+   * @deprecated because uses StringBuffer, not builder, for version 2 compatibility only
+   */
   public void prettyPrint(
       int indent, 
       int incr, 
@@ -1056,7 +1070,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       buf.append(' ');
     }
     if (_typeImpl == null) {
-      buf.append((_id == 0) ? " Special REMOVED marker " : " Special Search Key, id = " + _id);
+      buf.append((_id == 0) 
+                  ? " Special REMOVED marker " 
+                  : _isJCasHashMapReserve() 
+                     ? (" Special JCasHashMap Reserve, id = " + _id)
+                     : " Special Search Key, id = " + _id);
     } else {
       if (useShortNames) {
         buf.append(getType().getShortName());
@@ -1319,7 +1337,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * All callers of this must insure fs is not indexed in **Any** View
    */
   protected void _resetInSetSortedIndex() { _flags &= ~_BIT_IN_SET_SORTED_INDEX; }
-  
+    
   protected void _setJCasHashMapReserve() {
     _flags |= _BIT_JCASHASHMAP_RESERVE;
   }
