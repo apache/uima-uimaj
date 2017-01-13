@@ -322,5 +322,15 @@ public interface FeatureStructure extends Cloneable {
    * @throws CASRuntimeException passthru
    */
   FeatureStructureImplC clone() throws CASRuntimeException;
+  
+  /**
+   * Compatibility for v2 code.
+   * As a side effect, this will enter this Feature Structure into the int-to-FS table so the low level
+   * API call ll_getFSForRef(int) works.  This has the effect of disabling garbage collection
+   * for this Feature Structure.
+   * @return the equivalent of the v2 address
+   */
+  int getAddress(); 
+  
 }
 
