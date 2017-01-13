@@ -132,7 +132,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   public static final String DISABLE_TYPESYSTEM_CONSOLIDATION = "uima.disable_typesystem_consolidation";
 
-  private static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = //true || // debug
+  /**
+   * public for test case
+   */
+  public static final boolean IS_DISABLE_TYPESYSTEM_CONSOLIDATION = // true || // debug
       Misc.getNoValueSystemProperty(DISABLE_TYPESYSTEM_CONSOLIDATION);
  
 //  private final static String DECOMPILE_JCAS = "uima.decompile.jcas";
@@ -413,7 +416,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * Shared by all CASes using this type system
    *   Excludes FsGeneratorArrays - those are built-in and constant 
    */
-  private final Map<ClassLoader, FsGenerator[]> generatorsByClassLoader = new IdentityHashMap<>();
+  private final Map<ClassLoader, FsGenerator3[]> generatorsByClassLoader = new IdentityHashMap<>();
 
   public TypeSystemImpl() {
 
@@ -1846,7 +1849,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   @Override
   public int ll_getParentType(int typeCode) {
-    return types.get(typeCode).getCode();
+    if (typeCode == 1) {
+      return 0;
+    }
+    return types.get(typeCode).getSuperType().getCode();
   }
   
   /**
@@ -2575,9 +2581,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param isPear -
    * @return the generators
    */
-  public FsGenerator[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {
+  public FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {
     synchronized (generatorsByClassLoader) {
-      FsGenerator[] g = generatorsByClassLoader.get(cl);
+      FsGenerator3[] g = generatorsByClassLoader.get(cl);
       if (g == null) {
         g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
         generatorsByClassLoader.put(cl, g);
