@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
@@ -88,9 +89,9 @@ public class TOP_Type {
 	// new subtypes of TOP_Type use <class-name>.this instead
 	protected final TOP_Type instanceOf_Type; // allow ref to this in inner class
 
-//  protected FSGenerator<?> getFSGenerator() {
-//    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
-//  }
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
+  }
 //
 //	private FSGenerator fsGenerator = new FSGenerator() {
 //		@SuppressWarnings("unchecked")

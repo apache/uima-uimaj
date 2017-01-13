@@ -23,6 +23,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -41,6 +42,11 @@ public class AnnotationBase_Type extends org.apache.uima.jcas.cas.TOP_Type {
   final Feature casFeat_sofa;
 
   final int casFeatCode_sofa;
+  
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
+  }
+
 
   public SofaFS getSofa(int addr) {
     throw new RuntimeException("not supported");

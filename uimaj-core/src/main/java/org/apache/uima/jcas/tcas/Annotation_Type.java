@@ -22,6 +22,7 @@ package org.apache.uima.jcas.tcas;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FSGenerator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -32,9 +33,9 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 @Deprecated
 public class Annotation_Type extends org.apache.uima.jcas.cas.AnnotationBase_Type {
-//  protected FSGenerator<?> getFSGenerator() {
-//    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
-//  }
+  protected FSGenerator<?> getFSGenerator() {
+    return null; // no longer used, but may be needed for compatibility with older existing JCasGen'd cover classes that might extend this class
+  }
 //
 //  private final FSGenerator fsGenerator = new FSGenerator() {
 //    @SuppressWarnings("unchecked")
