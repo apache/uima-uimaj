@@ -30,6 +30,7 @@ import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.function.Supplier;
 
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
@@ -89,12 +90,12 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
 //  }
   
     
-  private TOP[] a = new TOP[DEFAULT_MIN_SIZE];
+  TOP[] a = new TOP[DEFAULT_MIN_SIZE];
   /**
    * index of slot at the end which is free, all following slots are free too
    */
-  private int a_nextFreeslot = 0;
-  private int a_firstUsedslot = 0;
+  int a_nextFreeslot = 0;
+  int a_firstUsedslot = 0;
   
   private final ArrayList<TOP> batch = new ArrayList<>();
   
@@ -428,7 +429,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     return sz;
   }
   
-  private void processBatch() {
+  void processBatch() {
     if (batch.size() != 0) {
 //      validateA();
       doProcessBatch();
@@ -1363,7 +1364,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    */
   @Override
   public NavigableSet<TOP> subSet(TOP fromElement, boolean fromInclusive, TOP toElement, boolean toInclusive) {
-    return new SubSet(fromElement, fromInclusive, toElement, toInclusive, false, null);
+    return new SubSet(() -> this, fromElement, fromInclusive, toElement, toInclusive, false, null);
   }
 
   /**
@@ -1418,7 +1419,8 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
    *   only used to create iterators over that subset
    *     -- no insert/delete
    */
-  public class SubSet implements NavigableSet<TOP> {
+  public static class SubSet implements NavigableSet<TOP> {
+    final Supplier<OrderedFsSet_array> theSet;
     final private TOP fromElement;
     final private TOP toElement;
     final private boolean fromInclusive;
@@ -1432,12 +1434,16 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         
     private int sizeSubSet = -1; // lazy - computed on first ref
 
-    SubSet(TOP fromElement, boolean fromInclusive, TOP toElement, boolean toInclusive) {
-      this(fromElement, fromInclusive, toElement, toInclusive, true, comparatorWithID);
+    private OrderedFsSet_array theSet() {
+      return theSet.get();
     }
     
-    SubSet(TOP fromElement, boolean fromInclusive, TOP toElement, boolean toInclusive, boolean doTest, Comparator<TOP> comparator) {
-  
+    SubSet(Supplier<OrderedFsSet_array> theSet, TOP fromElement, boolean fromInclusive, TOP toElement, boolean toInclusive) {
+      this(theSet, fromElement, fromInclusive, toElement, toInclusive, true, theSet.get().comparatorWithID);
+    }
+    
+    SubSet(Supplier<OrderedFsSet_array> theSet, TOP fromElement, boolean fromInclusive, TOP toElement, boolean toInclusive, boolean doTest, Comparator<TOP> comparator) {
+      this.theSet = theSet;
       this.fromElement = fromElement;
       this.toElement = toElement;
       this.fromInclusive = fromInclusive;
@@ -1445,23 +1451,24 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       if (doTest && comparator.compare(fromElement, toElement) > 0) {
         throw new IllegalArgumentException();
       }
-      processBatch();    
-      firstPosInRange = fromInclusive ? ceilingPos(fromElement) : higherPos(fromElement);
-      lastPosInRange  = toInclusive ? floorPos(toElement) : lowerPos(toElement);
+      OrderedFsSet_array s = theSet();
+      theSet().processBatch();    
+      firstPosInRange = fromInclusive ? s.ceilingPos(fromElement) : s.higherPos(fromElement);
+      lastPosInRange  = toInclusive ? s.floorPos(toElement) : s.lowerPos(toElement);
       // lastPosInRange can be LT firstPosition if fromInclusive is false
       //   In this case, the subset is empty
       if (lastPosInRange < firstPosInRange) {
         firstElementInRange = null;
         lastElementInRange = null;
       } else {
-        firstElementInRange = a[firstPosInRange];
-        lastElementInRange = a[lastPosInRange];
+        firstElementInRange = s.a[firstPosInRange];
+        lastElementInRange = s.a[lastPosInRange];
       }
     }
     
     @Override
     public Comparator<? super TOP> comparator() {
-      return comparatorWithID;
+      return theSet().comparatorWithID;
     }
 
     @Override
@@ -1502,7 +1509,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       if (!isInRange(fs)) {
         return false;
       }
-      return OrderedFsSet_array.this.contains(o);
+      return theSet().contains(o);
     }
 
     @Override
@@ -1561,7 +1568,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         return lastElementInRange;
       }
       // in range
-      return OrderedFsSet_array.this.lower(fs);
+      return theSet().lower(fs);
     }
 
     @Override
@@ -1578,7 +1585,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         return lastElementInRange;
       }
       
-      return OrderedFsSet_array.this.floor(fs);
+      return theSet().floor(fs);
     }
 
     @Override
@@ -1592,7 +1599,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         return firstElementInRange;
       }
       
-      return OrderedFsSet_array.this.ceiling(fs);
+      return theSet().ceiling(fs);
     }
 
     @Override
@@ -1605,7 +1612,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
         return firstElementInRange;
       }
       
-      return OrderedFsSet_array.this.higher(fs);
+      return theSet().higher(fs);
     }
 
     @Override
@@ -1637,14 +1644,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
             throw new NoSuchElementException();
           }
 
-          TOP r = a[pos++];
+          TOP r = theSet().a[pos++];
           incrToNext();
           return r;        
         }
         
         private void incrToNext() {
           while (pos <= lastPosInRange) {
-            if (a[pos] != null) {
+            if (theSet().a[pos] != null) {
               break;
             }
             pos ++;
@@ -1677,14 +1684,14 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
             throw new NoSuchElementException();
           }
 
-          TOP r = a[pos--];
+          TOP r = theSet().a[pos--];
           decrToNext();
           return r;        
         }
         
         private void decrToNext() {
           while (pos >= firstPosInRange) {
-            if (a[pos] != null) {
+            if (theSet().a[pos] != null) {
               break;
             }
             pos --;
@@ -1699,7 +1706,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       if (!isInRange(fromElement1) || !isInRange(toElement1)) {
         throw new IllegalArgumentException();
       }
-      return OrderedFsSet_array.this.subSet(fromElement1, fromInclusive1, toElement1, toInclusive1);  
+      return theSet().subSet(fromElement1, fromInclusive1, toElement1, toInclusive1);  
     }
 
     @Override
@@ -1728,19 +1735,19 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
     }
   
     private boolean isGtLast(TOP fs) {
-      return comparatorWithID.compare(fs, lastElementInRange) > 0;      
+      return theSet().comparatorWithID.compare(fs, lastElementInRange) > 0;      
     }
     
     private boolean isGeLast(TOP fs) {
-      return comparatorWithID.compare(fs,  lastElementInRange) >= 0;
+      return theSet().comparatorWithID.compare(fs,  lastElementInRange) >= 0;
     }
 
     private boolean isLtFirst(TOP fs) {
-      return comparatorWithID.compare(fs, firstElementInRange) < 0;
+      return theSet().comparatorWithID.compare(fs, firstElementInRange) < 0;
     }
 
     private boolean isLeFirst(TOP fs) {
-      return comparatorWithID.compare(fs, firstElementInRange) <= 0;
+      return theSet().comparatorWithID.compare(fs, firstElementInRange) <= 0;
     }
     
     private boolean isInRange(TOP fs) {
@@ -1751,7 +1758,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       if (firstElementInRange == null) {
         return false;
       }
-      int r = comparatorWithID.compare(fs, firstElementInRange);
+      int r = theSet().comparatorWithID.compare(fs, firstElementInRange);
       return fromInclusive ? (r >= 0) : (r > 0);
     }
     
@@ -1759,7 +1766,7 @@ public class OrderedFsSet_array implements NavigableSet<TOP> {
       if (lastElementInRange == null) {
         return false;
       }
-      int r = comparatorWithID.compare(fs, lastElementInRange);
+      int r = theSet().comparatorWithID.compare(fs, lastElementInRange);
       return toInclusive ? (r <= 0) : (r < 0);
     }
   }

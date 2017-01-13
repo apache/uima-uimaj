@@ -19,6 +19,7 @@
 package org.apache.uima.internal.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
@@ -91,7 +92,45 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   }
   
   public Iterator<T> iterator() {
-    return ohs.iterator();
+    return new Iterator<T>() {
+      /**
+       * Keep this always pointing to a non-0 entry, or
+       * if not valid, outside the range
+       */
+      protected int curPosition = moveToNextFilled(0);
+
+      @Override
+      public final boolean hasNext() {
+        return curPosition < getCapacity();
+      }
+
+      @Override
+      public final T next() {
+        if (curPosition >= getCapacity()) {
+          throw new NoSuchElementException();
+        }
+        try {
+          T r = get(curPosition);
+          curPosition = moveToNextFilled(curPosition + 1);
+          return r;
+        } catch (ArrayIndexOutOfBoundsException e) {
+          throw new NoSuchElementException();
+        }
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+      
+      private int moveToPrevious(int position) {
+        if (position >= getCapacity()) {
+          return -1;
+        }
+        return moveToPreviousFilled(position - 1);
+      }
+
+    };
   }
 
   /**
