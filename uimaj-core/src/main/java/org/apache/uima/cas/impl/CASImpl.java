@@ -128,7 +128,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
   private static final boolean trace = false; // debug
-  public static final boolean traceFSs = false;  // debug - trace FS creation and update  
+  public static final boolean traceFSs = false;  // debug - trace FS creation and update
+  public static final boolean traceCow = false;  // debug - trace copy on write actions, index adds / deletes 
   private static final String traceFile = "traceFSs.log.txt";
   private static final PrintStream traceOut;
   static {
@@ -216,6 +217,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX &&
       !IS_THROW_EXCEPTION_CORRUPT_INDEX;
  
+  public static final String ALWAYS_HOLD_ONTO_FSS = "uima.enable_id_to_feature_structure_map_for_all_fss";
+  static final boolean IS_ALWAYS_HOLD_ONTO_FSS =    // debug
+      Misc.getNoValueSystemProperty(ALWAYS_HOLD_ONTO_FSS);
 //  private static final int REF_DATA_FOR_ALLOC_SIZE = 1024;
 //  private static final int INT_DATA_FOR_ALLOC_SIZE = 1024;
 //  
@@ -373,14 +377,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * Pear generators are mostly null except for instances where the PEAR has redefined
      * the JCas cover class
      */
-    private FsGenerator[] generators;
+    private FsGenerator3[] generators;
     /**
      * When generating a new instance of a FS in a PEAR where there's an alternate JCas class impl,
      * generate the base version, and make the alternate a trampoline to it.
      *   Note: in future, if it is known that this FS is never used outside of this PEAR, then can
      *         skip generating the double version
      */
-    private FsGenerator[] baseGenerators; 
+    private FsGenerator3[] baseGenerators; 
     
     // If this CAS can be flushed (reset) or not.
     // often, the framework disables this before calling users code
@@ -510,7 +514,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private LongSet lllongSet = null;
     
     // For tracing FS creation and updating, normally disabled
-    private final  StringBuilder traceFScreationSb = traceFSs ? new StringBuilder() : null;
+    private final StringBuilder traceFScreationSb = traceFSs ? new StringBuilder() : null;
+    private final StringBuilder traceCowSb = traceCow ? new StringBuilder() : null;
     private int traceFSid = 0; 
     private boolean traceFSisCreate;
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
@@ -736,7 +741,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * not in SharedViewData to reduce object traversal when
    * generating FSs
    */
-  FeatureStructureImplC pearBaseFs = null;  
+  FeatureStructureImplC pearBaseFs = null;
+  
+//  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
 
   // CASImpl(TypeSystemImpl typeSystem) {
   // this(typeSystem, DEFAULT_INITIAL_HEAP_SIZE);
@@ -908,11 +915,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     svd.fsTobeAddedbackSingleInUse = false;
   }
-    
+   
+  private FSsTobeAddedback getAddback(int size) {
+    if (svd.fsTobeAddedbackSingleInUse) {
+      Misc.internalError();
+    }
+    return svd.fssTobeAddedback.get(size - 1);
+  }
+  
   FSsTobeAddedbackSingle getAddbackSingle() {
     if (svd.fsTobeAddedbackSingleInUse) {
-      throw new RuntimeException(); // internal error
+//      System.out.println(Misc.dumpCallers(addbackSingleTrace, 2, 100));
+      Misc.internalError();
     }
+//    addbackSingleTrace = Thread.currentThread().getStackTrace();
+    
     svd.fsTobeAddedbackSingleInUse = true;
     svd.fsTobeAddedbackSingle.clear();  // safety
     return svd.fsTobeAddedbackSingle;
@@ -990,12 +1007,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                      // to insure sofa precedes the ref of it
     }
 
-    FsGenerator g = svd.generators[ti.getCode()];  // get generator or null
-    if (g != null) {
-      return (T) g.createFS(ti, this);
-    } else { // pear case, with no overriding pear - use base
-      return (T) createFsFromGenerator(svd.baseGenerators, ti);
-    }
+    FsGenerator3 g = svd.generators[ti.getCode()];  // get generator or null
+    
+    return (g != null) 
+             ? (T) g.createFS(ti, this)
+              // pear case, with no overriding pear - use base    
+             : (T) createFsFromGenerator(svd.baseGenerators, ti);
 
 //    
 //    
@@ -1022,7 +1039,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   boolean maybeMakeBaseVersionForPear(FeatureStructureImplC fs, TypeImpl ti) {
     if (!inPearContext()) return false;
-    FsGenerator g = svd.generators[ti.getCode()];  // get pear generator or null
+    FsGenerator3 g = svd.generators[ti.getCode()];  // get pear generator or null
     if (g == null) return false;
     TOP baseFs;
     try {
@@ -1038,7 +1055,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return true;
   }
  
-  private TOP createFsFromGenerator(FsGenerator[] gs, TypeImpl ti) {
+  private TOP createFsFromGenerator(FsGenerator3[] gs, TypeImpl ti) {
 //    if (ti == null || gs == null || gs[ti.getCode()] == null) {
 //      System.out.println("debug");
 //    }
@@ -1802,6 +1819,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (wasRemoved) {
         maybeAddback(fs);
       }
+      
     } else {
       fs._setLongValueNcNj(feat, v);
     }
@@ -2371,7 +2389,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     TOP fs = (TOP) createFS(ti);
     if (!fs._isPearTrampoline()) {
-      svd.id2fs.put(fs);  // hold on to it if nothing else is
+      if (IS_ALWAYS_HOLD_ONTO_FSS) {
+        svd.id2fs.putUnconditionally(fs);  // hold on to it if nothing else is
+      } else {
+        svd.id2fs.put(fs);
+      }
     }
     return fs._id;
   }
@@ -2403,7 +2425,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createArray(int typeCode, int arrayLength) {
     TOP fs = createArray(getTypeFromCode_checked(typeCode), arrayLength);
-    svd.id2fs.put(fs);
+    if (IS_ALWAYS_HOLD_ONTO_FSS) {
+      svd.id2fs.putUnconditionally(fs);
+    } else {
+      svd.id2fs.put(fs);
+    }
     return fs._id;      
   }
 
@@ -2518,6 +2544,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (fst._isPearTrampoline()) {
       return fst._id;  // no need to hold on to this one - it's in jcas hash maps
     }
+    // uncond. because this method can be called multiple times
     svd.id2fs.putUnconditionally(fst);  // hold on to it
     return ((FeatureStructureImplC)fs)._id;
   }
@@ -2750,11 +2777,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int ssz = svd.fssTobeAddedback.size();
 
     // next method skips if the fsRef is not in the index (cache)
-    return removeFromCorruptableIndexAnyView(
+    boolean wasRemoved = removeFromCorruptableIndexAnyView(
         fs, 
-        (ssz > 0) ? svd.fssTobeAddedback.get(ssz - 1) : 
+        (ssz > 0) ? getAddback(ssz) :   // validates single not in use
                     getAddbackSingle()  // validates single usage at a time
-        );            
+        );
+    if (!wasRemoved && svd.fsTobeAddedbackSingleInUse) {
+      svd.fsTobeAddedbackSingleInUse = false;
+    }
+    return wasRemoved;
   }
 
 //  public FeatureImpl getFeatFromRegistry(int jcasFieldRegistryIndex) {
@@ -2849,7 +2880,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
                                   (FSIndexRepositoryImpl) fs._casView.getIndexRepository(), 
                                   toBeAdded, 
                                   isSkipBagIndexes);
-      fs._resetInSetSortedIndex();
+      fs._resetInSetSortedIndex(); 
       return r;
     }
     
@@ -4534,7 +4565,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public void setId2FSs(FeatureStructure ... fss) {
     for (FeatureStructure fs : fss) {
-      svd.id2fs.put((TOP)fs);
+      if (IS_ALWAYS_HOLD_ONTO_FSS) {
+        svd.id2fs.putUnconditionally((TOP)fs);
+      } else {
+        svd.id2fs.put((TOP)fs);
+      }
     }
   }
   
@@ -4829,7 +4864,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final TOP fs = (TOP) aFs;
     final CASImpl view = fs._casView;
     final TypeImpl ti = fs._getTypeImpl();
-    final FsGenerator generator = view.svd.generators[ti.getCode()];
+    final FsGenerator3 generator = view.svd.generators[ti.getCode()];
     if (null == generator) {
       return aFs;
     }
@@ -4845,30 +4880,29 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param g
    * @return
    */
-  private TOP pearConvert(TOP fs, FsGenerator g) {
-    TOP r = svd.id2tramp.getReserve(fs._id);
-    if (r != null) {
+  private TOP pearConvert(TOP fs, FsGenerator3 g) {
+    return svd.id2tramp.putIfAbsent(fs._id, k -> {
+
+      svd.reuseId = k;  // create new FS using base FS's ID
+      pearBaseFs = fs;
+      TOP r;
+      // createFS below is modified because of pearBaseFs non-null to 
+      // "share" the int and data arrays
+      try {
+        r = g.createFS(fs._getTypeImpl(), this);
+      } finally {
+        svd.reuseId = 0;
+        pearBaseFs = null;
+      }
+      assert r != null;
+      if (r instanceof UimaSerializable) {
+        throw new UnsupportedOperationException(
+            "Pears with Alternate implementations of JCas classes implementing UimaSerializable not supported.");
+//        ((UimaSerializable) fs)._save_to_cas_data();  // updates in r too
+//        ((UimaSerializable) r)._init_from_cas_data();
+      }
       return r;
-    }
-    
-    svd.reuseId = fs._id;  // create new FS using base FS's ID
-    pearBaseFs = fs;
-    // createFS below is modified because of pearBasFs non-null to 
-    // "share" the int and data arrays
-    try {
-      r = g.createFS(fs._getTypeImpl(), this);
-    } finally {
-      svd.reuseId = 0;
-      pearBaseFs = null;
-    }
-    if (r instanceof UimaSerializable) {
-      throw new UnsupportedOperationException(
-          "Pears with Alternate implementations of JCas classes implementing UimaSerializable not supported.");
-//      ((UimaSerializable) fs)._save_to_cas_data();  // updates in r too
-//      ((UimaSerializable) r)._init_from_cas_data();
-    }
-    svd.id2tramp.put(r);
-    return r;
+    });
   }
   
   /**
@@ -4878,7 +4912,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return the corresponding base fs
    */
   <T extends TOP> T getBaseFsFromTrampoline(T fs) {
-    TOP r = svd.id2base.getReserve(fs._id);
+    TOP r = svd.id2base.get(fs._id);
     assert r != null;
     return (T) r;
   }
@@ -4892,7 +4926,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     if (b.length() > 0) {
       traceFSflush();
     }
-    
+    // normally commented-out for matching with v2
+//    // mark annotations created by subiterator
+//    if (fs._getTypeCode() == TypeSystemConstants.annotTypeCode) {
+//      StackTraceElement[] stktr = Thread.currentThread().getStackTrace();
+//      if (stktr.length > 7 && stktr[6].getClassName().equals("org.apache.uima.cas.impl.Subiterator")) {
+//        b.append('*');
+//      }
+//    }
     svd.id2addr.add(svd.nextId2Addr);
     svd.nextId2Addr += fs._getTypeImpl().getFsSpaceReq((TOP)fs);
     traceFSfs(fs);
@@ -4915,6 +4956,50 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     b.append(" t:").append(Misc.elide(fs._getTypeImpl().getShortName(), 10));    
   }
   
+  void traceIndexMod(boolean isAdd, TOP fs, boolean isAddbackOrSkipBag) {
+    StringBuilder b = svd.traceCowSb;
+    b.setLength(0);
+    b.append(isAdd ? (isAddbackOrSkipBag ? "abk_idx " : "add_idx ")
+                   : (isAddbackOrSkipBag ? "rmv_auto_idx " : "rmv_norm_idx "));
+//    b.append(fs.toString());
+    b.append(fs._getTypeImpl().getShortName()).append(":").append(fs._id);
+    if (fs instanceof Annotation) {
+      Annotation ann = (Annotation) fs;
+      b.append(" begin: ").append(ann.getBegin());
+      b.append(" end: ").append(ann.getEnd());
+      b.append(" txt: \"").append(Misc.elide(ann.getCoveredText(), 10)).append("\"");
+    }
+    traceOut.println(b);         
+  }
+  
+  void traceCowCopy(FsIndex_singletype<?> index) {
+    StringBuilder b = svd.traceCowSb;
+    b.setLength(0);
+    b.append("cow-copy:");
+    b.append(" i: ").append(index);
+    traceOut.println(b);
+  }
+  
+  void traceCowCopyUse(FsIndex_singletype<?> index) {
+    StringBuilder b = svd.traceCowSb;
+    b.setLength(0);
+    b.append("cow-copy-used:");
+    b.append(" i: ").append(index);
+    traceOut.println(b);
+  }
+
+
+  void traceCowReinit(String kind, FsIndex_singletype<?> index) { 
+    StringBuilder b = svd.traceCowSb;
+    b.setLength(0);
+    b.append("cow-redo: ");
+    b.append(kind);
+    b.append(" i: ").append(index);
+    b.append(" c: ");
+    b.append(Misc.getCaller());
+    traceOut.println(b);
+  }
+
   /** only used for tracing, enables tracing 2 slots for long/double */
   private FeatureImpl prevFi;
   
@@ -5239,6 +5324,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.bcsd.reinit(istream);
   }
   
+  void maybeHoldOntoFS(FeatureStructureImplC fs) {
+    if (IS_ALWAYS_HOLD_ONTO_FSS) {
+      svd.id2fs.putUnconditionally((TOP)fs);
+    }
+  }
   
 //  int allocIntData(int sz) {
 //    
