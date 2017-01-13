@@ -60,12 +60,15 @@ public class Misc {
    * @return  x called by: y ...
    */
   public static StringBuilder getCallers(final int s, final int n) {
-    StackTraceElement[] e = Thread.currentThread().getStackTrace();
+    return dumpCallers(Thread.currentThread().getStackTrace(), s, n);
+  }
+  
+  public static StringBuilder dumpCallers(final StackTraceElement[] e, final int s, final int n) {
     StringBuilder sb = new StringBuilder();
     for (int i = s + 2; i < s + n + 3; i++) {
       if (i >= e.length) break;
       if (i != s + 2) {
-        sb.append("  called_by: ");
+        sb.append("\n  called_by: ");
       }
       sb.append(formatcaller(e[i]));      
     }
@@ -73,11 +76,11 @@ public class Misc {
   }
   
   /**
-   * @return the name of the caller in the stack
+   * @return the name of the caller in the stack and their caller
    */
   public static String getCaller() {
     StackTraceElement[] e = Thread.currentThread().getStackTrace();
-    return formatcaller(e[4]) + "called by: " + formatcaller(e[5]);
+    return formatcaller(e[5]) + " => " + formatcaller(e[4]);
   }
   
   private static String formatcaller(StackTraceElement e) {
