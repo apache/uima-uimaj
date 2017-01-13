@@ -78,6 +78,13 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   int ll_maxAnnotSpan();
   
   /**
+   * @return true if one or more of the underlying indexes this iterator goes over, has been updated
+   *   since initialization or resetting operation (moveToFirst/Last/feature_structure).
+   *   This includes empty iterators becoming non-empty.
+   */
+  boolean isIndexesHaveBeenUpdated();
+  
+  /**
    * an empty iterator
    */
   static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator<FeatureStructure> () {
@@ -110,6 +117,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     @Override
     public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
     @Override
-    public LowLevelIndex<FeatureStructure> ll_getIndex() { return null; }    
+    public LowLevelIndex<FeatureStructure> ll_getIndex() { return null; }
+    @Override
+    public boolean isIndexesHaveBeenUpdated() { return false; }    
   };
 }
