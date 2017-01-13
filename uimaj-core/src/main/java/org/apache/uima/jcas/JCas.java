@@ -143,6 +143,49 @@ public interface JCas extends AbstractCas {
    */
   Feature getRequiredFeature(Type t, String s) throws CASException;
 
+  /*
+   * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
+   * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
+   * @deprecated only for V2 compiling
+   */
+  @Deprecated
+  default Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  }
+
+  /*
+   * Internal Use - sets the corresponding Java instance for a Cas instance
+   * @deprecated only for V2 compiling
+   */
+  @Deprecated
+  default void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  } 
+
+  /*
+   * Internal Use - sets the corresponding Java instance for a Cas instance
+   * @deprecated only for V2 compiling
+   */
+  default <T extends TOP> T getJfsFromCaddr(int casAddr) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  } 
+
+  /*
+   * Internal Use. 
+   * @deprecated only for V2 compiling
+   */
+  default void checkArrayBounds(int fsRef, int pos) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  }
+
+  /*
+   * Internal Use - throw missing feature exception at runtime.
+   * @deprecated only for V2 compiling
+   */
+  default void throwFeatMissing(String feat, String type) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  }
+  
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
    *             call {@link #getSofa()} if you truly need to access the SofaFS object.
