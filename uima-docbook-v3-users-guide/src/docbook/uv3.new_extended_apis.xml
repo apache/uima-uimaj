@@ -90,6 +90,16 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     some index as a key, is automatically (under the covers) temporarily removing the Feature Structure from indexes, 
     doing the modification, and then adding it back.
     </para>
+    
+    <para>Similarly to version 2, iterator methods <code>moveToFirst, moveToLast, and moveTo(a_positioning_Feature_Structure)</code>
+      "reset" the iterator to be able to "see" the current state of the indexes.  This corresponds to resetting the
+      concurrent modification detection sensing in version 2, when these methods are used.
+    </para>
+    
+    <para>Note that the phrase <emphasis>Concurrent Modification</emphasis> is being used here in a single threading
+      context, to mean that within a single thread, while an iterator is active, some modifications are being done
+      to the indexes.  UIMA does not support multi-threaded write access to the CAS; it does support multi-threaded
+      read access to a set of CAS Views, concurrent with one thread having write access (to different views).</para>
   </section>
 
   <section id="uv3.new_extended_apis.select">

@@ -28,7 +28,14 @@ under the License.
   <titleabbrev>Migrating JCas</titleabbrev>
   
   <para>To migrate a UIMA application / pipeline to version 3, you need to replace the Version 2 JCas
-	  classes with version 3 classes.  This is best done by running the migration tool, which is available
+	  classes with version 3 classes.
+  </para>
+  <para>Some projects are built using Maven, and use the JCasGen Maven plugin as part of the build.
+  These builds, when switched to depend on version 3, will automatically generate the new JCas
+  class definitions, so nothing special need be done.
+  </para>
+  
+  <para>If you have customized JCasGen classes, these can be migrated by running the migration tool, which is available
 	  as a stand-alone command line tool (<code>runV3migrateJCas.sh or ...bat</code>), or 
 	  as an Eclipse launch configuration.</para>
 	  

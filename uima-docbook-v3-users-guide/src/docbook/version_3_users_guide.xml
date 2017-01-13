@@ -32,6 +32,7 @@ under the License.
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.custom_java_objects.xml"/> 
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.migration.xml"/>
   <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.pears.xml"/>
+  <xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.migration.aids.xml"/>
 
   <!-- xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="uv3.performance.xml"/-->
 </book>

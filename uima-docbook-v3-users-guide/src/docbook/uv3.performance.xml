@@ -35,6 +35,11 @@ under the License.
     <para>A focus of the implementation has been to try to achieve much more locality of reference, including
     the code itself.  For example, many parts of the implementation were rewritten to eliminate duplicate 
     code.  Many more objects were shared where feasible, with attention paid to multi-threading aspects.</para>
+    
+    <para>This improvement reduces the memory cache "load" that the framework imposes, potentially permitting
+    more of the space to be used for other things, including user code.</para>
+    
+    <para>The framework's use of Java 8 facilities such as method handles and lambdas may also result in some performance gains.</para>
   </section>
   
   <section id="uv3.performance.indexes">  
@@ -58,12 +63,17 @@ under the License.
       </listitem>
     </itemizedlist>
     </para>
+    
   </section>
-
+  
   <section id="uv3.performance.low_level_api">  
     <title>Low Level API performance</title>
     
-    <para>
+    <para>Low level APIs in v2 have a slight performance advantage; in v3, they have a performance penalty.  Furthermore,
+      low level Feature Structure creation and calling <code>my_feature_structure.getAddress()</code> both return an
+      <code>int</code> "handle" which can be used to retrieve the corresponding Feature Structure.  To make this work,
+      these operations must update a map between <code>ints</code> and the Feature Structure object.  This prevents 
+      no-longer-used feature structures from being garbage collected (until the CAS is reset). 
     </para>
   </section>
 

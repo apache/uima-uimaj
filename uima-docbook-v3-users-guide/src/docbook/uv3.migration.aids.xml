@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/references/uv3.migration.aids/">
+<!ENTITY tp "uv3.migration.aids.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.migration.aids">
+  <title>Migration aids</title>
+    
+    <para>To aid migration, some features of UIMA V3 which might cause migration difficulties 
+      can be disabled.  Users may initially want to disable these, and get their pipelines working,
+      and then over time, re-enable these while fixing any issues that may come up, one feature
+      at a time.
+    </para> 
+    
+    <para>
+      Global JVM properties for UIMA V3 that control these are described in the table below.  
+    </para>
+  
+  <section id="uv3.migration.aids.property-table">
+    <title>Properties Table</title>
+      
+    <para>This table describes the various JVM defined properties; specify these on the Java command line
+    using -Dxxxxxx, where the xxxxxx is one of
+    the properties starting with <code>uima.</code> from the table below.</para>  
+    <informaltable frame="all" rowsep="1" colsep="1">
+     <tgroup cols="3">
+       <colspec colnum="1" colname="Title" colwidth="1*"/>
+       <colspec colnum="2" colname="Description" colwidth="3*"/>
+       
+       <spanspec spanname="fullwidth" namest="Title" nameend="Description" align="center"/>
+        
+       <tbody>
+         <row>
+           <entry><emphasis role="bold">Title</emphasis></entry>
+           <entry><emphasis role="bold">Property Name &amp; Description</emphasis></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>Disable Type System consolidation</para></entry>
+           
+           <entry><para>uima.disable_typesystem_consolidation</para>
+           
+                  <para>Default: equal Type Systems are consolidated.</para>
+                  <para>When type systems are committed, the resulting Type System (Java object) 
+                    is considered read-only, and is compared to already existing Type Systems.
+                    Existing type systems, if found, are reused.  Besides saving storage, this can
+                    sometimes improve locality of reference, and therefore, performance. 
+                    Setting this property disables this consolidation.</para></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>Enable finding all Feature Structures by their int ID</para></entry>
+           
+           <entry><para>uima.enable_id_to_feature_structure_map_for_all_fss</para>
+           
+                  <para>Default: normally created Feature Structures are not kept in a map.</para>
+                  <para>In version 3, normally, Feature Structures are not added to the 
+                        map used by the Low Level CAS API to map from int ids to Feature Structures.
+                        This has the benefit that no longer referenced Feature Structures may be 
+                        garbaged collected.  This behavior may be overridden by this property.</para></entry>
+         </row>
+         
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Trading off runtime checks for speed</emphasis></entry>
+         </row>
+                  
+         <row>
+           <entry><para>Disabling runtime feature validation</para></entry>
+           
+           <entry><para>uima.uima.disable_runtime_feature_validation</para>
+           
+                  <para>Once code is running correctly, you may remove this check for performance
+                    reasons by setting this property.</para></entry>
+         </row>
+
+         <row>
+           <entry><para>Disabling runtime feature <emphasis>value</emphasis> validation</para></entry>
+           
+           <entry><para>uima.disable_runtime_feature_value_validation</para>
+           
+                  <para>Default: features being set into FS features which are FSs are checked for proper type subsumption.</para>
+                  <para>Once code is running correctly, you may remove this check for performance
+                    reasons by setting this property.</para></entry>
+         </row>
+
+       </tbody>
+     </tgroup>
+   </informaltable>
+    
+  </section>
+  
+</chapter>
