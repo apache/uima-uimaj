@@ -30,8 +30,6 @@ import org.apache.uima.cas.FeatureStructure;
  */
 @Deprecated
 public interface FeatureStructureImpl extends FeatureStructure {
-
-  int getAddress(); 
   
   String toString(int indent);
 

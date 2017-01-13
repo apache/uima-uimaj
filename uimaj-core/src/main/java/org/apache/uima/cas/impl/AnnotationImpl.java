@@ -21,10 +21,10 @@ package org.apache.uima.cas.impl;
 import org.apache.uima.cas.text.AnnotationFS;
 
 /**
- * For backwards compatibility only with V2
- * @deprecated
+ * For backwards compatibility with V2
+ * @deprecated use Annotation instead
  */
 @Deprecated
-public interface AnnotationImpl extends AnnotationFS {
+public interface AnnotationImpl extends AnnotationFS, FeatureStructureImpl {
 
 }
