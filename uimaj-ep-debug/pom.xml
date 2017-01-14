@@ -100,7 +100,7 @@ UIMA data structures to the Eclipse Debug displays</description>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.platform</groupId>
-          <artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
+          <artifactId>org.eclipse.swt</artifactId>
         </exclusion>
       </exclusions>
 		</dependency>
