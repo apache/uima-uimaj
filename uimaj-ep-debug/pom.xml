@@ -102,6 +102,15 @@ UIMA data structures to the Eclipse Debug displays</description>
           <groupId>org.eclipse.platform</groupId>
           <artifactId>org.eclipse.swt</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.ui.workbench</artifactId>
+        </exclusion>       
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.search</artifactId>
+        </exclusion>
+        
       </exclusions>
 		</dependency>
     
