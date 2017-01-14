@@ -103,6 +103,13 @@
 			<artifactId>org.eclipse.jdt.debug.ui</artifactId>
 			<version>3.2.0</version>
 			<scope>provided</scope>
+			<!-- https://issues.apache.org/jira/browse/UIMA-5252 -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.platform</groupId>
+          <artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
+        </exclusion>
+      </exclusions>
 		</dependency>
     
     <!-- dependencies added to overcome 3.6 maven central corrupted upload -->
