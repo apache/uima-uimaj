@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-alpha-SNAPSHOT</version>
+    <version>3.0.0-alpha</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-launcher
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-ep-launcher
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-launcher
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-ep-launcher
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-launcher
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-ep-launcher
     </url>
   </scm>
   
@@ -231,7 +231,7 @@
             -->
             <Bundle-Activator>org.apache.uima.ep_launcher.LauncherPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.launcher;singleton:=true</Bundle-SymbolicName>
-            <!-- Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment   invalid value : JavaSE-1.8 --> 
+            <!-- Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment invalid value : JavaSE-1.8 --> 
 			<!-- NOTE: ANY CONTINUATION LINES for Require-Bundle MUST START IN Col1 else manifest is potentially wrong -->
             <Require-Bundle>org.eclipse.core.runtime</Require-Bundle>
             <Import-Package>
