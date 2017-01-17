@@ -53,7 +53,11 @@
       http://svn.apache.org/viewvc/uima/uimaj/trunk/jcasgen-maven-plugin
     </url>
   </scm>
-	
+  
+  <properties>
+    <uimaScmProject>${project.artifactId}</uimaScmProject>
+  </properties>
+  
 	<dependencies>
 		<!-- Dependencies on the Maven Plugin API and friends -->
 		<dependency>
