@@ -187,7 +187,7 @@ public class UIMAResultPrinter extends ResultPrinter implements TestListener {
   }
 
   /**
-   * @see org.junit.TestListener#addFailure(Test, AssertionFailedError)
+   * @see junit.framework.TestListener#addFailure(Test, AssertionFailedError)
    */
   public void addFailure(Test test, AssertionFailedError t) {
     getWriter().print("failure");
