@@ -91,7 +91,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * Performs initialization logic. This implementation just reads values for the configuration
    * parameters.
    * 
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(UimaContext)
+   * @see org.apache.uima.analysis_component.JCasAnnotator_ImplBase#initialize(UimaContext)
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
