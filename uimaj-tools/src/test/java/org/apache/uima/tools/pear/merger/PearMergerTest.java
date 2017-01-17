@@ -22,7 +22,7 @@ package org.apache.uima.tools.pear.merger;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

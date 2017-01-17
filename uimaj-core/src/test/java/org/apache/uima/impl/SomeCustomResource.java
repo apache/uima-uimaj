@@ -27,7 +27,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
 import org.apache.uima.resource.Resource_ImplBase;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 
 public class SomeCustomResource extends Resource_ImplBase {

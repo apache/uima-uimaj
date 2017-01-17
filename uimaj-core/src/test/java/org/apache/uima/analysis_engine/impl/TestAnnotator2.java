@@ -36,7 +36,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UimaContextHolderTest;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Annotator class used for testing.

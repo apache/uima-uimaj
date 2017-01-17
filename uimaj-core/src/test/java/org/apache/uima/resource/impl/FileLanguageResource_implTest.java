@@ -28,7 +28,7 @@ import org.apache.uima.resource.FileLanguageResourceSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

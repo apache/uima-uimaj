@@ -18,7 +18,7 @@
  */
 package org.apache.uima.collection.impl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.uima.analysis_component.CasMultiplier_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;

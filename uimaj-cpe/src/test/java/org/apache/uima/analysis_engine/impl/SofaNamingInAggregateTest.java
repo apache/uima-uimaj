@@ -21,7 +21,7 @@ package org.apache.uima.analysis_engine.impl;
 
 import java.util.HashMap;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

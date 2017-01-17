@@ -63,7 +63,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * A CAS equality checker for JUnit.

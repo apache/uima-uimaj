@@ -24,7 +24,7 @@ import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

@@ -21,7 +21,7 @@ package org.apache.uima.collection.impl;
 
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.CasTestUtil;

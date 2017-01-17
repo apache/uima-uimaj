@@ -29,8 +29,8 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.metadata.impl.SofaMapping_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+import org.junit.Assert;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public class SofaMapping_implTest extends TestCase {

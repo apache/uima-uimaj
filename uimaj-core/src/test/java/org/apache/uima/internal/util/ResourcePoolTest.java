@@ -28,7 +28,7 @@ import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.Level;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

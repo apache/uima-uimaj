@@ -40,7 +40,7 @@ import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

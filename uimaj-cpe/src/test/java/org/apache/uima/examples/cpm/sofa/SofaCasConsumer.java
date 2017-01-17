@@ -19,7 +19,7 @@
 
 package org.apache.uima.examples.cpm.sofa;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;

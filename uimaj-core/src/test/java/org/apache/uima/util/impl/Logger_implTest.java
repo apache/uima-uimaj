@@ -21,7 +21,7 @@ package org.apache.uima.util.impl;
 
 import org.apache.uima.util.Level;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 /**

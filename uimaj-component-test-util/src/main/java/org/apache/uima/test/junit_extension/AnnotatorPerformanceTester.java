@@ -24,7 +24,7 @@ import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.logging.LogManager;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
