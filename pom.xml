@@ -49,13 +49,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/
     </url>
   </scm>
 

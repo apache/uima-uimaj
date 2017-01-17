@@ -36,13 +36,13 @@
   
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-bootstrap
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-bootstrap
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-bootstrap
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-bootstrap
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-bootstrap
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-bootstrap
     </url>
   </scm>
   

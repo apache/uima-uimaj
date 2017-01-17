@@ -43,13 +43,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-tools
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-tools
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-tools
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-tools
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-tools
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-tools
     </url>
   </scm>
   

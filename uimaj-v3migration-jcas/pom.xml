@@ -35,13 +35,13 @@
   
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-jcas
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-jcas
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-jcas
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-jcas
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-jcas
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-jcas
     </url>
   </scm>
   
