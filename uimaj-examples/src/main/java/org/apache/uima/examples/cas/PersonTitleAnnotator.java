@@ -24,7 +24,6 @@ import java.util.Arrays;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.analysis_engine.annotator.AnnotatorContext;
 import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -92,7 +91,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
    * Performs initialization logic. This implementation just reads values for the configuration
    * parameters.
    * 
-   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(AnnotatorContext)
+   * @see org.apache.uima.analysis_engine.annotator.BaseAnnotator#initialize(UimaContext)
    */
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     super.initialize(aContext);
