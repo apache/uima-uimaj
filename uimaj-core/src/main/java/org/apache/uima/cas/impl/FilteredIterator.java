@@ -19,18 +19,16 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.text.AnnotationFS;
 
 /**
  * Implements a filtered iterator.
  */
-class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T> {
+class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
 
   // The base iterator.
   private FSIterator<T> it;
@@ -91,8 +89,18 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
     adjustForConstraintForward();
   }
 
+  public void moveToNextNvc() {
+    this.it.moveToNextNvc();
+    adjustForConstraintForward();
+  }
+
   public void moveToPrevious() {
     this.it.moveToPrevious();
+    adjustForConstraintBackward();
+  }
+
+  public void moveToPreviousNvc() {
+    this.it.moveToPreviousNvc();
     adjustForConstraintBackward();
   }
 
@@ -101,6 +109,10 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
     return this.it.get();
   }
 
+  public T getNvc() {
+    return this.it.getNvc();
+  }
+  
   /**
    * @see org.apache.uima.cas.FSIterator#copy()
    */
@@ -116,12 +128,12 @@ class FilteredIterator<T extends FeatureStructure> extends FSIteratorImplBase<T>
     adjustForConstraintForward();
   }
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
-   */
-  @Override
-  <TT extends AnnotationFS> void moveTo(int begin, int end) {
-    ((FSIteratorImplBase<T>)(this.it)).moveTo(begin, end);
-    adjustForConstraintForward();
-  }
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.impl.FSIteratorImplBase#moveTo(java.util.Comparator)
+//   */
+//  @Override
+//  <TT extends AnnotationFS> void moveTo(int begin, int end) {
+//    ((FSIterator_concurrentmod<T>)(this.it)).moveTo(begin, end);
+//    adjustForConstraintForward();
+//  }
 }

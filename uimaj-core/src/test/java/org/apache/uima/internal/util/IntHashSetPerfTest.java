@@ -21,9 +21,9 @@ package org.apache.uima.internal.util;
 
 import java.util.Random;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.internal.util.rb_trees.IntArrayRBT;
+
+import junit.framework.TestCase;
 
 public class IntHashSetPerfTest extends TestCase {
   /**

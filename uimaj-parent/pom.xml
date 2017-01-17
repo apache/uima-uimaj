@@ -38,7 +38,7 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.10.0-SNAPSHOT</version>
+  <version>3.0.0-alpha</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -53,13 +53,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-parent
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-parent
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-parent
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-parent
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-parent
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-parent
     </url>
   </scm>
 
@@ -144,7 +144,7 @@
      BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
-    <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
+    <compat.level>NON_BACKWARD_COMPATIBLE</compat.level>
     <compat.previous.version>2.9.0</compat.previous.version>
 
     <!-- 
@@ -153,13 +153,13 @@
      properties already, they should be injected manually into the plugins. 
     -->    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
     <maven.surefire.heap>512m</maven.surefire.heap>
     <maven.surefire.argLine />
     <jacoco.argLine />
   </properties>
-
+  
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -171,9 +171,24 @@
     </dependencies>
   </dependencyManagement>
   
+  <dependencies>
+    <!-- Used to enable findbug rule suppression annotations -->
+    <!-- This is the Apache v2 license version -->      
+    <dependency>
+      <groupId>com.github.stephenc.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+      <version>1.3.9-1</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+  
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.9</version>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
@@ -185,7 +200,10 @@
      
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId> 
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <source>8</source>
+          </configuration>
           <executions>
             <execution>
               <id>attach-javadocs</id>
@@ -201,7 +219,7 @@
             </execution>
           </executions>
         </plugin>
-
+        
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -232,6 +250,33 @@
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>0.7.6.201602180812</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <!-- version 2.0.0 fails -->
+          <!-- version 2.3.4 eliminates spurious warning messages -->
+          <!-- version 2.5 has accidental dependency on Java 6 -->
+          <!-- version 2.5.0 gives error - default pkg '.' not permitted, o.a.u.cas.impl -->
+          <!-- version 2.3.7 failing in some projects  -->  <!-- doesnt support java 8 -->
+             <!-- currently only overridden in uimaj-ep-configuration because otherwise, that is excluded from 
+                  update site plugins/ folder -->
+          <version>3.0.1</version>        
+        </plugin>
+        
+        <plugin>
+          <groupId>org.apache.rat</groupId>
+          <artifactId>apache-rat-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <exclude>src/main/run_configuration/*.launch</exclude>
+                </excludes>    
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>       
       </plugins>
     </pluginManagement>
     <plugins>
@@ -408,10 +453,6 @@
                         <excludes>
                           <exclude>**/impl/**/*</exclude>
                           <exclude>**/internal/**/*</exclude>
-                          <exclude>org/apache/uima/cas/CASRuntimeException</exclude>
-                          <exclude>org/apache/uima/cas/SerialFormat</exclude>
-                          <exclude>org/apache/uima/util/CasIOUtils</exclude>
-                          <exclude>org/apache/uima/util/CasLoadMode</exclude>
                         </excludes>
                       </requireBackwardCompatibility>
                     </rules>
@@ -423,5 +464,54 @@
         </pluginManagement>
       </build>
     </profile>
+    <profile>
+      <id>m2e</id>
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+          
+            <!--This plugin's configuration is used to store Eclipse m2e settings 
+                only. It has no influence on the Maven build itself. -->
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                  
+                    <!-- ***************************** -->
+                    <!-- IGNORE maven-bundle-plugin    -->
+                    <!-- ***************************** -->
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.felix</groupId>
+                        <artifactId>
+                          maven-bundle-plugin
+                        </artifactId>
+                        <versionRange>[3,)</versionRange>
+                        <goals>
+                          <goal>process</goal>
+                          <goal>bundle</goal>
+                          <goal>manifest</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>  
   </profiles>
 </project>

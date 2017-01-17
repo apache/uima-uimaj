@@ -55,6 +55,8 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.uima.util.impl.Constants;
+
 /**
  * The <code>FileUtil</code> class provides utility methods for working with general files.
  */
@@ -997,7 +999,7 @@ public class FileUtil {
       outputArray = new String[outputList.size()];
       outputList.toArray(outputArray);
     }
-    return (outputArray != null) ? outputArray : new String[0];
+    return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
 
   /**
@@ -1026,7 +1028,7 @@ public class FileUtil {
         }
       }
     }
-    return (outputArray != null) ? outputArray : new String[0];
+    return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
 
   /**
@@ -1057,7 +1059,7 @@ public class FileUtil {
         }
       }
     }
-    return (outputArray != null) ? outputArray : new String[0];
+    return (outputArray != null) ? outputArray : Constants.EMPTY_STRING_ARRAY;
   }
 
   /**

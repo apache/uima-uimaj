@@ -100,7 +100,7 @@ public class CasManager_impl implements CasManager {
         return;
       }
       throw new UIMARuntimeException(UIMARuntimeException.ILLEGAL_ADDING_OF_NEW_META_INFO_AFTER_CAS_DEFINED, 
-              new Object[] {aMetaData.getSourceUrlString()});  // internal error  UIMA-1249    
+             aMetaData.getSourceUrlString());  // internal error  UIMA-1249    
     }
     mMetaDataList.add(aMetaData);
 //    mCasDefinition = null; // marka this stale

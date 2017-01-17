@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.0-SNAPSHOT</version>
+    <version>3.0.0-alpha</version>
     <relativePath>uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -49,19 +49,19 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha
     </url>
   </scm>
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>2.10.0SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->
+    <jiraVersion>3.0.0SDK-alpha</jiraVersion>   
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
@@ -159,6 +159,27 @@
       <artifactId>uimaj-json</artifactId>
       <version>${project.version}</version>
     </dependency>    
+    <dependency>
+      <groupId>org.apache.uima</groupId>
+      <artifactId>uimaj-v3migration-jcas</artifactId>
+      <version>${project.version}</version>
+    </dependency>  
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-core</artifactId>
+      <version>0.5.28</version>
+    </dependency>  
+    <dependency>
+      <groupId>org.bitbucket.mstrobel</groupId>
+      <artifactId>procyon-compilertools</artifactId>
+      <version>0.5.28</version>
+    </dependency>  
+    <dependency>    <!-- apache v2 license  2016 checked -->
+      <groupId>com.github.javaparser</groupId>
+      <artifactId>javaparser-core</artifactId>
+      <version>2.5.1</version>
+    </dependency>
+      
   </dependencies>
 
   
@@ -188,8 +209,7 @@
             <goals>
               <goal>javadoc</goal>
             </goals>
-            <configuration>
-              <source>7</source> 
+            <configuration> 
               <groups>
                 <group>
                   <title>Packages</title>
@@ -264,7 +284,8 @@
                   <exclude>uimaj-bootstrap/**</exclude>
                   <exclude>uimaj-internal-tools/**</exclude>
                   <exclude>uimaj-json/**</exclude>
-                  <exclude>src/main/readme/NOTICE-without-jackson</exclude>
+                  <exclude>uimaj-v3migration-jcas/**</exclude>
+                  <exclude>src/main/bin_distr_license_notices/NOTICE-without-jackson</exclude>
                </excludes>
               </configuration>
             </execution>

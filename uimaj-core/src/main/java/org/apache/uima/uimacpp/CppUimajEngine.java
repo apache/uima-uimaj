@@ -146,7 +146,7 @@ public class CppUimajEngine {
       completeSerializer.setCasMgrSerializer(serializer);
       completeSerializer.setCasSerializer(Serialization.serializeCAS(casImpl));
 
-      casImpl.reinit(completeSerializer);
+      casImpl.getBinaryCasSerDes().reinit(completeSerializer);
 
       // System.out.println(cc.getProcessingResourceMetaData().getName());
     } catch (Exception exc) {
@@ -186,7 +186,7 @@ public class CppUimajEngine {
       serializer.shortHeapArray = aShortHeapArray;
       serializer.longHeapArray = aLongHeapArray;
 
-      casImpl.reinit(serializer);
+      casImpl.getBinaryCasSerDes().reinit(serializer);
 
       // 2. create result spec
       if (ae != null) {

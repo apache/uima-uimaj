@@ -72,16 +72,18 @@ public interface FSIndexRepository {
   /**
    * Get all indexes in this repository.
    * 
+   * @param <T> the generic type of the FeatureStructures
    * @return All indexes.
    */
-  Iterator<FSIndex<FeatureStructure>> getIndexes();
+  <T extends FeatureStructure> Iterator<FSIndex<T>> getIndexes();
 
   /**
    * Get all indexes in this repository as low level indexes
    * 
+   * @param <T> the generic type of the FeatureStructures
    * @return All indexes.
    */
-  Iterator<LowLevelIndex> ll_getIndexes();
+  <T extends FeatureStructure> Iterator<LowLevelIndex<T>> ll_getIndexes();
   
   /**
    * Add a feature structure to all appropriate indexes in the repository. If no indexes exist for
@@ -95,20 +97,22 @@ public interface FSIndexRepository {
    * 
    * @param fs
    *          The FS to be added.
+   * @param <T> the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
-  void addFS(FeatureStructure fs);
+  <T extends FeatureStructure> void addFS(T fs);
 
   /**
    * Remove a feature structure from all indexes in the repository.
    * 
    * @param fs
    *          The FS to be removed.
+   * @param <T> the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
    */
-  void removeFS(FeatureStructure fs);
+  <T extends FeatureStructure> void removeFS(T fs);
 
   /**
    * Remove all instances of type, including all subtypes from all indexes in the repository view.
@@ -126,8 +130,7 @@ public interface FSIndexRepository {
   
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
-   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
-   * are not removed.
+   * subtypes).  The elements are returned in arbitrary order.
    *
    * Generics: T is the Java class for aType.
    * @param aType

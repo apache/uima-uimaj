@@ -123,7 +123,7 @@ public class I18nUtil {
       } else
         return message;
     } catch (Exception e) {
-      return "MESSAGE LOCALIZATION FAILED: " + e.getMessage();
+      return "MESSAGE LOCALIZATION FAILED: The key " + aMessageKey + " may be missing in the properties file " + e.getMessage();
     }
   }
 

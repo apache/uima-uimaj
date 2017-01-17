@@ -161,7 +161,7 @@ public class InstallationDescriptor implements Serializable {
 
     public String deploymentType = InstallationDescriptorHandler.STANDARD_TAG;
 
-    public ServiceInfo serviceInfo = null;
+    public transient ServiceInfo serviceInfo = null;  // ServiceInfo is not serializable
 
     public Hashtable<String, Properties> networkParams = null;
 

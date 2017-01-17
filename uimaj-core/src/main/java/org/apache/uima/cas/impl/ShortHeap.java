@@ -22,7 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Arrays;
 
 /**
- * Encapsulate 16 bit storage for a CAS.HEAP_CELL_SIZE
+ * the v2 CAS short aux heap - used in modeling some binary (de)serialization
  */
 final class ShortHeap extends CommonAuxHeap {
 
@@ -78,6 +78,12 @@ final class ShortHeap extends CommonAuxHeap {
     return pos;
   }
 
+  int addShortArray(short[] val) {
+    int pos = reserve(val.length);
+    System.arraycopy(val, 0, heap, pos, val.length);
+    return pos;
+  }
+
   protected void reinit(short[] shortHeap) {
     int argLength = shortHeap.length;
     if (argLength > heap.length)
@@ -86,4 +92,11 @@ final class ShortHeap extends CommonAuxHeap {
     System.arraycopy(shortHeap, 0, heap, 0, argLength);
     this.heapPos = argLength;
   }
+  
+  public short[] toArray() {
+    short[] r = new short[heapPos];
+    System.arraycopy(heap, 0, r, 0, heapPos);
+    return r;
+  }
+
 }

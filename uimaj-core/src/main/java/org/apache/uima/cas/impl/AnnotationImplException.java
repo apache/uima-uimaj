@@ -117,7 +117,7 @@ public class AnnotationImplException extends Exception {
 
   /** @return The same as getMessage(), but prefixed with <code>"AnnotationImplException: "</code>. */
   public String toString() {
-    return "AnnotationImplException: " + this.getMessage();
+    return this.getClass().getSimpleName() + ": " + this.getMessage();
   }
 
   /**

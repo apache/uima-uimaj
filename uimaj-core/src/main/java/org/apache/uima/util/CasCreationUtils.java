@@ -53,6 +53,7 @@ import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.LinearTypeOrderBuilder;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas_data.CasData;
 import org.apache.uima.cas_data.FeatureStructure;
 import org.apache.uima.cas_data.PrimitiveValue;
@@ -86,6 +87,10 @@ import org.apache.uima.resource.metadata.impl.ProcessingResourceMetaData_impl;
  */
 public class CasCreationUtils {
 
+  private final static AllowedValue[] EMPTY_ALLOWED_VALUE_ARRAY = new AllowedValue[0];
+  
+  private final static FeatureDescription[] EMPTY_FEAT_DESC_ARRAY = new FeatureDescription[0];
+  
   /**
    * Creates a new CAS instance. Note this method does not work for Aggregate Analysis Engine
    * descriptors -- use {@link #createCas(AnalysisEngineDescription)} instead.
@@ -561,13 +566,18 @@ public class CasCreationUtils {
     } catch (InvalidXMLException e) {
       throw new ResourceInitializationException(e);
     }
-
-    // get initial heap size
+    
+ // get initial heap size
     String initialHeapSizeStr = null;
     if (aPerformanceTuningSettings != null) {
       initialHeapSizeStr = aPerformanceTuningSettings
           .getProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE);
     }
+    
+    int initialHeapSize = (null == initialHeapSizeStr) 
+                            ? CASImpl.DEFAULT_INITIAL_HEAP_SIZE
+                            : Integer.parseInt(initialHeapSizeStr);
+    
     
     // Check Jcas cache performance setting.  Defaults to true.
     boolean useJcasCache = true;
@@ -582,18 +592,21 @@ public class CasCreationUtils {
     // create CAS using either aTypeSystem or aTypeSystemDesc
     CASMgr casMgr;
     if (aTypeSystem != null) {
-      if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), aTypeSystem, useJcasCache);
-      } else {
-        casMgr = CASFactory.createCAS(aTypeSystem, useJcasCache);
+      casMgr = CASFactory.createCAS(initialHeapSize, aTypeSystem, useJcasCache);
+      
+      // Set JCas ClassLoader - before setupTypeSystem
+      if (aResourceManager.getExtensionClassLoader() != null) {
+        casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
       }
+
     } else // no TypeSystem to reuse - create a new one
     {
-      if (initialHeapSizeStr != null) {
-        casMgr = CASFactory.createCAS(Integer.parseInt(initialHeapSizeStr), useJcasCache);
-      } else {
-        casMgr = CASFactory.createCAS(CASImpl.DEFAULT_INITIAL_HEAP_SIZE, useJcasCache);
+      casMgr = CASFactory.createCAS();
+ 
+      if (aResourceManager.getExtensionClassLoader() != null) {
+        casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
       }
+
       // install type system
       setupTypeSystem(casMgr, aTypeSystemDesc);
       // Commit the type system
@@ -616,16 +629,15 @@ public class CasCreationUtils {
     // Commit the index repository
     casMgr.getIndexRepositoryMgr().commit();
 
-    // Set JCas ClassLoader
-    if (aResourceManager.getExtensionClassLoader() != null) {
-      casMgr.setJCasClassLoader(aResourceManager.getExtensionClassLoader());
-    }
 
     return casMgr.getCAS().getView(CAS.NAME_DEFAULT_SOFA);
   }
 
   /**
    * Create a CAS from a CAS Definition.
+   * 
+   * In V3, creating the type system is expensive (due to loading and setting up of JCas classes), so
+   * we do the type system creation once per CasDefinition and store it with the CAS definition
    * 
    * @param casDef
    *                completely describes the CAS to be created
@@ -640,8 +652,21 @@ public class CasCreationUtils {
    */
   public static CAS createCas(CasDefinition casDef, Properties performanceTuningSettings)
       throws ResourceInitializationException {
-    return createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), casDef
-        .getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
+    TypeSystemImpl tsi = casDef.getTypeSystemImpl();
+    CAS cas;
+    if (null == tsi) {
+      synchronized (casDef) {
+        if (null == tsi) { // retest under sync lock
+          cas = createCas(casDef.getTypeSystemDescription(), casDef.getTypePriorities(), 
+              casDef.getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
+          casDef.setTypeSystemImpl((TypeSystemImpl) cas.getTypeSystem());
+          return cas;
+        }  
+      }
+    } 
+    
+    return doCreateCas(tsi, casDef.getTypeSystemDescription(), casDef.getTypePriorities(), 
+            casDef.getFsIndexDescriptions(), performanceTuningSettings, casDef.getResourceManager());
   }
 
   /**
@@ -1222,7 +1247,7 @@ public class CasCreationUtils {
   private static AllowedValue[] getAllowedValues(TypeDescription type) {
     AllowedValue[] r = type.getAllowedValues();
     if (r == null) {
-      return new AllowedValue[0];
+      return EMPTY_ALLOWED_VALUE_ARRAY;
     }
     return r;
   }
@@ -1664,7 +1689,7 @@ public class CasCreationUtils {
       throws ResourceInitializationException {
     FeatureDescription[] existingFeatures = aType.getFeatures();
     if (existingFeatures == null) {
-      existingFeatures = new FeatureDescription[0];
+      existingFeatures = EMPTY_FEAT_DESC_ARRAY;
     }
 
     for (int i = 0; i < aFeatures.length; i++) {
@@ -1784,7 +1809,7 @@ public class CasCreationUtils {
 
     @Override
     public String toString() {
-      return "MetaDataCacheKey [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
+      return this.getClass().getSimpleName() + " [resourceSpecifier=" + resourceSpecifier + ", rmClassLoader="
           + rmClassLoader + ", rmDataPath=" + rmDataPath + "]";
     }
   }

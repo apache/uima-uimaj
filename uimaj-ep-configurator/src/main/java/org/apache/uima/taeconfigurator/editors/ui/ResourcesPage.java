@@ -23,22 +23,37 @@ import org.apache.uima.taeconfigurator.editors.Form2Panel;
 import org.apache.uima.taeconfigurator.editors.MultiPageEditor;
 import org.eclipse.ui.forms.IManagedForm;
 
+
+/**
+ * The Class ResourcesPage.
+ */
 public class ResourcesPage extends HeaderPageWithSash {
 
+  /** The resource dependency section. */
   private ResourceDependencySection resourceDependencySection;
 
+  /** The extnl res bind section. */
   // private ExternalResourceSection externalResourceSection;
   private ExtnlResBindSection extnlResBindSection;
 
+  /** The res bind import section. */
   private ImportResBindSection resBindImportSection;
 
+  /**
+   * Instantiates a new resources page.
+   *
+   * @param editor the editor
+   */
   public ResourcesPage(MultiPageEditor editor) {
     super(editor, "Resource Definitions and Bindings");
   }
 
   /**
-   * Called by the framework to fill in the contents
+   * Called by the framework to fill in the contents.
+   *
+   * @param managedForm the managed form
    */
+  @Override
   protected void createFormContent(IManagedForm managedForm) {
 
     // Only primitive engines can declare Resource Dependencies
@@ -58,14 +73,29 @@ public class ResourcesPage extends HeaderPageWithSash {
     createToolBarActions(managedForm);
   }
 
+  /**
+   * Gets the resource dependency section.
+   *
+   * @return the resource dependency section
+   */
   public ResourceDependencySection getResourceDependencySection() {
     return resourceDependencySection;
   }
 
+  /**
+   * Gets the resource bindings section.
+   *
+   * @return the resource bindings section
+   */
   public ExtnlResBindSection getResourceBindingsSection() {
     return extnlResBindSection;
   }
 
+  /**
+   * Gets the res bind import section.
+   *
+   * @return the res bind import section
+   */
   public ImportResBindSection getResBindImportSection() {
     return resBindImportSection;
   }

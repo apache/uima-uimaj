@@ -31,6 +31,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
+
 /**
  * 
  * This class handles the "Edit Installation Descriptor" action, which appear in the context menu of
@@ -41,24 +42,33 @@ import org.eclipse.ui.PlatformUI;
  */
 public class EditInstallationDescriptorAction implements IObjectActionDelegate {
 
+  /** The ssel. */
   private IStructuredSelection ssel;
 
   /**
-   * Constructor
+   * Constructor.
    */
   public EditInstallationDescriptorAction() {
     super();
   }
 
   /**
+   * Sets the active part.
+   *
+   * @param action the action
+   * @param targetPart the target part
    * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
    */
+  @Override
   public void setActivePart(IAction action, IWorkbenchPart targetPart) {
   }
 
   /**
-   * See IActionDelegate#run(IAction)
+   * See IActionDelegate#run(IAction).
+   *
+   * @param action the action
    */
+  @Override
   public void run(IAction action) {
     Shell shell = new Shell();
 
@@ -87,8 +97,12 @@ public class EditInstallationDescriptorAction implements IObjectActionDelegate {
   }
 
   /**
-   * See IActionDelegate#selectionChanged(IAction, ISelection)
+   * See IActionDelegate#selectionChanged(IAction, ISelection).
+   *
+   * @param action the action
+   * @param selection the selection
    */
+  @Override
   public void selectionChanged(IAction action, ISelection selection) {
     ssel = null;
     if (selection instanceof IStructuredSelection)

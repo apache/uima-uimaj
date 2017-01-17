@@ -83,7 +83,7 @@ public class MsgLocalizationClassLoader {
      */
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<ClassLoader, ClassLoader>(7);
+      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<>(7);
       // get the call stack
       Class<?>[] cs = new CallStack().getCallStack();
       // start at the caller of the caller's class loader
@@ -122,7 +122,7 @@ public class MsgLocalizationClassLoader {
     
     @Override
     public URL getResource(String name) {
-      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<ClassLoader, ClassLoader>(7);
+      Map<ClassLoader,ClassLoader> alreadySearched = new IdentityHashMap<>(7);
       // get the call stack
       Class<?>[] cs = new CallStack().getCallStack();
       // start at the caller of the caller's class loader

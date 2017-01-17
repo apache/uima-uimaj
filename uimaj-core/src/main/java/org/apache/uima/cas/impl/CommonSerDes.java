@@ -57,7 +57,7 @@ public class CommonSerDes {
    *     - byte in 0xFF 00 position: 
    *               a sequential version number, incrementing (starting w/ 0)
    *     
-   *         Form 4:  0 = original (UIMA v2)
+   *                  0 = original (UIMA v2)
    *                  1 = fixes to original found during V3 development
    *                  2 = V3
    *                       
@@ -75,7 +75,7 @@ public class CommonSerDes {
     boolean form6;
     boolean typeSystemIncluded;  // for form 6, TS only
     boolean typeSystemIndexDefIncluded;
-    byte seqVersionNbr;
+    byte seqVersionNbr = 2;  // safety, might be changed to write v2 style 
     boolean isV3;
     boolean swap;
     int v;      // for error messages
@@ -95,6 +95,11 @@ public class CommonSerDes {
     
     
     public void write(DataOutputStream dos) throws IOException {
+      if (isV3) {
+        assert seqVersionNbr >= 2; 
+      } else {
+        assert seqVersionNbr < 2;
+      }
       v = (!isCompressed && !isDelta) ? 1 : 0;
       if (isDelta) v |= 0x02;
       if (isCompressed) v |= 0x04;
@@ -120,7 +125,7 @@ public class CommonSerDes {
       }
       
     }
-    
+
     /* ******** Header Properties **********/
     public boolean isDelta() {
       return isDelta;
@@ -174,7 +179,7 @@ public class CommonSerDes {
       }
     }
   }
-
+  
   public static Header readHeader(DataInputStream dis) throws IOException {
 
     Header h = new Header();
@@ -198,7 +203,7 @@ public class CommonSerDes {
     h.typeSystemIncluded = (v & 16) != 0;
     h.seqVersionNbr = (byte) ((v & 0xFF00) >> 8);
     h.isV3 = (v & 0x010000) != 0;
-    
+   
     if (h.isCompressed) {
       v = r.readInt();
       h.form4 = v == 0;

@@ -23,9 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
@@ -38,6 +35,7 @@ import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
 import org.apache.uima.analysis_engine.metadata.impl.FixedFlow_impl;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
 import org.apache.uima.resource.ResourceSpecifier;
@@ -51,6 +49,9 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 
 public class MultiprocessingAnalysisEngine_implTest extends TestCase {
@@ -223,7 +224,7 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
       
       final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
       ProcessThread[] threads = new ProcessThread[NUM_THREADS];
-//      Random random = new Random();      
+      Random random = new Random();      
 
       for (int i = 0; i < NUM_THREADS; i++) {
         threads[i] = new ProcessThread(ae);
@@ -283,7 +284,6 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
   
-  
   public void testProcessManyAgg() throws Exception {
     //get Resource Specifier from XML file
     XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
@@ -294,21 +294,13 @@ public class MultiprocessingAnalysisEngine_implTest extends TestCase {
     }
   }
   
-//  public void testLoopProcessManyAgg() throws Exception {
-//    XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
-//    final ResourceSpecifier specifier = 
-//        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
-//    Misc.timeLoops("ProcessManyAgg", 1000, new Callable<Object>() {
-//
-//      @Override
-//      public Object call() throws Exception {
-//        processMany(specifier);
-//        return null;
-//      }
-//    });
-//      
-//  }
- 
+  // rename to run this in a loop
+  public void tstLoopProcessManyAgg() throws Exception {
+    XMLInputSource in = new XMLInputSource("src/test/resources/ExampleTae/SimpleTestAggregate.xml");
+    ResourceSpecifier specifier = 
+        UIMAFramework.getXMLParser().parseResourceSpecifier(in);
+    Misc.timeLoops("ProcessManyAgg", 1000, () -> processMany(specifier));   
+  }
   
   final int NUM_THREADS = Math.min(50, Runtime.getRuntime().availableProcessors() * 5);
   final int NUM_INSTANCES = (int)(NUM_THREADS * .7);

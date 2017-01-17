@@ -22,8 +22,6 @@ package org.apache.uima.resource.impl;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
@@ -37,6 +35,8 @@ import org.apache.uima.resource.metadata.impl.NameValuePair_impl;
 import org.apache.uima.resource.metadata.impl.ResourceMetaData_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 
 public class ConfigurableDataResourceSpecifier_implTest extends TestCase {

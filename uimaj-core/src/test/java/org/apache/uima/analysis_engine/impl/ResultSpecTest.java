@@ -22,8 +22,6 @@ package org.apache.uima.analysis_engine.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -32,10 +30,12 @@ import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.TypeSystemMgr;
-import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 public class ResultSpecTest extends TestCase {
 
@@ -49,7 +49,7 @@ public class ResultSpecTest extends TestCase {
   
   // types
   
-  private static final TypeSystemMgr ts = new TypeSystemImpl();
+  private static final TypeSystemMgr ts = CASFactory.createTypeSystem();
   private static final Type t1 = ts.addType("T1", ts.getTopType());
   private static final Feature f1 = ts.addFeature("F1", t1, t1);
   private static final Feature f1a = ts.addFeature("F1a", t1, t1);

@@ -28,13 +28,6 @@ package org.apache.uima.cas;
 public interface ArrayFS extends CommonArrayFS {
 
   /**
-   * Return the size of the array.
-   * 
-   * @return The size of the array.
-   */
-  int size(); // Java style. We can also call this getLength().
-
-  /**
    * Get the i-th feature structure from the array.
    * @param i index
    * @return The i-th feature structure.
@@ -72,7 +65,7 @@ public interface ArrayFS extends CommonArrayFS {
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException;
+      throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of an external array into this array.
@@ -90,7 +83,7 @@ public interface ArrayFS extends CommonArrayFS {
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
   void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException;
+      throws ArrayIndexOutOfBoundsException;
 
   /**
    * Creates a new array the this array is copied to.

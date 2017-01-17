@@ -25,6 +25,7 @@ import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.LowLevelCAS;
+import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -126,6 +127,21 @@ public interface CAS extends AbstractCas {
   static final String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
 
   /**
+   * Java Object type
+   */
+  static final String TYPE_NAME_JAVA_OBJECT = UIMA_CAS_PREFIX + "JavaObject";
+  
+  /**
+   * FS Array List
+   */
+  static final String TYPE_NAME_FS_ARRAY_LIST = UIMA_CAS_PREFIX + "FSArrayList";
+
+  /**
+   * int Array List
+   */
+  static final String TYPE_NAME_INT_ARRAY_LIST = UIMA_CAS_PREFIX + "IntegerArrayList";
+
+  /**
    * ArrayBase type.
    */
   static final String TYPE_NAME_ARRAY_BASE = UIMA_CAS_PREFIX + "ArrayBase";
@@ -176,6 +192,10 @@ public interface CAS extends AbstractCas {
   static final String TYPE_NAME_DOUBLE_ARRAY = UIMA_CAS_PREFIX + "DoubleArray";
 
   /**
+   * FSHashSet type
+   */
+  static final String TYPE_NAME_FS_HASH_SET = UIMA_CAS_PREFIX +  "FSHashSet"; 
+  /**
    * Sofa type.
    */
   static final String TYPE_NAME_SOFA = UIMA_CAS_PREFIX + "Sofa";
@@ -218,6 +238,17 @@ public interface CAS extends AbstractCas {
    */
   static final String FEATURE_BASE_NAME_SOFAARRAY = "sofaArray";
 
+  /**
+   * Base name of FSArrayList fsArray feature.
+   * Base name of FSHashSet   fsArray feature.
+   */
+  static final String FEATURE_BASE_NAME_FS_ARRAY = "fsArray";
+
+  /**
+   * Base name of FSArrayList fsArray feature.
+   */
+  static final String FEATURE_BASE_NAME_INT_ARRAY = "intArray";
+ 
   /**
    * Qualified name of Sofa number feature.
    */
@@ -405,17 +436,22 @@ public interface CAS extends AbstractCas {
   static final String NAME_SPACE_UIMA_TCAS = "uima" + TypeSystem.NAMESPACE_SEPARATOR + "tcas";
 
   /**
+   * UIMA TCAS name space prefix to prepend to type names (adds an extra period to the name space
+   * proper.
+   */
+  static final String UIMA_TCAS_PREFIX = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR;
+
+  /**
    * Name of annotation type.
    */
-  static final String TYPE_NAME_ANNOTATION = NAME_SPACE_UIMA_TCAS + TypeSystem.NAMESPACE_SEPARATOR
-          + "Annotation";
+  static final String TYPE_NAME_ANNOTATION = UIMA_TCAS_PREFIX + "Annotation";
 
   /**
    * Name of document annotation type.
    */
-  static final String TYPE_NAME_DOCUMENT_ANNOTATION = NAME_SPACE_UIMA_TCAS
-          + TypeSystem.NAMESPACE_SEPARATOR + "DocumentAnnotation";
+  static final String TYPE_NAME_DOCUMENT_ANNOTATION = UIMA_TCAS_PREFIX + "DocumentAnnotation";
 
+   
   /**
    * Sofa ID feature that is the handle to a text Sofa.
    */
@@ -742,8 +778,9 @@ public interface CAS extends AbstractCas {
    * the document language is specified.
    * 
    * @param <T> the Java class for the document annotation.  Could be the JCas cover class or FeatureStructure
-   * @return The document annotation, or <code>null</code> if there is none.  The return value is the
-   *         JCas cover class or the plain Java cover class for FeatureStructures if JCas is not in use.
+   * @return The document annotation.  If it doesn't exist, one is created.  The return value is the
+   *         JCas cover class or the plain Java cover class for FeatureStructures if 
+   *         there is no JCas cover class for this type.
    */
   <T extends AnnotationFS> T getDocumentAnnotation();
 
@@ -789,10 +826,10 @@ public interface CAS extends AbstractCas {
 
   /**
    * Get iterator for all SofaFS in the CAS.
-   * 
+   * @param <T> generic type of sofa iterator
    * @return an iterator over SofaFS.
    */
-  FSIterator<SofaFS> getSofaIterator();
+  <T extends SofaFS> FSIterator<T> getSofaIterator();
 
   /**
    * Create an iterator over structures satisfying a given constraint. Constraints are described in
@@ -1025,10 +1062,11 @@ public interface CAS extends AbstractCas {
    * and the index repository that contains metadata (annotations and other feature
    * structures) pertaining to that Sofa.
    * 
+   * @param <T> generic type of returned view
    * @return an iterator which returns all views.  Each object returned by
-   *   the iterator is of type CAS.
+   *   the iterator is of type CAS or a subtype.
    */
-  Iterator<CAS> getViewIterator();
+  <T extends CAS> Iterator<T> getViewIterator();
   
   /**
    * Get iterator over all views with the given name prefix.  Each view provides access to Sofa data
@@ -1084,4 +1122,23 @@ public interface CAS extends AbstractCas {
    */
   void protectIndexes(Runnable runnable);
 
+  default <T extends FeatureStructure> SelectFSs<T> select() {
+    return new SelectFSs_impl<>(this);
+  }
+
+  default <T extends FeatureStructure> SelectFSs<T> select(Type type) {
+    return new SelectFSs_impl<>(this).type(type);
+  }
+
+  default <T extends FeatureStructure> SelectFSs<T> select(Class<T> clazz) {
+    return new SelectFSs_impl<>(this).type(clazz);
+  }
+
+  default <T extends FeatureStructure> SelectFSs<T> select(int jcasType) {
+    return new SelectFSs_impl<>(this).type(jcasType);
+  }
+
+  default <T extends FeatureStructure> SelectFSs<T> select(String fullyQualifiedTypeName) {
+    return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
+  }
 }

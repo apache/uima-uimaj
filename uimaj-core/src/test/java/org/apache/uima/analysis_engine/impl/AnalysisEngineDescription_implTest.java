@@ -28,9 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.Constants;
 import org.apache.uima.ResourceSpecifierFactory;
 import org.apache.uima.UIMAFramework;
@@ -45,9 +42,9 @@ import org.apache.uima.analysis_engine.metadata.impl.FlowControllerDeclaration_i
 import org.apache.uima.cas.CAS;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.impl.FlowControllerDescription_impl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.SerializationUtils;
-import org.apache.uima.internal.util.Utilities;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ExternalResourceDependency;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -89,6 +86,8 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLParser;
+
+import junit.framework.TestCase;
 
 /**
  * Test the AnalysisEngineDescription_impl class.
@@ -312,7 +311,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     p.put(Resource.PARAM_CONFIG_MANAGER, configManager);
     p.put(Resource.PARAM_RESOURCE_MANAGER,  UIMAFramework.newDefaultResourceManager());
     p.put(Resource.PARAM_UIMA_CONTEXT, uimaContext);
-    int numberOfThreads = Math.min(50, Utilities.numberOfCores * 5); 
+    int numberOfThreads = Math.min(50, Misc.numberOfCores * 5); 
     final AnalysisEngine[] aes = new AnalysisEngine[numberOfThreads];
     System.out.format("test multicore initialize with %d threads%n",
         numberOfThreads);
@@ -379,8 +378,8 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) UIMAFramework
               .getXMLParser().parse(new XMLInputSource(is, null));
 
-      Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
-      Assert.assertEquals(aggregateDesc, newAggregateDesc);
+      assertEquals(primitiveDesc, newPrimitiveDesc);
+      assertEquals(aggregateDesc, newAggregateDesc);
 
       // test a complex descriptor
       XMLInputSource in = new XMLInputSource(JUnitExtension
@@ -396,7 +395,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       is = new ByteArrayInputStream(descXml.getBytes(encoding));
       AnalysisEngineDescription newDesc = (AnalysisEngineDescription) UIMAFramework.getXMLParser()
               .parse(new XMLInputSource(is, null));
-      Assert.assertEquals(desc, newDesc);
+      assertEquals(desc, newDesc);
 
       // test a descriptor that includes a CasConsumer
       in = new XMLInputSource(JUnitExtension
@@ -408,7 +407,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       is = new ByteArrayInputStream(descXml.getBytes(encoding));
       newDesc = (AnalysisEngineDescription) UIMAFramework.getXMLParser().parse(
               new XMLInputSource(is, null));
-      Assert.assertEquals(desc, newDesc);
+      assertEquals(desc, newDesc);
 
     } catch (Exception e) {
       JUnitExtension.handleException(e);
@@ -438,8 +437,8 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       AnalysisEngineDescription newAggregateDesc = (AnalysisEngineDescription) SerializationUtils
               .deserialize(aggregateDescBytes);
 
-      Assert.assertEquals(primitiveDesc, newPrimitiveDesc);
-      Assert.assertEquals(aggregateDesc, newAggregateDesc);
+      assertEquals(primitiveDesc, newPrimitiveDesc);
+      assertEquals(aggregateDesc, newAggregateDesc);
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
@@ -638,9 +637,9 @@ public class AnalysisEngineDescription_implTest extends TestCase {
       // e.printStackTrace();
       ex = e;
     }
-    Assert.assertNotNull(ex);
-    Assert.assertNotNull(ex.getMessage());
-    Assert.assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
+    assertNotNull(ex);
+    assertNotNull(ex.getMessage());
+    assertFalse(ex.getMessage().startsWith("EXCEPTION MESSAGE LOCALIZATION FAILED"));
   }
 
   public void testNoDelegatesToResolve() throws Exception {
@@ -658,6 +657,6 @@ public class AnalysisEngineDescription_implTest extends TestCase {
     StringWriter outerXml2 = new StringWriter();
     outer.toXML(outerXml2);
 
-    Assert.assertEquals(outerXml.toString(), outerXml2.toString());
+    assertEquals(outerXml.toString(), outerXml2.toString());
   }
 }

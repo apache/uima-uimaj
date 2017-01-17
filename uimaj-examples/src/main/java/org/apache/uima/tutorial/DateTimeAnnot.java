@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -16,103 +16,125 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.uima.tutorial;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
+
 
 /**
  * Updated by JCasGen Mon Nov 29 15:02:38 EST 2004 XML source: C:/Program
  * Files/apache/uima/examples/descriptors/tutorial/ex6/TutorialTypeSystem.xml
- * 
+ *
  * @generated
  */
 public class DateTimeAnnot extends Annotation {
-  /**
-   * @generated
-   * @ordered
-   */
-  public final static int typeIndexID = JCasRegistry.register(DateTimeAnnot.class);
 
-  /**
-   * @generated
-   * @ordered
-   */
-  public final static int type = typeIndexID;
+    /**
+     * The Constant typeIndexID.
+     *
+     * @generated 
+     * @ordered 
+     */
+    public static final int typeIndexID = JCasRegistry.register(DateTimeAnnot.class);
 
-  /** @generated */
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
+    /**
+     * The Constant type.
+     *
+     * @generated 
+     * @ordered 
+     */
+    public static final int type = typeIndexID;
 
-  /**
+    /**
+     * Gets the type index ID.
+     *
+     * @return the type index ID
+     * @generated 
+     */
+    public int getTypeIndexID() {
+        return typeIndexID;
+    }
+
+    /** The Constant _FI_shortDateString. */
+    public static final int _FI_shortDateString = TypeSystemImpl.getAdjustedFeatureOffset("shortDateString");
+
+    /**
    * Never called. Disable default constructor
-   * 
+   *
    * @generated
    */
-  protected DateTimeAnnot() {
-  }
+    protected  DateTimeAnnot() {
+    }
 
-  /**
-   * Internal - constructor used by generator
-   * 
-   * @generated
-   */
-  public DateTimeAnnot(int addr, TOP_Type type) {
-    super(addr, type);
-    readObject();
-  }
+    /**
+     * Internal - constructor used by generator.
+     *
+     * @param type the type
+     * @param casImpl the cas impl
+     * @generated 
+     */
+    public  DateTimeAnnot(TypeImpl type, CASImpl casImpl) {
+        super(type, casImpl);
+        readObject();
+    }
 
-  /** @generated */
-  public DateTimeAnnot(JCas jcas) {
-    super(jcas);
-    readObject();
-  }
+    /**
+     * Instantiates a new date time annot.
+     *
+     * @param jcas the jcas
+     * @generated 
+     */
+    public  DateTimeAnnot(JCas jcas) {
+        super(jcas);
+        readObject();
+    }
 
-  public DateTimeAnnot(JCas jcas, int begin, int end) {
-    super(jcas);
-    setBegin(begin);
-    setEnd(end);
-    readObject();
-  }
+    /**
+     * Instantiates a new date time annot.
+     *
+     * @param jcas the jcas
+     * @param begin the begin
+     * @param end the end
+     */
+    public  DateTimeAnnot(JCas jcas, int begin, int end) {
+        super(jcas);
+        setBegin(begin);
+        setEnd(end);
+        readObject();
+    }
 
-  /**
-   * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->
-   * 
-   * @generated modifiable
-   */
-  private void readObject() {
-  }
+    /**
+     * <!-- begin-user-doc --> Write your own initialization here <!-- end-user-doc -->.
+     *
+     * @generated modifiable
+     */
+    private void readObject() {
+    }
 
-  // *--------------*
-  // * Feature: shortDateString
+    // *--------------*
+    // * Feature: shortDateString
+    /**
+     * getter for shortDateString - gets.
+     *
+     * @return the short date string
+     * @generated 
+     */
+    public String getShortDateString() {
+        return _getStringValueNc(_FI_shortDateString);
+    }
 
-  /**
-   * getter for shortDateString - gets
-   * 
-   * @generated
-   */
-  public String getShortDateString() {
-    if (DateTimeAnnot_Type.featOkTst
-            && ((DateTimeAnnot_Type) jcasType).casFeat_shortDateString == null)
-      this.jcasType.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
-    return jcasType.ll_cas.ll_getStringValue(addr,
-            ((DateTimeAnnot_Type) jcasType).casFeatCode_shortDateString);
-  }
-
-  /**
-   * setter for shortDateString - sets
-   * 
-   * @generated
-   */
-  public void setShortDateString(String v) {
-    if (DateTimeAnnot_Type.featOkTst
-            && ((DateTimeAnnot_Type) jcasType).casFeat_shortDateString == null)
-      this.jcasType.jcas.throwFeatMissing("shortDateString", "org.apache.uima.tutorial.DateTimeAnnot");
-    jcasType.ll_cas.ll_setStringValue(addr,
-            ((DateTimeAnnot_Type) jcasType).casFeatCode_shortDateString, v);
-  }
+    /**
+     * setter for shortDateString - sets.
+     *
+     * @param v the new short date string
+     * @generated 
+     */
+    public void setShortDateString(String v) {
+        _setStringValueNfc(_FI_shortDateString, v);
+    }
 }

@@ -27,14 +27,28 @@ import javax.swing.JMenuItem;
 
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class RemoveLanguageHandler.
+ */
 public class RemoveLanguageHandler implements ActionListener {
 
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new removes the language handler.
+   *
+   * @param frame the frame
+   */
   public RemoveLanguageHandler(MainFrame frame) {
     this.main = frame;
   }
 
+  /* (non-Javadoc)
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     String lang = ((JMenuItem) e.getSource()).getText();
     if (this.main.getLanguage().equals(lang)) {

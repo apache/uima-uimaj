@@ -20,13 +20,14 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.10.0 Release Notes</title>
+  <title>Apache UIMA v3.0.0-alpha Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-alpha Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
+<a href="#alpha">Alpha release status notice</a><br/>
 <a href="#what.is.uima">What is UIMA?</a><br/>
 <a href="#major.changes">Major Changes in this Release</a><br/>
 <a href="#get.involved">How to Get Involved</a><br/>
@@ -34,6 +35,16 @@
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
    
+<h2><a id="alpha">0. Alpha release status</a></h2>
+  <p>This is an alpha release, done in order to expand the 
+     community of people doing initial testing on this new release.
+     As such, it is possible that bugs or deficiencies may be found
+     which might require changes to APIs.</p>
+     
+  <p>Following a period of alpha testing, depending on the results,
+     we will proceed to more official releases.
+     </p>
+     
 <h2><a id="what.is.uima">1. What is UIMA?</a></h2>
 
      <p>
@@ -80,18 +91,51 @@
 			</p>
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
-<p>This is mainly a bug fix release.</p>
 
-<p>A new chapter on External Resources was added to the UIMA Reference book.</p>
+<p>Version 3 is a major reimplementation of the internals of UIMA,
+with many significant changes.  A one-time migration step is required if 
+JCas cover classes are being used.  
+Please read the Version 3 users guide located in the docs directory
+for information on these changes and the migration tool.
+</p>
 
-<p>Some new methods to better manage External Resources were added to the ResourceManager,
-including a destroy() method that may be called by users to destroy external resources that
-are being managed by a particular ResourceManager.</p>  
-  
-<h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
+<p>A very brief summary of Version 3:
+<ul><li>Feature Structures become Java Objects, 
+and may be Garbage Collected.</li>
+<li>Many performance improvements</li>
+<li>Iterating over indexes no longer throws 
+ConcurrentModificationException</li>
+<li>Support for arbitrary Java Objects in the CAS</li>
+<li>Using above, new built-ins for ArrayList style
+lists of Feature Structures and ints, and a FSHashSet</li>
+<li>New "select" framework for flexible 
+access to Feature Structures</li>
+<li>Integration with Java 8 facilities such as Streams</li>
+</p>
+
+<p>Please read the overview section of the Version 3 
+users guide for more.</p>
+ 
+<h3>API changes</h3>
+ <p>Many APIs were changed, typically by adding new capability.  
+ However, we attempt to preserve existing APIs, for backward compatibility. 
+ </p>
+ 
+<h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
-issues fixed in this release.  
+issues affecting this release.  
    
+<h2><a id="alpha">Alpha Release</a></h2>
+<p>Because this release makes major changes to UIMA internals,
+this is an alpha release of version 3.  It is being made to get 
+wider community involvement in testing and feedback.  
+The APIs may change, and features
+may be added or altered.<\p>
+
+<p>Please use the mailing lists 
+( http://uima.apache.org/mail-lists.html ) 
+for feedback.</p> 
+ 
 <h2><a id="get.involved">How to Get Involved</a></h2>
 <p>
 The Apache UIMA project really needs and appreciates any contributions, 

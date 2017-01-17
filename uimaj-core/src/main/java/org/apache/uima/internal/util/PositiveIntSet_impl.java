@@ -22,6 +22,8 @@ package org.apache.uima.internal.util;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.util.impl.Constants;
+
 
 
 /**
@@ -75,8 +77,6 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   // Extra space in hashset for initial capacity - when creating from bitmap set - multiplier of existing size
   private static final int HASH_SET_OVERALLOCATE_DIVIDER_SHIFT = 1; // bit shift right = divide by 2 = 50% of existing capacity
   
-  public static final int[] EMPTY_INT_ARRAY = new int[0];
-
   private PositiveIntSet intSet;  // one of 3 representations: IntBitSet, IntHashSet, IntSet (based on IntVector)
   
   //package private for test case
@@ -166,7 +166,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
   public IntListIterator getOrderedIterator() {
     if (isBitSet) {
       if (null == intSet) {
-        return new IntListIteratorOverArray(EMPTY_INT_ARRAY);
+        return new IntListIteratorOverArray(Constants.EMPTY_INT_ARRAY);
       }
       return intSet.iterator();
     }
@@ -724,7 +724,7 @@ public class PositiveIntSet_impl implements PositiveIntSet {
     if (null != intSet) {
       return intSet.toIntArray();
     }
-    return EMPTY_INT_ARRAY;
+    return Constants.EMPTY_INT_ARRAY;
   }
 
   /* (non-Javadoc)

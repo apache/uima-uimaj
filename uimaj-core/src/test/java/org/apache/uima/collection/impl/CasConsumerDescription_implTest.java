@@ -25,9 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -63,6 +60,9 @@ import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 public class CasConsumerDescription_implTest extends TestCase {
   CasConsumerDescription_impl mTestDesc;

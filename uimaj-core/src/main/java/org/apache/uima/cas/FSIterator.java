@@ -20,8 +20,14 @@
 package org.apache.uima.cas;
 
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.apache.uima.cas.impl.LowLevelIterator;
 
 /**
  * Iterator over feature structures.
@@ -65,7 +71,7 @@ import java.util.NoSuchElementException;
  * 
  * 
  */
-public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
+public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> {
 
   /**
    * Check if this iterator is valid.
@@ -84,16 +90,39 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
   T get() throws NoSuchElementException;
 
   /**
+   * Get the structure the iterator is pointing at.
+   * Throws various unchecked exceptions, if the iterator is not valid
+   * @return The structure the iterator is pointing at.
+   */
+  default T getNvc() {
+    return get();
+  }
+  
+  /**
    * Advance the iterator. This may invalidate the iterator.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveToNext();
 
   /**
+   * version of moveToNext which bypasses the isValid check - call only if you've just done this check yourself
+   */
+  default void moveToNextNvc() {
+    moveToNext();
+  }
+  
+  /**
    * Move the iterator one element back. This may invalidate the iterator.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   void moveToPrevious();
+
+  /**
+   * version of moveToPrevious which bypasses the isValid check - call only if you've just done this check yourself
+   */
+  default void moveToPreviousNvc() {
+    moveToPrevious();
+  }
 
   /**
    * Move the iterator to the first element. The iterator will be valid iff the underlying
@@ -124,10 +153,12 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * 
    * @param fs
    *          The feature structure the iterator that supplies the 
-   *          comparison information.  It must be of type T or a subtype of T.
+   *          comparison information.  It can be a supertype of T as long as it can supply the keys needed.
+   *          A typical example is a subtype of Annotation, and using an annotation instance to specify 
+   *          the begin / end.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
-  void moveTo(FeatureStructure fs);
+   void  moveTo(FeatureStructure fs);
 
   /**
    * Copy this iterator.
@@ -135,5 +166,111 @@ public interface FSIterator<T extends FeatureStructure> extends Iterator<T> {
    * @return A copy of this iterator, pointing at the same element.
    */
   FSIterator<T> copy();
+  
+  /**
+   * @return the type this iterator is over
+   */
+  default Type getType() {
+    return ((LowLevelIterator<T>)this).ll_getIndex().getType();
+  }
 
+  /*****************************************************
+   * DEFAULT implementations of Iterator interface
+   * in terms of FSIterator methods
+   *****************************************************/
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#hasNext()
+   */
+  @Override
+  default boolean hasNext() {
+    return isValid();
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#next()
+   */
+  @Override
+  default T next() {
+    T result = get();
+    moveToNext();
+    return result;
+  }
+  
+  default T nextNvc() {
+    T result = getNvc();
+    moveToNextNvc();
+    return result;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.util.Iterator#remove()
+   */
+  @Override
+  default void remove() {
+    throw new UnsupportedOperationException();
+  } 
+  
+  @Override
+  default boolean hasPrevious() {
+    return isValid();
+  }
+
+  @Override
+  default T previous() {
+    T result = get();
+    moveToPrevious();
+    return result;
+
+  }
+
+  @Override
+  default int nextIndex() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  default int previousIndex() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  default void set(T e) {
+    throw new UnsupportedOperationException();
+    
+  }
+
+  @Override
+  default void add(T e) {
+    throw new UnsupportedOperationException();
+    
+  }
+  
+  /**
+   * Don't use this directly, use select()... spliterator instead where possible.
+   * Otherwise, insure the FSIterator instance can support sized/subsized.
+   * @return a split iterator for this iterator, which has the following characteristics
+   *   DISTINCT, SIZED, SUBSIZED
+   *   
+   */
+  default Spliterator<T> spliterator() {
+    return Spliterators.spliterator(
+        this, 
+        ((LowLevelIterator<T>)this).ll_indexSize(), 
+
+        Spliterator.DISTINCT |
+        Spliterator.SIZED    |
+        Spliterator.SUBSIZED);
+  }
+  
+  default Stream<T> stream() {
+    return StreamSupport.stream(spliterator(),  false);
+  }
+
+  
 }

@@ -561,7 +561,7 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
               </row>
               <row>
-                <entry>Lists/Arrays inline formatting?</entry>
+                <entry>Lists/Arrays inline fmtng?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
@@ -571,7 +571,7 @@ ae.destroy();</programlisting></para>
                 <entry>-</entry>
               </row>
               <row>
-                <entry>Formatted?</entry>
+                <entry>Fmtd?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>Yes</entry>
@@ -621,7 +621,7 @@ ae.destroy();</programlisting></para>
                 <entry>send all</entry>
               </row>
               <row>
-                <entry>NameSpace/Schemas?</entry>
+                <entry>Name Space / Schemas?</entry>
                 <entry>-</entry>
                 <entry>Yes</entry>
                 <entry>-</entry>

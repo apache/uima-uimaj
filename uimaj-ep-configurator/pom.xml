@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.10.0-SNAPSHOT</version>
+    <version>3.0.0-alpha</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-configurator
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-ep-configurator
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/trunk/uimaj-ep-configurator
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-ep-configurator
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/trunk/uimaj-ep-configurator
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-ep-configurator
     </url>
   </scm>
   
@@ -296,6 +296,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.7</version> <!-- using 3.0.1 causes the subsequent update site generation to skip this plugin for unknown reasons -->
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
@@ -314,7 +315,7 @@
             </Export-Package>
             <Bundle-Activator>org.apache.uima.taeconfigurator.TAEConfiguratorPlugin</Bundle-Activator>
             <Bundle-SymbolicName>org.apache.uima.desceditor;singleton:=true</Bundle-SymbolicName>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
 
             <!-- handle split packages in Eclipse.
               We do this by using Require-Bundle, and excluding from the Import-Package those
@@ -366,7 +367,6 @@ org.eclipse.core.runtime
               !org.eclipse.ui.part,
               !org.eclipse.core.runtime,
               *,
-              org.apache.uima.jcas.jcasgenp,
               org.eclipse.jdt.ui
             </Import-Package>
 

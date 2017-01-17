@@ -25,15 +25,19 @@ import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
 import org.eclipse.ui.IStartup;
 import org.osgi.framework.BundleContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The main plugin class to be used in the desktop.
  */
 public class DebugPlugin extends Plugin implements IStartup {
 
+  /** The Constant PREF_ALREADY_SET_PREF_SHOW_DETAILS. */
   public static final String PREF_ALREADY_SET_PREF_SHOW_DETAILS = "org.apache.uima.ep_debug.already_set_pref_show_details";
 
+  /** The Constant ALREADY_SET_PREF_SHOW_DETAILS. */
   public static final String ALREADY_SET_PREF_SHOW_DETAILS = "already_set_pref_show_details";
 
+  /** The plugin. */
   // The shared instance.
   private static DebugPlugin plugin;
 
@@ -45,8 +49,12 @@ public class DebugPlugin extends Plugin implements IStartup {
   }
 
   /**
-   * This method is called upon plug-in activation
+   * This method is called upon plug-in activation.
+   *
+   * @param context the context
+   * @throws Exception the exception
    */
+  @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
     // Intent of next code
@@ -72,8 +80,12 @@ public class DebugPlugin extends Plugin implements IStartup {
   }
 
   /**
-   * This method is called when the plug-in is stopped
+   * This method is called when the plug-in is stopped.
+   *
+   * @param context the context
+   * @throws Exception the exception
    */
+  @Override
   public void stop(BundleContext context) throws Exception {
     super.stop(context);
     plugin = null;
@@ -81,13 +93,19 @@ public class DebugPlugin extends Plugin implements IStartup {
 
   /**
    * Returns the shared instance.
+   *
+   * @return the default
    */
   public static DebugPlugin getDefault() {
     return plugin;
   }
 
   // this method is required by the Startup extension, which, in turn, is required
+  /* (non-Javadoc)
+   * @see org.eclipse.ui.IStartup#earlyStartup()
+   */
   // to get the plugin started (no other event gets it started)
+  @Override
   public void earlyStartup() {
   }
 

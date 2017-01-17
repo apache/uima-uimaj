@@ -58,6 +58,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameter;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UriUtils;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Instances of this class shared by multiple threads
@@ -68,9 +69,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * resource bundle for log messages
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
-  
-  private static final String[] EMPTY_STRINGS = new String[0];
-  
+    
   /**
    * The ComponentInfoImpl class (an inner non-static class) has no fields and 
    *   just one method that refers to fields in
@@ -159,7 +158,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * The size check followed by an add is in one sync block within getEmptyCas(), 
    * locked on the set object itself (not shared with any other locks).
    */
-  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<CAS, Boolean>());
+  final protected Set<CAS> mOutstandingCASes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
   /**
    * Object that implements management interface to the AE.
@@ -237,7 +236,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    * @return the combined absolute sofamappings
    */
   public Map<String, String> combineSofaMappings(Map<String, String> aSofaMappings) {
- // The aSofaMappings parameter, if present, defines the mapping between the child
+    // The aSofaMappings parameter, if present, defines the mapping between the child
     // context's sofa names and this context's sofa names. This context's sofa names
     // may again be remapped (according to the mSofaMappings field). We need to
     // produce the absolute mapping and pass that into the child context's constructor.
@@ -518,7 +517,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationGroups();
     if (groups == null) {
-      return EMPTY_STRINGS;
+      return Constants.EMPTY_STRING_ARRAY;
     } else {
       Set<String> names = new TreeSet<String>();
       for (int i = 0; i < groups.length; i++) {
@@ -539,7 +538,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     ConfigurationParameter[] params = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationParameters();
     if (params == null) {
-      return EMPTY_STRINGS;
+      return Constants.EMPTY_STRING_ARRAY;
     } else {
       String[] names = new String[params.length];
       for (int i = 0; i < params.length; i++) {
@@ -558,7 +557,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     ConfigurationGroup[] groups = getConfigurationManager().getConfigParameterDeclarations(
             getQualifiedContextName()).getConfigurationGroupDeclarations(aGroup);
     if (groups.length == 0) {
-      return EMPTY_STRINGS;
+      return Constants.EMPTY_STRING_ARRAY;
     } else {
       List<String> names = new ArrayList<String>();
       ConfigurationParameter[] commonParams = getConfigurationManager()

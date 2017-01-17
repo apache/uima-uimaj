@@ -30,6 +30,7 @@ import java.util.jar.JarFile;
 import org.apache.uima.pear.util.FileUtil;
 import org.apache.uima.pear.util.StringUtil;
 import org.apache.uima.resource.RelativePathResolver;
+import org.apache.uima.util.impl.Constants;
 import org.xml.sax.SAXException;
 
 /**
@@ -241,7 +242,7 @@ public class PackageBrowser {
    */
   public File[] findDirectory(String dirNamePattern) {
     String pattern = dirNamePattern.replace('\\', '/');
-    File[] foundDirs = new File[0];
+    File[] foundDirs = Constants.EMPTY_FILE_ARRAY;
     ArrayList<File> foundDirList = new ArrayList<File>();
     Iterator<File> list = _allDirs.iterator();
     while (list.hasNext()) {
@@ -273,7 +274,7 @@ public class PackageBrowser {
    */
   public File[] findFile(String fileNamePattern) {
     String pattern = fileNamePattern.replace('\\', '/');
-    File[] foundFiles = new File[0];
+    File[] foundFiles = Constants.EMPTY_FILE_ARRAY;
     ArrayList<File> foundFileList = new ArrayList<File>();
     Iterator<File> list = _allFiles.iterator();
     while (list.hasNext()) {

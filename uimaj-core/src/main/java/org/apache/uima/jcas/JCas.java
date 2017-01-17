@@ -36,6 +36,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.FeatureValuePath;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.SofaID;
 import org.apache.uima.cas.Type;
@@ -44,6 +45,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
+import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -82,22 +84,24 @@ public interface JCas extends AbstractCas {
   /**
    * @return the FSIndexRepository object for this Cas
    */
-  public abstract FSIndexRepository getFSIndexRepository();
+  FSIndexRepository getFSIndexRepository();
 
-  public abstract LowLevelIndexRepository getLowLevelIndexRepository();
+  LowLevelIndexRepository getLowLevelIndexRepository();
 
   /** 
    * @return the CAS object for this JCas instantiation 
    */
-  public abstract CAS getCas();
+  CAS getCas();
 
   /* internal use */
-  public abstract CASImpl getCasImpl();
+  CASImpl getCasImpl();
 
   /* internal use */
-  public abstract LowLevelCAS getLowLevelCas();
+  LowLevelCAS getLowLevelCas();
 
   /**
+   * Backwards Compatibility only - throws unsupported operation exception
+   * 
    * get the JCas _Type instance for a particular CAS type constant
    * 
    * @param i
@@ -105,17 +109,7 @@ public interface JCas extends AbstractCas {
    * @return the instance of the JCas xxx_Type object for the specified type
    */
   public abstract TOP_Type getType(int i);
-
-  /**
-   * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which
-   * require a CAS Type, for instance iterator creation.
-   * 
-   * @param i -
-   *          index returned by Foo.type
-   * @return the CAS Java Type object for this CAS Type.
-   */
-  public abstract Type getCasType(int i);
-
+  
   /**
    * get the JCas x_Type instance for a particular Java instance of a type
    * 
@@ -126,44 +120,71 @@ public interface JCas extends AbstractCas {
   @Deprecated
   public abstract TOP_Type getType(TOP instance);
 
+
+  /**
+   * Given Foo.type, return the corresponding CAS Type object. This is useful in the methods which
+   * require a CAS Type, for instance iterator creation.
+   * 
+   * @param i -
+   *          index returned by Foo.type
+   * @return the CAS Java Type object for this CAS Type.
+   */
+  Type getCasType(int i);
+
   /*
    * Internal use - looks up a type-name-string in the CAS type system and returns the Cas Type
    * object. Throws CASException if the type isn't found
    */
-  public abstract Type getRequiredType(String s) throws CASException;
+  Type getRequiredType(String s) throws CASException;
 
   /*
    * Internal use - look up a feature-name-string in the CAS type system and returns the Cas Feature
    * object. Throws CASException if the feature isn't found
    */
-  public abstract Feature getRequiredFeature(Type t, String s) throws CASException;
+  Feature getRequiredFeature(Type t, String s) throws CASException;
 
   /*
    * Internal Use - look up a feature-name-string in the CAS type system and returns the Cas Feature
    * object. If the feature isn't found, adds an exception to the errorSet but doesn't throw
+   * @deprecated only for V2 compiling
    */
-
-  public abstract Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst);
-
-  /*
-   * Internal Use - sets the corresponding Java instance for a Cas instance
-   */
-  public abstract void putJfsFromCaddr(int casAddr, FeatureStructure fs);
+  @Deprecated
+  default Feature getRequiredFeatureDE(Type t, String s, String rangeName, boolean featOkTst) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  }
 
   /*
    * Internal Use - sets the corresponding Java instance for a Cas instance
+   * @deprecated only for V2 compiling
    */
-  public abstract <T extends TOP> T getJfsFromCaddr(int casAddr);
+  @Deprecated
+  default void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  } 
+
+  /*
+   * Internal Use - sets the corresponding Java instance for a Cas instance
+   * @deprecated only for V2 compiling
+   */
+  default <T extends TOP> T getJfsFromCaddr(int casAddr) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  } 
 
   /*
    * Internal Use. 
+   * @deprecated only for V2 compiling
    */
-  public abstract void checkArrayBounds(int fsRef, int pos);
+  default void checkArrayBounds(int fsRef, int pos) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  }
 
   /*
    * Internal Use - throw missing feature exception at runtime.
+   * @deprecated only for V2 compiling
    */
-  public void throwFeatMissing(String feat, String type);
+  default void throwFeatMissing(String feat, String type) {
+    throw new UnsupportedOperationException("not supported in UIMA v3");
+  }
   
   /**
    * @deprecated As of v2.0, use {#getView(String)}. From the view you can access the Sofa data, or
@@ -172,14 +193,14 @@ public interface JCas extends AbstractCas {
    * @return the Sofa
    */
   @Deprecated
-  public abstract Sofa getSofa(SofaID sofaID);
+  Sofa getSofa(SofaID sofaID);
 
   /**
    * Get the Sofa feature structure associated with this JCas view.
    * 
    * @return The SofaFS associated with this JCas view.
    */  
-  public abstract Sofa getSofa();
+  Sofa getSofa();
 
   /**
    * Create a view and its underlying Sofa (subject of analysis). The view provides access to the
@@ -199,7 +220,7 @@ public interface JCas extends AbstractCas {
    * @throws CASException -
    *           if a View with this name already exists in this CAS
    */
-  public abstract JCas createView(String sofaID) throws CASException;
+  JCas createView(String sofaID) throws CASException;
 
   /**
    * Create a JCas view for a Sofa. 
@@ -210,7 +231,7 @@ public interface JCas extends AbstractCas {
    * @return The JCas view for the given Sofa.
    * @throws CASException -
    */  
-  public abstract JCas getJCas(Sofa sofa) throws CASException;
+  JCas getJCas(Sofa sofa) throws CASException;
 
   /**
    * Gets the JCas-based interface to the Index Repository. Provides the same functionality
@@ -219,7 +240,7 @@ public interface JCas extends AbstractCas {
    *
    * @return the JCas-based interface to the index repository
    */
-  public abstract JFSIndexRepository getJFSIndexRepository();
+  JFSIndexRepository getJFSIndexRepository();
 
   /**
    * Gets the document annotation. The object returned from this method can be typecast to
@@ -233,7 +254,7 @@ public interface JCas extends AbstractCas {
    * @return The one instance of the DocumentAnnotation annotation.
    * @see org.apache.uima.cas.CAS#getDocumentAnnotation
    */
-  public abstract TOP getDocumentAnnotationFs();
+  TOP getDocumentAnnotationFs();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -243,7 +264,7 @@ public interface JCas extends AbstractCas {
    * @return 0-length instance of a StringArray
    */
 
-  public abstract StringArray getStringArray0L();
+  StringArray getStringArray0L();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -252,7 +273,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
    */
-  public abstract IntegerArray getIntegerArray0L();
+  IntegerArray getIntegerArray0L();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -260,7 +281,7 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
-  public abstract FloatArray getFloatArray0L();
+  FloatArray getFloatArray0L();
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -269,7 +290,7 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a FSArray
    */
-  public abstract FSArray getFSArray0L();
+  FSArray getFSArray0L();
 
   /**
    * initialize the JCas for new Cas content. Not used, does nothing.
@@ -277,7 +298,7 @@ public interface JCas extends AbstractCas {
    * @deprecated not required, does nothing
    */
   @Deprecated
-  public abstract void processInit();
+  void processInit();
 
   /**
    * Get the view for a Sofa (subject of analysis). The view provides access to the Sofa data and
@@ -700,5 +721,26 @@ public interface JCas extends AbstractCas {
    * @exception CASRuntimeException When <code>clazz</code> doesn't correspond to a subtype of the index's type.
    */
   <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz);
+  
+  
+  default <T extends FeatureStructure> SelectFSs<T> select() {
+    return new SelectFSs_impl<>(getCas());
+  }
+
+  default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
+    return new SelectFSs_impl<>(getCasImpl()).type(type);
+  }
+
+  default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
+    return new SelectFSs_impl<>(getCasImpl()).type(clazz);
+  }
+
+  default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
+    return new SelectFSs_impl<>(getCasImpl()).type(jcasType);
+  }
+
+  default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return new SelectFSs_impl<>(getCasImpl()).type(fullyQualifiedTypeName);
+  }
 
 }

@@ -19,18 +19,26 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import org.apache.uima.cas.ArrayFS;
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
-import org.apache.uima.cas.impl.LowLevelCAS;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Class model for Cas FSArray type */
-public final class FSArray extends TOP implements Iterable<FeatureStructure>, ArrayFS {
+public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, SelectViaCopyToArray {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.cas.jcas.FSArray";
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
@@ -50,13 +58,12 @@ public final class FSArray extends TOP implements Iterable<FeatureStructure>, Ar
     return typeIndexID;
   }
 
+  private final TOP[] theArray;
+  
   // never called. Here to disable default constructor
+  @SuppressWarnings("unused")
   private FSArray() {
-  }
-
- /* Internal - Constructor used by generator */
-  public FSArray(int addr, TOP_Type type) {
-    super(addr, type);
+    theArray = null;
   }
 
   /**
@@ -65,63 +72,94 @@ public final class FSArray extends TOP implements Iterable<FeatureStructure>, Ar
    * @param length The number of elements in the new array
    */
   public FSArray(JCas jcas, int length) {
-    this(
-    /* addr */jcas.getLowLevelCas().ll_createArray(jcas.getType(typeIndexID).casTypeCode, length),
-    /* type */jcas.getType(typeIndexID));
+    super(jcas);
+    _casView.validateArraySize(length);
+    theArray = new TOP[length];
 
-    // at this point we can use the jcasType value, as it is set
-    // can't do this earlier as the very first statement is required by
-    // JAVA to be the super or alternate constructor call
-    jcasType.casImpl.checkArrayPreconditions(length);
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(length);
+    }    
+  }
+  
+  /**
+   * used by generator
+   * Make a new FSArray of given size
+   * @param c -
+   * @param t -
+   * @param length the length of the array
+   */
+  public FSArray(TypeImpl t, CASImpl c, int length) {
+    super(t, c);  
+    _casView.validateArraySize(length);
+    theArray = new TOP[length];
+    
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    if (CASImpl.IS_USE_V2_IDS) {
+      _casView.adjustLastFsV2size(length);
+    }    
   }
 
-  // /** create a new FSArray of a given size.
-  // *
-  // * @param jcas
-  // * @param length
-  // */
-  //  
-  // public FSArray create(JCas jcas, int length){
-  // return new FSArray(jcas, length);
-  // }
 
   /** return the indexed value from the corresponding Cas FSArray as a Java Model object. */
-  public FeatureStructure get(int i) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    final LowLevelCAS ll_cas = jcasType.ll_cas;
-    return ll_cas.ll_getFSForRef(ll_cas.ll_getRefArrayValue(addr, i));
+  public TOP get(int i) {
+    return _maybeGetPearFs(theArray[i]);
   }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
-    jcasType.casImpl.checkArrayBounds(addr, i);
-    jcasType.ll_cas.ll_setRefArrayValue(addr, i, jcasType.ll_cas.ll_getFSRef(v));
+    TOP vt = (TOP) v;
+    if (vt != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
+    }
+    theArray[i] = _maybeGetBaseForPearFs(vt);
+    _casView.maybeLogArrayUpdate(this, null, i);
   }
 
   /** return the size of the array. */
   public int size() {
-    return jcasType.casImpl.ll_getArraySize(addr);
+    return theArray.length;
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
-  public void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, destOffset, length);
-    for (int i = 0; i < length; i++) {
-      jcasType.ll_cas.ll_setRefArrayValue(addr, i + destOffset, jcasType.ll_cas.ll_getFSRef(src[i
-              + srcOffset]));
+  public void copyFromArray(FeatureStructure[] src, int srcPos, int destPos, int length) {
+    int srcEnd = srcPos + length;
+    int destEnd = destPos + length;
+    if (srcPos < 0 ||
+        srcEnd > src.length ||
+        destEnd > size()) {
+      throw new ArrayIndexOutOfBoundsException(
+          String.format("FSArray.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
+    }
+    
+    // doing this element by element to get pear conversions done if needed, and 
+    // to get journaling done
+    for (;srcPos < srcEnd && destPos < destEnd;) {
+      set(destPos++, src[srcPos++]);
     }
   }
 
   /**
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
-  public void copyToArray(int srcOffset, FeatureStructure[] dest, int destOffset, int length) {
-    jcasType.casImpl.checkArrayBounds(addr, srcOffset, length);
-    for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefArrayValue(
-              addr, i + srcOffset));
+  public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
+    int srcEnd = srcPos + length;
+    int destEnd = destPos + length;
+    if (srcPos < 0 ||
+        srcEnd > size() ||
+        destEnd > dest.length) {
+      throw new ArrayIndexOutOfBoundsException(
+          String.format("FSArray.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
+    }
+    for (;srcPos < srcEnd && destPos < destEnd;) {
+      dest[destPos++] = _maybeGetPearFs(get(srcPos++));
     }
   }
 
@@ -129,55 +167,78 @@ public final class FSArray extends TOP implements Iterable<FeatureStructure>, Ar
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   public FeatureStructure[] toArray() {
-    final int size = size();
-    FeatureStructure[] outArray = new FeatureStructure[size];
-    copyToArray(0, outArray, 0, size);
-    return outArray;
+    FeatureStructure[] r = new FeatureStructure[size()];
+    copyToArray(0, r, 0, size());
+    return r;
   }
+  
+  public FeatureStructure[] _toArrayForSelect() { return toArray(); }
 
   /**
    * Not supported, will throw UnsupportedOperationException
    */
-  public void copyFromArray(String[] src, int srcOffset, int destOffset, int length) {
+  public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     throw new UnsupportedOperationException();
   }
     
   /**
    * Copies an array of Feature Structures to an Array of Strings.
    * The strings are the "toString()" representation of the feature structures, 
-   * which are probably something that looks like FeatureStructure@123456
    * 
-   * @param srcOffset
+   * @param srcPos
    *                The index of the first element to copy.
    * @param dest
    *                The array to copy to.
-   * @param destOffset
+   * @param destPos
    *                Where to start copying into <code>dest</code>.
    * @param length
    *                The number of elements to copy.
    * @exception ArrayIndexOutOfBoundsException
-   *                    If <code>srcOffset &lt; 0</code> or
+   *                    If <code>srcPos &lt; 0</code> or
    *                    <code>length &gt; size()</code> or
-   *                    <code>destOffset + length &gt; destArray.length</code>.
+   *                    <code>destPos + length &gt; destArray.length</code>.
    */
-  public void copyToArray(int srcOffset, String[] dest, int destOffset, int length) {
-    CASImpl ll = jcasType.casImpl;
-    ll.checkArrayBounds(addr, srcOffset, length);
+  public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
+    _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
-      dest[i + destOffset] = ll.ll_getFSForRef(ll.ll_getRefArrayValue(this.addr, i + srcOffset)).toString();
+      FeatureStructure fs = _maybeGetPearFs(theArray[i + srcPos]);
+      dest[i + destPos] = (fs == null) ? null : fs.toString();
     }
   }
 
-  public String[] toStringArray() {
-    final int size = size();
-    String[] strArray = new String[size];
-    copyToArray(0, strArray, 0, size);
-    return strArray;
+  // internal use
+  // used by serializers, other impls (e.g. FSHashSet)
+  // no conversion to Pear trampolines done
+  public TOP[] _getTheArray() {
+    return theArray;
+  }
+    
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
+   * no conversion to Pear trampolines done
+   */
+  @Override
+  public void copyValuesFrom(CommonArrayFS v) {
+    FSArray bv = (FSArray) v;
+    System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
+    _casView.maybeLogArrayUpdates(this, 0, size());
+  }
+  
+  /**
+   * Convenience - create a FSArray from an existing FeatureStructure[]
+   * @param jcas -
+   * @param a -
+   * @return -
+   */
+  public static FSArray create(JCas jcas, FeatureStructure[] a) {
+    FSArray fsa = new FSArray(jcas, a.length);
+    fsa.copyFromArray(a, 0, 0, a.length);
+    return fsa;
   }
 
   @Override
-  public Iterator<FeatureStructure> iterator() {
-    return new Iterator<FeatureStructure>() {
+  public Iterator<TOP> iterator() {
+    return new Iterator<TOP>() {
       int i = 0;
       
       @Override
@@ -186,18 +247,21 @@ public final class FSArray extends TOP implements Iterable<FeatureStructure>, Ar
       }
 
       @Override
-      public FeatureStructure next() {
-        if (!hasNext())
+      public TOP next() {
+        if (!hasNext()) {
           throw new NoSuchElementException();
-        return get(i++);
+        }
+        return get(i++);  // does trampoline conversion
       }
-
-      @Override
-      public void remove() {
-        throw new UnsupportedOperationException();
-      }
-      
     };
   }
-
+  
+  @Override
+  public Spliterator<TOP> spliterator() {
+    return Arrays.spliterator(theArray);
+  }
+  
+  public <T extends TOP> Stream<T> stream() {
+    return (Stream<T>) StreamSupport.stream(spliterator(), false);
+  }
 }

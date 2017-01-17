@@ -26,11 +26,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collections;
 
-import org.junit.Assert;
-import junit.framework.TestCase;
-
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+
+import org.junit.Assert;
+import junit.framework.TestCase;
 
 /**
  * Tests the DataResource_impl class.

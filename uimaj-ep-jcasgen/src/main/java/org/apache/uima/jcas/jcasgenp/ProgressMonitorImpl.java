@@ -21,29 +21,61 @@ package org.apache.uima.jcas.jcasgenp;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ProgressMonitorImpl.
+ */
 public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgressMonitor {
+  
+  /** The fwd. */
   private IProgressMonitor fwd;
 
+  /**
+   * Instantiates a new progress monitor impl.
+   *
+   * @param pm the pm
+   */
   ProgressMonitorImpl(IProgressMonitor pm) {
     fwd = pm;
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.jcasgen.IProgressMonitor#done()
+   */
+  @Override
   public void done() {
     fwd.done();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.jcasgen.IProgressMonitor#beginTask(java.lang.String, int)
+   */
+  @Override
   public void beginTask(String name, int totalWorked) {
     fwd.beginTask(name, totalWorked);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.jcasgen.IProgressMonitor#subTask(java.lang.String)
+   */
+  @Override
   public void subTask(String name) {
     fwd.subTask(name);
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.tools.jcasgen.IProgressMonitor#worked(int)
+   */
+  @Override
   public void worked(int work) {
     fwd.worked(work);
   }
 
+  /**
+   * Internal worked.
+   *
+   * @param work the work
+   */
   /*
    * (non-Javadoc)
    * 
@@ -52,6 +84,11 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
   public void internalWorked(double work) {
   }
 
+  /**
+   * Checks if is canceled.
+   *
+   * @return true, if is canceled
+   */
   /*
    * (non-Javadoc)
    * 
@@ -61,6 +98,11 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
     return false;
   }
 
+  /**
+   * Sets the canceled.
+   *
+   * @param value the new canceled
+   */
   /*
    * (non-Javadoc)
    * 
@@ -69,6 +111,11 @@ public class ProgressMonitorImpl implements org.apache.uima.tools.jcasgen.IProgr
   public void setCanceled(boolean value) {
   }
 
+  /**
+   * Sets the task name.
+   *
+   * @param name the new task name
+   */
   /*
    * (non-Javadoc)
    * 

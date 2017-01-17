@@ -79,15 +79,9 @@ public class CollectionReaderDescription_impl extends ResourceCreationSpecifier_
               new Object[] { getSourceUrlString() });
     }
     // try to load user class
-    // ust UIMA extension ClassLoader if available
     Class<?> implClass;
-    ClassLoader cl = aResourceManager.getExtensionClassLoader();
     try {
-      if (cl != null) {
-        implClass = cl.loadClass(getImplementationName());
-      } else {
-        implClass = Class.forName(getImplementationName());
-      }
+      implClass = aResourceManager.loadUserClass(getImplementationName());
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
               new Object[] { getImplementationName(), getSourceUrlString() }, e);

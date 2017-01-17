@@ -29,6 +29,7 @@ import org.apache.uima.resource.metadata.ConfigurationParameterDeclarations;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLizable;
+import org.apache.uima.util.impl.Constants;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,15 +43,17 @@ public class ConfigurationParameterDeclarations_impl extends MetaDataObject_impl
         ConfigurationParameterDeclarations {
 
   static final long serialVersionUID = -2248322904617280983L;
+  
+  static final ConfigurationGroup[] EMPTY_CONFIG_GROUP_ARRAY = new ConfigurationGroup[0];
 
   /** Configuration Parameters that are not in any group */
-  private ConfigurationParameter[] mConfigurationParameters = new ConfigurationParameter[0];
+  private ConfigurationParameter[] mConfigurationParameters = Constants.EMPTY_CONFIG_PARM_ARRAY;
 
   /** Configuration Groups */
-  private ConfigurationGroup[] mConfigurationGroups = new ConfigurationGroup[0];
+  private ConfigurationGroup[] mConfigurationGroups = EMPTY_CONFIG_GROUP_ARRAY;
 
   /** Parameters common to all groups */
-  private ConfigurationParameter[] mCommonParameters = new ConfigurationParameter[0];
+  private ConfigurationParameter[] mCommonParameters = Constants.EMPTY_CONFIG_PARM_ARRAY;
 
   /** Name of the default group */
   private String mDefaultGroupName;

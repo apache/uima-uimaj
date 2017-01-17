@@ -60,7 +60,7 @@ import org.apache.uima.util.XMLizable;
  * 
  */
 public class ResourceManager_impl implements ResourceManager {
-  
+
   /**
    * Ties an External Resource instance to
    *   - its description 
@@ -99,7 +99,7 @@ public class ResourceManager_impl implements ResourceManager {
    */
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
   
-  protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class;
+  protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class; 
 
   private AtomicBoolean isDestroyed = new AtomicBoolean(false);
   /**
@@ -150,7 +150,7 @@ public class ResourceManager_impl implements ResourceManager {
 
   /**
    * Internal map from resource names (declared in resource declaration XML) to Class objects
-   * for parameterized Resource.
+   * for parameterized Resource. 
    * 
    *   These class objects may or may not be Resource instances.  
    *   They may be arbitrary classes, except that they must implement SharedResourceObject.
@@ -631,7 +631,7 @@ public class ResourceManager_impl implements ResourceManager {
 
   /*
    * (non-Javadoc)
-   * 
+   *   
    * Called during resource initialization, when the resource has external resource bindings,
    * to resolve those bindings                                              
    *                                               
@@ -699,7 +699,6 @@ public class ResourceManager_impl implements ResourceManager {
                       aDependencies[i].getInterfaceName(), aDependencies[i].getSourceUrlString() });
         }
       }
-      
     }
   }
 
@@ -886,7 +885,7 @@ public class ResourceManager_impl implements ResourceManager {
     // no destroy of caspool at this time
     
   }
-
+  
   /* (non-Javadoc)
    * @see org.apache.uima.resource.ResourceManager#getExternalResources()
    */
@@ -906,9 +905,5 @@ public class ResourceManager_impl implements ResourceManager {
       
     return rs;
   }
-  
-  
-  
-  
 
 }

@@ -19,8 +19,6 @@
 
 package org.apache.uima.jcas.test;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.Type;
@@ -29,6 +27,8 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+
+import junit.framework.TestCase;
 
 public class CASTestSetup implements AnnotatorInitializer {
 
@@ -182,7 +182,8 @@ public class CASTestSetup implements AnnotatorInitializer {
     tsm.addFeature("plainDouble", typeRoot, typeDouble);
     tsm.addFeature("plainLong", typeRoot, typeLong);
     tsm.addFeature("plainString", typeRoot, typeString);
-    tsm.addFeature("plainRef", typeRoot, typeRef);
+//    tsm.addFeature("plainRef", typeRoot, typeRef);
+    tsm.addFeature("plainRef", typeRoot, typeRoot);
 
     if (bad != BAD_MISSING_TYPE_IN_CAS)
       tsm.addType("aa.MissingInCas", topType);
@@ -209,7 +210,7 @@ public class CASTestSetup implements AnnotatorInitializer {
     try {
       tsm.addType("some.new.Name", group1);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_INH_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_INH_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);
@@ -217,7 +218,7 @@ public class CASTestSetup implements AnnotatorInitializer {
     try {
       tsm.addFeature("some.new.Name", group1, typeString);
     } catch (CASAdminException e) {
-      TestCase.assertTrue(e.getError() == CASAdminException.TYPE_IS_FEATURE_FINAL);
+      TestCase.assertTrue(e.getMessageKey() == CASAdminException.TYPE_IS_FEATURE_FINAL);
       exc = true;
     }
     TestCase.assertTrue(exc);

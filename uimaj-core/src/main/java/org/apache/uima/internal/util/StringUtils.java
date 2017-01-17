@@ -38,7 +38,7 @@ public class StringUtils {
    * @param buf
    *          Buffer to print to.
    */
-  public static final void printSpaces(int n, StringBuffer buf) {
+  public static final void printSpaces(int n, StringBuilder buf) {
     for (int i = 0; i < n; i++) {
       buf.append(' ');
     }

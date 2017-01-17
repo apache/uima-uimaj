@@ -212,12 +212,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @throws AnalysisEngineProcessException
    *           if the FlowController failed
    */
-  public FlowContainer computeFlow(final CAS aCAS) throws AnalysisEngineProcessException {
+  public FlowContainer computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     mTimer.startIt();
     CAS view = null;
     try {
-      // throws if _InitialView is mapped to non-existent sofa https://issues.apache.org/jira/browse/UIMA-5097
-      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());     
+      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
+
       // now get the right interface(e.g. CAS or JCAS)
       UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
@@ -234,9 +234,9 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     } finally {
-      aCAS.setCurrentComponentInfo(null); // https://issues.apache.org/jira/browse/UIMA-5097
       if (view != null) {
-        ((CASImpl)view).restoreClassLoaderUnlockCas();      
+        ((CASImpl)view).restoreClassLoaderUnlockCas();
+        view.setCurrentComponentInfo(null);
       }
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());
@@ -309,22 +309,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
               new Object[] { aDescriptor.getSourceUrlString() });
     }
     // load FlowController class
-    Class<?> flowControllerClass = null;
-    try {
-      // get UIMA extension ClassLoader if available
-      ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
-
-      if (cl != null) {
-        // use UIMA extension ClassLoader to load the class
-        flowControllerClass = cl.loadClass(flowControllerClassName);
-      } else {
-        // use application ClassLoader to load the class
-        flowControllerClass = Class.forName(flowControllerClassName);
-      }
-    } catch (ClassNotFoundException e) {
-      throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
-              new Object[] { flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
-    }
+    Class<?> flowControllerClass = loadUserClassOrThrow(flowControllerClassName, aDescriptor);
 
     Object userObject;
     try {

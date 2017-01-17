@@ -27,6 +27,7 @@ import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.resource.impl.RelativePathResolver_impl;
+import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
@@ -82,7 +83,7 @@ public abstract class Resource_ImplBase implements Resource {
     if (aAdditionalParams != null) {
       mUimaContextAdmin = (UimaContextAdmin) aAdditionalParams.get(PARAM_UIMA_CONTEXT);
     }
-    if (mUimaContextAdmin == null) {// no, we have to create one 
+    if (mUimaContextAdmin == null) {// no, we have to create one    
     
       // skip this part if initializing an external resource
       // https://issues.apache.org/jira/browse/UIMA-5153
@@ -97,12 +98,12 @@ public abstract class Resource_ImplBase implements Resource {
         if (resMgr == null) {
           resMgr = UIMAFramework.newDefaultResourceManager();
         }
-  
+
         // get a Logger for this class and set its ResourceManager so that
         // UIMA extension ClassLoader is used to locate message digests.
         Logger logger = UIMAFramework.getLogger(this.getClass());
         logger.setResourceManager(resMgr);
-        
+      
         ConfigurationManager configMgr = null;
         if (aAdditionalParams != null) {
           configMgr = (ConfigurationManager)aAdditionalParams.get(PARAM_CONFIG_MANAGER);
@@ -110,7 +111,7 @@ public abstract class Resource_ImplBase implements Resource {
         if (configMgr == null) {
           configMgr = UIMAFramework.newConfigurationManager();
         }
-  
+
         // create and initialize UIMAContext
         mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
       }
@@ -299,6 +300,15 @@ public abstract class Resource_ImplBase implements Resource {
     return getResourceManager().getCasManager();
   }
   
+  public Class<?> loadUserClass(String name) throws ClassNotFoundException {
+    return getResourceManager().loadUserClass(name);
+  }
+  
+  public Class<?> loadUserClassOrThrow(String name, ResourceSpecifier aSpecifier) 
+      throws ResourceInitializationException {
+    return ResourceManager_impl.loadUserClassOrThrow(name, getResourceManager(), aSpecifier);
+  }
+    
   public RelativePathResolver getRelativePathResolver(Map<String, Object> aAdditionalParams) {
     RelativePathResolver relPathResolver = null;
     if (aAdditionalParams != null) {
@@ -309,5 +319,5 @@ public abstract class Resource_ImplBase implements Resource {
     }
     return relPathResolver;
   }
-
+  
 }

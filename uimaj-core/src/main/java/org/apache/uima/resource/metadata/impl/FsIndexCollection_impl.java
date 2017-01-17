@@ -48,6 +48,8 @@ import org.apache.uima.util.XMLizable;
 public class FsIndexCollection_impl extends MetaDataObject_impl implements FsIndexCollection {
 
   private static final long serialVersionUID = -7687383527183197102L;
+  
+  private static final FsIndexDescription[] EMPTY_FS_INDEX_DESCRIPTION_ARRAY = new FsIndexDescription[0];
 
   private String mName;
 
@@ -59,7 +61,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
 
   private Import[] mImports = Import.EMPTY_IMPORTS;
 
-  private FsIndexDescription[] mFsIndexes = new FsIndexDescription[0];
+  private FsIndexDescription[] mFsIndexes = EMPTY_FS_INDEX_DESCRIPTION_ARRAY;
 
   /**
    * @see ResourceMetaData#getName()
@@ -148,7 +150,7 @@ public class FsIndexCollection_impl extends MetaDataObject_impl implements FsInd
   public FsIndexDescription[] getFsIndexes() {
     // don't allow this to return null
     if (mFsIndexes == null)
-      mFsIndexes = new FsIndexDescription[0];
+      mFsIndexes = EMPTY_FS_INDEX_DESCRIPTION_ARRAY;
     return mFsIndexes;
   }
 

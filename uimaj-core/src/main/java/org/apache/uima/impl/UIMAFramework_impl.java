@@ -52,6 +52,7 @@ import org.apache.uima.util.Logger;
 import org.apache.uima.util.SimpleResourceFactory;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.XMLParser;
+import org.apache.uima.util.impl.Constants;
 import org.apache.uima.util.impl.XMLParser_impl;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -170,7 +171,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    */
   protected void _initialize() throws Exception {
     // attempt to improve initialization performance
-    Introspector.setBeanInfoSearchPath(new String[0]);
+    Introspector.setBeanInfoSearchPath(Constants.EMPTY_STRING_ARRAY);
 
     // create and configure the factories and XML Parser
     mResourceFactory = new CompositeResourceFactory_impl();
@@ -309,9 +310,9 @@ public class UIMAFramework_impl extends UIMAFramework {
   protected Logger _newLogger() {
     try {
       // get static method getInstance()
-      Method instanceMethod = mLoggerClass.getMethod("getInstance", new Class[0]);
+      Method instanceMethod = mLoggerClass.getMethod("getInstance", Constants.EMPTY_CLASS_ARRAY);
       // invoke getInstance() method and retrieve default logger object
-      return (Logger) instanceMethod.invoke(null, new Class[0]);
+      return (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
     } catch (NoSuchMethodException e) {
       throw new UIMARuntimeException(e);
     } catch (InvocationTargetException e) {
@@ -518,9 +519,9 @@ public class UIMAFramework_impl extends UIMAFramework {
           }
           mLoggerClass = Class.forName(loggerClass);
           // get static method getInstance()
-          Method instanceMethod = mLoggerClass.getMethod("getInstance", new Class[0]);
+          Method instanceMethod = mLoggerClass.getMethod("getInstance", Constants.EMPTY_CLASS_ARRAY);
           // invoke getInstance() method and retrieve default logger object
-          mDefaultLogger = (Logger) instanceMethod.invoke(null, new Class[0]);
+          mDefaultLogger = (Logger) instanceMethod.invoke(null, Constants.EMPTY_CLASS_ARRAY);
         } catch (Exception e) {
           throw new SAXException(e);
         }

@@ -22,10 +22,17 @@ package org.apache.uima.jcas.cas;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyFloatList extends FloatList {
+public class NonEmptyFloatList extends FloatList implements NonEmptyList {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.NonEmptyFloatList";
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyFloatList.class);
 
@@ -35,13 +42,15 @@ public class NonEmptyFloatList extends FloatList {
     return typeIndexID;
   }
 
+  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
+  
+  /* local data */
+//  private float _F_head;
+//  private FloatList _F_tail;
+  
   // Never called. Disable default constructor
   protected NonEmptyFloatList() {
-  }
-
- /* Internal - Constructor used by generator */
-  public NonEmptyFloatList(int addr, TOP_Type type) {
-    super(addr, type);
   }
 
   public NonEmptyFloatList(JCas jcas) {
@@ -49,55 +58,81 @@ public class NonEmptyFloatList extends FloatList {
   }
 
   /**
-   * @param jcas the JCas create the new Feature Structure in
-   * @param item the head item
-   * @param tail the tail item
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
    */
-  public NonEmptyFloatList(JCas jcas, float item, FloatList tail) {
-    this(jcas);
-    setHead(item);
-    setTail(tail); 
+
+  public NonEmptyFloatList(TypeImpl t, CASImpl c) {
+    super(t, c);
   }
 
+  /**
+   * Generate a NonEmpty node with the specified head and tail
+   * @param jcas -
+   * @param v -
+   * @param tail -
+   */
+  public NonEmptyFloatList(JCas jcas, float v, CommonList tail) {
+    this(jcas);
+    setHead(v);
+    setTail(tail);
+  }
+  
+  /**
+   * Generate a NonEmpty node with the specified head with the empty node as the tail
+   * @param jcas -
+   * @param v -
+   */
+  public NonEmptyFloatList(JCas jcas, float v) {
+    this(jcas, v, jcas.getCasImpl().getEmptyFloatList());
+  }
+  
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public float getHead() {
-    if (NonEmptyFloatList_Type.featOkTst
-            && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
-      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
-    return jcasType.ll_cas.ll_getFloatValue(addr,
-            ((NonEmptyFloatList_Type) jcasType).casFeatCode_head);
-  }
+  public float getHead() { return _getFloatValueNc(_FI_head); }
 
   /* setter for head * */
   public void setHead(float v) {
-    if (NonEmptyFloatList_Type.featOkTst
-            && ((NonEmptyFloatList_Type) jcasType).casFeat_head == null)
-      this.jcasType.jcas.throwFeatMissing("head", "uima.cas.NonEmptyFloatList");
-    jcasType.ll_cas.ll_setFloatValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_head, v);
+    this._setFloatValueNfc(_FI_head, v);
   }
 
+//  public void _setHeadNcNj(float v) { setFloatValueNcNj(_getFeat(_FI_head), v); }
+  
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FloatList getTail() {
-    if (NonEmptyFloatList_Type.featOkTst
-            && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
-      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
-    return (FloatList) (jcasType.ll_cas.ll_getFSForRef(jcasType.ll_cas.ll_getRefValue(addr,
-            ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail)));
-  }
+  public FloatList getTail() { return (FloatList) _getFeatureValueNc(_FI_tail); }
 
   /* setter for tail * */
   public void setTail(FloatList v) {
-    if (NonEmptyFloatList_Type.featOkTst
-            && ((NonEmptyFloatList_Type) jcasType).casFeat_tail == null)
-      this.jcasType.jcas.throwFeatMissing("tail", "uima.cas.NonEmptyFloatList");
-    jcasType.ll_cas.ll_setRefValue(addr, ((NonEmptyFloatList_Type) jcasType).casFeatCode_tail,
-            jcasType.ll_cas.ll_getFSRef(v));
+    if (v != null && _casView.getBaseCAS() != v._casView.getBaseCAS()) {
+      /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
+      throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
+    }
+    _setFeatureValueNcWj(_FI_tail, v); 
   }
 
+  public void setTail(CommonList v) { setTail((FloatList) v); }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#get_headAsString()
+   */
+  @Override
+  public String get_headAsString() {
+    return Float.toString(((NonEmptyFloatList)this).getHead());
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.cas.CommonList#set_headAsString(java.lang.String)
+   */
+  @Override
+  public void set_headFromString(String v) {
+    setHead(Float.parseFloat(v));
+  }
+  
   @Override
   public Iterator<Float> iterator() {
     return new Iterator<Float>() {
@@ -114,18 +149,13 @@ public class NonEmptyFloatList extends FloatList {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        NonEmptyFloatList nn = (NonEmptyFloatList) node;
-        Float r = nn.getHead();
+        NonEmptyFloatList nn = (NonEmptyFloatList)node; 
+        Float element = nn.getHead();
         node = nn.getTail();
-        return r;
+        return element;
       }
-
-      @Override
-      public void remove() {
-        throw new UnsupportedOperationException();
-      }
-    };
       
+    };
   }
-  
+
 }

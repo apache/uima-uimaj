@@ -21,8 +21,6 @@ package org.apache.uima.resource.metadata.impl;
 
 import java.io.File;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.resource.ExternalResourceDescription;
@@ -31,6 +29,8 @@ import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.XMLInputSource;
+
+import junit.framework.TestCase;
 
 
 public class ResourceManagerConfiguration_implTest extends TestCase {

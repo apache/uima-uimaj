@@ -124,7 +124,7 @@ public interface ResourceManager {
    *         
    *         or, (if the named resource has no implementation) the DataResource instance 
    *         corresponding to the named Resource, given aParams, 
-   *         
+   * 
    *         or if no resource with this name exists, <code>null</code>.  
    * 
    * @throws ResourceAccessException
@@ -141,7 +141,8 @@ public interface ResourceManager {
    * 
    * @param aName
    *          the name of a resource
-   * @param <N> The generic type for the returned class
+   *          
+   * @param <N> the type of the Class
    * 
    * @return the Class for the resource named <code>aName</code>, <code>null</code> if there is
    *         no resource registered under that name.
@@ -371,7 +372,7 @@ public interface ResourceManager {
    * Loads a user class using either the UIMA extension class loader (if specified) or 
    * the loader the UIMA framework is running in.
    * @param name the class to load
-   * @param <N> the generic type for the returned class
+   * @param <N> generic class of class
    * @return the class
    * @throws ClassNotFoundException -
    */
@@ -390,7 +391,7 @@ public interface ResourceManager {
    * knowledgeable source; for example a single ResourceManager might be used for multiple UIMA Pipelines.
    */
   public void destroy();
-  
+      
   /**
    * 
    * @return a List of External Shared Resource instances instantiated by this Resource Manager.

@@ -19,18 +19,27 @@
 
 package org.apache.uima.cas.impl;
 
+import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.SelectFSs;
+import org.apache.uima.cas.Type;
+import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.internal.util.IntPointerIterator;
+
 /**
  * Low-level FS index object. Use to obtain low-level iterators.
  * 
  */
-public interface LowLevelIndex {
+public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
 
   /**
    * Get a low-level, FS reference iterator.
    * 
    * @return An iterator for this index.
    */
-  LowLevelIterator ll_iterator();
+  default LowLevelIterator<T> ll_iterator() {
+    return ll_iterator(true);
+  };
 
   /**
    * Get a low-level, FS reference iterator. This iterator can be disambiguated. This means that
@@ -41,22 +50,100 @@ public interface LowLevelIndex {
    *          When set to <code>false</code>, iterator will be disambiguated.
    * @return An iterator for this index.
    */
-  LowLevelIterator ll_iterator(boolean ambiguous);
+  LowLevelIterator<T> ll_iterator(boolean ambiguous);
   
-  /**
-   * Get a low-level, FS reference iterator specifying instances of
-   * the precise type <b>only</b> (i.e. without listing the subtypes).
-   * 
-   * @return An iterator for the root type of this index.
-   */
-  LowLevelIterator ll_rootIterator();
-
-  /**
-   * Get the number of FSs in this index.
-   * 
-   * @return The size of this index.
-   */
-  int size();
+//  /**
+//   * Get a low-level, FS reference iterator specifying instances of
+//   * the precise type <b>only</b> (i.e. without listing the subtypes).
+//   * 
+//   * @return An iterator for the root type of this index.
+//   */
+//  LowLevelIterator<T> ll_rootIterator();
 
   int ll_compare(int ref1, int ref2);
+  
+  CASImpl getCasImpl();
+  
+  // incorporated from FSIndexImpl
+  
+  FSIndexComparator getComparatorForIndexSpecs();
+
+  default void flush() {   // probably not needed, but left for backwards compatibility  4/2015
+    throw new UnsupportedOperationException();
+  }
+
+  default IntPointerIterator getIntIterator() {   // probably not needed, but left for backwards compatibility 4/2015
+    return new IntPointerIterator() {
+
+      private LowLevelIterator<T> it = ll_iterator();
+   
+      @Override
+      public boolean isValid() { return it.isValid(); }
+      @Override
+      public int get() { return it.ll_get(); }
+      @Override
+      public void inc() { it.moveToNext(); }
+      @Override
+      public void dec() { it.moveToPrevious(); }
+      @Override
+      public void moveTo(int i) { it.moveTo(i); }
+      @Override
+      public void moveToFirst() { it.moveToFirst(); }
+      @Override
+      public void moveToLast() { it.moveToLast(); }
+      @Override
+      public Object copy() { 
+        IntPointerIterator newIt = getIntIterator();
+        if (isValid()) {
+          newIt.moveTo(it.ll_get());
+        } else { // is invalid
+          newIt.moveToFirst();
+          newIt.dec(); // make invalid
+        }
+        return newIt;
+      }
+    };
+  }
+  
+  /**
+   * @param ti type which is a subtype of this index's type
+   * @param <U> the type the subindex is over
+   * @return the index but just over this subtype
+   */
+  default <U extends T> LowLevelIndex<U> getSubIndex(TypeImpl ti) {
+    return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(), (FSIndexComparatorImpl) getComparatorForIndexSpecs());
+  }
+
+  /**
+   * @return for annotation indexes, an conservative estimate the maximum span between begin and end
+   * The value may be larger than actual.
+   */
+  int ll_maxAnnotSpan();  
+  
+  
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select() {
+    return ((SelectFSs_impl)getCasImpl().select()).index(this);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
+    return ((SelectFSs_impl)select()).type(type);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
+    return ((SelectFSs_impl)select()).type(clazz);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
+    return ((SelectFSs_impl)select()).type(jcasType);
+  }
+
+  @Override
+  default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
+    return ((SelectFSs_impl)select()).type(fullyQualifiedTypeName);
+  }
+  
 }

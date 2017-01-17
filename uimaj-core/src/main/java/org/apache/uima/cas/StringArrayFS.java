@@ -28,13 +28,6 @@ package org.apache.uima.cas;
 public interface StringArrayFS extends CommonArrayFS {
 
   /**
-   * Return the size of the array.
-   * 
-   * @return The size of the array.
-   */
-  int size();
-
-  /**
    * Get the i-th string from the array.
    * @param i the index
    * @return The i-th element.
@@ -55,39 +48,40 @@ public interface StringArrayFS extends CommonArrayFS {
    */
   void set(int i, String str) throws ArrayIndexOutOfBoundsException;
 
-  /**
-   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
-   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
-   * 
-   * @param srcOffset
-   *          The index of the first element to copy.
-   * @param dest
-   *          The array to copy to.
-   * @param destOffset
-   *          Where to start copying into <code>dest</code>.
-   * @param length
-   *          The number of elements to copy.
-   * @exception ArrayIndexOutOfBoundsException
-   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
-   *              <code>destOffset + length &gt; destArray.length</code>.
-   */
-  void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException;
+  // these next 2 are inherited from super interface
+//  /**
+//   * Copy the contents of the array from <code>start</code> to <code>end</code> to the
+//   * destination <code>destArray</code> with destination offset <code>destOffset</code>.
+//   * 
+//   * @param srcOffset
+//   *          The index of the first element to copy.
+//   * @param dest
+//   *          The array to copy to.
+//   * @param destOffset
+//   *          Where to start copying into <code>dest</code>.
+//   * @param length
+//   *          The number of elements to copy.
+//   * @exception ArrayIndexOutOfBoundsException
+//   *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
+//   *              <code>destOffset + length &gt; destArray.length</code>.
+//   */
+//  void copyToArray(int srcOffset, String[] dest, int destOffset, int length)
+//          throws ArrayIndexOutOfBoundsException;
 
-  /**
-   * Copy the contents of an external array into this array.
-   * 
-   * @param src
-   *          The source array.
-   * @param srcOffset
-   *          Where to start copying in the source array.
-   * @param destOffset
-   *          Where to start copying to in the destination array.
-   * @param length
-   *          The number of elements to copy.
-   */
-  void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
-          throws ArrayIndexOutOfBoundsException;
+//  /**
+//   * Copy the contents of an external array into this array.
+//   * 
+//   * @param src
+//   *          The source array.
+//   * @param srcOffset
+//   *          Where to start copying in the source array.
+//   * @param destOffset
+//   *          Where to start copying to in the destination array.
+//   * @param length
+//   *          The number of elements to copy.
+//   */
+//  void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
+//          throws ArrayIndexOutOfBoundsException;
 
   /**
    * Creates a new array the this array is copied to.
@@ -95,5 +89,4 @@ public interface StringArrayFS extends CommonArrayFS {
    * @return A Java array copy of this FS array.
    */
   String[] toArray();
-
 }

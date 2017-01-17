@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Defines the low-level CAS APIs. The low-level CAS APIs provide no access to feature structure
@@ -142,6 +143,10 @@ public interface LowLevelCAS {
   public static final int TYPE_CLASS_LONGARRAY = 17;
 
   public static final int TYPE_CLASS_DOUBLEARRAY = 18;
+  
+  public static final int TYPE_CLASS_JAVAOBJECT = 19;
+  
+  public static final int TYPE_CLASS_JAVAOBJECTARRAY = 20;
 
   static final int NULL_FS_REF = 0;
 
@@ -235,23 +240,33 @@ public interface LowLevelCAS {
    * Get the low-level reference from an existing FS object. Use this API if you already have a FS
    * object from somewhere, and want to apply low-level APIs to it.
    * 
+   * Has a side effect of adding the FS to the internal table allowing ll_getFSforRef.  
+   * 
+   * Note: This prevents the object from being GC'd, so this use is deprecated.
+   * 
    * @param fsImpl
    *          The FS object for which we want the reference.
    * @return The low-level reference of the FS object parameter.
+   * 
    */
   int ll_getFSRef(FeatureStructure fsImpl);
 
   /**
-   * Return a FS object that corresponds to a low-level reference. Note that this <b>must</b> be a
+   * <p>Return a FS object that corresponds to a low-level reference. Note that this <b>must</b> be a
    * valid reference that has been obtained from the low-level APIs. If the input reference
-   * parameter does not represent a valid reference, the results of this call are undefined.
-   * 
+   * parameter does not represent a valid reference, an exception is thrown.
+   * </p>
+   * <p>In version 3, the map this API uses is not normally populated; it is populated only 
+   * for Feature Structures created using the low-level APIs, and also when 
+   * the ll_getFSRef API (above) is used, or the getAddress
+   * method is called on a Feature Structure
+   * </p>
    * @param fsRef
    *          The FS reference.
    * @param <T> the Java class for the Feature Structure
    * @return A FS object corresponding to the input reference.
    */
-  <T extends FeatureStructure> T ll_getFSForRef(int fsRef);
+  <T extends TOP> T ll_getFSForRef(int fsRef);
 
   /**
    * Get the value of an integer valued feature.

@@ -27,6 +27,7 @@ import org.apache.uima.analysis_engine.metadata.FlowConstraints;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * A <code>CapabilityLanguageFlow</code> is a simple type of {@link FlowConstraints} that
@@ -46,7 +47,7 @@ public class CapabilityLanguageFlow_impl extends MetaDataObject_impl implements
                   "capabilityLanguageFlow", null, true, "node") });
 
   /** Array of AnalysisEngine identifiers indicating the capabilityLanguage flow. */
-  private String[] mCapabilityLanguageFlow = new String[0];
+  private String[] mCapabilityLanguageFlow = Constants.EMPTY_STRING_ARRAY;
 
   static final long serialVersionUID = -3582926806264514233L;
 

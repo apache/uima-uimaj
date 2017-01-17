@@ -30,6 +30,7 @@ import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.LanguagePrecondition;
 import org.apache.uima.resource.metadata.MimeTypePrecondition;
 import org.apache.uima.resource.metadata.Precondition;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link Capability}
@@ -39,25 +40,28 @@ import org.apache.uima.resource.metadata.Precondition;
 public class Capability_impl extends MetaDataObject_impl implements Capability {
 
   static final long serialVersionUID = -2821073595288674925L;
+  
+  private final static TypeOrFeature[] EMPTY_TYPE_OR_FEATURE_ARRAY = new TypeOrFeature[0];
+  
+  private final static Precondition[] EMPTY_PRECONDITION_ARRAY = new Precondition[0];
 
-  private static final String[] EMPTY_STRINGS = new String[0];
   /** a description of this capability */
   private String mDescription;
 
   /** Input Types and/or Features. */
-  private TypeOrFeature[] mInputs = new TypeOrFeature[0];
+  private TypeOrFeature[] mInputs = EMPTY_TYPE_OR_FEATURE_ARRAY;
 
   /** Output Types and/or Features. */
-  private TypeOrFeature[] mOutputs = new TypeOrFeature[0];
+  private TypeOrFeature[] mOutputs = EMPTY_TYPE_OR_FEATURE_ARRAY;
 
   /** Preconditions (includes languages supported). */
-  private Precondition[] mPreconditions = new Precondition[0];
+  private Precondition[] mPreconditions = EMPTY_PRECONDITION_ARRAY;
 
   /** input SofAs */
-  private String[] mInputSofas = EMPTY_STRINGS;
+  private String[] mInputSofas = Constants.EMPTY_STRING_ARRAY;
 
   /** output SofAs */
-  private String[] mOutputSofas = EMPTY_STRINGS;
+  private String[] mOutputSofas = Constants.EMPTY_STRING_ARRAY;
 
   /*
    * (non-Javadoc)
@@ -111,7 +115,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     }
 
     // No language precondition found. Return an empty array.
-    return EMPTY_STRINGS;
+    return Constants.EMPTY_STRING_ARRAY;
   }
 
   /**
@@ -127,7 +131,7 @@ public class Capability_impl extends MetaDataObject_impl implements Capability {
     }
 
     // No language precondition found. Return an empty array.
-    return EMPTY_STRINGS;
+    return Constants.EMPTY_STRING_ARRAY;
   }
 
   /**

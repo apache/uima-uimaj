@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPlatformRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+// TODO: Auto-generated Javadoc
 /**
  * Class holds type plugin-wide collections and static methods. Also implements the runnable that is
  * called to do the processing
@@ -34,15 +35,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class JgPluginRunner implements IPlatformRunnable {
 
+  /**
+   * Instantiates a new jg plugin runner.
+   */
   public JgPluginRunner() {
   }
 
+  /* (non-Javadoc)
+   * @see org.eclipse.core.runtime.IPlatformRunnable#run(java.lang.Object)
+   */
+  @Override
   public Object run(Object object) {
     try {
       final String[] arguments = (String[]) object;
       final IWorkspace workspace = ResourcesPlugin.getWorkspace();
       final Jg jg = new Jg();
       IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+        @Override
         public void run(IProgressMonitor progressMonitor) throws CoreException {
           jg.main0(arguments, new MergerImpl(), null, // no progressMonitor,
                   new EP_LogThrowErrorImpl());

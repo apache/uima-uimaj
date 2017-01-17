@@ -27,19 +27,33 @@ import javax.swing.JFileChooser;
 import org.apache.uima.internal.util.Timer;
 import org.apache.uima.tools.cvd.MainFrame;
 
+
+/**
+ * The Class FileOpenEventHandler.
+ */
 public class FileOpenEventHandler implements ActionListener {
 
   
+  /** The main. */
   private final MainFrame main;
 
+  /**
+   * Instantiates a new file open event handler.
+   *
+   * @param frame the frame
+   */
   public FileOpenEventHandler(MainFrame frame) {
     super();
     this.main = frame;
   }
 
   /**
+   * Action performed.
+   *
+   * @param event the event
    * @see java.awt.event.ActionListener#actionPerformed(ActionEvent)
    */
+  @Override
   public void actionPerformed(ActionEvent event) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setDialogTitle("Open text file");

@@ -31,8 +31,6 @@ import java.util.Iterator;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
@@ -41,7 +39,6 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
@@ -54,6 +51,8 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import junit.framework.TestCase;
 
 
 public class XCASDeserializerTest extends TestCase {
@@ -71,6 +70,7 @@ public class XCASDeserializerTest extends TestCase {
     super(arg0);
   }
 
+  @Override
   protected void setUp() throws Exception {
     File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
     File indexesFile = JUnitExtension.getFile("ExampleCas/testIndexes.xml");
@@ -129,9 +129,12 @@ public class XCASDeserializerTest extends TestCase {
   private void doTestDeserializeAndReserialize(boolean useJCas) throws Exception {
     // deserialize a complex CAS
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
+    CASImpl casImpl = (CASImpl) cas;
     if (useJCas) {
       cas.getJCas();
     }
+    TypeSystemImpl tsi = casImpl.getTypeSystemImpl();
+    
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
     ContentHandler deserHandler = deser.getXCASHandler(cas);
@@ -142,6 +145,43 @@ public class XCASDeserializerTest extends TestCase {
     xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
 
+//    //print some statistics to aid in verifying deserialization was correct
+//    FSIndexRepository iri = cas.getIndexRepository();
+//    FSIterator<TOP> it = iri.getAllIndexedFS(tsi.getTopType());
+//    List<TOP> allFSs = new ArrayList<>();
+//    while (it.hasNext()) {
+//      allFSs.add(it.next());
+//    }
+//    
+//    Collections.sort(allFSs, (fs1, fs2) -> 
+//       { int c = fs1._typeImpl.getName().compareTo(fs2._typeImpl.getName());
+//         if (0 == c) {
+//           return Integer.compare(fs1._id, fs2._id);
+//         }
+//         return c;
+//       });
+//    
+//    {
+//      int i = 0;
+//    
+//      int si = 0;
+//      String prevName = "";
+//      for (TOP fs : allFSs) {
+//        String thisName = fs._typeImpl.getName();
+//        if (thisName.equals(prevName)) {
+//          i ++;
+//          continue;
+//        }
+//        if (!prevName.equals("")) {
+//          System.out.format("%,d %,d %s%n", si, i-1, prevName);
+//        }
+//        prevName = thisName;
+//        si = i;
+//        i++;
+//      }
+//      System.out.format("%,d %,d %s%n", si, i-1, prevName);
+//    }
+    
     // check that array refs are not null
     Type entityType = cas.getTypeSystem().getType("org.apache.uima.testTypeSystem.Entity");
     Feature classesFeat = entityType.getFeatureByBaseName("classes");
@@ -172,9 +212,16 @@ public class XCASDeserializerTest extends TestCase {
     XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
     xmlReader.setContentHandler(deserHandler2);
+//    // debug
+//    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
+//    ps.println(xml);
+//    ps.close();
     xmlReader.parse(new InputSource(new StringReader(xml)));
 
     // compare
+//    if (cas.getAnnotationIndex().size() != cas2.getAnnotationIndex().size()) {
+//      System.out.println("debug");
+//    }
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
     // CasComparer.assertEquals(cas,cas2);
   }
@@ -200,7 +247,8 @@ public class XCASDeserializerTest extends TestCase {
     XMLSerializer xmlSer = new XMLSerializer(sw, false);
     xcasSer.serialize(cas, xmlSer.getContentHandler(), true, ootsd);
     String xml = sw.getBuffer().toString();
-//    FileUtils.saveString2File(xml, new File("c:/temp/xmlv2.xml"));
+//    System.out.println("debug writing temp/xmlv3.xml");
+//    FileUtils.saveString2File(xml, new File("c:/temp/xmlv3.xml"));
 //    System.out.println(xml);
 
     // deserialize into a CAS that accepts the full typesystem
@@ -254,6 +302,15 @@ public class XCASDeserializerTest extends TestCase {
   }
 
   public void testMultipleSofas() throws Exception {
+    /*************************************************
+     * Make CAS with 2 sofas, initial and OtherSofa  *
+     *                                               *
+     * Add instance of TOP and index in both views   *
+     *                                               *
+     * Serialize to string "xml"                     *
+     *                                               *
+     * Deserialize from string                       *
+     *************************************************/
     CAS cas = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), indexes);
     // set document text for the initial view
     cas.setDocumentText("This is a test");
@@ -323,7 +380,7 @@ public class XCASDeserializerTest extends TestCase {
     SAXParser parser = fact.newSAXParser();
     XMLReader xmlReader = parser.getXMLReader();
     xmlReader.setContentHandler(deserHandler);
-    xmlReader.parse(new InputSource(serCasStream));
+    xmlReader.parse(new InputSource(serCasStream)); 
     serCasStream.close();
 
     // get a v1.x version of the same CAS
@@ -402,7 +459,7 @@ public class XCASDeserializerTest extends TestCase {
     XCASDeserializer.deserialize(bais, cas);
 
     //check
-    Iterator<StringArray> iter = cas.getIndexRepository().getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
+    Iterator iter = cas.getIndexRepository().getAllIndexedFS(cas.getTypeSystem().getType("uima.cas.StringArray"));
     StringArrayFS strArrayOut = (StringArrayFS)iter.next();
     assertEquals(null, strArrayOut.get(0));
     assertEquals("value", strArrayOut.get(1));

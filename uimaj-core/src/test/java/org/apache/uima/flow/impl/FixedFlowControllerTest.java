@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
@@ -42,6 +40,8 @@ import org.apache.uima.resource.metadata.OperationalProperties;
 import org.apache.uima.resource.metadata.impl.OperationalProperties_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.util.CasCreationUtils;
+
+import junit.framework.TestCase;
 
 
 public class FixedFlowControllerTest extends TestCase {

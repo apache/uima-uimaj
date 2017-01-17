@@ -19,9 +19,12 @@
 
 package org.apache.uima.jcas.tcas;
 
+import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.TOP_Type;
 
 /**
  * The JCas class definition for the CAS <code>DocumentAnnotation</code> type. When text CASs are
@@ -40,17 +43,25 @@ public class DocumentAnnotation extends Annotation {
     return typeIndexID;
   }
 
+  public final static int _FI_language = TypeSystemImpl.getAdjustedFeatureOffset("language"); 
+        
   // Never called. Disable default constructor
   protected DocumentAnnotation() {
   }
 
- /* Internal - Constructor used by generator */
-  public DocumentAnnotation(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
   public DocumentAnnotation(JCas jcas) {
     super(jcas);
+  }
+
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public DocumentAnnotation(TypeImpl t, CASImpl c) {
+    super(t, c);
   }
 
   // *------------------*
@@ -59,23 +70,13 @@ public class DocumentAnnotation extends Annotation {
    * getter for language
    * @return the language
    */
-  public String getLanguage() {
-    if (DocumentAnnotation_Type.featOkTst
-            && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      this.jcasType.jcas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
-    return jcasType.ll_cas.ll_getStringValue(addr,
-            ((DocumentAnnotation_Type) jcasType).casFeatCode_language);
-  }
+  public String getLanguage() { return _getStringValueNc(_FI_language); }
 
   /**
    * setter for language
    * @param v the language
    */
   public void setLanguage(String v) {
-    if (DocumentAnnotation_Type.featOkTst
-            && ((DocumentAnnotation_Type) jcasType).casFeat_language == null)
-      this.jcasType.jcas.throwFeatMissing("language", "uima.tcas.DocumentAnnotation");
-    jcasType.ll_cas.ll_setStringValue(addr,
-            ((DocumentAnnotation_Type) jcasType).casFeatCode_language, v);
+    _setStringValueNfc(_FI_language, v);
   }
 }

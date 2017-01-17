@@ -22,13 +22,7 @@ package org.apache.uima.internal.util.rb_trees;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.cas.impl.FSRBTSetIndex;
-import org.apache.uima.cas.impl.IntIterator4set;
-import org.apache.uima.internal.util.ComparableIntPointerIterator;
-import org.apache.uima.internal.util.IntComparator;
 import org.apache.uima.internal.util.IntListIterator;
-import org.apache.uima.internal.util.IntPointerIterator;
 
 /**
  * A set (not a map) of ints.
@@ -526,10 +520,10 @@ public class IntArrayRBT extends IntArrayRBTcommon {
     return new IntArrayRBTKeyIterator();
   }
 
-  // this version doesn't do ConcurrentModificationException testing
-  public <T extends FeatureStructure> IntPointerIterator pointerIterator(IntComparator comp, FSRBTSetIndex<T> fsSetIndex) {
-    return new IntIterator4set<T>(fsSetIndex, null, comp);
-  }
+//  // this version doesn't do ConcurrentModificationException testing
+//  public <T extends FeatureStructure> IntPointerIterator pointerIterator(IntComparator comp, FsIndex_set<T> fsSetIndex) {
+//    return new IntIterator4set<T>(fsSetIndex, null, comp);
+//  }
 
 //  public IntPointerIterator pointerIterator(int aKey) {
 //    PointerIterator it = new PointerIterator();
@@ -537,11 +531,11 @@ public class IntArrayRBT extends IntArrayRBTcommon {
 //    return it;
 //  }
 
-  public <T extends FeatureStructure> ComparableIntPointerIterator<T> pointerIterator(
-      FSRBTSetIndex<T> fsSetIndex, int[] detectIllegalIndexUpdates, IntComparator comp) {
-    IntIterator4set<T> cpi = new IntIterator4set<T>(fsSetIndex, detectIllegalIndexUpdates, comp);
-    return cpi;
-  }
+//  public <T extends FeatureStructure> ComparableIntPointerIterator<T> pointerIterator(
+//      FsIndex_set<T> fsSetIndex, int[] detectIllegalIndexUpdates, IntComparator comp) {
+//    IntIterator4set<T> cpi = new IntIterator4set<T>(fsSetIndex, detectIllegalIndexUpdates, comp);
+//    return cpi;
+//  }
   
   //debug
   public boolean debugScanFor(int key) {

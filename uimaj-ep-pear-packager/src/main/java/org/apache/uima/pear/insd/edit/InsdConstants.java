@@ -19,6 +19,7 @@
 
 package org.apache.uima.pear.insd.edit;
 
+
 /**
  * 
  * this interface defines common constants used in classes related to handling PEAR Installation
@@ -28,25 +29,36 @@ package org.apache.uima.pear.insd.edit;
  */
 public interface InsdConstants {
 
+  /** The comp id. */
   public final String COMP_ID = "compID";
 
+  /** The comp descriptor path. */
   public final String COMP_DESCRIPTOR_PATH = "compDescriptorPath";
 
+  /** The comp name. */
   public final String COMP_NAME = "compName";
 
+  /** The collection iterator descriptor path. */
   public final String COLLECTION_ITERATOR_DESCRIPTOR_PATH = "collectionIteratorDescriptorPath";
 
+  /** The cas initializer descriptor path. */
   public final String CAS_INITIALIZER_DESCRIPTOR_PATH = "casInitializerDescriptorPath";
 
+  /** The cas consumer descriptor path. */
   public final String CAS_CONSUMER_DESCRIPTOR_PATH = "casConsumerDescriptorPath";
 
+  /** The comp type analysis engine. */
   public final String COMP_TYPE_ANALYSIS_ENGINE = "analysis_engine";
 
+  /** The comp type cas consumer. */
   public final String COMP_TYPE_CAS_CONSUMER = "cas_consumer";
 
+  /** The comp type cas initializer. */
   public final String COMP_TYPE_CAS_INITIALIZER = "cas_initializer";
 
+  /** The comp type collection reader. */
   public final String COMP_TYPE_COLLECTION_READER = "collection_reader";
 
+  /** The comp type cpe. */
   public final String COMP_TYPE_CPE = "cpe";
 }

@@ -26,6 +26,7 @@ import org.apache.uima.analysis_engine.metadata.FixedFlow;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
+import org.apache.uima.util.impl.Constants;
 
 /**
  * Reference implementation of {@link FixedFlow}.
@@ -37,7 +38,7 @@ public class FixedFlow_impl extends MetaDataObject_impl implements FixedFlow {
   static final long serialVersionUID = -3582926806264514233L;
 
   /** Array of AnalysisEngine identifiers indicating the fixed flow. */
-  private String[] mFixedFlow = new String[0];
+  private String[] mFixedFlow = Constants.EMPTY_STRING_ARRAY;
 
   /**
    * @see org.apache.uima.analysis_engine.metadata.FixedFlow#getFlowConstraintsType()

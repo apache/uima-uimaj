@@ -22,72 +22,69 @@ package org.apache.uima.jcas.cas;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.JCasRegistry;
 
-public class StringList extends org.apache.uima.jcas.cas.TOP implements Iterable<String> {
+public abstract class StringList extends TOP implements CommonList, Iterable<String> {
 
-	public final static int typeIndexID = JCasRegistry.register(StringList.class);
+	/* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<String> iterator() {
+    return Collections.emptyIterator(); // overridden by NonEmptyStringList
+  }
 
-	public final static int type = typeIndexID;
-
-	public int getTypeIndexID() {
-		return typeIndexID;
-	}
-
-	// Never called.
+  // Never called.
 	protected StringList() { // Disable default constructor
-	}
-
-	/* Internal - Constructor used by generator */
-	public StringList(int addr, TOP_Type type) {
-		super(addr, type);
 	}
 
 	public StringList(JCas jcas) {
 		super(jcas);
 	}
 
-	public String getNthElement(int i) {
-		if (this instanceof EmptyStringList) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_ON_EMPTY_LIST, new String[] { "EmptyStringList" });
-			throw casEx;
-		}
-
-		if (i < 0) {
-			CASRuntimeException casEx = new CASRuntimeException(
-					CASRuntimeException.JCAS_GET_NTH_NEGATIVE_INDEX, new String[] { Integer.toString(i) });
-			throw casEx;
-		}
-
-		int originali = i;
-		StringList cg = this;
-		for (;; i--) {
-			if (cg instanceof EmptyStringList) {
-				CASRuntimeException casEx = new CASRuntimeException(
-						CASRuntimeException.JCAS_GET_NTH_PAST_END, new String[] { Integer.toString(originali) });
-				throw casEx;
-			}
-			NonEmptyStringList c = (NonEmptyStringList) cg;
-			if (i == 0)
-				return c.getHead();
-			cg = c.getTail();
-		}
-	}
-
-  @Override
-  public Iterator<String> iterator() {
-    return Collections.emptyIterator();  // NonEmptyStringList overrides
-  }
- 
   /**
-   * pushes a String onto front of this list
-   * @param s the String to push
-   * @return the new list, with this String as the first element's head value
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
    */
-  public NonEmptyStringList push(String s) {
-    return new NonEmptyStringList(this.jcasType.jcas, s, this);
+
+  public StringList(TypeImpl t, CASImpl c) {
+    super(t, c);
   }
+
+  public String getNthElement(int i) {
+    return ((NonEmptyStringList) getNonEmptyNthNode(i)).getHead();
+  }
+   
+  public NonEmptyStringList createNonEmptyNode() {
+    NonEmptyStringList node = new NonEmptyStringList(this._casView.getTypeSystemImpl().stringNeListType, this._casView);
+    return node;
+  }  
+  
+  public NonEmptyStringList push(String item) {
+    return new NonEmptyStringList(this._casView.getJCasImpl(), item, this);
+  } 
+  
+  @Override
+  public EmptyStringList getEmptyList() {
+    return this._casView.getEmptyStringList();
+  }
+
+  /**
+   * Create an StringList from an existing array of Strings
+   * @param jcas the JCas to use
+   * @param a the array of Strings to populate the list with
+   * @return an StringList, with the elements from the array
+   */
+  public static StringList createFromArray(JCas jcas, String[] a) {
+    StringList stringList = jcas.getCasImpl().getEmptyStringList();   
+    for (int i = a.length - 1; i >= 0; i--) {
+      stringList = stringList.push(a[i]);
+    }   
+    return stringList;
+  }
+  
 }

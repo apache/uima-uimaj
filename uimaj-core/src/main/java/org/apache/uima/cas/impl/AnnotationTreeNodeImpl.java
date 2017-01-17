@@ -25,11 +25,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationTreeNode;
 
-/**
- * TODO: Create type comment for AnnotationTreeNodeImpl.
- * 
- * 
- */
+
 public class AnnotationTreeNodeImpl<T extends AnnotationFS>  implements AnnotationTreeNode<T> {
 
   private T annot;

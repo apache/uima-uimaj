@@ -21,13 +21,13 @@ package org.apache.uima.cas.admin;
 
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.impl.FeatureImpl;
 
 /**
- * Interface for creating comparators, which in turn are used to create indexes.
- * 
- * 
+ * This interface describes objects which specify the comparison used in indexes for keys. 
  */
 public interface FSIndexComparator extends Comparable<FSIndexComparator> {
+  
 
   static final int FEATURE_KEY = 0;
 

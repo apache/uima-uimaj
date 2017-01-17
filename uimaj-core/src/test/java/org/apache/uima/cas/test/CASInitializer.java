@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas.test;
 
+import java.util.function.Consumer;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.admin.CASFactory;
@@ -26,6 +28,7 @@ import org.apache.uima.cas.admin.CASMgr;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.admin.TypeSystemMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.util.CasCreationUtils;
@@ -35,7 +38,7 @@ import org.apache.uima.util.CasCreationUtils;
  */
 public class CASInitializer {
 
-  public static CAS initCas(AnnotatorInitializer init) {
+  public static CAS initCas(AnnotatorInitializer init, Consumer<TypeSystemImpl> reinitTypeSystem) {
     // Create an initial CASMgr from the factory.
     CASMgr casMgr0 = CASFactory.createCAS();
     CASMgr casMgr = null;
@@ -50,8 +53,11 @@ public class CASInitializer {
       init.initTypeSystem(tsa);
       // Commit the type system.
       ((CASImpl) casMgr0).commitTypeSystem();
+      if (null != reinitTypeSystem) {
+        reinitTypeSystem.accept(((CASImpl) casMgr0).getTypeSystemImpl());
+      }
 
-      casMgr = CASFactory.createCAS(tsa);
+      casMgr = CASFactory.createCAS(casMgr0.getTypeSystemMgr());
 
       // Create the Base indexes.
       casMgr.initCASIndexes();
@@ -66,6 +72,7 @@ public class CASInitializer {
     }
 
     // Create the default text Sofa and return CAS view
+    
     return casMgr.getCAS().getCurrentView();
   }
 

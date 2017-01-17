@@ -50,6 +50,8 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
 
   static final long serialVersionUID = 3476535733588304983L;
 
+  static final NameValuePair[] EMPTY_NAME_VALUE_PAIR_ARRAY = new NameValuePair[0];
+  
   private static final Method methodGetSettingsForGroups;
   static {
     try {
@@ -61,7 +63,7 @@ public class ConfigurationParameterSettings_impl extends MetaDataObject_impl imp
   /**
    * Settings for parameters that are not in any group.
    */
-  private NameValuePair[] mParameterSettings = new NameValuePair[0];
+  private NameValuePair[] mParameterSettings = EMPTY_NAME_VALUE_PAIR_ARRAY;
 
   /**
    * Settings for parameters in groups. This HashMap has <code>String</code> keys (the group name)

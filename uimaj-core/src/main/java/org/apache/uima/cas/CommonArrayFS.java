@@ -29,14 +29,19 @@ public interface CommonArrayFS extends FeatureStructure {
    * 
    * @return The size of the array.
    */
-  int size(); // Java style. We can also call this getLength().
+  int size(); 
 
   /**
    * Creates a new string array and copies this array values into it.
    * 
    * @return A Java array copy of this array.
    */
-  String[] toStringArray();
+  default String[] toStringArray() {
+    final int size = size();
+    String[] strArray = new String[size];
+    copyToArray(0, strArray, 0, size);
+    return strArray;
+  }
 
   /**
    * Copy the contents of the array to an external string array.
@@ -79,4 +84,26 @@ public interface CommonArrayFS extends FeatureStructure {
   void copyFromArray(String[] src, int srcOffset, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException, NumberFormatException;
 
+  /**
+   * @return a comma-separated string of the string values of the elements of the array
+   */
+  default String getValuesAsCommaSeparatedString() { 
+    String [] sa = toStringArray();
+    StringBuilder sb = new StringBuilder();
+    boolean isFirst = true;
+    for (String s : sa) {
+      if (!isFirst) {
+        sb.append(',');
+      }
+      isFirst = false;
+      sb.append(s);
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Copy values from another array of the same kind
+   * @param v the other array
+   */
+  void copyValuesFrom(CommonArrayFS v);
 }

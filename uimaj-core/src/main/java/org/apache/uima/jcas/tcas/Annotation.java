@@ -19,19 +19,27 @@
 
 package org.apache.uima.jcas.tcas;
 
-import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.admin.LinearTypeOrder;
+import org.apache.uima.cas.impl.AnnotationImpl;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
-import org.apache.uima.jcas.cas.TOP_Type;
 
 /**
  * the JCas class model for the CAS type uima.cas.Annotation. It defines two integer valued features
  * indicating the begin and end of the span being annotated. There is also a method to retrieve the
  * spanned text as a string.
  */
-public class Annotation extends AnnotationBase implements AnnotationFS {
+public class Annotation extends AnnotationBase implements AnnotationImpl {
+
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = "org.apache.uima.jcas.cas.Annotation";
+  public final static String _FeatName_begin = "begin";
+  public final static String _FeatName_end = "end";
 
   public final static int typeIndexID = JCasRegistry.register(Annotation.class);
 
@@ -40,19 +48,33 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   public int getTypeIndexID() {
     return typeIndexID;
   }
+  
+  public final static int _FI_begin = TypeSystemImpl.getAdjustedFeatureOffset("begin");
+  public final static int _FI_end   = TypeSystemImpl.getAdjustedFeatureOffset("end");
+  
+//  /* local data */
+//  private int _F_begin;
+//  private int _F_end;
 
   // Never called. Disable default constructor
   protected Annotation() {
   }
 
- /* Internal - Constructor used by generator */
-  public Annotation(int addr, TOP_Type type) {
-    super(addr, type);
-  }
-
   public Annotation(JCas jcas) {
     super(jcas);
   }
+  
+  /**
+   * used by generator
+   * Make a new AnnotationBase
+   * @param c -
+   * @param t -
+   */
+
+  public Annotation(TypeImpl t, CASImpl c) {
+    super(t, c);
+  }
+
 
   // *------------------*
   // * Feature: begin
@@ -60,24 +82,15 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * getter for begin - gets beginning of span of annotation
    */
-  public int getBegin() {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-//      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-    return ((Annotation_Type)jcasType).getBegin(addr);
-//    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin);
+//  public int getBegin() { return _F_begin; }
+  public int getBegin() { return _getIntValueNc(_FI_begin); 
   }
 
   /*
    * setter for begin - sets beginning of span of annotation
    */
-  public void setBegin(int v) {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_begin == null)
-//      this.jcasType.jcas.throwFeatMissing("begin", "uima.tcas.Annotation");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_begin, v);
-  }
-
+  public void setBegin(int v) { _setIntValueNfcCJ(_FI_begin, v); }
+  
   // *------------------*
   // * Feature: end
   // * ending of span of annotation
@@ -85,24 +98,17 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   /*
    * getter for end - gets ending of span of annotation
    */
-  public int getEnd() {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-//      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-    return ((Annotation_Type)jcasType).getEnd(addr);
-//    return jcasType.ll_cas.ll_getIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end);
+  public int getEnd() { 
+    return this._getIntValueNc(_FI_end);
   }
 
   /*
    * setter for end - sets ending of span of annotation
    */
   public void setEnd(int v) {
-    // not needed - is built in
-//    if (Annotation_Type.featOkTst && ((Annotation_Type) jcasType).casFeat_end == null)
-//      this.jcasType.jcas.throwFeatMissing("end", "uima.tcas.Annotation");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Annotation_Type) jcasType).casFeatCode_end, v);
+    this._setIntValueNfc(_FI_end,  v);
   }
-
+  
   /**
    * Constructor with begin and end passed as arguments
    * @param jcas JCas
@@ -110,18 +116,18 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
    * @param end   end offset
    */
   public Annotation(JCas jcas, int begin, int end) {
-    this(jcas); // forward to constructor
-    this.setBegin(begin);
-    this.setEnd(end);
+    super(jcas); // forward to constructor
+    this._setIntValueNcNj(_FI_begin, begin);
+    this._setIntValueNcNj(_FI_end, end);
   }
 
   /**
    * @see org.apache.uima.cas.text.AnnotationFS#getCoveredText()
+   * @return -
    */
   public String getCoveredText() {
 
-    final CAS casView = this.getView();
-    final String text = casView.getDocumentText();
+    final String text = _casView.getDocumentText();
     if (text == null) {
       return null;
     }
@@ -136,6 +142,56 @@ public class Annotation extends AnnotationBase implements AnnotationFS {
   @Deprecated
   public int getStart() {
     return getBegin();
+  }
+  
+  /**
+   * Compare two annotations, no type order
+   * @param other -
+   * @return -
+   */
+  public int compareAnnotation(Annotation other) {
+    int result = Integer.compare(_getIntValueNc(_FI_begin), other._getIntValueNc(_FI_begin));
+    if (result != 0) return result;
+
+    result = Integer.compare(_getIntValueNc(_FI_end), other._getIntValueNc(_FI_end));
+    return (result == 0) ? 0 : -result;  // reverse compare
+  }
+  
+  /**
+   * Compare two annotations incl type order
+   * @param other -
+   * @param lto -
+   * @return -
+   */
+  public int compareAnnotation(Annotation other, LinearTypeOrder lto) {
+    int result = compareAnnotation(other);
+    if (result != 0) return result;
+    
+    return lto.compare(this, other);
+  }
+
+
+  /**
+   * Compare two annotations, with type order, with id compare
+   * @param other -
+   * @return -
+   */
+  public int compareAnnotationWithId(Annotation other) {
+    int result = compareAnnotation(other);
+    if (result != 0) return result;    
+    return Integer.compare(_id,  other._id);
+  }
+  
+  /**
+   * Compare two annotations, with type order, with id compare
+   * @param other -
+   * @param lto -
+   * @return -
+   */
+  public int compareAnnotationWithId(Annotation other, LinearTypeOrder lto) {
+    int result = compareAnnotation(other, lto);
+    if (result != 0) return result;    
+    return Integer.compare(_id,  other._id);
   }
 
 }

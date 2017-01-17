@@ -23,9 +23,9 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.apache.uima.internal.util.IntListIterator;
+
+import junit.framework.TestCase;
 
 public class IntArrayRBTtest extends TestCase {
   private final static int NIL = 0;

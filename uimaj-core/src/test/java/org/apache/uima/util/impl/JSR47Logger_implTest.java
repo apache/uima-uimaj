@@ -22,10 +22,10 @@ package org.apache.uima.util.impl;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import org.apache.uima.util.Level;
+
 import org.junit.Assert;
 import junit.framework.TestCase;
-
-import org.apache.uima.util.Level;
 
 /**
  * UIMA Logging Test

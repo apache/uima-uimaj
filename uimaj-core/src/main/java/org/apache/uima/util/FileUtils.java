@@ -29,6 +29,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -110,17 +113,17 @@ public class FileUtils {
    *           Various I/O errors.
    */
   public static String reader2String(Reader reader) throws IOException {
-    StringBuffer strBuffer = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     char[] buf = new char[10000];
     int charsRead;
     try {
       while ((charsRead = reader.read(buf)) >= 0) {
-        strBuffer.append(buf, 0, charsRead);
+        sb.append(buf, 0, charsRead);
       }
     } finally {
       reader.close();
     }
-    return strBuffer.toString();
+    return sb.toString();
   }
 
   /**
@@ -194,6 +197,21 @@ public class FileUtils {
     }
   }
 
+  /**
+   * Efficiently Writes string data as UTF-8 characters to path
+   *   added for backwards compatibility with v2
+   * @param path where to write to, creating a new file if it doesn't already exist
+   * @param data the data to write
+   */
+  public static void writeToFile(Path path, String data) {   
+    // try with resources, closes bw at end
+    try (BufferedWriter bw = Files.newBufferedWriter(path, StandardOpenOption.CREATE)) {  
+      bw.write(data);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+  
   /**
    * Delete all files in a directory (not recursive).
    * 
@@ -362,15 +380,15 @@ public class FileUtils {
         && filePathComponents[i].equals(relToPathComponents[i])) {
       i++;
     }
-    StringBuffer buf = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int j = i; j < relToPathComponents.length; j++) {
-      buf.append("../");
+      sb.append("../");
     }
     for (int j = i; j < filePathComponents.length - 1; j++) {
-      buf.append(filePathComponents[j]).append('/');
+      sb.append(filePathComponents[j]).append('/');
     }
-    buf.append(filePathComponents[filePathComponents.length - 1]);
-    return buf.toString();
+    sb.append(filePathComponents[filePathComponents.length - 1]);
+    return sb.toString();
   }
 
   /**

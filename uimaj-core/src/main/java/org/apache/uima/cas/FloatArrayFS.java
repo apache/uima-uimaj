@@ -63,7 +63,7 @@ public interface FloatArrayFS extends CommonArrayFS {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
-  void copyToArray(int srcOffset, float[] dest, int destOffset, int length)
+  void copyToArray(int srcOffset, float[] dest, int destOffset, int length) 
           throws ArrayIndexOutOfBoundsException;
 
   /**
@@ -78,7 +78,7 @@ public interface FloatArrayFS extends CommonArrayFS {
    * @param length
    *          The number of elements to copy.
    */
-  void copyFromArray(float[] src, int srcOffset, int destOffset, int length)
+  void copyFromArray(float[] src, int srcOffset, int destOffset, int length) 
           throws ArrayIndexOutOfBoundsException;
 
   /**
@@ -87,5 +87,4 @@ public interface FloatArrayFS extends CommonArrayFS {
    * @return An array copy.
    */
   float[] toArray();
-
 }

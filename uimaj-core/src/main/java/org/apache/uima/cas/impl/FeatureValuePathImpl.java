@@ -200,9 +200,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 	private FeatureValuePathImpl(String pathSnippet, FeatureValuePathImpl child)
 			throws CASRuntimeException {
 		if (pathSnippet == null || pathSnippet.length() == 0) {
-			CASRuntimeException exception = new CASRuntimeException(
-					CASRuntimeException.INVALID_FEATURE_PATH, new String[] { pathSnippet });
-			throw exception;
+			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
 		}
 
 		this.childPath = child;
@@ -223,14 +221,13 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		// path
 		if ((this.isCoveredTextFeature || this.isFsIdFeature || this.isUniqueIdFeature || this.isTypeNameFeature)
 				&& child != null) {
-			CASRuntimeException exception = new CASRuntimeException(
-					CASRuntimeException.INVALID_FEATURE_PATH, new String[] { pathSnippet });
-			throw exception;
+			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, pathSnippet);
 		}
 
 	}
 
-	public Object evaluate(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Object evaluate(int currentFS, LowLevelCAS cas) {
 		String valueType = getValueType();
 		if (CAS.TYPE_NAME_FLOAT.equals(valueType)) {
 			return evaluateAsFloat(currentFS, cas);
@@ -249,7 +246,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Float evaluateAsFloat(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Float evaluateAsFloat(int currentFS, LowLevelCAS cas) {
 		if (currentFS == 0) {
 			return null;
 		}
@@ -318,7 +316,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Float[] evaluateAsFloatArray(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Float[] evaluateAsFloatArray(int currentFS, LowLevelCAS cas) {
 		if (!getValueType().equals(CAS.TYPE_NAME_FLOAT_ARRAY)) {
 			throw new IllegalStateException("Feature path does not denote a float array");
 		}
@@ -406,7 +405,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Integer evaluateAsInt(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Integer evaluateAsInt(int currentFS, LowLevelCAS cas) {
 		if (currentFS == 0) {
 			return null;
 		}
@@ -478,7 +478,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public Integer[] evaluateAsIntArray(int currentFS, LowLevelCAS cas) {
+	@Override
+  public Integer[] evaluateAsIntArray(int currentFS, LowLevelCAS cas) {
 		if (!getValueType().equals(CAS.TYPE_NAME_INTEGER_ARRAY)) {
 			throw new IllegalStateException("Feature path does not denote an int array");
 		}
@@ -576,7 +577,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * @param cas CAS
    * @return A string representation of the leaf value.
    */
-	public String evaluateAsString(int currentFS, LowLevelCAS cas) {
+	@Override
+  public String evaluateAsString(int currentFS, LowLevelCAS cas) {
 		if (currentFS == 0) {
 			return null;
 		}
@@ -656,7 +658,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 	}
 
-	public String[] evaluateAsStringArray(int currentFS, LowLevelCAS cas) {
+	@Override
+  public String[] evaluateAsStringArray(int currentFS, LowLevelCAS cas) {
 		if (!getValueType().equals(CAS.TYPE_NAME_STRING_ARRAY)) {
 			throw new IllegalStateException("Feature path does not denote a String array");
 		}
@@ -763,7 +766,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    * 
    * @return the type for which the last feature in the feature path is defined.
    */
-	public int getFSType() {
+	@Override
+  public int getFSType() {
 		if (this.isSimpleRangeType) {
 			return this.typeCode;
 		}
@@ -784,7 +788,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
    *         <li>CAS.TYPE_NAME_FLOAT_ARRAY
    *         </ul>
    */
-	public String getValueType() {
+	@Override
+  public String getValueType() {
 		if (this.valueTypeName == null) {
 			this.valueTypeName = this.childPath.getValueType();
 			if (this.arrayIndex == USE_ALL_ENTRIES) {
@@ -800,8 +805,9 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		return this.valueTypeName;
 	}
 
-	public String toString() {
-		StringBuffer result = new StringBuffer();
+	@Override
+  public String toString() {
+		StringBuilder result = new StringBuilder();
 		if (this.typeNameInSnippet != null) {
 			result.append(this.typeNameInSnippet);
 			result.append(TypeSystem.FEATURE_SEPARATOR);
@@ -824,7 +830,8 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		return result.toString();
 	}
 
-	public void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException {
+	@Override
+  public void typeSystemInit(int fsType, LowLevelTypeSystem ts) throws CASRuntimeException {
 		if (this.typeNameInSnippet != null) { // if the feature path snippet
 			// defines
 			// its own
@@ -834,9 +841,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 
 		if (fsType == LowLevelTypeSystem.UNKNOWN_TYPE_CODE) {
-			CASRuntimeException exception = new CASRuntimeException(
-					CASRuntimeException.INVALID_FEATURE_PATH, new String[] { this.typeNameInSnippet });
-			throw exception;
+			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.typeNameInSnippet );
 		}
 
 		// the range type denotes what type of FSes (or
@@ -860,9 +865,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 				rangeTypeCode = ts.ll_getRangeType(this.featureCode);
 			} else {
 				Type type = ts.ll_getTypeForCode(fsType);
-				CASRuntimeException exception = new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT,
-						new String[] { this.featureName, type.getName() });
-				throw exception;
+				throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, this.featureName, type.getName());
 			}
 		}
 
@@ -938,9 +941,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			if (this.isSimpleRangeType
 					&& !(this.childPath.isBracketsOnly() || 
 					     this.childPath.isFsIdFeature)) {
-				CASRuntimeException exception = new CASRuntimeException(
-						CASRuntimeException.INVALID_FEATURE_PATH, new String[] { this.featureName });
-				throw exception;
+				throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.featureName);
 			}
 
 			// continue with the child path
@@ -949,9 +950,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			// make sure that the type is a subtype of annotation
 			int annotationType = ts.ll_getCodeForTypeName(CAS.TYPE_NAME_ANNOTATION);
 			if (!((TypeSystemImpl) ts).subsumes(annotationType, fsType)) {
-				CASRuntimeException exception = new CASRuntimeException(
-						CASRuntimeException.INVALID_FEATURE_PATH, new String[] { this.featureName });
-				throw exception;
+				throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.featureName);
 			}
 
 			this.valueTypeName = SIMPLE_VAL_TYPES[Arrays.binarySearch(SIMPLE_VAL_TYPES,
@@ -1008,9 +1007,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 		}
 		int endIndex = this.featureName.indexOf(']');
 		if (endIndex == -1) { // we're missing the ending bracket
-			CASRuntimeException exception = new CASRuntimeException(
-					CASRuntimeException.INVALID_FEATURE_PATH, new String[] { this.toString() });
-			throw exception;
+			throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.toString());
 		}
 
 		this.isArrayOrList = true;
@@ -1031,9 +1028,7 @@ public class FeatureValuePathImpl implements FeatureValuePath {
 			try {
 				this.arrayIndex = Integer.parseInt(arrayIndexString);
 			} catch (NumberFormatException e) {
-				CASRuntimeException exception = new CASRuntimeException(
-						CASRuntimeException.INVALID_FEATURE_PATH, new String[] { this.toString() });
-				throw exception;
+				throw new CASRuntimeException(CASRuntimeException.INVALID_FEATURE_PATH, this.toString());
 			}
 		}
 
