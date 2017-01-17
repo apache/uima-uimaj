@@ -54,9 +54,20 @@ under the License.
 		  at every startup.</para></listitem>
 	  </varlistentry> -->
     <varlistentry>
+      <term><emphasis role="strong">generating during build</emphasis></term>
+      <listitem>
+        <para>If the project is built by Maven, it's possible the JCas classes are built from the type descriptions, 
+          using UIMA's
+          Maven JCasGen plugin.  If so, you can just rebuild the project; the JCasGen plugin for V3 generates
+          the new JCas classes. 
+          </para>
+      </listitem>
+    </varlistentry>
+    
+    <varlistentry>
       <term><emphasis role="strong">running the migration utility</emphasis></term>
       <listitem>
-        <para>This is the recommended way.</para>
+        <para>This is the recommended way if you can't regenerate the classes from the type descriptions.</para>
 	      
 	      <para>This does the work of migrating and produces new versions of the JCas classes, which
 	      need to replace the existing ones.  It allows complex existing JCas classes to migrated, perhaps
@@ -190,9 +201,9 @@ under the License.
       <varlistentry>
 	      <term><emphasis role="strong">Backwards compatible</emphasis></term>
 	      <listitem>
-	        <para>Version 3 is intended to be backwards compatible - the goal is that you should be able to run 
-	        existing applications, with minimal adjustment initially.  If the application uses custom JCas 
-	        class implementations, utilities are provided to help do the necessary JCas migration mostly automatically.</para>
+	        <para>Version 3 is intended to be binary backwards compatible - the goal is that you should be able to run 
+	        existing applications without recompiling them, except for the need to migrate or regenerate 
+          any User supplied JCas Classes.  Utilities are provided to help do the necessary JCas migration mostly automatically.</para>
 	      </listitem>
 	    </varlistentry>
 	    
