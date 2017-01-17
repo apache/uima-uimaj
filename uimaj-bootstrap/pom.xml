@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-alpha</version>
+    <version>3.0.0-beta-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -36,13 +36,13 @@
   
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-bootstrap
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-bootstrap
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-bootstrap
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-bootstrap
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-bootstrap
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-bootstrap
     </url>
   </scm>
   
