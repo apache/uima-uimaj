@@ -21,7 +21,7 @@ package org.apache.uima.internal.util;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

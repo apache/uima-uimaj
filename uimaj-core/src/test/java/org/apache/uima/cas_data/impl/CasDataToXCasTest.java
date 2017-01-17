@@ -19,7 +19,7 @@
 
 package org.apache.uima.cas_data.impl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.cas_data.CasData;

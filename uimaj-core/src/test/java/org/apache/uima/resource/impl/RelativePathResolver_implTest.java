@@ -22,7 +22,7 @@ package org.apache.uima.resource.impl;
 import java.io.File;
 import java.net.URL;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.test.junit_extension.JUnitExtension;

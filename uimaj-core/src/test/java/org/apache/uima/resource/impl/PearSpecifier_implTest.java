@@ -23,7 +23,7 @@ import static org.apache.uima.analysis_engine.impl.AnalysisEngineDescription_imp
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

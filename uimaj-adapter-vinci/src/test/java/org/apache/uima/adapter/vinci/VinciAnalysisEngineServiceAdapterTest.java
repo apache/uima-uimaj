@@ -19,7 +19,7 @@
 
 package org.apache.uima.adapter.vinci;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.Constants;

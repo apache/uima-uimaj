@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

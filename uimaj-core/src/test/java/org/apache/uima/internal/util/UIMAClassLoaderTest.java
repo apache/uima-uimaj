@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Random;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

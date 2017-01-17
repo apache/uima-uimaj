@@ -21,7 +21,7 @@ package org.apache.uima.pear.util;
 
 import java.io.File;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.pear.tools.InstallationController.TestStatus;

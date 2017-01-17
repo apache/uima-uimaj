@@ -19,7 +19,7 @@
 
 package org.apache.uima.resource.service.impl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;

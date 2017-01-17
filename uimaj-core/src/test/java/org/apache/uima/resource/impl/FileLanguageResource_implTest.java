@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.resource.DataResource;

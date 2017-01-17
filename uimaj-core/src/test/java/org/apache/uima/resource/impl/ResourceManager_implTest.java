@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import junit.framework.TestCase;
 
 import org.apache.uima.UIMAFramework;

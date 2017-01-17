@@ -24,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Contains static convenience methods for using the UIMA JUnit extensions.
