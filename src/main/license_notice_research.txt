@@ -22,6 +22,8 @@ November 3 2016
     Jars have no info in their manifest
     source has Apache license file, no notice file
     
+  javaparser-core 2.5.1 is dual licensed, one is Apache v2 license.  No notice file found.
+    
   Note: ASM not depended on (Nov 2016). ASM is licensed under a BSD 3-clause style license.  
   
   
