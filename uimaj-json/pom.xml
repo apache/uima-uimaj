@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
   <artifactId>uimaj-json</artifactId>
@@ -30,9 +30,9 @@
   <description>JSON support for UIMA SDK</description>
   
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-json</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-json</developerConnection>
-    <url>http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-json</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0/uimaj-json</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0/uimaj-json</developerConnection>
+    <url>http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0/uimaj-json</url>
   </scm>
   
   <properties>
