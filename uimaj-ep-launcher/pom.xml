@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-beta-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -213,6 +213,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>3.0.1</version>  <!-- override 2.3.7 - getting unresolved refs to some dependencies, fixed by 3.0.1 -->
         <configuration>
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
