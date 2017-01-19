@@ -260,7 +260,9 @@
           <!-- version 2.3.7 failing in some projects  -->  <!-- doesnt support java 8 -->
              <!-- currently only overridden in uimaj-ep-configuration because otherwise, that is excluded from 
                   update site plugins/ folder -->
-          <version>3.0.1</version>        
+          <!--  version>3.0.1</version causes 2 plugins to go missing when FeaturesAndBundlesPublisher runs -->
+          <version>2.3.7</version> <!-- override to 3.0.1 just in those 2-3 projects that require it --> 
+                  
         </plugin>
         
         <plugin>
