@@ -165,11 +165,12 @@ public class Jg {
       Type type = (Type) it.next();
       if (type.isFeatureFinal()) {
         noGenTypes.add(type.getName());
-        continue;
+        continue;  // skip if feature final
       }
       String typeName = type.getName();
       List<Feature> fs = type.getFeatures();
       List<Feature> features = new ArrayList<Feature>(fs.size());
+      // get list of features defined in this type excluding those defined in supertypes
       for (int i = 0; i < fs.size(); i++) {
         Feature f = fs.get(i);
         String fName = f.getName();
@@ -262,6 +263,9 @@ public class Jg {
             "org.apache.uima.jcas.cas.NonEmptyIntegerList");
     addBuiltInTypeInfo("uima.cas.NonEmptyStringList", "org.apache.uima.jcas.cas.NonEmptyStringList");
     addBuiltInTypeInfo("uima.cas.Sofa", "org.apache.uima.jcas.cas.Sofa");
+    addBuiltInTypeInfo("uima.cas.IntegerArrayList", "org.apache.uima.jcas.cas.IntegerArrayList");
+    addBuiltInTypeInfo("uima.cas.FSArrayList", "org.apache.uima.jcas.cas.FSArrayList");
+    addBuiltInTypeInfo("uima.cas.FSHashSet", "org.apache.uima.jcas.cas.FSHashSet");
   }
 
   /** The resource bundle. */
