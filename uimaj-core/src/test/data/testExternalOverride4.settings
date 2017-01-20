@@ -16,8 +16,4 @@
  #  * specific language governing permissions and limitations
  #  * under the License.
  #  ***************************************************************
-prefix    Prefix
-suffix    Suffix
-test.externalStringArray = [${prefix},\-,${suffix},->,${prefix-suffix}]
-test.externalIntegerArray : [1 , 22 , 3\33,4444]  
-
+test.externalInteger         43

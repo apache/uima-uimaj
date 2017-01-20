@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 import org.apache.uima.Constants;
@@ -63,6 +64,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.examples.SourceDocumentInformation;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.RelativePathResolver;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -322,9 +324,13 @@ public class AnalysisEngine_implTest extends TestCase {
       ae.destroy();
 
       // descriptor with configuration parameter external overrides
-      // implicitly load settings values from the system property UimaExternalSettings
+      // implicitly load settings values from the 3 files in the system property UimaExternalOverrides
+      // Load 1st from filesystem, 2nd from classpath, and 3rd from datapath
+      
+      String prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, "src/test/data");
       String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
-      System.setProperty("UimaExternalOverrides", resDir+"testExternalOverride.settings,"+resDir+"testExternalOverride2.settings");
+      System.setProperty("UimaExternalOverrides", 
+              resDir+"testExternalOverride.settings,TextAnalysisEngineImplTest/testExternalOverride2.settings,testExternalOverride4.settings");
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae1 = new PrimitiveAnalysisEngine_impl();
@@ -344,6 +350,11 @@ public class AnalysisEngine_implTest extends TestCase {
       Integer intValue = (Integer) ae1.getUimaContext().getConfigParameterValue("IntegerParam");
       Assert.assertEquals(43,  intValue.intValue());  // Will be 42 if external override not defined
       System.clearProperty("UimaExternalOverrides");
+      if (prevDatapath == null) {
+        System.clearProperty(RelativePathResolver.UIMA_DATAPATH_PROP);
+      } else {
+        System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, prevDatapath);
+      }
       
       ae1.destroy();
       

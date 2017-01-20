@@ -19,15 +19,9 @@
 
 package org.apache.uima.analysis_engine.impl;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.junit.Assert;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
@@ -41,7 +35,7 @@ import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Settings;
 import org.apache.uima.util.UimaContextHolderTest;
-import org.apache.uima.util.impl.Settings_impl;
+import org.junit.Assert;
 
 /**
  * Annotator class used for testing.
@@ -76,7 +70,6 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
     // Note: this annotator launched with external overrides loaded from testExternalOverride2.settings 
     String contextName = ((UimaContext_ImplBase) aContext).getQualifiedContextName();
     if ("/ExternalOverrides/".equals(contextName)) {
-      String expected = "Context Holder Test";
       String[] actuals = null;
       try {
         actuals = UimaContextHolder.getContext().getSharedSettingArray("test.externalFloatArray");
@@ -85,8 +78,7 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
       }
       Assert.assertEquals(0, actuals.length);
       
-      // prefix-suffix     Prefix-${suffix}
-      // suffix = should be ignored
+      String expected = "Context Holder Test";
       String actual = null;
       try {
         actual = UimaContextHolder.getContext().getSharedSettingValue("context-holder");
@@ -111,7 +103,12 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
       // Test a stand-alone settings object
       Settings testSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-      String lines = "foo = ${bar} \n bar : [ok \n OK] \n bad = ${missing}";
+      String lines = "foo = ${bar} \n" +
+                "bar : [ok \n OK] \n" +
+                "bad = ${missing} \n" +
+                "loop1 = one ${loop2} \n" +
+                "loop2 = two ${loop3} \n" +
+                "loop3 = three ${loop1} \n" ;
       InputStream is;
       try {
         is = new ByteArrayInputStream(lines.getBytes("UTF-8"));
@@ -122,6 +119,12 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         try {
           val = testSettings.lookUp("bad");
           Assert.fail("\"bad\" should create an error");
+        } catch (ResourceConfigurationException e) {
+          System.err.println("Expected exception: " + e.toString());
+        }
+        try {
+          val = testSettings.lookUp("loop2");
+          Assert.fail("\"loop2\" should create an error");
         } catch (ResourceConfigurationException e) {
           System.err.println("Expected exception: " + e.toString());
         }
