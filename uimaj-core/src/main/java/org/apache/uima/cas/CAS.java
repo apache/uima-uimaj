@@ -126,20 +126,20 @@ public interface CAS extends AbstractCas {
    */
   static final String TYPE_NAME_DOUBLE = UIMA_CAS_PREFIX + "Double";
 
-  /**
-   * Java Object type
-   */
-  static final String TYPE_NAME_JAVA_OBJECT = UIMA_CAS_PREFIX + "JavaObject";
-  
-  /**
-   * FS Array List
-   */
-  static final String TYPE_NAME_FS_ARRAY_LIST = UIMA_CAS_PREFIX + "FSArrayList";
-
-  /**
-   * int Array List
-   */
-  static final String TYPE_NAME_INT_ARRAY_LIST = UIMA_CAS_PREFIX + "IntegerArrayList";
+//  /**
+//   * Java Object type
+//   */
+//  static final String TYPE_NAME_JAVA_OBJECT = UIMA_CAS_PREFIX + "JavaObject";
+//  
+//  /**
+//   * FS Array List
+//   */
+//  static final String TYPE_NAME_FS_ARRAY_LIST = UIMA_CAS_PREFIX + "FSArrayList";
+//
+//  /**
+//   * int Array List
+//   */
+//  static final String TYPE_NAME_INT_ARRAY_LIST = UIMA_CAS_PREFIX + "IntegerArrayList";
 
   /**
    * ArrayBase type.
@@ -191,10 +191,10 @@ public interface CAS extends AbstractCas {
    */
   static final String TYPE_NAME_DOUBLE_ARRAY = UIMA_CAS_PREFIX + "DoubleArray";
 
-  /**
-   * FSHashSet type
-   */
-  static final String TYPE_NAME_FS_HASH_SET = UIMA_CAS_PREFIX +  "FSHashSet"; 
+//  /**
+//   * FSHashSet type
+//   */
+//  static final String TYPE_NAME_FS_HASH_SET = UIMA_CAS_PREFIX +  "FSHashSet"; 
   /**
    * Sofa type.
    */

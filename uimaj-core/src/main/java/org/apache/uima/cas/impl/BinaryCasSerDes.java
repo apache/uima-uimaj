@@ -1585,9 +1585,9 @@ public class BinaryCasSerDes {
 
     for (int heapIndex = startPos; heapIndex < heapsz; heapIndex += getFsSpaceReq(fs, type)) {
       int typecode = heap.heap[heapIndex];
-      if (isBeforeV3 && typecode > TypeSystemConstants.lastBuiltinV2TypeCode) {
-        typecode = typecode + TypeSystemConstants.numberOfNewBuiltInsSinceV2;
-      }
+//      if (isBeforeV3 && typecode > TypeSystemConstants.lastBuiltinV2TypeCode) {
+//        typecode = typecode + TypeSystemConstants.numberOfNewBuiltInsSinceV2;
+//      }
       type = tsi.getTypeForCode(heap.heap[heapIndex]);
       if (type == null) {
         throw new CASRuntimeException(CASRuntimeException.deserialized_type_not_found, Integer.valueOf(heap.heap[heapIndex]));

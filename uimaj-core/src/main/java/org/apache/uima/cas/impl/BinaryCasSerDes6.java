@@ -1808,11 +1808,11 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
                          ? tgtType.getFsSpaceReq(lastArrayLength)
                          : 0) {
       final int tgtTypeCode = readVnumber(typeCode_dis); // get type code
-      final int adjTgtTypeCode = tgtTypeCode + ((this.bcsd.isBeforeV3 && tgtTypeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
-          ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
-          : 0);
-      tgtType = (isTypeMapping ? tgtTs : srcTs).getTypeForCode(adjTgtTypeCode); 
-      final TypeImpl srcType = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(adjTgtTypeCode) : tgtType;
+//      final int adjTgtTypeCode = tgtTypeCode + ((this.bcsd.isBeforeV3 && tgtTypeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
+//          ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
+//          : 0);
+      tgtType = (isTypeMapping ? tgtTs : srcTs).getTypeForCode(tgtTypeCode); 
+      final TypeImpl srcType = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tgtTypeCode) : tgtType;
       
       final boolean storeIt = (srcType != null);
       // A receiving client from a service always
@@ -1839,7 +1839,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
  
       if (TRACE_DES) {
         System.out.format("Des: fsnbr %,4d fsid %,4d adjTgtTypeCode: %,3d %13s srcTypeCode: %s%n", 
-            nbrFSs, cas.getLastUsedFsId() + 1, adjTgtTypeCode, tgtType.getShortName(),  (null == srcType) ? "<null>" : Integer.toString(srcType.getCode()));
+            nbrFSs, cas.getLastUsedFsId() + 1, tgtTypeCode, tgtType.getShortName(),  (null == srcType) ? "<null>" : Integer.toString(srcType.getCode()));
       }
 
       if (tgtType.isArray()) {

@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+   
+/* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
 
@@ -45,83 +47,117 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.SelectViaCopyToArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
 
+/** An expandable array of Feature Structures, implementing the ArrayList API.
+ * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
+ * @generated */
+
 /**
- * An ArrayList type containing Feature Structures, for UIMA
- *   - Has all the methods of List
- *   - Implements the select(...) APIs 
+ * <p>An ArrayList type containing Feature Structures, for UIMA
+ *   <ul><li>Has all the methods of List
+ *       <li>Implements the select(...) APIs 
+ *   </ul>
  *   
- * Implementation notes:
- *   - Uses UimaSerializable APIs
- *   - two implementations of the array list:
- *     -- one uses the original FSArray, via an asList wrapper
- *     -- This is used until an add or remove operation;
- *       --- switches to ArrayList, resetting the original FSArray to null
+ * <p>Implementation notes:
+ *   <ul>
+ *     <li>Uses UimaSerializable APIs
+ *     <li>two implementations of the array list:
+ *     <ul><li>one uses the original FSArray, via an asList wrapper
+ *         <li>This is used until an add or remove operation;
+ *         <li>switches to ArrayList, resetting the original FSArray to null
+ *     </ul>
  *       
- *   - This enables operation without creating the Java Object in use cases of deserializing and
+ *     <li>This enables operation without creating the Java Object in use cases of deserializing and
  *     referencing when updating is not being used.
+ *   </ul>
  *
  * @param <T> the generic type
  */
-public final class FSArrayList <T extends TOP> extends TOP implements 
-                                 UimaSerializableFSs, CommonArrayFS, SelectViaCopyToArray, 
-                                 List<T>, RandomAccess, Cloneable {
 
+public class FSArrayList <T extends TOP> extends TOP implements 
+                         UimaSerializableFSs, CommonArrayFS, SelectViaCopyToArray, 
+                         List<T>, RandomAccess, Cloneable {
+ 
   /** The Constant EMPTY_LIST. */
   private final static List<? extends TOP> EMPTY_LIST = Arrays.asList(Constants.EMPTY_TOP_ARRAY);
-  /**
-   * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
-   * class or class instance to the corresponding instance of the _Type class
+
+  /** @generated
+   * @ordered 
    */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.jcas.type.FSArrayList";
+  
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(FSArrayList.class);
-
-  /** The Constant type. */
-  public final static int type = typeIndexID;
-
-  /**
-   * used to obtain reference to the _Type instance.
-   *
-   * @return the type array index
+  /** @generated
+   * @ordered 
    */
-  // can't be factored - refs locally defined field
+  @SuppressWarnings ("hiding")
+  public final static int type = typeIndexID;
+  /** @generated
+   * @return index of the type  
+   */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
   /** lifecycle   - starts as empty array list   - becomes non-empty when updated (add)       -- used from that point on. */
   private final List<T> fsArrayList;
   
   /** lifecycle   - starts as the empty list   - set when _init_from_cas_data()   - set to null when update (add/remove) happens. */
+  @SuppressWarnings("unchecked")
   private List<T> fsArrayAsList = (List<T>) EMPTY_LIST;
-  
-  /** The Constant _FI_fsArray. */
-  public static final int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  
-  /**
-   * Instantiates a new FS array list.
-   */
-  // never called. Here to disable default constructor
-  @SuppressWarnings("unused")
-  private FSArrayList() {
+
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_fsArray = "fsArray";
+
+
+  /* Feature Adjusted Offsets */
+  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected FSArrayList() {
     fsArrayList = null;
   }
-
-  /**
-   * Make a new ArrayList .
-   *
-   * @param jcas The JCas
+    
+  /** Internal - constructor used by generator 
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public FSArrayList(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+    fsArrayList = new ArrayList<>();
+  }
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public FSArrayList(JCas jcas) {
     super(jcas);
     fsArrayList = new ArrayList<>();
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+                            // because this impls CommonArrayFS
       _casView.traceFSCreate(this);
-    }
-  }
+    }   
+  } 
 
   /**
    * Make a new ArrayList with an initial size .
@@ -137,43 +173,26 @@ public final class FSArrayList <T extends TOP> extends TOP implements
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-  }
-  
-  /**
-   * used by generator
-   * Make a new FSArrayList.
-   *
-   * @param t -
-   * @param c -
-   */
-  public FSArrayList(TypeImpl t, CASImpl c) {
-    super(t, c);  
+  }     
+ 
     
-    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
-      _casView.traceFSCreate(this);
-    }
-    fsArrayList = new ArrayList<>();
-  }
+  //*--------------*
+  //* Feature: fsArray
 
-  // *------------------*
-  // * Feature: fsArray
-  /**
-   * Gets the fs array.
-   *
-   * @return the fs array
+  /** getter for fsArray - gets internal use - holds the contents
+   * @generated
+   * @return value of the feature 
    */
-  /* getter for fsArray */
-  private FSArray getFsArray() { return (FSArray) _getFeatureValueNc(_FI_fsArray); }
-
-  /**
-   * Sets the fs array.
-   *
-   * @param v the new fs array
+  private FSArray getFsArray() { return (FSArray)(_getFeatureValueNc(_FI_fsArray));}
+    
+  /** setter for fsArray - sets internal use - holds the contents 
+   * @generated
+   * @param v value to set into the feature 
    */
-  /* setter for fsArray */
   private void setFsArray(FSArray v) {
-    _setFeatureValueNcWj(_FI_fsArray, v); }
-
+    _setFeatureValueNcWj(_FI_fsArray, v);
+  }    
+    
   /**
    * Maybe start using array list.
    */
@@ -184,27 +203,13 @@ public final class FSArrayList <T extends TOP> extends TOP implements
       fsArrayAsList = null;  // stop using this one
     }
   }
-  
-  /**
-   * Gta.
-   *
-   * @return the TO p[]
-   */
-  private TOP[] gta() {
-    FSArray fsa = getFsArray();
-    if (null == fsa) {
-      return Constants.EMPTY_TOP_ARRAY;
-    }
-    return fsa._getTheArray();
-  }
-  
+    
   /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
    */
   @Override
   public void _init_from_cas_data() {
     // special handling to have getter and setter honor pear trampolines
-//    fsArrayAsList = (List<T>) Arrays.asList(gta());
     final FSArray fsa = getFsArray();
     if (null == fsa) {
       fsArrayAsList = Collections.emptyList();
@@ -521,7 +526,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
    * @see java.util.ArrayList#toArray(java.lang.Object[])
    */
   @Override
-  public <T> T[] toArray(T[] a) {
+  public <U> U[] toArray(U[] a) {
     return gl().toArray(a);
   }
 
@@ -820,5 +825,7 @@ public final class FSArrayList <T extends TOP> extends TOP implements
   public void sort(Comparator<? super T> c) {
     gl().sort(c);
   }
-     
+    
 }
+
+    

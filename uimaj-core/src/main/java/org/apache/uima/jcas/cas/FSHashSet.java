@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+   
+/* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
 
@@ -25,62 +27,53 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.RandomAccess;
 import java.util.Set;
 import java.util.Spliterator;
 
-import javax.xml.crypto.NoSuchMechanismException;
-
 import org.apache.uima.UimaSerializableFSs;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.SelectViaCopyToArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
-/**
- * A HashSet type containing Feature Structures,
- *   - Has all the methods of HashSet
- *   - Implements the select(...) APIs 
- *   
- * Implementation notes:
- *   - Uses UimaSerializable APIs 
- *
- * No PEAR trampoline conversions are done
- * 
- * @param <T> the generic type
- */
-public final class FSHashSet <T extends TOP> extends TOP implements 
-                                 UimaSerializableFSs, SelectViaCopyToArray, 
-                                 Set<T>, RandomAccess, Cloneable {
 
-  /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.FSHashSet";
-
-  /**
-   * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
-   * class or class instance to the corresponding instance of the _Type class
+/** a hash set of Feature Structures
+ * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
+ * @generated */
+public class FSHashSet <T extends TOP> extends TOP implements 
+                            UimaSerializableFSs, SelectViaCopyToArray, 
+                            Set<T>, RandomAccess, Cloneable {
+  
+  /** @generated
+   * @ordered 
    */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.jcas.type.FSHashSet";
+  
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(FSHashSet.class);
-
-  /** The Constant type. */
-  public final static int type = typeIndexID;
-
-  /**
-   * used to obtain reference to the _Type instance.
-   *
-   * @return the type array index
+  /** @generated
+   * @ordered 
    */
-  // can't be factored - refs locally defined field
+  @SuppressWarnings ("hiding")
+  public final static int type = typeIndexID;
+  /** @generated
+   * @return index of the type  
+   */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-    
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
   /** lifecycle   
    *   - starts as empty array list   
    *   - becomes non-empty when updated (add)       
@@ -90,23 +83,40 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   private boolean isSaveNeeded = false;
   
   private final HashSet<T> fsHashSet; // not set here to allow initial size version
+
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
    
-  /** The Constant _FI_fsArray. */
-  public static final int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  
-  /**
-   * Instantiates a new FS hash set.
-   */
-  // never called. Here to disable default constructor
-  @SuppressWarnings("unused")
-  private FSHashSet() {
+  public final static String _FeatName_fsArray = "fsArray";
+
+
+  /* Feature Adjusted Offsets */
+  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected FSHashSet() {
     fsHashSet = null;
   }
+    
+  /** Internal - constructor used by generator 
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public FSHashSet(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    fsHashSet = new HashSet<>();
 
-  /**
-   * Make a new ArrayList .
-   *
-   * @param jcas The JCas
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+  }
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public FSHashSet(JCas jcas) {
     super(jcas);
@@ -114,8 +124,8 @@ public final class FSHashSet <T extends TOP> extends TOP implements
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
-    }
-  }
+    }   
+  } 
 
   /**
    * Make a new ArrayList with an initial size .
@@ -132,42 +142,24 @@ public final class FSHashSet <T extends TOP> extends TOP implements
       _casView.traceFSCreate(this);
     }
   }
-  
-  /**
-   * used by generator
-   * Make a new FSArrayList.
-   *
-   * @param t -
-   * @param c -
-   */
-  public FSHashSet(TypeImpl t, CASImpl c) {
-    super(t, c);  
     
-    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
-      _casView.traceFSCreate(this);
-    }
-    fsHashSet = new HashSet<>();
-  }
+  //*--------------*
+  //* Feature: fsArray
 
-  // *------------------*
-  // * Feature: fsArray
-  /**
-   * Gets the fs array.
-   *
-   * @return the fs array
+  /** getter for fsArray - gets internal use - holds the set of Feature Structures
+   * @generated
+   * @return value of the feature 
    */
-  /* getter for fsArray */
-  private FSArray getFsArray() { return (FSArray) _getFeatureValueNc(_FI_fsArray); }
-
-  /**
-   * Sets the fs array.
-   *
-   * @param v the new fs array
+  private FSArray getFsArray() { return (FSArray)(_getFeatureValueNc(_FI_fsArray));}
+    
+  /** setter for fsArray - sets internal use - holds the set of Feature Structures 
+   * @generated
+   * @param v value to set into the feature 
    */
-  /* setter for fsArray */
   private void setFsArray(FSArray v) {
-    _setFeatureValueNcWj(_FI_fsArray, v); }
-  
+    _setFeatureValueNcWj(_FI_fsArray, v);
+  }    
+    
   /* (non-Javadoc)
    * @see org.apache.uima.UimaSerializable#_init_from_cas_data()
    */
@@ -254,7 +246,7 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof FSHashSet)) return false;
-    FSHashSet other = (FSHashSet) o;
+    FSHashSet<?> other = (FSHashSet<?>) o;
     if (size() != other.size()) return false;
     if (size() == 0) return true;
     
@@ -273,9 +265,23 @@ public final class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public int hashCode() {
-    return isSaveNeeded
-        ? fsHashSet.hashCode()
-        : Arrays.hashCode(gta());
+    // hash code needs to be the same for both styles
+    // fsHashSet adds element hashcodes, Arrays combines using 31*.
+    
+//    return isSaveNeeded
+//        ? fsHashSet.hashCode()    // no good - hash codes different
+//        : Arrays.hashCode(gta());
+    if (isSaveNeeded) {
+      return fsHashSet.hashCode();
+    }
+    int hc = 0;
+    for (TOP fs : gta()) {
+      if (fs == null) {
+        continue;
+      }
+      hc += fs.hashCode();
+    }
+    return hc;
   }
 
   /**
@@ -520,3 +526,5 @@ public final class FSHashSet <T extends TOP> extends TOP implements
   }
 
 }
+
+    
