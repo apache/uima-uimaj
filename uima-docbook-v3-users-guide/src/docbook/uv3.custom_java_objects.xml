@@ -178,7 +178,7 @@ public void _save_to_cas_data() {
 	  
     <para>Semi-built-in means that the JCas cover classes for these are defined as part of the core Java classes,
       but the types themselves are not "built-in".  They may be added to any tyupe system by importing them by name using the import statement:
-      <programlisting>&lt;import location="org.apache.uima.semibuiltins.xml"/&gt;</programlisting>
+      <programlisting>&lt;import name="org.apache.uima.semibuiltins.xml"/&gt;</programlisting>
     </para>
     
 	  <section id="uv3.custom_java_objects.semibuiltin_fsarraylist">
