@@ -158,7 +158,7 @@ public void _save_to_cas_data() {
             case (but one which might occur frequently), and in that case having the
             _save_to_cas_data operation do nothing, since the original CAS data is still valid.</para>
             
-            <para>One additional "boilderplate" method is required for all of these classes:            
+            <para>One additional "boilerplate" method is required for all of these classes:            
             <blockquote><para>public FeatureStructureImplC _superClone() {return clone();}</para></blockquote></para>
           </listitem>
        </varlistentry>
@@ -169,14 +169,19 @@ public void _save_to_cas_data() {
     following section.</para>
   </section>
   
-  <section id="uv3.custom_java_objects.new_builtins">
-	  <title>Additional Built-in UIMA Types for some common Java Objects</title>
-	  <titleabbrev>Built-in UIMA Types for Java Objects</titleabbrev>
+  <section id="uv3.custom_java_objects.new_semibuiltins">
+	  <title>Additional Semi-Built-in UIMA Types for some common Java Objects</title>
+	  <titleabbrev>Semi-Built-in UIMA Types for Java Objects</titleabbrev>
 	  
-	  <para>Some additional built-in UIMA types are defined in Version 3 using this new mechanism.  They work fully in
+	  <para>Some additional semi-built-in UIMA types are defined in Version 3 using this new mechanism.  They work fully in
 	  Java, and are transported to non-Java frameworks as ordinary CAS objects.</para>
 	  
-	  <section id="uv3.custom_java_objects.builtin_fsarraylist">
+    <para>Semi-built-in means that the JCas cover classes for these are defined as part of the core Java classes,
+      but the types themselves are not "built-in".  They may be added to any tyupe system by importing them by name using the import statement:
+      <programlisting>&lt;import location="org.apache.uima.semibuiltins.xml"/&gt;</programlisting>
+    </para>
+    
+	  <section id="uv3.custom_java_objects.semibuiltin_fsarraylist">
 	    <title>FSArrayList</title>
 	    <titleabbrev>FSArrayList</titleabbrev>
 	    
@@ -193,7 +198,7 @@ public void _save_to_cas_data() {
 	    can be used as a source for the <code>select</code> framework.</para> 
 	  </section>
 	  
-	  <section id="uv3.custom_java_objects.builtin_integerarraylists">
+	  <section id="uv3.custom_java_objects.semibuiltin_integerarraylists">
       <title>IntegerArrayList</title>
       <titleabbrev>IntegerArrayList</titleabbrev>
       
@@ -215,7 +220,7 @@ public void _save_to_cas_data() {
        
     </section>
     
-    <section id="uv3.custom_java_objects.builtin_FSHashSet">
+    <section id="uv3.custom_java_objects.semibuiltin_FSHashSet">
       <title>FSHashSet</title>
       <titleabbrev>FSHashSet</titleabbrev>
       

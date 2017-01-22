@@ -116,7 +116,7 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     
     <para>There is a new framework that supports allowing you to add your own custom Java objects as
       objects transportable in the CAS.  The following chapter describes this facility, and some new
-      built-in types that make use of it.
+      semi-built-in types that make use of it.  
     </para>
   </section>  
   
@@ -153,11 +153,13 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
   <section id="uv3.new_extended_apis.annotation">
     <title>Annotation comparator methods</title>
     
-    <para>The built-in type Annotation has multiple new methods to allow comparing two annotations.
-      The first method uses
+    <para>The built-in type Annotation has 4 new methods to allow comparing two annotations.
+      The first method (<code>compareAnnotation</code>) uses
       the standard annotation comparator (two keys: begin (ascending) and end (descending)). 
-      A second method adds a 3rd key, the linear type order.
-      Another two methods extend these two methods with an additional key - the Annotation's ID.
+      A second method (<code>compareAnnotation(other, linear_type_order)</code>) adds a 3rd comparison,
+      used if the Annotations compare equal), which uses a linear_type_order to compare the two types.
+      Another two methods extend these two methods with an additional key - the Annotation's ID,
+      used only if the previous comparsions are all equal.
       All of these return the standard Java compare result allowing discrimination between equal, &gt;, and &lt;.
       </para>
   </section>
@@ -168,10 +170,14 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     <para>Some APIs were reorganized.  Some of the reorganizations include altering the super class
       and implements hierarchies, making some classes abstract, making use of Java 8's new
       <code>default</code> mechanisms to supply default implementations in interfaces, 
-      and moving methods to more common places.  Users of these APIs
+      and moving methods to more common places.  Users of the non-internal UIMA APIs
       should not be affected by these reorganizations.
     </para>
 
+    <para>As an example, version 2 had two different Java objects representing particular Feature Structures, such as
+    "Annotation".  One was used (<code>org.apache.uima.jcas.tcas.Annotation</code>) if the JCas was enabled; 
+    the other (<code>org.apache.uima.cas.impl.AnnotationImpl</code>)otherwise.  In version 3, there's only one implementation;
+    the other (AnnotationImpl) is converted to an interface.  Annotation now "implements AnnotationImpl.</para>
   </section>
   
   <section id="uv3.new_extended_apis.other">
