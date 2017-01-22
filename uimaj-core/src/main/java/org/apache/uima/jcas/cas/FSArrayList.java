@@ -520,7 +520,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   /**
    * To array.
    *
-   * @param <T> the generic type
+   * @param <U> the generic type
    * @param a -
    * @return -
    * @see java.util.ArrayList#toArray(java.lang.Object[])
