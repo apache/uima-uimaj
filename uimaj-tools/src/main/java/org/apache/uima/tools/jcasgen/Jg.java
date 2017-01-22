@@ -263,9 +263,10 @@ public class Jg {
             "org.apache.uima.jcas.cas.NonEmptyIntegerList");
     addBuiltInTypeInfo("uima.cas.NonEmptyStringList", "org.apache.uima.jcas.cas.NonEmptyStringList");
     addBuiltInTypeInfo("uima.cas.Sofa", "org.apache.uima.jcas.cas.Sofa");
-    addBuiltInTypeInfo("uima.cas.IntegerArrayList", "org.apache.uima.jcas.cas.IntegerArrayList");
-    addBuiltInTypeInfo("uima.cas.FSArrayList", "org.apache.uima.jcas.cas.FSArrayList");
-    addBuiltInTypeInfo("uima.cas.FSHashSet", "org.apache.uima.jcas.cas.FSHashSet");
+    // not built-in
+//    addBuiltInTypeInfo("uima.cas.IntegerArrayList", "org.apache.uima.jcas.cas.IntegerArrayList");
+//    addBuiltInTypeInfo("uima.cas.FSArrayList", "org.apache.uima.jcas.cas.FSArrayList");
+//    addBuiltInTypeInfo("uima.cas.FSHashSet", "org.apache.uima.jcas.cas.FSHashSet");
   }
 
   /** The resource bundle. */
