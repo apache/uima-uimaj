@@ -16,13 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+   
+/* Apache UIMA v3 - First created by JCasGen Fri Jan 20 11:55:59 EST 2017 */
 
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
-import java.util.PrimitiveIterator.OfInt;
 import java.util.RandomAccess;
 import java.util.Spliterator;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
@@ -36,8 +38,18 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.cas.IntegerArray;
+
+
+/** an expandable array of ints
+ * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
+ * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
+ * @generated */
 
 /**
  * An ArrayList type containing ints, for UIMA
@@ -54,33 +66,34 @@ import org.apache.uima.jcas.JCasRegistry;
  *   - This enables operation without creating the Java Object in use cases of deserializing and
  *     referencing when updating is not being used.    
  */
-public final class IntegerArrayList extends TOP implements 
-                                 Iterable<Integer>,
-                                 UimaSerializable, CommonArrayFS, 
-                                 RandomAccess, Cloneable {
 
-  /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.IntegerArrayList";
-
-  /**
-   * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover
-   * class or class instance to the corresponding instance of the _Type class
+public class IntegerArrayList extends TOP implements 
+                          Iterable<Integer>,
+                          UimaSerializable, CommonArrayFS, 
+                          RandomAccess, Cloneable {
+ 
+  /** @generated
+   * @ordered 
    */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.jcas.type.IntegerArrayList";
+  
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
   public final static int typeIndexID = JCasRegistry.register(IntegerArrayList.class);
-
-  public final static int type = typeIndexID;
-
-  /**
-   * used to obtain reference to the _Type instance
-   * 
-   * @return the type array index
+  /** @generated
+   * @ordered 
    */
-  // can't be factored - refs locally defined field
+  @SuppressWarnings ("hiding")
+  public final static int type = typeIndexID;
+  /** @generated
+   * @return index of the type  
+   */
   @Override
-  public int getTypeIndexID() {
-    return typeIndexID;
-  }
-
+  public              int getTypeIndexID() {return typeIndexID;}
+ 
   /**
    * lifecycle
    *   - starts as empty array list
@@ -96,18 +109,39 @@ public final class IntegerArrayList extends TOP implements
    *   - set to null when update (add/remove) happens
    */
   private List_of_ints intArrayAsList = List_of_ints.EMPTY_LIST();
-  
-  public static final int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
-  
-  // never called. Here to disable default constructor
-  @SuppressWarnings("unused")
-  private IntegerArrayList() {
+
+  /* *******************
+   *   Feature Offsets *
+   * *******************/ 
+   
+  public final static String _FeatName_intArray = "intArray";
+
+
+  /* Feature Adjusted Offsets */
+  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
+
+   
+  /** Never called.  Disable default constructor
+   * @generated */
+  protected IntegerArrayList() {
     intArrayList = null;
   }
-
-  /**
-   * Make a new ArrayList 
-   * @param jcas The JCas
+    
+  /** Internal - constructor used by generator 
+   * @generated
+   * @param casImpl the CAS this Feature Structure belongs to
+   * @param type the type of this Feature Structure 
+   */
+  public IntegerArrayList(TypeImpl type, CASImpl casImpl) {
+    super(type, casImpl);
+    intArrayList = new IntVector();
+    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
+      _casView.traceFSCreate(this);
+    }
+  }
+  
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs 
    */
   public IntegerArrayList(JCas jcas) {
     super(jcas);
@@ -115,7 +149,7 @@ public final class IntegerArrayList extends TOP implements
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-  }
+  } 
 
   /**
    * Make a new ArrayList with an initial size 
@@ -130,38 +164,31 @@ public final class IntegerArrayList extends TOP implements
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-  }
-  
-  /**
-   * used by generator
-   * Make a new FSArrayList
-   * @param c -
-   * @param t -
-   */
-  public IntegerArrayList(TypeImpl t, CASImpl c) {
-    super(t, c);  
+  } 
     
-    if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
-      _casView.traceFSCreate(this);
-    }
-    intArrayList = new IntVector();
-  }
+  //*--------------*
+  //* Feature: intArray
 
-  // *------------------*
-  // * Feature: fsArray
-  /* getter for fsArray */
-  private IntegerArray getIntegerArray() { return (IntegerArray) _getFeatureValueNc(_FI_intArray); }
-
-  /* setter for fsArray */
-  private void setIntegerArray(IntegerArray v) {
-    _setFeatureValueNcWj(_FI_intArray, v); }
-
+  /** getter for intArray - gets internal use - holds the ints
+   * @generated
+   * @return value of the feature 
+   */
+  private IntegerArray getIntArray() { return (IntegerArray)(_getFeatureValueNc(_FI_intArray));}
+    
+  /** setter for intArray - sets internal use - holds the ints 
+   * @generated
+   * @param v value to set into the feature 
+   */
+  private void setIntArray(IntegerArray v) {
+    _setFeatureValueNcWj(_FI_intArray, v);
+  }    
+    
   private void maybeStartUsingIntegerArrayList() {
     if (intArrayAsList != null) {
       intArrayList.removeAllElements();
       intArrayList.copyFromArray(intArrayAsList.toArrayMinCopy(), 0, 0, size()); 
       intArrayAsList = null;  // stop using this one
-      setIntegerArray(null);  // clear
+      setIntArray(null);  // clear
     }
   }
   
@@ -175,14 +202,14 @@ public final class IntegerArrayList extends TOP implements
     if (null != intArrayAsList) {
       return;  // nothing to do
     }
-    IntegerArray ia = getIntegerArray();
+    IntegerArray ia = getIntArray();
     final int size = intArrayList.size();
     if (ia == null || ia.size() != size) {
       ia = new IntegerArray(_casView.getJCasImpl(), size);
-      setIntegerArray(ia);
+      setIntArray(ia);
     }
     ia.copyFromArray(intArrayList.getArray(), 0,  0, size());
-    intArrayAsList = List_of_ints.newInstance(getIntegerArray()._getTheArray());
+    intArrayAsList = List_of_ints.newInstance(getIntArray()._getTheArray());
   }
   
   /**
@@ -196,7 +223,7 @@ public final class IntegerArrayList extends TOP implements
   }
 
   /**
-   * updates the i-th value of the FSArrayList
+   * updates the i-th value of the IntegerArrayList
    * @param i -
    * @param v -
    */
@@ -230,7 +257,7 @@ public final class IntegerArrayList extends TOP implements
         srcEnd > src.length ||
         destEnd > size()) {
       throw new ArrayIndexOutOfBoundsException(
-          String.format("FSArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
+          String.format("IntegerArrayList.copyFromArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     if (null == intArrayAsList) {
       intArrayList.copyFromArray(src, srcPos, destPos, length);
@@ -253,7 +280,7 @@ public final class IntegerArrayList extends TOP implements
         srcEnd > size() ||
         destEnd > dest.length) {
       throw new ArrayIndexOutOfBoundsException(
-          String.format("FSArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
+          String.format("IntegerArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     if (null == intArrayAsList) {
       intArrayList.copyToArray(srcPos, dest, destPos, length);
@@ -328,7 +355,7 @@ public final class IntegerArrayList extends TOP implements
   }
   
   /**
-   * Convenience - create a FSArrayList from an existing FeatureStructure[]
+   * Convenience - create a IntegerArrayList from an existing FeatureStructure[]
    * @param jcas -
    * @param a -
    * @return -
@@ -521,7 +548,7 @@ public final class IntegerArrayList extends TOP implements
   public Spliterator.OfInt spliterator() {
     return (null == intArrayAsList) 
         ? Arrays.spliterator(intArrayList.toIntArray())
-        : Arrays.spliterator(getIntegerArray()._getTheArray());
+        : Arrays.spliterator(getIntArray()._getTheArray());
   }
 
   /**
@@ -531,4 +558,7 @@ public final class IntegerArrayList extends TOP implements
     return StreamSupport.intStream(spliterator(), false);
   }
   
+    
 }
+
+    

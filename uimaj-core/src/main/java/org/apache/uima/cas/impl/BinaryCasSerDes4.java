@@ -1785,12 +1785,12 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       if (TRACE_DES) System.out.println("Form4Deser heapStart: " + heapStart + "  heapEnd: " + heapEnd);
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += type.getFsSpaceReq(arraySize)) {
         final int typeCode = readVnumber(typeCode_dis);
-        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
-            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
-            : 0);
-         type = ts.getTypeForCode(adjTypeCode);
+//        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
+//            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
+//            : 0);
+         type = ts.getTypeForCode(typeCode);
         
-        prevFs = prevFsByType[adjTypeCode]; // could be null;
+        prevFs = prevFsByType[typeCode]; // could be null;
         prevFsRefs = getPrevFsRef(type); // null or int[], only for things having fsrefs (array or not)
         
         if (type.isArray()) {
@@ -1869,7 +1869,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //        fs2seq.put(currentFs, s2);  // 1 origin to match v2
         seq2fs.put(s2, currentFs);
         
-        prevFsByType[adjTypeCode] = currentFs;
+        prevFsByType[typeCode] = currentFs;
       }
       
       csds.setHeapEnd(heapEnd);

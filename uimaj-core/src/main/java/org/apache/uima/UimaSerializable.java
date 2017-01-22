@@ -20,7 +20,6 @@
 package org.apache.uima;
 
 import org.apache.uima.cas.impl.FeatureStructureImplC;
-import org.apache.uima.jcas.cas.FSArrayList;
 
 /**
  * This interface is implemented by JCas classes that need to be called by the 

@@ -310,9 +310,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public final TypeImpl_list stringNeListType;
   public final TypeImpl_list fsNeListType;
 
-  public final TypeImpl      fsArrayListType;
-  public final TypeImpl      intArrayListType;
-  public final TypeImpl      fsHashSetType;
+  // no longer built-in for better backwards compatibility
+//  public final TypeImpl      fsArrayListType;
+//  public final TypeImpl      intArrayListType;
+//  public final TypeImpl      fsHashSetType;
             
 //  /**
 //   * List indexed by typecode
@@ -515,14 +516,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     docType = new TypeImpl_annot(CAS.TYPE_NAME_DOCUMENT_ANNOTATION, this, annotType, Annotation.class);
     langFeat = (FeatureImpl) addFeature(CAS.FEATURE_BASE_NAME_LANGUAGE, docType, stringType, false);
     
-    fsArrayListType = new TypeImpl(CAS.TYPE_NAME_FS_ARRAY_LIST, this, topType);
-    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsArrayListType, fsArrayType);
-    
-    intArrayListType = new TypeImpl(CAS.TYPE_NAME_INT_ARRAY_LIST, this, topType);
-    addFeature(CAS.FEATURE_BASE_NAME_INT_ARRAY, intArrayListType, intArrayType);
-    
-    fsHashSetType = new TypeImpl(CAS.TYPE_NAME_FS_HASH_SET, this, topType);
-    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsHashSetType, fsArrayType);
+//    fsArrayListType = new TypeImpl(CAS.TYPE_NAME_FS_ARRAY_LIST, this, topType);
+//    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsArrayListType, fsArrayType);
+//    
+//    intArrayListType = new TypeImpl(CAS.TYPE_NAME_INT_ARRAY_LIST, this, topType);
+//    addFeature(CAS.FEATURE_BASE_NAME_INT_ARRAY, intArrayListType, intArrayType);
+//    
+//    fsHashSetType = new TypeImpl(CAS.TYPE_NAME_FS_HASH_SET, this, topType);
+//    addFeature(CAS.FEATURE_BASE_NAME_FS_ARRAY, fsHashSetType, fsArrayType);
 
 //    javaObjectType = new TypeImpl_javaObject(CAS.TYPE_NAME_JAVA_OBJECT, this, topType, Object.class);
 //    javaObjectArrayType = addArrayType(javaObjectType, null, HEAP_STORED_ARRAY, JavaObjectArray.class);
@@ -619,9 +620,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     setTypeFinal(stringNeListType);
     setTypeFinal(intNeListType);
     
-    setTypeFinal(fsArrayListType);
-    setTypeFinal(intArrayListType);
-    setTypeFinal(fsHashSetType);
+//    setTypeFinal(fsArrayListType);
+//    setTypeFinal(intArrayListType);
+//    setTypeFinal(fsHashSetType);
 
     listBaseType.setFeatureFinal();
     fsListType.setFeatureFinal();
@@ -639,9 +640,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     annotType.setFeatureFinal();
     annotBaseType.setFeatureFinal();
     
-    fsArrayListType.setFeatureFinal();
-    intListType.setFeatureFinal();
-    fsHashSetType.setFeatureFinal();
+//    fsArrayListType.setFeatureFinal();
+//    intListType.setFeatureFinal();
+//    fsHashSetType.setFeatureFinal();
 
 //    allTypesForByteCodeGen = new TypeImpl[] {
 //        booleanType, 
@@ -2023,7 +2024,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     case CAS.TYPE_NAME_FLOAT:
     case CAS.TYPE_NAME_DOUBLE:
     case CAS.TYPE_NAME_STRING:
-    case CAS.TYPE_NAME_JAVA_OBJECT:
+//    case CAS.TYPE_NAME_JAVA_OBJECT:
 //    case CAS.TYPE_NAME_MAP:
 //    case CAS.TYPE_NAME_LIST:
       return false;

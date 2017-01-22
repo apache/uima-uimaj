@@ -106,6 +106,12 @@ public class CASTestSetup implements AnnotatorInitializer {
   public static final String ANNOT_SET_INDEX = "Annotation Set Index";
 
   public static final String ANNOT_BAG_INDEX = "Annotation Bag Index";
+  
+  public static final String INTEGER_ARRAY_LIST = "org.apache.uima.jcas.cas.IntegerArrayList";
+
+  public static final String FS_ARRAY_LIST = "org.apache.uima.jcas.cas.FSArrayList";
+
+  public static final String FS_HASH_SET = "org.apache.uima.jcas.cas.FSHashSet";
 
   /**
    * Constructor for CASTestSetup.
@@ -222,6 +228,15 @@ public class CASTestSetup implements AnnotatorInitializer {
       exc = true;
     }
     TestCase.assertTrue(exc);
+    
+    // add IntegerArrayList type, FSHashSet, FSArrayList
+    Type integerArrayListType = tsm.addType(INTEGER_ARRAY_LIST, topType);
+    tsm.addFeature("intArray", integerArrayListType, typeArrayInt);
+    Type fsArrayListType = tsm.addType(FS_ARRAY_LIST, topType);
+    tsm.addFeature("fsArray", fsArrayListType, typeArrayRef);
+    Type fsHashSetType = tsm.addType(FS_HASH_SET, topType);
+    tsm.addFeature("fsArray", fsHashSetType, typeArrayRef);
+
   }
 
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {
