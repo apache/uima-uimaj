@@ -182,9 +182,4 @@ public interface TypeSystem {
    *         this type system.
    */
   LowLevelTypeSystem getLowLevelTypeSystem();
-
-  /**
-   * Add prebuilt types to the type system.
-   */
-  void addPrebuilt();
 }

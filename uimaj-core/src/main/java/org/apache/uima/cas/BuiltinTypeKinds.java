@@ -67,8 +67,8 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_LONG,
         CAS.TYPE_NAME_FLOAT,
         CAS.TYPE_NAME_DOUBLE,
-        CAS.TYPE_NAME_STRING,
-        CAS.TYPE_NAME_JAVA_OBJECT
+        CAS.TYPE_NAME_STRING
+//        CAS.TYPE_NAME_JAVA_OBJECT
         );
     
     Misc.addAll(creatableArrays,  
@@ -95,10 +95,10 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_NON_EMPTY_STRING_LIST,
         CAS.TYPE_NAME_TOP,
         CAS.TYPE_NAME_ANNOTATION_BASE,
-        CAS.TYPE_NAME_ANNOTATION,
-        CAS.TYPE_NAME_FS_ARRAY_LIST,
-        CAS.TYPE_NAME_INT_ARRAY_LIST,
-        CAS.TYPE_NAME_FS_HASH_SET
+        CAS.TYPE_NAME_ANNOTATION
+//        CAS.TYPE_NAME_FS_ARRAY_LIST,
+//        CAS.TYPE_NAME_INT_ARRAY_LIST,
+//        CAS.TYPE_NAME_FS_HASH_SET
     );    
     creatableBuiltinJCas.addAll(creatableArrays);
  

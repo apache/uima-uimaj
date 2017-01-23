@@ -71,14 +71,14 @@ public interface TypeSystemConstants {
   static final int annotTypeCode = 35;
   static final int docTypeCode = 36;  // DocumentAnnotation
 
-  static final int lastBuiltinV2TypeCode = 36;
+//  static final int lastBuiltinV2TypeCode = 36;
 
   // new v3 type codes.. Above codes match v2
-  static final int fsArrayListTypeCode = 37;
-  static final int intArrayListTypeCode = 38;
-  static final int fsHashSetTypeCode = 39;
+//  static final int fsArrayListTypeCode = 37;
+//  static final int intArrayListTypeCode = 38;
+//  static final int fsHashSetTypeCode = 39;
 
-  static final int numberOfNewBuiltInsSinceV2 = 3;
+//  static final int numberOfNewBuiltInsSinceV2 = 3;
 
 //  static final int javaObjectTypeCode = 37;
 //  static final int javaObjectArrayTypeCode = 38;
