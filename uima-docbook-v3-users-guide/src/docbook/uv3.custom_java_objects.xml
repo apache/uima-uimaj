@@ -185,8 +185,6 @@ public void _save_to_cas_data() {
       (Note: this will not show up if your project doesn't include uimaj-core on its build path.)
     </para>
     
-    
-    
 	  <section id="uv3.custom_java_objects.semibuiltin_fsarraylist">
 	    <title>FSArrayList</title>
 	    <titleabbrev>FSArrayList</titleabbrev>
