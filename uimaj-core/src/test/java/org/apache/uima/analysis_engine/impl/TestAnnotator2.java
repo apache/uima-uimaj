@@ -106,7 +106,12 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
 
       // Test a stand-alone settings object
       Settings testSettings = UIMAFramework.getResourceSpecifierFactory().createSettings();
-      String lines = "foo = ${bar} \n bar : [ok \n OK] \n bad = ${missing}";
+      String lines = "foo = ${bar} \n" +
+                "bar : [ok \n OK] \n" +
+                "bad = ${missing} \n" +
+                "loop1 = one ${loop2} \n" +
+                "loop2 = two ${loop3} \n" +
+                "loop3 = three ${loop1} \n" ;
       InputStream is;
       try {
         is = new ByteArrayInputStream(lines.getBytes("UTF-8"));
@@ -117,6 +122,12 @@ public class TestAnnotator2 extends CasAnnotator_ImplBase {
         try {
           val = testSettings.lookUp("bad");
           Assert.fail("\"bad\" should create an error");
+        } catch (ResourceConfigurationException e) {
+          System.err.println("Expected exception: " + e.toString());
+        }
+        try {
+          val = testSettings.lookUp("loop2");
+          Assert.fail("\"loop2\" should create an error");
         } catch (ResourceConfigurationException e) {
           System.err.println("Expected exception: " + e.toString());
         }
