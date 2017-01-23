@@ -38,7 +38,7 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.0-alpha</version>
+  <version>3.0.0-beta-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
@@ -53,13 +53,13 @@
        element, and just changing the following two properties -->
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-parent
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-parent
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-parent
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-parent
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha/uimaj-parent
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-parent
     </url>
   </scm>
 
