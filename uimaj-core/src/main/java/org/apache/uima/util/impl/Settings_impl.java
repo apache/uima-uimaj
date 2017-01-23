@@ -60,6 +60,13 @@ public class Settings_impl implements Settings {
 
   private Map<String, String> map;
   
+  // Thread-local map of properties being resolved +for detecting circular references.
+  private ThreadLocal<HashMap<String, Integer>> tlResolving = new ThreadLocal<HashMap<String, Integer>>() {
+    protected synchronized HashMap<String, Integer> initialValue() {
+      return new HashMap<String, Integer>();
+    }
+  };
+
   /*
    * Regex that matches ${...}
    * non-greedy so stops on first '}' -- hence key cannot contain '}'
@@ -176,10 +183,10 @@ public class Settings_impl implements Settings {
   
   /**
    * Look up the value for a property.
-   * Perform one substitution pass on ${key} substrings replacing them with the value for key.
-   * Recursively evaluate the value to be substituted.  NOTE: infinite loops not detected!
-   * If the key variable has not been defined, an exception is thrown.
-   * To avoid evaluation and get ${key} in the output escape the $ or {
+   * Recursively evaluate the value replacing references ${key} with the value of the key.
+   * Nested references such as ${name-${suffix}} are supported. 
+   * Exceptions are thrown for circular references and undefined references.
+   * To avoid evaluation and get ${key} in the output escape the $ or {, e.g. \${key}
    * Arrays are returned as a comma-separated string, e.g. "[elem1,elem2]" 
    * Note: escape characters are not removed as they may affect array separators. 
    * 
@@ -190,36 +197,84 @@ public class Settings_impl implements Settings {
    * @throws ResourceConfigurationException if the value references an undefined property
    */
   public String lookUp(String name) throws ResourceConfigurationException {
-    String value;
-    if ((value = map.get(name)) == null) {
+    return lookUp(name, name);
+  }
+  
+  private String lookUp(String from, String name) throws ResourceConfigurationException {
+    // Maintain a set of variables being expanded so can recognize infinite recursion
+    // Needs to be thread-local as multiple threads may be evaluating properties
+    HashMap<String, Integer> resolving = tlResolving.get();
+    if (resolving.containsKey(name)) {
+      System.err.println("Circular evaluation of property: '" + name + "' - definitions are:");
+      for (String s : resolving.keySet()) {
+        System.err.println(resolving.get(s) + ": " + s + " = " + map.get(s));
+      }
+      // Circular reference to external override variable "{0}" when evaluating "{1}"
+      throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_CIRCULAR_REFERENCE,
+              new Object[] { name, from });
+    }
+
+    // Add the name for the duration of the lookup
+    resolving.put(name, new Integer(resolving.size()));
+    try {
+      return resolve(from, map.get(name));
+    } finally {
+      resolving.remove(name);
+    }
+  }
+  
+  /**
+   * Replace variable references in a string.
+   * 
+   * @param value - String to scan for variable references
+   * @return - value with all references resolved and escapes processed
+   * @throws Exception
+   */
+  public String resolve(String value) throws Exception {
+    return unescape(resolve(value, value));
+  }
+
+  private String resolve(String from, String value) throws ResourceConfigurationException {
+    if (value == null) {
       return null;
     }
     Matcher matcher = evalPattern.matcher(value);
+    if (!matcher.find()) {
+      return value;
+    }
     StringBuilder result = new StringBuilder(value.length() + 100);
-    int lastEnd = 0;
-    while (matcher.find()) {
-      // Check if the $ is escaped
-      if (isEscaped(value, matcher.start())) {
-        result.append(value.substring(lastEnd, matcher.start() + 1));
-        lastEnd = matcher.start() + 1; // copy the escaped $ and restart after it
-      } else {
-        result.append(value.substring(lastEnd, matcher.start()));
-        lastEnd = matcher.end();
-        String key = value.substring(matcher.start() + 2, lastEnd - 1);
-        String val = lookUp(key);
-        if (val == null) { // External override variable "{0}" references the undefined variable "{1}"
+
+    // If this ${ is escaped then simply remove the \ and expand everything after the ${
+    if (isEscaped(value, matcher.start())) {
+      result.append(value.substring(0, matcher.start() - 1));
+      result.append("${");
+      result.append(resolve(from, value.substring(matcher.start() + 2)));
+      return result.toString();
+    }
+
+    // Find start of variable, expand all that follows, and then look for the end
+    // so that nested entries are supported, e.g. ${name${suffix}}
+    result.append(value.substring(0, matcher.start()));
+    String remainder = resolve(from, value.substring(matcher.start() + 2));
+    int end = remainder.indexOf('}');
+    // If ending } missing leave the ${ as-is
+    // If there is no variable treat as if omitted, i.e. '${}' => ''
+    if (end < 0) {
+      result.append("${");
+      result.append(remainder);
+    } else {
+      String key = remainder.substring(0, end);
+      if (end > 0) {
+        String val = lookUp(from, key);
+        if (val == null) { // Undefined reference to external override variable "{0}" when evaluating "{1}"
           throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_INVALID,
-                  new Object[] { name, key });
+                  new Object[] { key, from });
         }
         result.append(val);
       }
+      result.append(remainder.substring(end + 1));
     }
-    if (lastEnd == 0) {
-      return value;
-    } else {
-      result.append(value.substring(lastEnd));
-      return result.toString();
-    }
+    return result.toString();
   }
   
   /**
@@ -227,7 +282,7 @@ public class Settings_impl implements Settings {
    */
   @Override
   public String getSetting(String name) throws ResourceConfigurationException {
-    String value = lookUp(name);
+    String value = lookUp(name, name);
     if (value == null) {
       return null;
     }
@@ -238,7 +293,7 @@ public class Settings_impl implements Settings {
       throw new ResourceConfigurationException(ResourceConfigurationException.EXTERNAL_OVERRIDE_TYPE_MISMATCH, 
               new Object[] { name });
     }
-    return value;
+    return unescape(value);  // Process escape characters after checking for array syntax
   }
 
   /**
@@ -246,7 +301,7 @@ public class Settings_impl implements Settings {
    */
   @Override
   public String[] getSettingArray(String name) throws ResourceConfigurationException {
-    String value = lookUp(name);
+    String value = lookUp(name, name);
     if (value == null) {
       return null;
     }
@@ -278,14 +333,14 @@ public class Settings_impl implements Settings {
     int i = 0;
     for (String token : tokens) {
       if (token != null) {
-        result[i++] = escape(token.trim());
+        result[i++] = unescape(token.trim());
       }
     }
     return result;
   }
 
   // Final step is to process any escapes by replacing \x by x
-  private String escape(String token) {
+  private String unescape(String token) {
     int next = token.indexOf('\\');
     if (next < 0) {
       return token;
