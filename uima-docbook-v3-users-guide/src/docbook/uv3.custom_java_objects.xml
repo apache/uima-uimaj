@@ -174,12 +174,18 @@ public void _save_to_cas_data() {
 	  <titleabbrev>Semi-Built-in UIMA Types for Java Objects</titleabbrev>
 	  
 	  <para>Some additional semi-built-in UIMA types are defined in Version 3 using this new mechanism.  They work fully in
-	  Java, and are transported to non-Java frameworks as ordinary CAS objects.</para>
+	  Java, and are serialized or transported to non-Java frameworks as ordinary CAS objects.</para>
 	  
     <para>Semi-built-in means that the JCas cover classes for these are defined as part of the core Java classes,
       but the types themselves are not "built-in".  They may be added to any tyupe system by importing them by name using the import statement:
       <programlisting>&lt;import name="org.apache.uima.semibuiltins"/&gt;</programlisting>
+      If you have a Java project whose classpath includes uimaj-core, and you run the Component Descriptor Editor
+      Eclipse plugin tool on a descriptor which includes a type system, you can configure this import by selecting
+      the Add on the Import type system subpanel, and import by name, and selecting org.apache.uima.semibuiltins.
+      (Note: this will not show up if your project doesn't include uimaj-core on its build path.)
     </para>
+    
+    
     
 	  <section id="uv3.custom_java_objects.semibuiltin_fsarraylist">
 	    <title>FSArrayList</title>

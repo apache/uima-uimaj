@@ -161,6 +161,11 @@ public class Jg {
     ((CASImpl) tcas).commitTypeSystem();
     builtInTypeSystem = ((CASImpl) tcas).getTypeSystemImpl();  // follow commit because commit may reuse existing type system
 
+    // setup noGen for semibuiltin types 
+    noGenTypes.add("org.apache.uima.jcas.cas.FSArrayList");
+    noGenTypes.add("org.apache.uima.jcas.cas.IntegerArrayList");
+    noGenTypes.add("org.apache.uima.jcas.cas.FSHashSet");
+    
     for (Iterator it = builtInTypeSystem.getTypeIterator(); it.hasNext();) {
       Type type = (Type) it.next();
       if (type.isFeatureFinal()) {
