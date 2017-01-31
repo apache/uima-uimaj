@@ -165,6 +165,9 @@ public void _save_to_cas_data() {
     </variablelist>
     </para>
     
+    <para>For custom types which hold collections of Feature Structures, you can have those participate in the 
+       <code>Select</code> framework, by implementing the optional Interface <code>SelectViaCopyToArray</code>.</para>
+       
     <para>For more examples, please see the implementations of the built-in classes described in the
     following section.</para>
   </section>

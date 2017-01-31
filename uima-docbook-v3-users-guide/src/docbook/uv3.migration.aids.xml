@@ -44,7 +44,7 @@ under the License.
     using -Dxxxxxx, where the xxxxxx is one of
     the properties starting with <code>uima.</code> from the table below.</para>  
     <informaltable frame="all" rowsep="1" colsep="1">
-     <tgroup cols="3">
+     <tgroup cols="2">
        <colspec colnum="1" colname="Title" colwidth="1*"/>
        <colspec colnum="2" colname="Description" colwidth="3*"/>
        

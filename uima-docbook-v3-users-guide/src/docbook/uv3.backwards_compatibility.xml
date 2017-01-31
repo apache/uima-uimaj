@@ -97,7 +97,8 @@ under the License.
   <section id="uv3.backards_compatibility.low_level_apis">
     <title>APIs for creating and modifying Feature Structures</title>
     
-    <para>There are 3 sets of APIs for creating and modifying Feature Structures.
+    <para>There are 3 sets of APIs for creating and modifying Feature Structures;
+      all are supported in V3.
     <itemizedlist spacing="compact">
       <listitem>
         <para>Using the JCas classes</para>
@@ -113,10 +114,10 @@ under the License.
     
     <para>Version 3 retains all 3 sets, to enable backward compatibility.</para>
     <para>The low level CAS interface was originally provided to enable a extra-high-performance
-      (but without type safety checks) mode.  In Version 3, this mode is actually somewhat slower than the others,
-      and no longer has any advantages.      
+      (but without compile-time type safety checks) mode.  
+      In Version 3, this mode is actually somewhat slower than the others, and no longer has any advantages.      
     </para>
-    <para>Using the low level CAS interface also blocks one of the new features of Version 3 - namely, automatic
+    <para>Using the low level CAS interface also sometimes blocks one of the new features of Version 3 - namely, automatic
     garbage collection of unreachable Feature Structures.  This is because creating a Feature Structure using the
     low level API creates the Java object for that Feature Structure, but returns an "int" handle to it.  
     In order to be able to find the Feature Structure, given that int handle, an entry is made in an internal map.
