@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>2.8.0</version>
+    <version>3.0.0-beta-SNAPSHOT</version>
     <relativePath />
   </parent>
 
@@ -76,14 +76,14 @@
                             Name must be the same as the ID for the plugin or feature
                 ======================================================================= -->
               <artifactItems>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-cas-editor</artifactId>    <version>${project.version}</version><destFileName>org.apache.uima.caseditor_${project.version}.jar    </destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-cas-editor-ide</artifactId><version>${project.version}</version><destFileName>org.apache.uima.caseditor.ide_${project.version}.jar</destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-configurator</artifactId>  <version>${project.version}</version><destFileName>org.apache.uima.desceditor_${project.version}.jar   </destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-debug</artifactId>         <version>${project.version}</version><destFileName>org.apache.uima.debug_${project.version}.jar        </destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-jcasgen</artifactId>       <version>${project.version}</version><destFileName>org.apache.uima.jcas.jcasgenp_${project.version}.jar</destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-pear-packager</artifactId> <version>${project.version}</version><destFileName>org.apache.uima.pear_${project.version}.jar         </destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-runtime</artifactId>       <version>${project.version}</version><destFileName>org.apache.uima.runtime_${project.version}.jar      </destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-launcher</artifactId>      <version>${project.version}</version><destFileName>org.apache.uima.launcher_${project.version}.jar     </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-cas-editor</artifactId>    <version>${project.version}</version><destFileName>org.apache.uima.caseditor_${parsedVersion.osgiVersion}.jar    </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-cas-editor-ide</artifactId><version>${project.version}</version><destFileName>org.apache.uima.caseditor.ide_${parsedVersion.osgiVersion}.jar</destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-configurator</artifactId>  <version>${project.version}</version><destFileName>org.apache.uima.desceditor_${parsedVersion.osgiVersion}.jar   </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-debug</artifactId>         <version>${project.version}</version><destFileName>org.apache.uima.debug_${parsedVersion.osgiVersion}.jar        </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-jcasgen</artifactId>       <version>${project.version}</version><destFileName>org.apache.uima.jcas.jcasgenp_${parsedVersion.osgiVersion}.jar</destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-pear-packager</artifactId> <version>${project.version}</version><destFileName>org.apache.uima.pear_${parsedVersion.osgiVersion}.jar         </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-runtime</artifactId>       <version>${project.version}</version><destFileName>org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar      </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-ep-launcher</artifactId>      <version>${project.version}</version><destFileName>org.apache.uima.launcher_${parsedVersion.osgiVersion}.jar     </destFileName></artifactItem>
               </artifactItems>
               <outputDirectory>${toBePacked}</outputDirectory>
             </configuration>
@@ -102,8 +102,8 @@
                             Name must be the same as the ID for the plugin or feature
                 ======================================================================= -->
               <artifactItems>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-runtime</artifactId><version>${project.version}</version><destFileName>org.apache.uima.runtime_${project.version}.jar</destFileName></artifactItem>
-                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-tools</artifactId>  <version>${project.version}</version><destFileName>org.apache.uima.tools_${project.version}.jar  </destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-runtime</artifactId><version>${project.version}</version><destFileName>org.apache.uima.runtime_${parsedVersion.osgiVersion}.jar</destFileName></artifactItem>
+                <artifactItem><groupId>org.apache.uima</groupId><artifactId>uimaj-eclipse-feature-tools</artifactId>  <version>${project.version}</version><destFileName>org.apache.uima.tools_${parsedVersion.osgiVersion}.jar  </destFileName></artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}/eus-work/features</outputDirectory>
             </configuration>
