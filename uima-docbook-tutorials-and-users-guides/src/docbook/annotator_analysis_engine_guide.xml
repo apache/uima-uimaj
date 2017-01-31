@@ -1128,7 +1128,7 @@ public void initialize(UimaContext aContext)
         when the UIMA framework is started.
         </para>
         <para>
-          The specified logger class must be available in the classpath and have to implement the 
+          The specified logger class must be available in the classpath and has to implement the 
           <code>org.apache.uima.util.Logger</code> interface. 
         </para>
         
