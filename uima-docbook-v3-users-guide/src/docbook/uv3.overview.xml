@@ -112,11 +112,10 @@ under the License.
 	    </varlistentry>
 	    
 	    <varlistentry>
-	      <term><emphasis role="strong">New UIMA built-in types, built using the custom Java object support</emphasis></term>
+	      <term><emphasis role="strong">New UIMA semi-built-in types, built using the custom Java object support</emphasis></term>
 	      <listitem>
 	        <para>The new support that allows custom serialization of arbitrary Java objects so they can be transported
-            in the CAS (above) is used to implement several new built-in UIMA types.  These are implemented in a 
-            "lazy" style, avoiding extra computation until needed. 
+            in the CAS (above) is used to implement several new semi-built-in UIMA types.  
 	        <variablelist>
 	          <varlistentry>
 	            <term><emphasis role="strong">FSArrayList</emphasis></term>

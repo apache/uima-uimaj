@@ -155,12 +155,41 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     
     <para>The built-in type Annotation has 4 new methods to allow comparing two annotations.
       The first method (<code>compareAnnotation</code>) uses
-      the standard annotation comparator (two keys: begin (ascending) and end (descending)). 
+      the standard annotation comparator (two keys: begin (ascending) and end (descending)); types can be different. 
       A second method (<code>compareAnnotation(other, linear_type_order)</code>) adds a 3rd comparison,
       used if the Annotations compare equal), which uses a linear_type_order to compare the two types.
       Another two methods extend these two methods with an additional key - the Annotation's ID,
       used only if the previous comparsions are all equal.
       All of these return the standard Java compare result allowing discrimination between equal, &gt;, and &lt;.
+      
+      <variablelist>
+        <varlistentry>
+          <term>Here's a summary, by compare arguments:</term>
+          <listitem>
+            <variablelist>
+              <varlistentry>
+                <term>begin, end</term>
+                <listitem><para>compares using just the begin and end values, the types can be arbitrary</para></listitem>
+              </varlistentry>
+              <varlistentry>
+                <term>begin, end, type-order</term>
+                <listitem><para>adds ordering of the types based on the global linear type order</para></listitem>
+              </varlistentry>
+              
+              <varlistentry>
+                <term>begin, end, fs.id()</term>
+                <listitem><para>like the first, but adds a compare of the ids if all else equal</para></listitem>
+              </varlistentry>
+              <varlistentry>
+                <term>begin, end, type-order, fs.id()</term>
+                <listitem><para>like the second, but adds a compare of the ids if all else equal</para></listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+      
+        
       </para>
   </section>
 

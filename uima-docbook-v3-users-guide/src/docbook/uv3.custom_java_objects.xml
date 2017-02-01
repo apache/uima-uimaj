@@ -90,12 +90,14 @@ under the License.
     </para>
     
     <para>Step 4 is to run JCasGen on this class to get an initial version of the class.  Of course, it will be missing
-    the Java Hashmap, but we'll add that in the next step.</para>
+    the Java HashMap, but we'll add that in the next step.</para>
     
-    <para>Step 5: modify 3 aspects of the generated JCas class.
+    <variablelist><varlistentry><term>Step 5: modify 3 aspects of the generated JCas class.</term>
+      <listitem>
+        <para>
     <variablelist>
        <varlistentry>
-          <term>Mark the class with one of two interfaces:</term>
+          <term>1. Mark the class with one of two interfaces:</term>
           <listitem>
             <itemizedlist  spacing="compact">
               <listitem><para><code>UimaSerializable</code></para></listitem>
@@ -108,15 +110,19 @@ under the License.
           </listitem>
        </varlistentry>
        <varlistentry>
-          <term>Add the Java Object as a field to the class</term>
+          <term>2. Add the Java Object as a field to the class</term>
           <listitem>
+            <!-- create a blank line -->
+            <variablelist><varlistentry><term></term><listitem><para></para></listitem></varlistentry></variablelist>
             <para>We'll define a new field:
     <programlisting>final private Map&lt;TOP, TOP&gt; fs2fsMap = new HashMap&lt;&gt;();</programlisting></para>
           </listitem>
        </varlistentry>
        <varlistentry>
-          <term>Implement two methods to marshal/unmarshal the Java Object data to the CAS Data Features</term>
+          <term>3. Implement two methods to marshal/unmarshal the Java Object data to the CAS Data Features</term>
           <listitem>
+            <!-- create a blank line -->
+            <variablelist><varlistentry><term></term><listitem><para></para></listitem></varlistentry></variablelist>
             <para>Now, we need to add the code that translates between the two UIMA Features 
                   "keys" and "values" and the map, and vice-versa.  We put this code into two methods, 
                   called <code>_init_from_cas_data</code> and <code>_save_to_cas_data</code>. 
@@ -158,23 +164,27 @@ public void _save_to_cas_data() {
             case (but one which might occur frequently), and in that case having the
             _save_to_cas_data operation do nothing, since the original CAS data is still valid.</para>
             
-            <para>One additional "boilerplate" method is required for all of these classes:            
-            <blockquote><para>public FeatureStructureImplC _superClone() {return clone();}</para></blockquote></para>
+            <para>One additional "boilerplate" method is required for all of these classes:</para>            
+            <para><code>  public FeatureStructureImplC _superClone() {return clone();}</code></para>
           </listitem>
        </varlistentry>
     </variablelist>
-    </para>
+
+        </para>
+      </listitem>
+    </varlistentry></variablelist>
+  
     
     <para>For custom types which hold collections of Feature Structures, you can have those participate in the 
        <code>Select</code> framework, by implementing the optional Interface <code>SelectViaCopyToArray</code>.</para>
        
-    <para>For more examples, please see the implementations of the built-in classes described in the
+    <para>For more examples, please see the implementations of the semi-built-in classes described in the
     following section.</para>
   </section>
   
   <section id="uv3.custom_java_objects.new_semibuiltins">
-	  <title>Additional Semi-Built-in UIMA Types for some common Java Objects</title>
-	  <titleabbrev>Semi-Built-in UIMA Types for Java Objects</titleabbrev>
+	  <title>Additional semi-built-in UIMA Types for some common Java Objects</title>
+	  <titleabbrev>semi-built-in UIMA Types</titleabbrev>
 	  
 	  <para>Some additional semi-built-in UIMA types are defined in Version 3 using this new mechanism.  They work fully in
 	  Java, and are serialized or transported to non-Java frameworks as ordinary CAS objects.</para>

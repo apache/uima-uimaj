@@ -88,7 +88,7 @@ under the License.
       Version 3 has special support for the case where there are different definitions of JCas classes 
       for the same UIMA type, inside and outside the PEAR.  It does this using what are called
       PEAR Trampolines.  When there are multiple JCas definitions, the one defined outside of the PEAR is
-      the one stored internally in UIMA's indexes and built-in types that have references to Feature Structures.
+      the one stored internally in UIMA's indexes and types that have references to Feature Structures.
       Accessing the Feature Structures checks (by asking the CAS) to see if its in a particular PEAR context
       (there may be several in one pipeline), and if so, a trampoline instance of the Feature Structure is
       created / used / accessed.  The trampoline instance shares internally the CAS data with the

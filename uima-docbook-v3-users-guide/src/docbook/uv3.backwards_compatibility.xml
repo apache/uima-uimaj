@@ -69,20 +69,12 @@ under the License.
 	  possible to have a UIMA-AS services working with a client, where the client is a version 3 instance, but the
 	  server is still a version 2 (or vice versa).</para>
 	  
-	  <para>Some formats like Binary and BinaryCompressedForm4 require the type systems match exactly.
-	  Version 3 adds some new built-in types, so the type systems won't match exactly; an accommodation is made
-	  when the version 3 deserialization detects that the serialized CAS was serialized with version 2, that
-	  enables version 3 to load version 2 serialized CASs, even for binary formats.  A planned extension for 
-	  UIMA-AS will allow version 3 clients to detect when a service is running version 2 code, and have the 
-	  serialization altered to be compatible with version 2 (provided that the new, built-in, types are not being used).
-	  </para>
-	  
 	  <section id="uv3.backwards_compatibility.serialization.deltas">  
 	    <title>Delta CAS Version 2 Binary deserialization not supported</title>
 	    
 	    <para>The binary serialization forms, including Compressed Binary Form 4, build an
 	      internal model of the v2 CAS in order to be able to deserialize v2 generated
-	      versions.  For delta CAS, this model cannot be accurately built, because version 3
+	      versions.  For <emphasis role="strong">delta</emphasis> CAS, this model cannot be accurately built, because version 3
 	      excludes from the model all unreachable Feature Structures, so in most cases it
 	      won't match the version 2 layout.  
 	    </para>
