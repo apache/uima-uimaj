@@ -929,13 +929,15 @@ public void initialize(UimaContext aContext)
       <title>Logging</title>
       
       <para>The UIMA SDK provides a logging facility, which is very similar to the
-        java.util.logging.Logger class that was introduced in Java 1.4.</para>
+        java.util.logging.Logger class that was introduced in Java 1.4.
+        In addition, it includes the SLF4j framework <ulink url="https://www.slf4j.org/"/>.</para>
       
-      <para>In the Java architecture, each logger instance is associated with a name. By
-        convention, this name is often the fully qualified class name of the component
-        issuing the logging call. The name can be referenced in a configuration file when
-        specifying which kinds of log messages to actually log, and where they should
-        go.</para>
+      <para>Each logger instance is associated with a name. By
+        convention, this name is usually a hierarchy of simple names connected with periods, 
+        often the fully qualified class name of the component
+        issuing the logging call. The name (or any of its parents - starting prefixes up to a period) 
+        can be referenced in a configuration file which can then configure for each logger
+        various things such as the logging level and where messages should go.</para>
       
       <para>The UIMA framework supports this convention using the
         <literal>UimaContext</literal> object. If you access a logger instance using
@@ -945,24 +947,49 @@ public void initialize(UimaContext aContext)
       <para>Here is an example from the process method of
         <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal>:
         
-        
-        <programlisting>getContext().getLogger().log(Level.FINEST,"Found: " + annotation);</programlisting>
+        <programlisting>getLogger().log(Level.FINEST,"Found: " + annotation);
+// or, using slf4j
+// note: this call format skips constructing the message 
+//       if tracing is not enabled
+getSlf4jLogger().trace("Found: {}", annotation);      
+</programlisting>
         </para>
       
-      <para>The first argument to the log method is the level of the log output. Here, a value of
+      <para>When using the UIMA logger, the first argument to the log method is the level of the log output. 
+        Here, a value of
         FINEST indicates that this is a highly-detailed tracing message. While useful for
         debugging, it is likely that real applications will not output log messages at this
         level, in order to improve their performance. Other defined levels, from lowest to
         highest importance, are FINER, FINE, CONFIG, INFO, WARNING, and SEVERE.</para>
+        
+      <para>When using the SLF4j logger, SEVERE is replaced by error, 
+        CONFIG is not present (use a config marker instead), and 
+        FINE, and FINER are replaced with trace and FINEST with debug. 
+        There are individual methods for various calls as well, 
+        as an alternative to specifying the level as a parameter.</para>
       
-      <para>If no logging configuration file is provided (see next section), the Java
+      <para>Each logging backend has its own documentation for how 
+        to configure loggers at run time, via configuration files or APIs in some cases.
+        Some backends even allow dynamic reconfiguration
+        while running, just by updating the configuration file (it is re-loaded every so often).
+      </para>
+      
+      <para>For the built-in-to-Java logging back end, if no logging configuration file is provided (see next section), 
+        the Java
         Virtual Machine defaults would be used, which typically set the level to INFO and
         higher messages, and direct output to the console.</para>
+        
+      <para>When using SLF4j, you must configure a specific back end - none are defaulted.  
+        See the SLF4j documentation for how to do this - it typically involves
+        putting into Java's classpath the appropriate back end JARs.</para>
       
-      <para>If you specify the standard UIMA SDK <literal>Logger.properties,</literal>
+      <para>If you specify the standard UIMA SDK <literal>Logger.properties</literal>
+        (found in <code>UIMA_HOME/config/</code>) with the default built-in Java logging implementation,
         the output will be directed to a file named uima.log, in the current working directory
         (often the <quote>project</quote> directory when running from Eclipse, for
-        instance).</para> <note><para>When using Eclipse, the uima.log file, if written
+        instance).</para> 
+        
+        <note><para>When using Eclipse, the uima.log file, if written
       into the Eclipse workspace in the project uimaj-examples, for example, may not appear
       in the Eclipse package explorer view until you right-click the uimaj-examples project
       with the mouse, and select <quote>Refresh</quote>. This operation refreshes the
@@ -971,8 +998,12 @@ public void initialize(UimaContext aContext)
       Preferences &rarr; General &rarr; Workspace, then click the <quote>refresh
       automatically</quote> checkbox.</para></note>
       
+      <para>The next several sections mainly describe how to configure the built-in
+        Java logger.  See the documentation for other logging back ends for 
+        details on how to configure those.</para>
+         
       <section id="ugr.tug.aae.logging.configuring">
-        <title>Specifying the Logging Configuration</title>
+        <title>Specifying the Logging Configuration when using Java's built-in logger</title>
         
         <para>The standard UIMA logger uses the underlying Java 1.4 logging mechanism. You
           can use the APIs that come with that to configure the logging. In addition, the
@@ -1018,7 +1049,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.setting_logging_levels">
-        <title>Setting Logging Levels</title>
+        <title>Setting Logging Levels when using Java's built-in logger</title>
         
         <para>Within the logging control file, the default global logging level specifies
           which kinds of events are logged across all loggers. For any given facility this
@@ -1045,7 +1076,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.output_format">
-        <title>Format of logging output</title>
+        <title>Configuring the format of logging output when using Java's built-in logger</title>
         
         <para>The logging output is formatted by handlers specified in the properties file
           for configuring logging, described above. The default formatter that comes with
@@ -1062,7 +1093,7 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.meaning_of_severity_levels">
-        <title>Meaning of the logging severity levels</title>
+        <title>Meaning of the logging severity levels used by the UIMA logger</title>
         
         <para>These levels are defined by the Java logging framework, which was
           incorporated into Java as of the 1.4 release level. The levels are defined in the
@@ -1104,24 +1135,25 @@ public void initialize(UimaContext aContext)
       </section>
       
       <section id="ugr.tug.aae.logging.using_outside_of_an_annotator">
-        <title>Using the logger outside of an annotator</title>
+        <title>Using loggers outside of an annotator</title>
         
         <para>An application using UIMA may want to log its messages using the same logging
-          framework. This can be done by getting a reference to the UIMA logger, as follows:
-          
+          framework. This can be done by getting a reference to the UIMA logger, as follows:        
           
           <programlisting>Logger logger = UIMAFramework.getLogger(TestClass.class);</programlisting>
+          or getting a SLF4j logger:
+          <programlisting>org.slf4j.Logger logger = LogFactory.getLogger(TestClass.class);</programlisting>
           </para>
         
-        <para>The optional class argument allows filtering by class (if the log handler
-          supports this). If not specified, the name of the returned logger instance is
+        <para>The class argument allows filtering by class. 
+          For UIMA loggers, if not specified, the name of the returned logger instance is
           <quote>org.apache.uima</quote>.</para>
       </section>
       
       <section id="ugr.tug.aae.logging.change_logger_implementation">
         <title>Changing the underlying UIMA logging implementation</title>
         
-        <para>By default the UIMA framework use, under the hood of the UIMA Logger interface, the Java logging framework 
+        <para>By default the UIMA framework uses, under the hood of the UIMA Logger interface, the Java logging framework 
         to do logging. But it is possible to change the logging implementation that UIMA use from Java logging to 
         an arbitrary logging system when specifying the system property  
           <programlisting>-Dorg.apache.uima.logger.class=&lt;loggerClass></programlisting>
@@ -1133,11 +1165,16 @@ public void initialize(UimaContext aContext)
         </para>
         
         <para>
-          UIMA also provides a logging implementation that use Apache Log4j instead of Java logging. To
-          use Log4j you have to provide the Log4j jars in the classpath and your application 
+          UIMA also provides a logging implementation that use Apache <code>Log4j 2</code> 
+          <ulink url="https://logging.apache.org/log4j"/> instead of Java logging. To
+          use <code>Log4j 2</code> you have to provide the <code>Log4j 2</code> jars in the classpath and your application 
           must specify the logging configuration as shown below. 
           <programlisting><?db-font-size 80% ?>-Dorg.apache.uima.logger.class=org.apache.uima.util.impl.Log4jLogger_impl</programlisting>
         </para>
+        
+        <para>The SLF4j logger framework, if used, must be configured with a particular back end.
+          Instructions on how to do this are in the SLF4j manual.  Note that some bindings, including
+          the one for <code>log4j 2</code> are provided with their individual back ends.</para>
       </section>
       
       
