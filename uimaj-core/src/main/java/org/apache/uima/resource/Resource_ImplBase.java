@@ -26,6 +26,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.resource.metadata.ResourceMetaData;
@@ -161,7 +162,8 @@ public abstract class Resource_ImplBase implements Resource {
           }
         }
       }
-
+      UimaContextHolder.setContext(mUimaContextAdmin);  // Create a UimaContext holder so that AEs created on this thread can use the Settings
+      
       // initialize configuration
       try {
         // createContext checks and skips repeated calls with same args (on different threads, for example)

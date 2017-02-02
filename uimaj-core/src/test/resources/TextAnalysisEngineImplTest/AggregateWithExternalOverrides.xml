@@ -23,7 +23,7 @@
   <primitive>false</primitive>
   <delegateAnalysisEngineSpecifiers>
     <delegateAnalysisEngine key="ExternalOverrides">
-      <import location="AnnotatorWithExternalOverrides.xml"/>
+      <import location="Annotator${with}ExternalOverrides.xml"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <analysisEngineMetaData>

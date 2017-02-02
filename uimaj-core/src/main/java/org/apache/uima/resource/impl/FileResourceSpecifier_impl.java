@@ -50,7 +50,11 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
    * @see org.apache.uima.resource.FileResourceSpecifier#getFileUrl()
    */
   public String getFileUrl() {
-    return mFileUrl;
+    if (mFileUrl != null && mFileUrl.contains("${")) {
+      return resolveSettings(mFileUrl);
+    } else {
+      return mFileUrl;
+    }
   }
 
   /**
