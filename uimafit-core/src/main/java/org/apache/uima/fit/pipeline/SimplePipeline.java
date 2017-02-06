@@ -35,6 +35,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
+import org.apache.uima.fit.util.LifeCycleUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -99,7 +100,7 @@ public final class SimplePipeline {
       aae.collectionProcessComplete();
     } finally {
       // Destroy
-      aae.destroy();
+      LifeCycleUtil.destroy(aae);
     }
   }
 
@@ -155,7 +156,8 @@ public final class SimplePipeline {
       aae.collectionProcessComplete();
     } finally {
       // Destroy
-      aae.destroy();
+      LifeCycleUtil.destroy(reader);
+      LifeCycleUtil.destroy(aae);
     }
   }
 
@@ -233,7 +235,7 @@ public final class SimplePipeline {
       aae.collectionProcessComplete();
     } finally {
       // Destroy
-      aae.destroy();
+      LifeCycleUtil.destroy(aae);
     }
   }
 
