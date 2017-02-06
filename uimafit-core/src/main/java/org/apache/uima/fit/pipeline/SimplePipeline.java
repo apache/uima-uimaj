@@ -34,6 +34,9 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.collection.CollectionReaderDescription;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.internal.ResourceManagerFactory;
 import org.apache.uima.fit.util.LifeCycleUtil;
 import org.apache.uima.jcas.JCas;
@@ -54,9 +57,11 @@ public final class SimplePipeline {
   /**
    * <p>
    * Run the CollectionReader and AnalysisEngines as a pipeline. After processing all CASes provided
-   * by the reader, the method calls {@link AnalysisEngine#collectionProcessComplete()
-   * collectionProcessComplete()} on the engines and {@link Resource#destroy() destroy()} on all
-   * engines.
+   * by the reader, the method calls the life-cycle methods
+   * ({@link AnalysisEngine#collectionProcessComplete() collectionProcessComplete()} on the engines
+   * and {@link Resource#destroy() destroy()}) on all engines. Note that the life-cycle methods are
+   * <b>NOT</b> called on the reader. As the reader was instantiated by the caller, it must also be
+   * managed (i.e. destroyed) the caller.
    * </p>
    * <p>
    * Note that with this method, external resources cannot be shared between the reader and the
@@ -76,19 +81,20 @@ public final class SimplePipeline {
    */
   public static void runPipeline(final CollectionReader reader,
           final AnalysisEngineDescription... descs) throws UIMAException, IOException {
-    // Create AAE
-    final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
-
-    // Instantiate AAE
-    final AnalysisEngine aae = createEngine(aaeDesc);
-
-    // Create CAS from merged metadata
-    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
-    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()), 
-            null, resMgr);
-    reader.typeSystemInit(cas.getTypeSystem());
-
+    AnalysisEngine aae = null;
     try {
+      // Create AAE
+      final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
+  
+      // Instantiate AAE
+      aae = createEngine(aaeDesc);
+  
+      // Create CAS from merged metadata
+      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+      final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()), 
+              null, resMgr);
+      reader.typeSystemInit(cas.getTypeSystem());
+
       // Process
       while (reader.hasNext()) {
         reader.getNext(cas);
@@ -114,6 +120,22 @@ public final class SimplePipeline {
    * <p>
    * External resources can be shared between the reader and the analysis engines.
    * </p>
+   * <p>
+   * This method is suitable for the batch-processing of sets of documents where the overheaded
+   * of instantiating the pipeline components does not significantly impact the overall runtime
+   * of the pipeline. If you need to avoid this overhead, e.g. because you wish to run a pipeline
+   * on individual documents, then you should not use this method. Instead, create a CAS using
+   * {@link JCasFactory}, create a reader instance using {@link CollectionReaderFactory#createReader},
+   * create an engine instance using {@link AnalysisEngineFactory#createEngine} and then use
+   * a loop to process the data, resetting the CAS after each step.
+   * </p>
+   * <pre><code>
+   *   while (reader.hasNext()) {
+   *     reader.getNext(cas);
+   *     engine.process(cas);
+   *     cas.reset();
+   *   }
+   * </code></pre>
    * 
    * @param readerDesc
    *          The CollectionReader that loads the documents into the CAS.
@@ -128,23 +150,26 @@ public final class SimplePipeline {
    */
   public static void runPipeline(final CollectionReaderDescription readerDesc,
           final AnalysisEngineDescription... descs) throws UIMAException, IOException {
-    ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
     
-    // Create the components
-    final CollectionReader reader = UIMAFramework.produceCollectionReader(readerDesc, resMgr, null);
-
-    // Create AAE
-    final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
-
-    // Instantiate AAE
-    final AnalysisEngine aae = UIMAFramework.produceAnalysisEngine(aaeDesc, resMgr, null);
-
-    // Create CAS from merged metadata
-    final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()),
-            null, resMgr);
-    reader.typeSystemInit(cas.getTypeSystem());
-
+    CollectionReader reader = null;
+    AnalysisEngine aae = null;
     try {
+      ResourceManager resMgr = ResourceManagerFactory.newResourceManager();
+      
+      // Create the components
+      reader = UIMAFramework.produceCollectionReader(readerDesc, resMgr, null);
+  
+      // Create AAE
+      final AnalysisEngineDescription aaeDesc = createEngineDescription(descs);
+  
+      // Instantiate AAE
+      aae = UIMAFramework.produceAnalysisEngine(aaeDesc, resMgr, null);
+  
+      // Create CAS from merged metadata
+      final CAS cas = CasCreationUtils.createCas(asList(reader.getMetaData(), aae.getMetaData()),
+              null, resMgr);
+      reader.typeSystemInit(cas.getTypeSystem());
+
       // Process
       while (reader.hasNext()) {
         reader.getNext(cas);
@@ -166,6 +191,9 @@ public final class SimplePipeline {
    * Provides a simple way to run a pipeline for a given collection reader and sequence of analysis
    * engines. After processing all CASes provided by the reader, the method calls
    * {@link AnalysisEngine#collectionProcessComplete() collectionProcessComplete()} on the engines.
+   * Note that {@link AnalysisEngine#destroy()} and {@link CollectionReader#destroy()} are
+   * <b>NOT</b> called. As the components were instantiated by the caller, they must also be managed
+   * (i.e. destroyed) the caller.
    * </p>
    * <p>
    * External resources can only be shared between the reader and/or the analysis engines if the
@@ -222,12 +250,14 @@ public final class SimplePipeline {
    */
   public static void runPipeline(final CAS aCas, final AnalysisEngineDescription... aDescs)
           throws ResourceInitializationException, AnalysisEngineProcessException {
-    // Create aggregate AE
-    final AnalysisEngineDescription aaeDesc = createEngineDescription(aDescs);
-
-    // Instantiate
-    final AnalysisEngine aae = createEngine(aaeDesc);
+    AnalysisEngine aae = null;
     try {
+      // Create aggregate AE
+      final AnalysisEngineDescription aaeDesc = createEngineDescription(aDescs);
+  
+      // Instantiate
+      aae = createEngine(aaeDesc);
+      
       // Process
       aae.process(aCas);
 
