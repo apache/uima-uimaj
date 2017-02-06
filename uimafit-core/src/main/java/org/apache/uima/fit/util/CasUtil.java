@@ -469,6 +469,10 @@ public final class CasUtil {
    * <p>
    * The covering annotation is never returned itself, even if it is of the queried-for type or a
    * subtype of that type.
+   * <p>
+   * The method only returns properly covered annotations, that is annotations where the begin/end
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
+   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param type
    *          a UIMA type.
@@ -490,6 +494,10 @@ public final class CasUtil {
    * <p>
    * The covering annotation is never returned itself, even if it is of the queried-for type or a
    * subtype of that type.
+   * <p>
+   * The method only returns properly covered annotations, that is annotations where the begin/end
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
+   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param cas
    *          a CAS.
@@ -580,6 +588,10 @@ public final class CasUtil {
    * {@link #selectCovered(CAS, Type, AnnotationFS)}. It is possible to use
    * {@code  selectCovered(cas, type, new Annotation(jCas, int, int))}, but that will allocate memory
    * in the jCas for the new annotation. If you do that repeatedly many times, memory may fill up.
+   * <p>
+   * The method only returns properly covered annotations, that is annotations where the begin/end
+   * offsets are equal to the given begin/end or where both the begin/end are included in
+   * the span of the given span. Partially overlapping annotations are not returned.
    * 
    * @param cas
    *          a CAS.
@@ -631,6 +643,11 @@ public final class CasUtil {
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
+   * <p>
+   * The method only returns properly covering annotations, that is annotations where the begin/end
+   * offsets are equal to the begin/end of the given annotation or where given 'covered' annotation
+   * is properly contained within the span of the 'covering' annotation. Partially overlapping
+   * annotations are not returned.
    * 
    * <p>
    * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
@@ -652,6 +669,11 @@ public final class CasUtil {
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
+   * <p>
+   * The method only returns properly covering annotations, that is annotations where the begin/end
+   * offsets are equal to the begin/end of the given annotation or where given 'covered' annotation
+   * is properly contained within the span of the 'covering' annotation. Partially overlapping
+   * annotations are not returned.
    * 
    * <p>
    * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
@@ -674,6 +696,10 @@ public final class CasUtil {
   /**
    * Get a list of annotations of the given annotation type constraint by a certain annotation.
    * Iterates over all annotations to find the covering annotations.
+   * <p>
+   * The method only returns properly covering annotations, that is annotations where the begin/end
+   * offsets are equal to the given begin/end to or where given span is properly contained within
+   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * <p>
    * <b>Note:</b> this is <b>REALLY SLOW!</b> You don't want to use this. Instead, consider using
@@ -712,6 +738,11 @@ public final class CasUtil {
    * Create an index for quickly lookup up the annotations covering a particular annotation. This is
    * preferable to using {@link #selectCovering(CAS, Type, int, int)} because the overhead of
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
+   * <p>
+   * The method only returns properly covering annotations, that is annotations where the begin/end
+   * offsets are equal to the begin/end of the given annotation or where given 'covered' annotation
+   * is properly contained within the span of the 'covering' annotation. Partially overlapping
+   * annotations are not returned.
    * 
    * @param cas
    *          a CAS.
@@ -756,6 +787,10 @@ public final class CasUtil {
    * scanning the CAS occurs only when the index is build. Subsequent lookups to the index are fast.
    * The order of entries in the map is not defined. However, lists of covered annotations in
    * the map are guaranteed to be in the same order as in the UIMA default annotation index.
+   * <p>
+   * The method only returns properly covered annotations, that is annotations where the begin/end
+   * offsets are equal to the 'covering' annotation or where both the begin/end are included in
+   * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
    * 
    * @param cas
    *          a CAS.
