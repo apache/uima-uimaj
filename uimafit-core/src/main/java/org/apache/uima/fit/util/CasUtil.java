@@ -799,16 +799,10 @@ public final class CasUtil {
     int o = 0;
     int i = 0;
     
-    // Whether to log debug information
-    boolean debug = false;
-    
     while ((o < typeArray.length || !memory.isEmpty()) && i < coveredTypeArray.length) {
       // Always make sure the memory contains at least one covering annotation to compare against
       if (memory.isEmpty()) {
         memory.push(typeArray[o]);
-        if (debug) {
-          System.out.printf("NEXT OUTER%n");
-        }
         o++;
       }
       AnnotationFS bottom = memory.peek();
@@ -817,9 +811,6 @@ public final class CasUtil {
       // start earlier.
       AnnotationFS iFS = coveredTypeArray[i];
       while (i < coveredTypeArray.length-1 && iFS.getBegin() < bottom.getBegin()) {
-        if (debug) {
-          System.out.printf("Skipping inner: %d %d%n", iFS.getBegin(), iFS.getEnd());
-        }
         i++;
         iFS = coveredTypeArray[i];
       }
@@ -838,15 +829,6 @@ public final class CasUtil {
           o++;
         }
         
-        if (debug) {
-          StringBuilder sb2 = new StringBuilder();
-          for (AnnotationFS f : memory) {
-            sb2.append(f.getBegin()).append("-").append(f.getEnd()).append(" ");
-          }
-          System.out.printf("OUTER 1: %s%n", sb2);
-          System.out.printf("INNER  : %d-%d%n", iFSbegin, iFSend);
-        }
-        
         // Record covered annotations
         for (AnnotationFS covering : memory) {
           if (covering.getBegin() <= iFSbegin && iFS.getEnd() <= covering.getEnd()) {
@@ -856,81 +838,24 @@ public final class CasUtil {
               index.put(covering, c);
             }
             c.add(iFS);
-            if (debug) {
-              System.out.printf("-- %d-%d covers %d-%d%n", covering.getBegin(), covering.getEnd(),
-                      iFSbegin, iFSend);
-            }
-          }
-          else {
-            if (debug) {
-              System.out.printf("-- %d-%d NOT covers %d-%d%n", covering.getBegin(),
-                      covering.getEnd(), iFSbegin, iFSend);
-            }
           }
         }
         
-        if (debug) {
-          System.out.printf("NEXT INNER 1%n");
-        }
         i++;
       }
       else {
-        if (debug) {
-          StringBuilder sb = new StringBuilder();
-          for (AnnotationFS f : memory) {
-            sb.append(f.getBegin()).append("-").append(f.getEnd()).append(" ");
-          }
-          System.out.printf("OUTER 2: %s%n", sb);
-          System.out.printf("INNER  : %d-%d%n", iFSbegin, iFS.getEnd());
-          System.out.printf("HOPELESS!%n");
-          
-          System.out.printf("NEXT INNER 2%n");
-        }
         i++;
       }
         
       // Purge covering annotations from memory that cannot match anymore given the currently
-      int purgeImpl = 0;
       // exampled covered annotation
-      if (purgeImpl == 0) {
-        // Alternative implementation: re-uses memory
-        Iterator<AnnotationFS> purgeIterator = memory.iterator();
-        while (purgeIterator.hasNext()) {
-          AnnotationFS purgeCandidate = purgeIterator.next();
-          if (purgeCandidate.getEnd() < iFS.getBegin()) {
-            if (debug) {
-              System.out.printf("Dropping: %d-%d%n", purgeCandidate.getBegin(),
-                      purgeCandidate.getEnd());
-            }
-            purgeIterator.remove();
-          }
+      // Alternative implementation: re-uses memory
+      Iterator<AnnotationFS> purgeIterator = memory.iterator();
+      while (purgeIterator.hasNext()) {
+        AnnotationFS purgeCandidate = purgeIterator.next();
+        if (purgeCandidate.getEnd() < iFS.getBegin()) {
+          purgeIterator.remove();
         }
-      }
-      
-      // Alternative implementation: uses more memory but faster?
-      if (purgeImpl == 1) {
-        memory2.clear();
-        for (AnnotationFS purgeCandidate : memory) {
-          if (purgeCandidate.getEnd() < iFS.getBegin()) {
-            if (debug) {
-              System.out.printf("Dropping: %d-%d%n", purgeCandidate.getBegin(),
-                      purgeCandidate.getEnd());
-            }
-          }
-          else {
-            memory2.add(purgeCandidate);
-          }
-        }
-        
-        // Swap
-        Deque<AnnotationFS> buf = memory;
-        memory = memory2;
-        memory2 = buf;
-      }
-      
-      if (debug) {
-        System.out.printf("outer: %d/%d  inner: %d/%d%n", o, typeArray.length, i,
-                coveredTypeArray.length);
       }
     }
 

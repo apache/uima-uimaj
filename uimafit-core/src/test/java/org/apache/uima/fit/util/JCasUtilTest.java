@@ -125,7 +125,7 @@ public class JCasUtilTest extends ComponentTestBase {
 
   @Test
   public void testSelectCoverRandom() throws Exception {
-    final int ITERATIONS = 25;
+    final int ITERATIONS = 10;
 
     for (int i = 0; i < ITERATIONS; i++) {
       CAS cas = jCas.getCas();
