@@ -66,6 +66,8 @@ under the License.
   <section id="uv3.logging.new_recorded_context_data">
     <title>Context Data</title>
       
+    <note><para><emphasis role="bold">Not (yet) implemented; for planning purposes only.</emphasis></para></note>
+    
     <para>
       Context data is kept in SLF4j MDC and/or NDC maps; there is a separate map per thread.  
       Some of this information is always updated, other is only recorded if the
@@ -111,6 +113,8 @@ under the License.
 
   <section id="uv3.logging.markers">
     <title>Markers used in UIMA Java core logging</title>
+    
+    <note><para><emphasis role="bold">Not (yet) implemented; for planning purposes only.</emphasis></para></note>
       
     <para>
       Markers are used to group log calls associated with specific kinds of things together,
