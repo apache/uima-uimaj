@@ -151,7 +151,9 @@
      Configuring settings is best done through default properties that multiple plugins.
      Local configurations within plugins should be avoided. Where plugins do not pick up default
      properties already, they should be injected manually into the plugins. 
-    -->    
+    --> 
+    <slf4j.version>1.7.22</slf4j.version>  
+    <log4j.version>2.8</log4j.version> 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
