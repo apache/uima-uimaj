@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/version_3_users_guide/uv3.logging/">
+<!ENTITY tp "uv3.migration.aids.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.logging">
+  <title>Logging</title>
+    
+    <para>V3 retains the existing V2 logging facade, unchanged, for backwards compatibility.
+    In addition, a new logging facade, the open source standard SLF4J is provided.
+    The current APIs for getting a logger get the V2 loggers; the SLF4j logger is made available
+    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call, as well as via
+    a new API on the Annotator base implementation classes, <code>getSlf4jLogger()</code>.
+    </para>
+            
+    <para>The v2 loggers support internationalization using resource bundles.  The logger
+      gets the classpath via a handle to a ResourceManager, and uses that Resource Manager's Extension Classpath
+      when looking up resource bundles.
+    </para>
+    
+    <para>V2 loggers have logging methods <code>logrb</code> which take bundle keys and substitutable parameters.
+      To do the equivalent using SLF4j logging, 
+      a new method on the UIMA logger, <code>rb(String bundleName, String bundleKey, Object ... params)</code>
+      will do the conversion to an internationalized string which can then be passed to 
+      SLF4j.  This should be done using a Java 8 lambda <code>Supplier&lt;String&gt;</code>, 
+      to avoid computing the value if logging is not enabled. 
+    </para>
+    
+    <para> 
+      The SLF4j and other documentation (e.g.,  
+      <ulink url="https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html"/> for log4j-2) describe 
+      how to connect various logging back ends to SLF4j, by 
+      putting adapters and back ends into the classpath at run time.  For example, 
+      to use the back end logger <code>log4j 2</code>, you would
+      include the Jars specified in this dependency tree as "compile" dependencies:
+      <ulink url="https://logging.apache.org/log4j/2.x/log4j-to-slf4j/dependencies.html#Dependency_Tree"/>.
+      
+    </para>
+    
+    <para>The Eclipse UIMA Runtime plugin excludes the slf4j api Jar and back ends, and expects the
+      Eclipse plugin install process to "hook up" the needed implementations from other resource bundles.  In current
+      versions of Eclipse, the standard Java version of the IDE has multiple implementations available. 
+    </para> 
+  
+  <section id="uv3.logging.new_recorded_context_data">
+    <title>Context Data</title>
+      
+    <para>
+      Context data is kept in SLF4j MDC and/or NDC maps; there is a separate map per thread.  
+      Some of this information is always updated, other is only recorded if the
+      logger for the class has a level set to Tracing.  
+      The following table lists the keys and the values recorded in the
+      contexts; these can be retrieved by the logging layouts and included in log messages.      
+    </para>    
+    
+    <informaltable frame="all" rowsep="1" colsep="1">
+     <tgroup cols="2">
+       <colspec colnum="1" colname="key" colwidth="1*"/>
+       <colspec colnum="2" colname="description" colwidth="4*"/>
+       
+       <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
+        
+       <tbody>
+         <row>
+           <entry><emphasis role="bold">Key Name</emphasis></entry>
+           <entry><emphasis role="bold">Description</emphasis></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>annotator</para></entry>         
+           <entry><para>the key name of the annotator.  Use an NDC reference to the stack to get the chain of 
+             aggregate embeddings.</para></entry>
+         </row>
+         
+         <row>
+           <entry><para>rootUimaContext</para></entry>
+           <entry><para>The root context corresponds to the pipeline being run.  This could be be nested.</para></entry>
+         </row>
+
+         <!-- <row>
+           <entry><para>op_state</para></entry>
+           <entry><para>An NDC, the operational state.  Could be in_annotator, in_flowController, in_serializer, etc.</para></entry>
+         </row>   -->                
+       </tbody>
+     </tgroup>
+   </informaltable>
+    
+  </section>
+
+  <section id="uv3.logging.markers">
+    <title>Markers used in UIMA Java core logging</title>
+      
+    <para>
+      Markers are used to group log calls associated with specific kinds of things together,
+      so they can be enabled/disabled as a group.  The Marker can also be included in a trace record.
+      The following table lists the keys and a description of which logging they are associated with.
+    </para>
+
+    <informaltable frame="all" rowsep="1" colsep="1">
+     <tgroup cols="2">
+       <colspec colnum="1" colname="key" colwidth="1*"/>
+       <colspec colnum="2" colname="description" colwidth="3*"/>
+       
+       <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
+        
+       <tbody>
+         <row>
+           <entry><emphasis role="bold">Marker Name</emphasis></entry>
+           <entry><emphasis role="bold">Description of logging</emphasis></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
+           <entry><para>annotator</para></entry>
+           <entry><para>for tracing when annotators are entered, exited</para></entry>
+         </row>
+
+         <row>
+           <entry><para>flow_controller</para></entry>
+           <entry><para>for tracing when flow controllers are computing</para></entry>
+         </row>
+
+         <row>
+           <entry><para>FSs</para></entry>
+           <entry><para>for tracing Feature Structure Creation and updating</para></entry>
+         </row>
+
+         <row>
+           <entry><para>index</para></entry>
+           <entry><para>for tracing when indexes are added to or removed from</para></entry>
+         </row>
+          
+         <row>
+           <entry><para>index_copy_on_write</para></entry>         
+           <entry><para>for tracing when an index part is copied, due to it being updated while an iterator might be iterating.</para></entry>
+         </row>
+
+         <row>
+           <entry><para>index_auto_rmv_add</para></entry>         
+           <entry><para>for tracing when index corruption avoidance done</para></entry>
+         </row>
+            
+         <row>
+           <entry><para>serdes</para></entry>
+           <entry><para>for tracing when serialization or deserialization is done</para></entry>
+         </row>
+                  
+       </tbody>
+     </tgroup>
+   </informaltable>
+    
+    
+  </section>
+</chapter>
