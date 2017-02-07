@@ -51,7 +51,7 @@
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
 
-    <eclipseUpdateSiteComponent>uimaj</eclipseUpdateSiteComponent>
+    <eclipseUpdateSiteComponent>uimaj-v3-pre-production</eclipseUpdateSiteComponent>
 
     <eclipseUpdateSubSite>${project.build.directory}/eclipse-update-site/${eclipseUpdateSiteComponent}</eclipseUpdateSubSite>
 
