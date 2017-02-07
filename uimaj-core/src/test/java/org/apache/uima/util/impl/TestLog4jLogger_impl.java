@@ -18,15 +18,15 @@
  */
 package org.apache.uima.util.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
 
@@ -39,12 +39,12 @@ public class TestLog4jLogger_impl extends TestCase {
 
    @Override
   public void setUp() throws Exception {
-      BasicConfigurator.configure();
+//      BasicConfigurator.configure();
    }
 
    @Override
   public void tearDown() throws Exception {
-      BasicConfigurator.resetConfiguration();
+//      BasicConfigurator.resetConfiguration();
    }
 
    private static HashMap<String, Level> logLevels = new HashMap<String, Level>(
@@ -85,9 +85,9 @@ public class TestLog4jLogger_impl extends TestCase {
 
       assertNotNull(uimaLogger);
       assertNotNull(classLogger);
-      Logger log4jLogger = org.apache.log4j.Logger.getLogger("org.apache.uima");
+      Logger log4jLogger = org.apache.logging.log4j.LogManager.getLogger("org.apache.uima");
       while (log4jLogger.getLevel() == null) {
-         log4jLogger = Logger.getRootLogger();
+         log4jLogger = LogManager.getRootLogger();
       }
 
       String key = log4jLogger.getLevel().toString();
@@ -179,29 +179,44 @@ public class TestLog4jLogger_impl extends TestCase {
    }
 
    public void testMessageLogMethods() throws Exception {
-     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+//     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+     final int[] nbrcalls = new int[1];
+     nbrcalls[0] = 0;
      
      // Tell the logger to log everything
-     Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
-     rootLogger.setLevel(org.apache.log4j.Level.ALL);
-     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
+//     long start = System.nanoTime();
+     org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
+//     System.out.format("debug time to init logger is %f%n ",  ((double)(System.nanoTime() - start)) / 1000000000.0d);
+     rootLogger.get().setLevel(org.apache.logging.log4j.Level.ALL);
+     rootLogger.getContext().updateLoggers();
+//     Configurator.setLevel(null, org.apache.logging.log4j.Level.ALL);
+//     final LoggerContext loggerContext = LoggerContext.getContext(false);
+//     final LoggerConfig loggerConfig = loggerContext.getConfiguration().getRootLogger();
+//     
+//     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
      // Capture the logging output without actually logging it
-     appender.addFilter(new org.apache.log4j.spi.Filter() {
+//     ConsoleAppender app = (ConsoleAppender) rootLogger.getAppenders().values().stream().findFirst().get();
+     // add the filter to the shared Logger Context appender
+     ConsoleAppender app = (ConsoleAppender) rootLogger.get().getAppenders().values().stream().findFirst().get();
+     Filter filter = new AbstractFilter() {
        @Override
-       public int decide(LoggingEvent event) {
-         records.add(event);
-         LocationInfo l = event.getLocationInformation();
-         System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
-         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", 
-                 l.getFileName());
-         return org.apache.log4j.spi.Filter.DENY;
+       public Result filter(LogEvent event) {
+         nbrcalls[0] ++;
+         StackTraceElement ste = event.getSource();
+         System.out.printf("[%s:%s] %s%n", ste.getFileName(), ste.getLineNumber(), event.getMessage().getFormattedMessage());
+         assertEquals(TestLog4jLogger_impl.this.getClass().getName() , ste.getClassName());
+         return Result.DENY;
        }
-     }); 
+     };
      
+     app.addFilter(filter);
+
+     try {
       // create Logger
       final org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance(getClass());
       // reset log level to INFO
       logger.setLevel(Level.INFO);
+//      Configurator.setLevel("Console", org.apache.logging.log4j.Level.INFO);
 
       // File file = File.createTempFile("LoggingTest","log");
       // file.deleteOnExit();
@@ -210,6 +225,7 @@ public class TestLog4jLogger_impl extends TestCase {
       // logger.setOutputStream(new PrintStream(new FileOutputStream(file)));
 
       // log test with method log(Level,String)
+
       logger.log(Level.INFO, "My first test message");
       logger.log(Level.INFO, "");
       logger.log(Level.INFO, null);
@@ -256,28 +272,49 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.logException(ex);
       logger.logException(null);
       
-      assertEquals(16, records.size());  // all calls except those with null or "" msgs (including non-null throwable/exception)
+      assertEquals(16, nbrcalls[0]);  // all calls except those with null or "" msgs (including non-null throwable/exception)
+     } finally {
+       app.removeFilter(filter);
+     }
+
    }
 
    public void testMessageKeyLogMethods() throws Exception {
-     final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+     final int[] nbrcalls = new int[1];
+     nbrcalls[0] = 0;
      
      // Tell the logger to log everything
-     Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
-     rootLogger.setLevel(org.apache.log4j.Level.ALL);
-     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
+     org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
+     rootLogger.get().setLevel(org.apache.logging.log4j.Level.ALL);
+     rootLogger.getContext().updateLoggers();
+//     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
      // Capture the logging output without actually logging it
-     appender.addFilter(new org.apache.log4j.spi.Filter() {
+//     appender.addFilter(new org.apache.logging.log4j.spi.Filter() {
+     
+     Filter filter = new AbstractFilter() {
        @Override
-       public int decide(LoggingEvent event) {
-         records.add(event);
-         LocationInfo l = event.getLocationInformation();
-         System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
-         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", 
-                 l.getFileName());
-         return org.apache.log4j.spi.Filter.DENY;
+       public Result filter(LogEvent event) { 
+         nbrcalls[0] ++;
+         StackTraceElement ste = event.getSource();
+         System.out.printf("[%s:%s] %s%n", ste.getFileName(), ste.getLineNumber(), event.getMessage().getFormattedMessage());
+         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", ste.getFileName());
+         return Result.DENY;
        }
-     }); 
+    }; 
+     
+     ConsoleAppender app = (ConsoleAppender) rootLogger.get().getAppenders().values().stream().findFirst().get();
+     app.addFilter(filter);
+     try {
+//       @Override
+//       public int decide(LoggingEvent event) {
+//         nbrcalss[0] ++;
+//         LocationInfo l = event.getLocationInformation();
+//         System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
+//         assertEquals(TestLog4jLogger_impl.this.getClass().getSimpleName()+".java", 
+//                 l.getFileName());
+//         return org.apache.logging.log4j.spi.Filter.DENY;
+//       }
+//     }); 
 
       // create Logger
       org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
@@ -339,7 +376,10 @@ public class TestLog4jLogger_impl extends TestCase {
             thrown);
       logger.logrb(Level.INFO, "testClass", "testMethod", null, null, thrown);
 
-      assertEquals(18, records.size());
+      assertEquals(18, nbrcalls[0]);
+     } finally {
+       app.removeFilter(filter);  // otherwise, subsequent test's filter gets appended, not replace
+     }
    }
 
    public void testLoggerFromUIMAFramework() {
