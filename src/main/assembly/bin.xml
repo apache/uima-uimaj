@@ -232,6 +232,22 @@ under the License.
       <fileMode>644</fileMode> 
       <directoryMode>755</directoryMode>        
     </dependencySet>
+    
+    <!--  loggers  -->
+    <dependencySet>
+      <includes>
+        <include>org.slf4j:slf4j-api:${slf4j.version}</include>
+        <include>org.apache.logging.log4j:log4j-slf4j-impl:${log4j.version}</include>
+        <include>org.apache.logging.log4j:log4j-core:${log4j.version}</include>
+        <include>org.apache.logging.log4j:log4j-api:${log4j.version}</include>
+      </includes>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <outputDirectory>lib</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <fileMode>644</fileMode> 
+      <directoryMode>755</directoryMode>        
+    </dependencySet>
   </dependencySets>
   
   <!-- Add other files - scripts, documentation, examples -->
