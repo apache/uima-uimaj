@@ -99,7 +99,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   private BoundsUse boundsUse = null; 
   
-  private TOP startingFs = null;
+  private TOP startingFs = null; // this is used for non-annotation positioning too
   private AnnotationFS boundingFs = null;
   
   
@@ -914,7 +914,11 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     FSIterator<T> it = fsIterator();
     if (it.isValid()) {
       T v = it.getNvc();
-      it.moveToNext();
+      if (shift >= 0) {
+        it.moveToNext();
+      } else {
+        it.moveToPrevious();
+      }
       if (it.isValid()) {
         throw new CASRuntimeException(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES, ti.getName(), maybeMsgPosition());
       }
@@ -1096,7 +1100,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.cas.TOP)
    */
   @Override
-  public SelectFSs<T> following(TOP fs) {
+  public SelectFSs<T> following(Annotation fs) {
     return commonFollowing(fs, 0);
   }
 
@@ -1104,15 +1108,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#following(int, int)
    */
   @Override
-  public SelectFSs<T> following(int begin, int end) {
-    return commonFollowing(makePosAnnot(begin, end), 0);
+  public SelectFSs<T> following(int position) {
+    return commonFollowing(makePosAnnot(0, position), 0);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#following(org.apache.uima.jcas.cas.TOP, int)
    */
   @Override
-  public SelectFSs<T> following(TOP fs, int offset) {
+  public SelectFSs<T> following(Annotation fs, int offset) {
     return commonFollowing(fs, offset);
   }
 
@@ -1120,15 +1124,15 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#following(int, int, int)
    */
   @Override
-  public SelectFSs<T> following(int begin, int end, int offset) {
-    return commonFollowing(makePosAnnot(begin, end), offset);
+  public SelectFSs<T> following(int position, int offset) {
+    return commonFollowing(makePosAnnot(0, position), offset);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.cas.TOP)
    */
   @Override
-  public SelectFSs<T> preceding(TOP fs) {
+  public SelectFSs<T> preceding(Annotation fs) {
     return commonPreceding(fs, 0);
   }
 
@@ -1136,24 +1140,24 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @see org.apache.uima.cas.SelectFSs#preceding(int, int)
    */
   @Override
-  public SelectFSs<T> preceding(int begin, int end) {
-    return commonPreceding(makePosAnnot(begin, end), 0);
+  public SelectFSs<T> preceding(int position) {
+    return commonPreceding(makePosAnnot(position, Integer.MAX_VALUE), 0);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(org.apache.uima.jcas.cas.TOP, int)
    */
   @Override
-  public SelectFSs<T> preceding(TOP fs, int offset) {
-    return commonPreceding(fs, offset);
+  public SelectFSs<T> preceding(Annotation annotation, int offset) {
+    return commonPreceding(annotation, offset);
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.SelectFSs#preceding(int, int, int)
    */
   @Override
-  public SelectFSs<T> preceding(int begin, int end, int offset) {
-    return commonPreceding(makePosAnnot(begin, end), offset);
+  public SelectFSs<T> preceding(int position, int offset) {
+    return commonPreceding(makePosAnnot(position, Integer.MAX_VALUE), offset);
   }
 
    
@@ -1190,16 +1194,16 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 //    }
 //  }
   
-  private SelectFSs<T> commonFollowing(TOP fs, int offset) {
-    this.startingFs = fs;
+  private SelectFSs<T> commonFollowing(Annotation annotation, int offset) {
+    this.startingFs = annotation;
     this.shift = offset;
     isFollowing = true;
     return this;
   }
 
-  private SelectFSs<T> commonPreceding(TOP fs, int offset) {
+  private SelectFSs<T> commonPreceding(Annotation annotation, int offset) {
 //    validateSinglePosition(fs, offset);
-    this.startingFs = fs;
+    this.startingFs = annotation;
     this.shift = offset;
     isPreceding = true;
     isBackwards = true; // always iterate backwards
