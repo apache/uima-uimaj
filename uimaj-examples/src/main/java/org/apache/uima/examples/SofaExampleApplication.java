@@ -31,6 +31,7 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.XMLInputSource;
 
 
@@ -71,39 +72,55 @@ public class SofaExampleApplication {
     // and puts the translation into a German Sofa
     seAnnotator.process(cas);
 
-    // get annotation iterator for the English CAS view
-    FSIndex anIndex = englishView.getAnnotationIndex();
-    FSIterator anIter = anIndex.iterator();
-
-    // and print out all annotations found
     System.out.println("---Printing all annotations for English Sofa---");
-    while (anIter.isValid()) {
-      AnnotationFS annot = (AnnotationFS) anIter.get();
-      System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText());
-      anIter.moveToNext();
-    }
+    englishView.select(Annotation.class).forEach(annot -> 
+          System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText()));
+    
+//    // get annotation iterator for the English CAS view
+//    FSIndex anIndex = englishView.getAnnotationIndex();
+//    FSIterator anIter = anIndex.iterator();
+//
+//    // and print out all annotations found
+//    while (anIter.isValid()) {
+//      AnnotationFS annot = (AnnotationFS) anIter.get();
+//      System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText());
+//      anIter.moveToNext();
+//    }
 
     // now try to get the CAS view for the German Sofa
     System.out.println();
     CAS germanView = cas.getView("GermanDocument");
-
-    // and annotator iterator for the German CAS View
-    anIndex = germanView.getAnnotationIndex();
-    anIter = anIndex.iterator();
     Type cross = germanView.getTypeSystem().getType("sofa.test.CrossAnnotation");
     Feature other = cross.getFeatureByBaseName("otherAnnotation");
 
-    // print out all annotations for the German Sofa
     System.out.println("---Printing all annotations for German Sofa---");
-    while (anIter.isValid()) {
-      AnnotationFS annot = (AnnotationFS) anIter.get();
+    
+    germanView.select(Annotation.class).forEach(annot -> {
       System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText());
       if (annot.getType() == cross) {
-        AnnotationFS crossAnnot = (AnnotationFS) annot.getFeatureValue(other);
+        Annotation crossAnnot = (Annotation) annot.getFeatureValue(other);
         System.out.println("   other annotation feature: " + crossAnnot.getCoveredText());
       }
-      anIter.moveToNext();
-    }
+    });
+    
+    
+//    // and annotator iterator for the German CAS View
+//    anIndex = germanView.getAnnotationIndex();
+//    anIter = anIndex.iterator();
+//    Type cross = germanView.getTypeSystem().getType("sofa.test.CrossAnnotation");
+//    Feature other = cross.getFeatureByBaseName("otherAnnotation");
+//
+//    // print out all annotations for the German Sofa
+//    System.out.println("---Printing all annotations for German Sofa---");
+//    while (anIter.isValid()) {
+//      AnnotationFS annot = (AnnotationFS) anIter.get();
+//      System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText());
+//      if (annot.getType() == cross) {
+//        AnnotationFS crossAnnot = (AnnotationFS) annot.getFeatureValue(other);
+//        System.out.println("   other annotation feature: " + crossAnnot.getCoveredText());
+//      }
+//      anIter.moveToNext();
+//    }
 
     // Clean up
     seAnnotator.destroy();

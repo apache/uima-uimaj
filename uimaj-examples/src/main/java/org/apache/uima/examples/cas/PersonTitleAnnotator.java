@@ -28,9 +28,11 @@ import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationExceptio
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
+import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -102,7 +104,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     mGovernmentTitles = (String[]) getContext().getConfigParameterValue("GovernmentTitles");
 
     // write log messages
-    logger = getContext().getLogger();
+    logger = getUimaLogger();
     logger.log(Level.CONFIG, "PersonTitleAnnotator initialized");
     logger.log(Level.CONFIG, "CivilianTitles = " + Arrays.asList(mCivilianTitles));
     logger.log(Level.CONFIG, "MilitaryTitles = " + Arrays.asList(mMilitaryTitles));
@@ -175,21 +177,32 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
       } else {
         // Search only within annotations of type mContainingType
 
-        // Get an iterator over the annotations of type mContainingType.
-        FSIterator it = aCAS.getAnnotationIndex(mContainingType).iterator();
-        // Loop over the iterator.
-        while (it.isValid()) {
-          // Get the next annotation from the iterator
-          AnnotationFS annot = (AnnotationFS) it.get();
-          // Get text covered by this annotation
-          String coveredText = annot.getCoveredText();
-          // Get begin position of this annotation
-          int annotBegin = annot.getBegin();
-          // search for matches within this
-          annotateRange(aCAS, coveredText, annotBegin);
-          // Advance the iterator.
-          it.moveToNext();
+        //v3
+        
+        for (Annotation annot : SelectFSs.select(aCAS.<Annotation>getAnnotationIndex(mContainingType))) {
+          
+          String coveredText = annot.getCoveredText();  // Get text covered by this annotation
+          int annotBegin = annot.getBegin();            // Get begin position of this annotation
+          annotateRange(aCAS, coveredText, annotBegin); // search for matches within this
+        
         }
+        
+        // v2
+//        // Get an iterator over the annotations of type mContainingType.
+//        FSIterator it = aCAS.getAnnotationIndex(mContainingType).iterator();
+//        // Loop over the iterator.
+//        while (it.isValid()) {
+//          // Get the next annotation from the iterator
+//          AnnotationFS annot = (AnnotationFS) it.get();
+//          // Get text covered by this annotation
+//          String coveredText = annot.getCoveredText();
+//          // Get begin position of this annotation
+//          int annotBegin = annot.getBegin();
+//          // search for matches within this
+//          annotateRange(aCAS, coveredText, annotBegin);
+//          // Advance the iterator.
+//          it.moveToNext();
+//        }
       }
     } catch (Exception e) {
       throw new AnalysisEngineProcessException(e);
@@ -232,6 +245,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
   protected void annotateRange(CAS aCAS, String aText, int aBeginPos, String aTitleType,
           String[] aTitles) {
     // Loop over the matchStrings.
+    
     for (int i = 0; i < aTitles.length; i++) {
       // logger.log("Looking for string: " + matchStrings[i]);
       // Find a first match, if it exists.
@@ -244,7 +258,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
         int absStart = aBeginPos + start;
         int absEnd = aBeginPos + end;
         // Write log message
-        getContext().getLogger().log(Level.FINER,
+        logger.log(Level.FINER,
                 "Found \"" + aTitles[i] + "\" at (" + absStart + "," + absEnd + ")");
         // Create a new annotation for the most recently discovered match.
         createAnnotation(aCAS, absStart, absEnd, aTitleType);
