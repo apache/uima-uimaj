@@ -28,11 +28,21 @@ import org.apache.uima.resource.ResourceManager;
  * A <code>Logger</code> is a component used to log messages. This interface defines the standard
  * way for UIMA components to produce log output.
  * <p>
- * In the UIMA SDK, this interface is implemented using the Java 1.4 logger as a back end. If you
+ * In the UIMA SDK, this interface is implemented using the Java logger as a back end.
+ * <p>The back end may be changed to Apache Log4j 2  by specifying
+ * <code>-Dorg.apache.uima.logger.class=org.apache.uima.util.impl.Log4jLogger_impl</code>
+ * and including the log4j 2 JARs in the classpath.
+ * <p>  
+ * If you
  * want to configure the logger, for example to specify the location of the log file and the logging
- * level, you should use the standard Java 1.4 logger properties or the java.util.logging APIs. See
+ * level, you use whatever back end logger implementation specifies, or use that logger's APIs.
+ * should use the standard Java logger properties or the java.util.logging APIs. See
  * the section "Specifying the Logging Configuration" in the Annotator and Analysis Engine
  * Developer's Guide chapter of the UIMA documentation for more information.
+ * <p>
+ * Version 3 augments this API with methods to do internationalization, separate from logging,
+ * so the String result can be used with the SLF4j facade.
+ *  
  */
 public interface Logger {
 
@@ -269,4 +279,13 @@ public void setOutputStream(OutputStream aStream);
    */
   public void setResourceManager(ResourceManager resourceManager);
 
+  /**
+   * Get an internationalized message from a resource bundle by key name, substituting the parameters.
+   * This should be called via a Supplier to avoid computing this until needed
+   * @param resourceBundle -
+   * @param key -
+   * @param params -
+   * @return the internationalized message
+   */
+  public String rb(String resourceBundle, String key, Object... params);
 }

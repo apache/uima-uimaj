@@ -352,4 +352,12 @@ public class Logger_impl implements Logger {
       return mResourceManager.getExtensionClassLoader();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.apache.uima.util.Logger#rb(String, String, Object...)
+   */
+  public String rb(String bundleName, String msgKey, Object... parameters) {
+    return I18nUtil.localizeMessage(bundleName, msgKey, parameters, getExtensionClassLoader());
+  }
 }

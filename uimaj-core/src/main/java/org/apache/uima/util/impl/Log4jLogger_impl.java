@@ -21,30 +21,52 @@ package org.apache.uima.util.impl;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.spi.AbstractLogger;
+import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 
 /**
  * UIMA Logging interface implementation for Log4j
+ * 
+ * This version is for Log4j version 2, from Apache
+ * Built using version 2.8
+ * 
  */
 public class Log4jLogger_impl implements Logger {
 
-   private static final String EXCEPTION_MESSAGE = "Exception occurred";
+  private static final String SOURCE_CLASS = "source_class";
+  
+  private static final String SOURCE_METHOD = "source_method";
+  
+  private static final String EXCEPTION_MESSAGE = "Exception occurred";
 
+  static final String FQCN = Log4jLogger_impl.class.getName();
    /**
     * logger object from the underlying Log4j logging framework
+    * The ExtendedLoggerWrapper includes the ability to specify the wrapper class
     */
-   private org.apache.log4j.Logger logger = null;
+  final private ExtendedLoggerWrapper                logger;
 
-   /**
-    * ResourceManager whose extension ClassLoader will be used to locate the
-    * message digests. Null will cause the ClassLoader to default to
-    * this.class.getClassLoader().
-    */
-   private ResourceManager mResourceManager = null;
+  final private org.apache.logging.log4j.core.Logger coreLogger;
+
+  final private MessageFactory                       mf;
+
+  /**
+   * ResourceManager whose extension ClassLoader will be used to locate the
+   * message digests. Null will cause the ClassLoader to default to
+   * this.class.getClassLoader().
+   */
+  private ResourceManager mResourceManager = null;
 
    /**
     * create a new LogWrapper class for the specified source class
@@ -55,11 +77,12 @@ public class Log4jLogger_impl implements Logger {
    private Log4jLogger_impl(Class<?> component) {
       super();
 
-      if (component != null) {
-         logger = org.apache.log4j.Logger.getLogger(component);
-      } else {
-         logger = org.apache.log4j.Logger.getLogger("org.apache.uima");
-      }
+      coreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getLogger( (null == component) 
+                                       ?  "org.apache.uima"
+                                       : component.getClass().getName());
+      mf = coreLogger.getMessageFactory();
+      
+      logger = new ExtendedLoggerWrapper((AbstractLogger) coreLogger, coreLogger.getName(), mf);
    }
 
    /**
@@ -91,8 +114,38 @@ public class Log4jLogger_impl implements Logger {
       return new Log4jLogger_impl();
    }
 
+   private boolean empty(String v) {
+     return (v == null || v.equals(""));
+   }
+   /**
+    * Convert bundle + message key + parameters to message
+    * @param bundleName -
+    * @param msgKey -
+    * @param params -
+    * @return the message
+    */
+   public String rb(String bundleName, String msgKey, Object... params) {
+     return I18nUtil.localizeMessage(bundleName, msgKey, params, getExtensionClassLoader());
+   }
+   
+   private void logMsg(Level level, Message m, Throwable th) {
+     logger.logMessage(FQCN, getLog4jLevel(level), null, m, th);
+   }
+   
+   private void logMsg(Level level, String m, Throwable th) {
+     logMsg(level, mf.newMessage(m), th);
+   }
+   
+   private void ssc(String sourceClass, String sourceMethod) {
+     final Map<String, String> ctx = ThreadContext.getContext();
+     
+     ctx.put(SOURCE_CLASS, Misc.null2str(sourceClass));
+     ctx.put(SOURCE_METHOD,  sourceMethod);
+   }
+   
    /**
     * Logs a message with level INFO.
+    * Uses this logger, not one associated with the calling class (if any).
     * 
     * @deprecated use new function with log level
     * @param aMessage
@@ -101,13 +154,9 @@ public class Log4jLogger_impl implements Logger {
    @Deprecated
   public void log(String aMessage) {
       if (isLoggable(Level.INFO)) {
-         if (aMessage == null || aMessage.equals(""))
-            return;
+         if (empty(aMessage)) return;
 
-         String[] sourceInfo = getStackTraceInfo(new Throwable());
-
-         org.apache.log4j.Logger.getLogger(sourceInfo[0]).log(getClass().getName(), 
-                 org.apache.log4j.Level.INFO, aMessage, null);
+         logMsg(Level.INFO, aMessage, null);
       }
    }
 
@@ -122,14 +171,9 @@ public class Log4jLogger_impl implements Logger {
    public void log(String aResourceBundleName, String aMessageKey,
          Object[] aArguments) {
       if (isLoggable(Level.INFO)) {
-         if (aMessageKey == null || aMessageKey.equals(""))
-            return;
-
-         String[] sourceInfo = getStackTraceInfo(new Throwable());
-         org.apache.log4j.Logger.getLogger(sourceInfo[0]).log(getClass().getName(), 
-               org.apache.log4j.Level.INFO, 
-               I18nUtil.localizeMessage(aResourceBundleName, aMessageKey,
-                     aArguments, getExtensionClassLoader()), null);
+         if (empty(aMessageKey)) return;
+         
+         logMsg(Level.INFO, rb(aResourceBundleName, aMessageKey, aArguments), null);
       }
    }
 
@@ -145,12 +189,7 @@ public class Log4jLogger_impl implements Logger {
       if (isLoggable(Level.INFO)) {
          if (aException == null)
             return;
-
-         String[] sourceInfo = getStackTraceInfo(new Throwable());
-
-         // log exception
-         org.apache.log4j.Logger.getLogger(sourceInfo[0]).log(getClass().getName(), 
-               org.apache.log4j.Level.INFO, EXCEPTION_MESSAGE, aException);
+         logMsg(Level.INFO, EXCEPTION_MESSAGE, aException);
       }
    }
 
@@ -180,9 +219,10 @@ public class Log4jLogger_impl implements Logger {
     * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
     */
    public boolean isLoggable(Level level) {
-      org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
+     return logger.isEnabled(getLog4jLevel(level));
+//      org.apache.logging.log4j.Level log4jLevel = getLog4jLevel(level);
 
-      return logger.isEnabledFor(log4jLevel);
+//      return logger.isEnabled(log4jLevel);
    }
 
    /*
@@ -191,10 +231,14 @@ public class Log4jLogger_impl implements Logger {
     * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
     */
    public void setLevel(Level level) {
-      // get corresponding Log4j level
-      org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-      logger.setLevel(log4jLevel);
+     
+     coreLogger.get().setLevel(getLog4jLevel(level));
+     coreLogger.getContext().updateLoggers();
+//     Configurator.setLevel(null, getLog4jLevel(level));
+//      // get corresponding Log4j level
+//      org.apache.logging.log4j.Level log4jLevel = getLog4jLevel(level);
+//
+//      logger.setLevel(log4jLevel);
    }
 
    /*
@@ -205,12 +249,9 @@ public class Log4jLogger_impl implements Logger {
     */
    public void log(Level level, String aMessage) {
       if (isLoggable(level)) {
-         if (aMessage == null || aMessage.equals(""))
-            return;
+         if (empty(aMessage)) return;
 
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-         logger.log(getClass().getName(), log4jLevel, aMessage, null);
+         logMsg(level, aMessage, null);
       }
    }
 
@@ -221,14 +262,7 @@ public class Log4jLogger_impl implements Logger {
     *      java.lang.String, java.lang.Object)
     */
    public void log(Level level, String aMessage, Object param1) {
-      if (isLoggable(level)) {
-         if (aMessage == null || aMessage.equals(""))
-            return;
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-         logger.log(getClass().getName(), log4jLevel, MessageFormat.format(aMessage,
-               new Object[] { param1 }), null);
-      }
+     log(level, aMessage, new Object[] {param1});
    }
 
    /*
@@ -239,14 +273,9 @@ public class Log4jLogger_impl implements Logger {
     */
    public void log(Level level, String aMessage, Object[] params) {
       if (isLoggable(level)) {
-         if (aMessage == null || aMessage.equals(""))
-            return;
-
-         // get corresponding Log4j level
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-         logger.log(getClass().getName(), log4jLevel, MessageFormat.format(aMessage, params), null);
-
+         if (empty(aMessage)) return;
+         
+         logMsg(level,MessageFormat.format(aMessage, params), null);
       }
    }
 
@@ -258,21 +287,9 @@ public class Log4jLogger_impl implements Logger {
     */
    public void log(Level level, String aMessage, Throwable thrown) {
       if (isLoggable(level)) {
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
 
-         if (aMessage != null && !aMessage.equals("")) {
-            // get corresponding Log4j level
-
-            logger.log(getClass().getName(), log4jLevel, aMessage, thrown);
-         }
-
-         if (thrown != null && (aMessage == null || aMessage.equals(""))) {
-            // get corresponding Log4j level
-            // log exception
-            logger.log(getClass().getName(), log4jLevel, EXCEPTION_MESSAGE, thrown);
-         }
+        logMsg(level, aMessage, thrown);
       }
-
    }
 
    /*
@@ -285,18 +302,10 @@ public class Log4jLogger_impl implements Logger {
    public void logrb(Level level, String sourceClass, String sourceMethod,
          String bundleName, String msgKey, Object param1) {
       if (isLoggable(level)) {
-         if (msgKey == null || msgKey.equals(""))
-            return;
-
-         if (sourceClass == null) {
-            sourceClass = "";
-         }
-
-         // get corresponding Log4j level
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-         logger.log(getClass().getName(), log4jLevel, I18nUtil.localizeMessage(bundleName, msgKey,
-               new Object[] { param1 }, getExtensionClassLoader()), null);
+         if (empty(msgKey)) return;
+         
+         ssc(sourceClass, sourceMethod);
+         logMsg(level, rb(bundleName, msgKey, param1), null);
       }
    }
 
@@ -310,17 +319,10 @@ public class Log4jLogger_impl implements Logger {
    public void logrb(Level level, String sourceClass, String sourceMethod,
          String bundleName, String msgKey, Object[] params) {
       if (isLoggable(level)) {
-         if (msgKey == null || msgKey.equals(""))
-            return;
-         if (sourceClass == null) {
-            sourceClass = "";
-         }
-
-         // get corresponding Log4j level
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-         logger.log(getClass().getName(), log4jLevel, I18nUtil.localizeMessage(bundleName, msgKey,
-               params, getExtensionClassLoader()), null);
+         if (empty(msgKey)) return;
+         
+         ssc(sourceClass, sourceMethod);
+         logMsg(level, rb(bundleName, msgKey, params), null);
       }
    }
 
@@ -334,26 +336,13 @@ public class Log4jLogger_impl implements Logger {
    public void logrb(Level level, String sourceClass, String sourceMethod,
          String bundleName, String msgKey, Throwable thrown) {
       if (isLoggable(level)) {
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-
-         if (sourceClass == null) {
-            sourceClass = "";
-         }
-
-         if (msgKey != null && !msgKey.equals("")) {
-            // get corresponding Log4j level
-            org.apache.log4j.Logger.getLogger(sourceClass).log(getClass().getName(), 
-                  log4jLevel,
-                  I18nUtil.localizeMessage(bundleName, msgKey, null,
-                        getExtensionClassLoader()), thrown);
-         }
-
-         if (thrown != null && (msgKey == null || msgKey.equals(""))) {
-
-            // log exception
-            org.apache.log4j.Logger.getLogger(sourceClass).log(getClass().getName(), log4jLevel,
-                  EXCEPTION_MESSAGE, thrown);
-         }
+        if (empty(msgKey) && null == thrown) return;
+        
+        String msg = empty(msgKey) 
+                       ? EXCEPTION_MESSAGE
+                       : rb(bundleName, msgKey);
+        ssc(sourceClass, sourceMethod);
+        logMsg(level, msg, thrown);
       }
    }
 
@@ -368,27 +357,15 @@ public class Log4jLogger_impl implements Logger {
          String bundleName, String msgKey) {
       if (isLoggable(level)) {
 
-         if (msgKey == null || msgKey.equals(""))
-            return;
+         if (empty(msgKey)) return;
 
-         if (sourceClass == null) {
-            sourceClass = "";
-         }
-         // get corresponding Log4j level
-         org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-         org.apache.log4j.Logger.getLogger(sourceClass).log(getClass().getName(), log4jLevel,
-               I18nUtil.localizeMessage(bundleName, msgKey, null, getExtensionClassLoader()), null);
-
-         // logger.log(log4jLevel, sourceClass + sourceMethod +
-         // I18nUtil.localizeMessage(bundleName, msgKey, null,
-         // getExtensionClassLoader()));
+         ssc(sourceClass, sourceMethod);
+         logMsg(level, rb(bundleName, msgKey), null);
       }
    }
 
    public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
-     // get corresponding Log4j level
-     org.apache.log4j.Level log4jLevel = getLog4jLevel(level);
-     logger.log(wrapperFQCN, log4jLevel, message, thrown);
+     logger.logMessage(wrapperFQCN, getLog4jLevel(level), null, mf.newMessage(message), thrown);
    }
    
    /*
@@ -413,68 +390,68 @@ public class Log4jLogger_impl implements Logger {
    }
 
    /**
-    * log4j level mapping to UIMA level mapping. SEVERE (highest value) ->
-    * SEVERE WARNING -%gt; WARNING INFO -%gt; INFO CONFIG -%gt; CONFIG FINE -%gt; FINE FINER ->
-    * FINER FINEST (lowest value) -%gt; FINEST OFF -%gt; OFF ALL -%gt; ALL
+    * log4j level mapping to UIMA level mapping. SEVERE (highest value) -&gt;
+    * SEVERE WARNING -&gt; WARNING INFO -&gt; INFO CONFIG -&gt; CONFIG FINE -&gt; FINE FINER -&gt;
+    * FINER FINEST (lowest value) -&gt; FINEST OFF -&gt; OFF ALL -&gt; ALL
     * 
     * @param level
     *           uima level
     * @return Level - corresponding JSR47 level
     */
-   private org.apache.log4j.Level getLog4jLevel(Level level) {
+   private org.apache.logging.log4j.Level getLog4jLevel(Level level) {
       switch (level.toInteger()) {
       case org.apache.uima.util.Level.OFF_INT:
-         return org.apache.log4j.Level.OFF;
+         return org.apache.logging.log4j.Level.OFF;
       case org.apache.uima.util.Level.SEVERE_INT:
-         return org.apache.log4j.Level.ERROR;
+         return org.apache.logging.log4j.Level.ERROR;
       case org.apache.uima.util.Level.WARNING_INT:
-         return org.apache.log4j.Level.WARN;
+         return org.apache.logging.log4j.Level.WARN;
       case org.apache.uima.util.Level.INFO_INT:
-         return org.apache.log4j.Level.INFO;
+         return org.apache.logging.log4j.Level.INFO;
       case org.apache.uima.util.Level.CONFIG_INT:
-         return org.apache.log4j.Level.INFO;
+         return org.apache.logging.log4j.Level.INFO;
       case org.apache.uima.util.Level.FINE_INT:
-         return org.apache.log4j.Level.DEBUG;
+         return org.apache.logging.log4j.Level.DEBUG;
       case org.apache.uima.util.Level.FINER_INT:
-         return org.apache.log4j.Level.ALL;
+         return org.apache.logging.log4j.Level.ALL;
       case org.apache.uima.util.Level.FINEST_INT:
-         return org.apache.log4j.Level.ALL;
+         return org.apache.logging.log4j.Level.ALL;
       default: // for all other cases return Level.ALL
-         return org.apache.log4j.Level.ALL;
+         return org.apache.logging.log4j.Level.ALL;
       }
    }
 
-   /**
-    * returns the method name and the line number if available
-    * 
-    * @param thrown
-    *           the thrown
-    * @return String[] - fist element is the source class, second element is the
-    *         method name with linenumber if available
-    */
-   private String[] getStackTraceInfo(Throwable thrown) {
-      StackTraceElement[] stackTraceElement = thrown.getStackTrace();
-
-      String sourceMethod = "";
-      String sourceClass = "";
-      int lineNumber = 0;
-      try {
-         lineNumber = stackTraceElement[1].getLineNumber();
-         sourceMethod = stackTraceElement[1].getMethodName();
-         sourceClass = stackTraceElement[1].getClassName();
-      } catch (Exception ex) {
-         // do nothing, use the initialized string members
-      }
-
-      if (lineNumber > 0) {
-         StringBuffer buffer = new StringBuffer(25);
-         buffer.append(sourceMethod);
-         buffer.append('(');
-         buffer.append(lineNumber);
-         buffer.append(')');
-         sourceMethod = buffer.toString();
-      }
-
-      return new String[] { sourceClass, sourceMethod };
-   }
+//   /**
+//    * returns the method name and the line number if available
+//    * 
+//    * @param thrown
+//    *           the thrown
+//    * @return String[] - fist element is the source class, second element is the
+//    *         method name with linenumber if available
+//    */
+//   private String[] getStackTraceInfo(Throwable thrown) {
+//      StackTraceElement[] stackTraceElement = thrown.getStackTrace();
+//
+//      String sourceMethod = "";
+//      String sourceClass = "";
+//      int lineNumber = 0;
+//      try {
+//         lineNumber = stackTraceElement[1].getLineNumber();
+//         sourceMethod = stackTraceElement[1].getMethodName();
+//         sourceClass = stackTraceElement[1].getClassName();
+//      } catch (Exception ex) {
+//         // do nothing, use the initialized string members
+//      }
+//
+//      if (lineNumber > 0) {
+//         StringBuffer buffer = new StringBuffer(25);
+//         buffer.append(sourceMethod);
+//         buffer.append('(');
+//         buffer.append(lineNumber);
+//         buffer.append(')');
+//         sourceMethod = buffer.toString();
+//      }
+//
+//      return new String[] { sourceClass, sourceMethod };
+//   }
 }
