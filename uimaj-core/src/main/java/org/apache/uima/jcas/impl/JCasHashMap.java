@@ -333,7 +333,7 @@ public class JCasHashMap {
     k1 = Integer.rotateLeft(k1, 15);
     k1 *= C2;
     
-    int h1 = seed ^ k1;
+    int h1 = seed ^ k1;  // bitwise exclusive or
     h1 = Integer.rotateLeft(h1, 13);
     h1 = h1 * 5 + 0xe6546b64;
     
