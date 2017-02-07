@@ -54,6 +54,10 @@ public class Misc {
     return whitespace.matcher(s).replaceAll(replacement);
   }
   
+  public static String null2str(String s) {
+    return (s == null) ? "" : s;
+  }
+  
   /**
    * @param s starting frames above invoker
    * @param n max number of callers to return
