@@ -23,10 +23,10 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfDouble;
 import java.util.Spliterator;
+import java.util.function.DoubleConsumer;
 import java.util.stream.DoubleStream;
 
 import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.DoubleArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.DoubleArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -53,6 +53,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
    * @return the type array index
    */
   // can't be factored - refs locally defined field
+  @Override
   public int getTypeIndexID() {
     return typeIndexID;
   }
@@ -102,6 +103,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#get(int)
    */
+  @Override
   public double get(int i) {
     return theArray[i];
   }
@@ -109,6 +111,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#set(int , double)
    */
+  @Override
   public void set(int i, double v) {
     theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
@@ -117,6 +120,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyFromArray(double[], int, int, int)
    */
+  @Override
   public void copyFromArray(double[] src, int srcPos, int destPos, int length) {
     System.arraycopy(src, srcPos, theArray, destPos, length);
   }
@@ -124,6 +128,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyToArray(int, double[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, double[] dest, int destPos, int length) {
     System.arraycopy(theArray, srcPos, dest, destPos, length);
   }
@@ -131,11 +136,13 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#toArray()
    */
+  @Override
   public double[] toArray() {
     return theArray.clone();
   }
 
   /** return the size of the array */
+  @Override
   public int size() {
     return theArray.length;
   }
@@ -143,6 +150,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyToArray(int, String[], int, int)
    */
+  @Override
   public void copyToArray(int srcPos, String[] dest, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, srcPos, length);
     for (int i = 0; i < length; i++) {
@@ -153,6 +161,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
   /**
    * @see org.apache.uima.cas.DoubleArrayFS#copyFromArray(String[], int, int, int)
    */
+  @Override
   public void copyFromArray(String[] src, int srcPos, int destPos, int length) {
     _casView.checkArrayBounds(theArray.length, destPos, length);
     for (int i = 0; i < length; i++) {
@@ -182,6 +191,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
     set(i, Double.parseDouble(v));    
   }
   
+  @Override
   public Spliterator.OfDouble spliterator() {
     return Arrays.spliterator(theArray);
   }
@@ -230,4 +240,13 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
     return doubleArray;
   }
 
+  /**
+   * non boxing version 
+   * @param action -
+   */
+  public void forEach(DoubleConsumer action) {
+    for (double d : theArray) {
+      action.accept(d);
+    }
+  }
 }

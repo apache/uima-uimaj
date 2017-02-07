@@ -24,6 +24,8 @@ package org.apache.uima.jcas.cas;
 import java.util.Arrays;
 import java.util.RandomAccess;
 import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 import java.util.PrimitiveIterator.OfInt;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
@@ -557,6 +559,18 @@ public class IntegerArrayList extends TOP implements
   public IntStream stream() {
     return StreamSupport.intStream(spliterator(), false);
   }
+
+  /**
+   * Version of forEach that doesn't box
+   * @param action -
+   */
+  public void forEach(IntConsumer action) {
+    OfInt ii = iterator();
+    while (ii.hasNext()) {
+      action.accept(ii.nextInt());
+    }
+  }
+  
   
     
 }

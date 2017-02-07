@@ -19,14 +19,27 @@
 
 package org.apache.uima.jcas.cas;
 
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator.OfInt;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 
 public abstract class IntegerList extends TOP implements CommonList, Iterable<Integer> {
+  
+  public static OfInt EMPTY_INT_ITERATOR = new OfInt() {
+
+    @Override
+    public boolean hasNext() {
+      return false;
+    }
+
+    @Override
+    public int nextInt() {
+      throw new NoSuchElementException();
+    }
+  };
 
 	// Never called.
 	protected IntegerList() { // Disable default constructor
@@ -68,8 +81,8 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    * @see java.lang.Iterable#iterator()
    */
   @Override
-  public Iterator<Integer> iterator() {
-    return Collections.emptyIterator();  // overridden by NonEmptyXxList
+  public OfInt iterator() {
+    return EMPTY_INT_ITERATOR;
   }
 
   /**
