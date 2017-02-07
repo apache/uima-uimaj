@@ -67,6 +67,26 @@
       <artifactId>uimaj-core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
+      <!-- exclude log4j, in prep for linking to m2e logback which includs slf4j api  -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -223,6 +243,7 @@
                    org.apache.uima.adapter.soap.axis11,
                  -->
                 <Import-Package>org.apache.log4j;resolution:=optional,
+                   org.apache.logging.log4j*;resolution:=optional,
                    !com.strobel.assembler,
                    !com.strobel.assembler.metadata,
                    !com.strobel.decompiler,
