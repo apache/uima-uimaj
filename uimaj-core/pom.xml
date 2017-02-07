@@ -69,13 +69,33 @@
   </properties>
   
 	<dependencies>
-	  <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.8</version>
-      <scope>provided</scope>
-      <optional>true</optional>
+    
+    <!-- Loggers -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>  <!-- core, not api, because need to set log level via api -->
+      <version>${log4j.version}</version>
+      <scope>compile</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>    
+    
 		<dependency>
 			<groupId>org.apache.uima</groupId>
 			<artifactId>uimaj-test-util</artifactId>
