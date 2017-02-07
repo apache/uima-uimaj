@@ -228,7 +228,7 @@ public class Settings_impl implements Settings {
    * 
    * @param value - String to scan for variable references
    * @return - value with all references resolved and escapes processed
-   * @throws Exception
+   * @throws Exception -
    */
   public String resolve(String value) throws Exception {
     return unescape(resolve(value, value));

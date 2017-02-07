@@ -108,7 +108,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    *   where the equal includes or doesn't include the type.
    * <p>
    * Default is to not include the type.
-   * @param true if the adjustment should require the types be the same.
+   * @param positionUsesType true if the adjustment should require the types be the same.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> positionUsesType(boolean positionUsesType); // ignored if not ordered index
@@ -166,7 +166,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * <p>
    * Default is to use feature structure identity comparison (same id()s), not equals, when 
    * doing the test to see if an annotation should be skipped.
-   * @param if true, use equals, if false, use id() ==.
+   * @param useAnnotationEquals if true, use equals, if false, use id() ==.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> useAnnotationEquals(boolean useAnnotationEquals);
@@ -183,7 +183,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Extend or not extend the selection to be over all the CAS views, not just a single view.
    * <p>
    * Default is that the selection is just for one CAS view
-   * @param true to extend the selection.
+   * @param allViews true to extend the selection.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> allViews(boolean allViews);
@@ -201,7 +201,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Indicates that a null value should or should not throw an exception.
    * <p>
    * Default: null is not OK as a value 
-   * @param true if null is an ok value.
+   * @param nullOk true if null is an ok value.
    * @return the updated SelectFSs object
    */
   SelectFSs<T> nullOK(boolean nullOk);  // applies to get()
@@ -219,7 +219,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * This can be a performance boost for hierarchically nested types.
    * <p>
    * Default: order is required by default, when iterating over an ordered index.
-   * @param true means order is not needed. 
+   * @param unordered true means order is not needed. 
    * @return the updated SelectFSs object
    */
   SelectFSs<T> orderNotNeeded(boolean unordered); // ignored if not ordered index
@@ -234,7 +234,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   /**
    * Specifies that the iteration should run in the normal or reverse order.
    * Note that this does not compose. 
-   * @param true to run in reverse order
+   * @param backwards true to run in reverse order
    * @return the updated SelectFSs object
    */
   SelectFSs<T> backwards(boolean backwards); // ignored if not ordered index
@@ -369,7 +369,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    *   A bounding Annotation is constructed whose begin
    *   is the end of fs1, and whose end is the begin of fs2.
    * <p> 
-   * If fs1 > fs2, they are swapped, and the selected values are returned in reverse order.
+   * If fs1 &gt; fs2, they are swapped, and the selected values are returned in reverse order.
    * 
    * @param fs1 the beginning bound
    * @param fs2 the ending bound
@@ -471,6 +471,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    */
   <N extends T> List<N> asList();
   /**
+   * @param clazz the class of the type of the elements
    * @param <N> the generic type argument of the elements of the array
    * @return a Array object representation of the elements of the selection.
    */
@@ -577,6 +578,8 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Positions to the fs using moveTo(fs), followed by a shifted(offset).
    * Gets the element at that position or null if empty or the element at that position is null. 
    * if nullOK is false, then throws CASRuntimeException if null would have been returned. 
+   * @param fs where to move to
+   * @param offset the offset move after positioning to fs, may be 0 or positive or negative
    * @return the selected element or null if empty
    * @throws CASRuntimeException (conditioned on nullOK == false) null being returned or the selection is empty.
    */
