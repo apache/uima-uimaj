@@ -25,6 +25,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.ResultSpecification;
 import org.apache.uima.resource.ResourceConfigurationException;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.Logger;
 
 /**
  * Implementation base class for AnalysisComponents. Normally developers do not extend this class
@@ -116,6 +117,18 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
       throw new UIMARuntimeException(UIMARuntimeException.UIMA_CONTEXT_NULL, new Object[] {} );
     }    
     return mContext;
+  }
+  
+  /**
+   * 
+   * @return the Logger associated with this uima Analysis Engine component
+   */
+  protected final Logger getUimaLogger() {
+    return getContext().getLogger();
+  }
+  
+  protected final org.slf4j.Logger getSlf4jLogger() {
+    return org.slf4j.LoggerFactory.getLogger(this.getClass());
   }
 
   /**
