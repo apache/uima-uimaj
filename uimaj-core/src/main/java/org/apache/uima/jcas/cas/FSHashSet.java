@@ -22,6 +22,8 @@
 package org.apache.uima.jcas.cas;
 
 import java.lang.reflect.Array;
+import java.util.AbstractCollection;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,6 +47,7 @@ import org.apache.uima.util.impl.Constants;
 
 
 /** a hash set of Feature Structures
+ * Is Pear aware - stores non-pear versions but may return pear version in pear contexts
  * Updated by JCasGen Fri Jan 20 11:55:59 EST 2017
  * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-types/src/main/descriptors/java_object_type_descriptors.xml
  * @generated */
@@ -179,7 +182,6 @@ public class FSHashSet <T extends TOP> extends TOP implements
     fsHashSet.clear();
     FSArray a = getFsArray();
     if (a != null) {
-      // do element by element to pick up pear trampoline conversion
       for (TOP fs : a) {
         fsHashSet.add((T) fs);
       }
@@ -199,15 +201,14 @@ public class FSHashSet <T extends TOP> extends TOP implements
         setFsArray(fsa);
       }
  
-      // using element by element instead of bulk operations to
-      //   pick up any pear trampoline conversion and
+      // using element by element instead of bulk operations
       //   in case fsa was preallocated and right size, may need journaling
       
       int i = 0;
       for (TOP fs : fsHashSet) {
         TOP currentValue = fsa.get(i);
         if (currentValue != fs) {
-          fsa.set(i, fs); // done this way to record for journaling for delta CAS
+          fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for delta CAS
         }
         i++;
       }
@@ -236,11 +237,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
     return fsa._getTheArray();
   }
   
-  /**
-   * Equals.
-   *
-   * @param o the o
-   * @return true, if successful
+  /*
    * @see java.util.AbstractSet#equals(java.lang.Object)
    */
   @Override
@@ -250,17 +247,13 @@ public class FSHashSet <T extends TOP> extends TOP implements
     if (size() != other.size()) return false;
     if (size() == 0) return true;
     
-    for (T item : this) {
-      if (!other.contains(item)) return false;
-    }
+    maybeLazyInit();
+    other.maybeLazyInit();
     
-    return true;
+    return fsHashSet.equals(other.fsHashSet);
   }
 
-  /**
-   * Hash code.
-   *
-   * @return the int
+  /*
    * @see java.util.AbstractSet#hashCode()
    */
   @Override
@@ -271,23 +264,11 @@ public class FSHashSet <T extends TOP> extends TOP implements
 //    return isSaveNeeded
 //        ? fsHashSet.hashCode()    // no good - hash codes different
 //        : Arrays.hashCode(gta());
-    if (isSaveNeeded) {
-      return fsHashSet.hashCode();
-    }
-    int hc = 0;
-    for (TOP fs : gta()) {
-      if (fs == null) {
-        continue;
-      }
-      hc += fs.hashCode();
-    }
-    return hc;
+    maybeLazyInit();
+    return fsHashSet.hashCode();
   }
 
-  /**
-   * To array.
-   *
-   * @return the feature structure[]
+  /*
    * @see java.util.AbstractCollection#toArray()
    */
   @Override
@@ -295,16 +276,13 @@ public class FSHashSet <T extends TOP> extends TOP implements
     if (isSaveNeeded) {
       T[] r = (T[]) new TOP[size()];
       fsHashSet.toArray(r);
+      
       return r;
     }
     return (T[]) gta().clone();
   }
 
-  /**
-   * Removes all elements matching c.
-   *
-   * @param c the elements to remove
-   * @return true, if set changed
+  /*
    * @see java.util.AbstractSet#removeAll(java.util.Collection)
    */
   @Override
@@ -315,19 +293,17 @@ public class FSHashSet <T extends TOP> extends TOP implements
     return r;
   }
 
-  /**
-   * To array.
-   *
-   * @param <N> the generic type
-   * @param a the a
-   * @return the N[]
+  /*
    * @see java.util.AbstractCollection#toArray(Object[])
    */
   @Override
   public <N> N[] toArray(N[] a) {
     if (isSaveNeeded) {
-      return fsHashSet.toArray(a);
+      N[] aa = fsHashSet.toArray(a);
+      _casView.swapInPearVersion(aa);
+      return aa;
     }
+    
     final int sz = size();
     if (a.length < sz) {
       a = (N[]) Array.newInstance(a.getClass().getComponentType(), sz);
@@ -335,13 +311,11 @@ public class FSHashSet <T extends TOP> extends TOP implements
     
     TOP[] d = gta();
     System.arraycopy(d, 0, a, 0, d.length);
+    _casView.swapInPearVersion(a);
     return a;
   }
 
-  /**
-   * Iterator.
-   *
-   * @return the iterator
+  /*
    * @see java.util.HashSet#iterator()
    */
   @Override
@@ -350,11 +324,28 @@ public class FSHashSet <T extends TOP> extends TOP implements
       return Collections.emptyIterator();
     }
     
-    return isSaveNeeded 
-        ? fsHashSet.iterator()
-        : gtaIterator();
+    return new Iterator<T>() {
+
+      final private Iterator<T> baseIt = isSaveNeeded 
+          ? fsHashSet.iterator()
+          : gtaIterator();
+
+      @Override
+      public boolean hasNext() {
+        return baseIt.hasNext();
+      }
+
+      @Override
+      public T next() {
+        return _maybeGetPearFs(baseIt.next());
+      }      
+    };
   }
   
+  /**
+   * 
+   * @return iterator over non-pear versions
+   */
   private Iterator<T> gtaIterator() {
     return (Iterator<T>) getFsArray().iterator(); 
   }
@@ -393,7 +384,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean contains(Object o) {
     maybeLazyInit();
-    return fsHashSet.contains(o);
+    return fsHashSet.contains((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
   }
 
   /**
@@ -406,7 +397,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean add(T e) {
     maybeLazyInit();
-    boolean r = fsHashSet.add(e); 
+    boolean r = fsHashSet.add(_maybeGetBaseForPearFs(e)); 
     if (r) isSaveNeeded = true;
     return r;
   }
@@ -421,7 +412,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean remove(Object o) {
     maybeLazyInit();
-    boolean r = fsHashSet.remove(o);
+    boolean r = fsHashSet.remove((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
     if (r) isSaveNeeded = true;
     return r;
   }
@@ -449,7 +440,12 @@ public class FSHashSet <T extends TOP> extends TOP implements
   @Override
   public boolean containsAll(Collection<?> c) {
     maybeLazyInit();
-    return fsHashSet.containsAll(c);
+    for (Object o : c) {
+      if (!contains(o)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
@@ -461,8 +457,16 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public boolean addAll(Collection<? extends T> c) {
+    if (c.size() == 0) {
+      return false;
+    }
+    
+    ArrayList<T> a = new ArrayList<>(c.size());
+    for (T item : c) {
+      a.add(_maybeGetBaseForPearFs(item));
+    }
     maybeLazyInit();
-    boolean r = fsHashSet.addAll(c);
+    boolean r = fsHashSet.addAll(a);
     if (r) isSaveNeeded = true;
     return r;
   }
@@ -475,9 +479,11 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public Spliterator<T> spliterator() {
-    return isSaveNeeded
+    Spliterator<T> baseSi =  isSaveNeeded
         ? fsHashSet.spliterator()
         : (Spliterator<T>) Arrays.asList(gta()).spliterator();
+        
+    return _casView.makePearAware(baseSi);   
   }
 
   /**
@@ -489,8 +495,15 @@ public class FSHashSet <T extends TOP> extends TOP implements
    */
   @Override
   public boolean retainAll(Collection<?> c) {
+    if (c.size() == 0) {
+      boolean wasNotEmpty = !isEmpty();
+      clear();
+      return wasNotEmpty;
+    }
+    
+    Collection<?> cc = _casView.collectNonPearVersions(c);
     maybeLazyInit();
-    boolean r = fsHashSet.retainAll(c);
+    boolean r = fsHashSet.retainAll(cc);
     if (r) isSaveNeeded = true;
     return r;
   }

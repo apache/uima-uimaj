@@ -109,6 +109,11 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
   public TOP get(int i) {
     return _maybeGetPearFs(theArray[i]);
   }
+  
+  // internal use
+  TOP get_without_PEAR_conversion(int i) {
+    return theArray[i];
+  }
 
   /** updates the Cas, setting the indexed value with the corresponding Cas FeatureStructure. */
   public void set(int i, FeatureStructure v) {
@@ -118,6 +123,12 @@ public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, Se
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
     }
     theArray[i] = _maybeGetBaseForPearFs(vt);
+    _casView.maybeLogArrayUpdate(this, null, i);
+  }
+  
+  // internal use
+  void set_without_PEAR_conversion(int i, TOP v) {
+    theArray[i] = v;
     _casView.maybeLogArrayUpdate(this, null, i);
   }
 

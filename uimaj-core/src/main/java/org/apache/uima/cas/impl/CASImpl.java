@@ -33,6 +33,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +43,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -5330,6 +5332,65 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
   
+  public void swapInPearVersion(Object[] a) {
+    if (!inPearContext()) {
+      return;
+    }
+  
+    for (int i = 0; i < a.length; i++) {
+      Object ao = a[i];
+      if (ao instanceof TOP) {
+        a[i] = pearConvert((TOP) ao);
+      }
+    }
+  }
+  
+  public Collection<?> collectNonPearVersions(Collection<?> c) {
+    if (c.size() == 0 || !inPearContext()) {
+      return c;
+    }
+    ArrayList<Object> items = new ArrayList<>(c.size());
+    for (Object o : c) {
+      if (o instanceof TOP) {
+        items.add(pearConvert((TOP) o));
+      }
+    }
+    return items;
+  }
+  
+  public <T> Spliterator<T> makePearAware(Spliterator<T> baseSi) {
+    if (!inPearContext()) {
+      return baseSi;
+    }
+    
+    return new Spliterator<T>() {
+
+      @Override
+      public boolean tryAdvance(Consumer<? super T> action) {
+        return baseSi.tryAdvance(item -> action.accept(
+            (item instanceof TOP) 
+              ? (T) pearConvert((TOP)item)
+              : item));
+      }
+
+      @Override
+      public Spliterator<T> trySplit() {
+        return baseSi.trySplit();
+      }
+
+      @Override
+      public long estimateSize() {
+        return baseSi.estimateSize();
+      }
+
+      @Override
+      public int characteristics() {
+        return baseSi.characteristics();
+      }
+      
+    };
+  }
+
 //  int allocIntData(int sz) {
 //    
 //    if (sz > INT_DATA_FOR_ALLOC_SIZE / 4) {

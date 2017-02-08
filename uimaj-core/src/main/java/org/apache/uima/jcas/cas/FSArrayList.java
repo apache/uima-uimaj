@@ -35,6 +35,7 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.uima.UimaSerializableFSs;
@@ -47,9 +48,6 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.SelectViaCopyToArray;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
 
@@ -75,6 +73,9 @@ import org.apache.uima.util.impl.Constants;
  *       
  *     <li>This enables operation without creating the Java Object in use cases of deserializing and
  *     referencing when updating is not being used.
+ *     
+ *     <li>The values stored internally are non-PEAR ones.
+ *     <li>The get/set/add operations convert to/from PEAR ones as needed
  *   </ul>
  *
  * @param <T> the generic type
@@ -110,11 +111,11 @@ public class FSArrayList <T extends TOP> extends TOP implements
   public              int getTypeIndexID() {return typeIndexID;}
  
   /** lifecycle   - starts as empty array list   - becomes non-empty when updated (add)       -- used from that point on. */
-  private final List<T> fsArrayList;
+  private final ArrayList<T> fsArrayList;
   
   /** lifecycle   - starts as the empty list   - set when _init_from_cas_data()   - set to null when update (add/remove) happens. */
   @SuppressWarnings("unchecked")
-  private List<T> fsArrayAsList = (List<T>) EMPTY_LIST;
+  private List<T> fsArray_asList = (List<T>) EMPTY_LIST;
 
   /* *******************
    *   Feature Offsets *
@@ -197,10 +198,10 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * Maybe start using array list.
    */
   private void maybeStartUsingArrayList() {
-    if (fsArrayAsList != null) {
+    if (fsArray_asList != null) {
       fsArrayList.clear();
-      fsArrayList.addAll(fsArrayAsList);
-      fsArrayAsList = null;  // stop using this one
+      fsArrayList.addAll(fsArray_asList);
+      fsArray_asList = null;  // stop using this one
     }
   }
     
@@ -212,20 +213,30 @@ public class FSArrayList <T extends TOP> extends TOP implements
     // special handling to have getter and setter honor pear trampolines
     final FSArray fsa = getFsArray();
     if (null == fsa) {
-      fsArrayAsList = Collections.emptyList();
+      fsArray_asList = Collections.emptyList();
     } else {
     
-      fsArrayAsList = new AbstractList<T>() {
+      fsArray_asList = new AbstractList<T>() {
         int i = 0;
         @Override
-        public T get(int index) {
-          return (T) fsa.get(i);
+        public T get(int index) {  
+          return (T) fsa.get_without_PEAR_conversion(i); 
         }
   
         @Override
         public int size() {
           return fsa.size();
-        }      
+        }
+
+        /* (non-Javadoc)
+         * @see java.util.AbstractList#set(int, java.lang.Object)
+         */
+        @Override
+        public T set(int index, T element) {
+          T prev = get(index);
+          fsa.set_without_PEAR_conversion(index, element);
+          return prev;
+        } 
       };
     }
   }
@@ -236,7 +247,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   @Override
   public void _save_to_cas_data() {
     // if fsArraysAsList is not null, then the cas data form is still valid, do nothing
-    if (null != fsArrayAsList) {
+    if (null != fsArray_asList) {
       return;
     }
     
@@ -247,36 +258,382 @@ public class FSArrayList <T extends TOP> extends TOP implements
       setFsArray(fsa = new FSArray(_casView.getJCasImpl(), sz));
     }
     
-    // using element by element instead of bulk operations to
-    //   pick up any pear trampoline conversion and 
     //   in case fsa was preallocated and right size, may need journaling
     int i = 0;
-    for (TOP fs : fsArrayList) {
-      TOP currentValue = fsa.get(i);
+    for (TOP fs : fsArrayList) {  // getting non-PEAR values
+      TOP currentValue = fsa.get_without_PEAR_conversion(i);  
       if (currentValue != fs) {
-        fsa.set(i, fs); // done this way to record for journaling for delta CAS
+        fsa.set_without_PEAR_conversion(i, fs); // done this way to record for journaling for delta CAS
       }
       i++;
     }
   }
   
   /**
-   * Gl.
-   *
+   * gets either the array list object, or a list operating over the original FS Array.
+   * Note: these forms will get/set the non Pear form of elements
    * @return the list
    */
   private List<T> gl () {
-    return (null == fsArrayAsList) 
+    return (null == fsArray_asList) 
       ? fsArrayList
-      : fsArrayAsList;
+      : fsArray_asList;
   }
   
+  /**
+   * Supports reading only, no update or remove 
+   * @return a list backed by gl(), where the items are pear converted
+   */
+  private List<T> gl_read_pear(List<T> baseItems) {
+    
+    return new List<T>() {
+      /*
+       * @see java.lang.Iterable#forEach(java.util.function.Consumer)
+       */
+      public void forEach(Consumer<? super T> action) {
+        baseItems.forEach(item -> {
+            T pearedItem = _maybeGetPearFs((T) item);
+            action.accept(pearedItem);
+        });
+      }
+
+      /*
+       * @see java.util.List#size()
+       */
+      public int size() {
+        return baseItems.size();
+      }
+
+      /*
+       * @see java.util.List#isEmpty()
+       */
+      public boolean isEmpty() {
+        return baseItems.isEmpty();
+      }
+
+      /*
+       * @see java.util.List#contains(java.lang.Object)
+       */
+      public boolean contains(Object o) {
+        return (o instanceof TOP) 
+                 ? baseItems.contains(_maybeGetBaseForPearFs((TOP)o))
+                 : false;
+      }
+
+      /*
+       * @see java.util.List#iterator()
+       */
+      public Iterator<T> iterator() {
+        return new Iterator<T>() {
+          
+          Iterator<T> outerIt = baseItems.iterator();
+
+          /*
+           * @see java.util.Iterator#hasNext()
+           */
+          public boolean hasNext() {
+            return outerIt.hasNext();
+          }
+
+          /*
+           * @see java.util.Iterator#next()
+           */
+          public T next() {
+            return _maybeGetPearFs(outerIt.next());
+          }
+
+        };
+      }
+
+      /*
+       * @see java.util.List#toArray()
+       */
+      public Object[] toArray() {
+        Object[] a = baseItems.toArray();
+        FSArrayList.this._casView.swapInPearVersion(a);
+        return a;
+      }
+      
+      /*
+       * @see java.util.List#toArray(java.lang.Object[])
+       */
+      public <U> U[] toArray(U[] a) {
+        U[] aa = baseItems.toArray(a);
+        FSArrayList.this._casView.swapInPearVersion(aa);
+        return aa;    
+      }
+
+      /*
+       * @see java.util.List#add(java.lang.Object)
+       */
+      public boolean add(T e) {
+        throw new UnsupportedOperationException();
+     }
+
+      /*
+       * @see java.util.List#remove(java.lang.Object)
+       */
+      public boolean remove(Object o) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#containsAll(java.util.Collection)
+       */
+      public boolean containsAll(Collection<?> c) {
+        for (Object item : c) {
+          if (!contains(item)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      /*
+       * @see java.util.List#addAll(java.util.Collection)
+       */
+      public boolean addAll(Collection<? extends T> c) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#addAll(int, java.util.Collection)
+       */
+      public boolean addAll(int index, Collection<? extends T> c) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#removeAll(java.util.Collection)
+       */
+      public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#retainAll(java.util.Collection)
+       */
+      public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#replaceAll(java.util.function.UnaryOperator)
+       */
+      public void replaceAll(UnaryOperator<T> operator) {
+        for (int i = size() - 1; i >= 0; i--) {
+          baseItems.set(i, _maybeGetBaseForPearFs(
+              operator.apply(_maybeGetPearFs(baseItems.get(i)))));
+        }
+      }
+
+      /*
+       * @see java.util.Collection#removeIf(java.util.function.Predicate)
+       */
+      public boolean removeIf(Predicate<? super T> filter) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#sort(java.util.Comparator)
+       */
+      public void sort(Comparator<? super T> c) {
+        baseItems.sort((o1, o2) -> c.compare(_maybeGetPearFs(o1), _maybeGetPearFs(o2))); 
+      }
+
+      /*
+       * @see java.util.List#clear()
+       */
+      public void clear() {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.List#equals(java.lang.Object)
+       */
+      public boolean equals(Object o) {
+        return baseItems.equals(o);
+      }
+
+      /*
+       * @see java.util.List#hashCode()
+       */
+      public int hashCode() {
+        return baseItems.hashCode();
+      }
+
+      /*
+       * @see java.util.List#get(int)
+       */
+      public T get(int index) {
+        return _maybeGetPearFs(baseItems.get(index));
+      }
+
+      /*
+       * @see java.util.List#set(int, java.lang.Object)
+       */
+      public T set(int index, T element) {
+        return baseItems.set(index, _maybeGetBaseForPearFs(element));
+      }
+
+      /*
+       * @see java.util.List#add(int, java.lang.Object)
+       */
+      public void add(int index, T element) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.Collection#stream()
+       */
+      public Stream<T> stream() {
+        return baseItems.stream().map(item -> _maybeGetPearFs(item));
+      }
+
+      /*
+       * @see java.util.List#remove(int)
+       */
+      public T remove(int index) {
+        throw new UnsupportedOperationException();
+      }
+
+      /*
+       * @see java.util.Collection#parallelStream()
+       */
+      public Stream<T> parallelStream() {
+        return baseItems.parallelStream().map(item -> _maybeGetPearFs(item));
+      }
+
+      /*
+       * @see java.util.List#indexOf(java.lang.Object)
+       */
+      public int indexOf(Object o) {
+        return baseItems.indexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+      }
+
+      /*
+       * @see java.util.List#lastIndexOf(java.lang.Object)
+       */
+      public int lastIndexOf(Object o) {
+        return baseItems.lastIndexOf((o instanceof TOP) ? _maybeGetBaseForPearFs((TOP)o) : o);
+      }
+
+      /*
+       * @see java.util.List#listIterator()
+       */
+      public ListIterator<T> listIterator() {
+        return listIterator(0);
+      }
+
+      /*
+       * @see java.util.List#listIterator(int)
+       */
+      public ListIterator<T> listIterator(int index) {
+        return new ListIterator<T>() {
+          
+          ListIterator<T> baseIt = baseItems.listIterator(index);
+          
+          /*
+           * @see java.util.ListIterator#hasNext()
+           */
+          public boolean hasNext() {
+            return baseIt.hasNext();
+          }
+
+          /**
+           * @return
+           * @see java.util.ListIterator#next()
+           */
+          public T next() {
+            return _maybeGetPearFs(baseIt.next());
+          }
+
+          /*
+           * @see java.util.ListIterator#hasPrevious()
+           */
+          public boolean hasPrevious() {
+            return baseIt.hasPrevious();
+          }
+
+          /*
+           * @see java.util.Iterator#forEachRemaining(java.util.function.Consumer)
+           */
+          public void forEachRemaining(Consumer<? super T> action) {
+            baseIt.forEachRemaining(item -> action.accept(_maybeGetPearFs(item)));
+          }
+
+          /**
+           * @return
+           * @see java.util.ListIterator#previous()
+           */
+          public T previous() {
+            return baseIt.previous();
+          }
+
+          /**
+           * @return
+           * @see java.util.ListIterator#nextIndex()
+           */
+          public int nextIndex() {
+            return baseIt.nextIndex();
+          }
+
+          /**
+           * @return
+           * @see java.util.ListIterator#previousIndex()
+           */
+          public int previousIndex() {
+            return baseIt.previousIndex();
+          }
+
+          /**
+           * 
+           * @see java.util.ListIterator#remove()
+           */
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+
+          /**
+           * @param e
+           * @see java.util.ListIterator#set(java.lang.Object)
+           */
+          public void set(T e) {
+            baseIt.set(_maybeGetBaseForPearFs(e));
+          }
+
+          /**
+           * @param e
+           * @see java.util.ListIterator#add(java.lang.Object)
+           */
+          public void add(T e) {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+
+      /*
+       * @see java.util.List#subList(int, int)
+       */
+      public List<T> subList(int fromIndex, int toIndex) {
+        return gl_read_pear(baseItems.subList(fromIndex, toIndex));
+      }
+
+      /*
+       * @see java.util.List#spliterator()
+       */
+      @Override
+      public Spliterator<T> spliterator() {
+        return FSArrayList.this._casView.makePearAware(baseItems.spliterator());
+      }
+    };
+  }
   /* (non-Javadoc)
    * @see java.util.List#get(int)
    */
   @Override
   public T get(int i) {
-    return gl().get(i);
+    return _maybeGetPearFs(gl().get(i));
   }
 
   /**
@@ -293,7 +650,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
-    return gl().set(i, v);
+    return _maybeGetPearFs(gl().set(i,  _maybeGetBaseForPearFs(v)));
   }
   
   /**
@@ -353,7 +710,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
-   * Note: doesn't convert to pear trampolines!.
+   * Note: converts to pear trampolines.
    *
    * @return the feature structure[]
    * @see org.apache.uima.cas.ArrayFS#toArray()
@@ -386,7 +743,8 @@ public class FSArrayList <T extends TOP> extends TOP implements
     
   /**
    * Copies an array of Feature Structures to an Array of Strings.
-   * The strings are the "toString()" representation of the feature structures, 
+   * The strings are the "toString()" representation of the feature structures.
+   * If in Pear context, the Pear form is used. 
    * 
    * @param srcPos
    *                The index of the first element to copy.
@@ -415,7 +773,8 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * 
    * (non-Javadoc)
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
-   * no conversion to Pear trampolines done
+   * The spliterators return PEAR objects, potentially.  The add operation expects PEAR objects,
+   * and converts them to base when storing.
    */
   @Override
   public void copyValuesFrom(CommonArrayFS v) {
@@ -452,22 +811,15 @@ public class FSArrayList <T extends TOP> extends TOP implements
   @Override
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
-  /**
-   * Contains all.
-   *
-   * @param c -
-   * @return -
+  /*
    * @see java.util.AbstractCollection#containsAll(java.util.Collection)
    */
   @Override
   public boolean containsAll(Collection<?> c) {
-    return gl().containsAll(c);
+    return gl_read_pear(gl()).containsAll(c);
   }
 
-  /**
-   * Checks if is empty.
-   *
-   * @return -
+  /*
    * @see java.util.ArrayList#isEmpty()
    */
   @Override
@@ -475,59 +827,42 @@ public class FSArrayList <T extends TOP> extends TOP implements
     return gl().isEmpty();
   }
 
-  /**
-   * Contains.
-   *
-   * @param o -
-   * @return -
+  /*
    * @see java.util.ArrayList#contains(java.lang.Object)
    */
   @Override
   public boolean contains(Object o) {
     if (!(o instanceof TOP)) return false;
     TOP fs = (TOP) o;    
-    return gl().contains(fs);
+    return gl().contains(_maybeGetBaseForPearFs(fs));
   }
 
-  /**
-   * Index of.
-   *
-   * @param o -
-   * @return -
+  /*
    * @see java.util.ArrayList#indexOf(java.lang.Object)
    */
   @Override
   public int indexOf(Object o) {
     if (!(o instanceof TOP)) return -1;
     TOP fs = (TOP) o;    
-    return gl().indexOf(fs);
+    return gl().indexOf(_maybeGetBaseForPearFs(fs));
   }
 
-  /**
-   * Last index of.
-   *
-   * @param o -
-   * @return -
+  /*
    * @see java.util.ArrayList#lastIndexOf(java.lang.Object)
    */
   @Override
   public int lastIndexOf(Object o) {
     if (!(o instanceof TOP)) return -1;
     TOP fs = (TOP) o;    
-    return gl().lastIndexOf(fs);
+    return gl().lastIndexOf(_maybeGetBaseForPearFs(fs));
   }
 
-  /**
-   * To array.
-   *
-   * @param <U> the generic type
-   * @param a -
-   * @return -
+  /*
    * @see java.util.ArrayList#toArray(java.lang.Object[])
    */
   @Override
-  public <U> U[] toArray(U[] a) {
-    return gl().toArray(a);
+  public <U> U[] toArray(U[] a) {    
+    return gl_read_pear(gl()).toArray(a);
   }
 
 
@@ -542,29 +877,21 @@ public class FSArrayList <T extends TOP> extends TOP implements
         + ", fsArrayList="
         + (fsArrayList != null ? fsArrayList.subList(0, Math.min(fsArrayList.size(), maxLen))
             : null)
-        + ", fsArrayAsList=" + (fsArrayAsList != null
-            ? fsArrayAsList.subList(0, Math.min(fsArrayAsList.size(), maxLen)) : null)
+        + ", fsArray_asList=" + (fsArray_asList != null
+            ? fsArray_asList.subList(0, Math.min(fsArray_asList.size(), maxLen)) : null)
         + "]";
   }
 
-  /**
-   * Adds the.
-   *
-   * @param e -
-   * @return -
+  /*
    * @see java.util.ArrayList#add(java.lang.Object)
    */
   @Override
   public boolean add(T e) {
     maybeStartUsingArrayList();
-    return fsArrayList.add(e);
+    return fsArrayList.add(_maybeGetBaseForPearFs(e));
   }
 
-  /**
-   * equals means equal items, same order.
-   *
-   * @param o -
-   * @return -
+  /*
    * @see java.util.AbstractList#equals(java.lang.Object)
    */
   @Override
@@ -573,31 +900,26 @@ public class FSArrayList <T extends TOP> extends TOP implements
     FSArrayList<T> other = (FSArrayList<T>) o;
     if (size() != other.size()) return false;
     
-    Iterator<T> it_other = other.iterator();
-    for (T item : this) {
+    List<T> items = gl();  // non-pear form
+    List<T> other_items = other.gl(); // non-pear form
+    
+    Iterator<T> it_other = other_items.iterator();
+    for (T item : items) {
       if (!item.equals(it_other.next())) return false;
     }
     return true;
   }
 
-  /**
-   * Adds the.
-   *
-   * @param index -
-   * @param element -
+  /*
    * @see java.util.ArrayList#add(int, java.lang.Object)
    */
   @Override
   public void add(int index, T element) {
     maybeStartUsingArrayList();
-    fsArrayList.add(index, element);
+    fsArrayList.add(index, _maybeGetBaseForPearFs(element));
   }
 
-  /**
-   * Removes the.
-   *
-   * @param index -
-   * @return -
+  /*
    * @see java.util.ArrayList#remove(int)
    */
   @Override
@@ -606,38 +928,34 @@ public class FSArrayList <T extends TOP> extends TOP implements
     return fsArrayList.remove(index);
   }
 
-  /**
-   * Removes the.
-   *
-   * @param o -
-   * @return -
+  /*
    * @see java.util.ArrayList#remove(java.lang.Object)
    */
   @Override
   public boolean remove(Object o) {
     maybeStartUsingArrayList();
-    return fsArrayList.remove(o);
+    if (!(o instanceof TOP)) {
+      return false;
+    }
+    return fsArrayList.remove(_maybeGetBaseForPearFs((TOP) o));
   }
 
-  /**
+  /*
    * want hashcode to depend only on equal items, regardless of what format.
    *
-   * @return -
    * @see java.util.AbstractList#hashCode()
    */
   @Override
   public int hashCode() {
     int hc = 1;
     final int prime = 31;
-    for (T item : this) {
+    for (T item : gl()) {  // non pear form
       hc = hc * prime + item.hashCode();
     }
     return hc;
   }
 
-  /**
-   * Clear.
-   *
+  /*
    * @see java.util.ArrayList#clear()
    */
   @Override
@@ -646,186 +964,148 @@ public class FSArrayList <T extends TOP> extends TOP implements
     fsArrayList.clear();
   }
 
-  /**
-   * Adds the all.
-   *
-   * @param c -
-   * @return -
+  /*
    * @see java.util.ArrayList#addAll(java.util.Collection)
    */
   @Override
   public boolean addAll(Collection<? extends T> c) {
-    maybeStartUsingArrayList();
-    return fsArrayList.addAll(c);
+    return addAll(size(), c);
   }
 
-  /**
-   * Adds the all.
-   *
-   * @param index -
-   * @param c -
-   * @return -
+  /*
    * @see java.util.ArrayList#addAll(int, java.util.Collection)
    */
   @Override
   public boolean addAll(int index, Collection<? extends T> c) {
+    if (c.size() == 0) {
+      return false;
+    }
     maybeStartUsingArrayList();
-    return fsArrayList.addAll(index, c);
+//    return fsArrayList.addAll(index, c); // doesn't do pear conversion
+    fsArrayList.ensureCapacity(fsArrayList.size() + c.size());
+    List<T> baseItems = c.stream().map(item -> 
+        _maybeGetBaseForPearFs(item)).collect(Collectors.toList());
+    fsArrayList.addAll(index, baseItems); 
+    return true;
   }
 
-  /**
-   * Removes the all.
-   *
-   * @param c -
-   * @return -
+  /*
    * @see java.util.ArrayList#removeAll(java.util.Collection)
    */
   @Override
   public boolean removeAll(Collection<?> c) {
+    boolean changed = false;
     maybeStartUsingArrayList();
-    return fsArrayList.removeAll(c);
+//    return fsArrayList.removeAll(c); // doesn't do pear conversion
+    for (Object item : c) {
+      if (!(item instanceof TOP)) {
+        continue;
+      }
+                // order important! 
+      changed = fsArrayList.remove(_maybeGetBaseForPearFs((TOP)item)) || changed;
+    }
+    return changed;
   }
 
-  /**
-   * Retain all.
-   *
-   * @param c -
-   * @return -
+  /*
    * @see java.util.ArrayList#retainAll(java.util.Collection)
    */
   @Override
   public boolean retainAll(Collection<?> c) {
-    maybeStartUsingArrayList();
-    return fsArrayList.retainAll(c);
+    Collection<?> cc = _casView.collectNonPearVersions(c);
+    maybeStartUsingArrayList();    
+    return fsArrayList.retainAll(cc);
   }
 
-  /**
-   * Stream.
-   *
-   * @return -
+  /*
    * @see java.util.Collection#stream()
    */
   @Override
   public Stream<T> stream() {
-    return gl().stream();
+    return gl().stream().map(item -> _maybeGetPearFs(item));
   }
 
-  /**
-   * Parallel stream.
-   *
-   * @return -
+  /*
    * @see java.util.Collection#parallelStream()
    */
   @Override
   public Stream<T> parallelStream() {
-    return gl().parallelStream();
+    return gl().parallelStream().map(item -> _maybeGetPearFs(item));
   }
 
-  /**
-   * List iterator.
-   *
-   * @param index -
-   * @return -
+  /*
    * @see java.util.ArrayList#listIterator(int)
    */
   @Override
   public ListIterator<T> listIterator(int index) {
-    return gl().listIterator(index);
+    return gl_read_pear(gl()).listIterator(index);
   }
 
-  /**
-   * List iterator.
-   *
-   * @return -
+  /*
    * @see java.util.ArrayList#listIterator()
    */
   @Override
   public ListIterator<T> listIterator() {
-    return gl().listIterator();
+    return listIterator(0);
   }
 
-  /**
-   * Iterator.
-   *
-   * @return -
+  /*
    * @see java.util.ArrayList#iterator()
    */
   @Override
   public Iterator<T> iterator() {
-    return gl().iterator();
+    return gl_read_pear(gl()).iterator();
   }
 
-  /**
-   * Sub list.
-   *
-   * @param fromIndex -
-   * @param toIndex -
-   * @return -
+  /*
    * @see java.util.ArrayList#subList(int, int)
    */
   @Override
   public List<T> subList(int fromIndex, int toIndex) {
-    return gl().subList(fromIndex, toIndex);
+    return gl_read_pear(gl().subList(fromIndex, toIndex));
   }
 
-  /**
-   * For each.
-   *
-   * @param action -
+  /*
    * @see java.util.ArrayList#forEach(java.util.function.Consumer)
    */
   @Override
   public void forEach(Consumer<? super T> action) {
-    gl().forEach(action);
+    gl_read_pear(gl()).forEach(action);
   }
 
-  /**
-   * Spliterator.
-   *
-   * @return -
+  /*
    * @see java.util.ArrayList#spliterator()
    */
   @Override
   public Spliterator<T> spliterator() {
-    return gl().spliterator();
+    return gl_read_pear(gl()).spliterator();
   }
 
-  /**
-   * Removes the if.
-   *
-   * @param filter -
-   * @return -
+  /*
    * @see java.util.ArrayList#removeIf(java.util.function.Predicate)
    */
   @Override
   public boolean removeIf(Predicate<? super T> filter) {
     maybeStartUsingArrayList();
-    return fsArrayList.removeIf(filter);
+    return fsArrayList.removeIf(item -> filter.test(_maybeGetPearFs(item)));
   }
 
-  /**
-   * Replace all.
-   *
-   * @param operator -
-   * @see java.util.ArrayList#replaceAll(java.util.function.UnaryOperator)
+  /*
+   * @see java.util.List#replaceAll(java.util.function.UnaryOperator)
    */
   @Override
   public void replaceAll(UnaryOperator<T> operator) {
-    maybeStartUsingArrayList();
-    fsArrayList.replaceAll(operator);
+    gl_read_pear(gl()).replaceAll(operator);
   }
 
-  /**
-   * Sort.
-   *
-   * @param c -
+  /*
    * @see java.util.ArrayList#sort(java.util.Comparator)
    */
   @Override
   public void sort(Comparator<? super T> c) {
-    gl().sort(c);
+    gl_read_pear(gl()).sort(c);
   }
-    
+      
 }
 
     
