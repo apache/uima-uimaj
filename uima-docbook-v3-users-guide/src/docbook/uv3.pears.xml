@@ -105,18 +105,12 @@ under the License.
       these inside a PEAR, and yet have the references work outside a PEAR, the implementor of these must
       insure that the actual stored JCas class for a Feature Structure is the base version, not the PEAR version,
       and also insure that any references are properly converted (while within a PEAR context).  
-    </para>  
+    </para> 
     
-    <para>The new built-in types that reference Feature Structures <emphasis>do not</emphasis> include 
-      the extra facility to support this conversion; they store whatever they're given.  This means that
-      they may be used inside or outside a PEAR, but cannot be used to hold onto Feature Structures set in
-      one context, but referenced in the other.
-    </para>
+    <para>Refer to the implementation of <code>FSHashSet</code> and <code>FSArrayList</code> to see what
+      needs to be done to make these "Pear aware".
+    </para> 
     
-    <para>If there is interest or need, additional documentation can be written describing how the 
-      core framework handles this, and providing a cookbook for others to implement this capability
-      for custom Java objects.
-    </para>
   </section>
     
   </chapter>
