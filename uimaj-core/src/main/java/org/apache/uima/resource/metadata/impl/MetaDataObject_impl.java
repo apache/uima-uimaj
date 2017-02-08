@@ -1658,22 +1658,22 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
 
   /*
    * UIMA-5274 Resolve any ${variable} entries in the string.
-   * Leaves the whole string unmodified if any variables are undefined
-   * but logs a warning message.
+   * Returns null if the expansion fails, i.e. a missing variable, or if no settings have been loaded.
+   * Logs a warning if settings have been loaded but an entry is missing.
    */
   protected String resolveSettings(String text) {
-    try {
-      UimaContext uimaContext = UimaContextHolder.getContext();
-      if (uimaContext != null) {
-        Settings_impl settings = (Settings_impl) uimaContext.getExternalOverrides();
-        if (settings != null) {
+    UimaContext uimaContext = UimaContextHolder.getContext();
+    if (uimaContext != null) {
+      Settings_impl settings = (Settings_impl) uimaContext.getExternalOverrides();
+      if (settings != null) {
+        try {
           return settings.resolve(text);
-        } 
+        } catch (Exception e) {
+          UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, e.toString());
+        }
       }
-    } catch (Exception e) {
-      UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, e.toString());
     }
-    return text;
+    return null;
   }
   
   

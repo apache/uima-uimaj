@@ -162,7 +162,6 @@ public abstract class Resource_ImplBase implements Resource {
           }
         }
       }
-      UimaContextHolder.setContext(mUimaContextAdmin);  // Create a UimaContext holder so that AEs created on this thread can use the Settings
       
       // initialize configuration
       try {
@@ -177,12 +176,15 @@ public abstract class Resource_ImplBase implements Resource {
       }
 
       // initialize any external resource declared in this descriptor
+      // UIMA-5274  Set & restore the UimaContextHolder so that resources created on this thread can use the Settings
       ResourceManagerConfiguration resMgrCfg = ((ResourceCreationSpecifier) aSpecifier)
               .getResourceManagerConfiguration();
       if (resMgrCfg != null) {
+        UimaContext prevContext = UimaContextHolder.setContext(mUimaContextAdmin);
         try {
           resMgrCfg.resolveImports(getResourceManager());
         } catch (InvalidXMLException e) {
+          UimaContextHolder.setContext(prevContext);
           throw new ResourceInitializationException(e);
         }
         if (aAdditionalParams == null) {
@@ -207,6 +209,8 @@ public abstract class Resource_ImplBase implements Resource {
         
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
                 mUimaContextAdmin.getQualifiedContextName(), aAdditionalParmsForExtResources);
+        
+        UimaContextHolder.setContext(prevContext);
       }
 
       // resolve and validate this component's external resource dependencies

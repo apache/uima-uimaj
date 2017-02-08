@@ -19,6 +19,8 @@
 
 package org.apache.uima;
 
+import org.apache.uima.util.Level;
+
 /**
  * This class holds the UimaContext for the current thread, or a parent thread.
  * The getContext method may be used by any plain Java class invoked by an annotator,
@@ -45,10 +47,13 @@ public class UimaContextHolder {
    * <p>
    * NOTE - Should be used only by the UIMA Framework.
    * </p>
-   * @param uimaContext -
+   * @param uimaContext - new UimaContext for this thread
+   * @return - previous UimaContext for this thread
    */
-  public static void setContext(UimaContext uimaContext) {
-    threadLocalContext.set(uimaContext);;
+  public static UimaContext setContext(UimaContext uimaContext) {
+    UimaContext prevContext = threadLocalContext.get();
+    threadLocalContext.set(uimaContext);
+    return prevContext;
   }
   
   /**

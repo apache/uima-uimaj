@@ -19,10 +19,12 @@
 
 package org.apache.uima.resource.impl;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.FileResourceSpecifier;
 import org.apache.uima.resource.metadata.impl.MetaDataObject_impl;
 import org.apache.uima.resource.metadata.impl.PropertyXmlInfo;
 import org.apache.uima.resource.metadata.impl.XmlizationInfo;
+import org.apache.uima.util.Level;
 
 /**
  * Reference implementation of {@link org.apache.uima.resource.FileResourceSpecifier}.
@@ -47,14 +49,20 @@ public class FileResourceSpecifier_impl extends MetaDataObject_impl implements
   }
 
   /**
+   * UIMA-5274  Expand any references to external overrides when name and location are fetched.
+   * Cache the value if the evaluation succeeds (later fetches may not have the settings defined!)
+   * Leave value unmodified if any settings are undefined and log a warning message.
+   * 
    * @see org.apache.uima.resource.FileResourceSpecifier#getFileUrl()
    */
   public String getFileUrl() {
     if (mFileUrl != null && mFileUrl.contains("${")) {
-      return resolveSettings(mFileUrl);
-    } else {
-      return mFileUrl;
+      String value = resolveSettings(mFileUrl);
+      if (value != null) {
+        mFileUrl = value;
+      }
     }
+    return mFileUrl;
   }
 
   /**

@@ -181,6 +181,7 @@
                       <exclude>org/apache/uima/jcas/cas/ShortArray</exclude>
                       <exclude>org/apache/uima/jcas/cas/LongArray</exclude>
                       <exclude>org/apache/uima/jcas/cas/DoubleArray</exclude>
+                      <exclude>org/apache/uima/UimaContextHolder</exclude>
                     </excludes>
                   </requireBackwardCompatibility>
                 </rules>

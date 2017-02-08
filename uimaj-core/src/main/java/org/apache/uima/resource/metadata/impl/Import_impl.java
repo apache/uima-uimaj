@@ -52,12 +52,11 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   private String mLocation;
   
   private String byNameSuffix = ".xml";
-  
+
   /*
    * UIMA-5274  Expand any references to external overrides when name and location are fetched.
+   * Cache the value if the evaluation succeeds (later fetches may not have the settings defined!)
    * Leave value unmodified if any settings are undefined.
-   * Don't cache the value as both methods are called (for validation?) early before the settings have been loaded,
-   * but the settings are available when the values are used when initializing an AggregateAnalysisEngine.
    */
 
   /*
@@ -67,10 +66,12 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    */
   public String getName() {
     if (mName != null && mName.contains("${")) {
-      return resolveSettings(mName);
-    } else {
-      return mName;
+      String value = resolveSettings(mName);
+      if (value != null) {  // Success!
+        mName = value;
+      }
     }
+    return mName;
   }
 
   /*
@@ -89,10 +90,12 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    */
   public String getLocation() {
     if (mLocation != null && mLocation.contains("${")) {
-      return resolveSettings(mLocation);
-    } else {
-      return mLocation;
+      String value = resolveSettings(mLocation);
+      if (value != null) {
+        mLocation = value;
+      }
     }
+    return mLocation;
   }
 
   /*

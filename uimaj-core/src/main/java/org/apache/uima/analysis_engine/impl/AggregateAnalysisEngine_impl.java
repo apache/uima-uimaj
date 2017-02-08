@@ -28,6 +28,8 @@ import java.util.Map;
 
 import org.apache.uima.Constants;
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -144,6 +146,8 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       setMetaData(mdCopy);
 
       // resolve component AnalysisEngine and FlowController specifiers
+      // UIMA-5274  Set & restore the UimaContextHolder so that AEs created on this thread can use the Settings
+      UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());
       try {
         // next call only done for side effect of resolving imports
         mDescription.getDelegateAnalysisEngineSpecifiers(getResourceManager());
@@ -159,6 +163,8 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         }
       } catch (InvalidXMLException e) {
         throw new ResourceInitializationException(e);
+      } finally {
+        UimaContextHolder.setContext(prevContext);
       }
 
       // validate the AnalysisEngineDescription and throw a
