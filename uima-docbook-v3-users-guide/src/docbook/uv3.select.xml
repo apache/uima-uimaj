@@ -614,8 +614,8 @@ startAt(begin, end, shifted) // same as above,
     <section id="uv3.select.annot.follow_precede">
       <title>Following or Preceding</title>
       
-      <para>For an sorted Index, you can specify all Feature Structures following or preceding a position.
-      The position can be specified either as a Feature Structure, or (for AnnotationIndexes only) 
+      <para>For an Annotation Index, you can specify all Feature Structures following or preceding a position.
+      The position can be specified either as a Feature Structure, or 
       by using begin and end values.
       The arguments are identical to those of the <code>startAt</code> specification, but are interpreted 
       differently.    
@@ -642,6 +642,7 @@ startAt(begin, end, shifted) // same as above,
         </varlistentry>
       </variablelist>
       
+      <para>The <code>preceding</code> iteration skips annotations whose <code>end</code> values are &gt; the saved <code>begin</code>.</para>
     </section>  
   </section>
   
