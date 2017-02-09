@@ -1101,7 +1101,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(Annotation fs) {
-    return commonFollowing(fs, 0);
+    return following(fs, 0);
   }
 
   /* (non-Javadoc)
@@ -1109,7 +1109,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(int position) {
-    return commonFollowing(makePosAnnot(0, position), 0);
+    return following(position, 0);
   }
 
   /* (non-Javadoc)
@@ -1117,6 +1117,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(Annotation fs, int offset) {
+    if (fs.getBegin() < fs.getEnd()) {
+      fs = makePosAnnot(fs.getEnd(), fs.getEnd());
+    }
     return commonFollowing(fs, offset);
   }
 
@@ -1125,7 +1128,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> following(int position, int offset) {
-    return commonFollowing(makePosAnnot(0, position), offset);
+    return commonFollowing(makePosAnnot(position, position), offset);
   }
 
   /* (non-Javadoc)
@@ -1133,7 +1136,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(Annotation fs) {
-    return commonPreceding(fs, 0);
+    return preceding(fs, 0);
   }
 
   /* (non-Javadoc)
@@ -1141,7 +1144,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(int position) {
-    return commonPreceding(makePosAnnot(position, Integer.MAX_VALUE), 0);
+    return preceding(position, 0);
   }
 
   /* (non-Javadoc)
@@ -1149,6 +1152,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    */
   @Override
   public SelectFSs<T> preceding(Annotation annotation, int offset) {
+    if (annotation.getEnd() < Integer.MAX_VALUE) {
+      annotation = makePosAnnot(annotation.getBegin(), Integer.MAX_VALUE);
+    }
     return commonPreceding(annotation, offset);
   }
 
