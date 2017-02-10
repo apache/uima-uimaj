@@ -471,6 +471,7 @@
         </pluginManagement>
         -->
         <plugins>
+          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
           <plugin>              
             <groupId>com.github.siom79.japicmp</groupId>
             <artifactId>japicmp-maven-plugin</artifactId>
@@ -478,6 +479,8 @@
             <configuration>
               <parameter>
                 <onlyModified>true</onlyModified>
+                <!-- filter out classes with impl in their package or class name -->
+                <postAnalysisScript>${project.basedir}/../uimaj-parent/src/main/groovy/api-report.groovy</postAnalysisScript>                  
               </parameter>
             </configuration>
             <executions>
@@ -488,6 +491,32 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          
+          <!-- This copy is to have the api change report included in the source distribution -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-API-change-report</id>
+                <phase>install</phase>  <!-- must follow verify -->
+                <goals><goal>run</goal></goals>
+                <configuration>
+                  <target>
+                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
+                    <if>
+                      <available file="${project.build.directory}/japicmp/" />
+                      <then>
+                        <copy toDir="${basedir}/api-change-report">
+                          <fileset dir="${project.build.directory}/japicmp"/>
+                        </copy>
+                      </then>
+                    </if>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            
           </plugin>
         </plugins>
       </build>

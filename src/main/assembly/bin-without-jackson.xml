@@ -310,6 +310,19 @@ under the License.
            and we want to eliminate failures due to write permissions -->
       <directoryMode>777</directoryMode>        
     </fileSet>
+    
+    <!-- Copy the API Change reports -->
+    <fileSet>
+      <directory>uimaj-core/api-change-report</directory>
+      <outputDirectory>api-change-reports/uimaj-core</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>uimaj-cpe/api-change-report</directory>
+      <outputDirectory>api-change-reports/uimaj-cpe</outputDirectory>
+      <fileMode>644</fileMode>
+    </fileSet>
+
   </fileSets>
  
   <files>
