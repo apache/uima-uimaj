@@ -381,6 +381,7 @@
         </file>
       </activation>
       <build>
+        <!-- https://issues.apache.org/jira/browse/UIMA-5307
         <pluginManagement>
           <plugins>
             <plugin>
@@ -420,7 +421,29 @@
               </executions>
             </plugin>
           </plugins>
-        </pluginManagement>
+        </pluginManagement 
+        -->
+        
+        <plugins>
+          <plugin>              
+            <groupId>com.github.siom79.japicmp</groupId>
+            <artifactId>japicmp-maven-plugin</artifactId>
+            <version>0.9.3</version>
+            <configuration>
+              <parameter>
+                <onlyModified>true</onlyModified>
+              </parameter>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>cmp</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
       </build>
     </profile>
   </profiles>
