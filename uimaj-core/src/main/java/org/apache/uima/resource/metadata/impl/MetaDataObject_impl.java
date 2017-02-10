@@ -40,19 +40,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalArgumentException;
 import org.apache.uima.UIMA_UnsupportedOperationException;
+import org.apache.uima.UimaContext;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.AllowedValue;
 import org.apache.uima.resource.metadata.MetaDataObject;
 import org.apache.uima.util.ConcurrentHashMapWithProducer;
 import org.apache.uima.util.InvalidXMLException;
+import org.apache.uima.util.Level;
 import org.apache.uima.util.NameClassPair;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.XMLSerializer;
 import org.apache.uima.util.XMLSerializer.CharacterValidatingContentHandler;
 import org.apache.uima.util.XMLizable;
+import org.apache.uima.util.impl.Settings_impl;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -1649,6 +1654,28 @@ public abstract class MetaDataObject_impl implements MetaDataObject {
   protected Node getMatchingNode(SerialContext serialContext, String name) {
     return (infoset == null) ? null : serialContext.serializer.findMatchingSubElement(name);
   }
+  
+
+  /*
+   * UIMA-5274 Resolve any ${variable} entries in the string.
+   * Returns null if the expansion fails, i.e. a missing variable, or if no settings have been loaded.
+   * Logs a warning if settings have been loaded but an entry is missing.
+   */
+  protected String resolveSettings(String text) {
+    UimaContext uimaContext = UimaContextHolder.getContext();
+    if (uimaContext != null) {
+      Settings_impl settings = (Settings_impl) uimaContext.getExternalOverrides();
+      if (settings != null) {
+        try {
+          return settings.resolve(text);
+        } catch (Exception e) {
+          UIMAFramework.getLogger(this.getClass()).log(Level.WARNING, e.toString());
+        }
+      }
+    }
+    return null;
+  }
+  
   
 //  /*****************************************
 //   * JSON support *

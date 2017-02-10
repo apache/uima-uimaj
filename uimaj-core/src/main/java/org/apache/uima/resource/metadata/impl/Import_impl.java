@@ -27,7 +27,6 @@ import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.Import;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
-import org.apache.uima.util.Logger;
 import org.apache.uima.util.XMLParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,6 +41,11 @@ import org.xml.sax.helpers.AttributesImpl;
 public class Import_impl extends MetaDataObject_impl implements Import {
   
   private static final long serialVersionUID = 6876757002913848998L;
+  
+  /**
+   * resource bundle for log messages
+   */
+  protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
 
   private String mName;
 
@@ -50,11 +54,23 @@ public class Import_impl extends MetaDataObject_impl implements Import {
   private String byNameSuffix = ".xml";
 
   /*
+   * UIMA-5274  Expand any references to external overrides when name and location are fetched.
+   * Cache the value if the evaluation succeeds (later fetches may not have the settings defined!)
+   * Leave value unmodified if any settings are undefined.
+   */
+
+  /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.resource.metadata.Import#getName()
    */
   public String getName() {
+    if (mName != null && mName.contains("${")) {
+      String value = resolveSettings(mName);
+      if (value != null) {  // Success!
+        mName = value;
+      }
+    }
     return mName;
   }
 
@@ -73,6 +89,12 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.resource.metadata.Import#getLocation()
    */
   public String getLocation() {
+    if (mLocation != null && mLocation.contains("${")) {
+      String value = resolveSettings(mLocation);
+      if (value != null) {
+        mLocation = value;
+      }
+    }
     return mLocation;
   }
 
@@ -98,22 +120,26 @@ public class Import_impl extends MetaDataObject_impl implements Import {
    * @see org.apache.uima.resource.metadata.Import#findAbsoluteUrl(org.apache.uima.resource.ResourceManager)
    */
   public URL findAbsoluteUrl(ResourceManager aResourceManager) throws InvalidXMLException {
-    Logger logger = UIMAFramework.getLogger(this.getClass());
-    if (getLocation() != null) {
+    String location, name;
+    if ((location=getLocation()) != null) {
       try {
-        URL url = new URL(this.getRelativePathBase(), getLocation());
-        logger.log(Level.CONFIG, "Import by location: " + url);
+        URL url = new URL(this.getRelativePathBase(), location);
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
+                new Object[] {"location", url});
         return url;
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.MALFORMED_IMPORT_URL, new Object[] {
-            getLocation(), getSourceUrlString() }, e);
+            location, getSourceUrlString() }, e);
       }
-    } else if (getName() != null) {
-      String filename = getName().replace('.', '/') + byNameSuffix;
+    } else if ((name=getName()) != null) {
+      String filename = name.replace('.', '/') + byNameSuffix;
       URL url;
       try {
         url = aResourceManager.resolveRelativePath(filename);
-        logger.log(Level.CONFIG, "Import by name: " + url);
+        UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(),
+                "findAbsoluteUrl", LOG_RESOURCE_BUNDLE, "UIMA_import_by__CONFIG",
+                new Object[] {"name", url});
       } catch (MalformedURLException e) {
         throw new InvalidXMLException(InvalidXMLException.IMPORT_BY_NAME_TARGET_NOT_FOUND,
                 new Object[] { filename, getSourceUrlString() }, e);
@@ -178,11 +204,13 @@ public class Import_impl extends MetaDataObject_impl implements Import {
     
     String namespace = getXmlizationInfo().namespace;
     AttributesImpl attrs = new AttributesImpl();
-    if (getName() != null) {
-      attrs.addAttribute("", "name", "name", "", getName());
+    String name = getName();
+    if (name != null) {
+      attrs.addAttribute("", "name", "name", "", name);
     }
-    if (getLocation() != null) {
-      attrs.addAttribute("", "location", "location", "", getLocation());
+    String location = getLocation();
+    if (location != null) {
+      attrs.addAttribute("", "location", "location", "", location);
     }
     Node node = serializer.findMatchingSubElement("import");
     serializer.outputStartElement(node, namespace, "import", "import", attrs);

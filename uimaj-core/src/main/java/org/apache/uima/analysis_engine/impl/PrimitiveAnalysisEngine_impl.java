@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
+import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
 import org.apache.uima.analysis_component.AnalysisComponent;
@@ -59,8 +60,9 @@ import org.apache.uima.util.Logger;
  */
 public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase implements AnalysisEngine {
   /**
-   * current class
+   * UIMA-5043 Set & restore the UimaContextHolder around calls to user code so it can be used to access the External Settings
    */
+  
   
   private static final Class<PrimitiveAnalysisEngine_impl> CLASS_NAME = PrimitiveAnalysisEngine_impl.class;
  
@@ -220,7 +222,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       return;
     }
 
-    UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
     try {
       Object userObject = annotatorClass.newInstance();
       if (userObject instanceof AnalysisComponent) {
@@ -230,10 +231,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
                 getAnalysisEngineMetaData(), aAdditionalParams);
       }
     } catch (ResourceInitializationException e) {
-      UimaContextHolder.clearContext();
       throw e;
     } catch (Exception e) {
-      UimaContextHolder.clearContext();
+      
       throw new ResourceInitializationException(
               ResourceInitializationException.COULD_NOT_INSTANTIATE_ANNOTATOR, new Object[] {
                   annotatorClassName, mDescription.getSourceUrlString() }, e);
@@ -246,6 +246,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     uimaContext.setLogger(logger);
 
     // initialize AnalysisComponent
+    UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
     try {
       mAnalysisComponent.initialize(getUimaContext());
       // set up the CAS pool for this AE (this won't do anything if mAnalysisComponent.getCasInstancesRequired() == 0)
@@ -256,7 +257,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
               ResourceInitializationException.ANNOTATOR_INITIALIZATION_FAILED, new Object[] {
                   annotatorClassName, mDescription.getSourceUrlString() }, e);
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -265,9 +266,9 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   public void destroy() {
     if (mAnalysisComponent != null) {
-      UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
+      UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       mAnalysisComponent.destroy();
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
       getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "destroy", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     }
@@ -307,22 +308,22 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
   public void batchProcessComplete() throws AnalysisEngineProcessException {
     enterBatchProcessComplete();
+    UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
     try {
-      UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       getAnalysisComponent().batchProcessComplete();
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
       exitBatchProcessComplete();
     }
   }
 
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     enterCollectionProcessComplete();
+    UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
     try {
-      UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       getAnalysisComponent().collectionProcessComplete();
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
       exitCollectionProcessComplete();
     }
   }
@@ -342,6 +343,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
             "UIMA_analysis_engine_process_begin__FINE", resourceName);
     try {
       CAS view = null;
+      UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       // call Annotator's process method
       try {
 
@@ -350,7 +352,6 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
         // now get the right interface(e.g. CAS or JCAS)
         // must precede the switchClassLoader call below UIMA-2211
-        UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
         Class<? extends AbstractCas> requiredInterface = mAnalysisComponent.getRequiredCasInterface();
         AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);
 
@@ -403,7 +404,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
         }
         throw e;
       } finally {
-        UimaContextHolder.clearContext();
+        UimaContextHolder.setContext(prevContext);
       }
 
       // log end of event
@@ -505,8 +506,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
    */
   protected CAS callAnalysisComponentNext() throws AnalysisEngineProcessException,
           ResultNotSupportedException {
+    UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
     try {
-      UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       AbstractCas absCas = mAnalysisComponent.next();
       getMBean().incrementCASesProcessed();
       // notify UimaContext that a CAS was returned -- it uses
@@ -536,7 +537,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       else
         throw new AnalysisEngineProcessException(e);
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -548,13 +549,13 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     super.reconfigure();
 
     // inform the annotator
+    UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
     try {
-      UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       mAnalysisComponent.reconfigure();
     } catch (ResourceInitializationException e) {
       throw new ResourceConfigurationException(e);
     } finally {
-      UimaContextHolder.clearContext();
+      UimaContextHolder.setContext(prevContext);
     }
   }
 
@@ -586,8 +587,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       if (casAvailable) {
         return true;
       }
+      UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
       try {
-        UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
         casAvailable = mMyAnalysisComponent.hasNext();
         if (!casAvailable) {
           //when hasNext returns false, by contract the AnalysisComponent is done processing its
@@ -606,7 +607,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
       }
  
       finally {
-        UimaContextHolder.clearContext();
+        UimaContextHolder.setContext(prevContext);
         exitProcess();
       }
     }

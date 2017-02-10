@@ -22,3 +22,9 @@ suffix = should be ignored
 # Empty array
 test.externalFloatArray =  []
 context-holder = Context Holder Test
+
+# Part of an import by location
+with = ${W${i}}${TH}
+i = I
+WI = Wi
+TH = th

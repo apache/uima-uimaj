@@ -26,6 +26,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.UimaContextHolder;
 import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
@@ -162,7 +163,7 @@ public abstract class Resource_ImplBase implements Resource {
           }
         }
       }
-
+      
       // initialize configuration
       try {
         // createContext checks and skips repeated calls with same args (on different threads, for example)
@@ -176,12 +177,15 @@ public abstract class Resource_ImplBase implements Resource {
       }
 
       // initialize any external resource declared in this descriptor
+      // UIMA-5274  Set & restore the UimaContextHolder so that resources created on this thread can use the Settings
       ResourceManagerConfiguration resMgrCfg = ((ResourceCreationSpecifier) aSpecifier)
               .getResourceManagerConfiguration();
       if (resMgrCfg != null) {
+        UimaContext prevContext = UimaContextHolder.setContext(mUimaContextAdmin);
         try {
           resMgrCfg.resolveImports(getResourceManager());
         } catch (InvalidXMLException e) {
+          UimaContextHolder.setContext(prevContext);
           throw new ResourceInitializationException(e);
         }
         if (aAdditionalParams == null) {
@@ -206,6 +210,8 @@ public abstract class Resource_ImplBase implements Resource {
         
         mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
                 mUimaContextAdmin.getQualifiedContextName(), aAdditionalParmsForExtResources);
+        
+        UimaContextHolder.setContext(prevContext);
       }
 
       // resolve and validate this component's external resource dependencies
