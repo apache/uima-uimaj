@@ -324,9 +324,9 @@ public class AnalysisEngine_implTest extends TestCase {
       // descriptor with configuration parameter external overrides
       // implicitly load settings values from the 3 files in the system property UimaExternalOverrides
       // Load 1st from filesystem, 2nd from classpath, and 3rd from datapath
-      
-      String prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, "src/test/data");
+
       String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
+      String prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, resDir);
       System.setProperty("UimaExternalOverrides", 
               resDir+"testExternalOverride.settings,TextAnalysisEngineImplTest/testExternalOverride2.settings,testExternalOverride4.settings");
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
