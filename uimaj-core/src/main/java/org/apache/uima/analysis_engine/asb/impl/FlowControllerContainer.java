@@ -129,7 +129,6 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
               "UIMA_flow_controller_init_begin__CONFIG", getMetaData().getName());
       
       // initialize FlowController
-      prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       mFlowController.initialize(getFlowControllerContext());
 
       mMBeanServer = null;
@@ -182,9 +181,8 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
-    UimaContext prevContext = null;
+    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
     try {
-      prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
       mFlowController.reconfigure();
     } catch (ResourceInitializationException e) {
       throw new ResourceConfigurationException(e);
