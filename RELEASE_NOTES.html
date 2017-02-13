@@ -111,14 +111,32 @@ lists of Feature Structures and ints, and a FSHashSet</li>
 <li>New "select" framework for flexible 
 access to Feature Structures</li>
 <li>Integration with Java 8 facilities such as Streams</li>
+</ul>
 </p>
 
 <p>Please read the overview section of the Version 3 
 users guide for more.</p>
+
+<p>Specific changes in this release versus the previous alpha release include
+<ul>
+  <li>The Eclipse update site for version 3 alpha is now under a new 
+    higher level directory, "uimaj-v3-pre-production".  This is to avoid
+    users accidentally installing it when they meant to get the lastest 
+    production level, which remains under "uimaj".
+  </li>
+  <li>The "select" framework APIs had javadocs added and some fixes which resulted in API changes for some methods.</li>
+  <li>Logging was upgraded in two ways:  The log4j back end for the UIMA logger was upgraded to log4j 2 (the current version).
+  And, support was added for the slf4j logging facade.</li>
+  <li>changes made to uimaj-2.9.0 were merged.</li>
+  <li>Various implementations of UIMA built-in types which have corresponding Java 8 non-boxing versions of methods were
+    augmented to support non-boxing alternatives; see the API changes report for details.</li> 
+</ul>
+</p>
  
 <h3>API changes</h3>
- <p>Many APIs were changed, typically by adding new capability.  
- However, we attempt to preserve existing APIs, for backward compatibility. 
+ <p>This version includes a new API compatibility report covering the non-internal APIs;
+   see <a href="api-change-report.html">change report</a> for the list of API changes
+   in this release.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
