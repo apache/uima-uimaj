@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-beta-SNAPSHOT</version>
+    <version>3.0.0-alpha02-SNAPSHOT</version>
     <relativePath />
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>3.0.0-beta-SNAPSHOT</version>
+  <version>3.0.0-alpha02-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
