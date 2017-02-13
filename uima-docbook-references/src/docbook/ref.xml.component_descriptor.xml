@@ -154,16 +154,24 @@ under the License.
       <programlisting>
 ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
 resMgr.setDataPath(yourPathString);
-AnalysisEngine ae = UIMAFramework.produceAE(desc, resMgr, null);
+AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
 </programlisting></para>
     
     <para>The default datapath for the entire JVM can be set via the
       <literal>uima.datapath</literal> Java system property, but this feature should
       only be used for standalone applications that don&apos;t need to run in the same JVM as
       other code that may need a different datapath.</para>
+
+    <para>The value of a name or location attribute may be parameterized with references to external
+    override variables using the <literal>${variable-name}</literal> syntax.
+    <programlisting>&lt;import location="Annotator${with}ExternalOverrides.xml" /&gt;</programlisting>
+	If a variable is undefined the value is left unmodified and a warning message identifies the missing
+	variable.</para>
+
     <para>Previous versions of UIMA also supported XInclude. That support didn't work in
       many situations, and it is no longer supported. To include other files, please use
       &lt;import&gt;.</para>
+
     <!--
     <para>The UIMA SDK also supports XInclude, a W3C candidate recommendation,
     to include XML files within other XML files.  However, it is recommended that the import syntax be used instead, as it
@@ -1101,6 +1109,13 @@ uima.tcas.Annotation.</programlisting>
               it will complain that it can&apos;t connect to the host <quote>org</quote>
               </para>
             
+			<para>The URL value may contain references to external override variables using the
+ 		      <literal>${variable-name}</literal> syntax, 
+			  e.g. <literal>file:com/${dictUrl}.txt</literal>.
+			  If a variable is undefined the value is left unmodified and a warning message
+ 		      identifies the missing variable.
+			  </para>
+
             <para>Another option is a
               <literal>&lt;fileLanguageResourceSpecifier&gt;</literal>, which is
               intended to support resources, such as dictionaries, that depend on the
@@ -2072,6 +2087,16 @@ if (uimaContext != null) {
             </para>
           </section>
 
+          <section id="&tp;aes.other_uses_for_external_configuration_parameters">
+            <title>Other Uses for External Configuration Parameters</title>
+			<para>
+            Explicit references to shared configuration parameters can be specified as part of the
+            value of the name and location attributes of the <literal>import</literal> element
+			and in the value of the fileUrl for a <literal>fileResourceSpecifier</literal>
+			(see <xref linkend="&tp;imports"/> and <xref linkend="&tp;aes.primitive.resource_manager_configuration"/>).
+            </para>
+		  </section>
+
         </section>
       </section>
  
@@ -2120,7 +2145,7 @@ if (uimaContext != null) {
       <literal>resourceManagerConfiguration</literal> elements are exactly the same as
       in Primitive Analysis Engine Descriptors (see <xref
         linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
-        linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+        linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
     
   </section>
   
@@ -2216,7 +2241,7 @@ if (uimaContext != null) {
         <literal>resourceManagerConfiguration</literal> elements are exactly the same
         as in the Primitive Analysis Engine Descriptors (see <xref
           linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
-          linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
       
     </section>
     <section id="&tp;collection_processing_parts.cas_initializer">
@@ -2360,7 +2385,7 @@ if (uimaContext != null) {
         <literal>resourceManagerConfiguration</literal> elements are exactly the same
         as in Primitive Analysis Engine Descriptors (see <xref
           linkend="&tp;aes.primitive.external_resource_dependencies"/> and <xref
-          linkend="&tp;aes.primitive.resource_manager_configuration"/>.</para>
+          linkend="&tp;aes.primitive.resource_manager_configuration"/>).</para>
       
     </section>
   </section>
