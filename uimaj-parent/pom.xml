@@ -426,8 +426,7 @@
       <build>
         <!--  the old checker, moving to japicmp  Java API Compatibility plugin
               https://issues.apache.org/jira/browse/UIMA-5307           
-        <pluginManagement>
-          <plugins>
+        
             <plugin>
               <artifactId>maven-enforcer-plugin</artifactId>
               <dependencies>
@@ -460,9 +459,25 @@
                 </execution>
               </executions>
             </plugin>
-          </plugins>
-        </pluginManagement>
         -->
+        <pluginManagement>
+          <plugins>
+            <plugin>
+	            <groupId>org.apache.rat</groupId>
+		          <artifactId>apache-rat-plugin</artifactId>
+		          <executions>
+		            <execution>
+		              <id>default-cli</id>
+		              <configuration >
+		                <excludes combine.children="append">
+	                    <exclude>**/api-change-report/**/*.*</exclude>>
+		                </excludes>
+		              </configuration>
+		            </execution>
+	          </executions>
+	          </plugin>
+          </plugins>
+        </pluginManagement> 
         <plugins>
           <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
           <plugin>              
