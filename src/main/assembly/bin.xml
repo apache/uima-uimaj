@@ -328,17 +328,17 @@ under the License.
     <!-- Copy the API Change reports -->
     <fileSet>
       <directory>uimaj-core/api-change-report</directory>
-      <outputDirectory>api-change-reports/uimaj-core</outputDirectory>
+      <outputDirectory>uimaj-core/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>uimaj-cpe/api-change-report</directory>
-      <outputDirectory>api-change-reports/uimaj-cpe</outputDirectory>
+      <outputDirectory>uimaj-cpe/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
     </fileSet>
     <fileSet>
       <directory>uimaj-json/api-change-report</directory>
-      <outputDirectory>api-change-reports/uimaj-json</outputDirectory>
+      <outputDirectory>uimaj-json/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
     </fileSet>
   </fileSets>
@@ -388,6 +388,10 @@ under the License.
       <source>uimaj-examples/src/main/java/org/apache/uima/examples/xmi/UimaTypeSystem2Ecore.java</source>
       <outputDirectory>examples/ecore_src/org/apache/uima/examples/xmi</outputDirectory>
       <fileMode>644</fileMode> 
+    </file>
+    <file>
+      <source>api-change-report.html</source>
+      <outputDirectory>.</outputDirectory>
     </file>
   </files>
 </assembly>

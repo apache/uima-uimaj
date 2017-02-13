@@ -139,13 +139,6 @@
   <properties>
     <uimaScmRoot>uimaj</uimaScmRoot>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <!-- 
-     BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-     BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-     NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-     -->
-    <compat.level>NON_BACKWARD_COMPATIBLE</compat.level>
-    <compat.previous.version>2.9.0</compat.previous.version>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
