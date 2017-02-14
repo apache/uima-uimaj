@@ -28,12 +28,12 @@ under the License.
   <title>Logging</title>
     
     <para>V3 retains the existing V2 logging facade, unchanged, for backwards compatibility.
-    In addition, a new logging facade, the open source standard SLF4J is provided.
+    In addition, a new logging facade, the open source standard SLF4J is available.
     The current APIs for getting a logger get the V2 loggers; the SLF4j logger is made available
-    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call, as well as via
-    a new API on the Annotator base implementation classes, <code>getSlf4jLogger()</code>.
+    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call.
     </para>
-            
+
+    <!--             
     <para>The v2 loggers support internationalization using resource bundles.  The logger
       gets the classpath via a handle to a ResourceManager, and uses that Resource Manager's Extension Classpath
       when looking up resource bundles.
@@ -46,6 +46,7 @@ under the License.
       SLF4j.  This should be done using a Java 8 lambda <code>Supplier&lt;String&gt;</code>, 
       to avoid computing the value if logging is not enabled. 
     </para>
+     -->
     
     <para> 
       The SLF4j and other documentation (e.g.,  
@@ -55,7 +56,7 @@ under the License.
       to use the back end logger <code>log4j 2</code>, you would
       include the Jars specified in this dependency tree as "compile" dependencies:
       <ulink url="https://logging.apache.org/log4j/2.x/log4j-to-slf4j/dependencies.html#Dependency_Tree"/>.
-      
+      These are included in the binary distribution.
     </para>
     
     <para>The Eclipse UIMA Runtime plugin excludes the slf4j api Jar and back ends, and expects the
@@ -74,12 +75,14 @@ under the License.
       logger for the class has a level set to Tracing.  
       The following table lists the keys and the values recorded in the
       contexts; these can be retrieved by the logging layouts and included in log messages.      
-    </para>    
+    </para>
+    
+    <para>Because the keys for context data are global, the ones UIMA uses internally are prefixed with "uima_".</para>   
     
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="2">
        <colspec colnum="1" colname="key" colwidth="1*"/>
-       <colspec colnum="2" colname="description" colwidth="4*"/>
+       <colspec colnum="2" colname="description" colwidth="3*"/>
        
        <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
         
@@ -91,13 +94,12 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
-           <entry><para>annotator</para></entry>         
-           <entry><para>the key name of the annotator.  Use an NDC reference to the stack to get the chain of 
-             aggregate embeddings.</para></entry>
+           <entry><para>uima_annotator</para></entry>         
+           <entry><para>the name of the annotator.</para></entry>
          </row>
          
          <row>
-           <entry><para>rootUimaContext</para></entry>
+           <entry><para>uima_root_context</para></entry>
            <entry><para>The root context corresponds to the pipeline being run.  This could be be nested.</para></entry>
          </row>
 
@@ -124,8 +126,8 @@ under the License.
 
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="2">
-       <colspec colnum="1" colname="key" colwidth="1*"/>
-       <colspec colnum="2" colname="description" colwidth="3*"/>
+       <colspec colnum="1" colname="key" colwidth="20*"/>
+       <colspec colnum="2" colname="description" colwidth="30*"/>
        
        <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
         
@@ -137,44 +139,43 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
-           <entry><para>annotator</para></entry>
+           <entry><para>uima_annotator</para></entry>
            <entry><para>for tracing when annotators are entered, exited</para></entry>
          </row>
 
          <row>
-           <entry><para>flow_controller</para></entry>
+           <entry><para>uima_flow_controller</para></entry>
            <entry><para>for tracing when flow controllers are computing</para></entry>
          </row>
 
          <row>
-           <entry><para>FSs</para></entry>
+           <entry><para>uima_feature_structure</para></entry>
            <entry><para>for tracing Feature Structure Creation and updating</para></entry>
          </row>
 
          <row>
-           <entry><para>index</para></entry>
+           <entry><para>uima_index</para></entry>
            <entry><para>for tracing when indexes are added to or removed from</para></entry>
          </row>
           
          <row>
-           <entry><para>index_copy_on_write</para></entry>         
+           <entry><para>uima_index_copy_on_write</para></entry>         
            <entry><para>for tracing when an index part is copied, due to it being updated while an iterator might be iterating.</para></entry>
          </row>
 
          <row>
-           <entry><para>index_auto_rmv_add</para></entry>         
+           <entry><para>uima_index_auto_rmv_add</para></entry>         
            <entry><para>for tracing when index corruption avoidance done</para></entry>
          </row>
             
          <row>
-           <entry><para>serdes</para></entry>
+           <entry><para>uima_serialization_deserialization</para></entry>
            <entry><para>for tracing when serialization or deserialization is done</para></entry>
          </row>
                   
        </tbody>
      </tgroup>
    </informaltable>
-    
-    
+        
   </section>
 </chapter>

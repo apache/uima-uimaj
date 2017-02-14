@@ -24,7 +24,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="uv3.migration">
-  <title>Migrating JCas classes from Version 2 to 3</title>
+  <title>Migrating JCas classes</title>
   <titleabbrev>Migrating JCas</titleabbrev>
   
   <section id="uv3.migration.big_picture">
@@ -55,7 +55,7 @@ under the License.
     </para>
     
     <section id="uv3.migration.maven-cookbook">
-      <title>How to modify a Maven project to support both v2 and v3</title>
+      <title>Modifying a Maven project to support both v2 &amp; v3</title>
       <titleabbrev>Maven v2/v3 simultaneous support</titleabbrev>
       
       <para>When migrating an existing Maven project to v3, you can of course, just change the dependencies, upgrade
