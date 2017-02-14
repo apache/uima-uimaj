@@ -128,7 +128,7 @@ public class FSUtilTest {
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
     }
     else {
-      assertEquals(AnnotationImpl.class.getName(),
+      assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationValue", FeatureStructure.class).getClass().getName());
     }
     assertEquals(0, getFeature(fs, "AnnotationValue", AnnotationFS.class).getBegin());
@@ -205,7 +205,7 @@ public class FSUtilTest {
       assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[0].getClass().getName());
     } else {
-      assertEquals(AnnotationImpl.class.getName(),
+      assertEquals(Annotation.class.getName(),
               getFeature(fs, "AnnotationListValue", AnnotationFS[].class)[0].getClass().getName());
     }
       

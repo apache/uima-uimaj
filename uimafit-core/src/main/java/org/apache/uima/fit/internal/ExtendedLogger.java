@@ -208,6 +208,11 @@ public class ExtendedLogger implements Logger {
     context.getLogger().setResourceManager(resourceManager);
   }
 
+  @Override
+  public String rb(String bundleName, String msgKey, Object... parameters) {
+    return I18nUtil.localizeMessage(bundleName, msgKey, parameters, getExtensionClassLoader());
+  }
+  
   /**
    * Logs a message at {@link Level#FINE}.
    * 

@@ -32,11 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.LocationInfo;
-import org.apache.log4j.spi.LoggingEvent;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -115,56 +110,56 @@ public class LoggingTest {
     }
   }
 
-  @Test
-  public void testLog4JLogger() {
-    final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
-
-    BasicConfigurator.configure();
-
-    // Tell the logger to log everything
-    Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
-    org.apache.log4j.Level oldLevel = rootLogger.getLevel();
-    rootLogger.setLevel(org.apache.log4j.Level.ALL);
-    Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
-    // Capture the logging output without actually logging it
-    appender.addFilter(new org.apache.log4j.spi.Filter() {
-      @Override
-      public int decide(LoggingEvent event) {
-        records.add(event);
-        LocationInfo l = event.getLocationInformation();
-        System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
-        return org.apache.log4j.spi.Filter.DENY;
-      }
-    });
-
-    try {
-      UimaContextAdmin ctx = new RootUimaContext_impl();
-      ctx.setLogger(Log4jLogger_impl.getInstance());
-      ExtendedLogger logger = new ExtendedLogger(ctx);
-
-      logger.setLevel(org.apache.uima.util.Level.ALL);
-      trigger(logger);
-      logger.setLevel(org.apache.uima.util.Level.OFF);
-      trigger(logger);
-
-      assertEquals(10, records.size());
-      assertEquals(org.apache.log4j.Level.ALL, records.get(0).getLevel());
-      assertEquals(org.apache.log4j.Level.ALL, records.get(1).getLevel());
-      assertEquals(org.apache.log4j.Level.DEBUG, records.get(2).getLevel());
-      assertEquals(org.apache.log4j.Level.DEBUG, records.get(3).getLevel());
-      assertEquals(org.apache.log4j.Level.INFO, records.get(4).getLevel());
-      assertEquals(org.apache.log4j.Level.INFO, records.get(5).getLevel());
-      assertEquals(org.apache.log4j.Level.WARN, records.get(6).getLevel());
-      assertEquals(org.apache.log4j.Level.WARN, records.get(7).getLevel());
-      assertEquals(org.apache.log4j.Level.ERROR, records.get(8).getLevel());
-      assertEquals(org.apache.log4j.Level.ERROR, records.get(9).getLevel());
-    } finally {
-      if (oldLevel != null) {
-        rootLogger.setLevel(oldLevel);
-        appender.clearFilters();
-      }
-    }
-  }
+//  @Test
+//  public void testLog4JLogger() {
+//    final List<LoggingEvent> records = new ArrayList<LoggingEvent>();
+//
+//    BasicConfigurator.configure();
+//
+//    // Tell the logger to log everything
+//    Logger rootLogger = org.apache.log4j.LogManager.getRootLogger();
+//    org.apache.log4j.Level oldLevel = rootLogger.getLevel();
+//    rootLogger.setLevel(org.apache.log4j.Level.ALL);
+//    Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
+//    // Capture the logging output without actually logging it
+//    appender.addFilter(new org.apache.log4j.spi.Filter() {
+//      @Override
+//      public int decide(LoggingEvent event) {
+//        records.add(event);
+//        LocationInfo l = event.getLocationInformation();
+//        System.out.printf("[%s:%s] %s%n", l.getFileName(), l.getLineNumber(), event.getMessage());
+//        return org.apache.log4j.spi.Filter.DENY;
+//      }
+//    });
+//
+//    try {
+//      UimaContextAdmin ctx = new RootUimaContext_impl();
+//      ctx.setLogger(Log4jLogger_impl.getInstance());
+//      ExtendedLogger logger = new ExtendedLogger(ctx);
+//
+//      logger.setLevel(org.apache.uima.util.Level.ALL);
+//      trigger(logger);
+//      logger.setLevel(org.apache.uima.util.Level.OFF);
+//      trigger(logger);
+//
+//      assertEquals(10, records.size());
+//      assertEquals(org.apache.log4j.Level.ALL, records.get(0).getLevel());
+//      assertEquals(org.apache.log4j.Level.ALL, records.get(1).getLevel());
+//      assertEquals(org.apache.log4j.Level.DEBUG, records.get(2).getLevel());
+//      assertEquals(org.apache.log4j.Level.DEBUG, records.get(3).getLevel());
+//      assertEquals(org.apache.log4j.Level.INFO, records.get(4).getLevel());
+//      assertEquals(org.apache.log4j.Level.INFO, records.get(5).getLevel());
+//      assertEquals(org.apache.log4j.Level.WARN, records.get(6).getLevel());
+//      assertEquals(org.apache.log4j.Level.WARN, records.get(7).getLevel());
+//      assertEquals(org.apache.log4j.Level.ERROR, records.get(8).getLevel());
+//      assertEquals(org.apache.log4j.Level.ERROR, records.get(9).getLevel());
+//    } finally {
+//      if (oldLevel != null) {
+//        rootLogger.setLevel(oldLevel);
+//        appender.clearFilters();
+//      }
+//    }
+//  }
 
   private void trigger(ExtendedLogger aLogger) {
     if (aLogger.isTraceEnabled()) {
