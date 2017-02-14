@@ -153,6 +153,7 @@
     <maven.surefire.heap>512m</maven.surefire.heap>
     <maven.surefire.argLine />
     <jacoco.argLine />
+    <api_check_oldVersion>3.0.0-alpha</api_check_oldVersion>
   </properties>
   
   <dependencyManagement>
@@ -424,42 +425,7 @@
         </file>
       </activation>
       <build>
-        <!--  the old checker, moving to japicmp  Java API Compatibility plugin
-              https://issues.apache.org/jira/browse/UIMA-5307           
-        
-            <plugin>
-              <artifactId>maven-enforcer-plugin</artifactId>
-              <dependencies>
-                <dependency>
-                  <groupId>org.semver</groupId>
-                  <artifactId>enforcer-rule</artifactId>
-                  <version>0.9.33</version>
-                </dependency>
-              </dependencies>
-              <executions>
-                <execution>
-                  <id>enforce-compatibility</id>
-                  <phase>verify</phase>
-                  <goals>
-                    <goal>enforce</goal>
-                  </goals>
-                  <configuration>
-                    <rules>
-                      <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
-                        <previousVersion>${compat.previous.version}</previousVersion>
-                        <dumpDetails>true</dumpDetails>
-                        <compatibilityType>${compat.level}</compatibilityType>
-                        <excludes>
-                          <exclude>**/impl/**/*</exclude>
-                          <exclude>**/internal/**/*</exclude>
-                        </excludes>
-                      </requireBackwardCompatibility>
-                    </rules>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-        -->
+
         <pluginManagement>
           <plugins>
             <plugin>
@@ -477,7 +443,8 @@
 	          </executions>
 	          </plugin>
           </plugins>
-        </pluginManagement> 
+        </pluginManagement>
+         
         <plugins>
           <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
           <plugin>              
@@ -485,6 +452,13 @@
             <artifactId>japicmp-maven-plugin</artifactId>
             <version>0.9.3</version>
             <configuration>
+              <oldVersion>
+                <dependency>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${api_check_oldVersion}</version>
+                </dependency>
+              </oldVersion>
               <parameter>
                 <onlyModified>true</onlyModified>
                 <!-- filter out classes with impl in their package or class name -->
