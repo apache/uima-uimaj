@@ -79,7 +79,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
-    UimaContext prevContext = UimaContextHolder.getContext();   // Get this early so the restore in correct
+    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());   // Get this early so the restore in correct
     try {
       // specifier must be a FlowControllerDescription. (Eventually, we
       // might support remote specifiers, but not yet)
