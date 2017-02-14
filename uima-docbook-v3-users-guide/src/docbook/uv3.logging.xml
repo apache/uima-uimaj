@@ -30,7 +30,10 @@ under the License.
     <para>V3 retains the existing V2 logging facade, unchanged, for backwards compatibility.
     In addition, a new logging facade, the open source standard SLF4J is available.
     The current APIs for getting a logger get the V2 loggers; the SLF4j logger is made available
-    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call.
+    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call,
+    as well as via a new API on the Annotator base implementation classes, <code>getSlf4jLogger(),
+    </code> which returns a named logger whose name is the fully qualified name of the 
+    annotator implementation class.
     </para>
 
     <!--             
