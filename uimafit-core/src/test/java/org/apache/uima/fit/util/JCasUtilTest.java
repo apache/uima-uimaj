@@ -463,15 +463,57 @@ public class JCasUtilTest extends ComponentTestBase {
   }
 
   @Test
-  public void testSelectFollowingPreceding() {
+  public void testSelectFollowing() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+    List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
+
+    assertEquals(token.get(2).getCoveredText(), selectFollowing(jCas, Token.class, token.get(1), 1)
+            .get(0).getCoveredText());
+  }
+
+  @Test
+  public void testSelectPreceding() {
     String text = "one two three";
     tokenBuilder.buildTokens(jCas, text);
     List<Token> token = new ArrayList<Token>(select(jCas, Token.class));
 
     assertEquals(token.get(0).getCoveredText(), selectPreceding(jCas, Token.class, token.get(1), 1)
             .get(0).getCoveredText());
-    assertEquals(token.get(2).getCoveredText(), selectFollowing(jCas, Token.class, token.get(1), 1)
-            .get(0).getCoveredText());
+  }
+
+  @Test
+  public void testSelectPrecedingWithOverlaps() {
+    String text = "a b c d e";
+    tokenBuilder.buildTokens(jCas, text);
+    new Token(jCas, 2, 7).addToIndexes();
+    
+    Token c = JCasUtil.selectAt(jCas, Token.class, 4, 5).get(0);
+
+    List<Token> preceedingTokens = selectPreceding(jCas, Token.class, c, 2);
+    
+    assertEquals(2, preceedingTokens.size());
+    assertEquals("b", preceedingTokens.get(1).getCoveredText());
+    assertEquals("a", preceedingTokens.get(0).getCoveredText());
+  }
+
+  @Test
+  public void testSelectPrecedingWithOverlaps2() {
+    jCas.setDocumentText("abcde");
+    new Token(jCas, 0, 1).addToIndexes();
+    new Token(jCas, 1, 2).addToIndexes();
+    new Token(jCas, 2, 3).addToIndexes();
+    new Token(jCas, 3, 4).addToIndexes();
+    new Token(jCas, 4, 5).addToIndexes();
+    new Token(jCas, 1, 3).addToIndexes();
+    
+    Token c = JCasUtil.selectAt(jCas, Token.class, 2, 3).get(0);
+
+    List<Token> preceedingTokens = selectPreceding(jCas, Token.class, c, 2);
+    
+    assertEquals(2, preceedingTokens.size());
+    assertEquals("b", preceedingTokens.get(1).getCoveredText());
+    assertEquals("a", preceedingTokens.get(0).getCoveredText());
   }
 
   @Test

@@ -1108,8 +1108,12 @@ public final class CasUtil {
     }
 
     // add annotations from the iterator into the result list
-    for (int i = 0; i < count && itr.isValid(); i++, itr.moveToPrevious()) {
-      precedingAnnotations.add(itr.get());
+    for (int i = 0; i < count && itr.isValid(); itr.moveToPrevious()) {
+      AnnotationFS cur = itr.get();
+      if (cur.getEnd() <= annotation.getBegin()) {
+        precedingAnnotations.add(itr.get());
+        i++;
+      }
     }
 
     // return in correct order
