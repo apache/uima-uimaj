@@ -27,6 +27,8 @@ import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
+import org.apache.uima.impl.Util;
+import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.resource.impl.RelativePathResolver_impl;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
@@ -325,5 +327,17 @@ public abstract class Resource_ImplBase implements Resource {
     }
     return relPathResolver;
   }
+
+  public void withContextHolder(Runnable userCode) {
+    Util.withContextHolder(getUimaContext(), userCode);
+  }
   
+  public void setContextHolderX(Runnable_withException userCode) throws Exception {
+    Util.withContextHolderX(getUimaContext(), userCode);
+  } 
+  
+  public UimaContext setContextHolder() {
+    return UimaContextHolder.setContext(getUimaContext());
+  }
+
 }

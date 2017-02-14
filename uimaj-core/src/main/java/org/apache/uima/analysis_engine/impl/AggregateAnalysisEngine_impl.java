@@ -147,7 +147,7 @@ public class AggregateAnalysisEngine_impl extends AnalysisEngineImplBase impleme
 
       // resolve component AnalysisEngine and FlowController specifiers
       // UIMA-5274  Set & restore the UimaContextHolder so that AEs created on this thread can use the Settings
-      UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());
+      UimaContext prevContext = setContextHolder();
       try {
         // next call only done for side effect of resolving imports
         mDescription.getDelegateAnalysisEngineSpecifiers(getResourceManager());
