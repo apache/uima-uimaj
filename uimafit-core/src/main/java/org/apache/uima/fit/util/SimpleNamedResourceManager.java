@@ -108,7 +108,7 @@ public class SimpleNamedResourceManager extends ResourceManager_impl {
           throws ResourceInitializationException {
 
     for (Entry<String, Object> e : externalContext.entrySet()) {
-      Object registration = mInternalResourceRegistrationMap.get(e.getKey());
+      ResourceRegistration registration = mInternalResourceRegistrationMap.get(e.getKey());
 
       if (registration == null) {
         try {
@@ -201,7 +201,7 @@ public class SimpleNamedResourceManager extends ResourceManager_impl {
           throws ResourceInitializationException {
     Field f = null;
     try {
-      f = aObject.getClass().getField(aFieldName);
+      f = aObject.getClass().getDeclaredField(aFieldName);
       f.setAccessible(true);
       return (T) f.get(aObject);
     } catch (Exception e) {
