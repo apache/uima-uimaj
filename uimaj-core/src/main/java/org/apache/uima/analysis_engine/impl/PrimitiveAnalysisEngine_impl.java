@@ -283,8 +283,11 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
   public void destroy() {
     if (mAnalysisComponent != null) {
       UimaContext prevContext = UimaContextHolder.setContext(getUimaContext());  // for use by POJOs
-      mAnalysisComponent.destroy();
-      UimaContextHolder.setContext(prevContext);
+      try {
+        mAnalysisComponent.destroy();
+      } finally {
+        UimaContextHolder.setContext(prevContext);
+      }
       getLogger().logrb(Level.CONFIG, CLASS_NAME.getName(), "destroy", LOG_RESOURCE_BUNDLE,
               "UIMA_analysis_engine_destroyed__CONFIG", getMetaData().getName());
     }

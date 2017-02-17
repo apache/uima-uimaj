@@ -198,8 +198,11 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    */
   public void destroy() {
     UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.destroy();
-    UimaContextHolder.setContext(prevContext);
+    try {
+      mFlowController.destroy();
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
     super.destroy();
   }
 
@@ -252,12 +255,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @return  the required CAS interface of the FlowController
    */
   public Class<? extends AbstractCas> getRequiredCasInterface() {
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    try {
-      return mFlowController.getRequiredCasInterface();
-    } finally {
-      UimaContextHolder.setContext(prevContext);
-    }
+    return mFlowController.getRequiredCasInterface();
   }
 
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
@@ -278,8 +276,11 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    */
   public void addAnalysisEngines(Collection<String> aKeys) {
     UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.addAnalysisEngines(aKeys);
-    UimaContextHolder.setContext(prevContext);
+    try {
+      mFlowController.addAnalysisEngines(aKeys);
+    } finally {
+      UimaContextHolder.setContext(prevContext);
+    }
   }
 
   /**
