@@ -18,22 +18,17 @@
  */
 package org.apache.uima.util.impl;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.text.MessageFormat;
-import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.Filter.Result;
+import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.MessageFactory;
 import org.apache.logging.log4j.spi.AbstractLogger;
 import org.apache.logging.log4j.spi.ExtendedLoggerWrapper;
-import org.apache.uima.internal.util.I18nUtil;
-import org.apache.uima.internal.util.Misc;
-import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.slf4j.Marker;
 
 /**
  * UIMA Logging interface implementation for Log4j
@@ -42,31 +37,109 @@ import org.apache.uima.util.Logger;
  * Built using version 2.8
  * 
  */
-public class Log4jLogger_impl implements Logger {
+public class Log4jLogger_impl extends Logger_common_impl {
 
-  private static final String SOURCE_CLASS = "source_class";
+  /**
+   * <p>Markers that are for marking levels not supported by log4j.
+   * <p>
+   * These are log4j class versions of the slf4j markers.
+   */
+  final static private org.apache.logging.log4j.Marker LOG4J_CONFIG = m(UIMA_MARKER_CONFIG);
+  final static private org.apache.logging.log4j.Marker LOG4J_FINE = m(UIMA_MARKER_FINE);
+  final static private org.apache.logging.log4j.Marker LOG4J_FINER = m(UIMA_MARKER_FINER);
+   
+  /**
+   * Filters for use in setLevel calls, for levels that need marker filtering.
+   * <p>
+   * Filters return NEUTRAL unless it's for the associated level.
+   * For associated level (e.g., INFO or TRACE), they return 
+   *   ACCEPT if the marker is present
+   *   DENY otherwise
+   */
   
-  private static final String SOURCE_METHOD = "source_method";
-  
-  private static final String EXCEPTION_MESSAGE = "Exception occurred";
+  static private org.apache.logging.log4j.core.filter.AbstractFilter makeFilter(
+      final org.apache.logging.log4j.Level tLevel, org.apache.logging.log4j.Marker tMarker) {
+    return new org.apache.logging.log4j.core.filter.AbstractFilter() {
 
-  static final String FQCN = Log4jLogger_impl.class.getName();
+      /* (non-Javadoc)
+       * @see org.apache.logging.log4j.core.filter.AbstractFilter#filter(org.apache.logging.log4j.core.LogEvent)
+       */
+      @Override
+      public Result filter(LogEvent event) {
+        if (event.getLevel() == tLevel) {
+          return (event.getMarker() != tMarker) 
+                   ? Result.DENY
+                   : Result.ACCEPT;
+        }
+        return Result.NEUTRAL;
+      }
+
+      /* (non-Javadoc)
+       * @see org.apache.logging.log4j.core.filter.AbstractFilter#filter(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.Level, org.apache.logging.log4j.Marker, org.apache.logging.log4j.message.Message, java.lang.Throwable)
+       */
+      @Override
+      public Result filter(org.apache.logging.log4j.core.Logger logger,
+          org.apache.logging.log4j.Level level, org.apache.logging.log4j.Marker marker, Message msg,
+          Throwable t) {
+        if (level == tLevel) {
+          return (marker != tMarker) 
+                   ? Result.DENY
+                   : Result.ACCEPT;
+        }
+        return Result.NEUTRAL;
+      }
+
+      /* (non-Javadoc)
+       * @see org.apache.logging.log4j.core.filter.AbstractFilter#filter(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.Level, org.apache.logging.log4j.Marker, java.lang.Object, java.lang.Throwable)
+       */
+      @Override
+      public Result filter(org.apache.logging.log4j.core.Logger logger,
+          org.apache.logging.log4j.Level level, org.apache.logging.log4j.Marker marker, Object msg,
+          Throwable t) {
+        if (level == tLevel) {
+          return (marker != tMarker) 
+                   ? Result.DENY
+                   : Result.ACCEPT;
+        }
+        return Result.NEUTRAL;
+      }
+
+      /* (non-Javadoc)
+       * @see org.apache.logging.log4j.core.filter.AbstractFilter#filter(org.apache.logging.log4j.core.Logger, org.apache.logging.log4j.Level, org.apache.logging.log4j.Marker, java.lang.String, java.lang.Object[])
+       */
+      @Override
+      public Result filter(org.apache.logging.log4j.core.Logger logger,
+          org.apache.logging.log4j.Level level, org.apache.logging.log4j.Marker marker, String msg,
+          Object... params) {
+        if (level == tLevel) {
+          return (marker != tMarker) 
+                   ? Result.DENY
+                   : Result.ACCEPT;
+        }
+        return Result.NEUTRAL;
+      }
+
+    };
+  }
+  
+  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_CONFIG = 
+      makeFilter(org.apache.logging.log4j.Level.INFO, LOG4J_CONFIG);
+
+  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINE = 
+      makeFilter(org.apache.logging.log4j.Level.TRACE, LOG4J_FINE);
+      
+  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINER = 
+      makeFilter(org.apache.logging.log4j.Level.TRACE, LOG4J_FINER);
+      
    /**
     * logger object from the underlying Log4j logging framework
     * The ExtendedLoggerWrapper includes the ability to specify the wrapper class
     */
-  final private ExtendedLoggerWrapper                logger;
+  final private ExtendedLoggerWrapper logger;
 
   final private org.apache.logging.log4j.core.Logger coreLogger;
 
-  final private MessageFactory                       mf;
-
-  /**
-   * ResourceManager whose extension ClassLoader will be used to locate the
-   * message digests. Null will cause the ClassLoader to default to
-   * this.class.getClassLoader().
-   */
-  private ResourceManager mResourceManager = null;
+  final private MessageFactory mf;
 
    /**
     * create a new LogWrapper class for the specified source class
@@ -75,22 +148,21 @@ public class Log4jLogger_impl implements Logger {
     *           specified source class
     */
    private Log4jLogger_impl(Class<?> component) {
-      super();
+      super(component);
 
       coreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getLogger( (null == component) 
                                        ?  "org.apache.uima"
-                                       : component.getClass().getName());
+                                       : component.getName());
       mf = coreLogger.getMessageFactory();
       
       logger = new ExtendedLoggerWrapper((AbstractLogger) coreLogger, coreLogger.getName(), mf);
    }
-
-   /**
-    * create a new LogWrapper object with the default logger from the Log4j
-    * logging framework
-    */
-   private Log4jLogger_impl() {
-      this(null);
+   
+   private Log4jLogger_impl(Log4jLogger_impl l, int limit) {
+     super(l, limit);
+     this.logger = l.logger;
+     this.coreLogger = l.coreLogger;
+     this.mf = l.mf;
    }
 
    /**
@@ -111,294 +183,33 @@ public class Log4jLogger_impl implements Logger {
     *         framework logger
     */
    public static synchronized Logger getInstance() {
-      return new Log4jLogger_impl();
-   }
-
-   private boolean empty(String v) {
-     return (v == null || v.equals(""));
-   }
-   /**
-    * Convert bundle + message key + parameters to message
-    * @param bundleName -
-    * @param msgKey -
-    * @param params -
-    * @return the message
-    */
-   public String rb(String bundleName, String msgKey, Object... params) {
-     return I18nUtil.localizeMessage(bundleName, msgKey, params, getExtensionClassLoader());
+      return new Log4jLogger_impl(null);
    }
    
-   private void logMsg(Level level, Message m, Throwable th) {
-     logger.logMessage(FQCN, getLog4jLevel(level), null, m, th);
+   public Log4jLogger_impl getLimitedLogger(int aLimit) {
+     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit) {
+       return this;
+     }
+     return new Log4jLogger_impl(this, aLimit);
    }
-   
-   private void logMsg(Level level, String m, Throwable th) {
-     logMsg(level, mf.newMessage(m), th);
-   }
-   
-   private void ssc(String sourceClass, String sourceMethod) {
-     final Map<String, String> ctx = ThreadContext.getContext();
-     
-     ctx.put(SOURCE_CLASS, Misc.null2str(sourceClass));
-     ctx.put(SOURCE_METHOD,  sourceMethod);
-   }
-   
-   /**
-    * Logs a message with level INFO.
-    * Uses this logger, not one associated with the calling class (if any).
-    * 
-    * @deprecated use new function with log level
-    * @param aMessage
-    *           the message to be logged
-    */
-   @Deprecated
-  public void log(String aMessage) {
-      if (isLoggable(Level.INFO)) {
-         if (empty(aMessage)) return;
-
-         logMsg(Level.INFO, aMessage, null);
-      }
-   }
+  
 
    /**
-    * Logs a message with a message key and the level INFO
+    * log4j level mapping to UIMA level mapping. <br/>
+    * SEVERE (highest value) -&gt; SEVERE <br/> 
+    * WARNING -&gt; WARNING <br/> 
+    * INFO -&gt; INFO <br/> 
+    * CONFIG -&gt; INFO <br/> 
+    * FINE -&gt; TRACE <br/> 
+    * FINER -&gt; TRACE <br/> 
+    * FINEST (lowest value) -&gt; DEBUG <br/> 
+    * OFF -&gt; OFF <br/> 
+    * ALL -&gt; ALL <br/>
     * 
-    * @deprecated use new function with log level
-    * @see org.apache.uima.util.Logger#log(java.lang.String, java.lang.String,
-    *      java.lang.Object[])
+    * @param level uima level
+    * @return Level - corresponding log4j 2 level
     */
-   @Deprecated
-   public void log(String aResourceBundleName, String aMessageKey,
-         Object[] aArguments) {
-      if (isLoggable(Level.INFO)) {
-         if (empty(aMessageKey)) return;
-         
-         logMsg(Level.INFO, rb(aResourceBundleName, aMessageKey, aArguments), null);
-      }
-   }
-
-   /**
-    * Logs an exception with level INFO
-    * 
-    * @deprecated use new function with log level
-    * @param aException
-    *           the exception to be logged
-    */
-   @Deprecated
-   public void logException(Exception aException) {
-      if (isLoggable(Level.INFO)) {
-         if (aException == null)
-            return;
-         logMsg(Level.INFO, EXCEPTION_MESSAGE, aException);
-      }
-   }
-
-   /**
-    * @see org.apache.uima.util.Logger#setOutputStream(java.io.OutputStream)
-    * @deprecated use external configuration possibility
-    */
-   @Deprecated
-   public void setOutputStream(OutputStream out) {
-      throw new UnsupportedOperationException(
-            "Method setOutputStream(OutputStream out) not supported");
-   }
-
-   /**
-    * @see org.apache.uima.util.Logger#setOutputStream(java.io.PrintStream)
-    * @deprecated use external configuration possibility
-    */
-   @Deprecated
-  public void setOutputStream(PrintStream out) {
-      throw new UnsupportedOperationException(
-            "Method setOutputStream(PrintStream out) not supported");
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
-    */
-   public boolean isLoggable(Level level) {
-     return logger.isEnabled(getLog4jLevel(level));
-//      org.apache.logging.log4j.Level log4jLevel = getLog4jLevel(level);
-
-//      return logger.isEnabled(log4jLevel);
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
-    */
-   public void setLevel(Level level) {
-     
-     coreLogger.get().setLevel(getLog4jLevel(level));
-     coreLogger.getContext().updateLoggers();
-//     Configurator.setLevel(null, getLog4jLevel(level));
-//      // get corresponding Log4j level
-//      org.apache.logging.log4j.Level log4jLevel = getLog4jLevel(level);
-//
-//      logger.setLevel(log4jLevel);
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level,
-    *      java.lang.String)
-    */
-   public void log(Level level, String aMessage) {
-      if (isLoggable(level)) {
-         if (empty(aMessage)) return;
-
-         logMsg(level, aMessage, null);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.Object)
-    */
-   public void log(Level level, String aMessage, Object param1) {
-     log(level, aMessage, new Object[] {param1});
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.Object[])
-    */
-   public void log(Level level, String aMessage, Object[] params) {
-      if (isLoggable(level)) {
-         if (empty(aMessage)) return;
-         
-         logMsg(level,MessageFormat.format(aMessage, params), null);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#log(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.Throwable)
-    */
-   public void log(Level level, String aMessage, Throwable thrown) {
-      if (isLoggable(level)) {
-
-        logMsg(level, aMessage, thrown);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.String, java.lang.String,
-    *      java.lang.String, java.lang.Object)
-    */
-   public void logrb(Level level, String sourceClass, String sourceMethod,
-         String bundleName, String msgKey, Object param1) {
-      if (isLoggable(level)) {
-         if (empty(msgKey)) return;
-         
-         ssc(sourceClass, sourceMethod);
-         logMsg(level, rb(bundleName, msgKey, param1), null);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.String, java.lang.String,
-    *      java.lang.String, java.lang.Object[])
-    */
-   public void logrb(Level level, String sourceClass, String sourceMethod,
-         String bundleName, String msgKey, Object[] params) {
-      if (isLoggable(level)) {
-         if (empty(msgKey)) return;
-         
-         ssc(sourceClass, sourceMethod);
-         logMsg(level, rb(bundleName, msgKey, params), null);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.String, java.lang.String,
-    *      java.lang.String, java.lang.Throwable)
-    */
-   public void logrb(Level level, String sourceClass, String sourceMethod,
-         String bundleName, String msgKey, Throwable thrown) {
-      if (isLoggable(level)) {
-        if (empty(msgKey) && null == thrown) return;
-        
-        String msg = empty(msgKey) 
-                       ? EXCEPTION_MESSAGE
-                       : rb(bundleName, msgKey);
-        ssc(sourceClass, sourceMethod);
-        logMsg(level, msg, thrown);
-      }
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#logrb(org.apache.uima.util.Level,
-    *      java.lang.String, java.lang.String, java.lang.String,
-    *      java.lang.String)
-    */
-   public void logrb(Level level, String sourceClass, String sourceMethod,
-         String bundleName, String msgKey) {
-      if (isLoggable(level)) {
-
-         if (empty(msgKey)) return;
-
-         ssc(sourceClass, sourceMethod);
-         logMsg(level, rb(bundleName, msgKey), null);
-      }
-   }
-
-   public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
-     logger.logMessage(wrapperFQCN, getLog4jLevel(level), null, mf.newMessage(message), thrown);
-   }
-   
-   /*
-    * (non-Javadoc)
-    * 
-    * @see org.apache.uima.util.Logger#setResourceManager(org.apache.uima.resource.ResourceManager)
-    */
-   public void setResourceManager(ResourceManager resourceManager) {
-      mResourceManager = resourceManager;
-   }
-
-   /**
-    * Gets the extension ClassLoader to used to locate the message digests. If
-    * this returns null, then message digests will be searched for using
-    * this.class.getClassLoader().
-    */
-   private ClassLoader getExtensionClassLoader() {
-      if (mResourceManager == null)
-         return null;
-      else
-         return mResourceManager.getExtensionClassLoader();
-   }
-
-   /**
-    * log4j level mapping to UIMA level mapping. SEVERE (highest value) -&gt;
-    * SEVERE WARNING -&gt; WARNING INFO -&gt; INFO CONFIG -&gt; CONFIG FINE -&gt; FINE FINER -&gt;
-    * FINER FINEST (lowest value) -&gt; FINEST OFF -&gt; OFF ALL -&gt; ALL
-    * 
-    * @param level
-    *           uima level
-    * @return Level - corresponding JSR47 level
-    */
-   private org.apache.logging.log4j.Level getLog4jLevel(Level level) {
+   static org.apache.logging.log4j.Level getLog4jLevel(Level level) {
       switch (level.toInteger()) {
       case org.apache.uima.util.Level.OFF_INT:
          return org.apache.logging.log4j.Level.OFF;
@@ -411,47 +222,163 @@ public class Log4jLogger_impl implements Logger {
       case org.apache.uima.util.Level.CONFIG_INT:
          return org.apache.logging.log4j.Level.INFO;
       case org.apache.uima.util.Level.FINE_INT:
-         return org.apache.logging.log4j.Level.DEBUG;
+         return org.apache.logging.log4j.Level.TRACE;
       case org.apache.uima.util.Level.FINER_INT:
-         return org.apache.logging.log4j.Level.ALL;
+        return org.apache.logging.log4j.Level.TRACE;
       case org.apache.uima.util.Level.FINEST_INT:
-         return org.apache.logging.log4j.Level.ALL;
+        return org.apache.logging.log4j.Level.DEBUG;
       default: // for all other cases return Level.ALL
          return org.apache.logging.log4j.Level.ALL;
       }
    }
+   
+   private static org.apache.logging.log4j.Marker m(Marker m) {
+     return (m == null) 
+              ? null
+              : ((org.apache.logging.slf4j.Log4jMarker)m).getLog4jMarker();  
+   }
+            
+   /*
+    * (non-Javadoc)
+    * 
+    * @see org.apache.uima.util.Logger#isLoggable(org.apache.uima.util.Level)
+    */
+   public boolean isLoggable(Level level) {
+     if (level == Level.CONFIG) {
+       Result r = filterTest(org.apache.logging.log4j.Level.INFO, LOG4J_CONFIG);       
+       return r == Result.ACCEPT ||
+              (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.TRACE));
+     }
+     if (level == Level.FINE) {
+       Result r = filterTest(org.apache.logging.log4j.Level.TRACE, LOG4J_FINE);
+       return r == Result.ACCEPT ||
+              (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.DEBUG));
+       
+     }
+     if (level == Level.FINER) {
+       Result r = filterTest(org.apache.logging.log4j.Level.TRACE, LOG4J_FINER);
+       return r == Result.ACCEPT ||
+              (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.DEBUG));
+     }
+     return coreLogger.isEnabled(getLog4jLevel(level));
+   }
+   
+   public boolean isLoggable(Level level, Marker marker) {
+     return coreLogger.isEnabled(getLog4jLevel(level), m(marker));
+   }
+   
+   // workaround for bug in log4j 2
+   // where it skips using filters set via APIs for this test
+   /**
+    * 
+    * @param level a log4j level that's equal or above (ERROR is highest) the level being tested
+    * @param marker - the marker that needs to be there to allow this
+    * @return - the result of running the logger filter test if there is one, else NEUTRAL
+    */
+   private Result filterTest(org.apache.logging.log4j.Level level, org.apache.logging.log4j.Marker marker) {
+     Filter filter = coreLogger.get().getFilter();
+     if (null != filter) {
+       return filter.filter(coreLogger, level, marker, (String) null, (Object[])null);
+     }
+     return Result.NEUTRAL;
+   }
 
-//   /**
-//    * returns the method name and the line number if available
-//    * 
-//    * @param thrown
-//    *           the thrown
-//    * @return String[] - fist element is the source class, second element is the
-//    *         method name with linenumber if available
-//    */
-//   private String[] getStackTraceInfo(Throwable thrown) {
-//      StackTraceElement[] stackTraceElement = thrown.getStackTrace();
-//
-//      String sourceMethod = "";
-//      String sourceClass = "";
-//      int lineNumber = 0;
-//      try {
-//         lineNumber = stackTraceElement[1].getLineNumber();
-//         sourceMethod = stackTraceElement[1].getMethodName();
-//         sourceClass = stackTraceElement[1].getClassName();
-//      } catch (Exception ex) {
-//         // do nothing, use the initialized string members
-//      }
-//
-//      if (lineNumber > 0) {
-//         StringBuffer buffer = new StringBuffer(25);
-//         buffer.append(sourceMethod);
-//         buffer.append('(');
-//         buffer.append(lineNumber);
-//         buffer.append(')');
-//         sourceMethod = buffer.toString();
-//      }
-//
-//      return new String[] { sourceClass, sourceMethod };
-//   }
+   /*
+    * ONLY FOR TEST CASE USE
+    */
+   public void setLevel(Level level) {    
+     if (level == Level.CONFIG) {
+       // next seems to do nothing...
+//       coreLogger.getContext().getConfiguration().getLoggerConfig(coreLogger.getName()).addFilter(FILTER_CONFIG);
+       // next also seems to do nothing...
+//       ((LoggerContext)LogManager.getContext(false)).getConfiguration().getLoggerConfig(coreLogger.getName()).addFilter(FILTER_CONFIG);
+       coreLogger.get().addFilter(FILTER_CONFIG);
+     } else {
+//       coreLogger.getContext().getConfiguration().getLoggerConfig(coreLogger.getName()).removeFilter(FILTER_CONFIG);
+       coreLogger.get().removeFilter(FILTER_CONFIG);
+     }
+     
+     if (level == Level.FINE) {
+       coreLogger.get().addFilter(FILTER_FINE);
+     } else {
+       coreLogger.get().removeFilter(FILTER_FINE);
+     }
+     
+     if (level == Level.FINER) {
+       coreLogger.get().addFilter(FILTER_FINER);
+     } else {
+       coreLogger.get().removeFilter(FILTER_FINER);
+     }
+     
+     coreLogger.get().setLevel(getLog4jLevel(level));
+     coreLogger.getContext().updateLoggers();
+   }
+
+   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, args, thrown);
+   }  
+
+   
+
+   // ---------------------- 
+   
+   @Override
+   public String getName() {
+     return logger.getName();
+   }
+
+   // ----------------------    
+            
+   // ----------------------    
+
+   @Override
+   public boolean isDebugEnabled() {
+     return logger.isDebugEnabled();
+   }
+
+   @Override
+   public boolean isDebugEnabled(Marker arg0) {
+     return logger.isDebugEnabled(m(arg0));
+   }
+
+   @Override
+   public boolean isErrorEnabled() {
+     return logger.isErrorEnabled();
+   }
+
+   @Override
+   public boolean isErrorEnabled(Marker arg0) {
+     return logger.isErrorEnabled(m(arg0));
+   }
+
+   @Override
+   public boolean isInfoEnabled() {
+     return logger.isInfoEnabled();
+   }
+
+   @Override
+   public boolean isInfoEnabled(Marker arg0) {
+     return logger.isInfoEnabled(m(arg0));
+   }
+
+   @Override
+   public boolean isTraceEnabled() {
+     return logger.isTraceEnabled();
+   }
+
+   @Override
+   public boolean isTraceEnabled(Marker arg0) {
+     return logger.isTraceEnabled(m(arg0));
+   }
+
+   @Override
+   public boolean isWarnEnabled() {
+     return logger.isWarnEnabled();
+   }
+
+   @Override
+   public boolean isWarnEnabled(Marker arg0) {
+     return logger.isWarnEnabled(m(arg0));
+   }
+   
 }

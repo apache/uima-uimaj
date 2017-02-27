@@ -22,7 +22,10 @@ package org.apache.uima.util;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceManager;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * A <code>Logger</code> is a component used to log messages. This interface defines the standard
@@ -40,11 +43,21 @@ import org.apache.uima.resource.ResourceManager;
  * the section "Specifying the Logging Configuration" in the Annotator and Analysis Engine
  * Developer's Guide chapter of the UIMA documentation for more information.
  * <p>
- * Version 3 augments this API with methods to do internationalization, separate from logging,
- * so the String result can be used with the SLF4j facade.
+ * Version 3 augments this API with methods to do UIMA-Resource-bundle-based internationalization, 
+ * separate from logging, so the String result can be used with various back end loggers.
+ * <p>
+ * Version 3 augments isLoggable to include the Marker.
+ *
  *  
  */
-public interface Logger {
+public interface Logger extends org.slf4j.Logger {
+
+  // standard markers
+  static final Marker UIMA_MARKER_CONFIG = MarkerFactory.getMarker("org.apache.uima.config");
+  static final Marker UIMA_MARKER_FINE = MarkerFactory.getMarker("org.apache.uima.fine");
+  static final Marker UIMA_MARKER_FINER = MarkerFactory.getMarker("org.apache.uima.finer");
+  // next not used
+//  static final Marker UIMA_MARKER_FINEST = MarkerFactory.getMarker("org.apache.uima.finest");
 
   /**
    * Logs a message.
@@ -253,6 +266,11 @@ public void setOutputStream(OutputStream aStream);
    * @return boolean - true if the argument level is greater or equal to the specified level
    */
   public boolean isLoggable(Level level);
+  
+  /**
+   * Checks if this logger is enabled for this level and this marker
+   */
+  public boolean isLoggable(Level level, Marker marker);
 
   /**
    * Sets the level of messages that will be logged by this logger. Note that if you call
@@ -288,4 +306,18 @@ public void setOutputStream(OutputStream aStream);
    * @return the internationalized message
    */
   public String rb(String resourceBundle, String key, Object... params);
+  
+  /**
+   * This is true if the name of the logger corresponds to a class which implements
+   * AnalysisComponent_ImplBase, which includes basic Annotators, plus Cas Multipliers
+   * and CPP components.
+   * @return true if this logger is an Annotator logger.
+   */
+  public boolean isAnnotatorLogger();
+
+  /**
+   * @param limit the limit
+   * @return a copy of the logger with the throttling limit set, or the same logger if no change
+   */
+  public Logger getLimitedLogger(int limit);
 }

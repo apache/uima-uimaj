@@ -25,7 +25,7 @@ package org.apache.uima.util;
 public class Level {
   /** level value */
   private int level;
-
+  
   /** level name */
   private String levelText;
 
@@ -56,14 +56,18 @@ public class Level {
   /** level value for level "ALL" */
   public final static int ALL_INT = Integer.MIN_VALUE;
 
+  
+  
   /** message level "OFF" */
   final static public Level OFF = new Level(OFF_INT, "OFF");
 
   /** message level "SEVERE" */
   final static public Level SEVERE = new Level(SEVERE_INT, "SEVERE");
+  final static public Level ERROR = SEVERE;
 
   /** message level "WARNING" */
   final static public Level WARNING = new Level(WARNING_INT, "WARNING");
+  final static public Level WARN = WARNING;
 
   /** message level "INFO" */
   final static public Level INFO = new Level(INFO_INT, "INFO");
@@ -73,12 +77,14 @@ public class Level {
 
   /** message level "FINE" */
   final static public Level FINE = new Level(FINE_INT, "FINE");
+  final static public Level TRACE = FINE;
 
   /** message level "FINER" */
   final static public Level FINER = new Level(FINER_INT, "FINER");
 
   /** message level "FINEST" */
   final static public Level FINEST = new Level(FINEST_INT, "FINEST");
+  final static public Level DEBUG = FINEST;
 
   /** message level "ALL" */
   final static public Level ALL = new Level(ALL_INT, "ALL");
