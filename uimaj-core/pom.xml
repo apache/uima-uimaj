@@ -66,29 +66,51 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>  <!-- core, not api, because need to set log level via api -->
       <version>${log4j.version}</version>
-      <scope>provided</scope>
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <version>${log4j.version}</version>
-      <scope>provided</scope>
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <scope>compile</scope>  
     </dependency>
-
+    
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${slf4j.version}</version>
     </dependency>
-
-    <!-- 
+    
+    <!-- needed to convert slf4j markers into log4j markers 
+         and for running the test --> 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>${log4j.version}</version>
+      <!-- scope provided fails: doesn't get added to the test classpath -->
+      <!-- needs to be in compile classpath to compile Log4jLogger_impl -->
+      <scope>compile</scope> 
     </dependency>
-     -->    
+
+    <!--  causes build error: package org.apache.logging.slf4j does not exist
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+                     -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
     
 		<dependency>
 			<groupId>org.apache.uima</groupId>
@@ -277,6 +299,10 @@
 				<configuration>
           <!-- testing on 64 bit Linux requires larger heap -->
 					<argLine>-Xmx650M</argLine>
+          <!-- exclude log4j slf bridge for testing 
+          <classpathDependencyExcludes>
+            <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
+          </classpathDependencyExcludes>          -->
 				</configuration>
 			</plugin>
 		</plugins>
