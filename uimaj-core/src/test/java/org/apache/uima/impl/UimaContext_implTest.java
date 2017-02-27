@@ -128,6 +128,14 @@ public class UimaContext_implTest extends TestCase {
     }
   }
 
+  /*
+   * @see TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+  }
+
   public void testGetConfigParameterValueString() throws Exception {
     try {
       String str = (String) mContext.getConfigParameterValue("StringParam");
