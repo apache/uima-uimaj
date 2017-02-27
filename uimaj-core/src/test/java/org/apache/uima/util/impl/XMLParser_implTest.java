@@ -66,6 +66,15 @@ public class XMLParser_implTest extends TestCase {
     // schema validation will be enabled for the whole suite.
     mXmlParser.enableSchemaValidation(true);
   }
+  
+  /*
+   * @see TestCase#tearDown()
+   */
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+  }
+
 
   public void testParse() throws Exception {
     try {
