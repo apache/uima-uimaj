@@ -70,6 +70,9 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
       
       <para>The new <code>select</code> framework supports stream operations; see the "select" chapter for details.
       </para> 
+      
+      <para>The UIMA Logger implementation has been extended with both the SLF4J logger APIs and the 
+      Log4j APIs which support Java 8's <code>Supplier</code> Functional Interfaces.</para>
            
     </section>
   </section>

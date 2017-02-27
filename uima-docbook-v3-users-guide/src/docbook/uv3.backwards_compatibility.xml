@@ -159,6 +159,8 @@ under the License.
       UIMA Type, inside and outside of the PEAR context.  
       If this is detected, a runtime exception is thrown.
     </para>
+    
+    <para>The workaround for this is to manually merge any JCas class definitions for the same class.</para>
   </section>
   
   <section id="uv3.backards_compatibility.toString">
@@ -172,6 +174,25 @@ under the License.
     </para>
   </section>
   
+  <section id="uv3.backards_compatibility.logging">
+    <title>Logging configuration is somewhat different</title>   
+    
+    <para>The default logging configuration in v2 was to use Java Util Logging (the logger built into Java).
+    For v3, the default is to use SLF4J which, in turn, picks a back-end logger, depending on what it finds
+    in the class path.</para>
+    
+    <para>This change was done to permit easier integration of UIMA as a library running within other frameworks.
+    </para>
+    
+    <para>The technique for (optionally) reporting the class and method (and sometimes, line number) 
+    was changed to conform to current logger conventions - whereby the loggers themselves obtain this
+    information from the call stack.  The V2 calls which pass in the sourceClass and sourceMethod information
+    have this information ignored, but replaced with what the loggers obtain from the stack track.
+    In some cases, where the callers in V2 were not actually passing in the correct class/method information,
+    this will result in a different log record.</para>
+    <para>
+    For more details, please see the logging chapter.</para>
+  </section>
   <section id="uv3.backards_compatibility.typesystem_sharing">
     <title>Type System sharing</title>   
     
@@ -189,7 +210,7 @@ under the License.
     an already existing one.</para>
     
     <para>Application code may code around this by re-acquiring references to type and feature
-    objects, if the type system returned from <code>commit</code> is not identical (==) to the
+    objects, if the type system instance object returned from <code>commit</code> is not identical (==) to the
     one being committed.</para>
   </section>
   

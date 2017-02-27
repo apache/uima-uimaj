@@ -178,17 +178,18 @@ under the License.
         <term><emphasis role="strong">Logging updated</emphasis></term>
         <listitem>
           <para>The UIMA logger is a facade that can be hooked up at deploy time to one of several logging backends.
-          One of these is the log4j logging framework.  UIMA V3 updates the support for this backend (when and if selected)
-          to the current level of that framework, now an Apache project called log4j 2.</para>
-          
-          <para>In addition, a now popular logging facade, slf4j, is added to UIMA.  This framework can be hooked up to
-          various logging backends, including log4j 2.  As a default, the Jars needed to for using log4j 2 as the backend
-          are included in the binary packaging.</para>
+          It has been extended to implement all of the Logger API calls provided in the SLF4j <code>Logger</code>
+          interface, and has been changed to use SLF4j as its back-end.  SLF4j, in turn, 
+          requires a logging back-end which it 
+          determines by examining what's available in the classpath, at deploy time.  This design
+          allows UIMA to be more easily embedded in other systems which have their own logging frameworks.</para>
           
           <para>Modern loggers support MDC/NDC and Markers; these are supported now via the slf4j facade.  
-          UIMA itself is extended to use these to provide contexts around logging; 
-          see the following chapter on logging for details.</para>
-        
+          UIMA itself is extended to use these to provide contexts around logging.
+          </para> 
+
+          <para>See the following chapter on logging for details.</para>
+                  
         </listitem>
       </varlistentry>
 

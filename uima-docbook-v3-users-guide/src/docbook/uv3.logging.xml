@@ -27,14 +27,20 @@ under the License.
 <chapter id="uv3.logging">
   <title>Logging</title>
     
-    <para>V3 retains the existing V2 logging facade, unchanged, for backwards compatibility.
-    In addition, a new logging facade, the open source standard SLF4J is available.
-    The current APIs for getting a logger get the V2 loggers; the SLF4j logger is made available
-    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call,
-    as well as via a new API on the Annotator base implementation classes, <code>getSlf4jLogger(),
-    </code> which returns a named logger whose name is the fully qualified name of the 
-    annotator implementation class.
+    <para>V3 retains the existing V2 logging facade, for backwards compatibility.
+    It has been augmented by the methods available in the SLF4j <code>Logger</code> API,
+    plus the Java 8 enabled APIs from the Log4j implementation that support the 
+    <code>Supplier</code> Functional Interface.
     </para>
+    
+    <para>The implementation of this facade in V2 was the built-in-to-Java logging framework.
+    For V3, this is changed to be the SLF4j facade.  This is an open source, standard facade
+    which allows deferring until deployment time, the specific logging back end to use.
+    </para>
+    
+    <para>If, at initialization time, SLF4J gets configuredto use a back end which is either the 
+    built-in Java logger, or Log4j-2, then the UIMA logger implementation is switched to
+    UIMA's implementation of those APIs (bypassing SLF4j, for efficiency).</para>
 
     <!--             
     <para>The v2 loggers support internationalization using resource bundles.  The logger
@@ -55,16 +61,14 @@ under the License.
       The SLF4j and other documentation (e.g.,  
       <ulink url="https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html"/> for log4j-2) describe 
       how to connect various logging back ends to SLF4j, by 
-      putting adapters and back ends into the classpath at run time.  For example, 
-      to use the back end logger <code>log4j 2</code>, you would
-      include the Jars specified in this dependency tree as "compile" dependencies:
-      <ulink url="https://logging.apache.org/log4j/2.x/log4j-to-slf4j/dependencies.html#Dependency_Tree"/>.
-      These are included in the binary distribution.
+      putting logging back-end implementations into the classpath at run time.  For example, 
+      to use the back end logger built into Java,  you would
+      include the <code>slf4j-jdk14</code> Jar.  This Jar is included in the UIMA binary distribution, so that
+      out-of-the-box, logging is available and configured the same as it was for V2.
     </para>
     
-    <para>The Eclipse UIMA Runtime plugin excludes the slf4j api Jar and back ends, and expects the
-      Eclipse plugin install process to "hook up" the needed implementations from other resource bundles.  In current
-      versions of Eclipse, the standard Java version of the IDE has multiple implementations available. 
+    <para>The Eclipse UIMA Runtime plugin bundle excludes the slf4j api Jar and back ends, but will 
+      "hook up" the needed implementations from other bundles.   
     </para> 
   
   <section id="uv3.logging.new_recorded_context_data">
@@ -140,7 +144,30 @@ under the License.
            <entry><emphasis role="bold">Description of logging</emphasis></entry>
          </row>
 
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify CONFIG and FINE/FINER/FINEST </emphasis></entry>
+         </row>
+         <row>
+           <entry><para>uima.config</para></entry>
+           <entry><para>configuration log record</para></entry>
+         </row>
+         <row>
+           <entry><para>uima.fine</para></entry>
+           <entry><para>sub category of trace, corresponds to FINE</para></entry>
+         </row>
+         <row>
+           <entry><para>uima.finer</para></entry>
+           <entry><para>sub category of trace, corresponds to FINER</para></entry>
+         </row>
+         <row>
+           <entry><para>uima.finest</para></entry>
+           <entry><para>sub category of trace, corresponds to FINEST</para></entry>
+         </row>
+         
          <!-- ******************************************************************************* -->
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify some tracing logging</emphasis></entry>
+         </row>
          <row>
            <entry><para>uima_annotator</para></entry>
            <entry><para>for tracing when annotators are entered, exited</para></entry>
@@ -181,4 +208,42 @@ under the License.
    </informaltable>
         
   </section>
+  
+  <section id="uv3.logging.defaults_configuration">
+    <title>Defaults and Configuration</title>
+    
+    <para>By default, UIMA is configured so that the UIMA logger is hooked up to the SLF4j facade, which
+      may or may not have a logging back-end.  If it doesn't, then any use of the UIMA logger will produce 
+      one warning message stating that SLF4j has no back-end logger configured, and so no logging will be done. 
+    </para>
+        
+    <para>When UIMA is run as an embedded library in other applications, slf4j will use those other application's
+      logging frameworks.</para>
+      
+    <para>Each logging back-end has its own way of being configured; 
+      please consult the proper back-end documentation for details.</para>
+    
+    <para>For backwards compatibility, the binary distribution of UIMA includes the slf4j back-end 
+      which hooks to the standard built-in Java logging framework, so out-of-the-box, UIMA should
+      be configured and log by default as V2 did.</para>  
+      
+    <section id="uv3.logging.throttling_annotator_logging">
+      <title>Throttling logging from Annotators</title>
+      
+       <para>Sometimes, in production, you may find annotators are logging excessively, and you wish to throttle 
+          this. But you may not have access to logging settings to control this,
+          perhaps because UIMA is running as a library component within another framework. 
+          For this special case,
+          you can limit logging done by Annotators by passing an additional parameter to the UIMA Framework's 
+          produceAnalysisEngine API, using the key name 
+          <code>AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING</code>
+          and setting the value to an Integer object equal to the the limit.  Using 0 will suppress all logging.
+          Any positive number allows that many log records to be logged, per level.  A limit of 10 would allow 
+          10 Errors, 10 Warnings, etc.  The limit is enforced separately, per logger instance.</para>
+          
+          <note><para>This only works if the logger used by Annotators is obtained from the 
+          Annotator base implementation class via the <code>getLogger()</code> method.</para></note>
+          
+    </section>  
+  </section>  
 </chapter>
