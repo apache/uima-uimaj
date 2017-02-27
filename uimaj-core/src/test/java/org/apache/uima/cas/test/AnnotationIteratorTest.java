@@ -231,7 +231,7 @@ public class AnnotationIteratorTest extends TestCase {
       ir.addFS(fs = this.cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
       beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1;
       endAlt = (endAlt == -1) ? 1 : endAlt - 1;
-      if (true ||showFSs) {
+      if (showFSs) {
         System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
       }
     }
