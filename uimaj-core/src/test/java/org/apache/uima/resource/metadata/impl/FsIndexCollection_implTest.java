@@ -57,6 +57,7 @@ public class FsIndexCollection_implTest extends TestCase {
    */
   protected void tearDown() throws Exception {
     super.tearDown();
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
 
   public void testBuildFromXmlElement() throws Exception {
