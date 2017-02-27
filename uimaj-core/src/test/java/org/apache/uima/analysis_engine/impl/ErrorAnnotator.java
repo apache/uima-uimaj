@@ -20,6 +20,7 @@
 package org.apache.uima.analysis_engine.impl;
 
 import org.apache.uima.analysis_engine.ResultSpecification;
+import org.apache.uima.analysis_engine.annotator.AnnotatorContextException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorProcessException;
 import org.apache.uima.analysis_engine.annotator.Annotator_ImplBase;
 import org.apache.uima.analysis_engine.annotator.TextAnnotator;
@@ -36,6 +37,14 @@ public class ErrorAnnotator extends Annotator_ImplBase implements TextAnnotator 
   public void process(CAS aCAS, ResultSpecification aResultSpec) throws AnnotatorProcessException {
     if ("ERROR".equals(aCAS.getDocumentText())) {
       throw new RuntimeException("Test Error");
+    }
+    
+    if ("LOG".equals(aCAS.getDocumentText())) {
+      try {
+        getContext().getLogger().warn("Test Warn Log");
+      } catch (AnnotatorContextException e) {
+        throw new RuntimeException("Internal test failure");
+      }
     }
   }
 }
