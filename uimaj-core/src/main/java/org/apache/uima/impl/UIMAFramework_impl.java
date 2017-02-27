@@ -171,6 +171,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_initialize()
    */
+  @Override
   protected void _initialize() throws Exception {
     // attempt to improve initialization performance
     Introspector.setBeanInfoSearchPath(Constants.EMPTY_STRING_ARRAY);
@@ -193,6 +194,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_getMajorVersion()
    */
+  @Override
   public short _getMajorVersion() {
     return UimaVersion.getMajorVersion(); // major version
   }
@@ -200,6 +202,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_getMinorVersion()
    */
+  @Override
   public short _getMinorVersion() {
     return UimaVersion.getMinorVersion(); // minor version
   }
@@ -207,6 +210,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_getBuildRevision()
    */
+  @Override
   public short _getBuildRevision() {
     return UimaVersion.getBuildRevision(); // build revision
   }
@@ -217,6 +221,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>ResourceFactory</code> to be used by the application
    */
+  @Override
   protected CompositeResourceFactory _getResourceFactory() {
     return mResourceFactory;
   }
@@ -227,6 +232,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>ResourceSpecifierFactory</code> to be used by the application.
    */
+  @Override
   protected ResourceSpecifierFactory _getResourceSpecifierFactory() {
     return mResourceSpecifierFactory;
   }
@@ -237,6 +243,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>XMLParser</code> to be used by the application.
    */
+  @Override
   protected XMLParser _getXMLParser() {
     return mXMLParser;
   }
@@ -244,6 +251,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#newCollectionProcessingManager()
    */
+  @Override
   protected CollectionProcessingManager _newCollectionProcessingManager(
           ResourceManager aResourceManager) {
     try {
@@ -265,6 +273,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>Logger</code> to be used by the application.
    */
+  @Override
   protected Logger _getLogger() {
     return mDefaultLogger;
   }
@@ -275,6 +284,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return the <code>Logger</code> of the specified source class
    */
+  @Override
   protected Logger _getLogger(Class component) {
     
     
@@ -316,6 +326,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_newLogger()
    */
+  @Override
   protected Logger _newLogger() {
     try {
       // get static method getInstance()
@@ -337,6 +348,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return a new <code>ResourceManager</code> to be used by the application.
    */
+  @Override
   protected ResourceManager _newDefaultResourceManager() {
     try {
       return (ResourceManager) Class.forName(mResourceManagerImplClassName).newInstance();
@@ -355,6 +367,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return a new <code>ResourceManager</code> to be used by the application.
    */
+  @Override
   protected ResourceManager _newDefaultResourceManagerPearWrapper() {
     try {
       return (ResourceManager) Class.forName(mResourceManagerPearWrapperImplClassName).newInstance();
@@ -373,6 +386,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @return a new <code>ConfigurationManager</code> to be used by the application.
    */
+  @Override
   protected ConfigurationManager _newConfigurationManager() {
     try {
       return (ConfigurationManager) Class.forName(mConfigurationManagerImplClassName).newInstance();
@@ -388,6 +402,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_newUimaContext()
    */
+  @Override
   protected UimaContextAdmin _newUimaContext() {
     try {
       return (UimaContextAdmin) Class.forName(mUimaContextImplClassName).newInstance();
@@ -403,6 +418,7 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * @see org.apache.uima.UIMAFramework#_newTimer()
    */
+  @Override
   protected UimaTimer _newTimer() {
     try {
       return (UimaTimer) Class.forName(mTimerClassName).newInstance();
@@ -421,6 +437,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * @see org.apache.uima.UIMAFramework#_produceCollectionProcessingEngine(org.apache.uima.collection.metadata.cpeDescription,
    *      java.util.Map)
    */
+  @Override
   protected CollectionProcessingEngine _produceCollectionProcessingEngine(
           CpeDescription aCpeDescription, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
@@ -443,6 +460,7 @@ public class UIMAFramework_impl extends UIMAFramework {
    * 
    * @see org.apache.uima.UIMAFramework#_getDefaultPerformanceTuningProperties()
    */
+  @Override
   protected Properties _getDefaultPerformanceTuningProperties() {
     return (Properties) mDefaultPerformanceTuningProperties.clone();
   }
@@ -502,6 +520,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     /**
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       context = CONTEXT_NONE;
     }
@@ -510,6 +529,7 @@ public class UIMAFramework_impl extends UIMAFramework {
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
      *      java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes)
             throws SAXException {
       if ("logger".equals(qName)) {
@@ -672,6 +692,7 @@ public class UIMAFramework_impl extends UIMAFramework {
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
       if ("factoryConfig".equals(qName)) {
         context = CONTEXT_NONE;
@@ -693,6 +714,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     /**
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       if (_getLogger() != null) {
         UIMAFramework.getLogger(CLASS_NAME).logrb(Level.WARNING, CLASS_NAME.getName(), "warning",
@@ -703,6 +725,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw new UIMARuntimeException(e);
     }
