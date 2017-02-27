@@ -104,7 +104,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
     mGovernmentTitles = (String[]) getContext().getConfigParameterValue("GovernmentTitles");
 
     // write log messages
-    logger = getUimaLogger();
+    logger = getLogger();
     logger.log(Level.CONFIG, "PersonTitleAnnotator initialized");
     logger.log(Level.CONFIG, "CivilianTitles = " + Arrays.asList(mCivilianTitles));
     logger.log(Level.CONFIG, "MilitaryTitles = " + Arrays.asList(mMilitaryTitles));
