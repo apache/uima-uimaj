@@ -765,7 +765,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     List<ErrorReport> es = errorSet.get();
     if (es != null) {
       StringBuilder msg = new StringBuilder(100);
-      msg.append('\n');
+//      msg.append('\n');  // makes a break in the message at the beginning, unneeded
       for (ErrorReport f : es) {
         msg.append(f.e.getMessage());
         throwWhenDone = throwWhenDone || f.doThrow;
@@ -773,11 +773,11 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       }
       errorSet.set(null); // reset after reporting
       if (throwWhenDone) {
-        throw new CASRuntimeException(CASException.JCAS_INIT_ERROR, msg);
+        throw new CASRuntimeException(CASException.JCAS_INIT_ERROR, "\n" + msg);
       } else {
         Logger logger = UIMAFramework.getLogger();
         if (null == logger) {
-          throw new CASRuntimeException(CASException.JCAS_INIT_ERROR, msg);
+          throw new CASRuntimeException(CASException.JCAS_INIT_ERROR, "\n" + msg);
         } else {
           logger.log(Level.WARNING, msg.toString());
         }          
