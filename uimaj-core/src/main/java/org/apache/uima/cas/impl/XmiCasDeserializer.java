@@ -1045,7 +1045,7 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_FLOAT:
         case LowLevelCAS.TYPE_CLASS_DOUBLE:
         case LowLevelCAS.TYPE_CLASS_STRING:
-        case LowLevelCAS.TYPE_CLASS_JAVAOBJECT: {
+            {
           casBeingFilled.setFeatureValueFromString(fs, fi, featVal);  
           break;
         }
