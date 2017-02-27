@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -40,6 +40,7 @@ import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContextAdmin;
+import org.apache.uima.analysis_component.AnalysisComponent_ImplBase;
 import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.metadata.CpeDescription;
@@ -53,6 +54,7 @@ import org.apache.uima.util.SimpleResourceFactory;
 import org.apache.uima.util.UimaTimer;
 import org.apache.uima.util.XMLParser;
 import org.apache.uima.util.impl.Constants;
+import org.apache.uima.util.impl.Logger_common_impl;
 import org.apache.uima.util.impl.XMLParser_impl;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -158,8 +160,8 @@ public class UIMAFramework_impl extends UIMAFramework {
   /**
    * HashMap includes all log wrapper classes
    */
-  private HashMap mLoggers;
-
+  private ConcurrentHashMap<String, Logger> mLoggers;
+  
   /**
    * Creates a new UIMAFramework_impl.
    */
@@ -185,7 +187,7 @@ public class UIMAFramework_impl extends UIMAFramework {
             .getResourceAsStream("performanceTuning.properties"));
 
     // create new HashMap for the LogWrappers
-    mLoggers = new HashMap(200, 1.0f);
+    mLoggers = new ConcurrentHashMap<>(200, 1.0f);
   }
 
   /**
@@ -274,8 +276,10 @@ public class UIMAFramework_impl extends UIMAFramework {
    * @return the <code>Logger</code> of the specified source class
    */
   protected Logger _getLogger(Class component) {
+    
+    
     // search for the source class logger in the HashMap
-    Object o = mLoggers.get(component.getName());
+    Logger o = mLoggers.get(component.getName());
 
     if (o == null) // source class logger not available
     {
@@ -288,7 +292,12 @@ public class UIMAFramework_impl extends UIMAFramework {
         // get static method getInstance(Class component)
         Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
         // invoke getInstance(Class component) method and retrieve logger object
-        o = instanceMethod.invoke(null, arguments);
+        o = (Logger) instanceMethod.invoke(null, arguments);
+        if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
+            // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
+            org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class.isAssignableFrom(component)) {  
+          ((Logger_common_impl)o).setAnnotatorLogger(true); 
+        } 
       } catch (NoSuchMethodException e) {
         throw new UIMARuntimeException(e);
       } catch (InvocationTargetException e) {
@@ -301,7 +310,7 @@ public class UIMAFramework_impl extends UIMAFramework {
       mLoggers.put(component.getName(), o);
     }
 
-    return (Logger) o;
+    return o;
   }
 
   /**
