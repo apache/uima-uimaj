@@ -123,14 +123,10 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @return the Logger associated with this uima Analysis Engine component
    */
-  protected final Logger getUimaLogger() {
+  protected final Logger getLogger() {
     return getContext().getLogger();
   }
   
-  protected final org.slf4j.Logger getSlf4jLogger() {
-    return org.slf4j.LoggerFactory.getLogger(this.getClass());
-  }
-
   /**
    * Gets the ResultSpecification for this AnalysisComponent. The ResultSpecification is a set of
    * types and features that this AnalysisComponent is asked to produce. An Analysis Component may
