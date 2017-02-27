@@ -18,14 +18,11 @@
  */
 package org.apache.uima.util.impl;
 
-import java.util.HashMap;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.filter.AbstractFilter;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.util.Level;
@@ -47,19 +44,19 @@ public class TestLog4jLogger_impl extends TestCase {
 //      BasicConfigurator.resetConfiguration();
    }
 
-   private static HashMap<String, Level> logLevels = new HashMap<String, Level>(
-         9);
-   static {
-      logLevels.put("OFF", Level.OFF);
-      logLevels.put("ERROR", Level.SEVERE);
-      logLevels.put("WARN", Level.WARNING);
-      logLevels.put("INFO", Level.INFO);
-      logLevels.put("INFO", Level.CONFIG);
-      logLevels.put("DEBUG", Level.FINE);
-      logLevels.put("ALL", Level.FINER);
-      logLevels.put("ALL", Level.FINEST);
-      logLevels.put("ALL", Level.ALL);
-   }
+//   private static HashMap<String, Level> logLevels = new HashMap<String, Level>(
+//         9);
+//   static {
+//      logLevels.put("OFF", Level.OFF);
+//      logLevels.put("ERROR", Level.SEVERE);
+//      logLevels.put("WARN", Level.WARNING);
+//      logLevels.put("INFO", Level.INFO);
+//      logLevels.put("INFO", Level.CONFIG);
+//      logLevels.put("DEBUG", Level.FINE);
+//      logLevels.put("ALL", Level.FINER);
+//      logLevels.put("ALL", Level.FINEST);
+//      logLevels.put("ALL", Level.ALL);
+//   }
 
    public void testLogWrapperCreation() throws Exception {
       org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
@@ -79,7 +76,14 @@ public class TestLog4jLogger_impl extends TestCase {
 
    public void testIsLoggable() throws Exception {
       // create logger
-      org.apache.uima.util.Logger uimaLogger = Log4jLogger_impl.getInstance();
+     org.apache.uima.util.Logger uimaLogger = null;
+      try {
+        uimaLogger = Log4jLogger_impl.getInstance();
+      } catch (Exception e) {
+        System.err.println(e);
+        e.printStackTrace(System.err);
+        throw e;
+      }
       org.apache.uima.util.Logger classLogger = Log4jLogger_impl
             .getInstance(this.getClass());
 
@@ -90,9 +94,9 @@ public class TestLog4jLogger_impl extends TestCase {
          log4jLogger = LogManager.getRootLogger();
       }
 
-      String key = log4jLogger.getLevel().toString();
+      String key = "INFO"; // log4jLogger.getLevel().toString();
 
-      Level defaultLogLevel = logLevels.get(key);
+      Level defaultLogLevel = Level.INFO; // logLevels.get(key); // doesn't work
 
       assertNotNull(defaultLogLevel);
       // check message logging for root logger based on default log level
@@ -213,7 +217,17 @@ public class TestLog4jLogger_impl extends TestCase {
 
      try {
       // create Logger
-      final org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance(getClass());
+       // debug
+      org.apache.uima.util.Logger tempLogger = null;
+      try {
+        tempLogger = Log4jLogger_impl.getInstance(getClass());
+      } catch (Throwable e) {
+        System.err.println("debug Caught throwable");
+        e.printStackTrace(System.err);
+        System.err.println("debug finished stacktrace");
+        throw e;
+      }
+      final org.apache.uima.util.Logger logger = tempLogger;
       // reset log level to INFO
       logger.setLevel(Level.INFO);
 //      Configurator.setLevel("Console", org.apache.logging.log4j.Level.INFO);
@@ -279,12 +293,17 @@ public class TestLog4jLogger_impl extends TestCase {
 
    }
 
+   
    public void testMessageKeyLogMethods() throws Exception {
      final int[] nbrcalls = new int[1];
      nbrcalls[0] = 0;
      
      // Tell the logger to log everything
      org.apache.logging.log4j.core.Logger rootLogger = (org.apache.logging.log4j.core.Logger) org.apache.logging.log4j.LogManager.getRootLogger();
+     // create Logger
+     org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
+  
+     try {
      rootLogger.get().setLevel(org.apache.logging.log4j.Level.ALL);
      rootLogger.getContext().updateLoggers();
 //     Appender appender = (Appender) rootLogger.getAllAppenders().nextElement();
@@ -316,8 +335,6 @@ public class TestLog4jLogger_impl extends TestCase {
 //       }
 //     }); 
 
-      // create Logger
-      org.apache.uima.util.Logger logger = Log4jLogger_impl.getInstance();
       // reset log level to INFO
       logger.setLevel(Level.INFO);
 
@@ -379,6 +396,11 @@ public class TestLog4jLogger_impl extends TestCase {
       assertEquals(18, nbrcalls[0]);
      } finally {
        app.removeFilter(filter);  // otherwise, subsequent test's filter gets appended, not replace
+     }
+    
+     } finally {
+       logger.setLevel(Level.INFO);
+       rootLogger.setLevel(org.apache.logging.log4j.Level.INFO);
      }
    }
 

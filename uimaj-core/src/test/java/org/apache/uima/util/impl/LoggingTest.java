@@ -87,11 +87,12 @@ public class LoggingTest extends TestCase {
   }
 
   public void testSetLevel() throws Exception {
+    Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
+    // org.apache.uima.*
     try {
+
       // get class logger
       Logger logger = UIMAFramework.getLogger(this.getClass());
-      Logger uimaLogger = UIMAFramework.getLogger(); // should affect everything in
-      // org.apache.uima.*
 
       // set level to WARNING
       uimaLogger.setLevel(Level.WARNING);
@@ -114,9 +115,10 @@ public class LoggingTest extends TestCase {
       Assert.assertTrue(logger.isLoggable(Level.INFO));
       Assert.assertFalse(logger.isLoggable(Level.FINER));
       Assert.assertFalse(logger.isLoggable(Level.ALL));
-      uimaLogger.setLevel(Level.INFO);
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
+    } finally {
+      uimaLogger.setLevel(Level.INFO); // otherwise, is stuck at INFO, too much logging
     }
 
   }
