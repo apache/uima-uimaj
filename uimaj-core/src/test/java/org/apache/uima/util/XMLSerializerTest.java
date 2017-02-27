@@ -86,7 +86,7 @@ public class XMLSerializerTest extends TestCase {
       ch.characters(data, 0, 4);
     } catch (SAXParseException e) {
       String msg = e.getMessage();
-      String expected = "Trying to serialize non-XML 1.0 character: " + (char)5 + ", 0x5 at offset 2";
+      String expected = "Trying to serialize non-XML 1.0 character: " + "0x5 at offset 2";
       assertEquals(msg.substring(0, expected.length()), expected);
       eh = true;
     }  
@@ -126,7 +126,7 @@ public class XMLSerializerTest extends TestCase {
     } catch (SAXParseException e) {
       String msg = e.getMessage();
       System.out.println(msg);
-      String expected = "Trying to serialize non-XML 1.1 character: " + (char)0 + ", 0x0 at offset 2";
+      String expected = "Trying to serialize non-XML 1.1 character: " + "0x0 at offset 2";
       assertEquals(msg.substring(0, expected.length()), expected);
       eh = true;
     }  
