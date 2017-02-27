@@ -42,7 +42,6 @@ import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
-import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
