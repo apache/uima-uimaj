@@ -1219,7 +1219,8 @@ public class AnalysisEngine_implTest extends TestCase {
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
-        } catch (AnalysisEngineProcessException e) {
+        } catch (Exception e) {
+        } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified twice, once for the 
@@ -1258,8 +1259,9 @@ public class AnalysisEngine_implTest extends TestCase {
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
-        } catch (AnalysisEngineProcessException e) {
-          UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+        } catch (Exception e) {
+        } finally {
+          UIMAFramework.getLogger().setLevel(Level.INFO); 
         }
         //check that FlowController was notified three times, once for the 
         //segment's flow and twice for the complete document's flow (once
@@ -1304,7 +1306,8 @@ public class AnalysisEngine_implTest extends TestCase {
           assertTrue(iter.hasNext());
           outCas = iter.next();
           fail(); // the above should throw an exception
-        } catch (AnalysisEngineProcessException e) {
+        } catch (Exception e) {
+        } finally {
           UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
         }
         //check that FlowController was notified three times, once for each level of granularity
@@ -1334,7 +1337,8 @@ public class AnalysisEngine_implTest extends TestCase {
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         iter.next();
         fail(); // should not get here
-      } catch (AnalysisEngineProcessException e) {
+      } catch (Exception e) {
+      } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       
@@ -1360,7 +1364,8 @@ public class AnalysisEngine_implTest extends TestCase {
           iter.next();
         }
         fail(); // should not get here
-      } catch (AnalysisEngineProcessException e) {
+      } catch (Exception e) {
+      } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1386,8 +1391,11 @@ public class AnalysisEngine_implTest extends TestCase {
       //next call should not have aborted, but FC should have been notified of the failiure,
       // and no CAS should come back
       UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
-      assertFalse(iter.hasNext());
-      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      try {
+        assertFalse(iter.hasNext());
+      } finally {
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      }
       assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
       assertEquals(1, FlowControllerForErrorTest.failedAEs.size());
       assertTrue(FlowControllerForErrorTest.failedAEs.contains("Segmenter"));
@@ -1506,8 +1514,8 @@ public class AnalysisEngine_implTest extends TestCase {
         UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
         ae.process(cas);
         fail();
-      }
-      catch(AnalysisEngineProcessException e) {
+      } catch (Exception e) {
+      } finally {
         UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
       }
       assertEquals(1, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1529,8 +1537,11 @@ public class AnalysisEngine_implTest extends TestCase {
       cas.reset();
       cas.setDocumentText("ERROR");
       UIMAFramework.getLogger().setLevel(Level.OFF);  // Suppress logging of expected exception
-      ae.process(cas); //should not throw exception now
-      UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      try {
+        ae.process(cas); //should not throw exception now
+      } finally {
+        UIMAFramework.getLogger().setLevel(Level.INFO); // Restore to apparent default of INFO
+      }
       
       //document should not have aborted, but FC should have been notified of the failiure
       assertEquals(0, FlowControllerForErrorTest.abortedDocuments.size());
@@ -1540,6 +1551,59 @@ public class AnalysisEngine_implTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }    
+  }
+  
+  public void testThrottleLogging() throws Exception {
+  //This test uses an aggregate AE fails if the document text is set to "ERROR".
+    AnalysisEngineDescription aeDesc = UIMAFramework.getXMLParser()
+            .parseAnalysisEngineDescription(
+                    new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForErrorTest.xml")));
+    AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeDesc);
+    FlowControllerForErrorTest.reset();
+    CAS cas = ae.newCAS();
+    for (int i = 0; i < 2; i++) {
+      cas.setDocumentText("LOG");
+      try {
+        ae.process(cas);
+      }
+      catch(AnalysisEngineProcessException e) {
+        fail();
+      }
+      cas.reset();
+    }
+    System.err.println("should see 2 WARN loggings above");
+    
+    ae = UIMAFramework.produceAnalysisEngine(aeDesc, Collections.singletonMap(
+        AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING, 1));
+    FlowControllerForErrorTest.reset();
+    cas = ae.newCAS();
+    for (int i = 0; i < 2; i++) {
+      cas.setDocumentText("LOG");
+      try {
+        ae.process(cas);
+      }
+      catch(AnalysisEngineProcessException e) {
+        fail();
+      }
+      cas.reset();
+    }
+    System.err.println("should see 1 WARN logging above");
+    
+    ae = UIMAFramework.produceAnalysisEngine(aeDesc, Collections.singletonMap(
+        AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING, 0));
+    FlowControllerForErrorTest.reset();
+    cas = ae.newCAS();
+    for (int i = 0; i < 2; i++) {
+      cas.setDocumentText("LOG");
+      try {
+        ae.process(cas);
+      }
+      catch(AnalysisEngineProcessException e) {
+        fail();
+      }
+      cas.reset();
+    }
+    System.err.println("should see no logging above");
   }
   
   public void testMissingSuper() throws Exception {
@@ -1559,9 +1623,11 @@ public class AnalysisEngine_implTest extends TestCase {
   public void testManyDelegates() throws Exception {
     // test with and without validation - UIMA-2453
     UIMAFramework.getXMLParser().enableSchemaValidation(true);
-    manyDelegatesCommon();
-    
-    UIMAFramework.getXMLParser().enableSchemaValidation(false);
+    try {
+      manyDelegatesCommon();
+    } finally {
+      UIMAFramework.getXMLParser().enableSchemaValidation(false);
+    }
     manyDelegatesCommon();
   }
   private void manyDelegatesCommon() throws Exception {
@@ -1655,47 +1721,52 @@ public class AnalysisEngine_implTest extends TestCase {
     AnalysisEngineDescription desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
             new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AggregateForMultipleAeTest.xml")));
     UIMAFramework.getLogger().setLevel(Level.CONFIG);
-    AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
-    ae1.newCAS();
-    
-    // Creating a 2nd duplicate engine failed in 2.8.1 if the 2nd of the 2 typesystems imported
-    // is also contained in the 1st (UIMA-5058)
     try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-    } catch (Exception e) {
-      JUnitExtension.handleException(e);
+      AnalysisEngine ae1 = UIMAFramework.produceAnalysisEngine(desc);
+      ae1.newCAS();
+      
+      // Creating a 2nd duplicate engine failed in 2.8.1 if the 2nd of the 2 typesystems imported
+      // is also contained in the 1st (UIMA-5058)
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+      } catch (Exception e) {
+        JUnitExtension.handleException(e);
+      }
+      
+      // Try creating one with at least one different type
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+        fail();
+      } catch (Exception e) {
+        System.err.println("Expected exception: " + e);
+      }
+      
+      // Try creating one with different type-priorities
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+        fail();
+      } catch (Exception e) {
+        System.err.println("Expected exception: " + e);
+      }
+      
+      // Try creating one with different indexes
+      try {
+        AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
+                new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
+        UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
+        fail();
+      } catch (Exception e) {
+        System.err.println("Expected exception: " + e);
+      }
+    } finally {
+      UIMAFramework.getLogger().setLevel(Level.INFO);    
     }
-    
-    // Try creating one with at least one different type
-    try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest2.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-      fail();
-    } catch (Exception e) {
-      System.err.println("Expected exception: " + e);
-    }
-    
-    // Try creating one with different type-priorities
-    try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest3.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-      fail();
-    } catch (Exception e) {
-      System.err.println("Expected exception: " + e);
-    }
-    
-    // Try creating one with different indexes
-    try {
-      AnalysisEngineDescription desc2 = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(
-              new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/MultipleAeTest4.xml")));
-      UIMAFramework.produceAnalysisEngine(desc2, ae1.getResourceManager(), null);
-      fail();
-    } catch (Exception e) {
-      System.err.println("Expected exception: " + e);
-    }
-  }
+  } 
+  
 }

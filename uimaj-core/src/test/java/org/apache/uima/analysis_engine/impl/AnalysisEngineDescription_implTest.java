@@ -296,6 +296,7 @@ public class AnalysisEngineDescription_implTest extends TestCase {
   public void tearDown() {
     primitiveDesc = null;
     aggregateDesc = null;
+    UIMAFramework.getXMLParser().enableSchemaValidation(false);
   }
   
   public void testMulticoreInitialize() throws Exception {
