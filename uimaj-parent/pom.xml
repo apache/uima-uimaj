@@ -153,7 +153,7 @@
     <maven.surefire.heap>512m</maven.surefire.heap>
     <maven.surefire.argLine />
     <jacoco.argLine />
-    <api_check_oldVersion>3.0.0-alpha</api_check_oldVersion>
+    <api_check_oldVersion>2.9.0</api_check_oldVersion>
   </properties>
   
   <dependencyManagement>
@@ -450,15 +450,16 @@
           <plugin>              
             <groupId>com.github.siom79.japicmp</groupId>
             <artifactId>japicmp-maven-plugin</artifactId>
-            <version>0.9.3</version>
+            <version>0.9.4</version>
             <configuration>
+              <!--  fixed in 0.94 -->
               <oldVersion>
                 <dependency>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>${project.artifactId}</artifactId>
                   <version>${api_check_oldVersion}</version>
                 </dependency>
-              </oldVersion>
+              </oldVersion> 
               <parameter>
                 <onlyModified>true</onlyModified>
                 <!-- filter out classes with impl in their package or class name -->
