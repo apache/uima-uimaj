@@ -32,6 +32,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
+import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
@@ -573,6 +575,50 @@ public class JCasTest extends TestCase {
 		}
 	}
 
+	// THis test is Java impl specific, works with Oracle Java 7 and 8, not tested with other Javas
+	// uncomment to run, but normally commented out.
+//  public void testSubiterator() throws Exception {
+//    for (int i = 0; i < 5; i++) {   // tokens: 0,1,  1,3   2,5,  3,7  4,9
+//      Token tok1 = new Token(jcas, i, 1 + 2*i);
+//      tok1.addToIndexes();
+//    }
+//    FSIndexRepositoryMgr irm = (FSIndexRepositoryMgr)jcas.getIndexRepository();
+//    TypeSystem ts = cas.getTypeSystem();
+//    LinearTypeOrder lo = irm.getDefaultTypeOrder();
+//    Type tokenType = ts.getType("x.y.z.Token");
+//    Type sentenceType = ts.getType("x.y.z.Sentence");
+//    Type annotType = ts.getType(CAS.TYPE_NAME_ANNOTATION);
+//
+//    boolean java7 = System.getProperty("java.version").startsWith("1.7");
+//    
+//    /*********************************************************
+//     * Surprise: Type Order is different between Java 7 and 8
+//     *********************************************************/
+//    assertEquals(java7, lo.lessThan(annotType, tokenType));   // annotation < token for java 7, opposite for Java 8
+//    assertTrue(lo.lessThan(sentenceType, tokenType));
+//    
+//    
+//    /********************************************************
+//     * This iterator is always empty 
+//     ********************************************************/
+//    Iterator<Annotation> iter = jcas.getAnnotationIndex(Token.type).subiterator(new Token(jcas, 2, 5));
+//    assertFalse(iter.hasNext()); // because is empty because of definition of where to start, step #2 (see above)
+//
+//    /*********************************************************
+//     * Surprise: This iterator is empty only for Java 8
+//     *   due to type ordering
+//     *********************************************************/
+//    iter = jcas.getAnnotationIndex(Token.type).subiterator(new Annotation(jcas, 2, 5));
+//    assertEquals(java7, iter.hasNext()); // Ok for java 7, empty for java 8 because of type order difference 
+//
+//    /*********************************************************
+//     * This iterator is never empty because type order for
+//     * Sentence is before Token in both Java 7 and 8
+//     *********************************************************/
+//    iter = jcas.getAnnotationIndex(Token.type).subiterator(new Sentence(jcas, 2, 5));
+//    assertTrue(iter.hasNext());    // OK for both, because Sentence is before Token in both Java 7 and 8    
+//  }  
+  
 	public void testGetNthFSList() throws Exception {
 		try {
 			Token tok1 = new Token(jcas);
@@ -908,8 +954,8 @@ public class JCasTest extends TestCase {
       assertEquals(expectedDoa[i++], v);
     }
     
-  }
-
+  }  
+  
   public void testUndefinedType() throws Exception {
     //create jcas with no type system
     JCas jcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
