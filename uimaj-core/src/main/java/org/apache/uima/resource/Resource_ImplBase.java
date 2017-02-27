@@ -27,6 +27,8 @@ import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.impl.Util;
 import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.resource.impl.RelativePathResolver_impl;
@@ -68,6 +70,7 @@ public abstract class Resource_ImplBase implements Resource {
    * multi-thread safe, given that each instance of this class is only called on one thread, once.
    * The critical parts that update shared information (in shared uima context) are inside a synchronize block
    */
+  @Override
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
 
@@ -117,6 +120,12 @@ public abstract class Resource_ImplBase implements Resource {
 
         // create and initialize UIMAContext
         mUimaContextAdmin = UIMAFramework.newUimaContext(logger, resMgr, configMgr);
+        if (aAdditionalParams != null) {
+          Object limit = aAdditionalParams.get(AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING);
+          if (limit != null) {
+            ((UimaContext_ImplBase)mUimaContextAdmin).setLoggingThrottleLimit((Integer)limit);
+          }
+        }
       }
     } else {
       // configure logger of the UIMA context so that class-specific logging
@@ -232,12 +241,14 @@ public abstract class Resource_ImplBase implements Resource {
   /**
    * @see org.apache.uima.resource.Resource#destroy()
    */
+  @Override
   public void destroy() {
   }
 
   /**
    * @see org.apache.uima.resource.Resource#getMetaData()
    */
+  @Override
   public ResourceMetaData getMetaData() {
     return mMetaData;
   }
@@ -260,6 +271,7 @@ public abstract class Resource_ImplBase implements Resource {
    * Get the logger for this UIMA framework class.
    * Note that this is NOT the user's logger in the UimaContext
    */
+  @Override
   public Logger getLogger() {
     return UIMAFramework.getLogger(this.getClass());
   }
@@ -267,6 +279,7 @@ public abstract class Resource_ImplBase implements Resource {
   /**
    * Set the logger in the current UimaContext for use by user annotators. 
    */
+  @Override
   public void setLogger(Logger aLogger) {
     if (getUimaContext() != null) {
       getUimaContextAdmin().setLogger(aLogger);
@@ -276,6 +289,7 @@ public abstract class Resource_ImplBase implements Resource {
   /**
    * @see org.apache.uima.resource.Resource#getResourceManager()
    */
+  @Override
   public ResourceManager getResourceManager() {
     if (getUimaContextAdmin() != null)
       return getUimaContextAdmin().getResourceManager();
@@ -288,6 +302,7 @@ public abstract class Resource_ImplBase implements Resource {
    * 
    * @see org.apache.uima.resource.Resource#getUimaContext()
    */
+  @Override
   public UimaContext getUimaContext() {
     return mUimaContextAdmin;
   }
@@ -295,6 +310,7 @@ public abstract class Resource_ImplBase implements Resource {
   /**
    * Gets the Admin interface to this Resource's UimaContext.
    */
+  @Override
   public UimaContextAdmin getUimaContextAdmin() {
     return mUimaContextAdmin;
   }
