@@ -123,7 +123,7 @@ public abstract class AnalysisComponent_ImplBase implements AnalysisComponent {
    * 
    * @return the Logger associated with this uima Analysis Engine component
    */
-  protected final Logger getLogger() {
+  protected Logger getLogger() {
     return getContext().getLogger();
   }
   

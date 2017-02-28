@@ -322,5 +322,7 @@ public void setOutputStream(OutputStream aStream);
    * @param limit the limit
    * @return a copy of the logger with the throttling limit set, or the same logger if no change
    */
-  public Logger getLimitedLogger(int limit);
+  default Logger getLimitedLogger(int limit) {
+    return this;
+  }
 }
