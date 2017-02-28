@@ -154,7 +154,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param aFqcn - fully qualified class name of highest level of logging impl.
    *               The class / method above this in the stack trace is used 
    *               for identifying where the logging call originated from.
-   * @param Level the uima Level
+   * @param level the uima Level
    * @param message the message
    * @param thrown may be null              
    */

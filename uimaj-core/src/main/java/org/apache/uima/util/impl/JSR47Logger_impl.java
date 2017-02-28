@@ -160,15 +160,15 @@ public class JSR47Logger_impl extends Logger_common_impl {
   /**
    * JSR-47 level mapping to UIMA level mapping.
    * 
-   * SEVERE (highest value) -%gt; SEVERE<br></br> 
-   * WARNING -%gt; WARNING<br></br> 
-   * INFO -%gt; INFO <br></br>
-   * CONFIG -%gt; CONFIG <br></br>
-   * FINE -%gt; FINE<br></br>
-   * FINER -%gt; FINER <br></br>
-   * FINEST (lowest value) -%gt; FINEST<br></br> 
-   * OFF -%gt; OFF <br></br>
-   * ALL -%gt; ALL<br></br>
+   * SEVERE (highest value) -%gt; SEVERE<br> 
+   * WARNING -%gt; WARNING<br> 
+   * INFO -%gt; INFO <br>
+   * CONFIG -%gt; CONFIG <br>
+   * FINE -%gt; FINE<br>
+   * FINER -%gt; FINER <br>
+   * FINEST (lowest value) -%gt; FINEST<br> 
+   * OFF -%gt; OFF <br>
+   * ALL -%gt; ALL<br>
    * 
    * @param level
    *          uima level

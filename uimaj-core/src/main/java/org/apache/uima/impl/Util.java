@@ -94,7 +94,7 @@ public class Util {
   
   /**
    * Calls userCode and then restores the context holder
-   * @param userCode
+   * @param userCode run this code within the current context
    */
   public static void preserveContextHolder(Runnable userCode) {
     UimaContext prevContext = UimaContextHolder.getContext();
@@ -105,6 +105,11 @@ public class Util {
     }
   }
 
+  /**
+   * Calls userCode with specified context, then restores the context holder
+   * @param context to use while running the userCode
+   * @param userCode the code to run.
+   */
   public static void withContextHolder(UimaContext context, Runnable userCode) {
     UimaContext prevContext = UimaContextHolder.setContext(context);
     try {
@@ -114,6 +119,12 @@ public class Util {
     }
   }
   
+  /**
+   * Calls userCode with specified context, then restores the context holder
+   * @param context to use while running the userCode
+   * @param userCode the code to run.
+   * @throws Exception -
+   */
   public static void withContextHolderX(UimaContext context, Runnable_withException userCode) throws Exception {
     UimaContext prevContext = UimaContextHolder.setContext(context);
     try {
