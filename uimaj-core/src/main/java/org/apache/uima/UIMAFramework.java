@@ -1330,6 +1330,8 @@ public abstract class UIMAFramework {
       mInstance._initialize();
     } catch (Exception e) {
       // could not load reference implementation
+      System.err.println("Could not create UIMA framework, using framework class name: " + frameworkClassName);
+      e.printStackTrace();
       throw new UIMA_IllegalStateException(UIMA_IllegalStateException.COULD_NOT_CREATE_FRAMEWORK,
               new Object[] { frameworkClassName }, e);
     }

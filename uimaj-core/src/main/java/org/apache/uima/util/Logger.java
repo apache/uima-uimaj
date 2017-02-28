@@ -269,6 +269,9 @@ public void setOutputStream(OutputStream aStream);
   
   /**
    * Checks if this logger is enabled for this level and this marker
+   * @param level the level to test
+   * @param marker null or the marker to test
+   * @return true if the level is greater or equal to the specified level and the marker matches
    */
   public boolean isLoggable(Level level, Marker marker);
 

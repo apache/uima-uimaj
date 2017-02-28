@@ -21,6 +21,7 @@ package org.apache.uima.util.impl;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.logging.Handler;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
@@ -256,7 +257,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   public void log(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
     if (isLoggable(level, m)) {    
       LogRecord record = new LogRecord(getJSR47Level(level, m), 
-                                       MessageFormatter.format(msg, args).getMessage());
+                                       MessageFormat.format(msg, args));
       record.setLoggerName(getName());
       record.setThrown(throwable);
       

@@ -19,6 +19,8 @@
 
 package org.apache.uima.util.impl;
 
+import java.text.MessageFormat;
+
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -66,7 +68,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   /**
    * logger object from the underlying Slf4j logging framework
    */
-  final private org.slf4j.spi.LocationAwareLogger logger;
+  final private org.slf4j.Logger logger;
+  final private boolean isLocationCapable;  // the slf4j simple logger is not 
   
   /**
    * create a new LogWrapper class for the specified source class
@@ -80,12 +83,14 @@ public class Slf4jLogger_impl extends Logger_common_impl {
                                  ? component.getName()
                                  : "org.apache.uima";
  
-    logger = (LocationAwareLogger) org.slf4j.LoggerFactory.getLogger(loggerName);
+    logger = org.slf4j.LoggerFactory.getLogger(loggerName);
+    isLocationCapable = logger instanceof org.slf4j.spi.LocationAwareLogger;
   }
   
   private Slf4jLogger_impl(Slf4jLogger_impl l, int limit) {
     super(l, limit);
     this.logger = l.logger;
+    isLocationCapable = logger instanceof org.slf4j.spi.LocationAwareLogger;
   }
     
   /**
@@ -200,7 +205,28 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
   
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
-    logger.log(m, aFqcn, getSlf4jLevel(level), message, args, thrown);
+    if (isLocationCapable) {  // slf4j simple logger is not
+      ((org.slf4j.spi.LocationAwareLogger)logger).log(m, aFqcn, getSlf4jLevel(level), message, args, thrown);
+    } else {
+      switch(getSlf4jLevel(level)) {
+      case LocationAwareLogger.ERROR_INT: 
+        logger.error(m, MessageFormat.format(message, args), thrown); 
+        break;
+      case LocationAwareLogger.WARN_INT: 
+        logger.warn(m, MessageFormat.format(message, args), thrown); 
+        break;
+      case LocationAwareLogger.INFO_INT: 
+        logger.info(m, MessageFormat.format(message, args), thrown); 
+        break;
+      case LocationAwareLogger.TRACE_INT: 
+        logger.trace(m, MessageFormat.format(message, args), thrown); 
+        break;
+      case LocationAwareLogger.DEBUG_INT: 
+        logger.debug(m, MessageFormat.format(message, args), thrown); 
+        break;
+      default: Misc.internalError();
+      }
+    }
   }
   
   /**
