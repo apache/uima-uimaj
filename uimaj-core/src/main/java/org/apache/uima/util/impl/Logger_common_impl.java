@@ -105,8 +105,8 @@ public abstract class Logger_common_impl implements Logger {
   
   /**
    * Copy constructor for limited loggers
-   * @param lci
-   * @param limit
+   * @param lci the original logger to copy
+   * @param limit the limit
    */
   protected Logger_common_impl(Logger_common_impl lci, int limit) {
     this.limit = limit;
@@ -124,10 +124,11 @@ public abstract class Logger_common_impl implements Logger {
   /**
    * The main log call implemented by subclasses
    * @param m the marker
-   * @param fqcn the fully qualified class name of the top-most logging class used
+   * @param aFqcn the fully qualified class name of the top-most logging class used
    *                   to filter the stack trace to get the caller class / method info
    * @param level the UIMA level
    * @param message -
+   * @param args - arguments to be substituted into the message
    * @param throwable - can be null
    */
   public abstract void log(Marker m, String aFqcn, Level level, 
@@ -150,7 +151,7 @@ public abstract class Logger_common_impl implements Logger {
   /**
    * Convert a standard UIMA call for wrapped loggers
    * 
-   * @param fqcn - fully qualified class name of highest level of logging impl.
+   * @param aFqcn - fully qualified class name of highest level of logging impl.
    *               The class / method above this in the stack trace is used 
    *               for identifying where the logging call originated from.
    * @param Level the uima Level

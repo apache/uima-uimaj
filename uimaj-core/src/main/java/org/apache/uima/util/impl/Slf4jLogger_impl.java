@@ -112,10 +112,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * creates a new Logger instance for the specified source class
-   * 
-   * @param component
-   *          current source class
+   * creates a new Logger instance using default name "org.apache.uima"
    * 
    * @return Logger - returns the Logger object for the specified class
    */
@@ -230,7 +227,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
   
   /**
-   * @return
+   * @return the logger name
    * @see org.slf4j.Logger#getName()
    */
   public String getName() {
@@ -238,7 +235,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * @return
+   * @return -
    * @see org.slf4j.Logger#isTraceEnabled()
    */
   public boolean isTraceEnabled() {
@@ -246,8 +243,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * @param marker
-   * @return
+   * @param marker -
+   * @return true if trace is enabled for this marker
    * @see org.slf4j.Logger#isTraceEnabled(org.slf4j.Marker)
    */
   public boolean isTraceEnabled(Marker marker) {
@@ -256,7 +253,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
 
   /**
-   * @return
+   * @return -
    * @see org.slf4j.Logger#isDebugEnabled()
    */
   public boolean isDebugEnabled() {
@@ -264,8 +261,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * @param marker
-   * @return
+   * @param marker -
+   * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isDebugEnabled(org.slf4j.Marker)
    */
   public boolean isDebugEnabled(Marker marker) {
@@ -274,7 +271,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
 
   /**
-   * @return
+   * @return -
    * @see org.slf4j.Logger#isInfoEnabled()
    */
   public boolean isInfoEnabled() {
@@ -283,8 +280,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
 
   /**
-   * @param marker
-   * @return
+   * @param marker -
+   * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isInfoEnabled(org.slf4j.Marker)
    */
   public boolean isInfoEnabled(Marker marker) {
@@ -293,7 +290,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
 
 
   /**
-   * @return
+   * @return -
    * @see org.slf4j.Logger#isWarnEnabled()
    */
   public boolean isWarnEnabled() {
@@ -301,8 +298,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * @param marker
-   * @return
+   * @param marker -
+   * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isWarnEnabled(org.slf4j.Marker)
    */
   public boolean isWarnEnabled(Marker marker) {
@@ -310,7 +307,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * @return
+   * @return -
    * @see org.slf4j.Logger#isErrorEnabled()
    */
   public boolean isErrorEnabled() {
@@ -318,8 +315,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
 
   /**
-   * @param marker
-   * @return
+   * @param marker -
+   * @return true if is enabled for this marker
    * @see org.slf4j.Logger#isErrorEnabled(org.slf4j.Marker)
    */
   public boolean isErrorEnabled(Marker marker) {
