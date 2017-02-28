@@ -195,16 +195,16 @@ public class Log4jLogger_impl extends Logger_common_impl {
   
 
    /**
-    * log4j level mapping to UIMA level mapping. <br/>
-    * SEVERE (highest value) -&gt; SEVERE <br/> 
-    * WARNING -&gt; WARNING <br/> 
-    * INFO -&gt; INFO <br/> 
-    * CONFIG -&gt; INFO <br/> 
-    * FINE -&gt; TRACE <br/> 
-    * FINER -&gt; TRACE <br/> 
-    * FINEST (lowest value) -&gt; DEBUG <br/> 
-    * OFF -&gt; OFF <br/> 
-    * ALL -&gt; ALL <br/>
+    * log4j level mapping to UIMA level mapping. <br></br>
+    * SEVERE (highest value) -&gt; SEVERE <br></br> 
+    * WARNING -&gt; WARNING <br></br> 
+    * INFO -&gt; INFO <br></br> 
+    * CONFIG -&gt; INFO <br></br> 
+    * FINE -&gt; TRACE <br></br> 
+    * FINER -&gt; TRACE <br></br> 
+    * FINEST (lowest value) -&gt; DEBUG <br></br> 
+    * OFF -&gt; OFF <br></br> 
+    * ALL -&gt; ALL <br></br>
     * 
     * @param level uima level
     * @return Level - corresponding log4j 2 level
