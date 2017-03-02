@@ -22,8 +22,8 @@ package org.apache.uima.util.impl;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.util.function.Supplier;
 
-import org.apache.logging.log4j.util.Supplier;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceManager;
@@ -141,9 +141,7 @@ public abstract class Logger_common_impl implements Logger {
   public static Marker getMarkerForLevel(Level level) {
     switch(level.toInteger()) {
     case Level.CONFIG_INT: return UIMA_MARKER_CONFIG;
-    case Level.FINE_INT: return UIMA_MARKER_FINE;
-    case Level.FINER_INT: return UIMA_MARKER_FINER;
-//    case Level.FINEST_INT: return UIMA_MARKER_FINEST;
+    case Level.FINEST_INT: return UIMA_MARKER_FINEST;
     default: return null;
     }
   }
@@ -806,28 +804,28 @@ void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
 @Override
 public void trace(String arg0) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, arg0, null, null);
+    log(null, fqcnCmn, Level.TRACE, arg0, null, null);
   }
 }
 
 @Override
 public void trace(String arg0, Object arg1) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) { 
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, arg0, new Object[] {arg1}, null);
+    log(null, fqcnCmn, Level.TRACE, arg0, new Object[] {arg1}, null);
   }
 }
 
 @Override
 public void trace(String arg0, Object... arg1) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) { 
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, arg0, arg1, null);
+    log(null, fqcnCmn, Level.TRACE, arg0, arg1, null);
   }
 }
 
 @Override
 public void trace(String arg0, Throwable arg1) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) { 
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, arg0, null, arg1);
+    log(null, fqcnCmn, Level.TRACE, arg0, null, arg1);
   }
 }
 
@@ -841,7 +839,7 @@ public void trace(Marker arg0, String arg1) {
 @Override
 public void trace(String arg0, Object arg1, Object arg2) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, arg0, new Object[] {arg1}, null);
+    log(null, fqcnCmn, Level.TRACE, arg0, new Object[] {arg1}, null);
   }
 }
 
@@ -880,7 +878,7 @@ public void trace(Marker arg0, String arg1, Object arg2, Object arg3) {
  */
 void trace(Supplier<String> msgSupplier) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
+    log(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
   }   
 }
 
@@ -890,7 +888,7 @@ void trace(Supplier<String> msgSupplier) {
  */
 void trace(Supplier<String> msgSupplier, Throwable throwable) {
   if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(UIMA_MARKER_FINE, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
+    log(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
   }   
 }
 

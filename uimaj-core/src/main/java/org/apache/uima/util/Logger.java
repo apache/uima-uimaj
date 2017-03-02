@@ -22,7 +22,6 @@ package org.apache.uima.util;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceManager;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -54,10 +53,7 @@ public interface Logger extends org.slf4j.Logger {
 
   // standard markers
   static final Marker UIMA_MARKER_CONFIG = MarkerFactory.getMarker("org.apache.uima.config");
-  static final Marker UIMA_MARKER_FINE = MarkerFactory.getMarker("org.apache.uima.fine");
-  static final Marker UIMA_MARKER_FINER = MarkerFactory.getMarker("org.apache.uima.finer");
-  // next not used
-//  static final Marker UIMA_MARKER_FINEST = MarkerFactory.getMarker("org.apache.uima.finest");
+  static final Marker UIMA_MARKER_FINEST = MarkerFactory.getMarker("org.apache.uima.finest");
 
   /**
    * Logs a message.

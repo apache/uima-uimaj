@@ -56,7 +56,14 @@ public class Level {
   /** level value for level "ALL" */
   public final static int ALL_INT = Integer.MIN_VALUE;
 
-  
+  /** level value for level "ERROR" */
+  public final static int ERROR_INT = SEVERE_INT;
+  /** level value for level "WARN" */
+  public final static int WARN_INT = WARNING_INT;
+  /** level value for level "DEBUG" */
+  public final static int DEBUG_INT = FINE_INT;
+  /** level value for level "TRACE" */
+  public final static int TRACE_INT = FINER_INT;
   
   /** message level "OFF" */
   final static public Level OFF = new Level(OFF_INT, "OFF");
@@ -77,14 +84,14 @@ public class Level {
 
   /** message level "FINE" */
   final static public Level FINE = new Level(FINE_INT, "FINE");
-  final static public Level TRACE = FINE;
+  final static public Level DEBUG = FINE;
 
   /** message level "FINER" */
   final static public Level FINER = new Level(FINER_INT, "FINER");
+  final static public Level TRACE = FINER;
 
   /** message level "FINEST" */
   final static public Level FINEST = new Level(FINEST_INT, "FINEST");
-  final static public Level DEBUG = FINEST;
 
   /** message level "ALL" */
   final static public Level ALL = new Level(ALL_INT, "ALL");

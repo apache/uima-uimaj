@@ -133,9 +133,9 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case Level.WARNING_INT: return LocationAwareLogger.WARN_INT;
     case Level.INFO_INT: return LocationAwareLogger.INFO_INT;
     case Level.CONFIG_INT: return LocationAwareLogger.INFO_INT;
-    case Level.FINE_INT: return LocationAwareLogger.TRACE_INT;
+    case Level.FINE_INT: return LocationAwareLogger.DEBUG_INT;
     case Level.FINER_INT: return LocationAwareLogger.TRACE_INT;
-    case Level.FINEST_INT: return LocationAwareLogger.DEBUG_INT;
+    case Level.FINEST_INT: return LocationAwareLogger.TRACE_INT;
     }
     Misc.internalError();
     return LocationAwareLogger.ERROR_INT; //ignored, just here for compile error avoidance
@@ -157,13 +157,13 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case org.apache.uima.util.Level.INFO_INT:
       return logger.isInfoEnabled();
     case org.apache.uima.util.Level.CONFIG_INT:
-      return logger.isInfoEnabled();
+      return logger.isInfoEnabled(UIMA_MARKER_CONFIG);
     case org.apache.uima.util.Level.FINE_INT:
-      return logger.isTraceEnabled();
+      return logger.isDebugEnabled();
     case org.apache.uima.util.Level.FINER_INT:
       return logger.isTraceEnabled();
     case org.apache.uima.util.Level.FINEST_INT:
-      return logger.isTraceEnabled();
+      return logger.isTraceEnabled(UIMA_MARKER_FINEST);
     default: // for Level.ALL return false, that's what jul logger does
       return false;
     }
@@ -182,7 +182,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     case org.apache.uima.util.Level.CONFIG_INT:
       return logger.isInfoEnabled(marker);
     case org.apache.uima.util.Level.FINE_INT:
-      return logger.isTraceEnabled(marker);
+      return logger.isDebugEnabled(marker);
     case org.apache.uima.util.Level.FINER_INT:
       return logger.isTraceEnabled(marker);
     case org.apache.uima.util.Level.FINEST_INT:
@@ -202,24 +202,34 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
   
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+    m = (m == null) 
+          ? getMarkerForLevel(level) 
+          : m;
+          
     if (isLocationCapable) {  // slf4j simple logger is not
       ((org.slf4j.spi.LocationAwareLogger)logger).log(m, aFqcn, getSlf4jLevel(level), message, args, thrown);
     } else {
-      switch(getSlf4jLevel(level)) {
-      case LocationAwareLogger.ERROR_INT: 
+      switch(level.toInteger()) {
+      case Level.SEVERE_INT: 
         logger.error(m, MessageFormat.format(message, args), thrown); 
         break;
-      case LocationAwareLogger.WARN_INT: 
+      case Level.WARNING_INT: 
         logger.warn(m, MessageFormat.format(message, args), thrown); 
         break;
-      case LocationAwareLogger.INFO_INT: 
+      case Level.INFO_INT: 
         logger.info(m, MessageFormat.format(message, args), thrown); 
         break;
-      case LocationAwareLogger.TRACE_INT: 
+      case Level.CONFIG_INT: 
+        logger.info(m, MessageFormat.format(message, args), thrown); 
+        break;
+      case Level.FINE_INT: 
+        logger.debug(m, MessageFormat.format(message, args), thrown); 
+        break;
+      case Level.FINER_INT: 
         logger.trace(m, MessageFormat.format(message, args), thrown); 
         break;
-      case LocationAwareLogger.DEBUG_INT: 
-        logger.debug(m, MessageFormat.format(message, args), thrown); 
+      case Level.FINEST_INT: 
+        logger.trace(m, MessageFormat.format(message, args), thrown); 
         break;
       default: Misc.internalError();
       }

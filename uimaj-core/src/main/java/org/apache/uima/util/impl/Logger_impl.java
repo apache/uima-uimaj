@@ -175,7 +175,7 @@ public class Logger_impl extends Logger_common_impl {
  
   @Override
   public boolean isDebugEnabled() {
-    return isLoggable(Level.FINEST);
+    return isLoggable(Level.FINE);
   }
 
   @Override
@@ -206,8 +206,8 @@ public class Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isTraceEnabled() {
-    return isLoggable(Level.FINE) ||
-        isLoggable(Level.FINER);
+    return isLoggable(Level.FINER) ||
+        isLoggable(Level.FINEST);
   }
 
   @Override

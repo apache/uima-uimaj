@@ -45,8 +45,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
    * These are log4j class versions of the slf4j markers.
    */
   final static private org.apache.logging.log4j.Marker LOG4J_CONFIG = m(UIMA_MARKER_CONFIG);
-  final static private org.apache.logging.log4j.Marker LOG4J_FINE = m(UIMA_MARKER_FINE);
-  final static private org.apache.logging.log4j.Marker LOG4J_FINER = m(UIMA_MARKER_FINER);
+  final static private org.apache.logging.log4j.Marker LOG4J_FINEST = m(UIMA_MARKER_FINEST);
    
   /**
    * Filters for use in setLevel calls, for levels that need marker filtering.
@@ -125,12 +124,9 @@ public class Log4jLogger_impl extends Logger_common_impl {
   final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_CONFIG = 
       makeFilter(org.apache.logging.log4j.Level.INFO, LOG4J_CONFIG);
 
-  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINE = 
-      makeFilter(org.apache.logging.log4j.Level.TRACE, LOG4J_FINE);
-      
-  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINER = 
-      makeFilter(org.apache.logging.log4j.Level.TRACE, LOG4J_FINER);
-      
+  final static private org.apache.logging.log4j.core.filter.AbstractFilter FILTER_FINEST = 
+      makeFilter(org.apache.logging.log4j.Level.TRACE, LOG4J_FINEST);
+         
    /**
     * logger object from the underlying Log4j logging framework
     * The ExtendedLoggerWrapper includes the ability to specify the wrapper class
@@ -200,9 +196,9 @@ public class Log4jLogger_impl extends Logger_common_impl {
     * WARNING -&gt; WARNING <br> 
     * INFO -&gt; INFO <br> 
     * CONFIG -&gt; INFO <br> 
-    * FINE -&gt; TRACE <br> 
+    * FINE -&gt; DEBUG <br> 
     * FINER -&gt; TRACE <br> 
-    * FINEST (lowest value) -&gt; DEBUG <br> 
+    * FINEST (lowest value) -&gt; TRACE <br> 
     * OFF -&gt; OFF <br> 
     * ALL -&gt; ALL <br>
     * 
@@ -222,11 +218,11 @@ public class Log4jLogger_impl extends Logger_common_impl {
       case org.apache.uima.util.Level.CONFIG_INT:
          return org.apache.logging.log4j.Level.INFO;
       case org.apache.uima.util.Level.FINE_INT:
-         return org.apache.logging.log4j.Level.TRACE;
+         return org.apache.logging.log4j.Level.DEBUG;
       case org.apache.uima.util.Level.FINER_INT:
         return org.apache.logging.log4j.Level.TRACE;
       case org.apache.uima.util.Level.FINEST_INT:
-        return org.apache.logging.log4j.Level.DEBUG;
+        return org.apache.logging.log4j.Level.TRACE;
       default: // for all other cases return Level.ALL
          return org.apache.logging.log4j.Level.ALL;
       }
@@ -249,16 +245,11 @@ public class Log4jLogger_impl extends Logger_common_impl {
        return r == Result.ACCEPT ||
               (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.TRACE));
      }
-     if (level == Level.FINE) {
-       Result r = filterTest(org.apache.logging.log4j.Level.TRACE, LOG4J_FINE);
+     if (level == Level.FINEST) {
+       Result r = filterTest(org.apache.logging.log4j.Level.TRACE, LOG4J_FINEST);
        return r == Result.ACCEPT ||
-              (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.DEBUG));
+              (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.TRACE));
        
-     }
-     if (level == Level.FINER) {
-       Result r = filterTest(org.apache.logging.log4j.Level.TRACE, LOG4J_FINER);
-       return r == Result.ACCEPT ||
-              (r == Result.NEUTRAL && coreLogger.isEnabled(org.apache.logging.log4j.Level.DEBUG));
      }
      return coreLogger.isEnabled(getLog4jLevel(level));
    }
@@ -298,18 +289,12 @@ public class Log4jLogger_impl extends Logger_common_impl {
        coreLogger.get().removeFilter(FILTER_CONFIG);
      }
      
-     if (level == Level.FINE) {
-       coreLogger.get().addFilter(FILTER_FINE);
+     if (level == Level.FINEST) {
+       coreLogger.get().addFilter(FILTER_FINEST);
      } else {
-       coreLogger.get().removeFilter(FILTER_FINE);
+       coreLogger.get().removeFilter(FILTER_FINEST);
      }
-     
-     if (level == Level.FINER) {
-       coreLogger.get().addFilter(FILTER_FINER);
-     } else {
-       coreLogger.get().removeFilter(FILTER_FINER);
-     }
-     
+          
      coreLogger.get().setLevel(getLog4jLevel(level));
      coreLogger.getContext().updateLoggers();
    }
@@ -327,8 +312,6 @@ public class Log4jLogger_impl extends Logger_common_impl {
      return logger.getName();
    }
 
-   // ----------------------    
-            
    // ----------------------    
 
    @Override

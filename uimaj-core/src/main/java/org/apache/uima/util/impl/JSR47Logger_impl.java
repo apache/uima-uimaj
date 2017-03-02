@@ -160,6 +160,8 @@ public class JSR47Logger_impl extends Logger_common_impl {
   /**
    * JSR-47 level mapping to UIMA level mapping.
    * 
+   * Maps via marker values for UIMA_MARKER_CONFIG and UIMA_MARKER_FINEST
+   * 
    * SEVERE (highest value) -%gt; SEVERE<br> 
    * WARNING -%gt; WARNING<br> 
    * INFO -%gt; INFO <br>
@@ -188,19 +190,21 @@ public class JSR47Logger_impl extends Logger_common_impl {
       case org.apache.uima.util.Level.WARNING_INT:
         return java.util.logging.Level.WARNING;
       case org.apache.uima.util.Level.INFO_INT:
-        return (m == UIMA_MARKER_CONFIG)
+        return (m == UIMA_MARKER_CONFIG) 
                  ? java.util.logging.Level.CONFIG
                  : java.util.logging.Level.INFO;
       case org.apache.uima.util.Level.CONFIG_INT:
         return java.util.logging.Level.CONFIG;
       case org.apache.uima.util.Level.FINE_INT:
-        return (m == UIMA_MARKER_FINER)
-                 ? java.util.logging.Level.FINER
-                 : java.util.logging.Level.FINE;
+        return java.util.logging.Level.FINE;
       case org.apache.uima.util.Level.FINER_INT:
-        return java.util.logging.Level.FINER;
+        // could be DEBUG with marker FINEST, DEBUG_INT == FINER_INT
+        return (m == UIMA_MARKER_FINEST)
+                 ? java.util.logging.Level.FINEST
+                 : java.util.logging.Level.FINER;
       case org.apache.uima.util.Level.FINEST_INT:
         return java.util.logging.Level.FINEST;
+          
       default: // for all other cases return Level.ALL
         return java.util.logging.Level.ALL;
     }
@@ -299,7 +303,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isDebugEnabled() {
-    return logger.isLoggable(java.util.logging.Level.FINEST);
+    return logger.isLoggable(java.util.logging.Level.FINE);
   }
 
   @Override
@@ -330,8 +334,8 @@ public class JSR47Logger_impl extends Logger_common_impl {
 
   @Override
   public boolean isTraceEnabled() {
-    return logger.isLoggable(java.util.logging.Level.FINE) ||
-        logger.isLoggable(java.util.logging.Level.FINER);
+    return logger.isLoggable(java.util.logging.Level.FINER) ||
+        logger.isLoggable(java.util.logging.Level.FINEST);
   }
 
   @Override
