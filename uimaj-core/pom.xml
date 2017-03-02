@@ -68,8 +68,17 @@
       <version>${log4j.version}</version>
       <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
             "test" fails in maven compile - cannot compile -->
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
+
+    <!-- dependency>  moved to surefire configuration
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId-->  <!-- core, not api, because need to set log level via api -->
+      <!-- version>${log4j.version}</version-->
+      <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
+            "test" fails in maven compile - cannot compile -->
+      <!-- scope>test</scope>
+    </dependency-->
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -77,8 +86,15 @@
       <version>${log4j.version}</version>
       <!--  "provided" fails in maven test - says cannot initialize class that makes ref to classes in this jar 
             "test" fails in maven compile - cannot compile -->
-      <scope>compile</scope>  
+      <scope>provided</scope>  
     </dependency>
+
+     <!-- dependency>  moved to surefire configuration
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope>  
+    </dependency-->
     
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -92,10 +108,16 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>${log4j.version}</version>
-      <!-- scope provided fails: doesn't get added to the test classpath -->
-      <!-- needs to be in compile classpath to compile Log4jLogger_impl -->
-      <scope>compile</scope> 
+      <!-- scope provided: put in compile classpath, excluded from test classpath, not passed along -->
+      <scope>provided</scope> 
     </dependency>
+
+     <!-- dependency>  moved to surefire configuration  
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j.version}</version>
+      <scope>test</scope> 
+    </dependency-->
 
     <!--  causes build error: package org.apache.logging.slf4j does not exist
     <dependency>
@@ -299,6 +321,12 @@
 				<configuration>
           <!-- testing on 64 bit Linux requires larger heap -->
 					<argLine>-Xmx650M</argLine>
+          <!--  include dependencies that are for logging but specified as "provided" -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-core/${log4j.version}/log4j-core-${log4j.version}.jar</additionalClasspathElement>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-api/${log4j.version}/log4j-api-${log4j.version}.jar</additionalClasspathElement>
+            <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-slf4j-impl/${log4j.version}/log4j-slf4j-impl-${log4j.version}.jar</additionalClasspathElement>
+          </additionalClasspathElements>
           <!-- exclude log4j slf bridge for testing 
           <classpathDependencyExcludes>
             <classpathDependencyExclude>org.apache.logging.log4j:log4j-slf4j-impl</classpathDependencyExclude>
