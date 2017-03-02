@@ -38,7 +38,7 @@ under the License.
     which allows deferring until deployment time, the specific logging back end to use.
     </para>
     
-    <para>If, at initialization time, SLF4J gets configuredto use a back end which is either the 
+    <para>If, at initialization time, SLF4J gets configured to use a back end which is either the 
     built-in Java logger, or Log4j-2, then the UIMA logger implementation is switched to
     UIMA's implementation of those APIs (bypassing SLF4j, for efficiency).</para>
 
@@ -70,7 +70,40 @@ under the License.
     <para>The Eclipse UIMA Runtime plugin bundle excludes the slf4j api Jar and back ends, but will 
       "hook up" the needed implementations from other bundles.   
     </para> 
-  
+
+  <section id="uv3.logging.levels">
+    <title>Logging Levels</title>
+    
+    <para>There are 2 logging level schemes, and there is a mapping between them.  Either of them may be used
+      when using the UIMA logger.  One of the schemes is the original UIMA v2 level set, which is the same 
+      as the built-in-to-java logger levels.  The other is the scheme adopted by SLF4J and many of its back ends.
+    </para>
+          
+   <para>Log statements are "filtered" according to the logging configuration, by Level, and sometimes by
+    additional indicators, such as Markers.  Levels work in a hierarchy.  A given level of 
+    filtering passes that level and all higher levels.  Some levels have two names, due to the 
+    way the different logger back-ends name things.  Most levels are also used as method names on 
+    the logger, to indicate logging for that level.  
+    For example, you could say <code>aLogger.log(Level.INFO, message)</code>
+    but you can also say <code>aLogger.info(message)</code>). The level ordering, highest to lowest, 
+    and the associated method names are as follows:
+    <itemizedlist spacing="compact">
+      <listitem><para>SEVERE or ERROR; error(...)</para></listitem>
+      <listitem><para>WARN or WARNING; warn(...)</para></listitem>
+      <listitem><para>INFO; info(...)</para></listitem>
+      <listitem><para>CONFIG; info(UIMA_MARKER_CONFIG, ...)</para></listitem>
+      <listitem><para>FINE or DEBUG; debug(...)</para></listitem>
+      <listitem><para>FINER or TRACE; trace(...)</para></listitem>
+      <listitem><para>FINEST; trace(UIMA_MARKER_FINEST, ...)</para></listitem>
+    </itemizedlist>
+    </para>
+    
+    <para>The CONFIG and FINEST levels are merged with other levels, but distinguished by having 
+    <code>Markers</code>.  If the filtering is configured to pass CONFIG level, then it will pass 
+    the higher levels (i.e., the INFO/WARN/ERROR or their alternative names WARNING/SEVERE) levels as well.
+    </para>
+      
+  </section>  
   <section id="uv3.logging.new_recorded_context_data">
     <title>Context Data</title>
       
@@ -145,22 +178,14 @@ under the License.
          </row>
 
          <row>
-           <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify CONFIG and FINE/FINER/FINEST </emphasis></entry>
+           <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify CONFIG and FINEST </emphasis></entry>
          </row>
          <row>
-           <entry><para>uima.config</para></entry>
+           <entry><para>org.apache.uima.config</para></entry>
            <entry><para>configuration log record</para></entry>
          </row>
          <row>
-           <entry><para>uima.fine</para></entry>
-           <entry><para>sub category of trace, corresponds to FINE</para></entry>
-         </row>
-         <row>
-           <entry><para>uima.finer</para></entry>
-           <entry><para>sub category of trace, corresponds to FINER</para></entry>
-         </row>
-         <row>
-           <entry><para>uima.finest</para></entry>
+           <entry><para>org.apache.uima.finest</para></entry>
            <entry><para>sub category of trace, corresponds to FINEST</para></entry>
          </row>
          

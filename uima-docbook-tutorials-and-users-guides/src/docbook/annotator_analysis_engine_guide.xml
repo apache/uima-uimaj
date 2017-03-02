@@ -955,17 +955,33 @@ public void initialize(UimaContext aContext)
         </para>
       
       <para>The <code>trace</code> call 
-        indicates that this is a tracing message. While useful for
-        debugging, it is likely that real applications will not output log messages at this
-        level, in order to improve their performance. Other defined levels for the UIMA logger, from lowest to
-        highest importance, are FINER, FINE, CONFIG, INFO, WARNING, and SEVERE.
-        SLF4J and other modern logging systems use a slightly different set: DEBUG, TRACE, INFO, wARN, and ERROR.
-        You may use either of these in your code, but the recommendation is to use the SLF4J tags in new code.</para>
-        
-      <para>These correspond as follows: SEVERE &rarr; ERROR, CONFIG &rarr; INFO + UIMA_MARKER_CONFIG, 
-        FINE &rarr; TRACE + UIMA_MARKER_FINE, FINER &rarr; TRACE + UIMA_MARKER_FINER, and
-        FINEST &rarr; DEBUG. 
+        indicates that this is a tracing message. This is useful for tracing program flow, but it is a low level which
+        is not usually enabled. 
       </para>
+      
+      <para>Log statements are "filtered" according to the logging configuration, by Level, and sometimes by
+        additional indicators, such as Markers.  Levels work in a hierarchy.  A given level of 
+        filtering passes that level and all higher levels.  Some levels have two names, due to the 
+        way the different logger back ends name things.  Most levels are also used as method names on 
+        the logger, to indicate logging for that level.  For example, you could say <code>aLogger.log(Level.INFO, message)</code>
+        but you can also say <code>aLogger.info(message)</code>). The level ordering, highest to lowest, 
+        and the associated method names are as follows:
+        <itemizedlist spacing="compact">
+          <listitem><para>SEVERE or ERROR; error(...)</para></listitem>
+          <listitem><para>WARN or WARNING; warn(...)</para></listitem>
+          <listitem><para>INFO; info(...)</para></listitem>
+          <listitem><para>CONFIG; info(UIMA_MARKER_CONFIG, ...)</para></listitem>
+          <listitem><para>FINE or DEBUG; debug(...)</para></listitem>
+          <listitem><para>FINER or TRACE; trace(...)</para></listitem>
+          <listitem><para>FINEST; trace(UIMA_MARKER_FINEST, ...)</para></listitem>
+        </itemizedlist>
+        </para>
+        
+        <para>The CONFIG and FINEST levels are merged with other levels, but distinguished by having 
+        <code>Markers</code>.  If the filtering is configured to pass CONFIG level, then it will pass also the
+        INFO/WARN/ERROR  (or their alternative names WARNING/SEVERE) levels as well.
+        </para>
+       
       
       <para>Each logging backend has its own documentation for how 
         to configure loggers at run time, via configuration files or APIs in some cases.
