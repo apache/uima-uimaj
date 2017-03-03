@@ -25,10 +25,12 @@ import java.text.MessageFormat;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.impl.JSR47Logger_impl;
+import org.apache.uima.util.impl.Logger_common_impl;
+import org.slf4j.Marker;
 
 /**
  * INTERNAL API - Wrapper for the UIMA {@link Logger} offering a more convenient API similar to that
@@ -37,14 +39,16 @@ import org.apache.uima.util.impl.JSR47Logger_impl;
  * {@code info}, {@code debug} and {@code trace} and mapping these to UIMA logging levels.
  * 
  */
-public class ExtendedLogger implements Logger {
+public class ExtendedLogger extends Logger_common_impl {
 
   private final UimaContext context;
 
   public ExtendedLogger(final UimaContext aContext) {
+    super(null);
     context = aContext;
   }
 
+  @Override
   @Deprecated
   public void log(String aMessage) {
     if (context != null) {
@@ -55,6 +59,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   @Deprecated
   public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
     if (context != null) {
@@ -65,6 +70,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   @Deprecated
   public void logException(Exception aException) {
     if (context != null) {
@@ -75,6 +81,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   @Deprecated
   public void setOutputStream(PrintStream aStream) {
     if (context != null) {
@@ -85,6 +92,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   @Deprecated
   public void setOutputStream(OutputStream aStream) {
     if (context != null) {
@@ -95,6 +103,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void log(Level level, String aMessage) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -104,6 +113,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void log(Level level, String aMessage, Object param1) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -114,6 +124,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void log(Level level, String aMessage, Object[] params) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -124,6 +135,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void log(Level level, String aMessage, Throwable thrown) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -133,6 +145,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey) {
     if (context != null) {
@@ -145,6 +158,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object param1) {
     if (context != null) {
@@ -157,6 +171,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object[] params) {
     if (context != null) {
@@ -169,6 +184,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Throwable thrown) {
     if (context != null) {
@@ -181,6 +197,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public void log(String wrapperFQCN, Level level, String message, Throwable thrown) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -190,6 +207,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public boolean isLoggable(Level level) {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -200,10 +218,12 @@ public class ExtendedLogger implements Logger {
     return false;
   }
 
+  @Override
   public void setLevel(Level level) {
     context.getLogger().setLevel(level);
   }
 
+  @Override
   public void setResourceManager(ResourceManager resourceManager) {
     context.getLogger().setResourceManager(resourceManager);
   }
@@ -291,11 +311,7 @@ public class ExtendedLogger implements Logger {
     if (context != null) {
       Logger logger = context.getLogger();
       if (logger != null) {
-        if (context.getLogger() instanceof JSR47Logger_impl) {
-          JSR47Logger_impl impl = (JSR47Logger_impl) context.getLogger();
-        }
-        context.getLogger()
-                .log(getClass().getName(), Level.INFO, String.valueOf(paramObject), null);
+        context.getLogger().log(getClass().getName(), Level.INFO, String.valueOf(paramObject), null);
       }
     }
   }
@@ -318,6 +334,7 @@ public class ExtendedLogger implements Logger {
     }
   }
 
+  @Override
   public boolean isDebugEnabled() {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -328,6 +345,7 @@ public class ExtendedLogger implements Logger {
     return false;
   }
 
+  @Override
   public boolean isErrorEnabled() {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -338,6 +356,7 @@ public class ExtendedLogger implements Logger {
     return false;
   }
 
+  @Override
   public boolean isInfoEnabled() {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -348,6 +367,7 @@ public class ExtendedLogger implements Logger {
     return false;
   }
 
+  @Override
   public boolean isTraceEnabled() {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -358,6 +378,7 @@ public class ExtendedLogger implements Logger {
     return false;
   }
 
+  @Override
   public boolean isWarnEnabled() {
     if (context != null) {
       Logger logger = context.getLogger();
@@ -452,4 +473,115 @@ public class ExtendedLogger implements Logger {
     }
     return null;
   }
+
+  @Override
+  public boolean isLoggable(Level level, Marker marker) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().isLoggable(level, marker);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public String getName() {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().getName();
+      }
+    }
+    return "";
+  }
+
+  @Override
+  public boolean isTraceEnabled(Marker marker) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().isTraceEnabled(marker);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isDebugEnabled(Marker marker) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().isDebugEnabled(marker);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isInfoEnabled(Marker marker) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().isInfoEnabled(marker);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isWarnEnabled(Marker marker) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().isWarnEnabled(marker);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isErrorEnabled(Marker marker) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        return context.getLogger().isErrorEnabled(marker);
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String message, Object[] args,
+          Throwable thrown) {
+    if (context != null) {
+      Logger logger = context.getLogger();
+      if (logger != null) {
+        switch(level.toInteger()) {
+          case Level.SEVERE_INT: 
+            logger.error(m, MessageFormat.format(message, args), thrown); 
+            break;
+          case Level.WARNING_INT: 
+            logger.warn(m, MessageFormat.format(message, args), thrown); 
+            break;
+          case Level.INFO_INT: 
+            logger.info(m, MessageFormat.format(message, args), thrown); 
+            break;
+          case Level.CONFIG_INT:
+            logger.info((m == null) ? Logger.UIMA_MARKER_CONFIG : m, MessageFormat.format(message, args), thrown); 
+            break;
+          case Level.FINE_INT: 
+            logger.debug(m, MessageFormat.format(message, args), thrown); 
+            break;
+          case Level.FINER_INT: 
+            logger.trace(m, MessageFormat.format(message, args), thrown); 
+            break;
+          case Level.FINEST_INT:
+            logger.trace((m == null) ? Logger.UIMA_MARKER_FINEST : m, MessageFormat.format(message, args), thrown); 
+            break;
+          default: Misc.internalError();
+        } // end of switch
+      } // end of if
+    } // end of if  
+  } // end of method
 }

@@ -70,6 +70,12 @@
       <version>1.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.7.24</version>
+      <scope>test</scope>
+    </dependency>    
 	</dependencies>
 	<licenses>
 		<license>
@@ -157,6 +163,24 @@
 						</execution>
 					</executions>
 				</plugin>
+        
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>enforce-compatibility</id>
+              <configuration>
+                <rules>
+                  <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
+                    <previousVersion>2.1.0</previousVersion>
+                    <dumpDetails>true</dumpDetails>
+                    <compatibilityType>NON_BACKWARD_COMPATIBLE</compatibilityType>
+                  </requireBackwardCompatibility>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
