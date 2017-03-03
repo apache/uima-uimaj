@@ -84,6 +84,10 @@
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+    </dependency>
 	</dependencies>
 	<build>
 		<finalName>uima-cpe</finalName>
