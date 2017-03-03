@@ -479,7 +479,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     }
     
     if (pearsOrJars.size() == 0) {
-      System.out.format("No .class files were replaced in %s%n.", kind);
+      System.out.format("No .class files were replaced in %s.%n", kind);
     } else {
       System.out.format("replacing .class files in %,d %s%n", pearsOrJars.size(), kind);
       for (PearOrJar p : pearsOrJars) {
