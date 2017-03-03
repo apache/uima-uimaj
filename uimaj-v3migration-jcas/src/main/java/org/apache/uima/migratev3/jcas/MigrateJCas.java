@@ -417,6 +417,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     FileUtils.deleteRecursive(new File(outputDirectory));
     
     isSource = true;
+    
     processRootsCollection("source", sourcesRoots, clp);
     
     isSource = false;
@@ -550,7 +551,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     if (c2ps.size() == 0) {
       return;
     }
-    System.out.format("Compiling converted %,d classes%n", c2ps.size());
+    System.out.format("Compiling converted %,d classes -- This may take a while!%n", c2ps.size());
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, Charset.forName("UTF-8"));
     Iterable<String> compilationUnitStrings = new Iterable<String>() {
@@ -635,6 +636,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private void processCollection(String sourceName, Iterator<String> sourceIterator) {
     System.out.println("Migrating " + sourceName + ", number of classes migrated:");
+    System.out.flush();
     int i = 1;
     System.out.print("    ");
     
