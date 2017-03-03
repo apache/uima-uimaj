@@ -41,8 +41,10 @@ under the License.
       </itemizedlist>
     </para>
     
-    <para>Some Maven projects use the JCasGen maven plugin; these project's JCasGen maven plugin,
-     if switched to UIMA V3, automatically generate the V3 versions.
+    <para>Some Maven projects use the JCasGen maven plugin; these projects' JCasGen maven plugin,
+     if switched to UIMA V3, automatically generate the V3 versions.  For proper operation, please run
+     maven clean install; the clean operation ought to remove the previously generated JCas class, including the
+     UIMA V2 <code>xxx_Type</code> classes, which are not used, won't compile in V3 and are need to be deleted. 
     </para>
     
     <para>You can use any of the methods of invoking JCasGen to generate the new V3 versions.  If you already have
@@ -168,22 +170,33 @@ under the License.
             <listitem><para>UIMA Run V3 migrate JCas from sources roots</para></listitem>
             <listitem><para>UIMA Run V3 migrate JCas from classes roots</para></listitem>
           </itemizedlist>
-          When running from classes roots, the classes must not have compile errors, and may contain Jars and PEARs. 
+          When running from classes roots, the classes must not have compile errors, and may contain Jars and PEARs.
+          Both launchers write their output to a temporary directory, whose name is printed in the Eclipse console log.
         </para>
       
         <para>
-          To use these launchers,
+          To use the launcher for source code,
             <itemizedlist spacing="compact">
-              <listitem><para>First select the eclipse project; this project's "build path" will supply the 
+              <listitem><para>First select the eclipse project containing the source code to transform; 
+                this project's "build path" will also supply the 
                 classpath used during migration for decompiling and compiling the sources.</para></listitem>
-              <listitem><para>run the launcher - it will prompt for two values:
-                <itemizedlist spacing="compact">
-                  <listitem><para>the root directory to scan recursively looking for JCas sources or classes/Jars/Pears to be converted</para></listitem>
-                  <listitem><para>an output directory - a writable folder, such as /temp/migrate</para></listitem>
-                </itemizedlist>
+              <listitem><para>run the migrate-from-sources launcher.
               </para></listitem>
             </itemizedlist>
   		  </para>
+        
+        <para>
+          To use the launcher for compiled code,
+            <itemizedlist spacing="compact">
+              <listitem><para>First select the eclipse project that provides the classpath that the compiled code used
+                when it was being built. This is required for proper "decompiling" of the classes and
+                recompiling the transformed results.
+                </para></listitem>
+              <listitem><para>The launcher will prompt you for a directory, which the migration tool will use as the
+                top of a tree to scan for Java .class files, as well as JARs and PEAR files, looking for items to migrate.
+              </para></listitem> 
+            </itemizedlist>
+        </para>
   	    
   	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
   	      the tool will scan the file system under these roots (including inside Jars and PEARs when running from
