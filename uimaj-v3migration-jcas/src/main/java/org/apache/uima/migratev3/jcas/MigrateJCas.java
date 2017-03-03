@@ -37,6 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -635,7 +636,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   
   private void processCollection(String sourceName, Iterator<String> sourceIterator) {
-    System.out.println("Migrating " + sourceName + ", number of classes migrated:");
+    System.out.println("Migrating " + sourceName);
+    System.out.println("number of classes migrated:");
     System.out.flush();
     int i = 1;
     System.out.print("    ");
@@ -1742,8 +1744,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       outDirSkipped = outputDirectory + "not-converted/";
       outDirLog = outputDirectory + "logs/";
     } else {
-      System.err.println("-outputDirectory is a required parameter, must be a path to a writable file directory.");
-      return false;
+      try {
+        outputDirectory = Files.createTempDirectory("UimaV3MigrateOutput").toString();
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
     }
     
     if (clp.isInArgsList(MIGRATE_CLASSPATH)) {
@@ -2143,7 +2149,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         + "  [-classesRoots <One-or-more-directories-or-jars-or-pears-separated-by-Path-separator>]\n"
         + "  [-classes <one-or-more-fully-qualified-class-names-separated-by-Path-separator]\n"
         + "            example:  -classes mypkg.foo:pkg2.bar\n"
-        + "  [-outputDirectory a-writable-directory-path (required)\n"
+        + "  [-outputDirectory a-writable-directory-path (optional)\n"
+        + "     if omitted, a temporary directory is used\n"
         + "  [-migrateClasspath a-class-path to use in decompiling, used if -classesRoots is specified\n"
         + "                     also used when compiling the migrated classes.\n"
         + "                     PEAR processing augments this with the PEAR's classpath information               "
@@ -2151,7 +2158,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         + "  NOTE: either -sourcesRoots or -classesRoots is required, but only one may be specified.\n"
         + "  NOTE: classesRoots are scanned for JCas classes, which are then decompiled, and the results processed like sourcesRoots\n"
         + "        The decompiling requires that the classes being scanned be on the migrateClasspath when this is invoked.\n"
-        + "  NOTE: -outputDirectory is required\n");
+       );
   }
 
   private static final Pattern implementsEmpty = Pattern.compile("implements  \\{");
