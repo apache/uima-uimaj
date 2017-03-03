@@ -198,7 +198,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
    * @see org.apache.uima.util.Logger#setLevel(org.apache.uima.util.Level)
    */
   public void setLevel(Level level) {    
-    throw new UnsupportedOperationException();
+    // allow nop operation
   }
   
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
