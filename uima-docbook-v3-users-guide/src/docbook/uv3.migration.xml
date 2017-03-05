@@ -24,10 +24,54 @@ specific language governing permissions and limitations
 under the License.
 -->
 <chapter id="uv3.migration">
-  <title>Migrating JCas classes</title>
-  <titleabbrev>Migrating JCas</titleabbrev>
+  <title>Migrating to UIMA Version 3</title>
+  <titleabbrev>Migrating to V3</titleabbrev>
   
   <section id="uv3.migration.big_picture">
+    <title>Migrating: the big picture</title>
+    
+    <para>Although UIMA V3 is designed to be backwards compatible with UIMA V2, there are some migration steps
+      needed.  These fall into two broad use cases: 
+      <itemizedlist spacing="compact">
+        <listitem><para>where you are "consuming" the Maven artifacts for the
+          core SDK, as part of another project, and </para></listitem>
+        <listitem><para>where you have an existing UIMA pipeline / application you wish to upgrade to use V3.</para></listitem>
+      </itemizedlist> 
+    </para>
+    
+  </section>
+  
+  <section id="uv3.migration.consuming">
+    <title>Consuming V3 Maven artifacts</title>
+    
+    <para>There are two issues which may affect other projects which consume V3:
+      <itemizedlist spacing="compact">
+        <listitem><para>default logging is now a no-op slf4j logger, and </para></listitem>
+        <listitem><para>issues using the <code>maven-bundle-plugin.</code></para></listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>Projects may have tests which write to the UIMA log.  Because V3 switched to SLF4J as the default logger,
+      unless SLF4J can find an adapter to some back-end logger, it will issue a message and substitute a "NO-OP" 
+      logger.  If your test cases depend on having the V2 default logger (which was the one built into Java), 
+      you need to add to your POM a "test" dependency on the SLF4J-to-JDK14 adapter.  Here's the xml you need to add:</para>
+    <programlisting><![CDATA[<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-jdk14</artifactId>
+  <version>1.7.24</version>  <!-- or some version you need -->
+  <scope>test</scope>
+</dependency>]]></programlisting>
+    
+    <para>If you build OSGi or Eclipse plugins using the <code>maven-bundle-plugin</code>, it will by default
+       look to include the slf4j artifacts, which instead, you probably want to hook up when the OSGi component
+       is installed to what's available.  You can block the attempt to include slf4j by adding a line to your
+       bundle commands such as &lt;import-package&gt; that exclude this package by adding</para>
+       <programlisting>!org.slf4j</programlisting>
+       <para>to the package list; the "!" says to exclude it.</para>
+    <para>Alternatively, you can include it in the bundle by adding a dependency to the version you which to include.</para>
+  </section>
+  
+  <section id="uv3.migration.migrating_pipeline">
     <title>How to migrate an existing UIMA pipeline to V3</title>
     <titleabbrev>How to migrate</titleabbrev>
     

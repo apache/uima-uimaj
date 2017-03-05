@@ -190,8 +190,10 @@ under the License.
     have this information ignored, but replaced with what the loggers obtain from the stack track.
     In some cases, where the callers in V2 were not actually passing in the correct class/method information,
     this will result in a different log record.</para>
+    
     <para>
-    For more details, please see the logging chapter.</para>
+      For more details, please see the logging chapter.
+    </para>
   </section>
   <section id="uv3.backards_compatibility.typesystem_sharing">
     <title>Type System sharing</title>   
