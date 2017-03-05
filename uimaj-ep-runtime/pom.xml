@@ -84,8 +84,7 @@
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-core</artifactId>
-        </exclusion>
-        
+        </exclusion>       
       </exclusions>
     </dependency>
 
@@ -242,12 +241,13 @@
                    org.apache.uima.adapter.soap,
                    org.apache.uima.adapter.soap.axis11,
                  -->
-                <Import-Package>org.apache.log4j;resolution:=optional,
-                   org.apache.logging.log4j*;resolution:=optional,
+                <Import-Package>org.slf4j*;resolution:=optional,
                    !com.strobel.assembler,
                    !com.strobel.assembler.metadata,
                    !com.strobel.decompiler,
                    !javax.annotation.meta,
+                   !org.apache.logging.slf4j*,
+                   !org.apache.logging.log4j*,
                    *
                 </Import-Package>
                 <!-- causes the other Jars from the maven
