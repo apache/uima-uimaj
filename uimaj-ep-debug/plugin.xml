@@ -109,5 +109,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.startup">
+      <startup class="org.apache.uima.ep_debug.DebugPluginStartup"/>
    </extension>
 </plugin>

@@ -27,13 +27,22 @@ under the License.
 <chapter id="uv3.logging">
   <title>Logging</title>
     
-    <para>V3 retains the existing V2 logging facade, unchanged, for backwards compatibility.
-    In addition, a new logging facade, the open source standard SLF4J is provided.
-    The current APIs for getting a logger get the V2 loggers; the SLF4j logger is made available
-    using the standard SLF4j <code>LoggerFactory.getLogger(...)</code> API call, as well as via
-    a new API on the Annotator base implementation classes, <code>getSlf4jLogger()</code>.
+    <para>V3 retains the existing V2 logging facade, for backwards compatibility.
+    It has been augmented by the methods available in the SLF4j <code>Logger</code> API,
+    plus the Java 8 enabled APIs from the Log4j implementation that support the 
+    <code>Supplier</code> Functional Interface.
     </para>
-            
+    
+    <para>The implementation of this facade in V2 was the built-in-to-Java logging framework.
+    For V3, this is changed to be the SLF4j facade.  This is an open source, standard facade
+    which allows deferring until deployment time, the specific logging back end to use.
+    </para>
+    
+    <para>If, at initialization time, SLF4J gets configured to use a back end which is either the 
+    built-in Java logger, or Log4j-2, then the UIMA logger implementation is switched to
+    UIMA's implementation of those APIs (bypassing SLF4j, for efficiency).</para>
+
+    <!--             
     <para>The v2 loggers support internationalization using resource bundles.  The logger
       gets the classpath via a handle to a ResourceManager, and uses that Resource Manager's Extension Classpath
       when looking up resource bundles.
@@ -46,23 +55,55 @@ under the License.
       SLF4j.  This should be done using a Java 8 lambda <code>Supplier&lt;String&gt;</code>, 
       to avoid computing the value if logging is not enabled. 
     </para>
+     -->
     
     <para> 
       The SLF4j and other documentation (e.g.,  
       <ulink url="https://logging.apache.org/log4j/2.x/log4j-slf4j-impl/index.html"/> for log4j-2) describe 
       how to connect various logging back ends to SLF4j, by 
-      putting adapters and back ends into the classpath at run time.  For example, 
-      to use the back end logger <code>log4j 2</code>, you would
-      include the Jars specified in this dependency tree as "compile" dependencies:
-      <ulink url="https://logging.apache.org/log4j/2.x/log4j-to-slf4j/dependencies.html#Dependency_Tree"/>.
-      
+      putting logging back-end implementations into the classpath at run time.  For example, 
+      to use the back end logger built into Java,  you would
+      include the <code>slf4j-jdk14</code> Jar.  This Jar is included in the UIMA binary distribution, so that
+      out-of-the-box, logging is available and configured the same as it was for V2.
     </para>
     
-    <para>The Eclipse UIMA Runtime plugin excludes the slf4j api Jar and back ends, and expects the
-      Eclipse plugin install process to "hook up" the needed implementations from other resource bundles.  In current
-      versions of Eclipse, the standard Java version of the IDE has multiple implementations available. 
+    <para>The Eclipse UIMA Runtime plugin bundle excludes the slf4j api Jar and back ends, but will 
+      "hook up" the needed implementations from other bundles.   
     </para> 
-  
+
+  <section id="uv3.logging.levels">
+    <title>Logging Levels</title>
+    
+    <para>There are 2 logging level schemes, and there is a mapping between them.  Either of them may be used
+      when using the UIMA logger.  One of the schemes is the original UIMA v2 level set, which is the same 
+      as the built-in-to-java logger levels.  The other is the scheme adopted by SLF4J and many of its back ends.
+    </para>
+          
+   <para>Log statements are "filtered" according to the logging configuration, by Level, and sometimes by
+    additional indicators, such as Markers.  Levels work in a hierarchy.  A given level of 
+    filtering passes that level and all higher levels.  Some levels have two names, due to the 
+    way the different logger back-ends name things.  Most levels are also used as method names on 
+    the logger, to indicate logging for that level.  
+    For example, you could say <code>aLogger.log(Level.INFO, message)</code>
+    but you can also say <code>aLogger.info(message)</code>). The level ordering, highest to lowest, 
+    and the associated method names are as follows:
+    <itemizedlist spacing="compact">
+      <listitem><para>SEVERE or ERROR; error(...)</para></listitem>
+      <listitem><para>WARN or WARNING; warn(...)</para></listitem>
+      <listitem><para>INFO; info(...)</para></listitem>
+      <listitem><para>CONFIG; info(UIMA_MARKER_CONFIG, ...)</para></listitem>
+      <listitem><para>FINE or DEBUG; debug(...)</para></listitem>
+      <listitem><para>FINER or TRACE; trace(...)</para></listitem>
+      <listitem><para>FINEST; trace(UIMA_MARKER_FINEST, ...)</para></listitem>
+    </itemizedlist>
+    </para>
+    
+    <para>The CONFIG and FINEST levels are merged with other levels, but distinguished by having 
+    <code>Markers</code>.  If the filtering is configured to pass CONFIG level, then it will pass 
+    the higher levels (i.e., the INFO/WARN/ERROR or their alternative names WARNING/SEVERE) levels as well.
+    </para>
+      
+  </section>  
   <section id="uv3.logging.new_recorded_context_data">
     <title>Context Data</title>
       
@@ -74,12 +115,14 @@ under the License.
       logger for the class has a level set to Tracing.  
       The following table lists the keys and the values recorded in the
       contexts; these can be retrieved by the logging layouts and included in log messages.      
-    </para>    
+    </para>
+    
+    <para>Because the keys for context data are global, the ones UIMA uses internally are prefixed with "uima_".</para>   
     
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="2">
        <colspec colnum="1" colname="key" colwidth="1*"/>
-       <colspec colnum="2" colname="description" colwidth="4*"/>
+       <colspec colnum="2" colname="description" colwidth="3*"/>
        
        <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
         
@@ -91,13 +134,12 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
-           <entry><para>annotator</para></entry>         
-           <entry><para>the key name of the annotator.  Use an NDC reference to the stack to get the chain of 
-             aggregate embeddings.</para></entry>
+           <entry><para>uima_annotator</para></entry>         
+           <entry><para>the name of the annotator.</para></entry>
          </row>
          
          <row>
-           <entry><para>rootUimaContext</para></entry>
+           <entry><para>uima_root_context</para></entry>
            <entry><para>The root context corresponds to the pipeline being run.  This could be be nested.</para></entry>
          </row>
 
@@ -124,8 +166,8 @@ under the License.
 
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="2">
-       <colspec colnum="1" colname="key" colwidth="1*"/>
-       <colspec colnum="2" colname="description" colwidth="3*"/>
+       <colspec colnum="1" colname="key" colwidth="20*"/>
+       <colspec colnum="2" colname="description" colwidth="30*"/>
        
        <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
         
@@ -135,46 +177,98 @@ under the License.
            <entry><emphasis role="bold">Description of logging</emphasis></entry>
          </row>
 
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify CONFIG and FINEST </emphasis></entry>
+         </row>
+         <row>
+           <entry><para>org.apache.uima.config</para></entry>
+           <entry><para>configuration log record</para></entry>
+         </row>
+         <row>
+           <entry><para>org.apache.uima.finest</para></entry>
+           <entry><para>sub category of trace, corresponds to FINEST</para></entry>
+         </row>
+         
          <!-- ******************************************************************************* -->
          <row>
-           <entry><para>annotator</para></entry>
+           <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify some tracing logging</emphasis></entry>
+         </row>
+         <row>
+           <entry><para>uima_annotator</para></entry>
            <entry><para>for tracing when annotators are entered, exited</para></entry>
          </row>
 
          <row>
-           <entry><para>flow_controller</para></entry>
+           <entry><para>uima_flow_controller</para></entry>
            <entry><para>for tracing when flow controllers are computing</para></entry>
          </row>
 
          <row>
-           <entry><para>FSs</para></entry>
+           <entry><para>uima_feature_structure</para></entry>
            <entry><para>for tracing Feature Structure Creation and updating</para></entry>
          </row>
 
          <row>
-           <entry><para>index</para></entry>
+           <entry><para>uima_index</para></entry>
            <entry><para>for tracing when indexes are added to or removed from</para></entry>
          </row>
           
          <row>
-           <entry><para>index_copy_on_write</para></entry>         
+           <entry><para>uima_index_copy_on_write</para></entry>         
            <entry><para>for tracing when an index part is copied, due to it being updated while an iterator might be iterating.</para></entry>
          </row>
 
          <row>
-           <entry><para>index_auto_rmv_add</para></entry>         
+           <entry><para>uima_index_auto_rmv_add</para></entry>         
            <entry><para>for tracing when index corruption avoidance done</para></entry>
          </row>
             
          <row>
-           <entry><para>serdes</para></entry>
+           <entry><para>uima_serialization_deserialization</para></entry>
            <entry><para>for tracing when serialization or deserialization is done</para></entry>
          </row>
                   
        </tbody>
      </tgroup>
    </informaltable>
-    
-    
+        
   </section>
+  
+  <section id="uv3.logging.defaults_configuration">
+    <title>Defaults and Configuration</title>
+    
+    <para>By default, UIMA is configured so that the UIMA logger is hooked up to the SLF4j facade, which
+      may or may not have a logging back-end.  If it doesn't, then any use of the UIMA logger will produce 
+      one warning message stating that SLF4j has no back-end logger configured, and so no logging will be done. 
+    </para>
+        
+    <para>When UIMA is run as an embedded library in other applications, slf4j will use those other application's
+      logging frameworks.</para>
+      
+    <para>Each logging back-end has its own way of being configured; 
+      please consult the proper back-end documentation for details.</para>
+    
+    <para>For backwards compatibility, the binary distribution of UIMA includes the slf4j back-end 
+      which hooks to the standard built-in Java logging framework, so out-of-the-box, UIMA should
+      be configured and log by default as V2 did.</para>  
+      
+    <section id="uv3.logging.throttling_annotator_logging">
+      <title>Throttling logging from Annotators</title>
+      
+       <para>Sometimes, in production, you may find annotators are logging excessively, and you wish to throttle 
+          this. But you may not have access to logging settings to control this,
+          perhaps because UIMA is running as a library component within another framework. 
+          For this special case,
+          you can limit logging done by Annotators by passing an additional parameter to the UIMA Framework's 
+          produceAnalysisEngine API, using the key name 
+          <code>AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING</code>
+          and setting the value to an Integer object equal to the the limit.  Using 0 will suppress all logging.
+          Any positive number allows that many log records to be logged, per level.  A limit of 10 would allow 
+          10 Errors, 10 Warnings, etc.  The limit is enforced separately, per logger instance.</para>
+          
+          <note><para>This only works if the logger used by Annotators is obtained from the 
+          Annotator base implementation class via the <code>getLogger()</code> method.</para></note>
+          
+    </section>  
+  </section>  
 </chapter>

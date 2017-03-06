@@ -144,10 +144,6 @@ public interface LowLevelCAS {
 
   public static final int TYPE_CLASS_DOUBLEARRAY = 18;
   
-  public static final int TYPE_CLASS_JAVAOBJECT = 19;
-  
-  public static final int TYPE_CLASS_JAVAOBJECTARRAY = 20;
-
   static final int NULL_FS_REF = 0;
 
   /**

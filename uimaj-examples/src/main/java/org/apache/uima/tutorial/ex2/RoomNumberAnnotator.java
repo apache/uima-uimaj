@@ -72,7 +72,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         annotation.setEnd(matcher.end());
         annotation.addToIndexes();
         annotation.setBuilding(mLocations[i]);
-        getUimaLogger().log(Level.FINEST, "Found: " + annotation);
+        getLogger().log(Level.FINEST, "Found: " + annotation);
         // or, using slf4j
         // note: this call skips constructing the message if tracing is not enabled
 //        getSlf4jLogger().trace("Found: {}", annotation);

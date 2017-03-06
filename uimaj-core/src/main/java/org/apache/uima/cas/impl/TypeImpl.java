@@ -29,7 +29,6 @@ import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import org.apache.uima.cas.BuiltinTypeKinds;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;

@@ -454,7 +454,6 @@ class FeaturePathImpl implements FeaturePath {
     case LowLevelCAS.TYPE_CLASS_LONG:
     case LowLevelCAS.TYPE_CLASS_FLOAT:
     case LowLevelCAS.TYPE_CLASS_DOUBLE:
-    case LowLevelCAS.TYPE_CLASS_JAVAOBJECT:
       verifyNoBuiltInFunction();
       return tgtFs.getFeatureValueAsString(targetFeature);
         
@@ -466,7 +465,6 @@ class FeaturePathImpl implements FeaturePath {
     case LowLevelCAS.TYPE_CLASS_FLOATARRAY:
     case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
     case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
-    case LowLevelCAS.TYPE_CLASS_JAVAOBJECTARRAY:
     case LowLevelCAS.TYPE_CLASS_FSARRAY:
       if (this.builtInFunction > NO_BUILT_IN_FUNCTION) {
         return evaluateBuiltInFunction(tgtFs);
@@ -612,7 +610,6 @@ class FeaturePathImpl implements FeaturePath {
       case LowLevelCAS.TYPE_CLASS_FLOAT:      
       case LowLevelCAS.TYPE_CLASS_LONG:       
       case LowLevelCAS.TYPE_CLASS_SHORT:      
-      case LowLevelCAS.TYPE_CLASS_JAVAOBJECT: 
       case LowLevelCAS.TYPE_CLASS_INVALID:    
         return currentFs;  // is the fs which has the feature which is the primitive value
 
@@ -625,7 +622,6 @@ class FeaturePathImpl implements FeaturePath {
       case LowLevelCAS.TYPE_CLASS_LONGARRAY:
       case LowLevelCAS.TYPE_CLASS_SHORTARRAY:
       case LowLevelCAS.TYPE_CLASS_STRINGARRAY:
-      case LowLevelCAS.TYPE_CLASS_JAVAOBJECTARRAY:
         return currentFs.getFeatureValue(targetFeature);
 
       case LowLevelCAS.TYPE_CLASS_FS:

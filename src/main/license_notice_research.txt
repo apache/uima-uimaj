@@ -25,6 +25,13 @@ November 3 2016
   javaparser-core 2.5.1 is dual licensed, one is Apache v2 license.  No notice file found.
     
   Note: ASM not depended on (Nov 2016). ASM is licensed under a BSD 3-clause style license.  
-  
+ 
+ Feb 14 2017
+   log4j jars included in binary distribution:
+     log4j-api-2.8 - ok
+     log4j-core-2.8 has Notice  ResolverUtil.java Copyright 2005-2006 Tim Fennell
+     log4j-slf4j-impl-2.8 OK
+     slf4j-api-1.7.22 - no info in the JAR
+       slf4j distributed under the MIT license.  added to bin_distr_license_notices
   
   

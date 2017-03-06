@@ -1879,7 +1879,7 @@ public class VinciCasProcessorDeployer implements CasProcessorDeployer {
    * Used during a launch of the managed (local) Cas Processor this method returns a port number on
    * which the Cas Processor is waiting for requests. Each Cas Processor was a given a port by the
    * local vns where it is expected to accept requests from clients. The ports assigned to Cas
-   * Processors are managed by the local instance of the VNS and available in the queue <i>portQueue</>.
+   * Processors are managed by the local instance of the VNS and available in the queue <i>portQueue</i>.
    * 
    * @param portQueue -
    *          queue containing ports assigned to services by local VNS

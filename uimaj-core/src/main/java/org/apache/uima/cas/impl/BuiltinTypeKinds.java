@@ -1,8 +1,9 @@
-package org.apache.uima.cas;
+package org.apache.uima.cas.impl;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.internal.util.Misc;
 
 /*

@@ -376,12 +376,15 @@ public class XMLSerializer {
     private final void checkForInvalidXmlChars(String s, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(s, xml11);
       if (index >= 0) {
-        String msg =  String.format("Trying to serialize non-XML %s character: %c, 0x%x at offset %,d in string starting with %s",
+        String startStr = (index == 0) 
+                         ? "[The Very First Character]"
+                         : s.substring(0, Math.min(index, Math.min(100,  s.length())));
+        String msg =  String.format("Trying to serialize non-XML %s character: 0x%x at offset %,d in string starting with %s",
             (xml11 ? "1.1" : "1.0"),
-            s.charAt(index), 
+//            s.charAt(index),  // don't try to output this, causes problems with other tooling 
             (int)s.charAt(index),
             index,
-            s.substring(0, Math.min(100,  s.length()))); 
+            startStr); 
         throw new SAXParseException(msg, null);
       }
     }
@@ -389,12 +392,15 @@ public class XMLSerializer {
     private final void checkForInvalidXmlChars(char[] ch, int start, int length, boolean xml11) throws SAXParseException {
       final int index = XMLUtils.checkForNonXmlCharacters(ch, start, length, xml11);
       if (index >= 0) {
-        String msg =  String.format("Trying to serialize non-XML %s character: %c, 0x%x at offset %,d in string starting with %s",
+        String startStr = (index == 0) 
+            ? "[The Very First Character]"
+            : new String(ch).substring(0, Math.min(index, Math.min(100,  ch.length)));
+        String msg =  String.format("Trying to serialize non-XML %s character: 0x%x at offset %,d in string starting with %s",
             (xml11 ? "1.1" : "1.0"),
-            ch[index], 
+//            ch[index],  // don't try to output this, causes problems with other tooling  
             (int)(ch[index]),
             index,
-            (new String(ch)).substring(0, Math.min(100,  ch.length))); 
+            startStr); 
         throw new SAXParseException(msg, null);
       }
     }

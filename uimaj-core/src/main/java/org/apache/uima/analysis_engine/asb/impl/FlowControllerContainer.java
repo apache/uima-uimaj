@@ -79,7 +79,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    */
   public boolean initialize(ResourceSpecifier aSpecifier, Map<String, Object> aAdditionalParams)
           throws ResourceInitializationException {
-    UimaContext prevContext = UimaContextHolder.getContext();   // Get this early so the restore in correct
+    UimaContext prevContext = setContextHolder();   // Get this early so the restore in correct
     try {
       // specifier must be a FlowControllerDescription. (Eventually, we
       // might support remote specifiers, but not yet)
@@ -181,7 +181,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @see org.apache.uima.resource.ConfigurableResource_ImplBase#reconfigure()
    */
   public void reconfigure() throws ResourceConfigurationException {
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
+    UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       mFlowController.reconfigure();
     } catch (ResourceInitializationException e) {
@@ -197,9 +197,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @see org.apache.uima.resource.Resource_ImplBase#destroy()
    */
   public void destroy() {
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.destroy();
-    UimaContextHolder.setContext(prevContext);
+    withContextHolder(() -> mFlowController.destroy());
     super.destroy();
   }
 
@@ -218,7 +216,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   public FlowContainer computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
     mTimer.startIt();
     CAS view = null;
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
+    UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
 
@@ -252,12 +250,12 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @return  the required CAS interface of the FlowController
    */
   public Class<? extends AbstractCas> getRequiredCasInterface() {
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    try {
-      return mFlowController.getRequiredCasInterface();
-    } finally {
-      UimaContextHolder.setContext(prevContext);
-    }
+//    UimaContext prevContext = setContextHolder();  // for use by POJOs
+//    try {
+      return mFlowController.getRequiredCasInterface(); // not likely to have user code
+//    } finally {
+//      UimaContextHolder.setContext(prevContext);
+//    }
   }
 
   public ProcessingResourceMetaData getProcessingResourceMetaData() {
@@ -277,9 +275,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @param aKeys the keys for the delegates
    */
   public void addAnalysisEngines(Collection<String> aKeys) {
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
-    mFlowController.addAnalysisEngines(aKeys);
-    UimaContextHolder.setContext(prevContext);
+    withContextHolder(() -> mFlowController.addAnalysisEngines(aKeys));
   }
 
   /**
@@ -289,7 +285,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @throws AnalysisEngineProcessException - 
    */
   public void removeAnalysisEngines(Collection<String> aKeys) throws AnalysisEngineProcessException {
-    UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
+    UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
       mFlowController.removeAnalysisEngines(aKeys);
     } finally {
@@ -335,7 +331,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
   }
   public void collectionProcessComplete() throws AnalysisEngineProcessException {
     if ( mFlowController != null ) {
-      UimaContext prevContext = UimaContextHolder.setContext(getFlowControllerContext());  // for use by POJOs
+      UimaContext prevContext = setContextHolder();  // for use by POJOs
       try {
         mFlowController.collectionProcessComplete();
       } finally {

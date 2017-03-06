@@ -55,9 +55,11 @@ public class Logger_implTest extends TestCase {
 
   public void testMessageLeveling() throws Exception {
     // create logger
+    
     org.apache.uima.util.Logger rootLogger = Logger_impl.getInstance();
     org.apache.uima.util.Logger classLogger = Logger_impl.getInstance(this.getClass());
 
+    try {
     rootLogger.setLevel(Level.INFO);
 
     // check message leveling root logger
@@ -117,6 +119,9 @@ public class Logger_implTest extends TestCase {
     Assert.assertTrue(classLogger.isLoggable(Level.WARNING));
     Assert.assertTrue(classLogger.isLoggable(Level.SEVERE));
     Assert.assertTrue(classLogger.isLoggable(Level.OFF));
-
+    } finally {
+      rootLogger.setLevel(Level.INFO);
+      classLogger.setLevel(Level.INFO);
+    }
   }
 }

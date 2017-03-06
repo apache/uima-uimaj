@@ -19,6 +19,6 @@
 -->
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.uima.migratev3.jcas.MigrateJCas"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-classesRoots &quot;${folder_prompt:root dir for compiled classes and jars and PEARs}&quot; &#13;&#10;-outputDirectory &quot;${folder_prompt:output file, something like /temp/uima-v3-migrated/:/temp/uima_v3_migrate}&quot; &#13;&#10;-migrateClasspath ${project_classpath}"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-classesRoots &quot;${folder_prompt:root dir for compiled classes and jars and PEARs}&quot;  &#13;&#10;-migrateClasspath ${project_classpath}"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-examples"/>
 </launchConfiguration>

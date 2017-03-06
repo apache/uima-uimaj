@@ -883,6 +883,20 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public int hashCode() {
     return _id;
   }
+  
+  
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#equals(java.lang.Object)
+   * must match hashCode
+   * must match comparator == 0, equal == true
+   */
+  @Override
+  public boolean equals(Object obj) {
+    return (obj instanceof FeatureStructureImplC) &&
+            ((FeatureStructureImplC)obj)._id == this._id;
+  }
+
 
   // ///////////////////////////////////////////////////////////////////////////
   // Pretty printing.

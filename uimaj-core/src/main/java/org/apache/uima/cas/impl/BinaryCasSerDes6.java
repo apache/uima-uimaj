@@ -3532,10 +3532,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           
         default: 
           Misc.internalError(); 
-          return 0;
+          return Integer.compare(scFs1._id, scFs2._id);
         } // end of switch
       } // end of for loop
-      return 0;
+      return Integer.compare(scFs1._id, scFs2._id);
     } // end of sort compare
       
     private int sortArray(TOP afs1, TOP afs2) {
