@@ -94,7 +94,7 @@ public class PearPackagingMojo extends AbstractMojo {
   /**
    * The maven project.
    */
-  @Component
+  @Parameter( defaultValue = "${project}", readonly = true )
   private MavenProject      project;
 
   // the PEAR packaging directory contains all the stuff that is added to
