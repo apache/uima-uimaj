@@ -23,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -37,7 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,12 +43,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -73,25 +73,23 @@ import org.apache.uima.pear.tools.PackageBrowser;
 import org.apache.uima.pear.tools.PackageInstaller;
 import org.apache.uima.util.FileUtils;
 
-import com.github.javaparser.ASTHelper;
 import com.github.javaparser.JavaParser;
-import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.AnnotationDeclaration;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.EmptyTypeDeclaration;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
-import com.github.javaparser.ast.body.VariableDeclaratorId;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -99,9 +97,11 @@ import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.EmptyStmt;
@@ -112,9 +112,9 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
-import com.github.javaparser.ast.type.ReferenceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
 /**
  * A driver that scans given roots for source and/or class Java files that contain JCas classes
@@ -182,6 +182,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private static final String MIGRATE_CLASSPATH = "-migrateClasspath"; 
   
   private static final String CLASSES = "-classes"; // individual classes to migrate, get from supplied classpath
+  
+  private static final Type intType = PrimitiveType.intType();
+  
+  private static final EnumSet<Modifier> public_static_final = 
+      EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL); 
   
   /*****************
    * Candidate
@@ -381,7 +386,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   /**
    * temp place to insert static final int feature declarations
    */
-  private List<BodyDeclaration> fi_fields = new ArrayList<>();
+  private NodeList<BodyDeclaration<?>> fi_fields = new NodeList<>();
   private Set<String> featNames = new HashSet<>();
 
   private boolean hasV2Constructors;
@@ -396,7 +401,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
   private boolean isOk;
 
-
+  private final PrettyPrinterConfiguration printWithoutComments = 
+      new PrettyPrinterConfiguration();
+  { printWithoutComments.setPrintComments(false); }
 
 
 
@@ -435,7 +442,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
     isOk = report();
     
-    postProcessing();
+    boolean noErrors = postProcessing();
+    
+    isOk = isOk && noErrors;
     
     System.out.println("Migration finished " + 
        (isOk 
@@ -443,9 +452,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
            : "with 1 or more unusual conditions that need manual checking."));
   }
   
-  private void postProcessing() {
+  private boolean postProcessing() {
+    boolean noErrors = true;
     if (javaCompilerAvailable()) {
-      compileV3sources();
+      noErrors = compileV3sources();
       
       postProcessPearsOrJars("jars" , jars ,  jarClassReplace);
       postProcessPearsOrJars("pears", pears, pearClassReplace);
@@ -469,6 +479,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //        throw new RuntimeException(e);
 //      }
     }
+    return noErrors;
   }
   
   private void postProcessPearsOrJars(String kind, List<PearOrJar> pearsOrJars, List<String1AndString2> classReplace) {  // pears or jars
@@ -547,10 +558,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * When running the compiler to compile v3 sources, we need a classpath that at a minimum
    * includes uimaj-core.  The strategy is to use the invoker of this tool's classpath as
    * specified from the application class loader
+   * @return true if no errors
    */
-  private void compileV3sources() {
+  private boolean compileV3sources() {
     if (c2ps.size() == 0) {
-      return;
+      return true;
     }
     System.out.format("Compiling converted %,d classes -- This may take a while!%n", c2ps.size());
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -586,7 +598,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     String classpath = getAppClassPath();
     Iterable<String> options = Arrays.asList("-d", classesBaseDir,
         "-classpath", classpath);
-    compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();    
+    return compiler.getTask(null, fileManager, null, options, null, compilationUnits).call();    
   }
   
   /**
@@ -757,7 +769,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
       StringReader sr = new StringReader(source);
       try {
-        cu = JavaParser.parse(sr, true);
+        cu = JavaParser.parse(sr);
         
         addImport("org.apache.uima.cas.impl.CASImpl");
         addImport("org.apache.uima.cas.impl.TypeImpl");
@@ -770,7 +782,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         }
         
         if (v3 && fi_fields.size() > 0) {
-          List<BodyDeclaration> classMembers = cu.getTypes().get(0).getMembers();
+          NodeList<BodyDeclaration<?>> classMembers = cu.getTypes().get(0).getMembers();
           int positionOfFirstConstructor = findConstructor(classMembers);
           if (positionOfFirstConstructor < 0) {
             throw new RuntimeException();
@@ -799,8 +811,6 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         } else {
           System.out.print("d");
         }
-      } catch (ParseException e) {
-        reportParseException();
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -863,11 +873,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     super.visit(n,  ignore);
   }
 
-  @Override
-  public void visit(EmptyTypeDeclaration n, Object ignore) {
-    updateClassName(n);
-    super.visit(n,  ignore);
-  }
+//  @Override
+//  public void visit(EmptyTypeDeclaration n, Object ignore) {
+//    updateClassName(n);
+//    super.visit(n,  ignore);
+//  }
 
   @Override
   public void visit(EnumDeclaration n, Object ignore) {
@@ -892,42 +902,46 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   public void visit(ClassOrInterfaceDeclaration n, Object ignore) {
     // do checks to see if this is a JCas class; if not report skipped
    
-    if (n.getParentNode() instanceof CompilationUnit) {
-      updateClassName(n);
-      List<ClassOrInterfaceType> supers = n.getExtends();
-      if (supers == null || supers.size() == 0) {
-        reportNotJCasClass("class doesn't extend a superclass");
-        super.visit(n, ignore);
-        return; 
+    Optional<Node> maybeParent = n.getParentNode();
+    if (maybeParent.isPresent()) {
+      Node parent = maybeParent.get();
+      if (parent instanceof CompilationUnit) {
+        updateClassName(n);
+        NodeList<ClassOrInterfaceType> supers = n.getExtendedTypes();
+        if (supers == null || supers.size() == 0) {
+          reportNotJCasClass("class doesn't extend a superclass");
+          super.visit(n, ignore);
+          return; 
+        }
+        
+        NodeList<BodyDeclaration<?>> members = n.getMembers();
+        setHasJCasConstructors(members);
+        if (hasV2Constructors && hasTypeFields(members)) {
+          reportV2Class();
+          super.visit(n,  ignore);
+          return;
+        }
+        if (hasV2Constructors) {
+          reportNotJCasClassMissingTypeFields();
+          return;
+        }
+        if (hasV3Constructors) {
+          reportV3Class();
+          return;
+        }
+        reportNotJCasClass("missing v2 constructors");
+        return;        
       }
-      
-      List<BodyDeclaration> members = n.getMembers();
-      setHasJCasConstructors(members);
-      if (hasV2Constructors && hasTypeFields(members)) {
-        reportV2Class();
-        super.visit(n,  ignore);
-        return;
-      }
-      if (hasV2Constructors) {
-        reportNotJCasClassMissingTypeFields();
-        return;
-      }
-      if (hasV3Constructors) {
-        reportV3Class();
-        return;
-      }
-      reportNotJCasClass("missing v2 constructors");
-      return;
-      
-    } else { // do standard processing for non-outer class
-      super.visit(n,  ignore);
-      return;
     }
+    
+    super.visit(n,  ignore);
+    return;
+    
   }
   
   @Override
   public void visit(PackageDeclaration n, Object ignored) {
-    packageName = n.getName().toString();
+    packageName = n.getNameAsString();
     super.visit(n, ignored);
   }
     
@@ -957,12 +971,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       setParameter(ps, 1, "CASImpl", "casImpl");
       
       // Body: change the 1st statement (must be super)
-      List<Statement> stmts = n.getBlock().getStmts();
+      NodeList<Statement> stmts = n.getBody().getStatements();
       if (!(stmts.get(0) instanceof ExplicitConstructorInvocationStmt)) {
         recordBadConstructor("missing super call");
         return;
       }
-      List<Expression> args = ((ExplicitConstructorInvocationStmt)(stmts.get(0))).getArgs();
+      NodeList<Expression> args = ((ExplicitConstructorInvocationStmt)(stmts.get(0))).getArguments();
       args.set(0, new NameExpr("type"));
       args.set(1,  new NameExpr("casImpl"));
      
@@ -988,9 +1002,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *****************************/
   @Override
   public void visit(MethodDeclaration n, Object ignore) {
-    String name = n.getName();
+    String name = n.getNameAsString();
     isGetter = isArraySetter = false;
     do {  // to provide break exit
+      
       if (name.length() >= 4 && 
           ((isGetter = name.startsWith("get")) || name.startsWith("set")) &&
           Character.isUpperCase(name.charAt(3)) &&
@@ -1008,7 +1023,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         }
         
         // get the range-part-name and convert to v3 range ("Ref" changes to "Feature")
-        String bodyString = n.getBody().toStringWithoutComments();
+        String bodyString = n.getBody().get().toString(printWithoutComments);
         int i = bodyString.indexOf("jcasType.ll_cas.ll_");
         if (i < 0) break; 
         String s = bodyString.substring(i + "jcasType.ll_cas.ll_get".length()); // also for ...ll_set - same length!
@@ -1048,16 +1063,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             reportMismatchedFeatureName(String.format("%-25s %s", featName, name));
           }
         }
-        
-        List<Expression> args = Collections.singletonList(new StringLiteralExpr(featName));
+        NodeList<Expression> args = new NodeList<>();
+        args.add(new StringLiteralExpr(featName));
         VariableDeclarator vd = new VariableDeclarator(
-            new VariableDeclaratorId("_FI_" + featName),
-            new MethodCallExpr(null, "TypeSystemImpl.getAdjustedFeatureOffset", args));
+            intType, 
+            "_FI_" + featName, 
+            new MethodCallExpr(new NameExpr("TypeSystemImpl"), new SimpleName("getAdjustedFeatureOffset"), args));
         if (featNames.add(featName)) {
-          fi_fields.add(new FieldDeclaration(
-              Modifier.PUBLIC + Modifier.STATIC + Modifier.FINAL, 
-              ASTHelper.INT_TYPE, 
-              vd));
+          fi_fields.add(new FieldDeclaration(public_static_final, vd));
         }
         
         /**
@@ -1069,11 +1082,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
          *       ll_getRefArrayValue  
          */
         if (isGetter && "Feature".equals(rangeNamePart)) {
-          for (Statement stmt : n.getBody().getStmts()) {
+          for (Statement stmt : n.getBody().get().getStatements()) {
             if (stmt instanceof ReturnStmt) {
-              Expression e = getUnenclosedExpr(((ReturnStmt)stmt).getExpr());
+              Expression e = getUnenclosedExpr(((ReturnStmt)stmt).getExpression().get());
               if ((e instanceof MethodCallExpr)) {
-                String methodName = ((MethodCallExpr)e).getName();
+                String methodName = ((MethodCallExpr)e).getNameAsString();
                 if (refGetter.matcher(methodName).matches()) { // ll_getRefValue or ll_getRefArrayValue
                   addCastExpr(stmt, n.getType());
                 }
@@ -1106,7 +1119,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       List<Statement> stmts;
       if ((c instanceof BinaryExpr) &&
           ((be = (BinaryExpr)c).getLeft() instanceof FieldAccessExpr) &&
-          ((FieldAccessExpr)be.getLeft()).getField().equals("featOkTst")) {
+          ((FieldAccessExpr)be.getLeft()).getNameAsString().equals("featOkTst")) {
         // remove the feature missing if statement
         
         // verify the remaining form 
@@ -1115,12 +1128,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
          || ! (be2.getLeft() instanceof FieldAccessExpr)
 
          || ! ((e = getExpressionFromStmt(n.getThenStmt())) instanceof MethodCallExpr)
-         || ! (((MethodCallExpr)e).getName()).equals("throwFeatMissing")) {
+         || ! (((MethodCallExpr)e).getNameAsString()).equals("throwFeatMissing")) {
           reportDeletedCheckModified("The featOkTst was modified:\n" + n.toString() + '\n');
         }
               
-        BlockStmt parent = (BlockStmt) n.getParentNode();
-        stmts = parent.getStmts();
+        BlockStmt parent = (BlockStmt) n.getParentNode().get();
+        stmts = parent.getStatements();
         stmts.set(stmts.indexOf(n), new EmptyStmt()); //dont remove
                                             // otherwise iterators fail
 //        parent.getStmts().remove(n);
@@ -1135,26 +1148,27 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    */
   @Override
   public void visit(MethodCallExpr n, Object ignore) {
-    Node p1, p2, updatedNode = null;
-    List<Expression> args;
+    Optional<Node> p1, p2, p3 = null; 
+    Node updatedNode = null;
+    NodeList<Expression> args;
     
     do {
       if (get_set_method == null) break;
-
+     
       /** remove checkArraybounds statement **/
-      if (n.getName().equals("checkArrayBounds") &&
-          ((p1 = n.getParentNode()) instanceof ExpressionStmt) &&
-          ((p2 = p1.getParentNode()) instanceof BlockStmt) &&
-          p2.getParentNode() == get_set_method) {
-        List<Statement> stmts = ((BlockStmt)p2).getStmts();
+      if (n.getNameAsString().equals("checkArrayBounds") &&
+          ((p1 = n.getParentNode()).isPresent() && p1.get() instanceof ExpressionStmt) &&
+          ((p2 = p1.get().getParentNode()).isPresent() && p2.get() instanceof BlockStmt) &&
+          ((p3 = p2.get().getParentNode()).isPresent() && p3.get() == get_set_method)) {
+        NodeList<Statement> stmts = ((BlockStmt)p2.get()).getStatements();
         stmts.set(stmts.indexOf(p1), new EmptyStmt());
         return;
       }
            
       // convert simpleCore expression ll_get/setRangeValue
       boolean useGetter = isGetter || isArraySetter;
-      if (n.getName().startsWith("ll_" + (useGetter ? "get" : "set") + rangeNameV2Part + "Value")) {
-        args = n.getArgs();
+      if (n.getNameAsString().startsWith("ll_" + (useGetter ? "get" : "set") + rangeNameV2Part + "Value")) {
+        args = n.getArguments();
         if (args.size() != (useGetter ? 2 : 3)) break;
         String suffix = useGetter ? "Nc" : rangeNamePart.equals("Feature") ? "NcWj" : "Nfc";
         String methodName = "_" + (useGetter ? "get" : "set") + rangeNamePart + "Value" + suffix; 
@@ -1166,26 +1180,27 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       
       // convert array sets/gets
       String z = "ll_" + (isGetter ? "get" : "set");
-      if (n.getName().startsWith(z) &&
-          n.getName().endsWith("ArrayValue")) {
+      String nname = n.getNameAsString();
+      if (nname.startsWith(z) &&
+          nname.endsWith("ArrayValue")) {
         
-        String s = n.getName().substring(z.length());
+        String s = nname.substring(z.length());
         s = s.substring(0,  s.length() - "Value".length()); // s = "ShortArray",  etc.
         if (s.equals("RefArray")) s = "FSArray";
         if (s.equals("IntArray")) s = "IntegerArray";
         EnclosedExpr ee = new EnclosedExpr(
-            new CastExpr(new ClassOrInterfaceType(s), n.getArgs().get(0)));
+            new CastExpr(new ClassOrInterfaceType(s), n.getArguments().get(0)));
         
         n.setScope(ee);    // the getter for the array fs
         n.setName(isGetter ? "get" : "set");
-        n.getArgs().remove(0);
+        n.getArguments().remove(0);
       }
       
       /** remove ll_getFSForRef **/
       /** remove ll_getFSRef **/
-      if (n.getName().equals("ll_getFSForRef") ||
-          n.getName().equals("ll_getFSRef")) {
-        updatedNode = replaceInParent(n, n.getArgs().get(0));        
+      if (n.getNameAsString().equals("ll_getFSForRef") ||
+          n.getNameAsString().equals("ll_getFSRef")) {
+        updatedNode = replaceInParent(n, n.getArguments().get(0));        
       }
       
       
@@ -1208,15 +1223,18 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   @Override
   public void visit(FieldAccessExpr n, Object ignore) {
     Expression e;
+    Optional<Expression> oe;
+    String nname = n.getNameAsString();
     
     if (get_set_method != null) {  
-      if (n.getField().startsWith("casFeatCode_") &&
-          ((e = getUnenclosedExpr(n.getScope())) instanceof CastExpr) &&
-          ("jcasType".equals(getName(((CastExpr)e).getExpr())))) {
-        String featureName = n.getField().substring("casFeatCode_".length());
+      if (nname.startsWith("casFeatCode_") &&
+          ((oe = n.getScope()).isPresent()) &&
+          ((e = getUnenclosedExpr(oe.get())) instanceof CastExpr) &&
+          ("jcasType".equals(getName(((CastExpr)e).getExpression())))) {
+        String featureName = nname.substring("casFeatCode_".length());
         replaceInParent(n, new NameExpr("_FI_" + featureName)); // repl last in List<Expression> (args)
         return;
-      } else if (n.getField().startsWith("casFeatCode_")) {
+      } else if (nname.startsWith("casFeatCode_")) {
         reportMigrateFailed("Found field casFeatCode_ ... without a previous cast expr using jcasType");
       }
     }
@@ -1226,7 +1244,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private class removeEmptyStmts extends VoidVisitorAdapter<Object> {
     @Override
     public void visit(BlockStmt n, Object ignore) {
-      Iterator<Statement> it = n.getStmts().iterator();
+      Iterator<Statement> it = n.getStatements().iterator();
       while (it.hasNext()) {
         if (it.next() instanceof EmptyStmt) {
           it.remove();
@@ -1237,11 +1255,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     
 //    @Override
 //    public void visit(MethodDeclaration n, Object ignore) {
-//      if (n.getName().equals("getModifiablePrimitiveNodes")) {
+//      if (n.getNameAsString().equals("getModifiablePrimitiveNodes")) {
 //        System.out.println("debug");
 //      }
 //      super.visit(n,  ignore);
-//      if (n.getName().equals("getModifiablePrimitiveNodes")) {
+//      if (n.getNameAsString().equals("getModifiablePrimitiveNodes")) {
 //        System.out.println("debug");
 //      }
 //    }
@@ -1263,23 +1281,23 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     pprintRoots("Sources", sourcesRoots);
     pprintRoots("Classes", classesRoots);
 
-    boolean isOk = true;
+    boolean isOk2 = true;
     try {
-      isOk = isOk && reportPaths("Workaround Directories", "workaroundDir.txt", pathWorkaround);
-      isOk = isOk && reportPaths("Reports of converted files where a deleted check was customized", "deletedCheckModified.txt", deletedCheckModified);
-      isOk = isOk && reportPaths("Reports of converted files needing manual inspection", "manualInspection.txt", manualInspection);
-      isOk = isOk && reportPaths("Reports of files which failed migration", "failed.txt", failedMigration);
-      isOk = isOk && reportPaths("Reports of non-JCas files", "NonJCasFiles.txt", nonJCasFiles);
-      isOk = isOk && reportPaths("Builtin JCas classes - skipped - need manual checking to see if they are modified",
+      isOk2 = isOk2 && reportPaths("Workaround Directories", "workaroundDir.txt", pathWorkaround);
+      isOk2 = isOk2 && reportPaths("Reports of converted files where a deleted check was customized", "deletedCheckModified.txt", deletedCheckModified);
+      isOk2 = isOk2 && reportPaths("Reports of converted files needing manual inspection", "manualInspection.txt", manualInspection);
+      isOk2 = isOk2 && reportPaths("Reports of files which failed migration", "failed.txt", failedMigration);
+      isOk2 = isOk2 && reportPaths("Reports of non-JCas files", "NonJCasFiles.txt", nonJCasFiles);
+      isOk2 = isOk2 && reportPaths("Builtin JCas classes - skipped - need manual checking to see if they are modified",
           "skippedBuiltins.txt", skippedBuiltins);
       // can't do the pear report here - post processing not yet done.      
 //      computeDuplicates();
 //      reportPaths("Report of duplicates - not identical", "nonIdenticalDuplicates.txt", nonIdenticalDuplicates);
 //      reportPaths("Report of duplicates - identical", "identicalDuplicates.txt", identicalDuplicates);
-      isOk = isOk && reportDuplicates();
+      isOk2 = isOk2 && reportDuplicates();
       
       reportPaths("Report of processed files", "processed.txt", c2ps);
-      return isOk;
+      return isOk2;
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -1740,17 +1758,18 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       if (!outputDirectory.endsWith("/")) {
         outputDirectory = outputDirectory + "/";
       }
-      outDirConverted = outputDirectory + "converted/";
-      outDirSkipped = outputDirectory + "not-converted/";
-      outDirLog = outputDirectory + "logs/";
     } else {
       try {
-        outputDirectory = Files.createTempDirectory("UimaV3MigrateOutput").toString();
+        outputDirectory = Files.createTempDirectory("UimaV3MigrateOutput").toString() + "/";
       } catch (IOException e) {
         e.printStackTrace();
         throw new RuntimeException(e);
       }
     }
+    outDirConverted = outputDirectory + "converted/";
+    outDirSkipped = outputDirectory + "not-converted/";
+    outDirLog = outputDirectory + "logs/";
+
     
     if (clp.isInArgsList(MIGRATE_CLASSPATH)) {
       migrateClasspath = clp.getParamArgument(MIGRATE_CLASSPATH);
@@ -1805,14 +1824,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private void addImport(String s) {
-    cu.getImports().add(new ImportDeclaration(new NameExpr(s), false, false));
+    cu.getImports().add(new ImportDeclaration(new Name(s), false, false));
   }
   
   private void removeImport(String s) {
     Iterator<ImportDeclaration> it = cu.getImports().iterator();
     while (it.hasNext()) { 
       ImportDeclaration impDcl = it.next();
-      if (impDcl.getName().toString().equals(s)) {
+      if (impDcl.getNameAsString().equals(s)) {
         it.remove();
         break;
       }
@@ -1824,25 +1843,25 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    ******************/
   
   private Node replaceInParent(Node n, Expression v) {
-    Node parent = n.getParentNode();
+    Node parent = n.getParentNode().get();
     if (parent instanceof EnclosedExpr) {
       ((EnclosedExpr)parent).setInner(v);
     } else if (parent instanceof MethodCallExpr) { // args in the arg list
-      List<Expression> args = ((MethodCallExpr)parent).getArgs();
+      List<Expression> args = ((MethodCallExpr)parent).getArguments();
       args.set(args.indexOf(n), v);
       v.setParentNode(parent);
     } else if (parent instanceof ExpressionStmt) { 
       ((ExpressionStmt)parent).setExpression(v);
     } else if (parent instanceof CastExpr) { 
-      ((CastExpr)parent).setExpr(v);
+      ((CastExpr)parent).setExpression(v);
     } else if (parent instanceof ReturnStmt) { 
-      ((ReturnStmt)parent).setExpr(v);
+      ((ReturnStmt)parent).setExpression(v);
     } else if (parent instanceof AssignExpr) {
       ((AssignExpr)parent).setValue(v);
     } else if (parent instanceof VariableDeclarator) {
-      ((VariableDeclarator)parent).setInit(v);      
+      ((VariableDeclarator)parent).setInitializer(v);      
     } else if (parent instanceof ObjectCreationExpr) {
-      List<Expression> args = ((ObjectCreationExpr)parent).getArgs();
+      List<Expression> args = ((ObjectCreationExpr)parent).getArguments();
       int i = args.indexOf(n);
       if (i < 0) throw new RuntimeException();
       args.set(i, v);      
@@ -1862,12 +1881,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private void setParameter(List<Parameter> ps, int i, String t, String name) {
     Parameter p = ps.get(i);
     p.setType(new ClassOrInterfaceType(t));
-    p.setId(new VariableDeclaratorId(name));
+    p.setName(new SimpleName(name));
   }
   
-  private int findConstructor(List<BodyDeclaration> classMembers) {
+  private int findConstructor(NodeList<BodyDeclaration<?>> classMembers) {
     int i = 0;
-    for (BodyDeclaration bd : classMembers) {
+    for (BodyDeclaration<?> bd : classMembers) {
       if (bd instanceof ConstructorDeclaration) {
         return i;
       }
@@ -1876,23 +1895,27 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return -1;
   }
   
-  private boolean hasTypeFields(List<BodyDeclaration> members) {
+  private boolean hasTypeFields(NodeList<BodyDeclaration<?>> members) {
     boolean hasType = false;
     boolean hasTypeId = false;
-    for (BodyDeclaration bd : members) {
+    for (BodyDeclaration<?> bd : members) {
       if (bd instanceof FieldDeclaration) {
         FieldDeclaration f = (FieldDeclaration)bd;
-        int m = f.getModifiers();
-        if (Modifier.isPublic(m) &&
-            Modifier.isStatic(m) &&
-            Modifier.isFinal(m) &&
-            getTypeName(f.getType()).equals("int")) {
+        EnumSet<Modifier> m = f.getModifiers();
+        if (m.contains(Modifier.PUBLIC) &&
+            m.contains(Modifier.STATIC) &&
+            m.contains(Modifier.FINAL) 
+//            &&
+//            getTypeName(f.getType()).equals("int")
+            ) {
           List<VariableDeclarator> vds = f.getVariables();
           for (VariableDeclarator vd : vds) {
-            String n = vd.getId().getName();
-            if (n.equals("type")) hasType = true;
-            if (n.equals("typeIndexID")) hasTypeId = true;
-            if (hasTypeId && hasType) break;
+            if (vd.getType().equals(intType)) {
+              String n = vd.getNameAsString();
+              if (n.equals("type")) hasType = true;
+              if (n.equals("typeIndexID")) hasTypeId = true;
+              if (hasTypeId && hasType) break;
+            }
           }
         }
       }
@@ -1912,13 +1935,13 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * Sets fields hasV2Constructors, hasV3Constructors
    * @param members
    */
-  private void setHasJCasConstructors(List<BodyDeclaration> members) {
+  private void setHasJCasConstructors(NodeList<BodyDeclaration<?>> members) {
     boolean has0ArgConstructor = false;
     boolean has1ArgJCasConstructor = false;
     boolean has2ArgJCasConstructorV2 = false;
     boolean has2ArgJCasConstructorV3 = false;
     
-    for (BodyDeclaration bd : members) {
+    for (BodyDeclaration<?> bd : members) {
       if (bd instanceof ConstructorDeclaration) {
         List<Parameter> ps = ((ConstructorDeclaration)bd).getParameters();
         if (ps.size() == 0) has0ArgConstructor = true;
@@ -1946,15 +1969,15 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private String getTypeName(Type t) {
-    if (t instanceof ReferenceType) {
-      t = ((ReferenceType)t).getType();
-    }
+//    if (t instanceof ReferenceType) {
+//      t = ((ReferenceType<?>)t).getType();
+//    }
     
     if (t instanceof PrimitiveType) {
       return ((PrimitiveType)t).toString(); 
     }
     if (t instanceof ClassOrInterfaceType) {
-      return ((ClassOrInterfaceType)t).getName();
+      return ((ClassOrInterfaceType)t).getNameAsString();
     }
     Misc.internalError(); return null;
   }
@@ -1967,10 +1990,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private String getName(Expression e) {
     e = getUnenclosedExpr(e);
     if (e instanceof NameExpr) {
-      return ((NameExpr)e).getName();
+      return ((NameExpr)e).getNameAsString();
     }
     if (e instanceof FieldAccessExpr) {
-      return ((FieldAccessExpr)e).getField();
+      return ((FieldAccessExpr)e).getNameAsString();
     }
     return null;
   }
@@ -1983,9 +2006,13 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * 
    * @param n type being declared
    */
-  private void updateClassName(TypeDeclaration n) {
-    if (n.getParentNode() instanceof CompilationUnit) {
-      className = n.getName();
+  private void updateClassName(TypeDeclaration<?> n) {
+    Optional<Node> pnode = n.getParentNode();
+    Node node;
+    if (pnode.isPresent() && 
+        (node = pnode.get()) instanceof CompilationUnit) {
+      CompilationUnit cu2 = (CompilationUnit) node;
+      className = cu2.getType(0).getNameAsString();
       String packageAndClassName = 
           (className.contains(".")) 
             ? className 
@@ -2018,7 +2045,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private Expression getUnenclosedExpr(Expression e) {
     while (e instanceof EnclosedExpr) {
-      e = ((EnclosedExpr)e).getInner();
+      e = ((EnclosedExpr)e).getInner().get();
     }
     return e;
   }
@@ -2030,7 +2057,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    */
   private Statement getStmtFromStmt(Statement stmt) {
     while (stmt instanceof BlockStmt) {
-      List<Statement> stmts = ((BlockStmt) stmt).getStmts();
+      NodeList<Statement> stmts = ((BlockStmt) stmt).getStatements();
       if (stmts.size() == 1) {
         stmt = stmts.get(0);
         continue;
@@ -2042,7 +2069,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private void addCastExpr(Statement stmt, Type castType) {
     ReturnStmt rstmt = (ReturnStmt) stmt;
-    rstmt.setExpr(new CastExpr(castType, rstmt.getExpr()));
+    Optional<Expression> o_expr = rstmt.getExpression(); 
+    Expression expr = o_expr.isPresent() ? o_expr.get() : null;
+    rstmt.setExpression(new CastExpr(castType, expr));
   }
   
   /********************
@@ -2053,9 +2082,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     reportMigrateFailed("Constructor is incorrect, " + msg);
   }
       
-  private void reportParseException() {
-    reportMigrateFailed("Unparsable Java");
-  }
+//  private void reportParseException() {
+//    reportMigrateFailed("Unparsable Java");
+//  }
   
   private void migrationFailed(String reason) {
     failedMigration.add(new PathAndReason(candidate.p, reason));
