@@ -114,6 +114,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 
 /**
@@ -188,6 +189,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private static final EnumSet<Modifier> public_static_final = 
       EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL); 
   
+  private static final PrettyPrinterConfiguration printWithoutComments = 
+      new PrettyPrinterConfiguration();
+  static { printWithoutComments.setPrintComments(false); }
+
+  private static final PrettyPrinterConfiguration printCu = 
+      new PrettyPrinterConfiguration();
+  static { printCu.setIndent("  "); }
+    
   /*****************
    * Candidate
    *****************/
@@ -401,11 +410,6 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
   private boolean isOk;
 
-  private final PrettyPrinterConfiguration printWithoutComments = 
-      new PrettyPrinterConfiguration();
-  { printWithoutComments.setPrintComments(false); }
-
-
 
   public MigrateJCas() {
   }
@@ -489,6 +493,18 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       Files.createDirectories(outDir);
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+    
+    // pearsOrJars may have entries with 0 candidate paths.  This happens when we scan them
+    // but find nothing to convert.  
+    // eliminate these.
+    
+    Iterator<PearOrJar> it = pearsOrJars.iterator();
+    while (it.hasNext()) {
+      PearOrJar poj = it.next();
+      if (poj.pathsToCandidateFiles.size() == 0) {
+        it.remove();
+      }
     }
     
     if (pearsOrJars.size() == 0) {
@@ -804,7 +820,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             writeV2Orig(source, v3);
           }
           if (v3) {
-            String s = cu.toString();
+            String s = new PrettyPrinter(printCu).print(cu);
             writeV3(s);  
           }
           System.out.print(".");
@@ -1760,7 +1776,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       }
     } else {
       try {
-        outputDirectory = Files.createTempDirectory("UimaV3MigrateOutput").toString() + "/";
+        outputDirectory = Files.createTempDirectory("migrateJCasOutput").toString() + "/";
       } catch (IOException e) {
         e.printStackTrace();
         throw new RuntimeException(e);
