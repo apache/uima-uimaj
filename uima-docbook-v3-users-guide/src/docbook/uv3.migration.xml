@@ -32,44 +32,14 @@ under the License.
     
     <para>Although UIMA V3 is designed to be backwards compatible with UIMA V2, there are some migration steps
       needed.  These fall into two broad use cases: 
-      <itemizedlist spacing="compact">
-        <listitem><para>where you are "consuming" the Maven artifacts for the
-          core SDK, as part of another project, and </para></listitem>
-        <listitem><para>where you have an existing UIMA pipeline / application you wish to upgrade to use V3.</para></listitem>
+      <itemizedlist>
+        <listitem><para>if you have an existing UIMA pipeline / application you wish to upgrade to use V3</para></listitem>
+        <listitem><para>if you are "consuming" the Maven artifacts for the core SDK, as part of another project</para></listitem>
       </itemizedlist> 
     </para>
     
   </section>
   
-  <section id="uv3.migration.consuming">
-    <title>Consuming V3 Maven artifacts</title>
-    
-    <para>There are two issues which may affect other projects which consume V3:
-      <itemizedlist spacing="compact">
-        <listitem><para>default logging is now a no-op slf4j logger, and </para></listitem>
-        <listitem><para>issues using the <code>maven-bundle-plugin.</code></para></listitem>
-      </itemizedlist>
-    </para>
-    
-    <para>Projects may have tests which write to the UIMA log.  Because V3 switched to SLF4J as the default logger,
-      unless SLF4J can find an adapter to some back-end logger, it will issue a message and substitute a "NO-OP" 
-      logger.  If your test cases depend on having the V2 default logger (which was the one built into Java), 
-      you need to add to your POM a "test" dependency on the SLF4J-to-JDK14 adapter.  Here's the xml you need to add:</para>
-    <programlisting><![CDATA[<dependency>
-  <groupId>org.slf4j</groupId>
-  <artifactId>slf4j-jdk14</artifactId>
-  <version>1.7.24</version>  <!-- or some version you need -->
-  <scope>test</scope>
-</dependency>]]></programlisting>
-    
-    <para>If you build OSGi or Eclipse plugins using the <code>maven-bundle-plugin</code>, it will by default
-       look to include the slf4j artifacts, which instead, you probably want to hook up when the OSGi component
-       is installed to what's available.  You can block the attempt to include slf4j by adding a line to your
-       bundle commands such as &lt;import-package&gt; that exclude this package by adding</para>
-       <programlisting>!org.slf4j</programlisting>
-       <para>to the package list; the "!" says to exclude it.</para>
-    <para>Alternatively, you can include it in the bundle by adding a dependency to the version you which to include.</para>
-  </section>
   
   <section id="uv3.migration.migrating_pipeline">
     <title>How to migrate an existing UIMA pipeline to V3</title>
@@ -88,18 +58,29 @@ under the License.
     <para>Some Maven projects use the JCasGen maven plugin; these projects' JCasGen maven plugin,
      if switched to UIMA V3, automatically generate the V3 versions.  For proper operation, please run
      maven clean install; the clean operation ought to remove the previously generated JCas class, including the
-     UIMA V2 <code>xxx_Type</code> classes, which are not used, won't compile in V3 and are need to be deleted. 
+     UIMA V2 <code>xxx_Type</code> classes, which are not used, won't compile in V3 and need to be deleted. 
     </para>
     
-    <para>You can use any of the methods of invoking JCasGen to generate the new V3 versions.  If you already have
-    the source or class files, you can also migrate those using the migration tool described in this section.</para>
+    <para>You can use any of the methods of invoking JCasGen to generate the new V3 versions.  
+      If using the Eclipse plugins (i.e., pushing the <code>JCasGen</code>) button in the 
+      configuration editor, etc.), the V3 version of the plugin must be the one installed into Eclipse.
+    </para>
+    
+    <para>    
+      If you have the source or class files, you can also migrate those using the migration tool described in this section.
+      This approach is useful when you've customized the JCas class, and wish to preserve those customizations,
+      while converting the v2 style to the v3 style.
+    </para>
      
+    <!-- 
     <para>For simple testing, after users have migrated or generated any user-supplied JCas classes, 
       users typically will JAR-up these migrated classes,
       and then place that JAR in the class path ahead of the original V2 pipeline's classes so these will replace
       the corresponding classes.
     </para>
+     -->
     
+    <!-- 
     <section id="uv3.migration.maven-cookbook">
       <title>Modifying a Maven project to support both v2 &amp; v3</title>
       <titleabbrev>Maven v2/v3 simultaneous support</titleabbrev>
@@ -119,24 +100,32 @@ under the License.
       wanting to use V3, they would need to place ahead of the original artifacts in the running pipeline's classpath.
       </para>
     </section>
+     -->
   </section>
+  
+  
   <section id="uv3.migration.jcas">
     <title>Migrating JCas classes</title>
-    
+   
+  <!-- repetitious 
   <para>Some projects are built using Maven, and use the JCasGen Maven plugin as part of the build.
   These builds, when switched to depend on version 3, will automatically generate the new JCas
   class definitions, so nothing special need be done.
   </para>
-  
+   -->
+   
   <para>If you have customized JCasGen classes, these can be migrated by running the migration tool, which is available
 	  as a stand-alone command line tool (<code>runV3migrateJCas.sh or ...bat</code>), or 
-	  as an Eclipse launch configuration.</para>
+	  as Eclipse launch configurations.</para>
 	  
   <para>This tool is run against a directory tree, and scans all the files in the tree, looking for 
      JCas cover classes.  It can process either source files, or, if those are not available, compiled
-     class files.  It can process these inside directories, as well as inside Jar files within those directories.</para>
+     class files (it runs a decompiler on these). 
+     It can process these inside directories, as well as inside Jar or PEAR files within those directories.</para>
                 
-	<para>Run this tool using a Java 8 JDK (as opposed to a Java JRE) in order to have the Java compiler available.</para>
+	<para>If you run this tool using a Java 8 JDK (as opposed to a Java JRE),
+    the JDK's java compiler will be used to create compiled versions of the migrated classes, 
+    and create copies of JARs and/or PEARs with these in them.</para>
 
   <para>The results of the migration include the migrated class files and a set of logs, summarized in the console
     output, detailing anything that might need inspection to verify the migration was done correctly.
@@ -157,8 +146,7 @@ under the License.
 	
 	<para>  
 	  The actual migration step is a source-to-source transformation, done using a Java parse of the source files.
-	  The parts in the source which are version 2 specific with the equivalent
-	  version 3 code.
+	  The parts in the source which are version 2 specific with the equivalent version 3 code.
 	  Only those parts which need updating are modified;
     other code and comments which are part of the source file are left unchanged.  This is intended to preserve
     any user customization that may have been done.  
@@ -216,17 +204,21 @@ under the License.
           </itemizedlist>
           When running from classes roots, the classes must not have compile errors, and may contain Jars and PEARs.
           Both launchers write their output to a temporary directory, whose name is printed in the Eclipse console log.
+          This temporary directory may be defaulted, or specified as one of the arguments.
         </para>
       
         <para>
-          To use the launcher for source code,
+          To use the Eclipse launcher for source code,
             <itemizedlist spacing="compact">
               <listitem><para>First select the eclipse project containing the source code to transform; 
                 this project's "build path" will also supply the 
-                classpath used during migration for decompiling and compiling the sources.</para></listitem>
+                classpath used during migration.</para></listitem>
               <listitem><para>run the migrate-from-sources launcher.
               </para></listitem>
             </itemizedlist>
+            This will scan the directory tree of the project, looking for source files which are JCas files, and 
+            migrate them.  No existing files are modified; everything is written to the output directory (by default, 
+            automatically assigned in temp space).
   		  </para>
         
         <para>
@@ -236,17 +228,19 @@ under the License.
                 when it was being built. This is required for proper "decompiling" of the classes and
                 recompiling the transformed results.
                 </para></listitem>
-              <listitem><para>The launcher will prompt you for a directory, which the migration tool will use as the
-                top of a tree to scan for Java .class files, as well as JARs and PEAR files, looking for items to migrate.
+              <listitem><para>The launcher will additionally prompt you for another directory 
+                which the migration tool will use as the top of a tree to scan for compiled Java JCas classes to be migrated.
               </para></listitem> 
             </itemizedlist>
         </para>
   	    
+        <!-- repetitious
   	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
   	      the tool will scan the file system under these roots (including inside Jars and PEARs when running from
           compiled classes), looking for definitions to migrate.  
   	    </para>
-		    
+		     -->
+         
 	      <!-- <blockquote><para>It can also be run with a list of specific JCas classes
 	      to migrate.</para></blockquote> -->
         
@@ -476,24 +470,57 @@ bin/runV3migrateJCas.sh
       </para>
       
       <para>Run the Eclipse launcher:</para>
+      <para>First, make sure you've installed the V3 UIMA plugins into Eclipse!</para>
       
-      <programlisting>Load Eclipse workspace containing the project to be migrated,
-  and the version 3 uimaj-migration project.
+      <programlisting>Startup an Eclipse workspace containing the project 
+with JCas source files to be migrated.
       
-Select the Java project having the classpath used when running.
+Select the Java project with the JCas sources to be migrated.
 
 Eclipse -&gt; menu -&gt; Run -&gt; Run configurations
-  Use the search box to find "Migrate JCas" launcher, and launch that.
-
-In the first prompt, 
-  enter the path to the root of the compiled classes or Jar or PEAR
-In the second prompt, 
-  enter a path to where you want the output, e.g. /temp/migrateJCas
+  Use the search box to find 
+  "UIMA run V3 migrate JCas from sources" launcher.
 </programlisting>
     
-    <para>Please read the console output summarization to see about any 
+    <para>Please read the console output summarization to see where the output went, and about any 
       conditions found during migration which need manual inspection and fixup.</para>
     </section>
     
   </section>
+  
+    <section id="uv3.migration.consuming">
+    <title>Consuming V3 Maven artifacts</title>
+    
+    <!-- 
+    <para>There are two issues which may affect other projects which consume V3:
+      <itemizedlist spacing="compact">
+        <listitem><para>default logging is now a no-op slf4j logger, and </para></listitem>
+        <listitem><para>issues using the <code>maven-bundle-plugin.</code></para></listitem>
+      </itemizedlist>
+    </para>
+     -->
+     
+    <para>Projects may have tests which write to the UIMA log.  Because V3 switched to SLF4J as the default logger,
+      unless SLF4J can find an adapter to some back-end logger, it will issue a message and substitute a "NO-OP" 
+      back-end logger.  If your test cases depend on having the V2 default logger (which was the one built into Java), 
+      you need to add a "test" dependency on the SLF4J-to-JDK14 adapter to your POM.  Here's the xml for that:</para>
+    <programlisting><![CDATA[<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-jdk14</artifactId>
+  <version>1.7.24</version>  <!-- or some version you need -->
+  <scope>test</scope>
+</dependency>]]></programlisting>
+
+    <!--     
+    <para>If you build OSGi or Eclipse plugins using the <code>maven-bundle-plugin</code>, it will by default
+       look to include the slf4j artifacts.  Instead of this, your run-time OSGi environment could frequenly
+       already include these artifacts, and you can instruct OSGi to "hook up" to them.
+       You can block the attempt to include slf4j directly in your plugin by adding a line to your
+       bundle commands such as &lt;import-package&gt; that exclude this package by adding</para>
+       <programlisting>!org.slf4j</programlisting>
+       <para>to the package list; the "!" says to exclude it.</para>
+    <para>Alternatively, you can include it in the bundle by adding a dependency to the version you which to include.</para>
+     -->
+  </section>
+  
 </chapter>
