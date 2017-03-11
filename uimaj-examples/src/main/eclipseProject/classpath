@@ -48,7 +48,7 @@
 	<classpathentry kind="var" path="UIMA_HOME/lib/uimaj-v3migration-jcas.jar"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/procyon-compilertools-0.5.28.jar"/>
   <classpathentry kind="var" path="UIMA_HOME/lib/procyon-core-0.5.28.jar"/>
-  <classpathentry kind="var" path="UIMA_HOME/lib/javaparser-core-2.5.1.jar"/>
+  <classpathentry kind="var" path="UIMA_HOME/lib/javaparser-core-3.1.1.jar"/>
 	<classpathentry kind="lib" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
