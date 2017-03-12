@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>3.0.0-alpha02-SNAPSHOT</version>
+  <version>3.0.0-alpha02</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
@@ -37,13 +37,13 @@
 
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-eclipse-update-site
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-eclipse-update-site-3.0.0-alpha02
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/uimaj-eclipse-update-site
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-eclipse-update-site-3.0.0-alpha02
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/uimaj-eclipse-update-site
+      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-eclipse-update-site-3.0.0-alpha02
     </url>
   </scm>
 
