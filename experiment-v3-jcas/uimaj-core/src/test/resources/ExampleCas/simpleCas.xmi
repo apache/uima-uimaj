@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+<xmi:XMI xmlns:testTypeSystem="http:///org/apache/uima/testTypeSystem.ecore"
+  xmlns:cas="http:///uima/cas.ecore" xmlns:tcas="http:///uima/tcas.ecore"
+  xmlns:xmi="http://www.omg.org/XMI" xmi:version="2.0">
+  <cas:NULL xmi:id="0"/>
+  <cas:Sofa xmi:id="1" sofaNum="1" sofaID="_InitialView" mimeType="text"
+    sofaString="IBM Announces Recipients Of Internet Research Grants&#13;&#10;&#13;&#10;Resources Will Help Universities Explore Internet2 Applications    &#13;&#10;&#13;&#10; Waltham, Mass., January 15, 1998 -- As part of its $3.5 million commitment to support the development of Internet2, IBM has announced the names of seven higher education institutions that will receive resources through the company's sponsored research program. These resources will facilitate development of Internet2 applications and participation in the Internet2 project.  The grant recipients are Clemson University in South Carolina, Duke University in North Carolina, Indiana University, Northwestern University in Illinois, the University of Chicago, the University of Michigan, and the University of South Carolina.  &#13;&#10;&#13;&#10;      Donated resources will be in the form of hardware, software, switches and other pieces of network infrastructure critical to Internet2 applications, connections, and operation.  In addition, grant recipients have access to the technological expertise of IBM personnel. Many of the grant recipients will use the donations to create networked consortiums with other higher educational institutions in their areas.  Grant resources will be used to enhance specific advanced technology applications -- ranging from telemedicine to the maintenance of a digital Movietone newsreel archive.  &#13;&#10;&#13;&#10;      Irving Wladawsky-Berger, general manager of IBM's Internet Division, emphasized the company's commitment to the  new  Internet.  He said,  The Internet has succeeded beyond our wildest imagination.  More and more people are getting connected around the world, as the Internet is being embraced across the research community, educational institutions, businesses of all sizes, and society at large.  The Internet2 efforts will take us all to the next levels, with significant improvements in bandwidth and quality of service.  Most important, the Internet2 efforts will make possible all kinds of new, exciting applications.  IBM is very proud to continue its associations and contributions to the Internet.   &#13;&#10;&#13;&#10;      Sean C. Rush, general manager of IBM Global Education, agrees.  He said,  Internet2 is being developed with the needs of higher education inmind.  Internet2 capabilities include high speed, dependability, and networking power.  For example, data base analysis that took hours or days will take minutes.  Researchers worldwide will be able to share large amounts of data without interruptions or slow downs.  And finally, Internet2 will serve as an important repository for a wealth of materials, and researchers will now have high quality, high speed access to books, art work, films, and music.   &#13;&#10;&#13;&#10;      Don Haile, vice president of IBM's Networking Hardware Development, has worked closely with several Internet2 universities over the past year.  The recent revolutions in networking technology, including the advent of ATM, switched LANs and route-switching, are allowing today's university faculty to consider network-based applications that they previously only dreamed about,  said Don.    Professors can transmit voice and video in real time over a network, enriching research collaborations and distance learning classroom experiences.   By providing high speed communication links,  Internet2 is supporting research that will benefit students and local communities, across the country.   &#13;&#10;&#13;&#10;  Internet2   &#13;&#10;&#13;&#10;      Since its recent inception, Internet2 has grown from 34 to over 100 research universities.  With Internet2, network applications are better served by new network points-of-presence (PoPs) capable of transmitting gigabits (billions of bits) of information per second.  Internet2 participants broaden their research and development expenditures to help create these GigaPoPs. Member universities, working with private member companies and non-profit organizations are developing tools for scientific research and higher education in the 21st century.  The Internet2 homepage is located at   http://www.internet2.edu/ &#13;&#10;&#13;&#10;  IBM Global Education Industry   &#13;&#10;&#13;&#10;      The Global Education Industry is a unit of IBM, the largest information technology company.  The Global Education Industry provides targeted products, consulting, and services to K-12 education and institutions of higher education throughout North America, Latin America, Europe and Asia.  IBM's Higher Education homepage is located at   http://www.hied.ibm.com &#13;&#10;&#13;&#10;  IBM Internet Division   &#13;&#10;&#13;&#10;      IBM is a leader in the development of the Internet and is dedicated to helping customers and developers exploit the potential of network computing,  drawing on the resources of over 24 information technology products and services, including computer systems, software, networking systems, storage devices and microelectronics.  Developers and customers can find out more about IBM's many initiatives relating to Internet technologies, products and services on the Web at   http://www.internet.ibm.com &#13;&#10;&#13;&#10;  IBM Networking Hardware Division   &#13;&#10;&#13;&#10;      IBM's Networking Hardware Division (NHD) develops and manufactures industry-leading networking technologies and products, providing global end-to-end solutions for Token-Ring, Ethernet, Gigabit Ethernet, ATM, IP and SNA networks.  IBM NHD also provides consulting, education, service and support worldwide to help customers achieve their business objectives.  For additional information on IBM's networking solutions, visit our Web site at  www.networking.ibm.com or call 800-IBM-3333 or outside the U.S. 770-644-5997.    # # #      The following term is a trademark of the IBM Corporation in the United States or other countries or both: IBM   &#13;&#10;"/>
+  <tcas:DocumentAnnotation xmi:id="2" sofa="1" begin="0" end="2930" language="en"/>
+  <testTypeSystem:Person xmi:id="3" sofa="1" begin="2077" end="2089" confidence="0.0" componentId="ACE"
+    mentionType="NAME"/>
+  <testTypeSystem:Person xmi:id="4" sofa="1" begin="1571" end="1577" confidence="0.0" componentId="ACE"
+    mentionType="NOMINAL"/>
+  <testTypeSystem:Person xmi:id="5">
+    <sofa href="#1"/>
+    <begin>2685</begin>
+    <end>2694</end>
+    <componentId>ACE</componentId>
+    <confidence>0.0</confidence>
+    <mentionType>NAME</mentionType>
+  </testTypeSystem:Person>  
+  <testTypeSystem:Organization xmi:id="6" sofa="1" begin="4165" end="4199"
+    confidence="0.0" componentId="ACE"
+    mentionType="NAME"/>  
+  <testTypeSystem:Owner xmi:id="7" sofa="1" begin="1162" end="1173"
+    confidence="0.0" componentId="ACE" relationArgs="8"/>
+  <testTypeSystem:BinaryRelationArgs xmi:id="8" domainValue="3"
+    rangeValue="6"/>
+  <testTypeSystem:Owner xmi:id="9" sofa="1" begin="1162" end="1173"
+    confidence="0.0" componentId="ACE" relationArgs="10"/>
+  <testTypeSystem:BinaryRelationArgs xmi:id="10">
+    <domainValue href="#3"/>
+    <rangeValue href="#6"/>
+  </testTypeSystem:BinaryRelationArgs>
+  <testTypeSystem:Entity xmi:id="11"    
+    componentId="CrossAnnotatorCoreference"
+    canonicalForm="University of South Carolina"
+    id="uid-pr00010_15Jan1998.txt-554">
+    <classes>org.apache.uima.testTypeSystem.College</classes>
+    <classes>org.apache.uima.testTypeSystem.Organization</classes>
+    <variantForms>USC</variantForms>
+    <variantForms>U of SC</variantForms>
+  </testTypeSystem:Entity>
+  
+  <cas:View sofa="1" members="2 3 4 5 6 7 9 11"/>
+</xmi:XMI>

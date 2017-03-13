@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<CAS>
+    <uima.cas.Sofa _indexed="0" _id="1" sofaNum="2" sofaID="EnglishDocument" sofaString="this beer is good"/>
+    <uima.tcas.DocumentAnnotation _indexed="2" _id="8" _ref_sofa="1" begin="0" end="17" language="x-unspecified"/>
+    <test.primitives.Example _indexed="2" _id="13" _ref_sofa="1" begin="1" end="5" floatFeature="99.99" stringFeature="aaaaaaa" boolFeature="true" byteFeature="122" shortFeature="-32768" longFeature="-9223372036854775808" doubleFeature="1.7976931348623157E308" _ref_intArrayFeature="39" _ref_floatArrayFeature="46" _ref_stringArrayFeature="32" _ref_boolArrayFeature="56" _ref_byteArrayFeature="53" _ref_shortArrayFeature="59" _ref_longArrayFeature="62" _ref_doubleArrayFeature="65"/>
+    <uima.cas.DoubleArray _id="65" size="5">
+        <i>1.7976931348623157E308</i>
+        <i>4.9E-324</i>
+        <i>1.5555</i>
+        <i>99.000000005</i>
+        <i>4.444444444444445</i>
+    </uima.cas.DoubleArray>
+    <uima.cas.LongArray _id="62" size="5">
+        <i>9223372036854775807</i>
+        <i>9223372036854775806</i>
+        <i>9223372036854775805</i>
+        <i>9223372036854775804</i>
+        <i>9223372036854775803</i>
+    </uima.cas.LongArray>
+    <uima.cas.ShortArray _id="59" size="5">
+        <i>32767</i>
+        <i>32766</i>
+        <i>32765</i>
+        <i>32764</i>
+        <i>32763</i>
+    </uima.cas.ShortArray>
+    <uima.cas.ByteArray _id="53" size="5">
+        <i>8</i>
+        <i>16</i>
+        <i>64</i>
+        <i>-128</i>
+        <i>-1</i>
+    </uima.cas.ByteArray>
+    <uima.cas.BooleanArray _id="56" size="20">
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+        <i>true</i>
+        <i>false</i>
+    </uima.cas.BooleanArray>
+    <uima.cas.StringArray _id="32" size="5">
+        <i>zzzzzz</i>
+        <i>yyyyyy</i>
+        <i>xxxxxx</i>
+        <i>wwwwww</i>
+        <i>vvvvvv</i>
+    </uima.cas.StringArray>
+    <uima.cas.FloatArray _id="46" size="5">
+        <i>3.4028235E38</i>
+        <i>3.4028234E35</i>
+        <i>42.0</i>
+        <i>1.401E-42</i>
+        <i>1.4E-45</i>
+    </uima.cas.FloatArray>
+    <uima.cas.IntegerArray _id="39" size="5">
+        <i>2147483647</i>
+        <i>2147483646</i>
+        <i>42</i>
+        <i>-2147483647</i>
+        <i>-2147483648</i>
+    </uima.cas.IntegerArray>
+</CAS>

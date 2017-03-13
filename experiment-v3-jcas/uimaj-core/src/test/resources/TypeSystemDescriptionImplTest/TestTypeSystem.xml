@@ -1,0 +1,94 @@
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+	
+        <!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+
+<name>TestTypeSystem</name>
+<description>This is a test.</description>
+<version>0.1</version>
+<vendor>The Apache Software Foundation</vendor>
+<imports>
+<import name="org.apache.uima.resource.metadata.impl.TypeSystemImportedByName"/>
+<import location="TypeSystemImportedByLocation.xml"/>
+<import name="TypeSystemImportedFromDataPath"/>
+</imports>
+<types>
+<typeDescription>
+<name>NamedEntity</name>
+<description>Anything that has a name.</description>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+<features>
+<featureDescription>
+<name>CanonicalName</name>
+<description>Canonical name for this entity.</description>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+</features>
+</typeDescription>
+<typeDescription>
+<name>Person</name>
+<description>A person.</description>
+<supertypeName>NamedEntity</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>Place</name>
+<description>A place.</description>
+<supertypeName>NamedEntity</supertypeName>
+<features>
+<featureDescription>
+<name>SubType</name>
+<description>Kind of place.</description>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+</features>
+</typeDescription>
+<typeDescription>
+<name>DocumentStructure</name>
+<description>Identifies document structure, such as sentence or paragraph.</description>
+<supertypeName>uima.tcas.Annotation</supertypeName>
+</typeDescription>
+<typeDescription>
+<name>Paragraph</name>
+<description>A paragraph.</description>
+<supertypeName>DocumentStructure</supertypeName>
+<features>
+<featureDescription>
+<name>sentences</name>
+<description>Direct references to sentences in this paragraph</description>
+<rangeTypeName>uima.cas.FSArray</rangeTypeName>
+<elementType>Sentence</elementType>
+<multipleReferencesAllowed>false</multipleReferencesAllowed>
+</featureDescription>
+<featureDescription>
+<name>testMultiRefAllowedFeature</name>
+<description>A test feature that allows multiple references.</description>
+<rangeTypeName>uima.cas.FSArray</rangeTypeName>
+<multipleReferencesAllowed>true</multipleReferencesAllowed>
+</featureDescription>
+</features>
+</typeDescription>
+<typeDescription>
+<name>Sentence</name>
+<description>A sentence.</description>
+<supertypeName>DocumentStructure</supertypeName>
+</typeDescription>
+</types>
+</typeSystemDescription>

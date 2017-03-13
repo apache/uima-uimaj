@@ -1,0 +1,18 @@
+{
+  "_views" : {
+    "_InitialView" : {
+      "RefTypes" : [
+        {"sofa" : 2,  "aListFs" : [
+            {"_type" : "NonEmptyFSList",  "tail" : [
+                {"_type" : "NonEmptyFSList",  "tail" : [
+                    {"_type" : "NonEmptyFSList",  "tail" : [ ],  "head" : 5 } ], 
+                  "head" : {"_type" : "RefTypes",  "sofa" : 2 } }, 
+                {"_type" : "NonEmptyFSList",  "tail" : [ ],  "head" : 5 } ], 
+              "head" : {"_type" : "RefTypes",  "sofa" : 2 } }, 
+            {"_type" : "NonEmptyFSList",  "tail" : [
+                {"_type" : "NonEmptyFSList",  "tail" : [ ],  "head" : 5 } ], 
+              "head" : {"_type" : "RefTypes",  "sofa" : 2 } }, 
+            {"_type" : "NonEmptyFSList",  "tail" : [ ],  "head" : 5 } ] },  5 ] } }, 
+  "_referenced_fss" : {
+    "2" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
+    "5" : {"_type" : "RefTypes",  "sofa" : 2 } } }

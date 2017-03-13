@@ -1,0 +1,15 @@
+{"_context" : {
+    "_types" : {
+      "EmptyIntegerList" : {"_id" : "uima.cas.EmptyIntegerList" }, 
+      "NonEmptyIntegerList" : {"_id" : "uima.cas.NonEmptyIntegerList", 
+        "_feature_types" : {"tail" : "_array" } }, 
+      "IntegerList" : {"_id" : "uima.cas.IntegerList", 
+        "_subtypes" : ["EmptyIntegerList",  "NonEmptyIntegerList" ] }, 
+      "ListBase" : {"_id" : "uima.cas.ListBase", 
+        "_subtypes" : ["IntegerList" ] }, 
+      "TOP" : {"_id" : "uima.cas.TOP", 
+        "_subtypes" : ["ListBase" ] } } }, 
+  "_views" : {
+    "_InitialView" : {
+      "NonEmptyIntegerList" : [
+        {"tail" : [22,  33 ],  "head" : 11 } ] } } }

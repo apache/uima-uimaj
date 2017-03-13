@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<!-- For testing only. -->
+
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+	<primitive>false</primitive>
+
+	<delegateAnalysisEngineSpecifiers>
+		<delegateAnalysisEngine key="Annotator1">
+			<import location="ResourceTestAnnotator.xml"/>
+		</delegateAnalysisEngine>
+
+		<delegateAnalysisEngine key="Annotator2">
+			<import location="ResourceTestAnnotator2.xml"/>
+		</delegateAnalysisEngine>
+	</delegateAnalysisEngineSpecifiers> 
+
+	<analysisEngineMetaData>
+		<name>Resource Test Aggregate TAE</name>
+		<description>For testing the resource manager.</description>
+		<version>1.0</version>
+		<vendor>The Apache Software Foundation</vendor>
+
+
+		<flowConstraints>
+		  <fixedFlow>
+		    <node>Annotator1</node>
+		    <node>Annotator2</node>
+		  </fixedFlow>
+		</flowConstraints>
+		
+		<!-- Capabilities: Inputs and Outputs -->
+		<capabilities>
+			<capability></capability>
+		</capabilities>
+
+	</analysisEngineMetaData>
+
+	<resourceManagerConfiguration>
+		<externalResources>
+			<externalResource>
+				<name>MyFileResource</name>
+				<description />
+				<fileResourceSpecifier>
+					<fileUrl>file:testDataFile2.dat</fileUrl>
+				</fileResourceSpecifier>
+			</externalResource>
+			<externalResource>
+				<name>OverriddenLanguageResourceObject</name>
+				<description />
+				<fileLanguageResourceSpecifier>
+					<fileUrlPrefix>file:FileLanguageResource_implTest_data_</fileUrlPrefix>
+					<fileUrlSuffix>.dat</fileUrlSuffix>
+				</fileLanguageResourceSpecifier>
+				<implementationName>org.apache.uima.resource.impl.TestResourceInterface_impl</implementationName>
+			</externalResource>
+		</externalResources>
+		<externalResourceBindings>
+			<externalResourceBinding>
+				<key>Annotator1/TestLanguageResourceObject</key>
+				<resourceName>OverriddenLanguageResourceObject</resourceName>
+			</externalResourceBinding>
+		</externalResourceBindings>
+	</resourceManagerConfiguration>
+</taeDescription>

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<typeSystemDescription
+ xmlns="http://uima.apache.org/resourceSpecifier">
+ <name>casTestCaseTypesystem</name>
+ <description>Type system description for CAS test cases.</description>
+ <version>1.0</version>
+ <vendor>Apache Software Foundation</vendor>
+ <types>
+  <typeDescription>
+   <name>Token</name>
+   <description></description>
+   <supertypeName>uima.tcas.Annotation</supertypeName>
+   <features>
+    <featureDescription>
+     <name>type</name>
+     <description></description>
+     <rangeTypeName>TokenType</rangeTypeName>
+    </featureDescription>
+    <featureDescription>
+     <name>tokenFloatFeat</name>
+     <description></description>
+     <rangeTypeName>uima.cas.Float</rangeTypeName>
+    </featureDescription>
+    <featureDescription>
+     <name>lemma</name>
+     <description></description>
+     <rangeTypeName>uima.cas.String</rangeTypeName>
+    </featureDescription>
+    <featureDescription>
+     <name>sentenceLength</name>
+     <description></description>
+     <rangeTypeName>uima.cas.Integer</rangeTypeName>
+    </featureDescription>
+    <featureDescription>
+     <name>lemmaList</name>
+     <description />
+     <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+     <multipleReferencesAllowed>true</multipleReferencesAllowed>
+    </featureDescription>
+   </features>
+  </typeDescription>
+  <typeDescription>
+   <name>TokenType</name>
+   <description></description>
+   <supertypeName>uima.cas.TOP</supertypeName>
+  </typeDescription>
+  <typeDescription>
+   <name>Sentence</name>
+   <description></description>
+   <supertypeName>uima.tcas.Annotation</supertypeName>
+   <features>
+    <featureDescription>
+     <name>sentenceLength</name>
+     <description />
+     <rangeTypeName>uima.cas.Integer</rangeTypeName>
+    </featureDescription>
+   </features>
+  </typeDescription>
+  
+  <typeDescription>
+   <name>SubTypeOfSentence</name>
+   <description></description>
+   <supertypeName>Sentence</supertypeName>
+   <features>
+    <featureDescription>
+     <name>interest</name>
+     <description />
+     <rangeTypeName>uima.cas.Integer</rangeTypeName>
+    </featureDescription>
+   </features>
+  </typeDescription>
+  
+  <typeDescription>
+   <name>Separator</name>
+   <description></description>
+   <supertypeName>TokenType</supertypeName>
+  </typeDescription>
+  <typeDescription>
+   <name>EndOfSentence</name>
+   <description></description>
+   <supertypeName>TokenType</supertypeName>
+  </typeDescription>
+  <typeDescription>
+   <name>Word</name>
+   <description></description>
+   <supertypeName>TokenType</supertypeName>
+  </typeDescription>
+  <typeDescription>
+   <name>org.apache.lang.Group1</name>
+   <description></description>
+   <supertypeName>uima.cas.String</supertypeName>
+   <allowedValues>
+    <value>
+     <string>"Chinese"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Japanese"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Korean"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"English"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"French"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"German"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Italian"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Spanish"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Portuguese"</string>
+     <description></description>
+    </value>
+   </allowedValues>
+  </typeDescription>
+  <typeDescription>
+   <name>org.apache.lang.Group2</name>
+   <description></description>
+   <supertypeName>uima.cas.String</supertypeName>
+   <allowedValues>
+    <value>
+     <string>"Arabic"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Czech"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Danish"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Dutch"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Finnish"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Greek"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Hebrew"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Hungarian"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Norwegian"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Polish"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Portuguese"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Russian"</string>
+     <description></description>
+    </value>
+    <value>
+     <string>"Turkish"</string>
+     <description></description>
+    </value>
+   </allowedValues>
+  </typeDescription>
+  <typeDescription>
+   <name>org.apache.lang.LanguagePair</name>
+   <description />
+   <supertypeName>uima.cas.TOP</supertypeName>
+   <features>
+    <featureDescription>
+     <name>lang1</name>
+     <description />
+     <rangeTypeName>org.apache.lang.Group1</rangeTypeName>
+    </featureDescription>
+    <featureDescription>
+     <name>lang2</name>
+     <description />
+     <rangeTypeName>org.apache.lang.Group2</rangeTypeName>
+    </featureDescription>
+   </features>
+  </typeDescription>
+  <typeDescription>
+    <name>OtherAnnotation</name>
+    <supertypeName>uima.cas.AnnotationBase</supertypeName>
+  </typeDescription>
+<typeDescription>
+<name>org.apache.uima.cas.test.types.Word</name>
+<description/>
+<supertypeName>uima.cas.TOP</supertypeName>
+<features>
+<featureDescription>
+<name>word</name>
+<description/>
+<rangeTypeName>uima.cas.String</rangeTypeName>
+</featureDescription>
+</features>
+</typeDescription>
+ </types>
+</typeSystemDescription>

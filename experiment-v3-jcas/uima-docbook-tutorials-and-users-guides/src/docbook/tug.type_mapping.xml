@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.tug.type_mapping">
+  <title>Managing different Type Systems</title>
+  <titleabbrev>Managing different TypeSystems</titleabbrev>
+  
+  <section id="ugr.tug.type_mapping.type_merging">
+    <title>Annotators, Type Merging, and Remotes</title>
+    
+	  <para>UIMA supports combining Annotators that have different type systems.
+	  This is normally done by "merging" the two type systems when the Annotators
+	  are first loaded and instantiated. The merge process produces a logical
+	  Union of the two; types having the same name have their feature sets combined.
+	  The combining rules say that the range of same-named feature slots must be the same.
+	  This combined type system is then used for the CAS that will be passed to
+	  all of the annotators.   Details of type merging are described in
+    <olink targetdoc="&uima_docs_ref;"/>
+	  <olink targetdoc="%uima_docs_ref;" targetptr="ugr.ref.cas.typemerging"/>.
+	  </para>
+	  
+	  <para>This approach (of merging the type systems together) works well for
+	  annotators that are run together in one UIMA pipeline instantiation in one
+	  machine.  Extensions are needed when UIMA is scaled out where the pipeline
+	  includes remote annotators, acting as servers, serving
+	  potentially multiple clients, each of which might have a different type system.
+	  Clients, when initializing, query all their remote server parts to get their
+	  type system definition, and merges them together with its own 
+	  to make the type system for the CAS that will be sent among all of those
+	  annotators. The Client's TypeSystem is the union of
+	  all of its annotators, even when some of the them are remote.
+	  </para>
+  </section>
+  
+  <section id="ugr.tug.type_mapping.remote_support">
+    <title>Supporting Remote Annotators</title>
+  
+	  <para>Servers, in providing service to multiple clients, may receive CASes from
+	  different Clients having different type systems.  UIMA has implemented several
+	  different approaches to support this.</para> 
+	  
+	  <note><para>
+    Base UIMA includes support for SOAP and VINCI
+    protocols (but these are both older, and do not support newer features of the CAS like
+    CAS Multipliers and multiple Views).   
+    </para></note>
+	  
+	  
+	  <para>The SOAP remote service sends the entire
+	  CAS, along with the Client's type system.  At the remote, the Client's type 
+	  system is deserialized and used as the remote's type system.  For Vinci and UIMA-AS
+	  using XMI, the "reachable" Feature Structures (only) are sent.  A reachable 
+    Feature Structure is one that is indexed, or is reachable via a 
+    reference from another reachable Feature Structure.  The receiving service's 
+    type system is guaranteed to be a subset of the sender.  Special code in the 
+    deserializer saves aside any types and features not present in the server's type
+    system and re-merges these values back when returning the CAS to the client.
+    </para>
+	  
+	  <para>
+	  UIMA-AS supports in addition binary CAS serialization protocols.
+	  The binary support is typically compressed.  This compression can greatly
+	  reduce the size of data, compared with plain binary serialization.
+	  The compressed form also supports having a target type system which is 
+	  different from the source's, as long as it is compatible. 
+	  </para>
+	  
+	  <para>Delta CAS support is available for XMI, binary and compressed binary 
+	  protocols, used by UIMA-AS.  The Delta CAS refers to the CAS returned from the service back to the client -
+	  only the new Feature Structures added by the service, plus any modifications to existing
+	  feature structures and/or indexes, are returned.  This can greatly reduce the size of the
+	  returned data.  Delta CAS support is automatically used with more recent versions of UIMA-AS.
+	  </para>
+  </section>
+  
+  <section id="ugr.tug.type_mapping.allowed_differences">
+    <title>Type filtering support in Binary Compressed Serialization/Deserialization</title>
+    
+    <para>The built-in support for Binary Compressed Serialization/Deserialization
+    supports filtering between non-identical type systems.  The filtering is designed
+    so that things (types and/or features) that are defined in one type system
+    but not in another are not sent (when serializing) nor received 
+    (when deserializing).  When deserializing, non-received features receive 0 
+    as their value.  For built-in types, like integer, float, etc., this is the 
+    number 0; for other kinds of things, this is usually a "null" value. </para>
+    
+    <para>Some kinds of type mappings cannot be supported, and will signal errors.
+    The two types being mapped between must be "mergable" according to the normal
+    type merger rules (see above); otherwise, errors are signaled.</para>
+  </section>
+  
+  <section id="ugr.tug.type_mapping.compressed">
+    <title>Remote Services support with Compressed Binary Serialization</title>
+    
+    <para>Uncompressed Binary Serialization protocols for communicating to 
+    remote UIMA-AS services require that the Client and Server's type systems
+    be identical.  Compressed Binary Serialization protocols support
+    Server type systems which are a subset of the Clients.  Types and/or features 
+    not in the Server's type system are not sent to the Server.  
+    </para>    
+  </section>
+  
+  <section id="ugr.tug.type_filtering.compressed_file">
+    <title>Compressed Binary serialization to/from files</title>
+    
+    <para>Compressed binary serialization to a file can specify
+    a target type system which is a subset of the original type system.  The
+    serialization will then exclude types and features not in the target, when 
+    serializing.  You can use this to filter the CAS to serialize out just the parts
+    you want to.
+    </para>
+    
+    <para>Compressed binary deserialization from a file must specify as the target type system
+    the one that went with the target when it was serialized.  The source
+    type system can be different; if it is missing types/features, these will be 
+    filtered during deserialization.  If it has additional features, these will be 
+    set to 0 (the default value) in the CAS heap.  For numeric features, this means
+    the value will be 0 (including floating point 0); for feature structure references
+    and strings, the value will be null.
+    </para>
+  </section>
+</chapter>

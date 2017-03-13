@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.    
+-->
+<feature
+      id="org.apache.uima.tools"
+      label="%featureName"
+      version="${parsedVersion.osgiVersion}"
+      provider-name="%providerName">
+
+   <description>%description</description>
+      
+   <copyright>%copyright</copyright>
+
+   <license url="%licenseURL">%license</license>
+   
+   <url>
+      <discovery label="UIMA Eclipse Plugins update site" url="http://www.apache.org/dist/uima/eclipse-update-site/"/>
+   </url>
+
+   <includes
+         id="org.apache.uima.runtime"
+         version="${parsedVersion.osgiVersion}"
+         name="UIMA Runtime plugin feature"/>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.apache.uima.runtime"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.apache.uima.jcas.jcasgenp"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.emf.codegen"/>
+      <import plugin="org.eclipse.emf.common"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+   </requires>
+
+   <plugin
+         id="org.apache.uima.debug"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.desceditor"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.jcas.jcasgenp"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.pear"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.caseditor"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.caseditor.ide"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.uima.launcher"
+         download-size="0"
+         install-size="0"
+         version="${parsedVersion.osgiVersion}"
+         unpack="false"/>
+        
+
+</feature>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/tools/tools.eclipse_launcher/" >
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<chapter id="ugr.tools.eclipse_launcher">
+
+	<title>Eclipse Analysis Engine Launcher&apos;s Guide</title>
+	<titleabbrev>Eclipse Analysis Engine Launcher&apos;s Guide</titleabbrev>
+	
+	<para>
+	The Analysis Engine Launcher is an Eclipse plug-in that provides debug and run support 
+	for Analysis Engines directly within eclipse, like a Java program can be debugged.
+	It supports most of the descriptor formats except CPE, UIMA AS and
+	some remote deployment descriptors.
+	</para>
+	
+	<screenshot>
+		<mediaobject>
+			<imageobject>
+				<imagedata width="5in" format="PNG"
+					fileref="&imgroot;image01.png" />
+			</imageobject>
+		</mediaobject>
+	</screenshot>
+		
+	<section id="ugr.tools.eclipse_launcher.create_configuration">
+	    <title>Creating an Analysis Engine launch configuration</title>
+	    <para>
+	    To debug or run an Analysis Engine a launch configuration must be created. To do this
+	    select "Run -> Run Configurations" or "Run -> Run Configurations" from the menu bar. A dialog
+	    will open where the launch configuration can be created. Select UIMA Analysis Engine and create
+	    a new configuration via pressing the New button at the top, or via the New button in the context menu.
+	    The newly created configuration will be automatically selected and the Main tab will be displayed.
+	    </para>
+	    
+	    <para>
+	    The Main tab defines the Analysis Engine which will be launched. First select the project which
+	    contains the descriptor, then choose a descriptor and select the input. The input can either be
+	    a folder which contains input files or just a single input file, if the recursively check box
+	    is marked the input folder will be scanned recursively for input files.  
+	    </para>
+	    
+	    <para>
+	    The input format defines the format of the input files, if it is set to CASes the input resource
+	    must be either in the XMI or XCAS format and if it is set to plain text, plain text input files in
+	    the specified encoding are expected. The input logic filters out all files which do not have an appropriate
+	    file ending, depending on the chosen format the file ending must be one of .xcas, .xmi or .txt, all
+	    other files are ignored when the input is a folder, if a single file is selected it will be processed
+	    independent of the file ending.
+	    </para>
+	    
+	    <para>
+	    The output directory is optional, if set all processed input files will be written to the specified
+	    directory in the XMI CAS format, if the clear check box is marked all files inside the output folder will be deleted, usually
+	    this option is not needed because existing files will be overwritten without notice.
+	    </para>
+	    
+	    <para>
+	    The other tabs in the launch configuration are documented in the eclipse documentation,
+	    see the "Java development user guide -> Tasks -> Running and Debugging". 
+	    </para>
+    </section>
+ 	
+ 	<section id="ugr.tools.eclipse_launcher.launching">
+	    <title>Launching an Analysis Engine</title>
+	    <para>
+		To launch an Analysis Engine go to the previously created launch configuration and
+		click on "Debug" or "Run" depending on the desired run mode. The Analysis Engine will
+		now be launched. The output will be shown in the Console View. To debug an Analysis Engine
+		place breakpoints inside the implementation class. If a breakpoint is hit the execution will pause 
+		like in a Java program. 
+	    </para>
+ 	</section>
+ </chapter>

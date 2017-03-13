@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+	 * 
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+	-->
+<plugin>
+
+     <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="install.xml"
+            id="org.apache.uima.pear.editInstallationDescriptor">
+         <action
+               label="Edit PEAR Installation Descriptor"
+               icon="icons/editInsdIcon.gif"
+               class="org.apache.uima.pear.actions.EditInstallationDescriptorAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.apache.uima.pear.newAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.apache.uima.pear.export.ExportAction">
+         <action
+               label="Generate PEAR file"
+               icon="icons/generatePearIcon.gif"
+               class="org.apache.uima.pear.actions.GeneratePearFileAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.apache.uima.pear.generatePear">
+         </action>
+         <filter
+               name="projectNature"
+               value="org.apache.uima.pear.UimaNature">
+         </filter>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.apache.uima.pear.AddUimaNature">
+         <action
+               label="Add UIMA Nature"
+               icon="icons/uimaNatureIcon.gif"
+               class="org.apache.uima.pear.actions.AddUimaNatureAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.apache.uima.pear.addUimaNature">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="UimaNature"
+         name="UIMA Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.apache.uima.pear.nature.UimaNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/uimaNatureIcon.gif"
+            natureId="org.apache.uima.pear.UimaNature"
+            id="org.apache.uima.pear.nature.image">
+      </image>
+   </extension>
+
+</plugin>

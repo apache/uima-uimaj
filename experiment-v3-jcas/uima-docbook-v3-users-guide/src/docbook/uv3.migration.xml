@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/version_3_users_guide/migration/">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="uv3.migration">
+  <title>Migrating to UIMA Version 3</title>
+  <titleabbrev>Migrating to V3</titleabbrev>
+  
+  <section id="uv3.migration.big_picture">
+    <title>Migrating: the big picture</title>
+    
+    <para>Although UIMA V3 is designed to be backwards compatible with UIMA V2, there are some migration steps
+      needed.  These fall into two broad use cases: 
+      <itemizedlist>
+        <listitem><para>if you have an existing UIMA pipeline / application you wish to upgrade to use V3</para></listitem>
+        <listitem><para>if you are "consuming" the Maven artifacts for the core SDK, as part of another project</para></listitem>
+      </itemizedlist> 
+    </para>
+    
+  </section>
+  
+  
+  <section id="uv3.migration.migrating_pipeline">
+    <title>How to migrate an existing UIMA pipeline to V3</title>
+    <titleabbrev>How to migrate</titleabbrev>
+    
+    <para>
+      UIMA V3 is designed to be binary compatible with existing UIMA V2 pipelines, so compiled and/or JAR-ed up classes 
+      representing a V2 pipeline should run with UIMA v3, with two changes:
+      <itemizedlist spacing="compact">
+        <listitem><para>Java 8 is required. (If you're already using Java 8, nothing need be done.)</para></listitem>
+        <listitem><para>Any defined JCas cover classes must be migrated or regenerated, and used instead.
+        (If you do not define any JCas classes or don't use JCas in your pipeline, then nothing need be done.)</para></listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>Some Maven projects use the JCasGen maven plugin; these projects' JCasGen maven plugin,
+     if switched to UIMA V3, automatically generate the V3 versions.  For proper operation, please run
+     maven clean install; the clean operation ought to remove the previously generated JCas class, including the
+     UIMA V2 <code>xxx_Type</code> classes, which are not used, won't compile in V3 and need to be deleted. 
+    </para>
+    
+    <para>You can use any of the methods of invoking JCasGen to generate the new V3 versions.  
+      If using the Eclipse plugins (i.e., pushing the <code>JCasGen</code>) button in the 
+      configuration editor, etc.), the V3 version of the plugin must be the one installed into Eclipse.
+    </para>
+    
+    <para>    
+      If you have the source or class files, you can also migrate those using the migration tool described in this section.
+      This approach is useful when you've customized the JCas class, and wish to preserve those customizations,
+      while converting the v2 style to the v3 style.
+    </para>
+     
+    <!-- 
+    <para>For simple testing, after users have migrated or generated any user-supplied JCas classes, 
+      users typically will JAR-up these migrated classes,
+      and then place that JAR in the class path ahead of the original V2 pipeline's classes so these will replace
+      the corresponding classes.
+    </para>
+     -->
+    
+    <!-- 
+    <section id="uv3.migration.maven-cookbook">
+      <title>Modifying a Maven project to support both v2 &amp; v3</title>
+      <titleabbrev>Maven v2/v3 simultaneous support</titleabbrev>
+      
+      <para>When migrating an existing Maven project to v3, you can of course, just change the dependencies, upgrade
+      to Java 8 if needed, and migrate/regenerate any user-defined JCas class definitions.  Nothing special is needed
+      for this approach.</para>
+      
+      <para>If you want to simultaneously support both v2 and v3, you can take advantage of the binary compatibility
+      support in v3, and have one set of maven artifacts for both (compiled with Java 7), plus an additional
+      Maven project just for the generated JCas classes v3-style.  This additional maven project would 
+      specify Java 8 and UIMA v3 dependencies, and produce a Jar file with the V3 version, either from migrated Java sources,
+      or using the JCasGen maven plugin, generating from the type system description.</para>
+      
+      <para>
+      The using community would see the original output artifacts, plus one new Jar artifact, which, if they were
+      wanting to use V3, they would need to place ahead of the original artifacts in the running pipeline's classpath.
+      </para>
+    </section>
+     -->
+  </section>
+  
+  
+  <section id="uv3.migration.jcas">
+    <title>Migrating JCas classes</title>
+   
+  <!-- repetitious 
+  <para>Some projects are built using Maven, and use the JCasGen Maven plugin as part of the build.
+  These builds, when switched to depend on version 3, will automatically generate the new JCas
+  class definitions, so nothing special need be done.
+  </para>
+   -->
+   
+  <para>If you have customized JCasGen classes, these can be migrated by running the migration tool, which is available
+	  as a stand-alone command line tool (<code>runV3migrateJCas.sh or ...bat</code>), or 
+	  as Eclipse launch configurations.</para>
+	  
+  <para>This tool is run against a directory tree, and scans all the files in the tree, looking for 
+     JCas cover classes.  It can process either source files, or, if those are not available, compiled
+     class files (it runs a decompiler on these). 
+     It can process these inside directories, as well as inside Jar or PEAR files within those directories.</para>
+                
+	<para>If you run this tool using a Java 8 JDK (as opposed to a Java JRE),
+    the JDK's java compiler will be used to create compiled versions of the migrated classes, 
+    and create copies of JARs and/or PEARs with these in them.</para>
+
+  <para>The results of the migration include the migrated class files and a set of logs, summarized in the console
+    output, detailing anything that might need inspection to verify the migration was done correctly.
+  </para>
+  
+  <blockquote><para>
+    If all is OK, the migration will say that it "finished with no unusual conditions", at the end.
+  </para></blockquote> 	  
+
+  <para>To complete the migration, update your UIMA application to use these classes in place of the version 2 JCas classes.
+  </para>
+    
+  <para>The migration tool is able to scan multiple directory trees, looking for existing Java
+	  source (.java) or class (.class) files, even inside Jars and PEAR archives. If compiled class files
+	  are used as input, a Java decompiler is used to decompile these to source.
+	  For PEARs and Jars, it replaces the migrated and compiled classes in copies of the PEARs and Jars.
+	</para>
+	
+	<para>  
+	  The actual migration step is a source-to-source transformation, done using a Java parse of the source files.
+	  The parts in the source which are version 2 specific with the equivalent version 3 code.
+	  Only those parts which need updating are modified;
+    other code and comments which are part of the source file are left unchanged.  This is intended to preserve
+    any user customization that may have been done.  
+    Detailed reports detailing any issues encountered are written to log files. 
+  </para>
+    
+<!--    <section id="uv3.migration.automatic">
+    <title>Automatic migration</title>
+    
+    <para>It is sometimes possible to have this migration done automatically, when a pipeline is started up.  Although
+      convenient, it has some drawbacks, the main ones being that it may not work correctly for more complex
+      customized JCas sources, and it slows down the launch of pipelines.  Ideally, the migration utility would be used
+      and the results checked before proceeding, and the migrated classes replaced in the pipeline(s), as a one time
+      migration process.</para>
+      
+    <para>The automatic migration works by detecting version 2 classes, decompiling them, migrating them, compiling
+      the migrated version, and then loading them in place of the version 2 classes.</para>
+    
+    <para>The automatic migration will throw a Runtime Exception 
+    if an unusual condition occurs for any reason during this process.
+    </para>
+  </section>
+ --> 
+ 		 
+		 <note><para>The compilation step (done after the source-to-source transformation) requires that a Java compiler is available 
+		   (which will be the case if you're running with a Java JDK, not a JRE).
+		 </para></note>
+		 
+		 <note><para>After running the tool, it is important to examining the console output and logs.
+       You can confirm that the migration completed without any unusual conditions, or, if something 
+       unusual was encountered, you can take corrective action.
+		 </para></note>
+		  
+		<section id="uv3.migration.tool_guide.running">
+	    <title>Running the migration tool</title>
+	    <para>The tool can be run as a stand-alone command, using the launcher scripts <code>runV3migrateJCas</code>; 
+	      there are two versions of this &mdash; one for windows (ending it ".bat") and one for linux / mac (ending in ".sh").
+		    If you run this without any arguments, it will show a brief help for the arguments.
+		  </para>
+		  
+		  <para>There are also a pair of Eclipse launch configurations 
+        (one for source files, the other for compiled classes), 
+        which are available if you have the uimaj-examples project
+        (included in the binary distribution of UIMA) in your Eclipse workspace.
+      </para>
+      
+      <section id="uv3.migration.tool_guide.running.eclipse">
+      <title>Using Eclipse to run the migration tool</title>
+      
+        <para>There are two Eclipse launch configurations; one works with source code, the other with compiled classes
+          or Jars or PEARs.  The launch configurations are named:
+          <itemizedlist spacing="compact">
+            <listitem><para>UIMA Run V3 migrate JCas from sources roots</para></listitem>
+            <listitem><para>UIMA Run V3 migrate JCas from classes roots</para></listitem>
+          </itemizedlist>
+          When running from classes roots, the classes must not have compile errors, and may contain Jars and PEARs.
+          Both launchers write their output to a temporary directory, whose name is printed in the Eclipse console log.
+          This temporary directory may be defaulted, or specified as one of the arguments.
+        </para>
+      
+        <para>
+          To use the Eclipse launcher for source code,
+            <itemizedlist spacing="compact">
+              <listitem><para>First select the eclipse project containing the source code to transform; 
+                this project's "build path" will also supply the 
+                classpath used during migration.</para></listitem>
+              <listitem><para>run the migrate-from-sources launcher.
+              </para></listitem>
+            </itemizedlist>
+            This will scan the directory tree of the project, looking for source files which are JCas files, and 
+            migrate them.  No existing files are modified; everything is written to the output directory (by default, 
+            automatically assigned in temp space).
+  		  </para>
+        
+        <para>
+          To use the launcher for compiled code,
+            <itemizedlist spacing="compact">
+              <listitem><para>First select the eclipse project that provides the classpath that the compiled code used
+                when it was being built. This is required for proper "decompiling" of the classes and
+                recompiling the transformed results.
+                </para></listitem>
+              <listitem><para>The launcher will additionally prompt you for another directory 
+                which the migration tool will use as the top of a tree to scan for compiled Java JCas classes to be migrated.
+              </para></listitem> 
+            </itemizedlist>
+        </para>
+  	    
+        <!-- repetitious
+  	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
+  	      the tool will scan the file system under these roots (including inside Jars and PEARs when running from
+          compiled classes), looking for definitions to migrate.  
+  	    </para>
+		     -->
+         
+	      <!-- <blockquote><para>It can also be run with a list of specific JCas classes
+	      to migrate.</para></blockquote> -->
+        
+      </section>
+		  
+      
+      <section id="uv3.migration.tool_guide.running.cmd_line">
+      <title>Running from the command line</title>
+      
+  	    <section id="uv3.migration.tool_guide.running.inputs">
+  	      <title>Command line: Specifying input sources</title>
+  	    
+  	    <para>Input is specified using these arguments:
+  		    <variablelist>
+  	
+  		      <varlistentry>
+  		        <term><emphasis role="strong">"-sourcesRoots"</emphasis></term>
+  		        <listitem>
+  		          <para>a list of one or more directories, separated by the
+  		            a path separator character (";" for Windows, ":" for others). 
+  		          </para>
+  		          <para>Migrates each candidate source file found in any of the file tree roots,
+  		            skipping over non-JCas classes.</para>
+  		        </listitem>
+  		      </varlistentry>
+  	
+  	        <varlistentry>
+  	          <term><emphasis role="strong">"-classesRoots"</emphasis></term>
+  	          <listitem>
+                <para>a list of one or more directories
+                  containing class files or Jars or PEARs, separated by the
+                  a path separator character (";" for Windows, ":" for others). 
+                </para>
+  	            <para>Decompiles, then migrates each candidate class file found in any of the file tree roots
+  	              (skipping over non-JCas classes).  
+  	            </para>	              
+  	          </listitem>
+  	        </varlistentry>
+  	        
+  		    </variablelist>  
+  	    </para>
+        </section>
+        	    
+  	    <section id="uv3.migration.tool_guide.classpath">
+  	      <title>Command line: Specifying a classpath for the migration</title>
+  	      <para>A classpath is required for the proper operation of the decompiling and compiling steps of 
+  	        the migration.  This is provided using the argument <code>-migrateClasspath</code>.
+  	        The Eclipse launcher "UIMA run V3 migrate JCas from classes roots" sets this argument using
+  	        the selected Eclipse project's classpath.
+  	        When migrating within a PEAR, the migration tool automatically adds the PEAR classes to the 
+  	        classpath.
+  	      </para>
+  	    </section>
+
+      </section>
+      	    	    	    
+	    <section id="uv3.migration.tool_guide.duplicates">
+	      <title>Handling duplicate definitions</title>
+	      <para>Sometimes, a classpath or directory tree may contain multiple instances of the same JCas class.
+	        These might be identical, or they might be different versions.  The migration utility detects this, 
+	        and migrates all non-identical instances, using a convention to store them in the output directory in a manner
+	        where different versions can be conveniently compared using tooling such as Eclipse's file compare.
+	      </para>
+	      <blockquote><para>When there are non-identical duplicate definitions, 
+	        the user must manually compare these and decide which version to use.</para></blockquote>
+	      
+	    </section>
+	  </section>  
+
+    <section id="uv3.migration.tool_guide.reports">
+      <title>Understanding the reports</title>
+      <para>The output directory contains a logs directory with additional information.
+        A summary is also written to System.out.
+      </para>
+        
+      <para>Each file translated has both a v2 source and a v3 source.  When the input is ".class" files, 
+        the v2 source is the result of the decompilation step, prior to any migration.
+      </para>
+      
+      <blockquote><para>
+        These are arranged in parallel directories, allowing Eclipse's multi-file directory "compare" to work on both directory
+        collections and conveniently show for all the migrated files the change details.
+      </para></blockquote>
+        
+      <para>In the case of non-identical duplicates, an increasing integer 
+        starting with 1 is inserted into the output directory tree
+        for each migrated class.</para>
+        
+      <para>The overall directory output directory tree looks like:
+        <programlisting>Directory structure, starting at -outputDirectory
+   converted/
+     v2/
+       x/y/z/javapath/.../Classname.java
+       x/y/z/javapath/.../Classname.java
+       ...
+     v3/
+       x/y/z/javapath/.../Classname.java
+       x/y/z/javapath/.../Classname.java
+       ...
+       
+       
+       1/     &lt;&lt; for non identical duplicates
+         x/y/z/javapath/.../Classname.java    
+         x/y/z/javapath/.../Classname.java  
+         ...                                    
+       2/     &lt;&lt; for non identical duplicates
+         x/y/z/javapath/.../Classname.java
+         x/y/z/javapath/.../Classname.java
+         ...
+     v3-classes/
+         ...    
+       
+   not-converted/
+   logs/
+     processed.txt
+     failed.txt
+     skippedBuiltins.txt
+     NonJCasFiles.txt
+     workaroundDir.txt
+     deletedCheckModified.txt
+     manualInspection.txt
+     pearsFileUpdates.txt
+     jarsFileUpdates.txt
+   pears/
+     xyz_converted_pear.pear  
+     ...
+   jars/
+     ...</programlisting>
+     
+        The converted subtree holds all the sources and migrated versions that were successfully migrated.
+        The not-converted subtree hold the sources that failed in some way the migration.
+        The logs contain many kinds of entries for different issues encountered:
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="strong">processed.txt</emphasis></term>
+            <listitem>
+              <para>List of successfully processed classes
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">failed.txt</emphasis></term>
+            <listitem>
+              <para>List of classes that failed to migrate
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">skippedBuiltins.txt</emphasis></term>
+            <listitem>
+              <para>List of classes representing built-ins that were skipped.  These need
+                manual inspection to see how to merge with new v3 built-ins.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">NonJCasFiles.txt</emphasis></term>
+            <listitem>
+              <para>List of files that were thought to be JCas classes but 
+                upon further analysis appear to not be.  These need 
+                manual inspection to confirm.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">deletedCheckModified.txt</emphasis></term>
+            <listitem>
+              <para>List of class where a version 2 if statement doing the "featOkTst"
+                was apparently modified.  In the migrated code, this statement was deleted,
+                perhaps incorrectly. These need manual inspection to confirm.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">manualInspection.txt</emphasis></term>
+            <listitem>
+              <para>List of files where the migration found a get or set method, where
+                the version 2 code was accessing a casFeatCode with the 
+                feature name not matching.  These need manual inspection.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">workaroundDir.txt</emphasis></term>
+	          <listitem>
+	            <para>When running conversions on a windows system for files from a linux system,
+	              sometimes there is a clash caused by the fact that Windows doesn't recognize 
+	              upper vs lower case in file names.  When this happens, an entry is logged here,
+	              and the conflicting name is suffixed with a "_c".
+	            </para>
+	          </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">jarsFileUpdates.txt</emphasis></term>
+            <listitem>
+              <para>List of Jar files and classes which were replace in them.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">pearsFileUpdates.txt</emphasis></term>
+            <listitem>
+              <para>List of Pear files and classes which were replace in them.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>    
+      </para>
+      
+           
+    </section>
+    
+    <section id="uv3.migration.tool_guide.cookbook">
+      <title>Examples</title> 
+    
+      <para>Run the command line tool:
+      <programlisting>cd $UIMA_HOME
+      
+bin/runV3migrateJCas.sh
+
+  -migrateClasspath /home/me/myproj/xyz.jar:$UIMA_HOME/lib/uima-core.jar
+    
+  -classesRoots /home/me/myproj/xyz.jar:/home/me/myproj/target/classes
+  
+  -outputDirectory /temp/migratejcas  
+</programlisting>
+      </para>
+      
+      <para>Run the Eclipse launcher:</para>
+      <para>First, make sure you've installed the V3 UIMA plugins into Eclipse!</para>
+      
+      <programlisting>Startup an Eclipse workspace containing the project 
+with JCas source files to be migrated.
+      
+Select the Java project with the JCas sources to be migrated.
+
+Eclipse -&gt; menu -&gt; Run -&gt; Run configurations
+  Use the search box to find 
+  "UIMA run V3 migrate JCas from sources" launcher.
+</programlisting>
+    
+    <para>Please read the console output summarization to see where the output went, and about any 
+      conditions found during migration which need manual inspection and fixup.</para>
+    </section>
+    
+  </section>
+  
+    <section id="uv3.migration.consuming">
+    <title>Consuming V3 Maven artifacts</title>
+    
+    <!-- 
+    <para>There are two issues which may affect other projects which consume V3:
+      <itemizedlist spacing="compact">
+        <listitem><para>default logging is now a no-op slf4j logger, and </para></listitem>
+        <listitem><para>issues using the <code>maven-bundle-plugin.</code></para></listitem>
+      </itemizedlist>
+    </para>
+     -->
+     
+    <para>Projects may have tests which write to the UIMA log.  Because V3 switched to SLF4J as the default logger,
+      unless SLF4J can find an adapter to some back-end logger, it will issue a message and substitute a "NO-OP" 
+      back-end logger.  If your test cases depend on having the V2 default logger (which was the one built into Java), 
+      you need to add a "test" dependency on the SLF4J-to-JDK14 adapter to your POM.  Here's the xml for that:</para>
+    <programlisting><![CDATA[<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-jdk14</artifactId>
+  <version>1.7.24</version>  <!-- or some version you need -->
+  <scope>test</scope>
+</dependency>]]></programlisting>
+
+    <!--     
+    <para>If you build OSGi or Eclipse plugins using the <code>maven-bundle-plugin</code>, it will by default
+       look to include the slf4j artifacts.  Instead of this, your run-time OSGi environment could frequenly
+       already include these artifacts, and you can instruct OSGi to "hook up" to them.
+       You can block the attempt to include slf4j directly in your plugin by adding a line to your
+       bundle commands such as &lt;import-package&gt; that exclude this package by adding</para>
+       <programlisting>!org.slf4j</programlisting>
+       <para>to the package list; the "!" says to exclude it.</para>
+    <para>Alternatively, you can include it in the bundle by adding a dependency to the version you which to include.</para>
+     -->
+  </section>
+  
+</chapter>

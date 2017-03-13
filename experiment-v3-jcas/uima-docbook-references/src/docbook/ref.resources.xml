@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/references/ref.resources/">
+<!ENTITY tp "ugr.ref.resources.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.resources">
+  <title>UIMA Resources</title>
+  <titleabbrev>UIMA Resources</titleabbrev>
+
+  <section id="ugr.ref.resources.overview">
+    <title>What is a UIMA Resource?</title>
+    <para>UIMA uses the term <code>Resource</code> to describe all UIMA components
+    that can be acquired by an application or by other resources.</para>
+    
+    <figure id="ref.resource.fig.kinds">
+      <title>Resource Kinds</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="3in" format="PNG" fileref="&imgroot;res_resource_kinds.png"/>
+        </imageobject>
+        <textobject><phrase>Resource Kinds, a partial list</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+    
+    <para>There are many kinds of resources; here's a list of the main kinds:
+      <variablelist>
+    
+        <varlistentry>
+          <term><emphasis role="strong">Annotator</emphasis></term>
+          <listitem><para>a user written component, receives a CAS, does some processing, and returns the possibly
+          updated CAS.  Variants include CollectionReaders, CAS Consumers, CAS Multipliers.</para></listitem>
+        </varlistentry>
+    
+        <varlistentry>
+          <term><emphasis role="strong">Flow Controller</emphasis></term>
+          <listitem><para>a user written component controlling the flow of CASes within an aggregate.</para></listitem>
+        </varlistentry>
+        
+        <varlistentry>
+          <term><emphasis role="strong">External Resource</emphasis></term>
+          <listitem><para>a user written component. Variants include:
+            <itemizedlist spacing="compact">
+              <listitem><para>Data - includes special lifecycle call to load data</para></listitem>
+              <listitem><para>Parameterized - allows multiple instantiations with simple string parameter variants;
+                example: a dictionary, that has variants in content for different languages</para></listitem>
+              <listitem><para>Configurable - supports configuration from the XML specifier</para></listitem>
+            </itemizedlist>
+          </para></listitem>
+        </varlistentry>
+      </variablelist>
+    </para>
+
+   <section id="ugr.ref.resources.resource-inner-implementations">
+      <title>Resource Inner Implementations</title>
+      
+      <para>Many of the resource kinds include in their specification a (possibly optional) element, which is 
+      the name of a Java class which implements the resource.  We will call this class the "inner implementation".</para>
+      
+      <para>The UIMA framework creates instances of Resource from resource specifiers, by calling 
+      the framework's <code>produceResource(specifier, additional_parameters)</code> method.
+      This call produces a instance of Resource.  </para>
+      
+      <blockquote>
+        <para>   
+          For example, calling produceResource on an AnalysisEngineDescription produces an instance of
+          AnalysisEngine.  This, in turn will have a reference to the user-written inner implementation class.
+          specified by the <code>annotatorImplementationName</code>.
+        </para>
+        <para>External resource descriptors may include an <code>implementationName</code> element.
+	        Calling produceResource on a ExternalResourceDescription produces an instance of Resource;
+	        the resource obtained by subsequent calls to <code>getResource(...)</code> 
+	        is dependent on the particular descriptor, and may be an instance of
+	        the inner implementation class. 
+        </para>
+      </blockquote>
+      
+      <para>For external resources, each resource specifier kind handles the case where 
+      the inner implementation is omitted.  If it is supplied, the named class must implement
+      the interface specified in the bindings for this resource. In addition, the particular specifier kind may 
+      further restrict the kinds of classes the user supplies as the implementationName.
+      </para>
+      
+      <para>Some examples of this further restriction:
+        <variablelist>
+          <varlistentry>
+            <term><emphasis role="strong">customResource</emphasis></term>
+            <listitem><para>the class must also implement the Resource interface</para></listitem>
+          </varlistentry>
+          <varlistentry>
+            <term><emphasis role="strong">dataResource</emphasis></term>
+            <listitem><para>the class must also implement the SharedResourceObject interface</para></listitem>
+          </varlistentry>
+        </variablelist>
+      </para>
+      
+    </section>
+   
+  </section>
+  
+  <section id="ugr.ref.resources.sharing-across-pipelines">
+    <title>Sharing Resources, even across pipelines</title>
+    <titleabbrev>Sharing Resources</titleabbrev>
+    <para>UIMA applications run one or more UIMA Pipelines.  Each pipeline has a top-level Analysis Engine, which
+    may be an aggregation of many other Analysis Engine components.  The UIMA framework instantiates Annotator 
+    resources as specified to configure the pipelines.</para>
+    
+    <para>Sometimes, many identical pipelines are created (for example,
+    in order to exploit multi-core hardware by processing multiple CASes in parallel). In this case, the framework
+    would produce multiple instances of those Annotation resources; these are implemented as multiple instances
+    of the same Java class.</para>
+    
+    <para>Sets of External Resources plus a CAS Pool and UIMA Extension ClassLoader are set up and kept, 
+       per instance of a ResourceManager; 
+    this instance serves to allow sharing of these items across one or more pipelines.
+    
+    <itemizedlist>
+      <listitem>
+        <para>The UIMA Extension ClassLoader (if specified) is used to find the resources to be loaded
+        by the framework</para>
+      </listitem>
+      <listitem>
+        <para>The <code>External Resources</code> are specified by a pipeline's resource configuration.</para>
+      </listitem>
+      <listitem>
+        <para>The CAS Pool is a pool of CASs all with identical type systems and index definitions, associated 
+        with a pipeline.</para>
+      </listitem>
+    </itemizedlist> </para>
+    
+    <para>When setting up a pipeline, the UIMA Framework's <code>produceResource</code> 
+    or one of its specialized variants is called, and a new
+    ResourceManager being created and used for that pipeline.  However, in many cases, it may be advantageous to
+    share the same Resources across multiple pipelines; this is easily doable by passing a common instance of the
+    ResourceManager to the pipeline creation methods (using the additional parameters of the produceResource method).</para>
+
+    <para>
+      To handle additional use cases, the ResourceManager has a <code>copy()</code> method which creates a copy of the
+      Resource Manager instance.  The new instance is created with a null CAS Manager; if you want to share the
+      the CAS Pool, you have to copy the CAS Manager: <code>newRM.setCasManager(originalRM.getCasManager())</code>.
+      You also may set the Extension Class Loader in the new instance (PEAR wrappers use this to allow
+      PEARs to have their own classpath).  See the Javadocs for details.
+    </para>
+          
+  </section>
+     
+  <section id="ugr.ref.resources.external-resource-multiple-parameterized-instances">
+    <title>External Resources support for multiple Parameterized Instances</title>
+    <para>A typical external resource gets a single instantiation, shared with all users of a particular
+    ResourceManager.
+    Sometimes, multiple instantiations may be useful (of the same resource).  The framework supports this for 
+    ParameterizedDataResources.  There's one kind supplied with UIMA - the fileLanguageResourceSpecifier.
+    This works by having each call to getResource(name, extra_keys[]) use the extra keys to select a particular
+    instance.  On the first call for a particular instance, the named resource uses the extra keys to 
+    initialize a new instance by calling its <code>load</code> method with a data resource derived from the 
+    extra keys by the named resource.
+    </para>
+   
+    <para>For example, the fileLanguageResourceSpecifier uses the language code and goes through 
+      a process with lots of defaulting and fall back to find a resource to load, based on the language code.
+    </para>
+    
+  </section>
+    
+</chapter>

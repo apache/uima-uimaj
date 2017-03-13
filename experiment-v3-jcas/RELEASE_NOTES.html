@@ -1,0 +1,178 @@
+	<!--
+    ***************************************************************
+    * Licensed to the Apache Software Foundation (ASF) under one
+    * or more contributor license agreements.  See the NOTICE file
+    * distributed with this work for additional information
+    * regarding copyright ownership.  The ASF licenses this file
+    * to you under the Apache License, Version 2.0 (the
+    * "License"); you may not use this file except in compliance
+    * with the License.  You may obtain a copy of the License at
+    *
+    *   http://www.apache.org/licenses/LICENSE-2.0
+    * 
+    * Unless required by applicable law or agreed to in writing,
+    * software distributed under the License is distributed on an
+    * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    * KIND, either express or implied.  See the License for the
+    * specific language governing permissions and limitations
+    * under the License.
+    ***************************************************************
+   -->
+<html>
+<head>
+  <title>Apache UIMA v3.0.0-alpha02 Release Notes</title>
+</head>
+<body>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-alpha02 Release Notes</h1>
+
+<h2>Contents</h2>
+<p>
+<a href="#alpha">Alpha release status notice</a><br/>
+<a href="#what.is.uima">What is UIMA?</a><br/>
+<a href="#major.changes">Major Changes in this Release</a><br/>
+<a href="#get.involved">How to Get Involved</a><br/>
+<a href="#report.issues">How to Report Issues</a><br/>
+<a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
+</p>  
+   
+<h2><a id="alpha">0. Alpha release status</a></h2>
+  <p>This is an alpha release, done in order to expand the 
+     community of people doing initial testing on this new release.
+     As such, it is possible that bugs or deficiencies may be found
+     which might require changes to APIs.</p>
+     
+  <p>Following a period of alpha testing, depending on the results,
+     we will proceed to more official releases.
+     </p>
+     
+<h2><a id="what.is.uima">1. What is UIMA?</a></h2>
+
+     <p>
+  			Unstructured Information Management applications are
+				software systems that analyze large volumes of
+				unstructured information in order to discover knowledge
+				that is relevant to an end user. UIMA is a framework and
+				SDK for developing such applications. An example UIM
+				application might ingest plain text and identify
+				entities, such as persons, places, organizations; or
+				relations, such as works-for or located-at. UIMA enables
+				such an application to be decomposed into components,
+				for example "language identification" -&gt; "language
+				specific segmentation" -&gt; "sentence boundary
+				detection" -&gt; "entity detection (person/place names
+				etc.)". Each component must implement interfaces defined
+				by the framework and must provide self-describing
+				metadata via XML descriptor files. The framework manages
+				these components and the data flow between them.
+				Components are written in Java or C++; the data that
+				flows between components is designed for efficient
+				mapping between these languages. UIMA additionally
+				provides capabilities to wrap components as network
+				services, and can scale to very large volumes by
+				replicating processing pipelines over a cluster of
+				networked nodes.
+			</p>
+      <p>
+				Apache UIMA is an Apache-licensed open source
+				implementation of the UIMA specification (that
+				specification is, in turn, being developed concurrently
+				by a technical committee within
+				<a href="http://www.oasis-open.org">OASIS</a>,
+				a standards organization). We invite and encourage you
+				to participate in both the implementation and
+				specification efforts.
+			</p>
+      <p>
+				UIMA is a component framework for analysing unstructured
+				content such as text, audio and video. It comprises an
+				SDK and tooling for composing and running analytic
+				components written in Java and C++, with some support
+				for Perl, Python and TCL.
+			</p>
+
+<h2><a id="major.changes">Major Changes in this Release</a></h2>
+
+<p>Version 3 is a major reimplementation of the internals of UIMA,
+with many significant changes.  A one-time migration step is required if 
+JCas cover classes are being used.  
+Please read the Version 3 users guide located in the docs directory
+for information on these changes and the migration tool.
+</p>
+
+<p>A very brief summary of Version 3:
+<ul><li>Feature Structures become Java Objects, 
+and may be Garbage Collected.</li>
+<li>Many performance improvements</li>
+<li>Iterating over indexes no longer throws 
+ConcurrentModificationException</li>
+<li>Support for arbitrary Java Objects in the CAS</li>
+<li>Using above, new semi-built-ins for ArrayList style
+lists of Feature Structures and ints, and a FSHashSet</li>
+<li>New "select" framework for flexible 
+access to Feature Structures</li>
+<li>Integration with Java 8 facilities such as Streams</li>
+<li>Logging framework upgraded</li>
+</ul>
+</p>
+
+<p>Please read the overview section of the Version 3 
+users guide for more.</p>
+
+<p>Specific changes in this release versus the previous alpha release include
+<ul>
+  <li>The Eclipse update site for version 3 alpha is now under a new 
+    higher level directory, "uimaj-v3-pre-production".  This is to avoid
+    users accidentally installing it when they meant to get the lastest 
+    production level, which remains under "uimaj".
+  </li>
+  <li>The "select" framework APIs had javadocs added and some fixes which resulted in API changes for some methods.</li>
+  <li>Logging was upgraded in two ways:  The log4j back end for the UIMA logger was upgraded to log4j 2 (the current version).
+  And, support was added for the slf4j logging facade.
+  The UIMA Logger now implements all the SLF4J Logger APIs, plus the APIs that use Java 8 Suppliers, from
+  the Log4j Logger API.</li>
+  <li>changes made to uimaj-2.9.0 were merged.</li>
+  <li>Various implementations of UIMA built-in types which have corresponding Java 8 non-boxing versions of methods were
+    augmented to support non-boxing alternatives; see the API changes report for details.</li> 
+</ul>
+</p>
+ 
+<h3>API changes</h3>
+ <p>This version includes a new API compatibility report covering the non-internal APIs;
+   see <a href="api-change-report.html">change report</a> for the list of API changes
+   since version 2.9.0.
+ </p>
+ 
+<h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
+Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
+issues affecting this release.  
+   
+<h2><a id="alpha">Alpha Release</a></h2>
+<p>Because this release makes major changes to UIMA internals,
+this is an alpha release of version 3.  It is being made to get 
+wider community involvement in testing and feedback.  
+The APIs may change, and features
+may be added or altered.</p>
+
+<p>Please use the mailing lists 
+( http://uima.apache.org/mail-lists.html ) 
+for feedback.</p> 
+ 
+<h2><a id="get.involved">How to Get Involved</a></h2>
+<p>
+The Apache UIMA project really needs and appreciates any contributions, 
+including documentation help, source code and feedback.  If you are interested
+in contributing, please visit 
+<a href="http://uima.apache.org/get-involved.html">
+  http://uima.apache.org/get-involved.html</a>.
+</p>
+  
+<h2><a id="report.issues">How to Report Issues</a></h2>
+<p>
+The Apache UIMA project uses JIRA for issue tracking.  Please report any 
+issues you find at 
+<a href="http://issues.apache.org/jira/browse/uima">http://issues.apache.org/jira/browse/uima</a>
+</p>
+  
+    
+</body>
+</html>

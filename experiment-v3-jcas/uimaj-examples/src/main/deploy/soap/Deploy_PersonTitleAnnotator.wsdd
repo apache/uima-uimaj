@@ -1,0 +1,55 @@
+<deployment name="PersonTitleAnnotator" xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+        <!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+
+
+  <service name="urn:PersonTitleAnnotator" provider="java:RPC">
+    <paramater name="scope" value="Request"/>
+    <parameter name="className" value="org.apache.uima.adapter.soap.AxisAnalysisEngineService_impl"/>
+    <parameter name="allowedMethods" value="getMetaData process"/>
+    <parameter name="allowedRoles" value="*"/>
+    <parameter name="resourceSpecifierPath" value="C:/Program Files/apache-uima/examples/descriptors/analysis_engine/PersonTitleAnnotator.xml"/>
+    <parameter name="numInstances" value="3"/>
+    <parameter name="enableLogging" value="true"/>
+
+    <typeMapping qname="ns:resourceMetaData" xmlns:ns="http://uima.apache.org/resourceSpecifier"
+             languageSpecificType="java:org.apache.uima.resource.metadata.ResourceMetaData"
+             serializer="org.apache.uima.adapter.soap.XmlSerializerFactory"
+             deserializer="org.apache.uima.adapter.soap.XmlDeserializerFactory"
+             encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+    <typeMapping qname="ns:resultSpecification" xmlns:ns="http://uima.apache.org/analysis_engine"
+             languageSpecificType="java:org.apache.uima.analysis_engine.ResultSpecification"
+             serializer="org.apache.uima.adapter.soap.XmlSerializerFactory"
+             deserializer="org.apache.uima.adapter.soap.XmlDeserializerFactory"
+             encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+    <typeMapping qname="ns:serviceDataCargo" xmlns:ns="http://uima.apache.org/analysis_engine"
+             languageSpecificType="java:org.apache.uima.analysis_engine.service.impl.ServiceDataCargo"
+             serializer="org.apache.uima.adapter.soap.BinarySerializerFactory"
+             deserializer="org.apache.uima.adapter.soap.BinaryDeserializerFactory"
+             encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+
+  </service>
+
+</deployment>

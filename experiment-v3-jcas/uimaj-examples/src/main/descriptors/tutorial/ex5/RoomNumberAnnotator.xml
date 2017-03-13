@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+   
+<!-- IMPORTANT: This descriptor intentionally contains an error
+     (an invalid parameter value) in order to show an example of
+     how to use internaionalized exceptions. -->
+     
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+	<primitive>true</primitive>
+	<annotatorImplementationName>org.apache.uima.tutorial.ex5.RoomNumberAnnotator</annotatorImplementationName>
+
+	<analysisEngineMetaData>
+		<name>Room Number Annotator</name>
+		<description>An example annotator that searches for room numbers in the IBM Watson
+			research buildings.</description>
+		<version>1.0</version>
+		<vendor>The Apache Software Foundation</vendor>
+		
+		<!-- Configuration Parameter Declarations -->
+		
+		<configurationParameters>
+			<configurationParameter>
+				<name>Patterns</name>
+				<description>List of room number regular expression
+					pattterns.</description>
+				<type>String</type>
+				<multiValued>true</multiValued>
+				<mandatory>true</mandatory>
+			</configurationParameter>
+			
+			<configurationParameter>
+				<name>Locations</name>
+				<description>List of locations corresponding to the room number
+					expressions specified by the Patterns parameter.</description>
+				<type>String</type>
+				<multiValued>true</multiValued>
+				<mandatory>true</mandatory>
+			</configurationParameter>
+		</configurationParameters>
+		
+		<configurationParameterSettings>
+			<nameValuePair>
+				<name>Patterns</name>
+				<value>
+					<array>
+						<string>\b[0-4]\d-[0-2]\d\d\b</string>
+						<string>\b[G1-4][NS]-[A-Z]\d\d\b</string>
+						<string>\bJ[12]-[A-Z]\d\d\b</string>
+						<string>(foo</string> <!--Intentionally Invalid! -->
+					</array>
+				</value>
+			</nameValuePair>
+			
+			<nameValuePair>
+				<name>Locations</name>
+				<value>
+					<array>
+						<string>Watson - Yorktown</string>
+						<string>Watson - Hawthorne I</string>
+						<string>Watson - Hawthorne II</string>
+					</array>
+				</value>
+			</nameValuePair>
+		</configurationParameterSettings>
+		
+		<!-- TypeSystem Definition -->
+		<typeSystemDescription>
+			<imports>
+				<import location="../ex1/TutorialTypeSystem.xml"/>
+			</imports>
+		</typeSystemDescription>
+		
+		<!-- Capabilities: Inputs, Outputs, and Preconditions -->
+		<capabilities>
+			<capability>
+				<inputs/>
+				<outputs>
+					<type>org.apache.uima.tutorial.RoomNumber</type>
+					<feature>org.apache.uima.tutorial.RoomNumber:building</feature>
+				</outputs>
+			</capability>
+		</capabilities>
+		<operationalProperties>
+			<modifiesCas>true</modifiesCas>
+			<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+			<outputsNewCASes>false</outputsNewCASes>
+		</operationalProperties>
+	</analysisEngineMetaData>
+</analysisEngineDescription>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<!--
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements.  See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership.  The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License.  You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied.  See the License for the
+	specific language governing permissions and limitations
+	under the License.    
+-->
+
+<plugin>
+   <extension-point id="org.apache.uima.caseditor.editor" name="DocumentProvider" schema="schema/org.apache.uima.caseditor.editor.exsd"/>
+
+	<extension point="org.eclipse.ui.editors">
+		<editor icon="icons/svgicons/document.png"
+			class="org.apache.uima.caseditor.editor.AnnotationEditor"
+			name="UIMA Annotation Editor"
+			contributorClass="org.apache.uima.caseditor.editor.AnnotationEditorActionContributor"
+			id="org.apache.uima.caseditor.editor" 
+			default="true"
+			extensions="xcas,xmi,bcas,scas">
+		</editor>
+	</extension>
+	
+	<extension point="org.eclipse.ui.editors.annotationTypes">
+		<type name="org.apache.uima.caseditor.Annotation" />
+		<type name="uima.tcas.Annotation" />
+	</extension>
+
+	<extension
+		point="org.eclipse.ui.editors.markerAnnotationSpecification">
+		<specification
+			annotationType="org.apache.uima.caseditor.Annotation"
+			colorPreferenceKey="annotationIndicationColor"
+			colorPreferenceValue="244,100,45" contributesToHeader="true"
+			highlightPreferenceKey="annotationIndicationHighlighting"
+			highlightPreferenceValue="false" icon="icon\book.gif"
+			isGoToNextNavigationTarget="false"
+			isGoToNextNavigationTargetKey="isAnnotationGoToNextNavigationTarget"
+			isGoToPreviousNavigationTarget="false"
+			isGoToPreviousNavigationTargetKey="isAnnotationGoToPreviousNavigationTarget"
+			label="Annotation"
+			overviewRulerPreferenceKey="annotationIndicationInOverviewRuler"
+			overviewRulerPreferenceValue="false" presentationLayer="5"
+			showInNextPrevDropdownToolbarAction="true"
+			showInNextPrevDropdownToolbarActionKey="showAnnotationInNextPrevDropdownToolbarAction"
+			symbolicIcon="warning" textPreferenceKey="annotationIndication"
+			textPreferenceValue="true"
+			verticalRulerPreferenceKey="annotationIndicationInVerticalRuler"
+			verticalRulerPreferenceValue="false" includeOnPreferencePage="false" />
+	</extension>
+	
+   <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="org.apache.uima.caseditor.editor.AnnotationEditorPreferenceInitializer">
+    </initializer>
+ </extension>
+ 
+ 	<extension point="org.eclipse.ui.views">
+		<category id="org.apache.uima.caseditor.ui.views" name="UIMA Cas Editor" />
+
+		<view id="org.apache.uima.caseditor.editview"
+			name="Edit View"
+			class="org.apache.uima.caseditor.editor.editview.EditView"
+			icon="icons/svgicons/explorer.png"
+			category="org.apache.uima.caseditor.ui.views" />
+		
+		<!-- Consider using allowMultiple="true" instead of defining it twice-->	
+		<view id="org.apache.uima.caseditor.editview2"
+			name="Edit View"
+			class="org.apache.uima.caseditor.editor.editview.EditView"
+			icon="icons/svgicons/explorer.png"
+			category="org.apache.uima.caseditor.ui.views" />
+			
+		<view id="org.apache.uima.caseditor.fsview"
+			name="FeatureStructure View"
+			class="org.apache.uima.caseditor.editor.fsview.FeatureStructureBrowserView"
+			icon="icons/svgicons/fsview.png"
+			category="org.apache.uima.caseditor.ui.views" />	
+			
+		<view id="org.apache.uima.caseditor.styleview"
+			name="Annotation Styles"
+			class="org.apache.uima.caseditor.editor.styleview.AnnotationStyleView"
+			icon="icons/svgicons/fsview.png"
+			category="org.apache.uima.caseditor.ui.views" />	
+	</extension>
+	
+ <extension
+	point="org.eclipse.ui.commands">
+      <category
+            name="Annotate"
+            description="Annotate"
+            id="org.apache.uima.caseditor.annotate">
+      </category>
+      
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="QuickAnnotate"
+            description="Quick Annotate"
+            name="Quick Annotate">
+      </command>
+      
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="Annotate"
+            description="Quick Annotate"
+            name="Annotate">
+      </command>
+      
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="WideRightAnnotationSide"
+            description="WideRightAnnotationSide"
+            name="WideRightAnnotationSide">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="LowerRightAnnotationSide"
+            description="LowerRightAnnotationSide"
+            name="LowerRightAnnotationSide">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="WideLeftAnnotationSide"
+            description="WideLeftAnnotationSide"
+            name="WideLeftAnnotationSide">
+      </command>
+      <command
+            categoryId="org.apache.uima.caseditor.annotate"
+            id="LowerLeftAnnotationSide"
+            description="LowerLeftAnnotationSide"
+            name="LowerLeftAnnotationSide">
+      </command>
+</extension>
+
+	<extension
+	         point="org.eclipse.ui.bindings">
+	<key
+	            commandId="QuickAnnotate"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="CR">
+	</key>
+	<key
+	            commandId="Annotate"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M2+CR">
+	</key>
+	<key
+	            commandId="WideLeftAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M1+K">
+	</key>
+	<key
+	            commandId="LowerLeftAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M1+L">
+	</key>
+	<key
+	            commandId="WideRightAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M3+L">
+	</key>
+	<key
+	            commandId="LowerRightAnnotationSide"
+	            contextId="org.eclipse.ui.contexts.window"
+	            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+	            sequence="M3+K">
+	</key>
+	</extension> 
+</plugin>

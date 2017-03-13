@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+	 * 
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+	-->
+<plugin>
+   <extension
+         point="org.eclipse.jdt.debug.javaLogicalStructures">
+            <javaLogicalStructure
+            description="UIMA Annotation"
+            subtypes="true"
+            type="org.apache.uima.cas.AnnotationFS">
+         <variable
+               name="CoveredText"
+               value="return this.getCoveredText();"/>
+         <variable
+               name="Features"
+               value="return org.apache.uima.cas.impl.DebugFSLogicalStructure.getDebugLogicalStructure_Features(this);"/>
+         <variable
+               name="SubAnnotations"
+               value="return org.apache.uima.cas.impl.DebugFSLogicalStructure.getDebugLogicalStructure_SubAnnotations(this);"/>
+      </javaLogicalStructure>
+      <javaLogicalStructure
+            description="UIMA FeatureStructure"
+            subtypes="true"
+            type="org.apache.uima.cas.FeatureStructure"
+            value="return  org.apache.uima.cas.impl.DebugFSLogicalStructure.getDebugLogicalStructure_FeatureStructure(this);"/>
+      <javaLogicalStructure
+            description="UIMA Debug Name-Value pair (value only)"
+            subtypes="false"
+            type="org.apache.uima.cas.impl.DebugNameValuePair"
+            value="return getValue();"/>
+      <javaLogicalStructure
+            description="UIMA CAS"
+            subtypes="true"
+            type="org.apache.uima.cas.CAS">
+         <variable
+               name="Sofa"
+               value="return new org.apache.uima.cas.impl.DebugFSLogicalStructure.ViewInfo(this);"/>
+         <variable
+               name="OtherViews"
+               value="return org.apache.uima.cas.impl.DebugFSLogicalStructure.getOtherViews(this);"/>
+         <variable
+               name="Indexes"
+               value="return org.apache.uima.cas.impl.DebugFSLogicalStructure.getIndexes(this);"/>
+      </javaLogicalStructure>
+      <javaLogicalStructure
+            description="UIMA JCas"
+            subtypes="true"
+            type="org.apache.uima.jcas.JCas">
+         <variable
+               name="Sofa"
+               value="return new org.apache.uima.cas.impl.DebugFSLogicalStructure.ViewInfo(this.getCas());"/>
+         <variable
+               name="OtherViews"
+               value="return org.apache.uima.cas.impl.DebugFSLogicalStructure.getOtherViews(this.getCas());"/>
+         <variable
+               name="Indexes"
+               value="return org.apache.uima.cas.impl.DebugFSLogicalStructure.getIndexes(this.getCas());"/>
+      </javaLogicalStructure>      
+      <javaLogicalStructure
+            description="UIMA IndexInfo"
+            subtypes="false"
+            type="org.apache.uima.cas.impl.DebugFSLogicalStructure$IndexInfo">
+         <variable
+               name="Name"
+               value="return this.indexName;"/>
+         <variable
+               name="Kind"
+               value="return this.getKind();"/>
+         <variable
+               name="Type"
+               value="return this.getType();"/>
+         <variable
+               name="Contents"
+               value="return this.getContents();"/>
+         <variable
+               name="SubTypes"
+               value="return this.getSubTypes();"/>
+      </javaLogicalStructure>
+      <javaLogicalStructure
+            description="UIMA Unexpanded FSs"
+            subtypes="false"
+            type="org.apache.uima.cas.impl.DebugFSLogicalStructure$UnexpandedFeatureStructures"
+            value="return this.getItems();"
+       />
+           <javaLogicalStructure
+            description="UIMA View Info"
+            subtypes="false"
+            type="org.apache.uima.cas.impl.DebugFSLogicalStructure$ViewInfo"
+            value="return this.getSofa();"/>  
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="org.apache.uima.ep_debug.DebugPluginStartup"/>
+   </extension>
+</plugin>

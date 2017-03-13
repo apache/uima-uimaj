@@ -1,0 +1,9 @@
+
+Apache UIMA (Unstructured Information Management Architecture) SDK
+Version ${project.version}
+http://uima.apache.org
+
+Copyright ${project.inceptionYear}, ${buildYear} The Apache Software Foundation
+
+This product includes software developed at 
+The Apache Software Foundation (http://www.apache.org/).

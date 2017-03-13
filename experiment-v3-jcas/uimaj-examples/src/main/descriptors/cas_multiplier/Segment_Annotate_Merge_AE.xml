@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+***************************************************************
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+***************************************************************
+-->
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+	<primitive>false</primitive>
+	
+	<delegateAnalysisEngineSpecifiers>
+		<delegateAnalysisEngine key="Segmenter">
+			<import location="SimpleTextSegmenter.xml"/>
+		</delegateAnalysisEngine>
+		
+		<delegateAnalysisEngine key="Tokenizer">
+			<import
+				location="../analysis_engine/SimpleTokenAndSentenceAnnotator.xml"/>
+		</delegateAnalysisEngine>
+		
+		<delegateAnalysisEngine key="NameRecognizer">
+			<import
+				location="../analysis_engine/SimpleNameRecognizer_RegEx_TAE.xml"/>
+		</delegateAnalysisEngine>
+		
+		<delegateAnalysisEngine key="Merger">
+			<import location="SimpleTextMerger.xml"/>
+		</delegateAnalysisEngine>
+	</delegateAnalysisEngineSpecifiers>
+		
+	<flowController key="FixedFlowController">
+		<import name="org.apache.uima.flow.FixedFlowController"/>
+	</flowController>
+		
+	<analysisEngineMetaData>
+		<name>Segment, Annotate, and Merge Example AE</name>
+		<description>Splits a document into pieces and runs the tokenizer and name
+			recognizer on each piece independently. Then runs the merger to reassemble the
+			document, keeping the name annotations in the merged document but discarding
+			the tokens. 
+		
+		    By default the intermediate segments are dropped after being processed by the merger, and
+			are not output from the aggregate.  This behavior is configurable via the
+			ActionForIntermediateSegments parameter.
+		</description>
+		<version>1.0</version>
+		<vendor>The Apache Software Foundation</vendor>
+		<flowConstraints>
+			<fixedFlow>
+				<node>Segmenter</node>
+				<node>Tokenizer</node>
+				<node>NameRecognizer</node>
+				<node>Merger</node>
+			</fixedFlow>
+		</flowConstraints>
+		
+		<configurationParameters>
+			<configurationParameter>
+				<name>AnnotationTypesToPreserve</name>
+				<description>Names of annotation types to be preserved in the merged CAS.</description>
+				<type>String</type>
+				<multiValued>true</multiValued>
+				<mandatory>true</mandatory>
+				<overrides>
+					<parameter>Merger/AnnotationTypesToCopy</parameter>
+				</overrides>
+			</configurationParameter>
+			
+			  <configurationParameter>
+				 <name>ActionForIntermediateSegments</name>
+				 <description>Tells the flow controller what to do with intermediate segments after they are input to the merger.
+				 Valid values are:
+					continue - the CAS continues on to the next element in the flow
+					stop - the CAS will no longer continue in the flow, and will be returned from the aggregate if possible.
+					drop - the CAS will no longer continue in the flow, and will be dropped (not returned from the aggregate) if possible.	 
+					dropIfNewCasProduced (the default) - if the CAS multiplier produced a new CAS as a result of processing this CAS, then this
+						CAS will be dropped.  If not, then this CAS will continue.			 
+				 </description>
+				 <type>String</type>
+				 <multiValued>false</multiValued>
+				 <mandatory>false</mandatory>
+				  <overrides>
+					  <parameter>FixedFlowController/ActionAfterCasMultiplier</parameter>
+				  </overrides>
+			   </configurationParameter>			
+			 </configurationParameters>
+		
+		<configurationParameterSettings>
+			<nameValuePair>
+				<name>AnnotationTypesToPreserve</name>
+				<value>
+					<array>
+						<string>example.Name</string>
+					</array>
+				</value>
+			</nameValuePair>
+			<nameValuePair>
+				<name>ActionForIntermediateSegments</name>
+				<value>
+					<string>drop</string>
+				</value>
+			</nameValuePair>
+		</configurationParameterSettings>
+		
+		<capabilities>
+			<capability>
+				<inputs/>
+				<outputs>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.examples.tokenizer.Sentence</type>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.examples.tokenizer.Token</type>
+					<type allAnnotatorFeatures="true">example.Name</type>
+				</outputs>
+				<languagesSupported>
+					<language>en</language>
+				</languagesSupported>
+			</capability>
+		</capabilities>
+		<operationalProperties>
+			<modifiesCas>true</modifiesCas>
+			<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+			<outputsNewCASes>true</outputsNewCASes>
+		</operationalProperties>
+	</analysisEngineMetaData>
+</analysisEngineDescription>

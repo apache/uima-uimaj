@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+<typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
+    <name>allTypes</name>
+    <description>A type system defining all types, but with no namespace conflicts.  
+    Arrays:  Boolean, Byte, Short, Integer, Long, Float, Double, String, FS
+    AnnotationBase, Annotation, DocumentAnnotation
+    Lists: Integer, Float, String,  empty, not-empty
+ 
+    features having values from all primitive value types:
+    Boolean, Byte, Short, Integer, Long, Float, Double, String
+
+    lists and arrays with / without the multiple-references-allowed flag</description>
+    <version>1.0</version>
+    <vendor/>
+  <types>
+    <typeDescription>
+      <name>org.apache.uima.test.AllTypes</name>
+      <description/>
+      <supertypeName>uima.tcas.Annotation</supertypeName>
+      <features>
+        <featureDescription>
+          <name>aBoolean</name>
+          <description/>
+          <rangeTypeName>uima.cas.Boolean</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aByte</name>
+          <description/>
+          <rangeTypeName>uima.cas.Byte</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aShort</name>
+          <description/>
+          <rangeTypeName>uima.cas.Short</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aInteger</name>
+          <description/>
+          <rangeTypeName>uima.cas.Integer</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aLong</name>
+          <description/>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aFloat</name>
+          <description/>
+          <rangeTypeName>uima.cas.Float</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aDouble</name>
+          <description/>
+          <rangeTypeName>uima.cas.Double</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aString</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aFS</name>
+          <description/>
+          <rangeTypeName>uima.tcas.Annotation</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayBoolean</name>
+          <description/>
+          <rangeTypeName>uima.cas.BooleanArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayMrBoolean</name>
+          <description/>
+          <rangeTypeName>uima.cas.BooleanArray</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayMrByte</name>
+          <description/>
+          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayByte</name>
+          <description/>
+          <rangeTypeName>uima.cas.ByteArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayShort</name>
+          <description/>
+          <rangeTypeName>uima.cas.ShortArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayMrShort</name>
+          <description/>
+          <rangeTypeName>uima.cas.ShortArray</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayString</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aArrayMrString</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringArray</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>aListInteger</name>
+          <description/>
+          <rangeTypeName>uima.cas.IntegerList</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aListMrInteger</name>
+          <description/>
+          <rangeTypeName>uima.cas.IntegerList</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>aListString</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringList</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aListMrString</name>
+          <description/>
+          <rangeTypeName>uima.cas.StringList</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+        <featureDescription>
+          <name>aListFs</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSList</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>aListMrFs</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSList</rangeTypeName>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      <featureDescription>
+          <name>aArrayFS</name>
+          <description/>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.tcas.Annotation</elementType>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  </types>
+</typeSystemDescription>

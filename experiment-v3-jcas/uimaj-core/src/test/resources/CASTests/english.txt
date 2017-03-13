@@ -1,0 +1,24 @@
+Some tokenization "test" to do !  We are checking so-so and so - so and
+--- also...  Especially we are interested in abrs e.g.  Ave.  which are
+very special.  Single char abrs like John C.  Mills.  This is zyz. but
+not known as abbreviation.  This is zyz. BUT not known as abbreviation.
+Another case is .  in a sentence???  Or .Net .12 or so.  Numbers 9.23 1,23
+$12 22% #2 and so on !!!  Parentheses (which are important) and [numeric]
+{expressions} ((*)) like (3 - 5) + 2 * -1 / 12 or 1/2 must work too.
+Also mark@twain.com and 9.4.124.8 and
+www.ibm-research.com @are also@ ### $$ @@ -checked.  Commas, and semicolons; and colons:
+are ::: interesting,,, ,too?  Apostrophes ''' are' 'interesting as well: L'Oreal
+Tom's 'don't' 1'2'3 8''. Also 'used' as 'quotations'. Let's go to the internet-cafe and
+chat with foo-bar.
+
+The next lines are paragraph boundary tests:
+
+tok1 tok2
+
+tok3 tok4
+
+tok5
+
+- tokX tokY
+
+tok6

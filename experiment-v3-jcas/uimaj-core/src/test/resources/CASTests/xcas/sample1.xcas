@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<CAS>
+    <uima.cas.Sofa _indexed="0" _id="10" sofaNum="1" sofaID="_InitialView" sofaString="Some tokenization &quot;test&quot; to do !  We are checking so-so and so - so and&#10;--- also...  Especially we are interested in abrs e.g.  Ave.  which are&#10;very special.  Single char abrs like John C.  Mills.  This is zyz. but&#10;not known as abbreviation.  This is zyz. BUT not known as abbreviation.&#10;Another case is .  in a sentence???  Or .Net .12 or so.  Numbers 9.23 1,23&#10;$12 22% #2 and so on !!!  Parentheses (which are important) and [numeric]&#10;{expressions} ((*)) like (3 - 5) + 2 * -1 / 12 or 1/2 must work too.&#10;Also mark@twain.com and 9.4.124.8 and&#10;www.ibm-research.com @are also@ ### $$ @@ -checked.  Commas, and semicolons; and colons:&#10;are ::: interesting,,, ,too?  Apostrophes ''' are' 'interesting as well: L'Oreal&#10;Tom's 'don't' 1'2'3 8''. Also 'used' as 'quotations'. Let's go to the internet-cafe and&#10;chat with foo-bar.&#10;&#10;The next lines are paragraph boundary tests:&#10;&#10;tok1 tok2&#10;&#10;tok3 tok4&#10;&#10;tok5&#10;&#10;- tokX tokY&#10;&#10;tok6&#10;"/>
+    <uima.tcas.DocumentAnnotation _indexed="1" _id="1" _ref_sofa="10" begin="0" end="913" language="en"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="1878" begin="0" end="821" _ref_sofa="10"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="1942" begin="821" end="867" _ref_sofa="10"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="1964" begin="867" end="878" _ref_sofa="10"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="1986" begin="878" end="889" _ref_sofa="10"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="2001" begin="889" end="895" _ref_sofa="10"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="2030" begin="895" end="908" _ref_sofa="10"/>
+    <uima.tt.ParagraphAnnotation _indexed="1" _id="2045" begin="908" end="913" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="73" begin="0" end="34" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="203" begin="34" end="85" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="291" begin="85" end="134" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="330" begin="134" end="159" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="397" begin="159" end="198" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="429" begin="198" end="211" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="475" begin="211" end="243" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="507" begin="243" end="256" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="553" begin="256" end="287" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="585" begin="287" end="306" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="617" begin="306" end="324" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="677" begin="324" end="344" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="800" begin="344" end="388" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1077" begin="388" end="505" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1333" begin="505" end="596" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1470" begin="596" end="662" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1691" begin="662" end="738" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1758" begin="738" end="767" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1874" begin="767" end="821" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1938" begin="821" end="867" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1960" begin="867" end="878" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1982" begin="878" end="889" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="1997" begin="889" end="895" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="2026" begin="895" end="908" _ref_sofa="10"/>
+    <uima.tt.SentenceAnnotation _indexed="1" _id="2041" begin="908" end="913" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="17" begin="0" end="4" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="24" begin="5" end="17" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="31" begin="18" end="19" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="38" begin="19" end="23" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="45" begin="23" end="24" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="52" begin="25" end="27" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="59" begin="28" end="30" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="66" begin="31" end="32" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="77" begin="34" end="36" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="84" begin="37" end="40" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="91" begin="41" end="49" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="98" begin="50" end="52" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="105" begin="52" end="53" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="112" begin="53" end="55" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="119" begin="56" end="59" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="126" begin="60" end="62" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="133" begin="63" end="64" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="140" begin="65" end="67" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="147" begin="68" end="71" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="154" begin="72" end="73" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="161" begin="73" end="74" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="168" begin="74" end="75" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="175" begin="76" end="80" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="182" begin="80" end="81" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="189" begin="81" end="82" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="196" begin="82" end="83" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="207" begin="85" end="95" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="214" begin="96" end="98" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="221" begin="99" end="102" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="228" begin="103" end="113" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="235" begin="114" end="116" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="242" begin="117" end="121" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="249" begin="122" end="123" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="256" begin="123" end="124" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="263" begin="124" end="125" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="270" begin="125" end="126" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="277" begin="128" end="131" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="284" begin="131" end="132" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="295" begin="134" end="139" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="302" begin="140" end="143" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="309" begin="144" end="148" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="316" begin="149" end="156" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="323" begin="156" end="157" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="334" begin="159" end="165" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="341" begin="166" end="170" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="348" begin="171" end="175" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="355" begin="176" end="180" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="362" begin="181" end="185" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="369" begin="186" end="187" tokenProperties="1" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="376" begin="187" end="188" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="383" begin="190" end="195" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="390" begin="195" end="196" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="401" begin="198" end="202" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="408" begin="203" end="205" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="415" begin="206" end="209" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="422" begin="209" end="210" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="433" begin="211" end="214" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="440" begin="215" end="218" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="447" begin="219" end="224" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="454" begin="225" end="227" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="461" begin="228" end="240" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="468" begin="240" end="241" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="479" begin="243" end="247" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="486" begin="248" end="250" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="493" begin="251" end="254" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="500" begin="254" end="255" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="511" begin="256" end="259" tokenProperties="3" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="518" begin="260" end="263" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="525" begin="264" end="269" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="532" begin="270" end="272" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="539" begin="273" end="285" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="546" begin="285" end="286" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="557" begin="287" end="294" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="564" begin="295" end="299" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="571" begin="300" end="302" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="578" begin="303" end="304" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="589" begin="306" end="308" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="596" begin="309" end="310" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="603" begin="311" end="319" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="610" begin="319" end="322" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="621" begin="324" end="326" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="628" begin="327" end="328" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="635" begin="328" end="331" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="642" begin="332" end="333" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="649" begin="333" end="335" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="656" begin="336" end="338" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="663" begin="339" end="341" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="670" begin="341" end="342" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="681" begin="344" end="351" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="688" begin="352" end="353" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="695" begin="353" end="354" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="702" begin="354" end="356" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="709" begin="357" end="358" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="716" begin="358" end="359" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="723" begin="359" end="361" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="730" begin="362" end="363" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="737" begin="363" end="365" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="744" begin="366" end="368" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="751" begin="368" end="369" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="758" begin="370" end="371" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="765" begin="371" end="372" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="772" begin="373" end="376" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="779" begin="377" end="379" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="786" begin="380" end="382" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="793" begin="383" end="386" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="804" begin="388" end="399" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="811" begin="400" end="401" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="818" begin="401" end="406" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="825" begin="407" end="410" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="832" begin="411" end="420" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="839" begin="420" end="421" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="846" begin="422" end="425" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="853" begin="426" end="427" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="860" begin="427" end="434" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="867" begin="434" end="435" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="874" begin="436" end="437" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="881" begin="437" end="448" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="888" begin="448" end="449" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="895" begin="450" end="451" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="902" begin="451" end="452" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="909" begin="452" end="453" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="916" begin="453" end="454" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="923" begin="454" end="455" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="930" begin="456" end="460" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="937" begin="461" end="462" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="944" begin="462" end="463" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="951" begin="464" end="465" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="958" begin="466" end="467" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="965" begin="467" end="468" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="972" begin="469" end="470" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="979" begin="471" end="472" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="986" begin="473" end="474" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="993" begin="475" end="476" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1000" begin="476" end="477" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1007" begin="478" end="479" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1014" begin="480" end="482" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1021" begin="483" end="485" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1028" begin="486" end="487" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1035" begin="487" end="488" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1042" begin="488" end="489" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1049" begin="490" end="494" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1056" begin="495" end="499" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1063" begin="500" end="503" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1070" begin="503" end="504" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1081" begin="505" end="509" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1088" begin="510" end="514" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1095" begin="514" end="515" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1102" begin="515" end="520" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1109" begin="520" end="521" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1116" begin="521" end="524" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1123" begin="525" end="528" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1130" begin="529" end="530" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1137" begin="530" end="531" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1144" begin="531" end="532" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1151" begin="532" end="533" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1158" begin="533" end="536" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1165" begin="536" end="537" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1172" begin="537" end="538" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1179" begin="539" end="542" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1186" begin="543" end="546" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1193" begin="546" end="547" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1200" begin="547" end="550" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1207" begin="550" end="551" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1214" begin="551" end="559" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1221" begin="559" end="560" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1228" begin="560" end="563" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1235" begin="564" end="565" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1242" begin="565" end="568" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1249" begin="569" end="573" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1256" begin="573" end="574" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1263" begin="575" end="576" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1270" begin="576" end="577" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1277" begin="577" end="578" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1284" begin="579" end="580" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1291" begin="580" end="581" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1298" begin="582" end="583" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1305" begin="583" end="584" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1312" begin="585" end="586" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1319" begin="586" end="593" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1326" begin="593" end="594" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1337" begin="596" end="602" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1344" begin="602" end="603" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1351" begin="604" end="607" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1358" begin="608" end="618" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1365" begin="618" end="619" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1372" begin="620" end="623" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1379" begin="624" end="630" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1386" begin="630" end="631" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1393" begin="632" end="635" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1400" begin="636" end="637" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1407" begin="637" end="638" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1414" begin="638" end="639" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1421" begin="640" end="651" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1428" begin="651" end="652" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1435" begin="652" end="653" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1442" begin="653" end="654" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1449" begin="655" end="656" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1456" begin="656" end="659" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1463" begin="659" end="660" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1474" begin="662" end="673" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1481" begin="674" end="675" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1488" begin="675" end="676" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1495" begin="676" end="677" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1502" begin="678" end="681" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1509" begin="681" end="682" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1516" begin="683" end="684" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1523" begin="684" end="695" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1530" begin="696" end="698" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1537" begin="699" end="703" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1544" begin="703" end="704" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1551" begin="705" end="706" tokenProperties="1" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1558" begin="706" end="707" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1565" begin="707" end="712" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1572" begin="713" end="716" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1579" begin="716" end="717" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1586" begin="717" end="718" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1593" begin="719" end="720" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1600" begin="720" end="723" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1607" begin="723" end="724" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1614" begin="724" end="725" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1621" begin="725" end="726" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1628" begin="727" end="728" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1635" begin="728" end="729" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1642" begin="729" end="730" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1649" begin="730" end="731" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1656" begin="731" end="732" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1663" begin="733" end="734" tokenProperties="8" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1670" begin="734" end="735" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1677" begin="735" end="736" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1684" begin="736" end="737" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1695" begin="738" end="742" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1702" begin="743" end="744" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1709" begin="744" end="748" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1716" begin="748" end="749" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1723" begin="750" end="752" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1730" begin="753" end="754" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1737" begin="754" end="764" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1744" begin="764" end="765" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1751" begin="765" end="766" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1762" begin="767" end="770" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1769" begin="770" end="771" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1776" begin="771" end="772" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1783" begin="773" end="775" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1790" begin="776" end="778" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1797" begin="779" end="782" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1804" begin="783" end="791" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1811" begin="791" end="792" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1818" begin="792" end="796" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1825" begin="797" end="800" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1832" begin="801" end="805" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1839" begin="806" end="810" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1846" begin="811" end="814" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1853" begin="814" end="815" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1860" begin="815" end="818" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1867" begin="818" end="819" tokenProperties="0" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1882" begin="821" end="824" tokenProperties="5" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1889" begin="825" end="829" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1896" begin="830" end="835" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1903" begin="836" end="839" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1910" begin="840" end="849" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1917" begin="850" end="858" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1924" begin="859" end="864" tokenProperties="4" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1931" begin="864" end="865" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1946" begin="867" end="871" tokenProperties="12" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1953" begin="872" end="876" tokenProperties="12" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1968" begin="878" end="882" tokenProperties="12" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1975" begin="883" end="887" tokenProperties="12" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="1990" begin="889" end="893" tokenProperties="12" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="2005" begin="895" end="896" tokenProperties="16" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="2012" begin="897" end="901" tokenProperties="6" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="2019" begin="902" end="906" tokenProperties="6" _ref_sofa="10"/>
+    <uima.tt.TokenAnnotation _indexed="1" _id="2034" begin="908" end="912" tokenProperties="12" _ref_sofa="10"/>
+</CAS>

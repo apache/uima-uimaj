@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+
+<!--
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements.  See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership.  The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License.  You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	KIND, either express or implied.  See the License for the
+	specific language governing permissions and limitations
+	under the License.    
+-->
+
+<plugin>
+   <extension-point id="org.apache.uima.caseditor.editor" name="DocumentProvider" schema="schema/org.apache.uima.caseditor.editor.exsd"/>
+   <extension-point id="org.apache.uima.caseditor.ide.searchstrategy" name="Type System Search Strategy" schema="schema/org.apache.uima.caseditor.ide.searchstrategy.exsd"/>
+
+	<extension point="org.eclipse.core.resources.natures"
+		id="NLPProject" name="UIMA Cas Editor Nature">
+		<runtime>
+			<run
+				class="org.apache.uima.caseditor.ide.NlpProject" />
+		</runtime>
+	</extension>
+
+	<!-- ui extensions -->
+	<extension point="org.eclipse.ui.importWizards">
+		
+		<category name="UIMA Cas Editor" id="org.apache.uima.caseditor.ide.wizards" />
+		
+		<wizard
+		category="org.apache.uima.caseditor.ide.wizards"
+		class="org.apache.uima.caseditor.ide.wizards.ImportDocumentWizard"
+		icon="icons/svgicons/document.png"
+		id="org.apache.uima.caseditor.ide.wizards.NewDocumentWizard"
+		name="Document">
+		<description>Create a Document</description>
+		</wizard>
+		</extension>
+
+	<extension point="org.eclipse.ui.perspectives">
+		<perspective
+			class="org.apache.uima.caseditor.ide.CasEditorPerspectiveFactory"
+			fixed="false" icon="icons/svgicons/corpus.png"
+			id="org.apache.uima.caseditor.perspective.NLP" name="Cas Editor">
+		</perspective>
+	</extension>
+
+	<extension point="org.eclipse.ui.propertyPages">
+		<page
+			class="org.apache.uima.caseditor.ui.property.EditorAnnotationPropertyPage"
+			icon="icons/svgicons/corpus.png"
+			id="org.apache.uima.caseditor.annotationspropertypage"
+			name="Annotations">
+			<enabledWhen>
+				<instanceof value="org.apache.uima.caseditor.editor.styleview.AnnotationTypeNode"/>
+			</enabledWhen>
+		</page>
+		
+        <page
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            class="org.apache.uima.caseditor.ide.TypeSystemLocationPropertyPage"
+            name="UIMA Type System"
+            id="org.apache.uima.caseditor.TypeSystemLocationPropertyPage">
+            </page>
+	</extension>
+ <extension point="org.apache.uima.caseditor.editor">
+    <provider
+    	  id="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider"
+          class="org.apache.uima.caseditor.ide.DefaultCasDocumentProvider"
+          inputType="org.eclipse.ui.IFileEditorInput">
+    </provider>
+ </extension>
+ 
+ <extension point="org.eclipse.ui.preferencePages">
+    <page
+          category="org.apache.uima.caseditor.ide.CasEditorPreference"
+          class="org.apache.uima.caseditor.editor.AnnotationEditorPreferencePage"
+          id="org.apache.uima.caseditor.ide.AnnotationEditorPreference"
+          name="Annotation Editor">
+    </page>
+    <page
+          category="org.apache.uima.caseditor.ide.CasEditorPreference"
+          class="org.apache.uima.caseditor.ide.CasEditorIdePreferencePage"
+          id="org.apache.uima.caseditor.ide.CasEditorIdePreference"
+          name="Cas Editor Ide">
+    </page>
+    <page
+          class="org.apache.uima.caseditor.ide.CasEditorPreferencePage"
+          id="org.apache.uima.caseditor.ide.CasEditorPreference"
+          name="UIMA Cas Editor">
+    </page>
+ </extension>
+ 
+    <extension
+       point="org.eclipse.core.runtime.preferences">
+    <initializer
+          class="org.apache.uima.caseditor.ide.CasEditorIdePreferenceInitializer">
+    </initializer>
+ </extension>
+</plugin>

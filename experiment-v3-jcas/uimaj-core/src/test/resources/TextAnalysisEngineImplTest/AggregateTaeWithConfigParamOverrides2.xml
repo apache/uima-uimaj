@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+
+<!-- Descriptor for testing configuration groups. -->
+
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+<primitive>false</primitive>
+
+<delegateAnalysisEngineSpecifiers>
+<delegateAnalysisEngine key="Annotator1">
+<import location="AnnotatorWithConfigurationParameters.xml"/>
+</delegateAnalysisEngine>
+
+<delegateAnalysisEngine key="Annotator2">
+<import location="AnnotatorWithConfigurationParameters.xml"/>
+</delegateAnalysisEngine>
+</delegateAnalysisEngineSpecifiers> 
+
+<flowController key="MyFlowController">
+	<import location="FlowControllerWithConfigurationParameters.xml"/>
+</flowController>
+	
+<analysisEngineMetaData>
+<name>Aggregate TAE with Configuration Parameter Overrides</name>
+<description>For testing configuration parameters.</description>
+<version>1.0</version>
+<vendor>The Apache Software Foundation</vendor>
+
+<!-- Configuration Parameter Definitions -->
+<configurationParameters defaultGroup="en" searchStrategy="language_fallback"> 
+  <!-- Explicit override -->
+  <configurationParameter>
+    <name>AggregateParam</name>
+    <description/>
+    <type>String</type>
+    <overrides>
+      <param>Annotator1/StringParam</param>
+    </overrides>
+  </configurationParameter>
+  
+  <!-- Array overrides (was testing deprecated Implicit override) -->
+  <configurationParameter>
+    <name>StringArrayParam</name>
+    <description/>
+    <type>String</type>
+    <multiValued>true</multiValued>
+    <overrides>
+      <parameter>Annotator1/StringArrayParam</parameter>
+      <parameter>Annotator2/StringArrayParam</parameter>
+      <parameter>MyFlowController/StringArrayParam</parameter>
+    </overrides>
+  </configurationParameter>
+
+  <!-- Override multiple params -->
+  <configurationParameter>
+    <name>AggregateParam2</name>
+    <description/>
+    <type>Integer</type>
+    <overrides>
+      <param>Annotator1/IntegerParam</param>
+      <param>Annotator2/IntegerParam</param>
+      <param>MyFlowController/IntegerParam</param>
+    </overrides>
+  </configurationParameter>
+</configurationParameters>
+
+
+<!-- Values for the configuration parameters -->
+<configurationParameterSettings>
+  <nameValuePair>
+    <name>AggregateParam</name>
+    <value><string>override</string></value>
+  </nameValuePair>
+  <nameValuePair>
+    <name>StringArrayParam</name>
+    <value>
+      <array><string>override</string></array>
+    </value>
+  </nameValuePair>
+  <nameValuePair>
+    <name>AggregateParam2</name>
+    <value><integer>100</integer></value>
+  </nameValuePair>
+</configurationParameterSettings>
+
+<flowConstraints>
+  <fixedFlow>
+    <node>Annotator1</node>
+    <node>Annotator2</node>
+  </fixedFlow>
+</flowConstraints>
+
+<!-- Capabilities: Inputs and Outputs -->
+<capabilities>
+<capability>
+<inputs/>
+<outputs/>
+<languagesSupported/>
+</capability>
+</capabilities>
+
+</analysisEngineMetaData>
+</taeDescription>

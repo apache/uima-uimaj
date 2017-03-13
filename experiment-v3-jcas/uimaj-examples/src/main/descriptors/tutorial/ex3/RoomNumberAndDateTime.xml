@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+   
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier" xmlns:xi="http://www.w3.org/2001/XInclude">
+	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+	<primitive>false</primitive>
+
+	<delegateAnalysisEngineSpecifiers>
+		<delegateAnalysisEngine key="RoomNumber">
+			<import location="../ex2/RoomNumberAnnotator.xml" />
+		</delegateAnalysisEngine>
+
+		<delegateAnalysisEngine key="DateTime">
+			<import location="TutorialDateTime.xml" />
+		</delegateAnalysisEngine>
+	</delegateAnalysisEngineSpecifiers>
+
+	<analysisEngineMetaData>
+		<name>Aggregate TAE - Room Number and DateTime Annotators</name>
+		<description>Detects Room Numbers, Dates, and Times</description>
+		
+		<flowConstraints>
+			<fixedFlow>
+				<node>RoomNumber</node>
+				<node>DateTime</node>
+			</fixedFlow>
+		</flowConstraints>
+		
+		<capabilities>
+			<capability>
+				<inputs/>
+				<outputs>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.tutorial.RoomNumber</type>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.tutorial.DateAnnot</type>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.tutorial.TimeAnnot</type>
+				</outputs>
+				<languagesSupported>
+					<language>en</language>
+				</languagesSupported>
+			</capability>
+		</capabilities>
+		<operationalProperties>
+			<modifiesCas>true</modifiesCas>
+			<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+			<outputsNewCASes>false</outputsNewCASes>
+		</operationalProperties>
+	</analysisEngineMetaData>
+</analysisEngineDescription>

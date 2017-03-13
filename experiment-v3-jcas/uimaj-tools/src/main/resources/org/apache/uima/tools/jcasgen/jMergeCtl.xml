@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+	 * 
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+	-->
+  <!-- Do a web search on     jet jmerge 
+       for info on this format or
+       check out the source for EMF core (version from ~ June, 2005) from Eclipse -->
+       
+<merge:options
+  indent="  "
+  braceStyle="matching"
+  redirect="Gen"
+  xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
+   <!-- 
+    Markup elements which specify regular expressions that will be executed against elements in the ASTs 
+    for the Existing (target) and generated (new, source) Code. 
+    Markkup regular expressions must include a 'capture', which is a subexpression enclosed in parentheses. 
+    For example, the regular expression for  @generated markup is @(gen)enerated.
+    When a markup rule matches a Java element, JMerge records the 'capture' of the rule 
+    and the corresponding Java element. 
+    For example, using the above rule, JMerge would record 
+    the string 'gen' against any Java element with an @generated tag.
+    -->
+    
+    <!-- key="etter"   
+         pattern=  /**  getter (or setter) for   -->
+    <merge:dictionaryPattern
+      name="featureGetSetMembers"
+      select="Member/getComment"
+      match="^\s*/\*\*\s(?:g|s)(etter)\sfor\s"/>
+          
+    <!-- key="gen"
+         pattern=   * @generated  - ending a line -->
+    <merge:dictionaryPattern
+      name="generatedMembers"
+      select="Member/getComment"
+      match="\s*@\s*(gen)erated\s*\n"/>
+
+    <!-- key="gen"
+         pattern=      @generated   */     -->
+    <merge:dictionaryPattern
+      name="generatedMembers1"
+      select="Member/getComment"
+      match="\s*@\s*(gen)erated\s*\*/"/>
+
+    <!-- key="ordered"
+         pattern=      @ordered      - ending a line -->
+    <merge:dictionaryPattern
+      name="orderedMembers"
+      select="Member/getComment"
+      match="\s*@\s*(ordered)\s*\n"/>
+
+    <!-- key="ordered"
+         pattern=      @ordered  */ -->
+    <merge:dictionaryPattern
+      name="orderedMembers1"
+      select="Member/getComment"
+      match="\s*@\s*(ordered)\s*\*/"/>
+
+    <!-- key="modifiable"
+         pattern=      @generated   modifiable  - ending a line -->
+    <merge:dictionaryPattern
+      name="generatedModifiableMembers"
+      select="Member/getComment"
+      match="\s*@\s*generated\s*(modifiable)\s*\n"/>
+
+    <!-- key="modifiable"
+         pattern=      @generated   modifiable    */ -->
+    <merge:dictionaryPattern
+      name="generatedModifiableMembers1"
+      select="Member/getComment"
+      match="\s*@\s*generated\s*(modifiable)\s*\*/"/>
+
+    <!--
+    
+      Emitted code overlays existing code only if specified in the pull rules.
+                    
+      Each pull element specifies the type of AST object it operates on, 
+      and the markup that must exist on the source and target objects in order for 
+      the rule to operate.
+      
+      The markup, if not specified, is presumed to "match" - as if the element was marked up.
+       
+      For example, a pull rule on methods that copies the method body when the target method 
+      have the 'gen' markup is near the bottom of the following list of pull rules.  
+      Removing the generated attribute from the target code would block replacement of that
+      with new emitted code.
+      
+      If the existing code has the targetMarkup, and there is a corresponding
+        generated element having the sourceMarkup (or no sourceMarkeup was spec'd in the rule)
+        possibly-modified-generated element (see next) is copied to (replaces) the existing 
+      
+      sourceTransfer controls merging of existing with emitted strings.  
+      If sourceTransfer is not present, then the emitted code overwrites the existing.
+      Otherwise, the emitted code is modified by the existing, for the part which matches group 1
+      in both the source and target, 
+      and that modified string (a mix of emitted with some of the existing) overwrites the existing.  
+      
+      All the pull rules are applied, in order, to each node source/target node pair.
+      e.g.:  for all node pairs:
+                for all rules:
+                   selectively pull emitted things into existing code
+     -->
+    <merge:pull
+      sourceGet="Field/getFlags"
+      targetMarkup="^gen$"
+      targetPut="Field/setFlags"/>
+      
+    <merge:pull
+      sourceGet="Initializer/getFlags"
+      targetMarkup="^gen$"
+      targetPut="Initializer/setFlags"/>
+
+    <!-- for emitted comments in generated things, preserve user changes in existing comments 
+         in the part of the comment where it says ...user-doc... -->
+    <merge:pull
+      sourceMarkup="^gen$"
+      sourceGet="Member/getComment"
+      sourceTransfer="(\s*&lt;!--\s*begin-user-doc -->.*?&lt;!-- end-user-doc -->\s*)"
+      targetMarkup="^gen$"
+      targetPut="Member/setComment"/>
+
+    <!-- for emitted generated comments in modifiable things, preserve user changes in existing 
+         comments in the part of the comment where it says ...user-doc... -->    
+    <merge:pull
+      sourceMarkup="^modifiable$"
+      sourceGet="Member/getComment"
+      sourceTransfer="(\s*&lt;!--\s*begin-user-doc -->.*?&lt;!-- end-user-doc -->\s*)"
+      targetMarkup="^modifiable$"
+      targetPut="Member/setComment"/>
+
+    <!-- cause the emitted generated comment to replace the existing one 
+         for the line which contains Update by JCasGen -->
+    <merge:pull
+      sourceMarkup="^gen$"
+      sourceGet="Member/getComment"
+      sourceTransfer="(\* Updated by JCasGen)"
+      targetMarkup="^gen$"
+      targetPut="Member/setComment"/>
+    
+    <!-- overlay generated comments for getters and setters with emmitted ones -->  
+    <merge:pull
+      sourceMarkup="^etter$"
+      sourceGet="Member/getComment"
+      targetMarkup="^etter$"
+      targetPut="Member/setComment"/>
+
+    <!-- overlay generated things with emitted ones -->
+    <merge:pull
+      sourceGet="Initializer/getBody"
+      targetMarkup="^gen$"
+      targetPut="Initializer/setBody"/>
+
+    <merge:pull
+      sourceGet="Type/getSuperclass"
+      targetMarkup="^gen$"
+      targetPut="Type/setSuperclass"/>
+
+    <merge:pull
+      sourceGet="Type/getSuperInterfaces"
+      sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)\n"
+      targetMarkup="^gen$"
+      targetPut="Type/addSuperInterface"/>
+
+    <merge:pull
+      sourceGet="Field/getType"
+      targetMarkup="^gen$"
+      targetPut="Field/setType"/>
+
+    <merge:pull
+      sourceGet="Field/getInitializer"
+      targetMarkup="^gen$"
+      targetPut="Field/setInitializer"/>
+
+    <merge:pull
+      sourceGet="Method/getBody"
+      targetMarkup="^gen$"
+      targetPut="Method/setBody"/>
+      
+    <merge:pull
+      sourceGet="Method/getReturnType"
+      targetMarkup="^gen$"
+      targetPut="Method/setReturnType"/>
+      
+    <merge:pull
+      sourceGet="Method/getExceptions"
+      targetMarkup="^gen$"
+      targetPut="Method/addException"/>
+
+    <merge:sweep markup="^gen$|^modifiable$" select="Member"/>
+
+    <merge:sort markup="^ordered$" select="Member"/>
+
+</merge:options>

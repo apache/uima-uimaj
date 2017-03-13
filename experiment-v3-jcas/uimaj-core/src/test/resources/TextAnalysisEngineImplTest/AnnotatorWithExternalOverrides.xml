@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ -->
+<!-- Descriptor for testing external overrides. -->
+<taeDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>org.apache.uima.analysis_engine.impl.TestAnnotator2</annotatorImplementationName>
+ 
+  <analysisEngineMetaData>
+    <name>Annotator With External Overrides</name>
+    <description>For testing configuration parameters.</description>
+    <version>1.0</version>
+    <vendor>The Apache Software Foundation</vendor>
+ 
+    <!-- Configuration Parameter Definitions -->
+    <configurationParameters> 
+      <configurationParameter>
+        <name>StringParam</name>
+        <externalOverrideName>inline-value</externalOverrideName>
+        <description/>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>StringArrayParam</name>
+        <externalOverrideName>test.externalStringArray</externalOverrideName>
+        <description/>
+        <type>String</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>  
+      <configurationParameter>
+        <name>IntegerParam</name>
+        <externalOverrideName>test.externalInteger</externalOverrideName>
+        <description/>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory> 
+      </configurationParameter>
+      <configurationParameter>
+        <name>IntegerArrayParam</name>
+        <externalOverrideName>test.externalIntegerArray</externalOverrideName>
+        <description/>
+        <type>Integer</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>FloatParam</name>
+        <description/>
+        <type>Float</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>FloatArrayParam</name>
+        <externalOverrideName>test.externalFloatArray</externalOverrideName>
+        <description/>
+        <type>Float</type>
+        <multiValued>true</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>RequiredParam</name>
+        <description/>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+
+
+    <!-- Values for the configuration parameters -->
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>StringParam</name>
+        <value><string>myString</string></value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>StringArrayParam</name>
+        <value>
+          <array>
+            <string>one</string>
+            <string>two</string>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>IntegerParam</name>
+        <value>
+          <integer>42</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>IntegerArrayParam</name>
+        <value>
+          <array>
+            <integer>1</integer>
+            <integer>2</integer>
+            <integer>3</integer>
+          </array>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>FloatParam</name>
+        <value>
+          <float>3.14</float>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>RequiredParam</name>
+        <value>
+          <string>RequiredValue</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+
+    <typeSystemDescription>
+    </typeSystemDescription>
+
+    <!-- Capabilities: Inputs and Outputs -->
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+</taeDescription>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
+<!ENTITY imgroot "images/references/ref.compress/">
+<!ENTITY tp "ugr.ref.compress.">
+<!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent" >  
+%uimaents;
+]>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<chapter id="ugr.ref.compress">
+  <title>Compressed Binary CASes</title>
+
+  <section id="ugr.ref.compress.overview">
+    <title>Binary CAS Compression overview</title>
+     
+    <para>UIMA has a proprietary binary serialization format, used internally
+    for several things, including communicating with embedded C++ annotators using
+    UIMA-CPP.  This binary format is also selectable for use with UIMA-AS.  Its use
+    requires that the source and target systems implement the identical type system
+    (because the type system is not sent, and internal coding is used within the
+    format that is keyed to the particular type system).</para>
+    
+    <para>Starting with version 2.4.1, two additional forms of binary serialization are added.
+    Both compress the data being serialized; typical size ratios can approach 50 : 1,
+    depending on the exact contents of the CAS, when compared with normal binary serialization.
+    </para>
+    
+    <para>The two forms are called 4 and 6, for historical/internal reasons.  The serialized forms
+    of both of these is fixed, but not currently standardized, and the form being used is encoded in the header so 
+    that the appropriate deserializer can be chosen.  Both forms include support for Delta CAS
+    being returned from a service.</para>
+
+    <para>Form 6 builds on form 4, and adds: serializing only those feature structures which
+    are reachable (that is, in some index, or referenced by other reachable feature structures),
+    and type filtering.</para>
+    
+    <para>Type filtering takes a source type system and a target type system, and for serializing 
+    (source to target), sends the binary representation of reachable feature structures in the target's type system.
+    For deserializing (reading a target into a source), the filtering takes the specification being read
+    as being encoded using the target's type system, and translates that into the source's type system.
+    In this process, types which exist in the source but not the target are skipped (when serializing); 
+    types which exist in the target, but not the source are skipped when deserializing.  
+    <!-- Note that this 
+    never happens when the target is a remote service, as the client type system is guaranteed to be a superset
+    of the service's due to type merging that UIMA does when starting up pipelines.  
+     -->
+    Features that exist in some
+    source type but not in the version of the same type in the target are skipped (when serializing)
+    or set to default values (i.e., 0 or null) when being deserialized.</para>
+
+    <para>There are two main use cases for using compressed forms.  The first one is for communicating with 
+    UIMA-AS remote services (not yet implemented).
+    <!--   
+    Form 6 is automatically used when binary is selected as the method
+    in the &lt;serializer> element in the UIMA-AS deployment descriptor.  It is used with delta CAS
+    support for the returned CAS, and with type filtering - sending to the remote service only those
+    types and features it defines in its type system.
+     -->
+    </para>
+    
+    <para>The second use case is for saving compressed representations of CASes to other media, such as disk files,
+    where they can be deserialized later for use in other UIMA applications.</para>
+    
+  </section>
+
+  
+  <section id="ugr.ref.compress.usage">
+    <title>Using Compressed Binary CASes</title>
+    
+    <para>The main user interface for serializing a CAS using compression is to use one of the 
+    static methods named serializeWithCompression in Serialization.  If you pass a Type System argument representing
+    a target type system, then form 6 compression is used; otherwise form 4 is used.  
+    To get the benefit of only serializing reachable Feature Structure instances, without type mapping 
+    (which is only in form 6), pass a type system argument which is null.     
+    </para>
+    
+    <para>To deserialize into a CAS without type mapping, use one of the deserialize method in Serialization.  
+    There are multiple forms of this method, depending on the arguments.  The forms which take extra arguments
+    include a ReuseInfo may only be used with serialized forms created with form 6 compression.  
+    The plain form of deserialize works with all forms of binary serialization, compressed and non-compressed, by examining a common
+    header which identifies the form of binary serialization used; however, for form 6, since it requires
+    additional arguments, it will fail - and you need to use the other deserialize form.</para>
+    
+    <para>Form 6 has an additional object, ReuseInfo, which holds information which 
+    is required for subsequent Delta CAS format serializations / deserializations.
+    It can speed up subsequent serializations of the same 
+    CAS (before it is further updated), for instance, if an application is sending the CAS to multiple services in parallel.  
+    The serializeWithCompression method returns this object when form 6 is being used. 
+    <!--
+    This object is also
+    used when deserializing delta CASs being returned from services:  internally, it is saved on the client side
+    when serializing a CAS to a remote service; it is saved on the service side after 
+    deserialization an incoming CAS.  The server-side instance of ReuseInfo is provided when that CAS is being 
+    serialized and returned to the client in delta-cas format, and the client-side instance of it is used when deserializing the delta CAS.
+    This is all done under the covers by the UIMA-AS implementation.
+    --> 
+    </para>
+    <para>In addition, the CasIOUtils class offers static load and save methods, which can be used with the SerialFormat
+    enum to serialize and deserialize to URLs or streams; see the Javadocs for details.</para> 
+  </section>
+
+  <section id="ugr.ref.compress.simple-deltas">
+    <title>Simple Delta CAS serialization</title>
+    <para>Use Form 4 for this, because form 6 supports delta CAS but requires 
+    that at the time of deserialization of a CAS (on the receiver side) which will later be delta serialized
+    back to the sender, 
+    an instance of the ReuseInfo must be saved, and that
+    same instance then used for delta serialization; furthermore, the original serialization 
+    (on the sender side)
+    also must save an instance of the ReuseInfo and use this when deserializing the delta CAS.
+    </para>
+    
+    <para>Form 4 may not be as efficient as form 6 in that it does not filter the CASes 
+    either by type systems nor by only sending reachable Feature Structure
+    instances.  But, it doesn't require a ReuseInfo object when doing delta serialization or
+    deserialization,  
+    so it may be more convenient to use when saving
+    delta CASes to files (as opposed to the other use case of 
+    a remote service returning delta CASes to a remote client).</para> 
+  </section>
+  
+  <section id="ugr.ref.compress.use-cases">
+    <title>Use Case cookbook</title>
+    <para>
+    Here are some use cases, together with a suggested approach and example of how to use the APIs.
+    </para>
+    
+    <para>
+      <emphasis role="strong">Save a CAS to an output stream, using form 4 (no type system filtering):</emphasis>
+    </para>
+          <programlisting>// set up an output stream.  In this example, an internal byte array.
+ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
+Serialization.serializeWithCompression(casSrc, baos);
+  // or
+CasIOUtls.save(casSrc, baos, SerialFormat.COMPRESSED);
+</programlisting>
+ 
+      <para><emphasis role="strong">Deserialize from a stream into an existing CAS:</emphasis></para>
+      <programlisting>// assume the stream is a byte array input stream
+// For example, one could be created 
+//   from the above ByteArrayOutputStream as follows:
+ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+// Deserialize into a cas having the identical type system
+Serialization.deserializeCAS(cas, bais);
+  // or
+CasIOUtils.load(bais, aCas);
+</programlisting>
+
+<para>Note that the <code>deserializeCAS(cas, inputStream)</code> method is a general way to
+deserialize into a CAS from an inputStream for all forms of binary serialized data
+(with exceptions as noted above).
+The method reads a common header, and based on what it finds, selects the appropriate
+deserialization routine.</para>
+
+<note><para>The <code>deserialization</code> method with just 2 arguments method doesn't support type filtering, or
+delta cas deserializating for form 6. To do those, see example below. 
+</para>
+</note>
+
+<para><emphasis role="strong">Serialize to an output stream, filtering out some types and/or features:</emphasis>
+</para>
+<para>
+To do this, an additional input specifying the Type System of the target must
+be supplied; this Type System should be a subset of the source CAS's.
+The <code>out</code> parameter may be an OutputStream, a DataOutputStream, or a File.
+</para>
+
+<programlisting>// set up an output stream.  In this example, an internal byte array.
+ByteArrayOutputStream baos = new ByteArrayOutputStream(OUT_BFR_INIT_SZ);
+Serialization.serializeWithCompression(cas, out, tgtTypeSystem);
+</programlisting>
+
+<para><emphasis role="strong">Deserialize with type filtering:</emphasis></para>
+<para>There are 2 type systems involved here: one is the receiving CAS, and the other is the type system
+used to decode the serialized form.  This may optionally be stored with the serialized form:</para>
+<programlisting>CasIOUtils.save(cas, out, SerialFormat.COMPRESSED_FILTERED_TS);
+</programlisting>
+<para>and/or it can be supplied at load time.  Here's two examples of suppling this at load time:</para>
+<programlisting>CasIOUtils.load(input, cas, typeSystem); 
+CasIOUtils.load(input, type_system_serialized_form_input, cas);
+</programlisting>
+
+<para>The reuseInfo should be null unless 
+deserializing a delta CAS, in which case, it must be the reuse info captured when 
+the original CAS was serialized out. 
+If the target type system is identical to the one in the CAS, you may pass null for it.
+If a delta cas is not being received, you must pass null for the reuseInfo.
+</para>
+<programlisting>ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+Serialization.deserializeCAS(cas, bais, tgtTypeSystem, reuseInfo);
+</programlisting> 
+</section>
+  
+
+</chapter>

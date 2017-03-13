@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--
+   ***************************************************************
+   * Licensed to the Apache Software Foundation (ASF) under one
+   * or more contributor license agreements.  See the NOTICE file
+   * distributed with this work for additional information
+   * regarding copyright ownership.  The ASF licenses this file
+   * to you under the Apache License, Version 2.0 (the
+   * "License"); you may not use this file except in compliance
+   * with the License.  You may obtain a copy of the License at
+         *
+   *   http://www.apache.org/licenses/LICENSE-2.0
+   * 
+   * Unless required by applicable law or agreed to in writing,
+   * software distributed under the License is distributed on an
+   * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   * KIND, either express or implied.  See the License for the
+   * specific language governing permissions and limitations
+   * under the License.
+   ***************************************************************
+   -->
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>true</primitive>
+  <annotatorImplementationName>org.apache.uima.ae.multiplier.SimpleCasGenerator</annotatorImplementationName>
+  <analysisEngineMetaData>
+    <name>Simple Text Segmenter</name>
+    <description>Generates specified number of CASes.</description>
+    <version>1.0</version>
+    <vendor>The Apache Software Foundation</vendor>
+    <configurationParameters>
+      <configurationParameter>
+        <name>NumberToGenerate</name>
+        <description>Approximate number of CASes to create.</description>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>StringOne</name>
+        <description>document text</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>StringTwo</name>
+        <description>document text</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>InputFile</name>
+        <description>document text</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>NumberToGenerate</name>
+        <value>
+          <integer>1</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>StringOne</name>
+        <value>
+          <string>Upcoming UIMA Seminars      April 7, 2004 Distillery Lunch Seminar   UIMA and its Metadata   12:00PM-1:00PM in HAW GN-K35.       Dave Ferrucci will give a UIMA overview and discuss the types of component metadata that UIMA components provide.  Jon Lenchner will give a demo of the Text Analysis Engine configurator tool.         April 16, 2004 KM &amp; I Department Tea    Title: An Eclipse-based TAE Configurator Tool   3:00PM-4:30PM in HAW GN-K35 .      Jon Lenchner will demo an Eclipse plugin for configuring TAE descriptors, which will be available soon for you to use.  No more editing XML descriptors by hand!         May 11, 2004 UIMA Tutorial    9:00AM-5:00PM in HAW GN-K35.      This is a full-day, hands-on tutorial on UIMA, covering the development of Text Analysis Engines and Collection Processing Engines, as well as how to include these components in your own applications.</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>StringTwo</name>
+        <value>
+          <string>UIMA Summer School      August 26, 2003   UIMA 101 - The New UIMA Introduction    (Hands-on Tutorial)   9:00AM-5:00PM in HAW GN-K35      August 28, 2003   FROST Tutorial   9:00AM-5:00PM in HAW GN-K35      September 15, 2003   UIMA 201: UIMA Advanced Topics    (Hands-on Tutorial)   9:00AM-5:00PM in HAW 1S-F53      September 17, 2003   The UIMA System Integration Test and Hardening Service   The "SITH"   3:00PM-4:30PM in HAW GN-K35            UIMA Summer School Tutorial and Presentation Details   UIMA 101: The new UIMA tutorial     Tuesday August 26 9:00AM - 4:30PM in GN-K35      UIMA 101 is a hands-on programming tutorial.      UIMA 101 is intended for people who want a first introductory course to UIMA or for people who would like a refresher.      The tutorial covers the same concepts in the first UIMA tutorial given in 3Q 2002 except for some key updates:      1) It uses a new interface to the CAS that makes it more natural to access and update CAS feature structures using ordinary Java objects (i.e., the JCAS) and   2) It uses updated TAE interfaces that give the application developer more control over managing multiple CASs.       Please NOTE expert users of UIMA can skip this one and should consider attending the Advanced Topics tutorial.      Prerequisites for the UIMA 101 Tutorial   1) Java Programming   2) Some experience with Eclipse IDE helpful      FROST Tutorial   August 28  9:00AM - 5:00PM  in GN-K35      Visitors from the FROST team will be here to talk to us about FROST.      UIMA 201: The UIMA Advanced Topics Tutorial   September 15:   9:00AM - 5:30PM in Hawthorne 1S-F53      UIMA 201 will introduce some new UIMA concepts and walk the student through hands-on examples.      The advanced topics tutorial is designed for people who have some experience with UIMA and want    to use new capabilities of UIMA 1.0 to address one or more of the following    Advanced Topics:      1) Collection Processing and Collection Processing Engines (CPEs)   2) Multi-Threading and CAS Pooling   3) Using the UIMA adapter framework to integrate network TAEs with Java TAEs   4) A Semantic Search Application that brings it all together	      Prerequisites for UIMA 201   1) UIMA 101 Tutorial OR Extensive UIMA Experience      The UIMA Integration Test bed Service (The "SITH")   September 17 3:00PM - 4:30PM in HAW GN-K35      We have developed the first version of the UIMA Integration Test bed service.      This service is being developed to help test, evaluate, certify and publish UIMA compliant components.      In this talk we will explain the service and what it is intended to provide the UIMA community. We will address the following topics:      1. SITH Services   2. How to submit components and what to expect in return   3. Overview of the test bed implementation using Collection Processing UIMA and Juru.    4. Next Steps for the SITH</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>InputFile</name>
+        <value>
+          <string>src/test/resources/data/IBM_LifeSciences.xml</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
+    <typeSystemDescription>
+      <types>
+        <typeDescription>
+          <name>foo.Bar</name>
+          <description/>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+        <typeDescription>
+          <name>NamedEntity</name>
+          <description/>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+        <typeDescription>
+          <name>DocumentStructure</name>
+          <description/>
+          <supertypeName>uima.tcas.Annotation</supertypeName>
+        </typeDescription>
+      </types>
+    </typeSystemDescription>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">NamedEntity</type>
+          <type allAnnotatorFeatures="true">DocumentStructure</type>
+        </outputs>
+        <languagesSupported/>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>false</modifiesCas>
+      <multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+      <outputsNewCASes>true</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+</analysisEngineDescription>

@@ -1,0 +1,81 @@
+<resourceManagerConfiguration xmlns="http://uima.apache.org/resourceSpecifier">
+	
+        <!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+
+
+<name>Test Resource Manager Configuration</name>
+<description>This is a test.  This is only a test.</description>
+<vendor>The Apache Software Foundation</vendor>
+<version>0.1</version>
+<externalResources>
+<externalResource>
+<name>MyFileResource</name>
+<description />
+<fileResourceSpecifier>
+<fileUrl>file:testDataFile.dat</fileUrl>
+</fileResourceSpecifier>
+</externalResource>
+<externalResource>
+<name>MyFileLanguageResource</name>
+<description />
+<fileLanguageResourceSpecifier>
+<fileUrlPrefix>file:FileLanguageResource_implTest_data_</fileUrlPrefix>
+<fileUrlSuffix>.dat</fileUrlSuffix>
+</fileLanguageResourceSpecifier>
+</externalResource>
+<externalResource>
+<name>MyResourceObject</name>
+<description />
+<fileResourceSpecifier>
+<fileUrl>file:testDataFile.dat</fileUrl>
+</fileResourceSpecifier>
+<implementationName>org.apache.uima.resource.impl.TestResourceInterface_impl</implementationName>
+</externalResource>
+<externalResource>
+<name>MyLanguageResourceObject</name>
+<description />
+<fileLanguageResourceSpecifier>
+<fileUrlPrefix>file:FileLanguageResource_implTest_data_</fileUrlPrefix>
+<fileUrlSuffix>.dat</fileUrlSuffix>
+</fileLanguageResourceSpecifier>
+<implementationName>org.apache.uima.resource.impl.TestResourceInterface_impl</implementationName>
+</externalResource>
+</externalResources>
+<externalResourceBindings>
+<externalResourceBinding>
+<key>_CollectionReader/TestFileResource</key>
+<resourceName>MyFileResource</resourceName>
+</externalResourceBinding>
+<externalResourceBinding>
+<key>_CasInitializer/TestFileLanguageResource</key>
+<resourceName>MyFileLanguageResource</resourceName>
+</externalResourceBinding>
+<externalResourceBinding>
+<key>TestTae/TestResourceObject</key>
+<resourceName>MyResourceObject</resourceName>
+</externalResourceBinding>
+<externalResourceBinding>
+<key>TestTae/TestLanguageResourceObject</key>
+<resourceName>MyLanguageResourceObject</resourceName>
+</externalResourceBinding>
+</externalResourceBindings>
+</resourceManagerConfiguration>

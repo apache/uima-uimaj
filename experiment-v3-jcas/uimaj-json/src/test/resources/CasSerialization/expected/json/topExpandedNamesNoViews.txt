@@ -1,0 +1,1 @@
+{"_context":{"_type_system":"A URI to TypeSystem","_types":{"TOP":{"_id":"uima.cas.TOP"}}},"_views":{"_InitialView":{"TOP":[{}]}}}
