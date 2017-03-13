@@ -38,7 +38,7 @@
   <groupId>org.apache.uima</groupId>
   <artifactId>uimaj-parent</artifactId>
   <packaging>pom</packaging>
-  <version>3.0.0-alpha03-SNAPSHOT</version>
+  <version>3.0.0-alpha02-SNAPSHOT</version>
   <name>Apache UIMA Java SDK: ${project.artifactId}</name>
   <description>The common parent pom for the uimaj SDK</description>
   <url>${uimaWebsiteUrl}</url>
