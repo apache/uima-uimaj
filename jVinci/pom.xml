@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-alpha02</version> 
+    <version>3.0.0-alpha02-SNAPSHOT</version> 
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
 
@@ -46,13 +46,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha02/jVinci
+      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/jVinci
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/tags/uimaj-3.0.0-alpha02/jVinci
+      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/jVinci
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/tags/uimaj-3.0.0-alpha02/jVinci
+      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/jVinci
     </url>
   </scm>
   
