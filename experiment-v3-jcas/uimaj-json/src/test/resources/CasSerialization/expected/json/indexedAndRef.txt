@@ -1,8 +1,0 @@
-{
-  "_views" : {
-    "_InitialView" : {
-      "RefTypes" : [
-        {"sofa" : 2,  "aFS" : 3 },  3 ] } }, 
-  "_referenced_fss" : {
-    "2" : {"_type" : "Sofa",  "sofaNum" : 1,  "sofaID" : "_InitialView" }, 
-    "3" : {"_type" : "RefTypes",  "sofa" : 2 } } }

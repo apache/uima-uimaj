@@ -285,7 +285,18 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>       
+        </plugin>   
+        
+        <!-- https://issues.apache.org/jira/browse/UIMA-5367 -->
+        <plugin> 
+          <groupId>org.apache.maven.plugins</groupId> 
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version> 
+          <configuration> 
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount> 
+          </configuration> 
+        </plugin>
+          
       </plugins>
     </pluginManagement>
     
