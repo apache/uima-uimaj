@@ -193,6 +193,8 @@ public final class JCasUtil {
   /**
    * Get all annotations of the given type at the specified offsets.
    * 
+   * @param <T>
+   *          the type of annotations to fetch.
    * @param jCas
    *          the CAS containing the annotations.
    * @param type
@@ -211,6 +213,8 @@ public final class JCasUtil {
   /**
    * Get a single annotations of the given type at the specified offsets.
    * 
+   * @param <T>
+   *          the type of annotations to fetch.
    * @param jCas
    *          the CAS containing the annotations.
    * @param type
