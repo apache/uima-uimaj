@@ -980,33 +980,38 @@ public final class CasUtil {
   }
 
   /**
-   * Return an annotation preceding or following of a given reference annotation.
+   * Return an annotation preceding or following of a given reference annotation. If the type
+   * parameter corresponds to the type or a subtype of the anchor annotation and the relative
+   * position is 0, then the anchor annotation is returned.
    * 
    * @param cas
    *          a CAS containing the annotation.
    * @param type
    *          a type.
-   * @param annotation
+   * @param aAnchor
    *          anchor annotation
-   * @param index
+   * @param aPosition
    *          relative position to access. A negative value selects a preceding annotation while a
    *          positive number selects a following annotation.
    * @return the addressed annotation.
    * @throws IndexOutOfBoundsException
-   *           if the relative index points beyond the type index bounds.
+   *           if the relative position points beyond the type index bounds.
+   * @throws IllegalArgumentException
+   *           if the relative position is {@code 0} and the anchor type does not subsume the
+   *           selected type.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
-  public static AnnotationFS selectSingleRelative(CAS cas, Type type, AnnotationFS annotation,
-          int index) {
+  public static AnnotationFS selectSingleRelative(CAS cas, Type type, AnnotationFS aAnchor,
+          int aPosition) {
     if (!cas.getTypeSystem().subsumes(cas.getAnnotationType(), type)) {
       throw new IllegalArgumentException("Type [" + type.getName() + "] is not an annotation type");
     }
 
     // move to first previous annotation
     FSIterator<AnnotationFS> itr = cas.getAnnotationIndex(type).iterator();
-    itr.moveTo(annotation);
+    itr.moveTo(aAnchor);
 
-    if (index < 0) {
+    if (aPosition < 0) {
       // If the insertion point is beyond the index, move back to the last.
       if (!itr.isValid()) {
         itr.moveToLast();
@@ -1020,11 +1025,11 @@ public final class CasUtil {
       // the same offset as the reference annotation.
 
       // make sure we're past the beginning of the reference annotation
-      while (itr.isValid() && itr.get().getEnd() > annotation.getBegin()) {
+      while (itr.isValid() && itr.get().getEnd() > aAnchor.getBegin()) {
         itr.moveToPrevious();
       }
 
-      for (int i = 0; i < (-index - 1) && itr.isValid(); ++i, itr.moveToPrevious()) {
+      for (int i = 0; i < (-aPosition - 1) && itr.isValid(); ++i, itr.moveToPrevious()) {
         // Seeking
       }
 
@@ -1033,7 +1038,7 @@ public final class CasUtil {
       } else {
         return itr.get();
       }
-    } else if (index > 0) {
+    } else if (aPosition > 0) {
       // When seeking forward, there is no need to check if the insertion point is beyond the
       // index. If it was, there would be nothing beyond it that could be found and returned.
       // The moveTo operation also does not yield an iterator being invalid because it points
@@ -1045,11 +1050,11 @@ public final class CasUtil {
       // the same offset as the reference annotation.
       
       // make sure we're past the end of the reference annotation
-      while (itr.isValid() && itr.get().getBegin() < annotation.getEnd()) {
+      while (itr.isValid() && itr.get().getBegin() < aAnchor.getEnd()) {
         itr.moveToNext();
       }
 
-      for (int i = 0; i < (index - 1) && itr.isValid(); ++i, itr.moveToPrevious()) {
+      for (int i = 0; i < (aPosition - 1) && itr.isValid(); ++i, itr.moveToPrevious()) {
         // Seeking
       }
 
@@ -1058,8 +1063,13 @@ public final class CasUtil {
       } else {
         return itr.get();
       }
-    } else {
-      return annotation;
+    } else if (cas.getTypeSystem().subsumes(aAnchor.getType(), type)) {
+      return aAnchor;
+    }
+    else {
+      throw new IllegalArgumentException(
+              "Relative position cannot be 0 if the type of the anchor annotator does not subsume "
+              + "the selected type.");
     }
   }
 
