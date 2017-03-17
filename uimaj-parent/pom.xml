@@ -208,8 +208,10 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
           <configuration>
             <source>8</source>
+            <javadocVersion>1.8</javadocVersion> <!-- https://issues.apache.org/jira/browse/UIMA-5369 -->
           </configuration>
           <executions>
             <execution>
