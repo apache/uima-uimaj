@@ -67,6 +67,7 @@ public final class JCasUtil {
   public static <T extends Annotation> Iterable<T> subiterate(final JCas jCas, final Class<T> type,
           final AnnotationFS container, final boolean ambiguous, final boolean strict) {
     return new Iterable<T>() {
+      @Override
       public Iterator<T> iterator() {
         return JCasUtil.iterator(container, type, ambiguous, strict);
       }
@@ -192,6 +193,8 @@ public final class JCasUtil {
   /**
    * Get all annotations of the given type at the specified offsets.
    * 
+   * @param <T>
+   *          the type of annotations to fetch.
    * @param jCas
    *          the CAS containing the annotations.
    * @param type
@@ -210,6 +213,8 @@ public final class JCasUtil {
   /**
    * Get a single annotations of the given type at the specified offsets.
    * 
+   * @param <T>
+   *          the type of annotations to fetch.
    * @param jCas
    *          the CAS containing the annotations.
    * @param type
@@ -613,29 +618,34 @@ public final class JCasUtil {
   }
 
   /**
-   * Return an annotation preceding or following of a given reference annotation.
+   * Return an annotation preceding or following of a given reference annotation. If the type
+   * parameter corresponds to the type or a subtype of the anchor annotation and the relative
+   * position is 0, then the anchor annotation is returned.
    * 
    * @param <T>
    *          the JCas type.
    * @param aJCas
    *          a JCas.
    * @param aType
-   *          a type.
-   * @param annotation
+   *          type of the annotation to be returned.
+   * @param aAnchor
    *          anchor annotation
-   * @param index
+   * @param aPosition
    *          relative position to access. A negative value selects a preceding annotation while a
    *          positive number selects a following annotation.
    * @return the addressed annotation.
    * @throws IndexOutOfBoundsException
-   *           if the relative index points beyond the type index bounds.
+   *           if the relative position points beyond the type index bounds.
+   * @throws IllegalArgumentException
+   *           if the relative position is {@code 0} and the anchor type does not subsume the
+   *           selected type.
    * @see <a href="package-summary.html#SortOrder">Order of selected feature structures</a>
    */
   @SuppressWarnings("unchecked")
   public static <T extends Annotation> T selectSingleRelative(JCas aJCas, Class<T> aType,
-          AnnotationFS annotation, int index) {
+          AnnotationFS aAnchor, int aPosition) {
     Type t = getType(aJCas, aType);
-    return (T) CasUtil.selectSingleRelative(aJCas.getCas(), t, annotation, index);
+    return (T) CasUtil.selectSingleRelative(aJCas.getCas(), t, aAnchor, aPosition);
   }
 
   /**

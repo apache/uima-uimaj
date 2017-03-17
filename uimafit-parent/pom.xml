@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.apache.uima</groupId>
@@ -17,12 +18,6 @@
 		<uima.version>3.0.0-alpha02-SNAPSHOT</uima.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <!-- 
-         BACKWARD_COMPATIBLE_IMPLEMENTER - patch version (=.=.+)
-         BACKWARD_COMPATIBLE_USER        - minor version (=.+.0)
-         NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
-         -->
-        <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
         <compat.previous.version>2.1.0</compat.previous.version>
 	</properties>
     <!--
@@ -313,42 +308,87 @@
         <profile>
             <id>enforce-compatibility</id>
             <activation>
-                <file><exists>.activate-enforce-compatibility</exists></file>
+        <file>
+          <exists>.activate-enforce-compatibility</exists>
+        </file>
             </activation>
             <build>
                 <pluginManagement>
                     <plugins>
                         <plugin>
-                            <artifactId>maven-enforcer-plugin</artifactId>
-                            <version>1.4.1</version>
-                            <dependencies>
+              <groupId>org.apache.rat</groupId>
+              <artifactId>apache-rat-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>default-cli</id>
+                  <configuration>
+                    <excludes combine.children="append">
+                      <exclude>**/api-change-report/**/*.*</exclude>
+                    </excludes>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+
+        <plugins>
+          <!-- https://siom79.github.io/japicmp/MavenPlugin.html -->
+          <plugin>
+            <groupId>com.github.siom79.japicmp</groupId>
+            <artifactId>japicmp-maven-plugin</artifactId>
+            <version>0.9.3</version>
+            <configuration>
+              <oldVersion>
                                 <dependency>
-                                    <groupId>org.semver</groupId>
-                                    <artifactId>enforcer-rule</artifactId>
-                                    <version>0.9.33</version>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${compat.previous.version}</version>
                                 </dependency>
-                            </dependencies>
+              </oldVersion>
+              <parameter>
+                <onlyModified>true</onlyModified>
+                <!-- filter out classes with impl in their package or class name -->
+                <postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</postAnalysisScript>
+              </parameter>
+            </configuration>
                             <executions>
                                 <execution>
-                                    <id>enforce-compatibility</id>
                                     <phase>verify</phase>
                                     <goals>
-                                        <goal>enforce</goal>
+                  <goal>cmp</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- This copy is to have the api change report included in the source distribution -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-API-change-report</id>
+                <phase>install</phase>  <!-- must follow verify -->
+                <goals>
+                  <goal>run</goal>
                                     </goals>
                                     <configuration>
-                                        <rules>
-                                            <requireBackwardCompatibility implementation="org.semver.enforcer.RequireBackwardCompatibility">
-                                                <previousVersion>${compat.previous.version}</previousVersion>
-                                                <dumpDetails>true</dumpDetails>
-                                                <compatibilityType>${compat.level}</compatibilityType>
-                                            </requireBackwardCompatibility>
-                                        </rules>
+                  <target>
+                    <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" />
+                    <if>
+                      <available file="${project.build.directory}/japicmp/" />
+                      <then>
+                        <copy toDir="${basedir}/api-change-report">
+                          <fileset dir="${project.build.directory}/japicmp" />
+                        </copy>
+                      </then>
+                    </if>
+                  </target>
                                     </configuration>
                                 </execution>
                             </executions>
                         </plugin>
                     </plugins>
-                </pluginManagement>
             </build>
         </profile>
     </profiles>

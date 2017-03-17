@@ -461,6 +461,37 @@ public class JCasUtilTest extends ComponentTestBase {
     assertEquals(secondToken.getBegin(), a.getBegin());
     assertEquals(secondToken.getEnd(), a.getEnd());
   }
+  
+  @Test(expected=IllegalArgumentException.class)
+  public void testSingleRelativeDifferentTypeSamePositionFail() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    for (Token token : tokens) {
+      new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
+    }    
+    
+    Token firstToken = tokens.get(0);
+    selectSingleRelative(jCas, AnalyzedText.class, firstToken, 0);
+  }
+
+  @Test
+  public void testSingleRelativeDifferentTypeSamePositionOk() {
+    String text = "one two three";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    for (Token token : tokens) {
+      new AnalyzedText(jCas, token.getBegin(), token.getEnd()).addToIndexes();
+    }    
+    
+    Token firstToken = tokens.get(0);
+    Token a = selectSingleRelative(jCas, Token.class, firstToken, 0);
+    assertEquals(firstToken, a);
+  }
 
   @Test
   public void testSelectFollowing() {

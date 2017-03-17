@@ -50,6 +50,8 @@ public final class JCasFactory {
    * detected automatically using {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are
    * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
+   * @param aText
+   *          the document text to be set in the new JCas.
    * @return a new JCas
    * @throws UIMAException
    *           if the JCas could not be initialized
@@ -64,6 +66,10 @@ public final class JCasFactory {
    * detected automatically using {@link TypePrioritiesFactory#createTypePriorities()}. Indexes are
    * detected automatically using {@link FsIndexFactory#createFsIndexCollection()}.
    * 
+   * @param aText
+   *          the document text to be set in the new JCas.
+   * @param aLanguage 
+   *          the document language to be set in the new JCas.
    * @return a new JCas
    * @throws UIMAException
    *           if the JCas could not be initialized
