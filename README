@@ -6,7 +6,7 @@
 What is uimaFIT?
 ----------------
 
-uimaFIT is a part of the Apache UIMA(TM) project. uimaFIT can only be used in conjunction with 
+uimaFIT is a part of the Apache UIMA(TM) project. uimaFIT can only be used in conjunction with
 a compatible version of the Java version of the Apache UIMA SDK. For your convenience, the binary
 distribution package of uimaFIT includes all libraries necessary to use uimaFIT. In particular for
 novice users, it is strongly advised to obtain a copy of the full UIMA SDK separately.
@@ -14,26 +14,26 @@ novice users, it is strongly advised to obtain a copy of the full UIMA SDK separ
 uimaFIT is a library that provides factories, injection, and testing utilities for UIMA. The
 following list highlights some of the features uimaFIT provides:
 
- * Factories: simplify instantiating UIMA components programmatically without descriptor files.  
-   For example, to instantiate an AnalysisEngine a call like this could be made: 
-   
+ * Factories: simplify instantiating UIMA components programmatically without descriptor files.
+   For example, to instantiate an AnalysisEngine a call like this could be made:
+
      AnalysisEngineFactory.createEngine(MyAEImpl.class, myTypeSystem, paramName, paramValue, ...)
 
  * Injection: handles the binding of configuration parameter values to the corresponding member
    variables in the analysis engines and handles the binding of external resources. For example,
    to bind a configuration parameter just annotate a member variable with @ConfigurationParameter.
    Then add one line of code to your initialize method:
-   
-     ConfigurationParameterInitializer.initialize(this, uimaContext).  
-     
+
+     ConfigurationParameterInitializer.initialize(this, uimaContext).
+
    This is handled automatically if you extend the uimaFIT JCasAnnotator_ImplBase class.
 
  * Testing: uimaFIT simplifies testing in a number of ways described in the documentation. By making
-   it easy to instantiate your components without descriptor files a large amount of 
+   it easy to instantiate your components without descriptor files a large amount of
    difficult-to-maintain and unnecessary XML can be eliminated from your test code. This makes tests
    easier to write and maintain. Also, running components as a pipeline can be accomplished with a
-   method call like this: 
-   
+   method call like this:
+
      SimplePipeline.runPipeline(reader, ae1, ..., aeN, consumer1, ... consumerN)
 
 
@@ -42,7 +42,7 @@ What's New in 2.3.0
 
 uimaFIT 2.3.0 is a minor feature and bugfix release to uimaFIT 2.2.0. It should should serve as a
 drop-in replacement for previous uimaFIT 2.x versions. Mind that uimaFIT 2.3.0 now requires UIMA
-2.9.1.
+2.9.0.
 
 A full list of issues addressed in this release can be found on the Apache issue tracker:
 
@@ -51,7 +51,7 @@ A full list of issues addressed in this release can be found on the Apache issue
 Supported Platforms
 -------------------
 
-uimaFIT requires Java 1.7 or higher, UIMA 2.9.1 or higher, and the Spring Framework 3.2.16 or higher.
+uimaFIT requires Java 1.7 or higher, UIMA 2.9.0 or higher, and the Spring Framework 3.2.16 or higher.
 
 
 Availability
@@ -87,11 +87,11 @@ uimafit-legacy-support - allows uimaFIT 2.x.0 to use uimaFIT 1.4.x meta data lik
 uimafit-spring         - an experimental module serving as a proof-of-concept for the integration of
                          UIMA with the Spring Framework. It is currently not considered finished and
                          uses invasive reflection in order to patch the UIMA framework such that it
-                         passes all components created by UIMA through Spring to provide for the 
-                         wiring of Spring context dependencies. This module is made available for 
-                         the adventurous but currently not considered stable, finished, or even a 
-                         proper part of the package. E.g. it is not included in the binary 
-                         distribution package. 
+                         passes all components created by UIMA through Spring to provide for the
+                         wiring of Spring context dependencies. This module is made available for
+                         the adventurous but currently not considered stable, finished, or even a
+                         proper part of the package. E.g. it is not included in the binary
+                         distribution package.
 
 
 Reference
@@ -115,11 +115,11 @@ appropriate:
 History
 -------
 
-Since end of 2012, uimaFIT is part of the Apache UIMA project. 
+Since end of 2012, uimaFIT is part of the Apache UIMA project.
 
 Apache uimaFIT was formerly known as uimaFIT, which in turn was formerly known as UUTUC.
 
-Before uimaFIT has become an sub-project within the Apache UIMA project, it is was collaborative 
+Before uimaFIT has become an sub-project within the Apache UIMA project, it is was collaborative
 effort between the Center for Computational Pharmacology at the University of Colorado Denver, the
 Center for Computational Language and Education Research at the University of Colorado at Boulder,
 and the Ubiquitous Knowledge Processing (UKP) Lab at the Technische Universität Darmstadt.
@@ -130,11 +130,11 @@ Philip Ogren, University of Colorado, USA
 Richard Eckart de Castilho, Technische Universität Darmstadt, Germany
 Steven Bethard, Stanford University, USA
 
-with contributions from Niklas Jakob, Fabio Mancinelli, Chris Roeder, Philipp Wetzler, Shuo Yang, 
+with contributions from Niklas Jakob, Fabio Mancinelli, Chris Roeder, Philipp Wetzler, Shuo Yang,
 Torsten Zesch.
 
 
 Support
 -------
 
-Please address questions to user@uima.apache.org.  
+Please direct questions to user@uima.apache.org.
