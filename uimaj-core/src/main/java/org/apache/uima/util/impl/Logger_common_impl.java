@@ -500,7 +500,7 @@ public abstract class Logger_common_impl implements Logger {
   /**
    * @param msgSupplier A function, which when called, produces the desired log message
    */
-  void debug(Supplier<String> msgSupplier) {
+  public void debug(Supplier<String> msgSupplier) {
     if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) {
       log(null, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, null);
     }   
@@ -510,7 +510,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param msgSupplier A function, which when called, produces the desired log message
    * @param throwable the exception to log
    */
-  void debug(Supplier<String> msgSupplier, Throwable throwable) {
+  public void debug(Supplier<String> msgSupplier, Throwable throwable) {
     if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) {
       log(null, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, throwable);
     }   
@@ -531,7 +531,7 @@ public abstract class Logger_common_impl implements Logger {
   * @param marker the marker data specific to this log statement
   * @param msgSupplier A function, which when called, produces the desired log message
   */
- void debug(Marker marker, Supplier<String> msgSupplier) {
+ public void debug(Marker marker, Supplier<String> msgSupplier) {
    if (isLoggable(Level.DEBUG, marker) && isOK(Level.DEBUG)) {
      log(marker, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, null);
    }   
@@ -541,7 +541,7 @@ public abstract class Logger_common_impl implements Logger {
   * @param marker the marker data specific to this log statement
   * @param msgSupplier A function, which when called, produces the desired log message
   */
- void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+ public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
    if (isLoggable(Level.DEBUG, marker) && isOK(Level.DEBUG)) {
      log(marker, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, throwable);
    }   
@@ -624,7 +624,7 @@ public abstract class Logger_common_impl implements Logger {
   /**
    * @param msgSupplier A function, which when called, produces the desired log message
    */
-  void error(Supplier<String> msgSupplier) {
+  public void error(Supplier<String> msgSupplier) {
     if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) {
       log(null, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
     }   
@@ -634,7 +634,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param msgSupplier A function, which when called, produces the desired log message
    * @param throwable the exception to log
    */
-  void error(Supplier<String> msgSupplier, Throwable throwable) {
+  public void error(Supplier<String> msgSupplier, Throwable throwable) {
     if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) {
       log(null, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
     }   
@@ -655,400 +655,426 @@ public abstract class Logger_common_impl implements Logger {
   * @param marker the marker data specific to this log statement
   * @param msgSupplier A function, which when called, produces the desired log message
   */
- void error(Marker marker, Supplier<String> msgSupplier) {
-   if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
-     log(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
-   }   
- }
- 
- /**
-  * @param marker the marker data specific to this log statement
-  * @param msgSupplier A function, which when called, produces the desired log message
-  */
- void error(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-   if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
-     log(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
-   }   
- }
-    
-   
+  public void error(Marker marker, Supplier<String> msgSupplier) {
+    if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
+      log(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
+    }
+  }
+
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void error(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
+      log(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
+    }
+  }
+
   // ---------------------- INFO
- 
- @Override
- public void info(String arg0) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
-     log(null, fqcnCmn, Level.INFO, arg0, null, null);
-   }
- }
 
- @Override
- public void info(String arg0, Object arg1) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) { 
-     log(null, fqcnCmn, Level.INFO, arg0, new Object[] {arg1}, null);
-   }
- }
-
- @Override
- public void info(String arg0, Object... arg1) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) { 
-     log(null, fqcnCmn, Level.INFO, arg0, arg1, null);
-   }
- }
-
- @Override
- public void info(String arg0, Throwable arg1) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) { 
-     log(null, fqcnCmn, Level.INFO, arg0, null, arg1);
-   }
- }
-
- @Override
- public void info(Marker arg0, String arg1) {
-   if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
-     log(arg0, fqcnCmn, Level.INFO, arg1, null, null);
-   }
- }
-
- @Override
- public void info(String arg0, Object arg1, Object arg2) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
-     log(null, fqcnCmn, Level.INFO, arg0, new Object[] {arg1}, null);
-   }
- }
-
- @Override
- public void info(Marker arg0, String arg1, Object arg2) {
-   if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
-     log(arg0, fqcnCmn, Level.INFO, arg1, new Object[] {arg2}, null);
-   }
- }
-
- @Override
- public void info(Marker arg0, String arg1, Object... arg2) {
-   if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
-     log(arg0, fqcnCmn, Level.INFO, arg1, arg2, null);
-   }
- }
-
- @Override
- public void info(Marker arg0, String arg1, Throwable arg2) {
-   if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
-     log(arg0, fqcnCmn, Level.INFO, arg1, null, arg2);
-   }
- }
-
- @Override
- public void info(Marker arg0, String arg1, Object arg2, Object arg3) {
-   if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
-     log(arg0, fqcnCmn, Level.INFO, arg1, new Object[] {arg2}, null);
-   }
- }
-
- // methods from log4j 2 using Java 8 suppliers
-
- /**
-  * @param msgSupplier A function, which when called, produces the desired log message
-  */
- void info(Supplier<String> msgSupplier) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
-     log(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
-   }   
- }
-
- /**
-  * @param msgSupplier A function, which when called, produces the desired log message
-  * @param throwable the exception to log
-  */
- void info(Supplier<String> msgSupplier, Throwable throwable) {
-   if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
-     log(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
-   }   
- }
-
- /**
-  * @param marker the marker data specific to this log statement
-  * @param message the message to log
-  * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
-  */
- public void info(Marker marker, String message, Supplier<?>... paramSuppliers) {
-   if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
-     log(marker, fqcnCmn, Level.INFO, message, suppliersToArray(paramSuppliers), null);
-   }  
- }
- 
-/**
- * @param marker the marker data specific to this log statement
- * @param msgSupplier A function, which when called, produces the desired log message
- */
-void info(Marker marker, Supplier<String> msgSupplier) {
-  if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
-    log(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
-  }   
-}
-
-/**
- * @param marker the marker data specific to this log statement
- * @param msgSupplier A function, which when called, produces the desired log message
- */
-void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-  if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
-    log(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
-  }   
-}
-   
-
-
-
-  // ----------------------  TRACE
-
-@Override
-public void trace(String arg0) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(null, fqcnCmn, Level.TRACE, arg0, null, null);
+  @Override
+  public void info(String arg0) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, arg0, null, null);
+    }
   }
-}
 
-@Override
-public void trace(String arg0, Object arg1) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) { 
-    log(null, fqcnCmn, Level.TRACE, arg0, new Object[] {arg1}, null);
+  @Override
+  public void info(String arg0, Object arg1) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, arg0, new Object[] { arg1 }, null);
+    }
   }
-}
 
-@Override
-public void trace(String arg0, Object... arg1) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) { 
-    log(null, fqcnCmn, Level.TRACE, arg0, arg1, null);
+  @Override
+  public void info(String arg0, Object... arg1) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, arg0, arg1, null);
+    }
   }
-}
 
-@Override
-public void trace(String arg0, Throwable arg1) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) { 
-    log(null, fqcnCmn, Level.TRACE, arg0, null, arg1);
+  @Override
+  public void info(String arg0, Throwable arg1) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, arg0, null, arg1);
+    }
   }
-}
 
-@Override
-public void trace(Marker arg0, String arg1) {
-  if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
-    log(arg0, fqcnCmn, Level.TRACE, arg1, null, null);
+  @Override
+  public void info(Marker arg0, String arg1) {
+    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+      log(arg0, fqcnCmn, Level.INFO, arg1, null, null);
+    }
   }
-}
 
-@Override
-public void trace(String arg0, Object arg1, Object arg2) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(null, fqcnCmn, Level.TRACE, arg0, new Object[] {arg1}, null);
+  @Override
+  public void info(String arg0, Object arg1, Object arg2) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, arg0, new Object[] { arg1 }, null);
+    }
   }
-}
 
-@Override
-public void trace(Marker arg0, String arg1, Object arg2) {
-  if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
-    log(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] {arg2}, null);
+  @Override
+  public void info(Marker arg0, String arg1, Object arg2) {
+    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+      log(arg0, fqcnCmn, Level.INFO, arg1, new Object[] { arg2 }, null);
+    }
   }
-}
 
-@Override
-public void trace(Marker arg0, String arg1, Object... arg2) {
-  if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
-    log(arg0, fqcnCmn, Level.TRACE, arg1, arg2, null);
+  @Override
+  public void info(Marker arg0, String arg1, Object... arg2) {
+    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+      log(arg0, fqcnCmn, Level.INFO, arg1, arg2, null);
+    }
   }
-}
 
-@Override
-public void trace(Marker arg0, String arg1, Throwable arg2) {
-  if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
-    log(arg0, fqcnCmn, Level.TRACE, arg1, null, arg2);
+  @Override
+  public void info(Marker arg0, String arg1, Throwable arg2) {
+    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+      log(arg0, fqcnCmn, Level.INFO, arg1, null, arg2);
+    }
   }
-}
 
-@Override
-public void trace(Marker arg0, String arg1, Object arg2, Object arg3) {
-  if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
-    log(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] {arg2}, null);
+  @Override
+  public void info(Marker arg0, String arg1, Object arg2, Object arg3) {
+    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+      log(arg0, fqcnCmn, Level.INFO, arg1, new Object[] { arg2 }, null);
+    }
   }
-}
 
-// methods from log4j 2 using Java 8 suppliers
+  // methods from log4j 2 using Java 8 suppliers
 
-/**
- * @param msgSupplier A function, which when called, produces the desired log message
- */
-void trace(Supplier<String> msgSupplier) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
-  }   
-}
+  /**
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void info(Supplier<String> msgSupplier) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
+    }
+  }
 
-/**
- * @param msgSupplier A function, which when called, produces the desired log message
- * @param throwable the exception to log
- */
-void trace(Supplier<String> msgSupplier, Throwable throwable) {
-  if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
-    log(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
-  }   
-}
+  /**
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   * @param throwable
+   *          the exception to log
+   */
+  public void info(Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+      log(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
+    }
+  }
 
-/**
- * @param marker the marker data specific to this log statement
- * @param message the message to log
- * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
- */
-public void trace(Marker marker, String message, Supplier<?>... paramSuppliers) {
-  if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
-    log(marker, fqcnCmn, Level.TRACE, message, suppliersToArray(paramSuppliers), null);
-  }  
-}
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param message
+   *          the message to log
+   * @param paramSuppliers
+   *          An array of functions, which when called, produce the desired log
+   *          message parameters.
+   */
+  public void info(Marker marker, String message, Supplier<?>... paramSuppliers) {
+    if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
+      log(marker, fqcnCmn, Level.INFO, message, suppliersToArray(paramSuppliers), null);
+    }
+  }
 
-/**
-* @param marker the marker data specific to this log statement
-* @param msgSupplier A function, which when called, produces the desired log message
-*/
-void trace(Marker marker, Supplier<String> msgSupplier) {
- if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
-   log(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
- }   
-}
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void info(Marker marker, Supplier<String> msgSupplier) {
+    if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
+      log(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
+    }
+  }
 
-/**
-* @param marker the marker data specific to this log statement
-* @param msgSupplier A function, which when called, produces the desired log message
-*/
-void trace(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
- if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
-   log(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
- }   
-}
-  
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
+      log(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
+    }
+  }
 
+  // ---------------------- TRACE
+
+  @Override
+  public void trace(String arg0) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, arg0, null, null);
+    }
+  }
+
+  @Override
+  public void trace(String arg0, Object arg1) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, arg0, new Object[] { arg1 }, null);
+    }
+  }
+
+  @Override
+  public void trace(String arg0, Object... arg1) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, arg0, arg1, null);
+    }
+  }
+
+  @Override
+  public void trace(String arg0, Throwable arg1) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, arg0, null, arg1);
+    }
+  }
+
+  @Override
+  public void trace(Marker arg0, String arg1) {
+    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+      log(arg0, fqcnCmn, Level.TRACE, arg1, null, null);
+    }
+  }
+
+  @Override
+  public void trace(String arg0, Object arg1, Object arg2) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, arg0, new Object[] { arg1 }, null);
+    }
+  }
+
+  @Override
+  public void trace(Marker arg0, String arg1, Object arg2) {
+    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+      log(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] { arg2 }, null);
+    }
+  }
+
+  @Override
+  public void trace(Marker arg0, String arg1, Object... arg2) {
+    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+      log(arg0, fqcnCmn, Level.TRACE, arg1, arg2, null);
+    }
+  }
+
+  @Override
+  public void trace(Marker arg0, String arg1, Throwable arg2) {
+    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+      log(arg0, fqcnCmn, Level.TRACE, arg1, null, arg2);
+    }
+  }
+
+  @Override
+  public void trace(Marker arg0, String arg1, Object arg2, Object arg3) {
+    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+      log(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] { arg2 }, null);
+    }
+  }
+
+  // methods from log4j 2 using Java 8 suppliers
+
+  /**
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void trace(Supplier<String> msgSupplier) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
+    }
+  }
+
+  /**
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   * @param throwable
+   *          the exception to log
+   */
+  public void trace(Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+      log(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
+    }
+  }
+
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param message
+   *          the message to log
+   * @param paramSuppliers
+   *          An array of functions, which when called, produce the desired log
+   *          message parameters.
+   */
+  public void trace(Marker marker, String message, Supplier<?>... paramSuppliers) {
+    if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
+      log(marker, fqcnCmn, Level.TRACE, message, suppliersToArray(paramSuppliers), null);
+    }
+  }
+
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void trace(Marker marker, Supplier<String> msgSupplier) {
+    if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
+      log(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
+    }
+  }
+
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void trace(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
+      log(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
+    }
+  }
 
   // ---------------------- WARN
-@Override
-public void warn(String arg0) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
-    log(null, fqcnCmn, Level.WARNING, arg0, null, null);
+  @Override
+  public void warn(String arg0) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, arg0, null, null);
+    }
   }
-}
 
-@Override
-public void warn(String arg0, Object arg1) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) { 
-    log(null, fqcnCmn, Level.WARNING, arg0, new Object[] {arg1}, null);
+  @Override
+  public void warn(String arg0, Object arg1) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, arg0, new Object[] { arg1 }, null);
+    }
   }
-}
 
-@Override
-public void warn(String arg0, Object... arg1) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) { 
-    log(null, fqcnCmn, Level.WARNING, arg0, arg1, null);
+  @Override
+  public void warn(String arg0, Object... arg1) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, arg0, arg1, null);
+    }
   }
-}
 
-@Override
-public void warn(String arg0, Throwable arg1) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) { 
-    log(null, fqcnCmn, Level.WARNING, arg0, null, arg1);
+  @Override
+  public void warn(String arg0, Throwable arg1) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, arg0, null, arg1);
+    }
   }
-}
 
-@Override
-public void warn(Marker arg0, String arg1) {
-  if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
-    log(arg0, fqcnCmn, Level.WARNING, arg1, null, null);
+  @Override
+  public void warn(Marker arg0, String arg1) {
+    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+      log(arg0, fqcnCmn, Level.WARNING, arg1, null, null);
+    }
   }
-}
 
-@Override
-public void warn(String arg0, Object arg1, Object arg2) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
-    log(null, fqcnCmn, Level.WARNING, arg0, new Object[] {arg1}, null);
+  @Override
+  public void warn(String arg0, Object arg1, Object arg2) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, arg0, new Object[] { arg1 }, null);
+    }
   }
-}
 
-@Override
-public void warn(Marker arg0, String arg1, Object arg2) {
-  if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
-    log(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] {arg2}, null);
+  @Override
+  public void warn(Marker arg0, String arg1, Object arg2) {
+    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+      log(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] { arg2 }, null);
+    }
   }
-}
 
-@Override
-public void warn(Marker arg0, String arg1, Object... arg2) {
-  if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
-    log(arg0, fqcnCmn, Level.WARNING, arg1, arg2, null);
+  @Override
+  public void warn(Marker arg0, String arg1, Object... arg2) {
+    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+      log(arg0, fqcnCmn, Level.WARNING, arg1, arg2, null);
+    }
   }
-}
 
-@Override
-public void warn(Marker arg0, String arg1, Throwable arg2) {
-  if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
-    log(arg0, fqcnCmn, Level.WARNING, arg1, null, arg2);
+  @Override
+  public void warn(Marker arg0, String arg1, Throwable arg2) {
+    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+      log(arg0, fqcnCmn, Level.WARNING, arg1, null, arg2);
+    }
   }
-}
 
-@Override
-public void warn(Marker arg0, String arg1, Object arg2, Object arg3) {
-  if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
-    log(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] {arg2}, null);
+  @Override
+  public void warn(Marker arg0, String arg1, Object arg2, Object arg3) {
+    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+      log(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] { arg2 }, null);
+    }
   }
-}
 
-// methods from log4j 2 using Java 8 suppliers
+  // methods from log4j 2 using Java 8 suppliers
 
-/**
- * @param msgSupplier A function, which when called, produces the desired log message
- */
-void warn(Supplier<String> msgSupplier) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
-    log(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
-  }   
-}
+  /**
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void warn(Supplier<String> msgSupplier) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
+    }
+  }
 
-/**
- * @param msgSupplier A function, which when called, produces the desired log message
- * @param throwable the exception to log
- */
-void warn(Supplier<String> msgSupplier, Throwable throwable) {
-  if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
-    log(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
-  }   
-}
+  /**
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   * @param throwable
+   *          the exception to log
+   */
+  public void warn(Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+      log(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
+    }
+  }
 
-/**
- * @param marker the marker data specific to this log statement
- * @param message the message to log
- * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
- */
-public void warn(Marker marker, String message, Supplier<?>... paramSuppliers) {
-  if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
-    log(marker, fqcnCmn, Level.WARNING, message, suppliersToArray(paramSuppliers), null);
-  }  
-}
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param message
+   *          the message to log
+   * @param paramSuppliers
+   *          An array of functions, which when called, produce the desired log
+   *          message parameters.
+   */
+  public void warn(Marker marker, String message, Supplier<?>... paramSuppliers) {
+    if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
+      log(marker, fqcnCmn, Level.WARNING, message, suppliersToArray(paramSuppliers), null);
+    }
+  }
 
-/**
-* @param marker the marker data specific to this log statement
-* @param msgSupplier A function, which when called, produces the desired log message
-*/
-void warn(Marker marker, Supplier<String> msgSupplier) {
-  if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
-    log(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
-  }    
-}
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void warn(Marker marker, Supplier<String> msgSupplier) {
+    if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
+      log(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
+    }
+  }
 
-/**
-* @param marker the marker data specific to this log statement
-* @param msgSupplier A function, which when called, produces the desired log message
-*/
-void warn(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-  if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
-    log(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
-  }   
-}
-  
-
-
-  
+  /**
+   * @param marker
+   *          the marker data specific to this log statement
+   * @param msgSupplier
+   *          A function, which when called, produces the desired log message
+   */
+  public void warn(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
+    if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
+      log(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
+    }
+  }
+ 
 }
