@@ -197,6 +197,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private static final PrettyPrinterConfiguration printCu = 
       new PrettyPrinterConfiguration();
   static { printCu.setIndent("  "); }
+  
+  private static final String ERROR_DECOMPILING = "!!! ERROR:";
     
   /*****************
    * Candidate
@@ -425,6 +427,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    ***********************************/
   void run(String[] args) {
     CommandLineParser clp = parseCommandArgs(args);
+    
+    System.out.format("Output top directory: %s%n", outputDirectory);
     
     // clear output dir
     FileUtils.deleteRecursive(new File(outputDirectory));
@@ -783,7 +787,19 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   //    System.out.println("Migrating source before migration:\n");
   //    System.out.println(source);
   //    System.out.println("\n\n\n");
-  
+      if (source.startsWith(ERROR_DECOMPILING)) {
+        System.err.println("Decompiling failed, got: " + source);
+        System.err.println("Please check the migrateClasspath");
+        System.err.println(" argument was: " + migrateClasspath);
+        System.err.println("  Value used was:");
+        URL[] urls = Misc.classpath2urls(migrateClasspath);
+        for (URL url : urls) {
+          System.err.println("    " + url.toString());
+        }
+        System.err.println("Skipping this component");
+        return;
+      }
+      
       StringReader sr = new StringReader(source);
       try {
         cu = JavaParser.parse(sr);
@@ -829,6 +845,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           System.out.print("d");
         }
       } catch (IOException e) {
+        e.printStackTrace();
         throw new RuntimeException(e);
       }
     } else {
