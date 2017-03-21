@@ -72,7 +72,7 @@ import org.xml.sax.SAXParseException;
  * an inner class - one per serialize call.
  * 
  * These classes are the common parts of serialization between XMI and JSON, mainly having to do with
- *   1) enquuing the FS to be serialized
+ *   1) enqueueing the FS to be serialized
  *   2) serializing according to their types and features
  *     
  * 
