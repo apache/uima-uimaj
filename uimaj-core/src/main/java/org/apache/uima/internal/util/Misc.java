@@ -22,6 +22,7 @@ package org.apache.uima.internal.util;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -30,7 +31,9 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +42,7 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.regex.Pattern;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.internal.util.function.Runnable_withException;
@@ -115,16 +119,84 @@ public class Misc {
   }
   
   public final static MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
+ 
   
+  private static FilenameFilter jarFilter = new FilenameFilter() {
+    public boolean accept(File dir, String name) {
+      name = name.toLowerCase();
+      return (name.endsWith(".jar"));
+    }
+  };
+
+  public static URL[] getURLs(String s) throws MalformedURLException, IOException, URISyntaxException {
+    List<URL> urls = new ArrayList<URL>();
+    String[] spaths = s.split(File.pathSeparator);
+    for (String p : spaths) {
+      addUrlsFromPath(p, urls);
+    }
+    return urls.toArray(new URL[urls.size()]);
+  }
+  
+  /**
+   * Given a String corresponding to one file path, which may be a directory, or may end in *,
+   * add the URLS it represents to the urls argument.
+   * 
+   * @param p a Jar path, or a Directory, or a directory ending with a directory-separator and a single *
+   *        p may be relative or absolute, following the definition of same in the Java File class.
+   * @param urls the list to add the URLs to
+   * @throws MalformedURLException -
+   * @throws IOException -
+   * @throws URISyntaxException -
+   */
+  public static void addUrlsFromPath(String p, List<URL> urls) throws MalformedURLException, IOException, URISyntaxException {
+    boolean mustBeDirectory = false;
+    if (p.endsWith("*")) {
+      if (p.length() < 2 || p.charAt(p.length() - 2) != File.separatorChar) {
+        UIMAFramework.getLogger().error("Path Specification \"{0}\" invalid.", p);
+        throw new MalformedURLException();
+      }
+      p = p.substring(0, p.length() - 2);
+      mustBeDirectory = true;
+    }
+    
+    File pf = new File(p);
+    if (pf.isDirectory()) {
+      File[] jars = pf.listFiles(jarFilter);
+      if (jars.length == 0) {
+        // this is the case where the user wants to include
+        // a directory containing non-jar'd .class files
+        addPathToURLs(urls, pf); 
+      } else {
+        for (File f : jars) {
+          addPathToURLs(urls, f);
+        }
+      }
+    } else if (mustBeDirectory) {
+      UIMAFramework.getLogger().error("Path Specification \"{0}\" must be a directory.", p);
+      throw new MalformedURLException();
+    } else if (p.toLowerCase().endsWith(".jar")) {
+      addPathToURLs(urls, pf);
+    } else {
+      // have a segment which does not denote a jar - skip it but note that 
+      UIMAFramework.getLogger().warn("Skipping adding \"{0}\" to URLs", p);
+    }
+  }
+  
+  private static void addPathToURLs(List<URL> urls, File cp) throws MalformedURLException {
+    URL url = cp.toURI().toURL();
+    urls.add(url);
+  }
+  
+  /**
+   * Convert a classpath having multiple parts separated by the pathSeparator,
+   * expanding paths that end with "*" as needed.
+   * @param classpath - to scan and convert to list of URLs
+   * @return the urls
+   */
   public static URL[] classpath2urls (String classpath) {
     try {
-      String [] sa = classpath.split(File.pathSeparator);
-      URL[] r = new URL[sa.length];
-      for (int i = 0; i < sa.length; i++) {
-        r[i] = new File(sa[i]).toURI().toURL();
-      }
-      return r;
-    } catch (MalformedURLException e) {
+      return getURLs(classpath);
+    } catch (IOException | URISyntaxException e) {
       throw new RuntimeException(e);
     }
   }
