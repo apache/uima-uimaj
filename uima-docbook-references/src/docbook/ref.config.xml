@@ -104,6 +104,25 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
+           <entry><para>Use built-in Java Logger as default back-end</para></entry>
+           
+           <entry><para><code>uima.use_jul_as_default_uima_logger</code></para>
+           
+                  <para>See <ulink url="https://issues.apache.org/jira/browse/UIMA-5381">UIMA-5381</ulink>.
+                  The standard UIMA logger uses an slf4j implementation, which, in turn hooks up to 
+                  a back end implementation based on what can be found in the class path (see slf4j documentation).
+                  If no backend implementation is found, the slf4j default is to use a NOP logger back end 
+                  which discards all logging.</para>
+                  
+                  <para>When this flag is specified, the behavior of the UIMA logger 
+                        is altered to use the built-in-to-Java logging implementation 
+                        as the back end for the UIMA logger.
+                  </para></entry>
+           <entry><para>3.0.0</para></entry>
+         </row>
+
+         <!-- ******************************************************************************* -->
+         <row>
            <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
            
            <entry><para><code>uima.allow_duplicate_add_to_indexes</code> (default is false)</para>
@@ -204,11 +223,13 @@ under the License.
            <entry><para>2.7.0</para></entry>
          </row>
 
-         <row>
-           <entry spanname="fullwidth"><emphasis role="bold">Measurement properties</emphasis></entry>
-         </row>         
+
          <!-- ******************************************************************************* -->
          <!--   DISABLED FOR NOW 
+         <row>
+           <entry spanname="fullwidth"><emphasis role="bold">Measurement properties</emphasis></entry>
+         </row>  
+                
          <row>
            <entry><para>Measure index flattening optimization</para></entry>
            

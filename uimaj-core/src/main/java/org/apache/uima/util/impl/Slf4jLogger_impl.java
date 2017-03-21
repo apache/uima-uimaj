@@ -39,30 +39,51 @@ import org.slf4j.spi.LocationAwareLogger;
  */
 public class Slf4jLogger_impl extends Logger_common_impl {
   
+  public static final String DEFAULT_JUL = "uima.use_jul_as_default_uima_logger";
+  public static final boolean IS_DEFAULT_JUL = Misc.getNoValueSystemProperty(DEFAULT_JUL);
+  
   static final boolean isJul;
   static final boolean isLog4j;
   
   static {
-    boolean tb;
-    org.slf4j.Logger tempLogger = org.slf4j.LoggerFactory.getLogger("org.apache.uima");
-    try {  // for jdk14 impl
-      Class<?> clazz = Class.forName("org.slf4j.impl.JDK14LoggerAdapter");
-      tb = clazz != null && clazz.isAssignableFrom(tempLogger.getClass());
-    } catch (ClassNotFoundException e1) {
-      tb = false;
+    Class<?> staticLoggerBinderClass = null;
+    try {
+      staticLoggerBinderClass = Class.forName("org.slf4j.impl.StaticLoggerBinder");
+    } catch (Exception e) {
+      // empty on purpose, if class not present, no back end logger, and staticLoggerBinderClass is left as null
     }
-    isJul = tb;
     
-    tb = false;
-    if (!isJul) {
-      try {  // for log4j 2 impl
-        Class<?> clazz = Class.forName("org.apache.logging.slf4j.Log4jLogger");
-        tb = null != clazz && clazz.isAssignableFrom(tempLogger.getClass());
+    if (null == staticLoggerBinderClass) {
+      if (IS_DEFAULT_JUL) {
+        isJul = true;
+        isLog4j = false;
+      } else {
+        isJul = false;
+        isLog4j = false;
+      }
+    } else {
+      // have some backend binding
+      boolean tb;
+      org.slf4j.Logger tempLogger = org.slf4j.LoggerFactory.getLogger("org.apache.uima");
+      try {  // for jdk14 impl
+        Class<?> clazz = Class.forName("org.slf4j.impl.JDK14LoggerAdapter");
+        tb = clazz != null && clazz.isAssignableFrom(tempLogger.getClass());
       } catch (ClassNotFoundException e1) {
         tb = false;
       }
+      isJul = tb;
+      
+      tb = false;
+      if (!isJul) {
+        try {  // for log4j 2 impl
+          Class<?> clazz = Class.forName("org.apache.logging.slf4j.Log4jLogger");
+          tb = null != clazz && clazz.isAssignableFrom(tempLogger.getClass());
+        } catch (ClassNotFoundException e1) {
+          tb = false;
+        }
+      }
+      isLog4j = tb;      
     }
-    isLog4j = tb;
   }
   
   /**
