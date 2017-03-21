@@ -168,7 +168,8 @@ import com.github.javaparser.printer.PrettyPrinterConfiguration;
  *   Mode 2: Given sources-roots 
  *     Duplicates are migrated, results are put into a v3/nnn/ rest-of-path-identical
  * 
- * Note: Each run clears the output directory before starting the migration.
+ * <p>Note: Each run clears the output directory before starting the migration.
+ * <p>Note: classpath may be specified using -migrateClassPath or as the class path used to run this tool. 
  */
 public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
