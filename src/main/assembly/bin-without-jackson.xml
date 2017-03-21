@@ -320,11 +320,13 @@ under the License.
       <directory>uimaj-core/api-change-report</directory>
       <outputDirectory>uimaj-core/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
     <fileSet>
       <directory>uimaj-cpe/api-change-report</directory>
       <outputDirectory>uimaj-cpe/api-change-report</outputDirectory>
       <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
     </fileSet>
 
   </fileSets>
