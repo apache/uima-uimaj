@@ -112,6 +112,11 @@ public class UimaBootstrap {
   };
   
   private static void addUrlsFromPath(String p, List<URL> urls) throws MalformedURLException, IOException, URISyntaxException {
+    // handle case where the path part is written x/y/z/*  by dropping the /* at the end
+    // This is the form used by Java itself for classpath
+    if (p.endsWith("*") && p.length() > 2 && p.charAt(p.length() - 2) == File.separatorChar) {
+      p = p.substring(0, p.length() - 2);
+    }
     File pf = new File(p);
     if (pf.isDirectory()) {
       File[] jars = pf.listFiles(jarFilter);
