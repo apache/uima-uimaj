@@ -80,13 +80,18 @@
 			</p>
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
-<p>This is mainly a bug fix release.</p>
+<p>The major changes in this release include:</p>
 
-<p>A new chapter on External Resources was added to the UIMA Reference book.</p>
-
-<p>Some new methods to better manage External Resources were added to the ResourceManager,
-including a destroy() method that may be called by users to destroy external resources that
-are being managed by a particular ResourceManager.</p>  
+<ul><li>new support for using parameter strings
+containing references to external override values within UIMA Descriptor <code>import</code> statements
+and within the fileUrl value of fileResourceSpecifiers.</li>
+<li>support for searching the classpath and UIMA Datapath when loading an external overrides file.</li>
+<li>to improve integration with Java, the JCas cover classes for the built-in UIMA types FSArray, FSList, 
+StringArray, and StringList now support the Iterable interface.</li>
+<li>a new report on API changes,
+<a target="_blank" href="api-change-report.html">api-change-report.html</a>,
+is included as part of the release.</li>
+</ul>
   
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
