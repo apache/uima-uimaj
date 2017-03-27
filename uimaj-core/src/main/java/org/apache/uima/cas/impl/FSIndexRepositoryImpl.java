@@ -732,7 +732,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     /**
      * Move the top element down in the heap until it finds its proper position.
      * 
-     * @param it
+     * @param it the current lowest index, that was just incremented or decremented
      *          indexes[0]
      * @param dir
      *          Direction of iterator movement, 1 for forward, -1 for backward
@@ -743,6 +743,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         flatIndexInfo.incrementReorderingCount();
       }
 
+      // if the iterator passed in just became invalid
+      //   move it to the last valid iterator spot (and reduec lastValidIndex by 1 afterwards)
       if (!it.isValid()) {
         final ComparableIntPointerIterator itl = checkConcurrentModification(this.lastValidIndex);
         this.iterators[this.lastValidIndex] = it;
@@ -751,11 +753,15 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
         it = itl;
       }
 
+      // return if 0th iterator is lowest (or equal) one
       final int num = this.lastValidIndex;
-      if ((num < 1) || !is_before(checkConcurrentModification(1), it, dir)) {
+      if ((num < 1) ||  // no iterator is valid OR
+                        // 0th is before or == to 1 in position
+          !is_before(checkConcurrentModification(1), it, dir)) {
         return;
       }
 
+      // 0th is after iterator[1]
       int idx = 1;
       this.iterators[0] = this.iterators[1];
       final int end = Math.min(num, SORTED_SECTION);
