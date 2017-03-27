@@ -103,21 +103,21 @@ public class Token_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_lemma, v);
   }
 
-  final Feature casFeat_sentenceLength;
-
-  final int casFeatCode_sentenceLength;
-
-  public int getSentenceLength(int addr) {
-    if (featOkTst && casFeat_sentenceLength == null)
-      this.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
-    return ll_cas.ll_getIntValue(addr, casFeatCode_sentenceLength);
-  }
-
-  public void setSentenceLength(int addr, int v) {
-    if (featOkTst && casFeat_sentenceLength == null)
-      this.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
-    ll_cas.ll_setIntValue(addr, casFeatCode_sentenceLength, v);
-  }
+//  final Feature casFeat_sentenceLength;
+//
+//  final int casFeatCode_sentenceLength;
+//
+//  public int getSentenceLength(int addr) {
+//    if (featOkTst && casFeat_sentenceLength == null)
+//      this.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
+//    return ll_cas.ll_getIntValue(addr, casFeatCode_sentenceLength);
+//  }
+//
+//  public void setSentenceLength(int addr, int v) {
+//    if (featOkTst && casFeat_sentenceLength == null)
+//      this.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
+//    ll_cas.ll_setIntValue(addr, casFeatCode_sentenceLength, v);
+//  }
 
   final Feature casFeat_lemmaList;
 
@@ -169,10 +169,10 @@ public class Token_Type extends Annotation_Type {
     casFeat_lemma = jcas.getRequiredFeatureDE(casType, "lemma", "uima.cas.String", featOkTst);
     casFeatCode_lemma = (null == casFeat_lemma) ? JCas.INVALID_FEATURE_CODE
             : ((FeatureImpl) casFeat_lemma).getCode();
-    casFeat_sentenceLength = jcas.getRequiredFeatureDE(casType, "sentenceLength",
-            "uima.cas.Integer", featOkTst);
-    casFeatCode_sentenceLength = (null == casFeat_sentenceLength) ? JCas.INVALID_FEATURE_CODE
-            : ((FeatureImpl) casFeat_sentenceLength).getCode();
+//    casFeat_sentenceLength = jcas.getRequiredFeatureDE(casType, "sentenceLength",
+//            "uima.cas.Integer", featOkTst);
+//    casFeatCode_sentenceLength = (null == casFeat_sentenceLength) ? JCas.INVALID_FEATURE_CODE
+//            : ((FeatureImpl) casFeat_sentenceLength).getCode();
     casFeat_lemmaList = jcas.getRequiredFeatureDE(casType, "lemmaList", "uima.cas.StringArray",
             featOkTst);
     casFeatCode_lemmaList = (null == casFeat_lemmaList) ? JCas.INVALID_FEATURE_CODE
@@ -186,8 +186,8 @@ public class Token_Type extends Annotation_Type {
     casFeatCode_tokenFloatFeat = JCas.INVALID_FEATURE_CODE;
     casFeat_lemma = null;
     casFeatCode_lemma = JCas.INVALID_FEATURE_CODE;
-    casFeat_sentenceLength = null;
-    casFeatCode_sentenceLength = JCas.INVALID_FEATURE_CODE;
+//    casFeat_sentenceLength = null;
+//    casFeatCode_sentenceLength = JCas.INVALID_FEATURE_CODE;
     casFeat_lemmaList = null;
     casFeatCode_lemmaList = JCas.INVALID_FEATURE_CODE;
     throw new RuntimeException("Internal Error-this constructor should never be called.");

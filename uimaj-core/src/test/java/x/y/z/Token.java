@@ -117,18 +117,18 @@ public class Token extends Annotation {
   // *------------------*
   // * Feature: sentenceLength
   /* getter for sentenceLength * */
-  public int getSentenceLength() {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_sentenceLength == null)
-      this.jcasType.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
-    return jcasType.ll_cas.ll_getIntValue(addr, ((Token_Type) jcasType).casFeatCode_sentenceLength);
-  }
+//  public int getSentenceLength() {
+//    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_sentenceLength == null)
+//      this.jcasType.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
+//    return jcasType.ll_cas.ll_getIntValue(addr, ((Token_Type) jcasType).casFeatCode_sentenceLength);
+//  }
 
   /* setter for sentenceLength * */
-  public void setSentenceLength(int v) {
-    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_sentenceLength == null)
-      this.jcasType.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
-    jcasType.ll_cas.ll_setIntValue(addr, ((Token_Type) jcasType).casFeatCode_sentenceLength, v);
-  }
+//  public void setSentenceLength(int v) {
+//    if (Token_Type.featOkTst && ((Token_Type) jcasType).casFeat_sentenceLength == null)
+//      this.jcasType.jcas.throwFeatMissing("sentenceLength", "x.y.z.Token");
+//    jcasType.ll_cas.ll_setIntValue(addr, ((Token_Type) jcasType).casFeatCode_sentenceLength, v);
+//  }
 
   // *------------------*
   // * Feature: lemmaList
