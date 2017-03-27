@@ -87,21 +87,21 @@ public class LanguagePair_Type extends TOP_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_lang2, v);
   }
 
-  final Feature casFeat_description;
-
-  final int casFeatCode_description;
-
-  public String getDescription(int addr) {
-    if (featOkTst && casFeat_description == null)
-      this.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
-    return ll_cas.ll_getStringValue(addr, casFeatCode_description);
-  }
-
-  public void setDescription(int addr, String v) {
-    if (featOkTst && casFeat_description == null)
-      this.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
-    ll_cas.ll_setStringValue(addr, casFeatCode_description, v);
-  }
+//  final Feature casFeat_description;
+//
+//  final int casFeatCode_description;
+//
+//  public String getDescription(int addr) {
+//    if (featOkTst && casFeat_description == null)
+//      this.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
+//    return ll_cas.ll_getStringValue(addr, casFeatCode_description);
+//  }
+//
+//  public void setDescription(int addr, String v) {
+//    if (featOkTst && casFeat_description == null)
+//      this.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
+//    ll_cas.ll_setStringValue(addr, casFeatCode_description, v);
+//  }
 
   // * initialize variables to correspond with Cas Type and Features
   public LanguagePair_Type(JCas jcas, Type casType) {
@@ -116,10 +116,10 @@ public class LanguagePair_Type extends TOP_Type {
             .getRequiredFeatureDE(casType, "lang2", "org.apache.lang.Group2", featOkTst);
     casFeatCode_lang2 = (null == casFeat_lang2) ? JCas.INVALID_FEATURE_CODE
             : ((FeatureImpl) casFeat_lang2).getCode();
-    casFeat_description = jcas.getRequiredFeatureDE(casType, "description", "uima.cas.String",
-            featOkTst);
-    casFeatCode_description = (null == casFeat_description) ? JCas.INVALID_FEATURE_CODE
-            : ((FeatureImpl) casFeat_description).getCode();
+//    casFeat_description = jcas.getRequiredFeatureDE(casType, "description", "uima.cas.String",
+//            featOkTst);
+//    casFeatCode_description = (null == casFeat_description) ? JCas.INVALID_FEATURE_CODE
+//            : ((FeatureImpl) casFeat_description).getCode();
   }
 
   protected LanguagePair_Type() { // block default new operator
@@ -127,8 +127,8 @@ public class LanguagePair_Type extends TOP_Type {
     casFeatCode_lang1 = JCas.INVALID_FEATURE_CODE;
     casFeat_lang2 = null;
     casFeatCode_lang2 = JCas.INVALID_FEATURE_CODE;
-    casFeat_description = null;
-    casFeatCode_description = JCas.INVALID_FEATURE_CODE;
+//    casFeat_description = null;
+//    casFeatCode_description = JCas.INVALID_FEATURE_CODE;
     throw new RuntimeException("Internal Error-this constructor should never be called.");
   }
 

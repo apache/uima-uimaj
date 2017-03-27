@@ -89,21 +89,21 @@ public class LanguagePair extends TOP {
     jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_lang2, v);
   }
 
-  // *------------------*
-  // * Feature: description
-  /* getter for description * */
-  public String getDescription() {
-    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
-      this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
-    return jcasType.ll_cas.ll_getStringValue(addr,
-            ((LanguagePair_Type) jcasType).casFeatCode_description);
-  }
-
-  /* setter for description * */
-  public void setDescription(String v) {
-    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
-      this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
-    jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_description,
-            v);
-  }
+//  // *------------------*
+//  // * Feature: description
+//  /* getter for description * */
+//  public String getDescription() {
+//    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
+//      this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
+//    return jcasType.ll_cas.ll_getStringValue(addr,
+//            ((LanguagePair_Type) jcasType).casFeatCode_description);
+//  }
+//
+//  /* setter for description * */
+//  public void setDescription(String v) {
+//    if (LanguagePair_Type.featOkTst && ((LanguagePair_Type) jcasType).casFeat_description == null)
+//      this.jcasType.jcas.throwFeatMissing("description", "org.apache.lang.LanguagePair");
+//    jcasType.ll_cas.ll_setStringValue(addr, ((LanguagePair_Type) jcasType).casFeatCode_description,
+//            v);
+//  }
 }
