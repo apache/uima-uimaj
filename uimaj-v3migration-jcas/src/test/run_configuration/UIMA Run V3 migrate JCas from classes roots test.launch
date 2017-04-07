@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
    Licensed to the Apache Software Foundation (ASF) under one
    or more contributor license agreements.  See the NOTICE file
@@ -26,7 +26,7 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.apache.uima.migratev3.jcas.MigrateJCas"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-sourcesRoots ${selected_resource_loc}&#13;&#10;-migrateClasspath ${project_classpath}"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-examples"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-classesRoots ${project_loc:/uimaj-v3migration-jcas}/src/test/v2_jcas_compiled&#13;&#10;-migrateClasspath ${project_loc:/uimaj-v3migration-jcas}/src/test/v2_jcas_compiled"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="uimaj-v3migration-jcas"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
