@@ -201,6 +201,15 @@ public class Misc {
     }
   }
   
+  public static String expandClasspath(String classpath) {
+    StringBuilder sb = new StringBuilder();
+    for (URL url : classpath2urls(classpath)) {
+      sb.append(url.toString());
+      sb.append(File.pathSeparatorChar);
+    }
+    return sb.substring(0, sb.length() - 1);  // drop trailing ":"
+  }
+  
   /**
    * 
    * @param name of property
