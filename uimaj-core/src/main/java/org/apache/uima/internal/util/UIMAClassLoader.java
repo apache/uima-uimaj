@@ -35,6 +35,8 @@ import java.util.StringTokenizer;
  * delegated to the application class loader.
  * 
  * This loader supports loading a special class "MethodHandlesLookup" from org.apache.uima.cas.impl.MethodHandlesLookup
+ * This is loaded from a byte string in order to have the defaulting mechanism for
+ * MethodHandlesLookup default to this class loaders context.
  * 
  */
 public class UIMAClassLoader extends URLClassLoader {
@@ -44,6 +46,10 @@ public class UIMAClassLoader extends URLClassLoader {
           }
          }
 
+  /** 
+   * This is a trick to allow loading the same class multiple times in different UIMAClassLoaders
+   * https://issues.apache.org/jira/browse/UIMA-5030 
+   */
   public static final String MHLC = "org.apache.uima.cas.impl.MethodHandlesLookup";
   /**
    * This is the byte array that defines the class org.apache.uima.cas.impl.MethodHandlesLookup, obtained by
@@ -115,7 +121,7 @@ public class UIMAClassLoader extends URLClassLoader {
    *           if a malformed URL has occurred in the classpath string.
    */
   public UIMAClassLoader(String classpath) throws MalformedURLException {
-    super(transformClasspath(classpath));
+    super(Misc.classpath2urls(classpath));
     commonInit();
   }
 
@@ -157,7 +163,7 @@ public class UIMAClassLoader extends URLClassLoader {
    *           if a malformed URL has occurred in the classpath string.
    */
   public UIMAClassLoader(String classpath, ClassLoader parent) throws MalformedURLException {
-    super(transformClasspath(classpath), parent);
+    super(Misc.classpath2urls(classpath), parent);
     commonInit();
   }
   
