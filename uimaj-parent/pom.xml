@@ -324,6 +324,30 @@
     </plugins>
   </build>
   <profiles>
+    <!-- ************ Java 9 enablement ************** -->
+    <profile>
+      <id>java9</id>
+      <activation>
+        <jdk>1.9</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                <compilerArgs>
+                  <arg>--add-modules</arg>
+                  <arg>java.xml.bind</arg>
+                </compilerArgs>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    
     <profile>
       <id>pmd</id>
       <build>
@@ -441,6 +465,8 @@
         </plugins>
       </build>
     </profile>
+    
+    <!-- **********  Backwards compatibility report generation profile ************** -->
     <profile>
       <id>enforce-compatibility</id>
       <activation>
@@ -528,6 +554,8 @@
         </plugins>
       </build>
     </profile>
+    
+    <!-- ************** m2e  profile ************* -->
     <profile>
       <id>m2e</id>
       <activation>
