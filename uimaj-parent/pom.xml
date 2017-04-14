@@ -152,6 +152,7 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.surefire.heap>512m</maven.surefire.heap>
     <maven.surefire.argLine />
+    
     <jacoco.argLine />
     <api_check_oldVersion>2.9.0</api_check_oldVersion>
   </properties>
@@ -234,7 +235,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.19.1</version>
           <configuration>
-            <argLine>@{jacoco.argLine} -Xmx${maven.surefire.heap} -Xms${maven.surefire.heap} ${maven.surefire.argLine}</argLine>
+            <argLine>@{jacoco.argLine} -Xmx@{maven.surefire.heap} -Xms@{maven.surefire.heap} @{maven.surefire.argLine} @{maven.surefire.java9}</argLine>
           </configuration>
         </plugin>
         
@@ -328,8 +329,11 @@
     <profile>
       <id>java9</id>
       <activation>
-        <jdk>1.9</jdk>
+        <jdk>9</jdk>
       </activation>
+      <properties>
+        <maven.surefire.java9>--add-modules java.xml.bind</maven.surefire.java9>
+      </properties>
       <build>
         <pluginManagement>
           <plugins>
@@ -341,8 +345,10 @@
                   <arg>--add-modules</arg>
                   <arg>java.xml.bind</arg>
                 </compilerArgs>
+                <target>1.9</target>
               </configuration>
             </plugin>
+            
           </plugins>
         </pluginManagement>
       </build>
