@@ -493,7 +493,7 @@
 		              <id>default-cli</id>
 		              <configuration>
 		                <excludes combine.children="append">
-	                    <exclude>**/api-change-report/**/*.*</exclude>&gt;
+	                    <exclude>**/api-change-report/**/*.*</exclude>
 		                </excludes>
 		              </configuration>
 		            </execution>
