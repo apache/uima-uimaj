@@ -317,8 +317,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-          <!-- testing on 64 bit Linux requires larger heap -->
-					<argLine>-Xmx650M</argLine>
+          <!-- set the heap using the property maven.surefire.heap -->
           <!--  include dependencies that are for logging but specified as "provided" -->
           <additionalClasspathElements>
             <additionalClasspathElement>${settings.localRepository}/org/apache/logging/log4j/log4j-core/${log4j.version}/log4j-core-${log4j.version}.jar</additionalClasspathElement>
