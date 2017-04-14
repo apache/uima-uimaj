@@ -67,12 +67,14 @@ public class UIMAClassLoaderTest extends TestCase {
     while (!(classOfLoader.getName().equals("java.lang.ClassLoader"))) {
       classOfLoader = classOfLoader.getSuperclass(); 
     }
-    Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
-    m.setAccessible(true);
-    Object o = m.invoke(cl, "someString");
-    Object o2 = m.invoke(cl, "s2");
-    assertTrue(o != o2);
-    assertTrue(cl != o);      
+    if (!Misc.isJava9ea) { // skip for java 9
+      Method m = classOfLoader.getDeclaredMethod("getClassLoadingLock", String.class);
+      m.setAccessible(true);
+      Object o = m.invoke(cl, "someString");
+      Object o2 = m.invoke(cl, "s2");
+      assertTrue(o != o2);
+      assertTrue(cl != o);      
+    }
   }
 
   public void testAdvancedRsrcMgrCLassLoaderCreation() throws Exception {
