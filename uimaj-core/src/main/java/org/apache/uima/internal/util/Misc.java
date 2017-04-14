@@ -623,7 +623,7 @@ public class Misc {
     };
   }
   
-  public boolean isJava9ea() {
+  public static boolean isJava9ea() {
     return isJava9ea;
   }
   
