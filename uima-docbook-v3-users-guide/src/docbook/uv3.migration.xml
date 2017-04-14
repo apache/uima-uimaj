@@ -188,7 +188,7 @@ under the License.
 		  </para>
 		  
 		  <para>There are also a pair of Eclipse launch configurations 
-        (one for source files, the other for compiled classes), 
+        (one for migrating source files, the other for compiled classes and JARs and PEARs), 
         which are available if you have the uimaj-examples project
         (included in the binary distribution of UIMA) in your Eclipse workspace.
       </para>
@@ -199,12 +199,11 @@ under the License.
         <para>There are two Eclipse launch configurations; one works with source code, the other with compiled classes
           or Jars or PEARs.  The launch configurations are named:
           <itemizedlist spacing="compact">
-            <listitem><para>UIMA Run V3 migrate JCas from sources roots</para></listitem>
-            <listitem><para>UIMA Run V3 migrate JCas from classes roots</para></listitem>
+            <listitem><para>UIMA Run V3 migrate JCas from file system source directory root</para></listitem>
+            <listitem><para>UIMA Run V3 migrate JCas from file system class directory root</para></listitem>
           </itemizedlist>
-          When running from classes roots, the classes must not have compile errors, and may contain Jars and PEARs.
+          When running from class directory roots, the classes must not have compile errors, and may contain Jars and PEARs.
           Both launchers write their output to a temporary directory, whose name is printed in the Eclipse console log.
-          This temporary directory may be defaulted, or specified as one of the arguments.
         </para>
       
         <para>
@@ -218,14 +217,14 @@ under the License.
             </itemizedlist>
             This will scan the directory tree of the project, looking for source files which are JCas files, and 
             migrate them.  No existing files are modified; everything is written to the output directory (by default, 
-            automatically assigned in temp space).
+            automatically assigned to a new temporary file system directory).
   		  </para>
         
         <para>
           To use the launcher for compiled code,
             <itemizedlist spacing="compact">
-              <listitem><para>First select the eclipse project that provides the classpath that the compiled code used
-                when it was being built. This is required for proper "decompiling" of the classes and
+              <listitem><para>First select the eclipse project that provides the classpath for the compiled code. 
+                This is required for proper "decompiling" of the classes and
                 recompiling the transformed results.
                 </para></listitem>
               <listitem><para>The launcher will additionally prompt you for another directory 
@@ -286,12 +285,22 @@ under the License.
         	    
   	    <section id="uv3.migration.tool_guide.classpath">
   	      <title>Command line: Specifying a classpath for the migration</title>
-  	      <para>A classpath is required for the proper operation of the decompiling and compiling steps of 
-  	        the migration.  This is provided using the argument <code>-migrateClasspath</code>.
+  	      <para>When migrating from compiled classes, a classpath is required to locate and decompile
+            the JCas classes to be migrated.  This classpath must include the JCas classes 
+            to be decompiled. The compiled classes must not have compile errors.
+          </para>
+          
+          <para>When migrating from sourcesRoots, this argument is required only if the JCas classes
+            have references to other non-migrated classes (other than core UIMA classes).  For example,
+            if your JCas class had a reference to a user defined Utility class, that would need to be in the classpath.
+            For plain, non-customized JCas classes, this argument is unnecessary.
+          </para>
+          
+          <para>To specify this parameter, use the argument <code>-migrateClasspath</code>.
   	        The Eclipse launcher "UIMA run V3 migrate JCas from classes roots" sets this argument using
   	        the selected Eclipse project's classpath.
-  	        When migrating within a PEAR, the migration tool automatically adds the PEAR classes to the 
-  	        classpath.
+  	        When migrating within a PEAR, the migration tool automatically adds the 
+            classpath specified by the PEAR (if any) to the classpath.
   	      </para>
   	    </section>
 
