@@ -48,6 +48,8 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.internal.util.function.Runnable_withException;
 
 public class Misc {
+  
+  public static final boolean isJava9ea = System.getProperty("java.version").startsWith("9-ea");
 
   public static final String blanks = "                                                     ";
   public static final String dots = "...";
@@ -620,6 +622,11 @@ public class Misc {
       }
     };
   }
+  
+  public boolean isJava9ea() {
+    return isJava9ea;
+  }
+  
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
 //  try {
