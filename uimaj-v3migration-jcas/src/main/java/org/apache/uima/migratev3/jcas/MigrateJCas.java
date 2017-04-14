@@ -1603,7 +1603,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     if (v instanceof Path) {
       Path path = (Path) v;
       FileSystem fileSystem = path.getFileSystem();
-      if (fileSystem instanceof com.sun.nio.zipfs.ZipFileSystem) {
+      if (fileSystem.getClass().getName().contains("zipfs")) {  // java 8 and 9
+//      if (fileSystem instanceof com.sun.nio.zipfs.ZipFileSystem) {
         v = v.toString() + "\t\t " + fileSystem.toString();
       }
     }
