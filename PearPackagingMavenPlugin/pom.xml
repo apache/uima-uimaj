@@ -44,13 +44,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/PearPackagingMavenPlugin
+      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/PearPackagingMavenPlugin
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uimaj/branches/experiment-v3-jcas/PearPackagingMavenPlugin
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/PearPackagingMavenPlugin
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uimaj/branches/experiment-v3-jcas/PearPackagingMavenPlugin
+      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/PearPackagingMavenPlugin
     </url>
   </scm>
   
