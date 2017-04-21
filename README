@@ -2,14 +2,15 @@
       Apache UIMA (Unstructured Information Management Architecture) 
       --------------------------------------------------------------
       
-This file applies to UIMA-SDK version 3.0.0-alpha and subsequent versions.
+This file applies to UIMA-SDK version 3.0.0-beta and subsequent versions.
+Java 8 is required.
 
 Backwards Compatibility
 -----------------------
 
 Version 3 is a major new release, and many APIs have been augmented.
 Existing version 2 UIMA Pipelines are expected to run with Version 3,
-after any JCas classes have been migrated.  
+after any non-built-in JCas classes have been migrated.  
 
 The documentation contains a new book, "UIMA Version 3 User's Guide",
 which explains the new features, the migration process and tool,
@@ -44,14 +45,14 @@ What's New
 Supported Platforms
 --------------------
 
-Apache UIMA v3.0.0 requires Java version 8 or later; it has been tested with Sun/Oracle Java 8, 
-and IBM 8.
+Apache UIMA v3.0.0 requires Java version 8; it has been tested with Oracle Java 8, 
+and IBM Java 8.
 
 Running the Eclipse plugin tooling for UIMA requires you start Eclipse using a Java 8 or later, as well.
 
 Running the migration tool requires running with a Java JDK, not a Java JRE.
 
-The supported platforms are: Windows, Linux, and Mac OS X. Other platforms and Java (8+) 
+The supported platforms are: Windows, Linux, and Mac OS X. Other platform 
 implementations should work, but have not been significantly tested.
 
 Many of the scripts in the /bin directory invoke Java. They use the value of the environment variable, JAVA_HOME, 
@@ -97,5 +98,6 @@ Double-click on one of the documents to display the analysis results for that do
 Getting Started
 ----------------
 
-Version 3 requires migration for existing Version 2 deployments that use JCas.  For instructions on this, please
+For existing Version 2 deployments that use non-built-in JCas classes, Version 3 requires migration 
+or regeneration of these classes.  For instructions on how to do this migration, please
 read the documentation for Version 3 located in the docs subdirectory.  

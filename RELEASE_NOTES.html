@@ -20,14 +20,14 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v3.0.0-alpha02 Release Notes</title>
+  <title>Apache UIMA v3.0.0-beta Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-alpha02 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-beta Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
-<a href="#alpha">Alpha release status notice</a><br/>
+<a href="#beta">Beta release status notice</a><br/>
 <a href="#what.is.uima">What is UIMA?</a><br/>
 <a href="#major.changes">Major Changes in this Release</a><br/>
 <a href="#get.involved">How to Get Involved</a><br/>
@@ -35,15 +35,11 @@
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
    
-<h2><a id="alpha">0. Alpha release status</a></h2>
-  <p>This is an alpha release, done in order to expand the 
-     community of people doing initial testing on this new release.
-     As such, it is possible that bugs or deficiencies may be found
-     which might require changes to APIs.</p>
-     
-  <p>Following a period of alpha testing, depending on the results,
-     we will proceed to more official releases.
-     </p>
+<h2><a id="beta">0. Beta release status</a></h2>
+  <p>This is the Beta release of 3.0.0; the next release is planned to be 
+     the official 3.0.0 release.  The beta release is being done in order to expand the 
+     community of people doing testing on this new release.
+     The APIs at this point are expected to be stable.</p>
      
 <h2><a id="what.is.uima">1. What is UIMA?</a></h2>
 
@@ -92,17 +88,19 @@
 
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
-<p>Version 3 is a major reimplementation of the internals of UIMA,
-with many significant changes.  A one-time migration step is required if 
-JCas cover classes are being used.  
+<p>Version 3 is a major reimplementation of the internals of 
+the Java version of UIMA,
+with many significant changes.
+If non-built-in JCas cover classes are being used,
+a one-time regeneration or migration step is required for these.  
 Please read the Version 3 users guide located in the docs directory
 for information on these changes and the migration tool.
 </p>
 
-<p>A very brief summary of Version 3:
+<p>A very brief summary of Version 3:</p>
 <ul><li>Feature Structures become Java Objects, 
-and may be Garbage Collected.</li>
-<li>Many performance improvements</li>
+subject to Garbage Collection, just like any other objects, 
+when no longer reachable.</li>
 <li>Iterating over indexes no longer throws 
 ConcurrentModificationException</li>
 <li>Support for arbitrary Java Objects in the CAS</li>
@@ -112,46 +110,40 @@ lists of Feature Structures and ints, and a FSHashSet</li>
 access to Feature Structures</li>
 <li>Integration with Java 8 facilities such as Streams</li>
 <li>Logging framework upgraded</li>
+<li>There are many performance improvements</li>
 </ul>
-</p>
+
 
 <p>Please read the overview section of the Version 3 
 users guide for more.</p>
 
-<p>Specific changes in this release versus the previous alpha release include
+<p>Specific changes in this release versus the previous alpha02 release include</p>
 <ul>
-  <li>The Eclipse update site for version 3 alpha is now under a new 
-    higher level directory, "uimaj-v3-pre-production".  This is to avoid
-    users accidentally installing it when they meant to get the lastest 
-    production level, which remains under "uimaj".
-  </li>
-  <li>The "select" framework APIs had javadocs added and some fixes which resulted in API changes for some methods.</li>
-  <li>Logging was upgraded in two ways:  The log4j back end for the UIMA logger was upgraded to log4j 2 (the current version).
-  And, support was added for the slf4j logging facade.
-  The UIMA Logger now implements all the SLF4J Logger APIs, plus the APIs that use Java 8 Suppliers, from
-  the Log4j Logger API.</li>
-  <li>changes made to uimaj-2.9.0 were merged.</li>
-  <li>Various implementations of UIMA built-in types which have corresponding Java 8 non-boxing versions of methods were
-    augmented to support non-boxing alternatives; see the API changes report for details.</li> 
+  <li>Added missing methods to logger interface to support Supplier argument.</li>
+  <li>The launchers for the normal UIMA Tooling default to specifying the built-in-to-Java logging framework.</li>
+  <li>The launchers were modified to support Java-style wild-card notation in the classpath.</li>
+  <li>Fix for permissions on Linux for API Change Report.</li>
+  <li>Restore a v2 method needed for backwards compatibility</li>
+  <li>Improve the migration tool's use of classpath and error reporting</li>
+  <li>Changes in the support for External Override Settings location were incorporated</li>
 </ul>
-</p>
+
  
 <h3>API changes</h3>
- <p>This version includes a new API compatibility report covering the non-internal APIs;
+ <p>There is an API compatibility report covering the non-internal APIs;
    see <a href="api-change-report.html">change report</a> for the list of API changes
-   since version 2.9.0.
+   since version 2.10.0.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
 issues affecting this release.  
    
-<h2><a id="alpha">Alpha Release</a></h2>
-<p>Because this release makes major changes to UIMA internals,
-this is an alpha release of version 3.  It is being made to get 
+<h2><a id="beta">Beta Release</a></h2>
+<p>This is a beta release of version 3.0.0, being made to get 
 wider community involvement in testing and feedback.  
-The APIs may change, and features
-may be added or altered.</p>
+At this point, the APIs are not expected to change, and features
+should be frozen.</p>
 
 <p>Please use the mailing lists 
 ( http://uima.apache.org/mail-lists.html ) 
