@@ -28,8 +28,14 @@ public class OptimizeStringsTest extends TestCase {
   private static Field STRING_OFFSET;
   static {
     try {
-      STRING_OFFSET = String.class.getDeclaredField("offset");
-      STRING_OFFSET.setAccessible(true);
+      // Found that IBM Java 8 version 8.0.4.2 returns a value for the field "offset", but it's 0
+      // and there doesn't seem to be an offset field in that class.
+      if (System.getProperty("java.version").startsWith("1.8")) {
+        STRING_OFFSET = null;
+      } else {
+        STRING_OFFSET =  String.class.getDeclaredField("offset");
+        STRING_OFFSET.setAccessible(true);
+      }
     } catch (SecurityException e) {
       throw new RuntimeException(e);
     } catch (NoSuchFieldException e) {
