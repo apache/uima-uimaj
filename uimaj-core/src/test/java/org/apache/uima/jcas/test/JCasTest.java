@@ -32,8 +32,6 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
-import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
@@ -85,7 +83,7 @@ public class JCasTest extends TestCase {
 
 	private JCas jcas;
 
-	private TypeSystem ts;
+//	private TypeSystem ts;
 
 	public EndOfSentence endOfSentenceInstance;
 
@@ -102,7 +100,7 @@ public class JCasTest extends TestCase {
 		try {
 			try {
 				this.cas = CASInitializer.initCas(new CASTestSetup(), null);
-				this.ts = this.cas.getTypeSystem();
+//				this.ts = this.cas.getTypeSystem();
 				this.jcas = cas.getJCas();
 				endOfSentenceInstance = new EndOfSentence(jcas);
 			} catch (Exception e1) {
@@ -144,7 +142,7 @@ public class JCasTest extends TestCase {
 
 	public void tearDown() {
 		this.cas = null;
-		this.ts = null;
+//		this.ts = null;
 		this.jcas = null;
 		this.endOfSentenceInstance = null;
 	}
@@ -152,12 +150,12 @@ public class JCasTest extends TestCase {
 	public void testMissingFeatureInCas() throws Exception {
 		try {
 			// jcasCasMisMatch(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS, CASException.JCAS_INIT_ERROR);
-			CAS localCas;
-			JCas localJcas = null;
-			boolean errFound = false;
+//			CAS localCas;
+//			JCas localJcas = null;
+//			boolean errFound = false;
 			try {
 			  // error happens during setup
-				localCas = CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS), null);
+				/*localCas =*/ CASInitializer.initCas(new CASTestSetup(CASTestSetup.BAD_MISSING_FEATURE_IN_CAS), null);
 			} catch (CASRuntimeException e) {
 				assertTrue(e.getMessageKey().equals(CASException.JCAS_INIT_ERROR));
 			}
@@ -176,11 +174,11 @@ public class JCasTest extends TestCase {
 
 	public void jcasCasMisMatch(int testId, String expectedErr) throws Exception {
 		try {
-			CAS localCas;
-			JCas localJcas;
+//			CAS localCas;
+//			JCas localJcas;
 			boolean errFound = false;
 			try {
-				localCas = CASInitializer.initCas(new CASTestSetup(testId), null);
+				/*localCas = */CASInitializer.initCas(new CASTestSetup(testId), null);
 //				ts = this.cas.getTypeSystem();
 //				try {
 //					localJcas = localCas.getJCas();
@@ -203,9 +201,9 @@ public class JCasTest extends TestCase {
 		something.addToIndexes();
 
 		JFSIndexRepository ir = jcas.getJFSIndexRepository();
-		FSIterator i1 = ir.getAnnotationIndex().iterator();
-		FSIterator i2 = i1.copy();
-		FSIterator i3 = i2.copy();
+		FSIterator<Annotation> i1 = ir.getAnnotationIndex().iterator();
+		FSIterator<Annotation> i2 = i1.copy();
+		FSIterator<Annotation> i3 = i2.copy();
 		assertTrue(i3 != null);
 	}
 
@@ -257,7 +255,7 @@ public class JCasTest extends TestCase {
 			CASImpl casImpl = jcas.getCasImpl();
 			assertTrue(casImpl == this.cas);
 
-			Annotation a1 = new Annotation(jcas, 4, 5);
+			/* Annotation a1 =*/ new Annotation(jcas, 4, 5);
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
 		}
@@ -350,8 +348,8 @@ public class JCasTest extends TestCase {
 			r1.addToIndexes();
 
 			JFSIndexRepository jfsi = jcas.getJFSIndexRepository();
-			FSIndex fsi1 = jfsi.getIndex("all", Root.type);
-			FSIterator fsit1 = fsi1.iterator();
+			FSIndex<Root> fsi1 = jfsi.getIndex("all", Root.type);
+			FSIterator<Root> fsit1 = fsi1.iterator();
 			assertTrue(fsit1.isValid());
 			Root[] fetched = new Root[2];
 			
@@ -411,7 +409,7 @@ public class JCasTest extends TestCase {
 				// System.out.print("m");
 			}
 			JFSIndexRepository jir = jcas.getJFSIndexRepository();
-			FSIterator it = jir.getIndex("all", Root.type).iterator();
+			FSIterator<Root> it = jir.<Root>getIndex("all", Root.type).iterator();
 			// System.out.print("\nTesting Random: ");
 			while (it.isValid()) {
 				root1.test(it.get());
@@ -468,7 +466,7 @@ public class JCasTest extends TestCase {
 		try {
 			try {
 				CAS cas2 = CASInitializer.initCas(new CASTestSetup(), null);
-				TypeSystem ts2 = cas2.getTypeSystem();
+//				TypeSystem ts2 = cas2.getTypeSystem();
 				JCas jcas2 = cas2.getJCas();
 				if (TypeSystemImpl.IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
   				assertTrue(jcas.getCasType(Annotation.type).equals(jcas2.getCasType(Annotation.type)));
@@ -518,8 +516,8 @@ public class JCasTest extends TestCase {
 			localCas.getIndexRepository().addFS(f1);
 
 			JFSIndexRepository ir = jcas.getJFSIndexRepository();
-			FSIndex index = ir.getAnnotationIndex();
-			FSIterator it = index.iterator();
+			FSIndex<Annotation> index = ir.getAnnotationIndex();
+			FSIterator<Annotation> it = index.iterator();
 
 			try {
 
@@ -550,7 +548,7 @@ public class JCasTest extends TestCase {
 
 	public void testCreateFSafterReset() throws Exception {
 		try {
-			CAS localCas = jcas.getCas();
+//			CAS localCas = jcas.getCas();
 			cas.reset();
 			TypeSystem ts = cas.getTypeSystem();
 			Type fsl = ts.getType("uima.cas.NonEmptyFSList");
@@ -565,7 +563,7 @@ public class JCasTest extends TestCase {
 		try {
 			Token tok1 = new Token(jcas);
 			tok1.addToIndexes();
-			FSIterator it = jcas.getJFSIndexRepository().getIndex("all", Token.type).iterator();
+			FSIterator<Token> it = jcas.getJFSIndexRepository().<Token>getIndex("all", Token.type).iterator();
 			while (it.hasNext()) {
 				Token token = (Token) it.next();
 				token.addToIndexes(); // something to do to keep Java from optimizing this away.
@@ -630,7 +628,7 @@ public class JCasTest extends TestCase {
 			NonEmptyFSList fsList = new NonEmptyFSList(jcas);
 			fsList.setHead(tok1);
 			fsList.setTail(fsList1);
-			EmptyFSList emptyFsList = new EmptyFSList(jcas);
+			/* EmptyFSList emptyFsList = */ new EmptyFSList(jcas);
 
 //			try {
 //				emptyFsList.getNthElement(0);
@@ -958,18 +956,18 @@ public class JCasTest extends TestCase {
   
   public void testUndefinedType() throws Exception {
     //create jcas with no type system
-    JCas jcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
-    jcas.setDocumentText("This is a test.");
+    JCas localJcas = CasCreationUtils.createCas(new TypeSystemDescription_impl(), null, null).getJCas();
+    localJcas.setDocumentText("This is a test.");
     try {
       //this should throw an exception
-      jcas.getCasType(Sentence.type);
+      localJcas.getCasType(Sentence.type);
       fail(); 
     } catch(CASRuntimeException e) {
       assertEquals(CASRuntimeException.JCAS_TYPE_NOT_IN_CAS, e.getMessageKey());
     }
     //check that this does not leave JCAS in an inconsistent state
     //(a check for bug UIMA-738)
-    Iterator<Annotation> iter = jcas.getAnnotationIndex().iterator();
+    Iterator<Annotation> iter = localJcas.getAnnotationIndex().iterator();
     assertTrue(iter.hasNext());
     Annotation annot = iter.next();
     assertEquals("This is a test.", annot.getCoveredText());
