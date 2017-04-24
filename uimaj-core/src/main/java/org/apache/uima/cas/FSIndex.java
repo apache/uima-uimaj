@@ -19,6 +19,8 @@
 
 package org.apache.uima.cas;
 
+import java.util.stream.Stream;
+
 /**
  * Feature structure index access interface.
  * 
@@ -215,4 +217,8 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
   <N extends FeatureStructure> SelectFSs<N> select(int jcasType);
   
   <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName);
+  
+  default Stream<T> stream() {
+    return this.select();
+  }
 }
