@@ -352,6 +352,7 @@ public void setOutputStream(OutputStream aStream);
   /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
    */
   public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
 
@@ -382,6 +383,7 @@ public void setOutputStream(OutputStream aStream);
   /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
    */
   public void error(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
 
@@ -412,6 +414,7 @@ public void setOutputStream(OutputStream aStream);
   /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
    */
   public void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
 
@@ -442,6 +445,7 @@ public void setOutputStream(OutputStream aStream);
   /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
    */
   public void trace(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
 
@@ -472,6 +476,7 @@ public void setOutputStream(OutputStream aStream);
   /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
+   * @param throwable the exception to log
    */
   public void warn(Marker marker, Supplier<String> msgSupplier, Throwable throwable);
 
