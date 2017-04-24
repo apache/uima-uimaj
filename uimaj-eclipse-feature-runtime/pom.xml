@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-beta</version>
+    <version>3.0.0-beta-SNAPSHOT</version>
     <relativePath>../uimaj-parent/pom.xml</relativePath>
   </parent>
     
@@ -45,13 +45,13 @@
        element, and just changing the following two properties -->  
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.0-beta/uimaj-eclipse-feature-runtime
+      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-feature-runtime
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-3.0.0-beta/uimaj-eclipse-feature-runtime
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-feature-runtime
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/tags/uimaj-3.0.0-beta/uimaj-eclipse-feature-runtime
+      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-feature-runtime
     </url>
   </scm>
   
