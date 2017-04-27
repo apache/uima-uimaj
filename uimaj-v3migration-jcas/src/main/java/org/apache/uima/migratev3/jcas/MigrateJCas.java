@@ -752,6 +752,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private void processCollection(String sourceName, Iterator<String> sourceIterator) {
     System.out.println("Migrating " + sourceName);
+    System.out.println("Each dot is one class; a duplicate is indicated by the letter d instead of a dot.");
     System.out.println("number of classes migrated:");
     System.out.flush();
     int i = 1;
@@ -760,7 +761,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     while (sourceIterator.hasNext()) {
       migrate(sourceIterator.next());  // prepare() is run on each item
                                        // sets field candidate
-      if ((i % 50) == 0) System.out.format("%4d%s", Integer.valueOf(i), "\r");
+      if ((i % 50) == 0) System.out.format("%4d%n    ", Integer.valueOf(i));
       i++;
     }
     System.out.format("%4d%n", Integer.valueOf(i - 1));   
@@ -1033,6 +1034,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       Node parent = maybeParent.get();
       if (parent instanceof CompilationUnit) {
         updateClassName(n);
+        if (!v3) {
+          // is a built-in class, skip it
+          super.visit(n, ignore);
+          return;
+        }
         NodeList<ClassOrInterfaceType> supers = n.getExtendedTypes();
         if (supers == null || supers.size() == 0) {
           reportNotJCasClass("class doesn't extend a superclass");
@@ -1287,7 +1293,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           ((p2 = p1.get().getParentNode()).isPresent() && p2.get() instanceof BlockStmt) &&
           ((p3 = p2.get().getParentNode()).isPresent() && p3.get() == get_set_method)) {
         NodeList<Statement> stmts = ((BlockStmt)p2.get()).getStatements();
-        stmts.set(stmts.indexOf(p1), new EmptyStmt());
+        stmts.set(stmts.indexOf(p1.get()), new EmptyStmt());
         return;
       }
            
@@ -1409,18 +1415,18 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
     boolean isOk2 = true;
     try {
-      isOk2 = isOk2 && reportPaths("Workaround Directories", "workaroundDir.txt", pathWorkaround);
-      isOk2 = isOk2 && reportPaths("Reports of converted files where a deleted check was customized", "deletedCheckModified.txt", deletedCheckModified);
-      isOk2 = isOk2 && reportPaths("Reports of converted files needing manual inspection", "manualInspection.txt", manualInspection);
-      isOk2 = isOk2 && reportPaths("Reports of files which failed migration", "failed.txt", failedMigration);
-      isOk2 = isOk2 && reportPaths("Reports of non-JCas files", "NonJCasFiles.txt", nonJCasFiles);
-      isOk2 = isOk2 && reportPaths("Builtin JCas classes - skipped - need manual checking to see if they are modified",
-          "skippedBuiltins.txt", skippedBuiltins);
+      isOk2 = reportPaths("Workaround Directories", "workaroundDir.txt", pathWorkaround) && isOk2;
+      isOk2 = reportPaths("Reports of converted files where a deleted check was customized", "deletedCheckModified.txt", deletedCheckModified) && isOk2;
+      isOk2 = reportPaths("Reports of converted files needing manual inspection", "manualInspection.txt", manualInspection) && isOk2;
+      isOk2 = reportPaths("Reports of files which failed migration", "failed.txt", failedMigration) && isOk2;
+      isOk2 = reportPaths("Reports of non-JCas files", "NonJCasFiles.txt", nonJCasFiles) && isOk2;
+      isOk2 = reportPaths("Builtin JCas classes - skipped - need manual checking to see if they are modified",
+          "skippedBuiltins.txt", skippedBuiltins) && isOk2;
       // can't do the pear report here - post processing not yet done.      
 //      computeDuplicates();
 //      reportPaths("Report of duplicates - not identical", "nonIdenticalDuplicates.txt", nonIdenticalDuplicates);
 //      reportPaths("Report of duplicates - identical", "identicalDuplicates.txt", identicalDuplicates);
-      isOk2 = isOk2 && reportDuplicates();
+      isOk2 = reportDuplicates() && isOk2;;
       
       reportPaths("Report of processed files", "processed.txt", c2ps);
       return isOk2;
@@ -1516,6 +1522,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   private boolean reportDuplicates() {
     List<Entry<String, List<ConvertedSource>>> nonIdenticals = new ArrayList<>();
     List<ConvertedSource> onlyIdenticals = new ArrayList<>();
+    
     for (Entry<String, List<ConvertedSource>> e : classname2multiSources.entrySet()) {
       List<ConvertedSource> convertedSourcesFor1class = e.getValue();
       if (convertedSourcesFor1class.size() > 1) {
@@ -1529,7 +1536,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         }
       }
     }
-    
+
     if (nonIdenticals.size() == 0) {
       if (onlyIdenticals.size() == 0) {
         System.out.println("There were no duplicates found.");
@@ -1603,7 +1610,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     if (v instanceof Path) {
       Path path = (Path) v;
       FileSystem fileSystem = path.getFileSystem();
-      if (fileSystem.getClass().getName().contains("zipfs")) {  // java 8 and 9
+      if (isZipFs(fileSystem)) {  // java 8 and 9
 //      if (fileSystem instanceof com.sun.nio.zipfs.ZipFileSystem) {
         v = v.toString() + "\t\t " + fileSystem.toString();
       }
@@ -1611,15 +1618,47 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     return v.toString();
   }
   
+  private boolean isZipFs(Object o) {
+    // Surprise! sometimes the o is not an instance of FileSystem but is the zipfs anyways
+    return o.getClass().getName().contains("zipfs");  // java 8 and 9
+  }
+  
   private <T, U> void sortReport2(List<? extends Report2<T, U>> items) {
     Collections.sort(items, 
         (o1, o2) -> {
-          int r = o1.getFirst().compareTo((T) o2.getFirst());
+          int r = protectedCompare(o1.getFirst(), o2.getFirst());           
           if (r == 0) {
-            r = o1.getSecond().compareTo((U) o2.getSecond());
+            r = protectedCompare(o1.getSecond(), o2.getSecond());
           }
           return r;
         });
+  }
+        
+  /**
+   * protect against comparing zip fs with non-zip fs - these are not comparable to each other in the Java impl
+   * @return -
+   */
+  private int protectedCompare(Comparable c1, Comparable c2) {
+    //debug
+    try {
+    if (isZipFs(c1)) {
+      if (isZipFs(c2)) {
+        return c1.compareTo(c2);  // both zip
+      } else {
+        return 1;
+      }
+    } else {
+      if (isZipFs(c2)) {
+        return -1;
+      } else {
+        return c1.compareTo(c2);  // both not zip
+      }
+    }
+    } catch (ClassCastException e) {
+      //debug
+      System.out.format("c1: %b  c2: %b%n c1: %s%n c2: %s%n", isZipFs(c1), isZipFs(c2), c1.getClass().getName(), c2.getClass().getName());
+      throw e;
+    }
   }
 
   /**
