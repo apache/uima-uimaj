@@ -137,10 +137,13 @@ public class Settings_impl implements Settings {
   }
 
   /**
-   * Load properties from the comma-separated list of files specified in the system property 
+   * Load properties from the comma-separated list of resources specified in the system property 
    *   UimaExternalOverrides
-   * Files are loaded in list order.  Duplicate properties are ignored so entries in a file override any in following files.
-   * The filesystem is searched first, and if not found and a relative name the datapath and classpath are searched.
+   * Resource names may be specified with a prefix of "file:" or "path:".
+   * If the prefix is "path:" the name must use the Java-style dotted format, similar to an import by name.
+   * The name is converted to a URL with a suffix of ".settings" and is looked up in the datapath and classpath.
+   * If the prefix is "file:" or is omitted the filesystem is searched.
+   * Resources are loaded in list order.  Duplicate properties are ignored so entries in a file override any in following files.
    * 
    * @throws ResourceConfigurationException wraps IOException
    */
@@ -152,20 +155,25 @@ public class Settings_impl implements Settings {
         UIMAFramework.getLogger(this.getClass()).logrb(Level.CONFIG, this.getClass().getName(), "loadSystemDefaults",
                 LOG_RESOURCE_BUNDLE, "UIMA_external_overrides_load__CONFIG",
                 new Object[] { fname });
-        File f = new File(fname);
         try {
           InputStream is = null; 
-          if (f.exists()) {
-            is = new FileInputStream(fname);
-          } else if (f.isAbsolute()) {
-            throw new FileNotFoundException(fname + " - not in filesystem.");
-          } else {  // Look in datapath & classpath if a relative entry not in the filesystem
-            URL relativeUrl = new URL("file", "", fname);
+          if (fname.startsWith("path:")) {  // Convert to a url and search the datapath & classpath
+            URL relativeUrl = new URL("file", "", fname.substring(5).replace('.', '/')+".settings");
             URL relPath = relativePathResolver.resolveRelativePath(relativeUrl);
             if (relPath != null) {
               is = relPath.openStream();
             } else {
-              throw new FileNotFoundException(fname + " - not found in directory " + System.getProperty("user.dir") + " or in the datapath or classpath.");
+              throw new FileNotFoundException(fname + " - not found in the datapath or classpath.");
+            }
+          } else {            // Files may have an optional "file:" prefix
+            if (fname.startsWith("file:")) {
+              fname = fname.substring(5);
+            }
+            File f = new File(fname);
+            if (f.exists()) {
+              is = new FileInputStream(fname);
+            } else {
+              throw new FileNotFoundException(fname + " - not in filesystem.");
             }
           }
           try {

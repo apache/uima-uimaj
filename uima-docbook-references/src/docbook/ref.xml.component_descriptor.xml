@@ -1960,9 +1960,12 @@ uima.tcas.Annotation.</programlisting>
             <para>
             The settings for all descriptors in a pipeline are usually loaded from one or more files
             whose names are obtained from the Java system property <emphasis>UimaExternalOverrides</emphasis>.
-            The value of the property must be a list of file names, each separated by a single comma 
-            e.g. <literal>&minus;DUimaExternalOverrides=file1.settings,file2.settings</literal>.
-            If a file is not in the filesystem and is a relative reference, both the datapath and classpath are searched.
+            The value of the property must be a comma-separated list of resource names.  If the name
+            has a prefix of "file:" or no prefix, the filesystem is searched.  If the name has a
+            prefix of "path:" the rest must be a Java-style dotted name, similar to the name
+            attribute for descriptor imports.  The dots are replaced by file separators and a suffix
+            of ".settings" is appended before searching the datapath and classpath.
+            e.g. <literal>&minus;DUimaExternalOverrides=/data/file1.settings,file:relative/file2.settings,path:org.apache.uima.resources.file3</literal>.
             </para>
 
             <para>
