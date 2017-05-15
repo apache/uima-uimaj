@@ -789,6 +789,37 @@ public class JCasUtilTest extends ComponentTestBase {
     index = indexCovering(jCas, Token.class, Sentence.class);
     // Check the first token is not contained in any sentence
     assertFalse(!index.get(tokens.get(0)).isEmpty());
+    
+    // Check if the reference annotation itself is returned
+    Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
+    extra.addToIndexes();
+    Map<Token, Collection<Token>> index2 = indexCovering(jCas, Token.class, Token.class);
+    assertEquals(0, index2.get(0).size());
+    assertEquals(1, index2.get(extra).size());
+    assertEquals(tokens.get(3), index2.get(extra).iterator().next());
+  }
+
+  @Test
+  public void testIndexCovered() throws Exception {
+    String text = "Will you come home today ? \n No , tomorrow !";
+    tokenBuilder.buildTokens(jCas, text);
+
+    List<Sentence> sentences = new ArrayList<Sentence>(select(jCas, Sentence.class));
+    List<Token> tokens = new ArrayList<Token>(select(jCas, Token.class));
+    
+    Map<Sentence, Collection<Token>> index = indexCovered(jCas, Sentence.class, Token.class);
+    
+    // Check covered annotations are found
+    assertEquals(tokens.subList(0, 6), index.get(sentences.get(0)));
+    assertEquals(tokens.subList(6, 10), index.get(sentences.get(1)));
+    
+    // Check if the reference annotation itself is returned
+    Token extra = new Token(jCas, tokens.get(3).getBegin(), tokens.get(3).getEnd());
+    extra.addToIndexes();
+    Map<Token, Collection<Token>> index2 = indexCovered(jCas, Token.class, Token.class);
+    assertEquals(0, index2.get(0).size());
+    assertEquals(1, index2.get(extra).size());
+    assertEquals(tokens.get(3), index2.get(extra).iterator().next());
   }
   
   @Test

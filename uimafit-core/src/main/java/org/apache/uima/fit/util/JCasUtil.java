@@ -483,6 +483,9 @@ public final class JCasUtil {
    * offsets are equal to the begin/end of the given annotation or where given 'covered' annotation
    * is properly contained within the span of the 'covering' annotation. Partially overlapping
    * annotations are not returned.
+   * <p>
+   * When querying for the annotations covering a given annotation, the given annotation itself
+   * is never returned, even if it is of the queried type.   
    * 
    * @param <T>
    *          the covered JCAs type.
@@ -513,6 +516,9 @@ public final class JCasUtil {
    * The method only returns properly covered annotations, that is annotations where the begin/end
    * offsets are equal to the 'covering' annotation or where both the begin/end are included in
    * the span of the 'covering' annotation. Partially overlapping annotations are not returned.
+   * <p>
+   * When querying for the annotations covered by a given annotation, the given annotation itself
+   * is never returned, even if it is of the queried type.
    * 
    * @param <T>
    *          the covering JCas type.
