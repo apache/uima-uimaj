@@ -32,7 +32,7 @@
 		<relativePath>uimafit-parent</relativePath>
 	</parent>
 	<properties>
-		<jiraVersion>12332459</jiraVersion>
+		<jiraVersion>12340576</jiraVersion>
 	</properties>
 	<scm>
 		<connection>scm:svn:http://svn.apache.org/repos/asf/uima/uimafit/trunk/</connection>
