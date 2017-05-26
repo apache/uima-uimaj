@@ -229,5 +229,20 @@ public class UIMAClassLoader extends URLClassLoader {
   
     }
   }
+
+  /* 
+   * loads resource from this class loader first, if possible
+   * (non-Javadoc)
+   * @see java.lang.ClassLoader#getResource(java.lang.String)
+   */
+  @Override
+  public URL getResource(String name) {
+    URL url = findResource(name);
+    
+    if (null == url) {
+      url = super.getResource(name);
+    }
+    return url;
+  }
   
 }
