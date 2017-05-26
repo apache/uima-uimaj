@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,16 +98,16 @@ public class UimaDecompiler {
     }
   }
     
-  /**
-   * decompile className, and use the byte array passed in instead of getting it from the classpath
-   * @param className the dotted name of the class
-   * @param byteArray the compiled definition for this class to decompile
-   * @return the decompilation
-   */
-  public ByteArrayOutputStream decompile(String className, byte[] byteArray) {
-    setDecompilerSettingsForByteArray(className.replace('.', '/'), byteArray);
-    return decompileCommon(className);
-  }
+//  /**
+//   * decompile className, and use the byte array passed in instead of getting it from the classpath
+//   * @param className the dotted name of the class
+//   * @param byteArray the compiled definition for this class to decompile
+//   * @return the decompilation
+//   */
+//  public ByteArrayOutputStream decompile(String className, byte[] byteArray) {
+//    setDecompilerSettingsForByteArray(className.replace('.', '/'), byteArray);
+//    return decompileCommon(className);
+//  }
   
   /**
    * decompile className, getting the compiled version from the classpath
@@ -180,7 +179,7 @@ public class UimaDecompiler {
   public String decompile(byte[] b) {
 //    PlainTextOutput pto = new PlainTextOutput();
     
-    String classNameSlashes = extractClassNameSlashes(b);
+    String classNameSlashes = Misc.classNameFromByteCode(b);
 //    setDecompilerSettingsForByteArray(classNameSlashes, b);
 //    Decompiler.decompile(classNameSlashes, pto, decompilerSettings);
 //    String s = pto.toString();
@@ -212,63 +211,66 @@ public class UimaDecompiler {
 //    Decompiler.decompile(classNameSlashes, pto, decompilerSettings);
 //    return pto.toString(); 
   }
-    
-  /**
-   * get the slashified form of the fully qualified class name, (minus the trailing .class)
-   * @param b the compiled form of the class
-   * @return fully qualified class name with slashes
-   */
-  public String extractClassNameSlashes(byte[] b) {
-    if (b[10] != 7 || b[13] != 1) { 
-      // class name not immediately findable in the compiled code, so decompile it (without knowing the class name)
-      PlainTextOutput pto = new PlainTextOutput();
-      setDecompilerSettingsForByteArray("", b);
-      //      decompilerSettings.setTypeLoader(getClasspathTypeLoader());
-      Decompiler.decompile("", pto, decompilerSettings);
-      String s = pto.toString();
-      
-      String packageName = "";
-      String className = "";
-      int ip = s.indexOf("package ");
-      if (ip >= 0) {
-        ip = ip + "package ".length();  // start of package name;
-        int ipe = s.indexOf(";", ip);  
-        packageName = s.substring(ip, ipe).replace('.', '/') + "/";
-      }
-      
-      Matcher m = cie_name.matcher(s);
-      boolean ok = m.find();
-      className = ok 
-                     ? m.group(2) 
-                     : "";    
-      
-      String classNameSlashes = packageName + className;
-//      if (classNameSlashes.equals("")) {
-//        throw new RuntimeException("Couldn't find class name");
+   
+  // use Misc.classNameFromByteCode
+//  /**
+//   * get the slashified form of the fully qualified class name, (minus the trailing .class)
+//   * @param b the compiled form of the class
+//   * @return fully qualified class name with slashes
+//   */
+//  public String extractClassNameSlashes(byte[] b) {
+//    if (b[10] == 7 && b[13] == 1) { // a well known compiled form
+//      int length = b[14] * 16 + b[15];
+//      try {
+//        String s = new String(b, 16, length, "UTF-8");
+//        if (s.endsWith(".class")) {
+//          s = s.substring(0, s.length() - ".class".length());
+//        }
+//        return s;      
+//      } catch (UnsupportedEncodingException e) {
+//        throw new RuntimeException(e);
 //      }
-      return classNameSlashes;
-    }
-    int length = b[14] * 16 + b[15];
-    try {
-      String s = new String(b, 16, length, "UTF-8");
-      if (s.endsWith(".class")) {
-        s = s.substring(0, s.length() - ".class".length());
-      }
-      return s;      
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
-  }
+//    } else {
+//      // class name not immediately findable in the compiled code, so decompile it (without knowing the class name)
+//      // this path is slow - has 2 decompiles per class (one just to find the package/class name).
+//      PlainTextOutput pto = new PlainTextOutput();
+//      setDecompilerSettingsForByteArray("", b);
+//      //      decompilerSettings.setTypeLoader(getClasspathTypeLoader());
+//      Decompiler.decompile("", pto, decompilerSettings);
+//      String s = pto.toString();
+//      
+//      String packageName = "";
+//      String className = "";
+//      int ip = s.indexOf("package ");
+//      if (ip >= 0) {
+//        ip = ip + "package ".length();  // start of package name;
+//        int ipe = s.indexOf(";", ip);  
+//        packageName = s.substring(ip, ipe).replace('.', '/') + "/";
+//      }
+//      
+//      Matcher m = cie_name.matcher(s);
+//      boolean ok = m.find();
+//      className = ok 
+//                     ? m.group(2) 
+//                     : "";    
+//      
+//      String classNameSlashes = packageName + className;
+////      if (classNameSlashes.equals("")) {
+////        throw new RuntimeException("Couldn't find class name");
+////      }
+//      return classNameSlashes;
+//    }
+//  }
   
   public boolean decompileToOutputDirectory(String className) {
     ByteArrayOutputStream baos = decompile(className);
     return writeIfOk(baos, className);
   }
 
-  public boolean decompileToOutputDirectory(String className, byte[] byteArray) {
-    ByteArrayOutputStream baos = decompile(className, byteArray);
-    return writeIfOk(baos, className);
-  }
+//  public boolean decompileToOutputDirectory(String className, byte[] byteArray) {
+//    ByteArrayOutputStream baos = decompile(className, byteArray);
+//    return writeIfOk(baos, className);
+//  }
 
   public boolean writeIfOk(ByteArrayOutputStream baos, String className) {
     if (!decompiledFailed(baos)) {
