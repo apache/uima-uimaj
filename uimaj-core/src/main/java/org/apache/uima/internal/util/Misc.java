@@ -293,7 +293,6 @@ public class Misc {
   /**
    * For standardized prettyprinting, to string.
    * Adds a collection of things (toString) separated by , and surrounded by [  ], to a StringBuilder
-   * @param indent the indentation to use
    * @param sb where the formatted collection results are appended to 
    * @param c the collection
    * @param <T> the kind of elements in the collection
@@ -337,11 +336,11 @@ public class Misc {
    *               item2,
    *               item3
    *             ]
-   * Starts as style 1, switches to style 2 when length > 60             
-   * @param sb
-   * @param c
-   * @param limit
-   * @param appender
+   * Starts as style 1, switches to style 2 when length &gt; 60             
+   * @param sb where the string is assembled
+   * @param c the collection to process
+   * @param limit the maximum number of items
+   * @param appender the appender
    * @return
    */
   public static <T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c, int limit, BiConsumer<StringBuilder, T> appender) {
@@ -678,6 +677,7 @@ public class Misc {
   /**
    * format a list of items for pretty printing as [item1, item2, ... ]
    * @param items to print
+   * @param <T> the type of elements in the list
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(List<T> items) {
@@ -687,6 +687,7 @@ public class Misc {
   /**
    * @param items to print
    * @param max - maximum number of items to print
+   * @param <T> the type of elements in the list
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(List<T> items, int max) {
@@ -697,6 +698,7 @@ public class Misc {
    * @param items to print
    * @param max - maximum number of items to print
    * @param appender - appender function
+   * @param <T> the type of elements in the list
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(List<T> items, int max, BiConsumer<StringBuilder, T> appender) {
@@ -707,6 +709,7 @@ public class Misc {
    * format a list of items for pretty printing as [item1, item2, ... ]
    * @param indent the amount to use as indentation
    * @param items to print
+   * @param <T> the type of elements in the list
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(int[] indent, List<T> items) {
@@ -717,6 +720,7 @@ public class Misc {
    * @param indent the amount to use as indentation
    * @param items to print
    * @param max - maximum number of items to print
+   * @param <T> the type of elements in the list
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(int[] indent, List<T> items, int max) {
@@ -728,6 +732,7 @@ public class Misc {
    * @param items to print
    * @param max - maximum number of items to print
    * @param appender - appender function
+   * @param <T> the type of elements in the list
    * @return  [item1, item2, ... ]
    */
   public static <T> String ppList(int[] indent, List<T> items, int max, BiConsumer<StringBuilder, T> appender) {
@@ -831,6 +836,8 @@ public class Misc {
   /** 
    * extract the slashified version of the fully qualified class name from
    * the bytecode for a class
+   * @param bytes the bytecode to extract from
+   * @return the slashified class name eg. x/y/z/Myclass
    */
   public static String classNameFromByteCode(byte[] bytes) {
     ByteBuffer bb = ByteBuffer.wrap(bytes);
