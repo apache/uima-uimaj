@@ -167,12 +167,12 @@
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-core</artifactId>
-      <version>0.5.28</version>
+      <version>0.5.32</version>
     </dependency>  
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.28</version>
+      <version>0.5.32</version>
     </dependency>  
     <dependency>    <!-- apache v2 license  2016 checked -->
       <groupId>com.github.javaparser</groupId>
