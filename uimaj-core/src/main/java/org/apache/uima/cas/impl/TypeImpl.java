@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.CAS;
@@ -305,22 +305,19 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public String toString(int indent) {
     StringBuilder sb = new StringBuilder();
     sb.append(this.getClass().getSimpleName() + " [name: ").append(name).append(", superType: ").append((superType == null) ? "<null>" :superType.getName()).append(", ");
-    prettyPrintList(sb, "directSubtypes", directSubtypes, ti -> sb.append(ti.getName()));
+    prettyPrintList(sb, "directSubtypes", directSubtypes, (sbx, ti) -> sbx.append(ti.getName()));
     sb.append(", ");
     appendIntroFeats(sb, indent);
     return sb.toString();
   }
   
-  private <T> void prettyPrintList(StringBuilder sb, String title, List<T> items, Consumer<T> appender) {
+  private <T> void prettyPrintList(StringBuilder sb, String title, List<T> items, BiConsumer<StringBuilder, T> appender) {
     sb.append(title).append(": ");
     Misc.addElementsToStringBuilder(sb, items, appender);
   }
   
-  private static final char[] blanks = new char[80];
-  static {Arrays.fill(blanks,  ' ');}
-
   public void prettyPrint(StringBuilder sb, int indent) {
-    indent(sb, indent).append(name).append(": super: ").append((null == superType) ? "<null>" : superType.getName());
+    Misc.indent(sb, indent).append(name).append(": super: ").append((null == superType) ? "<null>" : superType.getName());
     
     if (staticMergedFeaturesIntroducedByThisType.size() > 0) {
       sb.append(", ");
@@ -328,11 +325,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     sb.append('\n');
   }
-  
-  private StringBuilder indent(StringBuilder sb, int indent) {
-    return sb.append(blanks, 0, Math.min(indent,  blanks.length));
-  }
-  
+    
   public void prettyPrintWithSubTypes(StringBuilder sb, int indent) {
     prettyPrint(sb, indent);
     int nextIndent = indent + 2;
@@ -341,7 +334,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 
   private void appendIntroFeats(StringBuilder sb, int indent) {
     prettyPrintList(sb, "FeaturesIntroduced/Range/multiRef", staticMergedFeaturesIntroducedByThisType,
-        fi -> indent(sb.append('\n'), indent + 2).append(fi.getShortName()).append('/')
+        (sbx, fi) -> Misc.indent(sbx.append('\n'), indent + 2).append(fi.getShortName()).append('/')
                 .append(fi.getRange().getName()).append('/')
                 .append(fi.isMultipleReferencesAllowed() ? 'T' : 'F') );
   }
