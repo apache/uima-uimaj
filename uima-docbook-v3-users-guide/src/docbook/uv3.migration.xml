@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd"[
-<!ENTITY imgroot "images/version_3_users_guide/migration/">
+<!ENTITY imgroot "images/version_3_users_guide/migrate/">
 <!ENTITY % uimaents SYSTEM "../../target/docbook-shared/entities.ent">  
 %uimaents;
 ]>
@@ -51,14 +51,26 @@ under the License.
       <itemizedlist spacing="compact">
         <listitem><para>Java 8 is required. (If you're already using Java 8, nothing need be done.)</para></listitem>
         <listitem><para>Any defined JCas cover classes must be migrated or regenerated, and used instead.
-        (If you do not define any JCas classes or don't use JCas in your pipeline, then nothing need be done.)</para></listitem>
+        (If you do not define any JCas classes or don't use JCas in your pipeline, then nothing need be done.)
+        A quick way to do this is to create a Jar with the migrated JCas classes, and put it into the classpath
+        ahead of the other JCas class definitions.</para></listitem>
       </itemizedlist>
+    </para>
+    
+    <para>Some adjustments may need to be made to logging setup, typically by including additional Jars 
+      (provided in the UIMA Binary distribution) in your 
+      application's classpath.  If you are using the standard UIMA Launch scripts, this is already done.
+      For custom application setups, insure that the classpath includes the (now) required jar 
+      "slf4j-api-xxxx.jar" (replace xxxx with the version).  
+      If you were using the standard UIMA based logging,
+      to get the similar behavior, include the slf4j-jdk14-xxxx.jar; this 
+      enables the standard Java Utility Logging facility. 
     </para>
     
     <para>Some Maven projects use the JCasGen maven plugin; these projects' JCasGen maven plugin,
      if switched to UIMA V3, automatically generate the V3 versions.  For proper operation, please run
      maven clean install; the clean operation ought to remove the previously generated JCas class, including the
-     UIMA V2 <code>xxx_Type</code> classes, which are not used, won't compile in V3 and need to be deleted. 
+     UIMA V2 <code>xxx_Type</code> classes.  These are no longer used, and won't compile in V3. 
     </para>
     
     <para>You can use any of the methods of invoking JCasGen to generate the new V3 versions.  
@@ -118,16 +130,97 @@ under the License.
 	  as a stand-alone command line tool (<code>runV3migrateJCas.sh or ...bat</code>), or 
 	  as Eclipse launch configurations.</para>
 	  
-  <para>This tool is run against a directory tree, and scans all the files in the tree, looking for 
-     JCas cover classes.  It can process either source files, or, if those are not available, compiled
-     class files (it runs a decompiler on these). 
-     It can process these inside directories, as well as inside Jar or PEAR files within those directories.</para>
-                
-	<para>If you run this tool using a Java 8 JDK (as opposed to a Java JRE),
-    the JDK's java compiler will be used to create compiled versions of the migrated classes, 
-    and create copies of JARs and/or PEARs with these in them.</para>
+  <para>This tool can migrate either sets of
+    <itemizedlist>
+      <listitem><para>Java source files (xxx.java) or </para></listitem>
+      <listitem><para>Compiled Java class files (including those contained in JARs or PEARs)</para></listitem>
+    </itemizedlist>
+    
+    Usually, if you have the source code it is best to migrate the sources.  Otherwise, you can migrate the compiled classes.
+  </para> 
+  
+  <para>When migrating <emphasis role="strong">source</emphasis> files, you specify one or more "roots" - places in a file directory, 
+    and the tool scans those  
+    directories recursively, looking for JCas source files.  When it finds one, it copies it to the output spot 
+    and migrates it. The output is arranged in parallel directories (before and after migration), 
+    for easy side-by-side comparing in a tool such as Eclipse file compare.</para>
+    
+  <para>After checking the migration results, including comparing the files, you replace the original source with
+    the migrated versions.  Also, the original V2 source would contain a source file for each JCas class ending in
+    "_Type"; these are not used in version 3 and should be deleted.</para>
+    
+  <para>You may also migrate <emphasis role="strong">class</emphasis> files; this can be used when the source files are not available.
+    This option has a decompilation step, to produce the source to be migrated and requires
+    a classpath (passed as the <code>migrationClasspath</code> parameter);
+    this classpath is used to resolve symbols during the decompilation, and should be the classpath used when running those classes.
+    For class files, the migration tool 
+    attempts to compile the results and, for Jars and PEARs, to update those migrated classes 
+    in a copy of the original packaging (meaning, within Jars or PEARs): 
+    
+    <itemizedlist spacing="compact">
+      <listitem><para>The <emphasis role="strong">classesRoots</emphasis> are used to locate .class files, perhaps within Jars and PEARs.</para></listitem>
+      <listitem><para>These are decompiled, using special versions of the migrateClasspath.</para></listitem>
+      <listitem><para>The resultant sources are migrated.</para></listitem>
+      <listitem><para>The migrated sources are compiled.</para></listitem>
+      <listitem><para>If the original classes came from Jars or PEARs, copies of these are made with the 
+        migrated classes replaced.</para></listitem>
+    </itemizedlist>
+  </para>
+  
+  
+  
+  <!-- 
+  <para>The migration tool makes a list of all the places in the sourcesRoots or classRoots which contain
+    one or more JCas classes.  It outputs a table of these places with numbered entries called 
+    <emphasis role="strong">root-ids</emphasis>; the root-ids are used
+    when outputting the results, so that output can be tied to where it originated in the 
+    directory roots.  Root-ids are sequentially incrementing integers starting with 1, and are suffixed
+    with a J or a P, if the root-id is for a Jar or a Pear. 
+    </para>
+    
+  <para>Each root-id has an associated value, consisting of a path plus 0 or more other root ids, preceding the path.
+    The root-id's value is the location of the Java class (excluding its package prefix).  For example, the
+    location for a class in a directory tree at /a/b/c/x/y/z/classname.java, where the fully qualified class name was
+    <code>x.y.z.classname</code>, would be /a/b/c.
+    </para>  
+    
+   <para>The value of a root-id may include 0 or more other root-ids; these additional root-ids are for the purpose of
+     identifying a containing Jar or PEAR location;  a PEAR containing a Jar would have two additional root-ids.</para>
+ -->      
+  <para>When scanning directories from source or class roots, if a Jar is encountered, it is recursively scanned.</para>
 
-  <para>The results of the migration include the migrated class files and a set of logs, summarized in the console
+  <para>If a PEAR file is encountered, it is installed into a temporary spot, and then scanned.  If scanning from 
+    classesRoots, the migrateClasspath is prepended with the PEAR's classpath.</para>
+    
+  <para>When migrating from compiled classes:
+    <itemizedlist>      
+      <listitem><para>The class is decompiled, and the resulting source is migrated.  One known issue in the 
+        migration when using compiled classes: the decompilation sometimes fails to include a required 
+        <code>cast</code> operation, which results in a subsequent compilation step reporting a compile error; 
+        these need to be manually fixed by adding back the missing cast.  
+        This problem doesn't happen when migrating from source files.</para>
+      </listitem>
+      
+      <listitem><para>The next 2 steps are skipped if no Java compiler is available.  A compiler is available if
+        the migrate utility is being run using a JDK (as opposed to a JRE version of Java).</para></listitem>
+      
+      <listitem><para>The migrated classes are compiled. 
+        During this processes, the classpath used is the same as the decompile classpath, except
+        that the uimaj-core Jar for version 3 (from the classpath used to run the migration tool) is prepended
+        so that the migrated version can be compiled.
+        </para></listitem>
+        
+      <listitem><para>Finally, if the original "packaging" of the class files is a Jar or PEAR, it 
+        is copied and updated with the migrated classes (provided there was no compile error).
+        </para>
+      </listitem>  
+            
+    </itemizedlist>
+  </para>
+                
+  <para>The results of the migration include the migrated files, a set of logs, and for classesRoots: the 
+    compiled classes, and repackaging of them into copies of original Jars and/or PEARs.
+    The migration operation is summarized in the console
     output, detailing anything that might need inspection to verify the migration was done correctly.
   </para>
   
@@ -135,22 +228,17 @@ under the License.
     If all is OK, the migration will say that it "finished with no unusual conditions", at the end.
   </para></blockquote> 	  
 
-  <para>To complete the migration, update your UIMA application to use these classes in place of the version 2 JCas classes.
+  <para>To complete the migration, fix any reported issues that need fixing, and then 
+    update your UIMA application to use these classes/Jars/PEARs 
+    in place of the version 2 ones.
   </para>
-    
-  <para>The migration tool is able to scan multiple directory trees, looking for existing Java
-	  source (.java) or class (.class) files, even inside Jars and PEAR archives. If compiled class files
-	  are used as input, a Java decompiler is used to decompile these to source.
-	  For PEARs and Jars, it replaces the migrated and compiled classes in copies of the PEARs and Jars.
-	</para>
-	
+    	
 	<para>  
 	  The actual migration step is a source-to-source transformation, done using a Java parse of the source files.
 	  The parts in the source which are version 2 specific with the equivalent version 3 code.
 	  Only those parts which need updating are modified;
     other code and comments which are part of the source file are left unchanged.  This is intended to preserve
     any user customization that may have been done.  
-    Detailed reports detailing any issues encountered are written to log files. 
   </para>
     
 <!--    <section id="uv3.migration.automatic">
@@ -170,11 +258,7 @@ under the License.
     </para>
   </section>
  --> 
- 		 
-		 <note><para>The compilation step (done after the source-to-source transformation) requires that a Java compiler is available 
-		   (which will be the case if you're running with a Java JDK, not a JRE).
-		 </para></note>
-		 
+ 		 		 
 		 <note><para>After running the tool, it is important to examining the console output and logs.
        You can confirm that the migration completed without any unusual conditions, or, if something 
        unusual was encountered, you can take corrective action.
@@ -182,8 +266,10 @@ under the License.
 		  
 		<section id="uv3.migration.tool_guide.running">
 	    <title>Running the migration tool</title>
+      
 	    <para>The tool can be run as a stand-alone command, using the launcher scripts <code>runV3migrateJCas</code>; 
-	      there are two versions of this &mdash; one for windows (ending it ".bat") and one for linux / mac (ending in ".sh").
+	      there are two versions of this &mdash; one for windows (ending it ".bat") 
+        and one for linux / mac (ending in ".sh").
 		    If you run this without any arguments, it will show a brief help for the arguments.
 		  </para>
 		  
@@ -199,15 +285,15 @@ under the License.
         <para>There are two Eclipse launch configurations; one works with source code, the other with compiled classes
           or Jars or PEARs.  The launch configurations are named:
           <itemizedlist spacing="compact">
-            <listitem><para>UIMA Run V3 migrate JCas from file system source directory root</para></listitem>
-            <listitem><para>UIMA Run V3 migrate JCas from file system class directory root</para></listitem>
+            <listitem><para>UIMA Run V3 migrate JCas from sources roots</para></listitem>
+            <listitem><para>UIMA Run V3 migrate JCas from classes roots</para></listitem>
           </itemizedlist>
           When running from class directory roots, the classes must not have compile errors, and may contain Jars and PEARs.
           Both launchers write their output to a temporary directory, whose name is printed in the Eclipse console log.
         </para>
       
         <para>
-          To use the Eclipse launcher for source code,
+          To use the Eclipse launcher to migrate from source code,
             <itemizedlist spacing="compact">
               <listitem><para>First select the eclipse project containing the source code to transform; 
                 this project's "build path" will also supply the 
@@ -216,8 +302,7 @@ under the License.
               </para></listitem>
             </itemizedlist>
             This will scan the directory tree of the project, looking for source files which are JCas files, and 
-            migrate them.  No existing files are modified; everything is written to the output directory (by default, 
-            automatically assigned to a new temporary file system directory).
+            migrate them.  No existing files are modified; everything is written to the output directory.
   		  </para>
         
         <para>
@@ -232,17 +317,7 @@ under the License.
               </para></listitem> 
             </itemizedlist>
         </para>
-  	    
-        <!-- repetitious
-  	    <para>No matter how the tool is started, the input to the tool is one or more directory tree roots; 
-  	      the tool will scan the file system under these roots (including inside Jars and PEARs when running from
-          compiled classes), looking for definitions to migrate.  
-  	    </para>
-		     -->
-         
-	      <!-- <blockquote><para>It can also be run with a list of specific JCas classes
-	      to migrate.</para></blockquote> -->
-        
+  	            
       </section>
 		  
       
@@ -279,14 +354,15 @@ under the License.
   	          </listitem>
   	        </varlistentry>
   	        
-  		    </variablelist>  
+  		    </variablelist>
+          You can specify either of these, but not both.  
   	    </para>
         </section>
         	    
   	    <section id="uv3.migration.tool_guide.classpath">
   	      <title>Command line: Specifying a classpath for the migration</title>
   	      <para>When migrating from compiled classes, a classpath is required to locate and decompile
-            the JCas classes to be migrated.  This classpath must include the JCas classes 
+            the JCas classes to be migrated.  This classpath should include the JCas classes 
             to be decompiled. The compiled classes must not have compile errors.
           </para>
           
@@ -309,12 +385,26 @@ under the License.
 	    <section id="uv3.migration.tool_guide.duplicates">
 	      <title>Handling duplicate definitions</title>
 	      <para>Sometimes, a classpath or directory tree may contain multiple instances of the same JCas class.
-	        These might be identical, or they might be different versions.  The migration utility detects this, 
-	        and migrates all non-identical instances, using a convention to store them in the output directory in a manner
-	        where different versions can be conveniently compared using tooling such as Eclipse's file compare.
+	        These might be identical, or they might be different versions.  
+        </para>
+        
+        <para>The migration utility handles this by migrating each instance.  
+        <!-- 
+        detects this, except for this case:
+          <itemizedlist spacing="compact">
+            <listitem><para>migrating from classes (meaning the classes are decompiled), and</para></listitem>
+            <listitem><para>the multiple instances defining the classes are not in a Jar or a PEAR, or</para></listitem>
+            <listitem><para>if in a PEAR, the multiple instances are not in a Jar within the PEAR</para></listitem>
+          </itemizedlist>
+          In this case, the decompilation gets the definition from the migrateClasspath, by classname, which means 
+          that even though there may be multiple definitions, only the one (the first one in the classpath) is found.
+        </para>
+         -->
+        
+        The migrated forms are 
+          stored in the output directory prefixed by the root-id (see above), as the parent directory.
+          The different versions can then be conveniently compared using tooling such as Eclipse's file compare.
 	      </para>
-	      <blockquote><para>When there are non-identical duplicate definitions, 
-	        the user must manually compare these and decide which version to use.</para></blockquote>
 	      
 	    </section>
 	  </section>  
@@ -328,57 +418,105 @@ under the License.
       <para>Each file translated has both a v2 source and a v3 source.  When the input is ".class" files, 
         the v2 source is the result of the decompilation step, prior to any migration.
       </para>
+              
+      <para>The process of scanning directories to find JCas class to migrate may come across multiple instances of
+        the same class.  There are two subcases:
+        <itemizedlist>
+          <listitem><para>The instances are the same.</para></listitem>
+          <listitem><para>The instances are different (two non-identical definitions for the same class).
+          Sometimes these arise when migrating from compiled classes, where the compilation was done by different
+          versions of the Java compiler, and the resulting decompilations are logically equal but have some fields or
+          methods in a different order.</para></listitem>
+        </itemizedlist></para>
       
-      <blockquote><para>
-        These are arranged in parallel directories, allowing Eclipse's multi-file directory "compare" to work on both directory
-        collections and conveniently show for all the migrated files the change details.
-      </para></blockquote>
+      <para>This diagram illustrates some of the potentials for identical and non-identical duplicate definitions
+        for the same classname, that the tool may encounter.  The blue boxes represent ordinary file directories
+        or Jars, and the other boxes with labels Cn1 and Cn2 represent the definitions for a classes named Cn1 
+        and Cn2; the different colors represent non-identical definitions, as an example.  Note that a definition
+        for a class might appear sometimes not within a Jar (or a PEAR, not shown here), as well as with that.
+         <mediaobject>
+            <imageobject>
+              <imagedata width="5.7in" format="PNG" fileref="&imgroot;multiples.png"/>
+            </imageobject>
+            <textobject><phrase>Example of some possible duplicate class definitions</phrase>
+            </textobject>
+          </mediaobject>
         
-      <para>In the case of non-identical duplicates, an increasing integer 
-        starting with 1 is inserted into the output directory tree
-        for each migrated class.</para>
+        The migration tool allows for all of these variants.  It will 
+        migrate all versions, and will (when migrating from compiled Jars and PEARs) compile and reassemble these.</para>
         
+      <para>The output directories prefix the package/classname holding the source code with a prefix of 
+        "a0", "a1", etc.  The "a" stands for alternative, and the 0 is for the first alternative, and the 1, 2, ...
+        are for other non-equal alternatives.</para>
+        
+      <para>When the migration is run from compiled classes, then, if possible,
+      the resulting migrated classes are recompiled and if from Jars or PEARs, reassembled into copies of those artifacts.
+      The compilation for the same classname, with the same sourcecode, could be different for different containers
+      because each compilation is done with that container's classpath (e.g. Jar or Pear) and with respect to the
+      compilation units of that container.  
+      </para>
+      
+      <para>Because of this, the compiled results for a given source instance, are done separately, and kept in output
+      directories, indexed additionally by the container number, as "c0", "c1", ... .
+      A list of all container numbers and the migrated      
+      classes within those containers, is printed out to enable correlating these by hand when necessary.
+      </para>
+             
       <para>The overall directory output directory tree looks like:
         <programlisting>Directory structure, starting at -outputDirectory
    converted/
      v2/
-       x/y/z/javapath/.../Classname.java
-       x/y/z/javapath/.../Classname.java
+       a0/pkg/name.../Classname.java   
+                           /Classname2.java etc.
+       a1/pkg/name.../Classname.java  if there are multiple
+                                              different versions 
        ...
      v3/
-       x/y/z/javapath/.../Classname.java
-       x/y/z/javapath/.../Classname.java
+       a0/pkg/name.../Classname.java
+                     /Classname2.java etc.
+       a1/pkg/name.../Classname.java  if there are multiple
+                                              different versions
        ...
        
-       
-       1/     &lt;&lt; for non identical duplicates
-         x/y/z/javapath/.../Classname.java    
-         x/y/z/javapath/.../Classname.java  
-         ...                                    
-       2/     &lt;&lt; for non identical duplicates
-         x/y/z/javapath/.../Classname.java
-         x/y/z/javapath/.../Classname.java
-         ...
-     v3-classes/
+     v3-classes/   for Jars and PEARs, the compiled class
+       // xyz is the path in the container to the
+       //       start of the pkg/name.../Classname.class
+       // the "a0", "a1", ... is extra but serves to 
+       //      identify which alternative of the source
+       23/a0/xyz/pkg/name.../Classname.class
+       33/a0/xyz/pkg/name.../Classname.class
+       42/a0/xyz/pkg/name.../Classname.class
          ...    
+
+     pears/
+       // xyz_updated_pear_copy is the path
+       //    relative to the container, of the PEAR
+       33/xyz_updated_pear_copy.pear  
+         ...
+     
+     jars/
+       // xyz_updated_jar_copy is the path
+       //    relative to the container, of the Jar
+       42/xyz_updated_jar_copy.jar
+         ...
        
    not-converted/
+   
    logs/
      processed.txt
      failed.txt
      skippedBuiltins.txt
-     NonJCasFiles.txt
+     nonJCasFiles.txt
      workaroundDir.txt
      deletedCheckModified.txt
      manualInspection.txt
-     pearsFileUpdates.txt
-     jarsFileUpdates.txt
-   pears/
-     xyz_converted_pear.pear  
-     ...
-   jars/
-     ...</programlisting>
+     pearFileUpdates.txt
+     jarFileUpdates.txt
      
+     ...</programlisting>
+      </para>
+    
+      <para>
         The converted subtree holds all the sources and migrated versions that were successfully migrated.
         The not-converted subtree hold the sources that failed in some way the migration.
         The logs contain many kinds of entries for different issues encountered:
@@ -432,6 +570,7 @@ under the License.
               </para>
             </listitem>
           </varlistentry>
+          <!-- 
           <varlistentry>
             <term><emphasis role="strong">workaroundDir.txt</emphasis></term>
 	          <listitem>
@@ -442,6 +581,7 @@ under the License.
 	            </para>
 	          </listitem>
           </varlistentry>
+           -->
           <varlistentry>
             <term><emphasis role="strong">jarsFileUpdates.txt</emphasis></term>
             <listitem>
@@ -458,7 +598,6 @@ under the License.
           </varlistentry>
         </variablelist>    
       </para>
-      
            
     </section>
     
@@ -511,8 +650,8 @@ Eclipse -&gt; menu -&gt; Run -&gt; Run configurations
      
     <para>Projects may have tests which write to the UIMA log.  Because V3 switched to SLF4J as the default logger,
       unless SLF4J can find an adapter to some back-end logger, it will issue a message and substitute a "NO-OP" 
-      back-end logger.  If your test cases depend on having the V2 default logger (which was the one built into Java), 
-      you need to add a "test" dependency on the SLF4J-to-JDK14 adapter to your POM.  Here's the xml for that:</para>
+      back-end logger.  If your test cases depend on having the V2 default logger (which is the one built into Java), 
+      you need to add a "test" dependency that specifies the SLF4J-to-JDK14 adapter to your POM.  Here's the xml for that:</para>
     <programlisting><![CDATA[<dependency>
   <groupId>org.slf4j</groupId>
   <artifactId>slf4j-jdk14</artifactId>
