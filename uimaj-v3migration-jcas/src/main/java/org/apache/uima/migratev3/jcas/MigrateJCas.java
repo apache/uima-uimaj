@@ -375,9 +375,9 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       try {
       si(sb);  // new line + indent
       sb.append("subContainers=");
-      Misc.addElementsToStringBuilder(indent, sb, Misc.setAsList(subContainers), 100, (sbx, i) -> sbx.append(i.id)).append(',');
+      Misc.addElementsToStringBuilder(indent, sb, Misc.setAsList(subContainers), -1, (sbx, i) -> sbx.append(i.id)).append(',');
       si(sb).append("paths migrated=");  // new line + indent
-      Misc.addElementsToStringBuilder(indent, sb, candidates, 100, StringBuilder::append).append(',');
+      Misc.addElementsToStringBuilder(indent, sb, candidates, -1, StringBuilder::append).append(',');
 //      si(sb).append("v3CompilePath=");  // new line + indent
 //      Misc.addElementsToStringBuilder(indent,  sb, v3CompiledPathAndContainerItemPath, 100, StringBuilder::append);
       } finally {
@@ -633,7 +633,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
                   "null").append(',');
       si(sb).append("containersAndPaths=")
             .append(containersAndV2Paths != null 
-                      ? Misc.ppList(indent, Misc.setAsList(containersAndV2Paths), maxLen, StringBuilder::append)
+                      ? Misc.ppList(indent, Misc.setAsList(containersAndV2Paths), -1, StringBuilder::append)
                       : "null").append(',');
       si(sb).append("v3SourcePath=").append(v3SourcePath).append(',');
       si(sb).append("fqcn_slash=").append(fqcn_slash).append("]").append(Misc.ls);
