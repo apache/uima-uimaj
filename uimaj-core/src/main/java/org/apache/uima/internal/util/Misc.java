@@ -339,7 +339,7 @@ public class Misc {
    * Starts as style 1, switches to style 2 when length &gt; 60             
    * @param sb where the string is assembled
    * @param c the collection to process
-   * @param limit the maximum number of items
+   * @param limit the maximum number of items, if negative, no limit
    * @param appender the appender
    * @return
    */
@@ -359,7 +359,7 @@ public class Misc {
     int i = 0;
     boolean overLimit = false;
     for (T item : c) {
-      if ((i++) >= limit) {
+      if ((i++) >= limit && limit >= 0) {
         overLimit = true;
         break;
       } else {
@@ -391,7 +391,7 @@ public class Misc {
       int cl = -1; // for dropping trailing end punctuation
       boolean overLimit = false;
       for (T item : c) {
-        if ((i++) >= limit) {
+        if ((i++) >= limit && limit >= 0) {
           overLimit = true;
           break;
         } else {
