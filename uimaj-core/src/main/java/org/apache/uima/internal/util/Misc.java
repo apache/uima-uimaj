@@ -386,6 +386,7 @@ public class Misc {
   private static <T> StringBuilder style2(int[] indent, StringBuilder sb, Collection<T> c, int limit, BiConsumer<StringBuilder, T> appender) {
     sb.append("[");
     indent[0] += 2;
+    indent(sb, indent);
     try {
       int i = 0;
       int cl = -1; // for dropping trailing end punctuation
