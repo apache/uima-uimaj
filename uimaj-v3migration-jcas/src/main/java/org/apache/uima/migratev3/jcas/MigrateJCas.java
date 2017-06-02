@@ -50,6 +50,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -272,7 +273,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    *           - holds set of rootIds in that container
    *           - topmost one has null parent, and null pathToJarOrPear
    ******************************************************************/
-  private static class Container {
+  private static class Container implements Comparable<Container> {
     final int id = nextContainerId++;
     final Container parent;      // null if at top level
     /**  root to scan from.  
@@ -281,7 +282,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
      *             -- for inner Jars, the Jar is copied out into temp space. */
     Path root;  
     final Path rootOrig; // for Jars and Pears, the original path ending in jar or pear
-    final Set<Container> subContainers = new HashSet<>();
+    final Set<Container> subContainers = new TreeSet<>();  // tree set for better ordering
     final List<Path> candidates = new ArrayList<>();
     final List<CommonConverted> convertedItems = new ArrayList<>();
     final List<V3CompiledPathAndContainerItemPath> v3CompiledPathAndContainerItemPath = new ArrayList<>();
@@ -307,54 +308,43 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       String s = root.toString().toLowerCase();
       isJar = s.endsWith(".jar");
       isPear = s.endsWith(".pear");
-      this.root = isPear 
-                   ? installPear()
-                   : isJar
-                      ? prepareJar()
-                      : root;
+      this.root = (isPear || isJar) 
+                   ? installJarOrPear()
+                   : root;
 //      // debug
 //      if (!isPear && isJar) {
 //        System.out.println("debug prepare jar: " + this);
 //      }
     }
       
-    
     /**
      * Called when a new container is created
      * @param container
      * @param path
      * @return install directory
      */
-    private Path installPear() {
+    private Path installJarOrPear() {
       try {
-        File pearInstallDir = Files.createTempDirectory(getTempDir(), "installedPear").toFile();
-        PackageBrowser ip = PackageInstaller.installPackage(pearInstallDir, rootOrig.toFile(), false);
-        String newClasspath = ip.buildComponentClassPath();
-        String parentClasspath = parent.pearClasspath;
-        this.pearClasspath = (null == parentClasspath || 0 == parentClasspath.length()) 
-                  ? newClasspath
-                  : newClasspath + File.pathSeparator + parentClasspath;
-        return Paths.get(pearInstallDir.toURI());
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    /**  
-     * copies embedded Jar to temp position in default file system if embedded.
-     * @return overlayed zip file system
-     */
-    private Path prepareJar() {
-      try {
-        Path theJar = rootOrig;
-        if (!theJar.getFileSystem().equals(FileSystems.getDefault())) {        
-          // embedded Jar: copy the Jar (intact) to a temp spot so it's no longer embedded
-          theJar = getTempOutputPathForJar(theJar);
-          Files.copy(rootOrig, theJar, StandardCopyOption.REPLACE_EXISTING);
+        Path theJarOrPear = rootOrig;
+        if (!theJarOrPear.getFileSystem().equals(FileSystems.getDefault())) {
+          // pear is embedded in another pear or jar, so copy the Jar (intact) to a temp spot so it's no longer embedded
+          theJarOrPear = getTempOutputPathForJarOrPear(theJarOrPear);
+          Files.copy(rootOrig, theJarOrPear, StandardCopyOption.REPLACE_EXISTING);
         }
         
-        FileSystem jfs = FileSystems.newFileSystem(theJar, null);
-        return jfs.getPath("/");
+        if (isPear) {
+          // extract the pear just to get the classpath 
+          File pearInstallDir = Files.createTempDirectory(getTempDir(), "installedPear").toFile();
+          PackageBrowser ip = PackageInstaller.installPackage(pearInstallDir, rootOrig.toFile(), false);
+          String newClasspath = ip.buildComponentClassPath();
+          String parentClasspath = parent.pearClasspath;
+          this.pearClasspath = (null == parentClasspath || 0 == parentClasspath.length()) 
+                    ? newClasspath
+                    : newClasspath + File.pathSeparator + parentClasspath;
+        }        
+        
+        FileSystem pfs = FileSystems.newFileSystem(theJarOrPear, null);
+        return pfs.getPath("/");
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -410,10 +400,20 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       if (id != other.id)
         return false;
       return true;
+    }
+
+
+    @Override
+    public int compareTo(Container o) {
+      return Integer.compare(id,  o.id);
     }    
   }
   
-  private static class ContainerAndPath {
+  /**
+   * A path to a .java or .class file in some container, for the v2 version
+   * For Jars and Pears, the path is relative to the zip "/" dir
+   */
+  private static class ContainerAndPath implements Comparable<ContainerAndPath> {
     final Path path;
     final Container container;
     
@@ -421,6 +421,20 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       this.path = path;
       this.container = container;          
     }
+    
+    /* (non-Javadoc)
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(ContainerAndPath o) {
+      int r = path.compareTo(o.path);
+      if (r != 0) {
+        return r;
+      }
+      return Integer.compare(container.id, o.container.id);
+    }
+
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -432,8 +446,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       return sb.toString();
     }
   }
+  
   /**
-   * a pair of the v3CompiledPath, and the Container origRoot up to the start of the package and class name
+   * This class holds information used to replace compiled items in Jars and Pears.
+   * 
+   * a pair of the v3CompiledPath (which is the container nbr/a0/ + the package-class-name slash + ".class"
+   *   and the Container origRoot up to the start of the package and class name
    * for the item being compiled.
    *   - Note: if a Jar has the same compiled class at multiple nesting levels, each one will have 
    *     an instance of this class 
@@ -525,8 +543,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   /** includes trailing / */
   private String outDirLog;
    
-  private Container[] sourcesRoots = new Container[0]; // only one of these has 1 or more Container instances
-  private Container[] classesRoots = new Container[0];
+  private Container[] sourcesRoots = null; // only one of these has 1 or more Container instances
+  private Container[] classesRoots = null;
   
   private CompilationUnit cu;
   
@@ -582,6 +600,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       this.fqcn_slash = fqcn_slash;
     }
 
+    /**
+     * 
+     * @param container having this commonConverted instance
+     * @return the path to .java or .class file.  
+     *         If the container is a Jar or PEAR, it is the path within that Jar or Pear FileSystem
+     */
     Path getV2SourcePath(Container container) {
       for (ContainerAndPath cp : containersAndV2Paths) {
         if (cp.container == container) {
@@ -662,15 +686,15 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //  private final List<Path> v2JCasFiles = new ArrayList<>();  // unused
 //  private final List<Path> v3JCasFiles = new ArrayList<>();  // unused
   
-  private final List<PathAndReason> nonJCasFiles = new ArrayList<>();  // path, reason
-  private final List<PathAndReason> failedMigration = new ArrayList<>(); // path, reason
-  private final List<PathAndReason> skippedBuiltins = new ArrayList<>();  // path, "built-in"
-  private final List<PathAndReason> deletedCheckModified = new ArrayList<>();  // path, deleted check string
+  private final List<PathContainerAndReason> nonJCasFiles = new ArrayList<>();  // path, reason
+  private final List<PathContainerAndReason> failedMigration = new ArrayList<>(); // path, reason
+  private final List<PathContainerAndReason> skippedBuiltins = new ArrayList<>();  // path, "built-in"
+  private final List<PathContainerAndReason> deletedCheckModified = new ArrayList<>();  // path, deleted check string
   private final List<String1AndString2> pathWorkaround = new ArrayList<>(); // original, workaround
   private final List<String1AndString2> pearClassReplace = new ArrayList<>(); // pear, classname
   private final List<String1AndString2> jarClassReplace  = new ArrayList<>(); // jar, classname
   
-  private final List<PathAndReason> manualInspection = new ArrayList<>(); // path, reason
+  private final List<PathContainerAndReason> manualInspection = new ArrayList<>(); // path, reason
 //  private final List<PathAndPath> embeddedJars = new ArrayList<>(); // source, temp   
   
   private boolean isV2JCas;  // false at start of migrate, set to true if a v2 class candidate is discovered
@@ -741,7 +765,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     // clear output dir
     FileUtils.deleteRecursive(new File(outputDirectory));
 
-    isSource = sourcesRoots.length > 0;
+    isSource = sourcesRoots != null;
     boolean isOk;
     if (isSource) {
       isOk = processRootsCollection("source", sourcesRoots, clp);
@@ -821,7 +845,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
               } 
               previousSkip[0] = pstr;
               si(psb).append("Skipping replacing ").append(pstr2)
-                     .append(" due to compile errors.");
+                     .append(" because it could not be found, perhaps due to compile errors.");
               flush(psb);
             }
           });
@@ -853,7 +877,15 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * As a side effect, it saves in the container, a list of all the compiled things together 
    *   with the path in container part, for use by a subsequent step to update copies of the jars/pears.
    *   
-   * @param container
+   * The items in the container are broken into batches of multiple classes to be compiled together.
+   *   - The grouping is to group by alternative number.  This insures that multiple 
+   *     definitions of the same class are done separately (otherwise the compiler complains 
+   *     about multiple definitions).
+   *     
+   * As a side effect. compiling update the container, adding all the compiled items
+   * to v3CompiledPathAndContainerItemPath
+   *    
+   * @param container -
    * @return true if compiled 1 or more sources, false if nothing was compiled
    */
   private boolean compileV3SourcesCommon2(Container container) {
@@ -870,6 +902,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //    for (String s : cpa) System.out.println("debug classpath: " + (++j) + " " + s);
     
     // get a list of compilation unit path strings to the converted/v3/nnn/path
+    /**
+     * containerRoot is
+     * rootOrig or for Jars/Pears the Path to "/" in the zip file system 
+     */
     Path containerRoot = null;
          
     /**
@@ -879,11 +915,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
      *   - Multiple compiled-paths might be for the same classname
      *   
      * For non-identical sources, the commonContainer instance "id" is spliced into the 
-     *   v3 migrated source path:  see getBaseOutputPath,  e.g. converted/v3/2/fqcn/slashed/name.java  
+     *   v3 migrated source path:  see getBaseOutputPath,  e.g. converted/2/a3/fqcn/slashed/name.java  
      *   
      * The compiler will complain if you feed it the same compilation unit classname twice, with
      *   different paths saying "duplicate class definition".  
-     *   - Fix:  do compilation in batches, one for each different commonConvertedContainer id.   
+     *   - Fix:  do compilation in batches, one for each different commonConverted id.   
      */
     
     Map<Integer, ArrayList<String>>  cu_path_strings_by_ccId = new TreeMap<>();  // tree map to have nice order of keys
@@ -894,6 +930,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       if (cc.v3SourcePath == null) continue;  // skip items that failed migration
       isEmpty = false;
       // relativePathInContainer = the whole path with the first part (up to the end of the container root) stripped off
+      /**
+       * itemPath is the original path in the container to where the source or class file is
+       * For Jars and PEARs, it is relative to the Jar or PEAR
+       */
       Path itemPath = cc.getV2SourcePath(container);
       if (null == containerRoot) {
         // lazy setup on first call
@@ -903,12 +943,16 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             ? itemPath.getFileSystem().getPath("/")
             : container.rootOrig;
       }
-      Path relativePathInContainer = containerRoot.relativize(cc.getV2SourcePath(container));
+      /**
+       * relativePathInContainer might be x/y/z/a/b/c/name.class
+       * (ends in .class because we only get here when the input is class files)
+       */
+      String relativePathInContainer = containerRoot.relativize(itemPath).toString();
       
       container.v3CompiledPathAndContainerItemPath.add(
           new V3CompiledPathAndContainerItemPath(
-              Paths.get(classesBaseDir, "a" + cc.id, relativePathInContainer.toString()),
-              relativePathInContainer.toString()));
+              Paths.get(classesBaseDir, "a" + cc.id, cc.fqcn_slash + ".class"  /*relativePathInContainer*/),
+              relativePathInContainer));
       ArrayList<String> items = cu_path_strings_by_ccId.computeIfAbsent(cc.id, x -> new ArrayList<>());
       items.add(cc.v3SourcePath.toString());
     }
@@ -1094,7 +1138,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     si(psb).append("  b means built in");
     si(psb).append("  i means identical duplicate");
     si(psb).append("  d means non-identical definition for the same JCas class");
-    si(psb).append("  nnn at the end of the line is the number of classes migrated");
+    si(psb).append("  nnn at the end of the line is the number of classes migrated\n");
     flush(psb);
   }
     
@@ -1835,7 +1879,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
 
   private void pprintRoots(String kind, Container[] roots) {
-    if (roots.length > 0) {
+    if (roots != null && roots.length > 0) {
       try {
         try (BufferedWriter bw = Files.newBufferedWriter(makePath(outDirLog + "ItemsProcessed"), StandardOpenOption.CREATE)) {
           logPrintNl(kind + " Roots:", bw);
@@ -2118,11 +2162,11 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     // prunes empty rootIds and subContainer nodes
     removeNonJCas(container);
 
-    if (container.candidates.size() == 0) { // above call might remove all candidates
+    if (container.candidates.size() == 0 && 
+        container.subContainers.size() == 0) { // above call might remove all candidates
       Container parent = container.parent;
       if (parent != null) {
-//        System.out.println("No Candidates found in scanned container ending in " + 
-//           container.rootOrig.getFileName().toString());
+//        System.out.println("No Candidates found, removing container: " + container.toString() );
 //        // debug
 //        System.out.println("debug: " + container.rootOrig.toString());
         parent.subContainers.remove(container);
@@ -2185,10 +2229,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     }
   }
 
-  // removes from rootId-lists nonJCas candidates
-  //   if non left, removes that root-id from the root-id lists
-  // recursion on subContainers.
-  //   for each subContainer, if it ends up empty (no rootIds, no subContainers) removes it
+  // removes nonJCas candidates
   private void removeNonJCas(Container container) {
     Iterator<Path> it = container.candidates.iterator();
     while (it.hasNext()) {
@@ -2310,7 +2351,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
    * @return a temporary file in the local temp directory that is a copy of the Jar
    * @throws IOException -
    */
-  private static Path getTempOutputPathForJar(Path path) throws IOException {
+  private static Path getTempOutputPathForJarOrPear(Path path) throws IOException {
     Path localTempDir = getTempDir();
     if (path == null ) {
       throw new IllegalArgumentException();
@@ -2658,12 +2699,13 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       
       TypeImpl ti = TypeSystemImpl.staticTsi.getType(Misc.javaClassName2UimaTypeName(packageAndClassName));
       if (null != ti) {
-//        // is a built-in type
-//        ClassnameAndPath p = new ClassnameAndPath(
-//            packageAndClassNameSlash, 
+        // is a built-in type
+//        ContainerAndPath p = new ContainerAndPath(
+//            current_path,
+//            current_container,packageAndClassNameSlash, 
 //            current_cc., 
 //            current_cc.pearClasspath);
-        skippedBuiltins.add(new PathAndReason(current_path, "built-in"));
+        skippedBuiltins.add(new PathContainerAndReason(current_path, current_container, "built-in"));
         isBuiltinJCas = true;
         isConvert2v3 = false;
         return;  
@@ -2730,7 +2772,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //  }
   
   private void migrationFailed(String reason) {
-    failedMigration.add(new PathAndReason(current_path, reason));
+    failedMigration.add(new PathContainerAndReason(current_path, current_container, reason));
     isConvert2v3 = false;    
   }
   
@@ -2750,7 +2792,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private void reportNotJCasClass(String reason) {
-    nonJCasFiles.add(new PathAndReason(current_path, reason));
+    nonJCasFiles.add(new PathContainerAndReason(current_path, current_container, reason));
     isConvert2v3 = false;
   }
   
@@ -2759,11 +2801,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   }
   
   private void reportDeletedCheckModified(String m) {
-    deletedCheckModified.add(new PathAndReason(current_path, m));
+    deletedCheckModified.add(new PathContainerAndReason(current_path, current_container, m));
   }
   
   private void reportMismatchedFeatureName(String m) {
-    manualInspection.add(new PathAndReason(current_path, "This getter/setter name doesn't match internal feature name: " + m));
+    manualInspection.add(new PathContainerAndReason(current_path, current_container, 
+        "This getter/setter name doesn't match internal feature name: " + m));
   }
   
   private void reportUnrecognizedV2Code(String m) {
@@ -2841,21 +2884,26 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
     abstract int getFirstLength();
   }
  
-  private static class PathAndReason extends Report2<Path, String> {
-    Path path;
-    String reason;
-    PathAndReason(Path path, String reason) {
-      this.path = path;
+  private static class PathContainerAndReason extends Report2<ContainerAndPath, String> {
+    final ContainerAndPath cap;
+    final String reason;
+    PathContainerAndReason(ContainerAndPath cap, String reason) {
+      this.cap = cap;
       this.reason = reason;
     }
+    
+    PathContainerAndReason(Path path, Container container, String reason) {
+      this(new ContainerAndPath(path, container), reason);
+    }
+    
     @Override
-    public Comparable<Path> getFirst() { return path; }
+    public Comparable<ContainerAndPath> getFirst() { return cap; }
     @Override
     public Comparable<String> getSecond() { return reason; }
     @Override
-    int getFirstLength() { return path.toString().length(); }
+    int getFirstLength() { return cap.toString().length(); }
   }
-  
+    
   private static class String1AndString2 extends Report2<String, String> {
     String s1;
     String s2;
@@ -3421,4 +3469,19 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 //return false;
 //}
   
+//private static class PathAndReason extends Report2<Path, String> {
+//Path path;
+//String reason;
+//PathAndReason(Path path, String reason) {
+//  this.path = path;
+//  this.reason = reason;
+//}
+//@Override
+//public Comparable<Path> getFirst() { return path; }
+//@Override
+//public Comparable<String> getSecond() { return reason; }
+//@Override
+//int getFirstLength() { return path.toString().length(); }
+//}
+
 }
