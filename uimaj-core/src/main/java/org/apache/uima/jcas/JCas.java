@@ -102,11 +102,11 @@ public interface JCas extends AbstractCas {
   /**
    * Backwards Compatibility only - throws unsupported operation exception
    * 
-   * get the JCas _Type instance for a particular CAS type constant
+   * In UIMA V2, this previously got the JCas _Type instance for a particular CAS type constant
+   * In UIMA V3, there is no _Type instance, so this throws an exception
    * 
-   * @param i
-   *          the CAS type constant, written as Foo.type
-   * @return the instance of the JCas xxx_Type object for the specified type
+   * @param i the CAS type constant, written as Foo.type
+   * @return none - throws an exception
    */
   public abstract TOP_Type getType(int i);
   
