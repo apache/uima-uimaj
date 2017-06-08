@@ -1913,7 +1913,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return type instanceof TypeImpl_string;
   }
 
-  public boolean isArrayOfFsType(Type type) {
+  public boolean isAbstractArrayType(Type type) {
+    return isArrayType(type); 
+  }
+  
+  public boolean isArrayType(Type type) {
     return ((TypeImpl) type).isArray();
   }
 
@@ -5390,6 +5394,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       
     };
   }
+  
 
 //  int allocIntData(int sz) {
 //    
