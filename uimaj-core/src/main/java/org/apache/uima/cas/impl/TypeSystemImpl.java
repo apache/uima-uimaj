@@ -2577,7 +2577,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * from FSArray to the most restrictive (in case there are multiple refs) array type.
    */
   void fixupFSArrayTypes(TypeImpl featRange, TOP arrayFs) {
-    if (featRange.isTypedFsArray()) {
+    if (arrayFs != null && featRange.isTypedFsArray() ) { // https://issues.apache.org/jira/browse/UIMA-5446
       if (arrayFs._getTypeImpl().getComponentType().subsumesStrictly(featRange.getComponentType())) {
         arrayFs._setTypeImpl(featRange);  // replace more general type with more specific type
       }
