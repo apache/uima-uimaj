@@ -47,13 +47,16 @@ under the License.
     
     <para>
       UIMA V3 is designed to be binary compatible with existing UIMA V2 pipelines, so compiled and/or JAR-ed up classes 
-      representing a V2 pipeline should run with UIMA v3, with two changes:
-      <itemizedlist spacing="compact">
+      representing a V2 pipeline should run with UIMA v3, with three changes:
+      <itemizedlist>
         <listitem><para>Java 8 is required. (If you're already using Java 8, nothing need be done.)</para></listitem>
         <listitem><para>Any defined JCas cover classes must be migrated or regenerated, and used instead.
         (If you do not define any JCas classes or don't use JCas in your pipeline, then nothing need be done.)
         A quick way to do this is to create a Jar with the migrated JCas classes, and put it into the classpath
         ahead of the other JCas class definitions.</para></listitem>
+        <listitem><para>The runtime classpath needs to include the slf4j-api Jar, and an appropriate slf4j bridging Jar,
+          for details, see next.
+          </para></listitem>
       </itemizedlist>
     </para>
     
@@ -141,7 +144,7 @@ under the License.
   
   <para>When migrating <emphasis role="strong">source</emphasis> files, you specify one or more "roots" - places in a file directory, 
     and the tool scans those  
-    directories recursively, looking for JCas source files.  When it finds one, it copies it to the output spot 
+    directories recursively (including inside Jars and PEARs), looking for JCas source files.  When it finds one, it copies it to the output spot 
     and migrates it. The output is arranged in parallel directories (before and after migration), 
     for easy side-by-side comparing in a tool such as Eclipse file compare.</para>
     
@@ -167,8 +170,6 @@ under the License.
     </itemizedlist>
   </para>
   
-  
-  
   <!-- 
   <para>The migration tool makes a list of all the places in the sourcesRoots or classRoots which contain
     one or more JCas classes.  It outputs a table of these places with numbered entries called 
@@ -187,18 +188,11 @@ under the License.
    <para>The value of a root-id may include 0 or more other root-ids; these additional root-ids are for the purpose of
      identifying a containing Jar or PEAR location;  a PEAR containing a Jar would have two additional root-ids.</para>
  -->      
-  <para>When scanning directories from source or class roots, if a Jar is encountered, it is recursively scanned.</para>
-
-  <para>If a PEAR file is encountered, it is installed into a temporary spot, and then scanned.  If scanning from 
-    classesRoots, the migrateClasspath is prepended with the PEAR's classpath.</para>
+  <para>When scanning directories from source or class roots, if a Jar or a PEAR is encountered, it is recursively scanned.</para>
     
   <para>When migrating from compiled classes:
     <itemizedlist>      
-      <listitem><para>The class is decompiled, and the resulting source is migrated.  One known issue in the 
-        migration when using compiled classes: the decompilation sometimes fails to include a required 
-        <code>cast</code> operation, which results in a subsequent compilation step reporting a compile error; 
-        these need to be manually fixed by adding back the missing cast.  
-        This problem doesn't happen when migrating from source files.</para>
+      <listitem><para>The class is decompiled, and the resulting source is migrated.</para>
       </listitem>
       
       <listitem><para>The next 2 steps are skipped if no Java compiler is available.  A compiler is available if
@@ -206,7 +200,7 @@ under the License.
       
       <listitem><para>The migrated classes are compiled. 
         During this processes, the classpath used is the same as the decompile classpath, except
-        that the uimaj-core Jar for version 3 (from the classpath used to run the migration tool) is prepended
+        that the uima-core Jar for version 3 (from the classpath used to run the migration tool) is prepended
         so that the migrated version can be compiled.
         </para></listitem>
         
@@ -234,8 +228,8 @@ under the License.
   </para>
     	
 	<para>  
-	  The actual migration step is a source-to-source transformation, done using a Java parse of the source files.
-	  The parts in the source which are version 2 specific with the equivalent version 3 code.
+	  The actual migration step is a source-to-source transformation, done using a parse of the source files.
+	  The parts in the source which are version 2 specific are replaced with the equivalent version 3 code.
 	  Only those parts which need updating are modified;
     other code and comments which are part of the source file are left unchanged.  This is intended to preserve
     any user customization that may have been done.  
