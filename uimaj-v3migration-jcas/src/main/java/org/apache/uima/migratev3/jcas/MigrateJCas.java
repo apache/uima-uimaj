@@ -2395,8 +2395,14 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       System.err.println();
       return false;
     }
+    
+    if (!clp.isInArgsList(SOURCE_FILE_ROOTS) && !clp.isInArgsList(CLASS_FILE_ROOTS)) {
+      System.err.println("Neither sources file roots nor classes file roots parameters specified; please specify just one.");
+      return false;
+    }
+    
     if (clp.isInArgsList(SOURCE_FILE_ROOTS) && clp.isInArgsList(CLASS_FILE_ROOTS)) {
-      System.err.println("both sources file roots and classess file roots parameters specified; please specify just one.");
+      System.err.println("both sources file roots and classes file roots parameters specified; please specify just one.");
       return false;
     }
     
