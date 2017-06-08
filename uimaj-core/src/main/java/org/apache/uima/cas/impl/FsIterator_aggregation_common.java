@@ -282,14 +282,43 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
 
   @Override
   public LowLevelIndex<T> ll_getIndex() {
-    return (LowLevelIndex<T>) index;
+    return (LowLevelIndex<T>)
+             ((index != null)
+                ? index 
+                : ((LowLevelIterator)allIterators[0]).ll_getIndex());
   }  
   
   @Override
   public String toString() {
-    Type type = this.ll_getIndex().getType();
+//    Type type = this.ll_getIndex().getType();
     StringBuilder sb = new StringBuilder(this.getClass().getSimpleName()).append(":").append(System.identityHashCode(this));
-    sb.append(" over Type: ").append(type.getName()).append(":").append(((TypeImpl)type).getCode());
+    
+    if (nonEmptyIterators.length == 0) {
+      sb.append(" empty iterator");
+      return sb.toString();
+    }
+    
+    sb.append( (index == null && nonEmptyIterators.length > 1) 
+                 ? " over multiple Types: "
+                 : " over type: ");
+ 
+    if (index == null) {
+      if (nonEmptyIterators.length > 1) {
+        sb.append('[');
+        for (FSIterator it : nonEmptyIterators) {
+          Type type = ((LowLevelIterator<FeatureStructure>)it).ll_getIndex().getType(); 
+          sb.append(type.getName()).append(':').append(((TypeImpl)type).getCode()).append(' ');
+        }
+        sb.append(']');
+      } else {
+        Type type = ((LowLevelIterator<FeatureStructure>)nonEmptyIterators[0]).ll_getIndex().getType(); 
+        sb.append(type.getName()).append(':').append(((TypeImpl)type).getCode()).append(' ');
+      }
+    } else {
+      Type type = index.getType(); 
+      sb.append(type.getName()).append(':').append(((TypeImpl)type).getCode()).append(' ');
+    }
+    
     sb.append(", size: ").append(this.ll_indexSize());
     return sb.toString();
   }
