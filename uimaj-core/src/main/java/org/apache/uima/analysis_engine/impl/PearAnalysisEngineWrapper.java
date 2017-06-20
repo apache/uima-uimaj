@@ -119,7 +119,9 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
 //       ((ResourceManagerPearWrapper)rsrcMgr).initializeFromParentResourceManager(parentResourceManager);
      }
      rsrcMgr.setExtensionClassPath(sp.classPath, true);
-     rsrcMgr.setCasManager(parentResourceManager.getCasManager());  // shares the same merged type system
+     if (parentResourceManager != null) {
+       rsrcMgr.setCasManager(parentResourceManager.getCasManager());  // shares the same merged type system
+     }
      UIMAFramework.getLogger(this.getClass()).logrb(
             Level.CONFIG,
             this.getClass().getName(),
