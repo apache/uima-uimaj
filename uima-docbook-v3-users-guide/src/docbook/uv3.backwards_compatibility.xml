@@ -86,7 +86,7 @@ under the License.
 	  
   </section>
   
-  <section id="uv3.backards_compatibility.low_level_apis">
+  <section id="uv3.backwards_compatibility.low_level_apis">
     <title>APIs for creating and modifying Feature Structures</title>
     
     <para>There are 3 sets of APIs for creating and modifying Feature Structures;
@@ -122,7 +122,7 @@ under the License.
     
   </section>
   
-  <section id="uv3.backards_compatibility.PEARs">
+  <section id="uv3.backwards_compatibility.PEARs">
     <title>PEAR support</title>   
     
     <para>Pears are supported in Version 3.  If they use JCas, their JCas classes need to be migrated.
@@ -163,7 +163,7 @@ under the License.
     <para>The workaround for this is to manually merge any JCas class definitions for the same class.</para>
   </section>
   
-  <section id="uv3.backards_compatibility.toString">
+  <section id="uv3.backwards_compatibility.toString">
     <title>toString()</title>   
     
     <para>
@@ -174,7 +174,7 @@ under the License.
     </para>
   </section>
   
-  <section id="uv3.backards_compatibility.logging">
+  <section id="uv3.backwards_compatibility.logging">
     <title>Logging configuration is somewhat different</title>   
     
     <para>The default logging configuration in v2 was to use Java Util Logging (the logger built into Java).
@@ -195,7 +195,24 @@ under the License.
       For more details, please see the logging chapter.
     </para>
   </section>
-  <section id="uv3.backards_compatibility.typesystem_sharing">
+  
+  <section id="uv3.backwards_compatibility.iterator">
+    <title>Iteration Order for equal Feature Structures</title>
+    
+    <para>When iterating using a sorted index, the sort order is determined by the Index's comparator.
+      For example, the built-in index for Annotations defines a comparator that makes use of the 
+      <code>begin</code> and <code>end</code> features, as well as the type via the type priority setting
+      (if type priorities are defined).
+    </para>
+    
+    <para>For the special case where there are multiple different Feature Structures which compare "equal"
+      using the Index's comparator, the iteration order is undefined.  Version 3 differs from verson 2 in the order
+      it iterates over these equal items.  If user code inadvertantly depends on the particular order
+      that version 2 iterates for these equal items, this may cause a difference in behavior when 
+      switching to version 3.</para>  
+  </section>
+  
+  <section id="uv3.backwards_compatibility.typesystem_sharing">
     <title>Type System sharing</title>   
     
     <para>Type System definitions are shared when they are equal.  After type systems 
@@ -216,7 +233,7 @@ under the License.
     one being committed.</para>
   </section>
   
-  <section id="uv3.backards_compatibility.checking">
+  <section id="uv3.backwards_compatibility.checking">
     <title>Some checks moved to native Java</title>   
     
     <para>In the interest of performance, some duplicate checks, such as whether an array index is within bounds, 
@@ -226,7 +243,7 @@ under the License.
     </para>
   </section>
   
-  <section id="uv3.backards_compatibility.class_hierarchy">
+  <section id="uv3.backwards_compatibility.class_hierarchy">
     <title>Some class hierarchies have been modified</title>   
     
     <para>The various JCas Classes implementing the built-ins for arrays have some additional
