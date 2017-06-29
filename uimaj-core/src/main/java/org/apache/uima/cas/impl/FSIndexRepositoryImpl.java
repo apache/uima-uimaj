@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -1522,6 +1523,33 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
 //    ((TypeImpl)type).getDirectSubtypes().stream().forEach(subType -> getAllIndexedFS(subType, iteratorList));
   }
+
+  
+  public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyIndexes(Type type) {
+    TypeImpl ti = (TypeImpl) type;
+    if (!isUsed.get(ti.getCode())) {
+      return streamNonEmptyDirectSubtypes(ti);
+    }
+    FsIndex_iicp<TOP> iicp = getIndexesForType(ti.getCode()).getNonSetIndex();
+    if (null == iicp || iicp.isEmpty()) {
+      return Stream.empty();
+    }
+    Stream<FsIndex_singletype<FeatureStructure>> iicpIndexesStream = iicp.streamNonEmptyIndexes();
+    return iicp.isDefaultBagIndex()
+             ? Stream.concat(iicpIndexesStream, streamNonEmptyDirectSubtypes(ti))
+             : iicpIndexesStream;
+  }
+  
+  public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyDirectSubtypes(TypeImpl ti) {
+    Stream<FsIndex_singletype<FeatureStructure>> r = null;
+    for (TypeImpl subType : ti.getDirectSubtypes()) {
+      r = (r == null) 
+            ? streamNonEmptyIndexes(subType)
+            : Stream.concat(r, streamNonEmptyIndexes(subType));
+    }
+    return (r == null) ? Stream.empty() : r;
+  }
+  
     
   // next method dropped - rather than seeing if something is in the index, and then 
   // later removing it (two lookups), we just conditionally remove it
