@@ -893,8 +893,16 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     FeatureImpl existingFeature = (FeatureImpl) getFeature(domainType, shortFeatName);
     if (existingFeature != null) {
       ((TypeImpl)domainType).checkExistingFeatureCompatible(existingFeature, rangeType);
-      if (subsumes(domainType, existingFeature.getHighestDefiningType())) {
-        existingFeature.setHighestDefiningType(domainType);
+      TypeImpl highestDefiningType = existingFeature.getHighestDefiningType();
+      if (highestDefiningType != domainType && subsumes(domainType, highestDefiningType)) {
+        // never happens in existing test cases  6/2017 schor
+        Misc.internalError();  // logically can never happen
+        // Note: The other case, where a type and subtype are defined, and then 
+        // features are added in any order, in particular, a 
+        //   supertype feature is added after a subtype feature of the same name/range has been added,
+        // causes the subtype's feature to be "deleted" and "inherited" instead.
+        //   code: checkAndAdjustFeatureInSubtypes in TypeImpl
+//        existingFeature.setHighestDefiningType(domainType);
       }
       return existingFeature;
     }
@@ -907,6 +915,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     if (!TypeSystemUtils.isIdentifier(shortFeatName)) {
       throw new CASAdminException(CASAdminException.BAD_FEATURE_SYNTAX, shortFeatName);
     }   
+    
+    // at end of FeatureImpl constructor, TypeImpl.addFeature is called
+    //   which does checks, calls checkAndAdjustFeatureInSubtypes, etc.
     return new FeatureImpl(
         (TypeImpl) domainType, 
         shortFeatName, 
