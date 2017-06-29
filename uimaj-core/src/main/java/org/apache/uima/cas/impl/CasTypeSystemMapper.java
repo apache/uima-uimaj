@@ -75,7 +75,7 @@ public class CasTypeSystemMapper {
   final private List<TypeImpl> tTgt2Src = new ArrayList<>();
   /**
    * Feature mapping from source to target
-   *   first key is the src type code, 2nd is the src feature offset 
+   *   first key is the src type code, 2nd is the src feature offset (origin 0)
    */
   final private FeatureImpl[][] fSrc2Tgt;
   
