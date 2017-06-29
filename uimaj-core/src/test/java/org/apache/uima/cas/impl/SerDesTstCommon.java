@@ -122,6 +122,7 @@ public abstract class SerDesTstCommon extends TestCase {
   
   { long seed = randomseed.nextLong();
     // long seed = 1_449_257_605_347_913_923L;   // to set a specific seed
+//    seed = 2_505_546_892_701_000_347L;
     randomseed.setSeed(seed);  
     System.out.format("SerDesTstCommon Initial RandomSeed: %,d%n", seed);
   }

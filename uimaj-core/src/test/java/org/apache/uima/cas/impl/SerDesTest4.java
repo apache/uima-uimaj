@@ -429,7 +429,7 @@ public class SerDesTest4 extends SerDesTstCommon {
     
     // debug compare before mark
 //    BinaryCasSerDes4 bcs = new BinaryCasSerDes4(ts, false);
-//    assertTrue(bcs.getCasCompare().compareCASes(cas, cas2));
+//    assertTrue(CasCompare.compareCASes(cas, cas2));
     
     marker = (MarkerImpl) cas.createMarker();
 
@@ -1028,7 +1028,7 @@ public class SerDesTest4 extends SerDesTstCommon {
         bais = new ByteArrayInputStream(readIn(fname));
       }
       deserCas.getBinaryCasSerDes().reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, deserCas));
+      assertTrue(CasCompare.compareCASes(cas, deserCas));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -1073,7 +1073,7 @@ public class SerDesTest4 extends SerDesTstCommon {
 
       BinaryCasSerDes bcsd_cas1 = cas.getBinaryCasSerDes();
       bcsd_cas1.reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, cas2));
+      assertTrue(CasCompare.compareCASes(cas, cas2));
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
@@ -1124,7 +1124,7 @@ public class SerDesTest4 extends SerDesTstCommon {
       
       BinaryCasSerDes bcsd_cas2 = cas2.getBinaryCasSerDes();
       bcsd_cas2.reinit(bais);
-      assertTrue(bcs.getCasCompare().compareCASes(cas, cas2));
+      assertTrue(CasCompare.compareCASes(cas, cas2));
 
       // verify indexed fs same; the order may be different so sort first
       // currently seems broken... not comparing anything of use
@@ -1199,7 +1199,7 @@ public class SerDesTest4 extends SerDesTstCommon {
   //
   // BinaryCasSerDes bcsd_deltaCas = deltaCas.getBinaryCasSerDes();
   // bcsd_deltaCas.reinit(bais);
-  // assertTrue(bcs.getCasCompare().compareCASes(cas, deltaCas));
+  // assertTrue(CasCompare.compareCASes(cas, deltaCas));
   //
   // // verify indexed fs same; the order may be different so sort first
   //
