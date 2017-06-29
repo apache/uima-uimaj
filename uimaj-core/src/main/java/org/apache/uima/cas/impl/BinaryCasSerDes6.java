@@ -40,13 +40,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import java.util.function.IntPredicate;
 import java.util.stream.Stream;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -58,7 +54,6 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FSIterator;
-import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.CASImpl.FsChange;
 import org.apache.uima.cas.impl.CommonSerDes.Header;
 import org.apache.uima.cas.impl.FSsTobeAddedback.FSsTobeAddedbackSingle;
@@ -67,7 +62,6 @@ import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
-import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -2801,10 +2795,14 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * The cas is passed in so that the Compare can use this for two different CASes
    * 
    */
-  private void processIndexedFeatureStructures(final CASImpl cas, boolean isWrite) throws IOException {
+  private void processIndexedFeatureStructures(final CASImpl cas1, boolean isWrite) throws IOException {
     if (!isWrite) {
-      AllFSs allFSs = new AllFSs(cas, mark, isTypeMapping ? fs -> isTypeInTgt(fs) : null, 
-                                            isTypeMapping ? typeMapper            : null);
+      AllFSs allFSs = new AllFSs(cas1, 
+                                 mark, 
+                                 isTypeMapping ? fs -> isTypeInTgt(fs) : null, 
+                                 isTypeMapping ? typeMapper            : null)
+                       .getAllFSsAllViews_sofas_reachable();
+          ;
       fssToSerialize = CASImpl.filterAboveMark(allFSs.getAllFSsSorted(), mark);
       foundFSs = allFSs.getAllNew();
       foundFSsBelowMark = allFSs.getAllBelowMark();
@@ -2816,15 +2814,15 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //      if (doMeasurements) {
 //        sm.statDetails[fsIndexes_i].original = fsIndexes.length * 4 + 1;      
 //      }
-    writeVnumber(control_i, cas.getNumberOfViews());
-    writeVnumber(control_i, cas.getNumberOfSofas());
+    writeVnumber(control_i, cas1.getNumberOfViews());
+    writeVnumber(control_i, cas1.getNumberOfSofas());
     if (doMeasurements) {
       sm.statDetails[fsIndexes_i].incr(1); // an approximation - probably correct
       sm.statDetails[fsIndexes_i].incr(1);
     }
 
     // write or enqueue the sofas
-    final FSIterator<Sofa> it = cas.getSofaIterator();
+    final FSIterator<Sofa> it = cas1.getSofaIterator();
     while (it.hasNext()) {
       Sofa sofa = it.nextNvc();
       // for delta only write new sofas
@@ -2838,10 +2836,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
       }
     }
-    TypeImpl topType = (TypeImpl) cas.getTypeSystemImpl().getTopType();
+    TypeImpl topType = (TypeImpl) cas1.getTypeSystemImpl().getTopType();
 
     // write (id's only, for index info) and/or enqueue indexed FSs, either all, or (for delta writes) the added/deleted/reindexed ones
-    cas.forAllViews(view -> {
+    cas1.forAllViews(view -> {
       processFSsForView(true,  // is enqueue
         isSerializingDelta 
           ? view.indexRepository.getAddedFSs().stream()
@@ -2945,42 +2943,42 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //    return !isTypeMapping || (null != typeMapper.mapTypeSrc2Tgt(typecode));
 //  }
   
-  private void processRefedFSs() {
-    for (int i = 0; i < toBeScanned.size(); i++) {
-      enqueueFeatures(toBeScanned.get(i));
-    }
-  }
+//  private void processRefedFSs() {
+//    for (int i = 0; i < toBeScanned.size(); i++) {
+//      enqueueFeatures(toBeScanned.get(i));
+//    }
+//  }
   
   
-  /**
-   * Enqueue all FSs reachable from features of the given FS.
-   */
-  private void enqueueFeatures(TOP fs) {
-    if (fs instanceof FSArray) {
-      for (TOP item : ((FSArray)fs)._getTheArray()) {
-        enqueueFS(item);
-      }
-      return;
-    }
-    
-    // not an FS Array
-    if (fs instanceof CommonArrayFS) {
-      return;
-    }
-  
-    final TypeImpl srcType = fs._getTypeImpl();
-    for (FeatureImpl srcFeat : srcType.getFeatureImpls()) {
-      if (isTypeMapping) {
-        FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
-        if (tgtFeat == null) {
-          continue;  // skip enqueue if not in target
-        }
-      } 
-      if (srcFeat.getRangeImpl().isRefType) {
-        enqueueFS(fs._getFeatureValueNc(srcFeat));
-      }
-    }
-  }
+//  /**
+//   * Enqueue all FSs reachable from features of the given FS.
+//   */
+//  private void enqueueFeatures(TOP fs) {
+//    if (fs instanceof FSArray) {
+//      for (TOP item : ((FSArray)fs)._getTheArray()) {
+//        enqueueFS(item);
+//      }
+//      return;
+//    }
+//    
+//    // not an FS Array
+//    if (fs instanceof CommonArrayFS) {
+//      return;
+//    }
+//  
+//    final TypeImpl srcType = fs._getTypeImpl();
+//    for (FeatureImpl srcFeat : srcType.getFeatureImpls()) {
+//      if (isTypeMapping) {
+//        FeatureImpl tgtFeat = typeMapper.getTgtFeature(srcType, srcFeat);
+//        if (tgtFeat == null) {
+//          continue;  // skip enqueue if not in target
+//        }
+//      } 
+//      if (srcFeat.getRangeImpl().isRefType) {
+//        enqueueFS(fs._getFeatureValueNc(srcFeat));
+//      }
+//    }
+//  }
   
     
   /**
@@ -3062,609 +3060,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   public boolean compareCASes(CASImpl c1, CASImpl c2) {
     return new CasCompare(c1, c2).compareCASes();
   }
-  
-  private class CasCompare {
-    /** 
-     * Compare 2 CASes for equal
-     */
-      final private CASImpl c1;
-      final private CASImpl c2;
-      final private TypeSystemImpl ts1;      
-      final private TypeSystemImpl ts2;
-      
-      /**
-       * This is used for two things:
-       *   First, used twice while sorting individual FS collections to be compared.
-       *   Second, used when doing the comparison to break recursion if asked to compare the same two things while comaring them.
-       */
-      final Set<Pair<TOP, TOP>> prevCompare = Collections.newSetFromMap(new HashMap<>());
-            
-      private TOP fs1, fs2;
-      private boolean isSrcCas;  // used for sorting with a CAS, to differentiate between src and target CASes
-            
-    public CasCompare(CASImpl c1, CASImpl c2) {
-      this.c1 = c1;
-      this.c2 = c2;
-      ts1 = c1.getTypeSystemImpl();
-      ts2 = c2.getTypeSystemImpl();
-    }
-      
-    public boolean compareCASes() {
-      
-      final List<TOP> c1FoundFSs;
-      final List<TOP> c2FoundFSs;
-      final boolean savedIsTypeMapping= isTypeMapping;
-      try {
-        assert(ts1 == srcTs);
-        // sometimes the tgtTs is null, indicating no type mapping
-        //   the CASs being compared are then both of type srcTs
-        assert(ts2 == srcTs || ts2 == tgtTs);
-//        srcTs = ts1;
-        processIndexedFeatureStructures(c1, false);
-        c1FoundFSs = fssToSerialize;  // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
-
-        isTypeMapping = false;   // when scanning CAS2, don't use type mapping
-        srcTs = ts2;
-        
-        processIndexedFeatureStructures(c2, false);
-        
-        isTypeMapping = savedIsTypeMapping;  // restore
-        srcTs = ts1; 
-
-        c2FoundFSs = fssToSerialize; // all reachable FSs in cas 2
-
-        // if type systems are "isEqual()" still need to map because of feature validation testing
-          
-        int i1 = 0;
-        int i2 = 0;
-        final int sz1 = c1FoundFSs.size();
-        final int sz2 = c2FoundFSs.size();
-        
-        isSrcCas = true;   // avoids sorting on types/features not present in ts2
-        sort(c1FoundFSs);
-        
-        isSrcCas = false;  // avoids sorting on types/features not present in ts1
-        sort(c2FoundFSs);
-        prevCompare.clear();
-        
-        while (i1 < sz1 && i2 < sz2) {
-          fs1 = c1FoundFSs.get(i1);  // assumes the elements are in same order??
-          fs2 = c2FoundFSs.get(i2);
-          
-          if (isTypeMapping) {
-            // skip compares for types that are missing in the other type system
-            final boolean typeMissingIn1 = typeMapper.mapTypeTgt2Src(fs2._getTypeImpl()) == null;
-            final boolean typeMissingIn2 = typeMapper.mapTypeSrc2Tgt(fs1._getTypeImpl()) == null;
-            if (!typeMissingIn1 && !typeMissingIn2) {
-              if (!compareFss()) {
-                return false;
-              }
-              i1++;
-              i2++;
-              continue;
-            }
-            if (typeMissingIn1 && typeMissingIn2) {
-              Misc.internalError();
-              i1++;
-              i2++;
-              continue;
-            }
-            if (typeMissingIn1) {
-              System.out.println("debug - type missing in 1, but test fails for refs");
-              i2++;
-              continue;
-            }
-            if (typeMissingIn2) {
-              Misc.internalError(); 
-              i1++;
-              continue;
-            }
-          } else {  // not type mapping
-            if (!compareFss()) {
-              return false;
-            }
-            i1++;
-            i2++;
-            continue;
-          }
-        }
-        
-        if (i1 == sz1 && i2 == sz2) {
-          return true;  // end, everything compared
-        }
-        
-        if (isTypeMapping) {
-          if (i1 < sz1) {
-            System.err.format("%,d Feature Structures in CAS1 with no matches in CAS2, e.g. %s%n",
-                sz1 - i1, c1FoundFSs.get(i1));
-            return false;
-          }
-
-          while (i2 < sz2) {
-            TOP fs = c2FoundFSs.get(i2);
-            if (isTypeMapping && typeMapper.mapTypeTgt2Src(fs._getTypeImpl()) != null) {  // not a complete test, misses refs
-              return false;  // have more FSs in c2 than in c1
-            }
-            i2++;
-          }
-          return true;
-        }
-        
-        // not type mapping, and number of FS didn't match
-        if (i1 < sz1) {
-          System.err.format("CAS1 had %,d additional Feature Structures, e.g.: %s%n", sz1 - i1, c1FoundFSs.get(i1));
-        } else {
-          System.err.format("CAS2 had %,d additional Feature Structures, e.g.: %s%n", sz2 - i2, c2FoundFSs.get(i2));
-        }
-        return false;
-      } catch (IOException e) {
-        throw new RuntimeException(e);  // never happen
-      } finally {
-        isTypeMapping = savedIsTypeMapping;
-      }
-    }
-
-    private boolean compareFss() {
-      TypeImpl ti1 = fs1._getTypeImpl();
-      TypeImpl ti2 = fs2._getTypeImpl();  // even if not type mapping, may be "equal" but not ==
-      
-      if (isTypeMapping) {
-        if (ti1 != typeMapper.mapTypeTgt2Src(ti2)) {
-          return mismatchFs("Different Types"); // types mismatch
-        }
-      } else {
-        if (!ti1.getName().equals(ti2.getName())) {
-          return mismatchFs("Type names miscompare"); // types mismatch
-        }
-      }
-          
-      if (ti1.isArray()) {
-        return compareFssArray();
-      } else {
-        if (isTypeMapping) {
-          for (FeatureImpl fi1 : ti1.getFeatureImpls()) {
-            FeatureImpl fi2 = typeMapper.getTgtFeature(ti1, fi1);
-            if (fi2 != null) {
-              if (!compareSlot(fi1, fi2)) {
-                return mismatchFs(fi1, fi2);
-              }
-            } // else we skip the compare - no slot in tgt for src
-          }
-        } else { // not type mapping
-          for (FeatureImpl fi1 : ti1.getFeatureImpls()) {
-            if (!compareSlot(fi1, fi1)) {
-              return mismatchFs(fi1);
-            }
-          }
-        }
-        return true;
-      }
-    }
-      
-    private boolean compareFssArray() {
-      CommonArrayFS a1 = (CommonArrayFS) fs1;
-      CommonArrayFS a2 = (CommonArrayFS) fs2;
-      int len1 = a1.size();
-      int len2 = a2.size();
-      if (len1 != len2) {
-        return mismatchFs();
-      }
-      
-      TypeImpl ti = fs1._getTypeImpl();
-      SlotKind kind = ti.getComponentSlotKind();
-      
-      switch(kind) {
-      case Slot_BooleanRef: return compareAllArrayElements(len1, i -> ((BooleanArray)a1).get(i) == ((BooleanArray)a2).get(i));
-      case Slot_ByteRef:    return compareAllArrayElements(len1, i -> ((ByteArray   )a1).get(i) == ((ByteArray   )a2).get(i));
-      case Slot_ShortRef:   return compareAllArrayElements(len1, i -> ((ShortArray  )a1).get(i) == ((ShortArray  )a2).get(i));
-      case Slot_Int:     return compareAllArrayElements(len1, i -> ((IntegerArray)a1).get(i) == ((IntegerArray)a2).get(i));
-      case Slot_LongRef:    return compareAllArrayElements(len1, i -> ((LongArray   )a1).get(i) == ((LongArray   )a2).get(i));
-      case Slot_Float:   return compareAllArrayElements(len1, i -> CASImpl.float2int(((FloatArray  )a1).get(i)) == 
-                                                                   CASImpl.float2int(((FloatArray  )a2).get(i)));
-      case Slot_DoubleRef:  return compareAllArrayElements(len1, i -> Double.doubleToRawLongBits(((DoubleArray)a1).get(i)) == 
-                                                                      Double.doubleToRawLongBits(((DoubleArray)a2).get(i)));
-      case Slot_HeapRef: return compareAllArrayElements(len1, i -> compareRefs(((FSArray)a1).get(i), ((FSArray)a2).get(i), null));
-      case Slot_StrRef:  return compareAllArrayElements(len1, i -> areStringsEqual(((StringArray)a1).get(i), ((StringArray)a2).get(i)));
-      default: 
-        Misc.internalError(); return true;  // only to avoid a compile error
-      }
-    }
-        
-    private boolean compareSlot(FeatureImpl fi1, FeatureImpl fi2) {
-      SlotKind kind = fi1.getSlotKind();
-      switch (kind) {
-      case Slot_Int: return fs1._getIntValueNc(fi1) == fs2._getIntValueNc(fi2); 
-      case Slot_Short: return fs1._getShortValueNc(fi1) == fs2._getShortValueNc(fi2);
-      case Slot_Boolean: return fs1._getBooleanValueNc(fi1) == fs2._getBooleanValueNc(fi2);
-      case Slot_Byte: return fs1._getByteValueNc(fi1) == fs2._getByteValueNc(fi2);
-            // don't compare floats directly - the NaN is defined to miscompare
-      case Slot_Float: return CASImpl.float2int(fs1._getFloatValueNc(fi1)) == CASImpl.float2int(fs2._getFloatValueNc(fi2));
-      case Slot_HeapRef: return compareRefs(fs1._getFeatureValueNc(fi1), fs2._getFeatureValueNc(fi2), fi1);
-      case Slot_StrRef: return areStringsEqual(fs1._getStringValueNc(fi1), fs2._getStringValueNc(fi2));
-      case Slot_LongRef: return fs1._getLongValueNc(fi1) == fs2._getLongValueNc(fi2);
-            // don't compare doubles directly - the NaN is defined to miscompare
-      case Slot_DoubleRef: return Double.doubleToRawLongBits(fs1._getDoubleValueNc(fi1)) == Double.doubleToRawLongBits(fs2._getDoubleValueNc(fi2));
-      default: Misc.internalError(); return true;     
-      }
-    }
-          
-    private boolean compareRefs(TOP rfs1, TOP rfs2, FeatureImpl fi) {
-      if (rfs1 == null) {
-        if (rfs2 != null){
-          System.err.format("For feature \"%s\", original fs1 ref feature is null, but target ref is not null: %s%n", 
-              (fi == null) ? "(notFeature) FSArray" : fi.getShortName(), rfs2);
-          return false;
-        }
-        return true; // both are null
-      }
-      
-      if (!isTypeInTgt(rfs1)) {
-        // source ref is for type not in target.  Target value should be 0
-        if (rfs2 != null) {
-          System.err.format("HeapRef original %s%n is for a type not in target ts, target should be null but has %s%n", rfs1, rfs2);
-          return false;
-        }
-        return true;
-      }
-      
-      // rfs1 != null at this point
-      if (rfs2 == null) {
-        System.err.format("For feature \"%s\" original fs1 ref is not null: %s%n, but target ref is null%n", 
-            (fi == null) ? "(notFeature) FSArray" : fi.getShortName(), rfs1);
-        return false;
-      }
-    
-//      final int seq1 = addr2seq1.getMostlyClose(c1ref);
-//      final int seq2 = addr2seq2.getMostlyClose(c2ref);
-      
-      if (rfs1._id == rfs2._id) {
-        return true;
-      }
-      
-      // ids mismatch, but might have the same "value"
-      // do a recursive check 
-      
-      Pair<TOP, TOP> refs = new Pair<TOP, TOP>(rfs1, rfs2);      
-      if (!prevCompare.add(refs)) {
-        return true; // consider these FSs to be equal, since we hit this while comparing them, to break recursion.
-                     // if there are other slots to compare, they will be compared subsequentially, at the higher level.
-      }
-            
-      TOP savedFs1 = fs1;
-      TOP savedFs2 = fs2;
-      
-      fs1 = rfs1;
-      fs2 = rfs2;
-      try {
-        return compareFss();
-      } finally {
-        fs1 = savedFs1;
-        fs2 = savedFs2;
-        prevCompare.remove(refs);
-      }
-    }
-        
-    private boolean compareAllArrayElements(int len, IntPredicate c) {
-      for (int i = 0; i < len; i++) {
-        if (!c.test(i)) {
-          mismatchFs("Comparing array of length " + len);
-          return false;
-        }
-      }
-      return true;
-    }
-    
-    
-    
-    private boolean areStringsEqual(String s1, String s2) {
-      if (null == s1) {
-        return null == s2;
-      }
-      return (null == s2) ? false : s1.equals(s2);
-    }     
-    
-//    private int skipOverTgtFSsNotInSrc(
-//        int[] heap, int heapEnd, int nextFsIndex, CasTypeSystemMapper typeMapper) {
-//      final TypeSystemImpl ts = typeMapper.tsTgt;
-//      for (; nextFsIndex < heapEnd;) {
-//        final int tCode = heap[nextFsIndex];
-//        if (typeMapper.mapTypeCodeTgt2Src(tCode) != 0) { 
-//          break;
-//        }
-//        nextFsIndex += incrToNextFs(heap, nextFsIndex, ts.getTypeInfo(tCode));
-//      }
-//      return nextFsIndex;
-//    }
-//    
-//    public void initSrcTgtIdMapsAndStringsCompare () {
-//
-//      int iTgtHeap = isTypeMapping ? skipOverTgtFSsNotInSrc(c2heap, c2end, 1, typeMapper) : 1;
-//      
-//      
-//      for (int iSrcHeap = 1; iSrcHeap < c1end;) {
-//        final int tCode = c1heap[iSrcHeap];
-//        final int tgtTypeCode = isTypeMapping ? typeMapper.mapTypeCodeSrc2Tgt(tCode) : tCode;
-//        final boolean isIncludedType = (tgtTypeCode != 0);
-//        
-//        // record info for type
-//        fsStartIndexes.addItemId(iSrcHeap, iTgtHeap, isIncludedType);  // maps src heap to tgt seq
-//        
-//        // for features in type - 
-//        //    strings: accumulate those strings that are in the target, if optimizeStrings != null
-//        //      strings either in array, or in individual values
-//        //    byte (array), short (array), long/double (instance or array): record if entries in aux array are skipped
-//        //      (not in the target).  Note the recording will be in a non-ordered manner (due to possible updates by
-//        //       previous delta deserialization)
-//        final TypeInfo srcTypeInfo = ts1.getTypeInfo(tCode);
-//        final TypeInfo tgtTypeInfo = (isTypeMapping && isIncludedType) ? ts2.getTypeInfo(tgtTypeCode) : srcTypeInfo;
-//              
-//        // Advance to next Feature Structure, in both source and target heap frame of reference
-//        if (isIncludedType) {
-//          final int deltaTgtHeap = incrToNextFs(c1heap, iSrcHeap, tgtTypeInfo);
-//          iTgtHeap += deltaTgtHeap;
-//          if (isTypeMapping) {
-//            iTgtHeap = skipOverTgtFSsNotInSrc(c2heap, c2end, iTgtHeap, typeMapper);
-//          }
-//        }
-//        iSrcHeap += incrToNextFs(c1heap, iSrcHeap, srcTypeInfo);
-//      }
-//    } 
-
-    private boolean mismatchFs() {
-      System.err.format("Mismatched Feature Structures:%n %s%n %s%n", 
-          fs1, fs2);
-      return false;
-    }
-
-//    private boolean mismatchFs(int i1, int i2) {
-//      System.err.format("Mismatched Feature Structures in srcSlot %d, tgtSlot %d%n %s%n %s%n", 
-//          i1, i2, dumpHeapFs(c1, c1heapIndex, ts1), dumpHeapFs(c2, c2heapIndex, ts2));
-//      return false;
-//    }
-    
-    private boolean mismatchFs(Feature fi) {
-      System.err.format("Mismatched Feature Structures in feature %s%n %s%n %s%n", 
-          fi.getShortName(), fs1, fs2);
-      return false;
-    }
-    
-    private boolean mismatchFs(Feature fi, Feature fi2) {
-      System.err.format("Mismatched Feature Structures in feature %s which mapped to target feature %s%n %s%n %s%n", 
-          fi.getShortName(), fi2.getShortName(), fs1, fs2);
-      return false;
-    }
-    
-    private boolean mismatchFs(String msg) {
-      System.err.format("Mismatched Feature Structures, %s%n %s%n %s%n", 
-          msg, fs1, fs2);
-      return false;
-    }
-        
-    private void sort(List<TOP> fss) {
-      prevCompare.clear();
-      Collections.sort(fss,  (afs1, afs2) -> sortCompare(afs1, afs2));
-    }
-    
-    /**
-     * Used for sorting within one type system, for two instances of the same type
-     * 
-     * Uses field isSrcCas (boolean) to differentiate when being used to sort for srcCas vs tgtCas
-     * 
-     * When sorting where type mapping is happening between source and target CASs, skip compares for
-     * features which are not in the opposite CAS.
-     * 
-     * @param scFs1
-     * @param scFs2
-     * @return
-     */
-    private int sortCompare(TOP scFs1, TOP scFs2) {
-      // sort by type code first
-      final TypeImpl fs1Type = scFs1._getTypeImpl();
-      int c = fs1Type.getName().compareTo(scFs2._getTypeImpl().getName());
-      if (c != 0) return c;
-      
-      // same type: compare on features, or if array, on length, then content
-      
-      if (fs1Type.isArray()) {
-        return sortArray(scFs1, scFs2);
-      }
-      
-      FeatureImpl[] fis = fs1Type.getFeatureImpls();
-      for (FeatureImpl fi : fis) {
-        if (isTypeMapping) {
-          if (isSrcCas && typeMapper.getTgtFeature(fs1Type, fi) == null) {
-            continue; // don't sort on features not in target type
-          } else if ((!isSrcCas) && typeMapper.getSrcFeature(fs1Type,  fi) == null) {
-            continue;  // don't sort on features not in source type
-          }
-        }
-        SlotKind kind = fi.getSlotKind();
-        switch(kind) {    // ...Ref are either long/double/str 
-        case Slot_Boolean: 
-          c = Boolean.compare(scFs1._getBooleanValueNc(fi),  scFs2._getBooleanValueNc(fi));
-          if (c != 0) return c; continue;
-        case Slot_Byte: 
-          c = Byte.compare(scFs1._getByteValueNc(fi),  scFs2._getByteValueNc(fi));
-          if (c != 0) return c; continue;
-        case Slot_Short: 
-          c = Short.compare(scFs1._getShortValueNc(fi),  scFs2._getShortValueNc(fi));
-          if (c != 0) return c; continue;
-        case Slot_Int:     
-          c = Integer.compare(scFs1._getIntValueNc(fi),  scFs2._getIntValueNc(fi));
-          if (c != 0) return c; continue;
-        case Slot_Float:                               
-          c = Integer.compare(CASImpl.float2int(scFs1._getFloatValueNc(fi)),  
-                              CASImpl.float2int(scFs2._getFloatValueNc(fi)));
-          if (c != 0) return c; continue;
-        case Slot_LongRef:   
-          c = Long.compare(scFs1._getLongValueNc(fi),  scFs2._getLongValueNc(fi));
-          if (c != 0) return c; continue;
-        case Slot_DoubleRef:   
-          c = Long.compare(Double.doubleToRawLongBits(scFs1._getDoubleValueNc(fi)),  
-                           Double.doubleToRawLongBits(scFs2._getDoubleValueNc(fi)));
-          if (c != 0) return c; continue;
-        case Slot_StrRef:  
-          c = Misc.compareStrings(scFs1._getStringValueNc(fi), scFs2._getStringValueNc(fi));
-          if (c != 0) return c; 
-          continue;
-          
-        case Slot_HeapRef: 
-          TOP refFs1 = scFs1._getFeatureValueNc(fi);
-          TOP refFs2 = scFs2._getFeatureValueNc(fi);
-          if (null == refFs1) {
-            if (null == refFs2) {
-              continue;
-            }
-            return -1;
-          } else if (null == refFs2) {
-            return 1;
-          }
-          if (refFs1._getTypeCode() == TypeSystemConstants.sofaTypeCode) {
-            c = Integer.compare(refFs1._id,  refFs2._id);
-            if (c != 0) return c; // approximate
-            continue; 
-          }
-          // refFS1 != null; refFs2 != null; type is not sofaTypeCode
-          if (!prevCompare.add(new Pair<TOP, TOP>(scFs1, scFs2))) {
-            continue; // skip recursion if previously were in the middle of sort-comparing these two elements
-          }
-          return sortCompare(refFs1, refFs2);
-          
-        default: 
-          Misc.internalError(); 
-          return Integer.compare(scFs1._id, scFs2._id);
-        } // end of switch
-      } // end of for loop
-      return Integer.compare(scFs1._id, scFs2._id);
-    } // end of sort compare
-      
-    private int sortArray(TOP afs1, TOP afs2) {
-      int sz1 = ((CommonArrayFS)afs1).size();
-      int sz2 = ((CommonArrayFS)afs2).size();
-      int c = Integer.compare(sz1, sz2);
-      if (c != 0) return c;
-      
-      return Integer.compare(afs1._id, afs2._id);  // an approximation
-    }
-    
-//    private StringBuilder dumpHeapFs(CASImpl cas, final int iHeap, final TypeSystemImpl ts) {
-//      StringBuilder sb = new StringBuilder();
-//      typeInfo = ts.getTypeInfo(cas.getHeap().heap[iHeap]);
-//      sb.append("Heap Addr: ").append(iHeap).append(' ');
-//      sb.append(typeInfo).append(' ');
-//  
-//      if (typeInfo.isHeapStoredArray) {
-//        sb.append(dumpHeapStoredArray(cas, iHeap));
-//      } else if (typeInfo.isArray) {
-//        sb.append(dumpNonHeapStoredArray(cas, iHeap));
-//      } else {
-//        sb.append("   Slots:\n");
-//        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//          sb.append("  ").append(typeInfo.getSlotKind(i)).append(": ")
-//              .append(dumpByKind(cas, i, iHeap)).append('\n');
-//        }
-//      }
-//      return sb;
-//    }
-    
-//    private StringBuilder dumpHeapStoredArray(CASImpl cas, final int iHeap) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      final int length = heap[iHeap + 1];
-//      sb.append("Array Length: ").append(length).append('[');
-//      SlotKind arrayElementKind = typeInfo.slotKinds[1];
-//      switch (arrayElementKind) {
-//      case Slot_HeapRef: case Slot_Int: case Slot_Short: case Slot_Byte: 
-//      case Slot_Boolean: case Slot_Float:
-//        for (int i = iHeap + 2; i < iHeap + length + 2; i++) {
-//          if (i > iHeap + 2) {
-//            sb.append(", ");
-//          }
-//          sb.append(heap[i]);
-//        }
-//        break;   
-//      case Slot_StrRef:
-//        StringHeap sh = cas.getStringHeap();
-//        for (int i = iHeap + 2; i < iHeap + length + 2; i++) {
-//          if (i > iHeap + 2) {
-//            sb.append(", ");
-//          }
-//          sb.append(sh.getStringForCode(heap[i]));        
-//        }
-//        break;
-//      default: throw new RuntimeException("internal error");
-//      }
-//      sb.append("] ");
-//      return sb;
-//    }
-//  
-//    private StringBuilder dumpNonHeapStoredArray(CASImpl cas, final int iHeap) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      final int length = heap[iHeap + 1];
-//      sb.append("Array Length: ").append(length).append('[');
-//      SlotKind arrayElementKind = typeInfo.slotKinds[1];
-//      
-//      for (int i = 0; i < length; i++) {
-//        if (i > 0) {
-//          sb.append(", ");
-//        }
-//        switch (arrayElementKind) {
-//        case Slot_BooleanRef: case Slot_ByteRef:
-//          sb.append(cas.getByteHeap().getHeapValue(heap[iHeap + 2 + i]));
-//          break;
-//        case Slot_ShortRef:
-//          sb.append(cas.getShortHeap().getHeapValue(heap[iHeap + 2 + i]));
-//          break;
-//        case Slot_LongRef: case Slot_DoubleRef: {
-//          long v = cas.getLongHeap().getHeapValue(heap[iHeap + 2 + i]);
-//          if (arrayElementKind == Slot_DoubleRef) {
-//            sb.append(CASImpl.long2double(v));
-//          } else {
-//            sb.append(String.format("%,d", v));
-//          }
-//          break;
-//        }
-//        default: throw new RuntimeException("internal error");
-//        }
-//      }
-//      sb.append("] ");
-//      return sb;      
-//    }
-//  
-//    private StringBuilder dumpByKind(CASImpl cas, int offset, final int iHeap) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      SlotKind kind = typeInfo.getSlotKind(offset);
-//      switch (kind) {
-//      case Slot_Int:
-//        return sb.append(heap[iHeap + offset]);
-//      case Slot_Short: 
-//        return sb.append((short)heap[iHeap + offset]);
-//      case Slot_Byte: 
-//        return sb.append((byte)heap[iHeap + offset]);
-//      case Slot_Boolean:  
-//        return sb.append(((heap[iHeap + offset]) == 0) ? false : true);
-//      case Slot_Float: {
-//        int v = heap[iHeap + offset];
-//        return sb.append(Float.intBitsToFloat(v)).append(' ').append(Integer.toHexString(v));
-//      }
-//      case Slot_HeapRef:
-//        return sb.append("HeapRef[").append(heap[iHeap + offset]).append(']');
-//      case Slot_StrRef:
-//        return sb.append(cas.getStringForCode(heap[iHeap + offset]));
-//      case Slot_LongRef:
-//        return sb.append(String.format("%,d", cas.getLongHeap().getHeapValue(heap[iHeap + offset])));
-//      case Slot_DoubleRef: {
-//        long v = cas.getLongHeap().getHeapValue(heap[iHeap + offset]);
-//        return sb.append(CASImpl.long2double(v)).append(' ').append(Long.toHexString(v));
-//      }
-//      default: throw new RuntimeException("internal error");      
-//      }
-//    }
-    
-  } // end of CasCompare class
-  
+   
   /**
    * 
    * @param f can be a DataOutputStream,

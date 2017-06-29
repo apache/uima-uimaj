@@ -4638,7 +4638,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   public List<TOP> walkReachablePlusFSsSorted(
     Consumer<TOP> action_filtered, MarkerImpl mark, Predicate<TOP> includeFilter, CasTypeSystemMapper typeMapper) {    
-    List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper).getAllFSsSorted();
+    List<TOP> all = new AllFSs(this, mark, includeFilter, typeMapper).getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
     List<TOP> filtered = filterAboveMark(all, mark);
     for (TOP fs : filtered) {
       action_filtered.accept(fs);

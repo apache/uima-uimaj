@@ -34,7 +34,7 @@ import org.apache.uima.jcas.cas.TOP;
 /**
  * support for collecting all FSs in a CAS
  *   -  over all views
- *   -  both indexed, and reachable
+ *   -  both indexed, and (optionally) reachable
  */
 class AllFSs {
   
@@ -52,10 +52,8 @@ class AllFSs {
     foundFSsBelowMark = (mark != null) ? new PositiveIntSet_impl(1024, 1, 1024) : null;
     this.includeFilter = includeFilter;
     this.typeMapper = typeMapper;
-    
-    getAllIndexedFSsAllViews();
   }
-  
+    
   PositiveIntSet getAllBelowMark() {
     return foundFSsBelowMark;
   }
@@ -82,14 +80,20 @@ class AllFSs {
     this.mark = null;
     foundFSsBelowMark = null;
     this.includeFilter = null;
-    this.typeMapper = null;
-    getAllIndexedFSsAllViews();    
+    this.typeMapper = null; 
   }
-  
-  void getAllIndexedFSsAllViews() {
+
+  public AllFSs getAllFSsAllViews_sofas() {
     cas.forAllSofas(sofa -> enqueueFS(sofa));
     cas.forAllViews(view -> 
        getFSsForView(view.indexRepository.<TOP>getAllIndexedFS(cas.getTypeSystemImpl().topType).stream()));
+    return this;
+  }
+
+  
+  public AllFSs getAllFSsAllViews_sofas_reachable() {
+    getAllFSsAllViews_sofas();
+    
     for (int i = 0; i < toBeScanned.size(); i++) {
       enqueueFeatures(toBeScanned.get(i));
     }
@@ -104,6 +108,7 @@ class AllFSs {
 //      }
 //    }
 
+    return this;
   }
   
   private void getFSsForView(Stream<TOP> fss) {

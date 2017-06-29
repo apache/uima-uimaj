@@ -153,7 +153,7 @@ public class CommonSerDesSequential {
     int nextAddr = fromAddr;
     if (TRACE_SETUP) System.out.println("Cmn serDes sequential setup called by: " + Misc.getCaller());
 
-    List<TOP> all =  new AllFSs(baseCas).getAllFSsSorted();
+    List<TOP> all =  new AllFSs(baseCas).getAllFSsAllViews_sofas_reachable().getAllFSsSorted();
     List<TOP> filtered = CASImpl.filterAboveMark(all, mark);
     for (TOP fs : filtered) {
       addFS1(fs, nextAddr);   // doesn't update sortedFSs, that will be done below in batch
