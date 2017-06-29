@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIterator;
@@ -517,6 +518,14 @@ class FsIndex_iicp<T extends FeatureStructure>
     return getCasImpl().indexRepository;
   }
 
+  /**
+   * @return a stream of FSIndex_singletype, for all non-empty indexes
+   */
+  public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyIndexes() {
+    createIndexIteratorCache();
+    return Arrays.stream(cachedSubFsLeafIndexes).filter(idx -> idx.size() > 0);
+  }
+  
 //  /* (non-Javadoc)
 //   * @see org.apache.uima.cas.FSIndex#select()
 //   */
