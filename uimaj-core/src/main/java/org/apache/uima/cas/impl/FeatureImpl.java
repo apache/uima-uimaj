@@ -26,6 +26,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.internal.util.Misc;
 
 /**
  * The implementation of features in the type system.
@@ -51,7 +52,7 @@ public class FeatureImpl implements Feature {
    * true if the range is a long or double
    */
   public final boolean isLongOrDouble; 
-  private TypeImpl highestDefiningType;  // not final, could change
+  private final TypeImpl highestDefiningType;  // if changed, this feature is thrown away and a replacement is made
   
   private final TypeImpl rangeType;
   
@@ -71,16 +72,23 @@ public class FeatureImpl implements Feature {
   /** type class of the range, including CasSerializer List constants */
   public  final int rangeTypeClass; // set from CasSerializerSupport.classifyType
 
+  private final long hashCodeLong;
+
+  /**
+   * used to make singleton which is used for "missing feature"
+   */
   private FeatureImpl() {
-    featureCode = 0;
-    isInInt = false;
-    rangeType = null;
-    isMultipleRefsAllowed = false;
-    isAnnotBaseSofaRef = false;
-    shortName = null;
-    slotKind = null;
-    rangeTypeClass = 0;
-    isLongOrDouble = false;
+    this.featureCode = 0;
+    this.isInInt = false;
+    this.rangeType = null;
+    this.isMultipleRefsAllowed = false;
+    this.isAnnotBaseSofaRef = false;
+    this.shortName = null;
+    this.slotKind = null;
+    this.rangeTypeClass = 0;
+    this.isLongOrDouble = false;
+    this.highestDefiningType = null;
+    this.hashCodeLong = computeHashCodeLong();
   }
 
   FeatureImpl(TypeImpl typeImpl, String shortName, TypeImpl rangeType, TypeSystemImpl tsi, boolean isMultipleRefsAllowed, SlotKind slotKind) {
@@ -97,6 +105,7 @@ public class FeatureImpl implements Feature {
   this.isAnnotBaseSofaRef = (highestDefiningType.getCode() == TypeSystemConstants.annotBaseTypeCode) && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA);
   this.isInInt = tsi.isInInt(rangeType);
   this.rangeTypeClass = CasSerializerSupport.classifyType(rangeType);
+  this.hashCodeLong = computeHashCodeLong();
   typeImpl.addFeature(this);  // might throw if existing feature with different range
   feats.add(this);
 }
@@ -225,9 +234,9 @@ public class FeatureImpl implements Feature {
     return highestDefiningType;
   }
   
-  void setHighestDefiningType(Type type) {
-    highestDefiningType = (TypeImpl) type;
-  }
+//  void setHighestDefiningType(Type type) {
+//    highestDefiningType = (TypeImpl) type;
+//  }
 
   /**
    * throw if v is not in the allowed value set of the range type
@@ -237,28 +246,32 @@ public class FeatureImpl implements Feature {
     TypeImpl_stringSubtype ti = (TypeImpl_stringSubtype) getRangeImpl();
     ti.validateIsInAllowedValues(v);
   }
-  
-  /**
-   * Used by CAS Copier to denote missing feature
-   */
-  public final static FeatureImpl singleton = new FeatureImpl();
 
+  @Override
+  public int hashCode() {
+    return (int) hashCodeLong;
+  }
+  
+  public long hashCodeLong() {
+    return hashCodeLong;
+  }
+  
   /**
    * Hashcode and equals are used, possibly for features in different type systems, 
    * where the features should be "equal".  Example: fitering during serialization.
    */
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-//    return this.featureCode;  // can't use this across different type systems
-    result = prime * result + ((highestDefiningType == null) ? 0 : highestDefiningType.getName().hashCode());
+ 
+  public long computeHashCodeLong() {
+    final long prime = 31;
+    long result;
+ //    return this.featureCode;  // can't use this across different type systems
+    result = prime          +  Misc.hashStringLong(shortName);
+    result = prime * result + ((highestDefiningType == null) ? 0 : highestDefiningType.hashCodeNameLong());
     result = prime * result + (isMultipleRefsAllowed ? 1231 : 1237);
-    result = prime * result + ((rangeType == null) ? 0 : rangeType.getName().hashCode());
-    result = prime * result + ((shortName == null) ? 0 : shortName.hashCode());
+    result = prime * result + ((rangeType == null) ? 0 : rangeType.hashCodeNameLong());
     return result;
   }
-
+  
   /**
    * This should work across different type systems, for instance 
    * when using filtered serialization
@@ -268,7 +281,11 @@ public class FeatureImpl implements Feature {
     if (this == o) {
       return 0;
     }    
+    
     FeatureImpl other = (FeatureImpl) o;
+    if (hashCodeLong == other.hashCodeLong) return 0;
+    
+    // to preserve the compare contract, can't use hash for miscompare
 
     int c;
     c = this.shortName.compareTo(other.shortName);
@@ -280,7 +297,7 @@ public class FeatureImpl implements Feature {
     c = rangeType.getName().compareTo(other.rangeType.getName());
     if (c != 0) return c;
 
-    return 0;
+    throw Misc.internalError();
   }
 
   @Override
@@ -291,12 +308,18 @@ public class FeatureImpl implements Feature {
     
     FeatureImpl other = (FeatureImpl) obj;
 //    return this.featureCode == other.featureCode;  // can't use this across different type systems
-    if (!highestDefiningType.getName().equals(other.highestDefiningType.getName())) return false;
-    if (isMultipleRefsAllowed != other.isMultipleRefsAllowed) return false;
-    if (!rangeType.getName().equals(other.rangeType.getName())) return false;
-    if (!shortName.equals(other.shortName)) return false;
-    return true;
+    return hashCodeLong == other.hashCodeLong;
+//    if (!highestDefiningType.getName().equals(other.highestDefiningType.getName())) return false;
+//    if (isMultipleRefsAllowed != other.isMultipleRefsAllowed) return false;
+//    if (!rangeType.getName().equals(other.rangeType.getName())) return false;
+//    if (!shortName.equals(other.shortName)) return false;
+//    return true;
   }
-  
+
+  /**
+   * Used by CAS Copier to denote missing feature
+   */
+  public final static FeatureImpl singleton = new FeatureImpl();
+
   
 }

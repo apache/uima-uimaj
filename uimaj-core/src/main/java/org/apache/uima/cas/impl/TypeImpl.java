@@ -177,6 +177,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
     this.allSuperTypes = null;
+    this.hashCodeNameLong = Misc.hashStringLong(name);
   }
   
   /**
@@ -264,6 +265,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     slotKind = TypeSystemImpl.getSlotKindFromType(this);
     
     hasRefFeature = name.equals(CAS.TYPE_NAME_FS_ARRAY);  // initialization of other cases done at commit time
+    this.hashCodeNameLong = Misc.hashStringLong(name);
   }
 
   /**
@@ -936,38 +938,48 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    */
   public final static TypeImpl singleton = new TypeImpl();
 
-  private int hashCode = 0;
-  private boolean hasHashCode = false;
+  private long hashCodeLong = 0;
+  private final long hashCodeNameLong;
+  private boolean hasHashCodeLong = false;
   
   @Override
   public int hashCode() {
-    if (hasHashCode) return hashCode;
-    synchronized (this) {
-      int h = computeHashCode();
-      if (tsi.isCommitted()) {
-        hashCode = h;
-        hasHashCode = true;
+    return (int) hashCodeLong();
+  }
+    
+  private long hashCodeLong() {
+    if (!hasHashCodeLong) {
+      synchronized (this) {
+        this.hashCodeLong = computeHashCodeLong();
+        if (this.getTypeSystem().isCommitted()) {
+          hasHashCodeLong = true; // no need to recompute
+        }
       }
-      return h;
     }
+    return hashCodeLong;
   }
   
+  public long hashCodeNameLong() {
+    return hashCodeNameLong;
+  }
+    
   /**
    * works across type systems
+   * a long so the hash code can be reliably used for quick equal compare.
+   * 
+   * Hash code is not a function of subtypes; otherwise two Type Systems
+   * with different types would have unequal TOP types, for example
    * @return -
    */
-  private int computeHashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + name.hashCode();
-    result = prime * result + ((superType == null) ? 0 : superType.name.hashCode());
-    for (TypeImpl ti : directSubtypes) {
-      result = prime * result + ti.name.hashCode();
-    }
+  private long computeHashCodeLong() {
+    final long prime = 31;
+    long result;
+    result = 31 + hashCodeNameLong;
+    result = prime * result + ((superType == null) ? 0 : superType.hashCodeLong());
     result = prime * result + (isFeatureFinal ? 1231 : 1237);
     result = prime * result + (isInheritanceFinal ? 1231 : 1237);
     for (FeatureImpl fi : getFeatureImpls()) {
-      result = prime * result + fi.hashCode();
+      result = prime * result + fi.hashCodeLong();
     }
     return result;
   }
@@ -982,68 +994,63 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     if (obj == null || !(obj instanceof TypeImpl)) return false;
 
     TypeImpl other = (TypeImpl) obj;
-    if (hashCode() != other.hashCode()) return false;
-    
-    if (!name.equals(other.name)) return false;
-    
-    if (superType == null) {
-      if (other.superType != null) return false;
-    } else {
-      if (other.superType == null) return false;
-      if (!superType.name.equals(other.superType.name)) return false;
-    }
-    
-    if (directSubtypes.size() != other.directSubtypes.size()) return false;
-    
-    if (isFeatureFinal != other.isFeatureFinal) return false;
-    if (isInheritanceFinal != other.isInheritanceFinal) return false;
-    
-    if (this.getNumberOfFeatures() != other.getNumberOfFeatures()) return false;
-    
-    final FeatureImpl[] fis1 = getFeatureImpls();
-    final FeatureImpl[] fis2 = other.getFeatureImpls();
-    if (!Arrays.equals(fis1,  fis2)) return false;
-    
-    for (int i = 0; i < directSubtypes.size(); i++) {
-      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
-    }
-    
-    return true;
+    return hashCodeLong() == other.hashCodeLong();
+//    if (hashCode() != other.hashCode()) return false;
+//    
+//    if (!name.equals(other.name)) return false;
+//    
+//    if (superType == null) {
+//      if (other.superType != null) return false;
+//    } else {
+//      if (other.superType == null) return false;
+//      if (!superType.name.equals(other.superType.name)) return false;
+//    }
+//    
+//    if (directSubtypes.size() != other.directSubtypes.size()) return false;
+//    
+//    if (isFeatureFinal != other.isFeatureFinal) return false;
+//    if (isInheritanceFinal != other.isInheritanceFinal) return false;
+//    
+//    if (this.getNumberOfFeatures() != other.getNumberOfFeatures()) return false;
+//    
+//    final FeatureImpl[] fis1 = getFeatureImpls();
+//    final FeatureImpl[] fis2 = other.getFeatureImpls();
+//    if (!Arrays.equals(fis1,  fis2)) return false;
+//    
+//    for (int i = 0; i < directSubtypes.size(); i++) {
+//      if (!directSubtypes.get(i).name.equals(other.directSubtypes.get(i).name)) return false;
+//    }
+//    
+//    return true;
   }
   
   /**
    * compareTo must return 0 for "equal" types
+   *    equal means same name, same flags, same supertype chain, same subtypes, and same features
+   * Makes use of hashcodelong to probablistically shortcut computation for equal case
    * 
-   * use the fully qualified names as the comparison
-   * Note: you can only compare types from the same type system. If you compare types from different
-   * type systems, the result is undefined.
+   * for not equal types, do by parts
    */
   @Override
   public int compareTo(TypeImpl t) {
-    if (this == t) {
-      return 0;
-    }
     
-    int c = this.name.compareTo(t.name);
-    if (c != 0) return c;
-        
-    c = Integer.compare(this.hashCode(), t.hashCode());
-    if (c != 0) return c;
+    if (this == t) return 0;
+    long hcl = this.hashCodeLong();
+    long thcl = t.hashCodeLong();
+    if (hcl == thcl) return 0;
     
-    // if get here, we have two types of the same name, and same hashcode
-    //   may or may not be equal
-    //   check the parts.
+    // can't use hashcode for non equal compare -violates compare contract
 
+    int c = Long.compare(hashCodeNameLong, t.hashCodeNameLong);
+    if (c != 0) return c;
+            
     if (this.superType == null || t.superType == null) {
       Misc.internalError();
     };
     
-    c = this.superType.name.compareTo(t.superType.name);
+    c = Long.compare(this.superType.hashCodeNameLong, t.superType.hashCodeNameLong);
     if (c != 0) return c;
-    
-    c = Integer.compare(this.directSubtypes.size(), t.directSubtypes.size());
-    if (c != 0) return c;
-    
+        
     c = Integer.compare(this.getNumberOfFeatures(),  t.getNumberOfFeatures());
     if (c != 0) return c;
     
@@ -1055,17 +1062,16 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     final FeatureImpl[] fis1 = getFeatureImpls();
     final FeatureImpl[] fis2 = t.getFeatureImpls();
     
+    c = Integer.compare(fis1.length, fis2.length);
+    if (c != 0) return c;
+    
     for (int i = 0; i < fis1.length; i++) {
       c = fis1[i].compareTo(fis2[i]);
       if (c != 0) return c;      
     }
     
-    for (int i = 0; i < directSubtypes.size(); i++) {
-      c = this.directSubtypes.get(i).compareTo(t.directSubtypes.get(i));
-      if (c != 0) return c;      
-    }
-
-    return 0;
+    // never get here, because would imply equal, and hashcodelongs would have been equal above.
+    throw Misc.internalError();
   }
 
   boolean isPrimitiveArrayType() {
