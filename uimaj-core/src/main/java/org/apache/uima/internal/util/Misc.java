@@ -569,8 +569,9 @@ public class Misc {
       throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
   }
   
-  public static void internalError() {
+  public static RuntimeException internalError() {
     assertUie(false);
+    return null;
   }
   
   public static void internalError(Throwable e) {
@@ -604,6 +605,23 @@ public class Misc {
     h1 *= 0xc2b2ae35;
     h1 ^= h1 >>> 16;
     return h1;
+  }
+  
+  /**
+   * a hash for strings as a long - less likely to be a collision
+   * @param s - the string
+   * @return a long hash
+   */
+  public static long hashStringLong(String s) {
+    if (s == null) return 0;
+    int l = s.length();
+    if (l == 0) return 0;
+    long c = 1; 
+    
+    for (int i = 0; i < l; i++) {
+      c = 31 * c + s.charAt(i);
+    }
+    return c;
   }
 
   public static <T> T getWithExpand(List<T> a, int i) {
