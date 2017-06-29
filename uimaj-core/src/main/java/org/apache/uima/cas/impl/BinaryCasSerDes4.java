@@ -69,7 +69,6 @@ import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.impl.DataIO;
 import org.apache.uima.util.impl.OptimizeStrings;
@@ -205,77 +204,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       this.strat = strat;
     }
   }
-  
-//  /**
-//   * Define all the slot kinds.
-//   */
-//  public enum SlotKind {
-//    Slot_ArrayLength(! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_HeapRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_Int(        IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_Byte(       ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_Short(      IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_TypeCode(   ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//
-//    Slot_StrOffset(  ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-//    Slot_StrLength(  ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, !IN_MAIN_HEAP),
-//    Slot_Long_High(    IS_DIFF_ENCODE,           IGNORED, 0, !IN_MAIN_HEAP),
-//    Slot_Long_Low (    IS_DIFF_ENCODE,           IGNORED, 0, !IN_MAIN_HEAP),
-//
-//    // the next are not actual slot kinds, but instead
-//    // are codes used to control encoding of Floats and Doubles.
-//    Slot_Float_Mantissa_Sign( ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    // exponent is 8 bits, and shifted in the expectation
-//    // that many values may be between 1 and 0 (e.g., normalized values)
-//    //   -- so sign moving is needed
-//    Slot_Float_Exponent(      ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    
-//    Slot_Double_Mantissa_Sign(! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    Slot_Double_Exponent(     ! IS_DIFF_ENCODE, CAN_BE_NEGATIVE, 0, !IN_MAIN_HEAP),
-//    Slot_FsIndexes(             IS_DIFF_ENCODE,         IGNORED, 4, !IN_MAIN_HEAP),
-//    
-//    Slot_StrChars(            IGNORED,          IGNORED, 2, !IN_MAIN_HEAP),
-//    
-//    Slot_Control(             IGNORED,          IGNORED, 0, !IN_MAIN_HEAP),
-//    Slot_StrSeg(              ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 0, ! IN_MAIN_HEAP),
-//    
-//    // the next slots are not serialized
-//    Slot_StrRef(     IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_BooleanRef( ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_ByteRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_ShortRef(   IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_LongRef(    IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_DoubleRef(  IS_DIFF_ENCODE,             IGNORED, 4, IN_MAIN_HEAP),
-//    Slot_Float(      ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    Slot_Boolean(    ! IS_DIFF_ENCODE, ! CAN_BE_NEGATIVE, 4, IN_MAIN_HEAP),
-//    // next used to capture original heap size
-//    Slot_MainHeap(   IGNORED,          IGNORED,           4, !IN_MAIN_HEAP),
-//
-//  //TODO fix this 
-//    Slot_JavaObjectRef(  IGNORED,      CAN_BE_NEGATIVE,   4, IN_MAIN_HEAP);
-//    ;
-//
-//    public final int i;
-//    public final boolean isDiffEncode;
-//    public final boolean canBeNegative;
-//    public final boolean inMainHeap;
-//    public final int elementSize;
-//    
-//    public static final int NBR_SLOT_KIND_ZIP_STREAMS;
-//    static {NBR_SLOT_KIND_ZIP_STREAMS = Slot_StrRef.i;}
-//    
-//    SlotKind(boolean isDiffEncode, 
-//             boolean canBeNegative, 
-//             int elementSize,
-//             boolean inMainHeap) {
-//      this.i = this.ordinal();
-//      this.isDiffEncode = isDiffEncode;
-//      this.canBeNegative = isDiffEncode ? true : canBeNegative;
-//      this.elementSize = elementSize; 
-//      this.inMainHeap = inMainHeap;
-//    }
-//  }
-  
+    
   /**
    * Things set up for one instance of this class, and
    * reuse-able
@@ -289,27 +218,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   /** 
    * Things shared between serialization and deserialization
    */
-    
-  // speedups
-//  final private static int arrayLength_i = Slot_ArrayLength.i;
-//  final private static int heapRef_i = Slot_HeapRef.i;
-//  final private static int int_i = Slot_Int.i;
-//  final private static int byte_i = Slot_Byte.ordinal();
-//  final private static int short_i = Slot_Short.i;
-//  final private static int typeCode_i = Slot_TypeCode.i;
-//  final private static int strOffset_i = Slot_StrOffset.i;
-//  final private static int strLength_i = Slot_StrLength.i;
-//  final private static int long_High_i = Slot_Long_High.i;
-//  final private static int long_Low_i = Slot_Long_Low.i;
-//  final private static int float_Mantissa_Sign_i = Slot_Float_Mantissa_Sign.i;
-//  final private static int float_Exponent_i = Slot_Float_Exponent.i;
-//  final private static int double_Mantissa_Sign_i = Slot_Double_Mantissa_Sign.i;
-//  final private static int double_Exponent_i = Slot_Double_Exponent.i;
-//  final private static int fsIndexes_i = Slot_FsIndexes.i;
-//  final private static int strChars_i = Slot_StrChars.i;
-//  final private static int control_i = Slot_Control.i;
-//  final private static int strSeg_i = Slot_StrSeg.i;
-  
+      
   /**
    * 
    * @param ts the type system
@@ -1547,9 +1456,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //      return (s == 0) ? null : seq2fs.get(s);
 //    }
   
-    private int fs2addr(TOP fs) {
-      return (fs == null) ? 0 : csds.fs2addr.get(fs);
-    }
+//    private int fs2addr(TOP fs) {
+//      return (fs == null) ? 0 : csds.fs2addr.get(fs);
+//    }
     
   }  // end of class definition for Serializer
   
@@ -2650,9 +2559,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       return (s == 0) ? null : seq2fs.get(s);
     }
     
-    private TOP addr2fs(int s) {
-      return (s == 0) ? null : csds.addr2fs.get(s);
-    }
+//    private TOP addr2fs(int s) {
+//      return (s == 0) ? null : csds.addr2fs.get(s);
+//    }
   }
 
   /* ******************************************************************
@@ -2682,284 +2591,26 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 //    }
 //    fsStartIndexes.finishSetup();
 //  }  
-
-  // this method is required, instead of merely making
-  // a "new" instance, so that
-  // the containing instance of BinaryCasSerDes4 can be
-  // accessed for the type info
   
-  public CasCompare getCasCompare() {
-    return new CasCompare();
-  }
-  
-  public class CasCompare {
-//    /** 
-//     * Compare 2 CASes for equal
-//     * The layout of refs to aux heaps does not have to match
-//     */
-//      private CASImpl c1;
-//      private CASImpl c2;
-//      private Heap c1HO;
-//      private Heap c2HO;
-//      private int[] c1heap;
-//      private int[] c2heap;
-//      private int iHeap;
-
-    /**
-     * Trampolines to Form6 compare
-     * There's no reliable way to get the set of FSs for 2 different form4 CASs, since the 
-     * method used is to take the FSs from the id2fs weakReferences, and therefore some 
-     * unreferenced items may appear in one and not the other.
-     * @param c1 a cas to compare
-     * @param c2 the cas to compare to
-     * @return true if they compare equal
-     */
-    public boolean compareCASes(CASImpl c1, CASImpl c2) {
-      BinaryCasSerDes6 bcsd6;
-      try {
-        bcsd6 = new BinaryCasSerDes6(c1);
-      } catch (ResourceInitializationException e) {
-        // never thrown
-        throw new RuntimeException(e);
-      }
-      return bcsd6.compareCASes(c1,  c2);
-//      this.c1 = c1;
-//      this.c2 = c2;
-//      c1HO = c1.getHeap();
-//      c2HO = c2.getHeap();
-//      final int endi = c1HO.getCellsUsed();
-//      final int end2 = c2HO.getCellsUsed();
-//      if (endi != end2) {
-//        System.err.format("CASes have different heap cells used: %,d %,d%n", endi, end2);
-//      }
-//      c1heap = c1HO.heap;
-//      c2heap = c2HO.heap;
-      
-//      final ComprItemRefs fsStartIndexes = new ComprItemRefs();
-//      initFsStartIndexes(fsStartIndexes, c1heap, 1, endi, null);
-      
-//      final int endsi = fsStartIndexes.getNbrOfItems();
-//      for (int i = 1; i < endsi; i++) {
-//        iHeap = fsStartIndexes.getItemAddr(i);
-////        System.out.println("");
-//        if (!compareFss()) {
-//          return false;
-//        }
-//      }
-//      
-//      int[] ifs1 = c1.getIndexedFSs();
-//      int[] ifs2 = c2.getIndexedFSs();
-//      
-//      return Arrays.equals(ifs1, ifs2);
-//    }
+//  public CasCompare getCasCompare() {
+//    return new CasCompare();
+//  }
+//  
+//  public class CasCompare {
 //
-//    private boolean compareFss() {
-//      int tCode = c1heap[iHeap];
-//      typeInfo = getTypeInfo(tCode);
-//      if (tCode != c2heap[iHeap]) {
-//        return mismatchFs();
-//      }
-//      if (typeInfo.isArray) {
-//        return compareFssArray();
-//      } else {
-//        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//          if (!compareSlot(i)) {
-//            return mismatchFs();
-//          }
-//        }
-//        return true;
-//      }
+//    /**
+//     * Trampolines to CasCompare 
+//     * There's no reliable way to get the set of FSs for 2 different form4 CASs, since the 
+//     * method used is to take the FSs from the id2fs weakReferences, and therefore some 
+//     * unreferenced items may appear in one and not the other.
+//     * @param c1 a cas to compare
+//     * @param c2 the cas to compare to
+//     * @return true if they compare equal
+//     */
+//    public boolean compareCASes(CASImpl c1, CASImpl c2) {
+//      return org.apache.uima.cas.impl.CasCompare.compareCASes(c1, c2);
 //    }
-//      
-//    private boolean compareFssArray() {
-//      int len1 = c1heap[iHeap + 1];
-//      int len2 = c2heap[iHeap + 1];
-//      if (len1 != len2) {
-//        return false;
-//      }
-//      for (int i = 0; i < len1; i++) {
-//        SlotKind kind = typeInfo.getSlotKind(2);
-//        if (typeInfo.isHeapStoredArray) {
-//          if (kind == Slot_StrRef) {
-//            if (! compareStrings(c1.getStringForCode(c1heap[iHeap + 2 + i]),
-//                                 c2.getStringForCode(c2heap[iHeap + 2 + i]))) {
-//              return mismatchFs();
-//            }
-//          } else if (c1heap[iHeap + 2 + i] != c2heap[iHeap + 2 + i]) {
-//            return mismatchFs();
-//          }
-//        } else {  // not heap stored array
-//          switch (kind) {
-//          case Slot_BooleanRef: case Slot_ByteRef:
-//            if (c1.getByteHeap().getHeapValue(c1heap[iHeap + 2] + i) !=
-//                c2.getByteHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
-//              return mismatchFs(); 
-//            }
-//            break;
-//          case Slot_ShortRef:
-//            if (c1.getShortHeap().getHeapValue(c1heap[iHeap + 2] + i) !=
-//                c2.getShortHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
-//              return mismatchFs();
-//            }
-//            break;
-//          case Slot_LongRef: case Slot_DoubleRef: {
-//            if (c1.getLongHeap().getHeapValue(c1heap[iHeap + 2] + i)  !=
-//                c2.getLongHeap().getHeapValue(c2heap[iHeap + 2] + i)) {
-//              return mismatchFs();
-//            }
-//            break;
-//          }
-//          default: throw new RuntimeException("internal error");
-//          }
-//        }
-//      } // end of for
-//      return true;
-//    }
-//    
-//    private boolean compareSlot(int offset) {
-//      SlotKind kind = typeInfo.getSlotKind(offset);
-//      switch (kind) {
-//      case Slot_Int: case Slot_Short: case Slot_Boolean: case Slot_Byte: 
-//      case Slot_Float: case Slot_HeapRef:
-//        return c1heap[iHeap + offset] == c2heap[iHeap + offset];
-//      case Slot_StrRef:
-//        return compareStrings(c1.getStringForCode(c1heap[iHeap + offset]),
-//                              c2.getStringForCode(c2heap[iHeap + offset]));
-//      case Slot_LongRef: case Slot_DoubleRef:
-//        return c1.getLongHeap().getHeapValue(c1heap[iHeap + offset]) ==
-//               c2.getLongHeap().getHeapValue(c2heap[iHeap + offset]);
-//      default: throw new RuntimeException("internal error");      
-//      }
-//    }
-//    
-//    private boolean compareStrings(String s1, String s2) {
-//      if (null == s1) {
-//        return null == s2;
-//      }
-//      return s1.equals(s2);
-//    }
-//     
-//    private boolean mismatchFs() {
-//      System.err.format("Mismatched Feature Structures:%n %s%n %s%n", 
-//          dumpHeapFs(c1), dumpHeapFs(c2));
-//      return false;
-//    }
-//    
-//    private StringBuilder dumpHeapFs(CASImpl cas) {
-//      StringBuilder sb = new StringBuilder();
-//      typeInfo = getTypeInfo(cas.getHeap().heap[iHeap]);
-//      sb.append(typeInfo);
-//  
-//      if (typeInfo.isHeapStoredArray) {
-//        sb.append(dumpHeapStoredArray(cas));
-//      } else if (typeInfo.isArray) {
-//        sb.append(dumpNonHeapStoredArray(cas));
-//      } else {
-//        sb.append("   Slots:\n");
-//        for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//          sb.append("  ").append(typeInfo.getSlotKind(i)).append(": ")
-//              .append(dumpByKind(cas, i)).append('\n');
-//        }
-//      }
-//      return sb;
-//    }
-//    
-//    private StringBuilder dumpHeapStoredArray(CASImpl cas) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      final int length = heap[iHeap + 1];
-//      sb.append("Array Length: ").append(length).append('[');
-//      SlotKind arrayElementKind = typeInfo.slotKinds[1];
-//      switch (arrayElementKind) {
-//      case Slot_HeapRef: case Slot_Int: case Slot_Short: case Slot_Byte: 
-//      case Slot_Boolean: case Slot_Float:
-//        for (int i = iHeap + 2; i < iHeap + length + 2; i++) {
-//          if (i > iHeap + 2) {
-//            sb.append(", ");
-//          }
-//          sb.append(heap[i]);
-//        }
-//        break;   
-//      case Slot_StrRef:
-//        StringHeap sh = cas.getStringHeap();
-//        for (int i = iHeap + 2; i < iHeap + length + 2; i++) {
-//          if (i > iHeap + 2) {
-//            sb.append(", ");
-//          }
-//          sb.append(sh.getStringForCode(heap[i]));        
-//        }
-//        break;
-//      default: throw new RuntimeException("internal error");
-//      }
-//      sb.append("] ");
-//      return sb;
-//    }
-//  
-//    private StringBuilder dumpNonHeapStoredArray(CASImpl cas) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      final int length = heap[iHeap + 1];
-//      sb.append("Array Length: ").append(length).append('[');
-//      SlotKind arrayElementKind = typeInfo.slotKinds[1];
-//      
-//      for (int i = 0; i < length; i++) {
-//        if (i > 0) {
-//          sb.append(", ");
-//        }
-//        switch (arrayElementKind) {
-//        case Slot_BooleanRef: case Slot_ByteRef:
-//          sb.append(cas.getByteHeap().getHeapValue(heap[iHeap + 2 + i]));
-//          break;
-//        case Slot_ShortRef:
-//          sb.append(cas.getShortHeap().getHeapValue(heap[iHeap + 2 + i]));
-//          break;
-//        case Slot_LongRef: case Slot_DoubleRef: {
-//          long v = cas.getLongHeap().getHeapValue(heap[iHeap + 2 + i]);
-//          if (arrayElementKind == Slot_DoubleRef) {
-//            sb.append(CASImpl.long2double(v));
-//          } else {
-//            sb.append(String.format("%,d", v));
-//          }
-//          break;
-//        }
-//        default: throw new RuntimeException("internal error");
-//        }
-//      }
-//      sb.append("] ");
-//      return sb;      
-//    }
-//  
-//    private StringBuilder dumpByKind(CASImpl cas, int offset) {
-//      StringBuilder sb = new StringBuilder();
-//      int[] heap = cas.getHeap().heap;
-//      SlotKind kind = typeInfo.getSlotKind(offset);
-//      switch (kind) {
-//      case Slot_Int:
-//        return sb.append(heap[iHeap + offset]);
-//      case Slot_Short: 
-//        return sb.append((short)heap[iHeap + offset]);
-//      case Slot_Byte: 
-//        return sb.append((byte)heap[iHeap + offset]);
-//      case Slot_Boolean:  
-//        return sb.append(((heap[iHeap + offset]) == 0) ? false : true);
-//      case Slot_Float: {
-//        int v = heap[iHeap + offset];
-//        return sb.append(Float.intBitsToFloat(v)).append(' ').append(Integer.toHexString(v));
-//      }
-//      case Slot_HeapRef:
-//        return sb.append("HeapRef[").append(heap[iHeap + offset]).append(']');
-//      case Slot_StrRef:
-//        return sb.append(cas.getStringForCode(heap[iHeap + offset]));
-//      case Slot_LongRef:
-//        return sb.append(String.format("%,d", cas.getLongHeap().getHeapValue(heap[iHeap + offset])));
-//      case Slot_DoubleRef: {
-//        long v = cas.getLongHeap().getHeapValue(heap[iHeap + offset]);
-//        return sb.append(CASImpl.long2double(v)).append(' ').append(Long.toHexString(v));
-//      }
-//      default: throw new RuntimeException("internal error");      
-//      }
-    }
-  }
+//  }
   
   /**
    * 
