@@ -896,7 +896,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public boolean equals(Object obj) {
     if (obj instanceof FeatureStructureImplC) {
       FeatureStructureImplC c2 = (FeatureStructureImplC) obj;
-      if (_casView != null && c2._casView != null &&   // for special REMOVED Marker
+      if (_casView == null && c2._casView == null) {
+        return c2._id == this._id;  // special case for removed marker
+      }
+      if (_casView != null && c2._casView != null &&   
            (_casView == c2._casView ||
             _casView.getBaseCAS() == c2._casView.getBaseCAS())) {
         return c2._id == this._id;
