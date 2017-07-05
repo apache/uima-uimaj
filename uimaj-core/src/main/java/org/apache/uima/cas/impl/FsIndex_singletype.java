@@ -229,6 +229,11 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     
   /**
    * @see org.apache.uima.cas.FSIndex#compare(FeatureStructure, FeatureStructure)
+   * 
+   * Note: this is the "general" compare, based on 
+   *   runtime interpreting the index's definition of its Keys, and the type ordering.
+   *   
+   * Annotation Index instances should use the custom comparators
    */    
   @Override
   public int compare(FeatureStructure afs1, FeatureStructure afs2) {
@@ -241,7 +246,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     FeatureStructureImplC fs2 = (FeatureStructureImplC) afs2;
 
     /**
-     * for each key:
+     * for each key defined by this index:
      *   if Feature:
      *     Switch by type:  float, 
      *       get the value:  fs1.getXXX, compare

@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Performs an ordered iteration among a set of iterators, each one corresponding to
@@ -46,11 +47,13 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   private boolean wentForward = true;
   
-  final private Comparator<FeatureStructure> comparator; 
+  final private Comparator<TOP> comparator; 
 
   public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp) {
     super(iicp);
-    this.comparator = iicp.fsIndex_singletype;
+    this.comparator = (iicp.fsIndex_singletype instanceof FsIndex_set_sorted) 
+                        ? ((FsIndex_set_sorted)iicp.fsIndex_singletype).getComparatorWithoutId()
+                        : (Comparator) iicp.fsIndex_singletype;
     moveToStart();
   } 
   
@@ -265,8 +268,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   private boolean is_before(FsIterator_singletype<T> l, FsIterator_singletype<T> r,
       int dir) {
 
-    final T fsLeft = l.get();
-    final T fsRight = r.get();
+    final TOP fsLeft = (TOP) l.get();
+    final TOP fsRight = (TOP) r.get();
     
     int d = comparator.compare(fsLeft, fsRight);
 

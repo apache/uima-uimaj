@@ -226,6 +226,8 @@ class FsIndex_iicp<T extends FeatureStructure>
   /**
    * Maybe not used 3/2015
    * 
+   * Compares two instances of FsIndex_iicp, for ordering.
+   * 
    * Compares first using the type code of the main types
    *   If those are equal,
    *   Compares using the comparatorForIndexSpecs objects
