@@ -72,7 +72,7 @@
 <!--     <dependency>     is included from uimaj-core, not needed for this project
       <groupId>org.bitbucket.mstrobel</groupId>
       <artifactId>procyon-compilertools</artifactId>
-      <version>0.5.28</version>
+      <version>0.5.32</version>
     </dependency>
  -->    
     <!-- for reading / transforming / generating JCas cover classes -->
