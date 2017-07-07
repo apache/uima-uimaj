@@ -289,8 +289,9 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
 //            break;         
           } // end of switch
         }
-      } else { // is type order compare    
-        result = ((LinearTypeOrder) key).compare(fs1, fs2);
+      } else { // is type order compare
+        LinearTypeOrder lto = (LinearTypeOrder) key;
+        result = lto.isEmptyTypeOrder() ? 0 : lto.compare(fs1, fs2);
       }
         
       if (result == 0) {
