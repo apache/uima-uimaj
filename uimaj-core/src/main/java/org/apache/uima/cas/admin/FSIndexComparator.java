@@ -73,6 +73,12 @@ public interface FSIndexComparator extends Comparable<FSIndexComparator> {
    */
   int addKey(Feature feat, int compareKey);
 
+  /**
+   * 
+   * @param typeOrder the type order
+   * @param compareKey the direction
+   * @return the number of the key
+   */
   int addKey(LinearTypeOrder typeOrder, int compareKey);
 
   /**
