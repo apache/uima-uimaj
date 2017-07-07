@@ -65,10 +65,12 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return t.isPrimitive();
   }
 
+  @Override
   public void setType(Type type) {
     this.type = type;
   }
 
+  @Override
   public Type getType() {
     return this.type;
   }
@@ -77,6 +79,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return ((TypeImpl)this.type).getCode();
   }
 
+  @Override
   public int addKey(Feature feat, int compareKey) {
     if (!checkType(feat.getRange())) {
       return -1;
@@ -87,6 +90,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return rc;
   }
 
+  @Override
   public int addKey(LinearTypeOrder typeOrder, int compareKey) {
     final int rc = this.keySpecs.size();
     this.keySpecs.add(typeOrder);
@@ -94,16 +98,19 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return rc;
   }
 
+  @Override
   public int getKeyType(int key) {
     return (this.keySpecs.get(key) instanceof Feature) 
         ? FEATURE_KEY 
         : TYPE_ORDER_KEY;
   }
 
+  @Override
   public int getNumberOfKeys() {
     return this.keySpecs.size();
   }
 
+  @Override
   public FeatureImpl getKeyFeature(int key) {
     if (getKeyType(key) == FEATURE_KEY) {
       return (FeatureImpl) this.keySpecs.get(key);
@@ -118,6 +125,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return null;
   }
 
+  @Override
   public int getKeyComparator(int key) {
     return this.directions.get(key);
   }
@@ -125,6 +133,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
   /**
    * Equals including the type of the comparator
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -172,6 +181,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     return result;
   }
 
+  @Override
   public boolean isValid() {
     if (this.type == null) {
       return false;
@@ -204,6 +214,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
    * 
    * @see java.lang.Comparable#compareTo(Object)
    */
+  @Override
   public int compareTo(FSIndexComparator o) {
     FSIndexComparator comp = o;
     final int thisSize = this.getNumberOfKeys();
@@ -211,7 +222,7 @@ public class FSIndexComparatorImpl implements FSIndexComparator {
     int i = 0;
     int feat1, feat2;
     while ((i < thisSize) && (i < compSize)) {
-      feat1 = ((FeatureImpl) this.getKeyFeature(i)).getCode();
+      feat1 = this.getKeyFeature(i).getCode();
       feat2 = ((FeatureImpl) comp.getKeyFeature(i)).getCode();
       if (feat1 < feat2) {
         return -1;
