@@ -253,7 +253,7 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
     return maxAnnotSpan;
   }
   
-  Comparator<TOP> getComparatorWithoutId() {
-    return comparatorWithoutID;
+  Comparator<TOP> getComparatorWithId() {
+    return comparatorWithID;
   }
 }
