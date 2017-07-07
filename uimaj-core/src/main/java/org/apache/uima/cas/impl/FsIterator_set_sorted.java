@@ -166,10 +166,10 @@ class FsIterator_set_sorted<T extends FeatureStructure> extends FsIterator_singl
   @Override
   public T getNvc() {
     if (!isCurrentElementFromLastGet) {
-      maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
       currentElement = iterator.next();
       isCurrentElementFromLastGet = true;
     }
+    maybeTraceCowUsingCopy(fsSetSortIndex, (CopyOnWriteIndexPart) navSet);
     return currentElement;
   }
 
