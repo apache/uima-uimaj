@@ -28,6 +28,7 @@ public abstract class FsIterator_subtypes_list <T extends FeatureStructure>  ext
 
   // An array of iterators, one for each subtype.
   //   This array has the indexes for all the subtypes that were non-empty at the time of iterator creation
+  //   The lastValidIndex is updated so that all iterators that are in "invalid" state are in the array above this index
   protected FsIterator_singletype<T>[] nonEmptyIterators;
   private FsIterator_singletype<T>[] emptyIterators;
   protected FsIterator_singletype<T>[] allIterators;
