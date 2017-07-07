@@ -197,19 +197,42 @@ under the License.
   </section>
   
   <section id="uv3.backwards_compatibility.iterator">
-    <title>Iteration Order for equal Feature Structures</title>
+    <title>Subtle differences in iteration</title>
     
-    <para>When iterating using a sorted index, the sort order is determined by the Index's comparator.
-      For example, the built-in index for Annotations defines a comparator that makes use of the 
-      <code>begin</code> and <code>end</code> features, as well as the type via the type priority setting
-      (if type priorities are defined).
-    </para>
-    
-    <para>For the special case where there are multiple different Feature Structures which compare "equal"
-      using the Index's comparator, the iteration order is undefined.  Version 3 differs from verson 2 in the order
-      it iterates over these equal items.  If user code inadvertantly depends on the particular order
-      that version 2 iterates for these equal items, this may cause a difference in behavior when 
-      switching to version 3.</para>  
+    <para>There are a couple of areas where iteration order may be
+      different.  These are areas where the previous iteration order was
+      unspecified.</para>
+      
+    <section id="uv3.backwards_compatibility.iterator.undefined">
+      <title>Iteration Order for equal Feature Structures</title>
+      
+      <para>When iterating using a sorted index, the sort order is determined by the Index's comparator.
+        For example, the built-in index for Annotations defines a comparator that makes use of the 
+        <code>begin</code> and <code>end</code> features, as well as the type via the type priority setting
+        (if type priorities are defined).
+      </para>
+      
+      <para>For the special case where there are multiple different Feature Structures which compare "equal"
+        using the Index's comparator, the iteration order is undefined.  Version 3 differs from verson 2 in the order
+        it iterates over these equal items.  If user code inadvertantly depends on the particular order
+        that version 2 iterates for these equal items, this may cause a difference in behavior when 
+        switching to version 3.</para>
+    </section>      
+      
+    <section id="uv3.backwards_compatibility.iterator.typeordermissing">
+      <title>Iteration Order with type ordering, where no type ordering has been specified</title>
+      
+      <para>When defining Sorted indexes, one of the keys you can specify is the 
+            type order.  This allows using type priorities to specify which type
+            comes before another type in the order.  The build-in Annotation index,
+            for example, sorts using the 3 keys of begin, end, and type order.</para>
+            
+      <para>Type order only works when one or more type ordering priorities are
+        specified.  In Version 3, if no type ordering priorities are specified,
+        then no type ordering is done.  This may differ in the results obtained
+        with version 2, which was doing some kind of default (unknown) type ordering in this 
+        case.</para>      
+    </section>    
   </section>
   
   <section id="uv3.backwards_compatibility.typesystem_sharing">
