@@ -168,10 +168,16 @@ public class TypePriorityTest extends TestCase {
    *     aaaa        aaab        aaba        aabb       abaa        abab        abba        abbb      baaa ...
    * aaaaa aaaab aaaba aaabb aabaa aabab aabba aabbb abaaa abaab ababa ababb abbaa abbab abbba abbbb baaaa ...
    */
+  
+//  public void testLearnLto() throws CASException {
+//    LinearTypeOrderBuilder order = irm.createTypeSortOrder();
+//    LinearTypeOrder lo = order.getOrder();
+//    System.out.println("debug linearTypeOrder " + lo);
+//  }
   /**
    * Test driver.
    */
-  public void testMain() throws Exception {
+  public void testMain() throws Exception {    
     LinearTypeOrderBuilder order = irm.createTypeSortOrder();
     order = irm.createTypeSortOrder();
     LinearTypeOrder lo;
