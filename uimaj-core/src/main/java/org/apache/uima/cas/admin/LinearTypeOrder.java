@@ -59,5 +59,10 @@ public interface LinearTypeOrder {
    * @return The type order as array of type codes in ascending order.
    */
   int[] getOrder();
+  
+  /**
+   * @return true if there is no type order defined for this pipeline
+   */
+  boolean isEmptyTypeOrder();
 
 }
