@@ -42,6 +42,9 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   /**
    * The number of elements to keep in order before the binary heap starts. This section helps the
    * performance in cases where a couple of types dominate the index.
+   * 
+   * The sorted section is searched sequentially.
+   * Above the sorted section, the search is done using binary search
    */
   private static final int SORTED_SECTION = 3;
   
@@ -52,7 +55,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp) {
     super(iicp);
     this.comparator = (iicp.fsIndex_singletype instanceof FsIndex_set_sorted) 
-                        ? ((FsIndex_set_sorted)iicp.fsIndex_singletype).getComparatorWithoutId()
+                        ? ((FsIndex_set_sorted)iicp.fsIndex_singletype).getComparatorWithId()
                         : (Comparator) iicp.fsIndex_singletype;
     moveToStart();
   } 
@@ -156,6 +159,10 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     }
   }
 
+  /**
+   * 
+   * @param it0 guaranteed to be a valid iterator by callers
+   */
   private void moveToNextCmn(final FsIterator_singletype<T> it0) {
     // We need to increment everything.
     int lvi = this.nonEmptyIterators.length - 1;
@@ -259,17 +266,26 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    * Test the order with which the two iterators should be used. Introduces arbitrary ordering for
    * equivalent FSs. Only called with valid iterators.
    * 
-   * @param l
-   * @param r
-   * @param dir
+   * @param l - guaranteed to ba a valid iterator by callers
+   * @param r - guaranteed to be a valid iterator by callers
+   * @param dir 
    *          Direction of movement, 1 for forward, -1 for backward
    * @return true if the left iterator needs to be used before the right one.
    */
   private boolean is_before(FsIterator_singletype<T> l, FsIterator_singletype<T> r,
       int dir) {
 
-    final TOP fsLeft = (TOP) l.get();
-    final TOP fsRight = (TOP) r.get();
+//    // debug
+//    if (!l.isValid()) {
+//      throw new RuntimeException("1st arg invalid");
+//    }
+//
+//    if (!r.isValid()) {
+//      throw new RuntimeException("2nd arg invalid");
+//    }
+
+    final TOP fsLeft = (TOP) l.getNvc();
+    final TOP fsRight = (TOP) r.getNvc();
     
     int d = comparator.compare(fsLeft, fsRight);
 
@@ -289,7 +305,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    * Move the idx'th element up in the heap until it finds its proper position.
    * 
    * @param it
-   *          indexes[idx]
+   *          indexes[idx], guaranteed to be "valid"
    * @param idx
    *          Element to move
    * @param dir
@@ -329,7 +345,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    * Move the top element down in the heap until it finds its proper position.
    * 
    * @param it
-   *          indexes[0]
+   *          indexes[0], may be invalid
    * @param dir
    *          Direction of iterator movement, 1 for forward, -1 for backward
    */
@@ -340,6 +356,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 //    }
 
     if (!it.isValid()) {
+      // if at the end of the iteration, the lastValidIndex is this one (e.g., is 0)
+      // and this operation is a noop, but sets the lastValidIndex to -1, indicating the iterator is invalid
       final FsIterator_singletype<T> itl = this.nonEmptyIterators[this.lastValidIndex]/*.checkConcurrentModification()*/;
       this.nonEmptyIterators[this.lastValidIndex] = it;
       this.nonEmptyIterators[0] = itl;
@@ -436,7 +454,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     int i = 0;
     while (i <= lvi) {
       final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
-      it.moveTo(fs);
+      it.moveTo(fs);  
       if (it.isValid()) {
         heapify_up(it, i, 1);
         ++i;
