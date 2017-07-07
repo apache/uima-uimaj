@@ -1810,13 +1810,23 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private Comparator<TOP> createAnnotationFsComparator() {
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
     
-    return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
-      if (fsx1 == fsx2) return 0;
-      Annotation fs1 = (Annotation) fsx1;
-      Annotation fs2 = (Annotation) fsx2;
+    if (lto.isEmptyTypeOrder()) {
+      return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
+        if (fsx1 == fsx2) return 0;
+        Annotation fs1 = (Annotation) fsx1;
+        Annotation fs2 = (Annotation) fsx2;        
+        return fs1.compareAnnotation(fs2);
+      };
       
-      return fs1.compareAnnotation(fs2, lto);
-    };
+    } else {
+      return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
+        if (fsx1 == fsx2) return 0;
+        Annotation fs1 = (Annotation) fsx1;
+        Annotation fs2 = (Annotation) fsx2;
+        
+        return fs1.compareAnnotation(fs2, lto);
+      };
+    }
   }
   
   //unrolled because of high frequency use
@@ -1824,15 +1834,26 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
 
-    this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
-      if (fsx1 == fsx2) return 0;
-
-      final Annotation fs1 = (Annotation) fsx1;
-      final Annotation fs2 = (Annotation) fsx2;
+    if (lto.isEmptyTypeOrder()) {
+      this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
+        if (fsx1 == fsx2) return 0;
+  
+        final Annotation fs1 = (Annotation) fsx1;
+        final Annotation fs2 = (Annotation) fsx2;
+        
+        return fs1.compareAnnotationWithId(fs2);
+      };
       
-      return fs1.compareAnnotationWithId(fs2, lto);
-    };
-    
+    } else {
+      this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
+        if (fsx1 == fsx2) return 0;
+  
+        final Annotation fs1 = (Annotation) fsx1;
+        final Annotation fs2 = (Annotation) fsx2;
+        
+        return fs1.compareAnnotationWithId(fs2, lto);
+      };
+    }
     return this.sii.annotationFsComparatorWithId;
   }
 
