@@ -168,80 +168,27 @@ public class AnnotationIteratorTest extends TestCase {
     this.endFeature = null;
     this.sentenceType = null;
   }
+  
+//  //debug
+//  // explore which isValid calls can be eliminated
+//  public void testIsValid() {
+//    int annotCount = setupTheCas();
+//    FSIndexRepository ir = this.cas.getIndexRepository();
+//    
+//    FSIterator<AnnotationFS> it = this.cas.getAnnotationIndex().iterator();
+//    it.moveToLast();
+//    int c = 0;
+//    while (it.hasPrevious()) {
+//      it.previous();
+//      c++;
+//    }
+//    System.out.println("debug count = " + c);
+//  }
+  
 
   public void testIterator1() {
-    
-    
-//   Tokens                +---+
-//                        +---+
-//                       +---+
-//   BigBound                      +-----------------------------+
-    final String text = "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
-//                       +--------+
-//   Sentences                +--------+
-//                                 +----------+
-//
-//   bound4strict                   +------------------+            
-//   sentence4strict                 +-----------------------------+
-    
-    
-    try {
-      this.cas.setDocumentText(text);
-    } catch (CASRuntimeException e) {
-      fail();
-    }
-
-    /***************************************************
-     * Create and index tokens and sentences 
-     ***************************************************/
+    int annotCount = setupTheCas();
     FSIndexRepository ir = this.cas.getIndexRepository();
-    int annotCount = 1; // Init with document annotation.
-    // create token and sentence annotations
-    AnnotationFS fs;
-    for (int i = 0; i < text.length() - 5; i++) {
-      ++annotCount;
-      ir.addFS(fs = this.cas.createAnnotation(this.tokenType, i, i + 5));
-      if (showFSs) {
-        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
-      }
-    }
-    // for (int i = 0; i < text.length() - 5; i++) {
-    // cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
-    // }
-    
-    // create overlapping sentences for unambigious testing
-    //   begin =  0,  5, 10, ...
-    //   end   = 10, 15, 20, ...
-    // non-overlapping:  0-10, 10-20, etc.
-    for (int i = 0; i < text.length() - 10; i += 5) {
-      ++annotCount;
-      ir.addFS(fs = this.cas.createAnnotation(this.sentenceType, i, i + 10));
-      if (showFSs) {
-        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
-      }
-    }
-    
-    // create overlapping phrases
-    // begin =  0,  6,  10, 14, ...
-    // end   =  5,  9,  16, 19, ...
-    
-    int beginAlt = 0, endAlt = 0;
-    for (int i = 0; i < text.length() - 10; i += 5) {
-      ++annotCount;
-      ir.addFS(fs = this.cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
-      beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1;
-      endAlt = (endAlt == -1) ? 1 : endAlt - 1;
-      if (showFSs) {
-        System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
-      }
-    }
-    
-    ++annotCount;
-    ir.addFS(fs = this.cas.createAnnotation(this.sentenceType,  12, 31));
-    if (showFSs) {
-      System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
-    }
-
 
     /***************************************************
      * iterate over them
@@ -521,6 +468,11 @@ public class AnnotationIteratorTest extends TestCase {
       AnnotationFS posFs = fss.get(fssStart + (count >> 1));
 //      //debug
 //      System.out.println(posFs.toString());
+      
+      // debug
+       it.moveToLast();
+       it.next();
+       
        it.moveTo(posFs);
        assertEquals(msg, it.get().hashCode(), posFs.hashCode());
       
@@ -655,6 +607,83 @@ public class AnnotationIteratorTest extends TestCase {
     }
 
   }
+
+  private int setupTheCas() {
+    
+    
+//  Tokens                +---+
+//                       +---+
+//                      +---+
+//  BigBound                      +-----------------------------+
+   final String text = "aaaa bbbb cccc dddd aaaa bbbb cccc dddd aaaa bbbb cccc dddd ";
+//                      +--------+
+//  Sentences                +--------+
+//                                +----------+
+//
+//  bound4strict                   +------------------+            
+//  sentence4strict                 +-----------------------------+
+   
+   
+   try {
+     this.cas.setDocumentText(text);
+   } catch (CASRuntimeException e) {
+     fail();
+   }
+
+   /***************************************************
+    * Create and index tokens and sentences 
+    ***************************************************/
+   FSIndexRepository ir = this.cas.getIndexRepository();
+   int annotCount = 1; // Init with document annotation.
+   // create token and sentence annotations
+   AnnotationFS fs;
+   for (int i = 0; i < text.length() - 5; i++) {
+     ++annotCount;
+     ir.addFS(fs = this.cas.createAnnotation(this.tokenType, i, i + 5));
+     if (showFSs) {
+       System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+     }
+   }
+   // for (int i = 0; i < text.length() - 5; i++) {
+   // cas.getIndexRepository().addFS(cas.createAnnotation(tokenType, i, i+5));
+   // }
+   
+   // create overlapping sentences for unambigious testing
+   //   begin =  0,  5, 10, ...
+   //   end   = 10, 15, 20, ...
+   // non-overlapping:  0-10, 10-20, etc.
+   for (int i = 0; i < text.length() - 10; i += 5) {
+     ++annotCount;
+     ir.addFS(fs = this.cas.createAnnotation(this.sentenceType, i, i + 10));
+     if (showFSs) {
+       System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+     }
+   }
+   
+   // create overlapping phrases
+   // begin =  0,  6,  10, 14, ...
+   // end   =  5,  9,  16, 19, ...
+   
+   int beginAlt = 0, endAlt = 0;
+   for (int i = 0; i < text.length() - 10; i += 5) {
+     ++annotCount;
+     ir.addFS(fs = this.cas.createAnnotation(this.phraseType,  i + beginAlt, i + 5 + endAlt));
+     beginAlt = (beginAlt == 1) ? -1 : beginAlt + 1;
+     endAlt = (endAlt == -1) ? 1 : endAlt - 1;
+     if (showFSs) {
+       System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+     }
+   }
+   
+   ++annotCount;
+   ir.addFS(fs = this.cas.createAnnotation(this.sentenceType,  12, 31));
+   if (showFSs) {
+     System.out.format("creating: %d begin: %d end: %d type: %s%n", annotCount, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
+   }
+   
+   return annotCount;
+
+ }
 
   public static void main(String[] args) {
     AnnotationIteratorTest test = new AnnotationIteratorTest(null);
