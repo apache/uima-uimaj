@@ -35,6 +35,10 @@ import org.apache.uima.jcas.JCasRegistry;
  */
 public class DocumentAnnotation extends Annotation {
 
+  /* public static string for use where constants are needed, e.g. in some Java Annotations */
+  public final static String _TypeName = CAS.TYPE_NAME_DOCUMENT_ANNOTATION;
+  public final static String _FeatName_language = "language";
+  
   public final static int typeIndexID = JCasRegistry.register(DocumentAnnotation.class);
 
   public final static int type = typeIndexID;

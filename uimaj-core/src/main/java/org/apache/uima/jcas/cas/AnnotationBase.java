@@ -53,7 +53,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public class AnnotationBase extends TOP implements AnnotationBaseImpl {
 
   /* public static strings for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.AnnotationBase";
+  public final static String _TypeName = CAS.TYPE_NAME_ANNOTATION_BASE;
   public final static String _FeatName_sofa = "sofa";
 
   public final static int typeIndexID = JCasRegistry.register(AnnotationBase.class);

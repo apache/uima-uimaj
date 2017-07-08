@@ -21,6 +21,7 @@ package org.apache.uima.jcas.cas;
 
 import java.io.InputStream;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
@@ -33,7 +34,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public class Sofa extends TOP implements SofaFSImpl {
   
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
+  public final static String _TypeName = CAS.TYPE_NAME_SOFA;
   public final static String _FeatName_sofaNum    = "sofaNum";
   public final static String _FeatName_sofaID     = "sofaID";
   public final static String _FeatName_mimeType   = "mimeType";

@@ -65,7 +65,7 @@ public class SourceDocumentInformation extends Annotation {
  
  
   /* *******************
-   *   Feature Offsets *
+   *   Feature Names   *
    * *******************/ 
    
   public final static String _FeatName_uri = "uri";

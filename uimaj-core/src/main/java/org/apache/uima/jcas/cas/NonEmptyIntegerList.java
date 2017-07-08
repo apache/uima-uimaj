@@ -25,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfInt;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -35,7 +36,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.jcas.cas.NonEmptyIntegerList";
+  public final static String _TypeName = CAS.TYPE_NAME_NON_EMPTY_INTEGER_LIST;
 
   public final static int typeIndexID = JCasRegistry.register(NonEmptyIntegerList.class);
 

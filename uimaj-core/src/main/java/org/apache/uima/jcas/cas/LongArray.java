@@ -26,6 +26,7 @@ import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.LongStream;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LongArrayFSImpl;
@@ -37,7 +38,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFSImpl, Iterable<Long> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.LongArray";
+  public final static String _TypeName = CAS.TYPE_NAME_LONG_ARRAY;
 
   
   /**

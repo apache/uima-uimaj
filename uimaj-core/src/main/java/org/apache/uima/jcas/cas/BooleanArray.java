@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.BooleanArrayFS;
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.BooleanArrayFSImpl;
 import org.apache.uima.cas.impl.CASImpl;
@@ -34,7 +35,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public final class BooleanArray extends TOP implements CommonPrimitiveArray, BooleanArrayFSImpl, Iterable<Boolean> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.BooleanArray";
+  public final static String _TypeName = CAS.TYPE_NAME_BOOLEAN_ARRAY;
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover

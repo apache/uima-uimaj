@@ -22,6 +22,7 @@ package org.apache.uima.jcas.cas;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -34,7 +35,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray, StringArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.jcas.cas.StringArray";
+  public final static String _TypeName = CAS.TYPE_NAME_STRING_ARRAY;
 
   /**
    * Each cover class when loaded sets an index. Used in the JCas typeArray to go from the cover

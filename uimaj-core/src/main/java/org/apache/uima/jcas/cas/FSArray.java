@@ -26,6 +26,7 @@ import java.util.Spliterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.FeatureStructure;
@@ -38,7 +39,7 @@ import org.apache.uima.jcas.JCasRegistry;
 public final class FSArray extends TOP implements Iterable<TOP>, ArrayFSImpl, SelectViaCopyToArray {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.cas.jcas.FSArray";
+  public final static String _TypeName = CAS.TYPE_NAME_FS_ARRAY;
 
   /**
    * each cover class when loaded sets an index. used in the JCas typeArray to go from the cover

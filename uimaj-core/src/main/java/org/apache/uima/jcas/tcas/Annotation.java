@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.tcas;
 
+import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.AnnotationImpl;
 import org.apache.uima.cas.impl.CASImpl;
@@ -37,7 +38,7 @@ import org.apache.uima.jcas.cas.AnnotationBase;
 public class Annotation extends AnnotationBase implements AnnotationImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
-  public final static String _TypeName = "org.apache.uima.jcas.cas.Annotation";
+  public final static String _TypeName = CAS.TYPE_NAME_ANNOTATION;
   public final static String _FeatName_begin = "begin";
   public final static String _FeatName_end = "end";
 
