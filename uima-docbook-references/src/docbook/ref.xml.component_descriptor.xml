@@ -154,7 +154,8 @@ under the License.
       <programlisting>
 ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
 resMgr.setDataPath(yourPathString);
-AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
+AnalysisEngine ae = 
+  UIMAFramework.produceAnalysisEngine(desc, resMgr, null);
 </programlisting></para>
     
     <para>The default datapath for the entire JVM can be set via the

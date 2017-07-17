@@ -721,9 +721,9 @@ private Feature initFeature(String featName, Type type)
       sort ordering (or set membership), without removing and re-adding back to the index.
       </para></note>
       
-    <para>To completely remove an item from the indexes may entail removing it multiple times, if it was 
+    <!-- <para>To completely remove an item from the indexes may entail removing it multiple times, if it was 
     added multiple times and (as of version 2.7.0) the JVM global property 
-    <code>uima.allow_duplicate_add_to_indexes</code> is true.</para>
+    <code>uima.allow_duplicate_add_to_indexes</code> is true.</para> -->
     
     <para>The automatic protection checks for updates of
     features being used as keys, and if it finds an update like this for a feature structure that
@@ -861,29 +861,30 @@ aPerson.setStringValue(lastNameFeature, newStringValueForLastName);</programlist
       the Component Descriptor, see <olink targetdoc="&uima_docs_ref;"
         targetptr="ugr.ref.xml.component_descriptor.aes.index"/>.</para>
        
-    <para>Feature structures should not be added to or removed from indexes while iterating
-      over them; a ConcurrentModificationException is thrown when this is detected (but see the following paragraph).
-      Certain operations are allowed with the iterators after modification, which can
-      <quote>reset</quote> this condition, such as moving to beginning, end, or moving to a
-      particular feature structure. So - if you have to modify the index, you can move it back to
-      the last FS you had retrieved from the iterator, and then continue, if that makes sense in
-      your application.</para>
-      
-    <para>Feature structures being iterated over should not have features which are used as the "keys" of an index, updated.
-    If this is done, UIMA, to prevent index corruption, will recover by automatically removing the FS from the indexes, 
+    <para>In UIMA V3, Feature structures may be added to or removed from indexes while iterating
+      over them.  If this happens, any iterators already created will continue to operate over the
+      before-modification version of the index, unless or until the iterator is re-synchronized with the current
+      value of the index via one of 3 iterator API calls: moveToFirst, moveToLast, or moveTo(FeatureStructure).
+      ConcurrentModificationException is no longer thrown in UIMA v3.
+    </para>
+    
+    <para>Feature structures being iterated over may have features which are used as the "keys" of an index, updated.
+    If this is done, UIMA, to prevent index corruption, will protect the indexes by automatically removing the 
+    Feature Structure from the indexes, 
     updating the field, and adding the FS back to the index.  This recovery operation, because it updates the index, 
-    will make the iterator throw a ConcurrentModificationException if the iterator is incremented or decremented;
-    this exception will likely be unexpected because because it is hidden and automatic.  
-    If you must do this kind of operation, consider using Snapshot iterators (see next),
-    which don't throw ConcurrentModificationException.</para>   
+    no longer makes the iterator throw a ConcurrentModificationException if the iterator is incremented or decremented;
+    existing iterators will continue to operate as if no index modification occurred.
+    The automatic removing and add-back of Feature Structures that occurs when features used
+      in index definitions are updated occurs transparently.
+    </para>   
       
-    <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
+    <!-- <para>As of version 2.7.0, a new method on FSIndex, <code>withSnapshotIterators(),</code> 
     allows creating a light-weight FSIndex based on the original FSIndex 
     that supports doing arbitrary index operations while iterating, and will not throw 
     <code>ConcurrentModificationException</code>.  Iterators obtained from this instance use a 
     <emphasis>snapshot</emphasis> technique - they create a snapshot of the original index when the 
     iterator is created, and then use that snapshot while operating, so the iteration is unaffected by any
-    modifications to the actual index.</para>
+    modifications to the actual index.</para>  -->
 
     <section id="ugr.ref.cas.index.built_in_indexes">
       <title>Built-in Indexes</title>
