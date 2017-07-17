@@ -156,7 +156,6 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    *          comparison information.  It can be a supertype of T as long as it can supply the keys needed.
    *          A typical example is a subtype of Annotation, and using an annotation instance to specify 
    *          the begin / end.
-   * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
    void  moveTo(FeatureStructure fs);
 
