@@ -205,10 +205,10 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    */
   @Override
   public FSIterator<T> iterator() {
-    setupIteratorCopyOnWrite();
+    CopyOnWriteIndexPart cow_index_wrapper = getNonNullCow();
     return casImpl.inPearContext()
-             ? new FsIterator_bag_pear<>(this, type)
-             : new FsIterator_bag     <>(this, type);
+             ? new FsIterator_bag_pear<>(this, type, cow_index_wrapper)
+             : new FsIterator_bag     <>(this, type, cow_index_wrapper);
   }
   
   @Override
