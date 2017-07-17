@@ -28,10 +28,10 @@ import org.apache.uima.cas.FeatureStructure;
 /**
  * Implements a filtered iterator.
  */
-class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
+class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   // The base iterator.
-  private FSIterator<T> it;
+  private LowLevelIterator<T> it;
 
   // The filter constraint.
   private FSMatchConstraint cons;
@@ -46,7 +46,7 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
    */
   FilteredIterator(FSIterator<T> it, FSMatchConstraint cons) {
     this();
-    this.it = it;
+    this.it = (LowLevelIterator<T>) it;
     this.cons = cons;
     moveToFirst();
   }
@@ -74,12 +74,12 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
   }
   
 
-  public void moveToFirst() {
-    this.it.moveToFirst();
+  public void moveToFirstNoReinit() {
+    this.it.moveToFirstNoReinit();
     adjustForConstraintForward();
   }
 
-  public void moveToLast() {
+  public void moveToLastNoReinit() {
     this.it.moveToLast();
     adjustForConstraintBackward();
   }
@@ -123,9 +123,34 @@ class FilteredIterator<T extends FeatureStructure> implements FSIterator<T> {
   /**
    * @see org.apache.uima.cas.FSIterator#moveTo(FeatureStructure)
    */
-  public void moveTo(FeatureStructure fs) {
-    this.it.moveTo(fs);
+  public void moveToNoReinit(FeatureStructure fs) {
+    this.it.moveToNoReinit(fs);
     adjustForConstraintForward();
+  }
+
+  @Override
+  public int ll_indexSize() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public LowLevelIndex<T> ll_getIndex() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public int ll_maxAnnotSpan() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean isIndexesHaveBeenUpdated() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return this.it.maybeReinitIterator();
   }
 
 //  /* (non-Javadoc)
