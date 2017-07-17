@@ -133,7 +133,7 @@ public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
    * 
    * If there are multiple different FSs in the index which compare equal with the 
    * given feature structure, an arbitrary one is returned. This differs from the moveTo(fs)
-   * operation which guarantees to move to the first feature structure occuring in the index
+   * operation which guarantees to move to the first feature structure occurring in the index
    * in this case.
    * 
    * @param fs A Feature Structure used a template to match with the Feature Structures in the index.
