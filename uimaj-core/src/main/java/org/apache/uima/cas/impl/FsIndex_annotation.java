@@ -64,7 +64,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
                               true, // ignored
                               true, // ignored
                               
-                              this.getFsRepositoryImpl().getAnnotationFsComparator()
+                              this.getFsRepositoryImpl().getAnnotationFsComparatorWithoutId()
                              ); 
   }
 
@@ -94,7 +94,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
         true,  // uses type priority
         true,  // position uses type - ignored
         true,  // skip returning results equal to annot
-        this.getFsRepositoryImpl().getAnnotationFsComparator()
+        this.getFsRepositoryImpl().getAnnotationFsComparatorWithoutId()
         );
   }
 
