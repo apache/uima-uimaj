@@ -745,6 +745,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   FeatureStructureImplC pearBaseFs = null;
   
+  /**
+   * Optimization - keep a documentAnnotationIterator handy for getting a ref to the doc annot
+   *   Initialized lazily, synchronized
+   *   One per cas view
+   */
+  private FSIterator<Annotation> docAnnotIter = null;
+  
 //  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
 
   // CASImpl(TypeSystemImpl typeSystem) {
@@ -1514,6 +1521,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         // initialized.
         
         tcas.mySofaRef = null;  // was in v2: (1 == view) ? -1 : 0;
+        tcas.docAnnotIter = null;
       }
     }
     this.svd.clearTrackingMarks();
@@ -4008,28 +4016,37 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // base CAS has no document
       return null;
     }
-    FSIterator<T> it = this.<T>getAnnotationIndex(getTypeSystemImpl().docType).iterator();
+    FSIterator<Annotation> it = getDocAnnotIter();
+    it.moveToFirst();  // revalidate in case index updated
     if (it.isValid()) {
-      return it.get();
+      Annotation r = it.get();
+      return (T) (inPearContext() 
+                  ? pearConvert(r)
+                  : r);
     }
     return null;
   }
-  
+
+  private FSIterator<Annotation> getDocAnnotIter() {
+    if (docAnnotIter != null) {
+      return docAnnotIter;
+    }
+    synchronized (this) {
+      if (docAnnotIter == null) {
+        docAnnotIter = this.<Annotation>getAnnotationIndex(getTypeSystemImpl().docType).iterator();
+      }
+      return docAnnotIter;
+    }
+  }
   /**
    * 
    * @return the fs addr of the document annotation found via the index, or 0 if not there
    */
   public int ll_getDocumentAnnotation() {
-    if (this == this.svd.baseCAS) {
-      // base CAS has no document
-      return 0;
-    }
-    
-    FSIterator<FeatureStructure> it = getIndexRepository().getIndex(CAS.STD_ANNOTATION_INDEX, getTypeSystemImpl().docType).iterator();
-    if (it.isValid()) {
-      return it.get()._id();
-    }
-    return 0;
+    AnnotationFS r = getDocumentAnnotationNoCreate();
+    return (r == null) 
+             ? 0
+             : r._id();
   }
   
   @Override
