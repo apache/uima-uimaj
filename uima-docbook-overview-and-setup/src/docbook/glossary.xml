@@ -71,7 +71,10 @@ region of text <quote>John Doe</quote> constitutes an annotation. We say
 
 in a UIMA <glossterm linkend="ugr.glossary.type_system">type system</glossterm>.
            It is the type used to record
-the labeling of regions of a <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm></para>
+the labeling of regions of a <glossterm linkend="ugr.glossary.sofa">Sofa</glossterm>.
+          Annotations are <glossterm linkend="ugr.glossary.feature_structure">Feature Structures</glossterm>
+          whose <glossterm linkend="ugr.glossary.type">Type</glossterm> is Annotation or a subtype
+          of that.</para>
       </glossdef>
     </glossentry>
   
@@ -276,6 +279,18 @@ match the fact pattern.</para>
       </glossdef>
     </glossentry>
   
+    <glossentry id="ugr.glossary.feature_structure">
+      <glossterm>Feature Structure</glossterm>
+      <glossdef>
+        <para>An instance of a <glossterm linkend="ugr.glossary.type">Type</glossterm>.
+        Feature Structures are kept in the <glossterm linkend="ugr.glossary.cas">CAS, and may
+        (optionally) be added to the defined <glossterm linkend="ugr.glossary.index">indexes</glossterm>.
+        Feature Structures may contain references to other Feature Structures.
+        Feature Structures whose type is Annotation or a subtype of that, are referred to as 
+        <glossterm linkend="ugr.glossary.annotation">annotations</glossterm>.</glossterm></para>
+      </glossdef>
+    </glossentry>
+    
     <glossentry id="ugr.glossary.feature">
       <glossterm>Feature</glossterm>
       <glossdef>
