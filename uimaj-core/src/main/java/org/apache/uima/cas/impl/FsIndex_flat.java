@@ -86,7 +86,7 @@ public class FsIndex_flat<T extends FeatureStructure> extends FsIndex_singletype
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
   @Override
-  public FSIterator<T> iterator() {
+  public LowLevelIterator<T> iterator() {
     return new FsIterator_subtypes_snapshot<T>(this);
   }
 

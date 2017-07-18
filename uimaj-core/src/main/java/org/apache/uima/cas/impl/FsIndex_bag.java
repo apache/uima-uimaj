@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -204,7 +203,7 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
   @Override
-  public FSIterator<T> iterator() {
+  public FsIterator_bag<T> iterator() {
     CopyOnWriteIndexPart cow_index_wrapper = getNonNullCow();
     return casImpl.inPearContext()
              ? new FsIterator_bag_pear<>(this, type, cow_index_wrapper)

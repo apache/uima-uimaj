@@ -262,6 +262,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     return size;
   }
   
+  @Override
   public int ll_maxAnnotSpan() {
     createIndexIteratorCache();  // does nothing if already created
     int span = -1;
@@ -465,11 +466,11 @@ class FsIndex_iicp<T extends FeatureStructure>
              : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype);
   } 
   
-  public FSIterator<T> iteratorUnordered() {
+  public LowLevelIterator<T> iteratorUnordered() {
     createIndexIteratorCache();  
     
     return (cachedSubFsLeafIndexes.length == 1)
-           ? (FSIterator<T>) fsIndex_singletype.iterator()
+           ? (FsIterator_singletype<T>) fsIndex_singletype.iterator()
            : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype); 
   }
 
