@@ -35,8 +35,12 @@ import org.apache.uima.jcas.cas.TOP;
 
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over 1 type (excluding subtypes)
- *   The name "Leaf" is a misnomer - it's just over one type excluding any subtypes if they exist
- * SubClasses define the actual index repository for each kind.
+ *   
+ * SubClasses 
+ *   FsIndex_bag, 
+ *   FsIndex_flat, 
+ *   FsIndex_set_sorted, 
+ * define the actual index repository for each kind.
  * 
  * @param <T> the Java cover class type for this index, passed along to (wrapped) iterators producing Java cover classes
  */
@@ -181,15 +185,18 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
   /**
    * Common part of iterator creation
    */
-  protected void setupIteratorCopyOnWrite() {
+  protected CopyOnWriteIndexPart setupIteratorCopyOnWrite() {
+    CopyOnWriteIndexPart cow_index_part = getCopyOnWriteIndexPart();
     if (null == wr_cow || null == wr_cow.get()) {
-      wr_cow = new WeakReference<>(createCopyOnWriteIndexPart());
+      cow_index_part = createCopyOnWriteIndexPart();
+      wr_cow = new WeakReference<>(cow_index_part);  
     }
+    return cow_index_part;
   }
   
   @Override
-  public FSIterator<T> iterator(FeatureStructure initialPositionFs) {
-    FSIterator<T> fsIt = iterator();
+  public LowLevelIterator<T> iterator(FeatureStructure initialPositionFs) {
+    LowLevelIterator<T> fsIt = iterator();
     fsIt.moveTo(initialPositionFs);
     return fsIt;
   }
@@ -208,6 +215,9 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     return this.indexType;
   }
 
+  @Override
+  abstract public LowLevelIterator<T> iterator();
+  
   /**
    * @param fs1 -
    * @param fs2 -
@@ -415,14 +425,12 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     return n;
   }
   
-  protected CopyOnWriteIndexPart getCopyOnWriteIndexPart() {
-    if (wr_cow != null) {
-      CopyOnWriteIndexPart n = wr_cow.get();
-      if (n != null) {
-        return n;
-      }
-    }
-    return null;
+  /**
+   * @return the copy-on-write wrapper for an index part if it exists for this index, 
+   *           or null
+   */
+  public CopyOnWriteIndexPart getCopyOnWriteIndexPart() {
+    return (wr_cow == null) ? null : wr_cow.get();
   }
   
   protected abstract CopyOnWriteIndexPart createCopyOnWriteIndexPart();
