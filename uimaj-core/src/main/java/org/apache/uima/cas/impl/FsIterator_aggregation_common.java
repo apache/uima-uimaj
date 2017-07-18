@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas.impl;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,15 +44,15 @@ import org.apache.uima.cas.Type;
 class FsIterator_aggregation_common<T extends FeatureStructure> 
           implements LowLevelIterator<T> {
   
-  final private FSIterator<T>[] allIterators; // not just for single-type iterators
-  private FSIterator<T>[] nonEmptyIterators; 
+  final private LowLevelIterator<T>[] allIterators; // not just for single-type iterators
+  private LowLevelIterator<T>[] nonEmptyIterators; 
   private FSIterator<T>[] emptyIterators; 
   
   private int lastValidIndex;
   
   final private FSIndex<T> index; // not used here, but returned via the ll_getIndex api.
   
-  FsIterator_aggregation_common(FSIterator<T>[] iterators, FSIndex<T> index) {
+  FsIterator_aggregation_common(LowLevelIterator<T>[] iterators, FSIndex<T> index) {
     this.allIterators = iterators;
       // can't see the reason for needing to copy the iterators
       // There's a separate call copy() to do that if needed
@@ -68,17 +67,17 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
   }
   
   private void separateIntoEmptyAndNonEmptyIterators() {
-    List<FSIterator<T>> nonEmptyOnes = new ArrayList<>();
-    List<FSIterator<T>> emptyOnes = new ArrayList<>();
-    for (FSIterator<T> it : allIterators) {
-      if (((LowLevelIterator<T>)it).ll_indexSize() == 0) {
+    List<LowLevelIterator<T>> nonEmptyOnes = new ArrayList<>();
+    List<LowLevelIterator<T>> emptyOnes = new ArrayList<>();
+    for (LowLevelIterator<T> it : allIterators) {
+      if (it.ll_indexSize() == 0) {
         emptyOnes.add(it);
       } else {
         nonEmptyOnes.add(it);
       }
     }
-    nonEmptyIterators = nonEmptyOnes.toArray(new FSIterator[nonEmptyOnes.size()]);
-    emptyIterators = emptyOnes.toArray(new FSIterator[emptyOnes.size()]);
+    nonEmptyIterators = nonEmptyOnes.toArray(new LowLevelIterator[nonEmptyOnes.size()]);
+    emptyIterators = emptyOnes.toArray(new LowLevelIterator[emptyOnes.size()]);
   }
   
   public T get() throws NoSuchElementException {
@@ -162,24 +161,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     if (!isValid()) {
       return;
     }
-    
-    FSIterator<T> it = nonEmptyIterators[lastValidIndex];
-    it.moveToNextNvc();
-
-    if (it.isValid()) {
-      return;
-    }
-    
-    final int nbrIt = nonEmptyIterators.length;
-    for (int i = lastValidIndex + 1; i < nbrIt; i++) {
-      it = nonEmptyIterators[i];
-      it.moveToFirst();
-      if (it.isValid()) {
-        lastValidIndex = i;
-        return;
-      }
-    }
-    lastValidIndex = nonEmptyIterators.length;  // invalid position
+    moveToNextNvc();
   }
     
   public void moveToNextNvc() {
@@ -206,15 +188,14 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     // No point in going anywhere if iterator is not valid.
     if (!isValid()) {
       return;
-    }
-    
+    }  
     moveToPreviousNvc();
   }
   
   @Override
   public void moveToPreviousNvc() {
     
-    FSIterator<T> it = nonEmptyIterators[lastValidIndex];
+    LowLevelIterator<T> it = nonEmptyIterators[lastValidIndex];
     it.moveToPreviousNvc();
 
     if (it.isValid()) {
@@ -223,7 +204,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
     
     for (int i = lastValidIndex - 1; i >=  0; i--) {
       it = nonEmptyIterators[i];
-      it.moveToLast();
+      it.moveToLastNoReinit();
       if (it.isValid()) {
         lastValidIndex = i;
         return;
@@ -259,9 +240,11 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
    */
   @Override
   public FSIterator<T> copy() {
-    final FSIterator<T>[] ai = allIterators.clone();
+    int size = allIterators.length;
+//    allIterators.clone();  // measurement shows clone on arrays has high overhead
+    final LowLevelIterator<T>[] ai = new LowLevelIterator[size];
     for (int i = 0; i < ai.length; i++) {
-      ai[i] = ai[i].copy();
+      ai[i] = (LowLevelIterator<T>) allIterators[i].copy();
     }
     
     FsIterator_aggregation_common<T> it = new FsIterator_aggregation_common<T>(ai, index);
@@ -319,7 +302,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
       sb.append(type.getName()).append(':').append(((TypeImpl)type).getCode()).append(' ');
     }
     
-    sb.append(", size: ").append(this.ll_indexSize());
+    sb.append(", index size: ").append(this.ll_indexSize());
     return sb.toString();
   }
   
@@ -344,6 +327,29 @@ class FsIterator_aggregation_common<T extends FeatureStructure>
       }
     }
     return -1;
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return false; // not used
+  }
+
+  @Override
+  public void moveToFirstNoReinit() {
+    // not supported
+    moveToFirst();
+  }
+
+  @Override
+  public void moveToLastNoReinit() {
+    // not supported
+    moveToLast();
+  }
+
+  @Override
+  public void moveToNoReinit(FeatureStructure fs) {
+    // not supported
+    moveTo(fs);
   }
 
 }
