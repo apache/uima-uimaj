@@ -68,7 +68,7 @@ public class ObjHashSet<T> implements Set<T> {
 
   private boolean secondTimeShrinkable = false;
   
-  private int modificationCount = 0;
+//  private int modificationCount = 0;
   
   public ObjHashSet(Class<T> clazz, T removedMarker) {
     this(12, clazz, removedMarker);  // default initial size
@@ -105,9 +105,9 @@ public class ObjHashSet<T> implements Set<T> {
     this.sizeWhichTriggersExpansion = ohs.sizeWhichTriggersExpansion;
     this.size = ohs.size;
     this.nbrRemoved = ohs.nbrRemoved;
-    this.keys = ohs.keys.clone();
+    this.keys = Arrays.copyOf(ohs.keys, ohs.keys.length);
     this.secondTimeShrinkable = ohs.secondTimeShrinkable;
-    this.modificationCount = ohs.modificationCount;
+//    this.modificationCount = ohs.modificationCount;
   }
   
 
@@ -121,9 +121,9 @@ public class ObjHashSet<T> implements Set<T> {
     this.sizeWhichTriggersExpansion = ohs.sizeWhichTriggersExpansion;
     this.size = ohs.size;
     this.nbrRemoved = ohs.nbrRemoved;
-    this.keys = (size == 0) ? emptyKeyArray() : ohs.keys.clone();
+    this.keys = (size == 0) ? emptyKeyArray() : Arrays.copyOf(ohs.keys, ohs.keys.length);
     this.secondTimeShrinkable = ohs.secondTimeShrinkable;
-    this.modificationCount = ohs.modificationCount;
+//    this.modificationCount = ohs.modificationCount;
   }
 
   private T[] emptyKeyArray() {
@@ -204,7 +204,7 @@ public class ObjHashSet<T> implements Set<T> {
   private void resetTable() {
     resetHistogram();
     size = 0;
-    modificationCount ++;
+//    modificationCount ++;
   }
   
   @Override
@@ -321,7 +321,7 @@ public class ObjHashSet<T> implements Set<T> {
     }
     keys[i] = obj;
     incrementSize();
-    modificationCount ++;
+//    modificationCount ++;
     return true;
   }
         
@@ -357,7 +357,7 @@ public class ObjHashSet<T> implements Set<T> {
     // found, remove it
     keys[pos] = removedMarker;  // at runtime, this cast is a no-op    
     size --;
-    modificationCount ++;
+//    modificationCount ++;
     nbrRemoved ++;
     return true;
   }
@@ -625,11 +625,11 @@ public class ObjHashSet<T> implements Set<T> {
     return anyChanged;
   }
 
-  /**
-   * @return the modificiation count
-   */
-  public int getModificationCount() {
-    return modificationCount;
-  }
+//  /**
+//   * @return the modificiation count
+//   */
+//  public int getModificationCount() {
+//    return modificationCount;
+//  }
   
 }

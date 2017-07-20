@@ -33,9 +33,12 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   
   private ObjHashSet<T> ohs;
   
+  private ObjHashSet<T> original;
+  
   
   public CopyOnWriteObjHashSet(ObjHashSet<T> original) {
     this.ohs = original;    
+    this.original = original;
   }
 
   /**
@@ -148,13 +151,13 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
     return ohs.toString();
   }
 
-  /**
-   * @see ObjHashSet#getModificationCount()
-   * @return the modification count
-   */
-  public int getModificationCount() {
-    return ohs.getModificationCount();
-  }
+//  /**
+//   * @see ObjHashSet#getModificationCount()
+//   * @return the modification count
+//   */
+//  public int getModificationCount() {
+//    return ohs.getModificationCount();
+//  }
 
   /**
    * @see ObjHashSet#getCapacity()
@@ -172,4 +175,13 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
     return ohs.size();
   }
 
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#isOriginal(java.lang.Object)
+   */
+  @Override
+  public boolean isOriginal() {
+    return ohs == original;
+  }
+
+  
 }
