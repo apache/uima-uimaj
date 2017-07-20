@@ -21,7 +21,9 @@ package org.apache.uima.cas;
 
 import java.util.Iterator;
 
+import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.cas.impl.LowLevelIndex;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Repository of indexes over feature structures. Use this interface to access previously defined
@@ -107,7 +109,8 @@ public interface FSIndexRepository {
    * Remove a feature structure from all indexes in the repository.
    * 
    * @param fs
-   *          The FS to be removed.
+   *          The FS to be removed.  The fs must be the exact FS to remove, not just one
+   *          which compares "equal" using the index's comparator.
    * @param <T> the generic type of the FeatureStructure
    * @exception NullPointerException
    *              If the <code>fs</code> parameter is <code>null</code>.
@@ -122,12 +125,30 @@ public interface FSIndexRepository {
   void removeAllIncludingSubtypes(Type type);
   
   /**
+   * Remove all instances of type, including all subtypes from all indexes in the repository view.
+   * @param clazz the JCas class of the type to remove.  To remove all use TOP.class
+   * @exception NullPointerException if the <code>clazz</code> parameter is <code>null</code>.
+  */
+  default void removeAllIncludingSubtypes(Class<? extends TOP> clazz) {
+    removeAllIncludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+  }
+  
+  /**
    * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
    * @param type the type to remove
    * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
   */
   void removeAllExcludingSubtypes(Type type);
-  
+
+  /**
+   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
+   * @param clazz the JCas Class of the type to remove
+   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
+  */
+  default void removeAllExcludingSubtypes(Class<? extends TOP> clazz) {
+    removeAllExcludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+  }
+
   /**
    * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
    * subtypes).  The elements are returned in arbitrary order.
