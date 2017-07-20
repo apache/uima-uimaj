@@ -87,42 +87,51 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * @exception NoSuchElementException
    *              If the iterator is not valid.
    */
-  T get() throws NoSuchElementException;
+  default T get() throws NoSuchElementException {
+    if (!isValid()) {
+      throw new NoSuchElementException();
+    }
+    return getNvc();
+  }
 
   /**
    * Get the structure the iterator is pointing at.
    * Throws various unchecked exceptions, if the iterator is not valid
    * @return The structure the iterator is pointing at.
    */
-  default T getNvc() {
-    return get();
-  }
+  T getNvc();
   
   /**
    * Advance the iterator. This may invalidate the iterator.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
-  void moveToNext();
+  default void moveToNext() {
+    if (!isValid()) {
+      return;
+    }
+    moveToNextNvc();
+  }
 
   /**
    * version of moveToNext which bypasses the isValid check - call only if you've just done this check yourself
    */
-  default void moveToNextNvc() {
-    moveToNext();
-  }
+  void moveToNextNvc();
   
   /**
    * Move the iterator one element back. This may invalidate the iterator.
    * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
-  void moveToPrevious();
+  default void moveToPrevious() {
+    if (!isValid()) {
+      return;
+    }
+    moveToPreviousNvc();
+  }
 
   /**
    * version of moveToPrevious which bypasses the isValid check - call only if you've just done this check yourself
    */
-  default void moveToPreviousNvc() {
-    moveToPrevious();
-  }
+  void moveToPreviousNvc();
 
   /**
    * Move the iterator to the first element. The iterator will be valid iff the underlying
@@ -147,8 +156,9 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * If the fs is greater than all of the entries in the index, the moveTo cannot set the iterator to an insertion point
    * where the current feature structure is greater than fs, so it marks the iterator "invalid".
    * <p>
-   * If the underlying index is a bag index, no ordering is present, and the moveTo operation moves to the
-   * fs which is the same identical fs as the key. If no such fs is in the index, the iterator is marked 
+   * If the underlying index is a set or bag index, no ordering is present, and the moveTo operation moves to the
+   * fs which is the same identical fs as the key (for a bag), or to the element which matches equal
+   * according to the index's comparator (for a set). If no such fs is in the index, the iterator is marked 
    * invalid.
    * 
    * @param fs
@@ -194,9 +204,10 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    */
   @Override
   default T next() {
-    T result = get();
-    moveToNext();
-    return result;
+    if (!isValid()) {
+      throw new NoSuchElementException();
+    }
+    return nextNvc();
   }
   
   default T nextNvc() {
@@ -222,11 +233,18 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
 
   @Override
   default T previous() {
-    T result = get();
-    moveToPrevious();
-    return result;
-
+    if (!isValid()) {
+      throw new NoSuchElementException();
+    }
+    return previousNvc();
   }
+  
+  default T previousNvc() {
+    T result = getNvc();
+    moveToPreviousNvc();
+    return result;
+  }
+
 
   @Override
   default int nextIndex() {
