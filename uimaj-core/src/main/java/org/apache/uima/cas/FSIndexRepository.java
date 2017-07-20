@@ -162,4 +162,20 @@ public interface FSIndexRepository {
    */
   <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type aType);
   
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).  The elements are returned in arbitrary order.
+   *
+   * Generics: T is the Java class for aType.
+   * @param clazz
+   *          The JCas class corresponding to the type
+   * @param <T> The Java class associated with aType
+   * @return An iterator that returns all indexed FeatureStructures of the specified type
+   *         and its subtypes, in no particular order.
+   */
+  default <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
+    return getAllIndexedFS(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+  }
+  
+  
 }
