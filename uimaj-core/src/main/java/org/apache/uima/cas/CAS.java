@@ -29,6 +29,8 @@ import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.impl.JCasImpl;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -603,6 +605,12 @@ public interface CAS extends AbstractCas {
   JCas getJCas() throws CASException;
 
   /**
+   * Get the JCasImpl for this CAS
+   * @return the JCasImpl for this CAS
+   */
+  JCasImpl getJCasImpl(); 
+  
+  /**
    * Get the Cas view that the current component should use.  This
    * should only be used by single-view components.
    * 
@@ -757,6 +765,20 @@ public interface CAS extends AbstractCas {
    * @exception CASRuntimeException When <code>type</code> is not an annotation type.
    */
   <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Type type) throws CASRuntimeException;
+  
+  /**
+   * Get the standard annotation index restricted to a specific annotation type.
+   * 
+   * @param type
+   *          The annotation type the index is restricted to, specified as a JCas class
+   * @param <T> the topmost Java class corresponding to the type
+   * @return The standard annotation index, restricted to <code>type</code>.
+   * @exception CASRuntimeException When <code>type</code> is not an annotation type.
+   */
+  default <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Class<T> clazz) 
+      throws CASRuntimeException {
+    return getAnnotationIndex(this.getJCasImpl().getCasType(clazz));
+  }
   
   /**
    * Create a new annotation. Note that you still need to insert the annotation into the index
