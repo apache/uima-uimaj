@@ -1583,7 +1583,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    */
   @Override
   public <T extends FeatureStructure> ListIterator<T> fs2listIterator(FSIterator<T> it) {
-    return new FSListIteratorImpl<T>(it);
+//    return new FSListIteratorImpl<T>(it);
+    return it;  // in v3, FSIterator extends listIterator
   }
 
   /**
