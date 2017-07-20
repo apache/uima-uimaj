@@ -163,9 +163,9 @@ class JCasHashMapSubMap {
     
     int probeDelta = probeInfo[PROBE_DELTA_INDEX];
     //debug
-    if (probeDelta <= 0) {
-      System.out.println("debug");
-    }
+//    if (probeDelta <= 0) {
+//      System.out.println("debug");
+//    }
     assert probeDelta > 0;
     
     // Next modification is overall, slower (very slightly)
