@@ -132,6 +132,26 @@ public class IndexRepositoryTest extends TestCase {
     index = ir.getIndex(CASTestSetup.ANNOT_SORT_INDEX);
     assertEquals(2, index.size());
 
+    // Annotation is supertype of token
+    // test if set observes implicit key of type
+    Type annotType = this.typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
+    Feature annotBeginFeat = this.typeSystem.getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
+    cas.getIndexRepository().removeAllIncludingSubtypes(annotType);
+
+    FeatureStructure annotTypeFs3 = this.cas.createFS(annotType);
+    annotTypeFs3.setIntValue(annotBeginFeat, 17);
+
+    cas.addFsToIndexes(tokenTypeFs1);
+    cas.addFsToIndexes(annotTypeFs3);
+
+    index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    assertEquals(2, index.size());
+    
+    // shows type is implicit key for set compares
+    index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX_NO_TYPEORDER);
+    assertEquals(2, index.size());
+    
+
   }
   
   /**
@@ -251,7 +271,7 @@ public class IndexRepositoryTest extends TestCase {
 //      fsa[i].setIntValue(beginFeat,  i);
     }
 
-    for (int iii = 0; iii < 3 /*10000*/; iii++) { // change to 10000 for iterations
+    for (int iii = 0; iii < 6 /*10000*/; iii++) { // change to 10000 for iterations
 
       cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
 
