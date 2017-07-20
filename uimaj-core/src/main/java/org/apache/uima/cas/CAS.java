@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import org.apache.uima.cas.admin.CASAdminException;
+import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -608,7 +609,9 @@ public interface CAS extends AbstractCas {
    * Get the JCasImpl for this CAS
    * @return the JCasImpl for this CAS
    */
-  JCasImpl getJCasImpl(); 
+  default JCasImpl getJCasImpl() {
+    return ((CASImpl) this).getJCasImpl();
+  }
   
   /**
    * Get the Cas view that the current component should use.  This
