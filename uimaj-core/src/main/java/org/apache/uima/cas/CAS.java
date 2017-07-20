@@ -772,7 +772,7 @@ public interface CAS extends AbstractCas {
   /**
    * Get the standard annotation index restricted to a specific annotation type.
    * 
-   * @param type
+   * @param clazz
    *          The annotation type the index is restricted to, specified as a JCas class
    * @param <T> the topmost Java class corresponding to the type
    * @return The standard annotation index, restricted to <code>type</code>.
