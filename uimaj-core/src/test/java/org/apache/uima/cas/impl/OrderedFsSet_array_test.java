@@ -52,11 +52,10 @@ public class OrderedFsSet_array_test extends TestCase {
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   static int SZ = 23;
   
-  static long seed ;  
-//      new Random().nextLong();
-//       4346658161185360480L;
+  static long seed =  new Random().nextLong();
+ //     -4709156741850323232L;
                      // 1783099358091571349L;
-//  static {System.out.println("OrderedFsSet_array_test random seed: " + seed);}
+  static {System.out.println("OrderedFsSet_array_test random seed: " + seed);}
   static Random r;
 
   
@@ -67,7 +66,7 @@ public class OrderedFsSet_array_test extends TestCase {
   private Comparator<TOP> comparatorWithoutID;
   private Annotation[] as = new Annotation[Integer.highestOneBit(SZ) << 1];
   
-  private OrderedFsSet_array a;   
+  private OrderedFsSet_array<TOP> a;   
   
   protected void setUp() throws Exception {
     
@@ -78,7 +77,7 @@ public class OrderedFsSet_array_test extends TestCase {
     jcas = cas.getJCas();
     ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
     comparatorWithID = ir.getAnnotationFsComparatorWithId(); 
-    comparatorWithoutID = ir.getAnnotationFsComparator();
+    comparatorWithoutID = ir.getAnnotationFsComparatorWithoutId();
     a = new OrderedFsSet_array(comparatorWithID, comparatorWithoutID);
     
   }
@@ -99,11 +98,6 @@ public class OrderedFsSet_array_test extends TestCase {
   }
   
   private void insert1(int iter) {
-    long seed =  
-        new Random().nextLong();
-//           -5704695699165084238L; 
-                       // 1783099358091571349L;
-    System.out.println("OrderedFsSet_array_test random seed: " + seed + ", outer iteration: " + iter);
     r = new Random(seed);
     
     //prefill
@@ -133,13 +127,13 @@ public class OrderedFsSet_array_test extends TestCase {
   
   private void add(int ... is) {
     for (int i : is) {
-      a.add(as[i]);
+      a.add(as[i], comparatorWithID);
     }
   }
   
   private void add(int start, int end) {
     for (int i = start; i < end; i++) {
-      a.add(as[i]);
+      a.add(as[i], comparatorWithID);
     }
   }
   
@@ -171,9 +165,10 @@ public class OrderedFsSet_array_test extends TestCase {
   private void vall() {
     int i = 0;
     for (TOP fs : a) {
-      if (fs != as[i++]) {
-        System.out.println("debug mismatch");
-      }
+      assertTrue(as[i++] == fs);
+//      if (fs != as[i++]) {
+//        System.out.println("debug mismatch");
+//      }
     }
 //    TOP[] cc = a.getInternalArrayDebug();
 //    for (int i = 0; i < SZ; i++) {
@@ -197,12 +192,12 @@ public class OrderedFsSet_array_test extends TestCase {
     int splt = r.nextInt(add.length) + 1;
     
     for (int i = 0; i < splt; i++) {
-      a.add(as[add[i]]);
+      a.add(as[add[i]], comparatorWithID);
     }
     a.size(); 
     
     for (int i = splt; i < add.length; i++) {
-      a.add(as[add[i]]);
+      a.add(as[add[i]], comparatorWithID);
     }
     a.size();
     
