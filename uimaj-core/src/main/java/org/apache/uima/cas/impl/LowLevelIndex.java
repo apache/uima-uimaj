@@ -19,12 +19,15 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
 import org.apache.uima.internal.util.IntPointerIterator;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Low-level FS index object. Use to obtain low-level iterators.
@@ -65,9 +68,21 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   CASImpl getCasImpl();
   
   // incorporated from FSIndexImpl
-  
+  /**
+   * This is **NOT** a comparator for Feature Structures, but rather 
+   * something that compares two comparator specifications
+   * @return -
+   */
   FSIndexComparator getComparatorForIndexSpecs();
 
+  /**
+   * 
+   * @return a comparator used by this index to compare Feature Structures
+   *   For sets, the equal is used to determine set membership
+   *   For sorted, the comparator is the sort order (this comparator is without the ID)
+   */
+  Comparator<TOP> getComparator();
+  
   default void flush() {   // probably not needed, but left for backwards compatibility  4/2015
     throw new UnsupportedOperationException();
   }

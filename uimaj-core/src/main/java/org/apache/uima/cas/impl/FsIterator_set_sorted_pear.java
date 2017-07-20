@@ -19,28 +19,20 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.NavigableSet;
-import java.util.NoSuchElementException;
-
 import org.apache.uima.cas.FeatureStructure;
-import org.apache.uima.internal.util.OrderedFsSet_array;
-import org.apache.uima.jcas.cas.TOP;
 
 /**
  * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
  */
-class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_set_sorted<T> {
-
-  FsIterator_set_sorted_pear(FsIndex_set_sorted<T> fsSetSortIndex, TypeImpl ti, Comparator<FeatureStructure> comp) {
-    super(fsSetSortIndex, ti, comp);
-  }    
-
-  @Override
-  public T get() {
-    return CASImpl.pearConvert(super.get());
+class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_set_sorted2<T> {
+  
+  FsIterator_set_sorted_pear(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper) {
+    super(ll_index, cow_wrapper);
   }
+  
+//  FsIterator_set_sorted_pear createInstance(OrderedFsSet_array orderedFsSet_array, LowLevelIndex ll_index) {
+//    orderedFsSet_array.new LL_Iterator(ll_index);
+//  }    
 
   @Override
   public T getNvc() {
@@ -49,6 +41,6 @@ class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_
 
   @Override
   public FsIterator_set_sorted_pear<T> copy() {
-    return new FsIterator_set_sorted_pear<T>(this.fsSetSortIndex, ti, this.comparator);
+    return new FsIterator_set_sorted_pear<T>(ll_index, ofsa);
   }
 }

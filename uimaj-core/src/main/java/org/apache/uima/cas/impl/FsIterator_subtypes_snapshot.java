@@ -108,7 +108,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    * @see org.apache.uima.cas.FSIterator#moveToFirst()
    */
   @Override
-  public void moveToFirst() {
+  public void moveToFirstNoReinit() {
     pos = 0;
   }
 
@@ -116,7 +116,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    * @see org.apache.uima.cas.FSIterator#moveToLast()
    */
   @Override
-  public void moveToLast() {
+  public void moveToLastNoReinit() {
     pos = snapshot.length - 1;
   }
 
@@ -124,7 +124,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   @Override
-  public void moveTo(FeatureStructure fs) {
+  public void moveToNoReinit(FeatureStructure fs) {
     if (is_unordered) {
       int i = 0;
       while ((i < snapshot.length) && compare(snapshot[i],  fs) < 0) {
@@ -195,6 +195,11 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    */
   @Override
   public boolean isIndexesHaveBeenUpdated() {
+    return false;
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
     return false;
   }
 

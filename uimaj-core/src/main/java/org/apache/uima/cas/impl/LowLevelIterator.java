@@ -59,9 +59,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   
 
   /**
-   * Return the size of the underlying index.
-   * 
-   * @return The size of the index.
+   * @return The size of the index.  In case of copy-on-write, this returns the size of the
+   *         index at the time the iterator was created.
    */
   int ll_indexSize();
 
@@ -83,42 +82,63 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
    *   This includes empty iterators becoming non-empty.
    */
   boolean isIndexesHaveBeenUpdated();
+ 
+  /**
+   * Internal use
+   * @return true if the iterator was refreshed to match the current index
+   */
+  boolean maybeReinitIterator();
+ 
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#moveToFirst()
+   */
+  @Override
+  default void moveToFirst() {
+    maybeReinitIterator();
+    moveToFirstNoReinit();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#moveToLast()
+   */
+  @Override
+  default void moveToLast() {
+    maybeReinitIterator();
+    moveToLastNoReinit();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
+   */
+  @Override
+  default void moveTo(FeatureStructure fs) {
+    maybeReinitIterator();
+    moveToNoReinit(fs);
+  }
+
+  
+  /**
+   * Internal use
+   * same as moveToFirst, but won't reset to use current contents of index if index has changed
+   */
+  void moveToFirstNoReinit();
+  
+  /**
+   * Internal use
+   * same as moveToFirst, but won't reset to use current contents of index if index has changed
+   */
+  void moveToLastNoReinit();
+
+  /**
+   * Internal use
+   * same as moveToFirst, but won't reset to use current contents of index if index has changed
+   */
+  void moveToNoReinit(FeatureStructure fs);
   
   /**
    * an empty iterator
    */
-  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator<FeatureStructure> () {
-    @Override
-    public boolean isValid() { return false; }
-    @Override
-    public FeatureStructure get() throws NoSuchElementException { throw new NoSuchElementException(); }
-    @Override
-    public FeatureStructure getNvc() { throw new NoSuchElementException(); }
-    @Override
-    public void moveTo(int i) {}
-    @Override
-    public void moveToFirst() {}
-    @Override
-    public void moveToLast() {}
-    @Override
-    public LowLevelIterator<FeatureStructure> copy() { return this; }
-    @Override
-    public void moveToNext() {}
-    @Override
-    public void moveToNextNvc() {}
-    @Override
-    public void moveToPrevious() {}
-    @Override
-    public void moveToPreviousNvc() {}
-    @Override
-    public void moveTo(FeatureStructure fs) {}
-    @Override
-    public int ll_indexSize() { return 0; }
-    @Override
-    public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
-    @Override
-    public LowLevelIndex<FeatureStructure> ll_getIndex() { return null; }
-    @Override
-    public boolean isIndexesHaveBeenUpdated() { return false; }    
-  };
+  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = 
+      new LowLevelIterator_empty();
 }

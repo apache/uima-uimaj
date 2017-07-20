@@ -59,12 +59,16 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
 
   // A reference to the low-level CAS.
   final protected CASImpl casImpl;
-  
   /**
    * comparator for an index, passed in as an argument to the constructor
    */
-  final private FSIndexComparatorImpl comparatorForIndexSpecs;
+  final protected FSIndexComparatorImpl comparatorForIndexSpecs;
+  
+  final protected Comparator<TOP> comparatorWithID;
+  final protected Comparator<TOP> comparatorWithoutID;
 
+  public final boolean isAnnotIdx;
+  
   /***********  Info about Index Comparator (not used for bag ***********
    * Index into these arrays is the key number (indexes can have multiple keys)
    **********************************************************************/
@@ -101,19 +105,19 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
              "(" + kind + ")[" + type.getShortName() + "]";
   }
   
-  // never called
-  // declared private to block external calls
-  @SuppressWarnings("unused")
-  private FsIndex_singletype() {
-    this.indexType = 0; // must do because it's final
-    this.casImpl = null;
-    this.type = null;
-    this.typeCode = 0;
-    comparatorForIndexSpecs = null;
-    keys = null;
-    keyTypeCodes = null;
-    isReverse = null;
-  }
+//  // never called
+//  // declared private to block external calls
+//  @SuppressWarnings("unused")
+//  private FsIndex_singletype() {
+//    this.indexType = 0; // must do because it's final
+//    this.casImpl = null;
+//    this.type = null;
+//    this.typeCode = 0;
+//    comparatorForIndexSpecs = null;
+//    keys = null;
+//    keyTypeCodes = null;
+//    isReverse = null;
+//  }
 
   /**
    * Constructor for FsIndex_singletype.
@@ -122,7 +126,10 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    * @param indexType -
    * @param comparatorForIndexSpecs -
    */
-  protected FsIndex_singletype(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
+  protected FsIndex_singletype(CASImpl cas, 
+                               Type type, 
+                               int indexType, 
+                               FSIndexComparator comparatorForIndexSpecs) {
     super();
     this.indexType = indexType;
     this.casImpl = cas;
@@ -139,6 +146,9 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
     this.isReverse = new boolean[nKeys];
     
     if (!this.comparatorForIndexSpecs.isValid()) {
+      isAnnotIdx = false;
+      comparatorWithID = null;
+      comparatorWithoutID = null;
       return;
     }
 
@@ -153,6 +163,23 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
       }
       isReverse[i] = this.comparatorForIndexSpecs.getKeyComparator(i) == FSIndexComparator.REVERSE_STANDARD_COMPARE;
     }
+    
+    FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
+    if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
+      comparatorWithID = ir.getAnnotationFsComparatorWithId(); 
+      comparatorWithoutID = ir.getAnnotationFsComparatorWithoutId();
+      isAnnotIdx = true;
+    } else {
+      isAnnotIdx = false;
+      comparatorWithoutID = (o1, o2) -> compare(o1,  o2);
+      comparatorWithID = (indexType == FSIndex.SORTED_INDEX)   
+          ? (o1, o2) -> {
+              final int c = compare(o1,  o2); 
+              // augment normal comparator with one that compares IDs if everything else equal
+              return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;} 
+          : comparatorWithoutID;
+    }          
+
   }
   
   /**
@@ -182,25 +209,21 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
    */
   abstract boolean deleteFS(T fs);
   
-  /**
-   * Common part of iterator creation
-   */
-  protected CopyOnWriteIndexPart setupIteratorCopyOnWrite() {
-    CopyOnWriteIndexPart cow_index_part = getCopyOnWriteIndexPart();
-    if (null == wr_cow || null == wr_cow.get()) {
-      cow_index_part = createCopyOnWriteIndexPart();
-      wr_cow = new WeakReference<>(cow_index_part);  
-    }
-    return cow_index_part;
-  }
-  
   @Override
   public LowLevelIterator<T> iterator(FeatureStructure initialPositionFs) {
     LowLevelIterator<T> fsIt = iterator();
     fsIt.moveTo(initialPositionFs);
     return fsIt;
   }
-    
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIndex#getComparator()
+   */
+  @Override
+  public Comparator<TOP> getComparator() {
+    return comparatorWithoutID;
+  }
+
   @Override
   public FSIndexComparator getComparatorForIndexSpecs() {
     return this.comparatorForIndexSpecs;
@@ -458,5 +481,16 @@ public abstract class FsIndex_singletype<T extends FeatureStructure> implements 
 //    casImpl.indexRepository.isUsedChanged = true;
   }
 
+///**
+//* Common part of iterator creation
+//*/
+//protected CopyOnWriteIndexPart setupIteratorCopyOnWrite() {
+// CopyOnWriteIndexPart cow_index_part = getCopyOnWriteIndexPart();
+// if (null == wr_cow || null == wr_cow.get()) {
+//   cow_index_part = createCopyOnWriteIndexPart();
+//   wr_cow = new WeakReference<>(cow_index_part);  
+// }
+// return cow_index_part;
+//}
 
 }

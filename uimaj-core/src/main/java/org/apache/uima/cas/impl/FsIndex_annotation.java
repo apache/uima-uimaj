@@ -48,7 +48,7 @@ public class FsIndex_annotation <T extends AnnotationFS>
    * @see org.apache.uima.cas.text.AnnotationIndex#iterator(boolean)
    */
   @Override
-  public FSIterator<T> iterator(boolean ambiguous) {
+  public LowLevelIterator<T> iterator(boolean ambiguous) {
     if (ambiguous) {
       return iterator();
     }

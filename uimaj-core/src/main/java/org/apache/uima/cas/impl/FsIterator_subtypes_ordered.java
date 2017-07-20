@@ -37,7 +37,7 @@ import org.apache.uima.jcas.cas.TOP;
  * @param <T> result type
  */
 public class FsIterator_subtypes_ordered<T extends FeatureStructure> 
-                    extends FsIterator_subtypes_list<T> {
+                    extends FsIterator_multiple_indexes<T> {
  
   /**
    * The number of elements to keep in order before the binary heap starts. This section helps the
@@ -50,14 +50,20 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   
   private boolean wentForward = true;
   
+  /** for sorted, this is with ID, otherwise, without */
   final private Comparator<TOP> comparator; 
+  
+  // The IICP
+  final private FsIndex_iicp<T> iicp;
+
 
   public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp) {
-    super(iicp);
-    this.comparator = (iicp.fsIndex_singletype instanceof FsIndex_set_sorted) 
+    super(iicp.getIterators());
+    this.iicp = iicp;
+    this.comparator = (iicp.fsIndex_singletype.isSorted()) 
                         ? ((FsIndex_set_sorted)iicp.fsIndex_singletype).getComparatorWithId()
                         : (Comparator) iicp.fsIndex_singletype;
-    moveToStart();
+    moveToFirstNoReinit();
   } 
   
   /**
@@ -65,24 +71,14 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   
   @Override
-  public void moveToFirst() {
-    if (firstChangedEmptyIterator() >= 0) {
-      this.nonEmptyIterators = initIterators();
-    }
-    // no need to call isIndexesHaveBeenUpdated because
-    // there's no state in this iterator that needs updating.
-    moveToStart();
-  }
-  
-  private void moveToStart() {
-    
+  public void moveToFirstNoReinit() {   
     int lvi = this.nonEmptyIterators.length - 1;
     // Need to consider all iterators.
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
-      final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
-      it.moveToFirst();
+      final LowLevelIterator<T> it = this.nonEmptyIterators[i];
+      it.moveToFirstNoReinit();
       if (it.isValid()) {
         heapify_up(it, i, 1);
         ++i;
@@ -96,14 +92,11 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     }
     // configured to continue with forward iterations
     this.wentForward = true;
-    this.lastValidIndex = lvi;
+    this.lastValidIteratorIndex = lvi;
   }
   
   @Override
-  public void moveToLast() {
-    if (firstChangedEmptyIterator() >= 0) {
-      this.nonEmptyIterators = initIterators();
-    }
+  public void moveToLastNoReinit() {
     // no need to call isIndexesHaveBeenUpdated because
     // there's no state in this iterator that needs updating.
     
@@ -112,9 +105,9 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
-      final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
-      it.resetConcurrentModification();
-      it.moveToLast();
+      final LowLevelIterator<T> it = this.nonEmptyIterators[i];
+//      it.resetConcurrentModification();
+      it.moveToLastNoReinit();
       if (it.isValid()) {
         heapify_up(it, i, -1);
         ++i;
@@ -128,28 +121,12 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     }
     // configured to continue with backward iterations
     this.wentForward = false;
-    this.lastValidIndex = lvi;
-  }
-
-  @Override
-  public void moveToNext() {
-    if (!isValid()) {
-      return;
-    }
-
-    final FsIterator_singletype<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
-
-    if (this.wentForward) {
-      it0.moveToNextNvc();
-      heapify_down(it0, 1);
-    } else {
-      moveToNextCmn(it0);
-    }
+    this.lastValidIteratorIndex = lvi;
   }
 
   @Override
   public void moveToNextNvc() {
-    final FsIterator_singletype<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
+    final LowLevelIterator<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
 
     if (this.wentForward) {
       it0.moveToNextNvc();
@@ -163,7 +140,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    * 
    * @param it0 guaranteed to be a valid iterator by callers
    */
-  private void moveToNextCmn(final FsIterator_singletype<T> it0) {
+  private void moveToNextCmn(final LowLevelIterator<T> it0) {
     // We need to increment everything.
     int lvi = this.nonEmptyIterators.length - 1;
     int i = 1;
@@ -171,16 +148,16 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       // Any iterator other than the current one needs to be
       // incremented until it's pointing at something that's
       // greater than the current element.
-      final FsIterator_singletype<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
+      final LowLevelIterator<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
       // If the iterator we're considering is not valid, we
       // set it to the first element. This should be it for this iterator...
       if (!it.isValid()) {
-        it.moveToFirst();
+        it.moveToFirstNoReinit();
       }
       // Increment the iterator while it is valid and pointing
       // at something smaller than the current element.
       while (it.isValid() && is_before(it, it0, 1)) {
-        it.moveToNext();
+        it.moveToNextNvc();
       }
 
       // find placement
@@ -196,7 +173,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       }
     }
 
-    this.lastValidIndex = lvi;
+    this.lastValidIteratorIndex = lvi;
     this.wentForward = true;
 
     it0.moveToNext();
@@ -205,17 +182,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   }
   
   @Override
-  public void moveToPrevious() {
-    if (!isValid()) {
-      return;
-    }
-
-    moveToPreviousNvc();
-  }
-  
-  @Override
   public void moveToPreviousNvc() {
-    final FsIterator_singletype<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
+    final LowLevelIterator<T> it0 = nonEmptyIterators[0]/*.checkConcurrentModification()*/;
     if (!this.wentForward) {
       it0.moveToPreviousNvc();
       // this also takes care of invalid iterators
@@ -228,11 +196,11 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
         // Any iterator other than the current one needs to be
         // decremented until it's pointing at something that's
         // smaller than the current element.
-        final FsIterator_singletype<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
+        final LowLevelIterator<T> it = nonEmptyIterators[i]/*.checkConcurrentModification()*/;
         // If the iterator we're considering is not valid, we
         // set it to the last element. This should be it for this iterator...
         if (!it.isValid()) {
-          it.moveToLast();
+          it.moveToLastNoReinit();
         }
         // Decrement the iterator while it is valid and pointing
         // at something greater than the current element.
@@ -253,7 +221,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
         }
       }
 
-      this.lastValidIndex = lvi;
+      this.lastValidIteratorIndex = lvi;
       this.wentForward = false;
 
       it0.moveToPrevious();
@@ -272,7 +240,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    *          Direction of movement, 1 for forward, -1 for backward
    * @return true if the left iterator needs to be used before the right one.
    */
-  private boolean is_before(FsIterator_singletype<T> l, FsIterator_singletype<T> r,
+  private boolean is_before(LowLevelIterator<T> l, LowLevelIterator<T> r,
       int dir) {
 
 //    // debug
@@ -292,8 +260,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // If two FSs are identical wrt the comparator of the index,
     // we still need to be able to distinguish them to be able to have a
     // well-defined sequence. In that case, we arbitrarily order FSs by
-    // their
-    // addresses. We need to do this in order to be able to ensure that a
+    // their ids. We need to do this in order to be able to ensure that a
     // reverse iterator produces the reverse order of the forward iterator.
     if (d == 0) {
       d = fsLeft._id() - fsRight._id();
@@ -302,16 +269,17 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   }
 
   /**
-   * Move the idx'th element up in the heap until it finds its proper position.
+   * Move the idx'th iterator element up in the heap until it finds its proper position.
+   * Up means previous iterators are before it
    * 
    * @param it
    *          indexes[idx], guaranteed to be "valid"
    * @param idx
-   *          Element to move
+   *          Element to move, nonEmptyIterators[i] == it
    * @param dir
    *          Direction of iterator movement, 1 for forward, -1 for backward
    */
-  private void heapify_up(FsIterator_singletype<T> it, int idx, int dir) {
+  private void heapify_up(LowLevelIterator<T> it, int idx, int dir) {
 //    FSIndexFlat<? extends FeatureStructure> flatIndexInfo = iicp.flatIndex;
 //    if (null != flatIndexInfo) {
 //      flatIndexInfo.incrementReorderingCount();
@@ -349,23 +317,23 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    * @param dir
    *          Direction of iterator movement, 1 for forward, -1 for backward
    */
-  private void heapify_down(FsIterator_singletype<T> it, int dir) {
+  private void heapify_down(LowLevelIterator<T> it, int dir) {
 //    FSIndexFlat<? extends FeatureStructure> flatIndexInfo = iicp.flatIndex;
 //    if (null != flatIndexInfo) {
 //      flatIndexInfo.incrementReorderingCount();
 //    }
 
     if (!it.isValid()) {
-      // if at the end of the iteration, the lastValidIndex is this one (e.g., is 0)
-      // and this operation is a noop, but sets the lastValidIndex to -1, indicating the iterator is invalid
-      final FsIterator_singletype<T> itl = this.nonEmptyIterators[this.lastValidIndex]/*.checkConcurrentModification()*/;
-      this.nonEmptyIterators[this.lastValidIndex] = it;
+      // if at the end of the iteration, the lastValidIteratorIndex is this one (e.g., is 0)
+      // and this operation is a noop, but sets the lastValidIteratorIndex to -1, indicating the iterator is invalid
+      final LowLevelIterator<T> itl = this.nonEmptyIterators[this.lastValidIteratorIndex]/*.checkConcurrentModification()*/;
+      this.nonEmptyIterators[this.lastValidIteratorIndex] = it;
       this.nonEmptyIterators[0] = itl;
-      --this.lastValidIndex;
+      --this.lastValidIteratorIndex;
       it = itl;
     }
 
-    final int num = this.lastValidIndex;
+    final int num = this.lastValidIteratorIndex;
     if ((num < 1) || !is_before(this.nonEmptyIterators[1]/*.checkConcurrentModification()*/, it, dir)) {
       return;
     }
@@ -415,18 +383,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public boolean isValid() {
-    return lastValidIndex >= 0;
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIterator#get()
-   */
-  @Override
-  public T get() throws NoSuchElementException {
-    if (!isValid()) {
-      throw new NoSuchElementException();
-    }
-    return getNvc();
+    return lastValidIteratorIndex >= 0;
   }
 
   /* (non-Javadoc)
@@ -441,10 +398,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
    */
   @Override
-  public void moveTo(FeatureStructure fs) {
-    if (firstChangedEmptyIterator() >= 0) {
-      this.nonEmptyIterators = initIterators();
-    }
+  public void moveToNoReinit(FeatureStructure fs) {
     // no need to call isIndexesHaveBeenUpdated because
     // there's no state in this iterator that needs updating.
 
@@ -453,8 +407,8 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     // Set all iterators to insertion point.
     int i = 0;
     while (i <= lvi) {
-      final FsIterator_singletype<T> it = this.nonEmptyIterators[i];
-      it.moveTo(fs);  
+      final LowLevelIterator<T> it = this.nonEmptyIterators[i];
+      it.moveToNoReinit(fs);  
       if (it.isValid()) {
         heapify_up(it, i, 1);
         ++i;
@@ -468,7 +422,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     }
     // configured to continue with forward iterations
     this.wentForward = true;
-    this.lastValidIndex = lvi;
+    this.lastValidIteratorIndex = lvi;
   }
 
   /* (non-Javadoc)
@@ -481,7 +435,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       it.moveToPrevious();  // mark new one also invalid
     } else {
       T posFs = get();
-      it.moveTo(posFs);  // moves to left-most position
+      it.moveToNoReinit(posFs);  // moves to left-most position
       while(it.get() != posFs) {
         it.moveToNext();
       }
@@ -489,7 +443,9 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     return it;
   }
 
-  
-
+  @Override
+  public LowLevelIndex<T> ll_getIndex() {
+    return iicp;
+  }
   
 }

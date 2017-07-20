@@ -46,52 +46,35 @@ class FsIterator_limited<T extends FeatureStructure>
     }
   }
   
-  public T get() throws NoSuchElementException {
-    maybeMakeInvalid();
-    T r = iterator.get();
-    count++;  
-    return r;
-  }
-
   public T getNvc() {
     maybeMakeInvalid();
-    T r = iterator.getNvc();
+    T r = iterator.get();  // not getNvc because of above line
     count++;
     return r;
   }
 
-  public void moveToNext() {
-    maybeMakeInvalid();
-    iterator.moveToNext();
-  }
-
   public void moveToNextNvc() {
     maybeMakeInvalid();
-    iterator.moveToNextNvc();
-  }
-
-  public void moveToPrevious() {
-    maybeMakeInvalid();
-    iterator.moveToPrevious();
+    iterator.moveToNext();   // not getNvc because of above line
   }
 
   public void moveToPreviousNvc() {
     maybeMakeInvalid();
-    iterator.moveToPreviousNvc();
+    iterator.moveToPrevious();  // not getNvc because of above line
   }
 
-  public void moveToFirst() {
-    iterator.moveToFirst();
+  public void moveToFirstNoReinit() {
+    iterator.moveToFirstNoReinit();
     maybeMakeInvalid();
   }
 
-  public void moveToLast() {
-    iterator.moveToLast();
+  public void moveToLastNoReinit() {
+    iterator.moveToLastNoReinit();
     maybeMakeInvalid();
   }
 
-  public void moveTo(FeatureStructure fs) {
-    iterator.moveTo(fs);
+  public void moveToNoReinit(FeatureStructure fs) {
+    iterator.moveToNoReinit(fs);
     maybeMakeInvalid();
   }
 
@@ -125,6 +108,11 @@ class FsIterator_limited<T extends FeatureStructure>
   @Override
   public boolean isIndexesHaveBeenUpdated() {
     return iterator.isIndexesHaveBeenUpdated();
+  }
+
+  @Override
+  public boolean maybeReinitIterator() {
+    return iterator.maybeReinitIterator();
   }
 
 }

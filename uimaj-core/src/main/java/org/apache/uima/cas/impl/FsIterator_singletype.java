@@ -20,17 +20,16 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
+import org.apache.uima.jcas.cas.TOP;
 
 public abstract class FsIterator_singletype<T extends FeatureStructure>
                     implements LowLevelIterator<T>, 
                                Comparable<FsIterator_singletype<T>> {
 
-  private int modificationSnapshot; // to catch illegal modifications
+//  private int modificationSnapshot; // to catch illegal modifications
 
 //  /**
 //   * This is a ref to the shared value in the FSIndexRepositoryImpl
@@ -46,9 +45,9 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
    * an instance of T and some other template type which can be a supertype of T, as long as
    * the keys are defined in both.
    */
-  final protected Comparator<FeatureStructure> comparator;
+  final protected Comparator<TOP> comparator;
 
-  public FsIterator_singletype(TypeImpl ti, Comparator<FeatureStructure> comparator){
+  public FsIterator_singletype(TypeImpl ti, Comparator<TOP> comparator){
     this.comparator = comparator;
 //    this.detectIllegalIndexUpdates = detectConcurrentMods;
     this.ti = ti;
@@ -56,7 +55,7 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
     // subtypes do moveToFirst after they finish initialization
   }
 
-  protected abstract int getModificationCountFromIndex();
+//  protected abstract int getModificationCountFromIndex();
   
 //  final protected <I extends FSIterator<T>> I checkConcurrentModification() {
 //    if (modificationSnapshot != getModificationCountFromIndex()) {
@@ -74,15 +73,15 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
     }
   }
   
-  protected void resetConcurrentModification() {  
-    this.modificationSnapshot = // (null == this.detectIllegalIndexUpdates) ? 0 : this.detectIllegalIndexUpdates[typeCode];
-                              getModificationCountFromIndex();
-  }
+//  protected void resetConcurrentModification() {  
+//    this.modificationSnapshot = // (null == this.detectIllegalIndexUpdates) ? 0 : this.detectIllegalIndexUpdates[typeCode];
+//                              getModificationCountFromIndex();
+//  }
 
   @Override
   public int compareTo(FsIterator_singletype<T> o) {
     if (comparator != null) {
-      return comparator.compare(this.get(), o.get());
+      return comparator.compare((TOP)this.get(), (TOP)o.get());
     } 
     return Integer.compare(this.get()._id(), o.get()._id());
   }
@@ -95,8 +94,8 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
     Type type = ti;
     StringBuilder sb = new StringBuilder(this.getClass().getSimpleName()).append(":").append(System.identityHashCode(this));
     sb.append(" over Type: ").append(type.getName()).append(":").append(ti.getCode());
-    sb.append(", size: ").append(this.ll_indexSize());
+    sb.append(", index size: ").append(this.ll_indexSize());
     return sb.toString();
-  }
-  
+  } 
+    
 }

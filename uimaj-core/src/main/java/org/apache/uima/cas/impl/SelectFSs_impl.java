@@ -591,9 +591,9 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   
   
   
-  private FSIterator<T>[] getPlainIteratorsForAllViews() {
+  private LowLevelIterator<T>[] getPlainIteratorsForAllViews() {
     final int nbrViews = view.getNumberOfViews();
-    FSIterator<T>[] ita = new FSIterator[nbrViews];
+    LowLevelIterator<T>[] ita = new LowLevelIterator[nbrViews];
     
     for (int i = 1; i <= nbrViews; i++) {
       CASImpl v = (i == 1) ? view.getInitialView() : (CASImpl) view.getView(i);
@@ -623,7 +623,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   
-  private FSIterator<T> plainFsIterator(FSIndex<T> idx, CASImpl v) {
+  private LowLevelIterator<T> plainFsIterator(FSIndex<T> idx, CASImpl v) {
     if (null == idx) { 
       // no bounds, not ordered
       // type could be null
@@ -641,22 +641,22 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     final boolean isIndexOrdered = idx.getIndexingStrategy() == FSIndex.SORTED_INDEX;
     final boolean isAnnotationIndex = idx instanceof AnnotationIndex;
     final AnnotationIndex ai = isAnnotationIndex ? (AnnotationIndex)idx: null;
-    FSIterator<T> it;
+    LowLevelIterator<T> it;
     if (boundsUse == BoundsUse.notBounded) {
       if (!isIndexOrdered) {
-        it = idx.iterator();       
+        it = (LowLevelIterator<T>) idx.iterator();       
       } else {
         // index is ordered but no bounds are being used - return plain fsIterator or maybe nonOverlapping version
         it = (isAnnotationIndex && isNonOverlapping)
-               ? ai.iterator(false)
+               ? (LowLevelIterator<T>) ai.iterator(false)
                : (isUnordered && idx instanceof FsIndex_iicp) 
                    ? ((FsIndex_iicp<T>)idx).iteratorUnordered()
-                   : idx.iterator();
+                   : (LowLevelIterator<T>) idx.iterator();
       }
     } else {
     // bounds in use, index must be annotation index, is ordered
-    it = (FSIterator<T>) new Subiterator<>(
-        (FSIterator<AnnotationFS>)idx.iterator(), 
+    it = new Subiterator(
+        (FSIterator<T>)idx.iterator(), 
         boundingFs, 
         !isNonOverlapping,  // ambiguous
         !isIncludeAnnotBeyondBounds,  // strict 
@@ -664,7 +664,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         isTypePriority, 
         isPositionUsesType, 
         isUseAnnotationEquals,              
-        v.indexRepository.getAnnotationFsComparator());
+        v.indexRepository.getAnnotationFsComparatorWithoutId());
     }
     
     it = isBackwards ? new FsIterator_backwards<>(it) : it;
@@ -674,7 +674,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
     return it;
   }
     
-  private FSIterator<T> altSourceIterator() {
+  private LowLevelIterator<T> altSourceIterator() {
     T[] filtered;
     if (sourceFSList != null) {
       List<T> filteredItems = new ArrayList<T>();

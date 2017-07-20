@@ -31,14 +31,9 @@ import org.apache.uima.cas.FeatureStructure;
  */
 class FsIterator_bag_pear<T extends FeatureStructure> extends FsIterator_bag<T> {
 
-  FsIterator_bag_pear(FsIndex_bag<T> fsBagIndex, TypeImpl ti) {
-    super(fsBagIndex, ti);
+  FsIterator_bag_pear(FsIndex_bag<T> fsBagIndex, TypeImpl ti, CopyOnWriteIndexPart cow_wrapper) {
+    super(fsBagIndex, ti, cow_wrapper);
   }    
-
-  @Override
-  public T get() {
-    return CASImpl.pearConvert(super.get());
-  }
 
   @Override
   public T getNvc() {
@@ -47,7 +42,7 @@ class FsIterator_bag_pear<T extends FeatureStructure> extends FsIterator_bag<T> 
   
   @Override
   public FsIterator_bag_pear<T> copy() {
-    FsIterator_bag_pear<T> copy = new FsIterator_bag_pear<T>(this.fsBagIndex, this.ti);
+    FsIterator_bag_pear<T> copy = new FsIterator_bag_pear<T>(this.fsBagIndex, this.ti, this.bag );
     copyCommonSetup(copy);
     return copy;
   }

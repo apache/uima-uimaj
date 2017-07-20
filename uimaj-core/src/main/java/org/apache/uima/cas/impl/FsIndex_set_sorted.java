@@ -48,7 +48,7 @@ import org.apache.uima.jcas.tcas.Annotation;
  * 
  * @param <T> the Java class type for this index
  */
-public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
+final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
 //  /**
 //   * This impl of sorted set interface allows using the bulk add operation implemented in Java's 
@@ -58,33 +58,14 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
 
   // The index, a NavigableSet. 
   final private OrderedFsSet_array<T> indexedFSs;
-  
     
-  final private Comparator<TOP> comparatorWithID;
-  final private Comparator<TOP> comparatorWithoutID;
-  
   // only an optimization used for select.covering for AnnotationIndexes
   private int maxAnnotSpan = -1;
-  public final boolean isAnnotIdx;
      
-  FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs, boolean useSorted) {
+  FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, comparatorForIndexSpecs);
-    FSIndexRepositoryImpl ir = this.casImpl.indexRepository;
+   
     
-    if (ir.isAnnotationIndex(comparatorForIndexSpecs, indexType)) {
-      comparatorWithID = ir.getAnnotationFsComparatorWithId(); 
-      comparatorWithoutID = ir.getAnnotationFsComparatorWithoutId();
-      isAnnotIdx = true;
-    } else {
-      isAnnotIdx = false;
-      comparatorWithoutID = (o1, o2) -> compare(o1,  o2);
-      comparatorWithID = useSorted   
-          ? (o1, o2) -> {
-              final int c = compare(o1,  o2); 
-              // augment normal comparator with one that compares IDs if everything else equal
-              return (c == 0) ? (Integer.compare(o1._id(), o2._id())) : c;} 
-          : comparatorWithoutID;
-    }          
     
     this.indexedFSs = new OrderedFsSet_array<T>(comparatorWithID, comparatorWithoutID);
   }
@@ -237,8 +218,10 @@ public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_sing
   }
      
   @Override
-  public FsIterator_set_sorted2<T> iterator() {
+  public LowLevelIterator<T> iterator() {
     CopyOnWriteIndexPart cow_wrapper = getNonNullCow();
+    // if index is empty, return never-the-less a real iterator,
+    //   not an empty one, because it may become non-empty
     return casImpl.inPearContext()
 //             ? new FsIterator_set_sorted_pear<>(this, type, this)
 //             : new FsIterator_set_sorted     <>(this, type, this);

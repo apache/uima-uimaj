@@ -20,7 +20,6 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -171,7 +169,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     /**
      * lazily created comparator using the built-in annotation index
      */
-    private Comparator<TOP> annotationFsComparator = null;
+    private Comparator<TOP> annotationFsComparatorWithoutId = null;
     
     private Comparator<TOP> annotationFsComparatorWithId = null;
     
@@ -752,7 +750,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     switch (indexingStrategy) {
     
     case FSIndex.SET_INDEX: 
-      ind = new FsIndex_set_sorted<T>(this.cas, type, indexingStrategy, comparatorForIndexSpecs, false); // false = is set
+      ind = new FsIndex_set_sorted<T>(this.cas, type, indexingStrategy, comparatorForIndexSpecs); // false = is set
       break;
     
 //    case FSIndex.FLAT_INDEX: 
@@ -766,7 +764,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     default: 
       // SORTED_INDEX is the default. We don't throw any errors, if the code is unknown, we just create a sorted index.
-      ind = new FsIndex_set_sorted<T>(this.cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs, true); // true = is sorted
+      ind = new FsIndex_set_sorted<T>(this.cas, type, FSIndex.SORTED_INDEX, comparatorForIndexSpecs); // true = is sorted
       break;
  
     }
@@ -1787,8 +1785,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    return this.sii.annotationComparator;
 //  }
   
-  Comparator<TOP> getAnnotationFsComparator() {
-    Comparator<TOP> r = this.sii.annotationFsComparator;
+  public Comparator<TOP> getAnnotationFsComparatorWithoutId() {
+    Comparator<TOP> r = this.sii.annotationFsComparatorWithoutId;
     // lazy creation
     if (null != r) {
       return r;
@@ -1811,7 +1809,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
     
     if (lto.isEmptyTypeOrder()) {
-      return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
+      return this.sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2) return 0;
         Annotation fs1 = (Annotation) fsx1;
         Annotation fs2 = (Annotation) fsx2;        
@@ -1819,7 +1817,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       };
       
     } else {
-      return this.sii.annotationFsComparator = (fsx1, fsx2) -> {
+      return this.sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2) return 0;
         Annotation fs1 = (Annotation) fsx1;
         Annotation fs2 = (Annotation) fsx2;
@@ -1875,5 +1873,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   public TypeSystemImpl getTypeSystemImpl() {
     return sii.tsi;
+  }
+  
+  public CASImpl getCasImpl() {
+    return cas;
   }
 }

@@ -29,7 +29,7 @@ import org.apache.uima.cas.text.AnnotationFS;
  * by java.util.Iterator.
  * Users writing their own iterator implementations may extend this class
  */
-public abstract class FSIteratorImplBase<T extends FeatureStructure> implements FSIterator<T> {
+public abstract class FSIteratorImplBase<T extends FeatureStructure> implements LowLevelIterator<T> {
 
   // Jira UIMA-464: add annotation comparator to be able to use Collections.binarySearch() on
   // annotation list.

@@ -25,10 +25,10 @@ import java.util.Comparator;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.FSIndex;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * FsIndex_iicp (iicp)
@@ -373,15 +373,15 @@ class FsIndex_iicp<T extends FeatureStructure>
 //      }
 //    }
   
-  <T2 extends FeatureStructure> FsIndex_singletype<T2> getNoSubtypeIndexForType(Type type) {
-    createIndexIteratorCache();
-    for (FsIndex_singletype<FeatureStructure> noSubtypeIndex : cachedSubFsLeafIndexes) {
-      if (noSubtypeIndex.getType() == type) {
-        return (FsIndex_singletype<T2>) noSubtypeIndex;
-      }
-    }
-    return null;
-  }
+//  <T2 extends FeatureStructure> FsIndex_singletype<T2> getNoSubtypeIndexForType(Type type) {
+//    createIndexIteratorCache();
+//    for (FsIndex_singletype<FeatureStructure> noSubtypeIndex : cachedSubFsLeafIndexes) {
+//      if (noSubtypeIndex.getType() == type) {
+//        return (FsIndex_singletype<T2>) noSubtypeIndex;
+//      }
+//    }
+//    return null;
+//  }
   
   FSIndexRepositoryImpl getFSIndexRepositoryImpl() {
     return fsIndexRepositoryImpl;
@@ -407,6 +407,14 @@ class FsIndex_iicp<T extends FeatureStructure>
   @Override
   public int getIndexingStrategy() {
     return fsIndex_singletype.getIndexingStrategy();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIndex#getComparator()
+   */
+  @Override
+  public Comparator<TOP> getComparator() {
+    return fsIndex_singletype.comparatorWithoutID;
   }
 
   @Override
@@ -456,22 +464,22 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   @Override
-  public FSIterator<T> iterator() {
+  public LowLevelIterator<T> iterator() {
     createIndexIteratorCache();  
    
     return (cachedSubFsLeafIndexes.length == 1)
-           ? (FSIterator<T>) fsIndex_singletype.iterator()
+           ? (LowLevelIterator<T>) fsIndex_singletype.iterator()
            : fsIndex_singletype.isSorted()
              ? new FsIterator_subtypes_ordered<T>(this)
-             : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype);
+             : new FsIterator_aggregation_common<T>(this.getIterators(), this);
   } 
   
   public LowLevelIterator<T> iteratorUnordered() {
     createIndexIteratorCache();  
     
     return (cachedSubFsLeafIndexes.length == 1)
-           ? (FsIterator_singletype<T>) fsIndex_singletype.iterator()
-           : new FsIterator_aggregation_common<T>(new FsIterator_subtypes_unordered<T>(this).allIterators, fsIndex_singletype); 
+           ? fsIndex_singletype.iterator()
+           : new FsIterator_aggregation_common<T>(getIterators(), this); 
   }
 
   /**
@@ -527,6 +535,16 @@ class FsIndex_iicp<T extends FeatureStructure>
   public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyIndexes() {
     createIndexIteratorCache();
     return Arrays.stream(cachedSubFsLeafIndexes).filter(idx -> idx.size() > 0);
+  }
+  
+  LowLevelIterator<T>[] getIterators() {
+    createIndexIteratorCache();
+    LowLevelIterator<T>[] r = new LowLevelIterator[cachedSubFsLeafIndexes.length];
+    int i = 0;
+    for (FsIndex_singletype<FeatureStructure> idx : cachedSubFsLeafIndexes) {
+      r[i++] = (LowLevelIterator<T>) idx.iterator();
+    }
+    return r;    
   }
   
 //  /* (non-Javadoc)

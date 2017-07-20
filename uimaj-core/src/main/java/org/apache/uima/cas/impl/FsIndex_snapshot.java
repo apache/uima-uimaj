@@ -66,7 +66,7 @@ public class FsIndex_snapshot <T extends FeatureStructure> implements LowLevelIn
    * @see org.apache.uima.cas.FSIndex#iterator()
    */
   @Override
-  public FSIterator<T> iterator() {
+  public LowLevelIterator<T> iterator() {
     return new FsIterator_subtypes_snapshot<T>(new FsIndex_flat<T>(wrapped));
   }
 
@@ -114,6 +114,14 @@ public class FsIndex_snapshot <T extends FeatureStructure> implements LowLevelIn
   @Override
   public CASImpl getCasImpl() {
     return wrapped.getCasImpl();
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIndex#getComparator()
+   */
+  @Override
+  public Comparator<TOP> getComparator() {
+    return wrapped.getComparator();
   }
 
   @Override

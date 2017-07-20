@@ -84,29 +84,14 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
     adjustForConstraintBackward();
   }
 
-  public void moveToNext() {
-    this.it.moveToNext();
-    adjustForConstraintForward();
-  }
-
   public void moveToNextNvc() {
     this.it.moveToNextNvc();
     adjustForConstraintForward();
   }
 
-  public void moveToPrevious() {
-    this.it.moveToPrevious();
-    adjustForConstraintBackward();
-  }
-
   public void moveToPreviousNvc() {
     this.it.moveToPreviousNvc();
     adjustForConstraintBackward();
-  }
-
-  public T get() throws NoSuchElementException {
-    // This may throw an exception.
-    return this.it.get();
   }
 
   public T getNvc() {
