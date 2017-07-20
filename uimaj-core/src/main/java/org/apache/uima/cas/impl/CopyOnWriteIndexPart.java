@@ -27,7 +27,6 @@ public interface CopyOnWriteIndexPart {
   void makeReadOnlyCopy();
   
   /**
-   * @param original an instance of ObjectHashSet or OrderedFsSet_sorted
    * @return true if this cow version is the same as the original.
    *              true means the index has not been updated
    */

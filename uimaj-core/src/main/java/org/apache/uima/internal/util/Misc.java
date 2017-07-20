@@ -341,7 +341,7 @@ public class Misc {
    * @param c the collection to process
    * @param limit the maximum number of items, if negative, no limit
    * @param appender the appender
-   * @return
+   * @return argument sb, appeneded
    */
   public static <T> StringBuilder addElementsToStringBuilder(StringBuilder sb, Collection<T> c, int limit, BiConsumer<StringBuilder, T> appender) {
     return addElementsToStringBuilder(INT0, sb, c, limit, appender);

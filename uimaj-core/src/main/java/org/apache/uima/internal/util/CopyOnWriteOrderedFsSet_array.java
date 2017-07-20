@@ -86,6 +86,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
 
   /**
    * @see OrderedFsSet_array#size()
+   * @return the size of this version of the index (maybe not the current index size)
    */
   public int size() {
     return set.size();

@@ -51,7 +51,11 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
     
   }
   
-  /** copy constructor */
+  /**
+  /**
+   *  copy constructor 
+   * @param v the original to copy
+   */
   public FsIterator_multiple_indexes(FsIterator_multiple_indexes<T> v) {
     allIterators = v.allIterators.clone();
     int i = 0;

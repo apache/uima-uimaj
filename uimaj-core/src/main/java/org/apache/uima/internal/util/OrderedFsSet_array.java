@@ -127,7 +127,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   
   /**
    * 
-   * @param fs item to add
+   * @param fs1 item to add
    * @param comparator either the comparator with ID for sorted indexes, or the comparator without ID for set indexes
    * @return true if fs was added (not already present)
    */
@@ -364,7 +364,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   
   /**
    * Removes the exactly matching (including ID) FS if present
-   * @param fs the fs to remove
+   * @param o the object (should be a Feature Structure) to remove
    * @return true if it was removed, false if it wasn't in the index
    */
 

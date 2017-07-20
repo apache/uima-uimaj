@@ -128,6 +128,10 @@ public class XmiCompare {
     }
     
     Path p2 = Paths.get(d2String, p1.getFileName().toString());
+    
+    if (!p2.toFile().exists()) {
+      return;
+    }
 
     try {
       CasIOUtils.load(new FileInputStream(p1.toFile()), c1);

@@ -126,13 +126,14 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   
   /**
    * Internal use
-   * same as moveToFirst, but won't reset to use current contents of index if index has changed
+   * same as moveToLast, but won't reset to use current contents of index if index has changed
    */
   void moveToLastNoReinit();
 
   /**
    * Internal use
-   * same as moveToFirst, but won't reset to use current contents of index if index has changed
+   * same as moveTo(fs), but won't reset to use current contents of index if index has changed
+   * @param fs the fs to use as the template identifying the place to move to
    */
   void moveToNoReinit(FeatureStructure fs);
   

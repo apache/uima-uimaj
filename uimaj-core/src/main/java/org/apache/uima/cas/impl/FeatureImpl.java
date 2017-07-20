@@ -259,6 +259,7 @@ public class FeatureImpl implements Feature {
   /**
    * Hashcode and equals are used, possibly for features in different type systems, 
    * where the features should be "equal".  Example: fitering during serialization.
+   * @return long version of hashcode
    */
  
   public long computeHashCodeLong() {
