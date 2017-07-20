@@ -408,7 +408,8 @@ public class JCasHashMapTest extends TestCase {
       final int key = addrs[i];
       TOP fs = (TOP) m.get(key);
       if (fs == null) {  // for debugging
-        System.out.println("stop");
+        System.out.println("debug stop");
+        fail();
       }
       assertTrue(null != fs);
     }
