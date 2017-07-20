@@ -279,7 +279,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
       
       return r;
     }
-    return (T[]) gta().clone();
+    return (T[]) Arrays.copyOf(gta(), gta().length);
   }
 
   /*

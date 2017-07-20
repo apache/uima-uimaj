@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -130,7 +131,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    * @see org.apache.uima.cas.StringArrayFS#toArray()
    */
   public String[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */

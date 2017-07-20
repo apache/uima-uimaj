@@ -140,7 +140,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    */
   @Override
   public int[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */

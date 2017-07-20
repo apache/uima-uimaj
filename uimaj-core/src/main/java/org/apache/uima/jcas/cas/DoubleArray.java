@@ -139,7 +139,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
    */
   @Override
   public double[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */

@@ -140,7 +140,7 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
    */
   @Override
   public long[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */

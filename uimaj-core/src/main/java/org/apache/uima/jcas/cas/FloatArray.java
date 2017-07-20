@@ -19,6 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -142,7 +144,7 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
    * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   public float[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /**

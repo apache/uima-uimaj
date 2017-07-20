@@ -19,6 +19,7 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -130,7 +131,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @see org.apache.uima.cas.ByteArrayFS#toArray()
    */
   public byte[] toArray() {
-    return theArray.clone();
+    return Arrays.copyOf(theArray, theArray.length);
   }
 
   /** return the size of the array */
