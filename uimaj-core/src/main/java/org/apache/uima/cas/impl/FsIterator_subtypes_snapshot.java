@@ -167,7 +167,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
    */
   @Override
-  public int ll_indexSize() {
+  public int ll_indexSizeMaybeNotCurrent() {
     return snapshot.length;
   }
   

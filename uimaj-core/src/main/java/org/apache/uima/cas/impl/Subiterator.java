@@ -935,7 +935,7 @@ public class Subiterator<T extends AnnotationFS> implements LowLevelIterator<T> 
    * in many cases, and may not be needed.
    */
   @Override
-  public int ll_indexSize() {
+  public int ll_indexSizeMaybeNotCurrent() {
     throw new UnsupportedOperationException();
   }
 
