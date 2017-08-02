@@ -1501,6 +1501,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public void resetNoQuestions() {
     svd.casResets.incrementAndGet();
     svd.clearCasReset();
+    getJCasImpl().sharedViewReset();
     if (trace) {
       System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
          " for CasId = " + getCasId() + ", new reset count = " + svd.casResets.get());
