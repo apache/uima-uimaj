@@ -29,6 +29,7 @@ import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
@@ -193,5 +194,14 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
     stringArray.copyFromArray(a, 0, 0, a.length);
     return stringArray;
   }
+  
+  /**
+   * @param v the compare object
+   * @return true if v is equal to one (or more) of the array elements
+   */
+  public boolean contains(String v) {
+    return Misc.contains(theArray, v);
+  }
+
 
 }
