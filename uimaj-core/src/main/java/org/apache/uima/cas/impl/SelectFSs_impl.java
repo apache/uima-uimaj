@@ -581,7 +581,8 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private FSIterator<T> fsIterator1() {
     prepareTerminalOp();
     FSIterator<T> it = isAllViews 
-                      ? new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), null)
+                      ? //new FsIterator_aggregation_common<T>(getPlainIteratorsForAllViews(), )
+                        createFsIterator_for_all_views()
                       : plainFsIterator(index, view);
 
     maybePosition(it);
@@ -590,6 +591,21 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   }
   
   
+  private FsIterator_aggregation_common<T> createFsIterator_for_all_views() {
+    final int nbrViews = view.getNumberOfViews();
+    LowLevelIterator<T>[] ita = new LowLevelIterator[nbrViews];
+//    LowLevelIndex<T>[] indexes = new LowLevelIndex[nbrViews];
+    
+    for (int i = 1; i <= nbrViews; i++) {
+      CASImpl v = (i == 1) ? view.getInitialView() : (CASImpl) view.getView(i);
+      LowLevelIndex<T> index = (LowLevelIndex<T>) getIndexForView(v);
+      ita[i - 1] = plainFsIterator(index, v);
+//      indexes[i - 1] = index;
+    }
+//    return new FsIterator_aggregation_common<T>(ita, new FsIndex_aggr<>(indexes));
+    return new FsIterator_aggregation_common<T>(ita, null);
+
+  }
   
   private LowLevelIterator<T>[] getPlainIteratorsForAllViews() {
     final int nbrViews = view.getNumberOfViews();
@@ -846,7 +862,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
 
       @Override
       public long estimateSize() {
-        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED) ? localIndex.size() : Long.MAX_VALUE;
+        return ((characteristics & Spliterator.SIZED) == Spliterator.SIZED && localIndex != null) ? localIndex.size() : Long.MAX_VALUE;
       }
 
       @Override
