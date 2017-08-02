@@ -68,7 +68,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * 
    * This is set up lazily on first need, to avoid extra work when won't be accessed
    */
-  FsIndex_singletype<FeatureStructure>[] cachedSubFsLeafIndexes = null;
+  FsIndex_singletype<TOP>[] cachedSubFsLeafIndexes = null;
   
   // VOLATILE to permit double-checked locking technique
   private volatile boolean isIteratorCacheSetup = false;
@@ -93,7 +93,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     } else {  
       int len = Math.min(3,  cachedSubFsLeafIndexes.length);
       for (int i = 0; i < len; i++) {
-        FsIndex_singletype<FeatureStructure> lii = cachedSubFsLeafIndexes[i]; 
+        FsIndex_singletype<TOP> lii = cachedSubFsLeafIndexes[i]; 
         sb.append("  cache ").append(i++);
         sb.append("  ").append(lii).append('\n');
       }
@@ -256,7 +256,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   public int size() {
     createIndexIteratorCache();  // does nothing if already created
     int size = 0;
-    for (FsIndex_singletype<FeatureStructure> iicp : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> iicp : cachedSubFsLeafIndexes) {
       size += iicp.size();
     }
     return size;
@@ -268,7 +268,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     int span = -1;
     FsIndex_singletype<T> idx = getFsIndex_singleType();
     if (idx instanceof FsIndex_set_sorted && ((FsIndex_set_sorted)idx).isAnnotIdx) {
-      for (FsIndex_singletype<FeatureStructure> subIndex : cachedSubFsLeafIndexes) {
+      for (FsIndex_singletype<TOP> subIndex : cachedSubFsLeafIndexes) {
         int s = ((FsIndex_set_sorted)subIndex).ll_maxAnnotSpan(); 
         if (s > span) {
           span = s;
@@ -280,26 +280,14 @@ class FsIndex_iicp<T extends FeatureStructure>
   
   public boolean isEmpty() {
     createIndexIteratorCache();  
-    for (FsIndex_singletype<FeatureStructure> index : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> index : cachedSubFsLeafIndexes) {
       if (index.size() > 0) {
         return false;
       }
     }
     return true;
   }
-  
-  boolean has1OrMoreEntries() {
-    createIndexIteratorCache();  // does nothing if already created
-    final FsIndex_singletype<FeatureStructure>[] localIc = this.cachedSubFsLeafIndexes;
-    final int len = localIc.length;
-    for (int i = 0; i < len; i++) {
-      if (localIc[i].size() > 0) {
-        return true;
-      };
-    }
-    return false;
-  }
-  
+    
   /**
    * A faster version of size() when there are lots of subtypes
    * The cache must be already set up
@@ -310,7 +298,7 @@ class FsIndex_iicp<T extends FeatureStructure>
    * @return a guess at the size, done quickly
    */
   int guessedSize() {
-    final FsIndex_singletype<FeatureStructure>[] localIc = this.cachedSubFsLeafIndexes;
+    final FsIndex_singletype<TOP>[] localIc = this.cachedSubFsLeafIndexes;
     final int len = localIc.length;
     final int lim = Math.min(3, len);
     int size = 0;
@@ -355,9 +343,9 @@ class FsIndex_iicp<T extends FeatureStructure>
 //          detectIllegalIndexUpdates[typeCode];
 //    }
     
-  boolean subsumes(int superType, int subType) {
-    return getCasImpl().getTypeSystemImpl().subsumes(superType,  subType);
-  }
+//  boolean subsumes(int superType, int subType) {
+//    return getCasImpl().getTypeSystemImpl().subsumes(superType,  subType);
+//  }
   
   // for flat index support
 //    void addToIteratedSortedIndexes() {
@@ -383,9 +371,9 @@ class FsIndex_iicp<T extends FeatureStructure>
 //    return null;
 //  }
   
-  FSIndexRepositoryImpl getFSIndexRepositoryImpl() {
-    return fsIndexRepositoryImpl;
-  }
+//  FSIndexRepositoryImpl getFSIndexRepositoryImpl() {
+//    return fsIndexRepositoryImpl;
+//  }
 
   FsIndex_singletype<T> getFsIndex_singleType() {
     return fsIndex_singletype;
@@ -440,7 +428,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   public T find(FeatureStructure fs) {
     createIndexIteratorCache();  // does nothing if already created
     
-    for (FsIndex_singletype<FeatureStructure> idx : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> idx : cachedSubFsLeafIndexes) {
      FeatureStructure result = idx.find(fs);
       if (result != null) {
         return (T) result;
@@ -532,7 +520,7 @@ class FsIndex_iicp<T extends FeatureStructure>
   /**
    * @return a stream of FSIndex_singletype, for all non-empty indexes
    */
-  public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyIndexes() {
+  public Stream<FsIndex_singletype<TOP>> streamNonEmptyIndexes() {
     createIndexIteratorCache();
     return Arrays.stream(cachedSubFsLeafIndexes).filter(idx -> idx.size() > 0);
   }
@@ -541,7 +529,7 @@ class FsIndex_iicp<T extends FeatureStructure>
     createIndexIteratorCache();
     LowLevelIterator<T>[] r = new LowLevelIterator[cachedSubFsLeafIndexes.length];
     int i = 0;
-    for (FsIndex_singletype<FeatureStructure> idx : cachedSubFsLeafIndexes) {
+    for (FsIndex_singletype<TOP> idx : cachedSubFsLeafIndexes) {
       r[i++] = (LowLevelIterator<T>) idx.iterator();
     }
     return r;    
