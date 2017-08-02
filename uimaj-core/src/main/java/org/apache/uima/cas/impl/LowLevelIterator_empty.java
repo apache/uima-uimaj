@@ -56,7 +56,7 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   @Override
   public void moveTo(FeatureStructure fs) {}
   @Override
-  public int ll_indexSize() { return 0; }
+  public int ll_indexSizeMaybeNotCurrent() { return 0; }
   @Override
   public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
   @Override

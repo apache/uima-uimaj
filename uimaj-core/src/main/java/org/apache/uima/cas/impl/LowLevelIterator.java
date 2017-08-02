@@ -60,9 +60,10 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
 
   /**
    * @return The size of the index.  In case of copy-on-write, this returns the size of the
-   *         index at the time the iterator was created.
+   *         index at the time the iterator was created, or at the last moveTo, moveToFirst, or moveToLast.
+   *         To get the current index size, use ll_getIndex().getSize()
    */
-  int ll_indexSize();
+  int ll_indexSizeMaybeNotCurrent();
 
   /**
    * Get the index for just the top most type of this iterator (excludes subtypes).
