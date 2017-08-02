@@ -595,11 +595,37 @@ public interface JCas extends AbstractCas {
   void removeAllIncludingSubtypes(int i);
   
   /**
+   * Remove all instances of type, including all subtypes from all indexes in the repository view.
+   * @param clazz the JCas class of the type to remove.  To remove all use TOP.class
+   * @exception NullPointerException if the <code>clazz</code> parameter is <code>null</code>.
+  */
+  default <T extends TOP> void removeAllIncludingSubtypes(Class<T> clazz) {
+    getFSIndexRepository().removeAllIncludingSubtypes(getCasType(clazz));
+  }
+  
+  /**
    * Remove all feature structures of a given type (excluding subtypes) from all indexes in the repository associated with this CAS View.
    * @param i the CAS type constant, written as Foo.type (for a given JCas Type) or anInstanceOfFoo.getTypeIndexID(), for an instance
    */
   void removeAllExcludingSubtypes(int i);
 
+  /**
+   * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
+   * @param clazz the JCas Class of the type to remove
+   * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
+  */
+  default <T extends TOP> void removeAllExcludingSubtypes(Class<T> clazz) {
+    getFSIndexRepository().removeAllExcludingSubtypes(getCasType(clazz));
+  }
+
+  /**
+   * Return the UIMA Type object corresponding to this JCas's JCas cover class
+   *   (Note: different JCas's, with different type systems, may share the same cover class impl)
+   * @param clazz a JCas cover class
+   * @return the corresponding UIMA Type object
+   */
+  public Type getCasType(Class<? extends FeatureStructure> clazz);
+  
   /**
    * Get the standard annotation index.
    * 
