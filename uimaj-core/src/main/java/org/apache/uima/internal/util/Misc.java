@@ -968,6 +968,15 @@ public class Misc {
       
     };
   }
+  
+  static public boolean contains(String[] strings, String item) {
+    for (String string: strings) {
+      if (Misc.equalStrings(string,  item)) {
+        return true;
+      }
+    }
+    return false;
+  }
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
 //  try {
