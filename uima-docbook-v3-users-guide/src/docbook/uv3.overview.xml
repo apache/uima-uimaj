@@ -171,6 +171,12 @@ under the License.
           This is no longer needed in version 3; UIMA iterators use a copy-on-write technique to allow index updating,
           while doing whatever minimal copying is needed to continue iteration over the original index.</para>
           </blockquote>
+          
+          <para>In both version 2 and 3, there are 3 iterater movement APIs which have a side effect of insuring the
+            iterator is operating correctly over the current index contents.  These are the <code>moveToFirst, 
+            moveToLast, and moveTo(some_feature_structure)</code> API calls.  In version 3, using these will
+            reinitialize the iterator (if needed) so that it is iterating over the current index contents;
+            if the index has not been modified, no reinitialization is needed (or done).</para>
         </listitem>
       </varlistentry>
       
