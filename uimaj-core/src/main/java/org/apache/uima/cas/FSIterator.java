@@ -278,13 +278,17 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   default Spliterator<T> spliterator() {
     return Spliterators.spliterator(
         this, 
-        ((LowLevelIterator<T>)this).ll_indexSize(), 
+        ((LowLevelIterator<T>)this).ll_indexSizeMaybeNotCurrent(), 
 
         Spliterator.DISTINCT |
         Spliterator.SIZED    |
         Spliterator.SUBSIZED);
   }
   
+  /**
+   * @return a Stream consisting of the items being iterated over by this iterator, 
+   *           starting from the current position.
+   */
   default Stream<T> stream() {
     return StreamSupport.stream(spliterator(),  false);
   }
