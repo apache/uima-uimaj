@@ -129,7 +129,7 @@ public interface FSIndexRepository {
    * @param clazz the JCas class of the type to remove.  To remove all use TOP.class
    * @exception NullPointerException if the <code>clazz</code> parameter is <code>null</code>.
   */
-  default void removeAllIncludingSubtypes(Class<? extends TOP> clazz) {
+  default <T extends TOP> void removeAllIncludingSubtypes(Class<T> clazz) {
     removeAllIncludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
   }
   
@@ -145,7 +145,7 @@ public interface FSIndexRepository {
    * @param clazz the JCas Class of the type to remove
    * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
   */
-  default void removeAllExcludingSubtypes(Class<? extends TOP> clazz) {
+  default <T extends TOP> void removeAllExcludingSubtypes(Class<T> clazz) {
     removeAllExcludingSubtypes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
   }
 
