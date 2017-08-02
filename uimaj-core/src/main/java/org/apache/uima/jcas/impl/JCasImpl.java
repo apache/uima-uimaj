@@ -168,6 +168,12 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     public FSArray fsArray0L = null;
        
+    void reset() {
+      stringArray0L = null;
+      integerArray0L = null;
+      floatArray0L = null;
+      fsArray0L = null;
+    }
   }
 
   // *******************
@@ -677,6 +683,10 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    */
   public void reset() {
     casImpl.reset();
+  }
+  
+  public void sharedViewReset() {
+    sharedView.reset();
   }
 
 //  /*
