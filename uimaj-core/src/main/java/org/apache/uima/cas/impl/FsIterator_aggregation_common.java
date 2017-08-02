@@ -146,11 +146,11 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
     lastValidIteratorIndex = -1;  // invalid position
   }
 
-  public int ll_indexSize() {
+  public int ll_indexSizeMaybeNotCurrent() {
     int sum = 0;
     for (int i = nonEmptyIterators.length - 1; i >=  0; i--) {
       FSIterator<T> it = nonEmptyIterators[i];
-      sum += ((LowLevelIterator<T>)it).ll_indexSize();
+      sum += ((LowLevelIterator<T>)it).ll_indexSizeMaybeNotCurrent();
     }
     return sum;
   }
@@ -217,7 +217,7 @@ class FsIterator_aggregation_common<T extends FeatureStructure> extends FsIterat
       sb.append(type.getName()).append(':').append(((TypeImpl)type).getCode()).append(' ');
     }
     
-    sb.append(", index size: ").append(this.ll_indexSize());
+    sb.append(", iterator size (may not match current index size): ").append(this.ll_indexSizeMaybeNotCurrent());
     return sb.toString();
   }
   
