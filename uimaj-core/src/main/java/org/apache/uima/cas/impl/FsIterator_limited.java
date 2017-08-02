@@ -88,8 +88,8 @@ class FsIterator_limited<T extends FeatureStructure>
   }
 
   @Override
-  public int ll_indexSize() {
-    return iterator.ll_indexSize();
+  public int ll_indexSizeMaybeNotCurrent() {
+    return iterator.ll_indexSizeMaybeNotCurrent();
   }
 
   @Override

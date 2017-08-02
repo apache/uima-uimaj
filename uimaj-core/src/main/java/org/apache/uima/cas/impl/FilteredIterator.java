@@ -114,7 +114,7 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   }
 
   @Override
-  public int ll_indexSize() {
+  public int ll_indexSizeMaybeNotCurrent() {
     throw new UnsupportedOperationException();
   }
 
