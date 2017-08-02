@@ -73,9 +73,9 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
         
     ArrayList<LowLevelIterator<T>> emptyIteratorsAl = new ArrayList<>();
     ArrayList<LowLevelIterator<T>> nonEmptyIteratorsAl = new ArrayList<>();
-    
     for (LowLevelIterator<T> it : allIterators) {
-      if (it.ll_indexSize() == 0) {
+      LowLevelIndex<T> idx = it.ll_getIndex();
+      if (idx == null || idx.size() == 0) {
         emptyIteratorsAl.add(it);  
       } else {
         nonEmptyIteratorsAl.add(it); 
@@ -110,10 +110,10 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
    */
   @Override
-  public int ll_indexSize() {
+  public int ll_indexSizeMaybeNotCurrent() {
     int sz = 0;
     for (LowLevelIterator<T> it : nonEmptyIterators) {
-      sz += it.ll_indexSize();      
+      sz += it.ll_indexSizeMaybeNotCurrent();      
     }
     return sz;
   }

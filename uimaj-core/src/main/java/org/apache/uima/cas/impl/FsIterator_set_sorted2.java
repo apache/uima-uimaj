@@ -166,7 +166,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
    */
   @Override
-  public int ll_indexSize() {
+  public int ll_indexSizeMaybeNotCurrent() {
     return ofsa.size();
   }
 
