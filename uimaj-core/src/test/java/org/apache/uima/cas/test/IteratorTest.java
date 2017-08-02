@@ -1243,21 +1243,21 @@ public class IteratorTest extends TestCase {
     verifyMoveToFirst(subsortedIt, true);
     
     // copy on write should prevent any change
-    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSize());
-    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSize());
-    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSize());
-    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSize());
-    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSize());
-    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSize());
+    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSizeMaybeNotCurrent());
 
     ir.removeAllIncludingSubtypes(sentenceType);
     
-    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSize());
-    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSize());
-    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSize());
-    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSize());
-    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSize());
-    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSize());
+    assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(91,  ((LowLevelIterator<FeatureStructure>)subsetIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSizeMaybeNotCurrent());
+    assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSizeMaybeNotCurrent());
     
     verifyConcurrantModificationDetected(setIt);
     verifyConcurrantModificationDetected(bagIt);
