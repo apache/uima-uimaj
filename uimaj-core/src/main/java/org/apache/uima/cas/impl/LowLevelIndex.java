@@ -63,8 +63,20 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
 //   */
 //  LowLevelIterator<T> ll_rootIterator();
 
-  int ll_compare(int ref1, int ref2);
+  /**
+   * Compare two Feature structures, referred to by IDs
+   * @param ref1 -
+   * @param ref2 -
+   * @return -
+   */
+  default int ll_compare(int ref1, int ref2) {
+    CASImpl cas = getCasImpl();
+    return compare(cas.getFsFromId_checked(ref1), cas.getFsFromId_checked(ref2));
+  };
   
+  /**
+   * @return a CAS View associated with this iterator
+   */
   CASImpl getCasImpl();
   
   // incorporated from FSIndexImpl
