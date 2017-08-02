@@ -182,7 +182,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   }
        
   private void ensureCapacity() {
-    
+    // if space at end or space at beginning
     if (a_nextFreeslot < a.length || a_firstUsedslot > 0) {
       return;
     }
@@ -200,7 +200,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    * This is called when inserting new items.
    * May be called to insert at top
    * 
-   * Side effects:  a_firstUsedslot if insert before first
+   * Side effects:  a_firstUsedslot adjusted if insert before first
    *                a_nextFreeslot adjusted if after last
    * 
    * Rebalancing: 
@@ -223,35 +223,37 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
       tr.append(String.format("insertSpace called with insertPosOfAddedSpace: %,d %n", insertPosOfAddedSpace));
     }
 
-    ensureCapacity(); // add space of no space at front or end, capacity == size()
+    ensureCapacity(); // add space at end if no space at front or end meaning capacity == size()
+    
     final boolean useFront;
     
     if (highest) {
 
-      // special case: add following last
-      if (a_nextFreeslot < a.length) {  // there's room
-        a_nextFreeslot ++;
-        return insertPosOfAddedSpace + 1;
-      } 
-      
-      insertPosOfAddedSpace -= rebalanceMoveSpaceToEnd();
-      useFront = false;
-    } else if (insertPosOfAddedSpace == a_firstUsedslot) {
-      
-    // special case: add before first
-      if (a_firstUsedslot > 0) {  // there's room
-        a_firstUsedslot --;
-        return insertPosOfAddedSpace;
+      if (a_nextFreeslot >= a.length) {  // there's no room at end, only room in front.  
+        insertPosOfAddedSpace -= rebalanceMoveSpaceToEnd();  // updates a_nextFreeslot and a_firstUsedslot
       }
 
-      insertPosOfAddedSpace += rebalanceMoveSpaceToFront();
-      useFront = true;
-    } else {
-      int distanceFromEnd   = a_nextFreeslot        - insertPosOfAddedSpace;
-      int distanceFromFront = insertPosOfAddedSpace - a_firstUsedslot;
-      useFront = distanceFromFront < distanceFromEnd;
-    }
-        
+      a_nextFreeslot ++;
+      return insertPosOfAddedSpace + 1;
+      
+    } else if (insertPosOfAddedSpace == a_firstUsedslot) {
+      
+      // special case: add before first
+      if (a_firstUsedslot == 0) {  // there's no room at beginning, only room at end
+        insertPosOfAddedSpace += rebalanceMoveSpaceToFront();
+      }
+      a_firstUsedslot --;
+      return insertPosOfAddedSpace;
+    } 
+      
+    // not highest, not before first element
+    int distanceFromEnd   = a_nextFreeslot        - insertPosOfAddedSpace;
+    int distanceFromFront = insertPosOfAddedSpace - a_firstUsedslot;
+    useFront = distanceFromFront < distanceFromEnd;
+    
+    /*******************
+     * Use Front Space *
+     *******************/
     if (useFront) {
       if (a_firstUsedslot == 0) {
         insertPosOfAddedSpace += rebalanceMoveSpaceToFront();
@@ -260,6 +262,10 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
       a_firstUsedslot --;
       return insertPosOfAddedSpace;  
     }
+    
+    /*******************
+     * Use End   Space *
+     *******************/
     if (a_nextFreeslot >= a.length) {
       insertPosOfAddedSpace -= rebalanceMoveSpaceToEnd();
     }
@@ -393,17 +399,19 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     /******************************************
      * remove by shifting using closest space *
      ******************************************/
-    int distanceFromEnd = a_nextFreeslot - pos;
-    int distanceFromFront = pos - a_firstUsedslot;
+    final int distanceFromEnd = a_nextFreeslot - pos;
+    final int distanceFromFront = pos - a_firstUsedslot;
     
     if (distanceFromFront < distanceFromEnd) {
-      if (distanceFromFront > 0) {  // edge case - no move needed
-        System.arraycopy(a, a_firstUsedslot,  a,  a_firstUsedslot + 1, pos - a_firstUsedslot);
+      if (distanceFromFront > 0) {  // skip when distance is 0 - no move needed
+        System.arraycopy(a, a_firstUsedslot,  a,  a_firstUsedslot + 1, distanceFromFront);
       }
       a[a_firstUsedslot] = null;      
       a_firstUsedslot ++;
     } else {
-      System.arraycopy(a,  pos + 1, a,  pos,  a_nextFreeslot - pos - 1); // sub 1 because a_nextFreeslot is exclusive
+      if (distanceFromEnd > 1) { // skip when distance from end == 0, no move needed
+        System.arraycopy(a,  pos + 1, a,  pos,  distanceFromEnd - 1); // sub 1 because a_nextFreeslot is exclusive
+      }
       a_nextFreeslot --;
       a[a_nextFreeslot] = null;
     }
