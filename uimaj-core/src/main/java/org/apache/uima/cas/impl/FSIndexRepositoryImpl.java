@@ -1041,7 +1041,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   /**
    * Remove all instances of a particular type (including its subtypes) from all indexes
-   * @param type -
+   * @param type  Type to remove (including all its subtypes) from this particular view.
    */
   public void removeAllIncludingSubtypes(Type type) {
     removeAllExcludingSubtypes(type);
@@ -1454,7 +1454,9 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //      }
 //    } else {
 //      iicps4allFSs.clear();
+    
       getAllIndexedFS(type, iteratorList);
+      
 //      this.isUsedChanged = false; // above call recomputed the cache  
 //    }    
 
@@ -1523,7 +1525,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
 
   
-  public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyIndexes(Type type) {
+  public Stream<FsIndex_singletype<TOP>> streamNonEmptyIndexes(Type type) {
     TypeImpl ti = (TypeImpl) type;
     if (!isUsed.get(ti.getCode())) {
       return streamNonEmptyDirectSubtypes(ti);
@@ -1532,14 +1534,18 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     if (null == iicp || iicp.isEmpty()) {
       return Stream.empty();
     }
-    Stream<FsIndex_singletype<FeatureStructure>> iicpIndexesStream = iicp.streamNonEmptyIndexes();
+    Stream<FsIndex_singletype<TOP>> iicpIndexesStream = iicp.streamNonEmptyIndexes();
     return iicp.isDefaultBagIndex()
              ? Stream.concat(iicpIndexesStream, streamNonEmptyDirectSubtypes(ti))
              : iicpIndexesStream;
   }
   
-  public Stream<FsIndex_singletype<FeatureStructure>> streamNonEmptyDirectSubtypes(TypeImpl ti) {
-    Stream<FsIndex_singletype<FeatureStructure>> r = null;
+  public Stream<FsIndex_singletype<TOP>> streamNonEmptyIndexes(Class<? extends TOP> clazz) {
+    return streamNonEmptyIndexes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+  }
+    
+  public Stream<FsIndex_singletype<TOP>> streamNonEmptyDirectSubtypes(TypeImpl ti) {
+    Stream<FsIndex_singletype<TOP>> r = null;
     for (TypeImpl subType : ti.getDirectSubtypes()) {
       r = (r == null) 
             ? streamNonEmptyIndexes(subType)
