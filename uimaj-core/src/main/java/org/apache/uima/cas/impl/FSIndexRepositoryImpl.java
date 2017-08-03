@@ -79,6 +79,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   
   public final static boolean ITEM_ADDED_TO_INDEX = true;
   public final static boolean ITEM_REMOVED_FROM_INDEX = false;
+  /** set next to true to debug issues with different treatment of no type priorities in v3 */
+  public final static boolean V2_ANNOTATION_COMPARE_TYPE_ORDER = false;
   /**
    * The default size of an index.
    */
@@ -1814,7 +1816,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   private Comparator<TOP> createAnnotationFsComparator() {
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
     
-    if (lto.isEmptyTypeOrder()) {
+    if (!V2_ANNOTATION_COMPARE_TYPE_ORDER && lto.isEmptyTypeOrder()) {
       return this.sii.annotationFsComparatorWithoutId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2) return 0;
         Annotation fs1 = (Annotation) fsx1;
@@ -1838,7 +1840,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
 
-    if (lto.isEmptyTypeOrder()) {
+    if (!V2_ANNOTATION_COMPARE_TYPE_ORDER && lto.isEmptyTypeOrder()) {
       this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2) return 0;
   
