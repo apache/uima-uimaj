@@ -55,9 +55,13 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JFSIndexRepository;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
@@ -160,19 +164,27 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
      * initialization done lazily - on first call to getter    *
      *   Can't be static because needs ref to a JCas instance  */
 
-    public StringArray stringArray0L = null;
+    private StringArray stringArray0L = null;
 
-    public IntegerArray integerArray0L = null;
+    private IntegerArray integerArray0L = null;    
+    private ByteArray byteArray0L = null;
+    private ShortArray shortArray0L = null;
+    private LongArray longArray0L = null;
 
-    public FloatArray floatArray0L = null;
+    private FloatArray floatArray0L = null;
+    private DoubleArray doubleArray0L = null;
 
-    public FSArray fsArray0L = null;
+    private FSArray fsArray0L = null;
        
     void reset() {
       stringArray0L = null;
       integerArray0L = null;
       floatArray0L = null;
       fsArray0L = null;
+      doubleArray0L = null;
+      byteArray0L = null;
+      shortArray0L = null;
+      longArray0L = null;
     }
   }
 
@@ -948,6 +960,48 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     if (null == sharedView.floatArray0L)
       sharedView.floatArray0L = new FloatArray(this, 0);
     return sharedView.floatArray0L;
+  }
+
+  
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getByteArray0L()
+   */
+  @Override
+  public ByteArray getByteArray0L() {
+    if (null == sharedView.byteArray0L)
+      sharedView.byteArray0L = new ByteArray(this, 0);
+    return sharedView.byteArray0L;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getShortArray0L()
+   */
+  @Override
+  public ShortArray getShortArray0L() {
+    if (null == sharedView.shortArray0L)
+      sharedView.shortArray0L = new ShortArray(this, 0);
+    return sharedView.shortArray0L;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getLongArray0L()
+   */
+  @Override
+  public LongArray getLongArray0L() {
+    if (null == sharedView.longArray0L)
+      sharedView.longArray0L = new LongArray(this, 0);
+    return sharedView.longArray0L;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.jcas.JCas#getDoubleArray0L()
+   */
+  @Override
+  public DoubleArray getDoubleArray0L() {
+    if (null == sharedView.doubleArray0L)
+      sharedView.doubleArray0L = new DoubleArray(this, 0);
+    return sharedView.doubleArray0L;
   }
 
   /*

@@ -47,8 +47,12 @@ import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
@@ -268,7 +272,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
@@ -277,7 +281,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
@@ -285,12 +289,48 @@ public interface JCas extends AbstractCas {
 
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same valuee because it is not
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FSArray
    */
   FSArray getFSArray0L();
+
+  /**
+   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
+   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
+   * the CAS is reset.
+   * @return 0-length instance of a ByteArray
+   */
+  ByteArray getByteArray0L();
+
+  /**
+   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
+   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
+   * the CAS is reset.
+   * @return 0-length instance of a ShortArray
+   */
+  ShortArray getShortArray0L();
+
+  /**
+   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
+   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
+   * the CAS is reset.
+   * @return 0-length instance of a LongArray
+   */
+  LongArray getLongArray0L();
+
+  /**
+   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
+   * avoid creating multiple copies of it. All uses can use the same value because it is not
+   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
+   * the CAS is reset.
+   * @return 0-length instance of a DoubleArray
+   */
+  DoubleArray getDoubleArray0L();
 
   /**
    * initialize the JCas for new Cas content. Not used, does nothing.
