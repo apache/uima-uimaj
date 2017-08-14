@@ -142,8 +142,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     
     boolean highest = false;
     
-      if (size() == 0 || 
-        (c = comparator.compare(fs, a[a_nextFreeslot - 1])) > 0 ) {
+    if (size() == 0 || (c = comparator.compare(fs, a[a_nextFreeslot - 1])) > 0 ) {
       highest = true;
 //      addNewHighest(fs);
 ////      modificationCount++;
@@ -214,6 +213,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    *      rebalance by moving 1/2 the space from end to front.
    *     
    * @param insertPosOfAddedSpace position where new item goes 1 to the left
+   * @param highest true if inserting at end
    * @return adjusted insertPosOfAddedSpace, the free spot is just to the left of this position
    */
   private int insertSpace(int insertPosOfAddedSpace, boolean highest) {
