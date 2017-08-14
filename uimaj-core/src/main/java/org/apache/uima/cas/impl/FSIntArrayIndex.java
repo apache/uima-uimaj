@@ -93,21 +93,26 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
       return true;
     }
     
-    int pos = find(fs);
+    int pos = findExact(fs);
     
     // This rather complex logic can't be simplified due to edge cases, and the need
     // to have inserts for = compare but unequal identity things go in ascending 
     // over time insert order (a test case need)
     if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) {
-      int pos2 = refineToExactFsSearch(fs, pos);
-      if (pos2 < 0) { 
-        // the exact match wasn't found, OK to add
-        this.indexIntVector.add(pos + 1, fs);
-      }
+      return false; // was already exactly in the index, but it's not allowed to add duplicates, so skip
+//      int pos2 = refineToExactFsSearch(fs, pos);
+//      if (pos2 < 0) { 
+//        // the exact match wasn't found, OK to add
+//        pos = refineToV3Position(pos, fs);
+//        this.indexIntVector.add(pos + 1, fs);
+//        
+//      }
     } else if (pos >= 0) {
+      // was already exactly in the index, and it's ok to add duplicates
       this.indexIntVector.add(pos + 1, fs);
-    }
-    else {
+      return true;
+    } else {
+      // was not exactly in the index
       this.indexIntVector.add(-(pos + 1), fs);
     }
     return true;
@@ -130,24 +135,29 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
       return true;
     }
     
-    int pos = find(fs);
+    int pos = findExact(fs);
     
     // This rather complex logic can't be simplified due to edge cases, and the need
     // to have inserts for = compare but unequal identity things go in ascending 
     // over time insert order (a test case need)
     if (pos >= 0 && !FSIndexRepositoryImpl.IS_ALLOW_DUP_ADD_2_INDEXES) {
-      int pos2 = refineToExactFsSearch(fs, pos);
-      if (pos2 < 0) { 
-        // the exact match wasn't found, OK to add
-        this.indexIntVector.multiAdd(pos + 1, fs, count);
-      }
+      return false; // was already exactly in the index, not ok to add dups, so skip
+//      int pos2 = refineToExactFsSearch(fs, pos);
+//      if (pos2 < 0) { 
+//        // the exact match wasn't found, OK to add
+//        this.indexIntVector.multiAdd(pos + 1, fs, count);
+//      } else {
+//        return false; // was already in the index, not ok to add dups, so skip       
+//      }
     } else if (pos >= 0) {
+      // was already exactly in the index, and it's ok to add duplicates
       this.indexIntVector.multiAdd(pos + 1, fs, count);
-    }
-    else {
+      return true;
+    } else {
+      // was not in the index
       this.indexIntVector.multiAdd(-(pos + 1), fs, count);
+      return true;
     }
-    return true;
   }
 
   // public IntIteratorStl iterator() {
@@ -162,6 +172,10 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    */
   private final int find(int fsRef) {
     return binarySearch(this.indexIntVector.getArray(), fsRef, 0, this.indexIntVector.size());
+  }
+  
+  private final int findExact(int fsRef) {
+    return binarySearchExact(this.indexIntVector.getArray(), fsRef, 0, this.indexIntVector.size());
   }
   
   /**
@@ -204,12 +218,13 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
    * @return position of Exact FS spot or neg of an insert spot (if no == match)
    */
   final int findEq(int fsRef) {
-    int pos = find(fsRef);
-    if (pos < 0) {
-      return pos;
-    }
-    int pos2 = refineToExactFsSearch(fsRef, pos);
-    return (pos2 == -1) ? (-pos) -1 : pos2;
+    return findExact(fsRef);
+//    int pos = find(fsRef);
+//    if (pos < 0) {
+//      return pos;
+//    }
+//    int pos2 = refineToExactFsSearch(fsRef, pos);
+//    return (pos2 == -1) ? (-pos) -1 : pos2;
   }
 
   // private final int find(int ele)
@@ -271,37 +286,35 @@ public class FSIntArrayIndex<T extends FeatureStructure> extends FSLeafIndexImpl
     // This means that the input span is empty.
     return (-start) - 1;
   }
-  
-  // do a search of equal-comparing FSs to find one (of among several possible) where the 
-  // FS address is == to fsRef
-  // Must be called with fsRef pointing to an element which compares equal
-  // returns the index to (one of the possibly many) entry which references
-  //   the same address as fsRef, or
-  //   -1 if not found
-  private final int refineToExactFsSearch(int fsRef, int startingPos) {
-    final int[] array = this.indexIntVector.getArray();
-    // search down and up for == fsRef, while key values ==
-    for (int movingPos = startingPos; movingPos >= 0; movingPos --) {
-      final int v = array[movingPos];
-      if (v == fsRef) {
-        return movingPos;
+
+  private final int binarySearchExact(int[] array, int ele, int start, int end) {
+    --end; // Make end a legal value.
+    int i; // Current position
+    int comp; // Compare value
+    while (start <= end) {
+      i = (int)(((long)start + end) / 2);
+      comp = compare(ele, array[i]);
+      if (comp == 0) {
+        comp = Integer.compare(ele, array[i]);
+        if (comp == 0) {
+          return i;
+        }
       }
-      if (compare(v, fsRef) != 0) {
-        break;  // not found
+      if (start == end) {
+        if (comp < 0) {
+          return (-i) - 1;
+        }
+        // comp > 0
+        return (-i) - 2; // (-(i+1))-1
       }
-    }
-    // search up
-    final int lenArray = this.indexIntVector.size();
-    for (int movingPos = startingPos + 1; movingPos < lenArray; movingPos ++) {
-      final int v = array[movingPos];
-      if (v == fsRef) {
-        return movingPos;
-      }
-      if (compare(v, fsRef) != 0) {
-       break;  // not found
+      if (comp < 0) {
+        end = i - 1;
+      } else { // comp > 0
+        start = i + 1;
       }
     }
-    return -1;
+    // This means that the input span is empty.
+    return (-start) - 1;
   }
 
   /**
