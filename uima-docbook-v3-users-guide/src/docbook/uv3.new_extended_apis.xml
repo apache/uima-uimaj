@@ -152,7 +152,8 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
         </para>
     </section> 
   </section>     
-  
+ 
+  <!--  
   <section id="uv3.new_extended_apis.annotation">
     <title>Annotation comparator methods</title>
     
@@ -162,7 +163,7 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
       A second method (<code>compareAnnotation(other, linear_type_order)</code>) adds a 3rd comparison,
       used if the Annotations compare equal), which uses a linear_type_order to compare the two types.
       Another two methods extend these two methods with an additional key - the Annotation's ID,
-      used only if the previous comparsions are all equal.
+      used only if the previous comparisons are all equal.
       All of these return the standard Java compare result allowing discrimination between equal, &gt;, and &lt;.
       
       <variablelist>
@@ -195,7 +196,8 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
         
       </para>
   </section>
-
+ -->
+ 
   <section id="uv3.new_extended_apis.reorganized">
     <title>Reorganized APIs</title>
     
@@ -211,9 +213,21 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     the other (<code>org.apache.uima.cas.impl.AnnotationImpl</code>)otherwise.  In version 3, there's only one implementation;
     the other (AnnotationImpl) is converted to an interface.  Annotation now "implements AnnotationImpl.</para>
   </section>
-  
+ 
+  <section id="uv3.new_extended_apis.class">
+    <title>Use of JCas Class to specify a UIMA type</title>
+    
+    <para>Several APIs require a UIMA type to be specified.  For instance, the API to remove all Feature Structures
+    of a particular type requires the type to be specified.  Instead of a UIMA Type object, if there is a JCas
+    cover class for that type, you can pass that as well, as (for example) <code>Annotation.class</code>.
+    </para>
+  </section>
+    
   <section id="uv3.new_extended_apis.other">
     <title>Other changes</title>
+    
+    <para>The JCas interface and implementation added the other built-in array types for 0-length instances.
+    New methods are <code>getByteArray0L, getShortArray0L, getLongArray0L, getDoubleArray0L</code>.</para>
     
     <para>The utility class <code>org.apache.uima.util.FileUtils</code> has a new method
       <code>writeToFile(path, string)</code>, which efficiently writes a string using UTF-8 encoding to 
