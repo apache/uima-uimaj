@@ -48,6 +48,8 @@ public class IndexRepositoryTest extends TestCase {
 
   FSIndexRepository indexRep;
 
+  private String running;
+
   /*
    * (non-Javadoc)
    * 
@@ -130,6 +132,28 @@ public class IndexRepositoryTest extends TestCase {
     index = ir.getIndex(CASTestSetup.ANNOT_SORT_INDEX);
     assertEquals(2, index.size());
 
+    // Annotation is supertype of token
+    // test if set observes implicit key of type
+    Type annotType = this.typeSystem.getType(CAS.TYPE_NAME_ANNOTATION);
+    Feature annotBeginFeat = this.typeSystem.getFeatureByFullName(CAS.TYPE_NAME_ANNOTATION + ":begin");
+    cas.getIndexRepository().removeAllIncludingSubtypes(annotType);
+
+    FeatureStructure annotTypeFs3 = this.cas.createFS(annotType);
+    annotTypeFs3.setIntValue(annotBeginFeat, 17);
+
+    cas.addFsToIndexes(tokenTypeFs1);
+    cas.addFsToIndexes(annotTypeFs3);
+
+    index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX);
+    assertEquals(2, index.size());
+    
+    // shows type is implicit key for set compares
+    index = ir.getIndex(CASTestSetup.ANNOT_SET_INDEX_NO_TYPEORDER);
+    assertEquals(2, index.size());
+    
+    
+    
+    
   }
   
   /**
@@ -182,6 +206,22 @@ public class IndexRepositoryTest extends TestCase {
   }
   
   public void testAddSpeed() { 
+    running = "testAddSpeed - 2 sorted, 1 set, 1 bag";
+    runAddSpeed();
+  }
+  
+  // commented out because this was copied from uv3, and uv2 is missing the ir.removeIndex method
+//  public void testAddSpeedSorted() {
+//    FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getIndexRepository();
+//    ir.removeIndex(CASTestSetup.ANNOT_SET_INDEX);
+//    ir.removeIndex(CASTestSetup.ANNOT_SORT_INDEX);
+//    ir.removeIndex(CASTestSetup.ANNOT_BAG_INDEX);
+////   ir.removeIndex(CAS.STD_ANNOTATION_INDEX);
+//    running = "testAddSpeedSorted";
+//    runAddSpeed();
+//  }
+    
+  private void runAddSpeed() { 
     // create an instance of an annotation type
     Feature beginFeat = this.typeSystem.getFeatureByFullName(CASTestSetup.TOKEN_TYPE + ":begin");
     Type fsType = this.typeSystem.getType(CASTestSetup.TOKEN_TYPE);
@@ -194,21 +234,21 @@ public class IndexRepositoryTest extends TestCase {
     
     // warmup and jit
     long prev = Long.MAX_VALUE;
-    for (int i = 0; i < 5 /* 1000 */; i++) {
+    for (int i = 0; i < 10; i++) {
       cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
       long t = timeAdd2Indexes(fsa, false);
       if (t < prev) {
-        System.out.format("Iteration %,d Add Forward 40K took  %,d microsec%n", i, t/1000);
+        System.out.format("%s Iteration %,d Add Forward 40K took  %,d microsec%n", running, i, t/1000);
         prev = t;
       }
     }
     
     prev = Long.MAX_VALUE;
-    for (int i = 0; i < 5 /* 10 */; i++) {
+    for (int i = 0; i < 10; i++) {
       cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
       long t = timeAdd2Indexes(fsa, true);
       if (t < prev) {
-        System.out.format("Iteration %,d Add Reverse 40K took  %,d microsec%n", i, t/1000);
+        System.out.format("%s Iteration %,d Add Reverse 40K took  %,d microsec%n", running, i, t/1000);
         prev = t;
       }
     }
@@ -219,7 +259,7 @@ public class IndexRepositoryTest extends TestCase {
     // create an instance of an non-annotation type
    
 
-    for (int iii = 0; iii < 3 /*10000*/; iii++) { // change to 10000 for iterations
+    for (int iii = 0; iii < 6 /*10000*/; iii++) { // change to 10000 for iterations
       
 //      this.cas = CASInitializer.initCas(new CASTestSetup());
 //      this.typeSystem = this.cas.getTypeSystem();
