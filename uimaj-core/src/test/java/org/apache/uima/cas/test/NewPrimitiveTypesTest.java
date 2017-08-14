@@ -79,6 +79,8 @@ public class NewPrimitiveTypesTest extends TestCase {
 
   private Type exampleType;
 
+  private Feature beginFeature;
+  
   private Feature floatFeature;
 
   private Feature stringFeature;
@@ -129,6 +131,8 @@ public class NewPrimitiveTypesTest extends TestCase {
 
       // new primitive types
       exampleType = tsa.addType("test.primitives.Example", annotationType);
+      
+      beginFeature = exampleType.getFeatureByBaseName("begin");
 
       floatFeature = tsa.addFeature("floatFeature", exampleType, tsa.getType(CAS.TYPE_NAME_FLOAT));
       stringFeature = tsa.addFeature("stringFeature", exampleType, tsa
@@ -360,7 +364,8 @@ public class NewPrimitiveTypesTest extends TestCase {
     validateFSData(cas);
 
     // editing the original FS should not change the clone
-    englishView.removeFsFromIndexes(fs);
+    englishView.removeFsFromIndexes(fs);    // does nothing! because fs already removed 3 statements above
+                                            // and remove requires finding == item in index
     fs.setStringValue(stringFeature, "foo");
     fs.setFloatValue(floatFeature, -1f);
     fs.setByteValue(byteFeature, (byte) -1);
@@ -368,6 +373,7 @@ public class NewPrimitiveTypesTest extends TestCase {
     fs.setShortValue(shortFeature, (short) -1);
     fs.setLongValue(longFeature, -1);
     fs.setDoubleValue(doubleFeature, -1);
+    fs.setIntValue(beginFeature, fs.getIntValue(beginFeature) + 1);  // otherwise, gets indexed in front 
     englishView.addFsToIndexes(fs);
     validateFSData(cas);
   }
