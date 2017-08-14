@@ -261,9 +261,20 @@ public class CasSerializerSupport {
      * set of FSs that have been enqueued to be serialized
      *  Computed during "enqueue" phase, prior to encoding
      *  Used to prevent duplicate enqueuing
+     *  
+     *  Public for use by JsonCasSerializer
      */    
     public final PositiveIntSet_impl visited_not_yet_written; 
     
+    /**
+     * Set of FSs referenced from features marked as multipleReferencesAllowed.
+     * Set during enqueue scanning, to handle the case where the
+     * "visited_not_yet_written" set may have already recorded that this FS is 
+     * already processed for enquing, but it is an array or list item which is being
+     * put "in-line" and no element is being written.
+     */
+    private final PositiveIntSet_impl enqueued_multiRef_arrays_or_lists = new PositiveIntSet_impl();
+
     /**
      * set of FSs that have multiple references
      * This is for JSON which is computing the multi-refs, not depending on the setting in a feature.
@@ -908,8 +919,19 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
+            if (featVal == 0) {
+              break;  // don't enqueue anything if the value is null
+            }
             final boolean alreadyVisited = visited_not_yet_written.contains(featVal);
             if (isMultiRef_enqueue(feat, featVal, alreadyVisited, false, false)) {
+              // https://issues.apache.org/jira/browse/UIMA-5532
+              if (enqueued_multiRef_arrays_or_lists.add(featVal)) {  // only do this once per item
+                if (alreadyVisited) {
+                  visited_not_yet_written.remove(featVal);
+                  // otherwise enqueue call below is a no-op
+                  // enqueue call will re-add this item to visited_not_yet_written
+                }
+              }
               enqueue(featVal);  // will add to queue list 1st time multi-ref detected
             // otherwise, it is singly referenced (so far) and will be embedded
             //   (or has already been enqueued, in dynamic embedding mode), so don't enqueue
@@ -931,8 +953,19 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
+            if (featVal == 0) {
+              break; // nothing to enqueue if the value is null
+            }
             final boolean alreadyVisited = visited_not_yet_written.contains(featVal);
             if (isMultiRef_enqueue(feat, featVal, alreadyVisited, insideListNode, true)) {
+              // https://issues.apache.org/jira/browse/UIMA-5532
+              if (enqueued_multiRef_arrays_or_lists.add(featVal)) {  // only do this once per item
+                if (alreadyVisited) {
+                  visited_not_yet_written.remove(featVal);
+                  // otherwise enqueue call below is a no-op
+                  // enqueue call will re-add this item to visited_not_yet_written
+                }
+              }              
               enqueue(featVal);
             } else if (fsClass == TYPE_CLASS_FSLIST && !alreadyVisited) {
               // also, we need to enqueue any FSs reachable from an FSList
