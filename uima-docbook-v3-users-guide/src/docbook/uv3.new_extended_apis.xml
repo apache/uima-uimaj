@@ -229,6 +229,11 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     <para>The JCas interface and implementation added the other built-in array types for 0-length instances.
     New methods are <code>getByteArray0L, getShortArray0L, getLongArray0L, getDoubleArray0L</code>.</para>
     
+    <para>FSIterator has a new <code>moveToExact(FeatureStructure)</code>, which works like moveTo, except that the
+      position moved to is one that is equal, not just compare as equal, to the Feature Structure argument.
+      If no such element exists, the iterator is marked invalid.
+    </para>
+    
     <para>The utility class <code>org.apache.uima.util.FileUtils</code> has a new method
       <code>writeToFile(path, string)</code>, which efficiently writes a string using UTF-8 encoding to 
       <code>path</code>.
