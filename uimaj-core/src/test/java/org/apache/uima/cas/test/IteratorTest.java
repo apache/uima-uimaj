@@ -382,10 +382,10 @@ public class IteratorTest extends TestCase {
   
   private void setupFSs() {
     for (int i = 0; i < 10; i++) {
-      createFSs(i);
+      createFSs(i);   // 0 ... 9
     }
     for (int i = 19; i >= 10; i--) {
-      createFSs(i);
+      createFSs(i);   // 19 ... 10
     }
   }
   
