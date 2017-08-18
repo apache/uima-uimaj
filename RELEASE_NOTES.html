@@ -20,10 +20,10 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v2.10.0 Release Notes</title>
+  <title>Apache UIMA v2.10.1 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.0 Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v2.10.1 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
@@ -82,15 +82,9 @@
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 <p>The major changes in this release include:</p>
 
-<ul><li>new support for using parameter strings
-containing references to external override values within UIMA Descriptor <code>import</code> statements
-and within the fileUrl value of fileResourceSpecifiers.</li>
-<li>support for searching the classpath and UIMA Datapath when loading an external overrides file.</li>
-<li>to improve integration with Java, the JCas cover classes for the built-in UIMA types FSArray, FSList, 
-StringArray, and StringList now support the Iterable interface.</li>
-<li>a new report on API changes,
-<a target="_blank" href="api-change-report.html">api-change-report.html</a>,
-is included as part of the release.</li>
+<ul><li>https://issues.apache.org/jira/browse/UIMA-5411 - for external override values,
+make the class/data path search for external settings explicit by requiring a path: prefix.
+This is a syntax change for this feature introduced in 2.10.0.</li>
 </ul>
   
 <h2><a id="list.issues">Full list of JIRA Issues Fixed in this Release</a></h2>
