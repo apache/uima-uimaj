@@ -345,6 +345,11 @@ public class JsonCasSerializerTest extends TestCase {
   }
 
   public void arrayOrListRefstst(boolean tstArray) throws Exception {
+    
+    // using dynamic embedding
+    // an element is multiply-referenced if it is both in the index (referenced by the "view") and is referenced 
+    //   by an FSRef in a feature or a slot in an FSArray
+    
     jcas.reset();
     
     //  make root FS that is indexed and has a ref 
@@ -374,16 +379,18 @@ public class JsonCasSerializerTest extends TestCase {
     l2.setHead(refa3);;
          
     if (tstArray) {
-      root.setAArrayFS(a);
+      root.setAArrayFS(a);  // is not (yet) multiply referenced
     } else {
       root.setAListFs(l0);
     }
     
     String sfx = (tstArray) ? "a" : "l";
     // all embeddable:
+    //   because ref1,2,3 are not index, and FSArray isn't either
     serializeAndCompare("array-all-embeddable-" + sfx + ".txt");
     // 1 not embeddable, at all 3 positions
     refa1.addToIndexes();
+    //   ref1 is multiply indexed
     serializeAndCompare("array-a1-not-" + sfx + ".txt");
     refa1.removeFromIndexes();
     refa2.addToIndexes();
