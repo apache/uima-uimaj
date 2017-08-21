@@ -901,10 +901,10 @@ public class CasSerializerSupport {
      *   (not handled here: ordinary FSs are serialized in-line in JSON with isDynamicMultiRef)
      *     
      * @param featCode - the feature, to look up the mulitRefAllowed flag
-     * @param featVal - the List or FSArray element
+     * @param featVal - the List or Array element
      * @param alreadyVisited true if visited_not_yet_written contains featVal
-     * @param isListNode
-     * @param isListFeat
+     * @param isListNode - 
+     * @param isListFeat - 
      * @return false if should skip enqueue because this array or list is being serialized inline
      * @throws SAXException
      */
