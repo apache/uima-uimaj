@@ -61,6 +61,14 @@ import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
+import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.IntegerList;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -106,6 +114,88 @@ public class XmiCasDeserializerTest extends TestCase {
             .getFsIndexes();
   }
 
+  /**
+   * test case for https://issues.apache.org/jira/browse/UIMA-5532
+   * @throws Exception
+   */
+  public void testSerialize_withPartialMultiRefs() throws Exception {
+   ;
+    TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+        new XMLInputSource(JUnitExtension.getFile("ExampleCas/testTypeSystem_small_withMultiRefs.xml")));
+    CAS cas = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
+    
+    TypeSystem ts = cas.getTypeSystem();
+    Type refType = ts.getType("RefType");
+    Feature ref = refType.getFeatureByBaseName("ref");
+    Feature ref_FSArray = refType.getFeatureByBaseName("ref_FSArray");
+    Feature ref_FSList = refType.getFeatureByBaseName("ref_FSList");
+    
+    JCas jcas = cas.getJCas();
+    FSArray fsarray = new FSArray(jcas, 2);
+    TOP fs1 = new TOP(jcas);
+    TOP fs2 = new TOP(jcas);
+    fsarray.set(0, fs1);
+    fsarray.set(1, fs2);
+    
+//    fsarray.addToIndexes(); // if added to indexes, forces serialization of FSArray as an element
+    
+    AnnotationFS fsRef = cas.createAnnotation(refType, 0, 0);
+    fsRef.setFeatureValue(ref, fsarray);
+    cas.addFsToIndexes(fsRef);                    // gets serialized in=place
+    
+    fsRef = cas.createAnnotation(refType, 0, 0);
+    fsRef.setFeatureValue(ref_FSArray, fsarray);
+    cas.addFsToIndexes(fsRef);                    // gets serialized as ref
+    
+    String xml = serialize(cas, null);
+    
+ // deserialize into another CAS
+    SAXParserFactory fact = SAXParserFactory.newInstance();
+    SAXParser parser = fact.newSAXParser();
+    XMLReader xmlReader = parser.getXMLReader();
+    
+    CAS cas2 = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
+    XmiCasDeserializer deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
+    ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
+    xmlReader.setContentHandler(deserHandler2);
+    xmlReader.parse(new InputSource(new StringReader(xml)));
+    
+    CasComparer.assertEquals(cas, cas2);
+    
+    // ------- repeat with lists in place of arrays --------------
+
+    cas.reset();
+    
+    FSList fslist2 = new EmptyFSList(jcas);
+    FSList fslist1 = new NonEmptyFSList(jcas, fs2, fslist2);
+    FSList fslist0 = new NonEmptyFSList(jcas, fs1, fslist1);
+    
+//    fsarray.addToIndexes(); // if added to indexes, forces serialization of FSArray as an element
+    
+    fsRef = cas.createAnnotation(refType, 0, 0);
+    fsRef.setFeatureValue(ref, fslist0);
+    cas.addFsToIndexes(fsRef);                    // gets serialized in=place
+    
+    fsRef = cas.createAnnotation(refType, 0, 0);
+    fsRef.setFeatureValue(ref_FSList, fslist0);
+    cas.addFsToIndexes(fsRef);                    // gets serialized as ref
+    
+    xml = serialize(cas, null);
+    
+ // deserialize into another CAS
+    parser = fact.newSAXParser();
+    xmlReader = parser.getXMLReader();
+    
+    cas2.reset();
+    deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
+    deserHandler2 = deser2.getXmiCasHandler(cas2);
+    xmlReader.setContentHandler(deserHandler2);
+    xmlReader.parse(new InputSource(new StringReader(xml)));
+    
+    CasComparer.assertEquals(cas, cas2);
+
+  }
+  
   public void testDeserializeAndReserialize() throws Exception {
     try {
       File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
