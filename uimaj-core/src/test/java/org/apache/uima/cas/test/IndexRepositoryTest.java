@@ -234,7 +234,7 @@ public class IndexRepositoryTest extends TestCase {
     
     // warmup and jit
     long prev = Long.MAX_VALUE;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5 /* 1000 */; i++) {
       cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
       long t = timeAdd2Indexes(fsa, false);
       if (t < prev) {
@@ -244,7 +244,7 @@ public class IndexRepositoryTest extends TestCase {
     }
     
     prev = Long.MAX_VALUE;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 5 /* 10 */; i++) {
       cas.getIndexRepository().removeAllIncludingSubtypes(cas.getTypeSystem().getTopType());
       long t = timeAdd2Indexes(fsa, true);
       if (t < prev) {
@@ -259,7 +259,7 @@ public class IndexRepositoryTest extends TestCase {
     // create an instance of an non-annotation type
    
 
-    for (int iii = 0; iii < 6 /*10000*/; iii++) { // change to 10000 for iterations
+    for (int iii = 0; iii < 3 /*10000*/; iii++) { // change to 10000 for iterations
       
 //      this.cas = CASInitializer.initCas(new CASTestSetup());
 //      this.typeSystem = this.cas.getTypeSystem();
