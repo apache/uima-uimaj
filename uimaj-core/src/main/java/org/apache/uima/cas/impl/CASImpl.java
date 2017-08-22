@@ -127,10 +127,13 @@ import org.apache.uima.util.Level;
  * 
  */
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS, TypeSystemConstants {
-  
+
+  private static final String TRACE_FSS = "uima.trace_fs_creation_and_updating";
   public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
   private static final boolean trace = false; // debug
-  public static final boolean traceFSs = false;  // debug - trace FS creation and update
+  public static final boolean traceFSs = // false;  // debug - trace FS creation and update
+      Misc.getNoValueSystemProperty(TRACE_FSS);
+  
   public static final boolean traceCow = false;  // debug - trace copy on write actions, index adds / deletes 
   private static final String traceFile = "traceFSs.log.txt";
   private static final PrintStream traceOut;
