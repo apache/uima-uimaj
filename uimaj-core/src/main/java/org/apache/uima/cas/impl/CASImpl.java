@@ -110,8 +110,11 @@ import org.apache.uima.util.Misc;
  */
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS {
   
+  private static final String TRACE_FSS = "uima.trace_fs_creation_and_updating";
   private static final boolean trace = false;
-  public static final boolean traceFSs = false;  // debug - trace FS creation and update
+  public static final boolean traceFSs = // false;  // debug - trace FS creation and update
+      Misc.getNoValueSystemProperty(TRACE_FSS);
+
   private static final String traceFile = "traceFSs.log.txt";
   private static final PrintStream traceOut;
   static {
