@@ -527,6 +527,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private int nextId2Addr = 1;  // only for tracing, to convert id's to v2 addresses
     final private int initialHeapSize;
     
+    JCasImpl.JCasSharedView jcasSharedView;
+    
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
       this.tsi = tsi;
@@ -567,6 +569,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         id2addr.add(0);
         nextId2Addr = 1;
       }
+      if (jcasSharedView != null) {
+        jcasSharedView.reset();
+      }
+      
+      emptyFloatList = null; // these cleared in case new ts redefines?
+      emptyFSList = null;
+      emptyIntegerList = null;
+      emptyStringList = null;
+  
+      clearNonSharedInstanceData();
     }
     
     /**
@@ -589,19 +601,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      *   
      */
     void clear() {
-      clearCasReset();
-      clearTrackingMarks();
-      
+      resetNoQuestions(false);  // false - skip flushing the index repos
+
       // type system + index spec
       tsi = null;
       featureCodesInIndexKeys.clear();
 //      featureJiInIndexKeys.clear();
-      emptyFloatList = null; // these cleared in case new ts redefines?
-      emptyFSList = null;
-      emptyIntegerList = null;
-      emptyStringList = null;
       
-      clearSofaInfo();
       
       /**
        * Clear the existing views, except keep the info for the initial view
@@ -618,8 +624,57 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         sofaNbr2ViewMap.clear();
         viewCount = 0;
       }
+      
     }
     
+    private void resetNoQuestions(boolean flushIndexRepos) {
+      casResets.incrementAndGet();
+      if (trace) {
+        System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
+           " for CasId = " + casId + ", new reset count = " + casResets.get());
+      }
+
+      clearCasReset(); // also clears cached FSs
+       
+      if (flushIndexRepos) {
+        flushIndexRepositoriesAllViews();
+      }
+      
+      clearTrackingMarks();
+      
+      clearSofaInfo();  // but keep initial view, and other views
+                                 // because setting up the index infrastructure is expensive
+      viewCount = 1;  // initial view
+      
+      traceFSid = 0;
+      if (traceFSs) traceFScreationSb.setLength(0);
+      componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
+    }
+    
+    private void flushIndexRepositoriesAllViews() {
+      int numViews = viewCount;
+      for (int view = 1; view <= numViews; view++) {
+        CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
+        if (tcas != null) {
+          tcas.indexRepository.flush();
+        }
+      }
+      
+   // safety : in case this public method is called on other than the base cas 
+      baseCAS.indexRepository.flush();  // for base view, other views flushed above
+    }
+    
+    private void clearNonSharedInstanceData() {
+      int numViews = viewCount;
+      for (int view = 1; view <= numViews; view++) {
+        CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getViewFromSofaNbr(view));
+        if (tcas != null) {         
+          tcas.mySofaRef = null;  // was in v2: (1 == view) ? -1 : 0;
+          tcas.docAnnotIter = null;
+        }
+      }      
+    }
+       
     private void clearTrackingMarks() {
       // resets all markers that might be held by things outside the Cas
       // Currently (2009) this list has a max of 1 element
@@ -701,6 +756,33 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
       return r;
     }
+    
+    private CASImpl getViewFromSofaNbr(int nbr) {
+      final ArrayList<CASImpl> sn2v = sofaNbr2ViewMap;
+      if (nbr < sn2v.size()) {
+        return sn2v.get(nbr);
+      }
+      return null;
+    }
+    
+    // For internal platform use only
+    CASImpl getInitialView() {
+      CASImpl couldBeThis = getViewFromSofaNbr(1);
+      if (couldBeThis != null) {
+        return couldBeThis;
+      }
+      // create the initial view, without a Sofa
+      CASImpl aView = new CASImpl(baseCAS, (SofaFS) null);
+      setViewForSofaNbr(1, aView);
+      assert (viewCount <= 1);
+      viewCount = 1;
+      return aView;
+    }
+    
+    void setViewForSofaNbr(int nbr, CASImpl view) {
+      Misc.setWithExpand(sofaNbr2ViewMap, nbr, view);
+    }
+
   }
   
   /*****************************************************************
@@ -1502,43 +1584,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   public void resetNoQuestions() {
-    svd.casResets.incrementAndGet();
-    svd.clearCasReset();
-    getJCasImpl().sharedViewReset();
-    if (trace) {
-      System.out.println("CAS Reset in thread " + Thread.currentThread().getName() +
-         " for CasId = " + getCasId() + ", new reset count = " + svd.casResets.get());
-    }
-    
-    int numViews = this.getViewCount();
-    // Flush indexRepository for all views
-    for (int view = 1; view <= numViews; view++) {
-      CASImpl tcas = (CASImpl) ((view == 1) ? getInitialView() : getView(view));
-      if (tcas != null) {
-        tcas.indexRepository.flush();
-        
-        // mySofaRef = -1 is a flag in initial view that sofa has not been set.
-        // For the initial view, it is possible to not have a sofa - it is set
-        // "lazily" upon the first need.
-        // all other views always have a sofa set. The sofaRef is set to 0,
-        // but will be set to the actual sofa addr in the cas when the view is
-        // initialized.
-        
-        tcas.mySofaRef = null;  // was in v2: (1 == view) ? -1 : 0;
-        tcas.docAnnotIter = null;
-      }
-    }
-    this.svd.clearTrackingMarks();
-    
-    // safety : in case this public method is called on other than the base cas 
-    this.getBaseCAS().indexRepository.flush();  // for base view, other views flushed above
-    this.svd.clearSofaInfo();  // but keep initial view, and other views
-                               // because setting up the index infrastructure is expensive
-    this.svd.viewCount = 1;  // initial view
-    
-    svd.traceFSid = 0;
-    if (traceFSs) svd.traceFScreationSb.setLength(0);
-    this.svd.componentInfo = null; // https://issues.apache.org/jira/browse/UIMA-5097
+    svd.resetNoQuestions(true);
   }
 
   /**
@@ -2033,7 +2079,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   // For internal use only
   public CAS getView(int sofaNum) {
-    return getViewFromSofaNbr(sofaNum);
+    return svd.getViewFromSofaNbr(sofaNum);
   }
 
   
@@ -2049,6 +2095,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public JCas getJCas() {
     if (this.jcas == null) {
       this.jcas = JCasImpl.getJCas(this);
+      this.svd.jcasSharedView = jcas.getSharedView();
     }
     return this.jcas;
   }
@@ -2098,30 +2145,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return getJCas(sofa);
   }
   
-  private CASImpl getViewFromSofaNbr(int nbr) {
-    final ArrayList<CASImpl> sn2v = this.svd.sofaNbr2ViewMap;
-    if (nbr < sn2v.size()) {
-      return sn2v.get(nbr);
-    }
-    return null;
-  }
-  
-  void setViewForSofaNbr(int nbr, CASImpl view) {
-    Misc.setWithExpand(this.svd.sofaNbr2ViewMap, nbr, view);
-  }
-
   // For internal platform use only
   CASImpl getInitialView() {
-    CASImpl couldBeThis = getViewFromSofaNbr(1);
-    if (couldBeThis != null) {
-      return couldBeThis;
-    }
-    // create the initial view, without a Sofa
-    CASImpl aView = new CASImpl(this.svd.baseCAS, (SofaFS) null);
-    setViewForSofaNbr(1, aView);
-    assert (this.svd.viewCount <= 1);
-    this.svd.viewCount = 1;
-    return aView;
+    return svd.getInitialView();
   }
 
   @Override
@@ -2195,7 +2221,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     final int sofaNbr = sofa.getSofaRef();
 //    final Integer sofaNbrInteger = Integer.valueOf(sofaNbr);
 
-    CASImpl aView = getViewFromSofaNbr(sofaNbr);
+    CASImpl aView = svd.getViewFromSofaNbr(sofaNbr);
     if (null == aView) {
       // This is the deserializer case, or the case where an older API created a
       // sofa,
@@ -2203,7 +2229,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
       // create a new CAS view
       aView = new CASImpl(this.svd.baseCAS, sofa);
-      setViewForSofaNbr(sofaNbr, aView);
+      svd.setViewForSofaNbr(sofaNbr, aView);
       verifySofaNameUniqueIfDeserializedViewAdded(sofaNbr, sofa);
       return aView;
     }
@@ -4130,7 +4156,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   @Override
   public String getViewName() {
-    return (this == getViewFromSofaNbr(1)) ? CAS.NAME_DEFAULT_SOFA :
+    return (this == svd.getViewFromSofaNbr(1)) ? CAS.NAME_DEFAULT_SOFA :
            mySofaIsValid() ? mySofaRef.getSofaID() : 
            null; 
   }
@@ -4722,28 +4748,28 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  public EmptyFSList getEmptyFSList() {
+  public EmptyFSList getEmptyFSListImpl() {
     if (null == svd.emptyFSList) {
       svd.emptyFSList = new EmptyFSList(getTypeSystemImpl().fsEListType, this);
     }
     return svd.emptyFSList;
   }
 
-  public EmptyFloatList getEmptyFloatList() {
+  public EmptyFloatList getEmptyFloatListImpl() {
     if (null == svd.emptyFloatList) {
       svd.emptyFloatList = new EmptyFloatList(getTypeSystemImpl().floatEListType, this);
     }
     return svd.emptyFloatList;
   }
   
-  public EmptyIntegerList getEmptyIntegerList() {
+  public EmptyIntegerList getEmptyIntegerListImpl() {
     if (null == svd.emptyIntegerList) {
       svd.emptyIntegerList = new EmptyIntegerList(getTypeSystemImpl().intEListType, this);
     }
     return svd.emptyIntegerList;
   }
   
-  public EmptyStringList getEmptyStringList() {
+  public EmptyStringList getEmptyStringListImpl() {
     if (null == svd.emptyStringList) {
       svd.emptyStringList = new EmptyStringList(getTypeSystemImpl().stringEListType, this);
     }
@@ -4755,10 +4781,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return the empty list (shared) corresponding to the type
    */
   public EmptyList getEmptyList(int rangeCode) {
-    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? getEmptyIntegerList() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? getEmptyFloatList() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? getEmptyStringList() :
-                                                                       getEmptyFSList();
+    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? getEmptyIntegerListImpl() :
+           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? getEmptyFloatListImpl() :
+           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? getEmptyStringListImpl() :
+                                                                       getEmptyFSListImpl();
   }
   
   /**
@@ -4770,16 +4796,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     switch (rangeCode) {
     case fsListTypeCode:
     case fsEListTypeCode:
-    case fsNeListTypeCode: return getEmptyFSList();
+    case fsNeListTypeCode: return getEmptyFSListImpl();
     case floatListTypeCode:
     case floatEListTypeCode:
-    case floatNeListTypeCode: return getEmptyFloatList();
+    case floatNeListTypeCode: return getEmptyFloatListImpl();
     case intListTypeCode:
     case intEListTypeCode:
-    case intNeListTypeCode: return getEmptyIntegerList();
+    case intNeListTypeCode: return getEmptyIntegerListImpl();
     case stringListTypeCode:
     case stringEListTypeCode:
-    case stringNeListTypeCode: return getEmptyStringList();
+    case stringNeListTypeCode: return getEmptyStringListImpl();
     default: throw new IllegalArgumentException();
     }
   }
