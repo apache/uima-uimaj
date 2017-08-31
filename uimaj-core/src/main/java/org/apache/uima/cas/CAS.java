@@ -30,8 +30,11 @@ import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyFloatList;
+import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.impl.JCasImpl;
-import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Object-oriented CAS (Common Analysis System) API.
@@ -1166,4 +1169,21 @@ public interface CAS extends AbstractCas {
   default <T extends FeatureStructure> SelectFSs<T> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
   }
+  
+  default EmptyFloatList getEmptyFloatList() {
+    return ((CASImpl)this).getEmptyFloatListImpl();
+  }
+  
+  default EmptyFSList getEmptyFSList() {
+    return ((CASImpl)this).getEmptyFSListImpl();
+  }
+  
+  default EmptyIntegerList getEmptyIntegerList() {
+    return ((CASImpl)this).getEmptyIntegerListImpl();
+  }
+
+  default EmptyStringList getEmptyStringList() {
+    return ((CASImpl)this).getEmptyStringListImpl();
+  }
+  
 }
