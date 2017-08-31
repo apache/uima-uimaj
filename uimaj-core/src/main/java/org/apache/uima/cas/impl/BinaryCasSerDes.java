@@ -225,6 +225,8 @@ public class BinaryCasSerDes {
   /**
    * This is for deserializing (never delta) from a serialized java object representation or maybe from the JNI bridge
    * 
+   * both callers do a cas reset of some kind
+   * 
    * @param heapMetadata -
    * @param heapArray -
    * @param stringTable -
@@ -285,7 +287,7 @@ public class BinaryCasSerDes {
   
       // freshen the initial view
       initialView.refreshView(baseCas, null);
-      baseCas.setViewForSofaNbr(1, initialView);
+      baseCas.svd.setViewForSofaNbr(1, initialView);
       baseCas.svd.viewCount = 1;
     }
     return baseCas;
@@ -298,7 +300,17 @@ public class BinaryCasSerDes {
    */
   public void reinit(CASCompleteSerializer casCompSer) {
     TypeSystemImpl ts = casCompSer.getCASMgrSerializer().getTypeSystem();
-    baseCas.svd.clear();   
+    
+    /*
+     * Special clearing:
+     *   Skips the resetNoQuestions operation of flushing the indexes, 
+     *   since these will be reinitialized with potentially new definitions.
+     *   
+     *   Clears additional data related to having the
+     *   - type system potentially change
+     *   - the features belonging to indexes change
+     */
+    baseCas.svd.clear();  // does all clearing except index repositories which will be wiped out   
     baseCas.installTypeSystemInAllViews(ts);  // the commit (next) re-installs it if it changes
     baseCas.commitTypeSystem();
 
@@ -311,7 +323,7 @@ public class BinaryCasSerDes {
 
     // freshen the initial view
     initialView.refreshView(baseCas, null);  // sets jcas to null for the view, too
-    baseCas.setViewForSofaNbr(1, initialView);
+    baseCas.svd.setViewForSofaNbr(1, initialView);
     baseCas.svd.viewCount = 1;
 
     // deserialize heap
