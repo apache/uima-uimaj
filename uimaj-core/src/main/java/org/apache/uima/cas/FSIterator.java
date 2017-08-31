@@ -146,20 +146,24 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   void moveToLast();
 
   /**
-   * Move the iterator to the first Feature Structure that is equal to <code>fs</code>. 
-   * First means the earliest one occurring in the index, in case multiple FSs that are "equal" to fs
+   * Move the iterator to the first Feature Structure that matches the <code>fs</code>. 
+   * First means the earliest one occurring in the index, in case multiple FSs matching the fs
    * are in the index.  If no
-   * such feature structure exists in the underlying collection, set the iterator to the "insertion
-   * point" for <code>fs</code>, i.e., to a point where the current feature structure is greater
-   * than <code>fs</code>, and the previous one is less than <code>fs</code>.
+   * such feature structure exists in the underlying collection, and the iterator is over a sorted index,
+   * set the iterator to the "insertion point" for <code>fs</code>, i.e., 
+   * to a point where the current feature structure compares greater
+   * than <code>fs</code>, and the previous one compares less than <code>fs</code>, using this
+   * sorted index's comparator.
    * <p>
    * If the fs is greater than all of the entries in the index, the moveTo cannot set the iterator to an insertion point
    * where the current feature structure is greater than fs, so it marks the iterator "invalid".
+   * 
    * <p>
-   * If the underlying index is a set or bag index, no ordering is present, and the moveTo operation moves to the
-   * fs which is the same identical fs as the key (for a bag), or to the element which matches equal
-   * according to the index's comparator (for a set). If no such fs is in the index, the iterator is marked 
-   * invalid.
+   * If the underlying index is a set or bag index, or an unordered form of iteration 
+   * is configured (for example using the <code>select</code> API, 
+   * no ordering is present, and the moveTo operation moves to a matching item,
+   * if one exists.  The match is done using the index's comparator.
+   * If none exist, the index is left if possible in some valid (but non-matching) position.
    * 
    * @param fs
    *          The feature structure the iterator that supplies the 
@@ -215,16 +219,6 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
     moveToNextNvc();
     return result;
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.util.Iterator#remove()
-   */
-  @Override
-  default void remove() {
-    throw new UnsupportedOperationException();
-  } 
   
   @Override
   default boolean hasPrevious() {
@@ -293,5 +287,16 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
     return StreamSupport.stream(spliterator(),  false);
   }
 
-  
+  /**
+   * Removes from all the indexes associated with this view, the 
+   * "current" Feature Structure (the one that would be returned by a 
+   * "get()" operation).  
+   *
+   * @throws NoSuchElementException if the iterator is invalid.
+   */
+  @Override
+  default void remove() {
+    ((LowLevelIterator<T>)this).ll_remove();
+  } 
+
 }
