@@ -21,7 +21,6 @@ package org.apache.uima.internal.util;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -51,7 +50,7 @@ import org.apache.uima.jcas.cas.TOP;
  *   for adds: shift space from back or front, whichever is closer
  *      
  */
-public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<T>, Set<T> {
+public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<T> {
 //  public boolean specialDebug = false;
   final private static boolean TRACE = false;
   final private static boolean MEASURE = false;
@@ -69,8 +68,8 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   int a_nextFreeslot = 0;
   int a_firstUsedslot = 0;
     
-  final public Comparator<TOP> comparatorWithID;
-  final public Comparator<TOP> comparatorWithoutID;
+  final private Comparator<TOP> comparatorNoTypeWithID;
+  final private Comparator<TOP> comparatorNoTypeWithoutID;
   private int maxSize = 0; // managing shrinking
   
 //  private TOP highest = null;
@@ -80,9 +79,9 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   
   private StringBuilder tr = TRACE ? new StringBuilder() : null;
   
-  public OrderedFsSet_array(Comparator<TOP> comparatorWithID, Comparator<TOP> comparatorWithoutID) {
-    this.comparatorWithID = comparatorWithID;
-    this.comparatorWithoutID = comparatorWithoutID;
+  public OrderedFsSet_array(Comparator<TOP> comparatorNoTypeWithID, Comparator<TOP> comparatorNoTypeWithoutID) {
+    this.comparatorNoTypeWithID = comparatorNoTypeWithID;
+    this.comparatorNoTypeWithoutID = comparatorNoTypeWithoutID;
     a = new TOP[DEFAULT_SIZE];
   }
 //  //debug
@@ -106,8 +105,8 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     System.arraycopy(set.a, 0, this.a, 0, set.a_nextFreeslot);
     this.a_firstUsedslot = set.a_firstUsedslot;
     this.a_nextFreeslot = set.a_nextFreeslot;
-    this.comparatorWithID = set.comparatorWithID;
-    this.comparatorWithoutID = set.comparatorWithoutID;
+    this.comparatorNoTypeWithID = set.comparatorNoTypeWithID;
+    this.comparatorNoTypeWithoutID = set.comparatorNoTypeWithoutID;
     
     this.maxSize = set.maxSize;
 //    this.modificationCount = set.modificationCount;
@@ -128,7 +127,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   /**
    * 
    * @param fs1 item to add
-   * @param comparator either the comparator with ID for sorted indexes, or the comparator without ID for set indexes
+   * @param comparator either the comparator without type with ID for sorted indexes, or the comparator withoutType without ID for set indexes
    * @return true if fs was added (not already present)
    */
   public boolean add(T fs1, Comparator<TOP> comparator) {
@@ -302,22 +301,28 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     return amtOfShift;
   }
 
-  /**
-   * If all items are LT key, returns - size - 1 
-   * @param fs the key
-   * @return the lowest position whose item is equal to or greater than fs;
-   *         if not equal, the item's position is returned as -insertionPoint - 1. 
-   *         If the key is greater than all elements, return -size - 1). 
-   */
-  public int find(TOP fs) {
-    return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorWithID);
-  }
+//  /**
+//   * If all items are LT key, returns - size - 1 
+//   * @param fs the key
+//   * @return the lowest position whose item is equal to or greater than fs;
+//   *         if not equal, the item's position is returned as -insertionPoint - 1. 
+//   *         If the key is greater than all elements, return -size - 1). 
+//   */
+//  private int find(TOP fs) {
+//    return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorNoTypeWithID);
+//  }
     
+  /**
+   *  using NoType because all callers of this have already used the type of fs to select
+   *  the right index.
+   * @param fs
+   * @return
+   */
   public int findWithoutID(TOP fs) {
-    return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorWithoutID);
+    return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorNoTypeWithoutID);
   }
   
-  private int find(TOP fs, Comparator<TOP> comparator) {
+  public int find(TOP fs, Comparator<TOP> comparator) {
     return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparator);
   }
   
@@ -370,7 +375,10 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   
   /**
    * Removes the exactly matching (including ID) FS if present
-   * @param o the object (should be a Feature Structure) to remove
+   * 
+   * Only called when type of FS matches this index's type, so the NoType comparator is used.
+   * 
+   * @param o the object (must be a FS of the type of this index) to remove
    * @return true if it was removed, false if it wasn't in the index
    */
 
@@ -385,7 +393,8 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     
     TOP fs = (TOP) o;
     
-    int pos = find(fs); // using ID as part of comparator
+    int pos = binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorNoTypeWithID);
+//        find(fs); // using ID as part of comparator
     if (pos < 0) {
       return false;
     }
@@ -451,7 +460,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    *            Not called unless there's one equal item below this.
    * @return - the index of the leftmost equal (without id) item
    */
-  public int binarySearchLeftMostEqual(final TOP fs, int start, int end) {
+  public int binarySearchLeftMostEqual(final TOP fs, int start, int end, Comparator<TOP> comparator) {
 
 //    assert start >= 0;    
 //    assert start < end;
@@ -463,7 +472,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
       TOP item = a[mid];
       int pos = mid;
          
-      int c = comparatorWithoutID.compare(item, fs);
+      int c = comparator.compare(item, fs);
       if (c == 0) {
         upper = pos;  // upper is exclusive
         if (upper == lower) {
@@ -502,7 +511,21 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
       }      
     };
   }
+  
+  public TOP[] toArray() {
+    TOP[] r = new TOP[size()];
+    System.arraycopy(a, a_firstUsedslot, r, 0, size());
+    return r;    
+  }
 
+  public <U> U[] toArray(U[] a1) {
+    if (a1.length < size()) {
+      a1 = (U[]) Array.newInstance(a1.getClass(), size());
+    }
+    System.arraycopy(a1,  a_firstUsedslot, a1,  0, size());
+    return a1;
+  }
+  
 //  public int getModificationCount() {
 //    return modificationCount;
 //  }
@@ -536,7 +559,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
     }
     b   .append(", a_nextFreeslot=").append(a_nextFreeslot)
         .append(", a_firstUsedslot=").append(a_firstUsedslot)
-        .append(", origComparator=").append(comparatorWithID)
+        .append(", origComparator=").append(comparatorNoTypeWithID)
         .append(", maxSize=").append(maxSize)
         .append("]");
     return b.toString();
@@ -603,106 +626,63 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
 
   }
 
-  /* (non-Javadoc)
-   * @see java.util.Set#contains(java.lang.Object)
-   */
-  @Override
-  public boolean contains(Object o) {
-    if (o == null) {
-      throw new IllegalArgumentException();
-    }
-    if (isEmpty()) {
-      return false;
-    }
-    TOP fs = (TOP) o;
-    return findWithoutID(fs) >= 0;
-  }
-
-  /* (non-Javadoc)
-   * @see java.util.Set#toArray()
-   */
-  @Override
-  public Object[] toArray() {
-    Object [] r = new Object[size()];
-    int i = 0;
-    for (TOP item : a) {
-      if (item != null) {
-        r[i++] = item;
-      }
-    }
-//    try { // debug
-      assert r.length == i;
-//    } catch (AssertionError e) { // debug
-//      System.err.format("size: %,d, final index: %,d, array length: %,d%n", size(), i, a.length );
-//      for (int di = 0; di < a.length; di++) {
-//        System.err.format("a[%,d] = %s%n", di, a[di]);
-//      }
-//      System.err.format("first used slot: %,d, next free slot: %,d batch size: %,d,"
-//          + " nullblockstart: %,d nullBlockEnd: %d, lastRemovedPos: %,d",
-//          a_firstUsedslot, a_nextFreeslot, batch.size(), nullBlockStart, nullBlockEnd,
-//          lastRemovedPos);
-//      throw e;
+//  /* (non-Javadoc)
+//   * @see java.util.Set#contains(java.lang.Object)
+//   */
+//  @Override
+//  public boolean contains(Object o) {
+//    if (o == null) {
+//      throw new IllegalArgumentException();
 //    }
-    return r;
-  }
-
-  /* (non-Javadoc)
-   * @see java.util.Set#toArray(java.lang.Object[])
-   */
-  @Override
-  public <U> U[] toArray(U[] a1) {
-    if (a1.length < size()) {
-      a1 = (U[]) Array.newInstance(a.getClass(), size());
-    }
-    int i = 0;
-    for (TOP item : a) {
-      if (item != null) {
-        a1[i++] = (U) item;
-      }
-    }
-    if (i < a1.length) {
-      a1[i] = null;  // contract for toArray, when array bigger than items
-    }
-    return a1;
-  }
+//    if (isEmpty()) {
+//      return false;
+//    }
+//    if (! (o instanceof TOP)) {
+//      return false;
+//    }
+//    TOP fs = (TOP) o;
+//    return findWithoutID(fs) >= 0;
+//  }
 
 
-  /* (non-Javadoc)
-   * @see java.util.Set#containsAll(java.util.Collection)
-   */
-  @Override
-  public boolean containsAll(Collection<?> c) {
-    throw new UnsupportedOperationException();
-  }
-
-  /* (non-Javadoc)
-   * @see java.util.Set#addAll(java.util.Collection)
-   */
-  @Override
-  public boolean addAll(Collection<? extends T> c) {
-    boolean changed = false;
-    for (T item : c) {
-      changed |= add(item);
-    }
-    return changed;
-  }
-
-  /* (non-Javadoc)
-   * @see java.util.Set#retainAll(java.util.Collection)
-   */
-  @Override
-  public boolean retainAll(Collection<?> c) {
-    throw new UnsupportedOperationException();
-  }
-
-  /* (non-Javadoc)
-   * @see java.util.Set#removeAll(java.util.Collection)
-   */
-  @Override
-  public boolean removeAll(Collection<?> c) {
-    throw new UnsupportedOperationException();
-  }
-
-
-  
+//
+//
+//  /* (non-Javadoc)
+//   * @see java.util.Set#containsAll(java.util.Collection)
+//   */
+//  @Override
+//  public boolean containsAll(Collection<?> c) {
+//    throw new UnsupportedOperationException();
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see java.util.Set#addAll(java.util.Collection)
+//   */
+//  @Override
+//  public boolean addAll(Collection<? extends T> c) {
+//    boolean changed = false;
+//    for (T item : c) {
+//      changed |= add(item);
+//    }
+//    return changed;
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see java.util.Set#retainAll(java.util.Collection)
+//   */
+//  @Override
+//  public boolean retainAll(Collection<?> c) {
+//    throw new UnsupportedOperationException();
+//  }
+//
+//  /* (non-Javadoc)
+//   * @see java.util.Set#removeAll(java.util.Collection)
+//   */
+//  @Override
+//  public boolean removeAll(Collection<?> c) {
+//    throw new UnsupportedOperationException();
+//  }
+//
+//
+//  
 }
