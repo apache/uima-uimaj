@@ -300,6 +300,8 @@ public class CasCompare {
      * This is used 
      *   - to speed up the compare - avoid comparing the same things multiple times, instead just use previous result
      *   - when doing the comparison to break recursion if asked to compare the same two things while comaring them.
+     *   
+     *   value is the result of previous comparison.
      */
   private final Map<Pair<TOP, TOP>, Integer> prevCompare = new HashMap<>();
   private final Prev prev1 = new Prev();
@@ -320,6 +322,7 @@ public class CasCompare {
   
   private final Map<ScsKey, String[]> stringCongruenceSets = new HashMap<>();
   private boolean isUsingStringCongruenceSets = false;
+  private final TypeImpl fsArrayType;
     
 
           
@@ -330,6 +333,7 @@ public class CasCompare {
     ts2 = c2.getTypeSystemImpl();
     typeMapper = ts1.getTypeSystemMapper(ts2);
     isTypeMapping = (null != typeMapper);
+    fsArrayType = ts1.fsArrayType;
   }
     
 //  public void compareStringArraysAsSets(boolean v) {
@@ -427,20 +431,6 @@ public class CasCompare {
           final boolean typeMissingIn2 = typeMapper.mapTypeSrc2Tgt(fs1._getTypeImpl()) == null;
           if (!typeMissingIn1 && !typeMissingIn2) {
             if (0 != compareFss(fs1, fs2, null, null)) {
-//                fs1 = c1FoundFSs.get(159);
-//                fs2 = c1FoundFSs.get(161);
-//                inSortContext = true;
-//                isSrcCas = true;
-//                System.out.println(" " + compareFss());
-//                fs1 = c2FoundFSs.get(17);
-//                fs2 = c2FoundFSs.get(18);
-//                System.out.println(" " + compareFss());
-              //debug
-//                dmp3sh("c1", c1, c1FoundFSs, -12567);
-//                dmp3sh("c2", c2, c2FoundFSs, -12567);
-//              inSortContext = true; 
-//              isSrcCas = false; 
-//              System.out.println("debug " + sortCompare(c2FoundFSs.get(159), c2FoundFSs.get(160)));
               mismatchFsDisplay();
               if (!compareAll) return false;
               allOk = false;
@@ -610,14 +600,6 @@ public class CasCompare {
    * 
    */
   private int compareFss(TOP fs1, TOP fs2, TypeImpl callerTi, FeatureImpl callerFi) {
-//    if (!inSortContext) {
-//      Pair<TOP, TOP> pair = new Pair<>(fs1, fs2);
-//      if (miscompares.contains(pair)) {
-//        //debug
-//        System.out.println("debug skipping compare of " + fs1._id + " " + fs2._id);
-//        return -1; 
-//      }
-//    }
    
     if (fs1 == fs2) {
       return 0;
@@ -646,18 +628,34 @@ public class CasCompare {
       return compareFssArray(fs1, fs2, callerTi, callerFi);
     } 
 
-    // compare features, non-refs first (for performance)    
+    // compare features, non-refs first (for performance)
+    List<FeatureImpl> featuresToCompareNext = new ArrayList<>();
+    
     for (FeatureImpl fi1 : ti1.getFeatureImpls()) {
-      if (!fi1.getRangeImpl().isRefType &&
-          (0 != (r = compareFeature(fs1, fs2, ti1, fi1)))) {
+      if (fi1.getRangeImpl().isRefType) {
+        featuresToCompareNext.add(fi1);
+      } else if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
           return r;
       }
     }
     
-    for (FeatureImpl fi1 : ti1.getFeatureImpls()) {
-      if (fi1.getRangeImpl().isRefType &&
-          (0 != (r = compareFeature(fs1, fs2, ti1, fi1)))) {
+    // compare non-fs arrays next
+    List<FeatureImpl> refFeatures = new ArrayList<>();
+    
+    for (FeatureImpl fi1 : featuresToCompareNext) {
+      TypeImpl ri = fi1.getRangeImpl();
+      if (ri.isPrimitiveArrayType() && ri != fsArrayType) {
+        if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
           return r;
+        }
+      } else {
+        refFeatures.add(fi1);
+      }
+    }
+
+    for (FeatureImpl fi1 : refFeatures) {
+      if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
+        return r;
       }
     }
     return 0; 
@@ -667,18 +665,22 @@ public class CasCompare {
     int r = 0;
     if (inSortContext && isTypeMapping) {
       if (isSrcCas && typeMapper.getTgtFeature(ti1, fi1) == null) {
-        return r; // skip tests for features not in target type system
+        return 0; // skip tests for features not in target type system
                   // so when comparing CASs, the src value won't cause a miscompare
       }
       if (!isSrcCas && typeMapper.getSrcFeature(ti1,  fi1) == null) {
-        return r; // types/features belong to target in this case
+        return 0; // types/features belong to target in this case
       }
     }
     FeatureImpl fi2 = (!inSortContext && isTypeMapping) ? typeMapper.getTgtFeature(ti1, fi1) : fi1;
     if (fi2 != null) {
       r = compareSlot(fs1, fs2, fi1, fi2, ti1);
       if (0 != r) {
-        if (!inSortContext) mismatchFs(fs1, fs2, fi1, fi2);
+        if (!inSortContext) {
+//          // debug
+//          compareSlot(fs1, fs2, fi1, fi2, ti1);
+          mismatchFs(fs1, fs2, fi1, fi2);
+        }
         return r;
       }
     } // else we skip the compare - no slot in tgt for src
@@ -866,12 +868,11 @@ public class CasCompare {
     
     // both are not null
     // do a recursive check 
-    
     Pair<TOP, TOP> refs = new Pair<TOP, TOP>(rfs1, rfs2);
     Integer prevComp = prevCompare.get(refs);
      if (prevComp != null) {  
        int v = prevComp.intValue();
-      return (v == 0) 
+       return (v == 0) 
                ? compareRefResult(rfs1, rfs2) // stop recursion, return based on loops
                : v;    
     }
@@ -893,7 +894,9 @@ public class CasCompare {
 //    fs2 = rfs2;
     try {
       int v = compareFss(rfs1, rfs2, callerTi, callerFi);
-      prevCompare.put(refs, v); // update to save value of comparison
+      if (v != 0) {
+        prevCompare.put(refs, v);
+      }
       return v;
     } finally {
       prev1.rmvLast(rfs1);
@@ -912,32 +915,35 @@ public class CasCompare {
    * @return - -1 if ref chain 1 length < 2 or is the same length but loop length 1 < 2
    *            1 if ref chain 1 length > 2 or is the same length but loop length 1 > 2
    *            0 if ref chain lengths are the same and loop length is the same
-   *    This is wrong:         unless: inSortContext:
-   *               case:   x -> y -> x          y -> x -> y   
-   *               break tie using parent ._id guarenteed not to be equal 
    */
   private int compareRefResult(TOP rfs1, TOP rfs2) {
-    if (prev1.size() > 0) {  // always true if have any recursion, false otherwise
-      prev1.add(rfs1);
-      prev2.add(rfs2);
-      
-      int r = prev1.compareUsize(prev2);
-      if (r != 0) {
-        return r;
-      }
-      r = prev1.compareCycleLen(prev2);
-      if (r != 0) {
-        return r;
-      }
-      // don't handle case here
-      //   of x -> y -> z   vs 
-      //      w -> y -> z, sorting
-      //        case of x -> y -> z -> x    vs a -> b -> c -> a   sorting or not sorting, comparing 
-//        if (inSortContext) {
-//          return Integer.compare(fs1._id, fs2._id);  // must be parent.
-//        }
+    if (prev1.size() <= 0) { 
+      return 0;  // no recursion case
     }
-    return 0;
+    
+    // had some recursion
+    prev1.add(rfs1);
+    prev2.add(rfs2);
+    
+    try { // only for finally block
+      // compare cycleLen first, because if !=, all ref pairs in above chain are !=
+      //   but if ==, then all cycle pairs are compare ==.
+      int r = prev1.compareCycleLen(prev2);
+      
+      if (r != 0) {
+        return r;
+      }
+      
+      if (prev1.cycleLen > 0) {  // && is equal to prev2 cycle length
+        return 0;  // at this level, the FSs are equal
+      }
+      
+      return prev1.compareUsize(prev2);
+      
+    } finally {
+      prev1.rmvLast(rfs1);
+      prev2.rmvLast(rfs2);
+    }
   }
       
   private int compareAllArrayElements(TOP fs1, TOP fs2, int len, IntUnaryOperator c) {
@@ -1050,27 +1056,13 @@ public class CasCompare {
     String mapmsg = fi.equals(fi2) 
                       ? ""
                       : "which mapped to target feature " + fi2.getShortName() + " ";
-    if (fi.getShortName().equals("innerConcepts")) {
-      System.out.println("debug");
-    }
     mismatchSb.append(String.format("Mismatched Feature Structures in feature %s %s%n %s%n %s%n", 
         fi.getShortName(), mapmsg, ps(fs1), ps(fs2)));
-    //debug
-//    inSortContext = true;
-//    sortCompare(c1FoundFSs.get(924), c1FoundFSs.get(925));
-//    inSortContext = false;
-//    miscompares.add(new Pair<>(fs1, fs2));
   }
   
   private void mismatchFs(TOP fs1, TOP fs2, String msg) {
-//      //debug
-//      if (fs1._id == fs2._id) {
-//        System.out.println("debug");
-//        throw new RuntimeException();
-//      }
     mismatchSb.append(String.format("Mismatched Feature Structures, %s%n %s%n %s%n", 
         msg, ps(fs1), ps(fs2)));
-//    miscompares.add(new Pair<>(fs1, fs2));
   }
       
   /** called to sort all the FSs before doing the equality compares */
@@ -1100,7 +1092,8 @@ public class CasCompare {
    * @param scFs2 -
    * @return -
    */
-  private int sortCompare(TOP scFs1, TOP scFs2) {        
+  private int sortCompare(TOP scFs1, TOP scFs2) {  
+    
 //    miscompares.clear();
     prev1.clear();
     prev2.clear();
@@ -1110,6 +1103,9 @@ public class CasCompare {
     int r = compareFss(scFs1, scFs2, null, null);
     prev1.prevCompareTop = null;
     prev2.prevCompareTop = null;
+    if (r == 0) {
+      r = Integer.compare(scFs1._id, scFs2._id);
+    }
     return r;
   }
       
