@@ -744,7 +744,7 @@ public class IteratorTest extends TestCase {
    * @param isCow - false for "snapshot" indexes - these don't do cow (copy on write) things
    */
   private void cowTst(FSIndex<FeatureStructure> index, boolean isCow) {
-    FSIterator<FeatureStructure> it = index.iterator();
+    LowLevelIterator<FeatureStructure> it = (LowLevelIterator)index.iterator();
     it.moveToLast();
     it.moveToFirst();
     // moved to first, 2.7.0, because new bag iterator is more forgiving re concurrentmodexception
@@ -782,14 +782,14 @@ public class IteratorTest extends TestCase {
     it.isValid();
     it.next();
     assertTrue(it.get() == a);  // gets the removed one
-    it.moveTo(a);  // causes COW reset
-    if (isCow && index == setIndex || index == bagIndex) {
-      assertFalse(it.isValid());  // moveTo on set with no match gives invalid iterator  
-    } else {      
+    it.moveTo(a);  // causes COW reset, a is not present (has been removed)
+//    if (isCow && index == setIndex || index == bagIndex) {
+//      assertFalse(it.isValid());  // moveTo on set with no match gives invalid iterator  
+//    } else {      
       assertTrue(isCow 
-                  ? (it.get() != a)
+                  ? (it.isMoveToSupported() ? it.get() != a : true)
                    : (it.get() == a));
-    }
+//    }
     cas.addFsToIndexes(a);  // add it back for subsequent tests
   }
   
