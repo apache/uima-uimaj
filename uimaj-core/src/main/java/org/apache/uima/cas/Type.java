@@ -22,6 +22,8 @@ package org.apache.uima.cas;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.uima.cas.impl.TypeImpl;
+
 /**
  * The interface describing types in the type system.
  * 
@@ -143,4 +145,11 @@ public interface Type {
    */
   Type getComponentType();
 
+  /**
+   * @param subtype - a UIMA Type
+   * @return true if this type subsumes (is equal or a supertype of) the subtype argument
+   */
+  default boolean subsumes(Type subtype) {
+    return ((TypeImpl)this).subsumes((TypeImpl) subtype);
+  }
 }
