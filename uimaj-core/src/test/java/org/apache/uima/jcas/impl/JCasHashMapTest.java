@@ -34,10 +34,15 @@ import junit.framework.TestCase;
 public class JCasHashMapTest extends TestCase {
   
   static final int SIZE = 20000;  // set > 2 million for cache avoidance timing tests
-  static final long SEED = new Random().nextLong(); 
-  static {System.out.println("JCasHashMapTest load: set random seed to " + SEED);}
-      // 12345;
-  static Random r = new Random(SEED);
+
+  static final Random r = new Random();
+  static final long SEED = r.nextLong(); 
+  // 12345;
+  static {
+    System.out.println("JCasHashMapTest load: set random seed to " + SEED);
+    r.setSeed(SEED);
+  }
+  
   static private int[] addrs = new int[SIZE];
   static int prev = 0;
   
