@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -43,14 +44,19 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.internal.util.function.Runnable_withException;
+import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 
 public class Misc {
   
@@ -232,7 +238,7 @@ public class Misc {
     File pf = new File(p);
     if (pf.isDirectory()) {
       File[] jars = pf.listFiles(jarFilter);
-      if (jars.length == 0) {
+      if (jars == null || jars.length == 0) {
         // this is the case where the user wants to include
         // a directory containing non-jar'd .class files
         addPathToURLs(urls, pf); 
@@ -976,6 +982,44 @@ public class Misc {
       }
     }
     return false;
+  }
+  
+  /**
+   * Issues message at warning or fine level (fine if enabled, includes stack trace)
+   * @param errorCount the count of errors used to decrease the frequency
+   * @param message the message
+   * @param logger the logger to use
+   */
+  public static void decreasingWithTrace(AtomicInteger errorCount, String message, Logger logger) {
+    if (logger != null) {
+      final int c = errorCount.incrementAndGet();
+      final int cTruncated = Integer.highestOneBit(c); 
+      // log with decreasing frequency
+      if (cTruncated == c) {
+        if (logger.isLoggable(Level.FINE)) {
+          try { throw new Throwable();}
+          catch (Throwable e) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(baos);
+            e.printStackTrace(ps);
+            message = "Message count: " + c + "; " + message + " Message count indicates messages skipped to avoid potential flooding.\n" + baos.toString();
+            logger.log(Level.FINE, message);
+          }
+        } else {
+          message = "Message count: " + c + "; " + message + " Message count indicates messages skipped to avoid potential flooding.";
+          logger.log(Level.WARNING, message);
+        }
+      }
+    }
+  }
+
+  public static void decreasingMessage(AtomicInteger errorCount, Supplier<String> messageSupplier, Consumer<String> publishMessage) {
+    final int c = errorCount.incrementAndGet();
+    final int cTruncated = Integer.highestOneBit(c);  // 1, 2, 4, 8, etc.
+    if (cTruncated == c) { // only happens for 1, 2, 4, etc
+      String message = "Message count: " + c + "; " + messageSupplier.get() + " Message count indicates messages skipped to avoid potential flooding.";
+      publishMessage.accept(message);
+    }
   }
 //private static final Function<String, Class> uimaSystemFindLoadedClass;
 //static {
