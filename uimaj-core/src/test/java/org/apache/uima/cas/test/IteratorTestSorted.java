@@ -26,6 +26,8 @@ import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.admin.CASFactory;
 import org.apache.uima.cas.admin.FSIndexRepositoryMgr;
 import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.FsIndex_annotation;
+import org.apache.uima.cas.impl.LowLevelIterator;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
@@ -75,20 +77,24 @@ public class IteratorTestSorted extends TestCase {
   static final int MAX_LEVELS = 6;  // max is 6 unless adding to the types and JCas class for them
   
   JCas jcas;
+  
   Level_1 firstItem;
   Level_1 lastItem;
   int maxBegin;
   int firstBegin;
+  boolean isWithoutTypeOrder;
   
   final ArrayList<Integer> levels = new ArrayList<>();
   FSIterator<Level_1> it;
   
-  final static long seed = new Random().nextLong();
+  final static Random r = new Random();
+  final static long seed = r.nextLong();
 //      6658836455455474098L;
 //  4811614709790403903L;
-  
-  static { System.out.println("Iterator Test Sorted, random seed = " + seed); }
-  final static Random r = new Random(seed);
+  static {
+    r.setSeed(seed);
+    System.out.println("Iterator Test Sorted, random seed = " + seed); 
+  }
     
   public void setUp() {
     CASImpl casMgr = (CASImpl) CASFactory.createCAS();
@@ -129,6 +135,8 @@ public class IteratorTestSorted extends TestCase {
       try {
       if (0 == i % 100000) {
         long seed2 =   r.nextLong();
+//              5680709196975735850L;
+        
 //            -4764445956829722324L;
 //            2151669209502835073L;
         System.out.format("iteration: %,d seed: %d%n", i, seed2);
@@ -137,7 +145,11 @@ public class IteratorTestSorted extends TestCase {
       }
       jcas.removeAllIncludingSubtypes(TOP.type);
       makeFSs(r.nextInt(MAX_LEVELS - 1) + 2);  // 2 - 6
-      it = jcas.getAnnotationIndex(Level_1.class).iterator();     
+      it = ((FsIndex_annotation)jcas.getAnnotationIndex(Level_1.class)).iterator(LowLevelIterator.IS_ORDERED, isWithoutTypeOrder = r.nextBoolean());
+      if ( ! isWithoutTypeOrder) {
+        firstItem = it.get();
+        firstItem.setId(0.0f);
+      }
       validate();
       
       // current design only allows one of the next two
@@ -206,37 +218,71 @@ public class IteratorTestSorted extends TestCase {
   }
   
   private void verifyFirst() {
-    assertTrue(it.get() == firstItem);  
+    if (isWithoutTypeOrder) {
+      assertTrue(it.get() == firstItem);  
+    } else {
+      assertTrue(it.get().getBegin() == firstItem.getBegin());  // because typepriority sort order
+    }
   }
   
   private void verifyLast() {
-    assertTrue(it.get() == lastItem);
+    if (isWithoutTypeOrder) {
+      assertTrue(it.get() == lastItem);  
+    } else {
+      assertTrue(it.get().getBegin() == lastItem.getBegin());  // because typepriority sort order
+    }
   }
   
   private void verifyLeftmost() {
     Level_1 item = it.get();
-    if (item != firstItem) {
-      it.moveToPreviousNvc();
+//    if (item != firstItem) {
+    it.moveToPreviousNvc();
+    if (it.isValid()) {
       if (it.get().getBegin() == item.getBegin()) {
         fail();
       }
+    } else {
+      it.moveToFirst();
     }
   }
   
   private void verifySeqToEnd() {
     Level_1 prev = it.get();
-    while (prev != lastItem) {
+    while (true) {
       it.moveToNextNvc();
-      assertTrue(it.getNvc().getId() > prev.getId());
+      if (!it.isValid()) {
+        it.moveToLast();
+        break;
+      }
+      if (isWithoutTypeOrder) {
+        assertTrue(it.getNvc().getId() > prev.getId());
+      }
+      validateEqualOrdering(prev, it.getNvc());
       prev = it.getNvc();
+    }
+  }
+  
+  private void validateEqualOrdering(Level_1 before, Level_1 after) {
+    if (before.getBegin() == after.getBegin() &&
+        before.getEnd() == after.getEnd()) {
+      if (before._getTypeImpl() == after._getTypeImpl() || isWithoutTypeOrder) {
+        assertTrue(before._id() < after._id());
+      }
     }
   }
   
   private void verifySeqToBegin() {
     Level_1 prev = it.get();
-    while (prev != firstItem) {
+    while (true) {
       it.moveToPreviousNvc();
-      assertTrue(it.getNvc().getId() < prev.getId());
+      if (! it.isValid()) {
+        it.moveToFirst();
+        break;
+      }
+      if (isWithoutTypeOrder) {
+        assertTrue(it.getNvc().getId() < prev.getId());
+      }
+      validateEqualOrdering(it.getNvc(), prev);
       prev = it.getNvc();
     }
   }
