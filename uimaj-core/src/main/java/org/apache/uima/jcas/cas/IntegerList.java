@@ -96,7 +96,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    
   @Override
   public EmptyIntegerList getEmptyList() {
-    return this._casView.getEmptyIntegerList();
+    return this._casView.getEmptyIntegerListImpl();
   }
 
   /**
@@ -106,7 +106,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
    * @return an IntegerList, with the elements from the array
    */
   public static IntegerList createFromArray(JCas jcas, int[] a) {
-    IntegerList integerList = jcas.getCasImpl().getEmptyIntegerList();   
+    IntegerList integerList = jcas.getCasImpl().getEmptyIntegerListImpl();   
     for (int i = a.length - 1; i >= 0; i--) {
       integerList = integerList.push(a[i]);
     }   

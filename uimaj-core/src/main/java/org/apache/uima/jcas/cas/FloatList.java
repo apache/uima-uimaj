@@ -77,7 +77,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
   
   @Override
   public EmptyFloatList getEmptyList() {
-    return this._casView.getEmptyFloatList();
+    return this._casView.getEmptyFloatListImpl();
   }
   
   /**
@@ -87,7 +87,7 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
    * @return an FloatList, with the elements from the array
    */
   public static FloatList createFromArray(JCas jcas, Float[] a) {
-    FloatList floatList = jcas.getCasImpl().getEmptyFloatList();   
+    FloatList floatList = jcas.getCasImpl().getEmptyFloatListImpl();   
     for (int i = a.length - 1; i >= 0; i--) {
       floatList = floatList.push(a[i]);
     }   

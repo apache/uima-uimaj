@@ -130,7 +130,7 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
    * @return an FSList, with the elements from the array
    */
   public static FSList createFromArray(JCas jcas, FeatureStructure[] a) {
-    FSList fsl = jcas.getCasImpl().getEmptyFSList();   
+    FSList fsl = jcas.getCasImpl().getEmptyFSListImpl();   
     for (int i = a.length - 1; i >= 0; i--) {
       fsl = fsl.push((TOP) a[i]);
     }   
@@ -164,6 +164,6 @@ public abstract class FSList extends TOP implements CommonList, Iterable<TOP> {
   
   @Override
   public EmptyFSList getEmptyList() {
-    return this._casView.getEmptyFSList();
+    return this._casView.getEmptyFSListImpl();
   }
 }
