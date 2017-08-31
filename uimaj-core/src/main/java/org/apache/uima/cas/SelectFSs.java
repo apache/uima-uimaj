@@ -21,7 +21,6 @@ package org.apache.uima.cas;
 
 import java.util.List;
 import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.text.AnnotationFS;
@@ -30,47 +29,13 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 /**
  * Collection of builder style methods to specify selection of FSs from indexes
- * Comment codes:
- *   AI = implies AnnotationIndex
- *   Ordered = implies an ordered index not necessarily AnnotationIndex
- *   BI = bounded iterator (boundedBy or bounding)
+ * Documentation is in a chapter in the UIMA Version 3 User's Guide.
  */
 public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stream<T> {
   
-  // Stream and Iterable both define forEach, with Iterable supplying a default.
-  @Override
-  default void forEach(Consumer<? super T> action) {
-    Iterable.super.forEach(action);
-  }
-  
-  
-  
-//  // If not specified, defaults to all FSs (unordered) unless AnnotationIndex implied
-//    // Methods take their generic type from the variable to which they are assigned except for
-//    // index(class) which takes it from its argument.
-//  <N extends FeatureStructure> SelectFSs<N> index(String indexName);  
-//  <N extends FeatureStructure> SelectFSs<N> index(FSIndex<N> index);
-//
-//  // If not specified defaults to the index's uppermost type.
-//  // Methods take their generic type from the variable to which they are assigned except for
-//  // type(class) which takes it from its argument.
-//  <N extends FeatureStructure> SelectFSs<N> type(Type uimaType);
-//  <N extends FeatureStructure> SelectFSs<N> type(String fullyQualifiedTypeName);
-//  <N extends FeatureStructure> SelectFSs<N> type(int jcasClass_dot_type);
-//  <N extends FeatureStructure> SelectFSs<N> type(Class<N> jcasClass_dot_class);
-    
-//  SelectFSs<T> shift(int amount); // incorporated into startAt 
-  
-  // ---------------------------------
-  // boolean operations
-  // ---------------------------------
-
-//  SelectFSs<T> matchType();      // exact type match (no subtypes)
-//  SelectFSs<T> matchType(boolean matchType); // exact type match (no subtypes)
-  
-  // only for AnnotationIndex
   /**
-   * Specify that type priority should be included when comparing two Feature Structures while positioning an iterator
+   * Specify that type priority should be included when comparing two Feature Structures 
+   * when moving to the leftmost among otherwise equal items for moveTo(fs).
    * <p>
    * Default is to not include type priority.
    * @return the updated SelectFSs object
@@ -86,33 +51,6 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    */
   SelectFSs<T> typePriority(boolean typePriority);
 
-  /**
-   * Only used when typePriority false, and only for Annotation Indexes
-   * <p>
-   * For annotation index, specifies that after a moveTo(FeatureStructure) operation has
-   *   found a feature structure that compares equal with the argument, 
-   *   the position is adjusted downwards while the element at the position is equal to the argument,
-   *   where the equal includes the type.
-   * <p>
-   * Default is to not include the type.
-   * @return the updated SelectFSs object
-   */
-  SelectFSs<T> positionUsesType();           // ignored if not ordered index
-
-  /**
-   * Only used when typePriority false, and only for Annotation Indexes
-   * <p>
-   * For annotation index, specifies that after a moveTo(FeatureStructure) operation has
-   *   found a feature structure that compares equal with the argument, 
-   *   the position is adjusted downwards while the element at the position is equal to the argument,
-   *   where the equal includes or doesn't include the type.
-   * <p>
-   * Default is to not include the type.
-   * @param positionUsesType true if the adjustment should require the types be the same.
-   * @return the updated SelectFSs object
-   */
-  SelectFSs<T> positionUsesType(boolean positionUsesType); // ignored if not ordered index
-  
   // Filters while iterating over Annotations
   
   /**
@@ -122,7 +60,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Default is to not have this filter.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> nonOverlapping();  // AI known as unambiguous
+  SelectFSs<T> nonOverlapping();  // requires Annotation Index, known as unambiguous
   /**
    * Meaningful only for Annotation Indexes, specifies that iteration should or should not return 
    * only annotations which don't overlap with each other.  Also known as "unambiguous".
@@ -131,7 +69,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param nonOverlapping true to specify filtering for only non-overlapping annotations.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> nonOverlapping(boolean nonOverlapping); // AI
+  SelectFSs<T> nonOverlapping(boolean nonOverlapping); // requires Annotation Index
   
   /**
    * Meaningful only for coveredBy, includes annotations where the end exceeds the bounding annotation's end.
@@ -139,7 +77,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Default is to NOT include annotations whose end exceeds the bounding annotation's end.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> includeAnnotationsWithEndBeyondBounds();  // AI known as "strict"
+  SelectFSs<T> includeAnnotationsWithEndBeyondBounds();  // requires Annotation Index, known as "not strict"
   /**
    * Meaningful only for coveredBy, includes or filters out annotations where the end exceeds the bounding annotation's end.
    * <p>
@@ -147,17 +85,17 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param includeAnnotationsWithEndBeyondBounds false to filter out annotations whose end exceeds the bounding annotation's end
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> includeAnnotationsWithEndBeyondBounds(boolean includeAnnotationsWithEndBeyondBounds); // AI
+  SelectFSs<T> includeAnnotationsWithEndBeyondBounds(boolean includeAnnotationsWithEndBeyondBounds); // requires Annotation Index
 
   /**
-   * Meaningful only for coveredBy: if true, then returned annotations are compared equal to 
+   * Meaningful only for coveredBy and covering: if true, then returned annotations are compared equal to 
    * the bounding annotation, and if equal, they are skipped.
    * <p>
    * Default is to use feature structure identity comparison (same id()s), not equals, when 
    * doing the test to see if an annotation should be skipped.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> useAnnotationEquals();                 
+  SelectFSs<T> skipWhenSameBeginEndType();                 
   /**
    * Meaningful only for coveredBy: if true, then returned annotations are compared 
    * to the bounding annotation
@@ -248,13 +186,13 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   // 
   // Variations, controlled by: 
   //   * typePriority
-  //   * positionUsesType
+  //   * useAnnotationEquals
+  //     * positionUsesType
   //   
   // The positional specs imply starting at the 
   //   - left-most (if multiple) FS at that position, or
   //   - if no FS at the position, the next higher FS
   //   - if !typePriority, equal test is only begin/end 
-  //     -- types ignored or not depending on positionUsesType 
   //    
   // shifts, if any, occur afterwards
   //   - can be positive or negative
@@ -271,41 +209,49 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   
   /**
    * Starting Position specification - For ordered sources, specifies which FS to start at. 
+   * Requires an ordered index not necessarily AnnotationIndex, not necessarily sorted
    * @param fs a Feature Structure specifying a starting position.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> startAt(TOP fs);  // Ordered
+  SelectFSs<T> startAt(TOP fs);  // an ordered index not necessarily AnnotationIndex, not necessarily sorted
+  
   /**
    * Starting Position specification - For Annotation Indexes, specifies which FS to start at. 
    * @param begin the begin bound
    * @param end the end bound
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> startAt(int begin, int end);   // AI
+  SelectFSs<T> startAt(int begin, int end);   // requires Annotation Index
+  
   /**
    * Starting Position specification - A combination of startAt followed by a shift
+   * 
+   * Requires an ordered index not necessarily AnnotationIndex, not necessarily sorted
    * @param fs a Feature Structure specifying a starting position.
    * @param shift the amount to shift; this many Feature Structures which 
    *               normally would be returned are instead skipped.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> startAt(TOP fs, int shift);        // Ordered
+  SelectFSs<T> startAt(TOP fs, int shift);        // an ordered index not necessarily AnnotationIndex, not necessarily sorted
+  
   /**
    * Starting Position specification - A combination of startAt followed by a shift
+   * Requires an Annotation Index.
    * @param begin the begin bound
    * @param end the end bound
    * @param shift the amount to shift; this many Feature Structures which 
    *               normally would be returned are instead skipped.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> startAt(int begin, int end, int shift);   // AI
+  SelectFSs<T> startAt(int begin, int end, int shift);   // requires Annotation Index
     
   /**
    * Limits the number of Feature Structures returned by this select
    * @param n the maximum number of feature structures returned.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> limit(int n); 
+  SelectFSs<T> limit(int n);
+  
   // ---------------------------------
   // subselection based on bounds
   //   - uses 
@@ -316,58 +262,71 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
   /**
    * Subselection - specifies selecting Feature Structures having the same begin and end
    *   - influenced by typePriority, positionUsesType, and useAnnotationEquals
+   * Requires an Annotation Index.
    * @param fs specifies the bounds.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> at(AnnotationFS fs);  // AI
+  SelectFSs<T> at(AnnotationFS fs);  // requires Annotation Index
+  
   /**
    * Subselection - specifies selecting Feature Structures having the same begin and end
+   * Requires an Annotation Index.
+   *   - influenced by typePriority, positionUsesType, and useAnnotationEquals
    * @param begin the begin bound
    * @param end  the end bound
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> at(int begin, int end);  // AI
+  SelectFSs<T> at(int begin, int end);  // requires Annotation Index
+
   /**
    * Subselection - specifies selecting Feature Structures 
    *   starting (and maybe ending) within a bounding Feature Structure
    *   - influenced by typePriority, positionUsesType, useAnnotationEquals,
    *     includeAnnotationsWithEndBeyondBounds
+   * Requires an Annotation Index.
    * @param fs specifies the bounds.
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> coveredBy(AnnotationFS fs);       // AI
+  SelectFSs<T> coveredBy(AnnotationFS fs);       // requires Annotation Index
+  
   /**
    * Subselection - specifies selecting Feature Structures 
    *   starting (and maybe ending) within a bounding Feature Structure
+   * Requires an Annotation Index.
    * @param begin the begin bound
    * @param end  the end bound
    * @return the updated SelectFSs object
    */
-  SelectFSs<T> coveredBy(int begin, int end);       // AI
+  SelectFSs<T> coveredBy(int begin, int end);       // requires Annotation Index
+  
   /**
    * Subselection - specifies selecting Feature Structures 
    *   starting before or equal to bounding Feature Structure
    *   and ending at or beyond the bounding Feature Structure
    *   - influenced by typePriority, positionUsesType, useAnnotationEquals
+   * Requires an Annotation Index.
    * @param fs specifies the bounds.
    * @return the updated SelectFSs object
    */  
-  SelectFSs<T> covering(AnnotationFS fs);      // AI
+  SelectFSs<T> covering(AnnotationFS fs);      // requires Annotation Index
+  
   /**
    * Subselection - specifies selecting Feature Structures 
    *   starting before or equal to bounding Feature Structure's begin
    *   and ending at or beyond the bounding Feature Structure's end
+   * Requires an Annotation Index.
    * @param begin the begin bound
    * @param end  the end bound
    * @return the updated SelectFSs object
    */  
-  SelectFSs<T> covering(int begin, int end);      // AI
+  SelectFSs<T> covering(int begin, int end);      // requires Annotation Index
   
   /**
    * Subselection - specifies selecting Feature Structures 
    *   which lie between two annotations.
    *   A bounding Annotation is constructed whose begin
    *   is the end of fs1, and whose end is the begin of fs2.
+   * Requires an Annotation Index.
    * <p> 
    * If fs1 &gt; fs2, they are swapped, and the selected values are returned in reverse order.
    * 
@@ -375,7 +334,7 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * @param fs2 the ending bound
    * @return the updated SelectFSs object
    */  
-  SelectFSs<T> between(AnnotationFS fs1, AnnotationFS fs2);  // AI implies a coveredBy style
+  SelectFSs<T> between(AnnotationFS fs1, AnnotationFS fs2);  // requires Annotation Index, implies a coveredBy style
  
   /* ---------------------------------
   * Semantics: 
