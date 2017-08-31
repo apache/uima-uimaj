@@ -52,13 +52,15 @@ public class OrderedFsSet_array_test extends TestCase {
   static File typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
   static int SZ = 23;
   
-  static long seed =  new Random().nextLong();
+  static final Random r = new Random();
+  static long seed =  r.nextLong();
  //     -4709156741850323232L;
                      // 1783099358091571349L;
-  static {System.out.println("OrderedFsSet_array_test random seed: " + seed);}
-  static Random r;
-
-  
+  static {
+    r.setSeed(seed);
+    System.out.println("OrderedFsSet_array_test random seed: " + seed);
+  }
+    
   CASImpl cas;
   JCas jcas;
   FSIndexRepositoryImpl ir;
@@ -92,13 +94,14 @@ public class OrderedFsSet_array_test extends TestCase {
   public void testInsert() {
     int i = 0;
 //    for (; i < 100; i++) {  //enable for lots of iterationss, disable for normal test case
+      seed = r.nextLong();
+      r.setSeed(seed);
+      System.out.println("OrderedFsSet_array_test i: " + i + ", seed: " + seed);
       insert1(i);
-//    }  
-//    System.out.println("debug end");
+//    }
   }
   
-  private void insert1(int iter) {
-    r = new Random(seed);
+  private void insert1(int iter) {    
     
     //prefill
     for (int i = 0; i < SZ; i++) {
