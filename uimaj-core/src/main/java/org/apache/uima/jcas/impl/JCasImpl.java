@@ -155,7 +155,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * We keep one copy per CAS view set          *
   // **********************************************/
   
-  private static class JCasSharedView {
+  public static class JCasSharedView {
     // ********************************************************
     // * Access to this data is assumed to be single threaded *
     // ********************************************************
@@ -176,7 +176,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
     private FSArray fsArray0L = null;
        
-    void reset() {
+    public void reset() {
       stringArray0L = null;
       integerArray0L = null;
       floatArray0L = null;
@@ -1263,5 +1263,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     return getFSIndexRepository().getIndex(label, getCasType(clazz));
   }
 
-  
+  public JCasSharedView getSharedView() {
+    return sharedView;
+  }
 }
