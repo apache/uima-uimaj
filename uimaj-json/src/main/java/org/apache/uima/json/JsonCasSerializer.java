@@ -936,7 +936,7 @@ public class JsonCasSerializer {
         // if we're not going to write the actual FS here, 
         //   and are just going to write the ref, 
         //   skip the start object
-        if (cds.multiRefFSs == null || !cds.multiRefFSs.contains(fs)) {         
+        if (!cds.isDynamicMultiRef || !cds.multiRefFSs.contains(fs)) {         
           jch.writeNlJustBeforeNext();
           jg.writeStartObject();  // start of feat : value
         }
@@ -1101,7 +1101,7 @@ public class JsonCasSerializer {
      * @throws IOException
      */
     private void writeFsOrRef(TOP fs) throws IOException {
-      if (fs == null || null == cds.multiRefFSs || cds.multiRefFSs.contains(fs)) {
+      if (fs == null || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(fs)) {
         jg.writeNumber(cds.getXmiIdAsInt(fs));
       } else {
         isEmbeddedFromFsFeature = false;
@@ -1125,7 +1125,7 @@ public class JsonCasSerializer {
     }
     
     private void writeFsOrRef(TOP fs, FeatureImpl fi) throws IOException {
-      if (fs == null || null == cds.multiRefFSs || cds.multiRefFSs.contains(fs)) {
+      if (fs == null || !cds.isDynamicMultiRef || cds.multiRefFSs.contains(fs)) {
         jg.writeFieldName(getShortFeatureName(fi));
         jg.writeNumber(cds.getXmiIdAsInt(fs));
       } else {
@@ -1420,13 +1420,13 @@ public class JsonCasSerializer {
     }
     
     private boolean isDynamicOrStaticMultiRef(FeatureImpl fi, TOP fs) {
-      return (cds.multiRefFSs == null) ? 
+      return (!cds.isDynamicMultiRef) ? 
                 cds.isStaticMultiRef(fi) : 
                 cds.multiRefFSs.contains(fs);
     }
     
     private boolean isDynamicOrStaticMultiRef(FeatureImpl fi, TOP fs, boolean isListAsFSs) {
-      return (cds.multiRefFSs == null) ? 
+      return (!cds.isDynamicMultiRef) ? 
                 (isListAsFSs || cds.isStaticMultiRef(fi)) : 
                 cds.multiRefFSs.contains(fs);
     }
