@@ -41,8 +41,10 @@ import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.jcas.cas.CommonList;
+import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
@@ -51,7 +53,6 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Logger;
-import org.apache.uima.util.MessageReport;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
@@ -109,8 +110,30 @@ import org.xml.sax.SAXParseException;
  *       ** Could ** not do this if no oots elements, but could break some assumptions
  *       and this only would apply to non-delta - not worth doing
  *       
+ * Enqueuing:
+ *   There are two styles
+ *     - enqueueCommon: does **NOT** recursively enqueue features
+ *     - enqueue: calls enqueueCommon and then recursively enqueues features
+ *     
+ *   enqueueCommon is called (bypassing enqueue) to defer scanning references 
+ *   
+ *   Order and target of enqueuing:
+ *     - things in the index 
+ *       -- put on "queue"
+ *       -- first, the sofa's (which are the only things indexed in base view)
+ *       -- next, for each view, for each item, the FSs, but **NOT** following any feature/array refs
+ *     - things not in the index, but deserialized (incoming)
+ *       -- put on previouslySerializedFSs, no recursive descent for features  
+ *     - (delta) enqueueNonsharedMultivaluedFS (lists and arrays)
+ *       -- put on modifiedEmbeddedValueFSs, no recursive descent for features
  *       
- *                      
+ *     - recursive descent for        
+ *       -- things in previouslySerializedFSs,
+ *       -- things in modifiedEmbeddedValueFSs
+ *       -- things in the index
+ *
+ *       The recursive descent is recursive, and an arbitrary long chain can get stack overflow error.
+ *       TODO Probably should fix this someday. See https://issues.apache.org/jira/browse/UIMA-106 *                      
  */
 
 public class CasSerializerSupport {
@@ -270,29 +293,58 @@ public class CasSerializerSupport {
     public final TypeSystemImpl tsi;
 
     /** 
-     * set of FSs that have been enqueued to be serialized
-     *  Computed during "enqueue" phase, prior to encoding
-     *  Used to prevent duplicate enqueuing
+     * set of FSs that have been visited and enqueued to be serialized
+     *   - exception: arrays and lists which are "inline" are put into this set,
+     *     but are not enqueued to be serialized.
+     *     
+     *   - FSs added to this, during "enqueue" phase, prior to encoding
+     *     
+     * uses:    
+     *   - for Arrays and Lists, used to detect multi-refs
+     *   - for Lists, used to detect loops
+     *   - during enqueuing phase, prevent multiple enqueuings
+     *   - during encoding phase, to prevent multiple encodings 
      *  
      *  Public for use by JsonCasSerializer
      */    
     public final Set<TOP> visited_not_yet_written = Collections.newSetFromMap(new IdentityHashMap<>()); 
      
     /**
-     * Set of FSs referenced from features marked as multipleReferencesAllowed.
+     * Set of array or list FSs referenced from features marked as multipleReferencesAllowed,
+     *   - which have previously been serialized "inline"
+     *   - which now need to be serialized as separate items
+     *   
      * Set during enqueue scanning, to handle the case where the
      * "visited_not_yet_written" set may have already recorded that this FS is 
-     * already processed for enquing, but it is an array or list item which is being
+     * already processed for enqueueing, but it is an array or list item which was being
      * put "in-line" and no element is being written.
+     * 
+     * It has array or list elements where the item needs to be enqueued onto the "queue" list.
+     * 
+     * Use: limit the put-onto-queue list to one time
      */
     private final Set<TOP> enqueued_multiRef_arrays_or_lists = Collections.newSetFromMap(new IdentityHashMap<>());
     
     /**
-     * set of FSs that have multiple references
+     * Set of FSs that have multiple references
+     * Has an entry for each FS (not just array or list FSs) which is (from some point on) being serialized as a multi-ref,
+     *   that is, is **not** being serialized (any more) using the special notation for arrays and lists
+     *   or, for JSON, **not** being serialized using the embedded notation
      * This is for JSON which is computing the multi-refs, not depending on the setting in a feature.
+     * This is also for xmi, to enable adding to "queue" (once) for each FSs of this kind.
+     * 
+     * Used: 
+     *   - limit the number of times this is put onto the queue to 1.
+     *   - skip encoding of items on "queue" if not in this Set (maybe not needed? 8/2017 mis)
+     *   - serialize if not in indexed set, dynamic ref == true, and in this set (otherwise serialize only from ref)
      */
     public final Set<TOP> multiRefFSs; 
     
+    /**
+     * Set to true for JSON configuration of using dynamic multi-ref detection for arrays and lists
+     */
+    public final boolean isDynamicMultiRef;
+
     /* *********************************************
      * FSs that need to be serialized because they're 
      *   a) in an index
@@ -413,7 +465,8 @@ public class CasSerializerSupport {
   	    throw new CASRuntimeException(CASRuntimeException.INVALID_MARKER, "Invalid Marker.");
       }
       isDelta = marker != null;
-      multiRefFSs = (trackMultiRefs) ? Collections.newSetFromMap(new IdentityHashMap<>()) : null;
+      multiRefFSs = Collections.newSetFromMap(new IdentityHashMap<>());
+      isDynamicMultiRef = trackMultiRefs;
     }
         
     // TODO: internationalize
@@ -421,7 +474,7 @@ public class CasSerializerSupport {
       String message = String.format("Feature %s is marked multipleReferencesAllowed=false, but it has"
           + " multiple references.  These will be serialized in duplicate.", 
           fi.getName());
-      MessageReport.decreasingWithTrace(errorCount, message, logger);
+      Misc.decreasingWithTrace(errorCount, message, logger);
       if (this.errorHandler2 != null) {
         this.errorHandler2.warning(new SAXParseException(message, null));
       }
@@ -590,6 +643,7 @@ public class CasSerializerSupport {
         }
                 
         // is the first instance, but skip if delta and not modified or above the line or filtered
+        // skip enqueuing incoming FS if already enqueued 
         int typeCode = enqueueCommon(fs);
         if (typeCode == -1) {
           continue;
@@ -608,7 +662,7 @@ public class CasSerializerSupport {
       List<TOP> fss = ir.getIndexedFSs();  // only sofas
       try {
         for (TOP fs : fss) {
-          enqueue(fs);  // put Sofa on by-ref queue
+          enqueueFsAndMaybeFeatures(fs);  // put Sofa on by-ref queue
         }
       } catch (SAXException e) {
         throw new RuntimeException("Internal error - should never happen", e);
@@ -628,7 +682,7 @@ public class CasSerializerSupport {
         if (loopIR != null) {
           List<TOP> items = loopIR.getIndexedFSs();
           for (TOP item : items) {
-            enqueueIndexedFs(sofaNum, item);
+            enqueueIndexedFs_only_not_features(sofaNum, item);
           }
         }
       }
@@ -687,29 +741,12 @@ public class CasSerializerSupport {
       return enqueueCommon(fs, false);
     }
     
+    /**
+     * @param fs -
+     * @param doDeltaAndFilteringCheck -
+     * @return true to have enqueue put onto "queue" and enqueue features
+     */
     private int enqueueCommon(TOP fs, boolean doDeltaAndFilteringCheck) {
-//      // debug 
-//      if (null == fs) {
-//        System.out.println("debug null fs");
-//        new Throwable().printStackTrace();
-//        int i = 0;
-//        while (true) {
-//          try {
-//            Thread.sleep(10000);
-//          } catch (InterruptedException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//          }
-//          i++;
-//          if (i % 10 == 0) {
-//            System.err.println("debug sleeping");
-//          }
-//        }
-//      }
-
-      
-//      final int typeCode = cas.getHeapValue(addr);
-//      assert(typeCode != 0);
       if (doDeltaAndFilteringCheck) {
         if (isDelta) {
           if (!marker.isNew(fs) && !marker.isModified(fs)) {
@@ -734,7 +771,8 @@ public class CasSerializerSupport {
 
       if (!visited_not_yet_written.add(fs)) {
         // was already visited; means this FS has multiple references, either from FS feature(s) or indexes or both
-        if (null != multiRefFSs) {
+        // https://issues.apache.org/jira/browse/UIMA-5532
+        if (isDynamicMultiRef || isArrayOrList(fs)) {
           boolean wasAdded = multiRefFSs.add(fs);
           if (wasAdded) {
             queue.add(fs);  // if was in indexed set before, isn't in the queue set, but needs to be
@@ -757,12 +795,13 @@ public class CasSerializerSupport {
         typeCode2namespaceNames[typeCode] = newXel;
       }  
       return typeCode;
-    }    
+    }   
+        
     /*
      * Enqueues an indexed FS. Does NOT enqueue features at this point.
      * Doesn't enqueue non-modified FS when delta
      */
-    void enqueueIndexedFs(int viewNumber, TOP fs) {
+    void enqueueIndexedFs_only_not_features(int viewNumber, TOP fs) {
       if (enqueueCommon(fs) != -1) {
         List<TOP> fss = indexedFSs[viewNumber - 1];
         if (null == fss) {
@@ -783,7 +822,7 @@ public class CasSerializerSupport {
      *          The FS address.
      * @throws SAXException 
      */
-    private void enqueue(TOP fs) throws SAXException {  
+    private void enqueueFsAndMaybeFeatures(TOP fs) throws SAXException {  
       if (null == fs) {
         return;
       }
@@ -794,20 +833,30 @@ public class CasSerializerSupport {
       }
       queue.add(fs);
       enqueueFeatures(fs);
-      // Also, for FSArrays enqueue the elements
-      if (fs instanceof FSArray) { //TODO: won't get parameterized arrays? no, there are no parameterized arrays in the impl
-        enqueueFSArrayElements((FSArray) fs);
-      }
+      // Also, for FSArrays enqueue the elements  -- not here, done by enqueueFeatures, 1 line above
+//      if (fs instanceof FSArray) { //TODO: won't get parameterized arrays? no, there are no parameterized arrays in the impl
+//        enqueueFSArrayElements((FSArray) fs);
+//      }
     }
             
     /**
-     * 
-     * @param curNode
-     * @param featCode
-     * @return true if OK, false if found cycle or multi-ref
-     * @throws SAXException
+     * For lists, 
+     *   see if this is a plain list
+     *     - no loops
+     *     - no other refs to list elements from outside the list
+     *     -- if so, return false;
+     *     
+     *   add all the elements of the list to visited_not_yet_written,
+     *     noting if they've already been added 
+     *     -- this indicates either a loop or another ref from outside,
+     *     -- in either case, return true - t
+     * @param curNode -
+     * @param featCode -
+     * @return false if no list element is multiply-referenced,
+     *         true if there is a loop or another ref from outside the list, for 
+     *         one or more list element nodes
      */
-    private boolean isListElementsMultiplyReferenced(TOP listNode) throws SAXException {
+    private boolean isListElementsMultiplyReferenced(TOP listNode) {
       boolean foundCycle = false;
       CommonList curNode = (CommonList) listNode;
       while (curNode instanceof NonEmptyList) {  // stop on end or 0
@@ -820,19 +869,44 @@ public class CasSerializerSupport {
       return foundCycle;
     }
     
-    
+    /**
+     * ordinary FSs referenced as features are not checked by this routine;
+     * this is only called for FSlists of various kinds, and fs arrays of various kinds
+     * 
+     * Not all featValues should be enqueued;
+     *   list or array features which are marked **NOT** multiple-refs-allowed 
+     *     are serialized in-line
+     *   for JSON, when using dynamicMultiRef (the default), list / array FSs 
+     *     are serialized by ref (not in-line) if there are multiple refs to them
+     *   
+     *   for XMI and JSON, any FS ref marked as multiple-refs-allowed forces
+     *     the item onto the ref "queue".
+     *     
+     *   (not handled here: ordinary FSs are serialized in-line in JSON with isDynamicMultiRef)
+     * 
+     * @param fi - the feature, to look up the multiRefAllowed flag
+     * @param featVal - the List or array element
+     * @param alreadyVisited true if visited_not_yet_written contains the featVal
+     * @param isListNode -
+     * @param isListFeat -
+     * @return false if should skip enqueue because this array or list is being serialized inline
+     * @throws SAXException -
+     */
     private boolean isMultiRef_enqueue(FeatureImpl fi, TOP featVal, boolean alreadyVisited, boolean isListNode, boolean isListFeat) throws SAXException {
-      if (multiRefFSs == null) {
+      if (!isDynamicMultiRef) {
         
-        // dynamic embedding (a JSON feature) is turned off - compute static embedding just for lists and arrays
+        // not JSON dynamic embedding, or dynamic embedding is turned off - compute static embedding just for lists and arrays
         boolean multiRefAllowed = fi.isMultipleReferencesAllowed() || isListNode;
         if (!multiRefAllowed) {
           // two cases: a list or non-list
-          // if a list, check/mark all the nodes in the list
+          // if a list, check/mark all the nodes in the list for any being multiply referenced
           if ((isListFeat && isListElementsMultiplyReferenced(featVal)) ||
+              // say: multi-ref not allowed, but discovered a multi-ref, will be serialized as separate item
               (!isListFeat && alreadyVisited)) {
               reportMultiRefWarning(fi);              
           } else {
+            // multi-ref not allowed, and this item is not multiply referenced (so far) 
+            // expecting to serialize as embedded (if array or list, or JSON)
             if (!isListFeat) {  // already added visited for list nodes
               visited_not_yet_written.add(featVal);
             }
@@ -843,7 +917,7 @@ public class CasSerializerSupport {
         }
       }
       
-      // doing dynamic determination of multi-refs
+      // doing JSON dynamic determination of multi-refs
       if (alreadyVisited) {
         return !multiRefFSs.contains(featVal); // enqueue in the "queue" section, first time this happens
       }
@@ -862,9 +936,6 @@ public class CasSerializerSupport {
      *          true iff the enclosing FS (addr) is a list type
      */
     private void enqueueFeatures(TOP fs) throws SAXException {
-//    if (fs.id() == 65) {
-//      System.out.println("debug 356");
-//    }
 
       /**
        * Handle FSArrays
@@ -879,13 +950,11 @@ public class CasSerializerSupport {
             continue;  // skip because not in filter type system
           }
           if (elem != null) {
-            enqueue(elem);
+            enqueueFsAndMaybeFeatures(elem);
           }
-        }
-        
+        }        
         return;
-      }
-      
+      }      
       
       boolean insideListNode = fs instanceof CommonList;
 
@@ -907,7 +976,7 @@ public class CasSerializerSupport {
         final int fsClass = fi.rangeTypeClass;
         switch (fsClass) {
           case LowLevelCAS.TYPE_CLASS_FS: {
-            enqueue(fs.getFeatureValue(fi));
+            enqueueFsAndMaybeFeatures(fs.getFeatureValue(fi));
             break;
           }
           case LowLevelCAS.TYPE_CLASS_INTARRAY:
@@ -920,6 +989,9 @@ public class CasSerializerSupport {
           case LowLevelCAS.TYPE_CLASS_DOUBLEARRAY:
           case LowLevelCAS.TYPE_CLASS_FSARRAY: {
             TOP array = fs.getFeatureValue(fi);  // can be null
+            if (null == array) {
+              continue;
+            }
             // we enqueue arrays if:
             //   when statically using multipleReferencesAllowed flag:
             //     when that says it's multiply referenced; 
@@ -927,20 +999,21 @@ public class CasSerializerSupport {
             //       be picked up when serializing the feature
             //   when dynamically computing multiple-refs: we enqueue it
             //   unless already enqueued, in order to pick up any multiple refs
-            if (array == null) {
-              break;  // don't enqueue anything for null values
-            }
             final boolean alreadyVisited = visited_not_yet_written.contains(array);
             if (isMultiRef_enqueue(fi, array, alreadyVisited, false, false)) {
-              // https://issues.apache.org/jira/browse/UIMA-5532
               if (enqueued_multiRef_arrays_or_lists.add(array)) {  // only do this once per item
-                if (alreadyVisited) {
-                  visited_not_yet_written.remove(array);
-                  // otherwise enqueue call below is a no-op
-                  // enqueue call will re-add this item to visited_not_yet_written
+                enqueueFsAndMaybeFeatures(array);  // will add to queue list 1st time multi-ref detected
+                // or JSON isDynamicEmbedding is on (whether or not multi-ref)
+              } else {
+                // for isDynamicMultiRef, this is the first time we detect multiple refs
+                // do this here, because the enqueued_multiRef_arrays_or_lists.add above makes
+                //   the 2nd and subsequent multi-ref things bypass the enqueue call.
+                //   - only needed for isDynamicMultiRef, because only that returns true for isMultiRef_enqueue
+                //     for the "first" instance, when it isn't yet known.
+                if (isDynamicMultiRef) {
+                  multiRefFSs.add(array);  
                 }
               }
-              enqueue(array);  // will add to queue list 1st time multi-ref detected
             // otherwise, it is singly referenced (so far) and will be embedded
             //   (or has already been enqueued, in dynamic embedding mode), so don't enqueue
             } else if (array instanceof FSArray && !alreadyVisited) {
@@ -964,19 +1037,22 @@ public class CasSerializerSupport {
             TOP startOfList_node = fs.getFeatureValue(fi);
             if (null == startOfList_node) {
               // the feature, whose type is one of the lists, has a null value, so there's nothing to enqueue
-              break;
+              continue;
             }
             final boolean alreadyVisited = visited_not_yet_written.contains(startOfList_node);
             if (isMultiRef_enqueue(fi, startOfList_node, alreadyVisited, insideListNode, true)) {
-              // https://issues.apache.org/jira/browse/UIMA-5532
               if (enqueued_multiRef_arrays_or_lists.add(startOfList_node)) {  // only do this once per item
-                if (alreadyVisited) {
-                  visited_not_yet_written.remove(startOfList_node);
-                  // otherwise enqueue call below is a no-op
-                  // enqueue call will re-add this item to visited_not_yet_written
+                enqueueFsAndMaybeFeatures(startOfList_node);
+              } else {
+                // for isDynamicMultiRef, this is the first time we detect multiple refs
+                // do this here, because the enqueued_multiRef_arrays_or_lists.add above makes
+                //   the 2nd and subsequent multi-ref things bypass the enqueue call.
+                //   - only needed for isDynamicMultiRef, because only that returns true for isMultiRef_enqueue
+                //     for the "first" instance, when it isn't yet known.
+                if (isDynamicMultiRef) {
+                  multiRefFSs.add(startOfList_node);  
                 }
               }              
-              enqueue(startOfList_node);
             } else if (startOfList_node instanceof FSList && !alreadyVisited) {
               // also, we need to enqueue any FSs reachable from an FSList
               enqueueFSListElements((FSList) startOfList_node);
@@ -996,7 +1072,7 @@ public class CasSerializerSupport {
     private void enqueueFSArrayElements(FSArray fsArray) throws SAXException {
        for (TOP elem : fsArray._getTheArray()) {
         if (elem != null) {
-          enqueue(elem);
+          enqueueFsAndMaybeFeatures(elem);
         }
       }
     }
@@ -1009,7 +1085,7 @@ public class CasSerializerSupport {
      *          Address of an FSList
      */
     private void enqueueFSListElements(FSList node) throws SAXException {
-      node.walkList( n -> enqueue(((NonEmptyFSList)n).getHead()), null);
+      node.walkList( n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList)n).getHead()), null);
     }
 
     /*
@@ -1052,8 +1128,9 @@ public class CasSerializerSupport {
         // so check if already written, and if so, skip
         //    Case where this happens: JSON serialization with dynamically determined single ref embedding
         //    - have to enqueue to check if multiple refs, even if embedding eventually
-        if (visited_not_yet_written.contains(fs)) {
-          if (null != multiRefFSs && !multiRefFSs.contains(fs)) {
+        if (visited_not_yet_written.contains(fs)) {        
+          // skip if JSON dynamically computing whether or not to embed things and there's only one item - it will be embedded instead
+          if (isDynamicMultiRef && !multiRefFSs.contains(fs)) {
             continue;  // skip writing embeddable item (for JSON dynamic embedding) from Q; will be written from reference
           }
           encodeFS(fs);
@@ -1099,10 +1176,16 @@ public class CasSerializerSupport {
             if (fs1 instanceof Annotation) {
               Annotation fs1a = (Annotation) fs1;
               Annotation fs2a = (Annotation) fs2;
+              
               c = Integer.compare(fs1a.getBegin(), fs2a.getBegin());
-              return (c != 0) ? c : Integer.compare(fs2a.getEnd(), fs1a.getEnd()); // reverse order
+              if (c != 0) return c;
+              
+              c = Integer.compare(fs2a.getEnd(), fs1a.getEnd()); // reverse order
+              if (c != 0) return c;
+              
+              // fall thru to do id compare
             }
-            // not annotation
+            // not annotation, or equal begin/end/type
             return Integer.compare(fs1._id, fs2._id);  // return in @id order
           }
       };
@@ -1132,9 +1215,16 @@ public class CasSerializerSupport {
       final int typeCode = fs._getTypeImpl().getCode();
 
       final int typeClass = classifyType(fs._getTypeImpl());
+      // for JSON, the items reachable via indexes are written first,
+      //   and isIndexId = false
+      //   The items reachable via refs are written next, and 
+      //   isIndexId = true;
       boolean isIndexId = csss.writeFsStart(fs, typeCode);
       
-      if (!isIndexId && multiRefFSs != null && multiRefFSs.contains(fs)) {
+      // write the id if needed for reference
+      //   - if it is not ref'd via index, and JSON is computing dynamic refs, and it is multiply ref'd
+      //   - skip if not JSON dynamic ref, or in index, or not multiply ref'd
+      if (!isIndexId && isDynamicMultiRef && multiRefFSs.contains(fs)) {
         csss.writeFsRef(fs);        
       } else {
         visited_not_yet_written.remove(fs);  // mark as written
@@ -1286,4 +1376,11 @@ public class CasSerializerSupport {
     default : return TypeSystemImpl.getTypeClass(ti);
     }
   }
+  
+  private static boolean isArrayOrList(TOP fs) {
+    return fs instanceof CommonPrimitiveArray ||
+           fs instanceof FSArray ||
+           fs instanceof CommonList;
+  }
+
 }
