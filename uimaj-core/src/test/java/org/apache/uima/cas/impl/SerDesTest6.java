@@ -765,6 +765,20 @@ public class SerDesTest6 extends SerDesTstCommon {
 
   }
 
+  // change tst to test to run this as a looper to catch infrequent errors
+  public void tstLoop() {
+    Random seeder = new Random();
+    for (int i = 0; i < 800; i++) {
+      long seed = seeder.nextLong();
+//          -670766016644278339L;  20, 33 IntegerArray miscompare
+//      -5294919707375572185L;   -28, 33  IntegerArray miscompare
+//      7169526779687013172L;   // ref miscompare
+      System.out.println("i: " + i + "  seed: " + seed);
+      random.setSeed(seed);
+      runCaptureSet();
+    }
+  }
+  
   public void captureGenerated() {
     capture = true;
     initWriteSavedInts();
