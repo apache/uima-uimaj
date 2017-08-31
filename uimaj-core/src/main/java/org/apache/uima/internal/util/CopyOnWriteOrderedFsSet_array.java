@@ -18,8 +18,6 @@
  */
 package org.apache.uima.internal.util;
 
-import java.util.Comparator;
-
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -29,22 +27,19 @@ import org.apache.uima.jcas.cas.TOP;
 
 public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
   
-  private OrderedFsSet_array set;
-  
-  final public Comparator<TOP> comparatorWithoutID;
-  final public Comparator<TOP> comparatorWithID;
-  
+  private OrderedFsSet_array<TOP> set;
+    
   final public int a_firstUsedslot;
   final public int a_nextFreeslot;
-  final public OrderedFsSet_array original;
+  final public OrderedFsSet_array<TOP> original;
   
   public TOP[] a;  // derived from "set" above
    
   public CopyOnWriteOrderedFsSet_array(OrderedFsSet_array original) {
     this.set = original;    
     this.original = original;
-    this.comparatorWithoutID = original.comparatorWithoutID;
-    this.comparatorWithID = original.comparatorWithID;
+//    this.comparatorNoTypeWithoutID = original.comparatorNoTypeWithoutID;
+//    this.comparatorNoTypeWithID = original.comparatorNoTypeWithID;
     this.a_firstUsedslot = original.a_firstUsedslot;
     this.a_nextFreeslot = original.a_nextFreeslot;
     this.a = original.a;
@@ -56,7 +51,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    */
   @Override
   public void makeReadOnlyCopy() {
-    this.set = new OrderedFsSet_array(set, true); // true = make read only copy
+    this.set = new OrderedFsSet_array<TOP>(set, true); // true = make read only copy
     this.a = set.a;
   }
 
@@ -81,7 +76,10 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    */
   @Override
   public boolean equals(Object obj) {
-    return set.equals(obj);
+    if (obj instanceof CopyOnWriteOrderedFsSet_array) {
+      return set.equals(((CopyOnWriteOrderedFsSet_array)obj).set);  // set object equals
+    }
+    return false;
   }
 
   /**
@@ -107,7 +105,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
     return set.toString();
   }
     
-  public OrderedFsSet_array getOfsa() {
+  public OrderedFsSet_array<TOP> getOfsa() {
     return set;
   }
 
