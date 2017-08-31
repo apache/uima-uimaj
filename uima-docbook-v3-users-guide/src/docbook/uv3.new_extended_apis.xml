@@ -102,7 +102,13 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     <para>Note that the phrase <emphasis>Concurrent Modification</emphasis> is being used here in a single threading
       context, to mean that within a single thread, while an iterator is active, some modifications are being done
       to the indexes.  UIMA does not support multi-threaded write access to the CAS; it does support multi-threaded
-      read access to a set of CAS Views, concurrent with one thread having write access (to different views).</para>
+      read access to a set of CAS Views, concurrent with one thread having write access (to different views).
+    </para>
+    
+    <para>The <code>remove()</code> API for iterators is now implemented for FSIterators.  It will remove the 
+    Feature Structure returned by <code>get()</code> from all indexes in the view.
+    Note that is different behavior from normal iterator remove operation, which removes the item from
+    the collection being iterated over, as opposed to removing the item from all indexes in the view.</para>
   </section>
 
   <section id="uv3.new_extended_apis.select">
@@ -229,10 +235,12 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     <para>The JCas interface and implementation added the other built-in array types for 0-length instances.
     New methods are <code>getByteArray0L, getShortArray0L, getLongArray0L, getDoubleArray0L</code>.</para>
     
+    <!-- 
     <para>FSIterator has a new <code>moveToExact(FeatureStructure)</code>, which works like moveTo, except that the
       position moved to is one that is equal, not just compare as equal, to the Feature Structure argument.
       If no such element exists, the iterator is marked invalid.
     </para>
+     -->
     
     <para>The utility class <code>org.apache.uima.util.FileUtils</code> has a new method
       <code>writeToFile(path, string)</code>, which efficiently writes a string using UTF-8 encoding to 

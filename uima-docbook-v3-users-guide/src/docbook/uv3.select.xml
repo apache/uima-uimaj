@@ -428,7 +428,8 @@ startAt(begin, end, shifted) // same as above,
       
       <para>When selecting Annotations, frequently you may want to select only those which have
       a relation to a bounding Annotation.  A commonly done selection is to select all Annotations 
-      (of a particular type) within the span of another, bounding Annotation, such as all <code>Tokens</code>
+      (of a particular type including its subtypes) within the span of another bounding Annotation, 
+      for example, all <code>Tokens</code>
       within a <code>Sentence</code>.</para>
       
       <para>There are four varieties of sub-selection within an annotation index.  They all are based on a 
@@ -459,7 +460,7 @@ startAt(begin, end, shifted) // same as above,
         <varlistentry>
           <term><emphasis role="strong">covering</emphasis></term>
           <listitem>
-            <para>iterates over Annotations that span (or are equal to) the bound.
+            <para>iterates over Annotations that span the bound.
             </para>
           </listitem>
         </varlistentry>
@@ -501,9 +502,16 @@ startAt(begin, end, shifted) // same as above,
             </para>
           </listitem>
         </varlistentry>
+        
+        
+        <!-- 
         <varlistentry>
           <term><emphasis role="strong">positionUsesType</emphasis></term>
           <listitem>
+            <para>This only has a meaning when typePriority is false.</para>
+            
+                           This next is a fanciful idea that has no reasonable implementation, so delete it.
+                
             <para>When type priorities are not being used, Annotations with the same begin and end and type
             will be together in the index.  The starting position, when there are many Annotations 
             which might compare equal, is the left-most (earliest) one of these.  In this comparison for 
@@ -511,8 +519,18 @@ startAt(begin, end, shifted) // same as above,
             only its begin and end values are used. 
             If you want to include the type of the bounding Annotation in the equal comparison, set this to true.
             </para>
+            
+             
+            <para>This setting only applies for bounded iterators with skipSameBeginEndType == true and typePriority false.
+            Bounded iterators skip over annotations which are "equal" to the bounding annotation.  The meaning of
+            "equal" is altered when this is set true: items whose type is not == to the bounds type will not be skipped.
+            </para>
+            
           </listitem>
         </varlistentry>
+        -->
+        
+        
         <varlistentry>
           <term><emphasis role="strong">nonOverlapping</emphasis></term>
           <listitem>
@@ -537,17 +555,14 @@ startAt(begin, end, shifted) // same as above,
           </listitem>
         </varlistentry>
         <varlistentry>
-          <term><emphasis role="strong">useAnnotationEquals</emphasis></term>
+          <term><emphasis role="strong">skipSameBeginEndType</emphasis></term>
           <listitem>
             <para>While doing bounded iteration, if the Annotation being returned is identical (has the same
-            _id()) with the bounding Annotation, it is always skipped.</para>
+            _id()) with the bounding Annotation, it is always skipped. But other annotations, which might 
+            have the same begin, end, and type values, are included by default.</para>
             
             <para>  
-            When this variant is specified, in addition to
-            that, any Annotation which has the same begin, end, and (maybe) type is also skipped.  
-            The <code>positionUsesType</code> setting is used to specify in this variant whether or not the 
-            type is included when doing the equals test.  Note that <code>typePriority</code> implies
-            <code>positionUsesType</code>.
+            When this configuration is specified, any Annotation which has the same begin, end, and type is also skipped.  
             </para>
           </listitem>
         </varlistentry>
@@ -568,19 +583,25 @@ startAt(begin, end, shifted) // same as above,
           <varlistentry>
             <term><emphasis role="strong">typePriority</emphasis></term>
             <listitem>
-              <para>default: type priorites are not used when determining bounds in bounded selects.
-              Subiterators, in contrast, use type priorities.
+              <para>default: false; type priorities are not used when moving to left-most among equal items.
+              Subiterators created using the AnnotationIndex, in contrast, use type priorities.
               </para>
             </listitem>
           </varlistentry>
+          
+          <!-- 
           <varlistentry>
             <term><emphasis role="strong">positionUsesType</emphasis></term>
             <listitem>
-              <para>default: the type of the bounding Annotation is ignored 
-               when determining bounds in bounded selects; only its begin and end position are used
+              <para>default: false; the type of the bounding Annotation is ignored 
+               when skipSameBeginEndType == true, for skipping equal-to-bound; 
+               only its begin and end position are used
               </para>
             </listitem>
           </varlistentry>
+           -->
+           
+           
           <varlistentry>
             <term><emphasis role="strong">nonOverlapping</emphasis></term>
             <listitem>
@@ -599,11 +620,12 @@ startAt(begin, end, shifted) // same as above,
             </listitem>
           </varlistentry>
           <varlistentry>
-            <term><emphasis role="strong">useAnnotationEquals</emphasis></term>
+            <term><emphasis role="strong">skipSameBeginEndType</emphasis></term>
             <listitem>
-              <para>default: only the single Annotation with the same _id() is skipped when doing sub selecting.
+              <para>default: only the single Annotation with the same _id() is skipped when using 
+                a bounded iteration.
                 Use this setting to expand the set of skipped Annotations to include all those equal to the 
-                bound's begin and end (and maybe, type, if positionUsesType or typePriority specified).   
+                bound's begin, end and type.   
               </para>
             </listitem>
           </varlistentry>
