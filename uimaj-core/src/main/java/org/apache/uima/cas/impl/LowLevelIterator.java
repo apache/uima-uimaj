@@ -19,10 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.internal.util.Misc;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Low-level FS iterator. Returns FS references, instead of FS objects.
@@ -117,8 +121,8 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
     maybeReinitIterator();
     moveToNoReinit(fs);
   }
+    
 
-  
   /**
    * Internal use
    * same as moveToFirst, but won't reset to use current contents of index if index has changed
@@ -139,8 +143,33 @@ public interface LowLevelIterator<T extends FeatureStructure> extends FSIterator
   void moveToNoReinit(FeatureStructure fs);
   
   /**
+   * @return the comparator used by this iterator.  It is always a withoutID style, and may be
+   *         either a withType or NoType style.  
+   */
+  Comparator<TOP> getComparator();
+    
+  default void ll_remove() {
+    LowLevelIndex<T> idx = ll_getIndex();
+    if (null == idx) {
+      UIMAFramework.getLogger().warn("remove called on UIMA iterator but iterator not over any index");
+    } else {
+      idx.getCasImpl().removeFsFromIndexes(get());
+    }
+  }
+
+
+  /**
    * an empty iterator
    */
-  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = 
-      new LowLevelIterator_empty();
+  static final LowLevelIterator<FeatureStructure> FS_ITERATOR_LOW_LEVEL_EMPTY = new LowLevelIterator_empty();
+  
+  /**
+   * Internal use constants
+   */
+  static final boolean IS_ORDERED = false;
+  
+  /**
+   * @return false if this iterator is over an unordered collection or set or bag
+   */
+  default boolean isMoveToSupported() { return false; }
 }

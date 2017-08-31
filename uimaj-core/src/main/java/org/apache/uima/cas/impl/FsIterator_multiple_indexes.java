@@ -20,9 +20,10 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import java.util.Comparator;
 
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Common code for both
@@ -32,23 +33,49 @@ import org.apache.uima.cas.FeatureStructure;
  * Supports creating corresponding iterators just for the non-empty ones
  * Supports reinit - evaluating when one or more formerly empty indexes is no longer empty, and recalculating the 
  *                   iterator set
+ *                   
+ * Supports move-to-leftmost when typeOrdering is to be ignored
+ *   -- when no typeorder key
+ *   -- when typeorder key, but select framework requests no typeordering for move to leftmost
+ *   
  * @param <T> the highest type returned by these iterators
  */
 public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  implements LowLevelIterator<T> {
 
   // An array of iterators, one for each in the collection (e.g. subtypes, or views or ...)
   // split among empty and non-empty.
-  protected LowLevelIterator<T>[] allIterators;
+  final protected LowLevelIterator<T>[] allIterators;
   private LowLevelIterator<T>[] emptyIterators;
   protected LowLevelIterator<T> [] nonEmptyIterators;
+  
+  /** 
+   * for set and sorted, both ignore id 
+   *   because this comparator is not used for comparing within the index, only for
+   *   compares between index items and outside args.
+   * if ignoring type, uses that style 
+   */
+  final protected Comparator<TOP> comparatorMaybeNoTypeWithoutId; 
+//  final protected boolean ignoreType_moveToLeftmost;
 
-  /** index into nonEmptyIterators, shows last valid one */
-  protected int lastValidIteratorIndex = -1;
+  final protected LowLevelIndex<T> main_idx;
+  
+//  /** true if sorted index, with typepriority as a key, but ignoring it because
+//   *    either there are no type priorities defined, or
+//   *    using a select-API-created iterator configured without typePriority
+//   *    
+//   *  Not final for the use case where there's a type-order key, type priorities are specified,
+//   *  but a select-API-created iterator wants to ignore type priorities.
+//   */
+//  final protected boolean isSortedTypeOrder_but_IgnoringTypeOrder; 
    
-  public FsIterator_multiple_indexes(LowLevelIterator<T>[] iterators) {
+  public FsIterator_multiple_indexes(LowLevelIndex<T> main_idx, 
+                                     LowLevelIterator<T>[] iterators,
+//                                     boolean ignoreType_moveToLeftmost) {
+                                     Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
     this.allIterators = iterators;
+    this.main_idx = main_idx;
+    this.comparatorMaybeNoTypeWithoutId = comparatorMaybeNoTypeWithoutId;
     separate_into_empty_indexes_and_non_empty_iterators();
-    
   }
   
   /**
@@ -58,12 +85,13 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
    */
   public FsIterator_multiple_indexes(FsIterator_multiple_indexes<T> v) {
     allIterators = v.allIterators.clone();
+    this.main_idx = v.main_idx;
+    this.comparatorMaybeNoTypeWithoutId = v.comparatorMaybeNoTypeWithoutId;
     int i = 0;
     for (LowLevelIterator<T> it : allIterators) {
       allIterators[i++] = (LowLevelIterator<T>) it.copy();
     }   
     separate_into_empty_indexes_and_non_empty_iterators();
-    lastValidIteratorIndex = v.lastValidIteratorIndex;
   }
   
   /**
@@ -85,27 +113,7 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
     emptyIterators    = emptyIteratorsAl   .toArray(new LowLevelIterator[emptyIteratorsAl   .size()]);
     nonEmptyIterators = nonEmptyIteratorsAl.toArray(new LowLevelIterator[nonEmptyIteratorsAl.size()]);
   }
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIterator#isValid()
-   */
-  @Override
-  public boolean isValid() {
-    return lastValidIteratorIndex >= 0 &&
-    lastValidIteratorIndex < nonEmptyIterators.length &&
-    nonEmptyIterators[lastValidIteratorIndex].isValid();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIterator#getNvc()
-   */
-  @Override
-  public T getNvc() {
-    return nonEmptyIterators[lastValidIteratorIndex].getNvc();
-  }
-
-  
-  
+    
   /* (non-Javadoc)
    * @see org.apache.uima.cas.impl.LowLevelIterator#ll_indexSize()
    */
@@ -175,5 +183,14 @@ public abstract class FsIterator_multiple_indexes <T extends FeatureStructure>  
     }
     return false;
   }
+  
+  @Override
+  public LowLevelIndex<T> ll_getIndex() {
+    return (LowLevelIndex<T>)
+             ((main_idx != null)
+                ? main_idx 
+                : ((LowLevelIterator<T>)allIterators[0]).ll_getIndex());
+  }  
+
   
 }

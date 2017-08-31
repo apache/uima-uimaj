@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Comparator;
 
 import org.apache.uima.cas.FSIndex;
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
@@ -93,7 +94,10 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    *   For sets, the equal is used to determine set membership
    *   For sorted, the comparator is the sort order (this comparator is without the ID)
    */
-  Comparator<TOP> getComparator();
+  Comparator<TOP> getComparator(); 
+  
+  static final Comparator<TOP> FS_ID_COMPARATOR = 
+      (TOP fs1, TOP fs2) -> Integer.compare(fs1._id, fs2._id); 
   
   default void flush() {   // probably not needed, but left for backwards compatibility  4/2015
     throw new UnsupportedOperationException();
@@ -147,6 +151,10 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    */
   int ll_maxAnnotSpan();  
   
+  /**
+   * @return true if the index is sorted
+   */
+  boolean isSorted();
   
   @Override
   default <N extends FeatureStructure> SelectFSs<N> select() {
@@ -173,4 +181,36 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
     return ((SelectFSs_impl)select()).type(fullyQualifiedTypeName);
   }
   
+  /**
+   * Return an iterator over the index. The position of the iterator will be set to 
+   * return the first item in the index.
+   * If the index is empty, the iterator position will be marked as invalid.
+   * 
+   * @return An FSIterator positioned at the beginning, or an invalid iterator.
+   */
+  default LowLevelIterator<T> iterator() {
+    return iterator(IS_ORDERED, IS_TYPE_ORDER);
+  }
+  
+  /**
+   * Internal use, used by select framework.
+   * 
+   * Return an iterator over the index. The position of the iterator will be set to 
+   * return the first item in the index.
+   * If the index is empty, the iterator position will be marked as invalid.
+   * 
+   * @param orderNotNeeded if true, skips work while iterating to keep iterators over multiple types in sync.
+   * @param ignoreType if true, the comparator used for moveTo leftmost operations 
+   *        will ignore typeOrder keys, if the index happens to define these
+   * 
+   * @return An FSIterator positioned at the beginning, or an invalid iterator.
+   */
+  LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType);
+
+  /**
+   * Internal use constants
+   */
+  static final boolean IS_ORDERED = false;
+  static final boolean IS_TYPE_ORDER = false;
+
 }

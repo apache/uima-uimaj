@@ -19,10 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * An empty Low-level FS iterator
@@ -33,13 +34,6 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   public boolean isValid() { return false; }
   @Override
   public T getNvc() { throw new NoSuchElementException(); }
-  @Override
-  public void moveTo(int i) {}
-  @Override
-  public void moveToFirst() {}
-  @Override
-  public void moveToLast() {}
-
   @Override
   public void moveToFirstNoReinit() {}
   @Override
@@ -54,8 +48,6 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   @Override
   public void moveToPreviousNvc() {}
   @Override
-  public void moveTo(FeatureStructure fs) {}
-  @Override
   public int ll_indexSizeMaybeNotCurrent() { return 0; }
   @Override
   public int ll_maxAnnotSpan() { return Integer.MAX_VALUE; }
@@ -64,7 +56,7 @@ public class LowLevelIterator_empty<T extends FeatureStructure> implements LowLe
   @Override
   public boolean isIndexesHaveBeenUpdated() { return false; }
   @Override
-  public boolean maybeReinitIterator() { 
-    return false;
-  }
+  public boolean maybeReinitIterator() { return false; }
+  @Override
+  public Comparator<TOP> getComparator() { return null; }
 }

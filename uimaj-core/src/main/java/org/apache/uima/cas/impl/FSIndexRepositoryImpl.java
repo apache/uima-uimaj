@@ -36,6 +36,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.FSComparators;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
@@ -175,6 +176,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     private Comparator<TOP> annotationFsComparatorWithId = null;
     
+    private Comparator<TOP> annotationFsComparatorNoTypeWithoutId = null;
+    
+    private Comparator<TOP> annotationFsComparatorNoTypeWithId = null;
+
     /**
      * optimization only - bypasses some shared (among views) initialization if already done
      */
@@ -1022,8 +1027,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    * @see org.apache.uima.cas.FSIndexRepository#getIndex(String)
    */
   @SuppressWarnings("unchecked")
-  public <T extends FeatureStructure> FSIndex<T> getIndex(String label) {
-    return (FSIndex<T>) this.name2indexMap.get(label);
+  public <T extends FeatureStructure> LowLevelIndex<T> getIndex(String label) {
+    return (LowLevelIndex<T>) this.name2indexMap.get(label);
   }
   
   /**
@@ -1472,7 +1477,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     
     LowLevelIterator<T>[] ia = new LowLevelIterator[iteratorListSize];
-    return new FsIterator_aggregation_common<T>(iteratorList.toArray(ia), null);
+    return new FsIterator_aggregation_common<T>(iteratorList.toArray(ia), null, null);
   }
 
   private final <T extends FeatureStructure> void getAllIndexedFS(Type type, List<LowLevelIterator<T>> iteratorList) {
@@ -1493,12 +1498,12 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 
     TypeImpl ti = (TypeImpl)type;
     if (isUsed.get(ti.getCode())) {
-      FsIndex_iicp<TOP> iicp = getIndexesForType(ti.getCode()).getNonSetIndex();  
+      FsIndex_iicp<T> iicp = (FsIndex_iicp<T>) getIndexesForType(ti.getCode()).getNonSetIndex();  
       
 //      iicps4allFSs.add(iicp);
       if (null != iicp && !iicp.isEmpty()) {
         LowLevelIterator<T> it = (iicp.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
-                                    ? (LowLevelIterator<T>)iicp.iteratorUnordered()
+                                    ? (LowLevelIterator<T>)iicp.iterator(true, true)  // order not needed, ignore type
                                     : (LowLevelIterator<T>)iicp.iterator();
         iteratorList.add(it);
         if (iicp.isDefaultBagIndex()) {
@@ -1793,13 +1798,40 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    return this.sii.annotationComparator;
 //  }
   
+  
+  public Comparator<TOP> getAnnotationFsComparator(FSComparators withId, FSComparators withTypeOrder) {
+    Comparator<TOP> r = getCachedComparator(withId, withTypeOrder);
+    if (r == null) {
+      r = createAnnotationFsComparator(withId, withTypeOrder);
+      setCachedComparator(withId, withTypeOrder, r);
+    }
+    return r; 
+  }
+
+  
+  private Comparator<TOP> createAnnotationFsComparator(FSComparators withId, FSComparators withTypeOrder) {
+    LinearTypeOrder lto = (withTypeOrder == FSComparators.WITH_TYPE_ORDER) ? getDefaultTypeOrder() : null;
+    if (withId == FSComparators.WITH_ID) {
+      if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
+        return (fs1, fs2) -> (fs1 == fs2) ? 0 : ((Annotation) fs1).compareAnnotationWithId((Annotation) fs2, lto);
+      } else {
+        return (fs1, fs2) -> (fs1 == fs2) ? 0 : ((Annotation) fs1).compareAnnotationWithId((Annotation) fs2);
+      }
+    } else {
+      if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
+        return (fs1, fs2) -> (fs1 == fs2) ? 0 : ((Annotation) fs1).compareAnnotation((Annotation) fs2, lto);
+      } else {
+        return (fs1, fs2) -> (fs1 == fs2) ? 0 : ((Annotation) fs1).compareAnnotation((Annotation) fs2);
+      }
+    }
+  }
+  
   public Comparator<TOP> getAnnotationFsComparatorWithoutId() {
     Comparator<TOP> r = this.sii.annotationFsComparatorWithoutId;
     // lazy creation
     if (null != r) {
       return r;
-    }
-    
+    }    
     return createAnnotationFsComparator();
   }
   
@@ -1808,11 +1840,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     // lazy creation
     if (null != r) {
       return r;
-    }
-    
+    }    
     return createAnnotationFsComparatorWithId();    
   }
   
+
   private Comparator<TOP> createAnnotationFsComparator() {
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
     
@@ -1835,28 +1867,28 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
   }
   
+//  public boolean isAnnotationComparator_usesTypeOrder() {
+//    final LinearTypeOrder lto = getDefaultTypeOrder(); 
+//    return V2_ANNOTATION_COMPARE_TYPE_ORDER || !lto.isEmptyTypeOrder();
+//  }
+  
   //unrolled because of high frequency use
   private Comparator<TOP> createAnnotationFsComparatorWithId() {
-
     final LinearTypeOrder lto = getDefaultTypeOrder();  // used as constant in comparator
 
     if (!V2_ANNOTATION_COMPARE_TYPE_ORDER && lto.isEmptyTypeOrder()) {
       this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2) return 0;
-  
         final Annotation fs1 = (Annotation) fsx1;
         final Annotation fs2 = (Annotation) fsx2;
-        
         return fs1.compareAnnotationWithId(fs2);
       };
       
     } else {
       this.sii.annotationFsComparatorWithId = (fsx1, fsx2) -> {
         if (fsx1 == fsx2) return 0;
-  
         final Annotation fs1 = (Annotation) fsx1;
         final Annotation fs2 = (Annotation) fsx2;
-        
         return fs1.compareAnnotationWithId(fs2, lto);
       };
     }
@@ -1886,4 +1918,37 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public CASImpl getCasImpl() {
     return cas;
   }
+  
+  private Comparator<TOP> getCachedComparator(FSComparators withId, FSComparators withTypeOrder) {
+    if (withId == FSComparators.WITH_ID) {
+      if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
+        return this.sii.annotationFsComparatorWithId;
+      } else {
+        return this.sii.annotationFsComparatorNoTypeWithId;
+      }
+    } else {
+      if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
+        return this.sii.annotationFsComparatorWithoutId;
+      } else {
+        return this.sii.annotationFsComparatorNoTypeWithoutId;
+      }
+    }
+  }
+
+  private void setCachedComparator(FSComparators withId, FSComparators withTypeOrder, Comparator<TOP> c) {
+    if (withId == FSComparators.WITH_ID) {
+      if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
+        this.sii.annotationFsComparatorWithId = c;
+      } else {
+        this.sii.annotationFsComparatorNoTypeWithId = c;
+      }
+    } else {
+      if (withTypeOrder == FSComparators.WITH_TYPE_ORDER) {
+        this.sii.annotationFsComparatorWithoutId = c;
+      } else {
+        this.sii.annotationFsComparatorNoTypeWithoutId = c;
+      }
+    }
+  }
+
 }

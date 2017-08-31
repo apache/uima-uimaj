@@ -22,6 +22,7 @@ package org.apache.uima.cas.impl;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -197,19 +198,20 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
   @Override
   protected void bulkAddTo(List<T> fss) {
     fss.addAll((Collection<? extends T>) this.index);
-  }
+  }  
   
   /* (non-Javadoc)
-   * @see org.apache.uima.cas.FSIndex#iterator()
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#iterator(boolean, boolean)
+   *   both orderNotNeeded and ignoreType are ignored for bag indexes.
    */
   @Override
-  public FsIterator_bag<T> iterator() {
+  public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
     CopyOnWriteIndexPart cow_index_wrapper = getNonNullCow();
     return casImpl.inPearContext()
              ? new FsIterator_bag_pear<>(this, type, cow_index_wrapper)
              : new FsIterator_bag     <>(this, type, cow_index_wrapper);
   }
-  
+
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
     if (CASImpl.traceCow) {

@@ -19,15 +19,18 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
+
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
  */
 class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_set_sorted2<T> {
   
-  FsIterator_set_sorted_pear(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper) {
-    super(ll_index, cow_wrapper);
+  FsIterator_set_sorted_pear(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper, Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
+    super(ll_index, cow_wrapper, comparatorMaybeNoTypeWithoutID);
   }
   
 //  FsIterator_set_sorted_pear createInstance(OrderedFsSet_array orderedFsSet_array, LowLevelIndex ll_index) {
@@ -41,6 +44,6 @@ class FsIterator_set_sorted_pear<T extends FeatureStructure> extends FsIterator_
 
   @Override
   public FsIterator_set_sorted_pear<T> copy() {
-    return new FsIterator_set_sorted_pear<T>(ll_index, ofsa);
+    return new FsIterator_set_sorted_pear<T>(ll_index, ofsa, this.comparatorMaybeNoTypeWithoutID);
   }
 }

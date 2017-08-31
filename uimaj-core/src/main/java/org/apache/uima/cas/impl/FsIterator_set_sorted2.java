@@ -20,21 +20,21 @@
 package org.apache.uima.cas.impl;
 
 import java.util.Comparator;
-import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.CopyOnWriteOrderedFsSet_array;
 import org.apache.uima.internal.util.Misc;
-import org.apache.uima.internal.util.OrderedFsSet_array;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
+ * An interator for 1 type for a set or sorted index
+ * 
  * NOTE: This is the version used for set/sorted iterators
  *   It is built directly on top of a CopyOnWrite wrapper for OrderedFsSet_array
  *   It uses the version of OrdereFsSet_array that has no embedded nulls
  * @param <T> the type of FSs being returned from the iterator, supplied by the calling context
  */
-class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_singletype<T> implements LowLevelIterator<T> {
+class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
   // not final, because on moveToFirst/Last/FS, the semantics dictate that 
   // if the underlying index was updated, this should iterate over that.
@@ -43,13 +43,16 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   private int pos;
 
   protected final FsIndex_set_sorted<T> ll_index;
+   
+  /**
+   * if the iterator is configured to ignore TypeOrdering, then
+   * the comparator omits the type (if the index has a type order key)
+   */
+  protected final Comparator<TOP> comparatorMaybeNoTypeWithoutID;  
   
-  private final Comparator<TOP> comparatorWithoutID;
-  
-  public FsIterator_set_sorted2(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper) {
-    super((TypeImpl)ll_index.getType(), 
-          ((CopyOnWriteOrderedFsSet_array)cow_wrapper).comparatorWithoutID);
-    this.comparatorWithoutID = ((CopyOnWriteOrderedFsSet_array)cow_wrapper).comparatorWithoutID;
+  public FsIterator_set_sorted2(FsIndex_set_sorted<T> ll_index, CopyOnWriteIndexPart cow_wrapper, Comparator<TOP> comparatorMaybeNoTypeWithoutID) {
+    super((TypeImpl)ll_index.getType());
+    this.comparatorMaybeNoTypeWithoutID = comparatorMaybeNoTypeWithoutID;
     
     this.ll_index = ll_index;
     ofsa = (CopyOnWriteOrderedFsSet_array) cow_wrapper;
@@ -61,6 +64,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
 //    }   
   }
   
+  @Override
   public boolean maybeReinitIterator() {
     if (!ofsa.isOriginal()) {
       // can't share this copy with other iterators - they may have not done a moveToFirst, etc.
@@ -106,18 +110,21 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
   }
   
   // Internal use
+  @Override
   public void moveToFirstNoReinit() {
     pos = ofsa.a_firstUsedslot;
   }
   
   // Internal use
+  @Override
   public void moveToLastNoReinit() {
     pos = ofsa.a_nextFreeslot - 1;       
   }
   
   // Internal use
+  @Override
   public void moveToNoReinit(FeatureStructure fs) {
-    pos = ofsa.getOfsa().findWithoutID((TOP) fs); 
+    pos = ofsa.getOfsa().find((TOP) fs, comparatorMaybeNoTypeWithoutID); 
 
     if (pos < 0) {
       pos = (-pos) -1;  // insertion point, one above
@@ -130,7 +137,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
 
     moveToPreviousNvc();
     if (isValid()) {
-      if (0 == comparatorWithoutID.compare((TOP)get(), (TOP) fs)) {
+      if (0 == comparatorMaybeNoTypeWithoutID.compare((TOP)get(), (TOP) fs)) {
         moveToLeftMost(fs);
       } else {
         // did not compare equal, so previous was the right position
@@ -142,13 +149,19 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     }
     return;   
   }
-  
+
+//  // Internal use
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    pos = ofsa.getOfsa().find((TOP) fs);  // find == find with ID 
+//    // if not found, this will be negative marking iterator invalid
+//  }
+
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   @Override
   public FsIterator_singletype<T> copy() {
-    FsIterator_set_sorted2<T> r = new FsIterator_set_sorted2<>(ll_index, ofsa);
+    FsIterator_set_sorted2<T> r = new FsIterator_set_sorted2<>(ll_index, ofsa, comparatorMaybeNoTypeWithoutID);
     r.pos = pos;
     return r;
   }
@@ -183,7 +196,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
    */
   @Override
   public int ll_maxAnnotSpan() {
-    FsIndex_set_sorted<T> ss_idx = (FsIndex_set_sorted<T>)ll_index;
+    FsIndex_set_sorted<T> ss_idx = ll_index;
     return ss_idx.isAnnotIdx 
         ? ss_idx.ll_maxAnnotSpan()
         : Integer.MAX_VALUE;
@@ -242,7 +255,7 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
         moveToLeftMostUp(fs, upperValidPos);
         return;
       }
-      comparedEqual = (0 == comparatorWithoutID.compare((TOP)get(), (TOP) fs));
+      comparedEqual = (0 == comparatorMaybeNoTypeWithoutID.compare((TOP)get(), (TOP) fs));
       if (!comparedEqual) {
         moveToLeftMostUp(fs, upperValidPos);
         return;
@@ -270,7 +283,20 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
     if (pos == upperValidPos) {
       return;
     }
-    pos = ofsa.getOfsa().binarySearchLeftMostEqual((TOP) fs, pos, upperValidPos);
+    pos = ofsa.getOfsa().binarySearchLeftMostEqual((TOP) fs, pos, upperValidPos, comparatorMaybeNoTypeWithoutID);
+  }
+  
+  @Override
+  public Comparator<TOP> getComparator() {
+    return comparatorMaybeNoTypeWithoutID;
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#moveToSupported()
+   */
+  @Override
+  public boolean isMoveToSupported() {
+    return this.ll_getIndex().isSorted();
   }
 
 //  @Override
@@ -290,39 +316,6 @@ class FsIterator_set_sorted2<T extends FeatureStructure> extends FsIterator_sing
 //    return ofsa.getOfsa().find(fs);
 //  }
   
-  /**
-   * @param fs - the fs to search for
-   * @param start the index representing the lower bound (inclusive) to search for
-   * @param end the index representing the upper bound (exclusive) to search for
-   * @return - the index of the leftmost equal (without id) item
-   */
-  private int binarySearchLeftMostEqual(final TOP fs, int start, int end) {
-
-//    assert start >= 0;    
-//    assert start < end;
-    
-    int lower = start, upper = end;
-    for (;;) {
-    
-      int mid = (lower + upper) >>> 1;  // overflow aware
-      TOP item = ofsa.a[mid];
-      int pos = mid;
-         
-      int c = comparatorWithoutID.compare(item, fs);
-      if (c == 0) {
-        upper = pos;  // upper is exclusive
-        if (upper == lower) {
-          return upper;
-        }
-      } else {  // item is less than fs; search upwards
-        lower = pos + 1;             // lower is inclusive
-        if (lower == upper) {
-          return upper;
-        }
-      }
-    }
-  }
-
 
 }
 

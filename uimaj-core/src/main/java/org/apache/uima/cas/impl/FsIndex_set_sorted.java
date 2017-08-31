@@ -19,11 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -41,22 +42,20 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   
  * This is an index over just one type (excluding subtypes)
  * 
- * Uses a NavigableSet as the index (of FSs).  
- *   For sorted, because this is a set, to allow multiple (different) FSs having
- *     the same key values to be in the index, the key used for the index is augmented by a least-significant
- *     key which is the _id field of the FS itself.
+ * Uses key augmented by a least-significant additional key: the _id field of the FS itself,
+ *   to allow multiple otherwise equal (but not ==) FSs to be in the index.
  * 
  * @param <T> the Java class type for this index
  */
 final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsIndex_singletype<T> {
   
-//  /**
+//  /**h
 //   * This impl of sorted set interface allows using the bulk add operation implemented in Java's 
 //   * TreeSet - that tests if the argument being passed in is an instance of SortedSet and does a fast insert.
 //   */
 
 
-  // The index, a NavigableSet. 
+  // The index, a custom high-performance array impl 
   final private OrderedFsSet_array<T> indexedFSs;
     
   // only an optimization used for select.covering for AnnotationIndexes
@@ -64,10 +63,8 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
      
   FsIndex_set_sorted(CASImpl cas, Type type, int indexType, FSIndexComparator comparatorForIndexSpecs) {
     super(cas, type, indexType, comparatorForIndexSpecs);
-   
     
-    
-    this.indexedFSs = new OrderedFsSet_array<T>(comparatorWithID, comparatorWithoutID);
+    this.indexedFSs = new OrderedFsSet_array<T>(comparatorNoTypeWithID, comparatorNoTypeWithoutID);
   }
 
   @Override
@@ -102,8 +99,8 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
       }
     }
     indexedFSs.add(fs, isSorted() 
-                              ? comparatorWithID 
-                              : comparatorWithoutID);
+                              ? comparatorNoTypeWithID 
+                              : comparatorNoTypeWithoutID);
   }
 
   /**
@@ -131,6 +128,8 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
              ? this.indexedFSs.getAtPos(pos)
              : null;
   }
+  
+  
   
 //  @Override
 //  public T find(FeatureStructure templateKey) {
@@ -207,28 +206,56 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
    */
   @Override
   public boolean deleteFS(T fs) {
+    if (((TOP)fs)._getTypeImpl() != this.type) {
+      throw new IllegalArgumentException(
+          String.format("Wrong type %s passed to deleteFS of index over type %s", 
+            ((TOP)fs)._getTypeImpl().getName(), this.type.getName()));
+    }
 //    maybeProcessBulkAdds(); // moved to OrderedFsSet_array class
     maybeCopy();
-    return this.indexedFSs.remove((TOP) fs);
+    return this.indexedFSs.remove(fs);
   }
   
   @Override
   protected void bulkAddTo(List<T> v) {
-    v.addAll((Collection<? extends T>) indexedFSs);
+    Collection<T> coll = new AbstractCollection<T>() {
+
+      @Override
+      public Iterator<T> iterator() { return null; }
+
+      @Override
+      public int size() { return FsIndex_set_sorted.this.size(); }
+
+      /* (non-Javadoc)
+       * @see java.util.AbstractCollection#toArray()
+       */
+      @Override
+      public T[] toArray() {
+        return (T[]) indexedFSs.toArray();
+      }
+    };
+    v.addAll(coll);
   }
      
   @Override
   public LowLevelIterator<T> iterator() {
+    return iterator(IS_ORDERED, IS_TYPE_ORDER);
+  }
+  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.FsIndex_singletype#iterator(boolean, boolean)
+   *   orderNotNeeded - ignored, because for a single index type, order always used
+   */
+  @Override
+  public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
     CopyOnWriteIndexPart cow_wrapper = getNonNullCow();
     // if index is empty, return never-the-less a real iterator,
     //   not an empty one, because it may become non-empty
+    Comparator<TOP> comparatorMaybeNoTypeWithoutID = ignoreType ? comparatorNoTypeWithoutID : comparatorWithoutID;
     return casImpl.inPearContext()
-//             ? new FsIterator_set_sorted_pear<>(this, type, this)
-//             : new FsIterator_set_sorted     <>(this, type, this);
-             ? new FsIterator_set_sorted_pear<T>(this, cow_wrapper)
-             : new FsIterator_set_sorted2<T>(this, cow_wrapper);
-  }
-  
+             ? new FsIterator_set_sorted_pear<T>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID)
+             : new FsIterator_set_sorted2<T>(this, cow_wrapper, comparatorMaybeNoTypeWithoutID);  }
+
   @Override
   protected CopyOnWriteIndexPart createCopyOnWriteIndexPart() {
     if (CASImpl.traceCow) {
@@ -237,11 +264,18 @@ final public class FsIndex_set_sorted<T extends FeatureStructure> extends FsInde
     return new CopyOnWriteOrderedFsSet_array(indexedFSs);
   }
   
+  @Override
   public int ll_maxAnnotSpan() {
     return maxAnnotSpan;
   }
-  
-  Comparator<TOP> getComparatorWithId() {
-    return comparatorWithID;
+
+  /* (non-Javadoc)
+   * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+   */
+  @Override
+  public int compare(FeatureStructure o1, FeatureStructure o2) {
+    return comparatorWithoutID.compare((TOP)o1, (TOP)o2);
   }
+  
+  
 }

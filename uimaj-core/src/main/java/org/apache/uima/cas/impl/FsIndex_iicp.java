@@ -50,7 +50,7 @@ import org.apache.uima.jcas.cas.TOP;
 class FsIndex_iicp<T extends FeatureStructure> 
           implements Comparable<FsIndex_iicp<? extends FeatureStructure>>,
                      Comparator<FeatureStructure>,
-                     LowLevelIndex<T> {
+                     LowLevelIndex<T> {  
 
 //  private final static boolean DEBUG = false;
 
@@ -416,8 +416,14 @@ class FsIndex_iicp<T extends FeatureStructure>
 
   @Override
   public int compare(FeatureStructure fs1, FeatureStructure fs2) {
-    return fsIndex_singletype.compare(fs1,  fs2);
+    return fsIndex_singletype.comparatorWithoutID.compare((TOP)fs1, (TOP)fs2);
   }
+  
+//  @Override
+//  public int compare(FeatureStructure fs1, FeatureStructure fs2, boolean ignoreType) {
+//    return fsIndex_singletype.compare(fs1,  fs2, ignoreType);
+//  }
+  
     
   @Override
   public boolean contains(FeatureStructure fs) {
@@ -452,22 +458,54 @@ class FsIndex_iicp<T extends FeatureStructure>
   }
   
   @Override
+  public boolean isSorted() {
+    return fsIndex_singletype.isSorted();
+  }
+  
+  /**
+   *  Iterator varieties
+   *  
+   *  All iterators are over a Type + subtypes (because that's the purpose of this class)
+   *    - ambiguous / unambiguous  (for AnnotationIndex)
+   *    - not strict / strict      (for AnnotationIndex)
+   *    - ignoring type priorities or not  (for any index)
+   *    - "unordered" - no need to preserve order
+   *  
+   *  These may be combined.  
+   */
+  
+  
+  
+  @Override
   public LowLevelIterator<T> iterator() {
-    createIndexIteratorCache();  
-   
-    return (cachedSubFsLeafIndexes.length == 1)
-           ? (LowLevelIterator<T>) fsIndex_singletype.iterator()
-           : fsIndex_singletype.isSorted()
-             ? new FsIterator_subtypes_ordered<T>(this)
-             : new FsIterator_aggregation_common<T>(this.getIterators(), this);
+    return iterator(false, false);
   } 
   
-  public LowLevelIterator<T> iteratorUnordered() {
-    createIndexIteratorCache();  
+//  public LowLevelIterator<T> iterator(boolean orderNotNeeded) {
+//    return iterator(orderNotNeeded, false);
+//  }
+//  
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIndex#iterator(boolean, boolean)
+   *   orderNotNeeded is ignored, because would never be here unless order was needed
+   */
+  @Override
+  public LowLevelIterator<T> iterator(boolean orderNotNeeded, boolean ignoreType) {
+    createIndexIteratorCache(); 
+
+    if (cachedSubFsLeafIndexes.length == 1) {
+      return fsIndex_singletype.iterator(IS_ORDERED, ignoreType);  
+    }
+
+    FsIndex_singletype<T> idx = getFsIndex_singleType();    
+    Comparator<TOP> comparatorMaybeNoTypeWithoutId = ignoreType ? idx.comparatorNoTypeWithoutID : idx.comparatorWithoutID;
     
-    return (cachedSubFsLeafIndexes.length == 1)
-           ? fsIndex_singletype.iterator()
-           : new FsIterator_aggregation_common<T>(getIterators(), this); 
+    if (! fsIndex_singletype.isSorted() ||  // is a set index, or 
+                         orderNotNeeded) {  // order is not needed 
+      return new FsIterator_aggregation_common<T>(getIterators(), this, comparatorMaybeNoTypeWithoutId); 
+    }
+    
+    return new FsIterator_subtypes_ordered<T>(this, comparatorMaybeNoTypeWithoutId);   
   }
 
   /**
@@ -481,11 +519,10 @@ class FsIndex_iicp<T extends FeatureStructure>
    */
   @Override
   public LowLevelIterator<T> ll_iterator(boolean ambiguous) {
-    if (!ambiguous) {
-      return new LLUnambiguousIteratorImpl<T>((LowLevelIterator<FeatureStructure>) iterator());
-     } else {
-       return (LowLevelIterator<T>) iterator();
-     }
+    LowLevelIterator<T> it = iterator(IS_ORDERED, IS_TYPE_ORDER);
+    return ambiguous
+             ? it
+             : new LLUnambiguousIteratorImpl<T>(it);
   }
   
 //  /* ***********************************
@@ -510,7 +547,8 @@ class FsIndex_iicp<T extends FeatureStructure>
     
   @Override
   public FSIndex<T> withSnapshotIterators() {
-    return new FsIndex_snapshot<>(this);
+    FsIndex_singletype<T> idx = getFsIndex_singleType();
+    return new FsIndex_snapshot<>(this, idx.comparatorWithoutID, idx.comparatorNoTypeWithoutID);
   }
 
   public FSIndexRepositoryImpl getFsRepositoryImpl() {

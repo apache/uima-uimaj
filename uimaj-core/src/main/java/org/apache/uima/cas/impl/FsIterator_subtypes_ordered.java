@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.cas.Type;
 import org.apache.uima.jcas.cas.TOP;
 
 /**
@@ -31,8 +32,6 @@ import org.apache.uima.jcas.cas.TOP;
  *   the type or subtype of the uppermost type.
  *   
  * The set of iterators is maintained in an array, with the 0th element being the current valid iterator.
- * 
- * This class doesn't do concurrent mod checking - that's done by the individual iterators.
  *
  * @param <T> result type
  */
@@ -48,21 +47,29 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   private static final int SORTED_SECTION = 3;
   
+  /** index into nonEmptyIterators, shows last valid one */
+  protected int lastValidIteratorIndex = -1;
+  
   private boolean wentForward = true;
   
-  /** for sorted, this is with ID, otherwise, without */
-  final private Comparator<TOP> comparator; 
   
   // The IICP
   final private FsIndex_iicp<T> iicp;
-
-
-  public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp) {
-    super(iicp.getIterators());
+  
+//  /** true if sorted index, with typepriority as a key, but ignoring it because
+//   *    either there are no type priorities defined, or
+//   *    using a select-API-created iterator configured without typePriority
+//   *    
+//   *  Not final for the use case where there's a type-order key, type priorities are specified,
+//   *  but a select-API-created iterator wants to ignore type priorities.
+//   */
+//  final private boolean isSortedAndIgnoringTypeOrderKey; 
+  
+  // call used by select framework to specify ignoring type priority
+  public FsIterator_subtypes_ordered(FsIndex_iicp<T> iicp, Comparator<TOP> comparatorMaybeNoTypeWithoutId) {
+    super(iicp, iicp.getIterators(), comparatorMaybeNoTypeWithoutId);
     this.iicp = iicp;
-    this.comparator = (iicp.fsIndex_singletype.isSorted()) 
-                        ? ((FsIndex_set_sorted)iicp.fsIndex_singletype).getComparatorWithId()
-                        : (Comparator) iicp.fsIndex_singletype;
+    FsIndex_set_sorted<T> idx2 = (FsIndex_set_sorted<T>)iicp.fsIndex_singletype;
     moveToFirstNoReinit();
   } 
   
@@ -251,11 +258,22 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
 //    if (!r.isValid()) {
 //      throw new RuntimeException("2nd arg invalid");
 //    }
-
-    final TOP fsLeft = (TOP) l.getNvc();
-    final TOP fsRight = (TOP) r.getNvc();
-    
-    int d = comparator.compare(fsLeft, fsRight);
+        
+    int d = compare(l.getNvc(), r.getNvc());
+    return d * dir < 0;
+  }
+  
+  /**
+   * Only used to compare two iterator's with different types position
+   * @param fsLeft the left iterator's element
+   * @param fsRight the right iterator's element
+   * @return  1 if left > right,   (compare maybe ignores type)
+   *         -1 if left < right,   (compare maybe ignores type)
+   *          1 if left == right and left.id > right.id
+   *         -1 if left == right and left.id < right.id
+   */
+  private int compare(FeatureStructure fsLeft, FeatureStructure fsRight) {
+    int d = comparatorMaybeNoTypeWithoutId.compare((TOP)fsLeft, (TOP)fsRight);
 
     // If two FSs are identical wrt the comparator of the index,
     // we still need to be able to distinguish them to be able to have a
@@ -265,7 +283,7 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
     if (d == 0) {
       d = fsLeft._id() - fsRight._id();
     }
-    return d * dir < 0;
+    return d;
   }
 
   /**
@@ -391,22 +409,31 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
    */
   @Override
   public T getNvc() throws NoSuchElementException {
-    return nonEmptyIterators[0]/*.checkConcurrentModification()*/.get();
+    return nonEmptyIterators[0].get();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
+   * 
+   * set all iterators to insertion point
+   * 
+   * While rattling the iterators for sort order:
+   *   if ignoreType_moveTo
+   *     use compare without type
    */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
     // no need to call isIndexesHaveBeenUpdated because
     // there's no state in this iterator that needs updating.
-
-    int lvi = this.nonEmptyIterators.length - 1;
+    
+    // set null unless need special extra type compare
+//    Type typeCompare = (isSortedAndIgnoringTypeOrderKey) ? fs.getType() : null;
+ 
+    int lastValidIterator_local = this.nonEmptyIterators.length - 1;
     // Need to consider all iterators.
     // Set all iterators to insertion point.
     int i = 0;
-    while (i <= lvi) {
+    while (i <= lastValidIterator_local) {
       final LowLevelIterator<T> it = this.nonEmptyIterators[i];
       it.moveToNoReinit(fs);  
       if (it.isValid()) {
@@ -415,26 +442,55 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
       } else {
         // swap this iterator with the last possibly valid one
         // lvi might be equal to i, this will not be a problem
-        this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
-        this.nonEmptyIterators[lvi] = it;
-        --lvi;
+        this.nonEmptyIterators[i] = this.nonEmptyIterators[lastValidIterator_local];
+        this.nonEmptyIterators[lastValidIterator_local] = it;
+        --lastValidIterator_local;
       }
     }
     // configured to continue with forward iterations
     this.wentForward = true;
-    this.lastValidIteratorIndex = lvi;
+    this.lastValidIteratorIndex = lastValidIterator_local;
   }
+
+//  /* (non-Javadoc)
+//   * @see org.apache.uima.cas.FSIterator#moveTo(org.apache.uima.cas.FeatureStructure)
+//   */
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//
+//    int lvi = this.nonEmptyIterators.length - 1;
+//    // Need to consider all iterators.
+//    // Set all iterators to insertion point.
+//    int i = 0;
+//    while (i <= lvi) {
+//      final LowLevelIterator<T> it = this.nonEmptyIterators[i];
+//      it.moveToExactNoReinit(fs);  
+//      if (it.isValid()) {
+//        heapify_up(it, i, 1);
+//        ++i;
+//      } else {
+//        // swap this iterator with the last possibly valid one
+//        // lvi might be equal to i, this will not be a problem
+//        this.nonEmptyIterators[i] = this.nonEmptyIterators[lvi];
+//        this.nonEmptyIterators[lvi] = it;
+//        --lvi;
+//      }
+//    }
+//    // configured to continue with forward iterations
+//    this.wentForward = true;
+//    this.lastValidIteratorIndex = lvi;
+//  }
 
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#copy()
    */
   @Override
   public FSIterator<T> copy() {
-    FsIterator_subtypes_ordered<T> it = new FsIterator_subtypes_ordered<T>(iicp);
+    FsIterator_subtypes_ordered<T> it = new FsIterator_subtypes_ordered<T>(iicp, comparatorMaybeNoTypeWithoutId);
     if (!isValid()) {
       it.moveToPrevious();  // mark new one also invalid
     } else {
-      T posFs = get();
+      T posFs = getNvc();
       it.moveToNoReinit(posFs);  // moves to left-most position
       while(it.get() != posFs) {
         it.moveToNext();
@@ -444,8 +500,16 @@ public class FsIterator_subtypes_ordered<T extends FeatureStructure>
   }
 
   @Override
-  public LowLevelIndex<T> ll_getIndex() {
-    return iicp;
+  public Comparator<TOP> getComparator() {
+    return comparatorMaybeNoTypeWithoutId;    
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.LowLevelIterator#moveToSupported()
+   */
+  @Override
+  public boolean isMoveToSupported() {
+    return true;
   }
   
 }

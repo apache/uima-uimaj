@@ -19,15 +19,11 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.Comparator;
-
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
-import org.apache.uima.jcas.cas.TOP;
 
 public abstract class FsIterator_singletype<T extends FeatureStructure>
-                    implements LowLevelIterator<T>, 
-                               Comparable<FsIterator_singletype<T>> {
+                    implements LowLevelIterator<T> {
 
 //  private int modificationSnapshot; // to catch illegal modifications
 
@@ -40,21 +36,22 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
 
   protected final TypeImpl ti;  
   
-  /**
-   * The generic type is FeatureStructure to allow comparing between
-   * an instance of T and some other template type which can be a supertype of T, as long as
-   * the keys are defined in both.
-   */
-  final protected Comparator<TOP> comparator;
+//  /**
+//   * The generic type is FeatureStructure to allow comparing between
+//   * an instance of T and some other template type which can be a supertype of T, as long as
+//   * the keys are defined in both.
+//   */
+//  final protected Comparator<TOP> comparatorWithoutID;
 
-  public FsIterator_singletype(TypeImpl ti, Comparator<TOP> comparator){
-    this.comparator = comparator;
+  public FsIterator_singletype(TypeImpl ti){
+//    this.comparatorWithoutID = comparatorWithoutID;
 //    this.detectIllegalIndexUpdates = detectConcurrentMods;
     this.ti = ti;
 //    resetConcurrentModification();  // can't do here, each subtype must finish it's initialization first
     // subtypes do moveToFirst after they finish initialization
   }
 
+  
 //  protected abstract int getModificationCountFromIndex();
   
 //  final protected <I extends FSIterator<T>> I checkConcurrentModification() {
@@ -78,13 +75,13 @@ public abstract class FsIterator_singletype<T extends FeatureStructure>
 //                              getModificationCountFromIndex();
 //  }
 
-  @Override
-  public int compareTo(FsIterator_singletype<T> o) {
-    if (comparator != null) {
-      return comparator.compare((TOP)this.get(), (TOP)o.get());
-    } 
-    return Integer.compare(this.get()._id(), o.get()._id());
-  }
+//  @Override
+//  public int compareTo(FsIterator_singletype<T> o) {
+//    if (comparatorWithoutID != null) {
+//      return comparatorWithoutID.compare((TOP)this.get(), (TOP)o.get());
+//    } 
+//    return Integer.compare(this.get()._id(), o.get()._id());
+//  }
    
   @Override
   public abstract FsIterator_singletype<T> copy();

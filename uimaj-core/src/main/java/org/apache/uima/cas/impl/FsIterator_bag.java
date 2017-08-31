@@ -19,24 +19,31 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.internal.util.CopyOnWriteObjHashSet;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
 class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T> {
 
+  private static final AtomicInteger moveToCount = new AtomicInteger(0);
+  
   protected CopyOnWriteObjHashSet<TOP> bag;
   final protected FsIndex_bag<T> fsBagIndex; // just an optimization, is == to fsLeafIndexImpl from super class, allows dispatch w/o casting
   
   private int position = -1;  
   
   private boolean isGoingForward = true;
+  
 
 
   FsIterator_bag(FsIndex_bag<T> fsBagIndex, TypeImpl ti, CopyOnWriteIndexPart cow_wrapper) {
-    super(ti, null);  // null: null comparator for bags
+    super(ti);
     this.fsBagIndex = fsBagIndex;  // need for copy()
     bag = (CopyOnWriteObjHashSet<TOP>) cow_wrapper;
     moveToFirst();
@@ -105,10 +112,22 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
    */
   @Override
   public void moveToNoReinit(FeatureStructure fs) {
+//    throw new UnsupportedOperationException("MoveTo operations for unordered iterators is not supported");
+    Misc.decreasingWithTrace(moveToCount, "MoveTo operations on iterators over Bag indexes are likely mistakes." , UIMAFramework.getLogger());
 //    resetConcurrentModification();
+    // for backwards compatibility
     position = bag.moveTo(fs);
+    if (position >= 0) {
+      if (getNvc() == null) {
+        position = -1; // mark invalid
+      }
+    }
   }
-    
+
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    position = bag.moveTo(fs);
+//  }
+
   /* (non-Javadoc)
    * @see org.apache.uima.cas.FSIterator#copy()
    */
@@ -161,5 +180,10 @@ class FsIterator_bag<T extends FeatureStructure> extends FsIterator_singletype<T
     return bag != fsBagIndex.getCopyOnWriteIndexPart();
   }
 
+  @Override
+  public Comparator<TOP> getComparator() {
+    return null;  // not used for bag
+  }
+  
 }
 
