@@ -48,6 +48,7 @@ abstract class FSsTobeAddedback implements AutoCloseable {
   /**
    * does an add back if needed 
    */
+  @Override
   public void close() { addback();}
 
   protected void logPart(FSIndexRepository view) {

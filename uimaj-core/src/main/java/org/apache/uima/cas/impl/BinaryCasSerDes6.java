@@ -2564,7 +2564,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
           // never happen because in the delta CAS ts system use-case, the 
           //   target is always a subset of the source
           //   due to type system merging
-          Misc.internalError();
+          throw Misc.internalError();
         }
         
         TypeImpl srcType = fs._getTypeImpl();

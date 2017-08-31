@@ -753,7 +753,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    *   Initialized lazily, synchronized
    *   One per cas view
    */
-  private FSIterator<Annotation> docAnnotIter = null;
+  private volatile FSIterator<Annotation> docAnnotIter = null;
   
 //  private StackTraceElement[] addbackSingleTrace = null;  // for debug use only, normally commented out  
 
@@ -1400,7 +1400,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
 
       default:
-        Misc.internalError();
+        throw Misc.internalError();
       }
       
       ByteArrayInputStream bis = new ByteArrayInputStream(buf.array());

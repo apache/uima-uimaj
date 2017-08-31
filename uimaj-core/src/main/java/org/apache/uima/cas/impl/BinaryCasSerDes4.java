@@ -477,7 +477,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
        *   addr2fs - address to feature structure
        *   sortedFSs - sorted by addr (sorted by id)
        *******************************************************************************/
-      final int origHeapEnd = (null == csds) ? 0 : csds.getHeapEnd();
+      final int origHeapEnd = csds.getHeapEnd();  // csds guaranteed non-null by constructor
       if (isDelta) {
         csds.setup(mark, origHeapEnd);  // add additional above the line items to csds
       } // otherwise was initialized when initially set up 
@@ -489,6 +489,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       fs2seq.clear();
 //      seq2fs.clear();
       int seq = 1;  // origin 1
+      
       final List<TOP> localSortedFSs = csds.getSortedFSs();
       for (TOP fs : localSortedFSs) {
         fs2seq.put(fs, seq++);
@@ -1742,7 +1743,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           if (ts.sofaType == type) {
             currentFs = baseCas.createSofa(sofaNum, sofaName, null);  
           } else {
-            CASImpl view = (CASImpl) baseCas.getView(sofaRef);
+            CASImpl view = baseCas.getView(sofaRef);
             if (type.getCode() == TypeSystemConstants.docTypeCode) {
               currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
               // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
@@ -2250,7 +2251,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
       final int vh = readDiff(long_High_dis, (int) (prev >>> 32));
       final int vl = readDiff(long_Low_dis, (int) prev);
-      final long v = (((long)vh) << 32) | (0xffffffffL & (long)vl);
+      final long v = (((long)vh) << 32) | (0xffffffffL & vl);
       return v;
     }
     

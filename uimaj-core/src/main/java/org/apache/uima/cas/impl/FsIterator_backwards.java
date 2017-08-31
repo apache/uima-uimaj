@@ -19,10 +19,12 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Wraps FSIterator<T>, runs it backwards
@@ -110,6 +112,11 @@ class FsIterator_backwards<T extends FeatureStructure>
     }
   }
 
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    it.moveToExactNoReinit(fs); 
+//  }
+
   @Override
   public FSIterator<T> copy() {
     return new FsIterator_backwards<T>(it.copy());
@@ -126,6 +133,11 @@ class FsIterator_backwards<T extends FeatureStructure>
   @Override
   public boolean maybeReinitIterator() {
     return it.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return it.getComparator();
   }
 
 }

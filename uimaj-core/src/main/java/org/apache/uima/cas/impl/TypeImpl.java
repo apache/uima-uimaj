@@ -1045,7 +1045,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     if (c != 0) return c;
             
     if (this.superType == null || t.superType == null) {
-      Misc.internalError();
+      throw Misc.internalError();
     };
     
     c = Long.compare(this.superType.hashCodeNameLong, t.superType.hashCodeNameLong);

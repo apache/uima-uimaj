@@ -1821,7 +1821,6 @@ public class XmiCasDeserializer {
       TOP tgtFs = maybeGetFsForXmiId(xmiId);
       if (null == tgtFs && xmiId != 0) { // https://issues.apache.org/jira/browse/UIMA-5446
         if (!lenient) {
-          if (xmiId == 0) report0xmiId();  //debug
           throw createException(XCASParsingException.UNKNOWN_ID, Integer.toString(xmiId));
         } else {
           // the element may be out of typesystem.  In that case set it

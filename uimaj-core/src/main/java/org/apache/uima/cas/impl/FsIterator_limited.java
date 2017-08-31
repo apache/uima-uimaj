@@ -19,10 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
-import java.util.NoSuchElementException;
-
+import java.util.Comparator;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Wraps FSIterator<T>, limits results to n gets
@@ -41,11 +41,12 @@ class FsIterator_limited<T extends FeatureStructure>
 
   private void maybeMakeInvalid() {
     if (count == limit) {
-      iterator.moveToFirst();
+      iterator.moveToFirstNoReinit();
       iterator.moveToPrevious();
     }
   }
   
+  @Override
   public T getNvc() {
     maybeMakeInvalid();
     T r = iterator.get();  // not getNvc because of above line
@@ -53,35 +54,49 @@ class FsIterator_limited<T extends FeatureStructure>
     return r;
   }
 
+  @Override
   public void moveToNextNvc() {
     maybeMakeInvalid();
     iterator.moveToNext();   // not getNvc because of above line
   }
 
+  @Override
   public void moveToPreviousNvc() {
     maybeMakeInvalid();
     iterator.moveToPrevious();  // not getNvc because of above line
   }
 
+  @Override
   public void moveToFirstNoReinit() {
     iterator.moveToFirstNoReinit();
     maybeMakeInvalid();
   }
 
+  @Override
   public void moveToLastNoReinit() {
     iterator.moveToLastNoReinit();
     maybeMakeInvalid();
   }
 
+  @Override
   public void moveToNoReinit(FeatureStructure fs) {
     iterator.moveToNoReinit(fs);
     maybeMakeInvalid();
   }
 
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    iterator.moveToExactNoReinit(fs);
+//    maybeMakeInvalid();
+//  }
+
+
+  @Override
   public FSIterator<T> copy() {
     return new FsIterator_limited<T>(iterator.copy(), limit);
   }
 
+  @Override
   public boolean isValid() {
     maybeMakeInvalid();
     return iterator.isValid();
@@ -113,6 +128,11 @@ class FsIterator_limited<T extends FeatureStructure>
   @Override
   public boolean maybeReinitIterator() {
     return iterator.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return iterator.getComparator();
   }
 
 }

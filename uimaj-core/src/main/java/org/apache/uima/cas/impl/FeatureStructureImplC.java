@@ -1055,6 +1055,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    * @param printRefs -
    * @deprecated because uses StringBuffer, not builder, for version 2 compatibility only
    */
+  @Deprecated
   public void prettyPrint(
       int indent, 
       int incr, 
@@ -1097,9 +1098,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     final boolean isShortForm = 
 //        isShortForm_arg;
         // debug
-        (this._id == 2512)
-          ? false
-          : isShortForm_arg;
+//        (this._id == 2512)
+//          ? false
+//          : 
+            isShortForm_arg;
     
     try {
     indent += incr;

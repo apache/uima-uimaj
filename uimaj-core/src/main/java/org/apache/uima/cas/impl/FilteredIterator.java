@@ -19,11 +19,13 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FSMatchConstraint;
 import org.apache.uima.cas.FeatureStructure;
+import org.apache.uima.jcas.cas.TOP;
 
 /**
  * Implements a filtered iterator.
@@ -112,6 +114,13 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
     this.it.moveToNoReinit(fs);
     adjustForConstraintForward();
   }
+  
+//  @Override
+//  public void moveToExactNoReinit(FeatureStructure fs) {
+//    this.it.moveToExactNoReinit(fs);
+//    adjustForConstraintForward();
+//  }
+
 
   @Override
   public int ll_indexSizeMaybeNotCurrent() {
@@ -136,6 +145,11 @@ class FilteredIterator<T extends FeatureStructure> implements LowLevelIterator<T
   @Override
   public boolean maybeReinitIterator() {
     return this.it.maybeReinitIterator();
+  }
+
+  @Override
+  public Comparator<TOP> getComparator() {
+    return it.getComparator();
   }
 
 //  /* (non-Javadoc)

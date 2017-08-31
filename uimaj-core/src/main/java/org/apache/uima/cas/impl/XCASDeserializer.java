@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
@@ -225,6 +226,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
       // Do setup work in the constructor.
       this.state = DOC_STATE;
@@ -238,6 +240,7 @@ public class XCASDeserializer {
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String,
      *      java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String nameSpaceURI, String localName, String qualifiedName,
             Attributes attrs) throws SAXException {
       // org.apache.vinci.debug.Debug.p("startElement: " + qualifiedName);
@@ -299,7 +302,7 @@ public class XCASDeserializer {
       }
       
       String typeName = getCasTypeName(qualifiedName);
-      TypeImpl type = (TypeImpl) ts.getType(typeName);
+      TypeImpl type = ts.getType(typeName);
       
       if (type == null) {
         if (this.outOfTypeSystemData == null) {
@@ -576,7 +579,7 @@ public class XCASDeserializer {
           throw createException(XCASParsingException.ILLEGAL_ARRAY_ATTR, attrName);
         }
       }
-      TOP fs = (TOP) cas.createArray(type, size);
+      TOP fs = cas.createArray(type, size);
       
       FSInfo fsInfo = new FSInfo(fs, indexRep);
       if (id >= 0) {
@@ -670,6 +673,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] chars, int start, int length) throws SAXException {
       switch (this.state) {
         case DOC_TEXT_STATE:
@@ -699,6 +703,7 @@ public class XCASDeserializer {
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public void endElement(String nsURI, String localName, String qualifiedName)
             throws SAXException {
       switch (this.state) {
@@ -745,7 +750,7 @@ public class XCASDeserializer {
         case DOC_TEXT_STATE: {
           // Assume old style CAS with one text Sofa
           Sofa newSofa = cas.createInitialSofa("text");
-          CASImpl initialView = (CASImpl) cas.getInitialView();
+          CASImpl initialView = cas.getInitialView();
           initialView.registerView(newSofa);
           // Set the document text without creating a documentAnnotation
           initialView.setDocTextFromDeserializtion(buffer.toString());
@@ -808,6 +813,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#endDocument()
      */
+    @Override
     public void endDocument() throws SAXException {
       // time = System.currentTimeMillis() - time;
       // System.out.println("Done reading xml data in " + new TimeSpan(time));
@@ -897,7 +903,7 @@ public class XCASDeserializer {
             Sofa sofa = (Sofa) fs;
             switch (fi.getRangeImpl().getCode()) {
             case TypeSystemConstants.sofaArrayFeatCode: sofa.setLocalSofaData(fsInfo.fs); break;
-            default: throw new CASRuntimeException(CASRuntimeException.INTERNAL_ERROR);
+            default: throw new CASRuntimeException(UIMARuntimeException.INTERNAL_ERROR);
             }
             return;
           }
@@ -1045,6 +1051,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
+    @Override
     public void error(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1054,6 +1061,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
      */
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
       throw e;
     }
@@ -1063,6 +1071,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#ignorableWhitespace(char[], int, int)
      */
+    @Override
     public void ignorableWhitespace(char[] arg0, int arg1, int arg2) throws SAXException {
       // Since we're not validating, we don't need to do anything; this won't
       // be called.
@@ -1073,6 +1082,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ContentHandler#setDocumentLocator(org.xml.sax.Locator)
      */
+    @Override
     public void setDocumentLocator(Locator loc) {
       // System.out.println("Setting document locator.");
       this.locator = loc;
@@ -1083,6 +1093,7 @@ public class XCASDeserializer {
      * 
      * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
      */
+    @Override
     public void warning(SAXParseException e) throws SAXException {
       throw e;
     }
