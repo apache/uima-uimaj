@@ -214,7 +214,13 @@ under the License.
         the regular Java iterator API, and a specific FS iterator API
         where the usual Java iterator APIs (<literal>hasNext()</literal> and <literal>next()</literal>)
         are augmented by <literal>isValid()</literal>, <literal>moveToNext() / moveToPrevious()</literal> (which does
-        not return an element) and <literal>get()</literal>.  Which API style you use is up to you,
+        not return an element) and <literal>get()</literal>.  Finally, there is a <literal>moveTo(FeatureStructure)</literal>
+        API, which, for sorted indexes, moves the iteration point to the left-most (among otherwise "equal") item
+        in the index which compares "equal" to the given FeatureStructure, using the index's defined comparator.
+      </para>
+      
+      <para>  
+        Which API style you use is up to you,
         but we do not recommend mixing the styles as the results are sometimes unexpected.  If you
         just want to iterate over an index from start to finish, either style is equally appropriate.
         If you also use <literal>moveTo(FeatureStructure fs)</literal> and 
@@ -256,9 +262,13 @@ under the License.
       <para>The ordering relation used by this index is to first order by the value of the
         <quote>begin</quote> features (in ascending order) and then by the value of the
         <quote>end</quote> feature (in descending order), and then, finally, by the 
-        Type Priority (if any type priorities are specified). This ordering insures that
+        Type Priority. This ordering insures that
         longer annotations starting at the same spot come before shorter ones. For Subjects
         of Analysis other than Text, this may not be an appropriate index.</para>
+        
+      <para>In addition to normal iterators, there is a <literal>select</literal> API, documented
+       in the Version 3 Users guide, which provides additional capabilities for accessing
+       Feature Structures via the indexes.</para>  
       
     </section>
   </section>

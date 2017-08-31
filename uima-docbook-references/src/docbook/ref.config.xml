@@ -224,12 +224,30 @@ under the License.
          </row>
 
 
-         <!-- ******************************************************************************* -->
-         <!--   DISABLED FOR NOW 
          <row>
-           <entry spanname="fullwidth"><emphasis role="bold">Measurement properties</emphasis></entry>
-         </row>  
-                
+           <entry spanname="fullwidth"><emphasis role="bold">Measurement / Tracing properties</emphasis></entry>
+         </row>         
+         <!-- ******************************************************************************* -->
+ 
+     <!--   DISABLED FOR NOW         
+         <row>
+           <entry><para>Trace Feature Structure Creation/Updating</para></entry>
+           
+           <entry><para><code>uima.trace_fs_creation_and_updating</code></para>
+                  <para>This causes a trace file to be produced in the current working directory.
+                  The file has one line for each Feature Structure that is created, and include
+                  information on the cas/cas-view, and the features that are set for the Feature Structure.
+                  There is, additionally, one line for each Feature Structure update.
+                  Updates that occur next-to trace information for the same Feature Structure are combined.
+                  </para>
+           
+                  <para>This can generate a lot of output, and definately slows down execution.</para>
+            </entry>
+            
+            <entry><para>2.10.1</para></entry>
+         </row>    
+         
+                    
          <row>
            <entry><para>Measure index flattening optimization</para></entry>
            
