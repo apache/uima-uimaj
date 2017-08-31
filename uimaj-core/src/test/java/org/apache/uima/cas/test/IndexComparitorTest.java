@@ -527,6 +527,36 @@ public class IndexComparitorTest extends TestCase {
     }
 
   }
+  
+  /*
+   * test set index:
+   *   put the same FS (by set comparator) into type and typeSub1
+   *   See if index contains both
+   *      see if moveTo finds both
+   *      see if iterator returns both  
+   */
+  public void testSetUsesType() throws Exception {
+    cas.reset();
+    
+    ir.addFS(createFs(type1, 1, 1));
+    ir.addFS(createFs(type1Sub1, 1, 1));  // same fs keys, different type
+    FeatureStructure testprobe = createFs(type1Sub1, 1, 1);  // not in index, used only for key values
+    FeatureStructure testprobe2 = createFs(type1, 1, 1);
+    
+    assertEquals(2, sortedType1.size());
+    assertEquals(2, setType1.size());
+    
+    FSIterator<FeatureStructure> it = setType1.iterator();
+    it.moveTo(testprobe);
+    assertEquals("Type1", it.get().getType().getShortName());
+    it.moveTo(testprobe2);
+    assertEquals("Type1", it.get().getType().getShortName());
+    it.moveToFirst();
+    assertEquals("Type1", it.next().getType().getShortName());
+    assertEquals("Type1Sub1", it.next().getType().getShortName());
+    
+  }
+  
 
   // note: this test is here because the setup is done
   public void testProtectIndex() throws Exception {
