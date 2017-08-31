@@ -76,13 +76,15 @@ public class AnnotationIndexTest extends TestCase {
   static int SZ = 59;
   static int SZp2 = 64;
   
-  static long seed =  new Random().nextLong();
+  static Random r = new Random();
+  static long seed =  r.nextLong();
   //-5710808747691817430L;
-//         -898838165734156852L; 
-                     // 1783099358091571349L;
-  static {System.out.println("AnnotationIndexTest random seed: " + seed);}
-  static Random r = new Random(seed);
-
+//-898838165734156852L; 
+            // 1783099358091571349L;
+  static { 
+    r.setSeed(seed); 
+    System.out.println("AnnotationIndexTest random seed: " + seed);
+  }
   
   CASImpl cas;
   JCas jcas;
