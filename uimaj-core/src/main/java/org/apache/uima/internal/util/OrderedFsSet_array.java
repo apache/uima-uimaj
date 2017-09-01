@@ -315,8 +315,8 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
   /**
    *  using NoType because all callers of this have already used the type of fs to select
    *  the right index.
-   * @param fs
-   * @return
+   * @param fs -
+   * @return -
    */
   public int findWithoutID(TOP fs) {
     return binarySearch(a, a_firstUsedslot, a_nextFreeslot, fs, comparatorNoTypeWithoutID);
@@ -458,6 +458,7 @@ public class OrderedFsSet_array<T extends FeatureStructure> implements Iterable<
    * @param start the index representing the lower bound (inclusive) to search for
    * @param end the index representing the upper bound (exclusive) to search for
    *            Not called unless there's one equal item below this.
+   * @param comparator the comparator to use (with or without type)
    * @return - the index of the leftmost equal (without id) item
    */
   public int binarySearchLeftMostEqual(final TOP fs, int start, int end, Comparator<TOP> comparator) {

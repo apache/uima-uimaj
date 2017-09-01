@@ -63,10 +63,11 @@ public class FsIndex_annotation <T extends AnnotationFS>
   }
   
   /**
-   * @param ambiguous
-   * @param strict
-   * @param ignoreType
-   * @return
+   * @param ambiguous false for unambiguous
+   * @param strict true for strict
+   * @param orderNotNeeded true for unordered
+   * @param ignoreType -
+   * @return - 
    */
   public LowLevelIterator<T> iterator(boolean ambiguous, boolean strict, boolean orderNotNeeded, boolean ignoreType) {
     if (ambiguous) {

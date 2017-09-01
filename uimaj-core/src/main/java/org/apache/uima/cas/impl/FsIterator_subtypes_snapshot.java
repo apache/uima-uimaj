@@ -64,6 +64,7 @@ public class FsIterator_subtypes_snapshot<T extends FeatureStructure> implements
    * @param snapshot -
    * @param index -
    * @param is_unordered - mark as unordered
+   * @param comparatorMaybeNoTypeWithoutId -
    */
   public FsIterator_subtypes_snapshot(T[] snapshot, 
                                       LowLevelIndex<T> index, 
