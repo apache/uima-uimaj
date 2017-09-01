@@ -21,6 +21,7 @@ package org.apache.uima.cas;
 
 import java.util.List;
 import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.apache.uima.cas.text.AnnotationFS;
@@ -675,6 +676,16 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
     return index.select();    
   } 
   
+  /**
+   * This method is required, because the 2 interfaces inherited both define this
+   * and this is needed to disambiguate
+   * Otherwise, get a compile error (but not on Eclipse...)
+   */
+  @Override
+  default void forEach(Consumer<? super T> action) {
+    Iterable.super.forEach(action);
+  }
+
 //  /**
 //   * DON'T USE THIS, use index.select(XXX.class) instead
 //   * @param index the index to use

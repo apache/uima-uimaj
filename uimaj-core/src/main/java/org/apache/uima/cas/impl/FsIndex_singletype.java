@@ -569,6 +569,18 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
     // casImpl.indexRepository.isUsedChanged = true;
   }
 
+  /* (non-Javadoc)
+   * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+   */
+  /**
+   * This is required to avoid compilation error (but not in Eclipse) due to 
+   * ambiguous interface inheritance from both FeatureStructure and Comparator
+   */
+  @Override
+  public abstract int compare(FeatureStructure o1, FeatureStructure o2);
+  
+  
+
   /// **
   // * Common part of iterator creation
   // */
