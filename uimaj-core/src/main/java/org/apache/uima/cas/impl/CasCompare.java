@@ -280,7 +280,26 @@ public class CasCompare {
       return true;
     }    
   }
+
+  private static class FeatLists {
+    /**
+     * first index is easy, easyArrays, refs, refArrays
+     */
+    final FeatureImpl[][] featsByEase = new FeatureImpl[4][];
     
+    FeatLists(List<FeatureImpl> easy, 
+              List<FeatureImpl> easyArrays, 
+              List<FeatureImpl> refs, 
+              List<FeatureImpl> refArrays) {
+      featsByEase[0] = (FeatureImpl[]) easy.toArray(new FeatureImpl[easy.size()]);
+      featsByEase[1] = (FeatureImpl[]) easyArrays.toArray(new FeatureImpl[easyArrays.size()]);
+      featsByEase[2] = (FeatureImpl[]) refs.toArray(new FeatureImpl[refs.size()]);
+      featsByEase[3] = (FeatureImpl[]) refArrays.toArray(new FeatureImpl[refArrays.size()]);
+    }
+  }
+  
+  final private Map<TypeImpl, FeatLists> type2featLists = new HashMap<>();
+  
   final private CASImpl c1;
   final private CASImpl c2;
   final private TypeSystemImpl ts1;      
@@ -628,37 +647,20 @@ public class CasCompare {
       return compareFssArray(fs1, fs2, callerTi, callerFi);
     } 
 
-    // compare features, non-refs first (for performance)
-    List<FeatureImpl> featuresToCompareNext = new ArrayList<>();
-    
-    for (FeatureImpl fi1 : ti1.getFeatureImpls()) {
-      if (fi1.getRangeImpl().isRefType) {
-        featuresToCompareNext.add(fi1);
-      } else if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
-          return r;
-      }
+    FeatLists featLists = type2featLists.get(ti1);
+    if (featLists == null) {
+      type2featLists.put(ti1, featLists = computeFeatLists(ti1));
     }
-    
-    // compare non-fs arrays next
-    List<FeatureImpl> refFeatures = new ArrayList<>();
-    
-    for (FeatureImpl fi1 : featuresToCompareNext) {
-      TypeImpl ri = fi1.getRangeImpl();
-      if (ri.isPrimitiveArrayType() && ri != fsArrayType) {
+
+    // compare features, non-refs first (for performance)
+    for (FeatureImpl[] featSet : featLists.featsByEase) {
+      for (FeatureImpl fi1 : featSet) {
         if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
           return r;
         }
-      } else {
-        refFeatures.add(fi1);
-      }
+      } 
     }
-
-    for (FeatureImpl fi1 : refFeatures) {
-      if (0 != (r = compareFeature(fs1, fs2, ti1, fi1))) {
-        return r;
-      }
-    }
-    return 0; 
+    return 0;
   }
      
   private int compareFeature(TOP fs1, TOP fs2, TypeImpl ti1, FeatureImpl fi1) {
@@ -686,6 +688,54 @@ public class CasCompare {
     } // else we skip the compare - no slot in tgt for src
     return r;
   }
+  
+  /**
+   * called during sort phase
+   * @param ti - type being sorted
+   * @return the feature lists for that type
+   */
+  private FeatLists computeFeatLists(TypeImpl ti) {
+    List<FeatureImpl> easy = new ArrayList<>();  
+    List<FeatureImpl> easyArrays = new ArrayList<>();  
+    List<FeatureImpl> ref = new ArrayList<>();  
+    List<FeatureImpl> refArrays = new ArrayList<>();
+    
+    for (FeatureImpl fi : ti.getFeatureImpls()) {
+      
+      if (isTypeMapping) {
+
+        if (isSrcCas && typeMapper.getTgtFeature(ti, fi) == null) {
+          continue; // skip for features not in target type system
+                    // so when comparing CASs, the src value won't cause a miscompare
+        }
+        
+        // probably not executed, since types discovered on first sort
+        // except for a type that exists only the the target
+        if (!isSrcCas && typeMapper.getSrcFeature(ti,  fi) == null) {
+          continue; // types/features belong to target in this case
+        }
+        
+      }
+            
+      TypeImpl range = fi.getRangeImpl();
+      if (range.isArray()) {
+        TypeImpl_array ra = (TypeImpl_array)range;
+        if (ra.getComponentType().isRefType) {
+          refArrays.add(fi);
+        } else {
+          easyArrays.add(fi);
+        }
+      } else {
+        if (range.isRefType) {
+          ref.add(fi);
+        } else {
+          easy.add(fi);
+        }
+      }
+    }
+    return new FeatLists(easy, easyArrays, ref, refArrays);
+  }
+  
   
 //    private int compareFssArray() {
 //      int r = compareFssArray((CommonArrayFS) fs1, (CommonArrayFS) fs2);
