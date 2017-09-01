@@ -127,6 +127,7 @@ public interface FSIndexRepository {
   /**
    * Remove all instances of type, including all subtypes from all indexes in the repository view.
    * @param clazz the JCas class of the type to remove.  To remove all use TOP.class
+   * @param <T> the type to remove
    * @exception NullPointerException if the <code>clazz</code> parameter is <code>null</code>.
   */
   default <T extends TOP> void removeAllIncludingSubtypes(Class<T> clazz) {
@@ -143,6 +144,7 @@ public interface FSIndexRepository {
   /**
    * Remove all instances of just this type, excluding subtypes, from all indexes in the repository view.
    * @param clazz the JCas Class of the type to remove
+   * @param <T> the type to remove
    * @exception NullPointerException if the <code>type</code> parameter is <code>null</code>.
   */
   default <T extends TOP> void removeAllExcludingSubtypes(Class<T> clazz) {
