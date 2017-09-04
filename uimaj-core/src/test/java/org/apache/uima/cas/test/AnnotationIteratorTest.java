@@ -264,7 +264,7 @@ public class AnnotationIteratorTest extends TestCase {
       assertTrue(false);
     }
     FSArray fsa = FSArray.create(jcas, tokensAndSentences);
-    NonEmptyFSList fslhead = (NonEmptyFSList) FSList.createFromArray(jcas,  tokensAndSentences);
+    NonEmptyFSList fslhead = (NonEmptyFSList) FSList.create(jcas,  tokensAndSentences);
     
     select_it = fsa.<AnnotationFS>select().fsIterator();
     assertCount("fsa ambiguous select annot iterator", annotCount, select_it);
