@@ -58,6 +58,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
 //  private int _F_end;
 
   // Never called. Disable default constructor
+  @Deprecated
   protected Annotation() {
   }
 

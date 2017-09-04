@@ -155,46 +155,11 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   // * We keep one copy per CAS view set          *
   // **********************************************/
   
-  public static class JCasSharedView {
-    // ********************************************************
-    // * Access to this data is assumed to be single threaded *
-    // ********************************************************
-
-    /* convenience holders of CAS constants that may be useful *
-     * initialization done lazily - on first call to getter    *
-     *   Can't be static because needs ref to a JCas instance  */
-
-    private StringArray stringArray0L = null;
-
-    private IntegerArray integerArray0L = null;    
-    private ByteArray byteArray0L = null;
-    private ShortArray shortArray0L = null;
-    private LongArray longArray0L = null;
-
-    private FloatArray floatArray0L = null;
-    private DoubleArray doubleArray0L = null;
-
-    private FSArray fsArray0L = null;
-       
-    public void reset() {
-      stringArray0L = null;
-      integerArray0L = null;
-      floatArray0L = null;
-      fsArray0L = null;
-      doubleArray0L = null;
-      byteArray0L = null;
-      shortArray0L = null;
-      longArray0L = null;
-    }
-  }
-
   // *******************
   // * Data per (J)CAS *
   // * There may be multiples of these for one base CAS - one per "view"
   // * Access to this data is assumed to be single threaded
   // *******************
-
-  private final JCasSharedView sharedView;
 
   // not public to protect it from accidents
   private final CASImpl casImpl;
@@ -304,7 +269,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
 
   // never called, but have to set values to null because they're final
   private JCasImpl() {
-    sharedView = null;
     casImpl = null;
     ll_IndexRepository = null;
     throw new RuntimeException("JCas constructor with no args called, should never be called.");
@@ -329,20 +293,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     // * that will be loaded.
 
     this.casImpl = cas;
-    
-    /**
-     * create the shared view only for the base case.
-     *   if not the base cas, 
-     *     switch to the base cas, 
-     *     create the shared view if needed
-     *     use that as the shared view
-     */
-    if (casImpl != casImpl.getBaseCAS()) {
-      sharedView = ((JCasImpl) casImpl.getBaseCAS().getJCas()).sharedView;
-    } else {
-      sharedView = new JCasSharedView();
-    }
-
+ 
     this.ll_IndexRepository = casImpl.ll_getIndexRepository();
     this.jfsIndexRepository = new JFSIndexRepositoryImpl(this, cas.getIndexRepository());
   }
@@ -697,10 +648,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
     casImpl.reset();
   }
   
-  public void sharedViewReset() {
-    sharedView.reset();
-  }
-
 //  /*
 //   * (non-Javadoc)
 //   * 
@@ -932,87 +879,82 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getStringArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
-
+  @Deprecated
   public StringArray getStringArray0L() {
-    if (null == sharedView.stringArray0L)
-      sharedView.stringArray0L = new StringArray(this, 0);
-    return sharedView.stringArray0L;
+    return this.getCas().getEmptyStringArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getIntegerArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
+  @Deprecated
   public IntegerArray getIntegerArray0L() {
-    if (null == sharedView.integerArray0L)
-      sharedView.integerArray0L = new IntegerArray(this, 0);
-    return sharedView.integerArray0L;
+    return this.getCas().getEmptyIntegerArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getFloatArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
+  @Deprecated
   public FloatArray getFloatArray0L() {
-    if (null == sharedView.floatArray0L)
-      sharedView.floatArray0L = new FloatArray(this, 0);
-    return sharedView.floatArray0L;
+    return this.getCas().getEmptyFloatArray();
   }
 
   
   
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JCas#getByteArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
-  @Override
+  @Deprecated
   public ByteArray getByteArray0L() {
-    if (null == sharedView.byteArray0L)
-      sharedView.byteArray0L = new ByteArray(this, 0);
-    return sharedView.byteArray0L;
+    return this.getCas().getEmptyByteArray();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JCas#getShortArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
-  @Override
+  @Deprecated
   public ShortArray getShortArray0L() {
-    if (null == sharedView.shortArray0L)
-      sharedView.shortArray0L = new ShortArray(this, 0);
-    return sharedView.shortArray0L;
+    return this.getCas().getEmptyShortArray();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JCas#getLongArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
-  @Override
+  @Deprecated
   public LongArray getLongArray0L() {
-    if (null == sharedView.longArray0L)
-      sharedView.longArray0L = new LongArray(this, 0);
-    return sharedView.longArray0L;
+    return this.getCas().getEmptyLongArray();
   }
 
   /* (non-Javadoc)
    * @see org.apache.uima.jcas.JCas#getDoubleArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
-  @Override
+  @Deprecated
   public DoubleArray getDoubleArray0L() {
-    if (null == sharedView.doubleArray0L)
-      sharedView.doubleArray0L = new DoubleArray(this, 0);
-    return sharedView.doubleArray0L;
+    return this.getCas().getEmptyDoubleArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getFSArray0L()
+   * @deprecated use getEmptyXXXArray() instead
    */
+  @Deprecated
   public FSArray getFSArray0L() {
-    if (null == sharedView.fsArray0L)
-      sharedView.fsArray0L = new FSArray(this, 0);
-    return sharedView.fsArray0L;
+    return this.getCas().getEmptyFSArray();
   }
 
   /*
@@ -1261,9 +1203,5 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   @Override
   public <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz) {
     return getFSIndexRepository().getIndex(label, getCasType(clazz));
-  }
-
-  public JCasSharedView getSharedView() {
-    return sharedView;
   }
 }
