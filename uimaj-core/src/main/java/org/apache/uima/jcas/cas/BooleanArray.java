@@ -211,7 +211,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray, Boo
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static BooleanArray createFromArray(JCas jcas, boolean[] a) {
+  public static BooleanArray create(JCas jcas, boolean[] a) {
     BooleanArray booleanArray = new BooleanArray(jcas, a.length);
     booleanArray.copyFromArray(a, 0, 0, a.length);
     return booleanArray;

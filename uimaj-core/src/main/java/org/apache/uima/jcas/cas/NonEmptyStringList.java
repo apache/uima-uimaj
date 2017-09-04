@@ -87,7 +87,7 @@ public class NonEmptyStringList extends StringList implements Iterable<String>, 
    * @param head -
    */
   public NonEmptyStringList(JCas jcas, String head) {
-    this(jcas, head, jcas.getCasImpl().getEmptyStringListImpl());
+    this(jcas, head, jcas.getCasImpl().getEmptyStringList());
   }
   
 // *------------------*

@@ -73,6 +73,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
 //  private final Sofa _F_sofa;
   
   // Never called. Disable default constructor
+  @Deprecated
   protected AnnotationBase() {
   }
 

@@ -24,10 +24,12 @@ import org.apache.uima.cas.CommonArrayFS;
 /**
  * This interface is implemented by arrays of non-FeatureStructure components 
  *   boolean, byte, short, int, long, float, double, String, JavaObject
+ * Internal Use Only.
  */
 public interface CommonPrimitiveArray extends CommonArrayFS {
   
   /**
+   * Internal Use Only.
    * Set an array value from a string representation
    * NOTE: does **not** log the change for delta cas; this should only be used by 
    *       internal deserializers

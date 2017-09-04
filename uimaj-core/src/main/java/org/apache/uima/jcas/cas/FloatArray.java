@@ -206,7 +206,7 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static FloatArray createFromArray(JCas jcas, float[] a) {
+  public static FloatArray create(JCas jcas, float[] a) {
     FloatArray floatArray = new FloatArray(jcas, a.length);
     floatArray.copyFromArray(a, 0, 0, a.length);
     return floatArray;

@@ -189,7 +189,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static StringArray createFromArray(JCas jcas, String[] a) {
+  public static StringArray create(JCas jcas, String[] a) {
     StringArray stringArray = new StringArray(jcas, a.length);
     stringArray.copyFromArray(a, 0, 0, a.length);
     return stringArray;

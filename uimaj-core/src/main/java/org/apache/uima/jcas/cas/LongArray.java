@@ -238,12 +238,16 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static LongArray createFromArray(JCas jcas, long[] a) {
+  public static LongArray create(JCas jcas, long[] a) {
     LongArray longArray = new LongArray(jcas, a.length);
     longArray.copyFromArray(a, 0, 0, a.length);
     return longArray;
   }
   
+  /**
+   * Non Boxing
+   * @param action to be performed on each element
+   */
   public void forEach(LongConsumer action) {
     for (long l : theArray) {
       action.accept(l);

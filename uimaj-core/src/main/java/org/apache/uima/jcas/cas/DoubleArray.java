@@ -235,7 +235,7 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static DoubleArray createFromArray(JCas jcas, double[] a) {
+  public static DoubleArray create(JCas jcas, double[] a) {
     DoubleArray doubleArray = new DoubleArray(jcas, a.length);
     doubleArray.copyFromArray(a, 0, 0, a.length);
     return doubleArray;

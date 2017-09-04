@@ -207,7 +207,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static ByteArray createFromArray(JCas jcas, byte[] a) {
+  public static ByteArray create(JCas jcas, byte[] a) {
     ByteArray byteArray = new ByteArray(jcas, a.length);
     byteArray.copyFromArray(a, 0, 0, a.length);
     return byteArray;

@@ -250,7 +250,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static IntegerArray createFromArray(JCas jcas, int[] a) {
+  public static IntegerArray create(JCas jcas, int[] a) {
     IntegerArray intArray = new IntegerArray(jcas, a.length);
     intArray.copyFromArray(a, 0, 0, a.length);
     return intArray;

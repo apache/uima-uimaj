@@ -204,7 +204,7 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
    * @param a the source for the array's initial values
    * @return a newly created and populated array
    */
-  public static ShortArray createFromArray(JCas jcas, short[] a) {
+  public static ShortArray create(JCas jcas, short[] a) {
     ShortArray shortArray = new ShortArray(jcas, a.length);
     shortArray.copyFromArray(a, 0, 0, a.length);
     return shortArray;
