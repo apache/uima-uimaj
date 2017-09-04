@@ -20,7 +20,6 @@
 package org.apache.uima;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfInt;
 
