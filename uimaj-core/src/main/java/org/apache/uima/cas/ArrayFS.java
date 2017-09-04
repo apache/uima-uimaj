@@ -21,9 +21,8 @@ package org.apache.uima.cas;
 
 /**
  * Feature structure array interface. To create a FS array object, use
- * {@link org.apache.uima.cas.CAS#createArrayFS CAS.createArrayFS()}.
- * 
- * 
+ * {@link org.apache.uima.cas.CAS#createArrayFS(int length)} or
+ * new FSArray(aJCas, length)
  */
 public interface ArrayFS extends CommonArrayFS {
 

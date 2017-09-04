@@ -33,9 +33,11 @@ import org.apache.uima.cas.impl.LowLevelIterator;
  * Iterator over feature structures.
  * 
  * <p>
- * This iterator interface extends {@link java.util.Iterator}, and supports the
- * standard <code>hasNext</code> and <code>next</code> methods. If finer control, including
- * reverse iteration, is needed, see below.
+ * This iterator interface extends {@link java.util.ListIterator} which, in turn,
+ * extends {@link java.util.Iterator}.  It supports all the methods of those APIs
+ * except nextIndex, previousIndex, set, and add.  remove meaning is changed to mean
+ * remove the item obtained by a get() from all the indexes in this view.
+ * If finer control, including reverse iteration, is needed, see below.
  * 
  * <p>Note: do not use the APIs described below *together* with the standard Java iterator methods
  * <code>next()</code> and <code>hasNext()</code>.  On any given iterator, use either the one or the
@@ -54,10 +56,9 @@ import org.apache.uima.cas.impl.LowLevelIterator;
  * <code>next()</code> would return, but does not advance the iterator.
  * 
  * <p>
- * Implementations of this interface are not required to be fail-fast. That is, if the iterator's
- * collection is modified, the effects on the iterator are in general undefined. Some collections
- * may handle this more gracefully than others, but in general, concurrent modification of the
- * collection you're iterating over is a bad idea.
+ * If the iterator's underlying UIMA Indexes are modified, the iterator continues as if 
+ * it doesn't see these modifications.  Three operations cause the iterator to "see" any modifications:
+ * moveToFirst, moveToLast, and moveTo(featureStructure).
  * 
  * <p>
  * If the iterator is moved past the boundaries of the collection, the behavior of subsequent calls
@@ -67,8 +68,6 @@ import org.apache.uima.cas.impl.LowLevelIterator;
  * subsequent call to {@link FSIterator#moveToPrevious() moveToPrevious()} is not guaranteed to set
  * the iterator back to the last element in the collection. Always use
  * {@link FSIterator#moveToLast() moveToLast()} in such cases.
- * 
- * 
  * 
  */
 public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> {
@@ -138,13 +137,13 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * collection is non-empty.  Allowed even if the underlying indexes being iterated over were modified.
    */
   void moveToFirst();
-
+  
   /**
    * Move the iterator to the last element. The iterator will be valid iff the underlying collection
    * is non-empty.  Allowed even if the underlying indexes being iterated over were modified.
    */
   void moveToLast();
-
+  
   /**
    * Move the iterator to the first Feature Structure that matches the <code>fs</code>. 
    * First means the earliest one occurring in the index, in case multiple FSs matching the fs
@@ -165,14 +164,27 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
    * if one exists.  The match is done using the index's comparator.
    * If none exist, the index is left if possible in some valid (but non-matching) position.
    * 
+   * <p>When the iterator is over a sorted index whose keys include the typeOrder key, this can cause
+   * unexpected operation, depending on type priorities.  For example, consider the Annotation Index,
+   * which includes this key.  If there are many indexed instances of the type "Foo" with the same begin and end,
+   * and a moveTo operation is specified using an Annotation instance with the same begin and end,
+   * then the Foo elements might or might not be seen going forwards, depending on the relative type 
+   * priorities of "Foo" and "Annotation".
+   * 
+   * <p>If you are not making use of typeOrdering, the "select" APIs can create iterators which will
+   * ignore the typeOrdering key when doing the moveTo operation, which will result in all the instances
+   * of type "Foo" being seen going forwards, independent of the type priorities.  See the 
+   * select documentation in the version 3 users guide.
+   * 
    * @param fs
    *          The feature structure the iterator that supplies the 
-   *          comparison information.  It can be a supertype of T as long as it can supply the keys needed.
+   *          comparison information.  It doesn't need to be in the index; it is just being
+   *          used as a comparison template.  It can be a supertype of T as long as it can supply the keys needed.
    *          A typical example is a subtype of Annotation, and using an annotation instance to specify 
    *          the begin / end.
    */
    void  moveTo(FeatureStructure fs);
-
+   
   /**
    * Copy this iterator.
    * 

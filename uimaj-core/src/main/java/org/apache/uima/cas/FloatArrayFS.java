@@ -21,7 +21,8 @@ package org.apache.uima.cas;
 
 /**
  * Interface for CAS float arrays. To create a float array object, use
- * {@link org.apache.uima.cas.CAS#createFloatArrayFS CAS.createFloatArrayFS()}.
+ * {@link org.apache.uima.cas.CAS#createFloatArrayFS CAS.createFloatArrayFS()}
+ * or new FloatArray(aJCas, length)
  * 
  * 
  */

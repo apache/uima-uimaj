@@ -21,9 +21,8 @@ package org.apache.uima.cas;
 
 /**
  * Interface for CAS int arrays. To create an int array object, use
- * {@link org.apache.uima.cas.CAS#createIntArrayFS CAS.createIntArrayFS()}.
- * 
- * 
+ * {@link org.apache.uima.cas.CAS#createIntArrayFS CAS.createIntArrayFS(int)} or
+ * new IntegerArray(aJCas, length)
  */
 public interface IntArrayFS extends CommonArrayFS {
 
