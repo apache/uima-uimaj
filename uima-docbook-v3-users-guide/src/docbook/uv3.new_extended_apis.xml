@@ -134,8 +134,12 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     
     <para>
       A new set of static methods on UIMA built-in lists and arrays, <code>create(jcas, array_source)</code>
-      is available; these take a Java array of items, and creates
+      take a Java array of items, and creates
       a corresponding UIMA built-in list or array populated with items from the array_source.
+    </para>
+    
+    <para>For UIMA Lists and Arrays, the CAS and JCas has getEmptyXXXList/Array methods, which return
+      a shared instance of the immutable empty object.
     </para>
     
     <para>For lists, new static methods <code>getEmptyList(JCas jcas)</code> on each of the 4
@@ -143,12 +147,54 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
       shared, common instance of the EmptyXxxList for a CAS.
     </para>
     
-    <para>For lists, a new <code>push(item)</code> API on an existing list node creates a new
-      non-empty node, sets its head to <code>item</code> and its tail to the existing list node.
-      This allows easy construction of a list in backwards order.
-      There is also a <code>pushNode()</code> which just creates and links in a new node to the front of the list.
-      And finally, there's a <code>createNonEmptyNode()</code>, which just creates a node of the 
-      same type, in the same CAS, without linking it.</para>
+    <para>For lists, there are some new common APIs for all list kinds.
+      <itemizedlist>
+        <listitem>
+          <para>
+            <code>push(item)</code> pushes the item onto an existing list node, creates a new
+            non-empty node, setting its head to <code>item</code> and its tail to the existing list node.
+            This allows easy construction of a list in backwards order.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>pushNode()</code> creates and links in a new node in front of this node.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>insertNode()</code> creates and links in a new node following this node.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>createNonEmptyNode()</code> creates a node of the 
+                 same type, in the same CAS, without linking it.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>getCommonTail()</code> gets the tail of the node
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>setTail()</code> sets the tail of the node
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>walkList()</code> walks the list applying a consumer to each item
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>getLength()</code> walks the list to compute its length
+          </para>
+        </listitem>
+      </itemizedlist>
+      
+    </para>
       
     <section id="uv3.new_extended_apis.reorganized.lists_and_arrays">
       <title>Built-in lists and arrays have common super classes / interfaces</title>

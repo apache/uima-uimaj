@@ -55,9 +55,19 @@ under the License.
     
     <para>The non-JCas Java cover classes for the built-in UIMA types remain, for backwards compatibility.
       So, if you have code that casts a Feature Structure instance to AnnotationImpl (a now deprecated 
-      version 2 non-JCas Java cover class), that will continue to work.
-      
-      </para>
+      version 2 non-JCas Java cover class), that will continue to work.  
+    </para>
+    
+    <section id="uv3.backwards_compatibility.jcas.names">  
+    <title>Additional reserved names in the JCas generated classes</title>
+    <titleabbrev>JCas reserved names</titleabbrev>
+
+    <para>Names beginning with "_" (underscore) are being used by the new JCas implementation, so you should not
+      name things with this convention.  If you do, please insure your names are not colliding with the names
+      being used by the generated JCas files.
+    </para>
+    
+    </section>
   </section>
   
   
