@@ -97,6 +97,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private final static boolean IS_UNORDERED = true;
   private final static boolean IS_ORDERED = false;
   private final static boolean IS_UNAMBIGUOUS = false;
+  private final static boolean IS_NOT_STRICT = false;
   
   private CASImpl view;
   private JCasImpl jcas;
@@ -111,7 +112,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
   private boolean isTypePriority = false;
 //  private boolean isPositionUsesType = false;
   private boolean isSkipSameBeginEndType = false; // for boundsUse only
-  private boolean isNonOverlapping = false;
+  private boolean isNonOverlapping = IS_UNAMBIGUOUS;
   private boolean isIncludeAnnotBeyondBounds = false;
   private boolean isAllViews = false;
   private boolean isNullOK = false;
@@ -715,7 +716,7 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
         //     - orderNotNecessary / 
 
         it = (isAnnotationIndex) 
-               ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, false /* because unbounded */, isUnordered, ! isTypePriority)
+               ? (LowLevelIterator<T>) ai.iterator( ! isNonOverlapping, IS_NOT_STRICT /* because unbounded */, isUnordered, ! isTypePriority)
                : idx.iterator(isUnordered, ! isTypePriority);
       }
     } else {

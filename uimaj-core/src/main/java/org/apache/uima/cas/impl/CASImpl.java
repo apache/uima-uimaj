@@ -485,6 +485,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private EmptyFloatList emptyFloatList;
     private EmptyIntegerList emptyIntegerList;
     private EmptyStringList emptyStringList;
+    
+    private FloatArray emptyFloatArray;
+    private FSArray emptyFSArray;
+    private IntegerArray emptyIntegerArray;
+    private StringArray emptyStringArray;
+    private DoubleArray emptyDoubleArray;
+    private LongArray emptyLongArray;
+    private ShortArray emptyShortArray;
+    private ByteArray emptyByteArray;
+    private BooleanArray emptyBooleanArray;
 
     /**
      * Created at startup time, lives as long as the CAS lives
@@ -526,9 +536,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
     private int nextId2Addr = 1;  // only for tracing, to convert id's to v2 addresses
     final private int initialHeapSize;
-    
-    JCasImpl.JCasSharedView jcasSharedView;
-    
+        
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
       this.tsi = tsi;
@@ -569,14 +577,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         id2addr.add(0);
         nextId2Addr = 1;
       }
-      if (jcasSharedView != null) {
-        jcasSharedView.reset();
-      }
       
       emptyFloatList = null; // these cleared in case new ts redefines?
       emptyFSList = null;
       emptyIntegerList = null;
       emptyStringList = null;
+      
+      emptyFloatArray = null;
+      emptyFSArray = null;
+      emptyIntegerArray = null;
+      emptyStringArray = null;
+      emptyDoubleArray = null;
+      emptyLongArray = null;
+      emptyShortArray = null;
+      emptyByteArray = null;
+      emptyBooleanArray = null;
   
       clearNonSharedInstanceData();
     }
@@ -1150,17 +1165,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
  
   private TOP createFsFromGenerator(FsGenerator3[] gs, TypeImpl ti) {
-//    if (ti == null || gs == null || gs[ti.getCode()] == null) {
-//      System.out.println("debug");
-//    }
     return gs[ti.getCode()].createFS(ti, this);
   }
   
-//  public int ll_createFSAnnotCheck(int typeCode) {
-//    TOP fs = createFSAnnotCheck(getTypeFromCode(typeCode));
-//    svd.id2fs.put(fs);  // required for low level, in order to "hold onto" / prevent GC of FS
-//    return fs._id;
-//  }
   
   public TOP createArray(TypeImpl array_type, int arrayLength) {
     TypeImpl_array tia = (TypeImpl_array) array_type;
@@ -1176,15 +1183,19 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       case longTypeCode: return new LongArray(array_type, this, arrayLength);
       case doubleTypeCode: return new DoubleArray(array_type, this, arrayLength);
       case stringTypeCode: return new StringArray(array_type, this, arrayLength);
-//      case javaObjectTypeCode: return new JavaObjectArray(array_type, this, arrayLength);
-      default: Misc.internalError();
+      default: throw Misc.internalError();
       }
-//      return tia.getGeneratorArray().createFS(type, this, arrayLength); 
-//      return (((FsGeneratorArray)getFsGenerator(type.getCode())).createFS(type, this, arrayLength));
     }
     return (TOP) createArrayFS(array_type, arrayLength);
   }
 
+  /* 
+   * ===============  These methods might be deprecated in favor of
+   *                  new FSArray(jcas, length) etc.
+   *                  except that these run with the CAS, not JCas 
+   * (non-Javadoc)
+   * @see org.apache.uima.cas.CAS#createArrayFS(int)
+   */
   @Override
   public ArrayFS createArrayFS(int length) {
     return createArrayFS(getTypeSystemImpl().fsArrayType, length);
@@ -1193,8 +1204,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   private ArrayFS createArrayFS(TypeImpl type, int length) {
     checkArrayPreconditions(length);
     return new FSArray(type, this, length);         
-//        getTypeSystemImpl().fsArrayType.getGeneratorArray()         // (((FsGeneratorArray)getFsGenerator(fsArrayTypeCode))
-//        .createFS(type, this, length);
   }
   
   @Override
@@ -1215,11 +1224,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return new StringArray(getTypeSystemImpl().stringArrayType, this, length);
   }
   
-//  public JavaObjectArray createJavaObjectArrayFS(int length) {
-//    checkArrayPreconditions(length);
-//    return new JavaObjectArray(getTypeSystemImpl().javaObjectArrayType, this, length);
-//  }
-
 
   // return true if only one sofa and it is the default text sofa
   public boolean isBackwardCompatibleCas() {
@@ -2095,7 +2099,6 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   public JCas getJCas() {
     if (this.jcas == null) {
       this.jcas = JCasImpl.getJCas(this);
-      this.svd.jcasSharedView = jcas.getSharedView();
     }
     return this.jcas;
   }
@@ -4748,32 +4751,98 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  public EmptyFSList getEmptyFSListImpl() {
+  public EmptyFSList getEmptyFSList() {
     if (null == svd.emptyFSList) {
       svd.emptyFSList = new EmptyFSList(getTypeSystemImpl().fsEListType, this);
     }
     return svd.emptyFSList;
   }
 
-  public EmptyFloatList getEmptyFloatListImpl() {
+  /*
+   * @see org.apache.uima.cas.CAS#getEmptyFloatList()
+   */
+  public EmptyFloatList getEmptyFloatList() {
     if (null == svd.emptyFloatList) {
       svd.emptyFloatList = new EmptyFloatList(getTypeSystemImpl().floatEListType, this);
     }
     return svd.emptyFloatList;
   }
   
-  public EmptyIntegerList getEmptyIntegerListImpl() {
+  public EmptyIntegerList getEmptyIntegerList() {
     if (null == svd.emptyIntegerList) {
       svd.emptyIntegerList = new EmptyIntegerList(getTypeSystemImpl().intEListType, this);
     }
     return svd.emptyIntegerList;
   }
   
-  public EmptyStringList getEmptyStringListImpl() {
+  public EmptyStringList getEmptyStringList() {
     if (null == svd.emptyStringList) {
       svd.emptyStringList = new EmptyStringList(getTypeSystemImpl().stringEListType, this);
     }
     return svd.emptyStringList;
+  }
+  
+  public FloatArray getEmptyFloatArray() {
+    if (null == svd.emptyFloatArray) {
+      svd.emptyFloatArray = new FloatArray(this.getJCas(), 0);
+    }
+    return svd.emptyFloatArray;
+  }
+
+  public FSArray getEmptyFSArray() {
+    if (null == svd.emptyFSArray) {
+      svd.emptyFSArray = new FSArray(this.getJCas(), 0);
+    }
+    return svd.emptyFSArray;
+  }
+  
+  public IntegerArray getEmptyIntegerArray() {
+    if (null == svd.emptyIntegerArray) {
+      svd.emptyIntegerArray = new IntegerArray(this.getJCas(), 0);
+    }
+    return svd.emptyIntegerArray;
+  }
+  
+  public StringArray getEmptyStringArray() {
+    if (null == svd.emptyStringArray) {
+      svd.emptyStringArray = new StringArray(this.getJCas(), 0);
+    }
+    return svd.emptyStringArray;
+  }
+  
+  public DoubleArray getEmptyDoubleArray() {
+    if (null == svd.emptyDoubleArray) {
+      svd.emptyDoubleArray = new DoubleArray(this.getJCas(), 0);
+    }
+    return svd.emptyDoubleArray;
+  }
+  
+  public LongArray getEmptyLongArray() {
+    if (null == svd.emptyLongArray) {
+      svd.emptyLongArray = new LongArray(this.getJCas(), 0);
+    }
+    return svd.emptyLongArray;
+  }
+  
+  public ShortArray getEmptyShortArray() {
+    if (null == svd.emptyShortArray) {
+      svd.emptyShortArray = new ShortArray(this.getJCas(), 0);
+    }
+    return svd.emptyShortArray;
+  }
+  
+  public ByteArray getEmptyByteArray() {
+    if (null == svd.emptyByteArray) {
+      svd.emptyByteArray = new ByteArray(this.getJCas(), 0);
+    }
+    return svd.emptyByteArray;
+  }
+  
+  public BooleanArray getEmptyBooleanArray() {
+    if (null == svd.emptyBooleanArray) {
+      svd.emptyBooleanArray = new BooleanArray(this.getJCas(), 0);
+    }
+    return svd.emptyBooleanArray;
   }
   
   /**
@@ -4781,31 +4850,31 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @return the empty list (shared) corresponding to the type
    */
   public EmptyList getEmptyList(int rangeCode) {
-    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? getEmptyIntegerListImpl() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? getEmptyFloatListImpl() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? getEmptyStringListImpl() :
-                                                                       getEmptyFSListImpl();
+    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? getEmptyIntegerList() :
+           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? getEmptyFloatList() :
+           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? getEmptyStringList() :
+                                                                       getEmptyFSList();
   }
   
   /**
    * Get an empty list from the type code of a list
-   * @param rangeCode -
+   * @param typeCode -
    * @return -
    */
-  public EmptyList getEmptyListFromTypeCode(int rangeCode) {
-    switch (rangeCode) {
+  public EmptyList getEmptyListFromTypeCode(int typeCode) {
+    switch (typeCode) {
     case fsListTypeCode:
     case fsEListTypeCode:
-    case fsNeListTypeCode: return getEmptyFSListImpl();
+    case fsNeListTypeCode: return getEmptyFSList();
     case floatListTypeCode:
     case floatEListTypeCode:
-    case floatNeListTypeCode: return getEmptyFloatListImpl();
+    case floatNeListTypeCode: return getEmptyFloatList();
     case intListTypeCode:
     case intEListTypeCode:
-    case intNeListTypeCode: return getEmptyIntegerListImpl();
+    case intNeListTypeCode: return getEmptyIntegerList();
     case stringListTypeCode:
     case stringEListTypeCode:
-    case stringNeListTypeCode: return getEmptyStringListImpl();
+    case stringNeListTypeCode: return getEmptyStringList();
     default: throw new IllegalArgumentException();
     }
   }
