@@ -92,7 +92,7 @@ public class TOP extends FeatureStructureImplC {
   }
   
   /**
-   * for internal use only
+   * for internal use only, creates a reserved marker
    * @param id -
    * @return -
    */
@@ -102,5 +102,8 @@ public class TOP extends FeatureStructureImplC {
     return r;
   }
 
+  /**
+   * Internal use - used as removed marker in maps 
+   */
 	final public static TOP _singleton = new TOP();
 }

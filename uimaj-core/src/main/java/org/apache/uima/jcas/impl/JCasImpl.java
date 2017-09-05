@@ -624,19 +624,6 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * associations. 
    */
   public static void clearData(CAS cas) {
-//    JCasImpl jcas = (JCasImpl) ((CASImpl) cas).getExistingJCas();
-//    final JCasSharedView sv = jcas.sharedView;
-//    for (Iterator<Map.Entry<ClassLoader, JCasHashMap>> it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
-//      Map.Entry<ClassLoader, JCasHashMap> e = it.next();
-//      sv.cAddr2Jfs = e.getValue();
-//      sv.cAddr2Jfs.clear();  // implements resize as well
-//      sv.stringArray0L = null;
-//      sv.floatArray0L = null;
-//      sv.fsArray0L = null;
-//      sv.integerArray0L = null;
-//    }
-//    sv.cAddr2Jfs = sv.cAddr2JfsByClassLoader
-//        .get(((CASImpl) cas).getJCasClassLoader());
   }
 
   /*
@@ -907,45 +894,7 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public FloatArray getFloatArray0L() {
     return this.getCas().getEmptyFloatArray();
   }
-
   
-  
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getByteArray0L()
-   * @deprecated use getEmptyXXXArray() instead
-   */
-  @Deprecated
-  public ByteArray getByteArray0L() {
-    return this.getCas().getEmptyByteArray();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getShortArray0L()
-   * @deprecated use getEmptyXXXArray() instead
-   */
-  @Deprecated
-  public ShortArray getShortArray0L() {
-    return this.getCas().getEmptyShortArray();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getLongArray0L()
-   * @deprecated use getEmptyXXXArray() instead
-   */
-  @Deprecated
-  public LongArray getLongArray0L() {
-    return this.getCas().getEmptyLongArray();
-  }
-
-  /* (non-Javadoc)
-   * @see org.apache.uima.jcas.JCas#getDoubleArray0L()
-   * @deprecated use getEmptyXXXArray() instead
-   */
-  @Deprecated
-  public DoubleArray getDoubleArray0L() {
-    return this.getCas().getEmptyDoubleArray();
-  }
-
   /*
    * (non-Javadoc)
    * 
