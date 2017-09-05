@@ -194,35 +194,36 @@ public abstract class Resource_ImplBase implements Resource {
       if (resMgrCfg != null) {
         UimaContext prevContext = UimaContextHolder.setContext(mUimaContextAdmin);
         try {
-          resMgrCfg.resolveImports(getResourceManager());
-        } catch (InvalidXMLException e) {
-          UimaContextHolder.setContext(prevContext);
-          throw new ResourceInitializationException(e);
-        }
-        if (aAdditionalParams == null) {
+          try {
+            resMgrCfg.resolveImports(getResourceManager());
+          } catch (InvalidXMLException e) {
+            throw new ResourceInitializationException(e);
+          }
+          if (aAdditionalParams == null) {
             aAdditionalParams = new HashMap<String, Object>();
             aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
-        } else {
-          if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
-            // copy in case original is shared on multi-threads, or 
-            // is unmodifiable
-            // and to avoid updating passed - in map
-            aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
-            aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
+          } else {
+            if (!aAdditionalParams.containsKey(PARAM_RESOURCE_MANAGER)) {
+              // copy in case original is shared on multi-threads, or
+              // is unmodifiable
+              // and to avoid updating passed - in map
+              aAdditionalParams = new HashMap<String, Object>(aAdditionalParams);
+              aAdditionalParams.put(PARAM_RESOURCE_MANAGER, mUimaContextAdmin.getResourceManager());
+            }
           }
+          // initializeExternalResources is synchronized
+
+          // https://issues.apache.org/jira/browse/UIMA-5153
+          final HashMap<String, Object> aAdditionalParmsForExtResources = new HashMap<String, Object>(aAdditionalParams); // copy in case
+          if (aAdditionalParmsForExtResources.get(PARAM_UIMA_CONTEXT) == null) {
+            aAdditionalParmsForExtResources.put(PARAM_UIMA_CONTEXT, mUimaContextAdmin);
+          }
+
+          mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
+                  mUimaContextAdmin.getQualifiedContextName(), aAdditionalParmsForExtResources);
+        } finally {
+          UimaContextHolder.setContext(prevContext);
         }
-        // initializeExternalResources is synchronized
-        
-        // https://issues.apache.org/jira/browse/UIMA-5153
-        final HashMap<String, Object> aAdditionalParmsForExtResources = new HashMap<String, Object>(aAdditionalParams); // copy in case
-        if (aAdditionalParmsForExtResources.get(PARAM_UIMA_CONTEXT) == null) {
-          aAdditionalParmsForExtResources.put(PARAM_UIMA_CONTEXT, mUimaContextAdmin);
-        }
-        
-        mUimaContextAdmin.getResourceManager().initializeExternalResources(resMgrCfg,
-                mUimaContextAdmin.getQualifiedContextName(), aAdditionalParmsForExtResources);
-        
-        UimaContextHolder.setContext(prevContext);
       }
 
       // resolve and validate this component's external resource dependencies
