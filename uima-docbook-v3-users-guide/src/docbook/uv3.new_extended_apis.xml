@@ -26,63 +26,22 @@ under the License.
 <chapter id="uv3.new_extended_apis">
   <title>New and Extended APIs</title>
   <titleabbrev>New/Extended APIs</titleabbrev>
-  
-  <section id="uv3.new_extended_apis.jcas_static_fields">
-    <title>JCas additional static fields</title>
+      
+  <section id="uv3.new_extended_apis.index_and_iterator_improvements">
+    <title>UIMA FSIndex and FSIterators improvements</title>
     
-    <para>(Also in UIMA Version 2 after release 2.10.0) Static final string fields are declared for each JCas cover class
-      and for each feature that is part of that UIMA type.  The fields look like
-      this example, taken from the Sofa class:
-      <programlisting>public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
-public final static String _FeatName_sofaNum    = "sofaNum";
-public final static String _FeatName_sofaID     = "sofaID";
-public final static String _FeatName_mimeType   = "mimeType";
-public final static String _FeatName_sofaArray  = "sofaArray";
-public final static String _FeatName_sofaString = "sofaString";
-public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
-       Each string has a generated name corresponding to the name of the type or the feature, and
-       a string value constant which of the type or feature name. These can be useful in
-       Java Annotations.
+    <para>The FSIndex interface implements Iterable, so you can now write <code>for (MyType item : myIndex)</code> to
+       iterate over an index.</para>
+       
+    <para>The FSIndex interface includes a <code>stream()</code> method, so you can now write <code>myIndex.stream().any-stream-operations</code>,
+      which will use the items in the index as the source of the stream.</para>
+         
+    <para>The FSIterator interface now implements the Java ListIterator Interface, and supports the methods there
+      except for add, nextIndex, previousIndex, and set; the remove() method's meaning is changed to remove the item
+      from all of the UIMA indexes.
     </para>
-  </section>
-  
-  <section id="uv3.new_extended_apis.java8">
-    <title>Java 8 integrations</title>
     
-    <para>Several of the the JCas cover classes provide additional
-      integrations with Java 8 facilities.</para>
-      
-    <section id="uv3.new_extended_apis.java8.lists">
-      <title>Built-in UIMA Arrays and Lists integration with Java 8</title>
-      
-      <para>The <code>iterator()</code> methods for <code>IntegerList
-        IntegerArrayList, IntegerArray, 
-        DoubleArray,</code> and <code>LongArray</code> return
-        an <code>OfInt / OfDouble / OfLong</code> instances.  These are a subtype of 
-        <code>Iterator</code> with an additional methods nextInt / nextLong / nextDouble which avoid the
-        boxing of the normal iterator.
-      </para>
-      
-      <para>The built-in collection types support a <code>stream()</code> method
-      returning a Stream or a type-specialized sub interface of Stream for primitives 
-      (IntStream, LongStream, DoubleStream) 
-      over the objects in the collection.</para>
-      
-      <para>The new <code>select</code> framework supports stream operations; see the "select" chapter for details.
-      </para> 
-      
-      <para>The UIMA Logger implementation has been extended with both the SLF4J logger APIs and the 
-      Log4j APIs which support Java 8's <code>Supplier</code> Functional Interfaces.</para>
-           
-    </section>
-  </section>
-  
-  <section id="uv3.new_extended_apis.fsiterator_implements_list">
-    <title>UIMA FSIterators improvements</title>
-    
-    <para>To enable more seamless integration with popular Java idioms, the UIMA iterators for iterating 
-    over UIMA Indexes (the FSIterator interface) now implements the Java ListIterator Interface.
-    </para>
+    <para>The FSIterator interface implements stream() and spliterator().</para>
     
     <para>The iterators over indexes no longer throw concurrent modification exceptions if the index is modified
     while it is being iterated over.  Instead, the iterators use a lazily-created copy-on-write approach that, when
@@ -100,15 +59,20 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     </para>
     
     <para>Note that the phrase <emphasis>Concurrent Modification</emphasis> is being used here in a single threading
-      context, to mean that within a single thread, while an iterator is active, some modifications are being done
       to the indexes.  UIMA does not support multi-threaded write access to the CAS; it does support multi-threaded
       read access to a set of CAS Views, concurrent with one thread having write access (to different views).
     </para>
     
-    <para>The <code>remove()</code> API for iterators is now implemented for FSIterators.  It will remove the 
-    Feature Structure returned by <code>get()</code> from all indexes in the view.
-    Note that is different behavior from normal iterator remove operation, which removes the item from
-    the collection being iterated over, as opposed to removing the item from all indexes in the view.</para>
+    <para>The <code>remove()</code> API for iterators is now implemented for FSIterators.  Its meaning is slightly
+    different from the normal Java meaning - it doesn't remove the item from the collection being iterated over; rather
+    it removes the Feature Structure returned by <code>get()</code> from all indexes in the view.
+    </para>
+    
+    <para>The FSIterator methods that normally check for iterator validity have versions which skip that check.  This
+    may be a performance optimization in cases where you can guarantee the iterator is valid, for example if
+    you have a loop which is checking <code>hasNext()</code> and following it with a <code>next()</code>, 
+    which is only executed if the
+    <code>hasNext()</code> was true.  The non-checking versions are suffixed with Nvc (stands for No Validity Check).</para>
   </section>
 
   <section id="uv3.new_extended_apis.select">
@@ -124,13 +88,40 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     <title>New custom Java objects in the CAS framework</title>
     
     <para>There is a new framework that supports allowing you to add your own custom Java objects as
-      objects transportable in the CAS.  The following chapter describes this facility, and some new
+      objects transportable in the CAS.  A following chapter describes this facility, and some new
       semi-built-in types that make use of it.  
     </para>
   </section>  
   
   <section id="uv3.new_extended_apis.lists_and_arrays">
     <title>Built-in lists and arrays</title>
+    
+    <para>UIMA Array and List types implement Iterable, so you can use them
+      like this: <code>for (MyType item : myArray) ...</code>.</para>
+
+    <para>UIMA Array and List types support a <code>stream()</code> method
+    returning a Stream or a type-specialized sub interface of Stream for primitives 
+    (IntStream, LongStream, DoubleStream) 
+    over the objects in the collection.</para>
+
+    <para>The <code>iterator()</code> methods for <code>IntegerList
+      IntegerArrayList, IntegerArray, 
+      DoubleArray,</code> and <code>LongArray</code> return
+      an <code>OfInt / OfDouble / OfLong</code> instances.  These are subtypes of 
+      <code>Iterator</code> with an additional methods nextInt / nextLong / nextDouble which avoid the
+      boxing of the normal iterator.
+    </para>
+       
+    <para>The new <code>select</code> framework supports stream operations; see the "select" chapter for details.
+    </para> 
+    
+    <para>
+      A new set of methods on UIMA built-in lists, <code>createNonEmptyNode() and getEmptyList()</code>, 
+      creates a non-empty node of the type, or retrieves a (shared) empty node of the type.  
+      These methods are not static, and create or get the instance in the same CAS as the object instance.
+      These methods are callable on both the empty and non-empty node instances, or on their shared
+      super interface, for example, on NonEmptyFloatList, EmptyFloatList, and FloatList (the common super interface).
+    </para>
     
     <para>
       A new set of static methods on UIMA built-in lists and arrays, <code>create(jcas, array_source)</code>
@@ -201,8 +192,9 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
         <para>Some methods common to multiple implements were moved to the super classes,
           some classes were made abstract (to prevent them from being instantiated, which would be an error).
           For arrays, a new method common to all arrays, <code>copyValuesFrom()</code> copies values from arrays of the same type.
-        </para>
+        </para>        
     </section> 
+    
   </section>     
  
   <!--  
@@ -275,27 +267,71 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     </para>
   </section>
     
+  <section id="uv3.new_extended_apis.jcasgen">
+    <title>JCasGen changes</title>
+    
+    <para>JCasgen is modified to generate the v3 style of JCas cover classes. 
+      It no longer generates the the xxx_Type.java classes, as these are 
+      not used by UIMA Version 3.</para>
+      
+    <section id="uv3.new_extended_apis.jcas_static_fields">
+    <title>JCas additional static fields</title>
+    
+    <para>Static final string fields are declared for each JCas cover class
+      and for each feature that is part of that UIMA type.  The fields look like
+      this example, taken from the Sofa class:
+      <programlisting>public final static String _TypeName = "org.apache.uima.jcas.cas.Sofa";
+public final static String _FeatName_sofaNum    = "sofaNum";
+public final static String _FeatName_sofaID     = "sofaID";
+public final static String _FeatName_mimeType   = "mimeType";
+public final static String _FeatName_sofaArray  = "sofaArray";
+public final static String _FeatName_sofaString = "sofaString";
+public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
+       Each string has a generated name corresponding to the name of the type or the feature, and
+       a string value constant which of the type or feature name. These can be useful in
+       Java Annotations.
+    </para>
+  </section>
+          
+  </section>
   <section id="uv3.new_extended_apis.other">
     <title>Other changes</title>
     
-    <para>The JCas interface and implementation added the other built-in array types for 0-length instances.
-    New methods are <code>getByteArray0L, getShortArray0L, getLongArray0L, getDoubleArray0L</code>.</para>
-    
-    <!-- 
-    <para>FSIterator has a new <code>moveToExact(FeatureStructure)</code>, which works like moveTo, except that the
-      position moved to is one that is equal, not just compare as equal, to the Feature Structure argument.
-      If no such element exists, the iterator is marked invalid.
+    <para>The CAS interface has additional convenience method to get the Annotation index:  <code>getAnnotationIndex()</code>.
     </para>
-     -->
-    
+        
     <para>The utility class <code>org.apache.uima.util.FileUtils</code> has a new method
       <code>writeToFile(path, string)</code>, which efficiently writes a string using UTF-8 encoding to 
       <code>path</code>.
     </para>
     
+    <para>The StringArray class has a new <code>contains(a_string)</code> method.</para>
+    
+    <para>
+      Sometimes Annotators may log excessively, causing problems in production settings.
+      Although this could be controlled using logging configuration, sometimes when
+      UIMA is embedded into other applications, you may not have easy access to modify those.
+     </para><para>
+      For this case, the produceAnalysisEngine's "additionalParameters" map supports a new key,  
+      AnalysisEngine.PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING.  
+      This key specifies that throttling should be applied to messages
+      produced by annotators using loggers obtained by Annotator code using the getLogger() API.
+    </para><para>
+      The value specified must be an Integer, and is the number of messages allowed before
+      logging is suppressed.  This number is applied to each logging level, separately.
+      To suppress all logging, use 0.  
+    </para>
+    
+    <para>The Type interface has new methods <code>subsumes(another_type), isStringOrStringSubtype()</code>, 
+        and <code>isStringSubtype().</code></para>
+
     <para>Many error messages were changed or added, causing changes to localization classes.
       For coding efficiency, some of the structure of the internal error reporting calls was changed
       to make use of Java's variable number of arguments syntax.</para>
+      
+    <para>The UIMA Logger implementation has been extended with both the SLF4J logger APIs and the 
+       Log4j APIs which support Java 8's <code>Supplier</code> Functional Interfaces.</para>
+         
   </section> 
    
 </chapter>
