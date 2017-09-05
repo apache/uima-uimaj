@@ -103,11 +103,11 @@ subject to Garbage Collection, just like any other objects,
 when no longer reachable.</li>
 <li>Iterating over indexes no longer throws 
 ConcurrentModificationException</li>
-<li>Support for arbitrary Java Objects in the CAS</li>
-<li>Using above, new semi-built-ins for ArrayList style
+<li>Support for arbitrary Java Objects in the CAS, using special custom implementations of JCas cover classes for those.</li>
+<li>Using above, new semi-built-ins for three new types: ArrayList style
 lists of Feature Structures and ints, and a FSHashSet</li>
 <li>New "select" framework for flexible 
-access to Feature Structures</li>
+access to Feature Structures, that can ignore typeOrdering keys in indexes.</li>
 <li>Integration with Java 8 facilities such as Streams</li>
 <li>Logging framework upgraded</li>
 <li>There are many performance improvements</li>
@@ -115,7 +115,7 @@ access to Feature Structures</li>
 
 
 <p>Please read the overview section of the Version 3 
-users guide for more.</p>
+users guide for more details.</p>
 
 <p>Specific changes in this release versus the previous alpha02 release include</p>
 <ul>
@@ -127,13 +127,14 @@ users guide for more.</p>
   <li>Restore a v2 method needed for backwards compatibility</li>
   <li>Improve the migration tool's use of classpath and error reporting</li>
   <li>Changes in the support for External Override Settings location were incorporated</li>
+  <li>Fixes incorporated into UIMA 2.10.1 are included.</li>
 </ul>
 
  
 <h3>API changes</h3>
  <p>There is an API compatibility report covering the non-internal APIs;
    see <a href="api-change-report.html">change report</a> for the list of API changes
-   since version 2.10.0.
+   since version 2.10.1.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
