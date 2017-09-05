@@ -165,7 +165,7 @@ public interface JCas extends AbstractCas {
    */
   @Deprecated
   default void putJfsFromCaddr(int casAddr, FeatureStructure fs) {
-    throw new UnsupportedOperationException("not supported in UIMA v3");
+    throw new UnsupportedOperationException("not supported in UIMA v3; maybe caused by running with UIMA v2 JCas classes in UIMA v3");
   } 
 
   /*
@@ -173,7 +173,7 @@ public interface JCas extends AbstractCas {
    * @deprecated only for V2 compiling
    */
   default <T extends TOP> T getJfsFromCaddr(int casAddr) {
-    throw new UnsupportedOperationException("not supported in UIMA v3");
+    throw new UnsupportedOperationException("not supported in UIMA v3; maybe caused by running with UIMA v2 JCas classes in UIMA v3");
   } 
 
   /*
@@ -364,35 +364,11 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a ByteArray
-   * @deprecated renamed getEmptyXXXArray
-   */
-  @Deprecated
-  default ByteArray getByteArray0L() {
-    return this.getCas().getEmptyByteArray();
-  }
-  /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same value because it is not
-   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
-   * the CAS is reset.
-   * @return 0-length instance of a ByteArray
    */
   default ByteArray getEmptyByteArray() {
     return this.getCas().getEmptyByteArray();
   }
 
-  /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same value because it is not
-   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
-   * the CAS is reset.
-   * @return 0-length instance of a ShortArray
-   * @deprecated renamed getEmptyXXXArray
-   */
-  @Deprecated
-  default ShortArray getShortArray0L() {
-    return this.getCas().getEmptyShortArray();
-  }
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
@@ -410,18 +386,6 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a LongArray
-   * @deprecated renamed getEmptyXXXArray
-   */
-  @Deprecated
-  default LongArray getLongArray0L() {
-    return this.getCas().getEmptyLongArray();
-  }
-  /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same value because it is not
-   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
-   * the CAS is reset.
-   * @return 0-length instance of a LongArray
    */
   default LongArray getEmptyLongArray() {
     return this.getCas().getEmptyLongArray();
@@ -433,35 +397,11 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a DoubleArray
-   * @deprecated renamed getEmptyXXXArray
-   */
-  @Deprecated
-  default DoubleArray getDoubleArray0L() {
-    return this.getCas().getEmptyDoubleArray();
-  }
-  /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same value because it is not
-   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
-   * the CAS is reset.
-   * @return 0-length instance of a DoubleArray
    */
   default DoubleArray getEmptyDoubleArray() {
     return this.getCas().getEmptyDoubleArray();
   }
   
-  /**
-   * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
-   * avoid creating multiple copies of it. All uses can use the same value because it is not
-   * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
-   * the CAS is reset.
-   * @return 0-length instance of a DoubleArray
-   * @deprecated renamed getEmptyXXXArray
-   */
-  @Deprecated
-  default BooleanArray getBooleanArray0L() {
-    return this.getCas().getEmptyBooleanArray();
-  }
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
    * avoid creating multiple copies of it. All uses can use the same value because it is not
