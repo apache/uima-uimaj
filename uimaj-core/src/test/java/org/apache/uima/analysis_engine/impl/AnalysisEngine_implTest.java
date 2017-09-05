@@ -328,7 +328,9 @@ public class AnalysisEngine_implTest extends TestCase {
       String resDir = "src/test/resources/TextAnalysisEngineImplTest/";
       String prevDatapath = System.setProperty(RelativePathResolver.UIMA_DATAPATH_PROP, resDir);
       System.setProperty("UimaExternalOverrides", 
-              resDir+"testExternalOverride.settings,TextAnalysisEngineImplTest/testExternalOverride2.settings,testExternalOverride4.settings");
+                      resDir+"testExternalOverride.settings," +
+                      "path:TextAnalysisEngineImplTest.testExternalOverride2," +
+                      "path:testExternalOverride4");
       in = new XMLInputSource(JUnitExtension.getFile("TextAnalysisEngineImplTest/AnnotatorWithExternalOverrides.xml"));
       desc = UIMAFramework.getXMLParser().parseAnalysisEngineDescription(in);
       ae1 = new PrimitiveAnalysisEngine_impl();
@@ -372,7 +374,7 @@ public class AnalysisEngine_implTest extends TestCase {
       System.clearProperty("UimaExternalOverrides");
       
       // Same aggregate with invalid syntax for an array in the external overrides file
-      System.setProperty("UimaExternalOverrides", resDir+"testExternalOverride3.settings");
+      System.setProperty("UimaExternalOverrides", "file:"+resDir+"testExternalOverride3.settings");
       try {
         UIMAFramework.produceAnalysisEngine(desc);
         fail(); // should not get here
