@@ -82,7 +82,7 @@ import org.apache.uima.util.XMLizable;
 public class Jg {
 
   /**
-   * Interface implemeted by JCAS code generation's templates.
+   * Interface implemented by JCAS code generation's templates.
    */
   public interface IJCasTypeTemplate {
     
