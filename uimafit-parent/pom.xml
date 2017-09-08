@@ -15,14 +15,15 @@
 	<inceptionYear>2012</inceptionYear>
 	<properties>
 		<spring.version>3.2.16.RELEASE</spring.version>
-		<uima.version>3.0.0-alpha02-SNAPSHOT</uima.version>
+		<uima.version>3.0.1-beta-SNAPSHOT</uima.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <compat.previous.version>2.1.0</compat.previous.version>
 	</properties>
-    <!--
-      - Only required while uimaFIT depends on unreleased versions of UIMA.
 	<repositories>
+    <!--
+      - For UIMA/uimaFIT SNAPSHOTs
+      -->
 		<repository>
 			<id>apache.snapshots</id>
 			<name>Apache Snapshot Repository</name>
@@ -33,6 +34,9 @@
 		</repository>
 	</repositories>
 	<pluginRepositories>
+    <!--
+      - For UIMA/uimaFIT SNAPSHOTs
+      -->
 		<pluginRepository>
 			<id>apache.snapshots.plugins</id>
 			<name>Apache Snapshot Repository - Maven plugins</name>
@@ -48,7 +52,6 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-    -->
     
 	<dependencies>
 		<dependency>
