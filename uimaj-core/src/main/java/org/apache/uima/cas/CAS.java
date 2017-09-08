@@ -616,16 +616,16 @@ public interface CAS extends AbstractCas {
   DoubleArrayFS createDoubleArrayFS(int length) throws CASRuntimeException;
 
   /**
-   * Get the JCas for this CAS.
+   * Get the JCas view for this CAS view
    * 
-   * @return The JCas for this CAS.
-   * @throws CASException -
+   * @return The JCas view for this CAS view
+   * @throws CASException not thrown in v3, but kept for backwards compatibility
    */
   JCas getJCas() throws CASException;
 
   /**
-   * Get the JCasImpl for this CAS
-   * @return the JCasImpl for this CAS
+   * Get the JCasImpl view for this CAS view
+   * @return the JCasImpl view for this CAS view
    */
   default JCasImpl getJCasImpl() {
     return ((CASImpl) this).getJCasImpl();

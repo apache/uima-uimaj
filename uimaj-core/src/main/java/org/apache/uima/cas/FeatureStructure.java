@@ -20,6 +20,7 @@
 package org.apache.uima.cas;
 
 import org.apache.uima.cas.impl.FeatureStructureImplC;
+import org.apache.uima.jcas.JCas;
 
 /**
  * Interface for feature structures.
@@ -295,12 +296,17 @@ public interface FeatureStructure extends Cloneable {
   void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException;
 
   /**
-   * Return the CAS that this FS belongs to.
-   *
-   * @return The CAS.
+   * @return The CAS view where this Feature Structure was created
    */
   CAS getCAS();
 
+  /**
+   * @return the JCas view where this Feature Structure was created
+   */
+  default JCas getJCas() {
+    return getCAS().getJCasImpl();  // getJCas defined (from v2) to throw exception, this one doesn't
+  };
+  
   /**
    * return the unique (to this CAS) id of this feature structure
    * @return the id
