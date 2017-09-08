@@ -23,7 +23,6 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createDependencyAndBind;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -73,7 +72,7 @@ import org.uimafit.descriptor.ExternalResource;
  * 
  */
 public class ExternalResourceFactoryTest extends ComponentTestBase {
-  private static final String EX_URI = "http://dum.my";
+  //private static final String EX_URI = "http://dum.my";
 
   private static final String EX_FILE_1 = "src/test/resources/data/docs/test.xcas";
 
@@ -184,8 +183,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
             ConfigurableResource.PARAM_VALUE, "2");
     bindResource(desc, DummyAE.RES_KEY_3, ParametrizedResource.class,
             ParametrizedResource.PARAM_EXTENSION, ".lala");
-    bindResource(desc, DummySharedResourceObject.class, EX_URI,
-            DummySharedResourceObject.PARAM_VALUE, "3");
+//    bindResource(desc, DummySharedResourceObject.class, EX_URI,
+//            DummySharedResourceObject.PARAM_VALUE, "3");
     // An undefined URL may be used if the specified file/remote URL does not exist or if
     // the network is down.
     bindResource(desc, DummyAE.RES_SOME_URL, new File(EX_FILE_1).toURI().toURL());
@@ -193,8 +192,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResource(desc, DummyAE.RES_SOME_FILE, new File(EX_FILE_1));
     bindResource(desc, DummyAE.RES_JNDI_OBJECT, JndiResourceLocator.class,
             JndiResourceLocator.PARAM_NAME, "dictionaries/german");
-    createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
-            DummySharedResourceObject.PARAM_VALUE, "3");
+//    createDependencyAndBind(desc, "legacyResource", DummySharedResourceObject.class, EX_URI,
+//            DummySharedResourceObject.PARAM_VALUE, "3");
   }
 
   public static class DummyAE extends JCasAnnotator_ImplBase {
@@ -213,8 +212,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
     static final String RES_KEY_3 = "Key3";
 
-    @ExternalResource
-    DummySharedResourceObject sharedObject;
+//    @ExternalResource
+//    DummySharedResourceObject sharedObject;
 
     static final String RES_SOME_URL = "SomeUrl";
 
@@ -255,11 +254,11 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
         throw new AnalysisEngineProcessException(e);
       }
 
-      assertNotNull(sharedObject);
-      assertEquals("3", sharedObject.getValue());
-
-      assertNotNull(sharedObject);
-      assertEquals(EX_URI, sharedObject.getUrl().toString());
+//      assertNotNull(sharedObject);
+//      assertEquals("3", sharedObject.getValue());
+//
+//      assertNotNull(sharedObject);
+//      assertEquals(EX_URI, sharedObject.getUrl().toString());
 
       assertNotNull(jndiPropertes);
       assertEquals("proper noun", jndiPropertes.get("Hans"));
@@ -274,11 +273,11 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
       assertTrue("URL [" + someFile.getUrl() + "] should end in [" + EX_FILE_1 + "]", someFile
               .getUrl().toString().endsWith(EX_FILE_1));
 
-      try {
-        assertNotNull(getContext().getResourceObject("legacyResource"));
-      } catch (ResourceAccessException e) {
-        throw new AnalysisEngineProcessException(e);
-      }
+//      try {
+//        assertNotNull(getContext().getResourceObject("legacyResource"));
+//      } catch (ResourceAccessException e) {
+//        throw new AnalysisEngineProcessException(e);
+//      }
     }
   }
 
@@ -356,14 +355,17 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public InputStream getInputStream() throws IOException {
       return null;
     }
 
+    @Override
     public URI getUri() {
       return URI.create(uri + extension);
     }
 
+    @Override
     public URL getUrl() {
       return null;
     }
@@ -376,6 +378,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     @ConfigurationParameter(name = PARAM_EXTENSION, mandatory = true)
     private String extension;
 
+    @Override
     public DataResource getDataResource(String[] aParams) throws ResourceInitializationException {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(ConfigurableDataResource.PARAM_EXTENSION);
@@ -392,17 +395,18 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     @ConfigurationParameter(name = PARAM_VALUE, mandatory = true)
     private String value;
 
-    private URI uri;
+//    private URI uri;
 
+    @Override
     public void load(DataResource aData) throws ResourceInitializationException {
       ConfigurationParameterInitializer.initialize(this, aData);
-      assertEquals(EX_URI, aData.getUri().toString());
-      uri = aData.getUri();
+//      assertEquals(EX_URI, aData.getUri().toString());
+//      uri = aData.getUri();
     }
 
-    public URI getUrl() {
-      return uri;
-    }
+//    public URI getUrl() {
+//      return uri;
+//    }
 
     public String getValue() {
       return value;
