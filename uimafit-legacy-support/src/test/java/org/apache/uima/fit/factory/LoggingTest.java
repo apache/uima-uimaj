@@ -24,6 +24,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -68,6 +69,7 @@ public class LoggingTest {
     handler.setLevel(Level.ALL);
     // Capture the logging output without actually logging it
     handler.setFilter(new Filter() {
+      @Override
       public boolean isLoggable(LogRecord record) {
         records.add(record);
         return false;
@@ -77,6 +79,14 @@ public class LoggingTest {
     try {
       JCas jcas = JCasFactory.createJCas();
       createEngine(LoggingCasConsumerChristmasTree.class).process(jcas.getCas());
+
+      // Workaround for https://issues.apache.org/jira/browse/UIMA-5323
+      Iterator<LogRecord> i = records.iterator();
+      while (i.hasNext()) {
+        if (i.next().getMessage().contains("Skipping adding")) {
+          i.remove();
+        }
+      }
 
       assertEquals(10, records.size());
       assertEquals(Level.FINER, records.get(0).getLevel());
@@ -107,6 +117,7 @@ public class LoggingTest {
     java.util.logging.Level oldLevel = handler.getLevel();
     handler.setLevel(Level.ALL);
     handler.setFilter(new Filter() {
+      @Override
       public boolean isLoggable(LogRecord record) {
         records.add(record);
         return true;
@@ -151,6 +162,14 @@ public class LoggingTest {
   }
 
   private void assertLogDone(List<LogRecord> records) {
+    // Workaround for https://issues.apache.org/jira/browse/UIMA-5323
+    Iterator<LogRecord> i = records.iterator();
+    while (i.hasNext()) {
+      if (i.next().getMessage().contains("Skipping adding")) {
+        i.remove();
+      }
+    }
+    
     assertEquals(1, records.size());
     assertEquals(Level.INFO, records.get(0).getLevel());
     records.clear();
@@ -191,11 +210,13 @@ public class LoggingTest {
 
   public static class LoggingCasMultiplier extends CasMultiplier_ImplBase {
 
+    @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       getLogger().info("Logging: " + getClass().getName());
       return false;
     }
 
+    @Override
     public AbstractCas next() throws AnalysisEngineProcessException {
       // Never called
       return null;
@@ -208,11 +229,13 @@ public class LoggingTest {
   }
 
   public static class LoggingJCasMultiplier extends JCasMultiplier_ImplBase {
+    @Override
     public boolean hasNext() throws AnalysisEngineProcessException {
       getLogger().info("Logging: " + getClass().getName());
       return false;
     }
 
+    @Override
     public AbstractCas next() throws AnalysisEngineProcessException {
       // Never called
       return null;
@@ -225,11 +248,13 @@ public class LoggingTest {
   }
 
   public static class LoggingJCasCollectionReader extends JCasCollectionReader_ImplBase {
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       getLogger().info("Logging: " + getClass().getName());
       return false;
     }
 
+    @Override
     public Progress[] getProgress() {
       return new Progress[0];
     }
@@ -251,15 +276,18 @@ public class LoggingTest {
   }
 
   public static class LoggingCasCollectionReader extends CasCollectionReader_ImplBase {
+    @Override
     public void getNext(CAS aCAS) throws IOException, CollectionException {
       // Never called
     }
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       getLogger().info("Logging: " + getClass().getName());
       return false;
     }
 
+    @Override
     public Progress[] getProgress() {
       return new Progress[0];
     }
