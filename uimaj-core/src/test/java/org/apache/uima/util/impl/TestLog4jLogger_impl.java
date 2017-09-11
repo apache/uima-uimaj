@@ -420,8 +420,7 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.log(Level.INFO,
             "------------------------------------------------------------");
       logger.log(Level.INFO, "My first test message");
-      logger.log(Level.INFO, "");
-      logger.log(Level.INFO, null);
-
+      logger.log(Level.INFO, "message with \"{0}\"", "substitute");
+      logger.info("message with \"{0}\"", "substitute");
    }
 }

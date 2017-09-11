@@ -142,7 +142,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   }
   
   public Slf4jLogger_impl getLimitedLogger(int aLimit) {
-    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit) {
+    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
       return this;
     }
     return new Slf4jLogger_impl(this, aLimit);
@@ -255,6 +255,10 @@ public class Slf4jLogger_impl extends Logger_common_impl {
       default: Misc.internalError();
       }
     }
+  }
+  
+  public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+    log(m, aFqcn, level, message, args, thrown); 
   }
   
   /**

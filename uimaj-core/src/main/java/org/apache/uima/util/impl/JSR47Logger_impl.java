@@ -40,6 +40,8 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class JSR47Logger_impl extends Logger_common_impl {
   
+  final static private Object[] zeroLengthArray = new Object[0];
+
   /**
    * logger object from the underlying JSR-47 logging framework
    */
@@ -95,7 +97,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   
   @Override
   public JSR47Logger_impl getLimitedLogger(int limit) {
-    if (limit == Integer.MAX_VALUE || limit == this.limit) {
+    if (limit == Integer.MAX_VALUE || limit == this.limit_common) {
       return this;
     }
     return new JSR47Logger_impl(this, limit);
@@ -294,6 +296,11 @@ public class JSR47Logger_impl extends Logger_common_impl {
       }
       logger.log(record);
     }
+  }
+  
+  @Override
+  public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
+    log(m, aFqcn, level, MessageFormatter.format(msg, args).getMessage(), zeroLengthArray, throwable);
   }
   
   @Override

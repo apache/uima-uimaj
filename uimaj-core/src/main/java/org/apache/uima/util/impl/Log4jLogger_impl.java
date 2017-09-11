@@ -18,6 +18,8 @@
  */
 package org.apache.uima.util.impl;
 
+import java.text.MessageFormat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.Filter.Result;
@@ -39,6 +41,7 @@ import org.slf4j.Marker;
  */
 public class Log4jLogger_impl extends Logger_common_impl {
 
+  final static private Object[] zeroLengthArray = new Object[0];
   /**
    * <p>Markers that are for marking levels not supported by log4j.
    * <p>
@@ -183,7 +186,7 @@ public class Log4jLogger_impl extends Logger_common_impl {
    }
    
    public Log4jLogger_impl getLimitedLogger(int aLimit) {
-     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit) {
+     if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
        return this;
      }
      return new Log4jLogger_impl(this, aLimit);
@@ -300,9 +303,13 @@ public class Log4jLogger_impl extends Logger_common_impl {
    }
 
    public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
-     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, args, thrown);
+     String substituted = MessageFormat.format(message, args);  
+     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), substituted, zeroLengthArray, thrown);
    }  
 
+   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, args, thrown);
+   }  
    
 
    // ---------------------- 

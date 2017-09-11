@@ -21,11 +21,13 @@ package org.apache.uima.util.impl;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
 import org.slf4j.Marker;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * UIMA Logging interface implementation without using an logging toolkit
@@ -103,7 +105,7 @@ public class Logger_impl extends Logger_common_impl {
   }
 
   public Logger_impl getLimitedLogger(int aLimit) {
-    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit) {
+    if (aLimit == Integer.MAX_VALUE || aLimit == this.limit_common) {
       return this;
     }
     return new Logger_impl(this, aLimit);
@@ -150,12 +152,24 @@ public class Logger_impl extends Logger_common_impl {
     if (mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + level.toString() + ": ");
-      mOut.println(message);
+      mOut.println(MessageFormat.format(message, args));
       if (null != thrown) {
         thrown.printStackTrace(mOut);
       }
     }
   }
+  
+  public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+    if (mOut != null) {
+      mOut.print(new Date());
+      mOut.print(": " + level.toString() + ": ");
+      mOut.println(MessageFormatter.format(message, args).getMessage());
+      if (null != thrown) {
+        thrown.printStackTrace(mOut);
+      }
+    }
+  }
+
 
   /*
    * (non-Javadoc)
