@@ -684,21 +684,31 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       
       String mname = m.getName(); 
       if (mname.length() <= 3 || !mname.startsWith("get")) continue;
-      String suffix = (mname.length() == 4) ? "" : mname.substring(4); 
-      String fname = Character.toLowerCase(mname.charAt(3)) + suffix; 
+      String suffix = (mname.length() == 4) ? "" : mname.substring(4);  // one char past 1st letter of feature
+      String fname = Character.toLowerCase(mname.charAt(3)) + suffix;   // entire name, with first letter lower cased 
       FeatureImpl fi = ti.getFeatureByBaseName(fname);
-      if (fi == null) {
-        fname = mname.charAt(3) + suffix;
+      if (fi == null) {                            
+        fname = mname.charAt(3) + suffix;      // no feature, but look for one with captialized first letter
         fi = ti.getFeatureByBaseName(fname);
         if (fi == null) continue;
       }
       
+      // some users are writing getFeat(some other args) as additional signatures - skip checking these
+      // https://issues.apache.org/jira/projects/UIMA/issues/UIMA-5557
+      Parameter[] p = m.getParameters();
+      TypeImpl range = fi.getRangeImpl();
+
+      if (p.length > 1) continue;  // not a getter, which has either 0 or 1 arg(the index int for arrays)
+      if (p.length == 1 &&
+          ( ! range.isArray() ||
+            p[0].getType() != int.class)) {
+        continue;  // has 1 arg, but is not an array or the arg is not an int
+      }
+      
       // have the feature, check the range
       Class<?> returnClass = m.getReturnType(); // for primitive, is int.class, etc.
-      TypeImpl range = fi.getRangeImpl();
       Class<?> rangeClass = range.getJavaClass();
-      if (fi.getRangeImpl().isArray()) {
-        Parameter[] p = m.getParameters();
+      if (range.isArray()) {
         if (p.length == 1 && p[0].getType() == int.class) {
           rangeClass = range.getComponentType().getJavaClass();
         }
