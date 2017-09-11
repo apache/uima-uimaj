@@ -327,6 +327,15 @@ public class ResourceManager_impl implements ResourceManager {
     }
   }
 
+  // https://issues.apache.org/jira/browse/UIMA-5553
+  public void setExtensionClassLoaderImpl(ClassLoader parent, boolean resolveResource) {
+    uimaCL = new UIMAClassLoader(new URL[0], parent);
+    if (resolveResource) {
+      // set UIMA extension ClassLoader also to resolve resources
+      getRelativePathResolver().setPathResolverClassLoader(uimaCL);
+    }
+  }
+  
   /**
    * @see org.apache.uima.resource.ResourceManager#getExtensionClassLoader()
    */
