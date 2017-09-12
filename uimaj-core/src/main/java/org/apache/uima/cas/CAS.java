@@ -738,7 +738,7 @@ public interface CAS extends AbstractCas {
   <T extends AnnotationFS> AnnotationFS createAnnotation(Type type, int begin, int end);
 
   /**
-   * Get the document annotation. The document has a string-valued feature called "language" where
+   * Get the Document Annotation. The Document Annotation has a string-valued feature called "language" where
    * the document language is specified.
    * 
    * @param <T> the Java class for the document annotation.  Could be the JCas cover class or FeatureStructure

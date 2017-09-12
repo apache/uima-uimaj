@@ -147,8 +147,9 @@ public class IteratorTestSorted extends TestCase {
     for (int i = 0; i < REPETITIONS; i++) {
       try {
       if (0 == i % 100000) {
-        long seed2 =  // r.nextLong();
-        -4550541241322613541L;
+        long seed2 =  r.nextLong();
+//            5680709196975735850L;
+
 //            2151669209502835073L;
         System.out.format("iteration: %,d seed: %d%n", i, seed2);
         r.setSeed(seed2);

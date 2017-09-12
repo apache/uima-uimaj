@@ -744,7 +744,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       }
 
       // if the iterator passed in just became invalid
-      //   move it to the last valid iterator spot (and reduec lastValidIndex by 1 afterwards)
+      //   move it to the last valid iterator spot (and reduce lastValidIndex by 1 afterwards)
       if (!it.isValid()) {
         final ComparableIntPointerIterator itl = checkConcurrentModification(this.lastValidIndex);
         this.iterators[this.lastValidIndex] = it;
