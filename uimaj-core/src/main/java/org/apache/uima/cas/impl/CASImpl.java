@@ -4782,6 +4782,30 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.emptyStringList;
   }
   
+  public CommonArrayFS getEmptyArray(TypeImpl type) {
+    switch (type.getCode()) {
+    case TypeSystemConstants.booleanArrayTypeCode :
+      return getEmptyBooleanArray();
+    case TypeSystemConstants.byteArrayTypeCode :
+      return getEmptyByteArray();
+    case TypeSystemConstants.shortArrayTypeCode :
+      return getEmptyShortArray();
+    case TypeSystemConstants.intArrayTypeCode :
+      return getEmptyIntegerArray();
+    case TypeSystemConstants.floatArrayTypeCode :
+      return getEmptyFloatArray();
+    case TypeSystemConstants.longArrayTypeCode :
+      return getEmptyLongArray();
+    case TypeSystemConstants.doubleArrayTypeCode :
+      return getEmptyDoubleArray();
+    case TypeSystemConstants.stringArrayTypeCode :
+      return getEmptyStringArray();
+    case TypeSystemConstants.fsArrayTypeCode :
+      return getEmptyFSArray();
+    default: throw Misc.internalError(); 
+    }
+  }
+  
   public FloatArray getEmptyFloatArray() {
     if (null == svd.emptyFloatArray) {
       svd.emptyFloatArray = new FloatArray(this.getJCas(), 0);

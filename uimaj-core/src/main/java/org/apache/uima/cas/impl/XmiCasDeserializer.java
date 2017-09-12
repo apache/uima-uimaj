@@ -1312,7 +1312,9 @@ public class XmiCasDeserializer {
      */
     private CommonArrayFS createNewArray(TypeImpl type, List<String> values) {
       final int sz = values.size();
-      CommonArrayFS fs = (CommonArrayFS) casBeingFilled.createArray(type, sz);
+      CommonArrayFS fs = (sz == 0) 
+                           ? casBeingFilled.getEmptyArray(type)
+                           : (CommonArrayFS) casBeingFilled.createArray(type, sz);
       if (fs instanceof FSArray) {
         final FSArray fsArray = (FSArray) fs;
         for (int i = 0; i < sz; i++) {
