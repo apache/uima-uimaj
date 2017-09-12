@@ -717,7 +717,8 @@ public class XmiCasSerializer {
     protected void writeArrays(int addr, int typeCode, int typeClass) throws SAXException {
       XmlElementName xmlElementName = cds.typeCode2namespaceNames[typeCode];
       
-      if (typeClass == LowLevelCAS.TYPE_CLASS_STRINGARRAY) {
+      if (typeClass == LowLevelCAS.TYPE_CLASS_STRINGARRAY && 
+          cds.cas.ll_getArraySize(addr) != 0) {  //https://issues.apache.org/jira/browse/UIMA-5558
 
         // string arrays are encoded as elements, in case they contain whitespace
         List<XmlElementNameAndContents> childElements = new ArrayList<XmlElementNameAndContents>();
@@ -917,6 +918,8 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: 
           if (cds.isStaticMultiRef(featCode)) {
             attrValue = cds.getXmiId(featValRaw);
+          } else if (cds.cas.ll_getArraySize(featValRaw) == 0) {
+            attrValue = "";  //https://issues.apache.org/jira/browse/UIMA-5558
           } else {
             stringArrayToElementList(featName, featValRaw, childElements);
             attrValue = null;
@@ -952,11 +955,15 @@ public class XmiCasSerializer {
 //              if (array.length > 0 && !arrayAndListFSs.put(featVal, featVal)) {
 //                reportWarning("Warning: multiple references to a ListFS.  Reference identity will not be preserved.");
 //              }
-            for (String string : listOfStrings) {
-              childElements.add(new XmlElementNameAndContents(new XmlElementName("", featName,
-                      featName), string));
+            if (featValRaw != CASImpl.NULL && listOfStrings.isEmpty()) { https://issues.apache.org/jira/browse/UIMA-5558
+              attrValue = "";
+            } else {
+              for (String string : listOfStrings) {
+                childElements.add(new XmlElementNameAndContents(new XmlElementName("", featName,
+                        featName), string));
+              }
+              attrValue = null;
             }
-            attrValue = null;
           }
           break;
         
@@ -1090,7 +1097,7 @@ public class XmiCasSerializer {
           case LowLevelCAS.TYPE_CLASS_BYTEARRAY:
             fs = new ByteArrayFSImpl(addr, cds.cas);
             break;
-          default: {
+          default: {  // used for string arrays of 0 length
             return "";
           }
         }
@@ -1112,6 +1119,15 @@ public class XmiCasSerializer {
       }
     }
     
+    /**
+     * https://issues.apache.org/jira/browse/UIMA-5558
+     * 
+     * If the string array has 0 length, no child elements are generated.
+     * In that case, 
+     * @param featName -
+     * @param addr -
+     * @param resultList -
+     */
     private void stringArrayToElementList(
         String featName, 
         int addr, 
