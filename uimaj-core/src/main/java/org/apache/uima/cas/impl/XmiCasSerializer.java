@@ -918,7 +918,7 @@ public class XmiCasSerializer {
         case LowLevelCAS.TYPE_CLASS_STRINGARRAY: 
           if (cds.isStaticMultiRef(featCode)) {
             attrValue = cds.getXmiId(featValRaw);
-          } else if (cds.cas.ll_getArraySize(featValRaw) == 0) {
+          } else if (featValRaw != CASImpl.NULL && cds.cas.ll_getArraySize(featValRaw) == 0) {
             attrValue = "";  //https://issues.apache.org/jira/browse/UIMA-5558
           } else {
             stringArrayToElementList(featName, featValRaw, childElements);
