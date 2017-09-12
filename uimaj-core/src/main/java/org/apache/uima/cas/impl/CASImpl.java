@@ -4782,8 +4782,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.emptyStringList;
   }
   
-  public CommonArrayFS getEmptyArray(TypeImpl type) {
-    switch (type.getCode()) {
+  public CommonArrayFS getEmptyArray(Type type) {
+    switch (((TypeImpl)type).getCode()) {
     case TypeSystemConstants.booleanArrayTypeCode :
       return getEmptyBooleanArray();
     case TypeSystemConstants.byteArrayTypeCode :
