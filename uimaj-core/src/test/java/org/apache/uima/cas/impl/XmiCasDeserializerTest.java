@@ -61,9 +61,12 @@ import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeDescription;
@@ -112,12 +115,99 @@ public class XmiCasDeserializerTest extends TestCase {
             .getFsIndexes();
   }
   
+  
+  /**
+   * test case for https://issues.apache.org/jira/projects/UIMA/issues/UIMA-5558
+   * @throws Exception
+   */
+  public void testSerialize_with_0_length_array() throws Exception {
+    
+    TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+        new XMLInputSource(JUnitExtension.getFile("ExampleCas/testTypeSystem_small_withoutMultiRefs.xml")));
+    CAS cas = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
+    
+    TypeSystem ts = cas.getTypeSystem();
+    Type refType = ts.getType("RefType");  // super is Annotation
+    Feature ref = refType.getFeatureByBaseName("ref");
+    Feature ref_StringArray = refType.getFeatureByBaseName("ref_StringArray");
+    Feature ref_StringList = refType.getFeatureByBaseName("ref_StringList");
+    JCas jcas = cas.getJCas();
+    
+    String xml;
+    
+ // deserialize into another CAS
+    SAXParserFactory fact = SAXParserFactory.newInstance();
+    SAXParser parser = fact.newSAXParser();
+    XMLReader xmlReader = parser.getXMLReader();
+    
+    CAS cas2 = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
+    XmiCasDeserializer deser2;
+    ContentHandler deserHandler2;
+    
+    {  
+      StringArray stringArray = new StringArray(jcas, 0);
+      
+      
+      AnnotationFS fsRef = cas.createAnnotation(refType, 0, 0);
+      fsRef.setFeatureValue(ref_StringArray, stringArray);
+      cas.addFsToIndexes(fsRef);                    // gets serialized in=place
+            
+      xml = serialize(cas, null);
+      
+   // deserialize into another CAS
+      fact = SAXParserFactory.newInstance();
+      parser = fact.newSAXParser();
+      xmlReader = parser.getXMLReader();
+      
+      deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
+      deserHandler2 = deser2.getXmiCasHandler(cas2);
+      xmlReader.setContentHandler(deserHandler2);
+      xmlReader.parse(new InputSource(new StringReader(xml)));
+      
+      CasComparer.assertEquals(cas, cas2);
+      AnnotationFS fs2 = cas2.getAnnotationIndex(refType).iterator().get();
+      StringArrayFS fsa2 = (StringArrayFS) fs2.getFeatureValue(ref_StringArray);
+      assertEquals(0, fsa2.size());     
+     }
+    
+    // ------- repeat with lists in place of arrays --------------
+    
+    cas.reset();
+
+    StringList stringlist0 = new EmptyStringList(jcas);
+    
+//    fsarray.addToIndexes(); // if added to indexes, forces serialization of FSArray as an element
+    
+    AnnotationFS fsRef = cas.createAnnotation(refType, 0, 0);
+    fsRef.setFeatureValue(ref_StringList, stringlist0);
+    cas.addFsToIndexes(fsRef);                    // gets serialized in=place
+        
+    xml = serialize(cas, null);
+    
+ // deserialize into another CAS
+    parser = fact.newSAXParser();
+    xmlReader = parser.getXMLReader();
+    
+    cas2.reset();
+
+    deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
+    deserHandler2 = deser2.getXmiCasHandler(cas2);
+    xmlReader.setContentHandler(deserHandler2);
+    xmlReader.parse(new InputSource(new StringReader(xml)));
+    
+    CasComparer.assertEquals(cas, cas2);
+    AnnotationFS fs2 = cas2.getAnnotationIndex(refType).iterator().get();
+    FeatureStructure fsl2 = fs2.getFeatureValue(ref_StringList);
+    assertTrue(fsl2.getType().getShortName().equals("EmptyStringList"));
+    
+  }
+  
   /**
    * test case for https://issues.apache.org/jira/browse/UIMA-5532
    * @throws Exception
    */
   public void testSerialize_withPartialMultiRefs() throws Exception {
-   ;
+   
     TypeSystemDescription typeSystemDescription = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(JUnitExtension.getFile("ExampleCas/testTypeSystem_small_withMultiRefs.xml")));
     CAS cas = CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
@@ -129,7 +219,7 @@ public class XmiCasDeserializerTest extends TestCase {
     Feature ref_FSList = refType.getFeatureByBaseName("ref_FSList");
     JCas jcas = cas.getJCas();
     
-    String xml = serialize(cas, null);
+    String xml;  // = serialize(cas, null);
     
  // deserialize into another CAS
     SAXParserFactory fact = SAXParserFactory.newInstance();
@@ -176,7 +266,7 @@ public class XmiCasDeserializerTest extends TestCase {
     
     cas.reset();
 
-    TOP fs1 = new TOP(jcas);
+    TOP fs1 = new TOP(jcas); //https://issues.apache.org/jira/browse/UIMA-5544
     TOP fs2 = new TOP(jcas);
 
     FSList fslist2 = new EmptyFSList(jcas);
@@ -200,8 +290,8 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader = parser.getXMLReader();
     
     cas2.reset();
-    fs1 = new TOP(jcas);  //https://issues.apache.org/jira/browse/UIMA-5544
-    fs2 = new TOP(jcas);
+//    fs1 = new TOP(jcas);  //https://issues.apache.org/jira/browse/UIMA-5544
+//    fs2 = new TOP(jcas);
     deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     deserHandler2 = deser2.getXmiCasHandler(cas2);
     xmlReader.setContentHandler(deserHandler2);
