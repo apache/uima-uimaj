@@ -254,7 +254,7 @@ public class Misc {
       addPathToURLs(urls, pf);
     } else {
       // have a segment which does not denote a jar - skip it but note that 
-      UIMAFramework.getLogger().warn("Skipping adding \"{0}\" to URLs", p);
+      UIMAFramework.getLogger().warn("Skipping adding \"{}\" to URLs", p);
     }
   }
   
