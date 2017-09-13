@@ -41,24 +41,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.SpringLayout;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -112,7 +98,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
   private File styleMapFile;
 
-  JList analyzedResultsList;
+  JList<String> analyzedResultsList;
 
   String inputDirPath = null;
 
@@ -173,6 +159,19 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
             tempDir);
   }
 
+  private void resetFiles(String filenameFilter) {
+    File dir = new File(inputDirPath);
+    // Select documents via filter. JMP
+    final InteractiveFilter iFilter = new InteractiveFilter(filenameFilter);
+    String[] documents = dir.list(iFilter);
+    //create an empty array to display
+    if(documents == null) {
+      documents = new String[] {};
+    }
+
+    analyzedResultsList.setListData(documents);
+  }
+
   public AnnotationViewerDialog(JFrame aParentFrame, String aDialogTitle, PrefsMediator med,
           File aStyleMapFile, String aPerformanceStats, TypeSystem aTypeSystem,
           final String[] aTypesToDisplay, boolean generatedStyleMap, CAS cas) {
@@ -199,15 +198,9 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
     // create an jlist to list the the analyzed documents
     inputDirPath = med.getOutputDir();
-    File dir = new File(inputDirPath);
-    // Select documents via filter. JMP
-    FilenameFilter iFilter = new InteractiveFilter();
-    String[] documents = dir.list(iFilter);
-    //create an empty array to display
-    if(documents == null) {
-       documents = new String[] {};
-    }
-    analyzedResultsList = new JList(documents);
+    analyzedResultsList = new JList<>();
+    resetFiles("");
+
     /*
      * File[] documents = dir.listFiles(); Vector docVector = new Vector(); for (int i = 0; i <
      * documents.length; i++) { if (documents[i].isFile()) { docVector.add(documents[i].getName()); } }
@@ -218,6 +211,30 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
 
     JPanel southernPanel = new JPanel();
     southernPanel.setLayout(new BoxLayout(southernPanel, BoxLayout.Y_AXIS));
+
+    JPanel filterPanel = new JPanel();
+    filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+    filterPanel.add(new JLabel("Filter: Filename contains "));
+    final JTextField filenameFilter = new JTextField();
+    filenameFilter.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        resetFiles(filenameFilter.getText());
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent e) {
+        resetFiles(filenameFilter.getText());
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        resetFiles(filenameFilter.getText());
+      }
+    });
+    filterPanel.add(filenameFilter);
+    filterPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
+    southernPanel.add(filterPanel);
 
     JPanel controlsPanel = new JPanel();
     controlsPanel.setLayout(new SpringLayout());
@@ -362,11 +379,19 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
    * Filter to not show the two interactive-mode directories in the file list
    */
   static class InteractiveFilter implements FilenameFilter {
+    private final String filenameFilter;
+
+    public InteractiveFilter(String filenameFilter) {
+      this.filenameFilter = filenameFilter;
+    }
+
     public boolean accept(File dir, String name) {
       if (name.equals("interactive_temp"))
         return false;
       if (name.equals("interactive_out"))
         return false;
+      if (!name.isEmpty())
+        return name.contains(filenameFilter);
       return true;
     }
   }
