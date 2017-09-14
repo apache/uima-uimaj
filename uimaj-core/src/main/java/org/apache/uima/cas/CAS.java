@@ -27,6 +27,7 @@ import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.SelectFSs_impl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.JCas;
@@ -36,6 +37,7 @@ import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
 import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
@@ -43,6 +45,7 @@ import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
 
 /**
@@ -628,7 +631,7 @@ public interface CAS extends AbstractCas {
    * @return the JCasImpl view for this CAS view
    */
   default JCasImpl getJCasImpl() {
-    return ((CASImpl) this).getJCasImpl();
+    return ((CASImpl)this.getLowLevelCAS()).getJCasImpl();
   }
   
   /**
@@ -798,7 +801,7 @@ public interface CAS extends AbstractCas {
    */
   default <T extends AnnotationFS> AnnotationIndex<T> getAnnotationIndex(Class<T> clazz) 
       throws CASRuntimeException {
-    return getAnnotationIndex(this.getJCasImpl().getCasType(clazz));
+    return getAnnotationIndex(getCasType((Class) clazz));
   }
   
   /**
@@ -1185,6 +1188,11 @@ public interface CAS extends AbstractCas {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
   }
   
+  default <T extends TOP> EmptyList getEmptyList(Class<T> clazz) {
+    return ((CASImpl)this.getLowLevelCAS()).getEmptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
+  }
+  
+  
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
@@ -1212,6 +1220,10 @@ public interface CAS extends AbstractCas {
   default EmptyStringList getEmptyStringList() {
     return ((CASImpl)getLowLevelCAS()).getEmptyStringList();
   };
+  
+  default <T extends TOP> CommonArrayFS getEmptyArray(Class<T> clazz) {
+    return ((CASImpl)getLowLevelCAS()).getEmptyArray(getCasType(clazz));
+  }
   
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
@@ -1275,5 +1287,14 @@ public interface CAS extends AbstractCas {
   default BooleanArray getEmptyBooleanArray() {
     return ((CASImpl)getLowLevelCAS()).getEmptyBooleanArray();
   };
+  
+  /**
+   * @param clazz - a JCas class
+   * @param <T> the type of the JCas class
+   * @return the corresponding Type, for this CAS
+   */
+  default <T extends TOP> Type getCasType(Class<T> clazz) {
+    return this.getJCasImpl().getCasType(clazz);
+  }
   
 }
