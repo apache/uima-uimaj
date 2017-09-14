@@ -113,8 +113,13 @@ public class I18nUtil {
         aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
       }
       // locate the resource bundle for this exception's messages
-      ResourceBundle bundle =  ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
-      String message = bundle.getString(aMessageKey);
+      String message;
+      if (aResourceBundleName == null) {
+        message = "Null ResourceBundle, key = \"" + aMessageKey + "\"";
+      } else {
+        ResourceBundle bundle =  ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
+        message = bundle.getString(aMessageKey);
+      }
       // if arguments exist, use MessageFormat to include them
       if (aArguments != null && aArguments.length > 0) {
         MessageFormat fmt = new MessageFormat(message);
