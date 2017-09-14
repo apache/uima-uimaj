@@ -185,7 +185,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param level -
    * @return true if not limited
    */
-  private boolean isOK(Level level) {
+  private boolean isNotLimited(Level level) {
     if (!isLimited) {
       return true;
     }
@@ -233,7 +233,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   @Deprecated
   public void log(String aMessage) {
-    if (isLoggable(Level.INFO) && !isEmpty(aMessage) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && !isEmpty(aMessage) && isNotLimited(Level.INFO)) {
       log(fqcnCmn, Level.INFO, aMessage, null);
     }
   }
@@ -248,7 +248,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   @Deprecated
   public void log(String aResourceBundleName, String aMessageKey, Object[] aArguments) {
-    if (isLoggable(Level.INFO) && !isEmpty(aMessageKey) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && !isEmpty(aMessageKey) && isNotLimited(Level.INFO)) {
       log(fqcnCmn, Level.INFO, rb(aResourceBundleName, aMessageKey, aArguments), null);
     }
   }
@@ -264,7 +264,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   @Deprecated
   public void logException(Exception aException) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO) && aException != null) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO) && aException != null) {
       log(fqcnCmn, Level.INFO, EXCEPTION_MESSAGE, aException);
     }
   }
@@ -276,7 +276,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage) {
-    if (isLoggable(level) && !isEmpty(aMessage) && isOK(level)) {
+    if (isLoggable(level) && !isEmpty(aMessage) && isNotLimited(level)) {
       log(fqcnCmn, level, aMessage, null);
     }
   }
@@ -289,7 +289,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage, Object param1) {
-    if (isLoggable(level) && !isEmpty(aMessage) && isOK(level)) {
+    if (isLoggable(level) && !isEmpty(aMessage) && isNotLimited(level)) {
       log(fqcnCmn, level, MessageFormat.format(aMessage, new Object[] { param1 }), null);
     }
   }
@@ -302,7 +302,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage, Object[] params) {
-    if (isLoggable(level) && !isEmpty(aMessage) && isOK(level)) {
+    if (isLoggable(level) && !isEmpty(aMessage) && isNotLimited(level)) {
       log(fqcnCmn, level, MessageFormat.format(aMessage, params), null);
     }
   }
@@ -315,7 +315,7 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(Level level, String aMessage, Throwable thrown) {
-    if (isLoggable(level) && isOK(level)) {
+    if (isLoggable(level) && isNotLimited(level)) {
       log(fqcnCmn, 
           level,
           (aMessage != null && !aMessage.equals(""))
@@ -334,7 +334,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object param1) {
-    if (isLoggable(level) && !isEmpty(msgKey) && isOK(level)) {
+    if (isLoggable(level) && !isEmpty(msgKey) && isNotLimited(level)) {
       log(fqcnCmn, level, rb(bundleName, msgKey, param1), null);
     }
   }
@@ -348,7 +348,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Object[] params) {
-    if (isLoggable(level) && !isEmpty(msgKey) && isOK(level)) {
+    if (isLoggable(level) && !isEmpty(msgKey) && isNotLimited(level)) {
       log(fqcnCmn, level, rb(bundleName, msgKey, params), null);
     }
   }
@@ -362,7 +362,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey, Throwable thrown) {
-    if (isLoggable(level) && isOK(level)) {
+    if (isLoggable(level) && isNotLimited(level)) {
       if (thrown == null && isEmpty(msgKey)) {
         return;
       }
@@ -384,7 +384,7 @@ public abstract class Logger_common_impl implements Logger {
   @Override
   public void logrb(Level level, String sourceClass, String sourceMethod, String bundleName,
           String msgKey) {
-    if (isLoggable(level) && !isEmpty(msgKey) && isOK(level)) {
+    if (isLoggable(level) && !isEmpty(msgKey) && isNotLimited(level)) {
       log(fqcnCmn, level, rb(bundleName, msgKey), null);
     }
   }
@@ -447,71 +447,71 @@ public abstract class Logger_common_impl implements Logger {
   
   @Override
   public void debug(String arg0) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
       log2(null, fqcnCmn, Level.DEBUG, arg0, null, null);
     }
   }
 
   @Override
   public void debug(String arg0, Object arg1) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) { 
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) { 
       log2(null, fqcnCmn, Level.DEBUG, arg0, new Object[] {arg1}, null);
     }
   }
 
   @Override
   public void debug(String arg0, Object... arg1) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) { 
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) { 
       log2(null, fqcnCmn, Level.DEBUG, arg0, arg1, null);
     }
   }
 
   @Override
   public void debug(String arg0, Throwable arg1) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) { 
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) { 
       log2(null, fqcnCmn, Level.DEBUG, arg0, null, arg1);
     }
   }
 
   @Override
   public void debug(Marker arg0, String arg1) {
-    if (isLoggable(Level.DEBUG, arg0) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG, arg0) && isNotLimited(Level.DEBUG)) {
       log2(arg0, fqcnCmn, Level.DEBUG, arg1, null, null);
     }
   }
 
   @Override
   public void debug(String arg0, Object arg1, Object arg2) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
       log2(null, fqcnCmn, Level.DEBUG, arg0, new Object[] {arg1}, null);
     }
   }
 
   @Override
   public void debug(Marker arg0, String arg1, Object arg2) {
-    if (isLoggable(Level.DEBUG, arg0) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG, arg0) && isNotLimited(Level.DEBUG)) {
       log2(arg0, fqcnCmn, Level.DEBUG, arg1, new Object[] {arg2}, null);
     }
   }
 
   @Override
   public void debug(Marker arg0, String arg1, Object... arg2) {
-    if (isLoggable(Level.DEBUG, arg0) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG, arg0) && isNotLimited(Level.DEBUG)) {
       log2(arg0, fqcnCmn, Level.DEBUG, arg1, arg2, null);
     }
   }
 
   @Override
   public void debug(Marker arg0, String arg1, Throwable arg2) {
-    if (isLoggable(Level.DEBUG, arg0) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG, arg0) && isNotLimited(Level.DEBUG)) {
       log2(arg0, fqcnCmn, Level.DEBUG, arg1, null, arg2);
     }
   }
 
   @Override
   public void debug(Marker arg0, String arg1, Object arg2, Object arg3) {
-    if (isLoggable(Level.DEBUG, arg0) && isOK(Level.DEBUG)) {
-      log2(arg0, fqcnCmn, Level.DEBUG, arg1, new Object[] {arg2}, null);
+    if (isLoggable(Level.DEBUG, arg0) && isNotLimited(Level.DEBUG)) {
+      log2(arg0, fqcnCmn, Level.DEBUG, arg1, new Object[] {arg2, arg3}, null);
     }
   }
 
@@ -521,7 +521,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param msgSupplier A function, which when called, produces the desired log message
    */
   public void debug(Supplier<String> msgSupplier) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
       log2(null, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, null);
     }   
   }
@@ -531,7 +531,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param throwable the exception to log
    */
   public void debug(Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.DEBUG) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG) && isNotLimited(Level.DEBUG)) {
       log2(null, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, throwable);
     }   
   }
@@ -542,7 +542,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
    */
   public void debug(Marker marker, String message, Supplier<?>... paramSuppliers) {
-    if (isLoggable(Level.DEBUG, marker) && isOK(Level.DEBUG)) {
+    if (isLoggable(Level.DEBUG, marker) && isNotLimited(Level.DEBUG)) {
       log2(marker, fqcnCmn, Level.DEBUG, message, suppliersToArray(paramSuppliers), null);
     }  
   }
@@ -552,7 +552,7 @@ public abstract class Logger_common_impl implements Logger {
   * @param msgSupplier A function, which when called, produces the desired log message
   */
  public void debug(Marker marker, Supplier<String> msgSupplier) {
-   if (isLoggable(Level.DEBUG, marker) && isOK(Level.DEBUG)) {
+   if (isLoggable(Level.DEBUG, marker) && isNotLimited(Level.DEBUG)) {
      log2(marker, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, null);
    }   
  }
@@ -562,7 +562,7 @@ public abstract class Logger_common_impl implements Logger {
   * @param msgSupplier A function, which when called, produces the desired log message
   */
  public void debug(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-   if (isLoggable(Level.DEBUG, marker) && isOK(Level.DEBUG)) {
+   if (isLoggable(Level.DEBUG, marker) && isNotLimited(Level.DEBUG)) {
      log2(marker, fqcnCmn, Level.DEBUG, msgSupplier.get(), null, throwable);
    }   
  }
@@ -571,71 +571,71 @@ public abstract class Logger_common_impl implements Logger {
            
   @Override
   public void error(String arg0) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
       log2(null, fqcnCmn, Level.ERROR, arg0, null, null);
     }
   }
 
   @Override
   public void error(String arg0, Object arg1) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) { 
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) { 
       log2(null, fqcnCmn, Level.ERROR, arg0, new Object[] {arg1}, null);
     }
   }
 
   @Override
   public void error(String arg0, Object... arg1) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) { 
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) { 
       log2(null, fqcnCmn, Level.ERROR, arg0, arg1, null);
     }
   }
 
   @Override
   public void error(String arg0, Throwable arg1) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) { 
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) { 
       log2(null, fqcnCmn, Level.ERROR, arg0, null, arg1);
     }
   }
 
   @Override
   public void error(Marker arg0, String arg1) {
-    if (isLoggable(Level.ERROR, arg0) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, arg0) && isNotLimited(Level.ERROR)) {
       log2(arg0, fqcnCmn, Level.ERROR, arg1, null, null);
     }
   }
 
   @Override
   public void error(String arg0, Object arg1, Object arg2) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
       log2(null, fqcnCmn, Level.ERROR, arg0, new Object[] {arg1}, null);
     }
   }
 
   @Override
   public void error(Marker arg0, String arg1, Object arg2) {
-    if (isLoggable(Level.ERROR, arg0) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, arg0) && isNotLimited(Level.ERROR)) {
       log2(arg0, fqcnCmn, Level.ERROR, arg1, new Object[] {arg2}, null);
     }
   }
 
   @Override
   public void error(Marker arg0, String arg1, Object... arg2) {
-    if (isLoggable(Level.ERROR, arg0) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, arg0) && isNotLimited(Level.ERROR)) {
       log2(arg0, fqcnCmn, Level.ERROR, arg1, arg2, null);
     }
   }
 
   @Override
   public void error(Marker arg0, String arg1, Throwable arg2) {
-    if (isLoggable(Level.ERROR, arg0) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, arg0) && isNotLimited(Level.ERROR)) {
       log2(arg0, fqcnCmn, Level.ERROR, arg1, null, arg2);
     }
   }
 
   @Override
   public void error(Marker arg0, String arg1, Object arg2, Object arg3) {
-    if (isLoggable(Level.ERROR, arg0) && isOK(Level.ERROR)) {
-      log2(arg0, fqcnCmn, Level.ERROR, arg1, new Object[] {arg2}, null);
+    if (isLoggable(Level.ERROR, arg0) && isNotLimited(Level.ERROR)) {
+      log2(arg0, fqcnCmn, Level.ERROR, arg1, new Object[] {arg2, arg3}, null);
     }
   }
 
@@ -645,7 +645,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param msgSupplier A function, which when called, produces the desired log message
    */
   public void error(Supplier<String> msgSupplier) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
       log2(null, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
     }   
   }
@@ -655,7 +655,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param throwable the exception to log
    */
   public void error(Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.ERROR) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR) && isNotLimited(Level.ERROR)) {
       log2(null, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
     }   
   }
@@ -666,7 +666,7 @@ public abstract class Logger_common_impl implements Logger {
    * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
    */
   public void error(Marker marker, String message, Supplier<?>... paramSuppliers) {
-    if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, marker) && isNotLimited(Level.ERROR)) {
       log2(marker, fqcnCmn, Level.ERROR, message, suppliersToArray(paramSuppliers), null);
     }  
   }
@@ -676,7 +676,7 @@ public abstract class Logger_common_impl implements Logger {
   * @param msgSupplier A function, which when called, produces the desired log message
   */
   public void error(Marker marker, Supplier<String> msgSupplier) {
-    if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, marker) && isNotLimited(Level.ERROR)) {
       log2(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, null);
     }
   }
@@ -688,7 +688,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void error(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.ERROR, marker) && isOK(Level.ERROR)) {
+    if (isLoggable(Level.ERROR, marker) && isNotLimited(Level.ERROR)) {
       log2(marker, fqcnCmn, Level.ERROR, msgSupplier.get(), null, throwable);
     }
   }
@@ -697,71 +697,71 @@ public abstract class Logger_common_impl implements Logger {
 
   @Override
   public void info(String arg0) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, arg0, null, null);
     }
   }
 
   @Override
   public void info(String arg0, Object arg1) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, arg0, new Object[] { arg1 }, null);
     }
   }
 
   @Override
   public void info(String arg0, Object... arg1) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, arg0, arg1, null);
     }
   }
 
   @Override
   public void info(String arg0, Throwable arg1) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, arg0, null, arg1);
     }
   }
 
   @Override
   public void info(Marker arg0, String arg1) {
-    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, arg0) && isNotLimited(Level.INFO)) {
       log2(arg0, fqcnCmn, Level.INFO, arg1, null, null);
     }
   }
 
   @Override
   public void info(String arg0, Object arg1, Object arg2) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, arg0, new Object[] { arg1 }, null);
     }
   }
 
   @Override
   public void info(Marker arg0, String arg1, Object arg2) {
-    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, arg0) && isNotLimited(Level.INFO)) {
       log2(arg0, fqcnCmn, Level.INFO, arg1, new Object[] { arg2 }, null);
     }
   }
 
   @Override
   public void info(Marker arg0, String arg1, Object... arg2) {
-    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, arg0) && isNotLimited(Level.INFO)) {
       log2(arg0, fqcnCmn, Level.INFO, arg1, arg2, null);
     }
   }
 
   @Override
   public void info(Marker arg0, String arg1, Throwable arg2) {
-    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, arg0) && isNotLimited(Level.INFO)) {
       log2(arg0, fqcnCmn, Level.INFO, arg1, null, arg2);
     }
   }
 
   @Override
   public void info(Marker arg0, String arg1, Object arg2, Object arg3) {
-    if (isLoggable(Level.INFO, arg0) && isOK(Level.INFO)) {
-      log2(arg0, fqcnCmn, Level.INFO, arg1, new Object[] { arg2 }, null);
+    if (isLoggable(Level.INFO, arg0) && isNotLimited(Level.INFO)) {
+      log2(arg0, fqcnCmn, Level.INFO, arg1, new Object[] { arg2, arg3 }, null);
     }
   }
 
@@ -772,7 +772,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void info(Supplier<String> msgSupplier) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
     }
   }
@@ -784,7 +784,7 @@ public abstract class Logger_common_impl implements Logger {
    *          the exception to log
    */
   public void info(Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.INFO) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO) && isNotLimited(Level.INFO)) {
       log2(null, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
     }
   }
@@ -799,7 +799,7 @@ public abstract class Logger_common_impl implements Logger {
    *          message parameters.
    */
   public void info(Marker marker, String message, Supplier<?>... paramSuppliers) {
-    if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, marker) && isNotLimited(Level.INFO)) {
       log2(marker, fqcnCmn, Level.INFO, message, suppliersToArray(paramSuppliers), null);
     }
   }
@@ -811,7 +811,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void info(Marker marker, Supplier<String> msgSupplier) {
-    if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, marker) && isNotLimited(Level.INFO)) {
       log2(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, null);
     }
   }
@@ -823,7 +823,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void info(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.INFO, marker) && isOK(Level.INFO)) {
+    if (isLoggable(Level.INFO, marker) && isNotLimited(Level.INFO)) {
       log2(marker, fqcnCmn, Level.INFO, msgSupplier.get(), null, throwable);
     }
   }
@@ -832,71 +832,71 @@ public abstract class Logger_common_impl implements Logger {
 
   @Override
   public void trace(String arg0) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, arg0, null, null);
     }
   }
 
   @Override
   public void trace(String arg0, Object arg1) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, arg0, new Object[] { arg1 }, null);
     }
   }
 
   @Override
   public void trace(String arg0, Object... arg1) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, arg0, arg1, null);
     }
   }
 
   @Override
   public void trace(String arg0, Throwable arg1) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, arg0, null, arg1);
     }
   }
 
   @Override
   public void trace(Marker arg0, String arg1) {
-    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, arg0) && isNotLimited(Level.TRACE)) {
       log2(arg0, fqcnCmn, Level.TRACE, arg1, null, null);
     }
   }
 
   @Override
   public void trace(String arg0, Object arg1, Object arg2) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, arg0, new Object[] { arg1 }, null);
     }
   }
 
   @Override
   public void trace(Marker arg0, String arg1, Object arg2) {
-    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, arg0) && isNotLimited(Level.TRACE)) {
       log2(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] { arg2 }, null);
     }
   }
 
   @Override
   public void trace(Marker arg0, String arg1, Object... arg2) {
-    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, arg0) && isNotLimited(Level.TRACE)) {
       log2(arg0, fqcnCmn, Level.TRACE, arg1, arg2, null);
     }
   }
 
   @Override
   public void trace(Marker arg0, String arg1, Throwable arg2) {
-    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, arg0) && isNotLimited(Level.TRACE)) {
       log2(arg0, fqcnCmn, Level.TRACE, arg1, null, arg2);
     }
   }
 
   @Override
   public void trace(Marker arg0, String arg1, Object arg2, Object arg3) {
-    if (isLoggable(Level.TRACE, arg0) && isOK(Level.TRACE)) {
-      log2(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] { arg2 }, null);
+    if (isLoggable(Level.TRACE, arg0) && isNotLimited(Level.TRACE)) {
+      log2(arg0, fqcnCmn, Level.TRACE, arg1, new Object[] { arg2, arg3 }, null);
     }
   }
 
@@ -907,7 +907,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void trace(Supplier<String> msgSupplier) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
     }
   }
@@ -919,7 +919,7 @@ public abstract class Logger_common_impl implements Logger {
    *          the exception to log
    */
   public void trace(Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.TRACE) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE) && isNotLimited(Level.TRACE)) {
       log2(null, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
     }
   }
@@ -934,7 +934,7 @@ public abstract class Logger_common_impl implements Logger {
    *          message parameters.
    */
   public void trace(Marker marker, String message, Supplier<?>... paramSuppliers) {
-    if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, marker) && isNotLimited(Level.TRACE)) {
       log2(marker, fqcnCmn, Level.TRACE, message, suppliersToArray(paramSuppliers), null);
     }
   }
@@ -946,7 +946,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void trace(Marker marker, Supplier<String> msgSupplier) {
-    if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, marker) && isNotLimited(Level.TRACE)) {
       log2(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, null);
     }
   }
@@ -958,7 +958,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void trace(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.TRACE, marker) && isOK(Level.TRACE)) {
+    if (isLoggable(Level.TRACE, marker) && isNotLimited(Level.TRACE)) {
       log2(marker, fqcnCmn, Level.TRACE, msgSupplier.get(), null, throwable);
     }
   }
@@ -966,71 +966,71 @@ public abstract class Logger_common_impl implements Logger {
   // ---------------------- WARN
   @Override
   public void warn(String arg0) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, arg0, null, null);
     }
   }
 
   @Override
   public void warn(String arg0, Object arg1) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, arg0, new Object[] { arg1 }, null);
     }
   }
 
   @Override
   public void warn(String arg0, Object... arg1) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, arg0, arg1, null);
     }
   }
 
   @Override
   public void warn(String arg0, Throwable arg1) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, arg0, null, arg1);
     }
   }
 
   @Override
   public void warn(Marker arg0, String arg1) {
-    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, arg0) && isNotLimited(Level.WARNING)) {
       log2(arg0, fqcnCmn, Level.WARNING, arg1, null, null);
     }
   }
 
   @Override
   public void warn(String arg0, Object arg1, Object arg2) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, arg0, new Object[] { arg1 }, null);
     }
   }
 
   @Override
   public void warn(Marker arg0, String arg1, Object arg2) {
-    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, arg0) && isNotLimited(Level.WARNING)) {
       log2(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] { arg2 }, null);
     }
   }
 
   @Override
   public void warn(Marker arg0, String arg1, Object... arg2) {
-    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, arg0) && isNotLimited(Level.WARNING)) {
       log2(arg0, fqcnCmn, Level.WARNING, arg1, arg2, null);
     }
   }
 
   @Override
   public void warn(Marker arg0, String arg1, Throwable arg2) {
-    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, arg0) && isNotLimited(Level.WARNING)) {
       log2(arg0, fqcnCmn, Level.WARNING, arg1, null, arg2);
     }
   }
 
   @Override
   public void warn(Marker arg0, String arg1, Object arg2, Object arg3) {
-    if (isLoggable(Level.WARNING, arg0) && isOK(Level.WARNING)) {
-      log2(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] { arg2 }, null);
+    if (isLoggable(Level.WARNING, arg0) && isNotLimited(Level.WARNING)) {
+      log2(arg0, fqcnCmn, Level.WARNING, arg1, new Object[] { arg2, arg3 }, null);
     }
   }
 
@@ -1041,7 +1041,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void warn(Supplier<String> msgSupplier) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
     }
   }
@@ -1053,7 +1053,7 @@ public abstract class Logger_common_impl implements Logger {
    *          the exception to log
    */
   public void warn(Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.WARNING) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING) && isNotLimited(Level.WARNING)) {
       log2(null, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
     }
   }
@@ -1068,7 +1068,7 @@ public abstract class Logger_common_impl implements Logger {
    *          message parameters.
    */
   public void warn(Marker marker, String message, Supplier<?>... paramSuppliers) {
-    if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, marker) && isNotLimited(Level.WARNING)) {
       log2(marker, fqcnCmn, Level.WARNING, message, suppliersToArray(paramSuppliers), null);
     }
   }
@@ -1080,7 +1080,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void warn(Marker marker, Supplier<String> msgSupplier) {
-    if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, marker) && isNotLimited(Level.WARNING)) {
       log2(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, null);
     }
   }
@@ -1092,7 +1092,7 @@ public abstract class Logger_common_impl implements Logger {
    *          A function, which when called, produces the desired log message
    */
   public void warn(Marker marker, Supplier<String> msgSupplier, Throwable throwable) {
-    if (isLoggable(Level.WARNING, marker) && isOK(Level.WARNING)) {
+    if (isLoggable(Level.WARNING, marker) && isNotLimited(Level.WARNING)) {
       log2(marker, fqcnCmn, Level.WARNING, msgSupplier.get(), null, throwable);
     }
   }
