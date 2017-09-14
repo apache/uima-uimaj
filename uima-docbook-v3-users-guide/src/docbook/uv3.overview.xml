@@ -262,6 +262,16 @@ under the License.
         </listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term><emphasis role="strong">Programming convenience</emphasis></term>
+        <listitem>
+          <para>Many APIs have been made more consistent and better integrated; see the chapter on new and extended APIs.
+            Examples:  UIMA Indexes now implement Iterable, so you can use the Java "extended for" construct directly;
+            UIMA Lists have new push and pushNode methods to create and link a new node onto the front of a list;
+            there are new methods on the CAS and JCas to get a shared instance of common immutable objects, like
+            0-length arrays and empty lists.</para>
+        </listitem>
+      </varlistentry>
 	  </variablelist>
   </para>
   

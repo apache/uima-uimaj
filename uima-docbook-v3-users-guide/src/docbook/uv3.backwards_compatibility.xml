@@ -28,7 +28,7 @@ under the License.
   <titleabbrev>Backwards Compatibility</titleabbrev>
   
   <para>Because users have made substantial investment in developing
-  applications using the UIMA framework, a goal is to protect this investment, by enabling
+  applications using the UIMA framework, a goal of version 3 is to protect this investment, by enabling
   Annotators and applications developed under previous versions to be able to be used in 
   subsequent versions of the framework.</para>
   
@@ -45,14 +45,7 @@ under the License.
       sister classes for each main JCas class.  User code is unlikely to access these sister classes.
       The JCas API method to access this sister class now throws a UnsupportedOperation exception.
     </para>
-    
-    <para>
-      New internal-use methods and fields have been added to the JCas classes.  The 
-      names for these have been carefully designed to reduce the likelihood of collision with previously
-      existing user code names; the usual technique is to start the names with a leading underscore character.
-      Users should consider these methods as internal use and subject to change with new releases.
-    </para>
-    
+        
     <para>The non-JCas Java cover classes for the built-in UIMA types remain, for backwards compatibility.
       So, if you have code that casts a Feature Structure instance to AnnotationImpl (a now deprecated 
       version 2 non-JCas Java cover class), that will continue to work.  
@@ -119,7 +112,8 @@ under the License.
       (but without compile-time type safety checks) mode.  
       In Version 3, this mode is actually somewhat slower than the others, and no longer has any advantages.      
     </para>
-    <para>Using the low level CAS interface also sometimes blocks one of the new features of Version 3 - namely, automatic
+    <para>Using the low level CAS interface also sometimes blocks one of the new features of Version 3 - 
+    namely, automatic
     garbage collection of unreachable Feature Structures.  This is because creating a Feature Structure using the
     low level API creates the Java object for that Feature Structure, but returns an "int" handle to it.  
     In order to be able to find the Feature Structure, given that int handle, an entry is made in an internal map.
@@ -194,6 +188,15 @@ under the License.
     <para>This change was done to permit easier integration of UIMA as a library running within other frameworks.
     </para>
     
+    <para>V3 UIMA logger includes the APIs like info(..), warn(..) etc., that are part of the 
+      SLF4j APIs.  In addition, these are augmented with the Java 8 style lambda arguments that
+      were introduced in log4j-2, for more concise and efficient log message computation.</para>
+      
+    <para>The new UIMA Logger APIs (e.g. logger.info(...), logger.warn(...)) 
+      use the SLF4j and other modern logger substitutable notation of "{}", as opposed
+      to the style adopted by the original Java logger, of "{nnn}".  All modern loggers have switched to
+      this. </para>  
+      
     <para>The technique for (optionally) reporting the class and method (and sometimes, line number) 
     was changed to conform to current logger conventions - whereby the loggers themselves obtain this
     information from the call stack.  The V2 calls which pass in the sourceClass and sourceMethod information
@@ -205,7 +208,7 @@ under the License.
       For more details, please see the logging chapter.
     </para>
   </section>
-  
+    
   <section id="uv3.backwards_compatibility.typesystem_sharing">
     <title>Type System sharing</title>   
     

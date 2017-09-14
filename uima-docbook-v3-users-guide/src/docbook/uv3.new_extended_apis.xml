@@ -131,13 +131,10 @@ under the License.
     
     <para>For UIMA Lists and Arrays, the CAS and JCas has getEmptyXXXList/Array methods, which return
       a shared instance of the immutable empty object.
+      The Cas and JCas have generic getEmptyArray/List, taking an argument JCas class identifying the type, 
+      e.g.  FloatArray.class, StringList.class, etc.
     </para>
-    
-    <para>For lists, new static methods <code>getEmptyList(JCas jcas)</code> on each of the 4
-      kinds of built-in lists (FS, Integer, Float, and String) retrieve a 
-      shared, common instance of the EmptyXxxList for a CAS.
-    </para>
-    
+        
     <para>For lists, there are some new common APIs for all list kinds.
       <itemizedlist>
         <listitem>
@@ -325,6 +322,8 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     <para>The Type interface has new methods <code>subsumes(another_type), isStringOrStringSubtype()</code>, 
         and <code>isStringSubtype().</code></para>
 
+    <para>The FlowController_ImplBase supports a getLogger() API, which is shorthand for getContext().getLogger().</para>
+    
     <para>Many error messages were changed or added, causing changes to localization classes.
       For coding efficiency, some of the structure of the internal error reporting calls was changed
       to make use of Java's variable number of arguments syntax.</para>
