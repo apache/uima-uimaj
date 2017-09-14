@@ -308,7 +308,12 @@ public class Log4jLogger_impl extends Logger_common_impl {
    }  
 
    public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
-     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, args, thrown);
+     if (thrown != null) {
+       assert args == null;
+       logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, thrown);
+     } else {
+       logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, args);
+     }
    }  
    
 
