@@ -27,6 +27,7 @@ import org.apache.uima.cas.AbstractCas;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
+import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.ConstraintFactory;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
@@ -46,10 +47,12 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.LowLevelCAS;
 import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.SelectFSs_impl;
+import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -893,4 +896,19 @@ public interface JCas extends AbstractCas {
     return new SelectFSs_impl<>(getCasImpl()).type(fullyQualifiedTypeName);
   }
 
+  /**
+   * @param clazz the JCas class of the list, e.g. FloatList.class
+   * @return - the shared (in this CAS) instance of the empty list (immutable)
+   */
+  default <T extends TOP> EmptyList getEmptyList(Class<T> clazz) {
+    return this.getCasImpl().getEmptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
+  }
+
+  /**
+   * @param clazz the JCas class of the Array, e.g. FloatArray.class
+   * @return a shared (in this CAS) instance of the empty array (immutable)
+   */
+  default <T extends TOP> CommonArrayFS getEmptyArray(Class<T> clazz) {
+    return this.getCasImpl().getEmptyArray(getCasType(clazz));
+  }
 }
