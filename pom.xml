@@ -177,7 +177,7 @@
     <dependency>    <!-- apache v2 license  2016 checked -->
       <groupId>com.github.javaparser</groupId>
       <artifactId>javaparser-core</artifactId>
-      <version>3.1.1</version>
+      <version>3.2.2</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
