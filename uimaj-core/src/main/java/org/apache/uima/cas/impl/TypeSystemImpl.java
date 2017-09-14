@@ -2569,10 +2569,16 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public static synchronized int getAdjustedFeatureOffset(String featName) {
     TypeImpl type = typeBeingLoadedThreadLocal.get();
     if (null == type) {
-      /*A JCas class field "{0}" is being initialized by non-framework (user) code before Type System Commit 
-       * for a type system with a corresponding type. 
-       * Either change the user load code to not do initialize, or to defer it until after the type system commit.*/
-      throw new CASRuntimeException(CASRuntimeException.JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT, featName);
+      /*A JCas class is being loaded and initialized (by non-framework user code) before 
+       * the type system with the corresponding type has been set up and committed.
+       * This is not allowed in UIMA v3 because the static class initialization code needs access to
+       * the type system in order to bridge the JCas class definition to the 
+       * corresponding type system type.
+       * You can fix this by reordering your code to do the commit for the type system first, or 
+       * if you're using a form like Class.forName("myJCasClass"), you can use the alternative
+       * API which only loads (but doesn't run the initialization: 
+       * Class.forName("myJCasClass", false, this.getClass().getClassLoader()).*/
+      throw new CASRuntimeException(CASRuntimeException.JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT);
     }
     FeatureImpl fi = type.getFeatureByBaseName(featName);
     return (fi == null) ? -1 : fi.getAdjustedOffset();
