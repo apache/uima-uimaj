@@ -211,13 +211,17 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
      * true if one or more of the indexes is a set index
      */
     boolean hasSetIndex; 
-    String typename;
+    final String typename;
     /**
      * index of any sorted index or -1 if no sorted index
      */
     int aSortedIndex = -1;   // -1 or the position of an arbitrary sorted index
     int aBagIndex = -1;      // -1 or the position of an arbitrary bag index
     final ArrayList<FsIndex_iicp<TOP>> indexesForType = new ArrayList<>(0); 
+    
+    IndexesForType(TypeImpl ti) {
+      this.typename = ti.getName();
+    }
     
     <T extends TOP> FsIndex_iicp<T> getNonSetIndex() {
       if (aSortedIndex < 0 && aBagIndex < 0) { // index is empty!
@@ -227,7 +231,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     }
     
     void add(FsIndex_iicp<TOP> iicp) {
-      typename = iicp.fsIndex_singletype.getType().getName();
+      assert typename.equals(iicp.fsIndex_singletype.getType().getName());
       final int kind = iicp.fsIndex_singletype.getIndexingStrategy();
       int i = indexesForType.size();
       switch (kind) {
@@ -503,7 +507,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     final int numTypes = ts.getNumberOfTypes() + 1; // Type counting starts at 1.
     // Can't instantiate arrays of generic types, but this is ok for ArrayList.
     for (int i = 1; i < numTypes; i++) {
-      this.indexArray[i] = new IndexesForType();
+      this.indexArray[i] = new IndexesForType(ts.types.get(i));
     }
     
 //    Arrays.fill(detectIllegalIndexUpdates, Integer.MIN_VALUE);
