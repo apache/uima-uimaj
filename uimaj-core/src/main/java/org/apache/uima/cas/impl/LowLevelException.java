@@ -103,7 +103,7 @@ public class LowLevelException extends UIMARuntimeException {
 
 
   public LowLevelException(String aMessageKey, Object[] aArguments, Throwable aCause) {
-    super(aMessageKey, aArguments, aCause);
+    super(aCause, aMessageKey, aArguments);
   }
 
   /** @return The same as getMessage(), but prefixed with <code>"LowLevelException: "</code>. */

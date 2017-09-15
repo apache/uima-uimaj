@@ -333,7 +333,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 	}
 	
 	public CASRuntimeException(String aMessageKey, Object[] aArguments, Throwable aCause) {
-		super(aMessageKey, aArguments, aCause);
+		super(aCause, aMessageKey, aArguments);
 	}
 	
   public CASRuntimeException(Throwable aCause, String aMessageKey, Object ... aArguments) {
@@ -346,7 +346,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 
 	public CASRuntimeException(String aResourceBundleName, String aMessageKey, Object[] aArguments,
 			Throwable aCause) {
-		super(aResourceBundleName, aMessageKey, aArguments, aCause);
+		super(aCause, aResourceBundleName, aMessageKey, aArguments);
 	}
 
 	/**

@@ -105,8 +105,7 @@ public class CASAdminException extends UIMARuntimeException {
   private String resourceBundleName = DEFAULT_RESOURCE_BUNDLE_NAME;
     
   public CASAdminException(String aResourceBundleName, Throwable aCause, String aMessageKey, Object ... aArguments) {
-    super(aCause, aMessageKey, aArguments);
-    resourceBundleName = aResourceBundleName;
+    super(aCause, aResourceBundleName, aMessageKey, aArguments);
   }
 
   public CASAdminException(String aMessageKey, Object ... aArguments) {
