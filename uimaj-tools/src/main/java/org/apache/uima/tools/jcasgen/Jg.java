@@ -1562,10 +1562,15 @@ public class Jg {
   public ResourceManager createResourceManager() {
     ResourceManager resourceManager = UIMAFramework.newDefaultResourceManager();
 
-    try {
-      resourceManager.setExtensionClassPath(this.getClass().getClassLoader(), classPath, true);
-    } catch (MalformedURLException e1) {
-      error.newError(IError.ERROR, getString("Internal Error", null), e1);
+    if (classPath != null && classPath.trim().length() > 0) {
+      try {
+        resourceManager.setExtensionClassPath(this.getClass().getClassLoader(), classPath, true);
+      } catch (MalformedURLException e1) {
+        error.newError(IError.ERROR, getString("Internal Error", null), e1);
+      }
+    }
+    else {
+        resourceManager.setExtensionClassLoader(this.getClass().getClassLoader(), true);
     }
     return resourceManager;
   }
