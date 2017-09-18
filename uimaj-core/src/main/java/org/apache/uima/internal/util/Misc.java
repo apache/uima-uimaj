@@ -228,7 +228,7 @@ public class Misc {
     boolean mustBeDirectory = false;
     if (p.endsWith("*")) {
       if (p.length() < 2 || p.charAt(p.length() - 2) != File.separatorChar) {
-        UIMAFramework.getLogger().error("Path Specification \"{0}\" invalid.", p);
+        UIMAFramework.getLogger().error("Path Specification \"{}\" invalid.", p);
         throw new MalformedURLException();
       }
       p = p.substring(0, p.length() - 2);
@@ -248,7 +248,7 @@ public class Misc {
         }
       }
     } else if (mustBeDirectory) {
-      UIMAFramework.getLogger().error("Path Specification \"{0}\" must be a directory.", p);
+      UIMAFramework.getLogger().error("Path Specification \"{}\" must be a directory.", p);
       throw new MalformedURLException();
     } else if (p.toLowerCase().endsWith(".jar")) {
       addPathToURLs(urls, pf);
