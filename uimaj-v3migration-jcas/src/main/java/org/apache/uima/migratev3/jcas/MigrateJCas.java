@@ -1349,6 +1349,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
       try {
         cu = JavaParser.parse(sr);  
         
+        addImport("java.lang.invoke.CallSite");
+        addImport("java.lang.invoke.MethodHandle");
         addImport("org.apache.uima.cas.impl.CASImpl");
         addImport("org.apache.uima.cas.impl.TypeImpl");
         addImport("org.apache.uima.cas.impl.TypeSystemImpl");
