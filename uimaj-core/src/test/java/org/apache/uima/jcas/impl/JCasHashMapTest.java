@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.zip.DataFormatException;
 
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.MultiThreadUtils;
@@ -36,7 +37,8 @@ public class JCasHashMapTest extends TestCase {
   static final int SIZE = 20000;  // set > 2 million for cache avoidance timing tests
 
   static final Random r = new Random();
-  static final long SEED = r.nextLong(); 
+  static final long SEED = r.nextLong();
+//      -6419339010654937562L;  // causes skew
   // 12345;
   static {
     System.out.println("JCasHashMapTest load: set random seed to " + SEED);
@@ -44,9 +46,11 @@ public class JCasHashMapTest extends TestCase {
   }
   
   static private int[] addrs = new int[SIZE];
-  static int prev = 0;
   
-  static {  
+  static { createAddrs(); } 
+
+  private static void createAddrs() {
+    int prev = 0;
     // unique numbers
     for (int i = 0; i < SIZE; i++) { 
       addrs[i] = prev = prev + r.nextInt(14) + 1;
@@ -57,7 +61,7 @@ public class JCasHashMapTest extends TestCase {
       int temp = addrs[i];
       addrs[i] = addrs[ir];
       addrs[ir] = temp;
-    }
+    }    
   }
   
   private final AtomicBoolean okToProceed = new AtomicBoolean(); 
@@ -139,7 +143,7 @@ public class JCasHashMapTest extends TestCase {
 
   public void testMultiThreadCompare() throws Exception {
     final Random random = new Random();
-    random.setSeed(1234L);  // debug
+//    random.setSeed(1234L);  // debug
     int numberOfThreads = Misc.numberOfCores;    
     System.out.format("test JCasHashMap with compare with up to %d threads%n", numberOfThreads);
 
@@ -421,12 +425,11 @@ public class JCasHashMapTest extends TestCase {
 
   }
   
-  public void testGrowth() {
-    System.out.println("JCasHashMapTest growth");
-    for (int th = 2; th <= 128; th *= 2) {
+  private void innerTstGrowth() throws DataFormatException {
+    for (int th = 2; th <= 128; th *= 2) {  // 2 4 8 16   32 64 128 256
       JCasHashMap.setDEFAULT_CONCURRENCY_LEVEL(th);
       double loadfactor = .6;  // from JCasHashMap impl
-      int sub_capacity = 32;   // from JCasHashMap impl
+      final int sub_capacity = 32;   // from JCasHashMap impl
       int subs = th;
       int agg_capacity = subs * sub_capacity;
       JCasHashMap m = new JCasHashMap(agg_capacity); // true = do use cache 
@@ -434,7 +437,7 @@ public class JCasHashMapTest extends TestCase {
       assertEquals(agg_capacity, m.getCapacity());
        
       int switchpoint = (int)Math.floor(agg_capacity * loadfactor);
-      fill(switchpoint, m);
+      fill(switchpoint, m);      
       System.out.print("JCasHashMapTest: after fill to switch point: ");
       assertTrue(checkSubsCapacity(m, sub_capacity));
       System.out.print("JCasHashMapTest: after 1 past switch point:  ");
@@ -476,10 +479,26 @@ public class JCasHashMapTest extends TestCase {
 //      System.out.print("JCasHashMapTest: clear (size below 4th time: ");
 //      assertTrue(checkSubsCapacity(m, sub_capacity, sub_capacity));  // don't shrink below minimum
     }
+    
+  }
+  
+  public void testGrowth() {
+    System.out.println("JCasHashMapTest growth");
+    while (true) { // loop for skew retry
+      boolean skewOk = true;
+      try {  // catch for skew retry
+        innerTstGrowth();
+      } catch (DataFormatException e) {  // hijacked this exception to avoid making a custom one
+        skewOk = false;
+      }
+      if (skewOk) break;
+      System.out.println("\n*******************\nJCasHashMapTest growth excessive skew retry\n*******************\n");
+      createAddrs();  // do a new set, hope it has less skew
+    }
   }
 
   private boolean checkSubsCapacity(JCasHashMap m, int v) {
-    return checkSubsCapacity(m, v, v * 2);
+    return checkSubsCapacity(m, v, v * 2);  
   }
   
   // check: the subMaps should be mostly of size v, but some might be of size v*2.
@@ -494,6 +513,18 @@ public class JCasHashMapTest extends TestCase {
     }
     System.out.format("%s%n", intListPm(caps, v));
     return true;
+  }
+  
+  private boolean isSkewed(JCasHashMap m, int n) throws DataFormatException {
+    int[] subsizes = m.getSubSizes();
+    int limit = n / subsizes.length;  // for 128 entries, over 4 submaps, = 32 avg size
+    limit = limit * 2; // allow 4x
+    for (int i : subsizes) {
+      if (i >= limit) {
+        throw new DataFormatException();
+      }
+    }
+    return false;
   }
   
   private String intList(int[] a) {
@@ -520,7 +551,7 @@ public class JCasHashMapTest extends TestCase {
     return sb.toString();
   }
   
-  private void fill (int n, JCasHashMap m) {
+  private void fill (int n, JCasHashMap m) throws DataFormatException {
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
       m.putIfAbsent(key, k -> TOP._createSearchKey(k));
@@ -530,5 +561,7 @@ public class JCasHashMapTest extends TestCase {
 //      m.put(fs);
 //      System.out.format("JCasHashMapTest fill %s%n",  intList(m.getCapacities()));
     }
+    
+    isSkewed(m, n);  // throws if skewed to retry test from top
   }
 }
