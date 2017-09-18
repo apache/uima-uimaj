@@ -2638,6 +2638,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *   - has to be pairs of feature name, call-site, in order to get the value to set, later
    *   --  doesn't need to be a hashmap, can be an arraylist of entry
    *   Type being loaded may not be known at this point.
+   * @param clazz the JCas class
+   * @param featName the short name of the feature
    * @return the created callsite
    */
   public static MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {

@@ -645,9 +645,10 @@ public class Misc {
   }
 
   /**
-   * Get item from array list.  If index is > length, expande the array, and return null
+   * Get item from array list.  If index is &gt; length, expande the array, and return null
    * @param a the list
    * @param i the index
+   * @param <T> the type of the items in the list
    * @return the item at the index or null
    */
   public static <T> T getWithExpand(List<T> a, int i) {

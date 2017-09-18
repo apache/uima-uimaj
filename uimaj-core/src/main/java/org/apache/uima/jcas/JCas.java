@@ -898,6 +898,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * @param clazz the JCas class of the list, e.g. FloatList.class
+   * @param <T> the type of the list, e.g FloatList
    * @return - the shared (in this CAS) instance of the empty list (immutable)
    */
   default <T extends TOP> EmptyList getEmptyList(Class<T> clazz) {
@@ -906,6 +907,7 @@ public interface JCas extends AbstractCas {
 
   /**
    * @param clazz the JCas class of the Array, e.g. FloatArray.class
+   * @param <T> the type of the list, e.g FloatArray
    * @return a shared (in this CAS) instance of the empty array (immutable)
    */
   default <T extends TOP> CommonArrayFS getEmptyArray(Class<T> clazz) {
