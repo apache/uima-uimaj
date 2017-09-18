@@ -27,6 +27,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.MutableCallSite;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -124,6 +125,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   
   private static final MethodType fsGeneratorType      = methodType(TOP.class, TypeImpl.class, CASImpl.class);
 //  private static final MethodType fsGeneratorArrayType = methodType(TOP.class, TypeImpl.class, CASImpl.class, int.class); // NO LONGER USED
+  
+  private static final List<MethodHandle> methodHandlesForInt = new ArrayList<>(); 
 
   static private class ErrorReport {
     final Exception e;
@@ -137,7 +140,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   static private ThreadLocal<List<ErrorReport>> errorSet = new ThreadLocal<>();
  
   /**
-   * One instance per JCas Class per class loader
+   * Map (per class loader) from JCas Classes, to all callSites in that JCas class 
+   */
+  public static final Map<Class<? extends TOP>, ArrayList<Entry<String, MutableCallSite>>> callSites_all_JCasClasses = new HashMap<>();
+
+  /**
+   * One instance per UIMA Type per class loader
    * 
    * Created when potentially loading JCas classes.
    * 
@@ -153,7 +161,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     final FsGenerator3 generator;
    
     /**
-     * The corresponding loaded JCas Class
+     * The corresponding loaded JCas Class for this UIMA type, may be a JCas class associated with a UIMA supertype
+     *   if no JCas class is found for this type.
      */
     final Class<?> jcasClass;
     
@@ -187,12 +196,14 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 
   /**
    * Map from class loaders used to load JCas Classes, both PEAR and non-Pear cases, to JCasClassInfo for that loaded JCas class instance.
-   *   Key is JCas fully qualified name (not UIMA type name).
-   *   Is String, since different type systems may use the same JCas classes.
+   *   value is a map:
+   *     Key is JCas fully qualified name (not UIMA type name).
+   *       Is String, since different type systems may use the same JCas classes.
+   *     value is the JCasClassInfo for that class
    * Cache of FsGenerator[]s kept in TypeSystemImpl instance, since it depends on type codes.
    * Current FsGenerator[] kept in CASImpl shared view data, switched as needed for PEARs. 
    */
-  private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl2type2JCas = new IdentityHashMap<>();
+  private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = new IdentityHashMap<>();
     
   /**
    * precomputed generators for built-in types
@@ -200,6 +211,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * Key = index = typecode
    */
   private static final JCasClassInfo[] jcasClassesInfoForBuiltins;
+  private static final ArrayList<MutableCallSite> callSites_toSync = new ArrayList<>();
 
   static {
     TypeSystemImpl tsi = TypeSystemImpl.staticTsi;
@@ -208,11 +220,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         
     // walk in subsumption order, supertype before subtype
     // Class loader used for builtins is the UIMA framework's class loader
+    callSites_toSync.clear();
     loadBuiltins(tsi.topType, tsi.getClass().getClassLoader());
     
+    MutableCallSite[] sync = callSites_toSync.toArray(new MutableCallSite[callSites_toSync.size()]);
+    MutableCallSite.syncAll(sync);
+
     reportErrors();
   }
-  
+    
   private static void loadBuiltins(TypeImpl ti, ClassLoader cl) {
     String typeName = ti.getName();
     
@@ -242,14 +258,14 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   static void loadAtTypeSystemCommitTime(TypeSystemImpl ts, boolean isDoUserJCasLoading, ClassLoader cl) { 
 
     boolean alreadyLoaded = false;
-    Map<String, JCasClassInfo> t2jcci;
+    Map<String, JCasClassInfo> type_to_jcasClassInfo;
 
-    synchronized (cl2type2JCas) {
-      t2jcci = cl2type2JCas.get(cl);
+    synchronized (cl_to_type2JCas) {
+      type_to_jcasClassInfo = cl_to_type2JCas.get(cl);
     
-      if (null == t2jcci) {    
-        t2jcci = new HashMap<>();
-        cl2type2JCas.put(cl, t2jcci);
+      if (null == type_to_jcasClassInfo) {    
+        type_to_jcasClassInfo = new HashMap<>();
+        cl_to_type2JCas.put(cl, type_to_jcasClassInfo);
       } else {
         alreadyLoaded = true;
       }
@@ -263,14 +279,14 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     lookup = defaultLookup;
     for (int typecode = 1; typecode < jcasClassesInfoForBuiltins.length; typecode++) {
   
-      JCasClassInfo jcci = jcasClassesInfoForBuiltins[typecode];
-      if (jcci != null) {
-        Class<?> jcasClass = jcci.jcasClass;  
+      JCasClassInfo jcas_class_info = jcasClassesInfoForBuiltins[typecode];
+      if (jcas_class_info != null) {
+        Class<?> jcasClass = jcas_class_info.jcasClass;  
 
         if (!alreadyLoaded) {
-          t2jcci.put(jcasClass.getCanonicalName(), jcci);
+          type_to_jcasClassInfo.put(jcasClass.getCanonicalName(), jcas_class_info);
         }
-        setTypeFromJCasIDforBuiltIns(jcci, ts, typecode);
+        setTypeFromJCasIDforBuiltIns(jcas_class_info, ts, typecode);
       }
     }  
     
@@ -297,8 +313,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
       }
 
-      maybeLoadJCasAndSubtypes(ts, ts.topType, t2jcci.get(TOP.class.getCanonicalName()), cl, t2jcci);
-      checkConformance(ts, ts.topType, t2jcci);
+      callSites_toSync.clear();
+      maybeLoadJCasAndSubtypes(ts, ts.topType, type_to_jcasClassInfo.get(TOP.class.getCanonicalName()), cl, type_to_jcasClassInfo);
+      
+      MutableCallSite[] sync = callSites_toSync.toArray(new MutableCallSite[callSites_toSync.size()]);
+      MutableCallSite.syncAll(sync);
+  
+      checkConformance(ts, ts.topType, type_to_jcasClassInfo);
     }
         
     reportErrors();
@@ -440,9 +461,16 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     Class<?> clazz = null;
     String className = Misc.typeName2ClassName(ti.getName());
     
-    try {
+    try { 
       TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);
       clazz = Class.forName(className, true, cl);
+      ArrayList<Entry<String, MutableCallSite>> callsites = callSites_all_JCasClasses.get(clazz);
+      if (null != callsites) {
+        for (Entry<String, MutableCallSite> e : callsites) {
+          e.getValue().setTarget(getConstantIntMethodHandle(TypeSystemImpl.getAdjustedFeatureOffset(e.getKey())));
+          callSites_toSync.add(e.getValue());
+        }
+      }
     } catch (ClassNotFoundException e) {
       // This is normal, if there is no JCas for this class
     } finally {
@@ -450,7 +478,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
     return clazz;
   }
-        
+      
+  private static synchronized MethodHandle getConstantIntMethodHandle(int i) {
+    MethodHandle mh = Misc.getWithExpand(methodHandlesForInt, i);
+    if (mh == null) {
+      methodHandlesForInt.set(i, mh = MethodHandles.constant(int.class, i));
+    }
+    return mh;    
+  }
+  
   /**
    * Return a Functional Interface for a generator for creating instances of a type.
    *   Function takes a casImpl arg, and returning an instance of the JCas type.
@@ -738,7 +774,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
                    new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM, clazz.getName(), featName), 
                    false);  // don't throw on this error, field is set to -1 and will throw if trying to use it   
        } else {
-        int staticOffsetInClass = Misc.getStaticIntFieldNoInherit(clazz, fname);
+        int staticOffsetInClass = Misc.getPrivateStaticIntFieldNoInherit(clazz, fname);
         if (fi.getAdjustedOffset() != staticOffsetInClass) {
           /** In JCAS class "{0}", UIMA field "{1}" was set up when this class was previously loaded and initialized, to have
            * an adjusted offset of "{2}" but now the feature has a different adjusted offset of "{3}"; this may be due to 
@@ -809,14 +845,14 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @return the generators for that set, as an array indexed by type code
    */
   static FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear, TypeSystemImpl tsi) {
-    synchronized(cl2type2JCas) {
+    synchronized(cl_to_type2JCas) {
       // This is the first time this class loader is being used - load the classes for this type system, or
       // This is the first time this class loader is being used with this particular type system
       loadAtTypeSystemCommitTime(tsi, true, cl);      
 
       FsGenerator3[] r = new FsGenerator3[tsi.getTypeArraySize()];
                           
-      Map<String, JCasClassInfo> t2jcci = cl2type2JCas.get(cl);
+      Map<String, JCasClassInfo> t2jcci = cl_to_type2JCas.get(cl);
       // can't use values alone because many types have the same value (due to copy-down)
       for (Entry<String, JCasClassInfo> e : t2jcci.entrySet()) {
         TypeImpl ti = tsi.getType(Misc.javaClassName2UimaTypeName(e.getKey()));
