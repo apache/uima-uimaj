@@ -55,14 +55,16 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   
   private final static CallSite _FC_begin = TypeSystemImpl.createCallSite(Annotation.class, "begin");
   private final static MethodHandle _FH_begin = _FC_begin.dynamicInvoker();
-  
+  private final static CallSite _FC_end = TypeSystemImpl.createCallSite(Annotation.class, "end");
+  private final static MethodHandle _FH_end = _FC_end.dynamicInvoker();
+
 //  static {
 //    _FC_begin.setTarget(MethodHandles.constant(int.class, TypeSystemImpl.getAdjustedFeatureOffset("begin")));
 //  }
   
   
-  private final static int _FI_begin = TypeSystemImpl.getAdjustedFeatureOffset("begin");
-  private final static int _FI_end   = TypeSystemImpl.getAdjustedFeatureOffset("end");
+//  private final static int _FI_begin = TypeSystemImpl.getAdjustedFeatureOffset("begin");
+//  private final static int _FI_end   = TypeSystemImpl.getAdjustedFeatureOffset("end");
   
 //  /* local data */
 //  private int _F_begin;
@@ -112,14 +114,14 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * getter for end - gets ending of span of annotation
    */
   public final int getEnd() { 
-    return this._getIntValueNc(_FI_end);
+    return this._getIntValueNc(wrapGetIntCatchException(_FH_end));
   }
 
   /*
    * setter for end - sets ending of span of annotation
    */
   public final void setEnd(int v) {
-    this._setIntValueNfc(_FI_end,  v);
+    this._setIntValueNfc(wrapGetIntCatchException(_FH_end),  v);
   }
   
   /**
@@ -131,7 +133,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   public Annotation(JCas jcas, int begin, int end) {
     super(jcas); // forward to constructor
     this._setIntValueNcNj( wrapGetIntCatchException(_FH_begin), begin);
-    this._setIntValueNcNj(_FI_end, end);
+    this._setIntValueNcNj(wrapGetIntCatchException(_FH_end), end);
   }
 
   /**
@@ -163,10 +165,12 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @return -
    */
   public final int compareAnnotation(Annotation other) {
-    int result = Integer.compare(_getIntValueNc( wrapGetIntCatchException(_FH_begin)), other._getIntValueNc( wrapGetIntCatchException(_FH_begin)));
+    final int b = wrapGetIntCatchException(_FH_begin);
+    int result = Integer.compare(_getIntValueNc(b), other._getIntValueNc(b));
     if (result != 0) return result;
 
-    result = Integer.compare(_getIntValueNc(_FI_end), other._getIntValueNc(_FI_end));
+    final int e = wrapGetIntCatchException(_FH_end);
+    result = Integer.compare(_getIntValueNc(e), other._getIntValueNc(e));
     return (result == 0) ? 0 : -result;  // reverse compare
   }
   

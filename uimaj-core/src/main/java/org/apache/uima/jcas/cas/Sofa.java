@@ -20,6 +20,8 @@
 package org.apache.uima.jcas.cas;
 
 import java.io.InputStream;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -52,12 +54,26 @@ public class Sofa extends TOP implements SofaFSImpl {
   
   /* local data */
   // these static ints are for fast index corruption checking
-  public final static int _FI_sofaNum    = TypeSystemImpl.getAdjustedFeatureOffset("sofaNum");
-  public final static int _FI_sofaID     = TypeSystemImpl.getAdjustedFeatureOffset("sofaID");
-  public final static int _FI_mimeType   = TypeSystemImpl.getAdjustedFeatureOffset("mimeType");
-  public final static int _FI_sofaArray  = TypeSystemImpl.getAdjustedFeatureOffset("sofaArray");
-  public final static int _FI_sofaString = TypeSystemImpl.getAdjustedFeatureOffset("sofaString");
-  public final static int _FI_sofaURI    = TypeSystemImpl.getAdjustedFeatureOffset("sofaURI");
+//  public final static int _FI_sofaNum    = TypeSystemImpl.getAdjustedFeatureOffset("sofaNum");
+//  public final static int _FI_sofaID     = TypeSystemImpl.getAdjustedFeatureOffset("sofaID");
+//  public final static int _FI_mimeType   = TypeSystemImpl.getAdjustedFeatureOffset("mimeType");
+//  public final static int _FI_sofaArray  = TypeSystemImpl.getAdjustedFeatureOffset("sofaArray");
+//  public final static int _FI_sofaString = TypeSystemImpl.getAdjustedFeatureOffset("sofaString");
+//  public final static int _FI_sofaURI    = TypeSystemImpl.getAdjustedFeatureOffset("sofaURI");
+
+  private final static CallSite _FC_sofaNum = TypeSystemImpl.createCallSite(Sofa.class, "sofaNum");
+  private final static CallSite _FC_sofaID = TypeSystemImpl.createCallSite(Sofa.class, "sofaID");
+  private final static CallSite _FC_mimeType = TypeSystemImpl.createCallSite(Sofa.class, "mimeType");
+  private final static CallSite _FC_sofaArray = TypeSystemImpl.createCallSite(Sofa.class, "sofaArray");
+  private final static CallSite _FC_sofaString = TypeSystemImpl.createCallSite(Sofa.class, "sofaString");
+  private final static CallSite _FC_sofaURI = TypeSystemImpl.createCallSite(Sofa.class, "sofaURI");
+
+  private final static MethodHandle _FH_sofaNum = _FC_sofaNum.dynamicInvoker();
+  private final static MethodHandle _FH_sofaID = _FC_sofaID.dynamicInvoker();
+  private final static MethodHandle _FH_mimeType = _FC_mimeType.dynamicInvoker();
+  private final static MethodHandle _FH_sofaArray = _FC_sofaArray.dynamicInvoker();
+  private final static MethodHandle _FH_sofaString = _FC_sofaString.dynamicInvoker();
+  private final static MethodHandle _FH_sofaURI = _FC_sofaURI.dynamicInvoker();
   
 //  private final int _F_sofaNum;
 //  private final String _F_sofaID;  // view name or _InitialView
@@ -86,9 +102,9 @@ public class Sofa extends TOP implements SofaFSImpl {
   
   public Sofa(TypeImpl t, CASImpl c, int sofaNum, String viewName, String mimeType) {
     super(t, c);
-    _setIntValueNcNj(_FI_sofaNum, sofaNum);
-    _setRefValueCommon(_FI_sofaID, viewName);
-    _setRefValueCommon(_FI_mimeType, mimeType);
+    _setIntValueNcNj(wrapGetIntCatchException(_FH_sofaNum), sofaNum);
+    _setRefValueCommon(wrapGetIntCatchException(_FH_sofaID), viewName);
+    _setRefValueCommon(wrapGetIntCatchException(_FH_mimeType), mimeType);
 //    _F_sofaNum = sofaNum;
 //    _F_sofaID = viewName;
 //    _F_mimeType = mimeType;
@@ -123,7 +139,7 @@ public class Sofa extends TOP implements SofaFSImpl {
    * getter for sofaNum
    * @return the sofa number
    */
-	public int getSofaNum() { return _getIntValueNc(_FI_sofaNum); }
+	public int getSofaNum() { return _getIntValueNc(wrapGetIntCatchException(_FH_sofaNum)); }
 	
 	// *--------------*
 	// * Feature: sofaID
@@ -133,7 +149,7 @@ public class Sofa extends TOP implements SofaFSImpl {
    * @return the sofaID, which is the same as the view name
    */
 	@Override
-  public String getSofaID() { return _getStringValueNc(_FI_sofaID); }
+  public String getSofaID() { return _getStringValueNc(wrapGetIntCatchException(_FH_sofaID)); }
 
 	// *--------------*
 	// * Feature: mimeType
@@ -142,7 +158,7 @@ public class Sofa extends TOP implements SofaFSImpl {
    * getter for mimeType - gets
    * @return the mime type
    */
-	public String getMimeType() { return _getStringValueNc(_FI_mimeType); }
+	public String getMimeType() { return _getStringValueNc(wrapGetIntCatchException(_FH_mimeType)); }
 
 	/**
    * @see org.apache.uima.cas.SofaFS#setLocalSofaData(FeatureStructure) This method is duplicated in
@@ -152,7 +168,7 @@ public class Sofa extends TOP implements SofaFSImpl {
   @Override
   public void setLocalSofaData(FeatureStructure aFS) {   
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
-    _setFeatureValueNcWj(_FI_sofaArray, aFS);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_sofaArray), aFS);
   }
 
 	public void setLocalSofaData(FeatureStructure aFS, String mimeType) {
@@ -167,7 +183,7 @@ public class Sofa extends TOP implements SofaFSImpl {
   @Override
   public void setLocalSofaData(String aString) {
     if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
-    _setStringValueNcWj(_FI_sofaString, aString);
+    _setStringValueNcWj(wrapGetIntCatchException(_FH_sofaString), aString);
 
     // create or update the document annotation for this Sofa's view
     ((CASImpl)(_casView.getView(this))).updateDocumentAnnotation();
@@ -183,13 +199,13 @@ public class Sofa extends TOP implements SofaFSImpl {
    * returns an UIMA Array whose data represents the sofa
    */
 	@Override
-  public FeatureStructure getLocalFSData() { return _getFeatureValueNc(_FI_sofaArray); }
+  public FeatureStructure getLocalFSData() { return _getFeatureValueNc(wrapGetIntCatchException(_FH_sofaArray)); }
 
 	/**
    * @see org.apache.uima.cas.SofaFS#getLocalStringData() 
    */
 	@Override
-  public String getLocalStringData() { return _getStringValueNc(_FI_sofaString); }
+  public String getLocalStringData() { return _getStringValueNc(wrapGetIntCatchException(_FH_sofaString)); }
 
 	/**
    * @see org.apache.uima.cas.SofaFS#setRemoteSofaURI(String) This method is duplicated in
@@ -198,7 +214,7 @@ public class Sofa extends TOP implements SofaFSImpl {
   @Override
   public void setRemoteSofaURI(String aURI) {
     if (isSofaDataSet()) { throwAlreadySet("setRemoteSofaURI()"); }
-    _setStringValueNcWj(_FI_sofaURI, aURI);
+    _setStringValueNcWj(wrapGetIntCatchException(_FH_sofaURI), aURI);
   }
 	
 	public void setRemoteSofaURI(String aURI, String mimeType) {
@@ -213,14 +229,14 @@ public class Sofa extends TOP implements SofaFSImpl {
 	}
 	
   @Override
-  public String getSofaMime() { return _getStringValueNc(_FI_mimeType); }
+  public String getSofaMime() { return _getStringValueNc(wrapGetIntCatchException(_FH_mimeType)); }
 
   @Override
-  public String getSofaURI() { return _getStringValueNc(_FI_sofaURI); }
+  public String getSofaURI() { return _getStringValueNc(wrapGetIntCatchException(_FH_sofaURI)); }
 
   // ** Note: this gets the feature named "sofaNum"
   @Override
-  public int getSofaRef() { return _getIntValueNc(_FI_sofaNum); }
+  public int getSofaRef() { return _getIntValueNc(wrapGetIntCatchException(_FH_sofaNum)); }
 
   @Override
   public InputStream getSofaDataStream() {
@@ -233,9 +249,9 @@ public class Sofa extends TOP implements SofaFSImpl {
    *   - used in generic pretty printing routines
    * @return -
    */
-  public TOP getSofaArray() { return _getFeatureValueNc(_FI_sofaArray); }
+  public TOP getSofaArray() { return _getFeatureValueNc(wrapGetIntCatchException(_FH_sofaArray)); }
   
-  public String getSofaString() { return _getStringValueNc(_FI_sofaString); }
+  public String getSofaString() { return _getStringValueNc(wrapGetIntCatchException(_FH_sofaString)); }
     
 
 	// override setStringValue for SofaFS to prohibit setting in this manner!
@@ -259,5 +275,5 @@ public class Sofa extends TOP implements SofaFSImpl {
 	  throw new CASRuntimeException(CASRuntimeException.SOFADATA_ALREADY_SET, msg);
 	}
 
-	public void setMimeType(String v) { _setStringValueNcWj(_FI_mimeType, v); }
+	public void setMimeType(String v) { _setStringValueNcWj(wrapGetIntCatchException(_FH_mimeType), v); }
 }

@@ -19,6 +19,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.Feature;
@@ -68,7 +71,9 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   // private final static int _FI_sofa = JCasRegistry.registerFeature();  // only for journal-able or corruptable feature slots
   
   /* local data */
-  public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
+//  public final static int _FI_sofa = TypeSystemImpl.getAdjustedFeatureOffset("sofa");
+  private final static CallSite _FC_sofa = TypeSystemImpl.createCallSite(AnnotationBase.class, "sofa");
+  private final static MethodHandle _FH_sofa = _FC_sofa.dynamicInvoker();
   
 //  private final Sofa _F_sofa;
   
@@ -88,7 +93,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
     // no journaling, no index corruption checking
-    _setRefValueCommon(_FI_sofa, _casView.getSofaRef());
+    _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
   }
 
   /**
@@ -104,7 +109,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
       throw new CASRuntimeException(CASRuntimeException.DISALLOW_CREATE_ANNOTATION_IN_BASE_CAS, this.getClass().getName());
     }
     // no journaling, no index corruption checking
-    _setRefValueCommon(_FI_sofa, _casView.getSofaRef());
+    _setRefValueCommon(wrapGetIntCatchException(_FH_sofa), _casView.getSofaRef());
   }
 
   // *------------------*
@@ -113,7 +118,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
   /*
    * getter for sofa - gets Sofaref for annotation
    */
-  public Sofa getSofa() { return (Sofa) _getFeatureValueNc(_FI_sofa); }
+  public Sofa getSofa() { return (Sofa) _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa)); }
   
   // There is no setter for this
   //   The value is set and is fixed when this is created
@@ -129,7 +134,7 @@ public class AnnotationBase extends TOP implements AnnotationBaseImpl {
     if (fi.getCode() == TypeSystemConstants.annotBaseSofaFeatCode) {
       // trying to set the sofa - don't do this, but check if the value
       // is OK (note: may break backwards compatibility)  
-      if (v != _getFeatureValueNc(AnnotationBase._FI_sofa)) {
+      if (v != _getFeatureValueNc(wrapGetIntCatchException(_FH_sofa))) {
         throw new CASRuntimeException(CASRuntimeException.ILLEGAL_SOFAREF_MODIFICATION);
       }
     }

@@ -19,6 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -44,9 +46,17 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
     return typeIndexID;
   }
 
-  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
-  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
-
+  public static final String _FeatName_head = "head";
+  public static final String _FeatName_tail = "tail";
+  
+//  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+//  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
+  private final static CallSite _FC_head = TypeSystemImpl.createCallSite(NonEmptyFSList.class, "head");
+  private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
+  private final static CallSite _FC_tail = TypeSystemImpl.createCallSite(NonEmptyFSList.class, "tail");
+  private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
+  
+  
 //  /* local data */
 //  private TOP _F_head;
 //  private FSList _F_tail;
@@ -94,7 +104,7 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public TOP getHead() { return _getFeatureValueNc(_FI_head); }
+  public TOP getHead() { return _getFeatureValueNc(wrapGetIntCatchException(_FH_head)); }
 
   /* setter for head * */
   public void setHead(FeatureStructure v) {
@@ -103,14 +113,14 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
     }
-    _setFeatureValueNcWj(_FI_head, v); }
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_head), v); }
 
 //  public void _setHeadNcNj(TOP v) { _F_head = v; }
   
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FSList getTail() { return (FSList) _getFeatureValueNc(_FI_tail); }
+  public FSList getTail() { return (FSList) _getFeatureValueNc(wrapGetIntCatchException(_FH_tail)); }
 
   /* setter for tail * */
   public void setTail(FSList v) {
@@ -118,7 +128,7 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
-    _setFeatureValueNcWj(_FI_tail, v); }
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); }
    
   @Override
   public void setTail(CommonList v) {

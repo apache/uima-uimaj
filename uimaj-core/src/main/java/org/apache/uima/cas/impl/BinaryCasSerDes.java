@@ -572,10 +572,11 @@ public class BinaryCasSerDes {
             .deserialize(baseCas, dis, delta, h);
           return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
         } else {
+          // is form 6
           CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
           TypeSystemImpl tsRead = (cms != null) ? cms.getTypeSystem() : null;
           if (null != tsRead) {
-            tsRead = tsRead.commit();  // no generators set up
+            tsRead = tsRead.commit();  // jcas initialized, but no generators for this cas set up
           }
             
           TypeSystemImpl ts_for_decoding =

@@ -21,8 +21,9 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Array;
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,9 +41,6 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-import org.apache.uima.jcas.cas.FSArray;
-import org.apache.uima.jcas.cas.SelectViaCopyToArray;
-import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.impl.Constants;
 
 
@@ -95,7 +93,9 @@ public class FSHashSet <T extends TOP> extends TOP implements
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
+//  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
+  public final static CallSite _FC_fsArray = TypeSystemImpl.createCallSite(FSHashSet.class, "fsArray");
+  public final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -153,14 +153,14 @@ public class FSHashSet <T extends TOP> extends TOP implements
    * @generated
    * @return value of the feature 
    */
-  private FSArray getFsArray() { return (FSArray)(_getFeatureValueNc(_FI_fsArray));}
+  private FSArray getFsArray() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));}
     
   /** setter for fsArray - sets internal use - holds the set of Feature Structures 
    * @generated
    * @param v value to set into the feature 
    */
   private void setFsArray(FSArray v) {
-    _setFeatureValueNcWj(_FI_fsArray, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_fsArray), v);
   }    
     
   /* (non-Javadoc)

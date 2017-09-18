@@ -21,12 +21,13 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 import java.util.Arrays;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.RandomAccess;
 import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import java.util.PrimitiveIterator.OfInt;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
@@ -40,12 +41,8 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.IntListIterator;
 import org.apache.uima.internal.util.IntVector;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
-import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.jcas.cas.IntegerArray;
 
 
 /** an expandable array of ints
@@ -120,7 +117,9 @@ public class IntegerArrayList extends TOP implements
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
+//  public final static int _FI_intArray = TypeSystemImpl.getAdjustedFeatureOffset("intArray");
+  private final static CallSite _FC_intArray = TypeSystemImpl.createCallSite(IntegerArrayList.class, "intArray");
+  private final static MethodHandle _FH_intArray = _FC_intArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -175,14 +174,14 @@ public class IntegerArrayList extends TOP implements
    * @generated
    * @return value of the feature 
    */
-  private IntegerArray getIntArray() { return (IntegerArray)(_getFeatureValueNc(_FI_intArray));}
+  private IntegerArray getIntArray() { return (IntegerArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_intArray)));}
     
   /** setter for intArray - sets internal use - holds the ints 
    * @generated
    * @param v value to set into the feature 
    */
   private void setIntArray(IntegerArray v) {
-    _setFeatureValueNcWj(_FI_intArray, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_intArray), v);
   }    
     
   private void maybeStartUsingIntegerArrayList() {

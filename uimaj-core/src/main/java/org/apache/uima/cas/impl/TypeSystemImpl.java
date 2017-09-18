@@ -1365,6 +1365,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         committedTypeSystems.put(this, new WeakReference<>(this));
       }
 
+      FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
       return this;
     } // of sync block 
   }
@@ -2621,7 +2622,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       return g;
     }
   }
-  
+    
   /**
    * Creates and returns a new MutableCallSite, 
    * recording it in list of all callsites for this type, in a map by typename

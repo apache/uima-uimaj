@@ -19,6 +19,8 @@
 
 package org.apache.uima.jcas.cas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -43,8 +45,15 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
     return typeIndexID;
   }
 
-  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
-  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
+  public static final String _FeatName_head = "head";
+  public static final String _FeatName_tail = "tail";
+  
+//  public static final int _FI_head = TypeSystemImpl.getAdjustedFeatureOffset("head");
+//  public static final int _FI_tail = TypeSystemImpl.getAdjustedFeatureOffset("tail");
+  private final static CallSite _FC_head = TypeSystemImpl.createCallSite(NonEmptyFloatList.class, "head");
+  private final static MethodHandle _FH_head = _FC_head.dynamicInvoker();
+  private final static CallSite _FC_tail = TypeSystemImpl.createCallSite(NonEmptyFloatList.class, "tail");
+  private final static MethodHandle _FH_tail = _FC_tail.dynamicInvoker();
   
   /* local data */
 //  private float _F_head;
@@ -93,19 +102,19 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public float getHead() { return _getFloatValueNc(_FI_head); }
+  public float getHead() { return _getFloatValueNc(wrapGetIntCatchException(_FH_head)); }
 
   /* setter for head * */
   public void setHead(float v) {
-    this._setFloatValueNfc(_FI_head, v);
+    this._setFloatValueNfc(wrapGetIntCatchException(_FH_head), v);
   }
 
-//  public void _setHeadNcNj(float v) { setFloatValueNcNj(_getFeat(_FI_head), v); }
+//  public void _setHeadNcNj(float v) { setFloatValueNcNj(_getFeat(wrapGetIntCatchException(_FH_head)), v); }
   
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FloatList getTail() { return (FloatList) _getFeatureValueNc(_FI_tail); }
+  public FloatList getTail() { return (FloatList) _getFeatureValueNc(wrapGetIntCatchException(_FH_tail)); }
 
   /* setter for tail * */
   public void setTail(FloatList v) {
@@ -113,7 +122,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, v, v._casView, _casView);
     }
-    _setFeatureValueNcWj(_FI_tail, v); 
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_tail), v); 
   }
 
   public void setTail(CommonList v) { setTail((FloatList) v); }
