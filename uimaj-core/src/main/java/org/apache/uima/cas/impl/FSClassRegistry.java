@@ -43,6 +43,7 @@ import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
@@ -467,12 +468,28 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       ArrayList<Entry<String, MutableCallSite>> callsites = callSites_all_JCasClasses.get(clazz);
       if (null != callsites) {
         for (Entry<String, MutableCallSite> e : callsites) {
-          e.getValue().setTarget(getConstantIntMethodHandle(TypeSystemImpl.getAdjustedFeatureOffset(e.getKey())));
-          callSites_toSync.add(e.getValue());
+          final int index = TypeSystemImpl.getAdjustedFeatureOffset(e.getKey());
+          final int prev = (int) e.getValue().getTarget().invokeExact();
+          
+          if (prev == -1) {
+            MethodHandle mh_constant = getConstantIntMethodHandle(index);
+
+            e.getValue().setTarget(mh_constant);
+            callSites_toSync.add(e.getValue());
+          } else if (prev != index) {
+            throw new UIMA_IllegalStateException(UIMA_IllegalStateException.JCAS_INCOMPATIBLE_TYPE_SYSTEMS,
+                new Object[] {ti.getName(), e.getKey()});
+          }
+
         }
       }
     } catch (ClassNotFoundException e) {
-      // This is normal, if there is no JCas for this class
+      // Class not found is normal, if there is no JCas for this class
+    } catch (Throwable e1) {
+      if (e1 instanceof UIMA_IllegalStateException) {
+        throw (UIMA_IllegalStateException) e1;
+      }
+      throw Misc.internalError();  // from invokeExact
     } finally {
       TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
     }

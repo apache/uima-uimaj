@@ -33,6 +33,8 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_Short;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_ShortRef;
 import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.MutableCallSite;
 import java.lang.ref.WeakReference;
@@ -146,6 +148,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //  private final static boolean IS_DECOMPILE_JCAS = Misc.getNoValueSystemProperty(DECOMPILE_JCAS);
 //  private final static Set<String> decompiled = (IS_DECOMPILE_JCAS) ? new HashSet<String>(256) : null;
     
+  static private final MethodHandle MHC_MINUS_1 = MethodHandles.constant(int.class, -1);
+  
   /**
    * Type code that is returned on unknown type names.
    */
@@ -2637,7 +2641,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return the created callsite
    */
   public static MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {
-    MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class));    
+    MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class)); 
+    callSite.setTarget(MHC_MINUS_1);  // for error checking
     ArrayList<Entry<String, MutableCallSite>> callSitesForType = FSClassRegistry.callSites_all_JCasClasses.computeIfAbsent(clazz, k -> new ArrayList<>());
     callSitesForType.add(new AbstractMap.SimpleEntry<String, MutableCallSite>(featName, callSite));
     return callSite;
