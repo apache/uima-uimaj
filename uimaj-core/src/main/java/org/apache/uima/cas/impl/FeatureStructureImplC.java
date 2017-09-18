@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.lang.invoke.MethodHandle;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Set;
 import java.util.function.IntFunction;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
@@ -1666,16 +1668,25 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 //    _flags = (_flags & ~bitMaskRefOffset) | v << shiftRefOffset;
 //  }
 
-  public TypeImpl _getTypeImpl() {
+  public final TypeImpl _getTypeImpl() {
     return _typeImpl;
   }
   
-  protected void _setTypeImpl(TypeImpl ti) {
+  protected final void _setTypeImpl(TypeImpl ti) {
     _typeImpl = ti;
   }
   
   public static int compare(FeatureStructureImplC a, FeatureStructureImplC b) {
     return Integer.compare(a._id, b._id);
   }
+  
+  protected final static int wrapGetIntCatchException(MethodHandle mh) {
+    try {
+      return (int) mh.invokeExact();
+    } catch(Throwable t) {
+      throw new UIMA_IllegalStateException(UIMA_IllegalStateException.JCAS_NO_TYPE, null, t);
+    }
+  }
+
 
 }
