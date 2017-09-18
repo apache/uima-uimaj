@@ -506,8 +506,16 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
 
   private static final Type intType = PrimitiveType.intType();
   
+  private static final Type callSiteType = JavaParser.parseType("CallSite");
+  
+  private static final Type methodHandleType = JavaParser.parseType("MethodHandle");
+  
+  private static final Type stringType = JavaParser.parseType("String");
+  
   private static final EnumSet<Modifier> public_static_final = 
-      EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL); 
+      EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL);
+  private static final EnumSet<Modifier> private_static_final = 
+      EnumSet.of(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL);
   
   private static final PrettyPrinterConfiguration printWithoutComments = 
       new PrettyPrinterConfiguration();
@@ -1634,14 +1642,39 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             reportMismatchedFeatureName(String.format("%-25s %s", featName, name));
           }
         }
-        NodeList<Expression> args = new NodeList<>();
-        args.add(new StringLiteralExpr(featName));
-        VariableDeclarator vd = new VariableDeclarator(
-            intType, 
-            "_FI_" + featName, 
-            new MethodCallExpr(new NameExpr("TypeSystemImpl"), new SimpleName("getAdjustedFeatureOffset"), args));
+        // add _FI_xxx = TypeSystemImpl.getAdjustedFeatureOffset("xxx");
+        // replaced Sept 2017
+//        NodeList<Expression> args = new NodeList<>();
+//        args.add(new StringLiteralExpr(featName));
+//        VariableDeclarator vd = new VariableDeclarator(
+//            intType, 
+//            "_FI_" + featName, 
+//            new MethodCallExpr(new NameExpr("TypeSystemImpl"), new SimpleName("getAdjustedFeatureOffset"), args));
+//        if (featNames.add(featName)) {  // returns true if it was added, false if already in the set of featNames
+//          fi_fields.add(new FieldDeclaration(public_static_final, vd));
+//        }
+        
+        // add _FC_xxx = TypeSystemImpl.createCallSite(ccc.class, "xxx");
+        // add _FH_xxx = _FC_xxx.dynamicInvoker();
+        // add _FeatName_xxx = "xxx"  //  https://issues.apache.org/jira/browse/UIMA-5575
+        
         if (featNames.add(featName)) {  // returns true if it was added, false if already in the set of featNames
-          fi_fields.add(new FieldDeclaration(public_static_final, vd));
+          // _FC_xxx = TypeSystemImpl.createCallSite(ccc.class, "xxx");
+          MethodCallExpr initCallSite = new MethodCallExpr(new NameExpr("TypeSystemImpl"), "createCallSite");
+          initCallSite.addArgument(new FieldAccessExpr(new NameExpr(className), "class"));
+          initCallSite.addArgument(new StringLiteralExpr(featName));
+          VariableDeclarator vd_FC = new VariableDeclarator(callSiteType, "_FC_" + featName, initCallSite);
+          fi_fields.add(new FieldDeclaration(private_static_final, vd_FC));
+          
+          // _FH_xxx = _FC_xxx.dynamicInvoker();
+          MethodCallExpr initInvoker = new MethodCallExpr(new NameExpr(vd_FC.getName()), "dynamicInvoker");
+          VariableDeclarator vd_FH = new VariableDeclarator(methodHandleType, "_FH_" + featName, initInvoker);
+          fi_fields.add(new FieldDeclaration(private_static_final, vd_FH));
+          
+          // _FeatName_xxx = "xxx"  //  https://issues.apache.org/jira/browse/UIMA-5575
+          VariableDeclarator vd_fn = new VariableDeclarator(stringType, "_FeatName_" + featName, new StringLiteralExpr(featName));
+          fi_fields.add(new FieldDeclaration(public_static_final, vd_fn));
+           
         }
         
         /**
@@ -1803,7 +1836,12 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
           ((e = getUnenclosedExpr(oe.get())) instanceof CastExpr) &&
           ("jcasType".equals(getName(((CastExpr)e).getExpression())))) {
         String featureName = nname.substring("casFeatCode_".length());
-        replaceInParent(n, new NameExpr("_FI_" + featureName)); // repl last in List<Expression> (args)
+//        replaceInParent(n, new NameExpr("_FI_" + featureName)); // repl last in List<Expression> (args)
+        
+        MethodCallExpr getint = new MethodCallExpr(null, "wrapGetIntCatchException");
+        getint.addArgument(new NameExpr("_FH_" + featureName));
+        replaceInParent(n, getint);
+        
         return;
       } else if (nname.startsWith("casFeatCode_")) {
         reportMigrateFailed("Found field casFeatCode_ ... without a previous cast expr using jcasType");
@@ -2715,6 +2753,10 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         isBuiltinJCas = true;
         isConvert2v3 = false;
         return;  
+      } else {
+        VariableDeclarator vd_typename = new VariableDeclarator(
+            stringType, "_TypeName", new StringLiteralExpr(packageAndClassName));
+        fi_fields.add(new FieldDeclaration(public_static_final, vd_typename));
       }
 
       return;
