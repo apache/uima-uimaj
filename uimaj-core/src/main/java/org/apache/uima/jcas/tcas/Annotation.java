@@ -21,7 +21,6 @@ package org.apache.uima.jcas.tcas;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.LinearTypeOrder;
