@@ -19,13 +19,16 @@
 
 package org.apache.uima.jcas.tcas;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.cas.impl.AnnotationImpl;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
@@ -50,8 +53,16 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
     return typeIndexID;
   }
   
-  public final static int _FI_begin = TypeSystemImpl.getAdjustedFeatureOffset("begin");
-  public final static int _FI_end   = TypeSystemImpl.getAdjustedFeatureOffset("end");
+  private final static CallSite _FC_begin = TypeSystemImpl.createCallSite(Annotation.class, "begin");
+  private final static MethodHandle _FH_begin = _FC_begin.dynamicInvoker();
+  
+//  static {
+//    _FC_begin.setTarget(MethodHandles.constant(int.class, TypeSystemImpl.getAdjustedFeatureOffset("begin")));
+//  }
+  
+  
+  private final static int _FI_begin = TypeSystemImpl.getAdjustedFeatureOffset("begin");
+  private final static int _FI_end   = TypeSystemImpl.getAdjustedFeatureOffset("end");
   
 //  /* local data */
 //  private int _F_begin;
@@ -85,13 +96,13 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * getter for begin - gets beginning of span of annotation
    */
 //  public int getBegin() { return _F_begin; }
-  public int getBegin() { return _getIntValueNc(_FI_begin); 
+  public final int getBegin() { return _getIntValueNc( wrapGetIntCatchException(_FH_begin)); 
   }
 
   /*
    * setter for begin - sets beginning of span of annotation
    */
-  public void setBegin(int v) { _setIntValueNfcCJ(_FI_begin, v); }
+  public final void setBegin(int v) { _setIntValueNfcCJ( wrapGetIntCatchException(_FH_begin), v); }
   
   // *------------------*
   // * Feature: end
@@ -100,14 +111,14 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
   /*
    * getter for end - gets ending of span of annotation
    */
-  public int getEnd() { 
+  public final int getEnd() { 
     return this._getIntValueNc(_FI_end);
   }
 
   /*
    * setter for end - sets ending of span of annotation
    */
-  public void setEnd(int v) {
+  public final void setEnd(int v) {
     this._setIntValueNfc(_FI_end,  v);
   }
   
@@ -119,7 +130,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    */
   public Annotation(JCas jcas, int begin, int end) {
     super(jcas); // forward to constructor
-    this._setIntValueNcNj(_FI_begin, begin);
+    this._setIntValueNcNj( wrapGetIntCatchException(_FH_begin), begin);
     this._setIntValueNcNj(_FI_end, end);
   }
 
@@ -151,8 +162,8 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @param other -
    * @return -
    */
-  public int compareAnnotation(Annotation other) {
-    int result = Integer.compare(_getIntValueNc(_FI_begin), other._getIntValueNc(_FI_begin));
+  public final int compareAnnotation(Annotation other) {
+    int result = Integer.compare(_getIntValueNc( wrapGetIntCatchException(_FH_begin)), other._getIntValueNc( wrapGetIntCatchException(_FH_begin)));
     if (result != 0) return result;
 
     result = Integer.compare(_getIntValueNc(_FI_end), other._getIntValueNc(_FI_end));
@@ -165,7 +176,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @param lto -
    * @return -
    */
-  public int compareAnnotation(Annotation other, LinearTypeOrder lto) {
+  public final int compareAnnotation(Annotation other, LinearTypeOrder lto) {
     int result = compareAnnotation(other);
     if (result != 0) return result;
     
@@ -178,7 +189,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @param other -
    * @return -
    */
-  public int compareAnnotationWithId(Annotation other) {
+  public final int compareAnnotationWithId(Annotation other) {
     int result = compareAnnotation(other);
     if (result != 0) return result;    
     return Integer.compare(_id,  other._id);
@@ -190,7 +201,7 @@ public class Annotation extends AnnotationBase implements AnnotationImpl {
    * @param lto -
    * @return -
    */
-  public int compareAnnotationWithId(Annotation other, LinearTypeOrder lto) {
+  public final int compareAnnotationWithId(Annotation other, LinearTypeOrder lto) {
     int result = compareAnnotation(other, lto);
     if (result != 0) return result;    
     return Integer.compare(_id,  other._id);
