@@ -23,16 +23,8 @@ import java.util.Iterator;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.FeatureDescription;
 
-
-/**
- * The Class JCasTypeTemplate.
- */
 public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
 
-  /* (non-Javadoc)
-   * @see org.apache.uima.tools.jcasgen.Jg.IJCasTypeTemplate#generate(java.lang.Object)
-   */
-  @Override
   public String generate(Object argument) {
     StringBuilder stringBuilder = new StringBuilder();
 
@@ -99,8 +91,12 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      String elemType = jg.getJavaRangeArrayElementType(fd);
      
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
-     featRegistry.append("  public final static int _FI_").append(featName).append(" = TypeSystemImpl.getAdjustedFeatureOffset(\"")
-                 .append(featName).append("\");\n");   
+     
+     featRegistry.append("  private final static int _FC_").append(featName)
+                 .append(" = TypeSystemImpl.createCallSite(").append(typeName).append(".class, ")
+                 .append("\"").append(featName).append("\");\n"); 
+     featRegistry.append("  private final static MethodHandle _FH_").append(featName)
+                 .append(" = _FC_").append(featName).append(".dynamicInvoker();\n"); 
       
    } /* of Features iteration */ 
     stringBuilder.append("\n  /* *******************\n   *   Feature Offsets *\n   * *******************/ \n   \n");

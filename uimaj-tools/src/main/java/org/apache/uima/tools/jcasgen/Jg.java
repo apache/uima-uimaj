@@ -1404,7 +1404,8 @@ public class Jg {
 //      v = ", jcasType.ll_cas.ll_getFSRef(v)";
     boolean isInInt = ! (range.equals("String") || range.equals("Feature") || range.equals("JavaObject"));
     String chksfx = getCheckSuffix(get_set, range);
-    String featOrOffset = "_FI_" + fname;
+    //wrapGetIntCatchException(_FH_begin)
+    String featOrOffset = "wrapGetIntCatchException(_FH_" + fname + ")";
     return "_" + get_set + range + "Value" + chksfx + "(" + featOrOffset  +
         ((get_set.equals("set")) ? v : "") + ")";
   }
