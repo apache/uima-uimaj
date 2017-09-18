@@ -44,7 +44,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
    else 
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); 
-    stringBuilder.append("\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.impl.TypeSystemImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
+    stringBuilder.append("\nimport java.lang.invoke.CallSite;\nimport java.lang.invoke.MethodHandle;\n\nimport org.apache.uima.cas.impl.CASImpl;\nimport org.apache.uima.cas.impl.TypeImpl;\nimport org.apache.uima.cas.impl.TypeSystemImpl;\nimport org.apache.uima.jcas.JCas; \nimport org.apache.uima.jcas.JCasRegistry;\n\n\n");
    for(Iterator i=jg.collectImports(td, false).iterator(); i.hasNext();) { 
     stringBuilder.append("import ");
     stringBuilder.append((String)i.next());
@@ -92,7 +92,7 @@ public class JCasTypeTemplate implements Jg.IJCasTypeTemplate {
      
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      
-     featRegistry.append("  private final static int _FC_").append(featName)
+     featRegistry.append("  private final static CallSite _FC_").append(featName)
                  .append(" = TypeSystemImpl.createCallSite(").append(typeName).append(".class, ")
                  .append("\"").append(featName).append("\");\n"); 
      featRegistry.append("  private final static MethodHandle _FH_").append(featName)

@@ -32,6 +32,9 @@ package <%=jg.packageName%>;
      jg.error.newError(IError.WARN, 
 		jg.getString("pkgMissing", new Object[] {td.getName()}), null); %>
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -98,7 +101,7 @@ public class <%=typeName%> extends <%=jg.getJavaName(td.getSupertypeName())%> {
      
      localData   .append("  public final static String _FeatName_").append(featName).append(" = \"").append(featName).append("\";\n");
      
-     featRegistry.append("  private final static int _FC_").append(featName)
+     featRegistry.append("  private final static CallSite _FC_").append(featName)
                  .append(" = TypeSystemImpl.createCallSite(").append(typeName).append(".class, ")
                  .append("\"").append(featName).append("\");\n"); 
      featRegistry.append("  private final static MethodHandle _FH_").append(featName)
