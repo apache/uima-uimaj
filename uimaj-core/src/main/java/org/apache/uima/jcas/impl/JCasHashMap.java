@@ -355,6 +355,16 @@ public class JCasHashMap {
     return r;
   }
   
+  // test case use
+  int[] getSubSizes() {
+    int[] r = new int[subMaps.length];
+    int i = 0;
+    for (JCasHashMapSubMap subMap : subMaps) {
+      r[i++] = subMap.size;
+    }
+    return r;
+  }
+  
   int getCapacity() {
     int r = 0;
     for (JCasHashMapSubMap subMap : subMaps) {
