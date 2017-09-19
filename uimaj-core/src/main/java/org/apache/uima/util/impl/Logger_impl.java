@@ -163,6 +163,7 @@ public class Logger_impl extends Logger_common_impl {
     if (mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + level.toString() + ": ");
+      // this version of MessageFormatter handles {} style
       mOut.println(MessageFormatter.format(message, args).getMessage());
       if (null != thrown) {
         thrown.printStackTrace(mOut);

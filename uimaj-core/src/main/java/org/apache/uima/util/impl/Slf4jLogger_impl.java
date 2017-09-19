@@ -222,6 +222,7 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     // allow nop operation
   }
   
+  // does the uima-logger style of message formatting
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     m = (m == null) 
           ? getMarkerForLevel(level) 
@@ -232,6 +233,8 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     } else {
       switch(level.toInteger()) {
       case Level.SEVERE_INT: 
+        // all of these calls to MessageFormat are to the java.text.MessageFormat
+        // to do {n} style format substitution
         logger.error(m, MessageFormat.format(message, args), thrown); 
         break;
       case Level.WARNING_INT: 
@@ -257,8 +260,48 @@ public class Slf4jLogger_impl extends Logger_common_impl {
     }
   }
   
+  // does the slf4j style of message formatting
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
-    log(m, aFqcn, level, message, args, thrown); 
+    m = (m == null) 
+        ? getMarkerForLevel(level) 
+        : m;
+        
+    if (isLocationCapable) {  // slf4j simple logger is not
+      ((org.slf4j.spi.LocationAwareLogger)logger).log(m, aFqcn, getSlf4jLevel(level), message, args, thrown);
+    } else {
+      if (thrown != null) {
+        Object[] args1 = (args == null) ? new Object[1] : new Object[args.length + 1];
+        if (args != null) {
+          System.arraycopy(args, 0, args1, 0, args.length);
+        }
+        args1[args1.length - 1] = thrown;
+        args = args1;
+      }  
+      switch(level.toInteger()) {
+      case Level.SEVERE_INT: 
+        logger.error(m, message, args); 
+        break;
+      case Level.WARNING_INT: 
+        logger.warn(m, message, args); 
+        break;
+      case Level.INFO_INT: 
+        logger.info(m, message, args); 
+        break;
+      case Level.CONFIG_INT: 
+        logger.info(m, message, args); 
+        break;
+      case Level.FINE_INT: 
+        logger.debug(m, message, args); 
+        break;
+      case Level.FINER_INT: 
+        logger.trace(m, message, args); 
+        break;
+      case Level.FINEST_INT: 
+        logger.trace(m, message, args); 
+        break;
+      default: Misc.internalError();
+      }
+    }
   }
   
   /**

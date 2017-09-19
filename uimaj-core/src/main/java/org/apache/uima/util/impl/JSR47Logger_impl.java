@@ -300,6 +300,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
   
   @Override
   public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
+    // this version of MessageFormatter does the {} style
     log(m, aFqcn, level, MessageFormatter.format(msg, args).getMessage(), zeroLengthArray, throwable);
   }
   

@@ -645,7 +645,7 @@ public class Misc {
   }
 
   /**
-   * Get item from array list.  If index is &gt; length, expande the array, and return null
+   * Get item from array list.  If index is &gt; length, expand the array, and return null
    * @param a the list
    * @param i the index
    * @param <T> the type of the items in the list
