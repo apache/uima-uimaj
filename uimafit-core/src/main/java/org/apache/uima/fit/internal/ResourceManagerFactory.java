@@ -18,8 +18,6 @@
  */
 package org.apache.uima.fit.internal;
 
-import java.net.MalformedURLException;
-
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
@@ -59,27 +57,23 @@ public class ResourceManagerFactory {
   }
   
   public static class DefaultResourceManagerCreator implements ResourceManagerCreator {
+    @Override
     public ResourceManager newResourceManager() throws ResourceInitializationException {
-      try {
-        UimaContext activeContext = UimaContextHolder.getContext();
-        if (activeContext != null) {
-          // If we are already in a UIMA context, then we re-use it. Mind that the JCas cannot
-          // handle switching across more than one classloader.
-          // This can be done since UIMA 2.9.0 and starts being handled in uimaFIT 2.3.0
-          // See https://issues.apache.org/jira/browse/UIMA-5056
-          return ((UimaContextAdmin) activeContext).getResourceManager();
-        }
-        else {
-          // If there is no UIMA context, then we create a new resource manager
-          // UIMA core still does not fall back to the context classloader in all cases.
-          // This was the default behavior until uimaFIT 2.2.0.
-          ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-          resMgr.setExtensionClassPath(ClassUtils.getDefaultClassLoader(), "", true);
-          return resMgr;
-        }
+      UimaContext activeContext = UimaContextHolder.getContext();
+      if (activeContext != null) {
+        // If we are already in a UIMA context, then we re-use it. Mind that the JCas cannot
+        // handle switching across more than one classloader.
+        // This can be done since UIMA 2.9.0 and starts being handled in uimaFIT 2.3.0
+        // See https://issues.apache.org/jira/browse/UIMA-5056
+        return ((UimaContextAdmin) activeContext).getResourceManager();
       }
-      catch (MalformedURLException e) {
-        throw new ResourceInitializationException(e);
+      else {
+        // If there is no UIMA context, then we create a new resource manager
+        // UIMA core still does not fall back to the context classloader in all cases.
+        // This was the default behavior until uimaFIT 2.2.0.
+        ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
+        resMgr.setExtensionClassLoader(ClassUtils.getDefaultClassLoader(), true);
+        return resMgr;
       }
     }
   }
