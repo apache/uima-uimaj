@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Modifier;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.maven.plugin.AbstractMojo;
@@ -34,12 +33,17 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
+import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
+import org.apache.uima.fit.factory.TypeSystemDescriptionFactory;
 import org.apache.uima.fit.maven.util.Util;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceSpecifier;
+import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.codehaus.plexus.util.FileUtils;
 import org.sonatype.plexus.build.incremental.BuildContext;
 import org.xml.sax.SAXException;
@@ -60,7 +64,7 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
   /**
    * Path where the generated resources are written.
    */
-  @Parameter(defaultValue="${project.build.directory}/classes", required=true)
+  @Parameter(defaultValue = "${project.build.directory}/classes", required = true)
   private File outputDirectory;
   
   /**
@@ -74,6 +78,17 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
    */
   @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
   private String encoding;
+
+  enum TypeSystemSerialization {
+    NONE, EMBEDDED
+  }
+
+  /**
+   * Mode of adding type systems found on the classpath via the uimaFIT detection mechanism at
+   * compile time to the generated descriptor. By default, no type systems are added.
+   */
+  @Parameter(defaultValue = "NONE")
+  private TypeSystemSerialization addTypeSystemDescriptions;
 
   @Override
   public void execute() throws MojoExecutionException {
@@ -106,24 +121,39 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         }
         
         ResourceCreationSpecifier desc = null;
+        ProcessingResourceMetaData metadata = null;
         switch (Util.getType(componentLoader, clazz)) {
           case ANALYSIS_ENGINE:
-            desc = AnalysisEngineFactory.createEngineDescription(clazz);
+            AnalysisEngineDescription aeDesc = AnalysisEngineFactory.createEngineDescription(clazz);
+            metadata = aeDesc.getAnalysisEngineMetaData();
+            desc = aeDesc;
             break;
           case COLLECTION_READER:
-            desc = CollectionReaderFactory.createReaderDescription(clazz);
+            CollectionReaderDescription crDesc = CollectionReaderFactory
+                    .createReaderDescription(clazz);
+            metadata = crDesc.getCollectionReaderMetaData();
+            desc = crDesc;
           default:
             // Do nothing
         }
 
         if (desc != null) {
-          File out = new File(outputDirectory, clazzPath+".xml");
+          switch (addTypeSystemDescriptions) {
+            case EMBEDDED:
+              embedTypeSystems(metadata);
+              break;
+            case NONE: // fall-through
+            default:
+              // Do nothing
+          }
+
+          File out = new File(outputDirectory, clazzPath + ".xml");
           out.getParentFile().mkdirs();
           toXML(desc, out.getPath());
           countGenerated++;
           
           // Remember component
-          componentsManifest.append("classpath*:").append(clazzPath+".xml").append('\n');
+          componentsManifest.append("classpath*:").append(clazzPath + ".xml").append('\n');
         }
       } catch (SAXException e) {
         getLog().warn("Cannot serialize descriptor for [" + clazzName + "]", e);
@@ -150,6 +180,19 @@ public class GenerateDescriptorsMojo extends AbstractMojo {
         throw new MojoExecutionException("Cannot write components manifest to [" + path + "]"
                 + ExceptionUtils.getRootCauseMessage(e), e);
       }
+    }
+  }
+
+  private void embedTypeSystems(ProcessingResourceMetaData metadata)
+          throws ResourceInitializationException {
+    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    Thread.currentThread().setContextClassLoader(componentLoader);
+    try {
+      TypeSystemDescriptionFactory.forceTypeDescriptorsScan();
+      TypeSystemDescription tsDesc = TypeSystemDescriptionFactory.createTypeSystemDescription();
+      metadata.setTypeSystem(tsDesc);
+    } finally {
+      Thread.currentThread().setContextClassLoader(classLoader);
     }
   }
 
