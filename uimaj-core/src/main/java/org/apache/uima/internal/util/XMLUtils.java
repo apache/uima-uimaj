@@ -520,6 +520,10 @@ public abstract class XMLUtils {
         (c >= 0xE000 && c <= 0xFFFD));
   }
 
+  /**
+   * @return an xml reader set up properly
+   * @throws SAXException -
+   */
   public static XMLReader createXMLReader() throws SAXException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
