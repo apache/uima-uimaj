@@ -72,7 +72,9 @@ public class XCASFileOpenEventHandler implements ActionListener {
           this.main.setXcasFileOpenDir(xcasFile.getParentFile());
           Timer time = new Timer();
           time.start();
-          SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+          SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+          saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+          SAXParser parser = saxParserFactory.newSAXParser();
           XCASDeserializer xcasDeserializer = new XCASDeserializer(this.main.getCas()
               .getTypeSystem());
           this.main.getCas().reset();
