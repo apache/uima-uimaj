@@ -37,6 +37,7 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.Pair;
 import org.apache.uima.internal.util.StringUtils;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
@@ -1293,7 +1294,7 @@ public class XCASDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
     ContentHandler handler;
     if (aLenient) {

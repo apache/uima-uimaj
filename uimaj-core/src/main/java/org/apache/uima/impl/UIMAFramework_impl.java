@@ -485,6 +485,7 @@ public class UIMAFramework_impl extends UIMAFramework {
     // with XML4J v3. This is a good thing, since the UtilityClassLoader writes
     // to the logger, which isn't created yet!
     SAXParserFactory factory = SAXParserFactory.newInstance();
+    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
     SAXParser parser = factory.newSAXParser();
     XMLReader reader = parser.getXMLReader();
 

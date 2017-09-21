@@ -724,7 +724,9 @@ public class MainFrame extends JFrame {
       setXcasFileOpenDir(xmiCasFile.getParentFile());
       Timer time = new Timer();
       time.start();
-      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+      saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      SAXParser parser = saxParserFactory.newSAXParser();
       XmiCasDeserializer xmiCasDeserializer = new XmiCasDeserializer(getCas().getTypeSystem());
       getCas().reset();
       parser.parse(xmiCasFile, xmiCasDeserializer.getXmiCasHandler(getCas(), true));

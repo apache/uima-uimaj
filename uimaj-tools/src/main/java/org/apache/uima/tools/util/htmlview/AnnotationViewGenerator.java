@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -87,6 +88,8 @@ public class AnnotationViewGenerator {
   public AnnotationViewGenerator(File aOutputDir) {
     mOutputDir = aOutputDir;
     mTFactory = TransformerFactory.newInstance();
+    mTFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    mTFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 
     // the viewer uses several files located via the classpath
     // parse xsl files into templates

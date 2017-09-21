@@ -111,6 +111,11 @@ public class DotCorpusSerializer {
    */
   public static DotCorpus parseDotCorpus(InputStream dotCorpusStream) throws CoreException {
     DocumentBuilderFactory documentBuilderFacoty = DocumentBuilderFactory.newInstance();
+    try {
+      documentBuilderFacoty.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (ParserConfigurationException e1) {
+      throw new RuntimeException(e1);
+    }
 
     DocumentBuilder documentBuilder;
 

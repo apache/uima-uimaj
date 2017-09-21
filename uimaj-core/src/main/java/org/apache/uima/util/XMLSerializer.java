@@ -24,6 +24,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
@@ -58,6 +59,10 @@ public class XMLSerializer {
   
   private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
           .newInstance();
+
+  static { transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+           transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+  }
 
   private TransformerHandler mHandler;
 

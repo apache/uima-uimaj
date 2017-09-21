@@ -87,8 +87,8 @@ public class Descriptor extends DefaultHandler {
   private Document parse(String configFile) {
     Document doc = null;
     try {
-
       SAXParserFactory factory = SAXParserFactory.newInstance();
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
       factory.setValidating(false);
 
       // Create the builder and parse the file

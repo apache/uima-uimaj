@@ -125,6 +125,7 @@ public class XMLUtil {
     try {
       // get SAX parser factory
       SAXParserFactory factory = SAXParserFactory.newInstance();
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       // set default SAX parser features
       factory.setFeature(NAMESPACES_FEATURE_ID, DEFAULT_NAMESPACES);
       factory.setFeature(NAMESPACE_PREFIXES_FEATURE_ID, DEFAULT_NAMESPACE_PREFIXES);

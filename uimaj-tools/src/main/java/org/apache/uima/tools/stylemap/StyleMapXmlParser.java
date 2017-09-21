@@ -71,7 +71,10 @@ public class StyleMapXmlParser extends DefaultHandler {
   public StyleMapXmlParser(String xmlFile) {
     try {
       // create new SAX Parser
-      SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+      SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+      saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      SAXParser parser = saxParserFactory.newSAXParser();
+
       XMLReader reader = parser.getXMLReader();
       // set the content handler
       reader.setContentHandler(this);

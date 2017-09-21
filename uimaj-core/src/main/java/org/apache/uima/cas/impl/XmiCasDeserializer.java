@@ -51,6 +51,7 @@ import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.I18nUtil;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementName;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
@@ -2291,7 +2292,7 @@ public class XmiCasDeserializer {
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
           XmiSerializationSharedData aSharedData, int aMergePoint)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
     ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint);
     xmlReader.setContentHandler(handler);
@@ -2365,7 +2366,7 @@ public class XmiCasDeserializer {
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient,
 		  XmiSerializationSharedData aSharedData, int aMergePoint, AllowPreexistingFS allowPreexistingFS)
   throws SAXException, IOException {
-	  XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+	  XMLReader xmlReader = XMLUtils.createXMLReader();
 	  XmiCasDeserializer deser = new XmiCasDeserializer(aCAS.getTypeSystem());
 	  ContentHandler handler = deser.getXmiCasHandler(aCAS, aLenient, aSharedData, aMergePoint, allowPreexistingFS);
 	  xmlReader.setContentHandler(handler);
