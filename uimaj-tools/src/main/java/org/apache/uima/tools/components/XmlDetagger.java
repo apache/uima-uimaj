@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -40,6 +41,8 @@ import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -58,6 +61,15 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
   public static final String PARAM_TEXT_TAG = "XmlTagContainingText";
   
   private SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+  
+  { try {
+      parserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (SAXNotRecognizedException | SAXNotSupportedException
+        | ParserConfigurationException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 
   private Type sourceDocInfoType;
 

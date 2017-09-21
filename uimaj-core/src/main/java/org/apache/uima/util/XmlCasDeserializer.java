@@ -27,6 +27,7 @@ import org.apache.uima.cas.SerialFormat;
 import org.apache.uima.cas.impl.OutOfTypeSystemData;
 import org.apache.uima.cas.impl.XCASDeserializer;
 import org.apache.uima.cas.impl.XmiCasDeserializer;
+import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -78,7 +79,7 @@ public abstract class XmlCasDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));
@@ -104,7 +105,7 @@ public abstract class XmlCasDeserializer {
    */
   static SerialFormat deserializeR(InputStream aStream, CAS aCAS, boolean aLenient)
       throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XmlCasDeserializerHandler handler = new XmlCasDeserializerHandler(aCAS, aLenient);
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));

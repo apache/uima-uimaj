@@ -407,7 +407,10 @@ public class ServiceRegistry {
   /* Methods to load and save registry info */
   public void load(String fname) throws Exception {
 
-    DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+
 
     FileReader readme = new FileReader(fname);
     Document doc;

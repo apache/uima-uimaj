@@ -41,6 +41,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -235,7 +236,7 @@ public class XCASDeserializerTest extends TestCase {
             + "<uima.tcas.DocumentAnnotation _indexed=\"1\" _id=\"8\" sofa=\"1\" begin=\"0\" end=\"13\" language=\"en\"/>"
             + "<foo.Bar _indexed=\"1\" _id=\"2\" sofa=\"1\" begin=\"0\" end=\"0\" baz=\"blah\">this is the value feature</foo.Bar></CAS>";
     OutOfTypeSystemData ootsd = new OutOfTypeSystemData();
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
     ContentHandler handler = deser.getXCASHandler(cas, ootsd);
     xmlReader.setContentHandler(handler);

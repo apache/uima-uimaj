@@ -29,6 +29,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -48,6 +50,15 @@ import org.apache.vinci.transport.util.TransportableConverter;
  */
 public class XMLToVinci {
 
+  private static final SAXParserFactory spf = SAXParserFactory.newInstance();
+  static {
+    try {
+      spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (SAXNotRecognizedException | SAXNotSupportedException
+        | ParserConfigurationException e) {
+      throw new RuntimeException(e);
+    }
+  }
   /**
    * Utility class not intended to be instantiated.
    */
@@ -243,7 +254,9 @@ public class XMLToVinci {
   public static VinciFrame xmlToVinciFrame(Reader r) throws ServiceException {
     XMLReader xr;
     try {
-      xr = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+      synchronized(spf) {
+        xr = spf.newSAXParser().getXMLReader();
+      }
     } catch (SAXException e) {
       throw new ServiceException("Error creating SAX Parser: " + e);
     } catch (ParserConfigurationException e) {
@@ -284,7 +297,9 @@ public class XMLToVinci {
   public static AFrame xmlToAFrame(Reader r) throws ServiceException {
     XMLReader xr;
     try {
-      xr = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+      synchronized (spf) {
+        xr = spf.newSAXParser().getXMLReader();
+      }
     } catch (SAXException e) {
       throw new ServiceException("Error creating SAX Parser: " + e);
     } catch (ParserConfigurationException e) {

@@ -33,6 +33,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.StringUtils;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.rb_trees.RedBlackTree;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -1200,7 +1201,7 @@ public class XCASDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
-    XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+    XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
     ContentHandler handler;
     if (aLenient) {
