@@ -117,12 +117,12 @@ public class CasIOUtilsTest extends TestCase{
   
   public void testXCAS() throws Exception
   {
-    testXMI(false);
+    testXCAS(false);
   }
 
   public void testXCASLenient() throws Exception
   {
-    testXMI(true);
+    testXCAS(true);
   }
 
   public void testXCAS(boolean leniently) throws Exception {
