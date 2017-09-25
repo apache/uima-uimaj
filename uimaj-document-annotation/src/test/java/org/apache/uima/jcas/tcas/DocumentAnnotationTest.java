@@ -20,11 +20,24 @@ package org.apache.uima.jcas.tcas;
 
 import junit.framework.TestCase;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.SerialFormat;
+import org.apache.uima.cas.impl.CASImpl;
+import org.apache.uima.cas.impl.CasCompare;
+import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
 import org.apache.uima.util.CasCreationUtils;
+import org.apache.uima.util.CasIOUtils;
+import org.apache.uima.util.XMLInputSource;
 
 
 public class DocumentAnnotationTest extends TestCase {
@@ -55,5 +68,34 @@ public class DocumentAnnotationTest extends TestCase {
     } catch (Exception e) {
       JUnitExtension.handleException(e);
     }
-  }  
+  }
+  
+  public void testDocMeta() throws Exception {
+    File typeSystemFile = JUnitExtension.getFile("ExampleCas/testTypeSystem_docmetadata.xml");
+    TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+            new XMLInputSource(typeSystemFile));
+    
+    CAS source = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
+    CAS target = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
+    
+    JCas jcas = source.getJCas();
+    new DocMeta(jcas).addToIndexes();
+    
+    jcas.setDocumentText("something");
+    
+    new Annotation(jcas);
+    
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    CasIOUtils.save(source, bos, SerialFormat.XMI);
+    bos.close();
+    
+    CasIOUtils.load(new ByteArrayInputStream(bos.toByteArray()), target);
+
+    AnnotationFS c = target.getDocumentAnnotation();
+    System.out.println(c);
+    System.out.println(target.<DocMeta>getDocumentAnnotation());
+//    System.out.println(target.getDocumentAnnotation());
+
+  }
+
 }
