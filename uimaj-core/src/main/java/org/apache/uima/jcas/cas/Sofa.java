@@ -177,18 +177,25 @@ public class Sofa extends TOP implements SofaFSImpl {
 	}
 
 	/**
-   * @see org.apache.uima.cas.SofaFS#setLocalSofaData(String) This method is duplicated in
-   *      SofaFSImpl. Any changes should be made in both places.
+   * @see org.apache.uima.cas.SofaFS#setLocalSofaData(String) 
    */
   @Override
   public void setLocalSofaData(String aString) {
-    if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
-    _setStringValueNcWj(wrapGetIntCatchException(_FH_sofaString), aString);
-
+    setLocalSofaDataNoDocAnnotUpdate(aString);
+    
     // create or update the document annotation for this Sofa's view
     ((CASImpl)(_casView.getView(this))).updateDocumentAnnotation();
   }
 
+  /**
+   * Internal use: used by deserializers
+   * @param aString the string to update
+   */
+  public void setLocalSofaDataNoDocAnnotUpdate(String aString) {
+    if (isSofaDataSet()) { throwAlreadySet("setLocalSofaData()"); }
+    _setStringValueNcWj(wrapGetIntCatchException(_FH_sofaString), aString);    
+  }
+  
   public void setLocalSofaData(String aString, String mimeType) {
     setLocalSofaData(aString);
     setMimeType(mimeType);

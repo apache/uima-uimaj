@@ -1316,6 +1316,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public TypeSystemImpl commit(ClassLoader cl) {
     synchronized(this) {
       if (this.locked) {
+        // is a no-op if already loaded for this Class Loader
+        // otherwise, need to load and set up generators for this class loader
+        getGeneratorsForClassLoader(cl, false);
         return this; // might be called multiple times, but only need to do once
       }
       // because subsumes depends on it
@@ -1369,7 +1372,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         committedTypeSystems.put(this, new WeakReference<>(this));
       }
 
-      FSClassRegistry.loadAtTypeSystemCommitTime(this, true, cl);
+      // this call is here for the case where a commit happens, but no subsequent
+      //   new CAS or switch classloader call is done.  For example, a "reinit" in an existing CAS
+      // This call internally calls the code to load JCas classes for this class loader.
+      getGeneratorsForClassLoader(cl, false);    
+//      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
       return this;
     } // of sync block 
   }

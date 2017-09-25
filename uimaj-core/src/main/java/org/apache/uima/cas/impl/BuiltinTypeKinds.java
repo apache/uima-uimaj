@@ -5,6 +5,31 @@ import java.util.Set;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.internal.util.Misc;
+import org.apache.uima.jcas.cas.AnnotationBase;
+import org.apache.uima.jcas.cas.BooleanArray;
+import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyFloatList;
+import org.apache.uima.jcas.cas.EmptyIntegerList;
+import org.apache.uima.jcas.cas.EmptyStringList;
+import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
+import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.FloatList;
+import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.IntegerList;
+import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.NonEmptyFloatList;
+import org.apache.uima.jcas.cas.NonEmptyIntegerList;
+import org.apache.uima.jcas.cas.NonEmptyStringList;
+import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
+import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.StringList;
+import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.jcas.tcas.Annotation;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -51,13 +76,50 @@ public class BuiltinTypeKinds {
    */
   public static final Set<String> nonCreatableTypesAndBuiltinArrays = new HashSet<String>();
   
+  public static final Set<String> creatableBuiltinJCasClassNames = new HashSet<>();
+  
+  static {
+    Misc.addAll( creatableBuiltinJCasClassNames, 
+        BooleanArray.class.getName(),
+        ByteArray.class.getName(),
+        ShortArray.class.getName(),
+        IntegerArray.class.getName(),
+        LongArray.class.getName(),
+        FloatArray.class.getName(),
+        DoubleArray.class.getName(),
+        StringArray.class.getName(),
+        FSArray.class.getName(),
+        
+        EmptyFloatList.class.getName(),
+        NonEmptyFloatList.class.getName(),
+        FloatList.class.getName(),
+        EmptyIntegerList.class.getName(),
+        NonEmptyIntegerList.class.getName(),
+        IntegerList.class.getName(),
+        EmptyStringList.class.getName(),
+        NonEmptyStringList.class.getName(),
+        StringList.class.getName(),
+        EmptyFSList.class.getName(),
+        NonEmptyFSList.class.getName(),
+        FSList.class.getName(),
+        
+        TOP.class.getName(),
+        AnnotationBase.class.getName(),
+        Annotation.class.getName(),
+        
+        Sofa.class.getName(),
+        // no default class for next in the classpath
+        "org.apache.uima.jcas.tcas.DocumentAnnotation"
+        );
+  }
+  
   /**
    * These types are
    *   - builtin, but could be extended by user 
    *   - creatable - so they need a generator.
    *     -- non-creatable built-in types are not generated 
    */
-  public static final Set<String> creatableBuiltinJCas = new HashSet<String>();
+  public static final Set<String> creatableBuiltinJCas = new HashSet<>();
 
   static {
     Misc.addAll(primitiveTypeNames, 
@@ -97,6 +159,8 @@ public class BuiltinTypeKinds {
         CAS.TYPE_NAME_TOP,
         CAS.TYPE_NAME_ANNOTATION_BASE,
         CAS.TYPE_NAME_ANNOTATION
+//        CAS.TYPE_NAME_DOCUMENT_ANNOTATION  // https://issues.apache.org/jira/browse/UIMA-5586
+         // these are semi-builtin (for backwards compatibility - not to change users type system codes if not used)
 //        CAS.TYPE_NAME_FS_ARRAY_LIST,
 //        CAS.TYPE_NAME_INT_ARRAY_LIST,
 //        CAS.TYPE_NAME_FS_HASH_SET

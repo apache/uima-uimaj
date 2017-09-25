@@ -1896,6 +1896,21 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
+   * Internal use, for cases where deserializing - special case setting sofString to skip updating the document annotation
+   * @param fs -
+   * @param feat -
+   * @param s -
+   */
+  public void setFeatureValueFromStringNoDocAnnotUpdate(FeatureStructureImplC fs, FeatureImpl feat, String s) {
+    if (fs instanceof Sofa && 
+        feat.getCode() == sofaStringFeatCode) {
+      ((Sofa)fs).setLocalSofaDataNoDocAnnotUpdate(s);
+    } else {
+      setFeatureValueFromString(fs, feat, s);
+    }
+  }
+  
+  /**
    * Supports setting slots to "0" for null values
    * @param fs The feature structure to update
    * @param feat the feature to update-
@@ -4032,7 +4047,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   /**
    * Generic issue:  The returned document annotation could be either an instance of 
-   *   DocumentAnnotation or an instance of Annotation - the Java cover class used for 
+   *   DocumentAnnotation or a subclass of it, or an instance of Annotation - the Java cover class used for 
    *   annotations when JCas is not being used.
    */
   @Override
@@ -4170,8 +4185,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 
   void setDocTextFromDeserializtion(String text) {
     if (mySofaIsValid()) {
-      SofaFS sofa = getSofaRef();  // creates sofa if doesn't already exist
-      sofa.setLocalSofaData(text);
+      Sofa sofa = getSofaRef();  // creates sofa if doesn't already exist
+      sofa.setLocalSofaDataNoDocAnnotUpdate(text);
     }
   }
 

@@ -2154,7 +2154,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
             break;
           }
           if (srcFeat == srcTs.sofaString) {
-            maybeStoreOrDefer(storeIt, fs, lfs -> ((Sofa)lfs).setLocalSofaData(vString));
+            maybeStoreOrDefer(storeIt, fs, lfs -> ((Sofa)lfs).setLocalSofaDataNoDocAnnotUpdate(vString));
             break;
           }
         }

@@ -887,7 +887,7 @@ public class XmiCasDeserializer {
         }
         
         
-        // before looping over features, set the xmi to fs correspondence for this FS, incase a 
+        // before looping over features, set the xmi to fs correspondence for this FS, in case a 
         //   feature does a self reference
         String idStr = attrs.getValue(ID_ATTR_NAME);
         final int extId;
@@ -1050,7 +1050,7 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_DOUBLE:
         case LowLevelCAS.TYPE_CLASS_STRING:
             {
-          casBeingFilled.setFeatureValueFromString(fs, fi, featVal);  
+          casBeingFilled.setFeatureValueFromStringNoDocAnnotUpdate(fs, fi, featVal);  
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FS: deserializeFsRef(featVal, fi, fs); break;
@@ -1742,7 +1742,7 @@ public class XmiCasDeserializer {
               for(FeatureImpl fi : currentType.getFeatureImpls()) {
                 if (!(fi.getName().equals(CAS.FEATURE_FULL_NAME_SOFA))) {
                   if ( ! this.featsSeen.contains(fi.getCode())) {
-                    casBeingFilled.setFeatureValueFromString(currentFs,  fi, null);
+                    casBeingFilled.setFeatureValueFromStringNoDocAnnotUpdate(currentFs,  fi, null);
                   }
                 }
               }              

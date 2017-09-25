@@ -1977,7 +1977,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
             break;
           }
           if (feat == ts.sofaString) {
-            maybeStoreOrDefer(lfs -> ((Sofa)lfs).setLocalSofaData(s));
+            maybeStoreOrDefer(lfs -> ((Sofa)lfs).setLocalSofaDataNoDocAnnotUpdate(s));
             break;
           }
         }

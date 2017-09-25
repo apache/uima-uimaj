@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
+import org.apache.uima.cas.impl.BuiltinTypeKinds;
 import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -808,14 +809,18 @@ public class Misc {
    * @return the fully qualified UIMA Type name 
    */
   public static String javaClassName2UimaTypeName(String className) {
-    if (className.startsWith("org.apache.uima.jcas.cas.")) { 
+    if (className.startsWith("org.apache.uima.jcas.cas.") && 
+        BuiltinTypeKinds.creatableBuiltinJCasClassNames.contains(className)) { 
       return CAS.UIMA_CAS_PREFIX + className.substring("org.apache.uima.jcas.cas.".length());
     }
-    if (className.startsWith("org.apache.uima.jcas.tcas.")) { 
+    if (className.startsWith("org.apache.uima.jcas.tcas.")&& 
+        BuiltinTypeKinds.creatableBuiltinJCasClassNames.contains(className)) { 
       return CAS.UIMA_TCAS_PREFIX + className.substring("org.apache.uima.jcas.tcas.".length());
     }
     return className;
   }
+  
+  
   
   public static void timeLoops(String title, int iterations, Runnable_withException r) throws Exception {
     long shortest = Long.MAX_VALUE;

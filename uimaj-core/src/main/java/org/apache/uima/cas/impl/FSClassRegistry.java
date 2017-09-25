@@ -250,15 +250,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     
   /**
    * Load JCas types for some combination of class loader and type system
-   * These classes may have already been loaded for this type system
-   * These classes may have already been loaded (perhaps for another type system)
-   * @param ts 
-   * @param isDoUserJCasLoading
-   * @param cl
+   * Some of these classes may have already been loaded for this type system
+   * Some of these classes may have already been loaded (perhaps for another type system)
+   * @param ts the type system
+   * @param isDoUserJCasLoading always true, left in for experimentation in the future with dynamic generation of JCas classes
+   * @param cl the class loader. For Pears, is the pear class loader
    */
-  static void loadAtTypeSystemCommitTime(TypeSystemImpl ts, boolean isDoUserJCasLoading, ClassLoader cl) { 
+  static void loadJCasForTSandClassLoader(TypeSystemImpl ts, boolean isDoUserJCasLoading, ClassLoader cl) { 
 
-    boolean alreadyLoaded = false;
+    boolean alreadyPartiallyLoaded = false;  // true if any JCas types for this class loader have previously been loaded
     Map<String, JCasClassInfo> type_to_jcasClassInfo;
 
     synchronized (cl_to_type2JCas) {
@@ -268,7 +268,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         type_to_jcasClassInfo = new HashMap<>();
         cl_to_type2JCas.put(cl, type_to_jcasClassInfo);
       } else {
-        alreadyLoaded = true;
+        alreadyPartiallyLoaded = true;
       }
     }
     
@@ -284,7 +284,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       if (jcas_class_info != null) {
         Class<?> jcasClass = jcas_class_info.jcasClass;  
 
-        if (!alreadyLoaded) {
+        if (!alreadyPartiallyLoaded) {
           type_to_jcasClassInfo.put(jcasClass.getCanonicalName(), jcas_class_info);
         }
         setTypeFromJCasIDforBuiltIns(jcas_class_info, ts, typecode);
@@ -305,6 +305,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
        *   - The second pass performs the conformance checks between the loaded JCas cover classes, and the current type system.
        *     This depends on having the TypeImpl's javaClass field be accurate (reflect any loaded JCas types)
        */
+      
+      // this is this here rather than in a static initializer, because 
+      // we want to use the "cl" parameter to get a version of the 
+      // getMethodHandlesLookup that will have the right (maybe more local) permissions checking.
+      // This is done by having the UIMA Class loader notice that the class being loaded is 
+      //   MHLC, and then dynamically loading in that class loader a copy of the byte code 
+      //   for that class.
       
       try {
         Class<?> clazz = Class.forName(UIMAClassLoader.MHLC, true, cl);
@@ -865,7 +872,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     synchronized(cl_to_type2JCas) {
       // This is the first time this class loader is being used - load the classes for this type system, or
       // This is the first time this class loader is being used with this particular type system
-      loadAtTypeSystemCommitTime(tsi, true, cl);      
+      loadJCasForTSandClassLoader(tsi, true, cl);
 
       FsGenerator3[] r = new FsGenerator3[tsi.getTypeArraySize()];
                           
@@ -878,6 +885,9 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         }
         JCasClassInfo jcci = e.getValue();
         
+        // skip entering a generator in the result if
+        //    in a pear setup, and this cl is not the cl that loaded the JCas class.
+        //    See method comment for why.
         if (!isPear || jcci.isPearOverride(cl)) {
           r[ti.getCode()] = (FsGenerator3) jcci.generator;
         }      
