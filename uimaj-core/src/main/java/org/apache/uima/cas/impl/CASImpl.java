@@ -1331,6 +1331,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     return sofa;
   }
+  
+  boolean hasView(String name) {
+    return this.svd.sofaNameSet.contains(name);
+  }
 
   Sofa createInitialSofa(String mimeType) { 
     Sofa sofa = createSofa(1, CAS.NAME_DEFAULT_SOFA, mimeType);

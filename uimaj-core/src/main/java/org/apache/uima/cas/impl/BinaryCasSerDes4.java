@@ -499,6 +499,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         }
       }
       
+      // the sort order is on the id (e.g. creation order)
       List<TOP> newSortedFSs = CASImpl.filterAboveMark(csds.getSortedFSs(), mark);  // returns all if mark not set            
             
       /**************************
@@ -686,7 +687,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       int fi = 2;
       final int end1 = nbrSofas + 2;
       for (; fi < end1; fi++) {
-        writeVnumber(control_i, fsIndexes[fi]);
+        writeVnumber(control_i, fsIndexes[fi]);  // not converted to sequential
         
         if (doMeasurement) {
           sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(fsIndexes[fi]));
@@ -1741,9 +1742,18 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
            */
 
           if (ts.sofaType == type) {
-            currentFs = baseCas.createSofa(sofaNum, sofaName, null);  
+            if (baseCas.hasView(sofaName)) {
+              // sofa was already created, by an annotationBase subtype deserialized prior to this one
+              currentFs = (TOP) baseCas.getView(sofaName).getSofa();
+            } else {
+              currentFs = baseCas.createSofa(sofaNum, sofaName, null);
+            }
           } else {
-            CASImpl view = baseCas.getView(sofaRef);
+            
+            CASImpl view = (null == sofaRef) 
+                             ? baseCas.getInitialView() // https://issues.apache.org/jira/browse/UIMA-5588
+                             : baseCas.getView(sofaRef);
+                             
             if (type.getCode() == TypeSystemConstants.docTypeCode) {
               currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
               // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
@@ -1942,10 +1952,11 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       case Slot_HeapRef:
         final int vh = readDiffWithPrevTypeSlot(kind, feat);
         if (ts.annotBaseSofaFeat == feat) {
-          sofaRef = (Sofa) seq2fs(vh);  // invalid if returns null
-                                                  // forward refs are not possible for sofas
-          assert(sofaRef != null);
-        } else {
+          sofaRef = (Sofa) seq2fs(vh);  // if sofa hasn't yet been deserialized, will be null
+                            // use case: create annot , without sofa - causes create sofa
+                            // but binary serialization keeps creation order
+        }
+        if (ts.annotBaseSofaFeat != feat || sofaRef == null) { https://issues.apache.org/jira/browse/UIMA-5588
           maybeStoreOrDefer(lfs -> {
             // in addition to deferring if currentFs is null, 
             // heap refs may need deferring if forward refs
@@ -2013,7 +2024,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       fsIndexes.add(nbrViews);
       fsIndexes.add(nbrSofas);
       for (int i = 0; i < nbrSofas; i++) {
-        fsIndexes.add(readVnumber(control_dis));
+        fsIndexes.add(readVnumber(control_dis));  // this is the v2 addr style
       }
         
       for (int i = 0; i < nbrViews; i++) {
@@ -2026,7 +2037,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       bcsd.reinitIndexedFSs(fsIndexes.getArray(), isDelta,
           i ->  
-               seq2fs.get(i)); // written on separate line for Eclipse breakpoint control
+              seq2fs.get(i),  // written on separate line for Eclipse breakpoint control
+          i -> 
+              csds.addr2fs.get(i)  // https://issues.apache.org/jira/browse/UIMA-5593
+                 ); 
     }
 
     /** 

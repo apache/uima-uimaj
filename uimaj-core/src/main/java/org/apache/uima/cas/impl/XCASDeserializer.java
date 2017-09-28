@@ -441,7 +441,7 @@ public class XCASDeserializer {
             }
             casView = cas.getView((Sofa) (fsTree.get(Integer.parseInt(extSofaRefString)).fs));
           }
-          if (ts.docType.subsumes(type)) {
+          if (type.getCode() == TypeSystemConstants.docTypeCode) {
             fs = casView.getDocumentAnnotation();
             cas.removeFromCorruptableIndexAnyView(fs, cas.getAddbackSingle());
           } else {
@@ -510,7 +510,7 @@ public class XCASDeserializer {
         }
       }
 
-      if (ts.docType.subsumes(type)) {
+      if (type.getCode() == TypeSystemConstants.docTypeCode) {
         cas.addbackSingle(fs);
       }
       

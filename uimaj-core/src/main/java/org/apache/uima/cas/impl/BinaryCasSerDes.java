@@ -1096,15 +1096,27 @@ public class BinaryCasSerDes {
    * @param fsIndex - array of fsRefs and counts, for sofas, and all views
    * @param isDeltaMods - true for calls which are for delta mods - these have adds/removes
    */
-  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr) {
-    int numViews = fsIndex[0];
+  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr) {   
+    int idx = reinitIndexedFSsSofas(fsIndex, isDeltaMods, getFsFromAddr);
+    reinitIndexedFSs(fsIndex, isDeltaMods, getFsFromAddr, fsIndex[0], idx);
+  }
+  
+  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr, IntFunction<TOP> getSofaFromAddr) {
+    int idx = reinitIndexedFSsSofas(fsIndex, isDeltaMods, getSofaFromAddr);
+    reinitIndexedFSs(fsIndex, isDeltaMods, getFsFromAddr, fsIndex[0], idx);
+  }
+  
+  int reinitIndexedFSsSofas(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr ) {
     int numSofas = fsIndex[1]; // number of sofas, not necessarily the same as number of views (initial view may not have a sofa)
     int idx = 2;
     int end1 = 2 + numSofas;
     for (; idx < end1; idx++) { // iterate over all the sofas,
       baseCas.indexRepository.addFS(getFsFromAddr.apply(fsIndex[idx])); // add to base index
     }
- 
+    return idx;
+  }
+  
+  void reinitIndexedFSs(int[] fsIndex, boolean isDeltaMods, IntFunction<TOP> getFsFromAddr, int numViews, int idx) {    
     baseCas.forAllSofas(sofa -> {
       String id = sofa.getSofaID();
       if (CAS.NAME_DEFAULT_SOFA.equals(id)) { // _InitialView
