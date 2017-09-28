@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.cas.CAS;
@@ -42,6 +43,8 @@ import org.apache.uima.util.XMLInputSource;
 
 public class DocumentAnnotationTest extends TestCase {
   JCas jcas;
+  private CAS source;
+  private CAS target;
   
   public void setUp() throws Exception {
     try {
@@ -75,10 +78,22 @@ public class DocumentAnnotationTest extends TestCase {
     TypeSystemDescription typeSystem = UIMAFramework.getXMLParser().parseTypeSystemDescription(
             new XMLInputSource(typeSystemFile));
     
-    CAS source = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
-    CAS target = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
+    source = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
+    target = CasCreationUtils.createCas(typeSystem, new TypePriorities_impl(), null);
     
-    JCas jcas = source.getJCas();
+    jcas = source.getJCas();
+    
+    tstSerdesB4Sofa(SerialFormat.XMI);
+    tstSerdesB4Sofa(SerialFormat.XCAS);
+    tstSerdesB4Sofa(SerialFormat.BINARY);
+    tstSerdesB4Sofa(SerialFormat.COMPRESSED);
+    tstSerdesB4Sofa(SerialFormat.COMPRESSED_FILTERED);    
+  }
+  
+  private void tstSerdesB4Sofa(SerialFormat format) throws IOException {
+    source.reset();
+    target.reset();
+    
     new DocMeta(jcas).addToIndexes();
     
     jcas.setDocumentText("something");
@@ -86,16 +101,14 @@ public class DocumentAnnotationTest extends TestCase {
     new Annotation(jcas);
     
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    CasIOUtils.save(source, bos, SerialFormat.XMI);
+    CasIOUtils.save(source, bos, format);
     bos.close();
     
     CasIOUtils.load(new ByteArrayInputStream(bos.toByteArray()), target);
-
     AnnotationFS c = target.getDocumentAnnotation();
     System.out.println(c);
     System.out.println(target.<DocMeta>getDocumentAnnotation());
-//    System.out.println(target.getDocumentAnnotation());
-
+    assertTrue(CasCompare.compareCASes((CASImpl)source, (CASImpl)target));
   }
 
 }
