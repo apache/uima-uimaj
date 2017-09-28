@@ -749,7 +749,7 @@ public class BinaryCasSerDes4 {
       int fi = 2;
       final int end1 = nbrSofas + 2;
       for (; fi < end1; fi++) {
-        writeVnumber(control_i, fsIndexes[fi]);
+        writeVnumber(control_i, fsIndexes[fi]);  // not converted to sequential
         
         if (doMeasurement) {
           sm.statDetails[fsIndexes_i].incr(DataIO.lengthVnumber(fsIndexes[fi]));
@@ -757,7 +757,7 @@ public class BinaryCasSerDes4 {
       }
        
       for (int vi = 0; vi < nbrViews; vi++) {
-        fi = compressFsxPart(fsIndexes, fi);    // added FSs
+        fi = compressFsxPart(fsIndexes, fi);    // added FSs  // compress converts to sequential
         if (isDelta) {
           fi = compressFsxPart(fsIndexes, fi);  // removed FSs
           fi = compressFsxPart(fsIndexes, fi);  // reindexed FSs
