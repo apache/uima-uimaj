@@ -133,7 +133,7 @@ public interface CommonList extends FeatureStructure {
 	/**
 	 * @return a shared instance of the empty node.
 	 */
-	CommonList getEmptyList();
+	CommonList emptyList();
 	
 	/**
 	 * Internal use

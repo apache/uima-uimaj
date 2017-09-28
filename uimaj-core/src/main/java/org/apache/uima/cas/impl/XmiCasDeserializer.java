@@ -1209,7 +1209,7 @@ public class XmiCasDeserializer {
           if (featVals == null) {
             fs.setFeatureValue(fi,  null);
           } else if (featVals.size() == 0) {
-            fs.setFeatureValue(fi, casBeingFilled.getEmptyList(rangeCode));
+            fs.setFeatureValue(fi, casBeingFilled.emptyList(rangeCode));
           } else {
             CommonList existingList = (CommonList) fs.getFeatureValue(fi);
             CommonList theList = createOrUpdateList(fi.getRangeImpl(), featVals, -1, existingList);
@@ -1244,7 +1244,7 @@ public class XmiCasDeserializer {
         updateExistingList(values, existingList);
         return existingList;
       } else {
-        return createListFromStringValues(values, casBeingFilled.getEmptyListFromTypeCode(listType.getCode()));
+        return createListFromStringValues(values, casBeingFilled.emptyListFromTypeCode(listType.getCode()));
       }
     }
     
@@ -1314,7 +1314,7 @@ public class XmiCasDeserializer {
     private CommonArrayFS createNewArray(TypeImpl type, List<String> values) {
       final int sz = values.size();
       CommonArrayFS fs = (sz == 0) 
-                           ? casBeingFilled.getEmptyArray(type)
+                           ? casBeingFilled.emptyArray(type)
                            : (CommonArrayFS) casBeingFilled.createArray(type, sz);
       if (fs instanceof FSArray) {
         final FSArray fsArray = (FSArray) fs;
@@ -1380,7 +1380,7 @@ public class XmiCasDeserializer {
         if (existingList instanceof EmptyList) {
           return existingList;
         } else {
-          return existingList.getEmptyList();
+          return existingList.emptyList();
         }
       }
           
@@ -1412,7 +1412,7 @@ public class XmiCasDeserializer {
       
         // got to the end of the values, but the existing list has more elements
         //   truncate the existing list
-        prevNode.setTail(existingList.getEmptyList());
+        prevNode.setTail(existingList.emptyList());
         return existingList;
       }
 
@@ -1434,7 +1434,7 @@ public class XmiCasDeserializer {
     
       // got to the end of the values, but the existing list has more elements
       //   truncate the existing list
-      prevNode.setTail(existingList.getEmptyList());
+      prevNode.setTail(existingList.emptyList());
       return existingList;
     }
 

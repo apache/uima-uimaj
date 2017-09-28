@@ -96,7 +96,7 @@ public class NonEmptyFloatList extends FloatList implements NonEmptyList {
    * @param v -
    */
   public NonEmptyFloatList(JCas jcas, float v) {
-    this(jcas, v, jcas.getCasImpl().getEmptyFloatList());
+    this(jcas, v, jcas.getCasImpl().emptyFloatList());
   }
   
   // *------------------*

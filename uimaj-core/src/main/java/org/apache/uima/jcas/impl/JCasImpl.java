@@ -866,44 +866,44 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getStringArray0L()
-   * @deprecated use getEmptyXXXArray() instead
+   * @deprecated use emptyXXXArray() instead
    */
   @Deprecated
   public StringArray getStringArray0L() {
-    return this.getCas().getEmptyStringArray();
+    return this.getCas().emptyStringArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getIntegerArray0L()
-   * @deprecated use getEmptyXXXArray() instead
+   * @deprecated use emptyXXXArray() instead
    */
   @Deprecated
   public IntegerArray getIntegerArray0L() {
-    return this.getCas().getEmptyIntegerArray();
+    return this.getCas().emptyIntegerArray();
   }
 
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getFloatArray0L()
-   * @deprecated use getEmptyXXXArray() instead
+   * @deprecated use emptyXXXArray() instead
    */
   @Deprecated
   public FloatArray getFloatArray0L() {
-    return this.getCas().getEmptyFloatArray();
+    return this.getCas().emptyFloatArray();
   }
   
   /*
    * (non-Javadoc)
    * 
    * @see org.apache.uima.jcas.JCas#getFSArray0L()
-   * @deprecated use getEmptyXXXArray() instead
+   * @deprecated use emptyXXXArray() instead
    */
   @Deprecated
   public FSArray getFSArray0L() {
-    return this.getCas().getEmptyFSArray();
+    return this.getCas().emptyFSArray();
   }
 
   /*

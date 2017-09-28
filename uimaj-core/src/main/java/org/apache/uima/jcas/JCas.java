@@ -271,11 +271,11 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a StringArray
-   * @deprecated renamed getEmptyXXXArray
+   * @deprecated renamed emptyXXXArray
    */
   @Deprecated
   default StringArray getStringArray0L() {
-    return this.getCas().getEmptyStringArray();
+    return this.getCas().emptyStringArray();
   }
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -284,8 +284,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a StringArray
    */
-  default StringArray getEmptyStringArray() {
-    return this.getCas().getEmptyStringArray();
+  default StringArray emptyStringArray() {
+    return this.getCas().emptyStringArray();
   }
 
   /**
@@ -294,11 +294,11 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
-   * @deprecated renamed getEmptyXXXArray
+   * @deprecated renamed emptyXXXArray
    */
   @Deprecated
   default IntegerArray getIntegerArray0L() {
-    return this.getCas().getEmptyIntegerArray();
+    return this.getCas().emptyIntegerArray();
   }
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -307,8 +307,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of an IntegerArray
    */
-  default IntegerArray getEmptyIntegerArray() {
-    return this.getCas().getEmptyIntegerArray();
+  default IntegerArray emptyIntegerArray() {
+    return this.getCas().emptyIntegerArray();
   }
 
   /**
@@ -317,11 +317,11 @@ public interface JCas extends AbstractCas {
    * updatable (it has no subfields). This is initialized lazily on first reference, and reset when
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
-   * @deprecated renamed getEmptyXXXArray
+   * @deprecated renamed emptyXXXArray
    */
   @Deprecated
   default FloatArray getFloatArray0L() {
-    return this.getCas().getEmptyFloatArray();
+    return this.getCas().emptyFloatArray();
   }
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -330,8 +330,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a FloatArray
    */
-  default FloatArray getEmptyFloatArray() {
-    return this.getCas().getEmptyFloatArray();
+  default FloatArray emptyFloatArray() {
+    return this.getCas().emptyFloatArray();
   }
 
   /**
@@ -342,11 +342,11 @@ public interface JCas extends AbstractCas {
    * 
    * See also the CAS API 
    * @return 0-length instance of a FSArray
-   * @deprecated renamed getEmptyXXXArray
+   * @deprecated renamed emptyXXXArray
    */
   @Deprecated
   default FSArray getFSArray0L() {
-    return this.getCas().getEmptyFSArray();
+    return this.getCas().emptyFSArray();
   }
   /**
    * A constant for each cas which holds a 0-length instance. Since this can be a common value, we
@@ -357,8 +357,8 @@ public interface JCas extends AbstractCas {
    * See also the CAS API 
    * @return 0-length instance of a FSArray
    */
-  default FSArray getEmptyFSArray() {
-    return this.getCas().getEmptyFSArray();
+  default FSArray emptyFSArray() {
+    return this.getCas().emptyFSArray();
   }
 
   /**
@@ -368,8 +368,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a ByteArray
    */
-  default ByteArray getEmptyByteArray() {
-    return this.getCas().getEmptyByteArray();
+  default ByteArray emptyByteArray() {
+    return this.getCas().emptyByteArray();
   }
 
   /**
@@ -379,8 +379,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a ShortArray
    */
-  default ShortArray getEmptyuShortArray() {
-    return this.getCas().getEmptyShortArray();
+  default ShortArray emptyShortArray() {
+    return this.getCas().emptyShortArray();
   }
 
   /**
@@ -390,8 +390,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a LongArray
    */
-  default LongArray getEmptyLongArray() {
-    return this.getCas().getEmptyLongArray();
+  default LongArray emptyLongArray() {
+    return this.getCas().emptyLongArray();
   }
   
   /**
@@ -401,8 +401,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a DoubleArray
    */
-  default DoubleArray getEmptyDoubleArray() {
-    return this.getCas().getEmptyDoubleArray();
+  default DoubleArray emptyDoubleArray() {
+    return this.getCas().emptyDoubleArray();
   }
   
   /**
@@ -412,8 +412,8 @@ public interface JCas extends AbstractCas {
    * the CAS is reset.
    * @return 0-length instance of a DoubleArray
    */
-  default BooleanArray getEmptyBooleanArray() {
-    return this.getCas().getEmptyBooleanArray();
+  default BooleanArray emptyBooleanArray() {
+    return this.getCas().emptyBooleanArray();
   }
 
 
@@ -901,8 +901,8 @@ public interface JCas extends AbstractCas {
    * @param <T> the type of the list, e.g FloatList
    * @return - the shared (in this CAS) instance of the empty list (immutable)
    */
-  default <T extends TOP> EmptyList getEmptyList(Class<T> clazz) {
-    return this.getCasImpl().getEmptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
+  default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
+    return this.getCasImpl().emptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
   }
 
   /**
@@ -910,7 +910,7 @@ public interface JCas extends AbstractCas {
    * @param <T> the type of the list, e.g FloatArray
    * @return a shared (in this CAS) instance of the empty array (immutable)
    */
-  default <T extends TOP> CommonArrayFS getEmptyArray(Class<T> clazz) {
-    return this.getCasImpl().getEmptyArray(getCasType(clazz));
+  default <T extends TOP> CommonArrayFS emptyArray(Class<T> clazz) {
+    return this.getCasImpl().emptyArray(getCasType(clazz));
   }
 }

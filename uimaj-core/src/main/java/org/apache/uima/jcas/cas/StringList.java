@@ -69,8 +69,8 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   } 
   
   @Override
-  public EmptyStringList getEmptyList() {
-    return this._casView.getEmptyStringList();
+  public EmptyStringList emptyList() {
+    return this._casView.emptyStringList();
   }
 
   /**
@@ -80,7 +80,7 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
    * @return an StringList, with the elements from the array
    */
   public static StringList create(JCas jcas, String[] a) {
-    StringList stringList = jcas.getCasImpl().getEmptyStringList();   
+    StringList stringList = jcas.getCasImpl().emptyStringList();   
     for (int i = a.length - 1; i >= 0; i--) {
       stringList = stringList.push(a[i]);
     }   

@@ -1188,104 +1188,104 @@ public interface CAS extends AbstractCas {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
   }
   
-  default <T extends TOP> EmptyList getEmptyList(Class<T> clazz) {
-    return ((CASImpl)this.getLowLevelCAS()).getEmptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
+  default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
+    return ((CASImpl)this.getLowLevelCAS()).emptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
   }
   
   
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
-  default EmptyFloatList getEmptyFloatList() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyFloatList();
+  default EmptyFloatList emptyFloatList() {
+    return ((CASImpl)getLowLevelCAS()).emptyFloatList();
   };
   
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
-  default EmptyFSList getEmptyFSList() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyFSList();
+  default EmptyFSList emptyFSList() {
+    return ((CASImpl)getLowLevelCAS()).emptyFSList();
   };
   
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
-  default EmptyIntegerList getEmptyIntegerList() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyIntegerList();
+  default EmptyIntegerList emptyIntegerList() {
+    return ((CASImpl)getLowLevelCAS()).emptyIntegerList();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
-  default EmptyStringList getEmptyStringList() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyStringList();
+  default EmptyStringList emptyStringList() {
+    return ((CASImpl)getLowLevelCAS()).emptyStringList();
   };
   
-  default <T extends TOP> CommonArrayFS getEmptyArray(Class<T> clazz) {
-    return ((CASImpl)getLowLevelCAS()).getEmptyArray(getCasType(clazz));
+  default <T extends TOP> CommonArrayFS emptyArray(Class<T> clazz) {
+    return ((CASImpl)getLowLevelCAS()).emptyArray(getCasType(clazz));
   }
   
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default FloatArray getEmptyFloatArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyFloatArray();
+  default FloatArray emptyFloatArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyFloatArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default FSArray getEmptyFSArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyFSArray();
+  default FSArray emptyFSArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyFSArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default IntegerArray getEmptyIntegerArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyIntegerArray();
+  default IntegerArray emptyIntegerArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyIntegerArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default StringArray getEmptyStringArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyStringArray();
+  default StringArray emptyStringArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyStringArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default DoubleArray getEmptyDoubleArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyDoubleArray();
+  default DoubleArray emptyDoubleArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyDoubleArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default LongArray getEmptyLongArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyLongArray();
+  default LongArray emptyLongArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyLongArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default ShortArray getEmptyShortArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyShortArray();
+  default ShortArray emptyShortArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyShortArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default ByteArray getEmptyByteArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyByteArray();
+  default ByteArray emptyByteArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyByteArray();
   };
 
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default BooleanArray getEmptyBooleanArray() {
-    return ((CASImpl)getLowLevelCAS()).getEmptyBooleanArray();
+  default BooleanArray emptyBooleanArray() {
+    return ((CASImpl)getLowLevelCAS()).emptyBooleanArray();
   };
   
   /**

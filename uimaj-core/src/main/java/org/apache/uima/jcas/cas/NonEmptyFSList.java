@@ -98,7 +98,7 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
    * @param head -
    */
   public NonEmptyFSList(JCas jcas, TOP head) {
-    this(jcas, head, jcas.getCasImpl().getEmptyFSList());
+    this(jcas, head, jcas.getCasImpl().emptyFSList());
   }
   
   // *------------------*

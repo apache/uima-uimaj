@@ -116,7 +116,7 @@ under the License.
     </para> 
     
     <para>
-      A new set of methods on UIMA built-in lists, <code>createNonEmptyNode() and getEmptyList()</code>, 
+      A new set of methods on UIMA built-in lists, <code>createNonEmptyNode() and emptyList()</code>, 
       creates a non-empty node of the type, or retrieves a (shared) empty node of the type.  
       These methods are not static, and create or get the instance in the same CAS as the object instance.
       These methods are callable on both the empty and non-empty node instances, or on their shared
@@ -129,9 +129,9 @@ under the License.
       a corresponding UIMA built-in list or array populated with items from the array_source.
     </para>
     
-    <para>For UIMA Lists and Arrays, the CAS and JCas has getEmptyXXXList/Array methods, which return
+    <para>For UIMA Lists and Arrays, the CAS and JCas has emptyXXXList/Array methods, which return
       a shared instance of the immutable empty object.
-      The Cas and JCas have generic getEmptyArray/List, taking an argument JCas class identifying the type, 
+      The Cas and JCas have generic emptyArray/List, taking an argument JCas class identifying the type, 
       e.g.  FloatArray.class, StringList.class, etc.
     </para>
         
@@ -178,6 +178,11 @@ under the License.
         <listitem>
           <para>
             <code>getLength()</code> walks the list to compute its length
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            <code>emptyList</code> returns a shared instance of the empty list of the same type, in the same CAS
           </para>
         </listitem>
       </itemizedlist>

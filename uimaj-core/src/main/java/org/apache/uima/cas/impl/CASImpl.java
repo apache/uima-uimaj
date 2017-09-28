@@ -4770,7 +4770,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  public EmptyFSList getEmptyFSList() {
+  public EmptyFSList emptyFSList() {
     if (null == svd.emptyFSList) {
       svd.emptyFSList = new EmptyFSList(getTypeSystemImpl().fsEListType, this);
     }
@@ -4778,110 +4778,110 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   /*
-   * @see org.apache.uima.cas.CAS#getEmptyFloatList()
+   * @see org.apache.uima.cas.CAS#emptyFloatList()
    */
-  public EmptyFloatList getEmptyFloatList() {
+  public EmptyFloatList emptyFloatList() {
     if (null == svd.emptyFloatList) {
       svd.emptyFloatList = new EmptyFloatList(getTypeSystemImpl().floatEListType, this);
     }
     return svd.emptyFloatList;
   }
   
-  public EmptyIntegerList getEmptyIntegerList() {
+  public EmptyIntegerList emptyIntegerList() {
     if (null == svd.emptyIntegerList) {
       svd.emptyIntegerList = new EmptyIntegerList(getTypeSystemImpl().intEListType, this);
     }
     return svd.emptyIntegerList;
   }
   
-  public EmptyStringList getEmptyStringList() {
+  public EmptyStringList emptyStringList() {
     if (null == svd.emptyStringList) {
       svd.emptyStringList = new EmptyStringList(getTypeSystemImpl().stringEListType, this);
     }
     return svd.emptyStringList;
   }
   
-  public CommonArrayFS getEmptyArray(Type type) {
+  public CommonArrayFS emptyArray(Type type) {
     switch (((TypeImpl)type).getCode()) {
     case TypeSystemConstants.booleanArrayTypeCode :
-      return getEmptyBooleanArray();
+      return emptyBooleanArray();
     case TypeSystemConstants.byteArrayTypeCode :
-      return getEmptyByteArray();
+      return emptyByteArray();
     case TypeSystemConstants.shortArrayTypeCode :
-      return getEmptyShortArray();
+      return emptyShortArray();
     case TypeSystemConstants.intArrayTypeCode :
-      return getEmptyIntegerArray();
+      return emptyIntegerArray();
     case TypeSystemConstants.floatArrayTypeCode :
-      return getEmptyFloatArray();
+      return emptyFloatArray();
     case TypeSystemConstants.longArrayTypeCode :
-      return getEmptyLongArray();
+      return emptyLongArray();
     case TypeSystemConstants.doubleArrayTypeCode :
-      return getEmptyDoubleArray();
+      return emptyDoubleArray();
     case TypeSystemConstants.stringArrayTypeCode :
-      return getEmptyStringArray();
+      return emptyStringArray();
     case TypeSystemConstants.fsArrayTypeCode :
-      return getEmptyFSArray();
+      return emptyFSArray();
     default: throw Misc.internalError(); 
     }
   }
   
-  public FloatArray getEmptyFloatArray() {
+  public FloatArray emptyFloatArray() {
     if (null == svd.emptyFloatArray) {
       svd.emptyFloatArray = new FloatArray(this.getJCas(), 0);
     }
     return svd.emptyFloatArray;
   }
 
-  public FSArray getEmptyFSArray() {
+  public FSArray emptyFSArray() {
     if (null == svd.emptyFSArray) {
       svd.emptyFSArray = new FSArray(this.getJCas(), 0);
     }
     return svd.emptyFSArray;
   }
   
-  public IntegerArray getEmptyIntegerArray() {
+  public IntegerArray emptyIntegerArray() {
     if (null == svd.emptyIntegerArray) {
       svd.emptyIntegerArray = new IntegerArray(this.getJCas(), 0);
     }
     return svd.emptyIntegerArray;
   }
   
-  public StringArray getEmptyStringArray() {
+  public StringArray emptyStringArray() {
     if (null == svd.emptyStringArray) {
       svd.emptyStringArray = new StringArray(this.getJCas(), 0);
     }
     return svd.emptyStringArray;
   }
   
-  public DoubleArray getEmptyDoubleArray() {
+  public DoubleArray emptyDoubleArray() {
     if (null == svd.emptyDoubleArray) {
       svd.emptyDoubleArray = new DoubleArray(this.getJCas(), 0);
     }
     return svd.emptyDoubleArray;
   }
   
-  public LongArray getEmptyLongArray() {
+  public LongArray emptyLongArray() {
     if (null == svd.emptyLongArray) {
       svd.emptyLongArray = new LongArray(this.getJCas(), 0);
     }
     return svd.emptyLongArray;
   }
   
-  public ShortArray getEmptyShortArray() {
+  public ShortArray emptyShortArray() {
     if (null == svd.emptyShortArray) {
       svd.emptyShortArray = new ShortArray(this.getJCas(), 0);
     }
     return svd.emptyShortArray;
   }
   
-  public ByteArray getEmptyByteArray() {
+  public ByteArray emptyByteArray() {
     if (null == svd.emptyByteArray) {
       svd.emptyByteArray = new ByteArray(this.getJCas(), 0);
     }
     return svd.emptyByteArray;
   }
   
-  public BooleanArray getEmptyBooleanArray() {
+  public BooleanArray emptyBooleanArray() {
     if (null == svd.emptyBooleanArray) {
       svd.emptyBooleanArray = new BooleanArray(this.getJCas(), 0);
     }
@@ -4892,11 +4892,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param rangeCode special codes for serialization use only
    * @return the empty list (shared) corresponding to the type
    */
-  public EmptyList getEmptyList(int rangeCode) {
-    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? getEmptyIntegerList() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? getEmptyFloatList() :
-           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? getEmptyStringList() :
-                                                                       getEmptyFSList();
+  public EmptyList emptyList(int rangeCode) {
+    return (rangeCode == CasSerializerSupport.TYPE_CLASS_INTLIST) ? emptyIntegerList() :
+           (rangeCode == CasSerializerSupport.TYPE_CLASS_FLOATLIST) ? emptyFloatList() :
+           (rangeCode == CasSerializerSupport.TYPE_CLASS_STRINGLIST) ? emptyStringList() :
+                                                                       emptyFSList();
   }
   
   /**
@@ -4904,20 +4904,20 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param typeCode -
    * @return -
    */
-  public EmptyList getEmptyListFromTypeCode(int typeCode) {
+  public EmptyList emptyListFromTypeCode(int typeCode) {
     switch (typeCode) {
     case fsListTypeCode:
     case fsEListTypeCode:
-    case fsNeListTypeCode: return getEmptyFSList();
+    case fsNeListTypeCode: return emptyFSList();
     case floatListTypeCode:
     case floatEListTypeCode:
-    case floatNeListTypeCode: return getEmptyFloatList();
+    case floatNeListTypeCode: return emptyFloatList();
     case intListTypeCode:
     case intEListTypeCode:
-    case intNeListTypeCode: return getEmptyIntegerList();
+    case intNeListTypeCode: return emptyIntegerList();
     case stringListTypeCode:
     case stringEListTypeCode:
-    case stringNeListTypeCode: return getEmptyStringList();
+    case stringNeListTypeCode: return emptyStringList();
     default: throw new IllegalArgumentException();
     }
   }

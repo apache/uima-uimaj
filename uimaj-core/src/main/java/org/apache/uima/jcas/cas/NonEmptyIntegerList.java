@@ -100,7 +100,7 @@ public class NonEmptyIntegerList extends IntegerList implements NonEmptyList {
    * @param v -
    */
   public NonEmptyIntegerList(JCas jcas, int v) {
-    this(jcas, v, jcas.getCasImpl().getEmptyIntegerList());
+    this(jcas, v, jcas.getCasImpl().emptyIntegerList());
   }
   
   // *------------------*
