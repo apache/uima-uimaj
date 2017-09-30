@@ -385,6 +385,12 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
 		private static final String refNamePrefix = "#";
 
+		/**
+		 * map from int (the FS) to Strings
+		 *   3 states: key not in map
+		 *             key in map, value of string = "seen once"
+		 *             key in map, value of string = #nnnn  when value seen more than once
+		 */
 		private RedBlackTree<String> tree;
 
 		private IntSet seen;
@@ -479,6 +485,8 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 
 	public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames, String s,
 			PrintReferences printRefs) {
+	  final Type stringType = this.getCASImpl().getTypeSystem().getType(CAS.TYPE_NAME_STRING);
+	  
 		indent += incr;
 		final int printInfo = printRefs.printInfo(this.getAddress());
 		if (printInfo != PrintReferences.NO_LABEL) {
@@ -498,6 +506,7 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 			buf.append(" \"" + s + "\"");
 		}
 		buf.append('\n');
+		
 		CommonAuxArrayFSImpl arrayFS = null;
 		LowLevelTypeSystem llts = this.getCASImpl().ll_getTypeSystem();
 		final int typeClass = this.getCASImpl().ll_getTypeClass(llts.ll_getCodeForType(this.getType()));
@@ -607,17 +616,21 @@ public abstract class FeatureStructureImpl implements FeatureStructure, Cloneabl
 			buf.append(feat.getShortName() + ": ");
 			approp = feat.getRange();
 			// System.out.println("Range type: " + approp);
-			if (approp.equals(this.getCASImpl().getTypeSystem().getType(CAS.TYPE_NAME_STRING))
-					|| (this.getCAS().getTypeSystem().getParent(approp) != null && this.getCAS()
-							.getTypeSystem().getParent(approp).equals(
-									this.getCASImpl().getTypeSystem().getType(CAS.TYPE_NAME_STRING)))) {
+			
+			// test if range is string type, or sub-string type (whose super type is string type)
+			if (approp.equals(stringType)
+					|| (this.getCAS().getTypeSystem().getParent(approp) != null && 
+					    this.getCAS().getTypeSystem().getParent(approp).equals(stringType))) {
 				stringVal = getStringValue(feat);
 				if (stringVal == null) {
-					stringVal = "<null>";
+				  buf.append("<null>");
 				} else {
-					stringVal = "\"" + stringVal + "\"";
+				  buf.append('"');
+				  buf.append(stringVal);
+				  buf.append('"');
 				}
-				buf.append(stringVal + "\n");
+				buf.append('\n');
+				
 			} else if (!approp.isPrimitive()) {
 			  Exception e = null;
 			  try {

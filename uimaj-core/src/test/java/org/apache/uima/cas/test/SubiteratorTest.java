@@ -117,6 +117,7 @@ public class SubiteratorTest extends TestCase {
     Annotation sentence = jcas.getAnnotationIndex(Sentence.class).iterator().next();
     FSIterator<Token> tokenIterator = tokenIndex.subiterator(sentence);
     Annotation token = tokenIndex.iterator().next();
+    // debug token.toString();
     tokenIterator.moveTo(token); //throws ClassCastException 
     
     // check unambiguous iterator creation
