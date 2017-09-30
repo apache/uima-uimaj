@@ -41,7 +41,7 @@ under the License.
     <title>Properties Table</title>
       
     <para>This table describes the various JVM defined properties; specify these on the Java command line
-    using -Dxxxxxx, where the xxxxxx is one of
+    using <code>-Dxxxxxx</code>, where the <code>xxxxxx</code> is one of
     the properties starting with <code>uima.</code> from the table below.</para>  
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="2">
@@ -58,9 +58,21 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
+           <entry><para>Use UIMA V2 format for toString() for Feature Structures</para></entry>
+           
+           <entry><para><code>uima.uima.v2_pretty_print_format</code></para>
+           
+                  <para>The native v3 format for pretty printing feature structures
+                    includes an id number with each FS, and some other minor improvements.
+                    If you have code which depends on the exact format that v2 UIMA produced
+                    for the toString() operation on Feature Structures, then include this
+                    flag to revert to that format.</para></entry>
+         </row>
+         <!-- ******************************************************************************* -->
+         <row>
            <entry><para>Disable Type System consolidation</para></entry>
            
-           <entry><para>uima.disable_typesystem_consolidation</para>
+           <entry><para><code>uima.disable_typesystem_consolidation</code></para>
            
                   <para>Default: equal Type Systems are consolidated.</para>
                   <para>When type systems are committed, the resulting Type System (Java object) 
@@ -74,7 +86,7 @@ under the License.
          <row>
            <entry><para>Enable finding all Feature Structures by their int ID</para></entry>
            
-           <entry><para>uima.enable_id_to_feature_structure_map_for_all_fss</para>
+           <entry><para><code>uima.enable_id_to_feature_structure_map_for_all_fss</code></para>
            
                   <para>Default: normally created Feature Structures are not kept in a map.</para>
                   <para>In version 3, normally, Feature Structures are not added to the 
@@ -91,7 +103,7 @@ under the License.
          <row>
            <entry><para>Disabling runtime feature validation</para></entry>
            
-           <entry><para>uima.uima.disable_runtime_feature_validation</para>
+           <entry><para><code>uima.uima.disable_runtime_feature_validation</code></para>
            
                   <para>Once code is running correctly, you may remove this check for performance
                     reasons by setting this property.</para></entry>
@@ -100,7 +112,7 @@ under the License.
          <row>
            <entry><para>Disabling runtime feature <emphasis>value</emphasis> validation</para></entry>
            
-           <entry><para>uima.disable_runtime_feature_value_validation</para>
+           <entry><para><code>uima.disable_runtime_feature_value_validation</code></para>
            
                   <para>Default: features being set into FS features which are FSs are checked for proper type subsumption.</para>
                   <para>Once code is running correctly, you may remove this check for performance

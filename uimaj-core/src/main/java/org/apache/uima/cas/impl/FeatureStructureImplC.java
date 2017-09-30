@@ -28,6 +28,7 @@ import java.util.function.IntFunction;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalStateException;
+import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
@@ -47,6 +48,7 @@ import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasImpl;
@@ -80,6 +82,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public static final String DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION = "uima.disable_runtime_feature_value_validation";
   public static final boolean IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION  = !Misc.getNoValueSystemProperty(DISABLE_RUNTIME_FEATURE_VALUE_VALIDATION);
  
+  public static final String V2_PRETTY_PRINT = "uima.v2_pretty_print_format";
+  public static final boolean IS_V2_PRETTY_PRINT = // debug true || 
+                                                   Misc.getNoValueSystemProperty(V2_PRETTY_PRINT);
+  
   private  static final boolean traceFSs = CASImpl.traceFSs;
     
   // next is for experiment (Not implemented) of allocating multiple int arrays for different fss
@@ -979,6 +985,14 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     getPrintRefs(printRefs, this);
   }
 
+  /**
+   * This is called, once, at the top level thing being printed.
+   * It recursively descends any references, and updates the
+   * PrintReferences with info needed to handle circular structures 
+   * 
+   * @param printRefs the PrintReferences to update
+   * @param fs the top level FS being pretty printed, to descend if needed
+   */
   private final void getPrintRefs(PrintReferences printRefs, FeatureStructureImplC fs) {
     if (null == fs) {
       return;
@@ -990,11 +1004,15 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     final TypeImpl ti = fs._typeImpl;
     if (ti != null) { // null for REMOVED marker
+      
       if (ti.isArray() && (fs instanceof FSArray)) {
         for (TOP item : ((FSArray)fs)._getTheArray()) {
           getPrintRefs(printRefs, item);
         }
       } else {
+        if (fs instanceof UimaSerializableFSs) {
+          ((UimaSerializableFSs)fs)._save_fsRefs_to_cas_data();
+        }
         ti.getFeaturesAsStream()
           .filter(fi -> fi.getRangeImpl().isRefType)     // is ref type
           .map(fi -> fs.getFeatureValue(fi)) // get the feature value
@@ -1107,11 +1125,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     try {
     indent += incr;
-    if (indent > 20) {
+    if (!IS_V2_PRETTY_PRINT && indent > 20) {
       buf.append(" ... past indent 20 ... ");
       return;
     }
-    getPrintRefs(printRefs, this);
+      
     final int printInfo = printRefs.printInfo(this);
     if (printInfo != PrintReferences.NO_LABEL) {
       String label = printRefs.getLabel(this);
@@ -1119,7 +1137,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         buf.append(printRefs.getLabel(this));
       }
       if (printInfo == PrintReferences.JUST_LABEL) {
-        buf.append(' ');  // was newline
+        buf.append(IS_V2_PRETTY_PRINT ? ' ' : '\n');  
         return;
       }
       buf.append(' ');
@@ -1136,7 +1154,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       } else {
         buf.append(getType().getName());
       }
-      buf.append(':').append(_id);
+      
+      if (!IS_V2_PRETTY_PRINT) {
+        buf.append(':').append(_id);
+      }
+      
       if (s != null) {
         buf.append(" \"" + s + "\"");
       }
@@ -1198,7 +1220,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       
       return;
     }  // end of case
+    
     }  // end of switch
+
+    // if get here, non of the cases in the above switch fit
     
     if (this instanceof FSArray) {  // catches instance of FSArrays which are "typed" to hold specific element types
       FSArray a = (FSArray) this;
@@ -1213,8 +1238,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       StringUtils.printSpaces(indent, buf);
       buf.append(fi.getShortName() + ": ");
       TypeImpl range = (TypeImpl) fi.getRange();
-      if (range.isPrimitive()) {
+      if (range.isPrimitive()) {  // Strings and string subtypes are primitive
         addStringOrPrimitive(buf, fi);
+        buf.append('\n'); 
         continue;
       }
       
@@ -1235,7 +1261,12 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
             buf.append(val._getTypeImpl().getShortName()).append(':').append(val._id);
           }
         } else {
-          ppval(val, indent, incr, buf, useShortNames, printRefs, false);          
+          // treat sofa refs special, since they're pervasive
+          if (val instanceof Sofa) {
+            buf.append(((Sofa)val).getSofaID());
+          } else {
+            ppval(val, indent, incr, buf, useShortNames, printRefs, false);
+          }
           buf.append('\n');
         }
         
@@ -1298,7 +1329,9 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (arrayLen > 0) {
       StringUtils.printSpaces(indent, buf);
       buf.append("Array elements: [");
-      int numToPrint = Math.min(15, arrayLen);  // print 15 or fewer elements
+      int numToPrint = IS_V2_PRETTY_PRINT
+                          ? arrayLen
+                          : Math.min(15, arrayLen);  // print 15 or fewer elements
 
       for (int i = 0; i < numToPrint; i++) {
         if (i > 0) {
@@ -1308,7 +1341,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         if (null == element) {
           buf.append("null");
         } else {
-          buf.append("\"" + Misc.elideString(element, 50) + "\"");  // was 15
+          buf.append('"');
+          buf.append(IS_V2_PRETTY_PRINT
+                       ? element
+                       : Misc.elideString(element, 50));
+          buf.append('"');
         }
       }
       
