@@ -575,7 +575,7 @@ public class BinaryCasSerDes {
           CASMgrSerializer cms = (embeddedCasMgrSerializer != null) ? embeddedCasMgrSerializer : casMgrSerializer; 
           TypeSystemImpl tsRead = (cms != null) ? cms.getTypeSystem() : null;
           if (null != tsRead) {
-            tsRead = tsRead.commit();  // jcas initialized, but no generators for this cas set up
+            tsRead = tsRead.commit(baseCas.getJCasClassLoader()); // https://issues.apache.org/jira/browse/UIMA-5598
           }
             
           TypeSystemImpl ts_for_decoding =
