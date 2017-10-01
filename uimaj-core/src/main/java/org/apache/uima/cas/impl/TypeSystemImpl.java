@@ -1313,6 +1313,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return commit(this.getClass().getClassLoader());  // default if not called with a CAS context 
   }
   
+  /**
+   * @see org.apache.uima.cas.admin.TypeSystemMgr#commit(ClassLoader)
+   */
+  @Override
   public TypeSystemImpl commit(ClassLoader cl) {
     synchronized(this) {
       if (this.locked) {
