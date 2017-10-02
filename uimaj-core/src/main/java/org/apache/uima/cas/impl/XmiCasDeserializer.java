@@ -1081,7 +1081,7 @@ public class XmiCasDeserializer {
           
             ByteArray byteArray = createOrUpdateByteArray(featVal, -1, existingByteArray);
             if (byteArray != existingByteArray) {
-              fs.setFeatureValue(fi,  byteArray);
+              CASImpl.setFeatureValueMaybeSofa(fs, fi, byteArray);
             }
           } else {  // not ByteArray, but encoded locally
             String[] arrayVals = parseArray(featVal);
@@ -1112,14 +1112,14 @@ public class XmiCasDeserializer {
 
     private void deserializeFsRef(String featVal, FeatureImpl fi, TOP fs) {
       if (featVal == null || featVal.length() == 0) {
-        fs.setFeatureValue(fi, null);  
+        CASImpl.setFeatureValueMaybeSofa(fs, fi, null);  
       } else {
         int xmiId = Integer.parseInt(featVal); 
         TOP tgtFs = maybeGetFsForXmiId(xmiId);
         if (null == tgtFs) {
           fixupToDos.add( () -> finalizeRefValue(xmiId, fs, fi));
         } else {
-          fs.setFeatureValue(fi,  tgtFs);
+          CASImpl.setFeatureValueMaybeSofa(fs, fi, tgtFs);
           ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
         }
       }
@@ -1192,7 +1192,7 @@ public class XmiCasDeserializer {
           CommonArrayFS existingArray = (CommonArrayFS) fs.getFeatureValue(fi);
           CommonArrayFS casArray = createOrUpdateArray(fi.getRangeImpl(), featVals, -1, existingArray);
           if (existingArray != casArray) {
-            fs.setFeatureValue(fi, casArray);
+            CASImpl.setFeatureValueMaybeSofa(fs, fi, (TOP)casArray);
           }
           //add to nonshared fs to encompassing FS map
           if (!fi.isMultipleReferencesAllowed()) {  // ! multiple refs => value is not shared
@@ -1829,10 +1829,10 @@ public class XmiCasDeserializer {
           // the element may be out of typesystem.  In that case set it
           // to null, but record the id so we can add it back on next serialization.
           this.sharedData.addOutOfTypeSystemAttribute(fs, fi.getShortName(), Integer.toString(xmiId));
-          fs.setFeatureValue(fi,  null);
+          CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
         }
       } else {
-        fs.setFeatureValue(fi,  tgtFs);
+        CASImpl.setFeatureValueMaybeSofa(fs, fi, tgtFs);
         ts.fixupFSArrayTypes(fi.getRangeImpl(), tgtFs);
       }
     }

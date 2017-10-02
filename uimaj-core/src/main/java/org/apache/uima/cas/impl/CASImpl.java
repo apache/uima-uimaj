@@ -1902,12 +1902,29 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   /**
+   * internal use - special setter for setting feature values, including
+   *   special handling if the feature is for the sofaArray,
+   *   when deserializing
+   * @param fs - 
+   * @param feat -
+   * @param value -
+   */
+  public static void setFeatureValueMaybeSofa(TOP fs, FeatureImpl feat, TOP value) {
+    if (fs instanceof Sofa) {
+      assert feat.getCode() == sofaArrayFeatCode;
+      ((Sofa)fs).setLocalSofaData(value);
+    } else {
+      fs.setFeatureValue(feat, value);
+    }
+  }
+  
+  /**
    * Internal use, for cases where deserializing - special case setting sofString to skip updating the document annotation
    * @param fs -
    * @param feat -
    * @param s -
    */
-  public void setFeatureValueFromStringNoDocAnnotUpdate(FeatureStructureImplC fs, FeatureImpl feat, String s) {
+  public static void setFeatureValueFromStringNoDocAnnotUpdate(FeatureStructureImplC fs, FeatureImpl feat, String s) {
     if (fs instanceof Sofa && 
         feat.getCode() == sofaStringFeatCode) {
       ((Sofa)fs).setLocalSofaDataNoDocAnnotUpdate(s);
@@ -1922,7 +1939,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param feat the feature to update-
    * @param s the string representation of the value, could be null
    */
-  public void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat, String s) {
+  public static void setFeatureValueFromString(FeatureStructureImplC fs, FeatureImpl feat, String s) {
     final TypeImpl range = feat.getRangeImpl();
     if (fs instanceof Sofa) {
       // sofa has special setters

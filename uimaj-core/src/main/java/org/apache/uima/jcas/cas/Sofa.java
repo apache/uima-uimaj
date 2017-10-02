@@ -37,12 +37,12 @@ public class Sofa extends TOP implements SofaFSImpl {
   
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_SOFA;
-  public final static String _FeatName_sofaNum    = "sofaNum";
-  public final static String _FeatName_sofaID     = "sofaID";
-  public final static String _FeatName_mimeType   = "mimeType";
-  public final static String _FeatName_sofaArray  = "sofaArray";
-  public final static String _FeatName_sofaString = "sofaString";
-  public final static String _FeatName_sofaURI    = "sofaURI";
+  public final static String _FeatName_sofaNum    = "sofaNum";  // int
+  public final static String _FeatName_sofaID     = "sofaID";   // string
+  public final static String _FeatName_mimeType   = "mimeType"; // string
+  public final static String _FeatName_sofaArray  = "sofaArray"; // TOP 
+  public final static String _FeatName_sofaString = "sofaString"; // string
+  public final static String _FeatName_sofaURI    = "sofaURI";    // string
 
 	public final static int typeIndexID = JCasRegistry.register(Sofa.class);
 

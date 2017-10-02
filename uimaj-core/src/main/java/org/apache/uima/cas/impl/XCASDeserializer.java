@@ -895,7 +895,7 @@ public class XCASDeserializer {
           String featName = "_ref_" + featFullName.substring(separatorOffset + 1);
           ootsAttrs.add(new Pair(featName, Integer.toString(extId)));
         }
-        fs.setFeatureValue(fi, null);
+        CASImpl.setFeatureValueMaybeSofa(fs, fi, null);
       } else {
         // the sofa ref in annotationBase is set when the fs is created, not here
         if (fi.getCode() != TypeSystemConstants.annotBaseSofaFeatCode) { 
@@ -911,7 +911,7 @@ public class XCASDeserializer {
           
           // handle case where feature is xyz[] (an array ref, not primitive) but the value of fs is FSArray
           ts.fixupFSArrayTypes(fi.getRangeImpl(), fsInfo.fs);
-          fs.setFeatureValue(fi, fsInfo.fs);
+          CASImpl.setFeatureValueMaybeSofa(fs, fi, fsInfo.fs);
         }
       }
     }
