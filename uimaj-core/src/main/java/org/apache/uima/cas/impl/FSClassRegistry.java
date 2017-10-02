@@ -205,6 +205,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * Current FsGenerator[] kept in CASImpl shared view data, switched as needed for PEARs. 
    */
   private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_to_type2JCas = new IdentityHashMap<>();
+  
+  private static final Map<ClassLoader, Map<String, JCasClassInfo>> cl_4pears_to_type2JCas = new IdentityHashMap<>();
     
   /**
    * precomputed generators for built-in types
@@ -256,17 +258,21 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @param isDoUserJCasLoading always true, left in for experimentation in the future with dynamic generation of JCas classes
    * @param cl the class loader. For Pears, is the pear class loader
    */
-  static void loadJCasForTSandClassLoader(TypeSystemImpl ts, boolean isDoUserJCasLoading, ClassLoader cl) { 
+  private static void loadJCasForTSandClassLoader(
+      TypeSystemImpl ts, 
+      boolean isDoUserJCasLoading, 
+      ClassLoader cl, 
+      Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j) { 
 
     boolean alreadyPartiallyLoaded = false;  // true if any JCas types for this class loader have previously been loaded
     Map<String, JCasClassInfo> type_to_jcasClassInfo;
 
-    synchronized (cl_to_type2JCas) {
-      type_to_jcasClassInfo = cl_to_type2JCas.get(cl);
+    synchronized (cl2t2j) {
+      type_to_jcasClassInfo = cl2t2j.get(cl);
     
       if (null == type_to_jcasClassInfo) {    
         type_to_jcasClassInfo = new HashMap<>();
-        cl_to_type2JCas.put(cl, type_to_jcasClassInfo);
+        cl2t2j.put(cl, type_to_jcasClassInfo);
       } else {
         alreadyPartiallyLoaded = true;
       }
@@ -869,14 +875,18 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @return the generators for that set, as an array indexed by type code
    */
   static FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear, TypeSystemImpl tsi) {
-    synchronized(cl_to_type2JCas) {
+    final Map<ClassLoader, Map<String, JCasClassInfo>> cl2t2j = isPear ? cl_4pears_to_type2JCas : cl_to_type2JCas;
+    synchronized(cl2t2j) {
+//      //debug
+//      System.out.format("debug loading JCas for type System %s ClassLoader %s, isPear: %b%n", 
+//                         tsi.hashCode(), cl, isPear);
       // This is the first time this class loader is being used - load the classes for this type system, or
       // This is the first time this class loader is being used with this particular type system
-      loadJCasForTSandClassLoader(tsi, true, cl);
+      loadJCasForTSandClassLoader(tsi, true, cl, cl2t2j);
 
       FsGenerator3[] r = new FsGenerator3[tsi.getTypeArraySize()];
                           
-      Map<String, JCasClassInfo> t2jcci = cl_to_type2JCas.get(cl);
+      Map<String, JCasClassInfo> t2jcci = cl2t2j.get(cl);
       // can't use values alone because many types have the same value (due to copy-down)
       for (Entry<String, JCasClassInfo> e : t2jcci.entrySet()) {
         TypeImpl ti = tsi.getType(Misc.javaClassName2UimaTypeName(e.getKey()));

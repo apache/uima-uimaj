@@ -427,10 +427,21 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   /**
    * Cache for implementing map from type code -> FsGenerator
    * Shared by all CASes using this type system
-   *   Excludes FsGeneratorArrays - those are built-in and constant 
+   *
+   *   maps from classloader to generator set for non-pears
+   *   
    */
   private final Map<ClassLoader, FsGenerator3[]> generatorsByClassLoader = new IdentityHashMap<>();
-  
+
+  /**
+   * Cache for implementing map from type code -> FsGenerator
+   * Shared by all CASes using this type system
+   *
+   *   maps from classloader to generator set for pears
+   *   
+   */
+  private final Map<ClassLoader, FsGenerator3[]> generators4pearsByClassLoader = new IdentityHashMap<>();
+
   public TypeSystemImpl() {
 
     // set up meta info (TypeImpl) for built-in types
@@ -1341,6 +1352,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         if (null != prevWr) {
           TypeSystemImpl prev = prevWr.get();
           if (null != prev) {
+            // the following is a no-op if the generators already set up for this class loader
+            prev.getGeneratorsForClassLoader(cl, false);
             return prev;
           }
         }      
@@ -2628,11 +2641,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @return the generators
    */
   public FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {
-    synchronized (generatorsByClassLoader) {
-      FsGenerator3[] g = generatorsByClassLoader.get(cl); // a separate map per type system instance
+    Map<ClassLoader, FsGenerator3[]> gByC = isPear ? generators4pearsByClassLoader : generatorsByClassLoader;
+    synchronized (gByC) {
+      FsGenerator3[] g = gByC.get(cl); // a separate map per type system instance
       if (g == null) {
         g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
-        generatorsByClassLoader.put(cl, g);
+        gByC.put(cl, g);
       }
       return g;
     }

@@ -1525,6 +1525,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // at the same time
     final ClassLoader cl = getJCasClassLoader();
     synchronized (ts) {
+//      //debug
+//      System.out.format("debug committing ts %s classLoader %s%n", ts.hashCode(), cl);
       if (!ts.isCommitted()) {
         TypeSystemImpl tsc = ts.commit(getJCasClassLoader());
         if (tsc != ts) {
