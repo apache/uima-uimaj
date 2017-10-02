@@ -111,6 +111,175 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration combine.self="override">
+              <target>
+                <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
+                <condition property="eclipse.home" value="C:/p/eclipse/470oxy">
+                  <not>
+                    <equals arg2="$C:/p/eclipse/470oxy" arg1="C:/p/eclipse/470oxy" />
+                  </not>
+                </condition>
+                <property environment="envVar" />
+                <condition property="eclipse.home" value="${envVar.ECLIPSE_HOME}">
+                  <isset property="envVar.ECLIPSE_HOME" />
+                </condition>
+                <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
+                <fail unless="uima-eclipse-jar-processor" message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
+                <!--  skip this for pre-production, only want latest there
+                <if>
+                  <equals arg2="true" arg1="${isApacheRelease}" />
+                  <then>
+                    
+                    <echo>checking out eclipse update subsite uimaj-v3-pre-production from dist ...release...</echo>
+                    <delete quiet="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                    <exec failonerror="true" executable="svn">
+                      <arg value="checkout" />
+                      <arg value="https://dist.apache.org/repos/dist/release/uima/eclipse-update-site/uimaj-v3-pre-production" />
+                      <arg value="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                    </exec>
+                  </then>
+                  <else>
+                    <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
+                    <delete quiet="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                  </else>
+                </if>
+                   -->
+                <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
+                <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.500.v20160504-1450.jar" failonerror="true">
+                  <arg line="-processAll" />
+                  <arg line="-repack" />
+                  <arg line="-pack" />
+                  <arg line="-verbose" />
+                  <arg line="-outputDir C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work/plugins" />
+                  <arg line="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/toBePacked" />
+                </java>
+                <copy todir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work/plugins" failonerror="true">
+                  <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/toBePacked" />
+                </copy>
+                <echo>Generate the p2 metadata and publish new artifacts</echo>
+                <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar" failonerror="true">
+                  <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+                  <arg line="-metadataRepository file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                  <arg line="-artifactRepository file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                  <arg line="-source C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work" />
+                  <arg line="-configs ANY.ANY.ANY" />
+                  <arg line="-publishArtifacts" />
+                  <arg line="-reusePack200Files" />
+                  <arg line="-compress" />
+                  <arg line="-append" />
+                </java>
+                <echo>Augment p2 metadata with category information</echo>
+                <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar" failonerror="true">
+                  <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher" />
+                  <arg line="-metadataRepository file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                  <arg line="-categoryDefinition file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site/category.xml" />
+                  <arg line="-categoryQualifier apache-uima" />
+                  <arg line="-compress" />
+                </java>
+                <if>
+                  <equals arg2="true" arg1="${isApacheRelease}" />
+                  <then>
+                    <echo message="Generating checksums for new features and plugins" />
+                    <checksum format="MD5SUM" algorithm="sha1">
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                        <include name="**/*.gz" />
+                        <include name="**/*.jar" />
+                      </fileset>
+                    </checksum>
+                    <checksum format="MD5SUM" algorithm="md5">
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                        <include name="**/*.gz" />
+                        <include name="**/*.jar" />
+                      </fileset>
+                    </checksum>
+                    <echo message="Generating gpg signatures for new features and plugins" />
+                    <apply failonerror="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work" executable="gpg">
+                      <arg value="--detach-sign" />
+                      <arg value="--armor" />
+                      <arg value="--batch" />
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                        <include name="**/*.jar" />
+                        <include name="**/*.jar.pack.gz" />
+                      </fileset>
+                    </apply>
+                    <echo message="Copying the checksums and signatures to the update subsite" />
+                    <copy todir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" failonerror="true">
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                        <include name="**/*.asc" />
+                        <include name="**/*.md5" />
+                        <include name="**/*.sha1" />
+                      </fileset>
+                    </copy>
+                    <echo message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
+                    <delete dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                      <include name="*.sha1" />
+                      <include name="*.md5" />
+                      <include name="*.asc" />
+                    </delete>
+                    <echo message="Generating checksums for updated artifacts.jar and content.jar" />
+                    <checksum format="MD5SUM" algorithm="sha1">
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                        <include name="*.jar" />
+                      </fileset>
+                    </checksum>
+                    <checksum format="MD5SUM" algorithm="md5">
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                        <include name="*.jar" />
+                      </fileset>
+                    </checksum>
+                    <echo message="Generating gpg signatures for artifacts.jar and content.jar" />
+                    <apply failonerror="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" executable="gpg">
+                      <arg value="--detach-sign" />
+                      <arg value="--armor" />
+                      <arg value="--batch" />
+                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                        <include name="*.jar" />
+                      </fileset>
+                    </apply>
+                  </then>
+                </if>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
+            <scope>runtime</scope>
+            <exclusions>
+              <exclusion>
+                <artifactId>ant</artifactId>
+                <groupId>ant</groupId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-apache-regexp</artifactId>
+            <version>1.9.2</version>
+            <scope>compile</scope>
+          </dependency>
+          <dependency>
+            <groupId>jakarta-regexp</groupId>
+            <artifactId>jakarta-regexp</artifactId>
+            <version>1.4</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+
    </plugins>
   </build>
 
