@@ -299,6 +299,9 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
   <section id="uv3.new_extended_apis.other">
     <title>Other changes</title>
     
+    <para>FSIterator interface now implements Iterable, so you can use these in the extended for syntax.
+      For example: <code>for (TOP item : jcas.getAllIndexedFSs(TOP.class)) ... </code></para>
+    
     <para>The TypeSystemMgr Interface has a variation of the <code>commit</code> method, which has a parameter 
       that specifies the class loader to be used when loading JCas class.  This should be used whenever there are
       user-specified JCas classes associated with the type system.  If not specified, it defaults to the class
