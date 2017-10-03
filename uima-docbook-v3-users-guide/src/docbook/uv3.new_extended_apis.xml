@@ -299,6 +299,8 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
   <section id="uv3.new_extended_apis.other">
     <title>Other changes</title>
     
+    <para>The convenience methods in the JCas have been duplicated in the CAS, including <code>getAllIndexFS</code>.</para>
+    
     <para>FSIterator interface now implements Iterable, so you can use these in the extended for syntax.
       For example: <code>for (TOP item : jcas.getAllIndexedFSs(TOP.class)) ... </code></para>
     

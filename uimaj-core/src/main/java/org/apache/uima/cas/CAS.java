@@ -1297,4 +1297,19 @@ public interface CAS extends AbstractCas {
     return this.getJCasImpl().getCasType(clazz);
   }
   
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
+   * are not removed.
+   *
+   * @param clazz - the JCas Java class specifing which type and subtypes are included
+   * @param <T> the Java clazz
+   *  
+   * @return An iterator that returns all indexed FeatureStructures of the Type and its subtypes, 
+   *    corresponding to the JCas clazz, in no particular order.
+   */
+  default <T extends TOP> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
+    return this.getIndexRepository().getAllIndexedFS(getCasType(clazz));
+  }
+
 }
