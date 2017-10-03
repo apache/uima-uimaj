@@ -611,14 +611,16 @@ public class FeatureStructureTest extends TestCase {
 	public void testToString() {
 		FeatureStructure listFS = this.cas.createFS(this.neListType);
 		listFS.setFeatureValue(this.tlFeature, listFS);
-		// System.out.println(listFS.toString());
+		System.out.println("toString for fslist, tail -> node, head is null");
+		System.out.println(listFS.toString());
 
 		FeatureStructure value = this.cas.createFS(this.tokenType);
 		FeatureStructure newList = this.cas.createFS(this.neListType);
 		newList.setFeatureValue(this.tlFeature, listFS);
 		newList.setFeatureValue(this.hdFeature, value);
 		listFS.setFeatureValue(this.hdFeature, value);
-		// System.out.println("\n" + newList.toString());
+		System.out.println("toString for fslist, tail is prev, prev's head: new token, head is same as rpev's head");
+		System.out.println(newList.toString());
 	}
 
 	public static void main(String[] args) {

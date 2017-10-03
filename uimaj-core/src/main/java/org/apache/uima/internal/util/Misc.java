@@ -184,10 +184,23 @@ public class Misc {
    * @return the stringBuilder, with nl if needed, and indention
    */
   public static StringBuilder indent(StringBuilder sb, int indent) {
+    // if the current sb doesn't end with a new line and indent > 0, add a new line
     if (!endsWithNl(sb) && indent > 0) {
       sb.append(ls);
     }
     return sb.append(blanks, 0, Math.min(blanks.length(), indent));    
+  }
+  
+  public static void addNlIfMissing(StringBuilder sb) {
+    if (!endsWithNl(sb)) {
+      sb.append(ls);
+    }
+  }
+  
+  public static void addNlIfMissing(StringBuffer sb) {
+    if (!endsWithNl(sb)) {
+      sb.append(ls);
+    }
   }
   
   private static boolean endsWithNl(StringBuilder sb) {
@@ -195,6 +208,11 @@ public class Misc {
     return (l >= 1) && sb.charAt(l-1) == '\n';
   }
     
+  private static boolean endsWithNl(StringBuffer sb) {
+    int l = sb.length();
+    return (l >= 1) && sb.charAt(l-1) == '\n';
+  }
+
   public final static MethodHandles.Lookup UIMAlookup = MethodHandles.lookup();
  
   
@@ -356,6 +374,7 @@ public class Misc {
   }
   
   public static <T> StringBuilder addElementsToStringBuilder(int[] indent, StringBuilder sb, Collection<T> c, int limit, BiConsumer<StringBuilder, T> appender) {
+    
   
     int origLength = sb.length();
     
@@ -386,6 +405,36 @@ public class Misc {
     } else {
       sb.setLength(sb.length() - 2);  // drop the final ", "
     }
+    
+    sb.append(']');
+    return sb;
+  }
+  
+  public static StringBuilder addElementsToStringBuilder(StringBuilder sb, int size, int limit, int indent, int incr, BiConsumer<StringBuilder, Integer> appender) {
+    int origLength = sb.length();
+    
+    if (size == 0) {       // empty case
+      return sb.append("[]");
+    }
+    
+    // first try to put on one line
+    sb.append('[');
+
+    for (int i = 0; i < limit; i++) {
+      if (i != 0) {
+        sb.append(", ");
+      }
+      appender.accept(sb, i);
+      
+      if (sb.length() - origLength > 60) {
+        sb.setLength(origLength);  // is too long to present on one line, change to multi-line format
+        return style2(sb, size, limit, indent, incr, appender);
+      }
+    }
+    
+    if (size > limit) {
+      sb.append("...");
+    } 
     
     sb.append(']');
     return sb;
@@ -422,7 +471,32 @@ public class Misc {
     }
     return sb;
   }
-  
+
+  private static <T> StringBuilder style2(StringBuilder sb, int size, int limit, int indent, int incr, BiConsumer<StringBuilder, Integer> appender) {
+    sb.append("[");
+    indent += incr;
+
+    for (int i = 0; i < limit; i++) {
+      if (i != 0) {
+        sb.append(',');
+      }
+      sb.append('\n');
+      indent(sb, indent);
+      appender.accept(sb, i);
+    }
+    
+    if (size > limit) {
+      sb.append(",\n");
+      indent(sb, indent);
+      sb.append("...");
+    }
+
+    sb.append('\n');
+    indent(sb, indent - incr);
+    sb.append(']');
+    return sb;
+  }
+
   /**
    * Writes a byte array output stream to a file
    * @param baos the array to write
@@ -565,7 +639,11 @@ public class Misc {
     } 
   }
   
-  
+  /**
+   * Takes trailing arguments of strings and adds them all the first
+   * @param c the collection to add the strings to
+   * @param v 0 or more strings as arguments
+   */
   static public void addAll(Collection<String> c, String ... v) {
     for (String s : v) {
       c.add(s);

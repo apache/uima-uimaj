@@ -302,6 +302,11 @@ public class SerDesTest4 extends SerDesTstCommon {
 
   public void testAllKinds() {
     loadCas(lfs);
+    // uncomment this to test toString()
+//    int i = 0;
+//    for (TOP item : cas.getIndexRepository().getAllIndexedFS(TOP.class)) {
+//      System.out.println(Integer.toString(i++) + ": " + item.toString());
+//    }
     verify("AllKinds");
   }
 

@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 
 import org.apache.uima.UIMARuntimeException;
@@ -38,7 +40,6 @@ import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
-import org.apache.uima.internal.util.StringUtils;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
@@ -1004,8 +1005,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     final TypeImpl ti = fs._typeImpl;
     if (ti != null) { // null for REMOVED marker
-      
-      if (ti.isArray() && (fs instanceof FSArray)) {
+      // for v2 style, don't descend fs arrays; these are omitted
+      if (!IS_V2_PRETTY_PRINT && ti.isArray() && (fs instanceof FSArray)) {
         for (TOP item : ((FSArray)fs)._getTheArray()) {
           getPrintRefs(printRefs, item);
         }
@@ -1050,6 +1051,18 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     prettyPrint(indent, incr, buf, useShortNames, null);
   }
 
+  /**
+   * Top level, does computation of self-ref
+   * Pretty prints this Feature Structure, no trailing nl
+   * Old form - uses string buffer.
+   * @param indent the indent amount
+   * @param incr the amount the indent is increased for a level
+   * @param buf where the resulting string is built
+   * @param useShortNames true to use short name
+   * @param s extra string to print
+   * @deprecated use form with StringBuilder (not StringBuffer)
+   */
+  @Deprecated
   @Override
   public void prettyPrint(int indent, int incr, StringBuffer buf, boolean useShortNames, String s) {
     PrintReferences printRefs = new PrintReferences();
@@ -1057,16 +1070,25 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
   }
   
+  /**
+   * Top level, does computation of self-ref
+   * Pretty prints this Feature Structure, no trailing nl
+   * @param indent the indent amount
+   * @param incr the amount the indent is increased for a level
+   * @param buf where the resulting string is built
+   * @param useShortNames true to use short name
+   * @param s extra string to print
+   */
   @Override
   public void prettyPrint(int indent, int incr, StringBuilder buf, boolean useShortNames, String s) {
     PrintReferences printRefs = new PrintReferences();
     getPrintRefs(printRefs);
-    prettyPrint(indent, incr, buf, useShortNames, s, printRefs);
+    prettyPrint(indent, incr, buf, useShortNames, s, printRefs);    
   }
 
   // old version from v2 using StringBuffer
   /**
-   * 
+   * Internal Use Only, public only for backwards compatibility
    * @param indent -
    * @param incr -
    * @param buf -
@@ -1101,14 +1123,28 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     prettyPrint(indent, incr, buf, useShortNames, s, printRefs, false);
   }
   
+  /**
+   * 
+   * @param sb -
+   */
   public void prettyPrintShort(StringBuilder sb) {
     prettyPrint(0, 2, sb, true, "", new PrintReferences(), true);
   }
   
-  public void prettyPrint(
+  /**
+   * recursively called by ppval
+   * @param indent -
+   * @param incr -
+   * @param buf -
+   * @param useShortNames -
+   * @param s -
+   * @param printRefs -
+   * @param isShortForm_arg -
+   */
+  private void prettyPrint(
       int indent,  // the current indent position
       int incr,    // the delta to indent this FS printing
-      StringBuilder buf, 
+      final StringBuilder buf, 
       boolean useShortNames, 
       String s, // carries the "#123" id refs for others to use, labels this fs with that.
       PrintReferences printRefs,
@@ -1125,10 +1161,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     try {
     indent += incr;
-    if (!IS_V2_PRETTY_PRINT && indent > 20) {
-      buf.append(" ... past indent 20 ... ");
-      return;
-    }
+//    if (!IS_V2_PRETTY_PRINT && indent > 20) {
+//      buf.append(" ... past indent 20 ... ");
+//      return;
+//    }
       
     final int printInfo = printRefs.printInfo(this);
     if (printInfo != PrintReferences.NO_LABEL) {
@@ -1173,50 +1209,50 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     switch (_getTypeCode()) {
     case TypeSystemConstants.stringArrayTypeCode: {
       StringArray a = (StringArray) this;
-      printArrayElements(a.size(), i -> a.get(i), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, a.get(i)), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.intArrayTypeCode: {
       IntegerArray a = (IntegerArray) this;
-      printArrayElements(a.size(), i -> Integer.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Integer.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.floatArrayTypeCode: {
       FloatArray a = (FloatArray) this;
-      printArrayElements(a.size(), i -> Float.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Float.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.booleanArrayTypeCode: {
       BooleanArray a = (BooleanArray) this;
-      printArrayElements(a.size(), i -> Boolean.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Boolean.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.byteArrayTypeCode: {
       ByteArray a = (ByteArray) this;
-      printArrayElements(a.size(), i -> Byte.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Byte.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.shortArrayTypeCode: {
       ShortArray a = (ShortArray) this;
-      printArrayElements(a.size(), i -> Short.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Short.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.longArrayTypeCode: {
       LongArray a = (LongArray) this;
-      printArrayElements(a.size(), i -> Long.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Long.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.doubleArrayTypeCode: {
       DoubleArray a = (DoubleArray) this;
-      printArrayElements(a.size(), i -> Double.toString(a.get(i)), indent, buf);
+      printArrayElements(a.size(), i -> appendOrNull(buf, Double.toString(a.get(i))), indent, incr, buf);
       return;
     }
     case TypeSystemConstants.fsArrayTypeCode: {
+      if (IS_V2_PRETTY_PRINT) {
+        break;  // v2 did not descend to print FSArray contents
+      }
       FSArray a = (FSArray) this;
-      printArrayElements(a.size(), 
-                         i -> ppArrayVal(a.get(i), incr, useShortNames, printRefs, isShortForm), 
-                         indent, 
-                         buf);
+      printFSArrayElements(a, indent, incr, buf, useShortNames, printRefs, isShortForm);
       
       return;
     }  // end of case
@@ -1226,21 +1262,20 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     // if get here, non of the cases in the above switch fit
     
     if (this instanceof FSArray) {  // catches instance of FSArrays which are "typed" to hold specific element types
+      if (IS_V2_PRETTY_PRINT) {
+        return; // v2 did not descend to print fs array contents
+      }
       FSArray a = (FSArray) this;
-      printArrayElements(a.size(), 
-                         i -> ppArrayVal(a.get(i), incr, useShortNames, printRefs, isShortForm), 
-                         indent, 
-                         buf);
+      printFSArrayElements(a, indent, incr, buf, useShortNames, printRefs, isShortForm);
       return;
     }
     
     for (FeatureImpl fi : _typeImpl.getFeatureImpls()) {
-      StringUtils.printSpaces(indent, buf);
+      Misc.indent(buf, indent);
       buf.append(fi.getShortName() + ": ");
       TypeImpl range = (TypeImpl) fi.getRange();
       if (range.isPrimitive()) {  // Strings and string subtypes are primitive
         addStringOrPrimitive(buf, fi);
-        buf.append('\n'); 
         continue;
       }
       
@@ -1267,7 +1302,6 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
           } else {
             ppval(val, indent, incr, buf, useShortNames, printRefs, false);
           }
-          buf.append('\n');
         }
         
 //          if (val != null && !val._typeImpl.getName().equals(CAS.TYPE_NAME_SOFA)) {
@@ -1292,7 +1326,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (range.isStringOrStringSubtype()) {
       String stringVal = getStringValue(fi);
       stringVal = (null == stringVal) ? "<null>" : "\"" + Misc.elideString(stringVal, 80) + "\"";
-      sb.append(stringVal + '\n');
+      sb.append(stringVal);  // caller adds nl
     } else {
       sb.append(this.getFeatureValueAsString(fi));
     }
@@ -1312,48 +1346,79 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
       buf.append((val == null) ? "<null>" : "sofa id: " +((SofaFS) val).getSofaID()); 
     }    
   }
+  
+  /**
+   * For printing arrays except FSArrays; called after printing the type:nnn
+   *   prints the length
+   *   if the length = 0 that's all
+   *   otherwise:
+   *   uses Misc.addElementsToStringBuilder to output the elements.  This routine does
+   *       [ + array contents + ], unless the line is too long, in which case it switches to multi-line
+   * @param arrayLen the length
+   * @param f the feature structure
+   * @param indent the current indent
+   * @param incr the indent incr
+   * @param buf the stringbuilder where the result is added
+   */
+  private void printArrayElements(int arrayLen, IntConsumer f, int indent, int incr, StringBuilder buf) {
+    Misc.indent(buf, indent);
+    buf.append("Array length: " + arrayLen);
+    if (arrayLen == 0) {
+      return;
+    }
 
-  private String ppArrayVal(FeatureStructureImplC val, 
-                            int incr, 
-                            boolean useShortNames, 
-                            PrintReferences printRefs, 
-                            boolean isShortForm) {
-    StringBuilder sb = new StringBuilder();
-    ppval(val, 0, incr, sb, useShortNames, printRefs, isShortForm);
-    return sb.toString();
+    Misc.indent(buf, indent);
+    buf.append("Array elements: ");
+    if (IS_V2_PRETTY_PRINT) {
+      buf.append("[");
+      for (int i = 0; i < arrayLen; i++) {
+        if (i > 0) {
+            buf.append(", ");
+        }
+        f.accept(i); //this._casView.ll_getStringArrayValue(this.getAddress(), i);
+      }
+      buf.append("]");  // no extra new line
+    } else {
+      // no limit to size
+      Misc.addElementsToStringBuilder(buf, arrayLen, arrayLen, indent, incr, (sb, i) -> f.accept(i));
+    }
   }
   
-  private void printArrayElements(int arrayLen, IntFunction<String> f, int indent, StringBuilder buf) {
-    StringUtils.printSpaces(indent, buf);
-    buf.append("Array length: " + arrayLen + "\n");
-    if (arrayLen > 0) {
-      StringUtils.printSpaces(indent, buf);
-      buf.append("Array elements: [");
-      int numToPrint = IS_V2_PRETTY_PRINT
-                          ? arrayLen
-                          : Math.min(15, arrayLen);  // print 15 or fewer elements
-
-      for (int i = 0; i < numToPrint; i++) {
-        if (i > 0) {
-          buf.append(", ");
-        }
-        String element = f.apply(i); //this._casView.ll_getStringArrayValue(this.getAddress(), i);
-        if (null == element) {
-          buf.append("null");
-        } else {
-          buf.append('"');
-          buf.append(IS_V2_PRETTY_PRINT
-                       ? element
-                       : Misc.elideString(element, 50));
-          buf.append('"');
-        }
-      }
-      
-      if (arrayLen > numToPrint) {
-        buf.append(", ...");
-      }
-      buf.append("]\n");
+  /**
+   * For printing FSArrays; called after printing the type:nnn
+   * Only called if ! IS_V2_PRETTY_PRINT, since v2 didn't print the array contents
+   *   prints the length
+   *   if the length = 0 that's all
+   *   otherwise:
+   *   
+   * @param arrayLen the length
+   * @param f the feature structure
+   * @param indent the current indent
+   * @param incr the indent incr
+   * @param buf the stringbuilder where the result is added
+   */
+  private void printFSArrayElements(FSArray fsarray, int indent, int incr, StringBuilder buf, boolean useShortNames, PrintReferences printRefs, boolean isShortForm) {
+    Misc.indent(buf, indent);
+    int arraylen = fsarray.size();
+    buf.append("Array length: " + arraylen);
+    if (arraylen == 0) {
+      return;
     }
+
+    Misc.indent(buf, indent);
+    buf.append("Array elements: [");
+    
+    indent += incr;
+    for (int i = 0; i < arraylen; i++) {
+      Misc.indent(buf, indent);
+      ppval(fsarray.get(i), indent, incr, buf, useShortNames, printRefs, isShortForm);
+    }
+    Misc.indent(buf, indent - incr);
+    buf.append(']');
+  }
+ 
+  private void appendOrNull(StringBuilder sb, String v) {
+    sb.append( (v == null) ? "null" : v);
   }
   
   public int getTypeIndexID() {
