@@ -320,6 +320,10 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     
     <para>The StringArray class has a new <code>contains(a_string)</code> method.</para>
     
+    <para>The CAS <code>protectIndexes</code> method returns an instance of AutoClosableNoException which is 
+      a subtype where the close method doesn't throw an exception.  This allows writing the try-with-resources
+      form without a catch block for Exception.</para>
+    
     <para>
       Sometimes Annotators may log excessively, causing problems in production settings.
       Although this could be controlled using logging configuration, sometimes when

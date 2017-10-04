@@ -253,12 +253,11 @@ public interface JCas extends AbstractCas {
 
   /**
    * Gets the document annotation. The object returned from this method can be typecast to
-   * org.apache.uima.jcas.tcas.DocumentAnnotation
+   * org.apache.uima.jcas.tcas.DocumentAnnotation if that class is loaded (it may not be...)
    * <p>
-   * The reason that the return type of this method is not DocumentAnnotation is because of problems
-   * that arise when using the UIMA Extension ClassLoader to load annotator classes. The
-   * DocumentAnnotation type may be defined in the UIMA extension ClassLoader, differently than in
-   * the framework ClassLoader.
+   * The reason that the return type of this method is not DocumentAnnotation is because 
+   * that class may not be loaded, or it may be loaded under a different class loader
+   * when using the UIMA Extension ClassLoader to load annotator classes. 
    * 
    * @return The one instance of the DocumentAnnotation annotation.
    * @see org.apache.uima.cas.CAS#getDocumentAnnotation

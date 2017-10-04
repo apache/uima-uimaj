@@ -118,6 +118,7 @@ import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasHashMap;
 import org.apache.uima.jcas.impl.JCasImpl;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.Level;
 
 /**
@@ -4500,15 +4501,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * protectIndexes
    * 
    * Within the scope of protectIndexes, 
-   *   feature updates are checked, and if found to be a key, and the FS is in a corruptable index,
+   *   feature updates are checked, and if found to be a key, and the FS is in a corruptible index,
    *     then the FS is removed from the indexes (in all necessary views) (perhaps multiple times
    *     if the FS was added to the indexes multiple times), and this removal is recorded on
    *     an new instance of FSsTobeReindexed appended to fssTobeAddedback.
    *     
-   *   Later, when the protectIndexes is closed, the tobe items are added back to the indies.
+   *   Later, when the protectIndexes is closed, the tobe items are added back to the indexes.
    */
   @Override
-  public AutoCloseable protectIndexes() {
+  public AutoCloseableNoException protectIndexes() {
     FSsTobeAddedback r = FSsTobeAddedback.createMultiple(this);
     svd.fssTobeAddedback.add(r);
     return r;
