@@ -790,8 +790,7 @@ try {
   ac.close();
 }
 
-// if Java 8 is in use, 
-// this can be written using the auto-close feature of try:
+// This can more compactly be written using the auto-close feature of try:
 
 try (AutoCloseable ac = my_cas.protectIndexes()) {
    ...  arbitrary user code which updates features 
