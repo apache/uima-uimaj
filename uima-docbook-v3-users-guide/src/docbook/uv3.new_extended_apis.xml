@@ -301,8 +301,12 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
     
     <para>The convenience methods in the JCas have been duplicated in the CAS, including <code>getAllIndexFS</code>.</para>
     
-    <para>FSIterator interface now implements Iterable, so you can use these in the extended for syntax.
-      For example: <code>for (TOP item : jcas.getAllIndexedFSs(TOP.class)) ... </code></para>
+    <para>New methods <code>getIndexedFSs(Type)</code> and <code>getIndexedFSs(MyJCas.class)</code> return 
+    unmodifiable, unordered Collections of all indexed Feature Structures of the specified type and its subtypes in 
+    this CAS's view.  This collection can be
+    used in a Java extended-for loop construction. <code>getIndexedFSs()</code> is the same but is for all Feature Structures,
+    regardless of type.  These are methods on the CAS, JCas, FSIndexRepository
+    interfaces, and return the Feature Structures of the specified type (including subtypes).</para>
     
     <para>The TypeSystemMgr Interface has a variation of the <code>commit</code> method, which has a parameter 
       that specifies the class loader to be used when loading JCas class.  This should be used whenever there are
