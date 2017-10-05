@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -47,6 +48,7 @@ import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
 import org.apache.uima.jcas.cas.LongArray;
 import org.apache.uima.jcas.cas.ShortArray;
+import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.util.XMLSerializer;
@@ -347,24 +349,36 @@ public class XCASSerializer {
      * Push the indexed FSs onto the queue.
      */
     private void enqueueIndexed() {
-      List<TOP> allSofas = cas.getBaseIndexRepositoryImpl().getIndexedFSs();
-      
-      // XCAS requires sofas in order of id
-      Collections.sort(allSofas, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id) );
-      enqueueList(allSofas, 0);
-      
+      Collection<Sofa> sofaCollection = cas.getBaseIndexRepositoryImpl().<Sofa>getIndexedFSs(Sofa.class);
+      int sofaCount = sofaCollection.size();
+      if (sofaCount > 0) {
+        Sofa[] allSofas = sofaCollection.toArray(new Sofa[sofaCount]);
+        
+        // XCAS requires sofas in order of id
+        Arrays.sort(allSofas, (fs1, fs2) -> Integer.compare(fs1._id, fs2._id) );
+        enqueueArray(allSofas, 0);
+      }
 
       // Get indexes for each SofaFS in the CAS
       for (int sofaNum = 1, numViews = cas.getViewCount(); sofaNum <= numViews; sofaNum++) {
         FSIndexRepositoryImpl viewIR = (FSIndexRepositoryImpl) cas.getBaseCAS().getSofaIndexRepository(sofaNum);
         if (viewIR != null) {
-          enqueueList(viewIR.getIndexedFSs(), sofaNum);
+          Collection<TOP> fssInView = viewIR.getIndexedFSs();
+          if (! fssInView.isEmpty()) {
+            enqueueCollection(fssInView, sofaNum);
+          }
         }
       }
     }
     
-    private void enqueueList(List<TOP> fss, int sofaNum) {
+    private void enqueueArray(TOP[] fss, int sofaNum) {
       for (TOP fs : fss) {   // enqueues the fss for one view (incl view 0 - the base view
+        enqueueIndexed(fs, sofaNum);
+      }
+    }
+    
+    private void enqueueCollection(Collection<TOP> fss, int sofaNum) {
+      for (TOP fs : fss) {
         enqueueIndexed(fs, sofaNum);
       }
     }

@@ -555,14 +555,14 @@ public class CasSerializerSupport {
         final Sofa sofa = getSofa(sofaNum);
         if (loopIR != null) {
           if (!isDelta) {
-            Collection<TOP> fsarray = loopIR.getIndexedFSs();
-            csss.writeView(sofa, fsarray);
+            Collection<TOP> fss = loopIR.getIndexedFSs();
+            csss.writeView(sofa, fss);
           } else { // is Delta Cas
         	  if (sofaNum != 1 && this.marker.isNew(sofa)) {
         	    // for views created after mark (initial view never is - it is always created with the CAS)
         	    // write out the view as new
-        	    List<TOP> fsarray = loopIR.getIndexedFSs();
-              csss.writeView(sofa, fsarray);
+        	    Collection<TOP> fss = loopIR.getIndexedFSs();
+              csss.writeView(sofa, fss);
         	  } else if (loopIR.isModified()) {
         	    csss.writeView(sofa, loopIR.getAddedFSs(), loopIR.getDeletedFSs(), loopIR.getReindexedFSs());
           	}
@@ -659,7 +659,7 @@ public class CasSerializerSupport {
      */
     private void enqueueIndexed()  {
       FSIndexRepositoryImpl ir = (FSIndexRepositoryImpl) cas.getBaseCAS().getBaseIndexRepository();
-      List<TOP> fss = ir.getIndexedFSs();  // only sofas
+      Collection<TOP> fss = ir.getIndexedFSs();  // only sofas
       try {
         for (TOP fs : fss) {
           enqueueFsAndMaybeFeatures(fs);  // put Sofa on by-ref queue
@@ -680,7 +680,7 @@ public class CasSerializerSupport {
         FSIndexRepositoryImpl loopIR = (FSIndexRepositoryImpl) cas.getBaseCAS()
                 .getSofaIndexRepository(sofaNum);
         if (loopIR != null) {
-          List<TOP> items = loopIR.getIndexedFSs();
+          Collection<TOP> items = loopIR.getIndexedFSs();
           for (TOP item : items) {
             enqueueIndexedFs_only_not_features(sofaNum, item);
           }

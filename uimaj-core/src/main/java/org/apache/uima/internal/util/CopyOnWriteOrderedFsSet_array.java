@@ -18,6 +18,9 @@
  */
 package org.apache.uima.internal.util;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.apache.uima.cas.impl.CopyOnWriteIndexPart;
 import org.apache.uima.jcas.cas.TOP;
 
@@ -87,7 +90,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    * @return the size of this version of the index (maybe not the current index size)
    */
   public int size() {
-    return set.size();
+    return a_nextFreeslot - a_firstUsedslot;
   }
 
 //  /**
@@ -107,6 +110,39 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
     
   public OrderedFsSet_array<TOP> getOfsa() {
     return set;
+  }
+  
+  /* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<TOP> iterator() {
+    return new Iterator<TOP>() {
+
+      int pos = a_firstUsedslot;
+      
+      @Override
+      public boolean hasNext() {
+        return pos >= 0 && pos < a_nextFreeslot;
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
+        return a[pos++];
+      }      
+    };
+  }
+
+  /* (non-Javadoc)
+   * @see org.apache.uima.cas.impl.CopyOnWriteIndexPart#copyToArray(org.apache.uima.jcas.cas.TOP[], int)
+   */
+  @Override
+  public int copyToArray(TOP[] target, int startingIndexInTarget) {
+    System.arraycopy(a, a_firstUsedslot, target, startingIndexInTarget, size());
+    return startingIndexInTarget + size();
   }
 
 }

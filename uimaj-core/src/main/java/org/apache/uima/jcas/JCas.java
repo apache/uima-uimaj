@@ -20,6 +20,7 @@
 package org.apache.uima.jcas;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -797,6 +798,22 @@ public interface JCas extends AbstractCas {
    * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
    * are not removed.
    *
+   * @param type - the type specifying which type and subtypes are included
+   * @param <T> the Java clazz of the returned types
+   *  
+   * @return An iterator that returns all indexed FeatureStructures of the JCas clazz 
+   *         and its subtypes, in no particular order.
+   */
+  default <T extends TOP> FSIterator<T> getAllIndexedFS(Type type) {
+    return getFSIndexRepository().getAllIndexedFS(type);
+  }
+
+  
+  /**
+   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
+   * are not removed.
+   *
    * @param clazz - the JCas Java class specifing which type and subtypes are included
    * @param <T> the Java clazz
    *  
@@ -805,7 +822,45 @@ public interface JCas extends AbstractCas {
    */
   <T extends TOP> FSIterator<T> getAllIndexedFS(Class<T> clazz);
 
+  /**
+   * Returns an unmodifiable collection of all the FSs that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param type the type of Feature Structures to include (including subtypes)
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  default <T extends TOP> Collection<T> getIndexedFSs(Type type) {
+    return this.getIndexRepository().getIndexedFSs(type);
+  }
   
+  /**
+   * Returns an unmodifiable collection of all the FSs that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param clazz
+   *          The JCas class corresponding to the type
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  default <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
+    return this.getIndexRepository().getIndexedFSs(clazz);
+  }
+
+  /**
+   * Returns an unmodifiable collection of all of the FSs
+   * that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param clazz
+   *          The JCas class corresponding to the type
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  default Collection<TOP> getIndexedFSs() { 
+    return this.getIndexRepository().getIndexedFSs();
+  }
+
   /**
    * Get iterator over all views in this JCas.  Each view provides access to Sofa data
    * and the index repository that contains metadata (annotations and other feature 

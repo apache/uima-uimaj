@@ -563,6 +563,15 @@ class FsIndex_iicp<T extends FeatureStructure>
     return Arrays.stream(cachedSubFsLeafIndexes).filter(idx -> idx.size() > 0);
   }
   
+  void collectCowIndexParts(ArrayList<CopyOnWriteIndexPart<T>> indexes) {
+    createIndexIteratorCache();
+    for (FsIndex_singletype idx : cachedSubFsLeafIndexes) {
+      if (idx.size() > 0) {
+        indexes.add(idx.getNonNullCow());
+      }
+    }
+  }
+  
   LowLevelIterator<T>[] getIterators() {
     createIndexIteratorCache();
     LowLevelIterator<T>[] r = new LowLevelIterator[cachedSubFsLeafIndexes.length];

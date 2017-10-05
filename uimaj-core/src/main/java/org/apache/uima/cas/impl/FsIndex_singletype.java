@@ -117,7 +117,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    * Weak ref so that after iterator is GC'd, and no ref's exist, this becomes
    * null, so that future mods no longer need to do extra work.
    */
-  protected WeakReference<CopyOnWriteIndexPart> wr_cow = null;
+  protected WeakReference<CopyOnWriteIndexPart<T>> wr_cow = null;
 
   @Override
   public String toString() {
@@ -542,7 +542,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
    * @return the copy-on-write wrapper for an index part if it exists for this
    *         index, or null
    */
-  public CopyOnWriteIndexPart getCopyOnWriteIndexPart() {
+  public CopyOnWriteIndexPart<T> getCopyOnWriteIndexPart() {
     return (wr_cow == null) ? null : wr_cow.get();
   }
 

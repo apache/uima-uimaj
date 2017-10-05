@@ -19,8 +19,10 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -1088,36 +1091,36 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   // ///////////////////////////////////////////////////////////////////////////
   // Serialization support
 
-  /**
-   * For one particular view (the one associated with this instance of FsIndexRepositoryImpl),
-   * return an array containing all FSs in any defined index, in this view. 
-   * This is intended to be used for serialization.
-   * 
-   * The order in which FSs occur in the array does not reflect the order in which they
-   * were added to the repository. 
-   * 
-   * @param <T> type of Feature Structure
-   * @return a List of all FSs in any defined index, in this view.
-   */
-  public <T extends FeatureStructure> List<T> getIndexedFSs() {
-    
-    final ArrayList<TOP> v = new ArrayList<>();  // accumulates fsAddrs from various indexes
-    
-    /* Iterate over index by type, with something in there
-     * and dump all the fss found for that type (excluding subtypes) into v
-     *   bag preferred over sorted; 
-     */
-    for (int i = 0; i < this.usedIndexes.size(); i++) {
-//      // debug
-//      int vs1 = v.size();
-      getNonSetSingleIndexForUsedType(i).bulkAddTo(v);
-//      for (int di = vs1; di < v.size(); di ++) {  // debug
-//        assert v.get(di) != null;                 // debug verify not null
-//      }
-    }  
-   
-    return (List<T>) v;
-  }
+//  /**
+//   * For one particular view (the one associated with this instance of FsIndexRepositoryImpl),
+//   * return an array containing all FSs in any defined index, in this view. 
+//   * This is intended to be used for serialization.
+//   * 
+//   * The order in which FSs occur in the array does not reflect the order in which they
+//   * were added to the repository. 
+//   * 
+//   * @param <T> type of Feature Structure
+//   * @return a List of all FSs in any defined index, in this view.
+//   */
+//  public <T extends FeatureStructure> List<T> getIndexedFSs4Serializers() {
+//    
+//    final ArrayList<TOP> v = new ArrayList<>();  // accumulates fsAddrs from various indexes
+//    
+//    /* Iterate over index by type, with something in there
+//     * and dump all the fss found for that type (excluding subtypes) into v
+//     *   bag preferred over sorted; 
+//     */
+//    for (int i = 0; i < this.usedIndexes.size(); i++) {
+////      // debug
+////      int vs1 = v.size();
+//      getNonSetSingleIndexForUsedType(i).bulkAddTo(v);
+////      for (int di = vs1; di < v.size(); di ++) {  // debug
+////        assert v.get(di) != null;                 // debug verify not null
+////      }
+//    }  
+//   
+//    return (List<T>) v;
+//  }
   
   /**
    * For this view, walk the indexed FSs in arbitrary order.
@@ -1451,26 +1454,8 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
    */
   public <T extends FeatureStructure> LowLevelIterator<T> getAllIndexedFS(Type type) {
     final ArrayList<LowLevelIterator<T>> iteratorList = new ArrayList<>();
-    
-//    TypeImpl ti = (TypeImpl) type;
-//    if (!isUsedChanged && ti.isTopType()) {  
-//      // reuse previously computed iicps4allFSs
-//      for (FsIndex_iicp<?> iicp : iicps4allFSs) {
-//        if (iicp.cachedSubFsLeafIndexes[0].size() != 0) {
-//          LowLevelIterator<T> it = (iicp.getIndexingStrategy() == FSIndex.SORTED_INDEX) 
-//              ? (LowLevelIterator<T>)iicp.iteratorUnordered()
-//              : (LowLevelIterator<T>)iicp.iterator();
-//          iteratorList.add(it);
-//        }
-//      }
-//    } else {
-//      iicps4allFSs.clear();
-    
-      getAllIndexedFS(type, iteratorList);
-      
-//      this.isUsedChanged = false; // above call recomputed the cache  
-//    }    
 
+    getAllIndexedFS(type, iteratorList);
     
     final int iteratorListSize = iteratorList.size();
     if (iteratorListSize == 0) {
@@ -1535,7 +1520,141 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    ((TypeImpl)type).getDirectSubtypes().stream().forEach(subType -> getAllIndexedFS(subType, iteratorList));
   }
 
+  public Collection<TOP> getIndexedFSs() {
+    return getIndexedFSs(sii.tsi.topType);
+  }
   
+  public <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
+    return getIndexedFSs(cas.getCasType(clazz));
+  }
+  
+  /**
+   * @param type the type of Feature Structures to include (including subtypes)
+   * @return an unmodifiable, unordered set of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  public <T extends TOP> Collection<T> getIndexedFSs(Type type) {
+    // collect CopyOnWriteIndexPart s for all index parts for type and its subtypes
+    final ArrayList<CopyOnWriteIndexPart<T>> indexes = new ArrayList<>(); 
+    TypeImpl ti = (TypeImpl) type;
+    
+    collectCowIndexParts(ti, indexes);
+    
+    if (indexes.size() == 0) {
+      return Collections.emptySet();
+    }
+
+    return new AbstractCollection<T>() {
+      
+      @Override
+      public Iterator<T> iterator() {
+        return new Iterator<T>() {
+          final int indexesSize = indexes.size();
+          int indexesIndex = 0;
+          Iterator<T> it = indexes.get(0).iterator();
+          
+          @Override
+          public boolean hasNext() {
+            return indexesIndex < indexesSize; 
+          }
+
+          @Override
+          public T next() {
+            if (!hasNext()) {
+              throw new NoSuchElementException();
+            }
+            T v = it.next();
+            
+            if (!it.hasNext()) {
+              indexesIndex++;
+              if (indexesIndex == indexesSize) {
+                return v;
+              }
+              it = indexes.get(indexesIndex).iterator();
+            }
+            return v;
+          }
+          
+        };
+      }
+
+      @Override
+      public int size() {
+        int r = 0;
+        for (CopyOnWriteIndexPart<T> cow : indexes) {
+          r += cow.size();
+        }
+        return r;
+      }
+      
+      @Override
+      public TOP[] toArray() {
+        TOP[] r = new TOP[size()];
+        
+        int i = 0;
+        for (CopyOnWriteIndexPart<T> idx : indexes) {
+          i = idx.copyToArray(r, i);
+        }
+        return r;
+      }
+
+      /* (non-Javadoc)
+       * @see java.util.AbstractCollection#toArray(java.lang.Object[])
+       */
+      @Override
+      public <U> U[] toArray(U[] r) {
+        
+        int i = 0;
+        for (CopyOnWriteIndexPart<T> idx : indexes) {
+          i = idx.copyToArray((TOP[]) r, i);
+        }
+        return r;
+      }
+
+      
+      
+      /* (non-Javadoc)
+       * @see java.util.AbstractCollection#isEmpty()
+       */
+      @Override
+      public boolean isEmpty() {
+        return indexes.isEmpty();
+      }
+      
+    };
+  }
+  
+  private <T extends TOP> void collectCowIndexParts(TypeImpl ti, ArrayList<CopyOnWriteIndexPart<T>> indexes) {
+    FsIndex_iicp<T> iicp;
+    
+    if (!isUsed.get(ti.getCode()) ||
+        (iicp = getIndexesForType(ti.getCode()).getNonSetIndex()) == null  || 
+        iicp.isEmpty()) {  // could be used, but now empty
+      // No index for this type was found at all. 
+      // Example:  You ask for an iterator over "TOP", but no instances of TOP are created,
+      //   and no index over TOP was ever created.
+      // Since the auto-indexes are created on demand for
+      //   each type, there may be gaps in the inheritance chain. So keep descending the inheritance
+      //   tree looking for relevant indexes.
+      ti.getDirectSubtypes().forEach(type -> collectCowIndexParts(type, indexes));
+      return;
+    }
+    
+    if (iicp.isDefaultBagIndex()) {
+      if (iicp.getFsIndex_singleType().size() > 0) {
+        indexes.add(iicp.getFsIndex_singleType().getNonNullCow());
+      }
+      ti.getDirectSubtypes().forEach(type -> collectCowIndexParts(type, indexes));
+    } else {
+      iicp.collectCowIndexParts(indexes);
+    }
+  }
+  
+  /**
+   * Stream instances of all of the non-empty indexes themselves
+   * @param type - the type to filter the indexes with
+   * @return all of the non-empty indexes, one for each sorted or default bag per type
+   */
   public Stream<FsIndex_singletype<TOP>> streamNonEmptyIndexes(Type type) {
     TypeImpl ti = (TypeImpl) type;
     if (!isUsed.get(ti.getCode())) {
@@ -1552,10 +1671,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   }
   
   public Stream<FsIndex_singletype<TOP>> streamNonEmptyIndexes(Class<? extends TOP> clazz) {
-    return streamNonEmptyIndexes(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+    return streamNonEmptyIndexes(getCasImpl().getCasType(clazz));
   }
     
-  public Stream<FsIndex_singletype<TOP>> streamNonEmptyDirectSubtypes(TypeImpl ti) {
+  private Stream<FsIndex_singletype<TOP>> streamNonEmptyDirectSubtypes(TypeImpl ti) {
     Stream<FsIndex_singletype<TOP>> r = null;
     for (TypeImpl subType : ti.getDirectSubtypes()) {
       r = (r == null) 

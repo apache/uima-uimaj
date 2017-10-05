@@ -19,10 +19,14 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.Iterator;
+
+import org.apache.uima.jcas.cas.TOP;
+
 /**
  * common APIs supporting the copy on write aspect of index parts
  */
-public interface CopyOnWriteIndexPart {
+public interface CopyOnWriteIndexPart<T> {
   
   void makeReadOnlyCopy();
   
@@ -31,4 +35,22 @@ public interface CopyOnWriteIndexPart {
    *              true means the index has not been updated
    */
   boolean isOriginal();
+  
+  /**
+   * @return The number of elements in the index
+   */
+  int size();
+  
+  /**
+   * @return iterator over all the elements
+   */
+  Iterator<T> iterator();
+  
+  /**
+   * Copy FS refs to target from this index part
+   * @param target the target array to copy into
+   * @param startingIndexInTarget the starting index in the target array
+   * @return startingIndexInTarget + size
+   */
+  int copyToArray(TOP[] target, int startingIndexInTarget);
 }

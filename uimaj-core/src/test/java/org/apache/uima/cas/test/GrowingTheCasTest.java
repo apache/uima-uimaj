@@ -21,6 +21,7 @@ package org.apache.uima.cas.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.apache.uima.UIMAFramework;
@@ -269,7 +270,8 @@ public class GrowingTheCasTest extends TestCase {
 }
 
   private void timeIt(int i) {
-    FSIterator<FeatureStructure> it = jcas.getIndexRepository().getAllIndexedFS(jcas.getCasType(Annotation.type));   
+//    FSIterator<FeatureStructure> it = jcas.getIndexRepository().getAllIndexedFS(jcas.getCasType(Annotation.type));   
+    Iterator<Annotation> it = jcas.getIndexedFSs(Annotation.class).iterator();    
     int c = 0;
     long startTime = System.nanoTime();
     while (it.hasNext()) {

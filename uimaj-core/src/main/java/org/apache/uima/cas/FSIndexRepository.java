@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
@@ -152,7 +153,7 @@ public interface FSIndexRepository {
   }
 
   /**
-   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * Gets an iterator over all indexed (in this View) FeatureStructures of the specified Type (and any of its
    * subtypes).  The elements are returned in arbitrary order.
    *
    * Generics: T is the Java class for aType.
@@ -165,7 +166,7 @@ public interface FSIndexRepository {
   <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Type aType);
   
   /**
-   * Gets an iterator over all indexed FeatureStructures of the specified Type (and any of its
+   * Gets an FSIterator over all indexed (in this view) FeatureStructures of the specified Type (and any of its
    * subtypes).  The elements are returned in arbitrary order.
    *
    * Generics: T is the Java class for aType.
@@ -176,8 +177,42 @@ public interface FSIndexRepository {
    *         and its subtypes, in no particular order.
    */
   default <T extends FeatureStructure> FSIterator<T> getAllIndexedFS(Class<T> clazz) {
-    return getAllIndexedFS(((FSIndexRepositoryImpl)this).getCasImpl().getJCasImpl().getCasType(clazz));
+    return getAllIndexedFS(((FSIndexRepositoryImpl)this).getCasImpl().getCasType((Class<TOP>) clazz));
   }
   
+  /**
+   * Returns an unmodifiable collection of all the FSs of this type and its subtypes, 
+   * that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param type the type of Feature Structures to include (including subtypes)
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  public <T extends TOP> Collection<T> getIndexedFSs(Type type);
   
+  /**
+   * Returns an unmodifiable collection of all the FSs of this type and its subtypes, 
+   * that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param clazz
+   *          The JCas class corresponding to the type
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  public <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz);
+ 
+  /**
+   * Returns an unmodifiable collection of all of the FSs
+   * that are indexed in this view, in an arbitrary order.  
+   * Subsequent modifications to the indexes do not affect this collection.
+   * @param clazz
+   *          The JCas class corresponding to the type
+   * @param <T> The Java class associated with type
+   * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
+   *         of the specified type (including subtypes)
+   */
+  public <T extends TOP> Collection<T> getIndexedFSs();
+
 }

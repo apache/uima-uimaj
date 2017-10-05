@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1600,10 +1601,10 @@ public class SerDesTest6 extends SerDesTstCommon {
   }
 
   private List<FeatureStructure> getIndexedFSs(CASImpl cas, TTypeSystem m) {
-    FSIterator<FeatureStructure> it = cas.getIndexRepository().getAllIndexedFS(m.getType(Akof1));
+    Collection<TOP> c = cas.getIndexRepository().getIndexedFSs(m.getType(Akof1));
     List<FeatureStructure> lfs = new ArrayList<FeatureStructure>();
-    while (it.hasNext()) {
-      lfs.add(it.next());
+    for (TOP fs : c) {
+      lfs.add(fs);
     }
     return lfs;
   }

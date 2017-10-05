@@ -19,6 +19,7 @@
 package org.apache.uima.util;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -29,7 +30,6 @@ import org.apache.uima.UimaSerializable;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.impl.CASImpl;
@@ -574,11 +574,10 @@ public class CasCopier {
       //   FSs when doing a full CAS copy with multiple views - the 2nd and subsequent
       //   views don't copy, but they do index.
       
-      FSIterator<TOP> it = srcCasViewImpl.getIndexRepository().getAllIndexedFS(srcTsi.getTopType());
+      Collection<TOP> c = srcCasViewImpl.getIndexRepository().getIndexedFSs();
   //    LowLevelIterator it = ((FSIndexRepositoryImpl)(srcCasViewImpl.getIndexRepository())).ll_getAllIndexedFS(srcTsi.getTopType());
   
-      while (it.hasNext()) {
-        final TOP fs = it.nextNvc();
+      for (final TOP fs : c) {
   //      System.out.format("debug  id: %,d  type: %s%n", fs.id(), fs._getTypeImpl().getShortName());
   //    Iterator<LowLevelIndex> indexes = srcCasViewImpl.getIndexRepository().ll_getIndexes();
   //    while (indexes.hasNext()) {

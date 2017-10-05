@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -85,8 +86,7 @@ class AllFSs {
 
   public AllFSs getAllFSsAllViews_sofas() {
     cas.forAllSofas(sofa -> enqueueFS(sofa));
-    cas.forAllViews(view -> 
-       getFSsForView(view.indexRepository.<TOP>getAllIndexedFS(cas.getTypeSystemImpl().topType).stream()));
+    cas.forAllViews(view -> getFSsForView(view.indexRepository.getIndexedFSs()));
     return this;
   }
 
@@ -111,8 +111,10 @@ class AllFSs {
     return this;
   }
   
-  private void getFSsForView(Stream<TOP> fss) {
-    fss.forEach(fs -> enqueueFS(fs));
+  private void getFSsForView(Collection<TOP> fss) {
+    for (TOP fs : fss) {
+      enqueueFS(fs);
+    }
   }
   
   private void enqueueFS(TOP fs) {

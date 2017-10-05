@@ -1240,7 +1240,7 @@ public class BinaryCasSerDes {
   // etc.
   int[] getIndexedFSs(Obj2IntIdentityHashMap<TOP> fs2addr) {
     IntVector v = new IntVector();
-    List<TOP> fss;
+    Collection<TOP> fss;
 
     int numViews = baseCas.getViewCount();
     v.add(numViews);
@@ -1252,7 +1252,7 @@ public class BinaryCasSerDes {
 
     // Get indexes for each view in the CAS
     baseCas.forAllViews(view -> 
-        addIdsToIntVector(view.indexRepository.getIndexedFSs(), v, fs2addr));
+        addIdsToIntVector(view.getIndexedFSs(), v, fs2addr));
     return v.toArray();
   }
 
