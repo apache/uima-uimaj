@@ -1318,8 +1318,8 @@ public interface CAS extends AbstractCas {
    * subtypes).  The elements are returned in arbitrary order, and duplicates (if they exist)
    * are not removed.
    *
-   * @param clazz - the JCas Java class specifing which type and subtypes are included
-   * @param <T> the Java clazz
+   * @param type the type of Feature Structures to include (including subtypes)
+   * @param <T> the JCas class the iterator uses
    *  
    * @return An iterator that returns all indexed FeatureStructures of the Type and its subtypes, 
    *    corresponding to the JCas clazz, in no particular order.
@@ -1344,9 +1344,6 @@ public interface CAS extends AbstractCas {
    * Returns an unmodifiable collection of all of the FSs
    * that are indexed in this view, in an arbitrary order.  
    * Subsequent modifications to the indexes do not affect this collection.
-   * @param clazz
-   *          The JCas class corresponding to the type
-   * @param <T> The Java class associated with type
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
    */

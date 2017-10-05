@@ -207,8 +207,6 @@ public interface FSIndexRepository {
    * Returns an unmodifiable collection of all of the FSs
    * that are indexed in this view, in an arbitrary order.  
    * Subsequent modifications to the indexes do not affect this collection.
-   * @param clazz
-   *          The JCas class corresponding to the type
    * @param <T> The Java class associated with type
    * @return an unmodifiable, unordered collection of all indexed (in this view) Feature Structures
    *         of the specified type (including subtypes)
