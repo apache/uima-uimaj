@@ -471,7 +471,7 @@ class JCasHashMapSubMap {
    * @param creator - the new value
    * @return - the previous fs in the table with the same key, or null
    */
-  TOP put(final int key, final TOP value, final int hash) {
+  final TOP put(final int key, final TOP value, final int hash) {
 
     final int[] probeInfo = probeInfoGet.get();
     resetProbeInfo(probeInfo);
@@ -511,7 +511,7 @@ class JCasHashMapSubMap {
    * @param hash - the hash that was already computed from the key
    * @return - the found fs, or null
    */
-  TOP get(final int key, final int hash) {
+  final TOP get(final int key, final int hash) {
 
     final int[] probeInfo = probeInfoGet.get();
     resetProbeInfo(probeInfo);

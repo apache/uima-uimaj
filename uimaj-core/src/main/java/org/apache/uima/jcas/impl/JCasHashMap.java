@@ -282,7 +282,7 @@ public class JCasHashMap {
     return (null != oneSubmap) ? oneSubmap : subMaps[hash & concurrencyBitmask];
   }
   
-  public TOP putIfAbsent(int key, IntFunction<TOP> creator) {
+  public final TOP putIfAbsent(int key, IntFunction<TOP> creator) {
     final int hash = hashInt(key);
     final TOP r = getSubMap(hash).putIfAbsent(key, hash >>> concurrencyLevelBits, creator);
     return r;
@@ -292,7 +292,7 @@ public class JCasHashMap {
    * @param key -
    * @return the item or null
    */
-  public TOP get(int key) {
+  public final TOP get(int key) {
     final int hash = hashInt(key);
     final TOP r = getSubMap(hash).get(key, hash >>> concurrencyLevelBits);
     return r;
@@ -302,7 +302,7 @@ public class JCasHashMap {
    * @param value -
    * @return previous value or null
    */
-  public TOP put(TOP value) {
+  public final TOP put(TOP value) {
     return put (value._id(), value);
   }
   
@@ -328,7 +328,7 @@ public class JCasHashMap {
   private static final int C2 = 0x1b873593;
   private static final int seed = 0x39c2ab57;  // arbitrary bunch of bits
 
-  public static int hashInt(int k1) {
+  public static final int hashInt(int k1) {
     k1 *= C1;
     k1 = Integer.rotateLeft(k1, 15);
     k1 *= C2;
