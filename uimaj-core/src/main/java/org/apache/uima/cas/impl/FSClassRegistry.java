@@ -482,6 +482,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       if (null != callsites) {
         for (Entry<String, MutableCallSite> e : callsites) {
           final int index = TypeSystemImpl.getAdjustedFeatureOffset(e.getKey());
+          if (index == -1) {
+            continue;  // a feature in the JCas class doesn't exist in the currently loaded type system
+                       // skip setting it.  If code uses this, a runtime error will happen.
+          }
           final int prev = (int) e.getValue().getTarget().invokeExact();
           
           if (prev == -1) {
