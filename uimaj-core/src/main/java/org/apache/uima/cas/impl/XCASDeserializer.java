@@ -658,7 +658,7 @@ public class XCASDeserializer {
          
           fixupToDos.add( () -> finalizeRefValue(Integer.parseInt(featVal), fs, feat));
         } else {  // is not a ref type.
-          cas.setFeatureValueFromStringNoDocAnnotUpdate(fs, feat, featVal);
+          CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(fs, feat, featVal);
         }
 
       }

@@ -1050,7 +1050,7 @@ public class XmiCasDeserializer {
         case LowLevelCAS.TYPE_CLASS_DOUBLE:
         case LowLevelCAS.TYPE_CLASS_STRING:
             {
-          casBeingFilled.setFeatureValueFromStringNoDocAnnotUpdate(fs, fi, featVal);  
+          CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(fs, fi, featVal);  
           break;
         }
         case LowLevelCAS.TYPE_CLASS_FS: deserializeFsRef(featVal, fi, fs); break;
@@ -1742,7 +1742,7 @@ public class XmiCasDeserializer {
               for(FeatureImpl fi : currentType.getFeatureImpls()) {
                 if (!(fi.getName().equals(CAS.FEATURE_FULL_NAME_SOFA))) {
                   if ( ! this.featsSeen.contains(fi.getCode())) {
-                    casBeingFilled.setFeatureValueFromStringNoDocAnnotUpdate(currentFs,  fi, null);
+                    CASImpl.setFeatureValueFromStringNoDocAnnotUpdate(currentFs,  fi, null);
                   }
                 }
               }              

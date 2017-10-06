@@ -24,9 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
-import java.util.function.IntFunction;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UIMA_IllegalStateException;
@@ -641,7 +639,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public void setFeatureValueFromString(Feature feat, String s) throws CASRuntimeException {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
-    _casView.setFeatureValueFromString(this, (FeatureImpl) feat, s);
+    CASImpl.setFeatureValueFromString(this, (FeatureImpl) feat, s);
   }
 
   /**

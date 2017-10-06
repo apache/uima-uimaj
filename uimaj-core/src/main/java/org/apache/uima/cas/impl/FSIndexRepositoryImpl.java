@@ -1520,8 +1520,16 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
 //    ((TypeImpl)type).getDirectSubtypes().stream().forEach(subType -> getAllIndexedFS(subType, iteratorList));
   }
 
+  // do this in index creation order 
+  // needed for backwards compatibility
+  // https://issues.apache.org/jira/browse/UIMA-5603 see comment toward end
+  
   public Collection<TOP> getIndexedFSs() {
-    return getIndexedFSs(sii.tsi.topType);
+    final ArrayList<CopyOnWriteIndexPart<TOP>> indexes = new ArrayList<>(); 
+    for (int i = 0; i < this.usedIndexes.size(); i++) {
+      indexes.add(getNonSetSingleIndexForUsedType(i).getNonNullCow());
+    }
+    return getCollectionFromCows(indexes);
   }
   
   public <T extends TOP> Collection<T> getIndexedFSs(Class<T> clazz) {
@@ -1539,7 +1547,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     TypeImpl ti = (TypeImpl) type;
     
     collectCowIndexParts(ti, indexes);
+    return getCollectionFromCows(indexes);
+  }
     
+  private <T extends TOP> Collection<T> getCollectionFromCows(ArrayList<CopyOnWriteIndexPart<T>> indexes) {
+
     if (indexes.size() == 0) {
       return Collections.emptySet();
     }
