@@ -1059,11 +1059,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   @Override
-  public TypeSystem getTypeSystem() {
+  public final TypeSystem getTypeSystem() {
     return getTypeSystemImpl();
   }
 
-  public TypeSystemImpl getTypeSystemImpl() {
+  public final TypeSystemImpl getTypeSystemImpl() {
     if (tsi_local == null) {
       tsi_local = this.svd.tsi;
     }
@@ -1791,12 +1791,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param fi -
    * @param setter -
    */
-  public void setWithJournal(FeatureStructureImplC fs, FeatureImpl fi, Runnable setter) {
+  public final void setWithJournal(FeatureStructureImplC fs, FeatureImpl fi, Runnable setter) {
     setter.run();
     maybeLogUpdate(fs, fi);
   }
   
-  public boolean isLoggingNeeded(FeatureStructureImplC fs) {
+  public final boolean isLoggingNeeded(FeatureStructureImplC fs) {
     return this.svd.trackingMark != null && !this.svd.trackingMark.isNew(fs._id);
   }
   
@@ -1826,7 +1826,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * @param startingIndex -
    * @param length number of consequtive items
    */
-  public void maybeLogArrayUpdates(FeatureStructureImplC fs, int startingIndex, int length) {
+  public final void maybeLogArrayUpdates(FeatureStructureImplC fs, int startingIndex, int length) {
     if (isLoggingNeeded(fs)) {
       this.logFSUpdate((TOP) fs, null, startingIndex, length);
     }
@@ -2011,83 +2011,83 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
 
   // Type access methods.
-  public boolean isStringType(Type type) {
+  public final boolean isStringType(Type type) {
     return type instanceof TypeImpl_string;
   }
 
-  public boolean isAbstractArrayType(Type type) {
+  public final boolean isAbstractArrayType(Type type) {
     return isArrayType(type); 
   }
   
-  public boolean isArrayType(Type type) {
+  public final boolean isArrayType(Type type) {
     return ((TypeImpl) type).isArray();
   }
 
-  public boolean isPrimitiveArrayType(Type type) {
+  public final boolean isPrimitiveArrayType(Type type) {
     return (type instanceof TypeImpl_array) && ! type.getComponentType().isPrimitive();
   }
 
-  public boolean isIntArrayType(Type type) {
+  public final boolean isIntArrayType(Type type) {
     return (type == getTypeSystemImpl().intArrayType);
   }
 
-  public boolean isFloatArrayType(Type type) {
+  public final boolean isFloatArrayType(Type type) {
     return ((TypeImpl)type).getCode() == floatArrayTypeCode;
   }
 
-  public boolean isStringArrayType(Type type) {
+  public final boolean isStringArrayType(Type type) {
     return ((TypeImpl)type).getCode() == stringArrayTypeCode;
   }
 
-  public boolean isBooleanArrayType(Type type) {
+  public final boolean isBooleanArrayType(Type type) {
     return ((TypeImpl)type).getCode() == booleanArrayTypeCode;
   }
 
-  public boolean isByteArrayType(Type type) {
+  public final boolean isByteArrayType(Type type) {
     return ((TypeImpl)type).getCode() == byteArrayTypeCode;
   }
 
-  public boolean isShortArrayType(Type type) {
+  public final boolean isShortArrayType(Type type) {
     return ((TypeImpl)type).getCode() == byteArrayTypeCode;
   }
 
-  public boolean isLongArrayType(Type type) {
+  public final boolean isLongArrayType(Type type) {
     return ((TypeImpl)type).getCode() == longArrayTypeCode;
   }
 
-  public boolean isDoubleArrayType(Type type) {
+  public final boolean isDoubleArrayType(Type type) {
     return ((TypeImpl)type).getCode() == doubleArrayTypeCode;
   }
 
-  public boolean isFSArrayType(Type type) {
+  public final boolean isFSArrayType(Type type) {
     return ((TypeImpl)type).getCode() == fsArrayTypeCode;
   }
 
-  public boolean isIntType(Type type) {
+  public final boolean isIntType(Type type) {
     return ((TypeImpl)type).getCode() == intTypeCode;
   }
 
-  public boolean isFloatType(Type type) {
+  public final boolean isFloatType(Type type) {
     return ((TypeImpl)type).getCode() == floatTypeCode;
   }
 
-  public boolean isByteType(Type type) {
+  public final boolean isByteType(Type type) {
     return ((TypeImpl)type).getCode() == byteTypeCode;
   }
 
-  public boolean isBooleanType(Type type) {
+  public final boolean isBooleanType(Type type) {
     return ((TypeImpl)type).getCode() == floatTypeCode;
   }
 
-  public boolean isShortType(Type type) {
+  public final boolean isShortType(Type type) {
     return ((TypeImpl)type).getCode() == shortTypeCode;
   }
 
-  public boolean isLongType(Type type) {
+  public final boolean isLongType(Type type) {
     return ((TypeImpl)type).getCode() == longTypeCode;
   }
 
-  public boolean isDoubleType(Type type) {
+  public final boolean isDoubleType(Type type) {
     return ((TypeImpl)type).getCode() == doubleTypeCode;
   }
 
@@ -4763,7 +4763,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //    
 //  }
   
-  public static boolean isSameCAS(CAS c1, CAS c2) {
+  public final static boolean isSameCAS(CAS c1, CAS c2) {
     CASImpl ci1 = (CASImpl) c1.getLowLevelCAS();
     CASImpl ci2 = (CASImpl) c2.getLowLevelCAS();
     return ci1.getBaseCAS() == ci2.getBaseCAS();
