@@ -27,6 +27,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.apache.uima.UIMARuntimeException;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.SaxDeserializer;
 import org.apache.uima.util.XMLParser;
@@ -52,8 +53,7 @@ public class SaxDeserializer_impl implements SaxDeserializer, LexicalHandler {
 
   static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 
-  private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
-          .newInstance();
+  private static final SAXTransformerFactory transformerFactory = XMLUtils.createSaxTransformerFactory();
 
   private DOMResult mDOMResult;
 

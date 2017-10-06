@@ -29,6 +29,7 @@ import java.util.Hashtable;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -408,7 +409,12 @@ public class ServiceRegistry {
   public void load(String fname) throws Exception {
 
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    try {
+      dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (ParserConfigurationException e) {
+      System.err.println("Warning: DocumentBuilderFactory doesn't support the feature http://apache.org/xml/features/disallow-doctype-decl");
+    }
+  
     DocumentBuilder docBuilder = dbf.newDocumentBuilder();
 
 

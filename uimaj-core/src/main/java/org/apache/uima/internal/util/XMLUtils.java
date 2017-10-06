@@ -23,11 +23,22 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.util.Level;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -520,16 +531,72 @@ public abstract class XMLUtils {
         (c >= 0xE000 && c <= 0xFFFD));
   }
 
-  /**
-   * @return an xml reader set up properly
-   * @throws SAXException -
-   */
+  public static SAXParserFactory createSAXParserFactory() {
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    try {
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+    } catch (ParserConfigurationException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+    }
+    return factory;
+  }
+  
   public static XMLReader createXMLReader() throws SAXException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-    xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
-    xmlReader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-    xmlReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+    try {
+      xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      xmlReader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      xmlReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+    } catch (SAXNotRecognizedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+    } catch (SAXNotSupportedException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "XMLReader doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+    }
     return xmlReader;
   }
+  
+  public static SAXTransformerFactory createSaxTransformerFactory() {
+    SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();    
+    try {
+      saxTransformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      saxTransformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+    } catch (IllegalArgumentException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "SAXTransformerFactory didn't recognized setting attribute XMLConstants.ACCESS_EXTERNAL_DTD or XMLConstants.ACCESS_EXTERNAL_STYLESHEET");
+    }
+    return saxTransformerFactory;
+  }
 
+  public static TransformerFactory createTransformerFactory() {
+    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    try {
+      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+    } catch (IllegalArgumentException e) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "TransformerFactory didn't recognized setting attribute XMLConstants.ACCESS_EXTERNAL_DTD or XMLConstants.ACCESS_EXTERNAL_STYLESHEET");
+    }
+    return transformerFactory;
+  }
+  
+  public static DocumentBuilderFactory createDocumentBuilderFactory() { 
+    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+    try {
+      documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+    } catch (ParserConfigurationException e1) {
+      UIMAFramework.getLogger().log(Level.WARNING, 
+          "DocumentBuilderFactory didn't recognized setting feature http://apache.org/xml/features/disallow-doctype-decl");
+    }
+    return documentBuilderFactory;
+  }
 }
+

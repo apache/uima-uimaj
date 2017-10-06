@@ -56,7 +56,7 @@ public class XMLToVinci {
       spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
     } catch (SAXNotRecognizedException | SAXNotSupportedException
         | ParserConfigurationException e) {
-      throw new RuntimeException(e);
+      System.err.println("Warning: SAXParserFactory didn't recognized the feature http://apache.org/xml/features/disallow-doctype-decl");
     }
   }
   /**
@@ -264,7 +264,13 @@ public class XMLToVinci {
     }
     // prevent undeclared namespace warnings.
     try {
-      xr.setFeature("http://xml.org/sax/features/namespaces", false);
+      try {
+        xr.setFeature("http://xml.org/sax/features/namespaces", false);
+      } catch (SAXNotRecognizedException e) {
+        System.err.println("Warning: XMLReader didn't recognize the feature http://xml.org/sax/features/namespaces");
+      } catch (SAXNotSupportedException e) {
+        System.err.println("Warning: XMLReader doesn't support the feature http://xml.org/sax/features/namespaces");
+      }
       VinciFrameHandler handler = new VinciFrameHandler();
       xr.setContentHandler(handler);
       xr.setErrorHandler(handler);

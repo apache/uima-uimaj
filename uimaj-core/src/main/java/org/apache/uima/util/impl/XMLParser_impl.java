@@ -156,8 +156,7 @@ public class XMLParser_impl implements XMLParser {
           XMLParser.ParsingOptions aOptions) throws InvalidXMLException {
     URL urlToParse = aInput.getURL();
     try {
-      SAXParserFactory factory = SAXParserFactory.newInstance();
-      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      SAXParserFactory factory = XMLUtils.createSAXParserFactory();
 
       // Turn on namespace support
       factory.setNamespaceAware(true);        
