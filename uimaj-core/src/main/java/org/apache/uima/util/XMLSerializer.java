@@ -24,7 +24,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
@@ -57,12 +56,7 @@ public class XMLSerializer {
   //  or the class found in any jar that has an entry: META-INF/service/javax.xml.transform.TransformerFactory
   //  or a platform default.
   
-  private static final SAXTransformerFactory transformerFactory = (SAXTransformerFactory) SAXTransformerFactory
-          .newInstance();
-
-  static { transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-           transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
-  }
+  private static final SAXTransformerFactory transformerFactory = XMLUtils.createSaxTransformerFactory();
 
   private TransformerHandler mHandler;
 

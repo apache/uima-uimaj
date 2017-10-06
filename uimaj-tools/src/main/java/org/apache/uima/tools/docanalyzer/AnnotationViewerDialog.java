@@ -65,7 +65,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -76,6 +75,7 @@ import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.internal.util.BrowserUtil;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.tools.images.Images;
 import org.apache.uima.tools.stylemap.ColorParser;
@@ -633,7 +633,7 @@ public class AnnotationViewerDialog extends JDialog implements ActionListener {
       Document parse = null;
       try {
         stream = new FileInputStream(aStyleMapFile);
-        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        DocumentBuilder db = XMLUtils.createDocumentBuilderFactory().newDocumentBuilder();
         parse = db.parse(stream);
       } catch (FileNotFoundException e) {
         throw new UIMARuntimeException(e);

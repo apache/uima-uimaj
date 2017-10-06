@@ -42,6 +42,7 @@ import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.TypeOrFeature;
 import org.apache.uima.analysis_engine.metadata.AnalysisEngineMetaData;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.Capability;
 import org.apache.uima.resource.metadata.TypeDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -87,9 +88,7 @@ public class AnnotationViewGenerator {
    */
   public AnnotationViewGenerator(File aOutputDir) {
     mOutputDir = aOutputDir;
-    mTFactory = TransformerFactory.newInstance();
-    mTFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-    mTFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+    mTFactory = XMLUtils.createTransformerFactory();
 
     // the viewer uses several files located via the classpath
     // parse xsl files into templates

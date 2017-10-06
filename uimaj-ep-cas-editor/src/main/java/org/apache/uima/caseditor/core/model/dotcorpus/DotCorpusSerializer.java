@@ -30,6 +30,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.uima.caseditor.CasEditorPlugin;
 import org.apache.uima.caseditor.editor.AnnotationStyle;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.util.XMLSerializer;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -110,12 +111,7 @@ public class DotCorpusSerializer {
    * @throws CoreException -
    */
   public static DotCorpus parseDotCorpus(InputStream dotCorpusStream) throws CoreException {
-    DocumentBuilderFactory documentBuilderFacoty = DocumentBuilderFactory.newInstance();
-    try {
-      documentBuilderFacoty.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-    } catch (ParserConfigurationException e1) {
-      throw new RuntimeException(e1);
-    }
+    DocumentBuilderFactory documentBuilderFacoty = XMLUtils.createDocumentBuilderFactory();
 
     DocumentBuilder documentBuilder;
 

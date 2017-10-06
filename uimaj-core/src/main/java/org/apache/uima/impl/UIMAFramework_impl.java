@@ -45,6 +45,7 @@ import org.apache.uima.collection.CollectionProcessingEngine;
 import org.apache.uima.collection.CollectionProcessingManager;
 import org.apache.uima.collection.metadata.CpeDescription;
 import org.apache.uima.internal.util.I18nUtil;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ConfigurationManager;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -484,8 +485,8 @@ public class UIMAFramework_impl extends UIMAFramework {
     // TOOD: Need UtilityClassLoader here? I don't think we do; this works
     // with XML4J v3. This is a good thing, since the UtilityClassLoader writes
     // to the logger, which isn't created yet!
-    SAXParserFactory factory = SAXParserFactory.newInstance();
-    factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+
+    SAXParserFactory factory = XMLUtils.createSAXParserFactory();
     SAXParser parser = factory.newSAXParser();
     XMLReader reader = parser.getXMLReader();
 

@@ -36,6 +36,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.XMLInputSource;
@@ -60,16 +61,7 @@ public class XmlDetagger extends CasAnnotator_ImplBase {
    */
   public static final String PARAM_TEXT_TAG = "XmlTagContainingText";
   
-  private SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-  
-  { try {
-      parserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
-    } catch (SAXNotRecognizedException | SAXNotSupportedException
-        | ParserConfigurationException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
+  private SAXParserFactory parserFactory = XMLUtils.createSAXParserFactory();
 
   private Type sourceDocInfoType;
 

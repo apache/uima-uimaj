@@ -35,6 +35,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -124,8 +125,7 @@ public class XMLUtil {
     SAXParser parser = null;
     try {
       // get SAX parser factory
-      SAXParserFactory factory = SAXParserFactory.newInstance();
-      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      SAXParserFactory factory = XMLUtils.createSAXParserFactory();
       // set default SAX parser features
       factory.setFeature(NAMESPACES_FEATURE_ID, DEFAULT_NAMESPACES);
       factory.setFeature(NAMESPACE_PREFIXES_FEATURE_ID, DEFAULT_NAMESPACE_PREFIXES);

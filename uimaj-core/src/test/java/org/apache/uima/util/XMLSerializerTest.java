@@ -25,6 +25,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 
+import org.apache.uima.internal.util.XMLUtils;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -58,9 +59,7 @@ public class XMLSerializerTest extends TestCase {
 //    if (xmlStr.contains("1.0")) {
     // useful to investigate issues when bad XML output is produced
     //   related to which Java implementation is being used
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+      TransformerFactory transformerFactory = XMLUtils.createTransformerFactory();
       Transformer t = transformerFactory.newTransformer();
       t.setOutputProperty(OutputKeys.VERSION, "1.1");
       

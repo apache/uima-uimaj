@@ -37,16 +37,17 @@ import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
 import org.apache.vinci.debug.Debug;
 import org.apache.vinci.debug.FatalException;
 import org.apache.vinci.transport.ServiceException;
 import org.apache.vinci.transport.XTalkTransporter;
 import org.apache.vinci.transport.util.XMLConverter;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Class for parsing an XML document and converting directly to XTalk.
@@ -215,7 +216,15 @@ public class XMLToXTalk {
       XTalkTransporter.writeInt(1, os);
       XMLReader xr;
       try {
-        xr = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        try {
+          spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        } catch (SAXNotRecognizedException e) {
+          System.err.println("Warning: SAXParserFactory didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+        } catch (SAXNotSupportedException e) {
+          System.err.println("Warning: SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+        }
+        xr = spf.newSAXParser().getXMLReader();
       } catch (SAXException e) {
         throw new ServiceException("Error creating SAX Parser: " + e);
       } catch (ParserConfigurationException e) {

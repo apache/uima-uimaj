@@ -19,17 +19,16 @@
 
 package org.apache.uima.adapter.vinci.util;
 
-import java.io.File;
-
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.uima.UIMAFramework;
+import org.apache.uima.internal.util.XMLUtils;
+import org.apache.uima.util.Level;
 import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.uima.UIMAFramework;
-import org.apache.uima.util.Level;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -87,8 +86,7 @@ public class Descriptor extends DefaultHandler {
   private Document parse(String configFile) {
     Document doc = null;
     try {
-      SAXParserFactory factory = SAXParserFactory.newInstance();
-      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", false);
+      SAXParserFactory factory = XMLUtils.createSAXParserFactory();
       factory.setValidating(false);
 
       // Create the builder and parse the file
