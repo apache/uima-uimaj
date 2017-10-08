@@ -1,9 +1,12 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package x.y.z;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -17,8 +20,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Token extends Annotation {
  
@@ -56,10 +59,14 @@ public class Token extends Annotation {
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_ttype = TypeSystemImpl.getAdjustedFeatureOffset("ttype");
-  public final static int _FI_tokenFloatFeat = TypeSystemImpl.getAdjustedFeatureOffset("tokenFloatFeat");
-  public final static int _FI_lemma = TypeSystemImpl.getAdjustedFeatureOffset("lemma");
-  public final static int _FI_lemmaList = TypeSystemImpl.getAdjustedFeatureOffset("lemmaList");
+  private final static CallSite _FC_ttype = TypeSystemImpl.createCallSite(Token.class, "ttype");
+  private final static MethodHandle _FH_ttype = _FC_ttype.dynamicInvoker();
+  private final static CallSite _FC_tokenFloatFeat = TypeSystemImpl.createCallSite(Token.class, "tokenFloatFeat");
+  private final static MethodHandle _FH_tokenFloatFeat = _FC_tokenFloatFeat.dynamicInvoker();
+  private final static CallSite _FC_lemma = TypeSystemImpl.createCallSite(Token.class, "lemma");
+  private final static MethodHandle _FH_lemma = _FC_lemma.dynamicInvoker();
+  private final static CallSite _FC_lemmaList = TypeSystemImpl.createCallSite(Token.class, "lemmaList");
+  private final static MethodHandle _FH_lemmaList = _FC_lemmaList.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -115,14 +122,14 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public TokenType getTtype() { return (TokenType)(_getFeatureValueNc(_FI_ttype));}
+  public TokenType getTtype() { return (TokenType)(_getFeatureValueNc(wrapGetIntCatchException(_FH_ttype)));}
     
   /** setter for ttype - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setTtype(TokenType v) {
-    _setFeatureValueNcWj(_FI_ttype, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_ttype), v);
   }    
     
    
@@ -134,14 +141,14 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public float getTokenFloatFeat() { return _getFloatValueNc(_FI_tokenFloatFeat);}
+  public float getTokenFloatFeat() { return _getFloatValueNc(wrapGetIntCatchException(_FH_tokenFloatFeat));}
     
   /** setter for tokenFloatFeat - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setTokenFloatFeat(float v) {
-    _setFloatValueNfc(_FI_tokenFloatFeat, v);
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_tokenFloatFeat), v);
   }    
     
    
@@ -153,14 +160,14 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getLemma() { return _getStringValueNc(_FI_lemma);}
+  public String getLemma() { return _getStringValueNc(wrapGetIntCatchException(_FH_lemma));}
     
   /** setter for lemma - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setLemma(String v) {
-    _setStringValueNfc(_FI_lemma, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_lemma), v);
   }    
     
    
@@ -172,14 +179,14 @@ public class Token extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getLemmaList() { return (StringArray)(_getFeatureValueNc(_FI_lemmaList));}
+  public StringArray getLemmaList() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)));}
     
   /** setter for lemmaList - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setLemmaList(StringArray v) {
-    _setFeatureValueNcWj(_FI_lemmaList, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_lemmaList), v);
   }    
     
     
@@ -189,7 +196,7 @@ public class Token extends Annotation {
    * @return value of the element at index i 
    */
   public String getLemmaList(int i) {
-     return ((StringArray)(_getFeatureValueNc(_FI_lemmaList))).get(i);} 
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)))).get(i);} 
 
   /** indexed setter for lemmaList - sets an indexed value - 
    * @generated
@@ -197,7 +204,7 @@ public class Token extends Annotation {
    * @param v value to set into the array 
    */
   public void setLemmaList(int i, String v) {
-    ((StringArray)(_getFeatureValueNc(_FI_lemmaList))).set(i, v);
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_lemmaList)))).set(i, v);
   }  
   }
 

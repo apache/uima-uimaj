@@ -1,9 +1,12 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package x.y.z;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -16,8 +19,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class Sentence extends Annotation {
  
@@ -52,7 +55,8 @@ public class Sentence extends Annotation {
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_sentenceLength = TypeSystemImpl.getAdjustedFeatureOffset("sentenceLength");
+  private final static CallSite _FC_sentenceLength = TypeSystemImpl.createCallSite(Sentence.class, "sentenceLength");
+  private final static MethodHandle _FH_sentenceLength = _FC_sentenceLength.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -108,14 +112,14 @@ public class Sentence extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getSentenceLength() { return _getIntValueNc(_FI_sentenceLength);}
+  public int getSentenceLength() { return _getIntValueNc(wrapGetIntCatchException(_FH_sentenceLength));}
     
   /** setter for sentenceLength - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setSentenceLength(int v) {
-    _setIntValueNfc(_FI_sentenceLength, v);
+    _setIntValueNfc(wrapGetIntCatchException(_FH_sentenceLength), v);
   }    
     
   }
