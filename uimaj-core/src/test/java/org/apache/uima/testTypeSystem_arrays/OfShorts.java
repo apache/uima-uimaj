@@ -19,24 +19,36 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Wed Mar 02 13:49:16 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:26:22 EDT 2017 */
 
 package org.apache.uima.testTypeSystem_arrays;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.JCas; 
 import org.apache.uima.jcas.JCasRegistry;
+
+
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Wed Mar 02 13:49:16 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/experiment-v3-jcas/uimaj-core/src/test/resources/ExampleCas/testTypeSystem_arrays.xml
+ * Updated by JCasGen Sun Oct 08 19:26:22 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/resources/ExampleCas/testTypeSystem_arrays.xml
  * @generated */
 public class OfShorts extends Annotation {
+ 
+  /** @generated
+   * @ordered 
+   */
+  @SuppressWarnings ("hiding")
+  public final static String _TypeName = "org.apache.uima.testTypeSystem_arrays.OfShorts";
+  
   /** @generated
    * @ordered 
    */
@@ -58,8 +70,12 @@ public class OfShorts extends Annotation {
    *   Feature Offsets *
    * *******************/ 
    
+  public final static String _FeatName_f1Shorts = "f1Shorts";
+
+
   /* Feature Adjusted Offsets */
-  public final static int _FI_f1Shorts = TypeSystemImpl.getAdjustedFeatureOffset("f1Shorts");
+  private final static CallSite _FC_f1Shorts = TypeSystemImpl.createCallSite(OfShorts.class, "f1Shorts");
+  private final static MethodHandle _FH_f1Shorts = _FC_f1Shorts.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -84,6 +100,19 @@ public class OfShorts extends Annotation {
     readObject();   
   } 
 
+
+  /** @generated
+   * @param jcas JCas to which this Feature Structure belongs
+   * @param begin offset to the begin spot in the SofA
+   * @param end offset to the end spot in the SofA 
+  */  
+  public OfShorts(JCas jcas, int begin, int end) {
+    super(jcas);
+    setBegin(begin);
+    setEnd(end);
+    readObject();
+  }   
+
   /** 
    * <!-- begin-user-doc -->
    * Write your own initialization here
@@ -102,14 +131,14 @@ public class OfShorts extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public ShortArray getF1Shorts() { return (ShortArray)(_getFeatureValueNc(_FI_f1Shorts));}
+  public ShortArray getF1Shorts() { return (ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_f1Shorts)));}
     
   /** setter for f1Shorts - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setF1Shorts(ShortArray v) {
-    _setFeatureValueNcWj(_FI_f1Shorts, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_f1Shorts), v);
   }    
     
     
@@ -119,7 +148,7 @@ public class OfShorts extends Annotation {
    * @return value of the element at index i 
    */
   public short getF1Shorts(int i) {
-     return ((ShortArray)(_getFeatureValueNc(_FI_f1Shorts))).get(i);} 
+     return ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_f1Shorts)))).get(i);} 
 
   /** indexed setter for f1Shorts - sets an indexed value - 
    * @generated
@@ -127,7 +156,7 @@ public class OfShorts extends Annotation {
    * @param v value to set into the array 
    */
   public void setF1Shorts(int i, short v) {
-    ((ShortArray)(_getFeatureValueNc(_FI_f1Shorts))).set(i, v);
+    ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_f1Shorts)))).set(i, v);
   }  
   }
 
