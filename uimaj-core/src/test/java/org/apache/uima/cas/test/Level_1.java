@@ -19,13 +19,14 @@
 
 package org.apache.uima.cas.test;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
-import org.apache.uima.jcas.JCas; 
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
-
-
 import org.apache.uima.jcas.tcas.Annotation;
 
 
@@ -62,8 +63,11 @@ public class Level_1 extends Annotation {
    *   Feature Offsets *
    * *******************/ 
   /* Feature Adjusted Offsets */
-  public final static int _FI_id = TypeSystemImpl.getAdjustedFeatureOffset("id");
-   
+//  public final static int _FI_id = TypeSystemImpl.getAdjustedFeatureOffset("id");
+
+  private final static CallSite _FC_id = TypeSystemImpl.createCallSite(Level_1.class, "id");
+  private final static MethodHandle _FH_id = _FC_id.dynamicInvoker();
+  
   /** Never called.  Disable default constructor
    * @generated */
   protected Level_1() {/* intentionally empty block */}
@@ -115,14 +119,14 @@ public class Level_1 extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public float getId() { return _getFloatValueNc(_FI_id);}
+  public float getId() { return _getFloatValueNc(wrapGetIntCatchException(_FH_id));}
     
   /** setter for id - sets id of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.) 
    * @generated
    * @param v value to set into the feature 
    */
   public void setId(float v) {
-    _setFloatValueNfc(_FI_id, v);
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_id), v);
   }    
 
   

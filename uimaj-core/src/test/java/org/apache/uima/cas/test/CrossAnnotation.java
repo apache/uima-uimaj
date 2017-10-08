@@ -1,9 +1,12 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package org.apache.uima.cas.test;
+
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -16,8 +19,8 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class CrossAnnotation extends Annotation {
  
@@ -52,7 +55,8 @@ public class CrossAnnotation extends Annotation {
 
 
   /* Feature Adjusted Offsets */
-  public final static int _FI_otherAnnotation = TypeSystemImpl.getAdjustedFeatureOffset("otherAnnotation");
+  private final static CallSite _FC_otherAnnotation = TypeSystemImpl.createCallSite(CrossAnnotation.class, "otherAnnotation");
+  private final static MethodHandle _FH_otherAnnotation = _FC_otherAnnotation.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -108,14 +112,14 @@ public class CrossAnnotation extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public Annotation getOtherAnnotation() { return (Annotation)(_getFeatureValueNc(_FI_otherAnnotation));}
+  public Annotation getOtherAnnotation() { return (Annotation)(_getFeatureValueNc(wrapGetIntCatchException(_FH_otherAnnotation)));}
     
   /** setter for otherAnnotation - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setOtherAnnotation(Annotation v) {
-    _setFeatureValueNcWj(_FI_otherAnnotation, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_otherAnnotation), v);
   }    
     
   }
