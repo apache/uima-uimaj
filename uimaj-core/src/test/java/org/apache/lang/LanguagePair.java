@@ -1,7 +1,7 @@
 
 
    
-/* Apache UIMA v3 - First created by JCasGen Fri Dec 16 10:23:12 EST 2016 */
+/* Apache UIMA v3 - First created by JCasGen Sun Oct 08 19:06:27 EDT 2017 */
 
 package org.apache.lang;
 
@@ -19,8 +19,8 @@ import org.apache.uima.jcas.cas.TOP;
 
 
 /** 
- * Updated by JCasGen Fri Dec 16 10:23:12 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
+ * Updated by JCasGen Sun Oct 08 19:06:27 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-core/src/test/java/org/apache/uima/jcas/test/generatedx.xml
  * @generated */
 public class LanguagePair extends TOP {
  
@@ -57,16 +57,13 @@ public class LanguagePair extends TOP {
 
 
   /* Feature Adjusted Offsets */
-//  public final static int _FI_lang1 = TypeSystemImpl.getAdjustedFeatureOffset("lang1");
-//  public final static int _FI_lang2 = TypeSystemImpl.getAdjustedFeatureOffset("lang2");
-//  public final static int _FI_description = TypeSystemImpl.getAdjustedFeatureOffset("description");
   private final static CallSite _FC_lang1 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang1");
-  private final static CallSite _FC_lang2 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang2");
-  private final static CallSite _FC_description = TypeSystemImpl.createCallSite(LanguagePair.class, "description");
-  
   private final static MethodHandle _FH_lang1 = _FC_lang1.dynamicInvoker();
+  private final static CallSite _FC_lang2 = TypeSystemImpl.createCallSite(LanguagePair.class, "lang2");
   private final static MethodHandle _FH_lang2 = _FC_lang2.dynamicInvoker();
+  private final static CallSite _FC_description = TypeSystemImpl.createCallSite(LanguagePair.class, "description");
   private final static MethodHandle _FH_description = _FC_description.dynamicInvoker();
+
    
   /** Never called.  Disable default constructor
    * @generated */
