@@ -30,7 +30,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 
 
 /** 
- * Updated by JCasGen Sun Oct 08 19:20:05 EDT 2017
+ * Updated by JCasGen Sun Oct 08 19:34:17 EDT 2017
  * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/descriptors/tutorial/ex6/TutorialTypeSystem.xml
  * @generated */
 public class Meeting extends Annotation {
@@ -237,7 +237,7 @@ public class Meeting extends Annotation {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_endTime), v);
   }    
     
-      /**
+        /**
      *  Custom constructor taking all parameters.
      *
      * @param jcas the jcas
