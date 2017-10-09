@@ -38,7 +38,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.MutableCallSite;
 import java.lang.ref.WeakReference;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,7 +47,6 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 import java.util.WeakHashMap;
@@ -2589,8 +2587,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //  Class<?> getJCasClass(int typecode) {
 //    return jcasClassesInfo[typecode].jcasClass; 
 //  }
-  
-  /**
+    /**
    * This code is run when a JCas class is loaded and resolved, for the first time, as part of type system commit, or
    * as part of statically loading the FSClassRegister class (where this is done for all the built-ins, once).
    * It looks up the offset value in the type system (via a thread-local)
@@ -2613,8 +2610,14 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
        * Class.forName("myJCasClass", false, this.getClass().getClassLoader()).*/
       throw new CASRuntimeException(CASRuntimeException.JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT);
     }
+
     FeatureImpl fi = type.getFeatureByBaseName(featName);
-    return (fi == null) ? -1 : fi.getAdjustedOffset();
+    return (fi == null) ? -1 : fi.getAdjustedOffset();    
+  }
+  
+  static synchronized int getAdjustedFeatureOffset(TypeImpl type, String featName) {
+    FeatureImpl fi = type.getFeatureByBaseName(featName);
+    return (fi == null) ? -1 : fi.getAdjustedOffset();    
   }
     
   /**
@@ -2654,27 +2657,30 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
   /**
    * Creates and returns a new MutableCallSite, 
-   * recording it in list of all callsites for this type, in a map by typename
-   * 
-   * Done this way because 
-   *   - can't be a classloader-wide list of call sites - some might not be associated with this type system
-   *   - can't be a typesystem-wide list of call sites - the JCas class might be used by multiple type systems
-   *     and the first one to load it would set this value.
-   *   - has to be pairs of feature name, call-site, in order to get the value to set, later
-   *   --  doesn't need to be a hashmap, can be an arraylist of entry
-   *   Type being loaded may not be known at this point.
+//   * recording it in list of all callsites for this type, in a map by typename
+//   * 
+//   * Done this way because 
+//   *   - can't be a classloader-wide list of call sites - some might not be associated with this type system
+//   *   - can't be a typesystem-wide list of call sites - the JCas class might be used by multiple type systems
+//   *     and the first one to load it would set this value.
+//   *   - has to be pairs of feature name, call-site, in order to get the value to set, later
+//   *   --  doesn't need to be a hashmap, can be an arraylist of entry
+//   *   Type being loaded may not be known at this point.
    * @param clazz the JCas class
    * @param featName the short name of the feature
    * @return the created callsite
    */
-  public static MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {
-    MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class)); 
+  public final static MutableCallSite createCallSite(Class<? extends TOP> clazz, String featName) {
+    MutableCallSite callSite = new MutableCallSite(MethodType.methodType(int.class));
     callSite.setTarget(MHC_MINUS_1);  // for error checking
-    ArrayList<Entry<String, MutableCallSite>> callSitesForType = FSClassRegistry.callSites_all_JCasClasses.computeIfAbsent(clazz, k -> new ArrayList<>());
-    callSitesForType.add(new AbstractMap.SimpleEntry<String, MutableCallSite>(featName, callSite));
+//    ArrayList<Entry<String, MutableCallSite>> callSitesForType = FSClassRegistry.callSites_all_JCasClasses.computeIfAbsent(clazz, k -> new ArrayList<>());
+//    callSitesForType.add(new AbstractMap.SimpleEntry<String, MutableCallSite>(featName, callSite));
     return callSite;
   }
 
+//  private static boolean isBuiltIn(Class<? extends TOP> clazz) {
+//    return BuiltinTypeKinds.creatableBuiltinJCasClassNames.contains(clazz.getName());
+//  }
 //  /**
 //   * Get a list of types which have OID feature, filtered down to being just the top-most
 //   * (in the type hierarchy)

@@ -140,10 +140,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   // must precede first (static) use
   static private ThreadLocal<List<ErrorReport>> errorSet = new ThreadLocal<>();
  
-  /**
-   * Map (per class loader) from JCas Classes, to all callSites in that JCas class 
-   */
-  public static final Map<Class<? extends TOP>, ArrayList<Entry<String, MutableCallSite>>> callSites_all_JCasClasses = new HashMap<>();
+//  /**
+//   * Map (per class loader) from JCas Classes, to all callSites in that JCas class 
+//   */
+//  public static final Map<Class<? extends TOP>, ArrayList<Entry<String, MutableCallSite>>> callSites_all_JCasClasses = new HashMap<>();
 
   /**
    * One instance per UIMA Type per class loader
@@ -278,6 +278,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       }
     }
     
+    callSites_toSync.clear();
+    
     /**
      * copy in built-ins
      *   update t2jcci (if not already loaded) with load info for type
@@ -294,6 +296,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           type_to_jcasClassInfo.put(jcasClass.getCanonicalName(), jcas_class_info);
         }
         setTypeFromJCasIDforBuiltIns(jcas_class_info, ts, typecode);
+        updateAllCallSitesForJCasClass((Class<? extends TOP>) jcasClass, ts.getTypeForCode(typecode));
       }
     }  
     
@@ -327,7 +330,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
       }
 
-      callSites_toSync.clear();
+
       maybeLoadJCasAndSubtypes(ts, ts.topType, type_to_jcasClassInfo.get(TOP.class.getCanonicalName()), cl, type_to_jcasClassInfo);
       
       MutableCallSite[] sync = callSites_toSync.toArray(new MutableCallSite[callSites_toSync.size()]);
@@ -472,48 +475,21 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * @return the loaded / resolved class
    */
   private static Class<?> maybeLoadJCas(TypeImpl ti, ClassLoader cl) {
-    Class<?> clazz = null;
+    Class<? extends TOP> clazz = null;
     String className = Misc.typeName2ClassName(ti.getName());
     
     try { 
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);
-      clazz = Class.forName(className, true, cl);
-      ArrayList<Entry<String, MutableCallSite>> callsites = callSites_all_JCasClasses.get(clazz);
-      if (null != callsites) {
-        for (Entry<String, MutableCallSite> e : callsites) {
-          final int index = TypeSystemImpl.getAdjustedFeatureOffset(e.getKey());
-          if (index == -1) {
-            continue;  // a feature in the JCas class doesn't exist in the currently loaded type system
-                       // skip setting it.  If code uses this, a runtime error will happen.
-          }
-          final int prev = (int) e.getValue().getTarget().invokeExact();
-          
-          if (prev == -1) {
-            MethodHandle mh_constant = getConstantIntMethodHandle(index);
-
-            e.getValue().setTarget(mh_constant);
-            callSites_toSync.add(e.getValue());
-          } else if (prev != index) {
-            throw new UIMA_IllegalStateException(UIMA_IllegalStateException.JCAS_INCOMPATIBLE_TYPE_SYSTEMS,
-                new Object[] {ti.getName(), e.getKey()});
-          }
-
-        }
-      }
+      clazz = (Class<? extends TOP>) Class.forName(className, true, cl);
+      updateAllCallSitesForJCasClass(clazz, ti);
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
-    } catch (Throwable e1) {
-      if (e1 instanceof UIMA_IllegalStateException) {
-        throw (UIMA_IllegalStateException) e1;
-      }
-      throw Misc.internalError();  // from invokeExact
     } finally {
       TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
     }
     return clazz;
   }
       
-  private static synchronized MethodHandle getConstantIntMethodHandle(int i) {
+  static synchronized MethodHandle getConstantIntMethodHandle(int i) {
     MethodHandle mh = Misc.getWithExpand(methodHandlesForInt, i);
     if (mh == null) {
       methodHandlesForInt.set(i, mh = MethodHandles.constant(int.class, i));
@@ -682,7 +658,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   
 //  static boolean isFieldInClass(Feature feat, Class<?> clazz) {
 //    try {
-//      return null != clazz.getDeclaredField("_FI_" + feat.getShortName());
+//      return null != clazz.getDeclaredField("_FC_" + feat.getShortName());
 //    } catch (NoSuchFieldException e) {
 //      return false;
 //    }    
@@ -705,7 +681,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * Checks that a JCas class definition conforms to the current type in the current type system.
    * Checks that the superclass chain contains some match to the super type chain.
    * Checks that the return value for the getters for features matches the feature's range.
-   * Checks that static _FI_xxx values from the JCas class == the adjusted feature offsets in the type system
+   * Checks that static _FC_xxx values from the JCas class == the adjusted feature offsets in the type system
    * 
    * @param clazz - the JCas class to check
    * @param tsi -
@@ -797,32 +773,38 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         }
       }
     }
-    
-    for (Field f : clazz.getDeclaredFields()) {
-      String fname = f.getName();
-      if (fname.length() <= 5 || !fname.startsWith("_FI_")) continue;
-      String featName = fname.substring(4);
-      FeatureImpl fi = ti.getFeatureByBaseName(featName);
-      if (fi == null) {
-        add2errors(errorSet, 
-                   new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM, clazz.getName(), featName), 
-                   false);  // don't throw on this error, field is set to -1 and will throw if trying to use it   
-       } else {
-        int staticOffsetInClass = Misc.getPrivateStaticIntFieldNoInherit(clazz, fname);
-        if (fi.getAdjustedOffset() != staticOffsetInClass) {
-          /** In JCAS class "{0}", UIMA field "{1}" was set up when this class was previously loaded and initialized, to have
-           * an adjusted offset of "{2}" but now the feature has a different adjusted offset of "{3}"; this may be due to 
-           * something else other than type system commit actions loading and initializing the JCas class, or to
-           * having a different non-compatible type system for this class, trying to use a common JCas cover class, which is not supported. */
+    try {
+      for (Field f : clazz.getDeclaredFields()) {
+        String fname = f.getName();
+        if (fname.length() <= 5 || !fname.startsWith("_FC_")) continue;
+        String featName = fname.substring(4);
+        FeatureImpl fi = ti.getFeatureByBaseName(featName);
+        if (fi == null) {
           add2errors(errorSet, 
-                     new CASRuntimeException(CASRuntimeException.JCAS_FIELD_ADJ_OFFSET_CHANGED,
-                        clazz.getName(), 
-                        fi.getName(), 
-                        Integer.valueOf(staticOffsetInClass), 
-                        Integer.valueOf(fi.getAdjustedOffset())),
-                     staticOffsetInClass != -1);  // throw unless static offset is -1, in that case, a runtime error will occur if it is usedd
-        }
-      }
+                     new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM, clazz.getName(), featName), 
+                     false);  // don't throw on this error, field is set to -1 and will throw if trying to use it   
+        } else {
+          Field mhf = clazz.getDeclaredField("_FH_" + featName);
+          mhf.setAccessible(true);
+          MethodHandle mh = (MethodHandle) mhf.get(null);
+          int staticOffsetInClass = (int) mh.invokeExact();
+          if (fi.getAdjustedOffset() != staticOffsetInClass) {
+             /** In JCAS class "{0}", UIMA field "{1}" was set up when this class was previously loaded and initialized, to have
+             * an adjusted offset of "{2}" but now the feature has a different adjusted offset of "{3}"; this may be due to 
+             * something else other than type system commit actions loading and initializing the JCas class, or to
+             * having a different non-compatible type system for this class, trying to use a common JCas cover class, which is not supported. */
+            add2errors(errorSet, 
+                       new CASRuntimeException(CASRuntimeException.JCAS_FIELD_ADJ_OFFSET_CHANGED,
+                          clazz.getName(), 
+                          fi.getName(), 
+                          Integer.valueOf(staticOffsetInClass), 
+                          Integer.valueOf(fi.getAdjustedOffset())),
+                       staticOffsetInClass != -1);  // throw unless static offset is -1, in that case, a runtime error will occur if it is usedd
+          }  // end of offset changed
+        }  // end of feature check
+      } // end of for loop
+    } catch (Throwable e) {
+      throw new RuntimeException(e);
     }
   }
   
@@ -918,5 +900,42 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     return true;
   }
 
+  private static void updateAllCallSitesForJCasClass(Class<? extends TOP> clazz, TypeImpl type) {
+    try {
+      Field[] fields = clazz.getDeclaredFields();
+     
+      for (Field field : fields) {
+        String fieldName = field.getName();
+        if (fieldName.startsWith("_FC_")) {
+  
+          String featureName = fieldName.substring("_FC_".length());
+          final int index = TypeSystemImpl.getAdjustedFeatureOffset(type, featureName);
+          if (index == -1) {
+            continue;  // a feature defined in the JCas class doesn't exist in the currently loaded type
+          }             // skip setting it.  If code uses this, a runtime error will happen.
+          
+          MutableCallSite c;
+          field.setAccessible(true);
+          c = (MutableCallSite) field.get(null);
+          
+          if (c == null) { // happens when first load of TypeSystemImpl is from JCas class ref
+            continue;  // will be set later when type system is committed.
+          }
+          
+          int prev = (int) c.getTarget().invokeExact();
+          if (prev == -1) {
+            MethodHandle mh_constant = getConstantIntMethodHandle(index);
+            c.setTarget(mh_constant);
+            callSites_toSync.add(c);
+          } else if (prev != index) {
+            throw new UIMA_IllegalStateException(UIMA_IllegalStateException.JCAS_INCOMPATIBLE_TYPE_SYSTEMS,
+                new Object[] {type.getName(), featureName});
+          }
+        }
+      }
+    } catch (Throwable e) {
+      Misc.internalError(e); // never happen
+    }
+  }
 }
   
