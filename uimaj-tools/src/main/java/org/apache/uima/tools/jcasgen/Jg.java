@@ -61,6 +61,7 @@ import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeImpl_string;
 import org.apache.uima.cas.impl.TypeSystemImpl;
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.metadata.FeatureDescription;
@@ -144,6 +145,8 @@ public class Jg {
 
   /** The Constant emptyFds. */
   static final FeatureDescription[] emptyFds = new FeatureDescription[0];
+
+  private static final URL[] emptyURLarray = new URL[0];
 
   /** The built in type system. */
   static TypeSystem builtInTypeSystem;
@@ -1570,7 +1573,7 @@ public class Jg {
       }
     }
     else {
-        resourceManager.setExtensionClassLoader(this.getClass().getClassLoader(), true);
+        resourceManager.setExtensionClassLoader(new UIMAClassLoader(emptyURLarray, this.getClass().getClassLoader()), true);
     }
     return resourceManager;
   }
