@@ -316,6 +316,9 @@ public class CASRuntimeException extends UIMARuntimeException {
   
   /** Subiterator {0} has bound type: {1}, begin: {2}, end: {3}, for coveredBy, not using type priorities, matching FS with same begin end and different type {4}, cannot order these*/
   public static final String SUBITERATOR_AMBIGUOUS_POSITION_DIFFERENT_TYPES = "SUBITERATOR_AMBIGUOUS_POSITION_DIFFERENT_TYPES";
+  
+  /** Deserializing Compressed Form 6, a type code: {0} has no corresponding type. currentFsId: {1} nbrFSs: {2} nextFsAddr: {3} */
+  public static final String DESER_FORM_6_BAD_TYPE_CODE = "DESER_FORM_6_BAD_TYPE_CODE";
   /**
    * The constructors are organized
    * 

@@ -1806,6 +1806,11 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //          ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
 //          : 0);
       tgtType = (isTypeMapping ? tgtTs : srcTs).getTypeForCode(tgtTypeCode); 
+      if (tgtType == null) {
+        /** Deserializing Compressed Form 6, a type code: {0} has no corresponding type. currentFsId: {1} nbrFSs: {2} nextFsAddr: {3} */
+        throw new CASRuntimeException(CASRuntimeException.DESER_FORM_6_BAD_TYPE_CODE, tgtTypeCode,
+            currentFsId, nbrFSs, nextFsAddr);
+      }
       final TypeImpl srcType = isTypeMapping ? typeMapper.mapTypeCodeTgt2Src(tgtTypeCode) : tgtType;
       
       final boolean storeIt = (srcType != null);
