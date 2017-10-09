@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ResourceManagerConfiguration;
 import org.apache.uima.util.XMLizable;
@@ -331,8 +332,13 @@ public interface ResourceManager {
   public void setExtensionClassPath(ClassLoader parent, String classpath, boolean resolveResource)
           throws MalformedURLException;
 
-  default void setExtensionClassLoader(ClassLoader parent, boolean resolveResources) {
-    ((ResourceManager_impl)this).setExtensionClassLoaderImpl(parent, resolveResources);
+  /**
+   * Set an extension class loader into the Resource Manager
+   * @param uimaExtensionClassLoader the loader to use
+   * @param resolveResources true to also use this to resolve resources
+   */
+  default void setExtensionClassLoader(UIMAClassLoader uimaExtensionClassLoader, boolean resolveResources) {
+    ((ResourceManager_impl)this).setExtensionClassLoaderImpl(uimaExtensionClassLoader, resolveResources);
   }
   
   /**

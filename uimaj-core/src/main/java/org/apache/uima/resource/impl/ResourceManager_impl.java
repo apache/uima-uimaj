@@ -328,9 +328,10 @@ public class ResourceManager_impl implements ResourceManager {
   }
 
   // https://issues.apache.org/jira/browse/UIMA-5553
+  // https://issues.apache.org/jira/browse/UIMA-5609
   // synchronized because the other methods that set the extension class loader are.
-  public synchronized void setExtensionClassLoaderImpl(ClassLoader parent, boolean resolveResource) {
-    uimaCL = new UIMAClassLoader(new URL[0], parent);
+  public synchronized void setExtensionClassLoaderImpl(UIMAClassLoader uimaExtensionClassLoader, boolean resolveResource) {
+    uimaCL = uimaExtensionClassLoader;
     if (resolveResource) {
       // set UIMA extension ClassLoader also to resolve resources
       getRelativePathResolver().setPathResolverClassLoader(uimaCL);
