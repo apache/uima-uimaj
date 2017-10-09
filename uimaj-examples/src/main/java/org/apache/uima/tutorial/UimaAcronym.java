@@ -78,10 +78,7 @@ public class UimaAcronym extends Annotation {
   private final static MethodHandle _FH_expandedForm = _FC_expandedForm.dynamicInvoker();
 
    
-    /** The Constant _FI_expandedForm. */
-    public static final int _FI_expandedForm = TypeSystemImpl.getAdjustedFeatureOffset("expandedForm");
-
-    /**
+  /**
    * Never called. Disable default constructor
    *
    * @generated

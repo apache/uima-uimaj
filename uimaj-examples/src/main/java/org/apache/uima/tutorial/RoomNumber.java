@@ -77,10 +77,6 @@ public class RoomNumber extends Annotation {
   private final static CallSite _FC_building = TypeSystemImpl.createCallSite(RoomNumber.class, "building");
   private final static MethodHandle _FH_building = _FC_building.dynamicInvoker();
 
-   
-    /** The Constant _FI_building. */
-    public static final int _FI_building = TypeSystemImpl.getAdjustedFeatureOffset("building");
-
     /**
    * Never called. Disable default constructor
    *

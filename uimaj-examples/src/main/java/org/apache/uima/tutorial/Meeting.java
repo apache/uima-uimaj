@@ -87,17 +87,6 @@ public class Meeting extends Annotation {
   private final static MethodHandle _FH_endTime = _FC_endTime.dynamicInvoker();
 
    
-    /** The Constant _FI_room. */
-    public static final int _FI_room = TypeSystemImpl.getAdjustedFeatureOffset("room");
-
-    /** The Constant _FI_date. */
-    public static final int _FI_date = TypeSystemImpl.getAdjustedFeatureOffset("date");
-
-    /** The Constant _FI_startTime. */
-    public static final int _FI_startTime = TypeSystemImpl.getAdjustedFeatureOffset("startTime");
-
-    /** The Constant _FI_endTime. */
-    public static final int _FI_endTime = TypeSystemImpl.getAdjustedFeatureOffset("endTime");
 
     /**
    * Never called. Disable default constructor

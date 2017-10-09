@@ -81,18 +81,6 @@ public class SourceDocumentInformation extends Annotation {
   private final static MethodHandle _FH_documentSize = _FC_documentSize.dynamicInvoker();
   private final static CallSite _FC_lastSegment = TypeSystemImpl.createCallSite(SourceDocumentInformation.class, "lastSegment");
   private final static MethodHandle _FH_lastSegment = _FC_lastSegment.dynamicInvoker();
-
-   
-  /* *******************
-   *   Feature Offsets *
-   * *******************/ 
-   
-  /* Feature Adjusted Offsets */
-  public final static int _FI_uri = TypeSystemImpl.getAdjustedFeatureOffset("uri");
-  public final static int _FI_offsetInSource = TypeSystemImpl.getAdjustedFeatureOffset("offsetInSource");
-  public final static int _FI_documentSize = TypeSystemImpl.getAdjustedFeatureOffset("documentSize");
-  public final static int _FI_lastSegment = TypeSystemImpl.getAdjustedFeatureOffset("lastSegment");
-
    
   /** Never called.  Disable default constructor
    * @generated */

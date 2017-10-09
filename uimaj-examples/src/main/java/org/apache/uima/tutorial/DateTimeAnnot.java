@@ -78,10 +78,7 @@ public class DateTimeAnnot extends Annotation {
   private final static MethodHandle _FH_shortDateString = _FC_shortDateString.dynamicInvoker();
 
    
-    /** The Constant _FI_shortDateString. */
-    public static final int _FI_shortDateString = TypeSystemImpl.getAdjustedFeatureOffset("shortDateString");
-
-    /**
+  /**
    * Never called. Disable default constructor
    *
    * @generated
