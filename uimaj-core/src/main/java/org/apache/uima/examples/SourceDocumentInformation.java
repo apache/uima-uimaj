@@ -21,6 +21,9 @@
 
 package org.apache.uima.examples;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -31,14 +34,9 @@ import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
-/** 
- * Stores detailed information about the original source document from which the current CAS was initialized. 
- * All information (like size) refers to the source document and not to the document in the CAS 
- *  which may be converted and filtered by a CAS Initializer. 
- * For example this information will be written to the Semantic Search index so that 
- *  the original document contents can be retrieved by queries.
- * Updated by JCasGen Wed Dec 21 14:40:40 EST 2016
- * XML source: C:/au/svnCheckouts/branches/uimaj/v3-alpha/uimaj-examples/src/main/resources/org/apache/uima/examples/SourceDocumentInformation.xml
+/** Stores detailed information about the original source document from which the current CAS was initialized. All information (like size) refers to the source document and not to the document in the CAS which may be converted and filtered by a CAS Initializer. For example this information will be written to the Semantic Search index so that the original document contents can be retrieved by queries.
+ * Updated by JCasGen Sun Oct 08 19:24:05 EDT 2017
+ * XML source: C:/au/svnCheckouts/uv3/trunk/uimaj-v3/uimaj-examples/src/main/resources/org/apache/uima/examples/SourceDocumentInformation.xml
  * @generated */
 public class SourceDocumentInformation extends Annotation {
   /** @generated
@@ -74,15 +72,15 @@ public class SourceDocumentInformation extends Annotation {
   public final static String _FeatName_lastSegment = "lastSegment";
 
 
-  /* *******************
-   *   Feature Offsets *
-   * *******************/ 
-   
   /* Feature Adjusted Offsets */
-  public final static int _FI_uri = TypeSystemImpl.getAdjustedFeatureOffset("uri");
-  public final static int _FI_offsetInSource = TypeSystemImpl.getAdjustedFeatureOffset("offsetInSource");
-  public final static int _FI_documentSize = TypeSystemImpl.getAdjustedFeatureOffset("documentSize");
-  public final static int _FI_lastSegment = TypeSystemImpl.getAdjustedFeatureOffset("lastSegment");
+  private final static CallSite _FC_uri = TypeSystemImpl.createCallSite(SourceDocumentInformation.class, "uri");
+  private final static MethodHandle _FH_uri = _FC_uri.dynamicInvoker();
+  private final static CallSite _FC_offsetInSource = TypeSystemImpl.createCallSite(SourceDocumentInformation.class, "offsetInSource");
+  private final static MethodHandle _FH_offsetInSource = _FC_offsetInSource.dynamicInvoker();
+  private final static CallSite _FC_documentSize = TypeSystemImpl.createCallSite(SourceDocumentInformation.class, "documentSize");
+  private final static MethodHandle _FH_documentSize = _FC_documentSize.dynamicInvoker();
+  private final static CallSite _FC_lastSegment = TypeSystemImpl.createCallSite(SourceDocumentInformation.class, "lastSegment");
+  private final static MethodHandle _FH_lastSegment = _FC_lastSegment.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -138,14 +136,14 @@ public class SourceDocumentInformation extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getUri() { return _getStringValueNc(_FI_uri);}
+  public String getUri() { return _getStringValueNc(wrapGetIntCatchException(_FH_uri));}
     
   /** setter for uri - sets URI of document. (For example, file:///MyDirectory/myFile.txt for a simple file or http://incubator.apache.org/uima/index.html for content from a web source.) 
    * @generated
    * @param v value to set into the feature 
    */
   public void setUri(String v) {
-    _setStringValueNfc(_FI_uri, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_uri), v);
   }    
     
    
@@ -157,14 +155,14 @@ public class SourceDocumentInformation extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getOffsetInSource() { return _getIntValueNc(_FI_offsetInSource);}
+  public int getOffsetInSource() { return _getIntValueNc(wrapGetIntCatchException(_FH_offsetInSource));}
     
   /** setter for offsetInSource - sets Byte offset of the start of document content within original source file or other input source. Only used if the CAS document was retrieved from an source where one physical source file contained several conceptual documents. Zero otherwise. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setOffsetInSource(int v) {
-    _setIntValueNfc(_FI_offsetInSource, v);
+    _setIntValueNfc(wrapGetIntCatchException(_FH_offsetInSource), v);
   }    
     
    
@@ -176,14 +174,14 @@ public class SourceDocumentInformation extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getDocumentSize() { return _getIntValueNc(_FI_documentSize);}
+  public int getDocumentSize() { return _getIntValueNc(wrapGetIntCatchException(_FH_documentSize));}
     
   /** setter for documentSize - sets Size of original document in bytes before processing by CAS Initializer. Either absolute file size of size within file or other source. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setDocumentSize(int v) {
-    _setIntValueNfc(_FI_documentSize, v);
+    _setIntValueNfc(wrapGetIntCatchException(_FH_documentSize), v);
   }    
     
    
@@ -195,14 +193,14 @@ public class SourceDocumentInformation extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public boolean getLastSegment() { return _getBooleanValueNc(_FI_lastSegment);}
+  public boolean getLastSegment() { return _getBooleanValueNc(wrapGetIntCatchException(_FH_lastSegment));}
     
   /** setter for lastSegment - sets For a CAS that represents a segment of a larger source document, this flag indicates whether this CAS is the final segment of the source document.  This is useful for downstream components that want to take some action after having seen all of the segments of a particular source document. 
    * @generated
    * @param v value to set into the feature 
    */
   public void setLastSegment(boolean v) {
-    _setBooleanValueNfc(_FI_lastSegment, v);
+    _setBooleanValueNfc(wrapGetIntCatchException(_FH_lastSegment), v);
   }    
     
   }
