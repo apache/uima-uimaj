@@ -1527,7 +1527,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
   public Collection<TOP> getIndexedFSs() {
     final ArrayList<CopyOnWriteIndexPart<TOP>> indexes = new ArrayList<>(); 
     for (int i = 0; i < this.usedIndexes.size(); i++) {
-      indexes.add(getNonSetSingleIndexForUsedType(i).getNonNullCow());
+      FsIndex_singletype<TOP> idx = getNonSetSingleIndexForUsedType(i);
+      if (idx.size() > 0) {
+        indexes.add(idx.getNonNullCow());
+      }
     }
     return getCollectionFromCows(indexes);
   }
