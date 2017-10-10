@@ -65,7 +65,7 @@ public class Misc {
 
   public static final String blanks = new String(new char[1000]).replace('\0', ' ');
   public static final String dots = "...";
-  public static final String ls = System.lineSeparator(); // n or r n
+//  public static final String ls = System.lineSeparator(); // n or r n
   public static final int[] INT0 = new int[] {0};
   
   private static final Pattern whitespace = Pattern.compile("\\s");
@@ -186,20 +186,20 @@ public class Misc {
   public static StringBuilder indent(StringBuilder sb, int indent) {
     // if the current sb doesn't end with a new line and indent > 0, add a new line
     if (!endsWithNl(sb) && indent > 0) {
-      sb.append(ls);
+      sb.append('\n');
     }
     return sb.append(blanks, 0, Math.min(blanks.length(), indent));    
   }
   
   public static void addNlIfMissing(StringBuilder sb) {
     if (!endsWithNl(sb)) {
-      sb.append(ls);
+      sb.append('\n');
     }
   }
   
   public static void addNlIfMissing(StringBuffer sb) {
     if (!endsWithNl(sb)) {
-      sb.append(ls);
+      sb.append('\n');
     }
   }
   

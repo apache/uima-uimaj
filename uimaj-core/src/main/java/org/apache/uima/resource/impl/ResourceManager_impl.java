@@ -101,7 +101,7 @@ public class ResourceManager_impl implements ResourceManager {
   
   protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class;
 
-  private static final URL[] emptyURLarray = null; 
+  private static final URL[] emptyURLarray = new URL[0]; 
 
   private AtomicBoolean isDestroyed = new AtomicBoolean(false);
   /**

@@ -668,7 +668,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
                       ? Misc.ppList(indent, Misc.setAsList(containersAndV2Paths), -1, StringBuilder::append)
                       : "null").append(',');
       si(sb).append("v3SourcePath=").append(v3SourcePath).append(',');
-      si(sb).append("fqcn_slash=").append(fqcn_slash).append("]").append(Misc.ls);
+      si(sb).append("fqcn_slash=").append(fqcn_slash).append("]").append('\n');
       } finally {
         indent[0] -= 2;
       }
@@ -2057,7 +2057,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
   
   private void logPrintNl(String msg, Writer bw) throws IOException {
     logPrint(msg, bw);
-    logPrint(Misc.ls, bw);
+    logPrint("\n", bw);
   }
   
   /**
