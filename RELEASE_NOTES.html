@@ -89,12 +89,16 @@
 <h2><a id="major.changes">Major Changes in this Release</a></h2>
 
 <p>Version 3 is a major reimplementation of the internals of 
-the Java version of UIMA,
-with many significant changes.
+the Java version of UIMA to support better integration with
+Java 8, alignment with modern memory hierarchies for 
+better performance, and multiple functional enhancements and
+improvements.</p>
+<p>
 If non-built-in JCas cover classes are being used,
 a one-time regeneration or migration step is required for these.  
 Please read the Version 3 users guide located in the docs directory
-for information on these changes and the migration tool.
+for information on these changes and the migration tool which can
+aid in migrating existing JCas class definitions.
 </p>
 
 <p>A very brief summary of Version 3:</p>
@@ -102,23 +106,25 @@ for information on these changes and the migration tool.
 subject to Garbage Collection, just like any other objects, 
 when no longer reachable.</li>
 <li>Iterating over indexes no longer throws 
-ConcurrentModificationException</li>
-<li>Support for arbitrary Java Objects in the CAS, using special custom implementations of JCas cover classes for those.</li>
-<li>Using above, new semi-built-ins for three new types: ArrayList style
-lists of Feature Structures and ints, and a FSHashSet</li>
+ConcurrentModificationException.</li>
+<li>Support for arbitrary Java Objects in the CAS, 
+using special custom implementations of JCas cover classes for those.</li>
+<li>Using the above new capability, new semi-built-ins for three new types: ArrayList style
+lists of Feature Structures and ints, and an FSHashSet</li>
 <li>New "select" framework for flexible 
 access to Feature Structures, that can ignore typeOrdering keys in indexes.</li>
 <li>Integration with Java 8 facilities such as Streams</li>
-<li>Logging framework upgraded</li>
+<li>Logging framework upgraded, supporting embedding UIMA in other frameworks using 
+popular logging APIs</li>
 <li>There are many performance improvements</li>
 </ul>
 
 
-<p>Please read the overview section of the Version 3 
-users guide for more details.</p>
+<p>Please read the Version 3 users guide for more details.</p>
 
 <p>Specific changes in this release versus the previous alpha02 release include</p>
 <ul>
+  <li>Eclipse plugins are now Jar-signed.
   <li>Renamed some methods to create UIMA arrays and lists from createFromArray to create</li>
   <li>Added missing methods to logger interface to support Supplier argument.</li>
   <li>The launchers for the normal UIMA Tooling default to specifying the built-in-to-Java logging framework.</li>
