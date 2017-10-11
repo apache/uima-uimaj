@@ -27,13 +27,31 @@ under the License.
 <chapter id="uv3.logging">
   <title>Logging</title>
     
-    <para>V3 retains the existing V2 logging facade, for backwards compatibility.
-    It has been augmented by the methods available in the SLF4j <code>Logger</code> API,
-    plus the Java 8 enabled APIs from the Log4j implementation that support the 
-    <code>Supplier</code> Functional Interface.
+    <para>Logging has evolved; two major changes now supported by V3 are
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>using a popular open-source standard logging facade, SLF4j, 
+                that can at run time discover and hook to 
+                a user specified logging framework.</para>
+        </listitem>
+        <listitem>
+          <para>Support for both old-style and new style substitutable parameter specification.</para>
+        </listitem>
+      </itemizedlist>
     </para>
     
-    <para>The implementation of this facade in V2 was the built-in-to-Java logging framework.
+    <para>For backwards compatibilit, V3 retains the existing V2 logging facade, so
+      existing code will continue to work.
+      The APIs have been augmented by the methods available in the SLF4j <code>Logger</code> API,
+      plus the Java 8 enabled APIs from the Log4j implementation that support the 
+      <code>Supplier</code> Functional Interface.
+    </para>
+    
+    <para>The old APIs support messages using the standard Java Util Logging style of writing substitutable
+      parameters using an integer, e.g., {0}, {1}, etc.  The new APIs support messages using the
+      modern substitutable parameters without an integer, e.g. {}.</para>
+    
+    <para>The implementation of this facade in V2 was the built-in-to-Java (java.util) logging framework.
     For V3, this is changed to be the SLF4j facade.  This is an open source, standard facade
     which allows deferring until deployment time, the specific logging back end to use.
     </para>
