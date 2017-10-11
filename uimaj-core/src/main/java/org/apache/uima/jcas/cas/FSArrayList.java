@@ -128,8 +128,8 @@ public class FSArrayList <T extends TOP> extends TOP implements
 
   /* Feature Adjusted Offsets */
 //  public final static int _FI_fsArray = TypeSystemImpl.getAdjustedFeatureOffset("fsArray");
-  public final static CallSite _FC_fsArray = TypeSystemImpl.createCallSite(FSArrayList.class, "fsArray");
-  public final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
+  private final static CallSite _FC_fsArray = TypeSystemImpl.createCallSite(FSArrayList.class, "fsArray");
+  private final static MethodHandle _FH_fsArray = _FC_fsArray.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
