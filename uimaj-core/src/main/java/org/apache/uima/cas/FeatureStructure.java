@@ -327,7 +327,7 @@ public interface FeatureStructure extends Cloneable {
    * @return a FeatureStructure that is the cloned copy of this FeatureStructure.
    * @throws CASRuntimeException passthru
    */
-  FeatureStructureImplC clone() throws CASRuntimeException;
+  Object clone() throws CASRuntimeException;
   
   /**
    * Compatibility for v2 code.
@@ -338,5 +338,22 @@ public interface FeatureStructure extends Cloneable {
    */
   int getAddress(); 
   
+  /**
+   * A feature structure is equal to another feature structure iff it is identical in the underlying
+   * representation.
+   * 
+   * @exception ClassCastException
+   *              If <code>o</code> is not a FS.
+   */
+  boolean equals(Object o) throws ClassCastException;
+
+  /**
+   * Will return a hash code that's consistent with equality, i.e., if two FSs are equal, they will
+   * also return the same hash code.
+   * 
+   * @return The hash code.
+   */
+  int hashCode();
+
 }
 

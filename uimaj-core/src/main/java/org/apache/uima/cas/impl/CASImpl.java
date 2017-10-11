@@ -2479,7 +2479,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       if (IS_ALWAYS_HOLD_ONTO_FSS) {
         svd.id2fs.putUnconditionally(fs);  // hold on to it if nothing else is
       } else {
-        svd.id2fs.put(fs);
+        svd.id2fs.put(fs);  // just like above, but has assert that wasn't there previously
       }
     }
     return fs._id;
