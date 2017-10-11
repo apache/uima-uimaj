@@ -17,7 +17,7 @@
    specific language governing permissions and limitations
    under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -116,6 +116,162 @@
         <version>1.7</version>
         <executions>
           <execution>
+            <id>default-cli</id>
+            <configuration>
+              <target>
+                <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
+                <!-- if the property uima-maven-build-eclipse-home is set, use it, otherwise don't -->
+                <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
+                  <not>
+                    <equals arg1="${uima-maven-build-eclipse-home}" arg2="$${uima-maven-build-eclipse-home}" />
+                  </not>
+                </condition>
+
+                <property environment="envVar" />
+                <condition property="eclipse.home" value="${envVar.ECLIPSE_HOME}">
+                  <isset property="envVar.ECLIPSE_HOME" />
+                </condition>
+                
+                <echo>deleting previous version of packed files from work</echo>
+                <echo>---------------------------------------------------</echo>
+                <delete verbose="true">
+                  <fileset dir="${eusWork}/plugins" includes="*.pack.gz"/>
+                </delete>
+                
+                <echo> </echo>
+                <echo>Compressing signed plugin Jars using pack200 - this may take a minute or 2</echo>
+                <echo>==========================================================================</echo>
+                <java jar="${uima-eclipse-jar-processor}" fork="true" failonerror="true" maxmemory="256m">
+                  <arg line="-pack" />
+                  <arg line="-verbose" />
+                  <arg line="-outputDir ${eusWork}/plugins"/>
+                  <arg line="${eusWork}/plugins" />
+                </java>
+                
+                <echo> </echo>
+                <echo>Resetting the content and artifacts for the site</echo>
+                <echo>------------------------------------------------</echo>
+                
+                <delete verbose="true">
+                  <fileset dir="${eclipseUpdateSubSite}" includes="content.jar,artifacts.jar"/>
+                </delete>
+                <copy todir="${eclipseUpdateSubSite}" failonerror="false">
+                  <fileset dir="${project.build.directory}/saved" includes="content.jar,artifacts.jar"/>
+                </copy>
+
+                <echo> </echo>
+                <echo>Generate the p2 metadata and publish new artifacts</echo>
+                <echo>--------------------------------------------------</echo>
+                <!-- Append is needed because category info is incremental with each additional release -->
+                <!-- publishArtifacts is needed to generate p2 metadata for the pack.gz forms -->
+                <!--   - tried and failed: using ANT to copy artifacts to the target - doesn't update metadata
+                         for pack.gz form ! if you don't publish artifacts
+                         - doesn't update artifacts.jar 
+                       - deleting SNAPSHOT jars in the eclipse update subsite 
+                         - fails because the previous metadata has info about those jars  
+                           and that isn't deleted, and continues to be used
+                -->
+                <java jar="${eclipse-equinox-launcher}" fork="true" failonerror="true" maxmemory="256m">
+                  <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+                  <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
+                  <arg line="-artifactRepository file:///${eclipseUpdateSubSite}" />
+                  <arg line="-source ${eusWork}" />
+                  <arg line="-configs ANY.ANY.ANY" />
+                  <arg line="-publishArtifacts" />
+                  <arg line="-reusePack200Files" />
+                  <arg line="-compress" />
+                  <arg line="-append" />     
+                </java>
+                
+                <echo> </echo>
+                <echo>Augment p2 metadata with category information</echo>
+                <echo>---------------------------------------------</echo>
+                <java jar="${eclipse-equinox-launcher}" fork="true" failonerror="true" maxmemory="256m">
+                  <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher" />
+                  <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
+                  <arg line="-categoryDefinition file:///${basedir}/category.xml" />
+                  <arg line="-categoryQualifier apache-uima" />
+                  <arg line="-compress" />
+                </java>  
+      
+                <echo> </echo>
+                <echo>Clearing previous checksums and signatures for eusWork plugins</echo>
+                <delete dir="${eusWork}">
+                  <include name="**/*.sha1" />
+                  <include name="**/*.md5" />
+                  <include name="**/*.asc" />
+                </delete>
+      
+                <echo message="Generating checksums for signed plugins" />
+                <checksum algorithm="sha1" format="MD5SUM">
+                  <fileset dir="${eusWork}">
+                    <include name="**/*.gz" />
+                    <include name="**/*.jar" />
+                  </fileset>
+                </checksum>
+                <checksum algorithm="md5" format="MD5SUM">
+                  <fileset dir="${eusWork}">
+                    <include name="**/*.gz" />
+                    <include name="**/*.jar" />
+                  </fileset>
+                </checksum>
+
+                <echo message="Generating gpg signatures for new features and plugins" />
+                <apply executable="gpg" dir="${eusWork}" failonerror="true"> 
+                  <arg value="--detach-sign" />
+                  <arg value="--armor" />
+                  <!-- batch flag needed to avoid gpg hang up -->
+                  <arg value="--batch" />
+                  <fileset dir="${eusWork}">
+                    <include name="**/*.jar" />
+                    <include name="**/*.jar.pack.gz" />
+                  </fileset>
+                </apply> 
+                
+                <echo message="Copying the checksums and signatures to the update subsite" />
+                <copy todir="${eclipseUpdateSubSite}" failonerror="true" overwrite="true">
+                  <fileset dir="${eusWork}">
+                    <include name="**/*.asc" />
+                    <include name="**/*.md5" />
+                    <include name="**/*.sha1" />
+                  </fileset>
+                </copy>
+
+                <echo> </echo>
+                <echo message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
+                <delete dir="${eclipseUpdateSubSite}">
+                  <include name="*.sha1" />
+                  <include name="*.md5" />
+                  <include name="*.asc" />
+                </delete> 
+                                  
+                <echo message="Generating checksums for updated artifacts.jar and content.jar" />
+                <checksum algorithm="sha1" format="MD5SUM">
+                  <fileset dir="${eclipseUpdateSubSite}">
+                     <include name="*.jar" />
+                  </fileset>
+                </checksum>
+
+                <checksum algorithm="md5" format="MD5SUM">
+                  <fileset dir="${eclipseUpdateSubSite}">
+                    <include name="*.jar" />
+                  </fileset>
+                </checksum>
+
+                <echo message="Generating gpg signatures for artifacts.jar and content.jar" />
+                <apply executable="gpg" dir="${eclipseUpdateSubSite}" failonerror="true"> 
+                  <arg value="--detach-sign" />
+                  <arg value="--armor" />
+                  <!-- batch flag needed to avoid gpg hang up -->
+                  <arg value="--batch" />
+                  <fileset dir="${eclipseUpdateSubSite}">
+                    <include name="*.jar" />
+                  </fileset>
+                </apply> 
+              </target>
+            </configuration>
+          </execution>
+          <execution>
             <id>BuildUpdateSite-pack-svnget-buildMetadata-commit-to-dev</id>
             <phase>package</phase>
             <goals>
@@ -147,6 +303,12 @@
                       <arg value="https://dist.apache.org/repos/dist/release/uima/eclipse-update-site/uimaj-v3-pre-production" />
                       <arg value="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
                     </exec>
+                    
+                    <echo>Saving original content and artifacts for the site</echo>
+                    <copy todir="${project.build.directory}/saved" failonerror="true"> 
+                      <fileset dir="${eclipseUpdateSubSite}" includes="content.jar,artifacts.jar" />
+                    </copy>
+                    
                   </then>
                   <else>
                     <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
@@ -154,6 +316,7 @@
                   </else>
                 </if>
                    -->
+                    
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
                 <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.500.v20160504-1450.jar" failonerror="true">
                   <arg line="-processAll" />
@@ -163,9 +326,16 @@
                   <arg line="-outputDir C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work/plugins" />
                   <arg line="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/toBePacked" />
                 </java>
-                <copy todir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work/plugins" failonerror="true">
-                  <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/toBePacked" />
+                
+                <echo>Save conditioned Jars prior to signing, in case of redo</echo>
+                <echo>-------------------------------------------------------</echo> 
+                <copy todir="${project.build.directory}/saved/features" failonerror="true">
+                  <fileset dir="${eusWork}/features" includes="*.jar" />                 
                 </copy>
+                <copy todir="${project.build.directory}/saved/plugins" failonerror="true">
+                   <fileset dir="${eusWork}/plugins" includes="*.jar" />                 
+                </copy>
+                
                 <echo>Generate the p2 metadata and publish new artifacts</echo>
                 <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar" failonerror="true">
                   <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
