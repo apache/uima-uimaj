@@ -379,7 +379,7 @@ public class CasIOUtils {
        * Binary, Compressed Binary (form 4 or 6)
        ******************************************/
       Header h = CommonSerDes.readHeader(deserIn);
-      return bcsd.reinit(h, casInputStream, readCasManager(tsiInputStream), casLoadMode, null, AllowPreexistingFS.allow, null);
+      return bcsd.reinit(h, casInputStream, readCasManager(tsiInputStream), casLoadMode, null, AllowPreexistingFS.allow, typeSystem);
     
     } else {
       
