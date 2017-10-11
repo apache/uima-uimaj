@@ -33,9 +33,20 @@ under the License.
   subsequent versions of the framework.</para>
   
   <para>To this end, version 3 is designed to be backwards compatible, 
-  except for needing a new set of JCas classes (if these were
-  previously being used).  The creation of this new set of JCas classes is mostly automated via a 
-  migration tool that handles converting the existing JCas classes, described in a later chapter.
+  except for needing:
+  <itemizedlist>
+    <listitem>
+     <para>possibly a recompilation (due to some rearrangements of many classes and interfaces)</para>
+    </listitem>
+    <listitem>
+      <para>a new set of User-defined JCas classes (if these were
+        previously being used). The creation of these Cas classes
+        can be done by regenerating them using JCasGen, or by 
+        using a migration tool that handles converting the existing JCas classes.
+        A later chapter covers how to upgrade the JCas classes.</para>
+    </listitem>
+  </itemizedlist>
+  There are some additional exceptions, described in the following sections.
   </para>
   
   <section id="uv3.backwards_compatibility.jcas">  
@@ -83,7 +94,7 @@ under the License.
 	    </para>
 	    
 	    <para>Version 3 will throw an exception if delta CAS deserialization of a version 2
-	      delta CAS is attempted.
+	      binary delta CAS is attempted.
 	    </para>
     </section>
 	  
@@ -175,6 +186,10 @@ under the License.
       has changed somewhat, to be more informative.  This may impact 
       situations such as testing, where the exact string representations
       are being compared.
+    </para>
+    
+    <para>A special global Java property, -Duima.v2_pretty_print_format can be set to have the toString() operation
+      for Feature Sructures print in the V2 style.
     </para>
   </section>
   

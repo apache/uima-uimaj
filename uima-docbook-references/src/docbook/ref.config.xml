@@ -122,6 +122,7 @@ under the License.
          </row>
 
          <!-- ******************************************************************************* -->
+         <!-- 
          <row>
            <entry><para>Allow duplicate addToIndexes for identical Feature Structures</para></entry>
            
@@ -134,8 +135,10 @@ under the License.
                         may be restored by this property.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
+         -->
          
          <!-- ******************************************************************************* -->
+         <!-- 
          <row>
            <entry><para>adding Annotation to wrong View</para></entry>
            
@@ -149,7 +152,8 @@ under the License.
                         for backward compatibility.</para></entry>
            <entry><para>2.7.0</para></entry>
          </row>
-
+         -->
+         
          <row>
            <entry spanname="fullwidth"><emphasis role="bold">Index protection properties</emphasis></entry>
          </row>         
@@ -228,8 +232,7 @@ under the License.
            <entry spanname="fullwidth"><emphasis role="bold">Measurement / Tracing properties</emphasis></entry>
          </row>         
          <!-- ******************************************************************************* -->
- 
-     <!--   DISABLED FOR NOW         
+      
          <row>
            <entry><para>Trace Feature Structure Creation/Updating</para></entry>
            
@@ -241,7 +244,7 @@ under the License.
                   Updates that occur next-to trace information for the same Feature Structure are combined.
                   </para>
            
-                  <para>This can generate a lot of output, and definately slows down execution.</para>
+                  <para>This can generate a lot of output, and definitely slows down execution.</para>
             </entry>
             
             <entry><para>2.10.1</para></entry>
@@ -267,7 +270,7 @@ under the License.
        </tbody>
      </tgroup>
    </informaltable>
-    
+   <para>Some additional global flags intended for helping v3 migration are documented in the V3 user's guide.</para> 
   </section>
   
 </chapter>
