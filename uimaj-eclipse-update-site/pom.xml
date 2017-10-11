@@ -28,7 +28,7 @@
   </parent>
 
   <artifactId>uimaj-eclipse-update-site</artifactId>
-  <version>3.0.0-beta-SNAPSHOT</version>
+  <version>3.0.0-beta</version>
   <packaging>pom</packaging>
 
   <name>Apache UIMA Eclipse: ${project.artifactId}</name>
@@ -37,13 +37,13 @@
 
   <scm>
     <connection>
-      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
+      scm:svn:http://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-eclipse-update-site-3.0.0-beta
     </connection>
     <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
+      scm:svn:https://svn.apache.org/repos/asf/uima/uv3/uimaj-v3/tags/uimaj-eclipse-update-site-3.0.0-beta
     </developerConnection>
     <url>
-      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/trunk/uimaj-eclipse-update-site
+      http://svn.apache.org/viewvc/uima/uv3/uimaj-v3/tags/uimaj-eclipse-update-site-3.0.0-beta
     </url>
   </scm>
 
@@ -144,7 +144,7 @@
                 <echo>deleting previous version of packed files from work</echo>
                 <echo>---------------------------------------------------</echo>
                 <delete verbose="true">
-                  <fileset dir="${eusWork}/plugins" includes="*.pack.gz"/>
+                  <fileset dir="${eusWork}/plugins" includes="*.pack.gz" />
                 </delete>
                 
                 <echo> </echo>
@@ -153,7 +153,7 @@
                 <java jar="${uima-eclipse-jar-processor}" fork="true" failonerror="true" maxmemory="256m">
                   <arg line="-pack" />
                   <arg line="-verbose" />
-                  <arg line="-outputDir ${eusWork}/plugins"/>
+                  <arg line="-outputDir ${eusWork}/plugins" />
                   <arg line="${eusWork}/plugins" />
                 </java>
                 
@@ -162,10 +162,10 @@
                 <echo>------------------------------------------------</echo>
                 
                 <delete verbose="true">
-                  <fileset dir="${eclipseUpdateSubSite}" includes="content.jar,artifacts.jar"/>
+                  <fileset dir="${eclipseUpdateSubSite}" includes="content.jar,artifacts.jar" />
                 </delete>
                 <copy todir="${eclipseUpdateSubSite}" failonerror="false">
-                  <fileset dir="${project.build.directory}/saved" includes="content.jar,artifacts.jar"/>
+                  <fileset dir="${project.build.directory}/saved" includes="content.jar,artifacts.jar" />
                 </copy>
 
                 <echo> </echo>
