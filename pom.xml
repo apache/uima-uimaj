@@ -280,9 +280,9 @@
             <configuration combine.self="override">
               <target>
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
-                <condition property="eclipse.home" value="C:/p/eclipse/470oxy">
+                <condition property="eclipse.home" value="${uima-maven-build-eclipse-home}">
                   <not>
-                    <equals arg2="$C:/p/eclipse/470oxy" arg1="C:/p/eclipse/470oxy" />
+                    <equals arg2="${uima-maven-build-eclipse-home}" arg1="$${uima-maven-build-eclipse-home}" />
                   </not>
                 </condition>
                 <property environment="envVar" />
@@ -297,11 +297,11 @@
                   <then>
                     
                     <echo>checking out eclipse update subsite uimaj-v3-pre-production from dist ...release...</echo>
-                    <delete quiet="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                    <delete quiet="true" dir="${eclipseUpdateSubSite}" />
                     <exec failonerror="true" executable="svn">
                       <arg value="checkout" />
-                      <arg value="https://dist.apache.org/repos/dist/release/uima/eclipse-update-site/uimaj-v3-pre-production" />
-                      <arg value="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                      <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+                      <arg value="${eclipseUpdateSubSite}" />
                     </exec>
                     
                     <echo>Saving original content and artifacts for the site</echo>
@@ -312,19 +312,20 @@
                   </then>
                   <else>
                     <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
-                    <delete quiet="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
+                    <!- - https://issues.apache.org/jira/browse/UIMA-3501 - ->
+                    <delete dir="${eclipseUpdateSubSite}" quiet="true" />
                   </else>
                 </if>
                    -->
                     
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
-                <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.500.v20160504-1450.jar" failonerror="true">
+                <java fork="true" maxmemory="256m" jar="${uima-eclipse-jar-processor}" failonerror="true">
                   <arg line="-processAll" />
                   <arg line="-repack" />
                   <arg line="-pack" />
                   <arg line="-verbose" />
-                  <arg line="-outputDir C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work/plugins" />
-                  <arg line="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/toBePacked" />
+                  <arg line="-outputDir ${eusWork}/plugins"  />
+                  <arg line="${toBePacked}" />
                 </java>
                 
                 <echo>Save conditioned Jars prior to signing, in case of redo</echo>
@@ -337,11 +338,11 @@
                 </copy>
                 
                 <echo>Generate the p2 metadata and publish new artifacts</echo>
-                <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar" failonerror="true">
+                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}" failonerror="true">
                   <arg line="-application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
-                  <arg line="-metadataRepository file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
-                  <arg line="-artifactRepository file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
-                  <arg line="-source C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work" />
+                  <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
+                  <arg line="-artifactRepository file:///${eclipseUpdateSubSite}" />
+                  <arg line="-source ${eusWork}" />
                   <arg line="-configs ANY.ANY.ANY" />
                   <arg line="-publishArtifacts" />
                   <arg line="-reusePack200Files" />
@@ -349,10 +350,10 @@
                   <arg line="-append" />
                 </java>
                 <echo>Augment p2 metadata with category information</echo>
-                <java fork="true" maxmemory="256m" jar="C:/p/eclipse/470oxy/plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar" failonerror="true">
+                <java fork="true" maxmemory="256m" jar="${eclipse-equinox-launcher}" failonerror="true">
                   <arg line="-application org.eclipse.equinox.p2.publisher.CategoryPublisher" />
-                  <arg line="-metadataRepository file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" />
-                  <arg line="-categoryDefinition file:///C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site/category.xml" />
+                  <arg line="-metadataRepository file:///${eclipseUpdateSubSite}" />
+                  <arg line="-categoryDefinition file:///${basedir}/category.xml" />
                   <arg line="-categoryQualifier apache-uima" />
                   <arg line="-compress" />
                 </java>
@@ -361,58 +362,58 @@
                   <then>
                     <echo message="Generating checksums for new features and plugins" />
                     <checksum format="MD5SUM" algorithm="sha1">
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                      <fileset dir="${eusWork}">
                         <include name="**/*.gz" />
                         <include name="**/*.jar" />
                       </fileset>
                     </checksum>
                     <checksum format="MD5SUM" algorithm="md5">
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                      <fileset dir="${eusWork}">
                         <include name="**/*.gz" />
                         <include name="**/*.jar" />
                       </fileset>
                     </checksum>
                     <echo message="Generating gpg signatures for new features and plugins" />
-                    <apply failonerror="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work" executable="gpg">
+                    <apply failonerror="true" dir="${eusWork}" executable="gpg">
                       <arg value="--detach-sign" />
                       <arg value="--armor" />
                       <arg value="--batch" />
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                      <fileset dir="${eusWork}">
                         <include name="**/*.jar" />
                         <include name="**/*.jar.pack.gz" />
                       </fileset>
                     </apply>
                     <echo message="Copying the checksums and signatures to the update subsite" />
-                    <copy todir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" failonerror="true">
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eus-work">
+                    <copy todir="${eclipseUpdateSubSite}" failonerror="true">
+                      <fileset dir="${eusWork}">
                         <include name="**/*.asc" />
                         <include name="**/*.md5" />
                         <include name="**/*.sha1" />
                       </fileset>
                     </copy>
                     <echo message="Clearing previous checksums and signatures for update artifacts.jar and content.jar" />
-                    <delete dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                    <delete dir="${eclipseUpdateSubSite}">
                       <include name="*.sha1" />
                       <include name="*.md5" />
                       <include name="*.asc" />
                     </delete>
                     <echo message="Generating checksums for updated artifacts.jar and content.jar" />
                     <checksum format="MD5SUM" algorithm="sha1">
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                      <fileset dir="${eclipseUpdateSubSite}">
                         <include name="*.jar" />
                       </fileset>
                     </checksum>
                     <checksum format="MD5SUM" algorithm="md5">
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                      <fileset dir="${eclipseUpdateSubSite}">
                         <include name="*.jar" />
                       </fileset>
                     </checksum>
                     <echo message="Generating gpg signatures for artifacts.jar and content.jar" />
-                    <apply failonerror="true" dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production" executable="gpg">
+                    <apply failonerror="true" dir="${eclipseUpdateSubSite}" executable="gpg">
                       <arg value="--detach-sign" />
                       <arg value="--armor" />
                       <arg value="--batch" />
-                      <fileset dir="C:\au\svnCheckouts\uv3\trunk\uimaj-v3\uimaj-eclipse-update-site\target/eclipse-update-site/uimaj-v3-pre-production">
+                      <fileset dir="${eclipseUpdateSubSite}">
                         <include name="*.jar" />
                       </fileset>
                     </apply>
