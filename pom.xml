@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.uima</groupId>
     <artifactId>uimaj-parent</artifactId>
-    <version>3.0.0-beta-SNAPSHOT</version>
+    <version>3.0.0-beta</version>
     <relativePath />
   </parent>
 
@@ -116,7 +116,7 @@
         <version>1.7</version>
         <executions>
           <execution>
-            <id>default-cli</id>
+            <id>make-subsite-after-signing</id>
             <configuration>
               <target>
                 <taskdef classname="net.sf.antcontrib.logic.IfTask" name="if" />
