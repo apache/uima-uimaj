@@ -344,6 +344,12 @@ public void setOutputStream(OutputStream aStream);
   public void debug(Marker marker, String message, Supplier<?>... paramSuppliers);
 
   /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void debug(String message, Supplier<?>... paramSuppliers);
+
+  /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
    */
@@ -373,6 +379,12 @@ public void setOutputStream(OutputStream aStream);
    * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
    */
   public void error(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void error(String message, Supplier<?>... paramSuppliers);
 
   /**
    * @param marker the marker data specific to this log statement
@@ -437,6 +449,12 @@ public void setOutputStream(OutputStream aStream);
   public void trace(Marker marker, String message, Supplier<?>... paramSuppliers);
 
   /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void trace(String message, Supplier<?>... paramSuppliers);
+
+  /**
    * @param marker the marker data specific to this log statement
    * @param msgSupplier A function, which when called, produces the desired log message
    */
@@ -466,6 +484,12 @@ public void setOutputStream(OutputStream aStream);
    * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
    */
   public void warn(Marker marker, String message, Supplier<?>... paramSuppliers);
+
+  /**
+   * @param message the message to log
+   * @param paramSuppliers An array of functions, which when called, produce the desired log message parameters.
+   */
+  public void warn(String message, Supplier<?>... paramSuppliers);
 
   /**
    * @param marker the marker data specific to this log statement
