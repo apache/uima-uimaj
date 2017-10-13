@@ -299,9 +299,9 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
   <section id="uv3.new_extended_apis.other">
     <title>Other changes</title>
     
-    <para>The convenience methods in the JCas have been duplicated in the CAS, including <code>getAllIndexFS</code>.</para>
+    <para>The convenience methods in the JCas have been duplicated in the CAS, e.g. <code>getAllIndexFS</code>.</para>
     
-    <para>New methods <code>getIndexedFSs(Type)</code> and <code>getIndexedFSs(MyJCas.class)</code> return 
+    <para>New methods <code>getIndexedFSs(myUimaType)</code> and <code>getIndexedFSs(MyJCas.class)</code> return 
     unmodifiable, unordered Collections of all indexed Feature Structures of the specified type and its subtypes in 
     this CAS's view.  This collection can be
     used in a Java extended-for loop construction. <code>getIndexedFSs()</code> is the same but is for all Feature Structures,
@@ -312,9 +312,6 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
       that specifies the class loader to be used when loading JCas class.  This should be used whenever there are
       user-specified JCas classes associated with the type system.  If not specified, it defaults to the class
       loader used to load the UIMA framework.
-    </para>
-      
-    <para>The CAS interface has additional convenience method to get the Annotation index:  <code>getAnnotationIndex()</code>.
     </para>
         
     <para>The utility class <code>org.apache.uima.util.FileUtils</code> has a new method

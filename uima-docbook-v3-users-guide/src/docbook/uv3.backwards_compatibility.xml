@@ -228,21 +228,27 @@ under the License.
     <title>Type System sharing</title>   
     
     <para>Type System definitions are shared when they are equal.  After type systems 
-    have been built up from type definitions, and are committed, a check is made to see if an
-    identical type system already exists.  This is often the case when a UIMA application is
+    have been built up from type definitions, at "commit" time, a check is made to see if an
+    identical type system already exists (same types and features).  
+    This is often the case when a UIMA application is
     scaling up by adding multiple pipelines, all using the same type system.  
     </para>
     
-    <para>If an identical type system is already created, then the commit operation returns 
-    the already created one, and the one just built is discarded.  Normally, this is not an issue.
-    However, some application code (for example, test cases) may construct type systems
-    programmatically, and along the way save references to defined types and features.  These
-    references can then become invalid when the type system is created and perhaps replaced with
-    an already existing one.</para>
+    <para>If an identical committed type system already exists, then the commit operation returns 
+    it, and the one just built is discarded.  Normally, this is not an issue.
+    However, some application code may save references to the type system object or to defined types and features.  
+    These references end up pointing to the discarded version, when the commit operation finds an already 
+    committed equal version.</para>
     
-    <para>Application code may code around this by re-acquiring references to type and feature
+    <para>Application code may code around this by re-acquiring references to the type system object, and to any type and feature
     objects, if the type system instance object returned from <code>commit</code> is not identical (==) to the
-    one being committed.</para>
+    one being committed.
+    The type system commit APIs are changed to return the type system - either the one being committed, or an
+    already existing equal committed type system.  So when coding
+    <code>myTypesystem.commit();</code> if you later refer to <code>myTypesystem</code>, change this to
+    <code>myTypesystem = myTypesystem.commit();</code>, to keep the variable <code>myTypesystem</code> always
+    referring to to the committed type system.
+    </para>
   </section>
   
   <section id="uv3.backwards_compatibility.checking">
