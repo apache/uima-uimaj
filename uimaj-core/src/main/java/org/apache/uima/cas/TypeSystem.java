@@ -80,7 +80,7 @@ public interface TypeSystem {
    *          The type of the elements of the resulting array type. This can be any type, even
    *          another array type.
    * @return The array type with the corresponding component type.
-   *         If it doesn't exist, a new TypeImplArray is created for it.
+   *         If it doesn't exist, a new TypeImpl_array is created for it.
    */
   Type getArrayType(Type componentType);
 
