@@ -236,9 +236,9 @@ public class JsonCasSerializerTest extends TestCase {
     Type a2t = tsMgr.getType(CAS.TYPE_NAME_ANNOTATION);
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
-    tsMgr.commit();
+    TypeSystemImpl tsi = (TypeSystemImpl) tsMgr.commit();
     jcs = new JsonCasSerializer().setOmit0Values(true);
-    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    jcs.setFilterTypes(tsi);
     serializeAndCompare("nameSpaceNoCollsionFiltered.txt");
     
     // filter, but not enough - should have 1 collison
@@ -247,8 +247,8 @@ public class JsonCasSerializerTest extends TestCase {
     // filter out the 2 types causing namespaces to be needed.
     tsMgr.addType("org.apache.uima.test.Token", a2t);
     tsMgr.addType("org.apache.uimax.test.Token", a2t);
-    tsMgr.commit();
-    jcs.setFilterTypes((TypeSystemImpl) tsMgr);
+    tsi = (TypeSystemImpl) tsMgr.commit();
+    jcs.setFilterTypes(tsi);
     serializeAndCompare("nameSpaceCollsionFiltered.txt");    
     
   }
