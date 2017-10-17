@@ -251,6 +251,16 @@ under the License.
     </para>
   </section>
   
+  <section id="uv3.backwards_compatibility.deserializing_0_length">
+    <title>Deserializing 0 length items in a CAS</title>   
+    
+    <para>In V3, 0-length arrays and lists belonging to one CAS are deserialized into a shared Java object.  Since 
+      0-length arrays and lists are
+      immutable, this should normally not matter.  It could cause problems if the application somehow is
+      depending on object non-identity equality for these items.
+    </para>
+  </section>
+  
   <section id="uv3.backwards_compatibility.checking">
     <title>Some checks moved to native Java</title>   
     

@@ -30,18 +30,16 @@ under the License.
   <section id="uv3.new_extended_apis.index_and_iterator_improvements">
     <title>UIMA FSIndex and FSIterators improvements</title>
     
-    <para>The FSIndex interface implements Iterable, so you can now write <code>for (MyType item : myIndex)</code> to
+    <para>The FSIndex interface implements Collection, so you can now write <code>for (MyType item : myIndex)</code> to
        iterate over an index.</para>
        
-    <para>The FSIndex interface includes a <code>stream()</code> method, so you can now write <code>myIndex.stream().any-stream-operations</code>,
+    <para>Because it implements Collection, the FSIndex interface includes a <code>stream()</code> method, so you can now write <code>myIndex.stream().any-stream-operations</code>,
       which will use the items in the index as the source of the stream.</para>
          
     <para>The FSIterator interface now implements the Java ListIterator Interface, and supports the methods there
       except for add, nextIndex, previousIndex, and set; the remove() method's meaning is changed to remove the item
       from all of the UIMA indexes.
     </para>
-    
-    <para>The FSIterator interface implements stream() and spliterator().</para>
     
     <para>The iterators over indexes no longer throw concurrent modification exceptions if the index is modified
     while it is being iterated over.  Instead, the iterators use a lazily-created copy-on-write approach that, when
@@ -96,13 +94,19 @@ under the License.
   <section id="uv3.new_extended_apis.lists_and_arrays">
     <title>Built-in lists and arrays</title>
     
+    <para>The built-in FSArray JCas class is now parameterized with the type of its
+      elements.</para>
+    
     <para>UIMA Array and List types implement Iterable, so you can use them
       like this: <code>for (MyType item : myArray) ...</code>.</para>
+      
+    <para>UIMA Arrays and Lists support <code>contains(element)</code> and <code>isEmpty()</code>.</para>
 
     <para>UIMA Array and List types support a <code>stream()</code> method
     returning a Stream or a type-specialized sub interface of Stream for primitives 
     (IntStream, LongStream, DoubleStream) 
-    over the objects in the collection.</para>
+    over the objects in the collection.  Omitted are stream types where boxing would
+    occur - Arrays of Byte, Short, Float, Boolean.</para>
 
     <para>The <code>iterator()</code> methods for <code>IntegerList
       IntegerArrayList, IntegerArray, 
@@ -197,7 +201,19 @@ under the License.
         </para>        
     </section> 
     
-  </section>     
+  </section>    
+  
+  <section id="uv3.new_extended_apis.collections">
+    <title>Many UIMA objects implement Stream or Collection</title>
+      <para>In Java 8, classes which implement Collection can be converted to streams using the <code>xxx.sream()</code>
+        method.  To better integrate with Java 8, the following UIMA classes and interfaces now implement Stream or Collection:
+        <itemizedlist>
+          <listitem><para>FSIndex (implements Collection)</para></listitem>
+          <listitem><para>all of the built-in Arrays, e.g. FloatArray implement Stream, the Integer/long/double arrays implement the non-boxing version</para></listitem>
+          <listitem><para>all of the built-in Lists implement Stream, the IntegerList implements the non boxing version</para></listitem>
+        </itemizedlist>
+      </para>
+  </section> 
  
   <!--  
   <section id="uv3.new_extended_apis.annotation">
