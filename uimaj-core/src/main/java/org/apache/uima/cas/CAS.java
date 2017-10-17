@@ -1222,7 +1222,7 @@ public interface CAS extends AbstractCas {
     return ((CASImpl)getLowLevelCAS()).emptyStringList();
   };
   
-  default <T extends TOP> CommonArrayFS emptyArray(Class<T> clazz) {
+  default <T extends TOP> CommonArrayFS<T> emptyArray(Class<T> clazz) {
     return ((CASImpl)getLowLevelCAS()).emptyArray(getCasType(clazz));
   }
   
