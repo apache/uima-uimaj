@@ -22,7 +22,6 @@ package org.apache.uima.cas.impl;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.admin.FSIndexComparator;
@@ -225,6 +224,11 @@ public class FsIndex_bag<T extends FeatureStructure> extends FsIndex_singletype<
     return Integer.MAX_VALUE;
   }
   
+  @Override
+  public LowLevelIterator<T> iterator() {
+    return iterator(!IS_ORDERED, !IS_TYPE_ORDER);
+  }
+
 //  ObjHashSet<TOP> getObjHashSet() {
 //    return index;
 //  } 

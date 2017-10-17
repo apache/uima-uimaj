@@ -19,7 +19,6 @@
 
 package org.apache.uima.jcas.cas;
 
-import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;

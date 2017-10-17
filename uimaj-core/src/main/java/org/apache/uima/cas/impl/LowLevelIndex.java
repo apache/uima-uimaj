@@ -37,7 +37,7 @@ import org.apache.uima.jcas.cas.TOP;
 public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
 
   /**
-   * Get a low-level, FS reference iterator.
+   * Get a low-level FS iterator.
    * 
    * @return An iterator for this index.
    */

@@ -2615,7 +2615,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return (fi == null) ? -1 : fi.getAdjustedOffset();    
   }
   
-  static synchronized int getAdjustedFeatureOffset(TypeImpl type, String featName) {
+  static int getAdjustedFeatureOffset(TypeImpl type, String featName) {
     FeatureImpl fi = type.getFeatureByBaseName(featName);
     return (fi == null) ? -1 : fi.getAdjustedOffset();    
   }

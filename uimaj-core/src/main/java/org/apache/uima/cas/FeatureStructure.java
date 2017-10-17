@@ -19,7 +19,6 @@
 
 package org.apache.uima.cas;
 
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.jcas.JCas;
 
 /**

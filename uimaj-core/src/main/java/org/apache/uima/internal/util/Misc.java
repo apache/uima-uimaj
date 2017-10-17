@@ -949,14 +949,16 @@ public class Misc {
     }
   }
   
-  public static <T> Iterable<T> iterable(Iterator<T> iterator) {
-    return new Iterable<T>() {
-      @Override
-      public Iterator<T> iterator() {
-        return iterator;
-      }
-    };
-  }
+
+  // bad idea - the iterator would be tied to another one, not independent
+//  public static <T> Iterable<T> iterable(Iterator<T> iterator) {
+//    return new Iterable<T>() {
+//      @Override
+//      public Iterator<T> iterator() {
+//        return iterator;
+//      }
+//    };
+//  }
   
   public static boolean isJava9ea() {
     return isJava9ea;
