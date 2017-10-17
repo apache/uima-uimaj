@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.AbstractCollection;
 import java.util.Comparator;
 
 import org.apache.uima.cas.FSIndex;
@@ -31,7 +32,9 @@ import org.apache.uima.jcas.cas.TOP;
  * Implementation of light-weight wrapper of normal indexes, which support special kinds of iterators
  *   base on the setting of IteratorExtraFunction
  */
-public class FsIndex_snapshot <T extends FeatureStructure> implements LowLevelIndex<T>, Comparator<FeatureStructure> {
+public class FsIndex_snapshot <T extends FeatureStructure>
+                extends AbstractCollection<T>
+                implements LowLevelIndex<T>, Comparator<FeatureStructure> {
     
   /**
    * wrapped index 

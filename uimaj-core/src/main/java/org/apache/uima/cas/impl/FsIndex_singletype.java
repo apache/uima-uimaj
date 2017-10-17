@@ -20,6 +20,7 @@
 package org.apache.uima.cas.impl;
 
 import java.lang.ref.WeakReference;
+import java.util.AbstractCollection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -34,8 +35,6 @@ import org.apache.uima.cas.admin.LinearTypeOrder;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 
-import com.strobel.core.IStrongBox;
-
 /**
  * The common (among all index kinds - set, sorted, bag) info for an index over
  * 1 type (excluding subtypes)
@@ -47,7 +46,8 @@ import com.strobel.core.IStrongBox;
  *          the Java cover class type for this index, passed along to (wrapped)
  *          iterators producing Java cover classes
  */
-public abstract class FsIndex_singletype<T extends FeatureStructure>
+public abstract class FsIndex_singletype<T extends FeatureStructure> 
+    extends AbstractCollection<T>
     implements Comparator<FeatureStructure>, LowLevelIndex<T> {
 
   private final static String[] indexTypes = new String[] {

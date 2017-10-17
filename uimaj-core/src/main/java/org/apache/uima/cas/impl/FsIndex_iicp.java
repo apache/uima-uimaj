@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas.impl;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -48,6 +49,7 @@ import org.apache.uima.jcas.cas.TOP;
  * For Internal Use
  */  
 class FsIndex_iicp<T extends FeatureStructure> 
+          extends AbstractCollection<T>
           implements Comparable<FsIndex_iicp<? extends FeatureStructure>>,
                      Comparator<FeatureStructure>,
                      LowLevelIndex<T> {  

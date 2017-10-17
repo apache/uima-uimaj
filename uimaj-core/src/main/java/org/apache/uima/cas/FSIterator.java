@@ -20,7 +20,6 @@
 package org.apache.uima.cas;
 
 import java.util.ConcurrentModificationException;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -71,7 +70,7 @@ import org.apache.uima.cas.impl.LowLevelIterator;
  * {@link FSIterator#moveToLast() moveToLast()} in such cases.
  * 
  */
-public interface FSIterator<T extends FeatureStructure> extends ListIterator<T>, Iterable<T>{
+public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> {
 
   /**
    * Check if this iterator is valid.
@@ -312,8 +311,4 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T>,
     ((LowLevelIterator<T>)this).ll_remove();
   } 
 
-  @Override
-  default Iterator<T> iterator() {
-    return this;
-  }
 }
