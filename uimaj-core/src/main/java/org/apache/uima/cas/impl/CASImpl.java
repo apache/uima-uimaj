@@ -4839,9 +4839,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       return emptyDoubleArray();
     case TypeSystemConstants.stringArrayTypeCode :
       return emptyStringArray();
-    case TypeSystemConstants.fsArrayTypeCode :
+    default: // TypeSystemConstants.fsArrayTypeCode or any other type
       return emptyFSArray();
-    default: throw Misc.internalError(); 
     }
   }
   
