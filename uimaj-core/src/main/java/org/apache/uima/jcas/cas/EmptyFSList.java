@@ -26,7 +26,7 @@ import org.apache.uima.cas.impl.TypeImpl_list;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class EmptyFSList extends FSList implements EmptyList {
+public class EmptyFSList<T extends TOP> extends FSList<T> implements EmptyList {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_EMPTY_FS_LIST;

@@ -35,7 +35,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for DoubleArray */
-public final class DoubleArray extends TOP implements CommonPrimitiveArray, DoubleArrayFSImpl, Iterable<Double> {
+public final class DoubleArray extends TOP implements CommonPrimitiveArray<Double>, DoubleArrayFSImpl, Iterable<Double> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_DOUBLE_ARRAY;
@@ -250,4 +250,19 @@ public final class DoubleArray extends TOP implements CommonPrimitiveArray, Doub
       action.accept(d);
     }
   }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(double item) {
+    for (double b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

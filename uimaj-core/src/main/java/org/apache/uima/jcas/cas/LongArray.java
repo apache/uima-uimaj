@@ -35,7 +35,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for LongArray */
-public final class LongArray extends TOP implements CommonPrimitiveArray, LongArrayFSImpl, Iterable<Long> {
+public final class LongArray extends TOP implements CommonPrimitiveArray<Long>, LongArrayFSImpl, Iterable<Long> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_LONG_ARRAY;
@@ -252,6 +252,20 @@ public final class LongArray extends TOP implements CommonPrimitiveArray, LongAr
     for (long l : theArray) {
       action.accept(l);
     }
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(long item) {
+    for (long b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

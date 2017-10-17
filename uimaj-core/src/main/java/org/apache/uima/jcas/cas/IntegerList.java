@@ -21,6 +21,10 @@ package org.apache.uima.jcas.cas;
 
 import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator.OfInt;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -79,6 +83,7 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
   
   /* (non-Javadoc)
    * @see java.lang.Iterable#iterator()
+   * overridden by NonEmptyIntegerList
    */
   @Override
   public OfInt iterator() {
@@ -111,5 +116,26 @@ public abstract class IntegerList extends TOP implements CommonList, Iterable<In
       integerList = integerList.push(a[i]);
     }   
     return integerList;
+  }
+    
+  public Stream<Integer> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+  
+  @Override
+  public Spliterator.OfInt spliterator() {
+    return Spliterators.spliterator(iterator(), Long.MAX_VALUE, 0);
+  } 
+  
+  public boolean contains(int v) {
+    IntegerList node = this;
+    while (node instanceof NonEmptyIntegerList) {
+      NonEmptyIntegerList n = (NonEmptyIntegerList) node;
+      if (n.getHead() == v) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
   }
 }

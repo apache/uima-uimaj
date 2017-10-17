@@ -19,12 +19,14 @@
 
 package org.apache.uima.cas;
 
+import org.apache.uima.jcas.cas.TOP;
+
 /**
  * Feature structure array interface. To create a FS array object, use
  * {@link org.apache.uima.cas.CAS#createArrayFS(int length)} or
  * new FSArray(aJCas, length)
  */
-public interface ArrayFS extends CommonArrayFS {
+public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
 
   /**
    * Get the i-th feature structure from the array.
@@ -33,7 +35,7 @@ public interface ArrayFS extends CommonArrayFS {
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
    */
-  FeatureStructure get(int i) throws ArrayIndexOutOfBoundsException;
+  <U extends TOP> U get(int i) throws ArrayIndexOutOfBoundsException;
 
   /**
    * Set the i-th value.
@@ -45,7 +47,7 @@ public interface ArrayFS extends CommonArrayFS {
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>i</code> is out of bounds.
    */
-  void set(int i, FeatureStructure fs) throws ArrayIndexOutOfBoundsException;
+  void set(int i, E fs) throws ArrayIndexOutOfBoundsException;
 
   /**
    * Copy the contents of the array from <code>start</code> to <code>end</code> to the
@@ -81,7 +83,7 @@ public interface ArrayFS extends CommonArrayFS {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
-  void copyFromArray(FeatureStructure[] src, int srcOffset, int destOffset, int length)
+  <T extends E> void copyFromArray(T[] src, int srcOffset, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException;
 
   /**
@@ -90,5 +92,7 @@ public interface ArrayFS extends CommonArrayFS {
    * @return A Java array copy of this FS array.
    */
   FeatureStructure[] toArray();
+  
+  TOP[] toArray(TOP[] a);
 
 }

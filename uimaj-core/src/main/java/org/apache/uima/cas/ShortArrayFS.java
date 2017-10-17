@@ -24,7 +24,7 @@ package org.apache.uima.cas;
  * {@link org.apache.uima.cas.CAS#createShortArrayFS CAS.createShortArrayFS(int)} or
  * new ShortArray(aJCas, length)
  */
-public interface ShortArrayFS extends CommonArrayFS {
+public interface ShortArrayFS extends CommonArrayFS<Short> {
 
   /**
    * Get the i-th element from the array.

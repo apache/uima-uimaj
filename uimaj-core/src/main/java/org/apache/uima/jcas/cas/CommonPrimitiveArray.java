@@ -26,7 +26,7 @@ import org.apache.uima.cas.CommonArrayFS;
  *   boolean, byte, short, int, long, float, double, String, JavaObject
  * Internal Use Only.
  */
-public interface CommonPrimitiveArray extends CommonArrayFS {
+public interface CommonPrimitiveArray<T> extends CommonArrayFS<T> {
   
   /**
    * Internal Use Only.

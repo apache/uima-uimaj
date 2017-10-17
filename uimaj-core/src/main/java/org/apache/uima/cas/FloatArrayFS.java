@@ -26,7 +26,7 @@ package org.apache.uima.cas;
  * 
  * 
  */
-public interface FloatArrayFS extends CommonArrayFS {
+public interface FloatArrayFS extends CommonArrayFS<Float> {
 
   /**
    * Get the element at position <code>index</code>.

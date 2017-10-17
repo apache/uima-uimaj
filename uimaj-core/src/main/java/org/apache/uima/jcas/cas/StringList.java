@@ -21,9 +21,12 @@ package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
 
 public abstract class StringList extends TOP implements CommonList, Iterable<String> {
@@ -87,4 +90,23 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
     return stringList;
   }
   
+  /**
+   * @param <T> generic type being returned
+   * @return a stream over this FSList
+   */
+  public Stream<String> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+ 
+  public boolean contains(String v) {
+    StringList node = this;
+    while (node instanceof NonEmptyStringList) {
+      NonEmptyStringList n = (NonEmptyStringList) node;
+      if (Misc.equalStrings(v, n.getHead())) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
+  }
 }

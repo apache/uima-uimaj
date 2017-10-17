@@ -21,10 +21,8 @@ package org.apache.uima.jcas.cas;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.MethodHandle;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfInt;
 
 import org.apache.uima.cas.CAS;

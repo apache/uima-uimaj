@@ -56,6 +56,7 @@ import org.apache.uima.jcas.JCasRegistry;
  *   - it is adjustable, like ArrayList
  *   
  * Implementation notes:
+ *   - implements Iterable + stream, not Collection, because stream returns IntStream
  *   - Uses UimaSerializable APIs
  *   - two implementations of the array list:
  *     -- one uses the original IntegerArray, via a variant of the asList wrapper that returns ints
@@ -68,7 +69,7 @@ import org.apache.uima.jcas.JCasRegistry;
 
 public class IntegerArrayList extends TOP implements 
                           Iterable<Integer>,
-                          UimaSerializable, CommonArrayFS, 
+                          UimaSerializable, CommonArrayFS<Integer>, 
                           RandomAccess, Cloneable {
  
   /** @generated
@@ -340,7 +341,7 @@ public class IntegerArrayList extends TOP implements
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArrayFS v) {
+  public void copyValuesFrom(CommonArrayFS<Integer> v) {
     clear();
     Spliterator.OfInt si;
     
@@ -370,14 +371,6 @@ public class IntegerArrayList extends TOP implements
   @Override
   public FeatureStructureImplC _superClone() {return clone();}  // enable common clone
   
-  /**
-   * @return -
-   * @see java.util.ArrayList#isEmpty()
-   */
-  public boolean isEmpty() {
-    return size() == 0;
-  }
-
   /**
    * @param i -
    * @return -
@@ -569,8 +562,6 @@ public class IntegerArrayList extends TOP implements
       action.accept(ii.nextInt());
     }
   }
-  
-  
     
 }
 

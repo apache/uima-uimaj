@@ -19,6 +19,7 @@
 
 package org.apache.uima.cas;
 
+import java.util.Collection;
 import java.util.stream.Stream;
 
 /**
@@ -64,7 +65,7 @@ import java.util.stream.Stream;
  * @param T the topmost type in this Index
  * 
  */
-public interface FSIndex<T extends FeatureStructure> extends Iterable<T> {
+public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
 
   /**
    * Indexing strategy: sorted index. A sorted index contains all elements, including duplicates.

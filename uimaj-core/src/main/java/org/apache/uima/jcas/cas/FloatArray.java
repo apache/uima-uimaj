@@ -20,6 +20,8 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
@@ -30,7 +32,10 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** Java Cas model for Cas FloatArray. */
-public final class FloatArray extends TOP implements CommonPrimitiveArray, FloatArrayFSImpl {
+public final class FloatArray extends TOP 
+                              implements CommonPrimitiveArray<Float>,
+                                         Iterable<Float>,
+                                         FloatArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_FLOAT_ARRAY;
@@ -211,4 +216,43 @@ public final class FloatArray extends TOP implements CommonPrimitiveArray, Float
     floatArray.copyFromArray(a, 0, 0, a.length);
     return floatArray;
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Iterable#iterator()
+   */
+  @Override
+  public Iterator<Float> iterator() {
+    return new Iterator<Float>() {
+
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < size();
+      }
+
+      @Override
+      public Float next() {
+        if (!hasNext())
+          throw new NoSuchElementException();
+        return get(i++);
+      }
+      
+    };
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(float item) {
+    for (float b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

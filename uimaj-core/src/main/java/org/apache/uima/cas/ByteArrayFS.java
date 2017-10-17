@@ -24,7 +24,7 @@ package org.apache.uima.cas;
  * {@link org.apache.uima.cas.CAS#createByteArrayFS CAS.createByteArrayFS(int)}
  * or new ByteArray(aJCas, length)
  */
-public interface ByteArrayFS extends CommonArrayFS {
+public interface ByteArrayFS extends CommonArrayFS<Byte> {
 
   /**
    * Get the i-th string from the array.

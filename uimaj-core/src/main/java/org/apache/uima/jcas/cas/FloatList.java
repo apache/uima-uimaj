@@ -21,8 +21,9 @@ package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
@@ -93,5 +94,20 @@ public abstract class FloatList extends TOP implements CommonList, Iterable<Floa
     }   
     return floatList;
   }
-
+  
+  public Stream<Float> stream() {
+    return StreamSupport.stream(spliterator(), false);
+  }
+  
+  public boolean contains(float v) {
+    FloatList node = this;
+    while (node instanceof NonEmptyFloatList) {
+      NonEmptyFloatList n = (NonEmptyFloatList) node;
+      if (n.getHead() == v) {
+        return true;
+      }
+      node = n.getTail();
+    }
+    return false;
+  }
 }

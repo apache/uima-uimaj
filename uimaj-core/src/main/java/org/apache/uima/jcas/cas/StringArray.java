@@ -22,10 +22,10 @@ package org.apache.uima.jcas.cas;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.StringArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -34,7 +34,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for StringArray */
-public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray, StringArrayFSImpl {
+public final class StringArray extends TOP implements Iterable<String>, CommonPrimitiveArray<String>, StringArrayFSImpl {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_STRING_ARRAY;
@@ -203,5 +203,8 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
     return Misc.contains(theArray, v);
   }
 
+  public Stream<String> stream() {
+    return Arrays.stream(theArray);
+  }
 
 }

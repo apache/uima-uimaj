@@ -24,7 +24,7 @@ package org.apache.uima.cas;
  * {@link org.apache.uima.cas.CAS#createLongArrayFS CAS.createLongArrayFS(int)}
  * or new LongArray(aJCas, length)
  */
-public interface LongArrayFS extends CommonArrayFS {
+public interface LongArrayFS extends CommonArrayFS<Long> {
 
   /**
    * Get the i-th element from the array.

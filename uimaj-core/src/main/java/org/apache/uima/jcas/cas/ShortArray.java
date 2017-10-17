@@ -25,7 +25,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
-import org.apache.uima.cas.ShortArrayFS;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.ShortArrayFSImpl;
 import org.apache.uima.cas.impl.TypeImpl;
@@ -33,7 +32,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ShortArray */
-public final class ShortArray extends TOP implements CommonPrimitiveArray, ShortArrayFSImpl, Iterable<Short> {
+public final class ShortArray extends TOP implements CommonPrimitiveArray<Short>, ShortArrayFSImpl, Iterable<Short> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_SHORT_ARRAY;
@@ -208,6 +207,20 @@ public final class ShortArray extends TOP implements CommonPrimitiveArray, Short
     ShortArray shortArray = new ShortArray(jcas, a.length);
     shortArray.copyFromArray(a, 0, 0, a.length);
     return shortArray;
+  }
+
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(short item) {
+    for (short b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

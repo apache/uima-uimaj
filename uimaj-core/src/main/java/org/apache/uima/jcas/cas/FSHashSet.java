@@ -153,13 +153,13 @@ public class FSHashSet <T extends TOP> extends TOP implements
    * @generated
    * @return value of the feature 
    */
-  private FSArray getFsArray() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));}
+  private FSArray<T> getFsArray() { return (FSArray<T>)(_getFeatureValueNc(wrapGetIntCatchException(_FH_fsArray)));}
     
   /** setter for fsArray - sets internal use - holds the set of Feature Structures 
    * @generated
    * @param v value to set into the feature 
    */
-  private void setFsArray(FSArray v) {
+  private void setFsArray(FSArray<T> v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_fsArray), v);
   }    
     
@@ -180,11 +180,10 @@ public class FSHashSet <T extends TOP> extends TOP implements
   private void lazyInit() {  
     isPendingInit = false;
     fsHashSet.clear();
-    FSArray a = getFsArray();
-    if (a != null) {
-      for (TOP fs : a) {
-        fsHashSet.add((T) fs);
-      }
+    FSArray<T> a = getFsArray();
+
+    for (T fs : a) {
+      fsHashSet.add((T) fs);
     }
   }
     
@@ -195,7 +194,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
   public void _save_to_cas_data() {
     if (isSaveNeeded) {
       isSaveNeeded = false;
-      FSArray fsa = getFsArray();
+      FSArray<T> fsa = getFsArray();
       if (fsa == null || fsa.size() != fsHashSet.size()) {
         fsa = new FSArray(_casView.getJCasImpl(), fsHashSet.size());
         setFsArray(fsa);

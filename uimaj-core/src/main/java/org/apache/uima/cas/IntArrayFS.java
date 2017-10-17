@@ -24,7 +24,7 @@ package org.apache.uima.cas;
  * {@link org.apache.uima.cas.CAS#createIntArrayFS CAS.createIntArrayFS(int)} or
  * new IntegerArray(aJCas, length)
  */
-public interface IntArrayFS extends CommonArrayFS {
+public interface IntArrayFS extends CommonArrayFS<Integer> {
 
   /**
    * Get the element at position <code>index</code>.

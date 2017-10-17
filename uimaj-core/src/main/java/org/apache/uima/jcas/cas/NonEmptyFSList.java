@@ -33,7 +33,7 @@ import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyList {
+public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmptyList {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_NON_EMPTY_FS_LIST;
@@ -86,7 +86,7 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
    * @param head -
    * @param tail -
    */
-  public NonEmptyFSList(JCas jcas, TOP head, CommonList tail) {
+  public NonEmptyFSList(JCas jcas, T head, CommonList tail) {
     this(jcas);
     setHead(head);
     setTail(tail);
@@ -97,30 +97,29 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
    * @param jcas -
    * @param head -
    */
-  public NonEmptyFSList(JCas jcas, TOP head) {
+  public NonEmptyFSList(JCas jcas, T head) {
     this(jcas, head, jcas.getCasImpl().emptyFSList());
   }
   
   // *------------------*
   // * Feature: head
   /* getter for head * */
-  public TOP getHead() { return _getFeatureValueNc(wrapGetIntCatchException(_FH_head)); }
+  public T getHead() { return (T) _getFeatureValueNc(wrapGetIntCatchException(_FH_head)); }
 
   /* setter for head * */
-  public void setHead(FeatureStructure v) {
-    TOP vt = (TOP) v;
+  public void setHead(T vt) {
     if (vt != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
       throw new CASRuntimeException(CASRuntimeException.FS_NOT_MEMBER_OF_CAS, vt, vt._casView, _casView);
     }
-    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_head), v); }
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_head), vt); }
 
 //  public void _setHeadNcNj(TOP v) { _F_head = v; }
   
   // *------------------*
   // * Feature: tail
   /* getter for tail * */
-  public FSList getTail() { return (FSList) _getFeatureValueNc(wrapGetIntCatchException(_FH_tail)); }
+  public FSList<T> getTail() { return (FSList<T>) _getFeatureValueNc(wrapGetIntCatchException(_FH_tail)); }
 
   /* setter for tail * */
   public void setTail(FSList v) {
@@ -135,8 +134,8 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
     setTail((FSList) v);
   }
   
-  public TOP getNthElement(int i) {
-    return ((NonEmptyFSList)getNonEmptyNthNode(i)).getHead();
+  public T getNthElement(int i) {
+    return ((NonEmptyFSList<T>)getNonEmptyNthNode(i)).getHead();
   }
 
   /**
@@ -144,16 +143,16 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
    * @param item to be inserted
    * @return the NonEmptyFSList node created  
    */
-  public NonEmptyFSList add(FeatureStructure item) {
-    FSList tail = getTail();
-    NonEmptyFSList node = tail.push((TOP) item);
+  public NonEmptyFSList<T> add(T item) {
+    FSList<T> tail = getTail();
+    NonEmptyFSList<T> node = tail.push(item);
     setTail(node);
     return node;
   }
 
   @Override
-  public Iterator<TOP> iterator() {
-    return new Iterator<TOP>() {
+  public Iterator<T> iterator() {
+    return new Iterator<T>() {
 
       FSList node = NonEmptyFSList.this;
       
@@ -163,12 +162,12 @@ public class NonEmptyFSList extends FSList implements Iterable<TOP>, NonEmptyLis
       }
 
       @Override
-      public TOP next() {
+      public T next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        NonEmptyFSList nn = (NonEmptyFSList)node; 
-        TOP element = nn.getHead();
+        NonEmptyFSList<T> nn = (NonEmptyFSList<T>)node; 
+        T element = nn.getHead();
         node = nn.getTail();
         return element;
       }

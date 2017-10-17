@@ -825,7 +825,7 @@ public class JCasTest extends TestCase {
 	}
 
   public void testFSListAPI() {
-    FSList sl = new EmptyFSList(jcas);
+    FSList<TOP> sl = new EmptyFSList(jcas);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
     sl = sl.push(fs2);
@@ -833,6 +833,12 @@ public class JCasTest extends TestCase {
    
     TOP[] fss = new TOP[2];
     int i = 0;
+    Iterator<TOP> it = sl.iterator();
+    while (it.hasNext()) {
+      fss[i++] = it.next();
+    }
+    
+    i = 0;   
     for (TOP s : sl) {
       fss[i++] = s;
     }
@@ -842,13 +848,15 @@ public class JCasTest extends TestCase {
   }
 	  
   public void testFSArrayAPI() {
-    FSArray sa = new FSArray(jcas, 2);
+    FSArray<FeatureStructure> sa = new FSArray(jcas, 2);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
     TOP[] values = {fs1, fs2}; 
     sa.copyFromArray(values, 0, 0, 2);
     
     int i = 0;
+    Iterator<FeatureStructure> it = sa.iterator();
+    
     for (FeatureStructure s : sa) {
       assert(s.equals(values[i++]));
     }

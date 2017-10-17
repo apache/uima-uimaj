@@ -35,7 +35,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** The Java Class model corresponding to the Cas IntegerArray_JCasImpl type. */
-public final class IntegerArray extends TOP implements CommonPrimitiveArray, IntArrayFSImpl, Iterable<Integer> {
+public final class IntegerArray extends TOP implements CommonPrimitiveArray<Integer>, IntArrayFSImpl, Iterable<Integer> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_INTEGER_ARRAY;
@@ -266,5 +266,18 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray, Int
     }
   }
 
+
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(int item) {
+    for (int b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 }

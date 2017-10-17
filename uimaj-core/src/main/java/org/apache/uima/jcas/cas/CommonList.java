@@ -30,7 +30,6 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CasSerializerSupport;
-import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.XmiSerializationSharedData;
 import org.apache.uima.cas.impl.XmiSerializationSharedData.OotsElementData;
 import org.apache.uima.internal.util.XmlAttribute;
@@ -288,6 +287,13 @@ public interface CommonList extends FeatureStructure {
     final List<String> list = new ArrayList<String>();
     anyListToOutput(sharedData, cds, s -> list.add(s)); 
     return list;
+  }
+  
+  /**
+   * @return true if this object represents an empty list
+   */
+  default boolean isEmpty() {
+    return this instanceof EmptyList;
   }
     
 }

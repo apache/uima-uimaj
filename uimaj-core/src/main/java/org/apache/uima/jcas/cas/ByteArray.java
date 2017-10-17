@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.uima.cas.ByteArrayFS;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.impl.ByteArrayFSImpl;
@@ -33,7 +32,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
 /** JCas class model for ByteArray */
-public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteArrayFSImpl, Iterable<Byte> {
+public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, ByteArrayFSImpl, Iterable<Byte> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_BYTE_ARRAY;
@@ -169,7 +168,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
    * @see org.apache.uima.jcas.cas.CommonArray#copyValuesFrom(org.apache.uima.jcas.cas.CommonArray)
    */
   @Override
-  public void copyValuesFrom(CommonArrayFS v) {
+  public void copyValuesFrom(CommonArrayFS<Byte> v) {
     ByteArray bv = (ByteArray) v;
     System.arraycopy(bv.theArray,  0,  theArray, 0, theArray.length);
     _casView.maybeLogArrayUpdates(this, 0, size());
@@ -213,4 +212,16 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray, ByteAr
     return byteArray;
   }
 
+  /**
+   * @param item the item to see if is in the array
+   * @return true if the item is in the array
+   */
+  public boolean contains(byte item) {
+    for (byte b : theArray) {
+      if (b == item) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

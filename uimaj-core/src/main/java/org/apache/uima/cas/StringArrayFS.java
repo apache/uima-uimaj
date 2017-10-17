@@ -24,7 +24,7 @@ package org.apache.uima.cas;
  * {@link org.apache.uima.cas.CAS#createStringArrayFS CAS.createStringArrayFS(int)}
  * or new StringArray(aJCas, length)
  */
-public interface StringArrayFS extends CommonArrayFS {
+public interface StringArrayFS extends CommonArrayFS<String> {
 
   /**
    * Get the i-th string from the array.
