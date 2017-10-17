@@ -31,6 +31,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
   /**
    * Get the i-th feature structure from the array.
    * @param i index
+   * @param <U> The class of the item being obtained by the get
    * @return The i-th feature structure.
    * @exception ArrayIndexOutOfBoundsException
    *              If the index is out of bounds.
@@ -79,6 +80,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    *          Where to start copying to in the destination array.
    * @param length
    *          The number of elements to copy.
+   * @param <T> the class of the array being copied into
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.

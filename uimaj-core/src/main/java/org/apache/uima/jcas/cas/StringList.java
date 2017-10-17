@@ -91,7 +91,6 @@ public abstract class StringList extends TOP implements CommonList, Iterable<Str
   }
   
   /**
-   * @param <T> generic type being returned
    * @return a stream over this FSList
    */
   public Stream<String> stream() {

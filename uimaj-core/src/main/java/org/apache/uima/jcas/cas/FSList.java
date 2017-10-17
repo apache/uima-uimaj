@@ -74,7 +74,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
     
   /**
    * Treat an FSArray as a source for SelectFSs. 
-   * @param <T> generic type being selected
+   * @param <U> generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select() {
@@ -84,7 +84,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   /**
    * Treat an FSArray as a source for SelectFSs. 
    * @param filterByType only includes elements of this type
-   * @param <T> generic type being selected
+   * @param <U> generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(Type filterByType) {
@@ -94,7 +94,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   /**
    * Treat an FSArray as a source for SelectFSs.  
    * @param filterByType only includes elements of this JCas class
-   * @param <T> generic type being selected
+   * @param <U> generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(Class<U> filterByType) {
@@ -104,7 +104,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   /**
    * Treat an FSArray as a source for SelectFSs. 
    * @param filterByType only includes elements of this JCas class's type
-   * @param <T> generic type being selected
+   * @param <U> generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(int filterByType) {
@@ -114,7 +114,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   /**
    * Treat an FSArray as a source for SelectFSs. 
    * @param filterByType only includes elements of this type (fully qualifined type name)
-   * @param <T> generic type being selected
+   * @param <U> generic type being selected
    * @return a new instance of SelectFSs
    */
   public <U extends T> SelectFSs<U> select(String filterByType) {
@@ -125,6 +125,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * Create an FSList from an existing array of Feature Structures
    * @param jcas the JCas to use
    * @param a the array of Feature Structures to populate the list with
+   * @param <U> the type of FeatureStructures being stored in the FSList being created
    * @return an FSList, with the elements from the array
    */
   public static <U extends TOP> FSList<U> create(JCas jcas, FeatureStructure[] a) {
@@ -153,7 +154,6 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
   }
 
   /**
-   * @param <T> generic type being returned
    * @return a stream over this FSList
    */
   public Stream<T> stream() {

@@ -253,6 +253,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * Convenience - create a FSArray from an existing FeatureStructure[]
    * @param jcas -
    * @param a -
+   * @param <U> the element type of the FSArray, subtype of FeatureStructure
    * @return -
    */
   public static <U extends FeatureStructure> FSArray<U> create(JCas jcas, U[] a) {
