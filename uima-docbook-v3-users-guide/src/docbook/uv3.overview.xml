@@ -151,6 +151,11 @@ under the License.
             both forwards and backwards while iterating, moving to specific positions, and doing various kinds
             of specialized Annotation selection such as working with Annotations spanned by another annotation.
           </para>
+          <para>By default, when sorted iterators are set up by the select framework, they ignore typePriorities;
+            this addresses a need of many use cases, and makes operation when there are many annotations spanning
+            the same begin and end more reliable.  Each select can specify to use typePriority as
+            part of the ordering when required.</para>
+            
           <para>This user's guide has a chapter devoted to this new framework.
           </para>
         </listitem>
