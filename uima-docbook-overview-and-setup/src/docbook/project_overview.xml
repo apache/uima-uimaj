@@ -98,10 +98,13 @@ under the License.
         <listitem>
           <para> References </para>
         </listitem>
+        <listitem>
+          <para>Version 3 users-guide</para>
+        </listitem>
       </itemizedlist> </para>
     
     <para>
-    The first 2 parts make up this book; the last 3 have individual 
+    The first 2 parts make up this book; the last 4 have individual 
     books.  The books are provided both as
     (somewhat large) html files, viewable in browsers, and also as PDF files.  
     The documentation is fully hyperlinked, with tables of contents.  The PDF versions are set up to 
@@ -162,6 +165,7 @@ under the License.
         </tgroup>
       </informaltable>
     </section>
+    
     <section id="ugr.project_overview_setup">
       <title>Eclipse Tooling Installation and Setup</title>
       <para>Provides step-by-step instructions for installing Apache UIMA in the Eclipse Interactive
@@ -382,6 +386,13 @@ under the License.
         </tgroup>
       </informaltable>
     </section>
+    
+    <section id="ugr.project_overview_v3">
+      <title>Version 3 User's guide</title>
+      <para>This book describes Version 3's features, capabilities, and differences with version 2.
+        </para>
+    </section>
+    
   </section>
   
   <section id="ugr.project_overview_doc_use">
@@ -766,6 +777,18 @@ under the License.
   </section>
   </section>
 
+  <section id="ugr.project_overview_migrating_from_v2_to_v3">
+    <title>Migrating existing UIMA pipelines from Version 2 to Version 3</title>
+    <para>The format of JCas classes changed when going from version 2 to version 3. 
+          If you had JCas classes for user types, these need to be regenerated using the 
+          version 3 JCasGen tooling or Maven plugin.  Alternatively, these can be 
+          migrated without regenerating; the migration preserves any customation 
+          users may have added to the JCas classes.</para>
+          
+    <para>The Version 3 User's Guide has a chapter detailing the migration, including
+      a description of the migration tool to aid in this process.</para>
+  </section>
+  
   <section id="ugr.project_overview_migrating_from_ibm_uima">
     <title>Migrating from IBM UIMA to Apache UIMA</title>
     <para>In Apache UIMA, several things have changed that require changes to user code and descriptors.
