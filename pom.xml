@@ -61,7 +61,7 @@
 
   <properties>
     <uimaScmProject>${project.artifactId}</uimaScmProject>
-    <jiraVersion>2.10.1SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->
+    <jiraVersion>2.10.2SDK</jiraVersion>   <!-- set this to get the right issues fixed report -->
     <assemblyFinalName>uimaj-${project.version}</assemblyFinalName> 
     <assemblyBinDescriptor>src/main/assembly/bin-without-jackson.xml</assemblyBinDescriptor> 
     <postNoticeText>${ibmNoticeText}</postNoticeText>    
