@@ -145,7 +145,7 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
     <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.9.0</compat.previous.version>
+    <compat.previous.version>2.10.1</compat.previous.version>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
@@ -160,7 +160,7 @@
     <maven.surefire.java9 />
     
     <jacoco.argLine />
-    <api_check_oldVersion>2.10.0</api_check_oldVersion>
+    <api_check_oldVersion>2.10.1</api_check_oldVersion>
   </properties>
 
   <dependencyManagement>
