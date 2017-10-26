@@ -303,30 +303,37 @@
                 
                 <fail unless="eclipse.home" message="********** Please set up and use an ant property eclipse.home set to an Eclipse installation at level 3.3 or later, e.g. c:/eclipses/3.3/eclipse" />
                 <fail unless="uima-eclipse-jar-processor" message="********** Please add to your settings.xml file the property uima-eclipse-jar-processor, point to this within an Eclipse installation at level 4.2 or later, e.g. \$\{uima-maven-build-eclipse-home\}/plugins/org.eclipse.equinox.p2.jarprocessor_1.0.200.v20110808-1657.jar" />
-                <!--  skip this for pre-production, only want latest there
-                <if>
-                  <equals arg2="true" arg1="${isApacheRelease}" />
-                  <then>
-                    
-                    <echo>checking out eclipse update subsite uimaj-v3-pre-production from dist ...release...</echo>
-                    <delete quiet="true" dir="${eclipseUpdateSubSite}" />
-                    <exec failonerror="true" executable="svn">
-                      <arg value="checkout" />
-                      <arg value="https://dist.apache.org/repos/dist/release/uima/eclipse-update-site/uimaj-v3-pre-production" />
-                      <arg value="${eclipseUpdateSubSite}" />
-                    </exec>
-                    
-                    <echo>Saving original content and artifacts for the site</echo>
-                    <copy todir="${project.build.directory}/saved" failonerror="true"> 
-                      <fileset dir="${eclipseUpdateSubSite}" includes="content.jar,artifacts.jar" />
-                    </copy>
-                    
-                  </then>
-                  <else>
-                    <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
-                    <delete quiet="true" dir="${eclipseUpdateSubSite}" />
-                  </else>
-                </if>
+                <!--  skip this when dropping previous versions
+                  <if>
+                      <equals arg1="${isApacheRelease}" arg2="true" />
+                      <then>
+    
+                        <echo>checking out eclipse update subsite ${eclipseUpdateSiteComponent} from dist ...release...</echo>
+                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+                        <exec executable="svn" failonerror="true">
+                          <arg value="checkout" />
+                          <arg value="${distsvnroot}repos/dist/release/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+                          <arg value="${eclipseUpdateSubSite}" />
+                        </exec> 
+                        
+                        <!- - abandon safety for now
+                        <echo>switching this checkout to ...dev... for safety</echo>
+                        <exec executable="svn">
+                          <arg value="switch" />
+                          <arg value="- -force" />  remove space between 2 dashes if uncommented
+                          <arg value="- -accept" />  remove space between 2 dashes if uncommented
+                          <arg value="mine-full" />
+                          <arg value="${distsvnroot}repos/dist/dev/uima/eclipse-update-site/${eclipseUpdateSiteComponent}" />
+                          <arg value="${eclipseUpdateSubSite}" />
+                        </exec> 
+                         - ->
+                      </then>
+                      <else>
+                        <echo>skipping checkout of current svn dist release (because not apache-release)</echo>
+                        <!- - https://issues.apache.org/jira/browse/UIMA-3501 - ->
+                        <delete dir="${eclipseUpdateSubSite}" quiet="true" />
+                      </else>
+                    </if>
                    -->
                     
                 <echo>Compress plugin Jars using pack200 - this may take a minute or 2</echo>
