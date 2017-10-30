@@ -545,7 +545,7 @@ public abstract class XMLUtils {
       factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory didn't recognized feature " + DISALLOW_DOCTYPE_DECL);
+          "SAXParserFactory didn't recognize feature " + DISALLOW_DOCTYPE_DECL);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
           "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
@@ -558,7 +558,7 @@ public abstract class XMLUtils {
       factory.setFeature(LOAD_EXTERNAL_DTD, false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory didn't recognized feature " + LOAD_EXTERNAL_DTD);
+          "SAXParserFactory didn't recognize feature " + LOAD_EXTERNAL_DTD);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
           "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
@@ -577,7 +577,7 @@ public abstract class XMLUtils {
       xmlReader.setFeature(EXTERNAL_GENERAL_ENTITIES, false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader didn't recognized feature " + EXTERNAL_GENERAL_ENTITIES);
+          "XMLReader didn't recognize feature " + EXTERNAL_GENERAL_ENTITIES);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
           "XMLReader doesn't support feature " + EXTERNAL_GENERAL_ENTITIES);
@@ -587,7 +587,7 @@ public abstract class XMLUtils {
       xmlReader.setFeature(EXTERNAL_PARAMETER_ENTITIES, false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader didn't recognized feature " + EXTERNAL_PARAMETER_ENTITIES);
+          "XMLReader didn't recognize feature " + EXTERNAL_PARAMETER_ENTITIES);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
           "XMLReader doesn't support feature " + EXTERNAL_PARAMETER_ENTITIES);
@@ -612,14 +612,14 @@ public abstract class XMLUtils {
       saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXTransformerFactory didn't recognized setting attribute " + ACCESS_EXTERNAL_DTD);
+          "SAXTransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_DTD);
     }
 
     try {
       saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_STYLESHEET, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXTransformerFactory didn't recognized setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
+          "SAXTransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
     }
 
     return saxTransformerFactory;
@@ -631,14 +631,14 @@ public abstract class XMLUtils {
       transformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "TransformerFactory didn't recognized setting attribute " + ACCESS_EXTERNAL_DTD);
+          "TransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_DTD);
     }
     
     try {
       transformerFactory.setAttribute(ACCESS_EXTERNAL_STYLESHEET, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "TransformerFactory didn't recognized setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
+          "TransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
     }
 
     return transformerFactory;
@@ -650,7 +650,7 @@ public abstract class XMLUtils {
       documentBuilderFactory.setFeature(DISALLOW_DOCTYPE_DECL, true);
     } catch (ParserConfigurationException e1) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "DocumentBuilderFactory didn't recognized setting feature " + DISALLOW_DOCTYPE_DECL);
+          "DocumentBuilderFactory didn't recognize setting feature " + DISALLOW_DOCTYPE_DECL);
     }
     
     try {
