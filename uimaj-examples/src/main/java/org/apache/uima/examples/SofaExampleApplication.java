@@ -95,13 +95,13 @@ public class SofaExampleApplication {
 
     System.out.println("---Printing all annotations for German Sofa---");
     
-    germanView.select(Annotation.class).forEach(annot -> {
+    for (Annotation annot : germanView.select(Annotation.class)) {
       System.out.println(" " + annot.getType().getName() + ": " + annot.getCoveredText());
       if (annot.getType() == cross) {
         Annotation crossAnnot = (Annotation) annot.getFeatureValue(other);
         System.out.println("   other annotation feature: " + crossAnnot.getCoveredText());
       }
-    });
+    }
     
     
 //    // and annotator iterator for the German CAS View

@@ -62,7 +62,7 @@ public class PrintAnnotations {
   public static void printAnnotations(CAS aCAS, PrintStream aOut) {
     
     // Version 3 using select with Stream support
-    aCAS.getAnnotationIndex().select(Annotation.class).forEach(fs -> printFS(fs, aCAS, 0, aOut));
+    aCAS.select(Annotation.class).forEach(fs -> printFS(fs, aCAS, 0, aOut));
 
 //    // Version 3 using select with extended for
 //    for (Annotation fs : aCAS.getAnnotationIndex().select(Annotation.class)) {
