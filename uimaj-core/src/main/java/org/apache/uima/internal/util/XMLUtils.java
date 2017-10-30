@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -48,7 +47,16 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  */
 public abstract class XMLUtils {
-
+  
+  // constants - not all Java versions define these
+  
+  private static final String ACCESS_EXTERNAL_STYLESHEET = "http://javax.xml.XMLConstants/property/accessExternalStylesheet";
+  private static final String ACCESS_EXTERNAL_DTD = "http://javax.xml.XMLConstants/property/accessExternalDTD";
+  
+  private static final String DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
+  private static final String LOAD_EXTERNAL_DTD = "http://apache.org/xml/features/nonvalidating/load-external-dtd";
+  private static final String EXTERNAL_GENERAL_ENTITIES = "http://xml.org/sax/features/external-general-entities";
+  private static final String EXTERNAL_PARAMETER_ENTITIES = "http://xml.org/sax/features/external-parameter-entities";
   /**
    * Normalizes the given string for output to XML. This converts all special characters, e.g. &lt;,
    * %gt;, &amp;, to their XML representations, e.g. &amp;lt;, &amp;gt;, &amp;amp;. The normalized
@@ -534,29 +542,29 @@ public abstract class XMLUtils {
   public static SAXParserFactory createSAXParserFactory() {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     try {
-      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      factory.setFeature(DISALLOW_DOCTYPE_DECL, true);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+          "SAXParserFactory didn't recognize feature " + DISALLOW_DOCTYPE_DECL);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+          "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
     } catch (ParserConfigurationException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+          "SAXParserFactory doesn't support feature " + DISALLOW_DOCTYPE_DECL);
     }
     
     try {
-      factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      factory.setFeature(LOAD_EXTERNAL_DTD, false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory didn't recognized feature http://apache.org/xml/features/nonvalidating/load-external-dtd");
+          "SAXParserFactory didn't recognize feature " + LOAD_EXTERNAL_DTD);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory doesn't support feature http://apache.org/xml/features/nonvalidating/load-external-dtd");
+          "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
     } catch (ParserConfigurationException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXParserFactory doesn't support feature http://apache.org/xml/features/nonvalidating/load-external-dtd");
+          "SAXParserFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
     }
     
     factory.setXIncludeAware(false);
@@ -566,33 +574,33 @@ public abstract class XMLUtils {
   public static XMLReader createXMLReader() throws SAXException {
     XMLReader xmlReader = XMLReaderFactory.createXMLReader();
     try {
-      xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      xmlReader.setFeature(EXTERNAL_GENERAL_ENTITIES, false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+          "XMLReader didn't recognize feature " + EXTERNAL_GENERAL_ENTITIES);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+          "XMLReader doesn't support feature " + EXTERNAL_GENERAL_ENTITIES);
     }
 
     try {
-      xmlReader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+      xmlReader.setFeature(EXTERNAL_PARAMETER_ENTITIES, false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+          "XMLReader didn't recognize feature " + EXTERNAL_PARAMETER_ENTITIES);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+          "XMLReader doesn't support feature " + EXTERNAL_PARAMETER_ENTITIES);
     }
 
     try {
-      xmlReader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false);
+      xmlReader.setFeature(LOAD_EXTERNAL_DTD,false);
     } catch (SAXNotRecognizedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader didn't recognized feature http://apache.org/xml/features/disallow-doctype-decl");
+          "XMLReader didn't recognized feature " + LOAD_EXTERNAL_DTD);
     } catch (SAXNotSupportedException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "XMLReader doesn't support feature http://apache.org/xml/features/disallow-doctype-decl");
+          "XMLReader doesn't support feature " + LOAD_EXTERNAL_DTD);
     }
 
     return xmlReader;
@@ -601,17 +609,17 @@ public abstract class XMLUtils {
   public static SAXTransformerFactory createSaxTransformerFactory() {
     SAXTransformerFactory saxTransformerFactory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();    
     try {
-      saxTransformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXTransformerFactory didn't recognized setting attribute XMLConstants.ACCESS_EXTERNAL_DTD");
+          "SAXTransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_DTD);
     }
 
     try {
-      saxTransformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+      saxTransformerFactory.setAttribute(ACCESS_EXTERNAL_STYLESHEET, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "SAXTransformerFactory didn't recognized setting attribute XMLConstants.ACCESS_EXTERNAL_STYLESHEET");
+          "SAXTransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
     }
 
     return saxTransformerFactory;
@@ -620,17 +628,17 @@ public abstract class XMLUtils {
   public static TransformerFactory createTransformerFactory() {
     TransformerFactory transformerFactory = TransformerFactory.newInstance();
     try {
-      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      transformerFactory.setAttribute(ACCESS_EXTERNAL_DTD, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "TransformerFactory didn't recognized setting attribute XMLConstants.ACCESS_EXTERNAL_DTD");
+          "TransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_DTD);
     }
     
     try {
-      transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+      transformerFactory.setAttribute(ACCESS_EXTERNAL_STYLESHEET, "");
     } catch (IllegalArgumentException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "TransformerFactory didn't recognized setting attribute XMLConstants.ACCESS_EXTERNAL_STYLESHEET");
+          "TransformerFactory didn't recognize setting attribute " + ACCESS_EXTERNAL_STYLESHEET);
     }
 
     return transformerFactory;
@@ -639,17 +647,17 @@ public abstract class XMLUtils {
   public static DocumentBuilderFactory createDocumentBuilderFactory() { 
     DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     try {
-      documentBuilderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      documentBuilderFactory.setFeature(DISALLOW_DOCTYPE_DECL, true);
     } catch (ParserConfigurationException e1) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "DocumentBuilderFactory didn't recognized setting feature http://apache.org/xml/features/disallow-doctype-decl");
+          "DocumentBuilderFactory didn't recognize setting feature " + DISALLOW_DOCTYPE_DECL);
     }
     
     try {
-      documentBuilderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+      documentBuilderFactory.setFeature(LOAD_EXTERNAL_DTD, false);
     } catch (ParserConfigurationException e) {
       UIMAFramework.getLogger().log(Level.WARNING, 
-          "DocumentBuilderFactory doesn't support feature http://apache.org/xml/features/nonvalidating/load-external-dtd");
+          "DocumentBuilderFactory doesn't support feature " + LOAD_EXTERNAL_DTD);
     }
     
     documentBuilderFactory.setXIncludeAware(false);
