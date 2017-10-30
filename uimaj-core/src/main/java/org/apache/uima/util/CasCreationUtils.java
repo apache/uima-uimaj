@@ -580,6 +580,7 @@ public class CasCreationUtils {
     
     
     // Check Jcas cache performance setting.  Defaults to true.
+    // in v3, JCasCache is ignored
     boolean useJcasCache = true;
     if (aPerformanceTuningSettings != null) {
       String useJcasCacheString = aPerformanceTuningSettings.getProperty(
