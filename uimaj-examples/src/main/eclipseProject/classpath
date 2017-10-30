@@ -24,24 +24,30 @@
 		<attributes>
 		  <!-- Strings file:/C:/Program Files/apache-uima are replaced
 		       by the adjustExamplePaths script with the UIMA install location -->
-			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-document-annotation.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-cpe.jar">
 		<attributes>
-			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
 		</attributes>
 	</classpathentry>		
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-tools.jar">
 			<attributes>
-			<attribute value="file:/C:/Program Files/apache-uima/docs/api" name="javadoc_location"/>
+			<attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
 		</attributes>
-	</classpathentry>			
+	</classpathentry>	
+  <classpathentry kind="var" path="UIMA_HOME/lib/uimaj-json.jar">
+    <attributes>
+      <attribute value="file:/C:/Program Files/apache-uima/docs/d/api" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>     
+			
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-vinci.jar"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/uima-adapter-soap.jar"/>
 	<classpathentry kind="var" path="UIMA_HOME/lib/jVinci.jar"/>
