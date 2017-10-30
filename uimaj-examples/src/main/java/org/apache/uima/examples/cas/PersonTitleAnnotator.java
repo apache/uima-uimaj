@@ -26,9 +26,7 @@ import org.apache.uima.analysis_component.CasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.analysis_engine.annotator.AnnotatorInitializationException;
 import org.apache.uima.cas.CAS;
-import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
-import org.apache.uima.cas.SelectFSs;
 import org.apache.uima.cas.Type;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.text.AnnotationFS;
@@ -179,7 +177,7 @@ public class PersonTitleAnnotator extends CasAnnotator_ImplBase {
 
         //v3
         
-        for (Annotation annot : SelectFSs.select(aCAS.<Annotation>getAnnotationIndex(mContainingType))) {
+        for (Annotation annot : aCAS.<Annotation>select(mContainingType)) {
           
           String coveredText = annot.getCoveredText();  // Get text covered by this annotation
           int annotBegin = annot.getBegin();            // Get begin position of this annotation
