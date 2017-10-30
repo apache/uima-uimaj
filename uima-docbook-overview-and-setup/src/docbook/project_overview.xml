@@ -1062,8 +1062,9 @@ under the License.
           </row>
           <row>
             <entry>Saving and Restoring CAS contents</entry>
-            <entry>APIs in the core framework support saving and restoring the contents of a CAS to streams using an
-              XMI format. </entry>
+            <entry>APIs in the core framework support saving and restoring the contents of a CAS to streams 
+              in multiple formats, including XMI, binary, and compressed forms.  
+              These apis are collected into the CasIOUtils class.</entry>
           </row>
           <row>
             <entry>PEAR Packager for Eclipse</entry>
@@ -1102,6 +1103,14 @@ under the License.
             <entry>Document Analyzer</entry>
             <entry>GUI Java application that applies analysis engines to sets of documents and shows results in a
               viewer.</entry>
+          </row>
+          <row>
+            <entry>CAS Editor</entry>
+            <entry>Eclipse plug-in that lets you edit the contents of a CAS</entry>
+          </row>
+          <row>
+            <entry>UIMA Pipeline Eclipse Launcher</entry>
+            <entry>Eclipse plug-in that lets you configure Eclipse launchers for UIMA pipelines</entry>
           </row>
           <row>
             <entry namest="col1" nameend="col2" align="center" role="tableSubhead"> Example Analysis

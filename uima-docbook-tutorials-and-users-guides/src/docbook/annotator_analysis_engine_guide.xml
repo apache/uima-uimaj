@@ -70,12 +70,20 @@ under the License.
     easy-to-use, native Java interface to the CAS called the <emphasis>JCas</emphasis>.
     The JCas represents each feature structure as a Java object; the example feature
     structure from the previous paragraph would be an instance of a Java class Person with
-    getFullName() and setFullName() methods. Though the examples in this guide all use the
-    JCas, it is also possible to directly access the underlying CAS system; for more
-    information see <olink targetdoc="&uima_docs_ref;"/>
-    <olink targetdoc="&uima_docs_ref;" targetptr="ugr.ref.cas"/>
-    .</para>
+    getFullName() and setFullName() methods. 
+  </para>
   
+  <para>The CAS interface for accessing feature structures uses UIMA Type an Feature object instances,
+    which are computed at run time, depending on the type system being used.  This interface supports
+    writing general annotators which can work for all type systems.  It is used, for example, internally,
+    in the CasCopier implementation, to copy the content of one CAS to another.
+  </para>
+  
+  <para>The JCas interface can take advantage of knowing ahead of time the particular Types and Features
+    a pipeline is using.  The JCas Classes correspond to a particular UIMA type, and the class includes 
+    special setters and getters whose names match the features.
+  </para>
+    
   <para>The remainder of this chapter will refer to the analysis of text documents and the
     creation of annotations that are attached to spans of text in those documents. Keep in mind
     that the CAS can represent arbitrary types of feature structures, and feature structures
@@ -153,9 +161,8 @@ under the License.
       Also you may wish to refer to the UIMA SDK Javadocs located in the <ulink
         url="api/index.html">docs/api/index.html</ulink> directory.</para>
     
-        <note><para>In Eclipse 3.1, if you highlight a UIMA class or method defined in the UIMA SDK
-    Javadocs, you can conveniently have Eclipse open the corresponding Javadoc for that
-    class or method in a browser, by pressing Shift + F2.</para></note>
+        <note><para>If you hover over a UIMA class or method defined in the UIMA SDK
+    Javadocs, the Javadocs appear after a short delay. </para></note>
     <note><para>If you downloaded the source distribution for UIMA, you can attach that as
     well to the library Jar files; for information on how to do this, see
     <olink targetdoc="&uima_docs_ref;"/>
@@ -453,28 +460,25 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
   // get document text
   String docText = aJCas.getDocumentText();
   // search for Yorktown room numbers
-  Matcher matcher = mYorktownPattern.matcher(docText);
+  Matcher m = mYorktownPattern.matcher(docText);
   int pos = 0;
-  while (matcher.find(pos)) {
-    // found one - create annotation
-    RoomNumber annotation = new RoomNumber(aJCas);
-    annotation.setBegin(matcher.start());
-    annotation.setEnd(matcher.end());
+  while (m.find(pos)) {
+    // found one - create annotation, with the begin/end positions
+    RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
     annotation.setBuilding("Yorktown");
     annotation.addToIndexes();
-    pos = matcher.end();
+    pos = m.end();
   }
+  
   // search for Hawthorne room numbers
-  matcher = mHawthornePattern.matcher(docText);
+  m = mHawthornePattern.matcher(docText);
   pos = 0;
-  while (matcher.find(pos)) {
-    // found one - create annotation
-    RoomNumber annotation = new RoomNumber(aJCas);
-    annotation.setBegin(matcher.start());
-    annotation.setEnd(matcher.end());
+  while (m.find(pos)) {
+    // found one - create annotation, with the begin/end positions
+    RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
     annotation.setBuilding("Hawthorne");
     annotation.addToIndexes();
-    pos = matcher.end();
+    pos = m.end();
   }
 }</programlisting>
       
@@ -483,9 +487,7 @@ public class RoomNumberAnnotator extends JCasAnnotator_ImplBase {
         calling some set methods:</para>
       
       
-      <programlisting>RoomNumber annotation = new RoomNumber(aJCas);
-annotation.setBegin(matcher.start());
-annotation.setEnd(matcher.end());
+      <programlisting>RoomNumber annotation = new RoomNumber(aJCas, m.start(), m.end());
 annotation.setBuilding("Yorktown");</programlisting>
       
       <para>The <literal>RoomNumber</literal> class was generated from the type system description by the
@@ -944,21 +946,36 @@ public void initialize(UimaContext aContext)
       <para>The UIMA framework supports this convention using the
         <literal>UimaContext</literal> object. If you access a logger instance using
         <literal>getContext().getLogger()</literal> or the shorter, but equivalent
-        <literal>getUimaLogger()</literal>
+        <literal>getLogger()</literal>
         within an Annotator, the logger
         name will be the fully qualified name of the Annotator implementation class.</para>
               
       <para>Here is an example from the process method of
         <literal>org.apache.uima.tutorial.ex2.RoomNumberAnnotator</literal>:
         
-        <programlisting>getLogger().trace("Found: {}", annotation);</programlisting>
-        </para>
-      
+        <programlisting>getLogger().trace("Found: {}", () -> annotation.toString());</programlisting>
+      </para>
+
       <para>The <code>trace</code> call 
         indicates that this is a tracing message. This is useful for tracing program flow, but it is a low level which
         is not usually enabled. 
       </para>
-      
+        
+      <para>
+        The first parameter is the message, with substitutable parts.  The convention for where those parts go is
+        written as either {} or {n}, where "n" is an integer, specifying the argument number.  
+        The modern logging APIs use the {} style, with API calls such as 
+        <code>logger.**level**( msg-using-{}-convention, substitutable-arguments)</code>, while the older
+        java.util.logger framework uses <code>logger.log(**level**, msg-using-{n} convention, substitutable-arguments)</code>.
+      </para>
+        
+      <para>
+        UIMA supports both styles.  
+        For new code, it is recommended to use the first style, together with the Java 8 lambda method for the arguments, which 
+        insures that the work of turning the <code>annotation</code>
+        argument into a printable string only will happen if tracing is enabled.
+      </para>
+         
       <para>Log statements are "filtered" according to the logging configuration, by Level, and sometimes by
         additional indicators, such as Markers.  Levels work in a hierarchy.  A given level of 
         filtering passes that level and all higher levels.  Some levels have two names, due to the 
@@ -977,7 +994,7 @@ public void initialize(UimaContext aContext)
         </itemizedlist>
         </para>
         
-        <para>The CONFIG and FINEST levels are merged with other levels, but distinguished by having 
+        <para>The CONFIG and FINEST levels are merged with other levels, but are distinguished by having 
         <code>Markers</code>.  If the filtering is configured to pass CONFIG level, then it will pass also the
         INFO/WARN/ERROR  (or their alternative names WARNING/SEVERE) levels as well.
         </para>
@@ -1000,8 +1017,7 @@ public void initialize(UimaContext aContext)
         Jar which connects SLF4j to the Java-built-in logger to use as
         its back end, so if you use the standard launchers, you will get this logging back end. 
         </para>
-  
-      
+        
       <para>Assuming you are using the Java-built-in-logger as the back-end, 
         if you specify the configuration using the standard UIMA SDK <literal>Logger.properties</literal>
         (found in <code>UIMA_HOME/config/</code>),
@@ -1384,35 +1400,38 @@ public void initialize(UimaContext aContext)
       <para>So far, we have been looking at annotators that look directly at the document text. However, annotators
         can also use the results of other annotators. One useful thing we can do at this point is look for the
         co-occurrence of a Date, a RoomNumber, and two Times &ndash; and annotate that as a Meeting.</para>
+        
+      <para>The <code>select</code> API, available on the CAS, JCas, and individual UIMA indexes, 
+        is the preferred way to get 
+        feature structures from the CAS and work with them.</para>  
       
       <para>The CAS maintains <emphasis>indexes</emphasis> of annotations, and from an index you can obtain an
-        iterator that allows you to step through all annotations of a particular type. Here&apos;s some example code
-        that would iterate over all of the TimeAnnot annotations in the JCas:
+        iterator that allows you to step through all annotations of a particular type in that index.
+        Indexes are optional; they allow you to specify a sorting order or can specify set-inclusion
+        criteria.  One built-in index is the Annotation index; this contains sorted instances of type Annotation 
+        or its subtypes.
+      </para> 
+      
+      <para>
+        Here&apos;s some example code
+        that would iterate over all of the TimeAnnot annotations in the JCas, in some unspecified order:
         
-        
-        <programlisting>for (TimeAnnot : aJCas.&lt;TimeAnnot&gt;select(TimeAnnot.class)) {
+        <programlisting>for (TimeAnnot : aJCas.select(TimeAnnot.class)) {
   //do something
 }</programlisting></para>
       
-      <note>
-      <para>You can also use the method
-        <literal>aJCas.getAllIndexedFS(YourClass.type)</literal>, which returns an iterator
-        over instances of <literal>YourClass</literal> in no particular order. 
+      <para>
+        The same code, but using the Annotation index to specify an ordering (assuming that
+        TimeAnnot is a subtype of Annotation):
         
-        <!-- Fixed by UIMA-4111 But beware - if you've defined
-        a <literal>set</literal> index for this type, and haven't defined any non-set indexes for this type, then,
-        the method would return only those instances in the set.  So, in a pathological case, if you defined the
-        set so that the key was some particular field, and all instances of this type had the same key, then 
-        only one instance of this type would be found.</para>
-        <para>To guarantee the existance of an index that would have an entry for all unique indexed 
-        Feature Structures, define a bag or sorted index for the type.
-        </para>.
-        
-
-        <para>All types which are subtypes of the built-in Annotation type have a sorted index, and so all instances of those
-        types are guaranteed to be found (at least once) by this iterator.   -->
-        
-        </para>
+        <programlisting>for (TimeAnnot : aJCas.getAnnotationIndex().select(TimeAnnot.class)) {
+  //do something
+}
+  // or
+for (TimeAnnot : aJCas.getAnnotationIndex(TimeAnnot.class).select()) {
+  //do something
+}
+</programlisting></para>
         
       <para>Also, if you've defined your own custom index as described in <olink targetdoc="&uima_docs_ref;"/>
         <olink targetdoc="&uima_docs_ref;"
@@ -1423,7 +1442,12 @@ public void initialize(UimaContext aContext)
       if you defined an index called "allEvents" over the type <literal>Event</literal>, and wanted 
       to get an index over just a particular subtype of event, say, <literal>TimeEvent</literal>,
       you can ask for that index using 
-        <literal>aJCas.getIndex("allEvents", TimeEvent.class)</literal>.</para></note>
+        <literal>aJCas.getIndex("allEvents", TimeEvent.class)</literal>.</para>
+      
+      
+      <para>Whereever the type is specified by TimeEvent.class, the APIs also allow the non-JCas 
+        specification of the type by passing an instance of a UIMA Type class. This alternative enables
+        writing code that can be used for any type, discovered at run time.</para>
       
       <para>Now that we&apos;ve explained the basics, let&apos;s take a look at the process method for
         <literal>org.apache.uima.tutorial.ex4.MeetingAnnotator</literal>. Since we&apos;re looking for a
@@ -2403,10 +2427,11 @@ documentAnalyzer</programlisting>
     
     <para>Here are some things to avoid doing in your annotator code:</para>
     
-    <para><emphasis role="bold">Retaining references to JCas objects between calls to
-      process()</emphasis></para>
+    <para><emphasis role="bold">Do not retain references to JCas objects between calls to
+      process() for different CASes</emphasis></para>
     
-    <para>The JCas will be cleared between calls to your annotator&apos;s process() method.
+    <para>The JCas will be cleared between calls to your annotator&apos;s process() method
+      for each new CAS.
       All of the analysis results related to the previous document will be deleted to make way
       for analysis of a new document. Therefore, you should never save a reference to a JCas
       Feature Structure object (i.e. an instance of a class created using JCasGen) and
@@ -2433,7 +2458,7 @@ documentAnalyzer</programlisting>
     <title>Viewing UIMA objects in the Eclipse debugger</title>
     <titleabbrev>UIMA Objects in Eclipse Debugger</titleabbrev>
     
-    <para>Eclipse (as of version 3.1 or later) has a new feature for viewing Java Logical
+    <para>Eclipse has a feature for viewing Java Logical
       Structures. When enabled, it will permit you to see a view of UIMA objects (such as
       feature structure instances, CAS or JCas instances, etc.) which displays the logical
       subparts. For example, here is a view of a feature structure for the RoomNumber
@@ -2450,8 +2475,8 @@ documentAnalyzer</programlisting>
     </mediaobject>
   </screenshot></para>
     
-    <para>The <quote>annotation</quote> object in Java shows as a 2 element object, not very
-      convenient for seeing the features or the part of the input that is being annotatoed. But
+    <para>The <quote>annotation</quote> object in Java shows the internals of the JCas object, not very
+      convenient for seeing the features or the part of the input that is being annotated. But
       if you turn on the Java Logical Structure mode by pushing this button:
       
       

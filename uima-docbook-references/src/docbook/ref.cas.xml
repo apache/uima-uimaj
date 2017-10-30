@@ -327,9 +327,9 @@ under the License.
       
     <para>The JCas cover classes for the array types support the Iterable API, so you may
     write extended for loops over instances of these.  For example:
-    <programlisting>FSArray myArray = ...
-for (TOP fs : myArray) {
-  somemethod(fs);
+    <programlisting>FSArray&lt;MyType&gt; myArray = ...
+for (MyType fs : myArray) {
+  some_method(fs);
 }</programlisting>
     </para>
     
@@ -424,7 +424,7 @@ for (TOP fs : myArray) {
     The iterator stops when it gets to the end of the list, determined by either the tail being null or 
     the element being one of the EmptyXXXList elements.
     Here's a StringList example:
-    <programlisting>StringList sl = new EmptyStringList(jcas);
+    <programlisting>StringList sl = jcas.emptyStringList();
 sl = sl.push("2");
 sl = sl.push("1");
 
@@ -476,22 +476,15 @@ for (String s : sl) {
       <programlisting>// Get all type names from the type system
 // and print them to stdout.
 private void listTypes1(TypeSystem ts) {
-  // Get an iterator over types
-  Iterator typeIterator = ts.getTypeIterator();
-  Type t;
-  System.out.println("Types in the type system:");
-  while (typeIterator.hasNext()) {
-    // Retrieve a type...
-    t = (Type) typeIterator.next();
-    // ...and print its name.
+  for (Type t : ts) {
+    // print its name.
     System.out.println(t.getName());
   }
-  System.out.println();
 }</programlisting>
       
       <para>This method is passed the type system as a parameter.  From the type system, we can 
         get an iterator
-        over all known types. If you run this against a CAS created with no additional
+        over all the types. If you run this against a CAS created with no additional
         user-defined types, we should see something like this on the console:</para>
       
       <programlisting>Types in the type system: 

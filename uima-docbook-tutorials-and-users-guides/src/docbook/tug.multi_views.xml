@@ -566,15 +566,10 @@ germAnnot.setFeatureValue(other, engAnnot);</programlisting>
         annotations for each associated CAS view. For the English Sofa:</para>
       
       
-      <programlisting>//get annotation iterator for this CAS
-FSIndex anIndex = aView.getAnnotationIndex();
-FSIterator anIter = anIndex.iterator();
-while (anIter.isValid()) {
-  AnnotationFS annot = (AnnotationFS) anIter.get();
+      <programlisting>for (Annotation annot : aView.getAnnotationIndex()) {
   System.out.println(" " + annot.getType().getName()
                          + ": " + annot.getCoveredText());
-  anIter.moveToNext();
-}</programlisting>
+}</programlisting>      
       
       <para>Iterating over all German annotations looks the same, except for the
         following:</para>
