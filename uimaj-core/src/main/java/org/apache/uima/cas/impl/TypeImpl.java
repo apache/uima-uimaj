@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Vector;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
@@ -1137,6 +1138,31 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
 //  FsGenerator getGenerator() {
 //    return generator;
 //  }
+
+  @Override
+  public Iterator<Feature> iterator() {
+    final FeatureImpl[] fia = getFeatureImpls();
+    final int l = fia.length;
+    
+    return new Iterator<Feature>() {
+      int i = 0;
+      
+      @Override
+      public boolean hasNext() {
+        return i < l;
+      }
+
+      @Override
+      public Feature next() {
+        if (hasNext()) {
+          return fia[i++];
+        } else {
+          throw new NoSuchElementException();
+        }
+      }
+      
+    };
+  }
 
 //  /**
 //   * @return the jcasClassInfo

@@ -2678,6 +2678,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return callSite;
   }
 
+  @Override
+  public Iterator<Type> iterator() {
+    return getTypeIterator();
+  }
+
 //  private static boolean isBuiltIn(Class<? extends TOP> clazz) {
 //    return BuiltinTypeKinds.creatableBuiltinJCasClassNames.contains(clazz.getName());
 //  }
