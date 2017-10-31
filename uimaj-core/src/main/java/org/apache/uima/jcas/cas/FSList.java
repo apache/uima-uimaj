@@ -20,7 +20,9 @@
 package org.apache.uima.jcas.cas;
 
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -31,8 +33,15 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.SelectFSs_impl;
 import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.apache.uima.jcas.JCas;
+import org.xml.sax.SAXException;
 
+/**
+ * 
+ *  T extends TOP, v2 already mandated TOP for set/get
+ * @param <T> the type of the elements in the list
+ */
 public abstract class FSList<T extends TOP> extends TOP implements CommonList, Iterable<T> {
  
 	// Never called.
@@ -128,12 +137,12 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @param <U> the type of FeatureStructures being stored in the FSList being created
    * @return an FSList, with the elements from the array
    */
-  public static <U extends TOP> FSList<U> create(JCas jcas, FeatureStructure[] a) {
-    FSList<TOP> fsl = jcas.getCasImpl().emptyFSList();   
+  public static <U extends TOP, E extends FeatureStructure> FSList<U> create(JCas jcas, E[] a) {
+    FSList<U> fsl = jcas.getCasImpl().emptyFSList();   
     for (int i = a.length - 1; i >= 0; i--) {
-      fsl = fsl.push((TOP) a[i]);
+      fsl = fsl.push((U) a[i]);
     }   
-    return (FSList<U>) fsl;
+    return fsl;
   }
 
   /* (non-Javadoc)

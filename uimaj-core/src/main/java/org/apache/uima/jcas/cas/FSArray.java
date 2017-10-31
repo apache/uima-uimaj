@@ -35,11 +35,14 @@ import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 
-/** Java Class model for Cas FSArray type */
+/** Java Class model for Cas FSArray type
+ *  extends FeatureStructure for backwards compatibility 
+ *  when using FSArray with no typing. 
+ */
 public final class FSArray<T extends FeatureStructure> extends TOP 
                            implements ArrayFSImpl<T>,
                                       Iterable<T>,                                      
-                                      SelectViaCopyToArray {
+                                      SelectViaCopyToArray<T> {
 
   /* public static string for use where constants are needed, e.g. in some Java Annotations */
   public final static String _TypeName = CAS.TYPE_NAME_FS_ARRAY;
@@ -149,7 +152,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   @Override
-  public <U extends T> void copyFromArray(U[] src, int srcPos, int destPos, int length) {
+  public <U extends FeatureStructure> void copyFromArray(U[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
     if (srcPos < 0 ||
@@ -162,7 +165,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
     // doing this element by element to get pear conversions done if needed, and 
     // to get journaling done
     for (;srcPos < srcEnd && destPos < destEnd;) {
-      set(destPos++, src[srcPos++]);
+      set(destPos++, (T) src[srcPos++]);
     }
   }
 
@@ -256,7 +259,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * @param <U> the element type of the FSArray, subtype of FeatureStructure
    * @return -
    */
-  public static <U extends FeatureStructure> FSArray<U> create(JCas jcas, U[] a) {
+  public static <U extends FeatureStructure> FSArray<U> create(JCas jcas, FeatureStructure[] a) {
     FSArray<U> fsa = new FSArray<U>(jcas, a.length);
     fsa.copyFromArray(a, 0, 0, a.length);
     return fsa;

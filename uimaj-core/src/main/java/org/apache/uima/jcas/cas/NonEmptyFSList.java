@@ -26,7 +26,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -103,10 +102,12 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
   
   // *------------------*
   // * Feature: head
+  // return type is TOP for backwards compatibility with v2
   /* getter for head * */
   public T getHead() { return (T) _getFeatureValueNc(wrapGetIntCatchException(_FH_head)); }
 
   /* setter for head * */
+  // arg type is TOP for backwards compatibility with v2
   public void setHead(T vt) {
     if (vt != null && _casView.getBaseCAS() != vt._casView.getBaseCAS()) {
       /** Feature Structure {0} belongs to CAS {1}, may not be set as the value of an array or list element in a different CAS {2}.*/
@@ -154,7 +155,7 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
   public Iterator<T> iterator() {
     return new Iterator<T>() {
 
-      FSList node = NonEmptyFSList.this;
+      FSList<T> node = NonEmptyFSList.this;
       
       @Override
       public boolean hasNext() {
