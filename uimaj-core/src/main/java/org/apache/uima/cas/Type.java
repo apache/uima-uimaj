@@ -41,9 +41,10 @@ import org.apache.uima.cas.impl.TypeImpl;
  * A type name is then a non-empty sequence of identifiers separated by periods. See also <a
  * href="./Feature.html#names">Feature names</a>.
  * 
- * 
+ * <p>
+ * Implements Iterable over all the features defined for this type.
  */
-public interface Type {
+public interface Type extends Iterable<Feature> {
 
   /**
    * Get the <a href="#names">fully qualified name</a> of the type.

@@ -22,6 +22,7 @@ package org.apache.uima.cas;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import org.apache.uima.cas.impl.LowLevelTypeSystem;
 
 /**
@@ -42,8 +43,10 @@ import org.apache.uima.cas.impl.LowLevelTypeSystem;
  * feature is appropriate for which type is available through the {@link Type Type} and
  * {@link Feature Feature} classes.
  * 
+ * Implements Iterable to allow iterating over all types
+ * 
  */
-public interface TypeSystem {
+public interface TypeSystem extends Iterable<Type> {
 
   /**
    * This is the character that separates a type name from a feature name. Ex.:
