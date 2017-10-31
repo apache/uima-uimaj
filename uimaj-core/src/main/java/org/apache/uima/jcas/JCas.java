@@ -53,7 +53,11 @@ import org.apache.uima.cas.text.AnnotationIndex;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyFSList;
+import org.apache.uima.jcas.cas.EmptyFloatList;
+import org.apache.uima.jcas.cas.EmptyIntegerList;
 import org.apache.uima.jcas.cas.EmptyList;
+import org.apache.uima.jcas.cas.EmptyStringList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -927,23 +931,47 @@ public interface JCas extends AbstractCas {
   <T extends TOP> FSIndex<T> getIndex(String label, Class<T> clazz);
   
   
-  default <T extends FeatureStructure> SelectFSs<T> select() {
+  /**
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures
+   */  
+  default <T extends TOP> SelectFSs<T> select() {
     return new SelectFSs_impl<>(getCas());
   }
 
-  default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
+  /**
+   * @param type specifies the type (and subtypes of that type) to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <N extends TOP> SelectFSs<N> select(Type type) {
     return new SelectFSs_impl<>(getCasImpl()).type(type);
   }
 
-  default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
+  /**
+   * @param clazz a JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+ default <N extends TOP> SelectFSs<N> select(Class<N> clazz) {
     return new SelectFSs_impl<>(getCasImpl()).type(clazz);
   }
 
-  default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
+ /**
+  * @param jcasType the "type" field from the JCas class corresponding to the type (and subtypes of that type) to access
+  * @param <N> the Type of the elements being accessed
+  * @return a newly created selection object for accessing feature structures of that type and its subtypes
+  */
+  default <N extends TOP> SelectFSs<N> select(int jcasType) {
     return new SelectFSs_impl<>(getCasImpl()).type(jcasType);
   }
 
-  default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
+  /**
+   * @param fullyQualifiedTypeName the string name of the type to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <N extends TOP> SelectFSs<N> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(getCasImpl()).type(fullyQualifiedTypeName);
   }
 
@@ -956,6 +984,34 @@ public interface JCas extends AbstractCas {
     return this.getCasImpl().emptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
   }
 
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default EmptyFloatList emptyFloatList() {
+    return getCas().emptyFloatList();
+  };
+  
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default <T extends TOP> EmptyFSList<T> emptyFSList() {
+    return getCas().emptyFSList();
+  };
+  
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default EmptyIntegerList emptyIntegerList() {
+    return getCas().emptyIntegerList();
+  };
+
+  /** 
+   * @return a lazily created shared (for this CAS) empty list
+   */
+  default EmptyStringList emptyStringList() {
+    return getCas().emptyStringList();
+  };
+  
   /**
    * @param clazz the JCas class of the Array, e.g. FloatArray.class
    * @param <T> the type of the list, e.g FloatArray
