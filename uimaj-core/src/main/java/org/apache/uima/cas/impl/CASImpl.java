@@ -4790,9 +4790,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
   }
 
-  public EmptyFSList emptyFSList() {
+  public <T extends TOP> EmptyFSList<T> emptyFSList() {
     if (null == svd.emptyFSList) {
-      svd.emptyFSList = new EmptyFSList(getTypeSystemImpl().fsEListType, this);
+      svd.emptyFSList = new EmptyFSList<>(getTypeSystemImpl().fsEListType, this);
     }
     return svd.emptyFSList;
   }
@@ -4851,9 +4851,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.emptyFloatArray;
   }
 
-  public FSArray emptyFSArray() {
+  public <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     if (null == svd.emptyFSArray) {
-      svd.emptyFSArray = new FSArray(this.getJCas(), 0);
+      svd.emptyFSArray = new FSArray<T>(this.getJCas(), 0);
     }
     return svd.emptyFSArray;
   }
