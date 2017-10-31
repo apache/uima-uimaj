@@ -85,7 +85,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
    */
-  <T extends E> void copyFromArray(T[] src, int srcOffset, int destOffset, int length)
+  <T extends FeatureStructure> void copyFromArray(T[] src, int srcOffset, int destOffset, int length)
       throws ArrayIndexOutOfBoundsException;
 
   /**

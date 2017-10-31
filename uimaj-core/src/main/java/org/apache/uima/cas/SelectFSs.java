@@ -668,11 +668,10 @@ public interface SelectFSs<T extends FeatureStructure> extends Iterable<T>, Stre
    * Use this static method to capture the generic argument  
    * @param index - the index to select over as a source
    * @param <U> generic type of index
-   * @param <V> generic type of returned select
    * @return - a SelectFSs instance
    */
   
-  static <U extends FeatureStructure, V extends U> SelectFSs<V> select(FSIndex<U> index) {
+  static <U extends FeatureStructure> SelectFSs<U> select(FSIndex<U> index) {
     return index.select();    
   } 
   

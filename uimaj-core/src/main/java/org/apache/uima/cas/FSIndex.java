@@ -22,6 +22,10 @@ package org.apache.uima.cas;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import org.apache.uima.cas.impl.LowLevelIndex;
+import org.apache.uima.cas.impl.TypeImpl;
+import org.apache.uima.jcas.cas.TOP;
+
 /**
  * Feature structure index access interface.
  * 
@@ -209,17 +213,64 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
    */
   FSIndex<T> withSnapshotIterators();
 
-  <N extends FeatureStructure> SelectFSs<N> select();
+  /**
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures
+   */
+ SelectFSs<T> select();
+
+  /**
+   * @param type specifies the type (and subtypes of that type) to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  <N extends T> SelectFSs<N> select(Type type);
   
-  <N extends FeatureStructure> SelectFSs<N> select(Type type);
+  /**
+   * @param clazz a JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  <N extends T> SelectFSs<N> select(Class<N> clazz);
   
-  <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz);
+  /**
+   * @param jcasType the "type" field from the JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  <N extends T> SelectFSs<N> select(int jcasType);
   
-  <N extends FeatureStructure> SelectFSs<N> select(int jcasType);
+  /**
+   * @param fullyQualifiedTypeName the string name of the type to access
+   * @param <N> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  <N extends T> SelectFSs<N> select(String fullyQualifiedTypeName);
   
-  <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName);
-  
+  /**
+   * @param <T> the Type of the elements being accessed
+   * @return a Stream over all the elements in the index (including subtypes)
+   */
   default Stream<T> stream() {
     return this.select();
   }
+  
+  /**
+   * @param clazz - the subtype
+   * @param <U> the subtype
+   * @return an instance of this index specialized to a subtype
+   */
+  default <U extends T> FSIndex<U> subType(Class<? extends TOP> clazz) {
+    return ((LowLevelIndex<T>)this).getSubIndex(clazz);
+  }
+  
+  /**
+   * @param type - the subtype
+   * @param <U> the subtype
+   * @return an instance of this index specialized to a subtype
+   */
+  default <U extends T> FSIndex<U> subType(Type type) {
+    return ((LowLevelIndex<T>)this).getSubIndex(type);
+  }
+  
 }

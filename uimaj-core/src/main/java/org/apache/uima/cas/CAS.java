@@ -80,9 +80,6 @@ import org.apache.uima.jcas.impl.JCasImpl;
  * {@link TypeSystem TypeSystem} object, you can access the {@link Type Type} and
  * {@link Feature Feature} objects for the CAS built-in types. Note that this interface also
  * provides constants for the names of the built-in types and features.
- * 
- * 
- * 
  */
 public interface CAS extends AbstractCas {
 
@@ -1169,30 +1166,58 @@ public interface CAS extends AbstractCas {
    */
   void protectIndexes(Runnable runnable);
 
-  default <T extends FeatureStructure> SelectFSs<T> select() {
+  /**
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures
+   */  
+  default <T extends TOP> SelectFSs<T> select() {
     return new SelectFSs_impl<>(this);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(Type type) {
+  /**
+   * @param type specifies the type (and subtypes of that type) to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(Type type) {
     return new SelectFSs_impl<>(this).type(type);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(Class<T> clazz) {
+  /**
+   * @param clazz a JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(Class<T> clazz) {
     return new SelectFSs_impl<>(this).type(clazz);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(int jcasType) {
+  /**
+   * @param jcasType the "type" field from the JCas class corresponding to the type (and subtypes of that type) to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(int jcasType) {
     return new SelectFSs_impl<>(this).type(jcasType);
   }
 
-  default <T extends FeatureStructure> SelectFSs<T> select(String fullyQualifiedTypeName) {
+  /**
+   * @param fullyQualifiedTypeName the string name of the type to access
+   * @param <T> the Type of the elements being accessed
+   * @return a newly created selection object for accessing feature structures of that type and its subtypes
+   */
+  default <T extends TOP> SelectFSs<T> select(String fullyQualifiedTypeName) {
     return new SelectFSs_impl<>(this).type(fullyQualifiedTypeName);
   }
   
+  /**
+   * @param <T> the type of the element of the list
+   * @param clazz a JCas class corresponding to the type (and subtypes of that type) to access
+   * @return a lazily created shared (for this CAS) empty list
+   */
   default <T extends TOP> EmptyList emptyList(Class<T> clazz) {
     return ((CASImpl)this.getLowLevelCAS()).emptyListFromTypeCode(((TypeImpl)getCasType(clazz)).getCode());
   }
-  
   
   /** 
    * @return a lazily created shared (for this CAS) empty list
@@ -1204,7 +1229,7 @@ public interface CAS extends AbstractCas {
   /** 
    * @return a lazily created shared (for this CAS) empty list
    */
-  default EmptyFSList emptyFSList() {
+  default <T extends TOP> EmptyFSList<T> emptyFSList() {
     return ((CASImpl)getLowLevelCAS()).emptyFSList();
   };
   
@@ -1221,7 +1246,12 @@ public interface CAS extends AbstractCas {
   default EmptyStringList emptyStringList() {
     return ((CASImpl)getLowLevelCAS()).emptyStringList();
   };
-  
+
+  /**
+   * @param <T> the class of the elements of the array
+   * @param clazz the class of the elements of the array
+   * @return a lazily created shared (for this CAS) 0-length array
+   */
   default <T extends TOP> CommonArrayFS<T> emptyArray(Class<T> clazz) {
     return ((CASImpl)getLowLevelCAS()).emptyArray(getCasType(clazz));
   }
@@ -1236,7 +1266,7 @@ public interface CAS extends AbstractCas {
   /** 
    * @return a lazily created shared (for this CAS) 0-length array
    */
-  default FSArray emptyFSArray() {
+  default <T extends FeatureStructure> FSArray<T> emptyFSArray() {
     return ((CASImpl)getLowLevelCAS()).emptyFSArray();
   };
 
