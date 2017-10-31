@@ -141,8 +141,13 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
    * @param <U> the type the subindex is over
    * @return the index but just over this subtype
    */
-  default <U extends T> LowLevelIndex<U> getSubIndex(TypeImpl ti) {
+  default <U extends T> LowLevelIndex<U> getSubIndex(Type type) {
+    TypeImpl ti = (TypeImpl) type;
     return getCasImpl().indexRepository.getIndexBySpec(ti.getCode(), getIndexingStrategy(), (FSIndexComparatorImpl) getComparatorForIndexSpecs());
+  }
+  
+  default <U extends T> LowLevelIndex<U> getSubIndex(Class<? extends TOP> clazz) {
+    return getSubIndex(this.getCasImpl().getCasType(clazz));
   }
 
   /**
@@ -157,27 +162,27 @@ public interface LowLevelIndex<T extends FeatureStructure> extends FSIndex<T> {
   boolean isSorted();
   
   @Override
-  default <N extends FeatureStructure> SelectFSs<N> select() {
-    return ((SelectFSs_impl)getCasImpl().select()).index(this);
+  default SelectFSs<T> select() {
+    return ((SelectFSs_impl<T>)getCasImpl().select()).index(this);
   }
 
   @Override
-  default <N extends FeatureStructure> SelectFSs<N> select(Type type) {
-    return ((SelectFSs_impl)select()).type(type);
+  default <N extends T> SelectFSs<N> select(Type type) {
+    return ((SelectFSs_impl)select()).type(type); // need cast to impl because type() not in interface
   }
 
   @Override
-  default <N extends FeatureStructure> SelectFSs<N> select(Class<N> clazz) {
+  default <N extends T> SelectFSs<N> select(Class<N> clazz) {
     return ((SelectFSs_impl)select()).type(clazz);
   }
 
   @Override
-  default <N extends FeatureStructure> SelectFSs<N> select(int jcasType) {
+  default <N extends T> SelectFSs<N> select(int jcasType) {
     return ((SelectFSs_impl)select()).type(jcasType);
   }
 
   @Override
-  default <N extends FeatureStructure> SelectFSs<N> select(String fullyQualifiedTypeName) {
+  default <N extends T> SelectFSs<N> select(String fullyQualifiedTypeName) {
     return ((SelectFSs_impl)select()).type(fullyQualifiedTypeName);
   }
   
