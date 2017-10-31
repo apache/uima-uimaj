@@ -71,6 +71,10 @@ under the License.
     you have a loop which is checking <code>hasNext()</code> and following it with a <code>next()</code>, 
     which is only executed if the
     <code>hasNext()</code> was true.  The non-checking versions are suffixed with Nvc (stands for No Validity Check).</para>
+    
+    <para>The FSIndex API has a new method, <code>subType(type-spec)</code>, which returns an FSIndex for the same
+      index, but specialized to elements which are a subtype of the original index.  The type-spec can be either a 
+      JCas class, e.g. <code>MyToken.class</code>, or a UIMA type instance.</para>
   </section>
 
   <section id="uv3.new_extended_apis.select">
@@ -312,6 +316,32 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
   </section>
           
   </section>
+  
+  <section id="uv3.new_extended_apis.generics">
+    <title>Generics added</title>
+    
+    <para>Version 3 adds generic typing to several structures, and makes use of this to enable users to
+      unclutter their code by taking advantage of Java's type inferencing, in many cases.
+    </para>
+    
+    <para>Generic types are added to:
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>FSIndex</emphasis> &lt;T extends FeatureStructure&gt; the type the index is over.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>FSArray</emphasis> &lt;T extends FeatureStructure&gt; the type the FSArray holds.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>FSList</emphasis> &lt;T extends TOP&gt; the type the FSList holds.</para>
+        </listitem>
+        <listitem>
+          <para><emphasis>SelectFSs</emphasis> &lt;T extends FeatureStructure&gt; the type the select is producing.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  </section>
+  
   <section id="uv3.new_extended_apis.other">
     <title>Other changes</title>
     
@@ -367,7 +397,9 @@ public final static String _FeatName_sofaURI    = "sofaURI";</programlisting>
       
     <para>The UIMA Logger implementation has been extended with both the SLF4J logger APIs and the 
        Log4j APIs which support Java 8's <code>Supplier</code> Functional Interfaces.</para>
-         
+ 
+    <para>The TypeSystem and Type object implementations implement <code>Iterable</code> and will iterate over
+      all the defined types, or, for a type, all the defined Features for that type.</para>        
   </section> 
    
 </chapter>
