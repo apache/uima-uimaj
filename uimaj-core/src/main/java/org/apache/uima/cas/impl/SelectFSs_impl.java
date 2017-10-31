@@ -90,7 +90,9 @@ import org.apache.uima.jcas.tcas.Annotation;
  *   for 3 other boundings:
  *     - use subiterator, pass in strict and skipeq
  *     
-   finish this javadoc comment edit                  
+   finish this javadoc comment edit
+ *   extends FeatureStructure, not TOP, because of ref from FSIndex 
+ *      which uses FeatureStructure for backwards compatibility                  
  */
 public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T> {
   
@@ -171,14 +173,14 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * @param <N> type of returned Feature Structures
    * @return -
    */
-  public <N extends FeatureStructure> SelectFSs_impl<N> index(String indexName) {
+  public SelectFSs_impl<T> index(String indexName) {
     this.index = view.indexRepository.getIndex(indexName);
-    return (SelectFSs_impl<N>) this;
+    return this;
   }
   
-  public <N extends FeatureStructure> SelectFSs_impl<N> index(FSIndex<N> aIndex) {
+  public SelectFSs_impl<T> index(FSIndex<T> aIndex) {
     this.index =  (LowLevelIndex<T>) aIndex;
-    return (SelectFSs_impl<N>) this;
+    return this;
   }
 
   /*
@@ -186,22 +188,22 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * if not specified defaults to the index's uppermost type.  
    */
   
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(Type uimaType) {
+  public <N extends T> SelectFSs_impl<N> type(Type uimaType) {
     this.ti = (TypeImpl) uimaType;
     return (SelectFSs_impl<N>) this;
   }
   
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
+  public <N extends T> SelectFSs_impl<N> type(String fullyQualifiedTypeName) {
     this.ti = view.getTypeSystemImpl().getType(fullyQualifiedTypeName);
     return (SelectFSs_impl<N>) this;
   }
 
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(int jcasClass_dot_type) {
+  public <N extends T> SelectFSs_impl<N> type(int jcasClass_dot_type) {
     this.ti = (TypeImpl) view.getJCas().getCasType(jcasClass_dot_type);
     return (SelectFSs_impl<N>) this;
   }
 
-  public <N extends FeatureStructure> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
+  public <N extends T> SelectFSs_impl<N> type(Class<N> jcasClass_dot_class) {
     this.ti = (TypeImpl) view.getJCasImpl().getCasType(jcasClass_dot_class);
     return (SelectFSs_impl<N>) this;
   }  

@@ -1084,8 +1084,8 @@ public class CasSerializerSupport {
      * @param addr
      *          Address of an FSList
      */
-    private void enqueueFSListElements(FSList node) throws SAXException {
-      node.walkList( n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList)n).getHead()), null);
+    private void enqueueFSListElements(FSList<TOP> node) throws SAXException {
+      node.walkList( n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList<TOP>)n).getHead()), null);
     }
 
     /*
