@@ -30,7 +30,6 @@ import java.util.List;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
-import org.apache.uima.cas.FSIndex;
 import org.apache.uima.cas.FSIndexRepository;
 import org.apache.uima.cas.FSIterator;
 import org.apache.uima.cas.Feature;
@@ -91,7 +90,7 @@ public class AnnotationIteratorTest extends TestCase {
 
   private boolean isSave;
 
-  private List<AnnotationFS> fss;
+  private List<Annotation> fss;
 
   private List<Integer> fssStarts = new ArrayList<Integer>();
 
@@ -193,7 +192,7 @@ public class AnnotationIteratorTest extends TestCase {
     /***************************************************
      * iterate over them
      ***************************************************/
-    List fss = new ArrayList();
+    fss = new ArrayList<>();
     callCount = -1;
     iterateOverAnnotations(annotCount, fss); // annotCount is the total number of sentences and tokens
     
@@ -212,8 +211,8 @@ public class AnnotationIteratorTest extends TestCase {
     ir.addFS(a2 = this.cas.createAnnotation(this.tokenType, 1, 6));
     a2.setStringValue(lemmaFeat, "lemma2");
     
-    FSIterator<AnnotationFS> it;
-    AnnotationIndex<AnnotationFS> tokenIndex = cas.getAnnotationIndex(tokenType);
+    FSIterator<Annotation> it;
+    AnnotationIndex<Annotation> tokenIndex = cas.getAnnotationIndex(tokenType);
     it = tokenIndex.subiterator(a1);
     assertCount("multi equal", 0, it);
     it = tokenIndex.subiterator(a1);
@@ -241,14 +240,14 @@ public class AnnotationIteratorTest extends TestCase {
    * @param fss
    */
   // called twice, the 2nd time should be with flattened indexes (List fss non empty the 2nd time)
-  private void iterateOverAnnotations(int annotCount, List<AnnotationFS> fss) {
-    this.fss = fss;
+  private void iterateOverAnnotations(int annotCount, List<Annotation> afss) {
+    this.fss = afss;
     isSave = fss.size() == 0;
-    int count;
-    AnnotationIndex<AnnotationFS> annotIndex = this.cas.getAnnotationIndex();
-    AnnotationIndex<AnnotationFS> sentIndex = this.cas.getAnnotationIndex(sentenceType);
-    FSIterator<AnnotationFS> it = annotIndex.iterator(true);  // a normal "ambiguous" iterator
-    FSIterator<AnnotationFS> select_it = cas.<AnnotationFS>select().fsIterator();
+//    int count;
+    AnnotationIndex<Annotation> annotIndex = this.cas.getAnnotationIndex();
+    AnnotationIndex<Annotation> sentIndex = this.cas.getAnnotationIndex(sentenceType);
+    FSIterator<Annotation> it = annotIndex.iterator(true);  // a normal "ambiguous" iterator
+    FSIterator<Annotation> select_it = annotIndex.select().fsIterator();
 //    assertTrue((isSave) ? it instanceof FSIteratorWrapper : 
 //      FSIndexFlat.enabled ? it instanceof FSIndexFlat.FSIteratorFlat : it instanceof FSIteratorWrapper);   
     assertCount("Normal ambiguous annot iterator", annotCount, it);
@@ -256,20 +255,20 @@ public class AnnotationIteratorTest extends TestCase {
     assertEquals(annotCount, select(annotIndex).toArray().length);  // stream op
     assertEquals(annotCount, select(annotIndex).asArray(Annotation.class).length);  // select op
     
-    AnnotationFS[] tokensAndSentences = select(annotIndex).asArray(AnnotationFS.class);
+    Annotation[] tokensAndSentences = annotIndex.select().asArray(Annotation.class);
     JCas jcas = null;
     try {
       jcas = cas.getJCas();
     } catch (CASException e) {
       assertTrue(false);
     }
-    FSArray fsa = FSArray.create(jcas, tokensAndSentences);
-    NonEmptyFSList fslhead = (NonEmptyFSList) FSList.create(jcas,  tokensAndSentences);
+    FSArray<Annotation> fsa = FSArray.create(jcas, tokensAndSentences);
+    NonEmptyFSList<Annotation> fslhead =  (NonEmptyFSList<Annotation>) FSList.<Annotation, Annotation>create(jcas,  tokensAndSentences);
     
-    select_it = fsa.<AnnotationFS>select().fsIterator();
+    select_it = fsa.select().fsIterator();
     assertCount("fsa ambiguous select annot iterator", annotCount, select_it);
 
-    select_it = fslhead.<AnnotationFS>select().fsIterator();
+    select_it = fslhead.<Annotation>select().fsIterator();
     assertCount("fslhead ambiguous select annot iterator", annotCount, select_it);
     
     // backwards
@@ -278,46 +277,46 @@ public class AnnotationIteratorTest extends TestCase {
     
     it = annotIndex.iterator(false);  // false means create an unambiguous iterator
     assertCount("Unambiguous annot iterator", 1, it);  // because of document Annotation - spans the whole range
-    select_it = cas.<AnnotationFS>select().nonOverlapping().fsIterator();
+    select_it = annotIndex.select().nonOverlapping().fsIterator();
     assertCount("Unambiguous select annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
-    select_it = cas.<AnnotationFS>select().nonOverlapping().backwards(true).fsIterator();
+    select_it = annotIndex.select().nonOverlapping().backwards(true).fsIterator();
     assertCount("Unambiguous select backwards annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
     
     it = sentIndex.iterator(false);  //  false means create an unambiguous iterator
     assertCount("Unambigous sentence iterator", 5, it);
-    select_it = cas.<AnnotationFS>select(sentenceType).nonOverlapping(true).fsIterator();
+    select_it = annotIndex.select(sentenceType).nonOverlapping(true).fsIterator();
     assertCount("Unambigous select sentence iterator", 5, select_it);
-    select_it = sentIndex.<AnnotationFS>select().nonOverlapping().fsIterator();
+    select_it = sentIndex.select().nonOverlapping().fsIterator();
     assertCount("Unambigous select sentence iterator", 5, select_it);
-    select_it = select(sentIndex).nonOverlapping().fsIterator();
+    select_it = sentIndex.select().nonOverlapping().fsIterator();
     assertCount("Unambigous select sentence iterator", 5, select_it);
     
     
     AnnotationFS bigBound = this.cas.createAnnotation(this.sentenceType, 10, 41);
     it = annotIndex.subiterator(bigBound, true, true);  // ambiguous, and strict
     assertCount("Subiterator over annot with big bound, strict", 38, it);
-    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
+    select_it = annotIndex.select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
     assertCount("Subiterator select over annot with big bound, strict", 38, select_it);
 
-    select_it = cas.<AnnotationFS>select().coveredBy(bigBound).limit(7).includeAnnotationsWithEndBeyondBounds().fsIterator();
+    select_it = annotIndex.select().coveredBy(bigBound).limit(7).includeAnnotationsWithEndBeyondBounds().fsIterator();
     assertCountLimit("Subiterator select limit 7 over annot with big bound, strict", 7, select_it);
     
-    FSIndex<Token> token_index = null;
     // uncomment these to check compile-time generic arguments OK
     // comment these out for running, because Token not a type
-//    FSIterator<Token> token_it = token_index.<Token>select().fsIterator();
-//    token_it = select(token_index).fsIterator();
-//    token_it = select(annotIndex, Token.class).fsIterator();
-//    FSIterator<Token> token_it = cas.select(Token.class).fsIterator();
-//    FSIterator<Token> token_it = token_index.select(Token.class).fsIterator();
+//    FSIndex<Token> token_index = annotIndex.subType(Token.class);
+//    token_index.select().fsIterator();
+//    select(token_index).fsIterator();
+//    annotIndex.select(Token.class).fsIterator();
+//    cas.select(Token.class).fsIterator();
+//    token_index.select(Token.class).fsIterator();
     
-    Object[] o = cas.<AnnotationFS>select().coveredBy(bigBound).skip(3).toArray();
+    Object[] o = annotIndex.select().coveredBy(bigBound).skip(3).toArray();
     assertEquals(35, o.length);
     
-    Object[] o1 = cas.<AnnotationFS>select().coveredBy(bigBound).toArray();
-    List<AnnotationFS> l2 = cas.<AnnotationFS>select().coveredBy(bigBound).backwards().asList();
-    Deque<AnnotationFS> l2r = new ArrayDeque<>();
-    for (AnnotationFS fs : l2) {
+    Object[] o1 = annotIndex.select().coveredBy(bigBound).toArray();
+    List<Annotation> l2 = annotIndex.select().coveredBy(bigBound).backwards().asList();
+    Deque<Annotation> l2r = new ArrayDeque<>();
+    for (Annotation fs : l2) {
       l2r.push(fs);
     }
     
@@ -325,9 +324,9 @@ public class AnnotationIteratorTest extends TestCase {
     
     it = annotIndex.subiterator(bigBound, false, true);  // unambiguous, strict
     assertCount("Subiterator over annot unambiguous strict", 3, it);
-    select_it = cas.<AnnotationFS>select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
+    select_it = annotIndex.select().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
-    select_it = cas.<AnnotationFS>select().backwards().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
+    select_it = annotIndex.select().backwards().coveredBy((Annotation) bigBound).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 3, select_it);
 
 //    it = annotIndex.subiterator(bigBound, true, false);
@@ -342,7 +341,7 @@ public class AnnotationIteratorTest extends TestCase {
     // covered by implies endWithinBounds
     select_it = select(annotIndex).coveredBy(bigBound).fsIterator();
     assertCount("Subiterator select over annot ambiguous strict", 38, select_it);
-    select_it = annotIndex.<AnnotationFS>select().coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
+    select_it = annotIndex.select().coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(false).fsIterator();
     assertCount("Subiterator select over annot ambiguous strict", 38, select_it);
     select_it = select(annotIndex).coveredBy(bigBound).includeAnnotationsWithEndBeyondBounds(true).fsIterator();
     assertCount("Subiterator select over annot ambiguous not-strict", 46, select_it);
@@ -355,7 +354,7 @@ public class AnnotationIteratorTest extends TestCase {
     AnnotationFS sent = this.cas.getAnnotationIndex(this.sentenceType).iterator().get();
     it = annotIndex.subiterator(sent, false, true);
     assertCount("Subiterator over annot unambiguous strict", 2, it);
-    select_it = annotIndex.<AnnotationFS>select().nonOverlapping().coveredBy(sent).fsIterator();
+    select_it = annotIndex.select().nonOverlapping().coveredBy(sent).fsIterator();
     assertCount("Subiterator select over annot unambiguous strict", 2, select_it);
     
     // strict skips first item
@@ -369,39 +368,39 @@ public class AnnotationIteratorTest extends TestCase {
     
     // single, get, nullOK
          
-    assertTrue(cas.<AnnotationFS>select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
+    assertTrue(annotIndex.select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
     boolean x = false;
     try {
-      assertNull(cas.<AnnotationFS>select().nullOK(false).coveredBy(3, 3).get());
+      assertNull(annotIndex.select().nullOK(false).coveredBy(3, 3).get());
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
         x= true;
       }
     }
     assertTrue(x);
-    assertNull(cas.<AnnotationFS>select().coveredBy(3, 3).get());
-    assertNotNull(cas.<AnnotationFS>select().get(3));
-    assertNull(cas.<AnnotationFS>select().nullOK().coveredBy(3, 5).get(3));
+    assertNull(annotIndex.select().coveredBy(3, 3).get());
+    assertNotNull(annotIndex.select().get(3));
+    assertNull(annotIndex.select().nullOK().coveredBy(3, 5).get(3));
     x = false;
     try {
-      cas.<AnnotationFS>select().coveredBy(3, 5). get(3);
+      annotIndex.select().coveredBy(3, 5). get(3);
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
         x= true;
       }
     }
     assertTrue(x);
-    assertTrue(cas.<AnnotationFS>select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
+    assertTrue(annotIndex.select().nonOverlapping().get().getType().getShortName().equals("DocumentAnnotation"));
     
-    select_it = cas.<AnnotationFS>select().nonOverlapping().fsIterator(); 
+    select_it = annotIndex.select().nonOverlapping().fsIterator(); 
     assertCount("Unambiguous select annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
-    select_it = cas.<AnnotationFS>select().nonOverlapping().backwards(true).fsIterator();
+    select_it = annotIndex.select().nonOverlapping().backwards(true).fsIterator();
     assertCount("Unambiguous select backwards annot iterator", 1, select_it);  // because of document Annotation - spans the whole range
-    assertNotNull(cas.<AnnotationFS>select().nonOverlapping().single());
+    assertNotNull(annotIndex.select().nonOverlapping().single());
 
     x = false;
     try {
-      cas.<AnnotationFS>select().coveredBy(3, 10).single();
+      annotIndex.select().coveredBy(3, 10).single();
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES)) {
         x= true;
@@ -410,7 +409,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(x);
     x = false;
     try {
-      cas.<AnnotationFS>select().coveredBy(3, 10).singleOrNull();
+      annotIndex.select().coveredBy(3, 10).singleOrNull();
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_TOO_MANY_INSTANCES)) {
         x= true;
@@ -419,39 +418,39 @@ public class AnnotationIteratorTest extends TestCase {
     assertTrue(x);
     x = false;
     try {
-      cas.<AnnotationFS>select().coveredBy(3, 5).single();
+      annotIndex.select().coveredBy(3, 5).single();
     } catch (CASRuntimeException e) {
       if (e.hasMessageKey(CASRuntimeException.SELECT_GET_NO_INSTANCES)) {
         x= true;
       }
     }
     assertTrue(x);
-    cas.<AnnotationFS>select().coveredBy(3, 5).singleOrNull();
+    annotIndex.select().coveredBy(3, 5).singleOrNull();
     
     select_it = select(annotIndex).following(2, 39).limit(2).fsIterator();
     assertCountLimit("Following", 2, select_it);
     select_it = select(annotIndex).following(2, 39).backwards().limit(2).fsIterator();
     assertCountLimit("Following", 2, select_it);
     
-    select_it = fsa.<AnnotationFS>select(sentenceType).fsIterator();
+    select_it = fsa.select(sentenceType).fsIterator();
     assertCount("select source array", 21, select_it);
-    select_it = fslhead.<AnnotationFS>select(sentenceType).fsIterator();
+    select_it = fslhead.select(sentenceType).fsIterator();
     assertCount("select source array", 21, select_it);
     
     /** covering **/
-    cas.<AnnotationFS>select(sentenceType).covering(20, 30).forEachOrdered(f ->  
+    annotIndex.select(sentenceType).covering(20, 30).forEachOrdered(f ->  
         System.out.format("found fs start at %d end %d%n", Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
     
-    cas.<AnnotationFS>select(sentenceType).covering(15, 19).forEachOrdered(f ->  
+    annotIndex.select(sentenceType).covering(15, 19).forEachOrdered(f ->  
         System.out.format("covering 15, 19:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
 
-    cas.<AnnotationFS>select(sentenceType).covering(37, 39).forEachOrdered(f ->  
+    annotIndex.select(sentenceType).covering(37, 39).forEachOrdered(f ->  
         System.out.format("covering sentences 37, 39:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
 
-    cas.<AnnotationFS>select(phraseType).covering(15, 19).forEachOrdered(f ->  
+    annotIndex.select(phraseType).covering(15, 19).forEachOrdered(f ->  
        System.out.format("covering phrases 15, 19:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
 
-    cas.<AnnotationFS>select(phraseType).covering(37, 39).forEachOrdered(f ->  
+    annotIndex.select(phraseType).covering(37, 39).forEachOrdered(f ->  
        System.out.format("covering phrases 37, 39:   %s:%d   %d -  %d%n", f.getType().getShortName(), Integer.valueOf(f._id()), Integer.valueOf(f.getBegin()), Integer.valueOf(f.getEnd())));
 
   }
@@ -459,7 +458,7 @@ public class AnnotationIteratorTest extends TestCase {
   private String flatStateMsg(String s) {
     return s + (isSave ? "" : " with flattened index");
   }
-  private void assertCount(String msg, int expected,  FSIterator<? extends AnnotationFS> it) {
+  private void assertCount(String msg, int expected,  FSIterator<? extends Annotation> it) {
     int fssStart = assertCountCmn(msg, expected, it);
     msg = flatStateMsg(msg);
     int count = expected;
@@ -505,7 +504,7 @@ public class AnnotationIteratorTest extends TestCase {
     assertEquals(msg, expected, count);
   }
   
-  private int assertCountCmn(String msg, int expected, FSIterator<? extends AnnotationFS> it) {
+  private int assertCountCmn(String msg, int expected, FSIterator<? extends Annotation> it) {
     msg = flatStateMsg(msg);
     int count = 0;
     callCount  ++;
@@ -517,7 +516,7 @@ public class AnnotationIteratorTest extends TestCase {
     }
     while (it.isValid()) {
       ++count;
-      AnnotationFS fs = it.next();
+      Annotation fs = it.next();
       if (showFSs) {
         System.out.format("%d " + msg + " fs begin: %d end: %d type: %s%n", count, fs.getBegin(), fs.getEnd(), fs.getType().getName() );
       }
@@ -532,7 +531,7 @@ public class AnnotationIteratorTest extends TestCase {
   }
   
     
-  private void assertCountLimit(String msg, int expected,  FSIterator<? extends AnnotationFS> it) {
+  private void assertCountLimit(String msg, int expected,  FSIterator<? extends Annotation> it) {
     assertCountCmn(msg, expected, it);
     it.moveToFirst();
     assertFalse(it.isValid());
@@ -552,7 +551,7 @@ public class AnnotationIteratorTest extends TestCase {
     
     caughtException = false;
     try {
-    	AnnotationIndex<AnnotationFS> ai = this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
+    	this.cas.getAnnotationIndex(ts.getType(CASTestSetup.TOKEN_TYPE_TYPE));
     } catch (CASRuntimeException e) {
     	caughtException = true;
     }
@@ -576,16 +575,17 @@ public class AnnotationIteratorTest extends TestCase {
       this.cas.setDocumentText("Sentence A with no value. Sentence B with value 377.");
     } catch (CASRuntimeException e) {
       assertTrue(false);
-    }      
+    }   
+    AnnotationIndex<Annotation> ai = cas.getAnnotationIndex();
           
     cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 0, 25));
     cas.addFsToIndexes(cas.createAnnotation(this.sentenceType, 26, 52));
     cas.addFsToIndexes(cas.createAnnotation(this.tokenType, 48, 51));
-    AnnotationIndex<AnnotationFS> tokenIdx = cas.getAnnotationIndex(this.tokenType);
+    AnnotationIndex<Annotation> tokenIdx = cas.getAnnotationIndex(this.tokenType);
     
-    AnnotationIndex<AnnotationFS> si = cas.getAnnotationIndex(this.sentenceType);
-    for (AnnotationFS sa : si) {
-      FSIterator<AnnotationFS> ti2 = tokenIdx.subiterator(sa, false, false);
+//    AnnotationIndex<AnnotationFS> si = cas.getAnnotationIndex(this.sentenceType);
+    for (Annotation sa : ai.select(this.sentenceType)) {
+      FSIterator<Annotation> ti2 = tokenIdx.subiterator(sa, false, false);
       
       while (ti2.hasNext()) {
         AnnotationFS t = ti2.next();
@@ -593,11 +593,11 @@ public class AnnotationIteratorTest extends TestCase {
       }
     }
 
-    SelectFSs<AnnotationFS> ssi = cas.getAnnotationIndex(this.sentenceType).select();
+    SelectFSs<Annotation> ssi = ai.select(this.sentenceType);
     
     for (AnnotationFS sa : ssi) {
     
-      FSIterator<AnnotationFS> ti2 = tokenIdx.<AnnotationFS>select()
+      FSIterator<Annotation> ti2 = tokenIdx.select()
           .coveredBy(sa).includeAnnotationsWithEndBeyondBounds(false).nonOverlapping().fsIterator();
       
       while (ti2.hasNext()) {

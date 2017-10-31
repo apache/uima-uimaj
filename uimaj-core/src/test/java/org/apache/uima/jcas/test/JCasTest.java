@@ -622,13 +622,13 @@ public class JCasTest extends TestCase {
 			Token tok1 = new Token(jcas);
 			Token tok2 = new Token(jcas);
 
-			NonEmptyFSList fsList1 = new NonEmptyFSList(jcas);
+			NonEmptyFSList<Token> fsList1 = new NonEmptyFSList<>(jcas);
 			fsList1.setHead(tok2);
-			fsList1.setTail(new EmptyFSList(jcas));
-			NonEmptyFSList fsList = new NonEmptyFSList(jcas);
+			fsList1.setTail(new EmptyFSList<>(jcas));
+			NonEmptyFSList<Token> fsList = new NonEmptyFSList<>(jcas);
 			fsList.setHead(tok1);
 			fsList.setTail(fsList1);
-			/* EmptyFSList emptyFsList = */ new EmptyFSList(jcas);
+			/* EmptyFSList emptyFsList = */ new EmptyFSList<Token>(jcas);
 
 //			try {
 //				emptyFsList.getNthElement(0);
@@ -825,7 +825,7 @@ public class JCasTest extends TestCase {
 	}
 
   public void testFSListAPI() {
-    FSList<TOP> sl = new EmptyFSList(jcas);
+    FSList<TOP> sl = new EmptyFSList<>(jcas);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
     sl = sl.push(fs2);
@@ -848,16 +848,16 @@ public class JCasTest extends TestCase {
   }
 	  
   public void testFSArrayAPI() {
-    FSArray<FeatureStructure> sa = new FSArray(jcas, 2);
+    FSArray sa = new FSArray<>(jcas, 2);
     TOP fs1 = new TOP(jcas);
     TOP fs2 = new TOP(jcas);
     TOP[] values = {fs1, fs2}; 
     sa.copyFromArray(values, 0, 0, 2);
     
     int i = 0;
-    Iterator<FeatureStructure> it = sa.iterator();
+    sa.iterator();
     
-    for (FeatureStructure s : sa) {
+    for (Object s : sa) {
       assert(s.equals(values[i++]));
     }
   }
