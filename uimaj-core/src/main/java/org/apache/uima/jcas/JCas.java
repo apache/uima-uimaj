@@ -992,6 +992,7 @@ public interface JCas extends AbstractCas {
   };
   
   /** 
+   * @param <T> the type of the FeatureStructures in the FSList
    * @return a lazily created shared (for this CAS) empty list
    */
   default <T extends TOP> EmptyFSList<T> emptyFSList() {

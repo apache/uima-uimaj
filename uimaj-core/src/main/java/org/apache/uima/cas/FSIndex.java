@@ -214,8 +214,7 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
   FSIndex<T> withSnapshotIterators();
 
   /**
-   * @param <N> the Type of the elements being accessed
-   * @return a newly created selection object for accessing feature structures
+    * @return a newly created selection object for accessing feature structures
    */
  SelectFSs<T> select();
 
@@ -248,7 +247,6 @@ public interface FSIndex<T extends FeatureStructure> extends Collection<T> {
   <N extends T> SelectFSs<N> select(String fullyQualifiedTypeName);
   
   /**
-   * @param <T> the Type of the elements being accessed
    * @return a Stream over all the elements in the index (including subtypes)
    */
   default Stream<T> stream() {

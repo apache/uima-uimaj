@@ -1227,6 +1227,7 @@ public interface CAS extends AbstractCas {
   };
   
   /** 
+   * @param <T> the type of the elements of the FSList
    * @return a lazily created shared (for this CAS) empty list
    */
   default <T extends TOP> EmptyFSList<T> emptyFSList() {
@@ -1248,7 +1249,7 @@ public interface CAS extends AbstractCas {
   };
 
   /**
-   * @param <T> the class of the elements of the array
+   * @param <T> the type of the elements of the array
    * @param clazz the class of the elements of the array
    * @return a lazily created shared (for this CAS) 0-length array
    */
@@ -1264,6 +1265,7 @@ public interface CAS extends AbstractCas {
   };
 
   /** 
+   * @oaram <T> the type of the lements of the FSArray
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray() {

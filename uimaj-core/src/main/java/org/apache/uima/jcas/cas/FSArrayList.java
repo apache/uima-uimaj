@@ -674,6 +674,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @param srcPos -
    * @param destPos -
    * @param length -
+   * @param <E> the type of the source array being copied from
    * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
    */
   public <E extends FeatureStructure> void copyFromArray(E[] src, int srcPos, int destPos, int length) {
@@ -697,9 +698,10 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @param dest -
    * @param destPos -
    * @param length -
+   * @param <E> the type of the elements of the Array being copied into
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
-  public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
+  public <E extends FeatureStructure> void copyToArray(int srcPos, E[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
     if (srcPos < 0 ||
@@ -709,7 +711,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
           String.format("FSArrayList.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     for (;srcPos < srcEnd && destPos < destEnd;) {
-      dest[destPos++] = get(srcPos++);
+      dest[destPos++] = (E) get(srcPos++);
     }
   }
 

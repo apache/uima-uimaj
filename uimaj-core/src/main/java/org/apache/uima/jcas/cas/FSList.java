@@ -135,6 +135,7 @@ public abstract class FSList<T extends TOP> extends TOP implements CommonList, I
    * @param jcas the JCas to use
    * @param a the array of Feature Structures to populate the list with
    * @param <U> the type of FeatureStructures being stored in the FSList being created
+   * @param <E> the type of the array argument
    * @return an FSList, with the elements from the array
    */
   public static <U extends TOP, E extends FeatureStructure> FSList<U> create(JCas jcas, E[] a) {

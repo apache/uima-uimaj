@@ -42,7 +42,6 @@ public interface  SelectViaCopyToArray<T extends FeatureStructure> {
   CASImpl _getView(); 
   
   /**
-   * @param <T> generic type being selected 
    * @return a new instance of SelectFSs
    */
   default SelectFSs_impl<T> select() {
