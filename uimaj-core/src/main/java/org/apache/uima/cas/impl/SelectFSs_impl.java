@@ -170,7 +170,6 @@ public class SelectFSs_impl <T extends FeatureStructure> implements SelectFSs<T>
    * INDEX
    * If not specified, defaults to all FSs (orderNotNeeded) unless AnnotationIndex implied
    * @param indexName -
-   * @param <N> type of returned Feature Structures
    * @return -
    */
   public SelectFSs_impl<T> index(String indexName) {
