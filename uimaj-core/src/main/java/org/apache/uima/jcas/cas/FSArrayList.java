@@ -84,7 +84,7 @@ import org.apache.uima.util.impl.Constants;
  */
 
 public class FSArrayList <T extends TOP> extends TOP implements 
-                         UimaSerializableFSs, CommonArrayFS, SelectViaCopyToArray, 
+                         UimaSerializableFSs, CommonArrayFS<T>, SelectViaCopyToArray<T>, 
                          List<T>, RandomAccess, Cloneable {
  
   /** The Constant EMPTY_LIST. */
@@ -675,7 +675,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @param destPos -
    * @param length -
    * @param <E> the type of the source array being copied from
-   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * @see org.apache.uima.cas.ArrayFS#copyFromArray(T[], int, int, int)
    */
   public <E extends FeatureStructure> void copyFromArray(E[] src, int srcPos, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -699,7 +699,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @param destPos -
    * @param length -
    * @param <E> the type of the elements of the Array being copied into
-   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, U[], int, int)
    */
   public <E extends FeatureStructure> void copyToArray(int srcPos, E[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
@@ -716,14 +716,12 @@ public class FSArrayList <T extends TOP> extends TOP implements
   }
 
   /**
+   * returns TOP[] because can't make array of T
    * Note: converts to pear trampolines.
-   *
-   * @return the feature structure[]
-   * @see org.apache.uima.cas.ArrayFS#toArray()
    */
   @Override
-  public T[] toArray() {
-    T[] r = (T[]) new TOP[size()];
+  public TOP[] toArray() {
+    TOP[] r = new TOP[size()];
     copyToArray(0, r, 0, size());
     return r;
   }
@@ -798,7 +796,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
   }
   
   /**
-   * Convenience - create a FSArrayList from an existing FeatureStructure[].
+   * Convenience - create a FSArrayList from an existing Array.
    *
    * @param <E> generic type of returned FS
    * @param <F> generic type of the elements of the array argument

@@ -1265,7 +1265,7 @@ public interface CAS extends AbstractCas {
   };
 
   /** 
-   * @oaram <T> the type of the lements of the FSArray
+   * @param <T> the type of the lements of the FSArray
    * @return a lazily created shared (for this CAS) 0-length array
    */
   default <T extends FeatureStructure> FSArray<T> emptyFSArray() {

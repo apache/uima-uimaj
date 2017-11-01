@@ -246,7 +246,7 @@ public class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @see org.apache.uima.cas.ArrayFS#copyFromArray(FeatureStructure[], int, int, int)
+   * @see org.apache.uima.cas.ArrayFS#copyFromArray(T[], int, int, int)
    * @param src -
    * @param srcPos -
    * @param destPos -
@@ -269,7 +269,7 @@ public class IntegerArrayList extends TOP implements
   }
 
   /**
-   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
+   * @see org.apache.uima.cas.ArrayFS#copyToArray(int, E[], int, int)
    * @param srcPos -
    * @param dest -
    * @param destPos -
@@ -357,7 +357,7 @@ public class IntegerArrayList extends TOP implements
   }
   
   /**
-   * Convenience - create a IntegerArrayList from an existing FeatureStructure[]
+   * Convenience - create a IntegerArrayList from an existing array.
    * @param jcas -
    * @param a -
    * @return -

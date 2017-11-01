@@ -173,7 +173,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
    * @see org.apache.uima.cas.ArrayFS#copyToArray(int, FeatureStructure[], int, int)
    */
   @Override
-  public void copyToArray(int srcPos, FeatureStructure[] dest, int destPos, int length) {
+  public <U extends FeatureStructure> void copyToArray(int srcPos, U[] dest, int destPos, int length) {
     int srcEnd = srcPos + length;
     int destEnd = destPos + length;
     if (srcPos < 0 ||
@@ -183,7 +183,7 @@ public final class FSArray<T extends FeatureStructure> extends TOP
           String.format("FSArray.copyToArray, srcPos: %,d destPos: %,d length: %,d",  srcPos, destPos, length));
     }
     for (;srcPos < srcEnd && destPos < destEnd;) {
-      dest[destPos++] = _maybeGetPearFs((TOP) get(srcPos++));
+      dest[destPos++] = (U) _maybeGetPearFs(get(srcPos++));
     }
   }
 
@@ -316,16 +316,13 @@ public final class FSArray<T extends FeatureStructure> extends TOP
     return false;
   }
 
-  public Object[] toArray(Object[] a) {
-    Object[] r = new Object[size()];
-    System.arraycopy(theArray, 0, r, 0, size()); 
-    return r;
-  }
-
-  public TOP[] toArray(TOP[] a) {
-    TOP[] r = new TOP[size()];
-    System.arraycopy(theArray, 0, r, 0, size());
-    return r;
+  public <U extends TOP> U[] toArray(U[] a) {
+    final int sz = size();
+    if (a.length < sz) {
+      return (U[]) Arrays.copyOf(theArray, sz, a.getClass());
+    }
+    System.arraycopy(theArray, 0, a, 0, size());
+    return a;
   }
 
  
