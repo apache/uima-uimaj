@@ -62,6 +62,7 @@ public interface ArrayFS<E extends FeatureStructure> extends CommonArrayFS<E> {
    *          Where to start copying into <code>dest</code>.
    * @param length
    *          The number of elements to copy.
+   * @param <U> the type of the array element
    * @exception ArrayIndexOutOfBoundsException
    *              If <code>srcOffset &lt; 0</code> or <code>length &gt; size()</code> or
    *              <code>destOffset + length &gt; destArray.length</code>.
