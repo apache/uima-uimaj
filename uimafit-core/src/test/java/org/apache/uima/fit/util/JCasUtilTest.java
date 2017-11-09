@@ -828,12 +828,13 @@ public class JCasUtilTest extends ComponentTestBase {
     Token a = new Token(this.jCas, 0, 1);
     Token b = new Token(this.jCas, 2, 3);
     Token bc = new Token(this.jCas, 2, 5);
-    Token c = new Token(this.jCas, 4, 5);
-    Token c1 = new Token(this.jCas, 4, 5);
-    Token d = new Token(this.jCas, 4, 7);
-    Token cd = new Token(this.jCas, 6, 7);
-    Token e = new Token(this.jCas, 8, 9);
-    for (Token token : Arrays.asList(a, b, bc, c, c1, d, cd, e)) {
+    Token c = new Token(this.jCas, 4, 6);
+    Token c1 = new Token(this.jCas, 4, 6);
+    Token d = new Token(this.jCas, 4, 5);
+    Token e = new Token(this.jCas, 4, 7);
+    Token cde = new Token(this.jCas, 6, 7);
+    Token f = new Token(this.jCas, 8, 9);
+    for (Token token : Arrays.asList(a, b, bc, c, c1, d, e, cde, e, f)) {
       token.addToIndexes();
     }
 
@@ -852,12 +853,13 @@ public class JCasUtilTest extends ComponentTestBase {
     Token a = new Token(this.jCas, 0, 1);
     Token b = new Token(this.jCas, 2, 3);
     Token bc = new Token(this.jCas, 2, 5);
-    Token c = new Token(this.jCas, 4, 5);
-    Token c1 = new Token(this.jCas, 4, 5);
-    Token d = new Token(this.jCas, 4, 7);
-    Token cd = new Token(this.jCas, 6, 7);
-    Token e = new Token(this.jCas, 8, 9);
-    for (Token token : Arrays.asList(a, b, bc, c, c1, d, cd, e)) {
+    Token c = new Token(this.jCas, 4, 6);
+    Token c1 = new Token(this.jCas, 4, 6);
+    Token d = new Token(this.jCas, 4, 5);
+    Token e = new Token(this.jCas, 4, 7);
+    Token cde = new Token(this.jCas, 6, 7);
+    Token f = new Token(this.jCas, 8, 9);
+    for (Token token : Arrays.asList(a, b, bc, c, c1, d, e, cde, e, f)) {
       token.addToIndexes();
     }
 

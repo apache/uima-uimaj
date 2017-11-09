@@ -299,7 +299,7 @@ public final class CasUtil {
     while (it.isValid()) {
       AnnotationFS a = it.get();
       // If the offsets do not match the specified offets, we're done
-      if (a.getBegin() != aBegin && a.getEnd() != aEnd) {
+      if (a.getBegin() != aBegin || a.getEnd() != aEnd) {
         break;
       }
       it.moveToNext();
