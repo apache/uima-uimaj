@@ -97,13 +97,17 @@ public class FSUtil {
   }
 
   public static boolean isMultiValuedFeature(FeatureStructure aFS, Feature feat) {
+    return isMultiValuedFeature(aFS.getCAS().getTypeSystem(), feat);
+  }
+
+  public static boolean isMultiValuedFeature(TypeSystem aTypeSystem, Feature feat) {
     if (feat == null) {
       return false;
     }
     
-    return feat.getRange().isArray() || isListType(aFS.getCAS().getTypeSystem(), feat.getRange());
+    return feat.getRange().isArray() || isListType(aTypeSystem, feat.getRange());
   }
-  
+
   public static void setFeature(FeatureStructure aFS, String aFeature, boolean... aValue) {
     Feature feat = getMandatoryFeature(aFS, aFeature);
     if (feat.getRange().isPrimitive()) {
