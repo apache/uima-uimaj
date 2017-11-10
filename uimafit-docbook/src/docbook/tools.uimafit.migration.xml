@@ -20,6 +20,17 @@
   <title>Migration Guide</title>
   <para>This section provides helpful information on incompatible changes between versions.</para>
   <section>
+    <title>Version 2.3.0 to 2.4.0</title>
+    <formalpara>
+      <title>Version requirements</title>
+      <para>Depends on UIMA 2.10.2, Spring Framework 3.2.16 and Java 7.</para>
+    </formalpara>
+    <formalpara>
+      <para>Mind the updated version requirements. There should be no other potentially problematic
+      changes in this upgrade.</para>
+    </formalpara>
+  </section>
+  <section>
     <title>Version 2.2.0 to 2.3.0</title>
     <formalpara>
       <title>CasIOUtil deprecated</title>
