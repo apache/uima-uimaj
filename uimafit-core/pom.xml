@@ -149,37 +149,29 @@
 				<plugin>
 					<groupId>org.apache.rat</groupId>
 					<artifactId>apache-rat-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>default-cli</id>
-							<configuration>
-								<excludes>
-                                    <!-- Plain documentation -->
-                                    <exclude>README*</exclude>
-                                    <!-- Release files -->
-                                    <exclude>RELEASE_NOTES*</exclude>
-                                    <exclude>issuesFixed/**</exclude>
-                                    <exclude>release.properties</exclude>
-                                    <!-- Build controls -->
-                                    <exclude>.activate-enforce-compatibility</exclude>
-									<!-- These test files are unreasonable to bear a license header -->
-                                    <exclude>src/test/resources/log4j.properties</exclude>
-									<exclude>src/test/resources/data/docs/unix-newlines.txt.bin</exclude>
-									<exclude>src/test/resources/data/docs/windows-newlines.txt.bin</exclude>
-									<exclude>src/test/resources/data/docs/bad.xcas</exclude>
-									<exclude>src/test/resources/data/docs/test.xcas</exclude>
-									<exclude>src/test/resources/data/docs/test.xmi</exclude>
-									<exclude>src/test/resources/data/reference/JCasBuilderTest.dump</exclude>
-									<exclude>src/test/resources/data/reference/test.xmi.dump</exclude>
-                                    <exclude>src/test/resources/data/reference/SerializationTestAnnotator.xml</exclude>
-									<!-- These configuration files cannot bear a license header -->
-									<exclude>src/test/resources/META-INF/org.apache.uima.fit/fsindexes.txt</exclude>
-									<exclude>src/test/resources/META-INF/org.apache.uima.fit/typepriorities.txt</exclude>
-									<exclude>src/test/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
-								</excludes>
-							</configuration>
-						</execution>
-					</executions>
+          <executions>
+            <execution>
+              <id>default-cli</id>
+              <configuration>
+                <excludes combine.children="append">
+                  <!-- These test files are unreasonable to bear a license header -->
+                  <exclude>src/test/resources/log4j.properties</exclude>
+                  <exclude>src/test/resources/data/docs/unix-newlines.txt.bin</exclude>
+                  <exclude>src/test/resources/data/docs/windows-newlines.txt.bin</exclude>
+                  <exclude>src/test/resources/data/docs/bad.xcas</exclude>
+                  <exclude>src/test/resources/data/docs/test.xcas</exclude>
+                  <exclude>src/test/resources/data/docs/test.xmi</exclude>
+                  <exclude>src/test/resources/data/reference/JCasBuilderTest.dump</exclude>
+                  <exclude>src/test/resources/data/reference/test.xmi.dump</exclude>
+                  <exclude>src/test/resources/data/reference/SerializationTestAnnotator.xml</exclude>
+                  <!-- These configuration files cannot bear a license header -->
+                  <exclude>src/test/resources/META-INF/org.apache.uima.fit/fsindexes.txt</exclude>
+                  <exclude>src/test/resources/META-INF/org.apache.uima.fit/typepriorities.txt</exclude>
+                  <exclude>src/test/resources/META-INF/org.apache.uima.fit/types.txt</exclude>
+                </excludes>
+              </configuration>
+            </execution>
+          </executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
