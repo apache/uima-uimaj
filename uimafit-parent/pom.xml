@@ -385,6 +385,8 @@
                 <onlyModified>true</onlyModified>
                 <!-- filter out classes with impl in their package or class name -->
                 <postAnalysisScript>${project.basedir}/../uimafit-parent/src/main/groovy/api-report.groovy</postAnalysisScript>
+                <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
+                <reportOnlyFilename>true</reportOnlyFilename>
               </parameter>
             </configuration>
             <executions>
