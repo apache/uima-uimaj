@@ -326,6 +326,6 @@ a feature called <code>category</code> which returns a String denoting the categ
 
 <section id="uv3.overview.java8">
   <title>Java 8 is required</title>
-  <para>The UIMA Java SDK Version 3 requires Java 8 or later.</para>
+  <para>The UIMA Java SDK Version 3 requires Java 8.</para>
 </section>      
 </chapter>

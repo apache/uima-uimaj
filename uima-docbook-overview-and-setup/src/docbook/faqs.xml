@@ -411,7 +411,7 @@ under the License.
       
       <varlistentry id="ugr.faqs.levels_required">
         <term><emphasis role="bold">What Java level and OS are required for the UIMA SDK?</emphasis></term>
-        <listitem><para>As of release 3.0.0, the UIMA SDK requires Java 1.8 or later.  
+        <listitem><para>As of release 3.0.0, the UIMA SDK requires Java 1.8.  
           It has been tested on mainly on Windows and Linux platforms, with some
           testing on the MacOSX. Other
           platforms and JDK implementations will likely work, but have
