@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.apache.uima.UimaSerializableFSs;
 import org.apache.uima.cas.CommonArrayFS;
