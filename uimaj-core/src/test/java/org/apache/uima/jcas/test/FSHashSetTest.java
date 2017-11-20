@@ -26,6 +26,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSHashSet;
+import org.apache.uima.jcas.cas.FSLinkedHashSet;
 
 import junit.framework.TestCase;
 import x.y.z.EndOfSentence;
@@ -62,26 +63,31 @@ public class FSHashSetTest extends TestCase {
 		this.jcas = cas.getJCas();
 	}
 
-	public void testBasic() {
-	  FSHashSet<Token> set = new FSHashSet<>(jcas);
-	  Token t1 = new Token(jcas);
+	private void basic(FSHashSet<Token> s) {
+    FSHashSet<Token> set = s;
+    Token t1 = new Token(jcas);
     Token t2 = new Token(jcas);
-	  set.add(t1);
-	  set.add(t2);
-	  set.remove(t1);
-	  
-	  assertEquals(1, set.size());
-	  
+    set.add(t1);
+    set.add(t2);
+    set.remove(t1);
+    
+    assertEquals(1, set.size());
+    
     Iterator<Token> it = set.iterator();
     Token k = null;
-	  while (it.hasNext()) {
-	    assertNotNull(k = it.next());
-	  }
-	  assertNotNull(k);
-	  set._save_fsRefs_to_cas_data();
-	  FSArray fa = (FSArray) set.getFeatureValue(set.getType().getFeatureByBaseName("fsArray"));
-	  assertNotNull(fa);
-	  assertEquals(fa.get(0), k);
+    while (it.hasNext()) {
+      assertNotNull(k = it.next());
+    }
+    assertNotNull(k);
+    set._save_fsRefs_to_cas_data();
+    FSArray fa = (FSArray) set.getFeatureValue(set.getType().getFeatureByBaseName("fsArray"));
+    assertNotNull(fa);
+    assertEquals(fa.get(0), k);	  
+	}
+	
+	public void testBasic() {
+	  basic(new FSHashSet<>(jcas));
+	  basic(new FSLinkedHashSet<>(jcas));
 	}
 	
 

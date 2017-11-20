@@ -110,20 +110,28 @@ public class FSHashSet <T extends TOP> extends TOP implements
    * @param type the type of this Feature Structure 
    */
   public FSHashSet(TypeImpl type, CASImpl casImpl) {
+    this(new HashSet<>(), type, casImpl);
+  }
+  
+  public FSHashSet(HashSet<T> set, TypeImpl type, CASImpl casImpl) {
     super(type, casImpl);
-    fsHashSet = new HashSet<>();
+    fsHashSet = set;
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
-    }
+    }    
   }
   
   /** @generated
    * @param jcas JCas to which this Feature Structure belongs 
    */
   public FSHashSet(JCas jcas) {
+    this(new HashSet<>(), jcas);
+  } 
+
+  public FSHashSet(HashSet<T> set, JCas jcas) {
     super(jcas);
-    fsHashSet = new HashSet<>();
+    fsHashSet = set;
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
@@ -131,21 +139,25 @@ public class FSHashSet <T extends TOP> extends TOP implements
   } 
 
   /**
-   * Make a new ArrayList with an initial size .
+   * Make a new HashSet with an initial size .
    *
    * @param jcas The JCas
    * @param length initial size
    */
   public FSHashSet(JCas jcas, int length) {
+    this (new HashSet<>(length), jcas, length);
+  }
+    
+  public FSHashSet(HashSet<T> set, JCas jcas, int length) {
     super(jcas);
     _casView.validateArraySize(length);
-    fsHashSet = new HashSet<>(length);
+    fsHashSet = set;
 
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
   }
-    
+  
   //*--------------*
   //* Feature: fsArray
 

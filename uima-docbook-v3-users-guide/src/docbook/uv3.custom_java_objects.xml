@@ -238,10 +238,10 @@ public void _save_to_cas_data() {
     </section>
     
     <section id="uv3.custom_java_objects.semibuiltin_FSHashSet">
-      <title>FSHashSet</title>
-      <titleabbrev>FSHashSet</titleabbrev>
+      <title>FSHashSet and FSLinkedHashSet</title>
       
-      <para>This type stores Feature Structures in a HashSet, using whatever is defined
+      
+      <para>These types store Feature Structures in a HashSet, using whatever is defined
       as the Feature Structure's <code>equals</code> and <code>hashcode</code>.
       
       <blockquote>
@@ -253,6 +253,9 @@ public void _save_to_cas_data() {
       </para>
             
       <para>The CAS data form is held in an FSArray consisting of the members of the set.</para>
+      
+      <para>If you want a predictable iteratation order, use FSLinkedHashSet instead of FSHashSet.
+      </para>
             
     </section>
     

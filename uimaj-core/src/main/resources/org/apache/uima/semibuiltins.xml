@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-  <!--
+<!--
    ***************************************************************
    * Licensed to the Apache Software Foundation (ASF) under one
    * or more contributor license agreements.  See the NOTICE file
@@ -19,7 +19,6 @@
    * under the License.
    ***************************************************************
    -->
-
 <typeSystemDescription xmlns="http://uima.apache.org/resourceSpecifier">
     <name>semibuiltins</name>
     <description>Semi-built-in types that can can be optionally imported by name.</description>
@@ -36,6 +35,7 @@
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>uima.cas.TOP</elementType>
+        <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
@@ -49,6 +49,7 @@
           <description/>
           <rangeTypeName>uima.cas.FSArray</rangeTypeName>
           <elementType>uima.cas.TOP</elementType>
+        <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
@@ -61,6 +62,21 @@
           <name>intArray</name>
           <description/>
           <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        <multipleReferencesAllowed>true</multipleReferencesAllowed>
+        </featureDescription>
+      </features>
+    </typeDescription>
+  <typeDescription>
+      <name>org.apache.uima.jcas.cas.FSLinkedHashSet</name>
+      <description/>
+      <supertypeName>org.apache.uima.jcas.cas.FSHashSet</supertypeName>
+      <features>
+        <featureDescription>
+          <name>fsArray</name>
+          <description>Internal use only</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+          <elementType>uima.cas.TOP</elementType>
+          <multipleReferencesAllowed>true</multipleReferencesAllowed>
         </featureDescription>
       </features>
     </typeDescription>
