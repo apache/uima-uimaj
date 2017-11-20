@@ -101,7 +101,8 @@ under the License.
     <para>  
     Feature Structures may, additionally, be kept in <code>FSArrays</code>, <code>FSLists</code>,
     and many additional collection-style objects that implement <code>SelectViaCopyToArray</code> interface.
-    This interface is implemented by the new semi-built-in types <code>FSArrayList</code> and <code>FSHashSet</code>;
+    This interface is implemented by the new semi-built-in types <code>FSArrayList</code>, 
+    <code>FSHashSet</code> and <code>FSLinkedHashSet</code>;
     user-defined JCas classes for user types may also choose to implement this.
     All of these sources may be used with <code>select</code>.</para>
     

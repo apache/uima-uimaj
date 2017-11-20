@@ -130,9 +130,9 @@ under the License.
 	            </listitem>
 	          </varlistentry>
     	      <varlistentry>
-	            <term><emphasis role="strong">FSHashSet</emphasis></term>
+	            <term><emphasis role="strong">FSHashSet, FSLinkedHashSet</emphasis></term>
 	            <listitem>
-	              <para>a Java HashSet containing Feature Structures. This JCas class implements the Set API.</para>
+	              <para>a Java HashSet or LinkedHashSet containing Feature Structures. This JCas class implements the Set API.</para>
 	            </listitem>
 	          </varlistentry>
  
