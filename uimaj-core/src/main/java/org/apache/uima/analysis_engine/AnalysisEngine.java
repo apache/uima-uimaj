@@ -182,6 +182,12 @@ public interface AnalysisEngine extends ConfigurableResource, CasObjectProcessor
   public static final String PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING = 
       "PARAM_THROTTLE_EXCESSIVE_ANNOTATOR_LOGGING";
   
+  public static final String MDC_ANNOTATOR_IMPL_NAME = "uima_annotator";
+  public static final String MDC_ANNOTATOR_CONTEXT_NAME = "uima_annotator_context_name";
+  public static final String MDC_ROOT_CONTEXT_ID = "uima_root_context_id";
+  public static final String MDC_CAS_ID = "uima_cas_id";
+  
+  
   /**
    * Initializes this <code>Resource</code> from a <code>ResourceSpecifier</code>. Applications
    * do not need to call this method. It is called automatically by the <code>ResourceFactory</code>

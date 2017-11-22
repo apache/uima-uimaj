@@ -124,13 +124,10 @@ under the License.
   </section>  
   <section id="uv3.logging.new_recorded_context_data">
     <title>Context Data</title>
-      
-    <note><para><emphasis role="bold">Not (yet) implemented; for planning purposes only.</emphasis></para></note>
     
     <para>
-      Context data is kept in SLF4j MDC and/or NDC maps; there is a separate map per thread.  
-      Some of this information is always updated, other is only recorded if the
-      logger for the class has a level set to Tracing.  
+      Context data is kept in SLF4j MDC maps; there is a separate map per thread.  
+      This information is set before calling Annotator's process or initialize methods. 
       The following table lists the keys and the values recorded in the
       contexts; these can be retrieved by the logging layouts and included in log messages.      
     </para>
@@ -153,12 +150,28 @@ under the License.
          <!-- ******************************************************************************* -->
          <row>
            <entry><para>uima_annotator</para></entry>         
-           <entry><para>the name of the annotator.</para></entry>
+           <entry><para>the annotator implementation name.</para></entry>
+         </row>
+
+         <row>
+           <entry><para>uima_annotator_context_name</para></entry>         
+           <entry><para>the fully qualified annotator context name within the pipeline.
+                        A top level (not contained within any aggregate) annotator will have
+                        a context of "/".</para></entry>
          </row>
          
          <row>
-           <entry><para>uima_root_context</para></entry>
-           <entry><para>The root context corresponds to the pipeline being run.  This could be be nested.</para></entry>
+           <entry><para>uima_root_context_id</para></entry>
+           <entry><para>A unique id representing the pipeline being run. 
+                This is unique within a class-loader for the UIMA-framework.
+                </para></entry>
+         </row>
+         
+         <row>
+           <entry><para>uima_cas_id</para></entry>
+           <entry><para>A unique id representing the CAS being currently processed in the pipeline.
+           This is unique within a class-loader for the UIMA-framework.
+           </para></entry>
          </row>
 
          <!-- <row>

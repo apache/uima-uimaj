@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -71,6 +72,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
    */
   private static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
     
+  private static AtomicInteger MDC_NEXT_ID = new AtomicInteger(0);
+  
   /**
    * The ComponentInfoImpl class (an inner non-static class) has no fields and 
    *   just one method that refers to fields in
@@ -168,6 +171,8 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
 
   final private String uniqueIdentifier;
   
+  final private String mdcUniqueId;
+  
   /**
    * A number to throttle logging from Annotators
    * If not the max value, it wraps loggers obtained with getLogger() that are 
@@ -186,6 +191,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContext_ImplBase() { 
     mQualifiedContextName = "/";  // This constructor for root call only
     uniqueIdentifier = constructUniqueName();
+    mdcUniqueId = String.valueOf(MDC_NEXT_ID.getAndIncrement());
     mSofaMappings = new TreeMap<String, String>();
 
   }
@@ -198,6 +204,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
   public UimaContext_ImplBase(String contextName, Map<String, String> sofaMappings) {
     mQualifiedContextName = contextName;
     uniqueIdentifier = constructUniqueName();
+    mdcUniqueId = "invalid";  // never referenced
     mSofaMappings = sofaMappings;
   }
   
@@ -860,4 +867,7 @@ public abstract class UimaContext_ImplBase implements UimaContextAdmin {
     loggingThrottleLimit = v;
   }
 
+  public String getMdcId() {
+    return mdcUniqueId;
+  }
 }

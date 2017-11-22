@@ -478,7 +478,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private final AtomicInteger casResets = new AtomicInteger(0);
     
     // unique ID for a created CAS view, not updated if CAS is reset and reused
-    private final int casId = casIdProvider.incrementAndGet();
+    private final String casId = String.valueOf(casIdProvider.incrementAndGet());
     
     // shared singltons, created at type system commit
     
@@ -4643,7 +4643,10 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.casResets.get();
   }
   
-  int getCasId() {
+  /**
+   * @return an identifier for this CAS, globally unique within the classloader
+   */
+  public String getCasId() {
     return svd.casId;
   }
   
@@ -5131,7 +5134,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   void traceFSfs(FeatureStructureImplC fs) {
     StringBuilder b = svd.traceFScreationSb;
     svd.traceFSid = fs._id;
-    b.append("c:").append(String.format("%-3d", getCasId()));
+    b.append("c:").append(String.format("%-3s", getCasId()));
     String viewName = fs._casView.getViewName();
     if (null == viewName) {
       viewName = "base";

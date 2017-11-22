@@ -52,6 +52,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
+import org.slf4j.MDC;
 
 /**
  * Reference implementation of {@link AnalysisEngine}.
@@ -248,7 +249,8 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // initialize AnalysisComponent
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
-      mAnalysisComponent.initialize(getUimaContext());
+      callInitializeMethod(mAnalysisComponent, getUimaContext());
+//      mAnalysisComponent.initialize(getUimaContext());
       // set up the CAS pool for this AE (this won't do anything if mAnalysisComponent.getCasInstancesRequired() == 0)
       getUimaContextAdmin().defineCasPool(mAnalysisComponent.getCasInstancesRequired(),
               getPerformanceTuningSettings(), mSofaAware);
@@ -374,10 +376,19 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
        
         // insure view is passed to switch / restore class loader https://issues.apache.org/jira/browse/UIMA-2211
         ((CASImpl)view).switchClassLoaderLockCasCL(this.getResourceManager().getExtensionClassLoader());
-
-        // call the process method
-        mAnalysisComponent.process(casToPass);
-        getMBean().incrementCASesProcessed();
+          
+        
+        callProcessMethod(mAnalysisComponent, casToPass);
+//        // call the process method
+//        MDC.put(MDC_ANNOTATOR_CONTEXT_NAME, ((UimaContext_ImplBase)getUimaContext()).getQualifiedContextName());
+//        MDC.put(MDC_ANNOTATOR_IMPL_NAME, mAnalysisComponent.getClass().getName());
+//        try {
+//        mAnalysisComponent.process(casToPass);
+//        } finally {
+//          MDC.remove(MDC_ANNOTATOR_CONTEXT_NAME);
+//          MDC.remove(MDC_ANNOTATOR_IMPL_NAME);
+//        }
+//        getMBean().incrementCASesProcessed();
         
         //note we do not clear the CAS's currentComponentInfo at this time
         // nor do we unlock the cas and switch it back (class loader-wise).  The AnalysisComponents still
