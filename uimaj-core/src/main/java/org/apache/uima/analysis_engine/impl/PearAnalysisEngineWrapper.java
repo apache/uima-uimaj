@@ -51,6 +51,7 @@ import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 import org.apache.uima.resource.metadata.ResourceMetaData;
 import org.apache.uima.util.InvalidXMLException;
 import org.apache.uima.util.Level;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.ProcessTrace;
 import org.apache.uima.util.XMLInputSource;
 
@@ -339,20 +340,23 @@ public class PearAnalysisEngineWrapper extends AnalysisEngineImplBase {
   public CasIterator processAndOutputNewCASes(CAS aCAS)
          throws AnalysisEngineProcessException {
 
+    Logger logger = UIMAFramework.getLogger(this.getClass()); 
+    if (logger.isLoggable(Level.FINE)) {
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
             this.getClass().getName(), "processAndOutputNewCASes",
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_begin__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
-
-      CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
-
+    }
+    
+    CasIterator result = this.ae.processAndOutputNewCASes(aCAS);
+    if (logger.isLoggable(Level.FINE)) {    
       UIMAFramework.getLogger(this.getClass()).logrb(Level.FINE,
             this.getClass().getName(), "processAndOutputNewCASes",
             LOG_RESOURCE_BUNDLE, "UIMA_analysis_engine_process_end__FINE",
             new Object[] { this.ae.getAnalysisEngineMetaData().getName() });
-
-      return result;
-   }
+    }
+    return result;
+  }
 
    /**
     * @see org.apache.uima.resource.Resource#destroy()
