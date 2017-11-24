@@ -600,12 +600,20 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
     return mMBeanNamePrefix;
   }
   
+  private static final boolean isMDC;
+  static {
+    MDC.put("uima_test", "uima_test");
+    isMDC = null != MDC.get("uima_test");
+    MDC.remove("uima_test");
+  }
   protected void callInitializeMethod(AnalysisComponent component, UimaContext context) throws ResourceInitializationException {
 //    component.initialize(context);
     try {
       withContexts(component, context, null, () -> component.initialize(context));
     } catch (Exception e) {
-      throw (ResourceInitializationException)e;
+      throw (e instanceof ResourceInitializationException)
+              ? ((ResourceInitializationException)e) 
+              : new ResourceInitializationException(e);
     }
   }
   
@@ -620,6 +628,7 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
   }
   
   private void withContexts(AnalysisComponent component, UimaContext context, AbstractCas cas, Runnable_withException r) throws Exception {
+    if (isMDC) {
     UimaContext_ImplBase ucib = (UimaContext_ImplBase)context;
     String prevCN = pushMDCstring(MDC_ANNOTATOR_CONTEXT_NAME, ucib.getQualifiedContextName());
     String prevAN = pushMDCstring(MDC_ANNOTATOR_IMPL_NAME, component.getClass().getName());
@@ -640,9 +649,13 @@ public abstract class AnalysisEngineImplBase extends ConfigurableResource_ImplBa
         popMDCstring(MDC_CAS_ID, prevCAS);
       }
     }
+    } else {
+      r.run();
+    }
   }
     
   private String pushMDCstring(String key, String value) {
+    if (value == null) value = "";  // protect against failures if no value
     String v = MDC.get(key);
     if (value.equals(v)) return value;
     MDC.put(key, (v == null) ? value : v + " : " + value);
