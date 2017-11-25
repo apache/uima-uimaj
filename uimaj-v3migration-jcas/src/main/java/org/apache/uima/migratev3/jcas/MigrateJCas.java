@@ -91,6 +91,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
@@ -355,12 +356,7 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
      */
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder();
-      si(sb); // initial nl and indentation
-      sb.append(isJar ? "Jar " : isPear ? "PEAR " : "");
-      sb.append("container [id=").append(id)
-          .append(", parent.id=").append((null == parent) ? "null" : parent.id)
-          .append(", root or pathToJarOrPear=").append(rootOrig).append(',');
+      StringBuilder sb = toString1();
       indent[0] += 2;
       try {
       si(sb);  // new line + indent
@@ -375,6 +371,16 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         si(sb).append(']');
       }
       return sb.toString();
+    }
+    
+    public StringBuilder toString1() {
+      StringBuilder sb = new StringBuilder();
+      si(sb); // initial nl and indentation
+      sb.append(isJar ? "Jar " : isPear ? "PEAR " : "");
+      sb.append("container [id=").append(id)
+          .append(", parent.id=").append((null == parent) ? "null" : parent.id)
+          .append(", root or pathToJarOrPear=").append(rootOrig).append(',');
+      return sb;
     }
 
     /* (non-Javadoc)
@@ -1347,8 +1353,8 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
         
       StringReader sr = new StringReader(source);
       try {
-        cu = JavaParser.parse(sr);  
-        
+        cu = JavaParser.parse(sr); 
+              
         addImport("java.lang.invoke.CallSite");
         addImport("java.lang.invoke.MethodHandle");
         addImport("org.apache.uima.cas.impl.CASImpl");
@@ -1369,7 +1375,23 @@ public class MigrateJCas extends VoidVisitorAdapter<Object> {
             throw new RuntimeException();
           }
           classMembers.addAll(positionOfFirstConstructor, fi_fields);
-        }      
+        }
+        
+        ImportDeclaration firstImport = cu.getImports().get(0);
+        String transformedMessage = String.format(" Migrated by uimaj-v3-migration-jcas, %s%n" +
+                                  " Container: %s%n" + 
+                                  " Path in container: %s%n",
+                                  new Date(),
+                                  container.toString1(),
+                                  path.toString()).replace('\\','/'); 
+        
+        Optional<Comment> existingComment = firstImport.getComment();
+        if (existingComment.isPresent()) {
+          Comment comment = existingComment.get();
+          comment.setContent(comment.getContent() + "\n" + transformedMessage);
+        } else {
+          firstImport.setBlockComment(transformedMessage);
+        }
                 
         if (isSource) {
           sourceToCommonConverted.put(source, cc);
