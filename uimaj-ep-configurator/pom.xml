@@ -365,9 +365,9 @@ org.eclipse.core.runtime
               !org.eclipse.ui.dialogs,
               !org.eclipse.ui.part,
               !org.eclipse.core.runtime,
-              *,
               org.apache.uima.jcas.jcasgenp,
-              org.eclipse.jdt.ui
+              org.eclipse.jdt.ui,
+              *
             </Import-Package>
 
             

@@ -216,10 +216,10 @@
             <!-- the bottom two imports are needed by Eclipse to get things to compile, but
                  not needed by maven -->
             <Import-Package>
-              !org.eclipse.core.runtime,                 
-              *,  
+              !org.eclipse.core.runtime,  
               org.osgi.framework, 
-              org.eclipse.jdt.core.jdom
+              org.eclipse.jdt.core.jdom,
+              *  
             </Import-Package> 
             <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
