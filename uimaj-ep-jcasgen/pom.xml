@@ -104,12 +104,6 @@
       <version>2.1.0</version>
       <scope>provided</scope>
     </dependency>
-		<!-- dependency>
-			<groupId>org.eclipse.emf</groupId>
-			<artifactId>org.eclipse.emf.codegen</artifactId>
-			<version>2.10.0-v20150123-0452</version>
-			<scope>provided</scope>
-		</dependency-->
     <dependency>
       <groupId>org.eclipse.emf</groupId>
       <artifactId>common</artifactId>
@@ -201,7 +195,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.3.7</version> <!-- using 3.0.1 causes the subsequent update site generation to skip this plugin for unknown reasons -->
         <configuration>
           <instructions>
             <!-- turn off "uses" generation because Eclipse 3.2.x doesn't work with them -->
@@ -224,9 +217,9 @@
                  not needed by maven -->
             <Import-Package>
               !org.eclipse.core.runtime,                 
-              *,  
               org.osgi.framework, 
-              org.eclipse.jdt.core.jdom
+              org.eclipse.jdt.core.jdom,
+              *  
             </Import-Package> 
             <Bundle-SymbolicName>org.apache.uima.jcas.jcasgenp;singleton:=true</Bundle-SymbolicName>
             <Eclipse-AutoStart>true</Eclipse-AutoStart>
