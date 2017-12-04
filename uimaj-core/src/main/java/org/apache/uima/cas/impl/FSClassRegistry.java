@@ -713,20 +713,38 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     //   type:    X  ->  XS -> Annotation -> AnnotationBase -> TOP
     boolean isOk = false;
     List<Class<?>> superClasses = new ArrayList<>();
+    boolean isCheckImmediateSuper = true;
+    Class<?> superClass = clazz.getSuperclass();
+    
    outer:
-    for (TypeImpl superType : ti.getAllSuperTypes()) {
-      JCasClassInfo jci = type2jcci.get(superType.getName());
-      if (jci == null) continue;
-      Class<?> superClass = clazz.getSuperclass();
-      superClasses.add(superClass);
-      while (superClass != FeatureStructureImplC.class && superClass != Object.class) {
-        if (jci.jcasClass == superClass) {
-          isOk = true;
-          break outer;
+    for (TypeImpl uimaSuperType : ti.getAllSuperTypes()) {        // iterate uimaSuperTypes
+      JCasClassInfo jci = type2jcci.get(uimaSuperType.getName());
+      if (jci != null) {
+        if (isCheckImmediateSuper) {
+          if (jci.jcasClass != superClass) {
+            /** The JCas class: "{0}" has supertype: "{1}" which doesn''t  match the UIMA type "{2}"''s supertype "{3}". */
+            add2errors(errorSet, 
+                new CASRuntimeException(CASRuntimeException.JCAS_MISMATCH_SUPERTYPE, 
+                    clazz.getCanonicalName(), 
+                    clazz.getSuperclass().getCanonicalName(),
+                    ti.getName(),
+                    ti.getSuperType().getName()),
+                false);  // not a throwable error, just a warning   
+          }
         }
-        superClass = superClass.getSuperclass();
+
         superClasses.add(superClass);
-      }
+        while (superClass != FeatureStructureImplC.class && superClass != Object.class) {
+          if (jci.jcasClass == superClass) {
+            isOk = true;
+            break outer;
+          }
+          superClass = superClass.getSuperclass();
+          superClasses.add(superClass);
+        }
+      } 
+      
+      isCheckImmediateSuper = false;
     }
     
     // This error only happens if the JCas type chain doesn't go thru "TOP" - so it isn't really a JCas class!
