@@ -387,9 +387,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         }         
         jcci = createJCasClassInfo(clazz, ti, jcasType);
         isCopyDown = false;
-        if (clazz != TOP.class) {  // TOP has no super class
-          validateSuperClass(jcci, ti);
-        }
+        // don't do this call, caller will call conformance which has a weaker
+        // test - passes if there is a shared
+        // https://issues.apache.org/jira/browse/UIMA-5660
+//        if (clazz != TOP.class) {  // TOP has no super class  
+//          validateSuperClass(jcci, ti);
+//        }
       } else {
         jcci = copyDownDefault_jcasClassInfo;
       }
@@ -406,7 +409,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         
       } else if (!ti.isTopType()) {
         // strong test for non-copy-down case: supertype must match, with 2 exceptions
-        validateSuperClass(jcci, ti);
+        // removed https://issues.apache.org/jira/browse/UIMA-5660
+//        validateSuperClass(jcci, ti);
       }
     }
        
@@ -439,28 +443,30 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
   private static String superTypeJCasName(TypeImpl ti) {
     return Misc.typeName2ClassName(ti.getSuperType().getName());
   }
-  /**
-   * verify that the supertype class chain matches the type
-   * @param clazz -
-   * @param ti -
-   */
-  private static void validateSuperClass(JCasClassInfo jcci, TypeImpl ti) {
-    final Class<?> clazz = jcci.jcasClass; 
-    if (! clazz.getSuperclass().getCanonicalName().equals(superTypeJCasName(ti))) {
-      /** Special case exceptions */
-      TypeImpl superti = ti.getSuperType();
-      TypeSystemImpl tsi = ti.getTypeSystem();
-      if (superti == tsi.arrayBaseType ||
-          superti == tsi.listBaseType) return;
-      /** The JCas class: "{0}" has supertype: "{1}" which doesn''t  match the UIMA type "{2}"''s supertype "{3}". */
-      throw new CASRuntimeException(CASRuntimeException.JCAS_MISMATCH_SUPERTYPE,
-        clazz.getCanonicalName(), 
-        clazz.getSuperclass().getCanonicalName(),
-        ti.getName(),
-        ti.getSuperType().getName());
-    }
-
-  }
+  
+//  /**
+//   * Removed https://issues.apache.org/jira/browse/UIMA-5660
+//   * verify that the supertype class chain matches the type
+//   * @param clazz -
+//   * @param ti -
+//   */
+//  private static void validateSuperClass(JCasClassInfo jcci, TypeImpl ti) {
+//    final Class<?> clazz = jcci.jcasClass; 
+//    if (! clazz.getSuperclass().getCanonicalName().equals(superTypeJCasName(ti))) {
+//      /** Special case exceptions */
+//      TypeImpl superti = ti.getSuperType();
+//      TypeSystemImpl tsi = ti.getTypeSystem();
+//      if (superti == tsi.arrayBaseType ||
+//          superti == tsi.listBaseType) return;
+//      /** The JCas class: "{0}" has supertype: "{1}" which doesn''t  match the UIMA type "{2}"''s supertype "{3}". */
+//      throw new CASRuntimeException(CASRuntimeException.JCAS_MISMATCH_SUPERTYPE,
+//        clazz.getCanonicalName(), 
+//        clazz.getSuperclass().getCanonicalName(),
+//        ti.getName(),
+//        ti.getSuperType().getName());
+//    }
+//
+//  }
   
   /**
    * Called to load (if possible) a corresponding JCas class for a UIMA type.
@@ -696,8 +702,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
     
     // check supertype
-         
     // one of the supertypes must match a superclass of the class
+    //       (both of these should be OK)
+    
+    //   class:   X  ->  XS -> Annotation -> AnnotationBase -> TOP -> FeatureStructureImplC
+    //   type:    X   -------> Annotation -> AnnotationBase -> TOP
+    //      (if XS getters/setters used, have runtime error; if never used, OK)
+    //
+    //   class:   X  --------> Annotation -> AnnotationBase -> TOP -> FeatureStructureImplC
+    //   type:    X  ->  XS -> Annotation -> AnnotationBase -> TOP
     boolean isOk = false;
     List<Class<?>> superClasses = new ArrayList<>();
    outer:
@@ -715,6 +728,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         superClasses.add(superClass);
       }
     }
+    
+    // This error only happens if the JCas type chain doesn't go thru "TOP" - so it isn't really a JCas class!
     
     if (!isOk && superClasses.size() > 0) {
       /** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
