@@ -301,9 +301,19 @@ public class Int2ObjHashMap<T> extends Common_hash_support implements Iterable<I
 //  }
 
   public T get(int key) {
-    return (key == 0) ? null : values[findPosition(key)];
+    if (key == 0) return null;
+    
+    int pos = findPosition(key);
+    if (found_removed != -1) {
+      keys[found_removed] = key;
+      keys[pos] = REMOVED_KEY;
+      T r = values[found_removed] = values[pos];
+      values[pos] = null;
+      return r;
+    }
+    return values[pos];
   }
-
+  
   public T remove(int key) {
   int pos = findPosition(key);
   T v = values[pos];
@@ -390,6 +400,14 @@ public class Int2ObjHashMap<T> extends Common_hash_support implements Iterable<I
   
   public boolean containsKey(int key) {
     int probeAddr = findPosition(key);
+    if (found_removed != -1) {
+      keys[found_removed] = key;
+      keys[probeAddr] = REMOVED_KEY;
+      values[found_removed] = values[probeAddr];
+      values[probeAddr] = null;
+      return true;
+    }
+
     return keys[probeAddr] != 0 ;
   }
  

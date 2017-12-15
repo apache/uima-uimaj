@@ -219,7 +219,18 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
 //  }
 
   public boolean contains(Object obj) {  // arg must be Object to fit Collection API
-    return (componentType.isAssignableFrom(obj.getClass())) ? (find((T) obj) != -1) : false;
+    if (obj == null || !componentType.isAssignableFrom(obj.getClass())) return false;
+    T tobj = (T) obj;
+    int pos = findPosition(tobj);
+    if (found_removed != -1) {
+      keys[found_removed] = tobj;
+      keys[pos] = removedMarker;
+      int r = values[found_removed] = values[pos];
+      values[pos] = 0;
+      return true;
+    }
+
+    return keys[pos] == obj;
   }
   
   /**
@@ -240,7 +251,14 @@ public class Obj2IntIdentityHashMap<T> extends Common_hash_support {
       return 0;
     }
     int pos = findPosition(obj);
-    return (keys[pos] != null) ? values[pos] : 0;
+    if (found_removed != -1) {
+      keys[found_removed] = obj;
+      keys[pos] = removedMarker;
+      int r = values[found_removed] = values[pos];
+      values[pos] = 0;
+      return r;
+    }
+    return values[pos];
   }
   
   /**
