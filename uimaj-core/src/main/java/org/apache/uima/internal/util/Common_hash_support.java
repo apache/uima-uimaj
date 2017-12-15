@@ -121,7 +121,7 @@ public abstract class Common_hash_support {
    * during the search.
    * 
    * @param hash     the hash code of the key
-   * @param is_eq_sor_not_present   true if the key at the int position is == to the key, or is 0
+   * @param is_eq_or_not_present   true if the key at the int position is == to the key, or is 0
    * @param is_removed_key true if the key at the int position is "removed"
    * @return the probeAddr in keys array.  The value is the not-present-value if not found
    */

@@ -461,8 +461,7 @@ public class Int2ObjHashMap<T> extends Common_hash_support implements Iterable<I
   }
   
   /**
-   * @param <T> the type of the argument returned
-   * @return an iterator<T> over the values in random order
+   * @return an iterator&lt;T&gt; over the values in random order
    */
   public Iterator<T> values() {
     return new Iterator<T>() {
