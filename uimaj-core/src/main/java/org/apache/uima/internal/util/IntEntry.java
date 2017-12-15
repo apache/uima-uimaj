@@ -19,7 +19,7 @@
 package org.apache.uima.internal.util;
 
 /**
- * like Entry<k, v> except the k is an int. 
+ * like Entry&lt;k, v&gt; except the k is an int. 
  *
  * @param <T> the type of the value
  */

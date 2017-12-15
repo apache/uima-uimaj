@@ -120,8 +120,7 @@ public abstract class Common_hash_support {
    * Side effect: found_removed is set to the position of the first REMOVED_KEY (if any) encountered
    * during the search.
    * 
-   * @param key_validity_checks check the key is valid or throw
-   * @param key_hash     compute the hash code of the key
+   * @param hash     the hash code of the key
    * @param is_eq_sor_not_present   true if the key at the int position is == to the key, or is 0
    * @param is_removed_key true if the key at the int position is "removed"
    * @return the probeAddr in keys array.  The value is the not-present-value if not found
@@ -308,7 +307,7 @@ public abstract class Common_hash_support {
    * advance pos until it points to a non 0 or is 1 past end
    * If pos is negative, start at 0.
    * Don't move if pos already has valid key
-   * @param pos
+   * @param pos -
    * @return updated pos
    */
   protected int moveToNextFilled(int pos) {
@@ -331,7 +330,7 @@ public abstract class Common_hash_support {
    * decrement pos until it points to a non 0 or is -1
    * If pos is beyond end start at end.
    * Don't move if pos already has valid key
-   * @param pos
+   * @param pos -
    * @return updated pos
    */
   protected int moveToPreviousFilled(int pos) {
@@ -378,11 +377,6 @@ public abstract class Common_hash_support {
     copyOld2New(new_capacity, old_capacity);
   }
   
-  /**
-   * 
-   * @param keyNotFound -
-   * @return true if keyNotFound
-   */
   protected void commonPutOrAddNotFound() {
     
     if (found_removed != -1) {
