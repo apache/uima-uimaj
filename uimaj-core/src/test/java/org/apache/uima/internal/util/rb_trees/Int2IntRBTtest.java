@@ -60,7 +60,7 @@ public class Int2IntRBTtest extends TestCase {
     IntListIterator itl = ia.keyIterator();
 
     while(itl.hasNext()){
-      r[i++] = itl.next();  
+      r[i++] = itl.nextNvc();  
     }
     assertEquals(i, vs.length - 1);
     assertTrue(Arrays.equals(r, new Integer[] {1, 2, 3, 4, 5, 6, 7, null}));
