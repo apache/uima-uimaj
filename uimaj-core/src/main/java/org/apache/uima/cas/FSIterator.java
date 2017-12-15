@@ -102,7 +102,6 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   
   /**
    * Advance the iterator. This may invalidate the iterator.
-   * @exception ConcurrentModificationException if the underlying indexes being iterated over were modified
    */
   default void moveToNext() {
     if (!isValid()) {
@@ -246,9 +245,8 @@ public interface FSIterator<T extends FeatureStructure> extends ListIterator<T> 
   }
   
   default T previousNvc() {
-    T result = getNvc();
     moveToPreviousNvc();
-    return result;
+    return getNvc();
   }
 
 

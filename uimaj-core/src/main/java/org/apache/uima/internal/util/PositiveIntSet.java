@@ -125,7 +125,7 @@ public interface PositiveIntSet {
   default void forAllInts(IntConsumer v) {
     IntListIterator it = iterator();
     while (it.hasNext()) {
-      v.accept(it.next());
+      v.accept(it.nextNvc());
     }
   }
 }

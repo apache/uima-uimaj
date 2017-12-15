@@ -35,15 +35,27 @@ public interface IntListIterator {
   boolean hasNext();
 
   /**
-   * Return the next feature structure and increment the iterator.
+   * Return the next int in the list and increment the iterator.
    * 
-   * @return The next feature structure.
+   * @return The next int.
    * @exception NoSuchElementException
    *              If no next element exists, i.e., when the iterator points at the last position in
    *              the index.
    */
-  int next() throws NoSuchElementException;
+  default int next() throws NoSuchElementException {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
+    return nextNvc();
+  }
 
+  /**
+   * version of next() which bypasses the validity check.
+   * Only use this if you've already done this check yourself.
+   * @return the next int in the list and increment the iterator.
+   */
+  int nextNvc();
+  
   /**
    * Check if there is a previous element. Does not move the iterator.
    * 
@@ -52,14 +64,26 @@ public interface IntListIterator {
   boolean hasPrevious();
 
   /**
-   * Return the previous feature structure and decrement the iterator.
+   * Return the previous int and decrement the iterator.
    * 
-   * @return The previous feature structure.
+   * @return the previous int (found by first moving the iterator one backwards).
    * @exception NoSuchElementException
    *              If no previous element exists, i.e., when the iterator points at the first
    *              position in the index.
    */
-  int previous();
+  default int previous() throws NoSuchElementException {
+    if (!hasPrevious()) {
+      throw new NoSuchElementException();
+    }
+    return previousNvc();
+  }
+  
+  /**
+   * version of previous that bypasses the validity check.
+   * Only use this if you've already done this check yourself.
+   * @return the previous int (found by first moving the iterator one backwards).
+   */
+  int previousNvc();
 
   /**
    * Move the iterator to the start of the underlying index.

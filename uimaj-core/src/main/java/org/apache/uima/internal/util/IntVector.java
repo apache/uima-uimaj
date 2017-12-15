@@ -51,7 +51,7 @@ public class IntVector implements Serializable {
   // Points to the next free cell in the array.
   protected int pos;
 
-  protected int[] array = null;
+  private int[] array = null;
 
   /**
    * Default constructor.
@@ -610,24 +610,18 @@ public class IntVector implements Serializable {
       }
 
       @Override
-      public int next() throws NoSuchElementException {
-        if (!hasNext()) {
-          throw new NoSuchElementException();
-        }
-        return get(pos++);
+      public int nextNvc() {
+        return get(pos++);        
       }
-
+      
       @Override
       public boolean hasPrevious() {
-        return pos >= 0 && pos < size();  // same as has next
+        return pos > 0 && pos < size();  
       }
-
+      
       @Override
-      public int previous() {
-        if (!hasPrevious()) {
-          throw new NoSuchElementException();
-        }
-        return get(pos--);
+      public int previousNvc() {
+        return get(--pos);
       }
 
       @Override
