@@ -92,7 +92,14 @@ under the License.
                   <para>In version 3, normally, Feature Structures are not added to the 
                         map used by the Low Level CAS API to map from int ids to Feature Structures.
                         This has the benefit that no longer referenced Feature Structures may be 
-                        garbaged collected.  This behavior may be overridden by this property.</para></entry>
+                        garbaged collected.  This behavior may be overridden by this property.</para>
+                  <para>This property supplies default values, per CAS, for that CAS's 
+                    <code>ll_enable_id_to_fs_map</code> mode.  This mode is programmatically
+                      settable, which overrides the default.  The mode changes how 
+                    Feature Structures are created, serialized, and deserialized, all in an 
+                    effort to make V2 code that uses low level CAS Apis and <code>ll_getFSForRef</code>
+                    methods continue to work; see the backwards compatibility section for details.</para>                        
+                        </entry>
          </row>
          
          <!-- ******************************************************************************* -->

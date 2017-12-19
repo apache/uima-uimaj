@@ -136,8 +136,8 @@ under the License.
     
     <informaltable frame="all" rowsep="1" colsep="1">
      <tgroup cols="2">
-       <colspec colnum="1" colname="key" colwidth="1*"/>
-       <colspec colnum="2" colname="description" colwidth="3*"/>
+       <colspec colnum="1" colname="key" colwidth="3*"/>
+       <colspec colnum="2" colname="description" colwidth="5*"/>
        
        <spanspec spanname="fullwidth" namest="key" nameend="description" align="center"/>
         
@@ -188,7 +188,7 @@ under the License.
     <title>Markers used in UIMA Java core logging</title>
     
     <note><para><emphasis role="bold">Not (yet) implemented; for planning purposes only.</emphasis></para></note>
-      
+   <!--      
     <para>
       Markers are used to group log calls associated with specific kinds of things together,
       so they can be enabled/disabled as a group.  The Marker can also be included in a trace record.
@@ -219,8 +219,10 @@ under the License.
            <entry><para>org.apache.uima.finest</para></entry>
            <entry><para>sub category of trace, corresponds to FINEST</para></entry>
          </row>
-         
+         --> 
          <!-- ******************************************************************************* -->
+         
+         <!-- 
          <row>
            <entry spanname="fullwidth"><emphasis role="bold">Markers used to classify some tracing logging</emphasis></entry>
          </row>
@@ -262,6 +264,7 @@ under the License.
        </tbody>
      </tgroup>
    </informaltable>
+    -->
         
   </section>
   
