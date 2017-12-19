@@ -30,7 +30,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.Arrays;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
@@ -169,7 +168,7 @@ public class CasIOUtils {
 
     return load(casUrl, null, aCAS, CasLoadMode.DEFAULT);
   }
-
+  
   /**
    * Loads a CAS from a URL source. The format is determined from the content.
    * 
@@ -346,7 +345,7 @@ public class CasIOUtils {
   
   private static SerialFormat load(InputStream casInputStream, InputStream tsiInputStream, CAS aCAS,
       CasLoadMode casLoadMode, TypeSystemImpl typeSystem) throws IOException {
-
+   
     if (!casInputStream.markSupported()) {
       casInputStream = new BufferedInputStream(casInputStream);
     }

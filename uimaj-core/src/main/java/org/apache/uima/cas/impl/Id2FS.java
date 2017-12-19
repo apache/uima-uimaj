@@ -64,6 +64,7 @@ public class Id2FS {
     id2fs = new JCasHashMap(initialSize); 
   }
 
+  /** put but assert wasn't there before */
   void put(int id, TOP fs) {
     TOP prev = id2fs.put(id, fs);
     assert prev == null;

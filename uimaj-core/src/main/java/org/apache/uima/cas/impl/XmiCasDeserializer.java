@@ -187,7 +187,7 @@ public class XmiCasDeserializer {
 
     // true if unknown types should be ignored; false if they should cause an error
     boolean lenient;
-
+    
     // number of oustanding startElement events that we are ignoring
     // we add 1 when an ignored element starts and subtract 1 when an ignored
     // element ends
@@ -290,7 +290,7 @@ public class XmiCasDeserializer {
      *   xmi:id is strictly greater than the mergePoint value will be
      *   deserialized. 
      */
-    private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient,
+    private XmiCasDeserializerHandler(CASImpl aCAS, boolean lenient, 
             XmiSerializationSharedData sharedData, int mergePoint, AllowPreexistingFS allowPreexistingFS) {
       super();
       this.casBeingFilled = aCAS.getBaseCAS();
@@ -2089,6 +2089,24 @@ public class XmiCasDeserializer {
   public XmiCasDeserializer(TypeSystem ts) {
     this(ts, null);
   }
+  
+  /* ========================================================= */
+  /*      getters for Xmi Cas Handler                          */
+  /*   Arguments:                                              */
+  /*     cas                                                   */
+  /*     lenient                                               */
+  /*     sharedData                                            */
+  /*     mergePoint (or -1)                                    */
+  /*     allow preexisting                                     */
+  /*                                                           */
+  /* existing variants:                                        */
+  /*     cas                                                   */
+  /*     cas, lenient                                          */
+  /*     cas, lenient, sharedData                              */
+  /*     cas, lenient, sharedData, mergePoint                  */
+  /*     cas, lenient, sharedData, mergePoint, allow           */
+  /* ========================================================= */
+ 
 
   /**
    * Create a default handler for deserializing a CAS from XMI.
@@ -2117,14 +2135,13 @@ public class XmiCasDeserializer {
    * @return The <code>DefaultHandler</code> to pass to the SAX parser.
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, null, -1, AllowPreexistingFS.ignore);
+    return getXmiCasHandler(cas, lenient, null); 
   }
+  
+  
 
   /**
-   * Create a default handler for deserializing a CAS from XMI. By default this is not lenient,
-   * meaning that if the XMI references Types that are not in the Type System, an Exception will be
-   * thrown. Use {@link XmiCasDeserializer#getXmiCasHandler(CAS,boolean)} to turn on lenient mode
-   * and ignore any unknown types.
+   * Create a default handler for deserializing a CAS from XMI. 
    * 
    * @param cas
    *          This CAS will be used to hold the data deserialized from the XMI
@@ -2139,14 +2156,11 @@ public class XmiCasDeserializer {
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
           XmiSerializationSharedData sharedData) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, -1, AllowPreexistingFS.ignore);
+    return getXmiCasHandler(cas, lenient, sharedData, -1);
   }
   
   /**
-   * Create a default handler for deserializing a CAS from XMI. By default this is not lenient,
-   * meaning that if the XMI references Types that are not in the Type System, an Exception will be
-   * thrown. Use {@link XmiCasDeserializer#getXmiCasHandler(CAS,boolean)} to turn on lenient mode
-   * and ignore any unknown types.
+   * Create a default handler for deserializing a CAS from XMI. 
    * 
    * @param cas
    *          This CAS will be used to hold the data deserialized from the XMI
@@ -2166,7 +2180,7 @@ public class XmiCasDeserializer {
    */
   public DefaultHandler getXmiCasHandler(CAS cas, boolean lenient,
           XmiSerializationSharedData sharedData, int mergePoint) {
-    return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, mergePoint, AllowPreexistingFS.ignore);
+    return getXmiCasHandler(cas, lenient, sharedData, mergePoint, AllowPreexistingFS.ignore);
   }  
   
   /**
@@ -2196,6 +2210,7 @@ public class XmiCasDeserializer {
           XmiSerializationSharedData sharedData, int mergePoint, AllowPreexistingFS allow) {
     return new XmiCasDeserializerHandler((CASImpl) cas, lenient, sharedData, mergePoint, allow);
   }  
+
 
   /**
    * Deserializes a CAS from XMI.

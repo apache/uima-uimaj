@@ -193,15 +193,13 @@ public class BinaryCasSerDes {
    */
   final private Int2ObjHashMap<TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
   final private Int2ObjHashMap<TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final private Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);      
+  final private Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);   
   
   /**
-   * If true, adjust type codes in serialized forms
-   * to allow v2 type codes to be correctly read by v3 impls,
-   * because v3 impls have a greater number of built-in types 
+   *  used to calculate total heap size
    */
   boolean isBeforeV3 = false;  
-
+  
   public BinaryCasSerDes(CASImpl baseCAS) {
     this.baseCas = baseCAS;
   }
@@ -527,7 +525,7 @@ public class BinaryCasSerDes {
                              TypeSystemImpl ts) throws CASRuntimeException {
   
     final DataInputStream dis = CommonSerDes.maybeWrapToDataInputStream(istream);
-
+    
     if (!h.isV3) {
       if (h.getSeqVersionNbr() < 2) {
         isBeforeV3 = true; // adjusts binary type numbers 
@@ -567,8 +565,8 @@ public class BinaryCasSerDes {
           System.out.format("BinDeser version = %d%n", Integer.valueOf(h.v));
         }
         if (h.form4) {
-          (new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false))
-            .deserialize(baseCas, dis, delta, h);
+          BinaryCasSerDes4 bcsd4 = new BinaryCasSerDes4(baseCas.getTypeSystemImpl(), false);
+          bcsd4.deserialize(baseCas, dis, delta, h);
           return h.typeSystemIndexDefIncluded ? SerialFormat.COMPRESSED_TSI : SerialFormat.COMPRESSED;
         } else {
           // is form 6
@@ -915,7 +913,7 @@ public class BinaryCasSerDes {
         IntListIterator it = csds.addr2fs.keyIterator();
         int iaa = 0;
         while (it.hasNext()) {
-          bds.fssAddrArray[iaa++] = it.next();
+          bds.fssAddrArray[iaa++] = it.nextNvc();
         }
         // iaa at this point refs the last entry in the table
         bds.fssAddrArray[iaa] = heap.getCellsUsed();

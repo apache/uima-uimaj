@@ -1480,7 +1480,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
             String[] strings = ((StringArray)fs)._getTheArray();
             IntListIterator it = changedFs.arrayUpdates.iterator();
             while (it.hasNext()) {
-              os.add(strings[it.next()]);
+              os.add(strings[it.nextNvc()]);
             }
           }
         } else {
@@ -1580,7 +1580,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         }
         
         while (it.hasNext()) {
-          int index = it.next();
+          int index = it.nextNvc();
           writeVnumber(fsIndexes_dos, index - prevIndex);
           prevIndex = index;
 
@@ -1792,6 +1792,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     /**********************************************************
      * Read in new FSs being deserialized and add them to heap
      **********************************************************/
+    
     // currentFsId used when debugging, only
     for (int currentFsId = nextFsId, nbrFSs = 0, nextFsAddr = 1; 
          this.bcsd.isBeforeV3 
@@ -1854,11 +1855,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
         if (storeIt) {
           if (!srcTs.annotBaseType.subsumes(srcType) &&  // defer subtypes of AnnotationBase
               !(srcTs.sofaType == srcType)) {            // defer sofa types
-            currentFs = cas.createFS(srcType);
-            if (currentFs instanceof UimaSerializable) {
-              UimaSerializable ufs = (UimaSerializable) currentFs;
-              uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
-            }
+            createCurrentFs(srcType, cas);
           } else {
             currentFs = null;
             singleFsDefer.clear();
@@ -1904,17 +1901,14 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
                              ? cas.getInitialView()  // https://issues.apache.org/jira/browse/UIMA-5588
                              : (CASImpl) cas.getView(sofaRef);
                              
-            if (srcType.getCode() == TypeSystemConstants.docTypeCode) {
-              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
-              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
-              // would end up creating additional instances
-            } else {
-              currentFs = view.createFS(srcType);
-              if (currentFs instanceof UimaSerializable) {
-                UimaSerializable ufs = (UimaSerializable) currentFs;
-                uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
-              }
-            }
+//            if (srcType.getCode() == TypeSystemConstants.docTypeCode) {
+//              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
+//              
+//              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
+//              // would end up creating additional instances
+//            } else {
+              createCurrentFs(srcType, view);
+//            }
           }
           if (srcType.getCode() == TypeSystemConstants.docTypeCode) { 
             boolean wasRemoved = cas.removeFromCorruptableIndexAnyView(currentFs, cas.getAddbackSingle());
@@ -1963,6 +1957,15 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     closeDataInputs();
 //      System.out.format("Deserialize took %,d ms%n", System.currentTimeMillis() - startTime1);
   }
+  
+  private void createCurrentFs(TypeImpl type, CASImpl view) {
+    currentFs = view.createFS(type);
+    if (currentFs instanceof UimaSerializable) {
+      UimaSerializable ufs = (UimaSerializable) currentFs;
+      uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+    }
+  }
+
   
   /**
    * 

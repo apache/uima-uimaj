@@ -213,7 +213,6 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
   final private boolean doMeasurements;
   
   final TypeImpl fsArrayType;
-
   
   /** 
    * Things shared between serialization and deserialization
@@ -280,7 +279,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     Deserializer deserializer = new Deserializer(cas, in, isDelta);    
     deserializer.deserialize(h);
   }
-
+  
   /**
    * Class instantiated once per serialization
    * Multiple serializations in parallel supported, with
@@ -1367,7 +1366,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
           
           IntListIterator it = fsChange.arrayUpdates.iterator();
           while (it.hasNext()) {
-            int i = it.next();
+            int i = it.nextNvc();
             // write the offset of the of the modified entry
             //   from the beginning of the fs addr
             //   i is already the 0 based offset, make it a 2 based one
@@ -1414,7 +1413,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         
         IntListIterator it = fsChange.arrayUpdates.iterator();
         while (it.hasNext()) {
-          int i = it.next();
+          int i = it.nextNvc();
                     
           writeVnumber(fsIndexes_dos, i - iPrevOffset);
           iPrevOffset = i;
@@ -1710,12 +1709,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
         } else {
           if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
               !(ts.sofaType == type)) {            // defer sofa types
-            currentFs = ivCas.createFS(type);
-            if (currentFs instanceof UimaSerializable) {
-              UimaSerializable ufs = (UimaSerializable) currentFs;
-              uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
-            }
-              
+            createCurrentFs(type, ivCas);              
           } else {
             currentFs = null;
             singleFsDefer.clear();
@@ -1754,17 +1748,13 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
                              ? baseCas.getInitialView() // https://issues.apache.org/jira/browse/UIMA-5588
                              : baseCas.getView(sofaRef);
                              
-            if (type.getCode() == TypeSystemConstants.docTypeCode) {
-              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
-              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
-              // would end up creating additional instances
-            } else {
-              currentFs = view.createFS(type);
-              if (currentFs instanceof UimaSerializable) {
-                UimaSerializable ufs = (UimaSerializable) currentFs;
-                uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
-              }
-            }
+//            if (type.getCode() == TypeSystemConstants.docTypeCode) {
+//              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
+//              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
+//              // would end up creating additional instances
+//            } else {
+              createCurrentFs(type, view);
+//            }
           }
           if (type.getCode() == TypeSystemConstants.docTypeCode) { 
             boolean wasRemoved = baseCas.checkForInvalidFeatureSetting(currentFs, baseCas.getAddbackSingle());
@@ -1813,6 +1803,14 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
       closeDataInputs();
 //      System.out.format("Deserialize took %,d ms%n", System.currentTimeMillis() - startTime1);
+    }
+    
+    private void createCurrentFs(TypeImpl type, CASImpl view) {
+      currentFs = view.createFS(type);
+      if (currentFs instanceof UimaSerializable) {
+        UimaSerializable ufs = (UimaSerializable) currentFs;
+        uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
+      }
     }
     
     private TOP readArray(int iHeap, TypeImpl type) throws IOException { 
