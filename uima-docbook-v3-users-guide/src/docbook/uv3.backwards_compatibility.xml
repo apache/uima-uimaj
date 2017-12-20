@@ -157,16 +157,16 @@ under the License.
     </para>
     
     <para>This mode is set on individual CASs via a new API.  It is also defaulted for all CASs by 
-      the value of a system property,
-      which can be set using <code>-Duima.enable_id_to_feature_structure_map_for_all_fss</code>.
-      This mode supplies a default value for all CASs; each individual CAS can also specify a specific value 
-      for this, which overrides.  
+      the value of a system property read once at JVM startup time, specified using
+      <code>-Duima.enable_id_to_feature_structure_map_for_all_fss</code>.  If specified using this system property,
+      this value overrides any programmatical value - the mode is always on.
+      If not specified using this, each individual CAS can programmatically turn this mode on or off for that CAS.
       
     </para>
     
     <para>The APIs for programmatically setting this mode on a CAS instance are on the LowLevelCAS.  The APIs are:</para>
     <programlisting>
-// set the mode, return a AutoClosable instance 
+// set the mode, returning a AutoClosableNoException instance 
 // whose close() method resets the mode to its previous value    
 AutoClosable ll_enable_id_to_fs_map()
 
@@ -177,22 +177,25 @@ AutoClosable ll_enable_id_to_fs_map(true/false)
 boolean is_ll_enable_id_to_fs_map() 
 </programlisting>
     <para>A recommended way of using this is with the Java try-with-resources construct:</para>
-    <programlisting>try (AutoClosable w = 
-       llcas.ll_enable_id_to_fs_map) {
+    <programlisting>try (AutoClosable w = llcas.ll_enable_id_to_fs_map) {
   ... some operations
 } // automatically restores previous value 
 </programlisting>   
     
-    <para>This mode modifies deserialization by having the newly created Feature structures
+    <para>This mode modifies deserialization (except for XCAS, Xmi) by having the newly created Feature structures
       have IDs which match the serialized form ids (that is, the UIMA V2 "addresses").  
-      Serialized forms like Xmi and XCAS have the ids 
-      included in the external form;  other serialized forms impute the id from the ordering of the 
-      serialized Feature Structures.</para>
+      <!-- Serialized forms like Xmi and XCAS have the ids 
+      included in the external form;
+       -->
+      </para>
       
-    <para>New FSs created after deserialization will have addresses greater than the last deserialized one.
-      Furthermore, if this mode is still enabled, the id will match what the v2 address would have been.
-      (If the mode is not enabled, the v3 design assigns incrementing-by-1 ids to new Feature Structures.)
-    </para>    
+    <para>If this mode is still enabled after deserializing, subsequently created FSs
+      will have ids which match what the v2 addresses would have been.
+    </para>
+    
+    <para>This mode modifies serialization (except for XCAS, Xmi) to include non-reachable FSs including
+      any new FSs created after deserialization (assuming the mode remains set). If you do not want to include these,
+      you can surround the serialize call with a try-with-resources that turns the mode off.</para>    
     
     <para>Note that this mode, once set on a CAS, is not affected by CAS reset.</para>
   </section>
