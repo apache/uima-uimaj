@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>10</version>
+    <version>11</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
@@ -147,14 +147,7 @@
     --> 
     <slf4j.version>1.7.25</slf4j.version>
     <log4j.version>2.10.0</log4j.version> 
-    <rat.version>0.12</rat.version>
-    <maven.enforcer.version>3.0.0-M1</maven.enforcer.version>
-    <maven.version>3.0.5</maven.version>
-    <maven.javadoc.version>3.0.0-M1</maven.javadoc.version>
-    <!-- felix.bundle.version>2.3.7</felix.bundle.version-->
-    <felix.bundle.version>3.3.0</felix.bundle.version>
     
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.surefire.heap>512m</maven.surefire.heap>
@@ -206,102 +199,18 @@
           <artifactId>maven-invoker-plugin</artifactId>
           <version>3.0.1</version>
         </plugin>
-        <plugin>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.8</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.7.0</version>
-          <configuration>
-            <source>${maven.compiler.source}</source>
-            <target>${maven.compiler.target}</target>
-          </configuration>
-        </plugin>
-     
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven.javadoc.version}</version>
-          <configuration>
-            <source>${maven.compiler.source}</source>
-            <javadocVersion>${maven.compiler.source}</javadocVersion> <!-- https://issues.apache.org/jira/browse/UIMA-5369 -->
-          </configuration>
-          <executions>
-            <execution>
-              <id>attach-javadocs</id>
-              <configuration>
-                <source>${maven.compiler.source}</source>
-              </configuration> 
-            </execution>
-            <execution>
-              <id>default-cli</id>  <!-- Jenkins runs this apparently 3/2015 -->
-              <configuration>
-                <source>${maven.compiler.source}</source>
-              </configuration> 
-            </execution>
-          </executions>
-        </plugin>
         
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20.1</version>
           <configuration>
             <argLine>@{jacoco.argLine} -Xmx@{maven.surefire.heap} -Xms@{maven.surefire.heap} @{maven.surefire.argLine} @{maven.surefire.java9}</argLine>
           </configuration>
         </plugin>
-        
-        <!-- Code quality checking plugins mostly used for CI builds -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <version>3.8</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>findbugs-maven-plugin</artifactId>
-          <version>3.0.3</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <version>2.7</version>
-        </plugin>               
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>0.7.9</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <!-- version 2.0.0 fails -->
-          <!-- version 2.3.4 eliminates spurious warning messages -->
-          <!-- version 2.5 has accidental dependency on Java 6 -->
-          <!-- version 2.5.0 gives error - default pkg '.' not permitted, o.a.u.cas.impl -->
-          <!-- version 2.3.7 failing in some projects  -->  <!-- doesnt support java 8 -->
-             <!-- currently only overridden in uimaj-ep-configuration because otherwise, that is excluded from 
-                  update site plugins/ folder -->
-          <!--  version>3.0.1</version causes 2 plugins to go missing when FeaturesAndBundlesPublisher runs -->
-          <version>${felix.bundle.version}</version> <!-- override to 3.0.1 just in those 2-3 projects that require it --> 
-                  
-        </plugin>
-        
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${maven.enforcer.version}</version>
-        </plugin>
-        
+                
         <plugin>
           <groupId>org.apache.rat</groupId>
           <artifactId>apache-rat-plugin</artifactId>
-          <version>${rat.version}</version>
           <executions>
             <execution>
               <id>default-cli</id>
@@ -318,41 +227,14 @@
         <plugin> 
           <groupId>org.apache.maven.plugins</groupId> 
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version> 
           <configuration> 
             <retryFailedDeploymentCount>10</retryFailedDeploymentCount> 
           </configuration> 
-        </plugin>
-        
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>3.5</version>
         </plugin>
          
       </plugins>
     </pluginManagement>
     
-    <plugins>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-versions</id>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>${maven.version}</version>
-                </requireMavenVersion>
-                <requireJavaVersion>
-                  <version>${maven.compiler.target}</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
   </build>
   <profiles>
     <!-- ************ Java 9 enablement ************** -->
