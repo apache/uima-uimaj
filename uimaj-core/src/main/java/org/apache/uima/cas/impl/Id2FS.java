@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.impl.JCasHashMap;
+import org.apache.uima.util.IteratorNvc;
 
 /**
  * A map from ints representing FS id's (or "addresses") to those FSs
@@ -41,7 +42,7 @@ import org.apache.uima.jcas.impl.JCasHashMap;
  * 
  * Threading: to support read-only views, concurrent with updates, needs to be thread safe
  */
-public class Id2FS {
+public class Id2FS implements Iterable<TOP> {
   static final boolean MEASURE = false;
   private static final int MEASURE_STACK_SIZE = 10;
   private static Map<MeasureCaller, MeasureCaller> callers = MEASURE ? new HashMap<>() : null;
@@ -303,6 +304,11 @@ public class Id2FS {
         dumpCallers("Callers of walkReachablePlueFSsSorted", walkableCallers);        
       }, "Dump id2fs weak"));
     }
+  }
+
+  @Override
+  public IteratorNvc<TOP> iterator() {
+    return id2fs.iterator();
   }
 
 }

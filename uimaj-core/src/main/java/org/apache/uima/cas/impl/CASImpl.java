@@ -130,7 +130,7 @@ import org.apache.uima.util.Level;
 public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLevelCAS, TypeSystemConstants {
 
   private static final String TRACE_FSS = "uima.trace_fs_creation_and_updating";
-  public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
+//  public static final boolean IS_USE_V2_IDS = false;  // if false, ids increment by 1
   private static final boolean trace = false; // debug
   public static final boolean traceFSs = // false;  // debug - trace FS creation and update
       Misc.getNoValueSystemProperty(TRACE_FSS);
@@ -224,7 +224,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       !IS_THROW_EXCEPTION_CORRUPT_INDEX;
  
   public static final String ALWAYS_HOLD_ONTO_FSS = "uima.enable_id_to_feature_structure_map_for_all_fss";
-  static final boolean IS_ALWAYS_HOLD_ONTO_FSS =    // debug
+  static final boolean IS_ALWAYS_HOLD_ONTO_FSS =    // debug and users of low-level cas apis with deserialization
       Misc.getNoValueSystemProperty(ALWAYS_HOLD_ONTO_FSS);
 //  private static final int REF_DATA_FOR_ALLOC_SIZE = 1024;
 //  private static final int INT_DATA_FOR_ALLOC_SIZE = 1024;
@@ -466,7 +466,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      * The version 2 size on the main heap of the last created FS
      */
     private int lastFsV2Size = 1;
-    
+
     /**
      * used to "capture" the fsIdGenerator value for a read-only CAS to be visible in
      * other threads
@@ -537,6 +537,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private final IntVector id2addr = traceFSs ? new IntVector() : null;
     private int nextId2Addr = 1;  // only for tracing, to convert id's to v2 addresses
     final private int initialHeapSize;
+    /** if true, 
+     *    modify fs creation to save in id2fs map
+     *    modify deserializers to create fss with ids the same as the serialized form (
+     *      or the V2 "address" imputed from that)
+     *    modify serializers to include reachables only found via id2fs table
+     */
+    private boolean isId2Fs = IS_ALWAYS_HOLD_ONTO_FSS;  // default (usually false unless this global is set
         
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
@@ -746,10 +753,27 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       id2tramp = null;
     }
     
+    /**
+     * The logic for this is:
+     *   - normal - add 1 to the value of the previous 
+     *              which is kept in fsIdGenerator
+     *              Update fsIdGenerator to be this id.
+     *              (maybe) set lastFsV2Size to the size of this FS in v2
+     *   - pear trampolines: use the exact same id as the main fs.
+     *            This value is in reuseId.  
+     *            In this case, no computation of "next" is done
+     *   - isId2Fs This is set if in special mode to emulate v2 addresses.  
+     *       - used for backwards compatibility when LowLevelCas getFSForRef calls in use
+     *       - used for debugging v2 vs v3 runs
+     *       - causes fsId to be set to a value which should match the v2 address
+     * Side effect: when doing v2 emulation, updates the lastFsV2Size
+     * @param fs - the fs, used to compute its "size" on the v2 heap when emulating v2 addresses
+     * @return the id to use
+     */
     private int getNextFsId(TOP fs) {
-      if (reuseId != 0) {
+      if (reuseId != 0) {  // for pear use
 //      l.setStrongRef(fs, reuseId);
-      return reuseId;
+        return reuseId;  // reuseId reset to 0 by callers' try/finally block
       } 
       
   //    l.add(fs);
@@ -759,15 +783,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   //    assert(l.size() == (2 + fsIdGenerator));
       final int p = fsIdGenerator;
       
-      final int r = fsIdGenerator += IS_USE_V2_IDS 
+      final int r = fsIdGenerator += (IS_ALWAYS_HOLD_ONTO_FSS || isId2Fs) 
                                        ? lastFsV2Size
                                        : 1;
       if (r < p) { 
         throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
       }
-      if (IS_USE_V2_IDS) {
+      if (IS_ALWAYS_HOLD_ONTO_FSS || isId2Fs) {
         // this computation is partial - misses length of arrays stored on heap
-        // because that info not yet available
+        // because that info not yet available  
+        // It is added later via call to adjustLastFsV2size(int)
         lastFsV2Size = fs._getTypeImpl().getFsSpaceReq();
       }
       return r;
@@ -1002,6 +1027,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   // ----------------------------------------
   //   accessors for data in SharedViewData
   // ----------------------------------------
+   
+  public boolean isId2Fs() {
+    return svd.isId2Fs;
+  }
+  
+  Id2FS getId2FSs() {
+    return svd.id2fs;
+  }
+  
+  void set_id2fs(TOP fs) {
+    svd.id2fs.put(fs);
+  }
   
   void addSofaViewName(String id) {
     svd.sofaNameSet.add(id);
@@ -2476,11 +2513,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     }
     TOP fs = (TOP) createFS(ti);
     if (!fs._isPearTrampoline()) {
-      if (IS_ALWAYS_HOLD_ONTO_FSS) {
-        svd.id2fs.putUnconditionally(fs);  // hold on to it if nothing else is
-      } else {
-        svd.id2fs.put(fs);  // just like above, but has assert that wasn't there previously
-      }
+      setId2FsMaybeUnconditionally(fs);
     }
     return fs._id;
   }
@@ -2512,11 +2545,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createArray(int typeCode, int arrayLength) {
     TOP fs = createArray(getTypeFromCode_checked(typeCode), arrayLength);
-    if (IS_ALWAYS_HOLD_ONTO_FSS) {
-      svd.id2fs.putUnconditionally(fs);
-    } else {
-      svd.id2fs.put(fs);
-    }
+    setId2FsMaybeUnconditionally(fs);
     return fs._id;      
   }
 
@@ -2543,7 +2572,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createByteArray(int arrayLength) {
     TOP fs = createArray(getTypeSystemImpl().byteArrayType, arrayLength);
-    svd.id2fs.put(fs);
+    set_id2fs(fs);
     return fs._id;
   }
 
@@ -2554,7 +2583,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createBooleanArray(int arrayLength) {
     TOP fs = createArray(getTypeSystemImpl().booleanArrayType, arrayLength);
-    svd.id2fs.put(fs);
+    set_id2fs(fs);
     return fs._id;
   }
 
@@ -2565,7 +2594,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createShortArray(int arrayLength) {
     TOP fs = createArray(getTypeSystemImpl().shortArrayType, arrayLength);
-    svd.id2fs.put(fs);
+    set_id2fs(fs);
     return fs._id;
   }
 
@@ -2576,7 +2605,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createLongArray(int arrayLength) {
     TOP fs = createArray(getTypeSystemImpl().longArrayType, arrayLength);
-    svd.id2fs.put(fs);
+    set_id2fs(fs);
     return fs._id;
   }
 
@@ -2587,7 +2616,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   @Override
   public int ll_createDoubleArray(int arrayLength) {
     TOP fs = createArray(getTypeSystemImpl().doubleArrayType, arrayLength);
-    svd.id2fs.put(fs);
+    set_id2fs(fs);
     return fs._id;
   }
 
@@ -2607,7 +2636,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       }
     }
     TOP fs = createArray(ti, arrayLength);
-    svd.id2fs.put(fs);
+    set_id2fs(fs);
     return fs._id;
   }
   
@@ -3944,7 +3973,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   public int ll_createAnnotation(int typeCode, int begin, int end) {
     TOP fs = createAnnotation(getTypeFromCode(typeCode), begin, end);
-    svd.id2fs.put(fs); // to prevent gc from reclaiming
+    set_id2fs(fs); // to prevent gc from reclaiming
     return fs._id();
   }
   
@@ -4662,14 +4691,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
    * Test case use
    * @param fss the FSs to include in the id 2 fs map
    */
-  public void setId2FSs(FeatureStructure ... fss) {
+  public void setId2FSsMaybeUnconditionally(FeatureStructure ... fss) {
     for (FeatureStructure fs : fss) {
-      if (IS_ALWAYS_HOLD_ONTO_FSS) {
-        svd.id2fs.putUnconditionally((TOP)fs);
-      } else {
-        svd.id2fs.put((TOP)fs);
-      }
+      setId2FsMaybeUnconditionally((TOP) fs);
     }
+  }
+  
+  private void setId2FsMaybeUnconditionally(TOP fs) {
+    if (IS_ALWAYS_HOLD_ONTO_FSS || svd.isId2Fs) {
+      svd.id2fs.putUnconditionally(fs);
+    } else {
+      set_id2fs(fs);
+    }   
   }
   
 //  Not currently used
@@ -5513,7 +5546,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   void maybeHoldOntoFS(FeatureStructureImplC fs) {
-    if (IS_ALWAYS_HOLD_ONTO_FSS) {
+    if (IS_ALWAYS_HOLD_ONTO_FSS || svd.isId2Fs) {
       svd.id2fs.putUnconditionally((TOP)fs);
     }
   }
@@ -5577,6 +5610,16 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     };
   }
   
+  public boolean is_ll_enable_id_to_fs_map() {
+    return svd.isId2Fs;
+  }
+  
+  public AutoCloseableNoException ll_enable_id_to_fs_map(boolean enable) {
+    final boolean restoreState = svd.isId2Fs;
+    AutoCloseableNoException r = () -> svd.isId2Fs = restoreState; 
+    svd.isId2Fs = enable;
+    return r;
+  }
 
 //  int allocIntData(int sz) {
 //    

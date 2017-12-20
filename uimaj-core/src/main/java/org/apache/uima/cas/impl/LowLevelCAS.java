@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.AutoCloseableNoException;
 
 /**
  * Defines the low-level CAS APIs. The low-level CAS APIs provide no access to feature structure
@@ -831,5 +832,27 @@ public interface LowLevelCAS {
   CASImpl ll_getSofaCasView(int addr);
   
   int ll_getSofa();
+  
+  /**
+   * Enables the id_to_fs_map mode. 
+   * @return an AutoClosable whose close method doesn't throw an exception
+   *   that will reset the mode to what it was when it was changed
+   */
+  default AutoCloseableNoException ll_enable_id_to_fs_map() {
+    return ll_enable_id_to_fs_map(true);
+  }
+  
+  /**
+   * Enables or disables the id_to_fs_map mode. 
+   * @return an AutoClosable whose close method doesn't throw an exception
+   *   that will reset the mode to what it was when it was changed
+   */
+  AutoCloseableNoException ll_enable_id_to_fs_map(boolean enable);
+  
+  /**
+   * @return true if the id_to_fs_map mode is enabled
+   */
+  boolean is_ll_enable_id_to_fs_map();
+  
 }
 

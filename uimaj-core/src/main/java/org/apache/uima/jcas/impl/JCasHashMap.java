@@ -19,10 +19,12 @@
 
 package org.apache.uima.jcas.impl;
 
+import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
 
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.IteratorNvc;
 
 /**
  * Version 3 (2016, for Java 8) of map between id's (ints) JCasCover Objects
@@ -114,7 +116,7 @@ import org.apache.uima.jcas.cas.TOP;
  *   putIfAbsent(value-to-be-computed, as an IntSupplier)
  *   get
  */
-public class JCasHashMap {
+public class JCasHashMap implements Iterable<TOP> {
 
   // set to true to collect statistics for tuning
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
@@ -418,6 +420,40 @@ public class JCasHashMap {
   
   public int getConcurrencyLevel() {
     return concurrencyLevel;
+  }
+
+  @Override
+  public IteratorNvc<TOP> iterator() {
+    return new IteratorNvc<TOP>() {
+      int i_submap = 0;
+      IteratorNvc<TOP> current_iterator = subMaps[0].iterator();
+      
+      { maybeMoveToNextValidSubmap(); }
+      
+      void maybeMoveToNextValidSubmap() {
+        while (i_submap < subMaps.length && !current_iterator.hasNext()) {
+          current_iterator = subMaps[++ i_submap].iterator();
+        }
+      }
+      
+      @Override
+      public boolean hasNext() {
+        maybeMoveToNextValidSubmap();
+        return i_submap < subMaps.length;
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) throw new NoSuchElementException();
+        return nextNvc(); 
+      }
+      
+      @Override
+      public TOP nextNvc() {
+        return current_iterator.nextNvc();
+      }
+      
+    };
   }
     
 //  private static final Thread dumpMeasurements = MEASURE_CACHE ? new Thread(new Runnable() {

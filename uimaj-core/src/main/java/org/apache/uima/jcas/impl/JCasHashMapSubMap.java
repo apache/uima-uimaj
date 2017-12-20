@@ -21,16 +21,18 @@ package org.apache.uima.jcas.impl;
 
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.function.IntFunction;
 
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.IteratorNvc;
 
 /**
  * Part of the JCasHashMap.
  * There are multiple instances of this class, one per concurrancy level
  */
-class JCasHashMapSubMap {
+class JCasHashMapSubMap implements Iterable<TOP> {
   
   // set to true to collect statistics for tuning
   // you have to also put a call to jcas.showJfsFromCaddrHistogram() at the end of the run
@@ -608,6 +610,41 @@ class JCasHashMapSubMap {
       resetProbeInfo(probeInfo);
     }
     return find(table, key, hash, probeInfo);
+  }
+
+  @Override
+  public IteratorNvc<TOP> iterator() {
+    return new IteratorNvc<TOP>() {
+      int i = moveToNextValid(0);
+
+      @Override
+      public boolean hasNext() {
+        return i < table.length;
+      }
+
+      @Override
+      public TOP next() {
+        if (!hasNext()) throw new NoSuchElementException();
+        return nextNvc();
+      }
+      
+      @Override
+      public TOP nextNvc() {
+        TOP r = table[i];
+        i = moveToNextValid(i+1);
+        return r;        
+      }
+      
+      int moveToNextValid(int pos) {
+        while (pos < table.length && 
+               (table[pos] == null || 
+                table[pos]._isJCasHashMapReserve())) {
+          pos ++;
+        }
+        return pos;
+      }
+    };
+    
   }
   
 //  private void lockit() {

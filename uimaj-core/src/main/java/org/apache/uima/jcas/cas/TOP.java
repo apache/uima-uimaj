@@ -88,7 +88,7 @@ public class TOP extends FeatureStructureImplC {
 	}
 
   public static TOP _createSearchKey(int id) {
-    return new TOP(id);
+    return new TOP(id);  // special super class, does nothing except create this TOP instance
   }
   
   /**

@@ -77,7 +77,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
+    if (_casView.isId2Fs()) {
       _casView.adjustLastFsV2size(length);
     }    
   }
@@ -95,7 +95,7 @@ public final class IntegerArray extends TOP implements CommonPrimitiveArray<Inte
     if (CASImpl.traceFSs) { // tracing done after array setting, skipped in super class
       _casView.traceFSCreate(this);
     }
-    if (CASImpl.IS_USE_V2_IDS) {
+    if (_casView.isId2Fs()) {
       _casView.adjustLastFsV2size(length);
     }    
   }
