@@ -569,7 +569,7 @@ public class SerializationReinitTest extends TestCase {
     newFS2.setIntValue(endFeature, cycle+2);
     ir.addFS(newFS2);
     CASImpl ci = (CASImpl) cas;
-    ci.setId2FSs(newFS2, newBA2, newSA2);
+    ci.setId2FSsMaybeUnconditionally(newFS2, newBA2, newSA2);
     // set string using lowlevel string create API
     final int llfs2 = ll_cas.ll_getFSRef(newFS2);
     final int llba2 = ll_cas.ll_getFSRef(newBA2);

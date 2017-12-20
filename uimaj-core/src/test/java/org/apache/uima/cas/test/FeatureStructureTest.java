@@ -229,7 +229,7 @@ public class FeatureStructureTest extends TestCase {
     fsl.addToIndexes(); // otherwise won't be replaced later
     
     Annotation token = this.cas.createFS(tokenType);
-    cas.setId2FSs(token);  
+    cas.setId2FSsMaybeUnconditionally(token);  
     
     // set up some refs; these must be updated if the type changes in a way to require a new FS
     fsa.set(0, token);   // set the 0th  element of a FS Array to point to the "token"
