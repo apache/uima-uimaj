@@ -431,8 +431,12 @@ public class JCasHashMap implements Iterable<TOP> {
       { maybeMoveToNextValidSubmap(); }
       
       void maybeMoveToNextValidSubmap() {
-        while (i_submap < subMaps.length && !current_iterator.hasNext()) {
-          current_iterator = subMaps[++ i_submap].iterator();
+        while (!current_iterator.hasNext()) {
+          i_submap ++;
+          if (i_submap >= subMaps.length) {
+            return;
+          }
+          current_iterator = subMaps[i_submap].iterator();
         }
       }
       
