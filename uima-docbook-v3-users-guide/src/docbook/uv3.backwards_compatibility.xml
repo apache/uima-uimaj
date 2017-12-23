@@ -162,11 +162,12 @@ under the License.
     
     <para>When a new CAS is created, the setting gets a default value, which comes from two sources:
       <itemizedlist>
-        <listitem><para>a <code>-Duima.enable_v2_id_references</code> system property, read once when the 
+        <listitem><para>a <code>-Duima.default_v2_id_references</code> system property, read once when the 
         UIMA framework classes are loaded.</para>
         </listitem>
-        <listitem><para>A setting called <code>defaultV2IdRefs</code>, kept per thread.
-          This overrides the system property.</para></listitem>
+        <listitem><para>A setting called <code>defaultV2IdRefs</code>, kept per thread.  The 
+          setting is inherited by any child threads the thread creates, and 
+          overrides the system property if used.</para></listitem>
       </itemizedlist> 
     </para>
     
@@ -231,8 +232,7 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
         </para>            
       </listitem>
     </itemizedlist>
-      
-    
+         
   </section>
   
   <section id="uv3.backwards_compatibility.PEARs">
