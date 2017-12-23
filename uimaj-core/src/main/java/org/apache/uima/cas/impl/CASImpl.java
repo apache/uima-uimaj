@@ -5629,6 +5629,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
     final boolean restoreState = svd.isId2Fs;
+    if (enable && !restoreState && svd.fsIdGenerator != 0) {
+      throw new IllegalStateException("CAS must be empty when switching to V2 ID References mode.");
+    }
     AutoCloseableNoException r = () -> svd.isId2Fs = restoreState; 
     svd.isId2Fs = enable;
     return r;
