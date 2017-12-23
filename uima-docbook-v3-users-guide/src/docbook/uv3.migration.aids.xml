@@ -84,22 +84,46 @@ under the License.
 
          <!-- ******************************************************************************* -->
          <row>
-           <entry><para>Enable finding all Feature Structures by their int ID</para></entry>
+           <entry><para>Default CASs to support V2 ID references</para></entry>
            
-           <entry><para><code>uima.enable_id_to_feature_structure_map_for_all_fss</code></para>
+           <entry><para><code>uima.default_v2_id_references</code></para>
            
-                  <para>Default: normally created Feature Structures are not kept in a map.</para>
-                  <para>In version 3, normally, Feature Structures are not added to the 
-                        map used by the Low Level CAS API to map from int ids to Feature Structures.
-                        This has the benefit that no longer referenced Feature Structures may be 
-                        garbaged collected.  This behavior may be overridden by this property.</para>
-                  <para>This property supplies default values, per CAS, for that CAS's 
-                    <code>ll_enable_id_to_fs_map</code> mode.  This mode is programmatically
-                      settable, which overrides the default.  The mode changes how 
-                    Feature Structures are created, serialized, and deserialized, all in an 
-                    effort to make V2 code that uses low level CAS Apis and <code>ll_getFSForRef</code>
-                    methods continue to work; see the backwards compatibility section for details.</para>                        
-                        </entry>
+                  <para>In version 3, Feature Structures are managed somewhat differently from V2.</para>
+                  <itemizedlist>
+                    <listitem><para>Feature Structure creation doesn't remember a map from the id to the FS,
+                      so the LowLevelCas method getFSForRef(int) isn't supported.  (Exception: Feature Structures
+                      created with the low level API calls are findable using this).</para>
+                    </listitem>
+                    <listitem>
+                      <para>Creation of Feature Structures assign "ids" as incrementing integers.  In V2, the 
+                        "id" is the address of the Feature Structure in the v2 Heap; these ids increment by 
+                        the size of the Feature Structure on the heap.</para>
+                    </listitem>
+                    <listitem>
+                      <para>Serialization only serializes "reachable" Feature Structures.</para>
+                    </listitem>
+                  </itemizedlist>
+                  
+                  <para>When this mode is set, the behavior is modified to emulate V2's.</para>
+                  <itemizedlist>
+                    <listitem><para>Feature Structures are added to an id-to-featureStructure map.</para>
+                    </listitem>
+                    <listitem>
+                      <para>IDs are assign incrementing by the size of what the Feature Structure would have been in V2.
+                      </para>
+                    </listitem>
+                    <listitem>
+                      <para>Serialization includes unreachable Feature Structures (except for Xmi and XCAS - because
+                        this is how V2 operates))</para>
+                    </listitem>
+                  </itemizedlist>
+                  <para>This property sets the default value, per CAS, for that CAS's 
+                    <code>ll_enableV2IdRefs</code> mode to true.  This mode is is also programmatically
+                      settable, which overrides this default.</para>   '
+                  <para>For more details on how this setting operates and interacts with the associated APIs, 
+                    see <xref linkend="uv3.backwards_compatibility.preserve_v2_ids"/></xref>
+                  </para>                     
+           </entry>
          </row>
          
          <!-- ******************************************************************************* -->
