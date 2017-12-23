@@ -231,6 +231,8 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
           over subsequent serialization/deserialization steps.
         </para>            
       </listitem>
+      <listitem><para>Note: This does not affect the <code>select</code> framework results - unreachable Feature Structures
+        are not included.</para></listitem>
     </itemizedlist>
          
   </section>
