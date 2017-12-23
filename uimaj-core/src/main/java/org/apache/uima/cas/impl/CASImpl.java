@@ -223,7 +223,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       !IS_REPORT_FS_UPDATE_CORRUPTS_INDEX &&
       !IS_THROW_EXCEPTION_CORRUPT_INDEX;
  
-  public static final String ALWAYS_HOLD_ONTO_FSS = "uima.enable_id_to_feature_structure_map_for_all_fss";
+  public static final String ALWAYS_HOLD_ONTO_FSS = "uima.default_v2_id_references";
   static final boolean IS_ALWAYS_HOLD_ONTO_FSS =    // debug and users of low-level cas apis with deserialization
       Misc.getNoValueSystemProperty(ALWAYS_HOLD_ONTO_FSS);
 //  private static final int REF_DATA_FOR_ALLOC_SIZE = 1024;
@@ -238,7 +238,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     new DebugNameValuePair(null, null);
     new DebugFSLogicalStructure();
   }
-
+  
+  private final static ThreadLocal<Boolean> defaultV2IdRefs = 
+      InheritableThreadLocal.withInitial(() -> null);
+  
+  public static ThreadLocal<Boolean> getDefaultV2IdRefs() {
+    return defaultV2IdRefs;
+  }
+  
   // Static classes representing shared instance data
   // - shared data is computed once for all views
   
@@ -543,8 +550,8 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
      *      or the V2 "address" imputed from that)
      *    modify serializers to include reachables only found via id2fs table
      */
-    private boolean isId2Fs = IS_ALWAYS_HOLD_ONTO_FSS;  // default (usually false unless this global is set
-        
+    private boolean isId2Fs;
+                
     private SharedViewData(CASImpl baseCAS, int initialHeapSize, TypeSystemImpl tsi) {
       this.baseCAS = baseCAS;
       this.tsi = tsi;
@@ -552,11 +559,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       bcsd = new BinaryCasSerDes(baseCAS);
       id2fs = new Id2FS(initialHeapSize);
       if (traceFSs) id2addr.add(0);
+      
+      Boolean v = getDefaultV2IdRefs().get();
+      isId2Fs = (v == null) 
+                  ? IS_ALWAYS_HOLD_ONTO_FSS
+                  : v;
     }
     
     void clearCasReset() {
       // fss
       fsIdGenerator = 0;
+      lastFsV2Size = 1;
       id2fs.clear();
       
       // pear caches
@@ -783,13 +796,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   //    assert(l.size() == (2 + fsIdGenerator));
       final int p = fsIdGenerator;
       
-      final int r = fsIdGenerator += (IS_ALWAYS_HOLD_ONTO_FSS || isId2Fs) 
+      final int r = fsIdGenerator += isId2Fs 
                                        ? lastFsV2Size
                                        : 1;
       if (r < p) { 
         throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
       }
-      if (IS_ALWAYS_HOLD_ONTO_FSS || isId2Fs) {
+      if (isId2Fs) {
         // this computation is partial - misses length of arrays stored on heap
         // because that info not yet available  
         // It is added later via call to adjustLastFsV2size(int)
@@ -4698,7 +4711,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   private void setId2FsMaybeUnconditionally(TOP fs) {
-    if (IS_ALWAYS_HOLD_ONTO_FSS || svd.isId2Fs) {
+    if (svd.isId2Fs) {
       svd.id2fs.putUnconditionally(fs);
     } else {
       set_id2fs(fs);
@@ -5546,7 +5559,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
   void maybeHoldOntoFS(FeatureStructureImplC fs) {
-    if (IS_ALWAYS_HOLD_ONTO_FSS || svd.isId2Fs) {
+    if (svd.isId2Fs) {
       svd.id2fs.putUnconditionally((TOP)fs);
     }
   }
@@ -5610,11 +5623,11 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     };
   }
   
-  public boolean is_ll_enable_id_to_fs_map() {
+  public boolean is_ll_enableV2IdRefs() {
     return svd.isId2Fs;
   }
   
-  public AutoCloseableNoException ll_enable_id_to_fs_map(boolean enable) {
+  public AutoCloseableNoException ll_enableV2IdRefs(boolean enable) {
     final boolean restoreState = svd.isId2Fs;
     AutoCloseableNoException r = () -> svd.isId2Fs = restoreState; 
     svd.isId2Fs = enable;

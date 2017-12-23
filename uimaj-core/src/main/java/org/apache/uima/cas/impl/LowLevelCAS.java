@@ -76,6 +76,7 @@ import org.apache.uima.util.AutoCloseableNoException;
  * 
  */
 public interface LowLevelCAS {
+  
   /**
    * Not a valid type. Type class constant returned by
    * {@link #ll_getTypeClass(int) ll_getTypeClass()}.
@@ -832,14 +833,14 @@ public interface LowLevelCAS {
   CASImpl ll_getSofaCasView(int addr);
   
   int ll_getSofa();
-  
+    
   /**
    * Enables the id_to_fs_map mode. 
    * @return an AutoClosable whose close method doesn't throw an exception
    *   that will reset the mode to what it was when it was changed
    */
-  default AutoCloseableNoException ll_enable_id_to_fs_map() {
-    return ll_enable_id_to_fs_map(true);
+  default AutoCloseableNoException ll_enableV2IdRefs() {
+    return ll_enableV2IdRefs(true);
   }
   
   /**
@@ -847,12 +848,32 @@ public interface LowLevelCAS {
    * @return an AutoClosable whose close method doesn't throw an exception
    *   that will reset the mode to what it was when it was changed
    */
-  AutoCloseableNoException ll_enable_id_to_fs_map(boolean enable);
+  AutoCloseableNoException ll_enableV2IdRefs(boolean enable);
   
   /**
    * @return true if the id_to_fs_map mode is enabled
    */
-  boolean is_ll_enable_id_to_fs_map();
+  boolean is_ll_enableV2IdRefs();
   
+  /**
+   * Defaults new CASs to have the id_to_fs_map enabled
+   * @return an AutoCloseable which restores the previous setting
+   */
+  static AutoCloseableNoException ll_defaultV2IdRefs() {
+    return ll_defaultV2IdRefs(true);
+  }
+  
+  /**
+   * Sets the defaults for new CASs to have the id_to_fs_map enabled.
+   * @return an AutoCloseable which restores the previous setting
+   */
+  static AutoCloseableNoException ll_defaultV2IdRefs(boolean enable) {
+    final ThreadLocal<Boolean> tl = CASImpl.getDefaultV2IdRefs(); 
+    final Boolean prev = tl.get();  // could be null, true or false
+    AutoCloseableNoException r = () -> tl.set(prev);     
+    tl.set(enable);
+    return r;
+  }
+
 }
 
