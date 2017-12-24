@@ -119,9 +119,9 @@ under the License.
                   </itemizedlist>
                   <para>This property sets the default value, per CAS, for that CAS's 
                     <code>ll_enableV2IdRefs</code> mode to true.  This mode is is also programmatically
-                      settable, which overrides this default.</para>   '
+                      settable, which overrides this default.</para>
                   <para>For more details on how this setting operates and interacts with the associated APIs, 
-                    see <xref linkend="uv3.backwards_compatibility.preserve_v2_ids"/></xref>
+                    see <xref linkend="uv3.backwards_compatibility.preserve_v2_ids"/>
                   </para>                     
            </entry>
          </row>
