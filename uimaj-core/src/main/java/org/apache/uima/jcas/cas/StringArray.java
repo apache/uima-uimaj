@@ -76,7 +76,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size(length);
+      _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
 
@@ -94,7 +94,7 @@ public final class StringArray extends TOP implements Iterable<String>, CommonPr
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size(length);
+      _casView.adjustLastFsV2Size_arrays(length);
     }    
   }
 

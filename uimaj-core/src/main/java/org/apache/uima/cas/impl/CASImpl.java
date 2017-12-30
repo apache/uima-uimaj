@@ -786,7 +786,9 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     private int getNextFsId(TOP fs) {
       if (reuseId != 0) {  // for pear use
 //      l.setStrongRef(fs, reuseId);
-        return reuseId;  // reuseId reset to 0 by callers' try/finally block
+        int r = reuseId;
+        reuseId = 0;
+        return r;  // reuseId reset to 0 by callers' try/finally block
       } 
       
   //    l.add(fs);
@@ -1051,6 +1053,18 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   void set_id2fs(TOP fs) {
     svd.id2fs.put(fs);
+  }
+  
+  void set_reuseId(int id) {
+    svd.reuseId = id;
+  }
+  
+  void setLastUsedFsId(int id) {
+    svd.fsIdGenerator = id;
+  }
+  
+  void setLastFsV2Size(int size) {
+    svd.lastFsV2Size = size;
   }
   
   void addSofaViewName(String id) {
@@ -4696,8 +4710,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.getNextFsId(fs);
   }
   
-  public void adjustLastFsV2size(int arrayLength) {
+  public void adjustLastFsV2Size_arrays(int arrayLength) {
     svd.lastFsV2Size += 1 + arrayLength;  // 1 is for array length value
+  }
+  
+  public void adjustLastFsV2size_nonHeapStoredArrays() {
+    svd.lastFsV2Size += 2;  // length and index into other special heap
   }
   
   /**

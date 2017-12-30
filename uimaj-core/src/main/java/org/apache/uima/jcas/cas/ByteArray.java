@@ -74,7 +74,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 
@@ -92,7 +92,7 @@ public final class ByteArray extends TOP implements CommonPrimitiveArray<Byte>, 
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 

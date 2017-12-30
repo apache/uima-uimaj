@@ -78,7 +78,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
   
@@ -95,7 +95,7 @@ public final class BooleanArray extends TOP implements CommonPrimitiveArray<Bool
       _casView.traceFSCreate(this);
     }
     if (_casView.isId2Fs()) {
-      _casView.adjustLastFsV2size(2); // space for length and ref
+      _casView.adjustLastFsV2size_nonHeapStoredArrays(); 
     }     
   }
 
