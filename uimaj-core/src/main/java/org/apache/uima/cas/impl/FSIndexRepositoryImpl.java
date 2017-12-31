@@ -1320,6 +1320,7 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
     
     // Add fsRef to all indexes.
     boolean noIndexOrOnlySetindexes = true;
+    boolean setOrSorted = false;  // set to true if at least one set or sorted index found
     for (FsIndex_iicp<TOP> iicp : indexes) {
       
       // the indexes for the type are over the type and its subtypes.
@@ -1335,6 +1336,11 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       if (noIndexOrOnlySetindexes) {
         noIndexOrOnlySetindexes = indexingStrategy == FSIndex.SET_INDEX;
       }
+      
+      // remember if we get any set or sorted index by turning this true
+      if (setOrSorted == false && indexingStrategy != FSIndex.BAG_INDEX) {
+        setOrSorted = true;
+      }
     }
     
     // log even if added back, because remove logs remove, and might want to know it was "reindexed"
@@ -1342,7 +1348,10 @@ public class FSIndexRepositoryImpl implements FSIndexRepositoryMgr, LowLevelInde
       logIndexOperation(fs, true);
     }
     
-    fs._setInSetSortedIndexed();
+    if (setOrSorted) { // only set this bit if this fs is in 1 or more set or sorted indexes
+      fs._setInSetSortedIndexed();
+    }
+    
     if (isAddback) { return; }
     
     // https://issues.apache.org/jira/browse/UIMA-4111
