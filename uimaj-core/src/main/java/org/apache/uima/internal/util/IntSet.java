@@ -46,6 +46,9 @@ public class IntSet implements PositiveIntSet {
    */
   public IntSet(int capacity) {
     this.iVec = new IntVector(capacity);
+    if (IS_TRACE_MODE_SWITCH) {
+      System.out.println("TRACE_MODE new IntSet with capacity: " + capacity);
+    }
   }
 
   /**

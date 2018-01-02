@@ -95,12 +95,19 @@ public abstract class Common_hash_support {
           size = 0;
           removed = 0;
           resetHistogram();
+          if (PositiveIntSet.IS_TRACE_MODE_SWITCH) {
+            System.out.println("TRAcE_MODE Common_hash clear 2nd time shrinkable, newCapacity=" + newCapacity + ", keys_length: " + keys_length());
+          }
           return;
         } else { // don't shrink below minimum
           clearExisting();
+          if (PositiveIntSet.IS_TRACE_MODE_SWITCH) {
+            System.out.println("TRAcE_MODE Common_hash clear 2nd time shrinkable but nothing done, below minimum: newCapacity=" + newCapacity + ", keys_length: " + keys_length());
+          }
           return;
         }
       } else {
+        if (PositiveIntSet.IS_TRACE_MODE_SWITCH) System.out.println("TRACE_MODE Common_hash clear setting 2nd time shrinkable");
         secondTimeShrinkable = true;
       }
     } else {

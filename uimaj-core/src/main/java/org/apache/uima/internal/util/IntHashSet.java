@@ -106,6 +106,9 @@ public class IntHashSet extends Common_hash_support implements PositiveIntSet {
     this.offset = isMake4 ? 0 : offset;
     newTable(this.initialCapacity);
     resetTable();
+    if (IS_TRACE_MODE_SWITCH) {
+      System.out.println("TRACE_MODE new IntHashSet, sizeBeforeExpanding = " + initialSizeBeforeExpanding + ", offset= " + offset);
+    }
   }
   
 //  /**

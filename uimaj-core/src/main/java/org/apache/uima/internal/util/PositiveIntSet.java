@@ -26,6 +26,8 @@ import java.util.function.IntConsumer;
  */
 public interface PositiveIntSet {
 
+  static final boolean IS_TRACE_MODE_SWITCH = false;  // for debugging
+
   /**
    * remove all members of the set
    */

@@ -337,10 +337,10 @@ public class ObjHashSet<T> extends Common_hash_support implements Set<T> {
    */
   private void addInner(T obj) {
     final int i = findPosition(obj);
-    //debug
-    if (keys[i] != null) {
-      System.out.println("debug");
-    }
+//    //debug
+//    if (keys[i] != null) {
+//      System.out.println("debug");
+//    }
     assert(keys[i] == null);
     keys[i] = obj;
 //    val259();

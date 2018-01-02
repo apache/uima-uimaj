@@ -88,6 +88,9 @@ public class IntBitSet implements PositiveIntSet {
   public IntBitSet(int maxAdjKey, int offset) {
     set = new BitSet(Math.max(1, maxAdjKey));
     this.offset = offset;
+    if (IS_TRACE_MODE_SWITCH) {
+      System.out.println("TRACE_MODE new IntBitSet, maxAdjKey = " + maxAdjKey + ", offset= " + offset);
+    }
   }
   
   /**
