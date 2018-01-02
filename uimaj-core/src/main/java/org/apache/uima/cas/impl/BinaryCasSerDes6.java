@@ -439,16 +439,19 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
   final private DataInputStream[] dataInputs = new DataInputStream[NBR_SLOT_KIND_ZIP_STREAMS];
   final private Inflater[] inflaters = new Inflater               [NBR_SLOT_KIND_ZIP_STREAMS];
 
-  /** the "fixups" for relative heap refs */
+  /** the "fixups" for relative heap refs
+   *  actions set slot values 
+   */
   final private List<Runnable> fixupsNeeded = new ArrayList<>();
   final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
 //  /** hold on to FS prior to getting them indexed to prevent them from being GC'd */
 //  final private List<TOP> preventFsGc = new ArrayList<>();
 
   /** 
+   * Deferred actions to set Feature Slots of feature structures.
    * the deferrals needed when deserializing a subtype of AnnotationBase before the sofa is known
    * Also for Sofa creation where some fields are final
-   * */
+   */
   final private List<Runnable> singleFsDefer = new ArrayList<>(); 
   
   /** used for deferred creation */
@@ -1754,7 +1757,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
     }
     
 //    stringTableOffset = isReadingDelta ? (stringHeapObj.getSize() - 1) : 0;
-    nextFsId = isReadingDelta ? (cas.getLastUsedFsId() + 1) : 0;
+    nextFsId = isReadingDelta ? cas.peekNextFsId() : 0;
     
 //    if (!isReadingDelta) {
 //      heapObj.reinitSizeOnly(1);
@@ -1793,7 +1796,12 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
      * Read in new FSs being deserialized and add them to heap
      **********************************************************/
     
-    // currentFsId used when debugging, only
+    // currentFsId is ID of next to be deserialized FS
+    //   only incremented when something is "stored", not skipped
+    // nextFsAddr only used for loop  termination , pre v3
+    //   could be gt than fsId, because some FSs are "skipped" in deserialization
+    
+    // currentFsId only used in error message
     for (int currentFsId = nextFsId, nbrFSs = 0, nextFsAddr = 1; 
          this.bcsd.isBeforeV3 
            ? nextFsAddr < totalMappedHeapSize
@@ -1802,6 +1810,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
          nextFsAddr += this.bcsd.isBeforeV3 
                          ? tgtType.getFsSpaceReq(lastArrayLength)
                          : 0) {
+     
       final int tgtTypeCode = readVnumber(typeCode_dis); // get type code
 //      final int adjTgtTypeCode = tgtTypeCode + ((this.bcsd.isBeforeV3 && tgtTypeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
 //          ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
@@ -1921,8 +1930,8 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
               r.run();
             }
           }
-        }
-      }
+        }  // end of handling deferred current fs
+      } // of not-an-array
 //      if (storeIt) {
 //        prevFsByType[srcType.getCode()] = currentFs;  // make this one the "prev" one for subsequent testing
 //        //debug
@@ -1934,9 +1943,10 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
 //                 need to have read skip slots not present in src
 //      targetHeapUsed += incrToNextFs(heap, currentFsId, tgtTypeInfo);  // typeInfo is target type info
       fsStartIndexes.addSrcFsForTgt(currentFs, storeIt);
-      currentFsId += storeIt ? 1 : 0;
-    }
+      currentFsId += storeIt ? cas.lastV2IdIncr() : 0;
+    } // end of for loop over items in main heap
 
+   
     for (Runnable r : fixupsNeeded) {
       r.run();
     }
