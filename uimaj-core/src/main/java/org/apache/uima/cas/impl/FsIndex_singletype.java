@@ -506,6 +506,10 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
   /**
    * Differs from flush in that it manipulates flags in the FSs to indicate
    * removed.
+   * This can only be done if we can guarantee the FS is not indexed **in any view**.
+   * We do that by only resetting if it is a subtype of annotation base, which is guaranteed
+   *   to be indexed only in 1 view.
+   * 
    */
   void removeAll() {
     FSIterator<T> it = iterator();
@@ -564,7 +568,7 @@ public abstract class FsIndex_singletype<T extends FeatureStructure>
 
   @Override
   public void flush() {
-    maybeCopy();
+//   maybeCopy(); // https://issues.apache.org/jira/browse/UIMA-5687
     wr_cow = null;
     // casImpl.indexRepository.isUsedChanged = true;
   }
