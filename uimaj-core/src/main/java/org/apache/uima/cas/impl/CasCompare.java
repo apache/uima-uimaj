@@ -67,13 +67,17 @@ import org.apache.uima.jcas.cas.TOP;
  *   Use the static compareCASes method for default comparisons
  *   Use the multi-step approach for more complex comparisons:
  *     - Make an instance of this class, passing in the two CASes.
- *     - Set any additional configuration (e.g., cc.compareAll(true); )
+ *     - Set any additional configuration 
+ *         cc.compareAll(true) - continue comparing if mismatch found
+ *         cc.compardIds(true) - compare ids (require ids to be ==)
  *     - Do any transformations needed on the CASes to account for known but allowed differences:
+ *         -- These are transformations done on the CAS Feature Structures outside of this routine
  *         -- example: for certain type:feature string values, normalize to the same canonical value
  *         -- example: for certain type:feature string arrays, where the order is not important, sort them
  *         -- example: for certain type:feature FSArrays, where the order is not important, sort them
  *            --- using the sortFSArray method
  *     - Do any configuration to specify congruence sets for String values
+ *        -- example: addStringCongruenceSet( type, feature, set-of-strings, -1<or int index if array>)
  *        -- these are specific to type / feature specs
  *        -- range can be string or string array - if string array, the spec includes the index or -1
  *           to indicate all indexes
@@ -326,7 +330,8 @@ public class CasCompare {
 //    private boolean compareStringArraysAsSets = false;
 //    private boolean compareArraysByElement = false;
     /** if true, continues comparison and reporting after finding the first miscompare */
-  private boolean compareAll = false;
+  private boolean isCompareAll = false;
+  private boolean isCompareIds = false;
 //    private boolean compareFSArraysAsSets = false;
     
 //    /** true when that FS._id (an Array of some kind) has been sorted */
@@ -390,7 +395,11 @@ public class CasCompare {
    * @param v true to continue the comparison after a miscompare
    */
   public void compareAll(boolean v) {
-    compareAll = v;
+    isCompareAll = v;
+  }
+  
+  public void compareIds(boolean v) {
+    isCompareIds = v;
   }
   
   
@@ -428,14 +437,14 @@ public class CasCompare {
       Predicate<TOP> includeFilter = isTypeMapping ? (fs -> isTypeInTgt(fs)) : null;
       // get just the indexed ones
       c1FoundFSs = new AllFSs(c1, null, includeFilter, isTypeMapping ? typeMapper : null)
-                        .getAllFSsAllViews_sofas()
+                        .getAllFSsAllViews_sofas_reachable()
                         .getAllFSs();
       
 //        c1FoundFSs = fssToSerialize;  // all reachable FSs, filtered by CAS1 -> CAS2 type systems.
       
 //        processIndexedFeatureStructures(c2, false);
       c2FoundFSs = new AllFSs(c2, null, null, null)
-                     .getAllFSsAllViews_sofas()
+                     .getAllFSsAllViews_sofas_reachable()
                      .getAllFSs(); // get just the indexed ones.
       
 
@@ -469,7 +478,7 @@ public class CasCompare {
           if (!typeMissingIn1 && !typeMissingIn2) {
             if (0 != compareFss(fs1, fs2, null, null)) {
               mismatchFsDisplay();
-              if (!compareAll) return false;
+              if (!isCompareAll) return false;
               allOk = false;
               int tc = fs1._getTypeImpl().compareTo(fs2._getTypeImpl());
               if (tc < 0) {
@@ -514,7 +523,7 @@ public class CasCompare {
           if (0 != compareFss(fs1, fs2, null, null)) {
             
             mismatchFsDisplay();
-            if (!compareAll) return false;
+            if (!isCompareAll) return false;
             allOk = false;
             int tc = fs1._getTypeImpl().compareTo(fs2._getTypeImpl());
             if (tc < 0) {
@@ -630,8 +639,8 @@ public class CasCompare {
    *   
    * If not in a sort context, a miscompare generates messaging information.
    *   
-   * @param callerTi - the type of another FS referencing this one, or null
-   * @param callerFi - the feature of the another FS referencing this one, or null
+   * @param callerTi - the type of another FS referencing this one, or null, used in congruence set testing
+   * @param callerFi - the feature of the another FS referencing this one, or null, used in congruence set testing
    * 
    * @return the compare result
    * 
@@ -660,7 +669,14 @@ public class CasCompare {
 //          return mismatchFs("Type names miscompare"); // types mismatch
 //        }
 //      }
-        
+ 
+    if (isCompareIds && !inSortContext) {
+      if (fs1._id != fs2._id) {
+        mismatchFs(fs1, fs2, "IDs miscompare");        
+        return Integer.compare(fs1._id, fs2._id);
+      }
+    }
+
     if (ti1.isArray()) {
       return compareFssArray(fs1, fs2, callerTi, callerFi);
     } 
@@ -896,6 +912,11 @@ public class CasCompare {
    *   - if comparing (use case 2, two different type systems) with 
    *     type not existing in other type system, skip (treat as 0).
    * 
+   * If comparing two FSs in 1 CAS, where there is type mapping, if the mapping to
+   *   the other CAS is null, change the value of the FS to null to match the sort order
+   *   the other CAS will haveand that mapping is
+   *   to null (because the type is missing), use null for the argument(s).
+   * 
    * Complexities: the type rfs1 may not be in the target type system.
    *   For this case - treat rfs2 == null as "equal", rfs2 != null as not equal (always gt)
    *   Is assymetrical (?) - same logic isn't applied for reverse case.
@@ -904,7 +925,25 @@ public class CasCompare {
    * @param fi -
    * @return -
    */
-  private int compareRefs(final TOP rfs1, final TOP rfs2, TypeImpl callerTi, FeatureImpl callerFi) {
+  private int compareRefs(TOP rfs1, TOP rfs2, TypeImpl callerTi, FeatureImpl callerFi) {
+    if (inSortContext && isTypeMapping) {
+      if (isSrcCas) {
+        if (rfs1 != null && typeMapper.mapTypeSrc2Tgt(rfs1._getTypeImpl()) == null) {
+          rfs1 = null;
+        }
+        if (rfs2 != null && typeMapper.mapTypeSrc2Tgt(rfs2._getTypeImpl()) == null) {
+          rfs2 = null;
+        }
+      } else {
+        if (rfs1 != null && typeMapper.mapTypeTgt2Src(rfs1._getTypeImpl()) == null) {
+          rfs1 = null;
+        }
+        if (rfs2 != null && typeMapper.mapTypeTgt2Src(rfs2._getTypeImpl()) == null) {
+          rfs2 = null;
+        }
+      }
+    }
+    
     if (rfs1 == null) {
       if (rfs2 != null) {
         return (!inSortContext && isTypeMapping &&
