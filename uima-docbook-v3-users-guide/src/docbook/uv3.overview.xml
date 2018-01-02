@@ -170,6 +170,7 @@ under the License.
           <para>Note that the automatic index corruption avoidance introduced in more recent versions of UIMA could
           be automatically removing Feature Structures from indexes and adding them back, if the user was updating
           some Feature of a Feature Structure that was part of an index specification for inclusion or ordering purposes.</para>
+          
           <blockquote><para>In version 2, you would accomplish this using a two pass scheme:
           Pass 1 would iterate and merely collect the Feature Structures to be updated into a Java collection of some kind.
           Pass 2 would use a plain Java iterator over that collection and modify the Feature Structures and/or the UIMA indexes.
@@ -177,11 +178,15 @@ under the License.
           while doing whatever minimal copying is needed to continue iteration over the original index.</para>
           </blockquote>
           
-          <para>In both version 2 and 3, there are 3 iterater movement APIs which have a side effect of insuring the
+          <para>In both version 2 and 3, there are 3 iterator movement APIs which have a side effect of insuring the
             iterator is operating correctly over the current index contents.  These are the <code>moveToFirst, 
             moveToLast, and moveTo(some_feature_structure)</code> API calls.  In version 3, using these will
             reinitialize the iterator (if needed) so that it is iterating over the current index contents;
             if the index has not been modified, no reinitialization is needed (or done).</para>
+            
+          <para>CAS reset and index removeAll operations clear the index without preserving any existing
+            iteration.  If you try to continue an iteration over an index cleared by these operations, the results
+            are undefined, and may throw exceptions.</para>  
         </listitem>
       </varlistentry>
       
