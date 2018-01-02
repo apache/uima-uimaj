@@ -1483,9 +1483,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private TOP currentFs;
 
     /** 
-     * the deferrals needed when deserializing a subtype of AnnotationBase before the sofa is known
-     * Also for Sofa creation where some fields are final
-     * */
+    * Deferred actions to set Feature Slots of feature structures.
+    * the deferrals needed when deserializing a subtype of AnnotationBase before the sofa is known
+    * Also for Sofa creation where some fields are final
+    */
     final private List<Runnable> singleFsDefer = new ArrayList<>(); 
     
     /** used for deferred creation */
@@ -1497,7 +1498,9 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     private int heapStart;
     private int heapEnd;
     
-    /** the "fixups" for relative heap refs */
+    /** the "fixups" for relative heap refs
+     *  actions set slot values 
+     */
     final private List<Runnable> fixupsNeeded = new ArrayList<>();
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
@@ -1687,6 +1690,10 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
 
       /*******************************
        * walk main heap - deserialize
+       *   FS Creation:
+       *     - creatCurrentFs -> createFs
+       *     - createSofa
+       *     - createArray
        *******************************/
       TypeImpl type;
       int arraySize = 0;
@@ -1694,97 +1701,96 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
       
       if (TRACE_DES) System.out.println("Form4Deser heapStart: " + heapStart + "  heapEnd: " + heapEnd);
       for (int iHeap = heapStart; iHeap < heapEnd; iHeap += type.getFsSpaceReq(arraySize)) {
-        final int typeCode = readVnumber(typeCode_dis);
-//        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
-//            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
-//            : 0);
-         type = ts.getTypeForCode(typeCode);
-        
-        prevFs = prevFsByType[typeCode]; // could be null;
-        prevFsRefs = getPrevFsRef(type); // null or int[], only for things having fsrefs (array or not)
-        
-        if (type.isArray()) {
-          currentFs = readArray(iHeap, type);
-          arraySize = ((CommonArrayFS)currentFs).size();
-        } else {
-          if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
-              !(ts.sofaType == type)) {            // defer sofa types
-            createCurrentFs(type, ivCas);              
-          } else {
-            currentFs = null;
-            singleFsDefer.clear();
-            sofaRef = null;
-            sofaNum = -1;
-            sofaName = null;
-          }
-          for (FeatureImpl feat : type.getFeatureImpls()) {
-            readByKind(feat, type);
-          }
-//          for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
-//            readByKind(iHeap, i);
-//          }
-        }
-        
-        if (currentFs == null) {
+          final int typeCode = readVnumber(typeCode_dis);
+  //        final int adjTypeCode = typeCode + ((this.bcsd.isBeforeV3 && typeCode > TypeSystemConstants.lastBuiltinV2TypeCode) 
+  //            ? TypeSystemConstants.numberOfNewBuiltInsSinceV2
+  //            : 0);
+           type = ts.getTypeForCode(typeCode);
           
-          /**
-           * Create single deferred FS
-           *   Either: Sofa (has final fields) or
-           *           Subtype of AnnotationBase - needs to be in the right view
-           *   
-           *   For the latter, handle document annotation specially
-           */
-
-          if (ts.sofaType == type) {
-            if (baseCas.hasView(sofaName)) {
-              // sofa was already created, by an annotationBase subtype deserialized prior to this one
-              currentFs = (TOP) baseCas.getView(sofaName).getSofa();
+          prevFs = prevFsByType[typeCode]; // could be null;
+          prevFsRefs = getPrevFsRef(type); // null or int[], only for things having fsrefs (array or not)
+          
+          if (type.isArray()) {
+            currentFs = readArray(iHeap, type);
+            arraySize = ((CommonArrayFS)currentFs).size();
+          } else {
+            if (!ts.annotBaseType.subsumes(type) &&  // defer subtypes of AnnotationBase
+                !(ts.sofaType == type)) {            // defer sofa types
+              createCurrentFs(type, ivCas);              
             } else {
-              currentFs = baseCas.createSofa(sofaNum, sofaName, null);
+              currentFs = null;
+              singleFsDefer.clear();
+              sofaRef = null;
+              sofaNum = -1;
+              sofaName = null;
             }
-          } else {
+            for (FeatureImpl feat : type.getFeatureImpls()) {
+              readByKind(feat, type);
+            }
+  //          for (int i = 1; i < typeInfo.slotKinds.length + 1; i++) {
+  //            readByKind(iHeap, i);
+  //          }
+          }
+          
+          if (currentFs == null) {
             
-            CASImpl view = (null == sofaRef) 
-                             ? baseCas.getInitialView() // https://issues.apache.org/jira/browse/UIMA-5588
-                             : baseCas.getView(sofaRef);
-                             
-//            if (type.getCode() == TypeSystemConstants.docTypeCode) {
-//              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
-//              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
-//              // would end up creating additional instances
-//            } else {
-              createCurrentFs(type, view);
-//            }
-          }
-          if (type.getCode() == TypeSystemConstants.docTypeCode) { 
-            boolean wasRemoved = baseCas.checkForInvalidFeatureSetting(currentFs, baseCas.getAddbackSingle());
-            for (Runnable r : singleFsDefer) {
-              r.run();
+            /**
+             * Create single deferred FS
+             *   Either: Sofa (has final fields) or
+             *           Subtype of AnnotationBase - needs to be in the right view
+             *   
+             *   For the latter, handle document annotation specially
+             */
+  
+            if (ts.sofaType == type) {
+              if (baseCas.hasView(sofaName)) {
+                // sofa was already created, by an annotationBase subtype deserialized prior to this one
+                currentFs = (TOP) baseCas.getView(sofaName).getSofa();
+              } else {
+                currentFs = baseCas.createSofa(sofaNum, sofaName, null);
+              }
+            } else {
+              
+              CASImpl view = (null == sofaRef) 
+                               ? baseCas.getInitialView() // https://issues.apache.org/jira/browse/UIMA-5588
+                               : baseCas.getView(sofaRef);
+                               
+  //            if (type.getCode() == TypeSystemConstants.docTypeCode) {
+  //              currentFs = view.getDocumentAnnotation();  // creates the document annotation if it doesn't exist
+  //              // we could remove this from the indexes until deserialization is over, but then, other calls to getDocumentAnnotation
+  //              // would end up creating additional instances
+  //            } else {
+                createCurrentFs(type, view);
+  //            }
             }
-            baseCas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
-          } else {
-            for (Runnable r : singleFsDefer) {
-              r.run();
+            if (type.getCode() == TypeSystemConstants.docTypeCode) { 
+              boolean wasRemoved = baseCas.checkForInvalidFeatureSetting(currentFs, baseCas.getAddbackSingle());
+              for (Runnable r : singleFsDefer) {
+                r.run();
+              }
+              baseCas.addbackSingleIfWasRemoved(wasRemoved, currentFs);
+            } else {
+              for (Runnable r : singleFsDefer) {
+                r.run();
+              }
             }
           }
-        }
-        
-        assert(currentFs != null);
-//        System.out.format("Adding %,d to csds%n", iHeap);
-//        if (isDelta) {
-//          System.out.format("debug adding iHeap: %,d afterAdd: %,d%n", iHeap, iHeap + nextHeapAddrAfterMark);
-//        }
-        csds.addFS(currentFs, iHeap);
-        int s2 = 1 + seq2fs.size();  
-//        fs2seq.put(currentFs, s2);  // 1 origin to match v2
-        seq2fs.put(s2, currentFs);
-        
-        prevFsByType[typeCode] = currentFs;
+          
+          assert(currentFs != null);
+  //        System.out.format("Adding %,d to csds%n", iHeap);
+  //        if (isDelta) {
+  //          System.out.format("debug adding iHeap: %,d afterAdd: %,d%n", iHeap, iHeap + nextHeapAddrAfterMark);
+  //        }
+          csds.addFS(currentFs, iHeap);
+          int s2 = 1 + seq2fs.size();  
+  //        fs2seq.put(currentFs, s2);  // 1 origin to match v2
+          seq2fs.put(s2, currentFs);
+          
+          prevFsByType[typeCode] = currentFs;
       }
-      
       csds.setHeapEnd(heapEnd);
-      
-      if (TRACE_DES) System.out.println("Form4Deser running deferred fixups after all FSs deserialized");
+
+//      if (TRACE_DES) System.out.println("Form4Deser running deferred fixups after all FSs deserialized");
       for (Runnable r : fixupsNeeded) {
         r.run();
       }
@@ -1815,7 +1821,7 @@ public class BinaryCasSerDes4 implements SlotKindsConstants {
     
     private TOP readArray(int iHeap, TypeImpl type) throws IOException { 
       final int length = readArrayLength();
-      TOP fs = ivCas.createArray(type, length);
+      TOP fs = ivCas.createArray(type, length); // create in default view - initial view (iv)cas
       if (length == 0) {
         return fs;
       }
