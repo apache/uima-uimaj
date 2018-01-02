@@ -35,6 +35,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
   final public int a_firstUsedslot;
   final public int a_nextFreeslot;
   final public OrderedFsSet_array<TOP> original;
+  final private int original_size;
   
   public TOP[] a;  // derived from "set" above
    
@@ -46,6 +47,7 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
     this.a_firstUsedslot = original.a_firstUsedslot;
     this.a_nextFreeslot = original.a_nextFreeslot;
     this.a = original.a;
+    this.original_size = original.size();
   }
   
   /**
@@ -89,8 +91,8 @@ public class CopyOnWriteOrderedFsSet_array implements CopyOnWriteIndexPart {
    * @see OrderedFsSet_array#size()
    * @return the size of this version of the index (maybe not the current index size)
    */
-  public int size() {
-    return a_nextFreeslot - a_firstUsedslot;
+  final public int size() {
+    return original_size;
   }
 
 //  /**

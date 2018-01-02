@@ -798,12 +798,12 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   //    assert(l.size() == (2 + fsIdGenerator));
       final int p = fsIdGenerator;
       
-      final int r = fsIdGenerator += isId2Fs 
-                                       ? lastFsV2Size
-                                       : 1;
+      final int r = fsIdGenerator = peekNextFsId();
+      
       if (r < p) { 
         throw new RuntimeException("UIMA Cas Internal id value overflowed maximum int value");
       }
+      
       if (isId2Fs) {
         // this computation is partial - misses length of arrays stored on heap
         // because that info not yet available  
@@ -811,6 +811,17 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         lastFsV2Size = fs._getTypeImpl().getFsSpaceReq();
       }
       return r;
+    }
+    
+    /**
+     * @return the lastUsedFsId + the size of that or 1
+     */
+    int peekNextFsId() {
+      return fsIdGenerator + lastFsV2IdIncr();
+    }
+    
+    int lastFsV2IdIncr() {
+      return (isId2Fs ? lastFsV2Size : 1);
     }
     
     private CASImpl getViewFromSofaNbr(int nbr) {
@@ -4749,6 +4760,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return svd.fsIdGenerator;
   }
   
+  final public int peekNextFsId() {
+    return svd.peekNextFsId();
+  }
+  
+  final public int lastV2IdIncr() {
+    return svd.lastFsV2IdIncr();
+  }
+  
   /**
    * Call this to capture the current value of fsIdGenerator and make it 
    * available to other threads.
@@ -5326,7 +5345,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     //  - v.toString()
   }
   
-  private static int debug2cnt = 0;
+//  private static int debug2cnt = 0;
   
   /**
    * @param v

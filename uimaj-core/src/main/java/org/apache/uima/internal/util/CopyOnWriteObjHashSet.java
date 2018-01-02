@@ -36,10 +36,13 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   
   private ObjHashSet<T> original;
   
+  private final int original_size;
+  
   
   public CopyOnWriteObjHashSet(ObjHashSet<T> original) {
     this.ohs = original;    
     this.original = original;
+    this.original_size = original.size();
   }
 
   /**
@@ -62,12 +65,7 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
   public int find(T obj) {
     return ohs.find(obj);
   }
-  
-//  @Override
-//  public int size() {
-//    
-//  }
-  
+    
   /**
    * For iterator use
    * @param index a magic number returned by the internal find
@@ -172,8 +170,8 @@ public class CopyOnWriteObjHashSet<T> implements CopyOnWriteIndexPart {
    * @see ObjHashSet#size()
    * @return the size
    */
-  public int size() {
-    return ohs.size();
+  final public int size() {
+    return original_size;
   }
 
   /* (non-Javadoc)
