@@ -62,6 +62,7 @@ import org.apache.uima.cas.test.CASInitializer;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.impl.SerializationMeasures;
 
@@ -397,6 +398,13 @@ public class SerDesTest6 extends SerDesTstCommon {
           break;
         }
       }
+    }
+  }
+  
+  public void testAllKindsV2() {
+    try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs();
+         AutoCloseableNoException b = casSrc.ll_enableV2IdRefs()) { // because casSrc set in setup
+      testAllKinds();
     }
   }
 

@@ -416,10 +416,10 @@ public class JCasHashMapTest extends TestCase {
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
       TOP fs = (TOP) m.get(key);
-      if (fs == null) {  // for debugging
-        System.out.println("debug stop");
-        fail();
-      }
+//      if (fs == null) {  // for debugging
+//        System.out.println("debug stop");
+//        fail();
+//      }
       assertTrue(null != fs);
     }
 

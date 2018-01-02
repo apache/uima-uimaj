@@ -1251,7 +1251,7 @@ public class IteratorTest extends TestCase {
     assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSizeMaybeNotCurrent());
 
     ir.removeAllIncludingSubtypes(sentenceType);
-    
+
     assertEquals(182, ((LowLevelIterator<FeatureStructure>)setIt).ll_indexSizeMaybeNotCurrent());
     assertEquals(200, ((LowLevelIterator<FeatureStructure>)bagIt).ll_indexSizeMaybeNotCurrent());
     assertEquals(200, ((LowLevelIterator<AnnotationFS>)sortedIt).ll_indexSizeMaybeNotCurrent());
@@ -1259,12 +1259,13 @@ public class IteratorTest extends TestCase {
     assertEquals(100, ((LowLevelIterator<FeatureStructure>)subbagIt).ll_indexSizeMaybeNotCurrent());
     assertEquals(100, ((LowLevelIterator<AnnotationFS>)subsortedIt).ll_indexSizeMaybeNotCurrent());
     
-    verifyConcurrantModificationDetected(setIt);
-    verifyConcurrantModificationDetected(bagIt);
-    verifyConcurrantModificationDetected(sortedIt);
-    verifyConcurrantModificationDetected(subsetIt);
-    verifyConcurrantModificationDetected(subbagIt);
-    verifyConcurrantModificationDetected(subsortedIt);
+    // skip - no concurrent mod
+//    verifyConcurrantModificationDetected(setIt);  
+//    verifyConcurrantModificationDetected(bagIt);
+//    verifyConcurrantModificationDetected(sortedIt);
+//    verifyConcurrantModificationDetected(subsetIt);
+//    verifyConcurrantModificationDetected(subbagIt);
+//    verifyConcurrantModificationDetected(subsortedIt);
 
     // due to copy on write, need to get new iterators
     setIt = setIndex.iterator();
