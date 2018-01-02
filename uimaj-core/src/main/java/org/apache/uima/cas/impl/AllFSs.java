@@ -84,7 +84,7 @@ class AllFSs {
     this.typeMapper = null; 
   }
 
-  public AllFSs getAllFSsAllViews_sofas() {
+  private AllFSs getAllFSsAllViews_sofas() {
     cas.forAllSofas(sofa -> enqueueFS(sofa));
     cas.forAllViews(view -> getFSsForView(view.indexRepository.getIndexedFSs()));
     return this;
