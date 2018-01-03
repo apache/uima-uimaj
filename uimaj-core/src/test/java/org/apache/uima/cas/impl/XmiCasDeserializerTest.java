@@ -74,6 +74,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCopier;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.FileUtils;
@@ -314,6 +315,21 @@ public class XmiCasDeserializerTest extends TestCase {
       JUnitExtension.handleException(e);
     }
   }
+  
+  public void testDeserializeAndReserializeV2() throws Exception {
+    try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
+      File tsWithNoMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem.xml");
+      doTestDeserializeAndReserialize(tsWithNoMultiRefs,false);
+      File tsWithMultiRefs = JUnitExtension.getFile("ExampleCas/testTypeSystem_withMultiRefs.xml");
+      doTestDeserializeAndReserialize(tsWithMultiRefs,false);
+      //also test with JCas initialized
+      doTestDeserializeAndReserialize(tsWithNoMultiRefs,true);
+      doTestDeserializeAndReserialize(tsWithMultiRefs,true);
+    } catch (Exception e) {
+      JUnitExtension.handleException(e);
+    }
+  }
+  
 
   private void doTestDeserializeAndReserialize(File typeSystemDescriptorFile, boolean useJCas) throws Exception {
     // deserialize a complex CAS from XCAS
@@ -350,6 +366,11 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.parse(new InputSource(new StringReader(xml)));
     
     // compare
+    
+    CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
+    // ids won't be the same, don't compare these
+    cc.compareCASes();
+    
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
     assertEquals(cas.getDocumentText(), cas2.getDocumentText());
     CasComparer.assertEquals(cas,cas2);
