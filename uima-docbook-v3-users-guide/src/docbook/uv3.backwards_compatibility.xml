@@ -207,7 +207,7 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
     <itemizedlist>
       <listitem><para>Newly created Feature structures
           have IDs which match what UIMA V2 references (the "addresses")
-          would be.  For serialized forms (except Xmi and XCAS), these IDs
+          would be.  For serialized forms (except Xmi), these IDs
           match the (imputed) v2 IDs of the serialized form.
         </para>
         
@@ -225,7 +225,7 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
         </para>
       </listitem>
       <listitem>
-        <para>This mode modifies serialization (except for XCAS, Xmi) to include non-reachable FSs.
+        <para>This mode modifies serialization to include non-reachable FSs.
           If you do not want to include these,  you can surround the serialize call with a try-with-resources 
           that turns the mode off.  But if you do this, there is no guarantee that the IDs will remain the same
           over subsequent serialization/deserialization steps.
