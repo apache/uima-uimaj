@@ -275,6 +275,8 @@ public class XmiCasDeserializer {
     
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
+    private TOP highestIdFs = null;
+    
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
      * @param aCAS CAS to deserialize into
@@ -1634,8 +1636,8 @@ public class XmiCasDeserializer {
         return (byte) (c - '0');
       else if ('A' <= c && c <= 'F')
         return (byte) (c - 'A' + 10);
-      else if ('1' <= c && c <= 'f')
-        return (byte) (c - '1' + 10);
+      else if ('a' <= c && c <= 'f')
+        return (byte) (c - 'a' + 10);
       else
         throw new NumberFormatException("Invalid hex char: " + c);
     }
