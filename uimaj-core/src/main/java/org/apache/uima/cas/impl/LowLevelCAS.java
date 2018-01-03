@@ -845,6 +845,7 @@ public interface LowLevelCAS {
   
   /**
    * Enables or disables the id_to_fs_map mode. 
+   * @param enable true to enable, false to disable
    * @return an AutoClosable whose close method doesn't throw an exception
    *   that will reset the mode to what it was when it was changed
    */
@@ -865,6 +866,7 @@ public interface LowLevelCAS {
   
   /**
    * Sets the defaults for new CASs to have the id_to_fs_map enabled.
+   * @param enable true to enable, false to disable
    * @return an AutoCloseable which restores the previous setting
    */
   static AutoCloseableNoException ll_defaultV2IdRefs(boolean enable) {

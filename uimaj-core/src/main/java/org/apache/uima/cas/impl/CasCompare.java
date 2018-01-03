@@ -77,7 +77,7 @@ import org.apache.uima.jcas.cas.TOP;
  *         -- example: for certain type:feature FSArrays, where the order is not important, sort them
  *            --- using the sortFSArray method
  *     - Do any configuration to specify congruence sets for String values
- *        -- example: addStringCongruenceSet( type, feature, set-of-strings, -1<or int index if array>)
+ *        -- example: addStringCongruenceSet( type, feature, set-of-strings, -1 or int index if array)
  *        -- these are specific to type / feature specs
  *        -- range can be string or string array - if string array, the spec includes the index or -1
  *           to indicate all indexes
@@ -159,7 +159,7 @@ public class CasCompare {
    * 
    * Note: when using, if two FSs end up comparing equal, the instances must be
    *       rolled back 1 item to allow further items to be compared in the chain.
-   *       Example:  a -> b -> c -> d
+   *       Example:  a -&gt; b -> c -&gt; d
    *         d's compared equal, c may have ref next to "e".
    */
   private static class Prev {
