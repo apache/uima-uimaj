@@ -35,6 +35,7 @@ import org.apache.uima.internal.util.Pair;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
 import org.apache.uima.jcas.cas.DoubleArray;
+import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FloatArray;
 import org.apache.uima.jcas.cas.IntegerArray;
@@ -132,6 +133,8 @@ import org.apache.uima.jcas.cas.TOP;
  */
 
 public class CasCompare {
+  
+  private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = true;
 
   /**
    * Compare 2 CASes, with perhaps different type systems.
@@ -150,7 +153,7 @@ public class CasCompare {
    * hold info about previous compares, to break cycles in references
    * The comparison records cycles and can distinguish different cyclic graphs.
    * When a cycle exists, it looks like:
-   *    a b c d e f g h i     a cycle starting wFBitith a, with refs ending up at i
+   *    a b c d e f g h i     a cycle starting with a, with refs ending up at i
    *              ^     v     and then looping back to f
    *              *-----*
    *              
@@ -332,6 +335,7 @@ public class CasCompare {
     /** if true, continues comparison and reporting after finding the first miscompare */
   private boolean isCompareAll = false;
   private boolean isCompareIds = false;
+  private boolean isCanonicalEmptyLists = true;
 //    private boolean compareFSArraysAsSets = false;
     
 //    /** true when that FS._id (an Array of some kind) has been sorted */
@@ -402,6 +406,9 @@ public class CasCompare {
     isCompareIds = v;
   }
   
+  public void compareCanonicalEmptyLists(boolean v) {
+    isCanonicalEmptyLists = v; 
+  }
   
   /**
    * Add a set of strings that should be considered equal when doing string comparisons.
@@ -466,6 +473,28 @@ public class CasCompare {
       while (i1 < sz1 && i2 < sz2) {
         TOP fs1 = c1FoundFSs.get(i1);  // assumes the elements are in same order??
         TOP fs2 = c2FoundFSs.get(i2);
+
+        if (isCanonicalEmptyLists) {
+          if (fs1 instanceof EmptyList && !(fs2 instanceof EmptyList)) {
+            int start = i1;
+            while (true) {
+              i1++;
+              if (i1 >= sz1) break;
+              fs1 = c1FoundFSs.get(i1);
+              if (!(fs1 instanceof EmptyList)) break;
+            }
+            System.out.println("CasCompare skipping " + (i1 - start) + " emptylist FSs in 1st CAS to realign.");            
+          } else if (fs2 instanceof EmptyList && !(fs1 instanceof EmptyList)) {
+            int start = i2;
+            while (true) {
+              i2++;
+              if (i2 >= sz2) break;
+              fs2 = c2FoundFSs.get(i2);
+              if (!(fs2 instanceof EmptyList)) break;
+            }
+            System.out.println("CasCompare skipping " + (i2 - start) + " emptylist FSs in 2nd CAS to realign.");
+          }
+        }
 
         clearPrevFss();
         prev1.prevCompareTop = fs1;
@@ -661,7 +690,14 @@ public class CasCompare {
 
     r = ti1.compareTo(ti2);
     if (r != 0) {
-      if (!inSortContext) mismatchFs(fs1, fs2, "Different Types"); // types mismatch
+      if (!inSortContext) {
+        if (isCanonicalEmptyLists) {
+          if (fs1 instanceof EmptyList) {
+            
+          }
+        }
+        mismatchFs(fs1, fs2, "Different Types"); // types mismatch
+      }
       return r;
     }
 
@@ -946,10 +982,19 @@ public class CasCompare {
     
     if (rfs1 == null) {
       if (rfs2 != null) {
-        return (!inSortContext && isTypeMapping &&
-                typeMapper.mapTypeTgt2Src(rfs2._getTypeImpl()) == null)
-                  ? 0   // no source type for this target type, treat as equal
-                  : -1;
+        if (!inSortContext && isTypeMapping &&
+                typeMapper.mapTypeTgt2Src(rfs2._getTypeImpl()) == null) {
+          return 0;
+        } else {
+          if (IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
+            System.out.println("debug stop");
+          }
+          return -1;
+        }
+//        return (!inSortContext && isTypeMapping &&
+//                typeMapper.mapTypeTgt2Src(rfs2._getTypeImpl()) == null)
+//                  ? 0   // no source type for this target type, treat as equal
+//                  : -1;
       }
       return 0;  // both are null.  no loops in ref chain possible 
     }
@@ -957,10 +1002,19 @@ public class CasCompare {
     // rfs1 != null at this point
     
      if (rfs2 == null) {
-      return (!inSortContext && isTypeMapping &&
-              typeMapper.mapTypeSrc2Tgt(rfs1._getTypeImpl()) == null)
-                ? 0 // no target type for this target type, treat as equal
-                : 1;  
+       if (!inSortContext && isTypeMapping &&
+           typeMapper.mapTypeSrc2Tgt(rfs1._getTypeImpl()) == null) {
+         return 0;
+       } else {
+         if (IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
+           System.out.println("debug stop");
+         } 
+         return 1;
+       }
+//      return (!inSortContext && isTypeMapping &&
+//              typeMapper.mapTypeSrc2Tgt(rfs1._getTypeImpl()) == null)
+//                ? 0 // no target type for this target type, treat as equal
+//                : 1;  
     }
      
     if (rfs1 == rfs2) {
@@ -979,9 +1033,17 @@ public class CasCompare {
     Integer prevComp = prevCompare.get(refs);
      if (prevComp != null) {  
        int v = prevComp.intValue();
-       return (v == 0) 
-               ? compareRefResult(rfs1, rfs2) // stop recursion, return based on loops
-               : v;    
+       if (v == 0) {
+         return compareRefResult(rfs1, rfs2); // stop recursion, return based on loops
+       } else {
+         if (IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
+           System.out.println("debug stop");
+         }
+         return v;
+       }
+//       return (v == 0) 
+//               ? compareRefResult(rfs1, rfs2) // stop recursion, return based on loops
+//               : v;    
     }
     prevCompare.put(refs, 0); // preset in case recursion compares this again
     
@@ -1019,11 +1081,21 @@ public class CasCompare {
    * 
    * @param rfs1 -
    * @param rfs2 -
-   * @return - -1 if ref chain 1 length < 2 or is the same length but loop length 1 < 2
-   *            1 if ref chain 1 length > 2 or is the same length but loop length 1 > 2
+   * @return - -1 if ref chain 1 length < ref chain 2 length or is the same length but loop length 1 < 2
+   *            1 if ref chain 1 length > ref chain 2 length or is the same length but loop length 1 > 2
    *            0 if ref chain lengths are the same and loop length is the same
+   *            Exception: if one of the items is a canonical "empty" list element, and the other 
+   *              is a non-canonical one - treat as equal.
    */
   private int compareRefResult(TOP rfs1, TOP rfs2) {
+    
+    // exception: treat canonical empty lists
+    if (!inSortContext && isCanonicalEmptyLists && rfs1 instanceof EmptyList) {
+//      if (prev1.size() <= 0 || prev2.size() <= 0) {
+        return 0;
+//      }
+    }
+    
     if (prev1.size() <= 0) { 
       return 0;  // no recursion case
     }
@@ -1038,6 +1110,9 @@ public class CasCompare {
       int r = prev1.compareCycleLen(prev2);
       
       if (r != 0) {
+        if (IS_DEBUG_STOP_ON_MISCOMPARE && !inSortContext) {
+          System.out.println("debug stop");
+        }
         return r;
       }
       
@@ -1058,7 +1133,9 @@ public class CasCompare {
     for (int i = 0; i < len; i++) {
       r = c.applyAsInt(i);
       if (r != 0) {
-        if (!inSortContext) mismatchFs(fs1, fs2, "Comparing array of length " + len);
+        if (!inSortContext) {
+          mismatchFs(fs1, fs2, "Comparing array of length " + len);
+        }
         return r;
       }
     }
