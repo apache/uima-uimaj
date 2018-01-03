@@ -5597,7 +5597,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   
   void maybeHoldOntoFS(FeatureStructureImplC fs) {
     if (svd.isId2Fs) {
-      svd.id2fs.putUnconditionally((TOP)fs);
+      svd.id2fs.put((TOP)fs);  // does an assert - prev id should not be there
     }
   }
   

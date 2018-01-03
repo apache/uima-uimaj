@@ -45,6 +45,7 @@ import org.apache.uima.resource.metadata.TypeSystemDescription;
 import org.apache.uima.resource.metadata.impl.TypePriorities_impl;
 import org.apache.uima.resource.metadata.impl.TypeSystemDescription_impl;
 import org.apache.uima.test.junit_extension.JUnitExtension;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasCreationUtils;
 import org.apache.uima.util.XMLInputSource;
 import org.apache.uima.util.XMLSerializer;
@@ -125,6 +126,13 @@ public class XCASDeserializerTest extends TestCase {
   public void testDeserializeAndReserialize() throws Exception {
     doTestDeserializeAndReserialize(false);
     doTestDeserializeAndReserialize(true);
+  }
+  
+  public void testDeserializeAndReserializeV2Ids() throws Exception {
+    try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs()) {
+      doTestDeserializeAndReserialize(false);
+      doTestDeserializeAndReserialize(true);      
+    }
   }
 
   private void doTestDeserializeAndReserialize(boolean useJCas) throws Exception {
@@ -224,6 +232,9 @@ public class XCASDeserializerTest extends TestCase {
 //      System.out.println("debug");
 //    }
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
+    CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
+    cc.compareIds(((CASImpl)cas).is_ll_enableV2IdRefs());
+    cc.compareCASes();
     // CasComparer.assertEquals(cas,cas2);
   }
 

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.UimaContext;
@@ -43,6 +44,7 @@ import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.impl.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -192,6 +194,11 @@ public class XCASDeserializer {
 
     // working with initial view
     private int nextIndex;
+    
+    private TOP highestIdFs = null;
+
+    /** the fsId read from the _id attribute */
+    private int fsId;
 
     private XCASDeserializerHandler(CASImpl aCAS, OutOfTypeSystemData ootsData) {
       super();
@@ -297,6 +304,9 @@ public class XCASDeserializer {
 
     // Create a new FS.
     private void readFS(String qualifiedName, Attributes attrs) throws SAXParseException {
+      // get the FeatureStructure id
+      fsId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
+      
       if (qualifiedName.equals("uima.cas.SofA")) {
         qualifiedName = "uima.cas.Sofa";  // fix for XCAS written with pre-public version of Sofas
       }
@@ -348,7 +358,7 @@ public class XCASDeserializer {
         final int extSofaNum = Integer.parseInt(sofaNum);
         
         // get the sofa's FeatureStructure id
-        final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
+//        final int sofaExtId = Integer.parseInt(attrs.getValue(XCASSerializer.ID_ATTR_NAME));
         
 
         // create some maps to handle v1 format XCAS ...
@@ -405,20 +415,20 @@ public class XCASDeserializer {
         // Now update the mapping from annotation int to ref values
         if (this.sofaRefMap.size() == extSofaNum) {
           // Sofa received in sofaNum order, add new one
-          this.sofaRefMap.add(sofaExtId);
+          this.sofaRefMap.add(fsId);
         } else if (this.sofaRefMap.size() > extSofaNum) {
           // new Sofa has lower sofaNum than last one
-          this.sofaRefMap.set(extSofaNum, sofaExtId);
+          this.sofaRefMap.set(extSofaNum, fsId);
         } else {
           // new Sofa has skipped ahead more than 1
           this.sofaRefMap.setSize(extSofaNum + 1);
-          this.sofaRefMap.set(extSofaNum, sofaExtId);
+          this.sofaRefMap.set(extSofaNum, fsId);
         }
 
         // get the sofa's mimeType
         String sofaMimeType = attrs.getValue(CAS.FEATURE_BASE_NAME_SOFAMIME);
-
-        fs = cas.createSofa(this.indexMap.get(extSofaNum), sofaID, sofaMimeType);
+        String finalSofaId = sofaID;
+        fs = maybeCreateWithV2Id(fsId, () -> cas.createSofa(this.indexMap.get(extSofaNum), finalSofaId, sofaMimeType));        
       } else {  // not a Sofa
         if (type.isAnnotationBaseType()) {
           
@@ -441,17 +451,18 @@ public class XCASDeserializer {
             casView = cas.getView((Sofa) (fsTree.get(Integer.parseInt(extSofaRefString)).fs));
           }
           if (type.getCode() == TypeSystemConstants.docTypeCode) {
-            fs = casView.getDocumentAnnotation();
+            fs = maybeCreateWithV2Id(fsId, () -> casView.getDocumentAnnotation());
+//            fs = casView.getDocumentAnnotation();
             cas.removeFromCorruptableIndexAnyView(fs, cas.getAddbackSingle());
           } else {
-            fs = casView.createFS(type);
+            fs = maybeCreateWithV2Id(fsId, () -> casView.createFS(type));
             if (currentFs instanceof UimaSerializable) {
               UimaSerializable ufs = (UimaSerializable) currentFs;
               uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
             }
           }
         } else {  // not an annotation base
-          fs = cas.createFS(type);
+          fs = maybeCreateWithV2Id(fsId, () -> cas.createFS(type));
           if (currentFs instanceof UimaSerializable) {
             UimaSerializable ufs = (UimaSerializable) currentFs;
             uimaSerializableFixups.add(() -> ufs._init_from_cas_data());
@@ -579,7 +590,9 @@ public class XCASDeserializer {
           throw createException(XCASParsingException.ILLEGAL_ARRAY_ATTR, attrName);
         }
       }
-      TOP fs = cas.createArray(type, size);
+      final int finalSize = size;
+      TOP fs = maybeCreateWithV2Id(fsId, () -> cas.createArray(type, finalSize));
+//      TOP fs = cas.createArray(type, size);
       
       FSInfo fsInfo = new FSInfo(fs, indexRep);
       if (id >= 0) {
@@ -749,7 +762,8 @@ public class XCASDeserializer {
         }
         case DOC_TEXT_STATE: {
           // Assume old style CAS with one text Sofa
-          Sofa newSofa = cas.createInitialSofa("text");
+          Sofa newSofa = (Sofa) maybeCreateWithV2Id(1, () -> cas.createInitialSofa("text"));
+//          Sofa newSofa = cas.createInitialSofa("text");
           CASImpl initialView = cas.getInitialView();
           initialView.registerView(newSofa);
           // Set the document text without creating a documentAnnotation
@@ -1170,6 +1184,25 @@ public class XCASDeserializer {
                 "_dash_");
       }
     }
+    
+    TOP maybeCreateWithV2Id(int id, Supplier<TOP> create) {
+      if (cas.is_ll_enableV2IdRefs()) {
+        cas.set_reuseId(id);
+        try {
+          TOP fs = create.get();
+          if (highestIdFs == null) {
+            highestIdFs = fs;
+          } else if (highestIdFs._id < fs._id) {
+            highestIdFs = fs;  // for setting up getNextId at end
+          } 
+          return fs;
+        } finally {           
+          cas.set_reuseId(0); // in case of error throw
+        }
+      } else {
+        return create.get();          
+      }
+    }
   }
 
   final private TypeSystemImpl ts;
@@ -1303,6 +1336,14 @@ public class XCASDeserializer {
     }
     xmlReader.setContentHandler(handler);
     xmlReader.parse(new InputSource(aStream));
+    
+    CASImpl casImpl = ((CASImpl)aCAS.getLowLevelCAS());
+    if (casImpl.is_ll_enableV2IdRefs()) {
+      TOP highest_fs = ((XCASDeserializerHandler)handler).highestIdFs;
+      
+      casImpl.setLastUsedFsId(highest_fs._id);
+      casImpl.setLastFsV2Size(highest_fs._getTypeImpl().getFsSpaceReq(highest_fs));
+    }
   }
 
 }
