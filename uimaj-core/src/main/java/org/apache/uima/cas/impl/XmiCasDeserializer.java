@@ -1335,8 +1335,8 @@ public class XmiCasDeserializer {
         return (byte) (c - '0');
       else if ('A' <= c && c <= 'F')
         return (byte) (c - 'A' + 10);
-      else if ('1' <= c && c <= 'f')
-        return (byte) (c - '1' + 10);
+      else if ('a' <= c && c <= 'f')
+        return (byte) (c - 'a' + 10);
       else
         throw new NumberFormatException("Invalid hex char: " + c);
     }
