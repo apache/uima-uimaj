@@ -1159,10 +1159,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     
     try {
     indent += incr;
-//    if (!IS_V2_PRETTY_PRINT && indent > 20) {
-//      buf.append(" ... past indent 20 ... ");
-//      return;
-//    }
+    if (!IS_V2_PRETTY_PRINT && indent > 20) {
+      buf.append(" ... past indent 20 ... ");
+      return;
+    }
       
     final int printInfo = printRefs.printInfo(this);
     if (printInfo != PrintReferences.NO_LABEL) {

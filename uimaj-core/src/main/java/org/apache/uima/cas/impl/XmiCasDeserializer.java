@@ -275,8 +275,6 @@ public class XmiCasDeserializer {
     
     final private List<Runnable> uimaSerializableFixups = new ArrayList<>();
     
-    private TOP highestIdFs = null;
-    
     /**
      * Creates a SAX handler used for deserializing an XMI CAS.
      * @param aCAS CAS to deserialize into
@@ -953,7 +951,7 @@ public class XmiCasDeserializer {
      * called from readFS 751
      * called from processDeferred, to handle features specified as child elements
      * @param type -
-     * @param fsAddr the address of the FS
+     * @param fs the FS
      * @param featName the feature name
      * @param featVal the value of the feature
      * @param isNewFS  true if this is a new FS
