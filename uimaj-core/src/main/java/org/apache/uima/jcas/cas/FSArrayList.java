@@ -94,7 +94,7 @@ public class FSArrayList <T extends TOP> extends TOP implements
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.type.FSArrayList";
+  public final static String _TypeName = "org.apache.uima.jcas.cas.FSArrayList";
   
   /** @generated
    * @ordered 

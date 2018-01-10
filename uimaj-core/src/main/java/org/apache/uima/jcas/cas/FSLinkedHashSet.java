@@ -56,7 +56,7 @@ public class FSLinkedHashSet <T extends TOP> extends FSHashSet<T> {
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.type.FSHashSet";
+  public final static String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
   
   /** @generated
    * @ordered 

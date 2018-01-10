@@ -76,7 +76,7 @@ public class IntegerArrayList extends TOP implements
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.type.IntegerArrayList";
+  public final static String _TypeName = "org.apache.uima.jcas.cas.IntegerArrayList";
   
   /** @generated
    * @ordered 

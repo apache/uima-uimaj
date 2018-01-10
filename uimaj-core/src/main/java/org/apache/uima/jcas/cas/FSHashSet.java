@@ -57,7 +57,7 @@ public class FSHashSet <T extends TOP> extends TOP implements
    * @ordered 
    */
   @SuppressWarnings ("hiding")
-  public final static String _TypeName = "org.apache.uima.jcas.type.FSHashSet";
+  public final static String _TypeName = "org.apache.uima.jcas.cas.FSHashSet";
   
   /** @generated
    * @ordered 
