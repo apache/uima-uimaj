@@ -20,6 +20,8 @@ package org.apache.uima.internal.util;
 
 import java.util.Random;
 
+import org.apache.uima.util.IntEntry;
+
 import junit.framework.TestCase;
 
 public class Int2ObjHashMapTest extends TestCase {

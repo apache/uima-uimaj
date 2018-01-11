@@ -23,12 +23,12 @@ import java.util.Iterator;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
-import org.apache.uima.internal.util.IntEntry;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSHashSet;
 import org.apache.uima.jcas.cas.FSLinkedHashSet;
 import org.apache.uima.jcas.cas.Int2FS;
+import org.apache.uima.util.IntEntry;
 
 import junit.framework.TestCase;
 import x.y.z.EndOfSentence;
@@ -43,8 +43,6 @@ public class FSHashSetTest extends TestCase {
 	private CAS cas;
 
 	private JCas jcas;
-
-	private TypeSystem ts;
 
 	public EndOfSentence endOfSentenceInstance;
 
@@ -61,7 +59,6 @@ public class FSHashSetTest extends TestCase {
 //		    }
 //		    )
 		    );
-		this.ts = this.cas.getTypeSystem();
 		this.jcas = cas.getJCas();
 	}
 

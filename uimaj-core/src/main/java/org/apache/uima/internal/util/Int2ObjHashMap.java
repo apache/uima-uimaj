@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
+import org.apache.uima.util.IntEntry;
 import org.apache.uima.util.impl.Constants;
 
 /**
@@ -48,6 +49,9 @@ import org.apache.uima.util.impl.Constants;
  *   
  * remove supported by replacing the value slot with null, and replacing the key slot with a "removed" token.
  * A cleanout of removed items occurs when necessary.
+ * 
+ * @param <T> the type of the component type, must match the clazz in the constructor call
+ * @param <E> the type of the elements
  *   
  */
 public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implements Iterable<IntEntry<E>>{
@@ -95,7 +99,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 //  private int size; // number of elements in the table  
  
   private int [] keys;
-  private T [] values;
+  private T [] values;  // this array constructed using the componentType
   
 //  private boolean secondTimeShrinkable = false;
   
@@ -300,11 +304,11 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 //    }
 //  }
 
-  public T get(int key) {
-    return (key == 0) ? null : values[findPosition(key)];
+  public E get(int key) {
+    return (key == 0) ? null : (E) values[findPosition(key)];
   }
 
-  public T remove(int key) {
+  public E remove(int key) {
   int pos = findPosition(key);
   T v = values[pos];
   int k = keys[pos];                      
@@ -313,7 +317,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
     keys[pos] = REMOVED_KEY;
     commonRemove();
   }
-  return v;  
+  return (E) v;  
   }
   
 //  private void maybeRebalanceRemoves() {
@@ -463,8 +467,8 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
   /**
    * @return an iterator&lt;T&gt; over the values in random order
    */
-  public Iterator<T> values() {
-    return new Iterator<T>() {
+  public Iterator<E> values() {
+    return new Iterator<E>() {
       
       /**
        * Keep this always pointing to a non-0 entry, or
@@ -478,11 +482,11 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
       }
 
       @Override
-      public T next() {
+      public E next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        T r = values[curPosition];
+        E r = (E) values[curPosition];
         curPosition = moveToNextFilled(curPosition + 1);
         return r;
       }
@@ -504,7 +508,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
   }
 
   public T[] valuesArray() {
-    Iterator<T> it = values();
+    Iterator<E> it = values();
     int size = size();
     T[] r = (T[]) Array.newInstance(componentType, size);
     for (int i = 0; i < size; i++) {
@@ -538,7 +542,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        final IntEntry<E> r = new IntEntry<E>(keys[curPosition], (E) values[curPosition]);
+        final IntEntry<E> r = new IntEntry<>(keys[curPosition], (E) values[curPosition]);
         curPosition = moveToNextFilled(curPosition + 1);
         return r;        
       }

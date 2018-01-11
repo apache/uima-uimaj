@@ -33,9 +33,9 @@ import org.apache.uima.cas.impl.FeatureStructureImplC;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.internal.util.Int2ObjHashMap;
-import org.apache.uima.internal.util.IntEntry;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
+import org.apache.uima.util.IntEntry;
 import org.apache.uima.util.impl.Constants;
 
 
@@ -328,7 +328,7 @@ public class Int2FS <T extends TOP> extends TOP implements
 
   public T get(int key) {
     maybeLazyInit();
-    return (T) int2FS.get(key);
+    return int2FS.get(key);
   }
 
   public T put(int key, T value) {

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.uima.internal.util;
+package org.apache.uima.util;
 
 /**
  * like Entry&lt;k, v&gt; except the k is an int. 
@@ -24,19 +24,28 @@ package org.apache.uima.internal.util;
  * @param <T> the type of the value
  */
 public class IntEntry<T> {
-  private int i;
-  private T v;
-  IntEntry(int i, T v) {
-    this.i = i;
-    this.v = v;
+  private int key;
+  private T value;
+  
+  public IntEntry(int i, T v) {
+    this.key = i;
+    this.value = v;
   }
   
+  /**
+   * 
+   * @return the key 
+   */
   public int getKey() {
-    return i;
+    return key;
   }
   
+  /**
+   * 
+   * @return the Value
+   */
   public T getValue() {
-    return v;
+    return value;
   }
 
   /* (non-Javadoc)
@@ -46,8 +55,8 @@ public class IntEntry<T> {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + i;
-    result = prime * result + ((v == null) ? 0 : v.hashCode());
+    result = prime * result + key;
+    result = prime * result + ((value == null) ? 0 : value.hashCode());
     return result;
   }
 
@@ -63,16 +72,14 @@ public class IntEntry<T> {
     if (getClass() != obj.getClass())
       return false;
     IntEntry other = (IntEntry) obj;
-    if (i != other.i)
+    if (key != other.key)
       return false;
-    if (v == null) {
-      if (other.v != null)
+    if (value == null) {
+      if (other.value != null)
         return false;
-    } else if (!v.equals(other.v))
+    } else if (!value.equals(other.value))
       return false;
     return true;
   }
-
-  
   
 }

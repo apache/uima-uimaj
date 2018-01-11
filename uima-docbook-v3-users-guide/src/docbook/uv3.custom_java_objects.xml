@@ -278,6 +278,9 @@ public void _save_to_cas_data() {
         under user control of what exactly gets added to them, 
         supporting removes and clearing, under application control
       </para>
+      
+      <para>The <code>iterator()</code> method returns an Iterator over <code>IntEntry&lt;T&gt;</code> objects - these
+        are like java <code>Entry&lt;K, V&gt;</code> objects except the key is an int.</para>
     </section>
     
   </section>
