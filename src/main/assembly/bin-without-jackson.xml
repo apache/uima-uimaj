@@ -328,7 +328,12 @@ under the License.
       <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>        
     </fileSet>
-
+    <fileSet>
+      <directory>uimaj-json/api-change-report</directory>
+      <outputDirectory>uimaj-json/api-change-report</outputDirectory>
+      <fileMode>644</fileMode>
+      <directoryMode>755</directoryMode>        
+    </fileSet>
   </fileSets>
  
   <files>
