@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.PrimitiveIterator.OfInt;
 
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.CASRuntimeException;
@@ -128,8 +129,8 @@ public class JCasTest extends TestCase {
 	}
 
 	public void checkExpectedBadCASError(Exception e1, String err) {
-		if (e1 instanceof CASRuntimeException) {
-			CASRuntimeException e = (CASRuntimeException) e1;
+		if (e1 instanceof UIMARuntimeException) {
+			UIMARuntimeException e = (UIMARuntimeException) e1;
 			System.out.print("\nCaught CAS Exception with message: ");
 			String m = e1.getMessage();
 			System.out.println(m);
@@ -166,7 +167,7 @@ public class JCasTest extends TestCase {
 
 	public void testChangedFType() throws Exception {
 		try {
-			jcasCasMisMatch(CASTestSetup.BAD_CHANGED_FEATURE_TYPE, CASException.JCAS_INIT_ERROR);
+			jcasCasMisMatch(CASTestSetup.BAD_CHANGED_FEATURE_TYPE, UIMARuntimeException.INTERNAL_ERROR);
 		} catch (Exception e) {
 			JUnitExtension.handleException(e);
 		}
