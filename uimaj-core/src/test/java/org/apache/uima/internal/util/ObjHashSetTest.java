@@ -79,7 +79,7 @@ public class ObjHashSetTest extends TestCase {
   }
   
   public void testAddIntoRemovedSlot() {
-    long seed = -4571976104270514645L;
+    long seed = // -4571976104270514645L;
         new Random().nextLong();
     System.out.println("Random seed for testAddIntoRemovedSlot in " + this.getClass().getName() + ": "  + seed);
     random = new Random(seed);

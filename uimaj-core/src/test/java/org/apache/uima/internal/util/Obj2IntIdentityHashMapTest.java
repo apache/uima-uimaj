@@ -113,7 +113,7 @@ public class Obj2IntIdentityHashMapTest extends TestCase {
     int notPres = 0;
     int countRmv = 0;
     
-    long seed = -6616473831883690L;
+    long seed = // -6616473831883690L;
         new Random().nextLong();
     System.out.println("Random seed for Obj2IntIdentityHashMapTest: " + seed);
     Random r = new Random(seed);

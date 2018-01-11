@@ -128,7 +128,7 @@ public class IntHashSetTest extends TestCase {
   }
   
   public void testAddIntoRemovedSlot() {
-    long seed = 6738591171221169418L;
+    long seed = // 6738591171221169418L;
         new Random().nextLong();
     System.out.println("Random seed for testAddIntoRemovedSlot in " + this.getClass().getName() + ": "  + seed);
     random = new Random(seed);
