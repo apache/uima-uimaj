@@ -114,6 +114,8 @@ public class CASTestSetup implements AnnotatorInitializer {
   public static final String FS_HASH_SET = "org.apache.uima.jcas.cas.FSHashSet";
   
   public static final String FS_LINKED_HASH_SET = "org.apache.uima.jcas.cas.FSLinkedHashSet";
+  
+  public static final String INT_2_FS = "org.apache.uima.jcas.cas.Int2FS";
 
   /**
    * Constructor for CASTestSetup.
@@ -239,6 +241,9 @@ public class CASTestSetup implements AnnotatorInitializer {
     Type fsHashSetType = tsm.addType(FS_HASH_SET, topType);
     tsm.addFeature("fsArray", fsHashSetType, typeArrayRef);
     Type fsLinkedHashSetType = tsm.addType(FS_LINKED_HASH_SET, fsHashSetType);
+    Type int2FSType = tsm.addType(INT_2_FS, topType);
+    tsm.addFeature("fsArray", int2FSType, typeArrayRef);
+    tsm.addFeature("intArray",  int2FSType,  typeArrayInt);     
   }
 
   public void initIndexes(FSIndexRepositoryMgr irm, TypeSystem ts) {

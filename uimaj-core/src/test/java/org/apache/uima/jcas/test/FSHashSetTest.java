@@ -23,10 +23,12 @@ import java.util.Iterator;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.TypeSystem;
+import org.apache.uima.internal.util.IntEntry;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.FSHashSet;
 import org.apache.uima.jcas.cas.FSLinkedHashSet;
+import org.apache.uima.jcas.cas.Int2FS;
 
 import junit.framework.TestCase;
 import x.y.z.EndOfSentence;
@@ -88,6 +90,31 @@ public class FSHashSetTest extends TestCase {
 	public void testBasic() {
 	  basic(new FSHashSet<>(jcas));
 	  basic(new FSLinkedHashSet<>(jcas));
+	}
+	
+	public void testBasicInt2FS() {
+	  Int2FS<Token> m = new Int2FS<>(jcas);
+	  Int2FS<Token> m2 = new Int2FS<>(jcas, 11);
+
+    Token t1 = new Token(jcas);
+    Token t2 = new Token(jcas);
+    m.put(t1._id(), t1);
+    m.put(t2._id(), t2);
+    m.remove(t1._id());
+
+    assertEquals(1, m.size());
+    
+    Iterator<IntEntry<Token>> it = m.iterator();
+    IntEntry<Token> k = null;
+    while (it.hasNext()) {
+      assertNotNull(k = it.next());
+    }
+    assertNotNull(k);
+    m._save_fsRefs_to_cas_data();
+    FSArray fa = (FSArray) m.getFeatureValue(m.getType().getFeatureByBaseName("fsArray"));
+    assertNotNull(fa);
+    assertEquals(fa.get(0), k.getValue());   
+
 	}
 	
 
