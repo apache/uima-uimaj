@@ -78,7 +78,7 @@ public class XmiSerializationSharedData {
    * getFsAddrForXmiId() method, necessary to support merging multiple XMI
    * CASes into the same CAS object.
    **/
-  private Int2ObjHashMap<TOP> xmiIdToFs = new Int2ObjHashMap<>(TOP.class);
+  private Int2ObjHashMap<TOP, TOP> xmiIdToFs = new Int2ObjHashMap<>(TOP.class);
   
   /**
    * List of OotsElementData objects, each of which captures information about

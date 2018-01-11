@@ -171,7 +171,7 @@ public class BinaryCasSerDes {
 //   * For delta, the addr is the modeled addr for the full CAS including both above and below the line.
 //   * 
 //   */
-//  final Int2ObjHashMap<TOP> addr2fs;  
+//  final Int2ObjHashMap<TOP, TOP> addr2fs;  
     
 //  /**
 //   * a map from a fs array of boolean/byte/short/long/double to its addr in the modeled aux heap
@@ -191,9 +191,9 @@ public class BinaryCasSerDes {
    * updated when delta deserializing.
    * reset at end of delta deserializings because multiple mods not supported
    */
-  final private Int2ObjHashMap<TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final private Int2ObjHashMap<TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
-  final private Int2ObjHashMap<TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);   
+  final private Int2ObjHashMap<TOP, TOP> byteAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
+  final private Int2ObjHashMap<TOP, TOP> shortAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);  
+  final private Int2ObjHashMap<TOP, TOP> longAuxAddr2fsa = new Int2ObjHashMap<>(TOP.class);   
   
   /**
    *  used to calculate total heap size
@@ -399,7 +399,7 @@ public class BinaryCasSerDes {
      * and then maybe remove the new one (and remember which views to re-add to).
      * @param heapAddr
      */
-    private void maybeAddBackAndRemoveFs(int heapAddr, Int2ObjHashMap<TOP> addr2fs) {
+    private void maybeAddBackAndRemoveFs(int heapAddr, Int2ObjHashMap<TOP, TOP> addr2fs) {
       if (fsStartAddr == -1) {
         fssIndex = -1;
         addrOfFsToBeAddedBack = -1;
@@ -424,7 +424,7 @@ public class BinaryCasSerDes {
      * @param heapAddr - the heap addr
      * @param bds -
      */
-    private void findCorrespondingFs(int heapAddr, Int2ObjHashMap<TOP> addr2fs) {
+    private void findCorrespondingFs(int heapAddr, Int2ObjHashMap<TOP, TOP> addr2fs) {
       if (fsStartAddr < heapAddr && heapAddr < fsEndAddr) {
         return;
       }
@@ -995,7 +995,7 @@ public class BinaryCasSerDes {
    * @return heapsz (used by caller to do word alignment)
    * @throws IOException 
    */
-  int updateAuxArrayMods(Reading r, Int2ObjHashMap<TOP> auxAddr2fsa, 
+  int updateAuxArrayMods(Reading r, Int2ObjHashMap<TOP, TOP> auxAddr2fsa, 
       Consumer_T_int_withIOException<TOP> setter) throws IOException {
     final int heapsz = r.readInt();
     if (heapsz > 0) {
@@ -1596,7 +1596,7 @@ public class BinaryCasSerDes {
    */
   private void createFSsFromHeaps(boolean isDelta, int startPos, CommonSerDesSequential csds) {
     final int heapsz = heap.getCellsUsed();
-    final Int2ObjHashMap<TOP> addr2fs = csds.addr2fs;
+    final Int2ObjHashMap<TOP, TOP> addr2fs = csds.addr2fs;
     tsi = baseCas.getTypeSystemImpl();
     TOP fs;
     TypeImpl type;
@@ -1785,7 +1785,7 @@ public class BinaryCasSerDes {
       FeatureImpl feat, 
       List<Runnable> fixups4forwardFsRefs, 
       Consumer<TOP> setter,
-      Int2ObjHashMap<TOP> addr2fs) {
+      Int2ObjHashMap<TOP, TOP> addr2fs) {
     int a = heapFeat(heapIndex, feat);
     if (a == 0) {
       return;
@@ -1807,7 +1807,7 @@ public class BinaryCasSerDes {
     return heap.heap[nextFsAddr + 1 + feat.getOffset()];
   }
   
-  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP> addr2fs,
+  private Sofa getSofaFromAnnotBase(int annotBaseAddr, StringHeap stringHeap2, Int2ObjHashMap<TOP, TOP> addr2fs,
                                     CommonSerDesSequential csds) {
     int sofaAddr = heapFeat(annotBaseAddr, tsi.annotBaseSofaFeat);
     if (0 == sofaAddr) {
@@ -1852,7 +1852,7 @@ public class BinaryCasSerDes {
    * @param slotAddr - the main heap slot addr being updated
    * @param slotValue - the new value
    */
-  private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue, Int2ObjHashMap<TOP> addr2fs) {
+  private void updateHeapSlot(BinDeserSupport bds, int slotAddr, int slotValue, Int2ObjHashMap<TOP, TOP> addr2fs) {
     TOP fs = bds.fs;
     TypeImpl type = fs._getTypeImpl();
     if (type.isArray()) {

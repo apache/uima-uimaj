@@ -367,7 +367,7 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    * first index: key is type code
    * 2nd index: key is slot-offset number (0-based) 
    */
-  final private Int2ObjHashMap<long[]> prevFsWithLongValues;
+  final private Int2ObjHashMap<long[], long[]> prevFsWithLongValues;
   
   /**
    * ordered set of FSs found in indexes or linked from other found FSs.

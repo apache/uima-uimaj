@@ -50,7 +50,7 @@ import org.apache.uima.util.impl.Constants;
  * A cleanout of removed items occurs when necessary.
  *   
  */
-public class Int2ObjHashMap<T> extends Common_hash_support implements Iterable<IntEntry<T>>{
+public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implements Iterable<IntEntry<E>>{
   
   private static final int REMOVED_KEY = Integer.MIN_VALUE;
 
@@ -503,14 +503,24 @@ public class Int2ObjHashMap<T> extends Common_hash_support implements Iterable<I
     };
   }
 
-  public Int2ObjHashMap<T> copy() {
+  public T[] valuesArray() {
+    Iterator<T> it = values();
+    int size = size();
+    T[] r = (T[]) Array.newInstance(componentType, size);
+    for (int i = 0; i < size; i++) {
+      r[i] = it.next();
+    }
+    return r;
+  }
+  
+  public Int2ObjHashMap<T, E> copy() {
     return new Int2ObjHashMap<>(this);
   }
 
   @Override
-  public Iterator<IntEntry<T>> iterator() {
+  public Iterator<IntEntry<E>> iterator() {
     
-    return new Iterator<IntEntry<T>>() {
+    return new Iterator<IntEntry<E>>() {
       
       /**
        * Keep this always pointing to a non-0 entry, or
@@ -524,11 +534,11 @@ public class Int2ObjHashMap<T> extends Common_hash_support implements Iterable<I
       }
 
       @Override
-      public IntEntry next() {
+      public IntEntry<E> next() {
         if (!hasNext()) {
           throw new NoSuchElementException();
         }
-        final IntEntry<T> r = new IntEntry<>(keys[curPosition], values[curPosition]);
+        final IntEntry<E> r = new IntEntry<E>(keys[curPosition], (E) values[curPosition]);
         curPosition = moveToNextFilled(curPosition + 1);
         return r;        
       }

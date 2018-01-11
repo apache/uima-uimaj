@@ -74,7 +74,7 @@ public class CommonSerDesSequential {
    * For delta, the addr is the modeled addr for the full CAS including both above and below the line.
    * 
    */
-  final Int2ObjHashMap<TOP> addr2fs = new Int2ObjHashMap<>(TOP.class);  
+  final Int2ObjHashMap<TOP, TOP> addr2fs = new Int2ObjHashMap<>(TOP.class);  
   
   /**
    * The FSs in this list are not necessarily sequential, but is in ascending (simulated heap) order,
