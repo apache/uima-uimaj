@@ -80,5 +80,22 @@
         </featureDescription>
       </features>
     </typeDescription>
+  <typeDescription>
+      <name>org.apache.uima.jcas.cas.Int2FS</name>
+      <description>map from ints to Feature Structures</description>
+      <supertypeName>uima.cas.TOP</supertypeName>
+      <features>
+        <featureDescription>
+          <name>fsArray</name>
+          <description>internal use</description>
+          <rangeTypeName>uima.cas.FSArray</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>intArray</name>
+          <description>internal use</description>
+          <rangeTypeName>uima.cas.IntegerArray</rangeTypeName>
+        </featureDescription>
+      </features>
+    </typeDescription>
   </types>
 </typeSystemDescription>
