@@ -202,7 +202,7 @@ public void _save_to_cas_data() {
 	    <title>FSArrayList</title>
 	    <titleabbrev>FSArrayList</titleabbrev>
 	    
-	    <para>This is like the current FSArray, except that it implements the List API and supports 
+	    <para><code>org.apache.uima.jcas.cas.FSArrayList</code> is like the current FSArray, except that it implements the List API and supports 
 	    adding to the array, with automatic resizing, like an ArrayList in Java.  It is implemented internally
 	    using a Java ArrayList.</para>
 	    
@@ -219,7 +219,7 @@ public void _save_to_cas_data() {
       <title>IntegerArrayList</title>
       <titleabbrev>IntegerArrayList</titleabbrev>
       
-      <para>This is like the current IntegerArray, except that it implements the List API and supports 
+      <para><code>org.apache.uima.jcas.cas.IntegerArrayList</code> is like the current IntegerArray, except that it implements the List API and supports 
       adding to the array, with automatic resizing, like an ArrayList in Java.</para>
       
       <para>The CAS data form is held in a plain IntegerArray feature.</para>
@@ -241,8 +241,9 @@ public void _save_to_cas_data() {
       <title>FSHashSet and FSLinkedHashSet</title>
       
       
-      <para>These types store Feature Structures in a HashSet, using whatever is defined
-      as the Feature Structure's <code>equals</code> and <code>hashcode</code>.
+      <para><code>org.apache.uima.jcas.cas.FSHashSet</code> and <code>org.apache.uima.jcas.cas.FSLinkedHashSet</code>
+        store Feature Structures in a (Linked) HashSet, using whatever is defined
+        as the Feature Structure's <code>equals</code> and <code>hashcode</code>.
       
       <blockquote>
 	      <para>You may customize the particular equals and hashcode by creating a wrapper class that
@@ -257,6 +258,26 @@ public void _save_to_cas_data() {
       <para>If you want a predictable iteratation order, use FSLinkedHashSet instead of FSHashSet.
       </para>
             
+    </section>
+    
+    <section id="uv3.custom_java_objects.semibuiltin_Int2FS">
+      <title>Int2FS Int to Feature Structure map</title>
+      
+      <para>Some applications find it convenient to have a map from ints to Feature Structures.
+        In UIMA V2, they made use of the low level CAS APIs that allowed
+        getting an Feature Structure from an int id using <code>ll_getFSForRef(int)</code>.
+      </para>
+      
+      <para>In v3, use of the low level APIs in this manner 
+        can be enabled, but is discouraged, because it prevents garbage collection of non-reachable Feature Structures.
+      </para>  
+
+      <para><code>org.apache.uima.jcas.cas.Int2FS&lt;T&gt;</code> maps from <code>int</code>s to <code>Feature Structure</code>s
+        of type T.
+        This provides an alternative way to have int -> FS maps, 
+        under user control of what exactly gets added to them, 
+        supporting removes and clearing, under application control
+      </para>
     </section>
     
   </section>
