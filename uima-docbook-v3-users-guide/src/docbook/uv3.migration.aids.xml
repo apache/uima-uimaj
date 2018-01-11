@@ -60,7 +60,7 @@ under the License.
          <row>
            <entry><para>Use UIMA V2 format for toString() for Feature Structures</para></entry>
            
-           <entry><para><code>uima.uima.v2_pretty_print_format</code></para>
+           <entry><para><code>uima.v2_pretty_print_format</code></para>
            
                   <para>The native v3 format for pretty printing feature structures
                     includes an id number with each FS, and some other minor improvements.
