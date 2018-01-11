@@ -144,14 +144,15 @@ public class AnnotationIndexTest extends TestCase {
     valTime = 0L;
     long startTime = System.nanoTime();
     int ii = 0;
-//    for (; i < 100; i++) {  //enable for lots of iterationss, disable for normal test case
+//    for (; ii < 100; ii++) {  //enable for lots of iterationss, disable for normal test case
+//      System.out.println("testInsert outer loop: " + ii);
       insert1(ii);
 //    }  
 //    System.out.println("debug end");
     long v1 = (System.nanoTime() - startTime) / 1000000;
     long v2 = valTime / 1000000;
     System.out.format("Test SZ: %d  SZp2: %d took %,d milliseconds%n", SZ, SZp2, v1);
-    System.out.format("val iter time: %,d insert/remove time: %d%n", v2, v1 - v2);
+    System.out.format("val iter time: %,d insert/remove time: %,d%n", v2, v1 - v2);
     
 //    Collections.sort(iterTimes,                 Comparator.comparingInt(Miter::getOuterIter)
 //                                 .thenComparing(Comparator.comparingLong(Miter::getTime).reversed()));
@@ -180,11 +181,14 @@ public class AnnotationIndexTest extends TestCase {
     rr(1, 3, -1, -1);
         
     for (int i = 0; i < 100_000; i++) {
+//      if (i % 1000 == 0) System.out.println("insert test iteration: " + i);
       removeAndReinsertRandom(iter, i);
 //      if ((i % 100000) == 0) {
 //        System.out.println("random testing OrderedFsSet_array, count: " + i);
 //      }
     }
+    
+//    System.out.println("debug");
 
   }
   
