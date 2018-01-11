@@ -30,7 +30,7 @@ public class Int2ObjHashMapTest extends TestCase {
   // needs to be > than 1/2 the capacity/2
   private static final int  REBAL = 32;  
 
-  Int2ObjHashMap<Integer> ihm;
+  Int2ObjHashMap<Integer, Integer> ihm;
   
   public void setUp() {
     ihm = new Int2ObjHashMap<>(Integer.class);
@@ -97,7 +97,7 @@ public class Int2ObjHashMapTest extends TestCase {
     int notPres = 0;
     int countRmv = 0;
     
-    long seed = -6616473831883690L;
+    long seed = // -6616473831883690L;
         new Random().nextLong();
     System.out.println("Random seed for Int2ObjHashMapTest: " + seed);
     Random r = new Random(seed);
