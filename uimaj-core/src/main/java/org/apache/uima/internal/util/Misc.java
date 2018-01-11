@@ -665,7 +665,7 @@ public class Misc {
   
   public static void assertUie(boolean v, Throwable e) {
     if (!v) 
-      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR);
+      throw new UIMARuntimeException(e, UIMARuntimeException.INTERNAL_ERROR, e);
   }
   
   public static RuntimeException internalError() {
@@ -883,6 +883,7 @@ public class Misc {
   /**
    * Convert a JCas class name (fully qualified) to a UIMA type name 
    *   Normally this is the same, but for two prefixes, it's slightly different
+   *   Also, class names for primitives (int, byte, etc. ) converted to int, byte, etc.
    * @param className the Java JCas class name for a UIMA type, fully qualified
    * @return the fully qualified UIMA Type name 
    */
@@ -895,7 +896,19 @@ public class Misc {
         BuiltinTypeKinds.creatableBuiltinJCasClassNames.contains(className)) { 
       return CAS.UIMA_TCAS_PREFIX + className.substring("org.apache.uima.jcas.tcas.".length());
     }
-    return className;
+    
+    switch (className) {
+    case "boolean": return "uima.cas.Boolean";
+    case "byte":    return "uima.cas.Byte";
+    case "short":   return "uima.cas.Short";
+    case "int":     return "uima.cas.Integer";
+    case "long":    return "uima.cas.Long";
+    case "float":   return "uima.cas.Float";
+    case "double":  return "uima.cas.Double";
+    case "java.lang.String": 
+                    return "uima.cas.String"; 
+    default: return className;
+    }
   }
   
   
