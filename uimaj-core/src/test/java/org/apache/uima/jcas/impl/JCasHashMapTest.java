@@ -375,7 +375,7 @@ public class JCasHashMapTest extends TestCase {
     JCasHashMap m = new JCasHashMap(200); // true = do use cache 
     assertTrue(m.getApproximateSize() == 0);
        
-    long start = System.currentTimeMillis();
+    long start = System.nanoTime();
     for (int i = 0; i < n; i++) {
       final int key = addrs[i];
       m.putIfAbsent(key, k -> TOP._createSearchKey(k));
@@ -386,11 +386,11 @@ public class JCasHashMapTest extends TestCase {
 //        m.put(fs);
 //      }
     }
-    
+    long stop = System.nanoTime();
     assertEquals(m.getApproximateSize(), n);
     
-    System.out.format("time for v1 %,d is %,d ms%n",
-        n, System.currentTimeMillis() - start);
+    System.out.format("time for v1 %,d is %,d microsecs%n",
+        n, (stop - start)/1000);
     m.showHistogram();
 
   }
