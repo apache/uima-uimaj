@@ -185,7 +185,7 @@ under the License.
 AutoClosable ll_enableV2IdRefs()
 
 // same, but with explicit set or reset of the mode
-AutoClosable ll_enableV2IdRefs(true/false)
+AutoClosableNoException ll_enableV2IdRefs(true/false)
 
 // return true if the mode is enabled
 boolean is_ll_enableV2IdRefs() 
@@ -194,10 +194,10 @@ boolean is_ll_enableV2IdRefs()
     <para>Static LowLevelCas APIs for setting the default value for this mode for new CASs on a particular thread:</para>
     <programlisting>
 // set the default    
-AutoClosable LowLeveCas.ll_defaultV2IdRefs()
+AutoClosableNoException LowLeveCas.ll_defaultV2IdRefs()
 
 // same, but with explicit set or reset of the mode
-AutoClosable LowLeveCas.ll_defaultV2IdRefs(true/false)
+AutoClosableNoException LowLeveCas.ll_defaultV2IdRefs(true/false)
 
 // return true if the mode is enabled
 boolean LowLeveCas.is_ll_defaultV2IdRefs() 
@@ -380,5 +380,37 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
       interfaces added, grouping them into <code>CommonPrimitiveArray</code> or 
       <code>CommonArray</code>.  These changes are internal, and should not affect users.
     </para>
+  </section>
+  
+  <section id="uv3.backwards_compatibility.multiple_type_systems_with_common_jcas">
+    <title>Enabling multiple versions of type systems to work with a single common JCas class</title>
+    <titleabbrev>Multi-TypeSystems single JCas</titleabbrev>   
+    
+    <para>Some applications may use a JCas class definition, defining for type T features f1, f2, f3 (for example), in a mode
+      where under a single class loader (for example, in one Java application), multiple CASs are loaded and processed,
+      where each CAS might have other versions of the type system, defining for type T a subset of the features in the JCas. 
+    </para>
+    
+    <para>In order to make this scenario possible, v3 takes an extra step, right before type system commit time, of 
+      loading the JCas classes corresponding to the types, and then augmenting the type definitions with additional
+      features defined in the JCas but not in the type description.  After this is done, the type system is committed, 
+      and offsets are assigned to the JCas class that are constant, even when a subsequent type system is loaded
+      that defines more features (provided that no new features are introduced).</para>
+      
+    <para>This feature represents a trade-off between highly efficient, locked-down offsets for features, and 
+      some limited flexibility to handle a somewhat common use case where additional features exist in the JCas.
+      The JCas loading code always checks to insure compatibility between the offsets in the JCas classes, as first set up,
+      and any subsequent type system being used with that JCas.
+    </para> 
+    
+    <para>This accommodation doesn't handle many possible scenarios. Some of these include situations where a
+      supertype might subsequently add extra feature slots, or the features end up after merging to have a different
+      ordering.</para> 
+    
+    <para>For cases where this accommodation is insufficient, the workaround is to run separate UIMA applications, each
+      under its own class loader, for the incompatible situations.</para>
+      
+    <para>PEARs, because they are loaded lazily after the type system has been committed, do not support this kind of
+      augmentation of types from the Pear-specific JCas class definition.</para>  
   </section>
   </chapter>
