@@ -134,6 +134,10 @@ public class CASRuntimeException extends UIMARuntimeException {
    * API which only loads (but doesn't run the initialization: 
    * Class.forName("myJCasClass", false, this.getClass().getClassLoader()).*/
 	public static final String JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT = "JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT";
+	
+	/** Cas class {0} with feature {1} but is mssing a 0 argument getter.  This feature will not be used to maybe expand the type's feature set.*/
+	public static final String JCAS_MISSING_GETTER = "JCAS_MISSING_GETTER";
+	
 	/**
    * JCas getNthElement method called via invalid object - an empty list: {0}.
    */
@@ -164,6 +168,9 @@ public class CASRuntimeException extends UIMARuntimeException {
    * a CAS, but rather just with a base CAS.
    */
 	public static final String JCAS_UNSUPPORTED_OP_NOT_CAS = "JCAS_UNSUPPORTED_OP_NOT_CAS";
+	
+	/** The Class "{0}" matches a UIMA Type, and is a subtype of uima.cas.TOP, but is missing the JCas typeIndexId.*/
+	public static final String JCAS_MISSING_TYPEINDEX = "JCAS_MISSING_TYPEINDEX";
 
 	/** A sofaFS with name {0} has already been created. */
 	public static final String SOFANAME_ALREADY_EXISTS = "SOFANAME_ALREADY_EXISTS";

@@ -83,6 +83,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   protected final boolean isLongOrDouble;  // for code generation
   
+  protected boolean isBuiltIn;  // for avoiding repetitive work
   
   int nbrOfLongOrDoubleFeatures = 0; 
   
@@ -442,6 +443,10 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     this.isInheritanceFinal = true;
   }
   
+  void setBuiltIn() {
+    this.isBuiltIn = true;
+  }
+  
   public boolean isLongOrDouble() {
     return this.isLongOrDouble;
   }
@@ -498,6 +503,9 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }    
   }
   
+  /**
+   * Sets hasRefFeature and nbrOfLongOrDoubleFeatures
+   */
   private void computeHasXxx() {
     nbrOfLongOrDoubleFeatures = superType.getNbrOfLongOrDoubleFeatures();
     if (superType.hasRefFeature) {
@@ -526,7 +534,8 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    * @param fi feature to be added
    */
   void addFeature(FeatureImpl fi) {
-    checkExistingFeatureCompatible(staticMergedFeatures.get(fi.getShortName()), fi.getRange());
+    // next already checked by caller "addFeature" in TypeSystemImpl
+//    checkExistingFeatureCompatible(staticMergedFeatures.get(fi.getShortName()), fi.getRange());
     checkAndAdjustFeatureInSubtypes(this, fi);
 
     staticMergedFeatures.put(fi.getShortName(), fi);

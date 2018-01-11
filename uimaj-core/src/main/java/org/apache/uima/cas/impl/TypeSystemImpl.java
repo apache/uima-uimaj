@@ -35,6 +35,7 @@ import static org.apache.uima.cas.impl.SlotKinds.SlotKind.Slot_StrRef;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.invoke.MethodType;
 import java.lang.invoke.MutableCallSite;
 import java.lang.ref.WeakReference;
@@ -61,6 +62,7 @@ import org.apache.uima.cas.TypeNameSpace;
 import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.admin.CASAdminException;
 import org.apache.uima.cas.admin.TypeSystemMgr;
+import org.apache.uima.cas.impl.FSClassRegistry.JCasClassInfo;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCasRegistry;
@@ -1331,9 +1333,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (this.locked) {
         // is a no-op if already loaded for this Class Loader
         // otherwise, need to load and set up generators for this class loader
-        getGeneratorsForClassLoader(cl, false);
+        loadAndVerifyGenerators(cl);
         return this; // might be called multiple times, but only need to do once
       }
+      
+      
       // because subsumes depends on it
       // and generator initialization uses subsumes
   //    this.numCommittedTypes = this.getNumberOfTypes(); // do before
@@ -1344,6 +1348,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // because it will call the type system iterator
   //    this.casMetadata.setupFeaturesAndCreatableTypes();
 
+      // Augment (if called for) the features for the types, based on features defined in the JCas classes (if they exist)
+      //   - also does feature reordering if necessary so subtype added features follow super type added ones.
+      Map<String, JCasClassInfo> type2jcci = FSClassRegistry.get_className_to_jcci(cl, false);  // is not pear
+      Lookup lookup = FSClassRegistry.getLookup(cl);
+      FSClassRegistry.augmentFeaturesFromJCas(this.topType, cl, this, type2jcci, lookup);      
 
       if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
         WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
@@ -1351,7 +1360,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           TypeSystemImpl prev = prevWr.get();
           if (null != prev) {
             // the following is a no-op if the generators already set up for this class loader
-            prev.getGeneratorsForClassLoader(cl, false);
+            prev.loadAndVerifyGenerators(cl);
             return prev;
           }
         }      
@@ -1390,11 +1399,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // this call is here for the case where a commit happens, but no subsequent
       //   new CAS or switch classloader call is done.  For example, a "reinit" in an existing CAS
       // This call internally calls the code to load JCas classes for this class loader.
-      getGeneratorsForClassLoader(cl, false);    
+      loadAndVerifyGenerators(cl);    
 //      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
       return this;
     } // of sync block 
-  }
+  }  
   
   /**
    * This is the actual offset for the feature, in either the int or ref array
@@ -1646,6 +1655,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     TypeImpl t = (TypeImpl) type;
     t.setFeatureFinal();
     t.setInheritanceFinal();
+    t.setBuiltIn();
   }
   
   private FeatureImpl getFeature(String typeName, String featureShortName) {
@@ -2634,6 +2644,29 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (arrayFs._getTypeImpl().getComponentType().subsumesStrictly(featRange.getComponentType())) {
         arrayFs._setTypeImpl(featRange);  // replace more general type with more specific type
       }
+    }
+  }
+  
+  /**
+   * Called when committing a type system 
+   *  -- after commit bit is set
+   *  -- loads JCas classes if needed
+   *  -- validates loaded JCas classes against type system
+   * @param cl the class loader to use 
+   */
+  public FsGenerator3[] loadAndVerifyGenerators(ClassLoader cl) {
+    synchronized (generatorsByClassLoader) {
+      
+      FsGenerator3[] g = generatorsByClassLoader.get(cl); // a separate map per type system instance
+      if (g == null) {
+        g = FSClassRegistry.getGeneratorsForClassLoader(cl, false, this);
+        generatorsByClassLoader.put(cl, g);
+        // if g is not null, then the combo of this cl and this type system impl instance has 
+        // already been checked.
+        FSClassRegistry.checkConformance(cl, this);        
+      }
+      
+     return g;
     }
   }
   

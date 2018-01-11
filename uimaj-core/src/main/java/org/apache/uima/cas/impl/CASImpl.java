@@ -1600,6 +1600,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     // ts
     // at the same time
     final ClassLoader cl = getJCasClassLoader();
+    boolean wasAlreadyCommitted = false;
     synchronized (ts) {
 //      //debug
 //      System.out.format("debug committing ts %s classLoader %s%n", ts.hashCode(), cl);
@@ -1609,9 +1610,14 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
           installTypeSystemInAllViews(tsc);
           ts = tsc;
         }
+      } else {
+        wasAlreadyCommitted = true;
       }
-    }       
-    svd.baseGenerators = svd.generators = ts.getGeneratorsForClassLoader(cl, false);  // false - not PEAR
+    } 
+    svd.baseGenerators = svd.generators = (wasAlreadyCommitted) 
+        ?  ts.loadAndVerifyGenerators(cl) // always do the conpliance check
+        :  ts.getGeneratorsForClassLoader(cl, false);  // false - not PEAR
+        
     createIndexRepository();
     return ts;
   }
@@ -4748,7 +4754,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
   }
   
 //  Not currently used
-//  public Int2ObjHashMap<TOP> getId2FSs() {
+//  public Int2ObjHashMap<TOP, TOP> getId2FSs() {
 //    return svd.id2fs.getId2fs();
 //  }
   
