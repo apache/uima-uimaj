@@ -39,6 +39,7 @@ import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.IntArrayFS;
 import org.apache.uima.cas.StringArrayFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.resource.metadata.FsIndexDescription;
 import org.apache.uima.resource.metadata.TypeSystemDescription;
@@ -52,7 +53,6 @@ import org.apache.uima.util.XMLSerializer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 import junit.framework.TestCase;
 
@@ -232,10 +232,13 @@ public class XCASDeserializerTest extends TestCase {
 //      System.out.println("debug");
 //    }
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
-    CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
-    cc.compareIds(((CASImpl)cas).is_ll_enableV2IdRefs());
-    cc.compareCASes();
-    // CasComparer.assertEquals(cas,cas2);
+    if (XmiCasDeserializerTest.IS_CAS_COMPARE) {
+      CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
+      cc.compareIds(((CASImpl)cas).is_ll_enableV2IdRefs());
+      cc.compareCASes();
+    } else {
+      CasComparer.assertEquals(cas,cas2);
+    }
   }
 
   public void testOutOfTypeSystem2() throws Exception {

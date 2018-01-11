@@ -89,6 +89,11 @@ import junit.framework.TestCase;
 
 
 public class XmiCasDeserializerTest extends TestCase {
+  
+  // normally set to true, set to false for comparative performance measurement
+  //   because this adds ~ 10 seconds or so to the time it takes to run the junit tests
+  
+  public static final boolean IS_CAS_COMPARE = true;
 
   private FsIndexDescription[] indexes;
 
@@ -366,10 +371,11 @@ public class XmiCasDeserializerTest extends TestCase {
     xmlReader.parse(new InputSource(new StringReader(xml)));
     
     // compare
-    
-    CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
-    // ids won't be the same, don't compare these
-    cc.compareCASes();
+    if (IS_CAS_COMPARE) {
+      CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
+      // ids won't be the same, don't compare these
+      cc.compareCASes();
+    }
     
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
     assertEquals(cas.getDocumentText(), cas2.getDocumentText());
