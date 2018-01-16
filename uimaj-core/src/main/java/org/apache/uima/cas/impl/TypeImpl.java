@@ -83,6 +83,12 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   
   protected final boolean isLongOrDouble;  // for code generation
   
+  /**
+   * when set, processing skipped for
+   *   - augment features from jcas
+   *   - conformance checking between jcas and type system
+   *   - validating the superclass chain upon load of jcas class
+   */
   protected boolean isBuiltIn;  // for avoiding repetitive work
   
   int nbrOfLongOrDoubleFeatures = 0; 
