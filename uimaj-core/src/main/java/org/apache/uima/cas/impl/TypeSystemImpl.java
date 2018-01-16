@@ -639,6 +639,24 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     setTypeFinal(stringNeListType);
     setTypeFinal(intNeListType);
     
+    topType.setBuiltIn();
+    listBaseType.setBuiltIn();
+    fsListType.setBuiltIn();
+    fsEListType.setBuiltIn();
+    fsNeListType.setBuiltIn();
+    floatListType.setBuiltIn();
+    floatEListType.setBuiltIn();
+    floatNeListType.setBuiltIn();
+    intListType.setBuiltIn();
+    intEListType.setBuiltIn();
+    intNeListType.setBuiltIn();
+    stringListType.setBuiltIn();
+    stringEListType.setBuiltIn();
+    stringNeListType.setBuiltIn();
+    annotType.setBuiltIn();
+    annotBaseType.setBuiltIn();
+    
+    
 //    setTypeFinal(fsArrayListType);
 //    setTypeFinal(intArrayListType);
 //    setTypeFinal(fsHashSetType);
@@ -658,6 +676,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     stringNeListType.setFeatureFinal();
     annotType.setFeatureFinal();
     annotBaseType.setFeatureFinal();
+    
+    
     
 //    fsArrayListType.setFeatureFinal();
 //    intListType.setFeatureFinal();
@@ -1358,7 +1378,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
         WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
         if (null != prevWr) {
           TypeSystemImpl prev = prevWr.get();
-          if (null != prev) {
+          if (null != prev) {            
             // the following is a no-op if the generators already set up for this class loader
             prev.loadAndVerifyGenerators(cl);
             return prev;
