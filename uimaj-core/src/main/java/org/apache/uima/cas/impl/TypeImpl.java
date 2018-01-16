@@ -57,6 +57,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
         
   private final String name;                // x.y.Foo
   private final String shortName;           //     Foo
+  private final String jcasClassName;       // chande prefix, maybe
   
   private final short typeCode;               // subtypes always have typecodes > this one and < typeCodeNextSibling
   private       short depthFirstCode;         // assigned at commit time
@@ -169,6 +170,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   private TypeImpl() {
     this.name = null;
     this.shortName = null;
+    this.jcasClassName = null;
     this.superType = null;
     
     this.isInheritanceFinal = false;
@@ -203,6 +205,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
     }
     
     this.name = name;
+    this.jcasClassName = Misc.typeName2ClassName(name);
     final int pos = this.name.lastIndexOf(TypeSystem.NAMESPACE_SEPARATOR);
     this.shortName = (pos >= 0) ? this.name.substring(pos + 1) : name;
     this.superType = supertype;
@@ -285,6 +288,11 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public String getName() {
     return this.name;
   }
+  
+  public String getJCasClassName() {
+    return this.jcasClassName;
+  }
+  
   
   /**
    * Get the super type.
