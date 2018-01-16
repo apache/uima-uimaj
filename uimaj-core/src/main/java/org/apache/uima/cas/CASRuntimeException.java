@@ -102,7 +102,7 @@ public class CASRuntimeException extends UIMARuntimeException {
 	/** JCas Class's supertypes for "{0}", "{1}" and the corresponding UIMA Supertypes for "{2}", "{3}" don't have an intersection. */
   public static final String JCAS_CAS_MISMATCH_SUPERTYPE = "JCAS_CAS_MISMATCH_SUPERTYPE";
 
-  /** The JCas class: "{0}" has supertype: "{1}" which doesn't match the UIMA type "{2}"''s supertype "{3}". */
+  /** The JCas class: "{0}" has supertypes: "{1}" which do not match the UIMA type "{2}"''s supertypes "{3}". */
   public static final String JCAS_MISMATCH_SUPERTYPE = "JCAS_MISMATCH_SUPERTYPE";
 	/**
    * JCas type "{0}" used in Java code, but was not declared in the XML type descriptor.

@@ -1353,7 +1353,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (this.locked) {
         // is a no-op if already loaded for this Class Loader
         // otherwise, need to load and set up generators for this class loader
-        loadAndVerifyGenerators(cl);
+        getGeneratorsForClassLoader(cl, false);  // false - is not pear
         return this; // might be called multiple times, but only need to do once
       }
       
@@ -1380,7 +1380,8 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
           TypeSystemImpl prev = prevWr.get();
           if (null != prev) {            
             // the following is a no-op if the generators already set up for this class loader
-            prev.loadAndVerifyGenerators(cl);
+            prev.getGeneratorsForClassLoader(cl, false);  // false - is not pear
+
             return prev;
           }
         }      
@@ -1419,7 +1420,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // this call is here for the case where a commit happens, but no subsequent
       //   new CAS or switch classloader call is done.  For example, a "reinit" in an existing CAS
       // This call internally calls the code to load JCas classes for this class loader.
-      loadAndVerifyGenerators(cl);    
+      getGeneratorsForClassLoader(cl, false);  // false - is not pear    
 //      FSClassRegistry.loadJCasForTSandClassLoader(this, true, cl);
       return this;
     } // of sync block 
@@ -2666,30 +2667,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       }
     }
   }
-  
-  /**
-   * Called when committing a type system 
-   *  -- after commit bit is set
-   *  -- loads JCas classes if needed
-   *  -- validates loaded JCas classes against type system
-   * @param cl the class loader to use 
-   */
-  public FsGenerator3[] loadAndVerifyGenerators(ClassLoader cl) {
-    synchronized (generatorsByClassLoader) {
-      
-      FsGenerator3[] g = generatorsByClassLoader.get(cl); // a separate map per type system instance
-      if (g == null) {
-        g = FSClassRegistry.getGeneratorsForClassLoader(cl, false, this);
-        generatorsByClassLoader.put(cl, g);
-        // if g is not null, then the combo of this cl and this type system impl instance has 
-        // already been checked.
-        FSClassRegistry.checkConformance(cl, this);        
-      }
-      
-     return g;
-    }
-  }
-  
+    
   /**
    * Called when switching or initializing CAS's shared-view-data instance of FsGenerator[]
    * @param cl the class loader
@@ -2699,6 +2677,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   public FsGenerator3[] getGeneratorsForClassLoader(ClassLoader cl, boolean isPear) {
     Map<ClassLoader, FsGenerator3[]> gByC = isPear ? generators4pearsByClassLoader : generatorsByClassLoader;
     synchronized (gByC) {
+      
       FsGenerator3[] g = gByC.get(cl); // a separate map per type system instance
       if (g == null) {
         g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
