@@ -903,14 +903,21 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public boolean equals(Object obj) {
     if (obj instanceof FeatureStructureImplC) {
       FeatureStructureImplC c2 = (FeatureStructureImplC) obj;
-      if (_casView == null && c2._casView == null) {
-        return c2._id == this._id;  // special case for removed marker
-      }
-      if (_casView != null && c2._casView != null &&   
-           (_casView == c2._casView ||
-            _casView.getBaseCAS() == c2._casView.getBaseCAS())) {
-        return c2._id == this._id;
-      }
+      
+      if (c2._id != this._id) return false;
+
+      return (_casView == null && c2._casView == null) ||
+             (_casView != null && c2._casView != null &&   
+              (_casView == c2._casView || _casView.getBaseCAS() == c2._casView.getBaseCAS()));
+      
+//      if (_casView == null && c2._casView == null) {
+//        return true;  // special case for removed marker
+//      }
+//      if (_casView != null && c2._casView != null &&   
+//           (_casView == c2._casView ||
+//            _casView.getBaseCAS() == c2._casView.getBaseCAS())) {
+//        return true;
+//      }
     }
 //        throw new IllegalArgumentException("Can't invoke equals on two FS from different CASes.");
     return false;
