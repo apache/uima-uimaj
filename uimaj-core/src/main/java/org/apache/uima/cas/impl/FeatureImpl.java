@@ -92,23 +92,32 @@ public class FeatureImpl implements Feature {
   }
 
   FeatureImpl(TypeImpl typeImpl, String shortName, TypeImpl rangeType, TypeSystemImpl tsi, boolean isMultipleRefsAllowed, SlotKind slotKind) {
-//  this.code = code;
-  this.highestDefiningType = typeImpl;  
-  List<FeatureImpl> feats = tsi.features;
-  featureCode = feats.size();
-  
-  this.rangeType = rangeType;
-  this.isLongOrDouble = rangeType.isLongOrDouble;
-  this.slotKind = slotKind;
-  this.shortName = shortName;
-  this.isMultipleRefsAllowed = isMultipleRefsAllowed;
-  this.isAnnotBaseSofaRef = (highestDefiningType.getCode() == TypeSystemConstants.annotBaseTypeCode) && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA);
-  this.isInInt = tsi.isInInt(rangeType);
-  this.rangeTypeClass = CasSerializerSupport.classifyType(rangeType);
-  this.hashCodeLong = computeHashCodeLong();
-  typeImpl.addFeature(this);  // might throw if existing feature with different range
-  feats.add(this);
-}
+  //  this.code = code;
+    this.highestDefiningType = typeImpl;  
+    List<FeatureImpl> feats = (tsi == null) ? null : tsi.features;
+    this.featureCode = (feats == null) ? -1 : feats.size();
+    
+    this.rangeType = rangeType;
+    this.isLongOrDouble = (rangeType == null) ? false : rangeType.isLongOrDouble;
+    this.slotKind = slotKind;
+    this.shortName = shortName;
+    this.isMultipleRefsAllowed = isMultipleRefsAllowed;
+    this.isAnnotBaseSofaRef = (highestDefiningType == null) 
+                                ? false
+                                : ((highestDefiningType.getCode() == TypeSystemConstants.annotBaseTypeCode) && shortName.equals(CAS.FEATURE_BASE_NAME_SOFA));
+    this.isInInt = (rangeType == null) 
+                     ? false 
+                     : (rangeType.getTypeSystem().isInInt(rangeType));
+    this.rangeTypeClass = (rangeType == null) 
+                     ? null
+                     : CasSerializerSupport.classifyType(rangeType);
+    this.hashCodeLong = computeHashCodeLong();
+    if (typeImpl != null) {
+      // if typeImpl is null, this is a "jcas only" defined feature, not a real feature
+      typeImpl.addFeature(this);  // might throw if existing feature with different range
+      feats.add(this);
+    }
+  }
 
   /**
    * @return the internal code of this feature. Necessary when using low-level APIs.
