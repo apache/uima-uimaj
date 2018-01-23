@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
 
 import org.apache.uima.util.IntEntry;
 import org.apache.uima.util.impl.Constants;
@@ -426,6 +427,40 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
     
     commonPutOrAddNotFound();
     return prevValue;
+  }
+  
+  public T computeIfAbsent(int key, IntFunction<T> mappingFunction) {
+    int i = findPosition(key);
+    if (keys[i] == 0) {
+      // key not found
+      if (found_removed != -1) {
+        i = found_removed; // use the removed slot for the new value
+      }
+      keys[i] = key;
+      values[i] = mappingFunction.apply(key);
+      commonPutOrAddNotFound();
+      return values[i];
+    }
+    
+    // key found
+    return values[i];
+  }
+
+  public T putIfAbsent(int key, T value) {
+    int i = findPosition(key);
+    if (keys[i] == 0) {
+      // key not found
+      if (found_removed != -1) {
+        i = found_removed; // use the removed slot for the new value
+      }
+      keys[i] = key;
+      values[i] = value;
+      commonPutOrAddNotFound();
+      return value;
+    }
+    
+    // key found
+    return values[i];
   }
 
   public void putInner(int key, T value) {
