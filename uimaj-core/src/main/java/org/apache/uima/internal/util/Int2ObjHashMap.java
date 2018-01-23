@@ -21,11 +21,8 @@ package org.apache.uima.internal.util;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 
 import org.apache.uima.util.IntEntry;
