@@ -164,7 +164,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
    
   // for journalling allocation: This is a 0-based offset for all features in feature order
   int highestOffset = -1;
-  
+    
 //  FeatureImpl featUimaUID = null;  // null or the feature named uimaUID with range type long
 
   private TypeImpl() {
@@ -423,7 +423,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
   public FeatureImpl getFeatureByBaseName(String featureShortName) {
     return staticMergedFeatures.get(featureShortName);
   }
-
+  
   /**
    * @see org.apache.uima.cas.Type#getShortName()
    */
@@ -914,31 +914,7 @@ public class TypeImpl implements Type, Comparable<TypeImpl> {
                           ? ((CommonArrayFS)fs).size()  
                           : 0);
   }  
-
-  
-  void setOffset2Feat(List<FeatureImpl> tempIntFis, 
-                      List<FeatureImpl> tempRefFis,
-                      List<FeatureImpl> tempNsr,
-                      FeatureImpl fi, 
-                      int next) {
-    if (fi.isInInt) {     
-      assert tempIntFis.size() == next;
-      tempIntFis.add(fi);
-      if (fi.getRangeImpl().isLongOrDouble) {
-        tempIntFis.add(null);  
-      }
-    } else {
-      assert tempRefFis.size() == next;
-      tempRefFis.add(fi);
-      TypeImpl range = fi.getRangeImpl();
-        
-      if (range.isRefType && 
-          range.typeCode != TypeSystemConstants.sofaTypeCode) {
-        tempNsr.add(fi);
-      }
-    }
-  }
-  
+    
   void initAdjOffset2FeatureMaps(List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis, List<FeatureImpl> tmpNsr) {
     tmpIntFis.addAll(Arrays.asList(superType.staticMergedIntFeaturesList));
     tmpRefFis.addAll(Arrays.asList(superType.staticMergedRefFeaturesList));

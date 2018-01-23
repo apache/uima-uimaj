@@ -62,12 +62,23 @@ public class JCasReinitTest extends TestCase {
   public void testReinit() throws Throwable {
     File typeSystemFile1;
     
-    typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_token_no_features.xml");
+//    // x.y.z.Token with no features
+//    typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_token_no_features.xml");
+//    typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
+//        new XMLInputSource(typeSystemFile1));
+//   
+//    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
+//    T.dumpOffset();
+//    
+
+    typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_t_nofeatures.xml");
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
-   
-    cas = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
     
+    cas_no_features = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
+    
+    T.dumpOffset();
+
     typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_t_1_feature.xml");
     typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
         new XMLInputSource(typeSystemFile1));
@@ -77,13 +88,6 @@ public class JCasReinitTest extends TestCase {
     T.dumpOffset();
 
 
-    typeSystemFile1 = JUnitExtension.getFile("ExampleCas/testTypeSystem_t_nofeatures.xml");
-    typeSystemDescription  = UIMAFramework.getXMLParser().parseTypeSystemDescription(
-        new XMLInputSource(typeSystemFile1));
-    
-    cas_no_features = (CASImpl) CasCreationUtils.createCas(typeSystemDescription, new TypePriorities_impl(), null);
-    
-    T.dumpOffset();
 
    
   }

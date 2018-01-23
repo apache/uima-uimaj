@@ -34,13 +34,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
@@ -111,7 +109,9 @@ import org.apache.uima.util.Logger;
  */
 
 public abstract class FSClassRegistry { // abstract to prevent instantiating; this class only has static methods
-  
+
+//  private static final boolean IS_TRACE_AUGMENT_TS = false;
+//  private static final boolean IS_TIME_AUGMENT_FEATURES = false;
   /* ========================================================= */
   /*    This class has only static methods and fields          */
   /*    To allow multi-threaded use, some fields are           */
@@ -242,6 +242,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     boolean isPearOverride(ClassLoader cl) {
       return jcasClass.getClassLoader().equals(cl);
     }
+    
+    TypeImpl getUimaType(TypeSystemImpl tsi) {
+      return tsi.getType(Misc.javaClassName2UimaTypeName(jcasClass.getName()));
+    }
   }
   
   /**
@@ -249,7 +253,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * Used to expand the type system when the JCas defines more features
    * than the type system declares.
    */
-  private static class JCasClassFeatureInfo {
+  static class JCasClassFeatureInfo {
     final String shortName;
     // rangename is byte.class, etc
     // or x.y.z.JCasClassName
@@ -259,6 +263,17 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       this.shortName = shortName;
       this.uimaRangeName = uimaRangeName;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+      return String.format("JCasClassFeatureInfo feature: %s, range: %s", (shortName == null) ? "<null>" : shortName, 
+                                                            (uimaRangeName == null) ? "<null>" : uimaRangeName);
+    }
+    
+    
   }
     
 
@@ -519,7 +534,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
       maybeLoadJCasAndSubtypes(tsi, subtype, jcci_or_copyDown, cl, type2jcci, callSites_toSync, lookup);
     }
   }
-
+  
   /** 
    * For a particular type name, get the JCasClassInfo
    *   - by fetching the cached value
@@ -540,21 +555,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     JCasClassInfo jcci = type2jcci.get(ti.getJCasClassName());
 
     if (jcci == null) {
-      // first time encountering this typename.  Attempt to load a jcas class for this
-      //   - if none, the next call returns null.      
-      jcci = createJCasClassInfo(ti, cl, lookup); // does update of callsites if was able find JCas class
-          
-      if (null != jcci) {    
-        // not done here, needs to be done additionally with different type systems
-        // done as part of conformance check
-//        if (!ti.isBuiltIn) {  
-//          validateSuperClass(jcci, ti);
-//        }
-        type2jcci.put(ti.getJCasClassName(), jcci);
-        // non-creatable JCas types (e.g. FSList) do not have a valid jcasType
-      
-      }
-    } 
+      jcci = maybeCreateJCasClassInfo(ti, cl, type2jcci, lookup);
+    }
     
     // do this setup for new type systems using previously loaded jcci, as well as
     // for new jccis
@@ -564,6 +566,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     return jcci;
   }
   
+  static JCasClassInfo maybeCreateJCasClassInfo(TypeImpl ti, ClassLoader cl, Map<String, JCasClassInfo> type2jcci, Lookup lookup) {
+    JCasClassInfo jcci = createJCasClassInfo(ti, cl, lookup); // does update of callsites if was able find JCas class
+    
+    if (null != jcci) {    
+      type2jcci.put(ti.getJCasClassName(), jcci);
+      // non-creatable JCas types (e.g. FSList) do not have a valid jcasType    
+    }
+    return jcci;    
+  }
   
   public static JCasClassInfo createJCasClassInfo(
       TypeImpl ti, 
@@ -587,67 +598,133 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         return null;
       }
     }         
-//    if (ti.getTypeSystem().isCommitted()) {
-//      try { 
-//        updateOrValidateAllCallSitesForJCasClass(clazz, ti, callSites_toSync);
-//      } finally {
-//        TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
-//      }
-//    }
     return createJCasClassInfo(clazz, ti, jcasType, lookup);
   }
   
-  static void augmentFeaturesFromJCas(
-      TypeImpl type, 
-      ClassLoader cl, 
-      TypeSystemImpl tsi, 
-      Map<String, JCasClassInfo> type2jcci,
-      Lookup lookup) {
-    
-    if (type.isBuiltIn) {
-      return;
-    }
-    
-    /**************************************************************************************
-     *    N O T E :                                                                       *
-     *    fixup the ordering of staticMergedFeatures:                                     *
-     *      - supers, then features introduced by this type.                              *
-     *      - order may be "bad" if later feature merge introduced an additional feature  *
-     **************************************************************************************/
-    type.getFeatureImpls(); // done to reorder the features if needed, see above comment block
-    
-    if ( ! type.isTopType()) {
-      // skip for top level; no features there, but no super type either
-      type.getFeatureImpls(); // done for side effect of computingcomputeStaticMergedFeaturesList();
-      
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(type); // only for supporting previous version of v3 jcas
-      
-      JCasClassInfo jcci = getOrCreateJCasClassInfo(type, cl, type2jcci, lookup);  // no call site sync
-      if (jcci != null) {
-        for (JCasClassFeatureInfo f : jcci.features) {
-          FeatureImpl fi = type.getFeatureByBaseName(f.shortName);
-          if (fi == null) {
-            // feature is missing in the type, add it
-            // Range is either one of the uima primitives, or
-            // a fs reference.  FS References could be to "unknown" types in this type system.
-            // If so, use TOP
-            TypeImpl rangeType = tsi.getType(f.uimaRangeName);
-            if (rangeType == null) {
-              rangeType = tsi.topType;
-            }            
-            tsi.addFeature(f.shortName, type, rangeType);
-          }
-        }
-      }
-    }
-     
-    
-    for (TypeImpl subti : type.getDirectSubtypes()) {
-      augmentFeaturesFromJCas(subti, cl, tsi, type2jcci, lookup);
-    }
-  }
+//  static AtomicLong time = IS_TIME_AUGMENT_FEATURES ? new AtomicLong(0) : null;
+//  
+//  static {
+//    if (IS_TIME_AUGMENT_FEATURES) {
+//      Runtime.getRuntime().addShutdownHook(new Thread(null, () -> {
+//        System.out.format("Augment features from JCas time: %,d ms%n",
+//            time.get() / 1000000L);
+//      }, "show augment feat from jcas time"));
+//    }
+//  }
+//  
+//  static void augmentFeaturesFromJCas(
+//      TypeImpl type, 
+//      ClassLoader cl, 
+//      TypeSystemImpl tsi, 
+//      Map<String, JCasClassInfo> type2jcci,
+//      Lookup lookup) {
+//       
+//    long startTime = 0;
+//    if (type.isTopType()) {
+//      if (IS_TIME_AUGMENT_FEATURES) {
+//        startTime = System.nanoTime();
+//      }
+//    } else {
+//      /**************************************************************************************
+//       *    N O T E :                                                                       *
+//       *    fixup the ordering of staticMergedFeatures:                                     *
+//       *      - supers, then features introduced by this type.                              *
+//       *      - order may be "bad" if later feature merge introduced an additional feature  *
+//       **************************************************************************************/
+//      // skip for top level; no features there, but no super type either
+//      type.getFeatureImpls(); // done for side effect of computingcomputeStaticMergedFeaturesList();
+//    }
+//    
+//    if (  //false &&  // debugging  
+//        ! type.isBuiltIn) {
+//
+//      if (IS_TRACE_AUGMENT_TS) System.out.println("trace Augment TS from JCas, for type " + type.getName());
+//
+//      
+//      TypeSystemImpl.typeBeingLoadedThreadLocal.set(type); // only for supporting previous version of v3 jcas
+//      
+//      JCasClassInfo jcci = getOrCreateJCasClassInfo(type, cl, type2jcci, lookup);  // no call site sync
+//      if (jcci != null) {
+//
+//        if (IS_TRACE_AUGMENT_TS) System.out.println("  trace Augment TS from JCas, adding features: " + Misc.ppList(Arrays.asList(jcci.features)));
+//        
+//        type.jcci = jcci;
+//        // also recurse for supertypes to load jcci's (in case some don't have uima type)
+//        //   recursion stops when have jcci already
+//        jcci = type2jcci.get(jcci.jcasClass.getSuperclass());
+//        if (null == jcci) {
+//          
+//        }
+//        
+////        for (JCasClassFeatureInfo f : jcci.features) {
+////          FeatureImpl fi = type.getFeatureByBaseName(f.shortName);
+////          if (fi == null) {
+////            
+////            /* *********************************************************************************
+////             * feature is missing in the type, a pseudo feature for it                                          *            
+////             * *********************************************************************************/
+////            
+////            /* Range is either one of the uima primitives, or                                  *
+////             * a fs reference.  FS References could be to "unknown" types in this type system. *
+////             *   If so, use TOP                                                                */
+////            TypeImpl rangeType = tsi.getType(f.uimaRangeName);
+////            if (rangeType == null) {
+////              rangeType = tsi.topType;
+////            }
+////            
+////            /** Can't add feature to type "{0}" since it is feature final. */
+////            if (type.isFeatureFinal()) {
+////              throw new CASAdminException(CASAdminException.TYPE_IS_FEATURE_FINAL, type.getName());
+////            }
+//// 
+////            if (IS_TRACE_AUGMENT_TS) System.out.println("    trace Augment TS from JCas, for feature: " + f.shortName );
+////           
+////            if (tsi.isInInt(rangeType)) {
+////              type.jcas_added_int_slots.add(new FeatureImpl_jcas_only(f.shortName, rangeType));
+////            } else {
+////              type.jcas_added_ref_slots.add(new FeatureImpl_jcas_only(f.shortName, rangeType));
+////            }
+////          }
+////        }
+//      }
+//    }
+//     
+//    if (IS_TRACE_AUGMENT_TS) System.out.println("trace Augment TS from JCas, for subtypes of type " + type.getName() + ", " + Misc.ppList(type.getDirectSubtypes()));
+//    for (TypeImpl subti : type.getDirectSubtypes()) {
+//      augmentFeaturesFromJCas(subti, cl, tsi, type2jcci, lookup);
+//    }
+//    
+//    if (IS_TIME_AUGMENT_FEATURES && type.isTopType()) {
+//      time.addAndGet(System.nanoTime() - startTime);
+//    }
+//  }
 
-  
+//  private void setTypeJcci(TypeImpl type, ClassLoader cl, Lookup lookup, Map<String, JCasClassInfo> type2jcci) {
+//    if (IS_TRACE_AUGMENT_TS) System.out.println("trace Augment TS from JCas, for type " + type.getName());
+//    
+//    TypeSystemImpl.typeBeingLoadedThreadLocal.set(type); // only for supporting previous version of v3 jcas
+//    
+//    JCasClassInfo jcci = getOrCreateJCasClassInfo(type, cl, type2jcci, lookup);  // no call site sync
+//    if (jcci != null) {
+//
+//      if (IS_TRACE_AUGMENT_TS) System.out.println("  trace Augment TS from JCas, adding features: " + Misc.ppList(Arrays.asList(jcci.features)));
+//      
+//      type.jcci = jcci;
+//      // also recurse for supertypes to load jcci's (in case some don't have uima type)
+//      //   recursion stops when have jcci already
+//      Class<?> superClass = jcci.jcasClass.getSuperclass();
+//      String superClassName = superClass.getName();
+//      jcci = type2jcci.get(superClassName);
+//      
+//      if (null == jcci) {
+//        TypeSystemImpl tsi = type.getTypeSystem();
+//        TypeImpl ti = tsi.getType(Misc.javaClassName2UimaTypeName(superClassName));
+//        
+//      
+//        setTypeJcci()
+//      }
+//    
+//  }
   
 //  private static String superTypeJCasName(TypeImpl ti) {
 //    return Misc.typeName2ClassName(ti.getSuperType().getName());
@@ -758,13 +835,15 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     String className = ti.getJCasClassName();
     
     try { 
+      TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);  // only for backwards compat with alpha02 release
       clazz = (Class<? extends TOP>) Class.forName(className, true, cl);
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
       return clazz;
-    } catch (Throwable e) {
-      e.printStackTrace(System.err);
+    } finally {
+      TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
     }
+    
     return clazz;
   }
       
@@ -1150,8 +1229,12 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
         FeatureImpl fi = ti.getFeatureByBaseName(featName);
         if (fi == null) {
           add2errors(errorSet, 
+                     /** JCAS class "{0}" defines a UIMA field "{1}" but the UIMA type doesn''t define that field. */
                      new CASRuntimeException(CASRuntimeException.JCAS_FIELD_MISSING_IN_TYPE_SYSTEM, clazz.getName(), featName), 
-                     false);  // don't throw on this error, field is set to -1 and will throw if trying to use it   
+                     false);  // don't throw on this error, field is still set up    
+//         //debug
+//         System.out.format("debug JCAS field not in ts: type: %s, field: %s %n%s%n",
+//                   clazz.getName(), featName, Misc.getCallers(1, 30));
         } else {
           Field mhf = clazz.getDeclaredField("_FH_" + featName);
           mhf.setAccessible(true);
@@ -1333,6 +1416,13 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
 //          System.out.println("debug " + fieldName);
           String featureName = fieldName.substring("_FC_".length());
           final int index = TypeSystemImpl.getAdjustedFeatureOffset(type, featureName);
+//          //debug
+//          if (type.getShortName().equals("Split") && featureName.equals("splits")
+//              ) {
+//            System.out.println("debug attempting to set offset for splits in Splits to " + index);
+//            System.out.println(type.toString(2));
+//            System.out.println(Misc.getCallers(1, 32));
+//          }
           if (index == -1) {
             continue;  // a feature defined in the JCas class doesn't exist in the currently loaded type
           }             // skip setting it.  If code uses this, a runtime error will happen.

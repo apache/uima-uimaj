@@ -123,6 +123,8 @@ import org.apache.uima.util.impl.Constants;
  */
 public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSystem {  
   
+  private static final boolean IS_TRACE_JCAS_EXPAND = false;  // set to show jcas expands of types
+  
   /**
    * Define this JVM property to disable equal type system consolidation.  
    * When a type system is committed, it normally is compared with other committed type systems
@@ -441,6 +443,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    *   
    */
   private final Map<ClassLoader, FsGenerator3[]> generators4pearsByClassLoader = new IdentityHashMap<>();
+  
+  private int nextI;  // temp value used in computing adjusted offsets 
+  private int nextR;  // temp value used in computing adjusted offsets
+  private Map<String, JCasClassInfo> type2jcci;  // temp value used in computing adjusted offsets
+  private Lookup lookup;
+  private ClassLoader cl_for_commit;
 
   public TypeSystemImpl() {
 
@@ -909,7 +917,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 
 
   public boolean isInInt(Type rangeType) {
-    return rangeType.isPrimitive() && !subsumes(stringType, rangeType);
+    return (rangeType == null) 
+             ? false
+             : (rangeType.isPrimitive() && !subsumes(stringType, rangeType));
   }
   
   @Override
@@ -1368,12 +1378,6 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       // because it will call the type system iterator
   //    this.casMetadata.setupFeaturesAndCreatableTypes();
 
-      // Augment (if called for) the features for the types, based on features defined in the JCas classes (if they exist)
-      //   - also does feature reordering if necessary so subtype added features follow super type added ones.
-      Map<String, JCasClassInfo> type2jcci = FSClassRegistry.get_className_to_jcci(cl, false);  // is not pear
-      Lookup lookup = FSClassRegistry.getLookup(cl);
-      FSClassRegistry.augmentFeaturesFromJCas(this.topType, cl, this, type2jcci, lookup);      
-
       if (!IS_DISABLE_TYPESYSTEM_CONSOLIDATION) {
         WeakReference<TypeSystemImpl> prevWr = committedTypeSystems.get(this);
         if (null != prevWr) {
@@ -1398,8 +1402,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //          }
 //        }
 //      }
-      
-      computeAdjustedFeatureOffsets(topType, 0, 0);  // must preceed the FSClassRegistry JCas stuff below
+
+      type2jcci = FSClassRegistry.get_className_to_jcci(cl, false);  // is not pear
+      lookup = FSClassRegistry.getLookup(cl);
+      cl_for_commit = cl;
+
+      computeAdjustedFeatureOffsets(topType);  // must preceed the FSClassRegistry JCas stuff below
       
       // Load all the available JCas classes (if not already loaded).
       // Has to follow above, because information computed above is used when
@@ -1428,27 +1436,68 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   /**
    * This is the actual offset for the feature, in either the int or ref array
+   * 
+   * Offsets for super types come before types, because
+   *   multiple subtypes can share the same super type
    *   
+   * Offsets due to JCas defined features are set before those from type systems, because
+   *   the same JCas class might be used with different type system,
+   *   and this increases the chance that the assignment is still valid.
+   *   
+   * Special handling for JCas defined features which are missing in the type system.
+   *   - these are allocated artificial "feature impls", which participate in the offset
+   *     setting, but not in anything else (like serialization)
+   * 
+   * Special handling for JCas super types which have no corresponding uima types
+   *   - features inferred from these are incorporated for purposes of computing offsets (only), because
+   *     some later type system might have these.
+   * 
+   * Sets offset into 2 places:
+   *   - the FeatureImpl
+   *   - a set of arrays in the type:
+   *       one mapping offset to featureImpl for refs
+   *       one mapping offset to featureImpl for ints
+   *       one mapping offset to non-fs-refs (for efficiency in enquing these before refs) 
+   * 
+   * also sets the number-of-used slots (int / ref) for allocating, in the type
+   * 
    * @param ti - the type
-   * @param nextI - the next available slot to use - for int style items
-   * @param nextR - the next available slot to use - for ref style items
    */
-  private void computeAdjustedFeatureOffsets(TypeImpl ti, int nextI, int nextR) {
+  private void computeAdjustedFeatureOffsets(TypeImpl ti) {
+
     List<FeatureImpl> tempIntFis = new ArrayList<>();
     List<FeatureImpl> tempRefFis = new ArrayList<>();
-    List<FeatureImpl> tempNsr    = new ArrayList<>();
+    List<FeatureImpl> tempNsr    = new ArrayList<>();    
+
     if (ti != topType) {
+      // initialize these offset -> fi maps from supertype
       ti.initAdjOffset2FeatureMaps(tempIntFis, tempRefFis, tempNsr);
+      nextI = ti.getSuperType().nbrOfUsedIntDataSlots;
+      nextR = ti.getSuperType().nbrOfUsedRefDataSlots;
+    } else {
+      nextI = 0;
+      nextR = 0;
     }
+ 
+    // all the JCas slots come first, because their offsets can't easily change
+    // this includes any superClass of a jcas class which is not in this type system
     
+    JCasClassInfo jcci = getJcci(ti);
+    
+    if (jcci != null) {
+      addJCasOffsetsWithSupers(jcci.jcasClass, tempIntFis, tempRefFis, tempNsr);
+//      addJCasOffsets(ti.jcci, tempIntFis, tempRefFis, tempNsr); // already done by above
+    }
+        
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
-      fi.setAdjustedOffset(fi.isInInt ? nextI : nextR);
-      ti.setOffset2Feat(tempIntFis, tempRefFis, tempNsr, fi, fi.isInInt ? (nextI++) : (nextR++));
-      if (((TypeImpl)fi.getRange()).isLongOrDouble) {
-        nextI ++;
-      }        
+      if (fi.getAdjustedOffset() == -1) {
+        // wasn't set due to jcas class, above
+        setFeatureAdjustedOffset(fi, tempIntFis, tempRefFis, tempNsr);
+      } else {
+        
+      }
     }
-    
+        
     ti.nbrOfUsedIntDataSlots = nextI;
     ti.nbrOfUsedRefDataSlots = nextR;
     
@@ -1467,15 +1516,166 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    ti.hasNoSlots = ti.nbrOfUsedIntDataSlots == 0 && ti.nbrOfUsedRefDataSlots == 0;
     
     for (TypeImpl sub : ti.getDirectSubtypes()) {
-      computeAdjustedFeatureOffsets(sub, nextI, nextR);
+      computeAdjustedFeatureOffsets(sub);
     }  
   }
       
+  
+  /**
+   * Insures that any super class jcas-defined features, 
+   *   not already defined (due to having a corresponding type in this
+   *   type system)
+   *   get their features done first
+   *   
+   * Walking up the super chain:
+   *   - could encounter a class which has no jcci (it's not a jcas class)
+   *     but has a super class which is one) - so don't stop the up walk.
+   *     
+   * Stop the up walk when
+   *   - reach the TOP or Object
+   *   - reach a class which has a corresponding uima type (the assumption is that
+   *     this type is a super type
+   *     
+   * @param ti the type associated with clazz, or null, if none   
+   * @param clazz the class whose supertypes are being scanned.  May not be a JCas class
+   * @param tempIntFis the array of int offsets (refs to feature impls (maybe jcas-only)
+   * @param tempRefFis the array of ref offsets (refs to feature impls (maybe jcas-only)
+   * @param tempNsrFis a list of non fs-ref ref values
+   */
+  private void addJCasOffsetsWithSupers(Class<?> clazz,  
+                                        List<FeatureImpl> tempIntFis, 
+                                        List<FeatureImpl> tempRefFis,
+                                        List<FeatureImpl> tempNsrFis) {
+    
+    Class<?> superClass = clazz.getSuperclass();
+    /* **********************
+     *   STOP if get to top *
+     * **********************/
+    if (superClass == Object.class) {
+      return;
+    }
+
+    String superClassName = superClass.getName();
+    String uimaSuperTypeName = Misc.javaClassName2UimaTypeName(superClassName);    
+    if (this.getType(uimaSuperTypeName) != null) {
+      
+      /* ****************************
+       *   STOP if get to UIMA type *
+       * ****************************/
+
+      // But process this jcas class level
+      // then return to recursively process other jcas class levels.
+      String className = clazz.getName();
+      String uimaTypeName = Misc.javaClassName2UimaTypeName(className);
+      TypeImpl ti = this.getType(uimaTypeName);
+      if (ti != null) {
+        maybeAddJCasOffsets(ti, tempIntFis, tempRefFis, tempNsrFis);
+      }
+      return;
+    }
+    
+    // recurse up the superclass chain for all jcci's not having UIMA types
+    //   If they exist, they will have been loaded/created by FSClassRegistry.augmentFeaturesFromJCas
+    //   some intermediate superclasses may not have jccis, just skip over them.   
+    
+    addJCasOffsetsWithSupers(superClass, tempIntFis, tempRefFis, tempNsrFis);
+//    maybeAddJCasOffsets(clazz, tempIntFis, tempRefFis, tempNsrFis); // already done by above statement
+  }
+  
+  
+  /**
+   * 
+   * @param ti the type having offsets set up for
+   * @param jcci a corresponding jcci, either for this type or for a super type 
+   *               when the super type is not in this uima type system
+   * @param tempIntFis list to augment with additional slots
+   * @param tempRefFis list to augment with additional slots
+   */
+  private void maybeAddJCasOffsets(TypeImpl ti, 
+                                   List<FeatureImpl> tempIntFis, 
+                                   List<FeatureImpl> tempRefFis,
+                                   List<FeatureImpl> tempNsrFis) {
+    
+    JCasClassInfo jcci = getJcci(ti);
+    if (null != jcci) {  // could be null if class is not a JCas class   
+      addJCasOffsets(jcci, tempIntFis, tempRefFis, tempNsrFis);
+    }
+  }
+  
+  private void addJCasOffsets(JCasClassInfo jcci, 
+      List<FeatureImpl> tempIntFis, 
+      List<FeatureImpl> tempRefFis,
+      List<FeatureImpl> tempNsrFis) {
+
+    List<FeatureImpl> added = IS_TRACE_JCAS_EXPAND ? (new ArrayList<>(0)) : null;
+    for (FSClassRegistry.JCasClassFeatureInfo jcci_feat : jcci.features) {
+      TypeImpl rangeType = getType(jcci_feat.uimaRangeName); // could be null
+      TypeImpl ti = jcci.getUimaType(this); // could be null
+      FeatureImpl fi = null;
+      if (ti != null) {
+        fi = ti.getFeatureByBaseName(jcci_feat.shortName); // could be null
+      }
+      if (fi == null) { //
+        // no feature for this type in this type system, but in the JCas.
+        // create a FeatureImpl_jcas_only, to hold the offset info to use for
+        // later in the
+        // update of the CallSites to install the offsets
+        fi = new FeatureImpl_jcas_only(jcci_feat.shortName, rangeType);
+        if (IS_TRACE_JCAS_EXPAND) {
+          added.add(fi);
+        }
+      }
+      assert fi.getAdjustedOffset() == -1;
+      setFeatureAdjustedOffset(fi, tempIntFis, tempRefFis, tempNsrFis);
+    }
+    
+    if (IS_TRACE_JCAS_EXPAND && added.size() > 0) {
+      System.out.format("debug trace jcas added: %d slots, %s%n", added.size(), 
+          Misc.ppList(added));
+    }
+  }
+  
+  void setFeatureAdjustedOffset(FeatureImpl fi, List<FeatureImpl> tmpIntFis, List<FeatureImpl> tmpRefFis, List<FeatureImpl> tmpNsr) {
+    boolean isInt = fi.isInInt;
+    fi.setAdjustedOffset(isInt ? nextI : nextR);
+    setOffset2Feat(tmpIntFis, tmpRefFis, tmpNsr, fi, isInt ? (nextI++) : (nextR++));
+    if (fi.isLongOrDouble) {
+      nextI ++;
+    }        
+  }
+  
+  void setOffset2Feat(
+      List<FeatureImpl> tempIntFis, 
+      List<FeatureImpl> tempRefFis,
+      List<FeatureImpl> tempNsr,
+      FeatureImpl fi, 
+      int next) {
+    boolean is_jcas_only = fi instanceof FeatureImpl_jcas_only;
+    if (fi.isInInt) {
+      // assert tempIntFis.size() == next; // could have added slots from JCas
+      tempIntFis.add(is_jcas_only ? null : fi);
+      if (fi.getRangeImpl().isLongOrDouble) {
+        tempIntFis.add(null);
+      }
+    } else {
+      // assert tempRefFis.size() == next; // could have added slots from JCas
+      tempRefFis.add(is_jcas_only ? null : fi);
+      TypeImpl range = fi.getRangeImpl();
+
+      if (!is_jcas_only && range.isRefType && range != sofaType) {
+        tempNsr.add(fi);
+      }
+    }
+  }
+  
+  private JCasClassInfo getJcci(TypeImpl ti) {
+    return FSClassRegistry.getOrCreateJCasClassInfo(ti, cl_for_commit, type2jcci, lookup);
+  }
+  
   /**
    * Feature "ids" - offsets without adjusting for whether or not they're in the class itself
    * @param ti a type to compute these for
-   * @param nextI - the next available int offset
-   * @param nextR - the next available ref offset
+   * @param next - the next offset
    */
   private void computeFeatureOffsets(TypeImpl ti, int next) {
     
@@ -2619,6 +2819,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
 //    return jcasClassesInfo[typecode].jcasClass; 
 //  }
     /**
+     * ******** OBSOLETE  - only left in for supporting some jcas style in alpha level *************
    * This code is run when a JCas class is loaded and resolved, for the first time, as part of type system commit, or
    * as part of statically loading the FSClassRegister class (where this is done for all the built-ins, once).
    * It looks up the offset value in the type system (via a thread-local)
@@ -2627,6 +2828,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    * @param featName -
    * @return the offset in the int or ref data arrays for the named feature
    */
+  // ******** OBSOLETE  - only left in for supporting some jcas style in alpha level *************
   public static synchronized int getAdjustedFeatureOffset(String featName) {
     TypeImpl type = typeBeingLoadedThreadLocal.get();
     if (null == type) {
@@ -2648,7 +2850,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   
   static int getAdjustedFeatureOffset(TypeImpl type, String featName) {
     FeatureImpl fi = type.getFeatureByBaseName(featName);
-    return (fi == null) ? -1 : fi.getAdjustedOffset();    
+    return (fi == null) ? -1 : fi.getAdjustedOffset();
+//    if (fi == null) {
+//      FeatureImpl_jcas_only fi_j = type.getJcasAddedFeature(featName);
+//      return (fi_j == null) ? -1 : fi_j.getAdjustedOffset();
+//    }
+//    return fi.getAdjustedOffset();    
   }
     
   /**
