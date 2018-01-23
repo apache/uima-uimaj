@@ -323,7 +323,24 @@ public class CasCompare {
     }
   }
   
+//  /**
+//   * Information about list feature structures
+//   */
+//  static class ListFs {
+//    final int fss_index;     // index in c1FoundFss, c2FoundFss
+//    TOP prev;    // index in listFss (list of this structure) of first found predecessor
+//    boolean has_multiple_predecessors;  // true if more than one predecessor
+//    ListFs(int i) {
+//      fss_index = i;
+//    }
+//  }
+
   final private Map<TypeImpl, FeatLists> type2featLists = new HashMap<>();
+  
+//  /**
+//   * key = fs.id  value = ListFs instance
+//   */
+//  final private Int2ObjHashMap<ListFs, ListFs> listFss = new Int2ObjHashMap<>(ListFs.class);
   
   final private CASImpl c1;
   final private CASImpl c2;
@@ -363,8 +380,8 @@ public class CasCompare {
   private boolean isTypeMapping;
   private final CasTypeSystemMapper typeMapper;
   
-  private List<TOP> c1FoundFSs;
-  private List<TOP> c2FoundFSs;
+  private ArrayList<TOP> c1FoundFSs;
+  private ArrayList<TOP> c2FoundFSs;
   
   private final Map<ScsKey, String[]> stringCongruenceSets = new HashMap<>();
   private boolean isUsingStringCongruenceSets = false;
@@ -461,6 +478,9 @@ public class CasCompare {
       int i2 = 0;
       final int sz1 = c1FoundFSs.size();
       final int sz2 = c2FoundFSs.size();
+      
+//      lists2arrays(c1FoundFSs);
+//      lists2arrays(c2FoundFSs);
  
       isSrcCas = true;   // avoids sorting on types/features not present in ts2
       sort(c1FoundFSs);
@@ -649,6 +669,66 @@ public class CasCompare {
     return () -> System.arraycopy(a, 0, fsArray._getTheArray(), 0, fsArray.size());
   }
   
+//  private lists2arrays(ArrayList<TOP> fss) {
+//    listFss.clear();
+//    populate_lists(listFss, fss); 
+//    
+//    TOP[] head = new TOP[1];  // place to store head
+//   
+//    for (IntEntry<ListFs> item : listFss) {
+//      boolean hasNoLoop = searchForLoops_forward(item);
+//      hasNoLoop = searchForLoops_backwards(item, hasNoLoop, head); // sets head
+//      if (hasNoLoop) {
+//        convertList2Array(head, fss);  // removes from listFss and from fss, adds to fss
+//      } 
+//      remove_list_from_listFss(head); // has been processed, remove all elements  
+//        
+//        
+//      }
+//    }
+//    
+//  }
+//  
+//  private void populate_lists(ArrayList<TOP> fss) {
+//    int sz = fss.size();
+//    for (int i = 0; i < sz; i++) {
+//      TOP item = fss.get(i);
+//      if (item instanceof CommonList) {
+//        ListFs existing = listFss.get(item._id);
+//        if (existing == null) {
+//          listFss.put(i, new ListFs(item._id));
+//          addBackChain(item);
+//        } 
+//      }
+//    }     
+//  }
+//  
+//  private void addBackChain(TOP item) {
+//    
+//    TOP current = item;
+//    while (true) {
+//      CommonList next = (current instanceof NonEmptyList) 
+//                          ? ((NonEmptyList)item).getCommonTail()
+//                          : null;
+//      if (next == null) return;
+//      if (!(next instanceof CommonList)) {
+//        // CAS Compare found UIMA list with list element item whose next element was next,
+//        // which was invalid.
+//      }
+//      assert next instanceof CommonList;
+//      
+//      ListFs existing = listFss.get(next._id());
+//      if (existing != null) {
+//        if (existing.prev != null && existing.prev != current) {
+//          existing.has_multiple_predecessors = true;
+//          
+//        
+//        
+//      
+//      
+//    }
+//  }
+  
   private void clearPrevFss() {
     prevCompare.clear();
     prev1.clear();
@@ -691,20 +771,10 @@ public class CasCompare {
     r = ti1.compareTo(ti2);
     if (r != 0) {
       if (!inSortContext) {
-        if (isCanonicalEmptyLists) {
-          if (fs1 instanceof EmptyList) {
-            
-          }
-        }
         mismatchFs(fs1, fs2, "Different Types"); // types mismatch
       }
       return r;
     }
-
-//      if (!ti1.getName().equals(ti2.getName())) {
-//          return mismatchFs("Type names miscompare"); // types mismatch
-//        }
-//      }
  
     if (isCompareIds && !inSortContext) {
       if (fs1._id != fs2._id) {
