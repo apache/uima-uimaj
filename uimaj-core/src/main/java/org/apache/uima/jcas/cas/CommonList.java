@@ -93,11 +93,7 @@ public interface CommonList extends FeatureStructure {
 	 */
 	default int getLength() {
 	  final int[] length = {0};
-	  try {
-      walkList( n -> length[0]++, () -> {});
-    } catch (SAXException e) {
-      // never happen
-    }
+    walkList(n -> length[0]++, () -> {});
 	  return length[0];
 	}
 	
@@ -108,21 +104,44 @@ public interface CommonList extends FeatureStructure {
 	 * @param foundLoop run if a loop happens
 	 * @throws SAXException -
 	 */
-	default void walkList(Consumer_withSaxException<NonEmptyList> consumer, Runnable foundLoop) throws SAXException {
-	  final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
-	  CommonList node = this;
-	  while (node instanceof NonEmptyList) {
-	    consumer.accept((NonEmptyList) node);
-	    node = node.getCommonTail();
-	    if (node == null) {
-	      break;
-	    }
-	    if (visited.contains(node) && foundLoop != null) {
-	      foundLoop.run();
-	    }
-	  }
-	}
-	
+  default void walkList_saxException(Consumer_withSaxException<NonEmptyList> consumer, Runnable foundLoop)
+      throws SAXException {
+    final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+    CommonList node = this;
+    while (node instanceof NonEmptyList) {
+      consumer.accept((NonEmptyList) node);
+      node = node.getCommonTail();
+      if (node == null) {
+        break;
+      }
+      if (visited.contains(node) && foundLoop != null) {
+        foundLoop.run();
+      }
+    }
+  }
+
+  /**
+   * Walks a list, executing the consumer on each element.
+   * If a loop is found, the foundloop method is run.
+   * @param consumer  a Consumer (with no declared exceptions) 
+   * @param foundLoop run if a loop happens
+   */
+  default void walkList(Consumer<NonEmptyList> consumer, Runnable foundLoop) {
+    final Set<CommonList> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+    CommonList node = this;
+    while (node instanceof NonEmptyList) {
+      consumer.accept((NonEmptyList) node);
+      node = node.getCommonTail();
+      if (node == null) {
+        break;
+      }
+      if (visited.contains(node) && foundLoop != null) {
+        foundLoop.run();
+      }
+    }
+  }
+
+  
 	/**
 	 * Creates a non empty node
 	 * @return a new non empty node

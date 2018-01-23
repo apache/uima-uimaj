@@ -43,6 +43,7 @@ import org.apache.uima.cas.CASRuntimeException;
 import org.apache.uima.cas.FSIndex;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.XmlElementName;
+import org.apache.uima.internal.util.function.Consumer_withSaxException;
 import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
@@ -1085,7 +1086,7 @@ public class CasSerializerSupport {
      *          Address of an FSList
      */
     private void enqueueFSListElements(FSList<TOP> node) throws SAXException {
-      node.walkList( n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList<TOP>)n).getHead()), null);
+      node.walkList_saxException(n -> enqueueFsAndMaybeFeatures(((NonEmptyFSList<TOP>)n).getHead()), null);
     }
 
     /*
