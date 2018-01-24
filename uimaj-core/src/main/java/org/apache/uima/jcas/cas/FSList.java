@@ -44,8 +44,9 @@ import org.xml.sax.SAXException;
  */
 public abstract class FSList<T extends TOP> extends TOP implements CommonList, Iterable<T> {
  
-	// Never called.
+	// for removed markers
 	protected FSList() {// Disable default constructor
+	  super();
 	}
 
 	public FSList(JCas jcas) {

@@ -60,8 +60,9 @@ public class NonEmptyFSList<T extends TOP> extends FSList<T> implements NonEmpty
 //  private TOP _F_head;
 //  private FSList _F_tail;
   
-  // Never called. Disable default constructor
-  protected NonEmptyFSList() {
+  // might be called to produce removed marker
+  public NonEmptyFSList() {
+    super();
   }
 
   public NonEmptyFSList(JCas jcas) {
