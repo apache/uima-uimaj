@@ -22,27 +22,44 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 
+import org.apache.uima.List_of_ints;
 import org.apache.uima.cas.CommonArrayFS;
 import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
+import org.apache.uima.internal.util.Int2ObjHashMap;
 import org.apache.uima.internal.util.Misc;
+import org.apache.uima.internal.util.Obj2IntIdentityHashMap;
 import org.apache.uima.internal.util.Pair;
+import org.apache.uima.internal.util.PositiveIntSet;
+import org.apache.uima.internal.util.PositiveIntSet_impl;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyList;
 import org.apache.uima.jcas.cas.FSArray;
+import org.apache.uima.jcas.cas.FSList;
 import org.apache.uima.jcas.cas.FloatArray;
+import org.apache.uima.jcas.cas.FloatList;
 import org.apache.uima.jcas.cas.IntegerArray;
+import org.apache.uima.jcas.cas.IntegerList;
 import org.apache.uima.jcas.cas.LongArray;
+import org.apache.uima.jcas.cas.NonEmptyFSList;
+import org.apache.uima.jcas.cas.NonEmptyFloatList;
+import org.apache.uima.jcas.cas.NonEmptyIntegerList;
+import org.apache.uima.jcas.cas.NonEmptyStringList;
 import org.apache.uima.jcas.cas.ShortArray;
 import org.apache.uima.jcas.cas.StringArray;
+import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
+import org.apache.uima.util.IntEntry;
 
 /**
  * Used by tests for Binary Compressed de/serialization code.
@@ -135,6 +152,7 @@ import org.apache.uima.jcas.cas.TOP;
 public class CasCompare {
   
   private final static boolean IS_DEBUG_STOP_ON_MISCOMPARE = true;
+  private final static boolean IS_MEAS_LIST_2_ARRAY = false;
 
   /**
    * Compare 2 CASes, with perhaps different type systems.
@@ -322,25 +340,36 @@ public class CasCompare {
       featsByEase[3] = (FeatureImpl[]) refArrays.toArray(new FeatureImpl[refArrays.size()]);
     }
   }
-  
-//  /**
-//   * Information about list feature structures
-//   */
-//  static class ListFs {
-//    final int fss_index;     // index in c1FoundFss, c2FoundFss
-//    TOP prev;    // index in listFss (list of this structure) of first found predecessor
-//    boolean has_multiple_predecessors;  // true if more than one predecessor
-//    ListFs(int i) {
-//      fss_index = i;
-//    }
-//  }
+    
+  // must always be true, need to rework convert lists to arrays if not
+  private static final boolean IS_CANONICAL_EMPTY_LISTS = true;
 
-  final private Map<TypeImpl, FeatLists> type2featLists = new HashMap<>();
+  /* ****************************************************
+   * Data Structures for converting lists to arrays
+   * ****************************************************/
+  private static final CommonList removed_list_marker = new NonEmptyFSList<TOP>();
   
-//  /**
-//   * key = fs.id  value = ListFs instance
-//   */
-//  final private Int2ObjHashMap<ListFs, ListFs> listFss = new Int2ObjHashMap<>(ListFs.class);
+  /** 
+   * key = _id, value = arraylist holding well-formed list with this node in it 
+   */
+  final private Int2ObjHashMap<ArrayList<CommonList>, ArrayList<CommonList>> map_e_to_a_list = 
+            new Int2ObjHashMap(ArrayList.class);
+  
+  /** 
+   * set of list elements determined to be members of a non-linear structure 
+   */
+  final private PositiveIntSet non_linear_list_elements = new PositiveIntSet_impl();
+  
+  /**
+   * a map from list nodes which might be removed, to their place in the fss array list
+   *   The index is 1 more, to avoid colliding with the 0 value, used for missing value
+   */
+  final private Obj2IntIdentityHashMap<CommonList> node_indexes = 
+      new Obj2IntIdentityHashMap<CommonList>(CommonList.class, removed_list_marker);
+  
+  final private PositiveIntSet list_successor_seen = new PositiveIntSet_impl();
+  
+  final private Map<TypeImpl, FeatLists> type2featLists = new HashMap<>();
   
   final private CASImpl c1;
   final private CASImpl c2;
@@ -352,7 +381,6 @@ public class CasCompare {
     /** if true, continues comparison and reporting after finding the first miscompare */
   private boolean isCompareAll = false;
   private boolean isCompareIds = false;
-  private boolean isCanonicalEmptyLists = true;
 //    private boolean compareFSArraysAsSets = false;
     
 //    /** true when that FS._id (an Array of some kind) has been sorted */
@@ -387,6 +415,8 @@ public class CasCompare {
   private boolean isUsingStringCongruenceSets = false;
   private final TypeImpl fsArrayType;
     
+  private int maxId1;
+  private int maxId2;
 
           
   public CasCompare(CASImpl c1, CASImpl c2) {
@@ -423,9 +453,9 @@ public class CasCompare {
     isCompareIds = v;
   }
   
-  public void compareCanonicalEmptyLists(boolean v) {
-    isCanonicalEmptyLists = v; 
-  }
+//  public void compareCanonicalEmptyLists(boolean v) {
+//    isCanonicalEmptyLists = v; 
+//  }
   
   /**
    * Add a set of strings that should be considered equal when doing string comparisons.
@@ -476,12 +506,18 @@ public class CasCompare {
           
       int i1 = 0;
       int i2 = 0;
-      final int sz1 = c1FoundFSs.size();
-      final int sz2 = c2FoundFSs.size();
+
+      final int maxId1 = c1.peekNextFsId();
+      final int maxId2 = c2.peekNextFsId();
+          
+      // convert_linear_lists_to_arrays may add more items
       
-//      lists2arrays(c1FoundFSs);
-//      lists2arrays(c2FoundFSs);
+      convert_linear_lists_to_arrays(c1FoundFSs);
+      convert_linear_lists_to_arrays(c2FoundFSs);
  
+      final int sz1 = c1FoundFSs.size();  // max size for comparing, includes added arrays converted from lists
+      final int sz2 = c2FoundFSs.size();
+
       isSrcCas = true;   // avoids sorting on types/features not present in ts2
       sort(c1FoundFSs);
       
@@ -494,7 +530,23 @@ public class CasCompare {
         TOP fs1 = c1FoundFSs.get(i1);  // assumes the elements are in same order??
         TOP fs2 = c2FoundFSs.get(i2);
 
-        if (isCanonicalEmptyLists) {
+        if (null == fs1) {  // nulls at end indicate list elements converted to arrays
+          if (null != fs2) {
+            System.err.format("%,d Feature Structures in CAS2 with no matches in CAS2, e.g. %s%n",
+                sz2 - i2, fs2.toString(2));
+            return ! allOk;
+          } else {           
+            return allOk;
+          }
+        }
+        if (null == fs2) {  // nulls at end indicate list elements converted to arrays
+          System.err.format("%,d Feature Structures in CAS1 with no matches in CAS2, e.g. %s%n",
+              sz1 - i1, fs1.toString(2));
+          return ! allOk;
+        }
+        
+        
+        if (IS_CANONICAL_EMPTY_LISTS) {
           if (fs1 instanceof EmptyList && !(fs2 instanceof EmptyList)) {
             int start = i1;
             while (true) {
@@ -669,65 +721,197 @@ public class CasCompare {
     return () -> System.arraycopy(a, 0, fsArray._getTheArray(), 0, fsArray.size());
   }
   
-//  private lists2arrays(ArrayList<TOP> fss) {
-//    listFss.clear();
-//    populate_lists(listFss, fss); 
-//    
-//    TOP[] head = new TOP[1];  // place to store head
-//   
-//    for (IntEntry<ListFs> item : listFss) {
-//      boolean hasNoLoop = searchForLoops_forward(item);
-//      hasNoLoop = searchForLoops_backwards(item, hasNoLoop, head); // sets head
-//      if (hasNoLoop) {
-//        convertList2Array(head, fss);  // removes from listFss and from fss, adds to fss
-//      } 
-//      remove_list_from_listFss(head); // has been processed, remove all elements  
-//        
-//        
-//      }
-//    }
-//    
-//  }
-//  
-//  private void populate_lists(ArrayList<TOP> fss) {
-//    int sz = fss.size();
-//    for (int i = 0; i < sz; i++) {
-//      TOP item = fss.get(i);
-//      if (item instanceof CommonList) {
-//        ListFs existing = listFss.get(item._id);
-//        if (existing == null) {
-//          listFss.put(i, new ListFs(item._id));
-//          addBackChain(item);
-//        } 
-//      }
-//    }     
-//  }
-//  
-//  private void addBackChain(TOP item) {
-//    
-//    TOP current = item;
-//    while (true) {
-//      CommonList next = (current instanceof NonEmptyList) 
-//                          ? ((NonEmptyList)item).getCommonTail()
-//                          : null;
-//      if (next == null) return;
-//      if (!(next instanceof CommonList)) {
-//        // CAS Compare found UIMA list with list element item whose next element was next,
-//        // which was invalid.
-//      }
-//      assert next instanceof CommonList;
-//      
-//      ListFs existing = listFss.get(next._id());
-//      if (existing != null) {
-//        if (existing.prev != null && existing.prev != current) {
-//          existing.has_multiple_predecessors = true;
-//          
-//        
-//        
-//      
-//      
-//    }
-//  }
+  /* ******************************************************************************* 
+   *     Convert UIMA Lists to arrays, to make the compare go faster
+   * *******************************************************************************/
+  
+  private void convert_linear_lists_to_arrays(ArrayList<TOP> fss) {
+    map_e_to_a_list.clear();
+    non_linear_list_elements.clear();
+    node_indexes.clear();
+    
+    int sz = fss.size();
+    for (int i = 0; i < sz; i++) {
+      TOP fs = fss.get(i);
+    
+      if (! (fs instanceof CommonList)) continue;                   // skip: not list node
+      CommonList node = (CommonList) fs;
+      if (node.isEmpty()) {
+        fss.set(i, null); // clear it, empty list elements don't need to be compared
+        continue;
+      }
+
+      if (non_linear_list_elements.contains(node._id())) continue;  // skip: in non-linear list
+      if (null !=  map_e_to_a_list.get(node._id())) {
+        node_indexes.put(node,  i + 1);                             // case: added as a successor
+        continue;                                                   // skip: already seen/processed
+      }
+ 
+      node_indexes.put(node, i + 1);                   // in case we have to remove this later
+      if (!node.isEmpty()) {
+        ArrayList<CommonList> al = new ArrayList<>();    // start a new arraylist
+        al.add(node);                                    // add this node
+        map_e_to_a_list.put(node._id(), al);
+
+        if (addSuccessors(node, al)) continue;  
+        
+        // some successor was in a non-linear situation        
+        move_to_non_linear(al);
+      }      
+    }
+    
+    if (IS_MEAS_LIST_2_ARRAY) {
+      System.out.format("CasCompare converting lists to Arrays, "
+          + "nbr of list elements considered: %,d, number of looped lists skipped: %,d%n",  
+          node_indexes.size(), non_linear_list_elements.size());
+    }
+    CASImpl view = fss.get(0)._casView;
+    TypeSystemImpl tsi = view.getTypeSystemImpl();
+    
+    Set<ArrayList<CommonList>> processed = Collections.newSetFromMap(new IdentityHashMap<>());
+    
+    for (IntEntry<ArrayList<CommonList>> ie : map_e_to_a_list) {
+      ArrayList<CommonList> e = ie.getValue();
+      if (processed.add(e)) {
+        convert_to_array(e, fss, view, tsi); // changes list element to highest pseudo fs, adds array elements
+      }
+    }
+    if (IS_MEAS_LIST_2_ARRAY) {
+      System.out.format("CasCompare converted %,d lists to Arrays%n", processed.size());            
+    }
+
+    // allow gc
+    map_e_to_a_list.clear();
+    non_linear_list_elements.clear();    
+    node_indexes.clear();
+  }
+  
+  /**
+   * Convert an array list to a uima array  (int, float, fs, string) 
+   *   - add to fss
+   *   - go thru fss and null out list elements
+   *   
+   * @param al -
+   * @param fss -
+   */
+  private void convert_to_array(
+      ArrayList<CommonList> al, 
+      ArrayList<TOP> fss,
+      CASImpl view,
+      TypeSystemImpl tsi) {
+    
+    CommonList e = al.get(0);  
+    if (e instanceof FSList) {
+      assert al.size() > 0;
+      FSArray<TOP> fsa = new FSArray<>(tsi.fsArrayType, view, al.size());
+      int i = 0;
+      for (CommonList n : al) {
+        assert !n.isEmpty();
+        fsa.set(i++, ((NonEmptyFSList)n).getHead());
+        fss.set(node_indexes.get(n) - 1, null);
+      }
+      fss.add(fsa);
+    } else if (e instanceof IntegerList) {
+      IntegerArray a = new IntegerArray(tsi.intArrayType, view, al.size());
+      int i = 0;
+      for (CommonList n : al) {
+        a.set(i++, (n instanceof EmptyList) 
+                       ? Integer.MIN_VALUE 
+                       : ((NonEmptyIntegerList)n).getHead());
+        fss.set(node_indexes.get(n) - 1, null);
+      }
+      fss.add(a);
+    } else if (e instanceof FloatList) {
+      FloatArray a = new FloatArray(tsi.floatArrayType, view, al.size());
+      int i = 0;
+      for (CommonList n : al) {
+        a.set(i++, (n instanceof EmptyList) 
+                       ? Float.MIN_VALUE 
+                       : ((NonEmptyFloatList)n).getHead());
+        fss.set(node_indexes.get(n) - 1, null);
+      }
+      fss.add(a);
+    } else if (e instanceof StringList) {
+      StringArray a = new StringArray(tsi.stringArrayType, view, al.size());
+      int i = 0;
+      for (CommonList n : al) {
+        a.set(i++, (n instanceof EmptyList) 
+                       ? null 
+                       : ((NonEmptyStringList)n).getHead());
+        fss.set(node_indexes.get(n) - 1, null);
+      }
+      fss.add(a);
+    } else Misc.internalError();
+    
+  }
+  
+  /**
+   * walk down list, adding successors, looking for loops
+   *   - each element is added to the array list, and also to the map from id -> array list
+   *   - if loop found, stop and return false
+   *   
+   *   - before adding element, see if already in map from id -> array list
+   *     -- if so, couple the array lists
+   * @param node -
+   * @param al -
+   * @return false if loop found
+   */
+  private boolean addSuccessors(CommonList node, ArrayList al) {
+    try {
+      list_successor_seen.add(node._id());  // starts reset, reset at end
+      
+      while (!node.isEmpty()) {
+        node = node.getCommonTail();
+        if (node == null || node.isEmpty()) break;
+        
+        if (!list_successor_seen.add(node._id())) return false;  // stop if loop is found
+  
+        ArrayList<CommonList> other = map_e_to_a_list.get(node._id());
+        if (null != other) { 
+          couple_array_lists(al, other, node);
+          return true;  // rest of list already walked
+        } else {
+          al.add(node);
+          map_e_to_a_list.put(node._id(), al);   // every element maps to containing al
+        }
+      }
+      return true;
+    } finally {
+      list_successor_seen.clear();
+    }
+  }
+  
+  /**
+   * merge a2 to follow a1, starting from position where commonNode is in a2
+   * @param a1 -
+   * @param a2 -
+   * @param commonNode -
+   */
+  private void couple_array_lists(ArrayList<CommonList> a1, ArrayList<CommonList> a2, CommonList commonNode) {
+    int i = 0;
+    int sz2 = a2.size();
+    for (; i < sz2; i++) {
+      if (commonNode == a2.get(i)) break;
+    }
+    
+    if (i == sz2) Misc.internalError();
+    
+    for (; i < sz2; i++) {
+      CommonList node = a2.get(i);
+      map_e_to_a_list.put(node._id(), a1);  // remove a2 value, put in a1 value
+      a1.add(node);
+    }    
+  }
+  
+  private void move_to_non_linear(ArrayList<CommonList> al) {
+    for (CommonList e : al) {
+      map_e_to_a_list.remove(e._id());
+      non_linear_list_elements.add(e._id());
+    }
+  }
+
+  
+  
   
   private void clearPrevFss() {
     prevCompare.clear();
@@ -777,7 +961,7 @@ public class CasCompare {
     }
  
     if (isCompareIds && !inSortContext) {
-      if (fs1._id != fs2._id) {
+      if (fs1._id < maxId1 && fs2._id < maxId2 && fs1._id != fs2._id) {
         mismatchFs(fs1, fs2, "IDs miscompare");        
         return Integer.compare(fs1._id, fs2._id);
       }
@@ -1160,7 +1344,7 @@ public class CasCompare {
   private int compareRefResult(TOP rfs1, TOP rfs2) {
     
     // exception: treat canonical empty lists
-    if (!inSortContext && isCanonicalEmptyLists && rfs1 instanceof EmptyList) {
+    if (!inSortContext && IS_CANONICAL_EMPTY_LISTS && rfs1 instanceof EmptyList) {
 //      if (prev1.size() <= 0 || prev2.size() <= 0) {
         return 0;
 //      }
@@ -1347,6 +1531,13 @@ public class CasCompare {
    * @return -
    */
   private int sortCompare(TOP scFs1, TOP scFs2) {  
+    
+    if (scFs1 == null) {
+      return (scFs2 == null) ? 0 : 1;
+    } 
+    if (scFs2 == null) {
+      return -1;
+    }
     
 //    miscompares.clear();
     prev1.clear();
