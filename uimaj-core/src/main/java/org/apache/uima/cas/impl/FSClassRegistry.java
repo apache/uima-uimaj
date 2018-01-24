@@ -543,6 +543,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
    * only called for non-Pear callers
    * @param ti -
    * @param cl -
+   * @param type2jcci -
+   * @param lookup -
    * @return - jcci or null, if no JCas class for this type was able to be loaded
    */
   public static JCasClassInfo getOrCreateJCasClassInfo(

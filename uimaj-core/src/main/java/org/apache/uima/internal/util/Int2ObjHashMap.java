@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -107,7 +108,7 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 //  private int found_removed;
   
 //  private int removed = 0;  // for rebalancing  
-  
+    
   public Int2ObjHashMap(Class<T> clazz) {
     this(clazz, MIN_SIZE);
   }
@@ -207,6 +208,8 @@ public class Int2ObjHashMap<T, E extends T> extends Common_hash_support implemen
 //    Arrays.fill(values, null);
 //    resetHistogram();
 //  }
+
+
 
   /** 
    * Searches the keys for a match
