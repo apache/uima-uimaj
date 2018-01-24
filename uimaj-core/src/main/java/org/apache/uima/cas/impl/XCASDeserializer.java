@@ -21,6 +21,7 @@ package org.apache.uima.cas.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,6 @@ import org.apache.uima.jcas.cas.CommonPrimitiveArray;
 import org.apache.uima.jcas.cas.FSArray;
 import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.TOP;
-import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.impl.Constants;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -1310,6 +1310,28 @@ public class XCASDeserializer {
   /**
    * Deserializes an XCAS from a stream.
    * 
+   * @param aReader
+   *          Reader from which to read the XCAS XML document
+   * @param aCAS
+   *          CAS into which to deserialize. This CAS must be set up with a type system that is
+   *          compatible with that in the XCAS.
+   * @param aLenient
+   *          if true, unknown Types will be ignored. If false, unknown Types will cause an
+   *          exception. The default is false.
+   * 
+   * @throws SAXException
+   *           if an XML Parsing error occurs
+   * @throws IOException
+   *           if an I/O failure occurs
+   */
+  public static void deserialize(Reader aReader, CAS aCAS, boolean aLenient)
+          throws SAXException, IOException {
+    deserialize(new InputSource(aReader), aCAS, aLenient);
+  }
+
+  /**
+   * Deserializes an XCAS from a stream.
+   * 
    * @param aStream
    *          input stream from which to read the XCAS XML document
    * @param aCAS
@@ -1326,6 +1348,12 @@ public class XCASDeserializer {
    */
   public static void deserialize(InputStream aStream, CAS aCAS, boolean aLenient)
           throws SAXException, IOException {
+    deserialize(new InputSource(aStream), aCAS, aLenient);
+  }
+  
+  public static void deserialize(InputSource aSource, CAS aCAS, boolean aLenient)
+      throws SAXException, IOException {
+
     XMLReader xmlReader = XMLUtils.createXMLReader();
     XCASDeserializer deser = new XCASDeserializer(aCAS.getTypeSystem());
     ContentHandler handler;
@@ -1335,15 +1363,16 @@ public class XCASDeserializer {
       handler = deser.getXCASHandler(aCAS);
     }
     xmlReader.setContentHandler(handler);
-    xmlReader.parse(new InputSource(aStream));
-    
-    CASImpl casImpl = ((CASImpl)aCAS.getLowLevelCAS());
+    xmlReader.parse(aSource);
+
+    CASImpl casImpl = ((CASImpl) aCAS.getLowLevelCAS());
     if (casImpl.is_ll_enableV2IdRefs()) {
-      TOP highest_fs = ((XCASDeserializerHandler)handler).highestIdFs;
-      
+      TOP highest_fs = ((XCASDeserializerHandler) handler).highestIdFs;
+
       casImpl.setLastUsedFsId(highest_fs._id);
       casImpl.setLastFsV2Size(highest_fs._getTypeImpl().getFsSpaceReq(highest_fs));
     }
   }
+  
 
 }
