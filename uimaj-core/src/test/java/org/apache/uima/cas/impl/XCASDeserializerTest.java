@@ -145,13 +145,17 @@ public class XCASDeserializerTest extends TestCase {
     TypeSystemImpl tsi = casImpl.getTypeSystemImpl();
     
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
-    ContentHandler deserHandler = deser.getXCASHandler(cas);
-    SAXParserFactory fact = SAXParserFactory.newInstance();
-    SAXParser parser = fact.newSAXParser();
-    XMLReader xmlReader = parser.getXMLReader();
-    xmlReader.setContentHandler(deserHandler);
-    xmlReader.parse(new InputSource(serCasStream));
+    
+    XCASDeserializer.deserialize(serCasStream, cas, false);  // not lenient
+    
+    // next is missing the support for v2 ids
+//    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+//    ContentHandler deserHandler = deser.getXCASHandler(cas);
+//    SAXParserFactory fact = SAXParserFactory.newInstance();
+//    SAXParser parser = fact.newSAXParser();
+//    XMLReader xmlReader = parser.getXMLReader();
+//    xmlReader.setContentHandler(deserHandler);
+//    xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
 
 //    //print some statistics to aid in verifying deserialization was correct
@@ -217,15 +221,18 @@ public class XCASDeserializerTest extends TestCase {
       cas2.getJCas();
     }
 
+    XCASDeserializer.deserialize(new StringReader(xml), cas2, false);  // not lenient
+
+    // next doesn't handle v2 form
     // deserialize into another CAS
-    XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
-    ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
-    xmlReader.setContentHandler(deserHandler2);
-//    // debug
-//    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
-//    ps.println(xml);
-//    ps.close();
-    xmlReader.parse(new InputSource(new StringReader(xml)));
+//    XCASDeserializer deser2 = new XCASDeserializer(cas2.getTypeSystem());
+//    ContentHandler deserHandler2 = deser2.getXCASHandler(cas2);
+//    xmlReader.setContentHandler(deserHandler2);
+////    // debug
+////    PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream("debug.log.txt", false)));
+////    ps.println(xml);
+////    ps.close();
+//    xmlReader.parse(new InputSource(new StringReader(xml)));
 
     // compare
 //    if (cas.getAnnotationIndex().size() != cas2.getAnnotationIndex().size()) {

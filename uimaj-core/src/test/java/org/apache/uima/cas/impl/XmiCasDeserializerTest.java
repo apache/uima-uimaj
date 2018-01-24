@@ -57,6 +57,7 @@ import org.apache.uima.cas.text.AnnotationFS;
 import org.apache.uima.cas_data.impl.CasComparer;
 import org.apache.uima.internal.util.MultiThreadUtils;
 import org.apache.uima.internal.util.MultiThreadUtils.ThreadM;
+import org.apache.uima.internal.util.XMLUtils;
 import org.apache.uima.internal.util.XmlAttribute;
 import org.apache.uima.internal.util.XmlElementNameAndContents;
 import org.apache.uima.jcas.JCas;
@@ -346,13 +347,17 @@ public class XmiCasDeserializerTest extends TestCase {
     }
 
     InputStream serCasStream = new FileInputStream(JUnitExtension.getFile("ExampleCas/cas.xml"));
-    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
-    ContentHandler deserHandler = deser.getXCASHandler(cas);
-    SAXParserFactory fact = SAXParserFactory.newInstance();
-    SAXParser parser = fact.newSAXParser();
-    XMLReader xmlReader = parser.getXMLReader();
-    xmlReader.setContentHandler(deserHandler);
-    xmlReader.parse(new InputSource(serCasStream));
+    
+    XCASDeserializer.deserialize(serCasStream, cas, false);  // not lenient
+    
+    // next is missing the support for v2 ids
+//    XCASDeserializer deser = new XCASDeserializer(cas.getTypeSystem());
+//    ContentHandler deserHandler = deser.getXCASHandler(cas);
+//    SAXParserFactory fact = SAXParserFactory.newInstance();
+//    SAXParser parser = fact.newSAXParser();
+//    XMLReader xmlReader = parser.getXMLReader();
+//    xmlReader.setContentHandler(deserHandler);
+//    xmlReader.parse(new InputSource(serCasStream));
     serCasStream.close();
 
     // reserialize as XMI
@@ -365,6 +370,9 @@ public class XmiCasDeserializerTest extends TestCase {
     if (useJCas) {
       cas2.getJCas();
     }
+    
+    XMLReader xmlReader = XMLUtils.createSAXParserFactory().newSAXParser().getXMLReader();
+    
     XmiCasDeserializer deser2 = new XmiCasDeserializer(cas2.getTypeSystem());
     ContentHandler deserHandler2 = deser2.getXmiCasHandler(cas2);
     xmlReader.setContentHandler(deserHandler2);
@@ -374,7 +382,17 @@ public class XmiCasDeserializerTest extends TestCase {
     if (IS_CAS_COMPARE) {
       CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
       // ids won't be the same, don't compare these
-      cc.compareCASes();
+      // tune debug
+      long start = System.nanoTime();
+      int i = 0;
+//      for (; i < 1000; i++) {
+        cc.compareCASes();
+//        if (i % 10 == 0) {
+          long end = System.nanoTime();
+          System.out.format("compareCASes i: %d, time: %,d millisec%n", i, (end - start) / 1000000L);
+          start = end;
+//        }
+//      }
     }
     
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
