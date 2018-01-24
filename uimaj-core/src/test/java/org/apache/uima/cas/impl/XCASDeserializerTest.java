@@ -240,9 +240,11 @@ public class XCASDeserializerTest extends TestCase {
 //    }
     assertEquals(cas.getAnnotationIndex().size(), cas2.getAnnotationIndex().size());
     if (XmiCasDeserializerTest.IS_CAS_COMPARE) {
+      long start = System.nanoTime();
       CasCompare cc = new CasCompare((CASImpl)cas, (CASImpl)cas2);
       cc.compareIds(((CASImpl)cas).is_ll_enableV2IdRefs());
-      cc.compareCASes();
+      assertTrue(cc.compareCASes());
+      System.out.format("compareCASes, time: %,d millisec%n",(System.nanoTime() - start) / 1000000L);
     } else {
       CasComparer.assertEquals(cas,cas2);
     }

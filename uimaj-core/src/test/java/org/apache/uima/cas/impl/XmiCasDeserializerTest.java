@@ -386,7 +386,7 @@ public class XmiCasDeserializerTest extends TestCase {
       long start = System.nanoTime();
       int i = 0;
 //      for (; i < 1000; i++) {
-        cc.compareCASes();
+        assertTrue(cc.compareCASes());
 //        if (i % 10 == 0) {
           long end = System.nanoTime();
           System.out.format("compareCASes i: %d, time: %,d millisec%n", i, (end - start) / 1000000L);
