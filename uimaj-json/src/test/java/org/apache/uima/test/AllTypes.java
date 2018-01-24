@@ -5,6 +5,9 @@
 
 package org.apache.uima.test;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -50,30 +53,54 @@ public class AllTypes extends Annotation {
    * *******************/ 
    
   /* Feature Adjusted Offsets */
-  public final static int _FI_aBoolean = TypeSystemImpl.getAdjustedFeatureOffset("aBoolean");
-  public final static int _FI_aByte = TypeSystemImpl.getAdjustedFeatureOffset("aByte");
-  public final static int _FI_aShort = TypeSystemImpl.getAdjustedFeatureOffset("aShort");
-  public final static int _FI_aInteger = TypeSystemImpl.getAdjustedFeatureOffset("aInteger");
-  public final static int _FI_aLong = TypeSystemImpl.getAdjustedFeatureOffset("aLong");
-  public final static int _FI_aFloat = TypeSystemImpl.getAdjustedFeatureOffset("aFloat");
-  public final static int _FI_aDouble = TypeSystemImpl.getAdjustedFeatureOffset("aDouble");
-  public final static int _FI_aString = TypeSystemImpl.getAdjustedFeatureOffset("aString");
-  public final static int _FI_aFS = TypeSystemImpl.getAdjustedFeatureOffset("aFS");
-  public final static int _FI_aArrayBoolean = TypeSystemImpl.getAdjustedFeatureOffset("aArrayBoolean");
-  public final static int _FI_aArrayMrBoolean = TypeSystemImpl.getAdjustedFeatureOffset("aArrayMrBoolean");
-  public final static int _FI_aArrayMrByte = TypeSystemImpl.getAdjustedFeatureOffset("aArrayMrByte");
-  public final static int _FI_aArrayByte = TypeSystemImpl.getAdjustedFeatureOffset("aArrayByte");
-  public final static int _FI_aArrayShort = TypeSystemImpl.getAdjustedFeatureOffset("aArrayShort");
-  public final static int _FI_aArrayMrShort = TypeSystemImpl.getAdjustedFeatureOffset("aArrayMrShort");
-  public final static int _FI_aArrayString = TypeSystemImpl.getAdjustedFeatureOffset("aArrayString");
-  public final static int _FI_aArrayMrString = TypeSystemImpl.getAdjustedFeatureOffset("aArrayMrString");
-  public final static int _FI_aListInteger = TypeSystemImpl.getAdjustedFeatureOffset("aListInteger");
-  public final static int _FI_aListMrInteger = TypeSystemImpl.getAdjustedFeatureOffset("aListMrInteger");
-  public final static int _FI_aListString = TypeSystemImpl.getAdjustedFeatureOffset("aListString");
-  public final static int _FI_aListMrString = TypeSystemImpl.getAdjustedFeatureOffset("aListMrString");
-  public final static int _FI_aListFs = TypeSystemImpl.getAdjustedFeatureOffset("aListFs");
-  public final static int _FI_aListMrFs = TypeSystemImpl.getAdjustedFeatureOffset("aListMrFs");
-  public final static int _FI_aArrayFS = TypeSystemImpl.getAdjustedFeatureOffset("aArrayFS");
+  private final static CallSite _FC_aBoolean = TypeSystemImpl.createCallSite(AllTypes.class, "aBoolean");
+  private final static MethodHandle _FH_aBoolean = _FC_aBoolean.dynamicInvoker();
+  private final static CallSite _FC_aByte = TypeSystemImpl.createCallSite(AllTypes.class, "aByte");
+  private final static MethodHandle _FH_aByte = _FC_aByte.dynamicInvoker();
+  private final static CallSite _FC_aShort = TypeSystemImpl.createCallSite(AllTypes.class, "aShort");
+  private final static MethodHandle _FH_aShort = _FC_aShort.dynamicInvoker();
+  private final static CallSite _FC_aInteger = TypeSystemImpl.createCallSite(AllTypes.class, "aInteger");
+  private final static MethodHandle _FH_aInteger = _FC_aInteger.dynamicInvoker();
+  private final static CallSite _FC_aLong = TypeSystemImpl.createCallSite(AllTypes.class, "aLong");
+  private final static MethodHandle _FH_aLong = _FC_aLong.dynamicInvoker();
+  private final static CallSite _FC_aFloat = TypeSystemImpl.createCallSite(AllTypes.class, "aFloat");
+  private final static MethodHandle _FH_aFloat = _FC_aFloat.dynamicInvoker();
+  private final static CallSite _FC_aDouble = TypeSystemImpl.createCallSite(AllTypes.class, "aDouble");
+  private final static MethodHandle _FH_aDouble = _FC_aDouble.dynamicInvoker();
+  private final static CallSite _FC_aString = TypeSystemImpl.createCallSite(AllTypes.class, "aString");
+  private final static MethodHandle _FH_aString = _FC_aString.dynamicInvoker();
+  private final static CallSite _FC_aFS = TypeSystemImpl.createCallSite(AllTypes.class, "aFS");
+  private final static MethodHandle _FH_aFS = _FC_aFS.dynamicInvoker();
+  private final static CallSite _FC_aArrayBoolean = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayBoolean");
+  private final static MethodHandle _FH_aArrayBoolean = _FC_aArrayBoolean.dynamicInvoker();
+  private final static CallSite _FC_aArrayMrBoolean = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayMrBoolean");
+  private final static MethodHandle _FH_aArrayMrBoolean = _FC_aArrayMrBoolean.dynamicInvoker();
+  private final static CallSite _FC_aArrayMrByte = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayMrByte");
+  private final static MethodHandle _FH_aArrayMrByte = _FC_aArrayMrByte.dynamicInvoker();
+  private final static CallSite _FC_aArrayByte = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayByte");
+  private final static MethodHandle _FH_aArrayByte = _FC_aArrayByte.dynamicInvoker();
+  private final static CallSite _FC_aArrayShort = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayShort");
+  private final static MethodHandle _FH_aArrayShort = _FC_aArrayShort.dynamicInvoker();
+  private final static CallSite _FC_aArrayMrShort = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayMrShort");
+  private final static MethodHandle _FH_aArrayMrShort = _FC_aArrayMrShort.dynamicInvoker();
+  private final static CallSite _FC_aArrayString = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayString");
+  private final static MethodHandle _FH_aArrayString = _FC_aArrayString.dynamicInvoker();
+  private final static CallSite _FC_aArrayMrString = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayMrString");
+  private final static MethodHandle _FH_aArrayMrString = _FC_aArrayMrString.dynamicInvoker();
+  private final static CallSite _FC_aListInteger = TypeSystemImpl.createCallSite(AllTypes.class, "aListInteger");
+  private final static MethodHandle _FH_aListInteger = _FC_aListInteger.dynamicInvoker();
+  private final static CallSite _FC_aListMrInteger = TypeSystemImpl.createCallSite(AllTypes.class, "aListMrInteger");
+  private final static MethodHandle _FH_aListMrInteger = _FC_aListMrInteger.dynamicInvoker();
+  private final static CallSite _FC_aListString = TypeSystemImpl.createCallSite(AllTypes.class, "aListString");
+  private final static MethodHandle _FH_aListString = _FC_aListString.dynamicInvoker();
+  private final static CallSite _FC_aListMrString = TypeSystemImpl.createCallSite(AllTypes.class, "aListMrString");
+  private final static MethodHandle _FH_aListMrString = _FC_aListMrString.dynamicInvoker();
+  private final static CallSite _FC_aListFs = TypeSystemImpl.createCallSite(AllTypes.class, "aListFs");
+  private final static MethodHandle _FH_aListFs = _FC_aListFs.dynamicInvoker();
+  private final static CallSite _FC_aListMrFs = TypeSystemImpl.createCallSite(AllTypes.class, "aListMrFs");
+  private final static MethodHandle _FH_aListMrFs = _FC_aListMrFs.dynamicInvoker();
+  private final static CallSite _FC_aArrayFS = TypeSystemImpl.createCallSite(AllTypes.class, "aArrayFS");
+  private final static MethodHandle _FH_aArrayFS = _FC_aArrayFS.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -116,14 +143,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public boolean getABoolean() { return _getBooleanValueNc(_FI_aBoolean);}
+  public boolean getABoolean() { return _getBooleanValueNc(wrapGetIntCatchException(_FH_aBoolean));}
     
   /** setter for aBoolean - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setABoolean(boolean v) {
-    _setBooleanValueNfc(_FI_aBoolean, v);
+    _setBooleanValueNfc(wrapGetIntCatchException(_FH_aBoolean), v);
   }    
     
    
@@ -135,14 +162,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public byte getAByte() { return _getByteValueNc(_FI_aByte);}
+  public byte getAByte() { return _getByteValueNc(wrapGetIntCatchException(_FH_aByte));}
     
   /** setter for aByte - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAByte(byte v) {
-    _setByteValueNfc(_FI_aByte, v);
+    _setByteValueNfc(wrapGetIntCatchException(_FH_aByte), v);
   }    
     
    
@@ -154,14 +181,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public short getAShort() { return _getShortValueNc(_FI_aShort);}
+  public short getAShort() { return _getShortValueNc(wrapGetIntCatchException(_FH_aShort));}
     
   /** setter for aShort - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAShort(short v) {
-    _setShortValueNfc(_FI_aShort, v);
+    _setShortValueNfc(wrapGetIntCatchException(_FH_aShort), v);
   }    
     
    
@@ -173,14 +200,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public int getAInteger() { return _getIntValueNc(_FI_aInteger);}
+  public int getAInteger() { return _getIntValueNc(wrapGetIntCatchException(_FH_aInteger));}
     
   /** setter for aInteger - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAInteger(int v) {
-    _setIntValueNfc(_FI_aInteger, v);
+    _setIntValueNfc(wrapGetIntCatchException(_FH_aInteger), v);
   }    
     
    
@@ -192,14 +219,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public long getALong() { return _getLongValueNc(_FI_aLong);}
+  public long getALong() { return _getLongValueNc(wrapGetIntCatchException(_FH_aLong));}
     
   /** setter for aLong - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setALong(long v) {
-    _setLongValueNfc(_FI_aLong, v);
+    _setLongValueNfc(wrapGetIntCatchException(_FH_aLong), v);
   }    
     
    
@@ -211,14 +238,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public float getAFloat() { return _getFloatValueNc(_FI_aFloat);}
+  public float getAFloat() { return _getFloatValueNc(wrapGetIntCatchException(_FH_aFloat));}
     
   /** setter for aFloat - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAFloat(float v) {
-    _setFloatValueNfc(_FI_aFloat, v);
+    _setFloatValueNfc(wrapGetIntCatchException(_FH_aFloat), v);
   }    
     
    
@@ -230,14 +257,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public double getADouble() { return _getDoubleValueNc(_FI_aDouble);}
+  public double getADouble() { return _getDoubleValueNc(wrapGetIntCatchException(_FH_aDouble));}
     
   /** setter for aDouble - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setADouble(double v) {
-    _setDoubleValueNfc(_FI_aDouble, v);
+    _setDoubleValueNfc(wrapGetIntCatchException(_FH_aDouble), v);
   }    
     
    
@@ -249,14 +276,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public String getAString() { return _getStringValueNc(_FI_aString);}
+  public String getAString() { return _getStringValueNc(wrapGetIntCatchException(_FH_aString));}
     
   /** setter for aString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAString(String v) {
-    _setStringValueNfc(_FI_aString, v);
+    _setStringValueNfc(wrapGetIntCatchException(_FH_aString), v);
   }    
     
    
@@ -268,14 +295,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public Annotation getAFS() { return (Annotation)(_getFeatureValueNc(_FI_aFS));}
+  public Annotation getAFS() { return (Annotation)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aFS)));}
     
   /** setter for aFS - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAFS(Annotation v) {
-    _setFeatureValueNcWj(_FI_aFS, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aFS), v);
   }    
     
    
@@ -287,14 +314,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public BooleanArray getAArrayBoolean() { return (BooleanArray)(_getFeatureValueNc(_FI_aArrayBoolean));}
+  public BooleanArray getAArrayBoolean() { return (BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayBoolean)));}
     
   /** setter for aArrayBoolean - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayBoolean(BooleanArray v) {
-    _setFeatureValueNcWj(_FI_aArrayBoolean, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayBoolean), v);
   }    
     
     
@@ -304,7 +331,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public boolean getAArrayBoolean(int i) {
-     return ((BooleanArray)(_getFeatureValueNc(_FI_aArrayBoolean))).get(i);} 
+     return ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayBoolean)))).get(i);} 
 
   /** indexed setter for aArrayBoolean - sets an indexed value - 
    * @generated
@@ -312,7 +339,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayBoolean(int i, boolean v) {
-    ((BooleanArray)(_getFeatureValueNc(_FI_aArrayBoolean))).set(i, v);
+    ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayBoolean)))).set(i, v);
   }  
    
     
@@ -323,14 +350,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public BooleanArray getAArrayMrBoolean() { return (BooleanArray)(_getFeatureValueNc(_FI_aArrayMrBoolean));}
+  public BooleanArray getAArrayMrBoolean() { return (BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrBoolean)));}
     
   /** setter for aArrayMrBoolean - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayMrBoolean(BooleanArray v) {
-    _setFeatureValueNcWj(_FI_aArrayMrBoolean, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayMrBoolean), v);
   }    
     
     
@@ -340,7 +367,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public boolean getAArrayMrBoolean(int i) {
-     return ((BooleanArray)(_getFeatureValueNc(_FI_aArrayMrBoolean))).get(i);} 
+     return ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrBoolean)))).get(i);} 
 
   /** indexed setter for aArrayMrBoolean - sets an indexed value - 
    * @generated
@@ -348,7 +375,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayMrBoolean(int i, boolean v) {
-    ((BooleanArray)(_getFeatureValueNc(_FI_aArrayMrBoolean))).set(i, v);
+    ((BooleanArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrBoolean)))).set(i, v);
   }  
    
     
@@ -359,14 +386,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public ByteArray getAArrayMrByte() { return (ByteArray)(_getFeatureValueNc(_FI_aArrayMrByte));}
+  public ByteArray getAArrayMrByte() { return (ByteArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrByte)));}
     
   /** setter for aArrayMrByte - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayMrByte(ByteArray v) {
-    _setFeatureValueNcWj(_FI_aArrayMrByte, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayMrByte), v);
   }    
     
     
@@ -376,7 +403,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public byte getAArrayMrByte(int i) {
-     return ((ByteArray)(_getFeatureValueNc(_FI_aArrayMrByte))).get(i);} 
+     return ((ByteArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrByte)))).get(i);} 
 
   /** indexed setter for aArrayMrByte - sets an indexed value - 
    * @generated
@@ -384,7 +411,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayMrByte(int i, byte v) {
-    ((ByteArray)(_getFeatureValueNc(_FI_aArrayMrByte))).set(i, v);
+    ((ByteArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrByte)))).set(i, v);
   }  
    
     
@@ -395,14 +422,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public ByteArray getAArrayByte() { return (ByteArray)(_getFeatureValueNc(_FI_aArrayByte));}
+  public ByteArray getAArrayByte() { return (ByteArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayByte)));}
     
   /** setter for aArrayByte - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayByte(ByteArray v) {
-    _setFeatureValueNcWj(_FI_aArrayByte, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayByte), v);
   }    
     
     
@@ -412,7 +439,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public byte getAArrayByte(int i) {
-     return ((ByteArray)(_getFeatureValueNc(_FI_aArrayByte))).get(i);} 
+     return ((ByteArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayByte)))).get(i);} 
 
   /** indexed setter for aArrayByte - sets an indexed value - 
    * @generated
@@ -420,7 +447,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayByte(int i, byte v) {
-    ((ByteArray)(_getFeatureValueNc(_FI_aArrayByte))).set(i, v);
+    ((ByteArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayByte)))).set(i, v);
   }  
    
     
@@ -431,14 +458,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public ShortArray getAArrayShort() { return (ShortArray)(_getFeatureValueNc(_FI_aArrayShort));}
+  public ShortArray getAArrayShort() { return (ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayShort)));}
     
   /** setter for aArrayShort - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayShort(ShortArray v) {
-    _setFeatureValueNcWj(_FI_aArrayShort, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayShort), v);
   }    
     
     
@@ -448,7 +475,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public short getAArrayShort(int i) {
-     return ((ShortArray)(_getFeatureValueNc(_FI_aArrayShort))).get(i);} 
+     return ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayShort)))).get(i);} 
 
   /** indexed setter for aArrayShort - sets an indexed value - 
    * @generated
@@ -456,7 +483,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayShort(int i, short v) {
-    ((ShortArray)(_getFeatureValueNc(_FI_aArrayShort))).set(i, v);
+    ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayShort)))).set(i, v);
   }  
    
     
@@ -467,14 +494,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public ShortArray getAArrayMrShort() { return (ShortArray)(_getFeatureValueNc(_FI_aArrayMrShort));}
+  public ShortArray getAArrayMrShort() { return (ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrShort)));}
     
   /** setter for aArrayMrShort - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayMrShort(ShortArray v) {
-    _setFeatureValueNcWj(_FI_aArrayMrShort, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayMrShort), v);
   }    
     
     
@@ -484,7 +511,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public short getAArrayMrShort(int i) {
-     return ((ShortArray)(_getFeatureValueNc(_FI_aArrayMrShort))).get(i);} 
+     return ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrShort)))).get(i);} 
 
   /** indexed setter for aArrayMrShort - sets an indexed value - 
    * @generated
@@ -492,7 +519,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayMrShort(int i, short v) {
-    ((ShortArray)(_getFeatureValueNc(_FI_aArrayMrShort))).set(i, v);
+    ((ShortArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrShort)))).set(i, v);
   }  
    
     
@@ -503,14 +530,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getAArrayString() { return (StringArray)(_getFeatureValueNc(_FI_aArrayString));}
+  public StringArray getAArrayString() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayString)));}
     
   /** setter for aArrayString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayString(StringArray v) {
-    _setFeatureValueNcWj(_FI_aArrayString, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayString), v);
   }    
     
     
@@ -520,7 +547,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public String getAArrayString(int i) {
-     return ((StringArray)(_getFeatureValueNc(_FI_aArrayString))).get(i);} 
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayString)))).get(i);} 
 
   /** indexed setter for aArrayString - sets an indexed value - 
    * @generated
@@ -528,7 +555,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayString(int i, String v) {
-    ((StringArray)(_getFeatureValueNc(_FI_aArrayString))).set(i, v);
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayString)))).set(i, v);
   }  
    
     
@@ -539,14 +566,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringArray getAArrayMrString() { return (StringArray)(_getFeatureValueNc(_FI_aArrayMrString));}
+  public StringArray getAArrayMrString() { return (StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrString)));}
     
   /** setter for aArrayMrString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayMrString(StringArray v) {
-    _setFeatureValueNcWj(_FI_aArrayMrString, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayMrString), v);
   }    
     
     
@@ -556,7 +583,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public String getAArrayMrString(int i) {
-     return ((StringArray)(_getFeatureValueNc(_FI_aArrayMrString))).get(i);} 
+     return ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrString)))).get(i);} 
 
   /** indexed setter for aArrayMrString - sets an indexed value - 
    * @generated
@@ -564,7 +591,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayMrString(int i, String v) {
-    ((StringArray)(_getFeatureValueNc(_FI_aArrayMrString))).set(i, v);
+    ((StringArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayMrString)))).set(i, v);
   }  
    
     
@@ -575,14 +602,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public IntegerList getAListInteger() { return (IntegerList)(_getFeatureValueNc(_FI_aListInteger));}
+  public IntegerList getAListInteger() { return (IntegerList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListInteger)));}
     
   /** setter for aListInteger - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListInteger(IntegerList v) {
-    _setFeatureValueNcWj(_FI_aListInteger, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListInteger), v);
   }    
     
    
@@ -594,14 +621,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public IntegerList getAListMrInteger() { return (IntegerList)(_getFeatureValueNc(_FI_aListMrInteger));}
+  public IntegerList getAListMrInteger() { return (IntegerList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListMrInteger)));}
     
   /** setter for aListMrInteger - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListMrInteger(IntegerList v) {
-    _setFeatureValueNcWj(_FI_aListMrInteger, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListMrInteger), v);
   }    
     
    
@@ -613,14 +640,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringList getAListString() { return (StringList)(_getFeatureValueNc(_FI_aListString));}
+  public StringList getAListString() { return (StringList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListString)));}
     
   /** setter for aListString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListString(StringList v) {
-    _setFeatureValueNcWj(_FI_aListString, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListString), v);
   }    
     
    
@@ -632,14 +659,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public StringList getAListMrString() { return (StringList)(_getFeatureValueNc(_FI_aListMrString));}
+  public StringList getAListMrString() { return (StringList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListMrString)));}
     
   /** setter for aListMrString - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListMrString(StringList v) {
-    _setFeatureValueNcWj(_FI_aListMrString, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListMrString), v);
   }    
     
    
@@ -651,14 +678,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSList getAListFs() { return (FSList)(_getFeatureValueNc(_FI_aListFs));}
+  public FSList getAListFs() { return (FSList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListFs)));}
     
   /** setter for aListFs - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListFs(FSList v) {
-    _setFeatureValueNcWj(_FI_aListFs, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListFs), v);
   }    
     
    
@@ -670,14 +697,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSList getAListMrFs() { return (FSList)(_getFeatureValueNc(_FI_aListMrFs));}
+  public FSList getAListMrFs() { return (FSList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListMrFs)));}
     
   /** setter for aListMrFs - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListMrFs(FSList v) {
-    _setFeatureValueNcWj(_FI_aListMrFs, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListMrFs), v);
   }    
     
    
@@ -689,14 +716,14 @@ public class AllTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSArray getAArrayFS() { return (FSArray)(_getFeatureValueNc(_FI_aArrayFS));}
+  public FSArray getAArrayFS() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)));}
     
   /** setter for aArrayFS - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayFS(FSArray v) {
-    _setFeatureValueNcWj(_FI_aArrayFS, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayFS), v);
   }    
     
     
@@ -706,7 +733,7 @@ public class AllTypes extends Annotation {
    * @return value of the element at index i 
    */
   public Annotation getAArrayFS(int i) {
-     return (Annotation)(((FSArray)(_getFeatureValueNc(_FI_aArrayFS))).get(i));} 
+     return (Annotation)(((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)))).get(i));} 
 
   /** indexed setter for aArrayFS - sets an indexed value - 
    * @generated
@@ -714,7 +741,7 @@ public class AllTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayFS(int i, Annotation v) {
-    ((FSArray)(_getFeatureValueNc(_FI_aArrayFS))).set(i, v);
+    ((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)))).set(i, v);
   }  
   }
 

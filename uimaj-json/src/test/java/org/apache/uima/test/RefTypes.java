@@ -5,6 +5,9 @@
 
 package org.apache.uima.test;
 
+import java.lang.invoke.CallSite;
+import java.lang.invoke.MethodHandle;
+
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
@@ -44,9 +47,12 @@ public class RefTypes extends Annotation {
    * *******************/ 
    
   /* Feature Adjusted Offsets */
-  public final static int _FI_aFS = TypeSystemImpl.getAdjustedFeatureOffset("aFS");
-  public final static int _FI_aListFs = TypeSystemImpl.getAdjustedFeatureOffset("aListFs");
-  public final static int _FI_aArrayFS = TypeSystemImpl.getAdjustedFeatureOffset("aArrayFS");
+  private final static CallSite _FC_aFS = TypeSystemImpl.createCallSite(RefTypes.class, "aFS");
+  private final static MethodHandle _FH_aFS = _FC_aFS.dynamicInvoker();
+  private final static CallSite _FC_aListFs = TypeSystemImpl.createCallSite(RefTypes.class, "aListFs");
+  private final static MethodHandle _FH_aListFs = _FC_aListFs.dynamicInvoker();
+  private final static CallSite _FC_aArrayFS = TypeSystemImpl.createCallSite(RefTypes.class, "aArrayFS");
+  private final static MethodHandle _FH_aArrayFS = _FC_aArrayFS.dynamicInvoker();
 
    
   /** Never called.  Disable default constructor
@@ -89,14 +95,14 @@ public class RefTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public Annotation getAFS() { return (Annotation)(_getFeatureValueNc(_FI_aFS));}
+  public Annotation getAFS() { return (Annotation)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aFS)));}
     
   /** setter for aFS - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAFS(Annotation v) {
-    _setFeatureValueNcWj(_FI_aFS, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aFS), v);
   }    
     
    
@@ -108,14 +114,14 @@ public class RefTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSList getAListFs() { return (FSList)(_getFeatureValueNc(_FI_aListFs));}
+  public FSList getAListFs() { return (FSList)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aListFs)));}
     
   /** setter for aListFs - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAListFs(FSList v) {
-    _setFeatureValueNcWj(_FI_aListFs, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListFs), v);
   }    
     
    
@@ -127,14 +133,14 @@ public class RefTypes extends Annotation {
    * @generated
    * @return value of the feature 
    */
-  public FSArray getAArrayFS() { return (FSArray)(_getFeatureValueNc(_FI_aArrayFS));}
+  public FSArray getAArrayFS() { return (FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)));}
     
   /** setter for aArrayFS - sets  
    * @generated
    * @param v value to set into the feature 
    */
   public void setAArrayFS(FSArray v) {
-    _setFeatureValueNcWj(_FI_aArrayFS, v);
+    _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aArrayFS), v);
   }    
     
     
@@ -144,7 +150,7 @@ public class RefTypes extends Annotation {
    * @return value of the element at index i 
    */
   public Annotation getAArrayFS(int i) {
-     return (Annotation)(((FSArray)(_getFeatureValueNc(_FI_aArrayFS))).get(i));} 
+     return (Annotation)(((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)))).get(i));} 
 
   /** indexed setter for aArrayFS - sets an indexed value - 
    * @generated
@@ -152,7 +158,7 @@ public class RefTypes extends Annotation {
    * @param v value to set into the array 
    */
   public void setAArrayFS(int i, Annotation v) {
-    ((FSArray)(_getFeatureValueNc(_FI_aArrayFS))).set(i, v);
+    ((FSArray)(_getFeatureValueNc(wrapGetIntCatchException(_FH_aArrayFS)))).set(i, v);
   }  
   }
 
