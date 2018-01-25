@@ -160,7 +160,7 @@ under the License.
       CAS Reset does not affect the setting, nor does checking it into / out of a CAS Pool.  
     </para>
     
-    <para>When a new CAS is created, the setting gets a default value, which comes from two sources:
+    <para>When a new CAS is created, this setting gets a default value, which comes from two sources:
       <itemizedlist>
         <listitem><para>a <code>-Duima.default_v2_id_references</code> system property, read once when the 
         UIMA framework classes are loaded.</para>
@@ -213,6 +213,8 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
         
         <para>Newly created Feature Structures, including those created when deserializing,
           are added to an internal map which maps the ID to the Feature Structure instance.
+          Feature Structures may be located by ID using the LowLevelCAS API 
+          <code>getFSForRef().</code>
         </para>
         
         <para>
@@ -225,10 +227,8 @@ boolean LowLeveCas.is_ll_defaultV2IdRefs()
         </para>
       </listitem>
       <listitem>
-        <para>This mode modifies serialization to include non-reachable FSs.
-          If you do not want to include these,  you can surround the serialize call with a try-with-resources 
-          that turns the mode off.  But if you do this, there is no guarantee that the IDs will remain the same
-          over subsequent serialization/deserialization steps.
+        <para>This mode modifies serialization (except for XCas, Xmi, and Compressed form 6, which in V2 are
+          implemented to just serialize reachable Feature Structures) to include non-reachable FSs.
         </para>            
       </listitem>
       <listitem><para>Note: This does not affect the <code>select</code> framework results - unreachable Feature Structures
