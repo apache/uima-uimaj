@@ -119,7 +119,8 @@ import org.apache.uima.util.impl.SerializationMeasures;
  *   create appropriate unzip data input streams for these
  *   
  * Properties of Form 4:
- *   1) (Change from V2) Indexes are used to determine what gets serialized, because there's no "heap" to walk.
+ *   1) (Change from V2) Indexes are used to determine what gets serialized, because there's no "heap" to walk,
+ *      unless the v2-id-mode is in effect.
  *      
  *   2) The number used for references to FSs is a sequentially incrementing one, starting at 1
  *       This allows better compression.
