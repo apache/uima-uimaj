@@ -313,7 +313,6 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     }
     
     for (TypeImpl subType : ti.getDirectSubtypes()) {
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(subType);
       loadBuiltins(subType, cl, type2jcci, callSites_toSync);
     }
   }
@@ -438,11 +437,7 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     JCasClassInfo jcci = getOrCreateJCasClassInfo(ti, cl, type2jcci, lookup);
     
     if (null != jcci && tsi.isCommitted()) {      
-      try {
-        updateOrValidateAllCallSitesForJCasClass(jcci.jcasClass, ti, callSites_toSync);
-      } finally {
-        TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
-      }
+      updateOrValidateAllCallSitesForJCasClass(jcci.jcasClass, ti, callSites_toSync);
     }
         
 //    String t2jcciKey = Misc.typeName2ClassName(ti.getName());
@@ -530,7 +525,6 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     
     
     for (TypeImpl subtype : ti.getDirectSubtypes()) {
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(subtype);  // not used, but left in for backwards compat.
       maybeLoadJCasAndSubtypes(tsi, subtype, jcci_or_copyDown, cl, type2jcci, callSites_toSync, lookup);
     }
   }
@@ -837,13 +831,10 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     String className = ti.getJCasClassName();
     
     try { 
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(ti);  // only for backwards compat with alpha02 release
       clazz = (Class<? extends TOP>) Class.forName(className, true, cl);
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
       return clazz;
-    } finally {
-      TypeSystemImpl.typeBeingLoadedThreadLocal.set(null);
     }
     
     return clazz;

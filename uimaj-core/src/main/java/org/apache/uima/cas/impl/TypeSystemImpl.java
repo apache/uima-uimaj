@@ -250,11 +250,11 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     
   final private static Map<TypeSystemImpl, WeakReference<TypeSystemImpl>> committedTypeSystems = Collections.synchronizedMap(new WeakHashMap<>());
   
-  /**
-   * used to pass the type being loaded reference to the JCas static initializer code,
-   *   referenced from the TypeSystemImpl.getAdjustedFeatureOffset([featurename]) method.
-   */
-  public final static ThreadLocal<TypeImpl> typeBeingLoadedThreadLocal = new ThreadLocal<TypeImpl>();
+//  /**  OBSOLETE with BETA and later levels
+//   * used to pass the type being loaded reference to the JCas static initializer code,
+//   *   referenced from the TypeSystemImpl.getAdjustedFeatureOffset([featurename]) method.
+//   */
+//  public final static ThreadLocal<TypeImpl> typeBeingLoadedThreadLocal = new ThreadLocal<TypeImpl>();
     
   /******************************************
    *   I N S T A N C E   V A R I A B L E S  *
@@ -2830,22 +2830,13 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
    */
   // ******** OBSOLETE  - only left in for supporting some jcas style in alpha level *************
   public static synchronized int getAdjustedFeatureOffset(String featName) {
-    TypeImpl type = typeBeingLoadedThreadLocal.get();
-    if (null == type) {
-      /*A JCas class is being loaded and initialized (by non-framework user code) before 
-       * the type system with the corresponding type has been set up and committed.
-       * This is not allowed in UIMA v3 because the static class initialization code needs access to
-       * the type system in order to bridge the JCas class definition to the 
-       * corresponding type system type.
-       * You can fix this by reordering your code to do the commit for the type system first, or 
-       * if you're using a form like Class.forName("myJCasClass"), you can use the alternative
-       * API which only loads (but doesn't run the initialization: 
-       * Class.forName("myJCasClass", false, this.getClass().getClassLoader()).*/
-      throw new CASRuntimeException(CASRuntimeException.JCAS_CLASS_INITIALIZED_BEFORE_TYPE_SYSTEM_COMMIT);
-    }
-
-    FeatureImpl fi = type.getFeatureByBaseName(featName);
-    return (fi == null) ? -1 : fi.getAdjustedOffset();    
+    /* The JCas class being loaded was generated for the "alpha" level of UIMA v3,
+     * and is not supported for Beta and later levels.
+     * 
+     * This can be fixed by regenerating this using the current v3 version of UIMA tooling
+     * (JCasgen, or the migration tooling to migrate from v2).
+     */
+      throw new CASRuntimeException(CASRuntimeException.JCAS_ALPHA_LEVEL_NOT_SUPPORTED);
   }
   
   static int getAdjustedFeatureOffset(TypeImpl type, String featName) {
