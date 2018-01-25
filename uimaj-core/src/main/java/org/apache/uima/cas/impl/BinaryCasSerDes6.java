@@ -76,6 +76,7 @@ import org.apache.uima.jcas.cas.Sofa;
 import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.util.AutoCloseableNoException;
 import org.apache.uima.util.CasIOUtils;
 import org.apache.uima.util.CasLoadMode;
 import org.apache.uima.util.impl.DataIO;
@@ -2826,12 +2827,16 @@ public class BinaryCasSerDes6 implements SlotKindsConstants {
    */
   private void processIndexedFeatureStructures(final CASImpl cas1, boolean isWrite) throws IOException {
     if (!isWrite) {
-      AllFSs allFSs = new AllFSs(cas1, 
-                                 mark, 
-                                 isTypeMapping ? fs -> isTypeInTgt(fs) : null, 
-                                 isTypeMapping ? typeMapper            : null)
-                       .getAllFSsAllViews_sofas_reachable();
-          ;
+      // always have form 6 do just reachables, to mimic what v2 did
+      AllFSs allFSs;
+      try (AutoCloseableNoException a = LowLevelCAS.ll_defaultV2IdRefs(false)) {
+        allFSs = new AllFSs(cas1, 
+                            mark, 
+                            isTypeMapping ? fs -> isTypeInTgt(fs) : null, 
+                            isTypeMapping ? typeMapper            : null)
+                  .getAllFSsAllViews_sofas_reachable();
+            ;
+      }
       fssToSerialize = CASImpl.filterAboveMark(allFSs.getAllFSsSorted(), mark);
       foundFSs = allFSs.getAllNew();
       foundFSsBelowMark = allFSs.getAllBelowMark();
