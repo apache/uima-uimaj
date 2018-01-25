@@ -123,9 +123,7 @@ public class RefTypes extends Annotation {
   public void setAListFs(FSList v) {
     _setFeatureValueNcWj(wrapGetIntCatchException(_FH_aListFs), v);
   }    
-    
-   
-    
+       
   //*--------------*
   //* Feature: aArrayFS
 
