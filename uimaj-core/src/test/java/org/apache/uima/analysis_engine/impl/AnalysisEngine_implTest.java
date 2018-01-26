@@ -427,7 +427,7 @@ public class AnalysisEngine_implTest extends TestCase {
     if (support240bug) {
       assertNotNull(desc);
     } else {
-      assertNotNull(ex);
+      fail();
     }
   }
 
