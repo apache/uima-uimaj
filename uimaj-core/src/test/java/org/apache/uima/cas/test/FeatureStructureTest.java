@@ -410,7 +410,7 @@ public class FeatureStructureTest extends TestCase {
 			token.setFloatValue(this.sentLenFeat, 0.0f);
 		} catch (CASRuntimeException e) {
 			caughtExc = true;
-			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_FEAT));
+			assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
 		}
 		assertTrue(caughtExc);
 		assertTrue(token.getFloatValue(this.tokenFloatFeat) == f);
