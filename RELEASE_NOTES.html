@@ -20,27 +20,20 @@
    -->
 <html>
 <head>
-  <title>Apache UIMA v3.0.0-beta Release Notes</title>
+  <title>Apache UIMA v3.0.0 Release Notes</title>
 </head>
 <body>
-<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0-beta Release Notes</h1>
+<h1>Apache UIMA (Unstructured Information Management Architecture) v3.0.0 Release Notes</h1>
 
 <h2>Contents</h2>
 <p>
-<a href="#beta">Beta release status notice</a><br/>
 <a href="#what.is.uima">What is UIMA?</a><br/>
 <a href="#major.changes">Major Changes in this Release</a><br/>
 <a href="#get.involved">How to Get Involved</a><br/>
 <a href="#report.issues">How to Report Issues</a><br/>
 <a href="#list.issues">List of JIRA Issues Fixed in this Release</a><br/>
 </p>  
-   
-<h2><a id="beta">0. Beta release status</a></h2>
-  <p>This is the Beta release of 3.0.0; the next release is planned to be 
-     the official 3.0.0 release.  The beta release is being done in order to expand the 
-     community of people doing testing on this new release.
-     The APIs at this point are expected to be stable.</p>
-     
+        
 <h2><a id="what.is.uima">1. What is UIMA?</a></h2>
 
      <p>
@@ -122,46 +115,23 @@ popular logging APIs</li>
 
 <p>Please read the Version 3 users guide for more details.</p>
 
-<p>Specific changes in this release versus the previous alpha02 release include</p>
+<p>Specific changes in this release versus the previous beta release include</p>
 <ul>
-  <li>The use of generic typing was improved.
-  <li>Fixed the Eclipse launcher in the examples project that's part of the binary distribution to properly
-      launch the v3-migration tool.</li>
-  <li>The UIMA built-in arrays and lists implement iterable and stream, with appropriate capabilities
-      for generic type specification.</li>
-  <li>Eclipse plugins are now Jar-signed.</li>
-  <li>Renamed some methods to create UIMA arrays and lists from createFromArray to create</li>
-  <li>Added missing methods to logger interface to support Supplier argument.</li>
-  <li>The launchers for the normal UIMA Tooling default to specifying the built-in-to-Java logging framework.</li>
-  <li>The launchers were modified to support Java-style wild-card notation in the classpath.</li>
-  <li>Fix for permissions on Linux for API Change Report.</li>
-  <li>Restore a v2 method needed for backwards compatibility</li>
-  <li>Improve the migration tool's use of classpath and error reporting</li>
-  <li>Changes in the support for External Override Settings location were incorporated</li>
-  <li>Fixes incorporated into UIMA 2.10.1 are included.</li>
-  <li>Made JCas loading more permissive - no longer need to have the type system committed before loading</li>
-  <li>JCasGen - add missing imports</li>
-  <li>renamed the methods for getting empty UIMA arrays and lists to emptyXxxx form</li>
-  <li>add methods supporting extended-for over all FSs in views</li> 
-  <li>several bugs fixed - see issues fixed, for all issues after 18 Sept 2017</li>
+  <li>Support of a v2 id compatibility mode, for backwards compatibility, enables use of the LowLevelCAS API getFSForRef(int)
+  <li>Improved support for sharing a set of loaded JCas classes with different, but somewhat compatible type systems
+  <li>New semi-builtin types: a FSLinkedHashSet, and a map from "int"s to Feature Structures
 </ul>
-
  
 <h3>API changes</h3>
  <p>There is an API compatibility report covering the non-internal APIs;
    see <a href="api-change-report.html">change report</a> for the list of API changes
-   since version 2.10.1.
+   since version 2.10.2.
  </p>
  
 <h2><a id="list.issues">Full list of JIRA Issues affecting this Release</a></h2>
 Click <a href="issuesFixed/jira-report.html">issuesFixed/jira-report.hmtl</a> for the list of 
 issues affecting this release.  
    
-<h2><a id="beta">Beta Release</a></h2>
-<p>This is a beta release of version 3.0.0, being made to get 
-wider community involvement in testing and feedback.  
-At this point, the APIs are not expected to change, and features
-should be frozen.</p>
 
 <p>Please use the mailing lists 
 ( http://uima.apache.org/mail-lists.html ) 

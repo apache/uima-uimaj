@@ -2,7 +2,7 @@
       Apache UIMA (Unstructured Information Management Architecture) 
       --------------------------------------------------------------
       
-This file applies to UIMA-SDK version 3.0.0-beta and subsequent versions.
+This file applies to UIMA-SDK version 3.0.0 and subsequent versions.
 Java 8 is required.
 
 Backwards Compatibility
