@@ -156,25 +156,27 @@ under the License.
       are not eligible for garbage collection. 
     </para>
     
-    <para>This mode is set on individual CASs via a new API.  Once set on a CAS, it remains until set to a different value;
+    <para>This mode is set on individual CASs via a new API; a default value may optionally be specified.
+      Once set on a CAS, it remains until set to a different value;
       CAS Reset does not affect the setting, nor does checking it into / out of a CAS Pool.  
     </para>
     
-    <para>When a new CAS is created, this setting gets a default value, which comes from two sources:
+    <para>When a new CAS is created, this mode is set according to two sources:
       <itemizedlist>
         <listitem><para>a <code>-Duima.default_v2_id_references</code> system property, read once when the 
         UIMA framework classes are loaded.</para>
         </listitem>
-        <listitem><para>A setting called <code>defaultV2IdRefs</code>, kept per thread.  The 
+        <listitem><para>A run-time value kept per thread, managed by an API on the LowLevelCAS interface.  The 
           setting is inherited by any child threads the thread creates, and 
           overrides the system property if used.</para></listitem>
+        <listitem><para>If neither of these are used, then the default is to not be in the sepcial v2-mode.</para></listitem>
       </itemizedlist> 
     </para>
     
     <para>The APIs for this are part of the LowLevelCAS.  The controlling APIs all return an instance
-      of AutoClosable, which can be used to reset the setting to its previous value.
+      of AutoClosableNoException, which can be used to reset the setting to its previous value.
       A recommended way of using these is with the Java <code>try with resources</code> construct: 
-    <programlisting>try (AutoClosable w = llcas.ll_enableV2IdRefs) {
+    <programlisting>try (AutoClosableNoException w = llcas.ll_enableV2IdRefs) {
   ... some operations
 } // automatically restores previous value 
 </programlisting>   
