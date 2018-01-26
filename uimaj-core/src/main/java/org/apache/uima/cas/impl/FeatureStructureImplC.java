@@ -36,6 +36,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
+import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
@@ -406,8 +407,17 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
    *          For JCas setters: convert offset to feature
    **************************************/
   
+  private void checkFeatRange(Feature feat, String shortRangeName) {
+    if ( ! (feat.getRange().getShortName().equals(shortRangeName))) {
+      /*Trying to access value of feature "{0}" as "{1}", but range of feature is "{2}".*/
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE, feat.getName(), "uima.cas." + shortRangeName, feat.getRange().getName());
+    }
+
+  }
+  
   @Override
   public void setBooleanValue(Feature feat, boolean v) {
+   checkFeatRange(feat, "Boolean");
     _setIntValueCJ((FeatureImpl) feat, v ? 1 : 0);
   }
   
@@ -419,6 +429,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
  
   @Override
   public void setByteValue(Feature feat, byte v) {
+    checkFeatRange(feat, "Byte");
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
@@ -436,6 +447,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setShortValue(Feature feat, short v) {
+    checkFeatRange(feat, "Short");
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
@@ -453,6 +465,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setIntValue(Feature feat, int v) {
+    checkFeatRange(feat, "Integer");
     _setIntValueCJ((FeatureImpl) feat, v);
   }
   
@@ -470,6 +483,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setLongValue(Feature feat, long v) {
+    checkFeatRange(feat, "Long");
     _setLongValueCJ((FeatureImpl) feat, v);
   }
 
@@ -490,7 +504,10 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   }
 
   @Override
-  public void setFloatValue(Feature feat, float v) { setIntValue(feat, CASImpl.float2int(v)); }
+  public void setFloatValue(Feature feat, float v) {
+    checkFeatRange(feat, "Float");
+    _setIntValueCJ((FeatureImpl) feat, CASImpl.float2int(v));
+  }
   
   protected void _setFloatValueNfc(int adjOffset, float v) { _setIntValueNfc(adjOffset, CASImpl.float2int(v)); }
 
@@ -506,7 +523,8 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
 
   @Override
   public void setDoubleValue(Feature feat, double v) {
-    setLongValue(feat, CASImpl.double2long(v)); 
+    checkFeatRange(feat, "Double");
+    _setLongValueCJ((FeatureImpl) feat, CASImpl.double2long(v));
   }
 
   protected void _setDoubleValueNfc(int adjOffset, double v) {
@@ -554,8 +572,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     FeatureImpl fi = (FeatureImpl) feat;
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
     if (IS_ENABLE_RUNTIME_FEATURE_VALUE_VALIDATION) featureValueValidation(feat, v);
-
-    // no need to check for index corruption because fs refs can't be index keys
+     // no need to check for index corruption because fs refs can't be index keys
     _setRefValueCommon(fi, _maybeGetBaseForPearFs((TOP)v));
     _casView.maybeLogUpdate(this, fi);
   }
@@ -725,6 +742,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public boolean getBooleanValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Boolean");
     return _getBooleanValueNc((FeatureImpl) feat);
   }
 
@@ -734,14 +752,18 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   public boolean _getBooleanValueNc(int adjOffset) { return _getIntValueCommon(adjOffset) == 1; }
 
   @Override
-  public byte getByteValue(Feature feat) { return (byte) getIntValue(feat); }
+  public byte getByteValue(Feature feat) {
+    checkFeatRange(feat, "Byte");
+    return (byte) _getIntValueCommon((FeatureImpl)feat); }
 
   public byte _getByteValueNc(FeatureImpl feat) { return (byte) _getIntValueNc(feat); }
   
   public byte _getByteValueNc(int adjOffset) { return  (byte) _getIntValueNc(adjOffset); }
 
   @Override
-  public short getShortValue(Feature feat) { return (short) getIntValue(feat); }
+  public short getShortValue(Feature feat) {
+    checkFeatRange(feat, "Short");
+    return (short) _getIntValueCommon((FeatureImpl)feat); }
 
   public short _getShortValueNc(FeatureImpl feat) { return (short) _getIntValueNc(feat); }
 
@@ -750,6 +772,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public int getIntValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Integer");
     return _getIntValueCommon((FeatureImpl)feat);
   }
     
@@ -761,6 +784,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public long getLongValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Long");
     return _getLongValueNc((FeatureImpl) feat);
   }
   
@@ -779,6 +803,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public float getFloatValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Float");
     return _getFloatValueNc(((FeatureImpl) feat).getAdjustedOffset());
   }
 
@@ -789,6 +814,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public double getDoubleValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+    checkFeatRange(feat, "Double");
     return _getDoubleValueNc((FeatureImpl) feat); 
   }
   
@@ -799,6 +825,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public String getStringValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) featureValidation(feat);
+//    checkFeatRange(feat, "String");
     return _getStringValueNc((FeatureImpl) feat);
   }
 
@@ -1528,7 +1555,11 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
         return Long.toString(getLongValue(feat));
       case TypeSystemConstants.doubleTypeCode :
         return Double.toString(getDoubleValue(feat));
-      default: // byte, short, int, 
+      case TypeSystemConstants.byteTypeCode:
+        return Byte.toString(getByteValue(feat));
+      case TypeSystemConstants.shortTypeCode:
+        return Short.toString(getShortValue(feat));
+      default: // int, 
         return Integer.toString(getIntValue(feat));
       }
     }
