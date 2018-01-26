@@ -294,31 +294,38 @@ public class UIMAFramework_impl extends UIMAFramework {
 
     if (o == null) // source class logger not available
     {
-      // create new Logger for the source class
-      // set method argument type
-      Class[] argumentTypes = { Class.class };
-      // set argument value
-      Object[] arguments = { component };
-      try {
-        // get static method getInstance(Class component)
-        Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
-        // invoke getInstance(Class component) method and retrieve logger object
-        o = (Logger) instanceMethod.invoke(null, arguments);
-        if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
-            // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
-            org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class.isAssignableFrom(component)) {  
-          ((Logger_common_impl)o).setAnnotatorLogger(true); 
-        } 
-      } catch (NoSuchMethodException e) {
-        throw new UIMARuntimeException(e);
-      } catch (InvocationTargetException e) {
-        throw new UIMARuntimeException(e);
-      } catch (IllegalAccessException e) {
-        throw new UIMARuntimeException(e);
-      }
+      synchronized (this) {
+        o = mLoggers.get(component.getName());
 
-      // put created logger to the HashMap
-      mLoggers.put(component.getName(), o);
+        if (o == null) { // source class logger not available
+      
+          // create new Logger for the source class
+          // set method argument type
+          Class[] argumentTypes = { Class.class };
+          // set argument value
+          Object[] arguments = { component };
+          try {
+            // get static method getInstance(Class component)
+            Method instanceMethod = mLoggerClass.getMethod("getInstance", argumentTypes);
+            // invoke getInstance(Class component) method and retrieve logger object
+            o = (Logger) instanceMethod.invoke(null, arguments);
+            if (AnalysisComponent_ImplBase.class.isAssignableFrom(component) || 
+                // Watch out: next Annotat_ImplBase class exists in 2 packages, this one is old one, needed for backwards compat.
+                org.apache.uima.analysis_engine.annotator.Annotator_ImplBase.class.isAssignableFrom(component)) {  
+              ((Logger_common_impl)o).setAnnotatorLogger(true); 
+            } 
+          } catch (NoSuchMethodException e) {
+            throw new UIMARuntimeException(e);
+          } catch (InvocationTargetException e) {
+            throw new UIMARuntimeException(e);
+          } catch (IllegalAccessException e) {
+            throw new UIMARuntimeException(e);
+          }
+    
+          // put created logger to the HashMap
+          mLoggers.put(component.getName(), o);
+        }
+      }
     }
 
     return o;

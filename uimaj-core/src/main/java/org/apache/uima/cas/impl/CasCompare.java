@@ -507,8 +507,8 @@ public class CasCompare {
       int i1 = 0;
       int i2 = 0;
 
-      final int maxId1 = c1.peekNextFsId();
-      final int maxId2 = c2.peekNextFsId();
+      maxId1 = c1.peekNextFsId();
+      maxId2 = c2.peekNextFsId();
           
       // convert_linear_lists_to_arrays may add more items
       
