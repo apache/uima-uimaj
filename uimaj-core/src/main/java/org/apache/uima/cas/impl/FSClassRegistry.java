@@ -835,6 +835,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
     } catch (ClassNotFoundException e) {
       // Class not found is normal, if there is no JCas for this class
       return clazz;
+    } catch (ExceptionInInitializerError e) {
+      throw new RuntimeException("Exception while loading " +  className, e);
     }
     
     return clazz;
