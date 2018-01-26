@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<COMPONENT_INSTALLATION_DESCRIPTOR>
+	<OS>
+		<NAME>Windows</NAME>
+	</OS>
+	<TOOLKITS>
+	</TOOLKITS>
+	<UIMA_FRAMEWORK>
+	</UIMA_FRAMEWORK>
+	<SUBMITTED_COMPONENT>
+		<ID>uima.example.DateTimeAnnotator</ID>
+		<NAME></NAME>
+		<DESC>$main_root/desc/TutorialDateTime.xml</DESC>
+		<DEPLOYMENT>standard</DEPLOYMENT>
+	</SUBMITTED_COMPONENT>
+	<INSTALLATION>
+		<PROCESS>
+			<ACTION>set_env_variable</ACTION>
+			<PARAMETERS>
+				<COMMENTS></COMMENTS>
+				<VAR_VALUE>$main_root/bin;</VAR_VALUE>
+				<VAR_NAME>CLASSPATH</VAR_NAME>
+			</PARAMETERS>
+		</PROCESS>
+		<PROCESS>
+			<ACTION>set_env_variable</ACTION>
+			<PARAMETERS>
+				<COMMENTS></COMMENTS>
+				<VAR_VALUE>$main_root/my/test/data/path</VAR_VALUE>
+				<VAR_NAME>uima.datapath</VAR_NAME>
+			</PARAMETERS>
+		</PROCESS>
+	</INSTALLATION>
+</COMPONENT_INSTALLATION_DESCRIPTOR>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+	<!--
+	 ***************************************************************
+	 * Licensed to the Apache Software Foundation (ASF) under one
+	 * or more contributor license agreements.  See the NOTICE file
+	 * distributed with this work for additional information
+	 * regarding copyright ownership.  The ASF licenses this file
+	 * to you under the Apache License, Version 2.0 (the
+	 * "License"); you may not use this file except in compliance
+	 * with the License.  You may obtain a copy of the License at
+         *
+	 *   http://www.apache.org/licenses/LICENSE-2.0
+	 * 
+	 * Unless required by applicable law or agreed to in writing,
+	 * software distributed under the License is distributed on an
+	 * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 * KIND, either express or implied.  See the License for the
+	 * specific language governing permissions and limitations
+	 * under the License.
+	 ***************************************************************
+   -->
+   
+<!--
+	Descriptor for a primitive TAE that uses the TutorialDateTime annotator
+-->
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+	<frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+	<primitive>true</primitive>
+	<annotatorImplementationName>org.apache.uima.tutorial.ex3.TutorialDateTime</annotatorImplementationName>
+
+
+	<analysisEngineMetaData>
+		<name>TutorialDateTime Annotator</name>
+		<description>Finds dates and times</description>
+		<version>1.0</version>
+		<vendor>The Apache Software Foundation</vendor>
+		
+		<!--
+		Configuration Parameter Definitions
+		-->
+		<configurationParameters/>
+		
+		<!--
+		Values for the configuration parameters
+		-->
+		<configurationParameterSettings/>
+		
+		<!--
+		TypeSystem Definition
+		-->
+		
+		<typeSystemDescription>
+			<imports>
+				<import location="TutorialTypeSystem.xml"/>
+			</imports>
+		</typeSystemDescription>
+		
+		<!--
+		Capabilities: Inputs, Outputs, and Preconditions
+		-->
+		<capabilities>
+			<capability>
+				<inputs/>
+				<outputs>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.tutorial.DateTimeAnnot</type>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.tutorial.TimeAnnot</type>
+					<type allAnnotatorFeatures="true">
+						org.apache.uima.tutorial.DateAnnot</type>
+				</outputs>
+				<languagesSupported>
+					<language>en</language>
+				</languagesSupported>
+			</capability>
+		</capabilities>
+		<operationalProperties>
+			<modifiesCas>true</modifiesCas>
+			<multipleDeploymentAllowed>true</multipleDeploymentAllowed>
+			<outputsNewCASes>false</outputsNewCASes>
+		</operationalProperties>
+	</analysisEngineMetaData>
+</analysisEngineDescription>
