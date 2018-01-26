@@ -100,11 +100,16 @@ under the License.
       
       <para>To use the Eclipse Install New Software mechanism, start Eclipse, and then pick the menu 
         <command>Help &rarr; Install new software...</command>.  In the next page, enter
-        the following URL in the "Work with" box and press enter: 
-        https://www.apache.org/dist/uima/eclipse-update-site/.</para>
+        the following URL in the "Work with" box and press enter:
+        <itemizedlist>
+          <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site/</code> or</listitem>
+          <listitem><para></para><code>https://www.apache.org/dist/uima/eclipse-update-site-uv3/</code>.</listitem>
+        </itemizedlist>
+        Choose the 2nd if you are working with core UIMA Java SDK at version 3 or later.
+       .</para>
       
       <para>Now select the plugin tools you wish to install, and click Next, and follow the 
-        remaining panels to install the UIMA plugins.</para>
+        remaining panels to install the UIMA plugins.  </para>
     </section>
 
     <!--      
