@@ -109,7 +109,7 @@ public class FeatureImpl implements Feature {
                      ? false 
                      : (rangeType.getTypeSystem().isInInt(rangeType));
     this.rangeTypeClass = (rangeType == null) 
-                     ? null
+                     ? CASImpl.TYPE_CLASS_FS
                      : CasSerializerSupport.classifyType(rangeType);
     this.hashCodeLong = computeHashCodeLong();
     if (typeImpl != null) {
