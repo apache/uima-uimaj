@@ -34,6 +34,7 @@ public class AbstractModelPart {
   public static final Properties casCreateProperties = new Properties();
   static {
     casCreateProperties.setProperty(UIMAFramework.CAS_INITIAL_HEAP_SIZE, "200");
+    casCreateProperties.setProperty(UIMAFramework.SKIP_USER_JCAS_LOADING, "true");
   }
 
   /** The model root. */
