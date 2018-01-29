@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.function.Supplier;
 
+import org.apache.uima.UIMAException;
+import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.resource.ResourceManager;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -306,6 +308,10 @@ public void setOutputStream(OutputStream aStream);
    * @return the internationalized message
    */
   public String rb(String resourceBundle, String key, Object... params);
+  
+  default String rb_ue(String key, Object... params) {
+    return rb(UIMAException.STANDARD_MESSAGE_CATALOG, key, params);
+  }
   
   /**
    * This is true if the name of the logger corresponds to a class which implements

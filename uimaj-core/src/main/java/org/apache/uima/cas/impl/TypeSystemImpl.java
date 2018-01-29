@@ -53,6 +53,7 @@ import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
+import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASRuntimeException;
@@ -69,6 +70,7 @@ import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
 import org.apache.uima.jcas.cas.ByteArray;
+import org.apache.uima.jcas.cas.CommonList;
 import org.apache.uima.jcas.cas.DoubleArray;
 import org.apache.uima.jcas.cas.EmptyFSList;
 import org.apache.uima.jcas.cas.EmptyFloatList;
@@ -91,6 +93,7 @@ import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.cas.TOP;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.util.Logger;
 import org.apache.uima.util.impl.Constants;
 
 /**
@@ -449,6 +452,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
   private Map<String, JCasClassInfo> type2jcci;  // temp value used in computing adjusted offsets
   private Lookup lookup;
   private ClassLoader cl_for_commit;
+  private boolean skip_loading_user_jcas = false;
 
   public TypeSystemImpl() {
 
@@ -1363,7 +1367,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
       if (this.locked) {
         // is a no-op if already loaded for this Class Loader
         // otherwise, need to load and set up generators for this class loader
-        getGeneratorsForClassLoader(cl, false);  // false - is not pear
+        getGeneratorsForClassLoader(cl, false);  // false - is not pear     
         return this; // might be called multiple times, but only need to do once
       }
       
@@ -1482,11 +1486,12 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     // all the JCas slots come first, because their offsets can't easily change
     // this includes any superClass of a jcas class which is not in this type system
     
-    JCasClassInfo jcci = getJcci(ti);
-    
-    if (jcci != null) {
-      addJCasOffsetsWithSupers(jcci.jcasClass, tempIntFis, tempRefFis, tempNsr);
-//      addJCasOffsets(ti.jcci, tempIntFis, tempRefFis, tempNsr); // already done by above
+    if (! skip_loading_user_jcas) {
+      JCasClassInfo jcci = getJcci(ti);
+      
+      if (jcci != null) {
+        addJCasOffsetsWithSupers(jcci.jcasClass, tempIntFis, tempRefFis, tempNsr);
+      }
     }
         
     for (final FeatureImpl fi : ti.getMergedStaticFeaturesIntroducedByThisType()) {
@@ -2836,7 +2841,9 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
      * This can be fixed by regenerating this using the current v3 version of UIMA tooling
      * (JCasgen, or the migration tooling to migrate from v2).
      */
-      throw new CASRuntimeException(CASRuntimeException.JCAS_ALPHA_LEVEL_NOT_SUPPORTED);
+    Logger logger = UIMAFramework.getLogger(TypeSystemImpl.class);
+    logger.warn(() -> logger.rb_ue(CASRuntimeException.JCAS_ALPHA_LEVEL_NOT_SUPPORTED)); 
+    return -1;
   }
   
   static int getAdjustedFeatureOffset(TypeImpl type, String featName) {
@@ -2877,7 +2884,7 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     synchronized (gByC) {
       
       FsGenerator3[] g = gByC.get(cl); // a separate map per type system instance
-      if (g == null) {
+      if (g == null && ! skip_loading_user_jcas) {
         g = FSClassRegistry.getGeneratorsForClassLoader(cl, isPear, this);
         gByC.put(cl, g);
       }
@@ -2913,6 +2920,10 @@ public class TypeSystemImpl implements TypeSystem, TypeSystemMgr, LowLevelTypeSy
     return getTypeIterator();
   }
 
+  public void set_skip_loading_user_jcas(boolean v) {
+    this.skip_loading_user_jcas = v;
+  }
+  
 //  private static boolean isBuiltIn(Class<? extends TOP> clazz) {
 //    return BuiltinTypeKinds.creatableBuiltinJCasClassNames.contains(clazz.getName());
 //  }

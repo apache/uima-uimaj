@@ -91,6 +91,16 @@ public abstract class UIMAFramework {
    * disables the cache; any other value leaves the default setting of true.
    */
   public static final String JCAS_CACHE_ENABLED = "jcas_cache_enabled";
+  
+  /**
+   * Key to be used in the Properties object returned by
+   * {@link #getDefaultPerformanceTuningProperties()}. The value of this key indicates whether 
+   * user-defined JCas classes should be loaded or skipped, during type system commit.
+   * The default is false; set to "true" to skip.  
+   * This is used by the Component Descriptor Editor when manipulating type systems, to avoid any
+   * issues with loading and working with different type systems where any JCas classes might not match.
+   */
+  public static final String SKIP_USER_JCAS_LOADING = "SKIP_USER_JCAS_LOADING";
 
   /**
    * To be implemented by subclasses; this should return a Properties object representing the

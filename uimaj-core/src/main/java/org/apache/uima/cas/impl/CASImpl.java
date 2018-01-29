@@ -1589,7 +1589,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
     return new FilteredIterator<T>(it, cons);
   }
 
-  public TypeSystemImpl commitTypeSystem() {
+  public TypeSystemImpl commitTypeSystem(boolean skip_loading_user_jcas) {
     TypeSystemImpl ts = getTypeSystemImpl();
     // For CAS pools, the type system could have already been committed
     // Skip the initFSClassReg if so, because it may have been updated to a JCas
@@ -1604,6 +1604,7 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
 //      //debug
 //      System.out.format("debug committing ts %s classLoader %s%n", ts.hashCode(), cl);
       if (!ts.isCommitted()) {
+        ts.set_skip_loading_user_jcas(skip_loading_user_jcas);
         TypeSystemImpl tsc = ts.commit(getJCasClassLoader());
         if (tsc != ts) {
           installTypeSystemInAllViews(tsc);
@@ -1615,8 +1616,13 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
         
     createIndexRepository();
     return ts;
+    
   }
-
+  
+  public TypeSystemImpl commitTypeSystem() {
+    return commitTypeSystem(false);
+  }
+  
   private void createIndexRepository() {
     if (!this.getTypeSystemMgr().isCommitted()) {
       throw new CASAdminException(CASAdminException.MUST_COMMIT_TYPE_SYSTEM);
