@@ -1033,8 +1033,8 @@ public abstract class FSClassRegistry { // abstract to prevent instantiating; th
           m = jcasClass.getDeclaredMethod(getterName); // get the getter with no args
         } catch (NoSuchMethodException e) {
           /** Cas class {0} with feature {1} but is mssing a 0 argument getter.  This feature will not be used to maybe expand the type's feature set.*/
-          UIMAFramework.getLogger(FSClassRegistry.class).log(Level.WARNING, CASRuntimeException.JCAS_MISSING_GETTER, 
-              new Object[] {jcasClass.getName(), featName});
+          Logger logger = UIMAFramework.getLogger(FSClassRegistry.class);
+          logger.warn( () -> logger.rb_ue(CASRuntimeException.JCAS_MISSING_GETTER, jcasClass.getName(), featName));
           continue;  // skip this one
         }
         
