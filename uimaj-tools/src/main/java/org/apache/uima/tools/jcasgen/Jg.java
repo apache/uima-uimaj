@@ -81,6 +81,7 @@ import org.apache.uima.util.XMLizable;
 
 public class Jg {
 
+  private final static boolean IS_TRACE_LIMITED = false;
   /**
    * Interface implemented by JCAS code generation's templates.
    */
@@ -880,7 +881,7 @@ public class Jg {
    */
 
   /**
-   * return true if td is not defined in this project, of
+   * return true if td is not defined in this project, or
    *   it is defined, but is also in merged and any of the other
    *   merged urls are not defined in this project.
    *
@@ -893,6 +894,9 @@ public class Jg {
     try {
       typeDefinitionUri = new URI (td.getSourceUrlString());
     } catch (URISyntaxException e) {
+      if (IS_TRACE_LIMITED) {
+        error.newError(IError.INFO, "debug isOutOfScope: got URISyntaxException, td.getSourceUrlstring: " + ((td.getSourceUrlString() == null) ? "null" : td.getSourceUrlString()), e);
+      }
       return true; // may be overkill - but if td's source can't be parsed ... likely out of project
     }
     String tdPath = typeDefinitionUri.getPath();
@@ -900,6 +904,9 @@ public class Jg {
     // Issue UIMA-4080 - If a type system resides in a JAR, then the path is null and it is
     // certainly out of scope.
     if (tdPath == null) {
+      if (IS_TRACE_LIMITED) {
+        error.newError(IError.INFO, "debug isOutOfScope: typeDefinitionUri had null path. " + typeDefinitionUri.toString(), null);
+      }
         return true;
     }
 
@@ -910,7 +917,7 @@ public class Jg {
     // as well as clients that use file-system notation (e.g. jcasgen-maven-plugin or a simple
     // invocation from the command line.
     String resolvedProjectPath;
-    if (!projectDirPath.startsWith("/")) {
+    if (!projectDirPath.startsWith("/")) { 
         resolvedProjectPath = new File(projectDirPath).getAbsoluteFile().toURI().getPath();
     }
     else {
@@ -929,6 +936,10 @@ public class Jg {
 
     boolean r = !tdPath.startsWith(resolvedProjectPath);
     if (r) {
+      if (IS_TRACE_LIMITED) {
+        error.newError(IError.INFO, "debug isOutOfScope: tdPath doesn't start with resolved ProjectPath, tdPath: "
+             + tdPath + ", resolvedProjectPath: " + resolvedProjectPath, null);
+      }
       return true;
     }
     Set<String> mergedPaths = mergedTypesAddingFeatures.get(td.getName());
@@ -942,6 +953,9 @@ public class Jg {
         }
         String tempPath = tempURI.getPath();
         if (!tempPath.startsWith(resolvedProjectPath)) {
+          if (IS_TRACE_LIMITED) {
+            error.newError(IError.INFO, "debug isOutOfScope due to mergedType adding feature", null);
+          }
           return true; 
         }
       }
