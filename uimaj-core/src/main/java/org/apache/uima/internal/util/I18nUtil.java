@@ -20,7 +20,11 @@
 package org.apache.uima.internal.util;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -28,6 +32,74 @@ import java.util.ResourceBundle;
  * 
  */
 public class I18nUtil {
+  
+  /**
+   * Cache for bundle lookup
+   *   otherwise, there are multiple lookups in a call-stack-climbing class loader
+   *   
+   */
+  
+  static class Bid {
+    final String bundleName;
+    final Locale locale;
+    final ClassLoader loader;
+    final ClassLoader [] loaders;
+    public Bid(String bundleName, Locale locale, ClassLoader loader, ClassLoader[] loaders) {
+      super();
+      this.bundleName = bundleName;
+      this.locale = locale;
+      this.loader = (loaders != null) ? null : loader;
+      this.loaders = loaders;
+    }
+    
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((bundleName == null) ? 0 : bundleName.hashCode());
+      result = prime * result + ((loader == null) ? 0 : loader.hashCode());
+      result = prime * result +  ((loaders == null) ? 0 : Arrays.hashCode(loaders));
+      result = prime * result + ((locale == null) ? 0 : locale.hashCode());
+      return result;
+    }
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Bid other = (Bid) obj;
+      if (bundleName == null) {
+        if (other.bundleName != null)
+          return false;
+      } else if (!bundleName.equals(other.bundleName))
+        return false;
+      if (loader == null) {
+        if (other.loader != null)
+          return false;
+      } else if (!loader.equals(other.loader))
+        return false;
+      if (locale == null) {
+        if (other.locale != null)
+          return false;
+      } else if ( locale != other.locale)
+        return false;
+      if (loaders == null) {
+        if (other.loaders != null)
+          return false;
+      } else if (!Arrays.equals(loaders, other.loaders))
+        return false;
+      return true;
+    }
+    
+  }
+  
+  private static final ThreadLocal<Map<Bid, ResourceBundle>> b_cache = 
+      ThreadLocal.withInitial(() -> new HashMap<>());
+  
+  
   /**
    * Localize a message to the default Locale.
    * 
@@ -110,14 +182,23 @@ public class I18nUtil {
           String aMessageKey, Object[] aArguments, ClassLoader aLoader) {
     try {
       if (aLoader == null) {
+        // get the constant, thread-safe, stack-climbing class loader
         aLoader = MsgLocalizationClassLoader.getMsgLocalizationClassLoader();        
       }
+      
+      final boolean is_stack_climbing_loader = aLoader == MsgLocalizationClassLoader.getMsgLocalizationClassLoader();
+
       // locate the resource bundle for this exception's messages
       String message;
       if (aResourceBundleName == null) {
         message = "Null ResourceBundle, key = \"" + aMessageKey + "\"";
       } else {
-        ResourceBundle bundle =  ResourceBundle.getBundle(aResourceBundleName, aLocale, aLoader);
+        ClassLoader[] cls = is_stack_climbing_loader ? Misc.getCallingClass_classLoaders() : null;
+        final ClassLoader final_aLoader = aLoader;
+        Bid cache_key = new Bid(aResourceBundleName, aLocale, aLoader, cls);        
+        ResourceBundle bundle =  b_cache.get().computeIfAbsent(cache_key,
+            (bid) -> 
+              ResourceBundle.getBundle(aResourceBundleName, aLocale, final_aLoader));
         message = bundle.getString(aMessageKey);
       }
       // if arguments exist, use MessageFormat to include them
@@ -133,11 +214,11 @@ public class I18nUtil {
   }
 
   public static void setTccl(ClassLoader tccl) {
-    MsgLocalizationClassLoader.CallClimbingClassLoader.originalTccl.set(tccl);
+    MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader.set(tccl);
   }
   
   public static void removeTccl() {
-    MsgLocalizationClassLoader.CallClimbingClassLoader.originalTccl.remove();
+    MsgLocalizationClassLoader.CallClimbingClassLoader.original_thread_context_class_loader.remove();
   }
     
 }
