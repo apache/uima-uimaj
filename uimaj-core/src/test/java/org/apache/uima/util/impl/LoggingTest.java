@@ -56,6 +56,9 @@ public class LoggingTest extends TestCase {
 
       // test base logging functions
       logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+
+      // https://issues.apache.org/jira/browse/UIMA-5719
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }
@@ -81,6 +84,9 @@ public class LoggingTest extends TestCase {
 
       // test base logging functions
       logger.log(Level.SEVERE, "Log test messege with Level SEVERE");
+      
+      // https://issues.apache.org/jira/browse/UIMA-5719
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
     } catch (Exception ex) {
       JUnitExtension.handleException(ex);
     }

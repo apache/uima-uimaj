@@ -149,16 +149,21 @@ public class Logger_impl extends Logger_common_impl {
   }
     
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
+    log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
+  }
+  
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String message, Throwable thrown) {
     if (mOut != null) {
       mOut.print(new Date());
       mOut.print(": " + level.toString() + ": ");
-      mOut.println(MessageFormat.format(message, args));
+      mOut.println(message);
       if (null != thrown) {
         thrown.printStackTrace(mOut);
       }
     }
   }
-  
+
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     if (mOut != null) {
       mOut.print(new Date());

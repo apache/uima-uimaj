@@ -155,6 +155,20 @@ public abstract class Logger_common_impl implements Logger {
                            String message, Object[] args, Throwable throwable);
   
   /**
+   * The version of the main log call implemented by subclasses that skips the substitution
+   *   because it already was done by rb() 
+   * 
+   * @param m the marker
+   * @param aFqcn the fully qualified class name of the top-most logging class used
+   *                   to filter the stack trace to get the caller class / method info
+   * @param level the UIMA level
+   * @param message -
+   * @param throwable - can be null
+   */
+  public abstract void log(Marker m, String aFqcn, Level level,
+                           String message, Throwable throwable);
+  
+  /**
    * @param level the Uima Level
    * @return the Marker to use
    */
@@ -178,7 +192,8 @@ public abstract class Logger_common_impl implements Logger {
    */
   @Override
   public void log(String aFqcn, Level level, String message, Throwable thrown) {
-    log(getMarkerForLevel(level), aFqcn, level, message, null, thrown);
+//    log(getMarkerForLevel(level), aFqcn, level, message, null, thrown);
+    log(getMarkerForLevel(level), aFqcn, level, message, thrown);
   }
   
   /**

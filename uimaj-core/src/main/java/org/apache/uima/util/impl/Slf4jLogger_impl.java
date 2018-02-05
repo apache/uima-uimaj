@@ -224,42 +224,48 @@ public class Slf4jLogger_impl extends Logger_common_impl {
   
   // does the uima-logger style of message formatting
   public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
-    m = (m == null) 
-          ? getMarkerForLevel(level) 
-          : m;
-          
-    if (isLocationCapable) {  // slf4j simple logger is not
-      ((org.slf4j.spi.LocationAwareLogger)logger).log(m, aFqcn, getSlf4jLevel(level), message, args, thrown);
-    } else {
-      switch(level.toInteger()) {
-      case Level.SEVERE_INT: 
-        // all of these calls to MessageFormat are to the java.text.MessageFormat
-        // to do {n} style format substitution
-        logger.error(m, MessageFormat.format(message, args), thrown); 
-        break;
-      case Level.WARNING_INT: 
-        logger.warn(m, MessageFormat.format(message, args), thrown); 
-        break;
-      case Level.INFO_INT: 
-        logger.info(m, MessageFormat.format(message, args), thrown); 
-        break;
-      case Level.CONFIG_INT: 
-        logger.info(m, MessageFormat.format(message, args), thrown); 
-        break;
-      case Level.FINE_INT: 
-        logger.debug(m, MessageFormat.format(message, args), thrown); 
-        break;
-      case Level.FINER_INT: 
-        logger.trace(m, MessageFormat.format(message, args), thrown); 
-        break;
-      case Level.FINEST_INT: 
-        logger.trace(m, MessageFormat.format(message, args), thrown); 
-        break;
-      default: Misc.internalError();
-      }
-    }
+    log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
   }
   
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String msg_with_params, Throwable thrown) {
+    m = (m == null) 
+        ? getMarkerForLevel(level) 
+        : m;
+        
+  if (isLocationCapable) {  // slf4j simple logger is not
+    ((org.slf4j.spi.LocationAwareLogger)logger).log(m, aFqcn, getSlf4jLevel(level), msg_with_params, null, thrown);
+  } else {
+    switch(level.toInteger()) {
+    case Level.SEVERE_INT: 
+      // all of these calls to MessageFormat are to the java.text.MessageFormat
+      // to do {n} style format substitution
+      logger.error(m, msg_with_params, thrown); 
+      break;
+    case Level.WARNING_INT: 
+      logger.warn(m, msg_with_params, thrown); 
+      break;
+    case Level.INFO_INT: 
+      logger.info(m, msg_with_params, thrown); 
+      break;
+    case Level.CONFIG_INT: 
+      logger.info(m, msg_with_params, thrown); 
+      break;
+    case Level.FINE_INT: 
+      logger.debug(m, msg_with_params, thrown); 
+      break;
+    case Level.FINER_INT: 
+      logger.trace(m, msg_with_params, thrown); 
+      break;
+    case Level.FINEST_INT: 
+      logger.trace(m, msg_with_params, thrown); 
+      break;
+    default: Misc.internalError();
+    }
+  }
+    
+  }
+
   // does the slf4j style of message formatting
   public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
     m = (m == null) 

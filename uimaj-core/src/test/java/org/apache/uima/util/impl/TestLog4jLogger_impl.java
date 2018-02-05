@@ -72,6 +72,8 @@ public class TestLog4jLogger_impl extends TestCase {
       classLogger.log(Level.INFO, "OLA in info");
 
       uimaLogger.log(Level.INFO, "UIMA OLA in info");
+      https://issues.apache.org/jira/browse/UIMA-5719
+      uimaLogger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
    }
 
    public void testIsLoggable() throws Exception {
@@ -287,6 +289,9 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.logException(null);
       
       assertEquals(16, nbrcalls[0]);  // all calls except those with null or "" msgs (including non-null throwable/exception)
+      // https://issues.apache.org/jira/browse/UIMA-5719
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
+      
      } finally {
        app.removeFilter(filter);
      }
@@ -423,6 +428,10 @@ public class TestLog4jLogger_impl extends TestCase {
       logger.log(Level.INFO, "message with \"{0}\"", "substitute");
       logger.info("message with \"{}\"", "substitute");  // new logger style
       logger.info("message with \"{}\"", new Object[] {"substitute"});  // new logger style
+      
+      // https://issues.apache.org/jira/browse/UIMA-5719
+      logger.logrb(Level.WARNING, "testClass", "testMethod", "org.apache.uima.impl.log_messages", "UIMA_external_override_ignored__CONFIG", new Object[] { "n1", "${abc}" });
+
 
    }
 }

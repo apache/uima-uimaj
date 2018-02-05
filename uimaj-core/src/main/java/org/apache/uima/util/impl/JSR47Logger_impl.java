@@ -261,10 +261,16 @@ public class JSR47Logger_impl extends Logger_common_impl {
   
 
   @Override
-  public void log(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {
+  public void log(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {    
+    if (isLoggable(level, m)) {
+      log(m, aFqcn, level, MessageFormat.format(msg, args), throwable);
+    }
+  }
+  
+  @Override
+  public void log(Marker m, String aFqcn, Level level, String msg, Throwable throwable) {
     if (isLoggable(level, m)) {    
-      LogRecord record = new LogRecord(getJSR47Level(level, m), 
-                                       MessageFormat.format(msg, args));
+      LogRecord record = new LogRecord(getJSR47Level(level, m), msg);
       record.setLoggerName(getName());
       record.setThrown(throwable);
       
@@ -297,6 +303,7 @@ public class JSR47Logger_impl extends Logger_common_impl {
       logger.log(record);
     }
   }
+
   
   @Override
   public void log2(Marker m, String aFqcn, Level level, String msg, Object[] args, Throwable throwable) {

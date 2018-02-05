@@ -303,9 +303,13 @@ public class Log4jLogger_impl extends Logger_common_impl {
    }
 
    public void log(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
-     String substituted = MessageFormat.format(message, args);  
-     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), substituted, zeroLengthArray, thrown);
+     log(m, aFqcn, level, MessageFormat.format(message, args), thrown);
    }  
+
+   @Override
+   public void log(Marker m, String aFqcn, Level level, String message, Throwable thrown) {
+     logger.logIfEnabled(aFqcn, getLog4jLevel(level), m(m), message, thrown);
+   }
 
    public void log2(Marker m, String aFqcn, Level level, String message, Object[] args, Throwable thrown) {
      if (thrown != null) {
