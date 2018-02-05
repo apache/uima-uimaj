@@ -55,6 +55,7 @@ import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMARuntimeException;
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.impl.BuiltinTypeKinds;
+import org.apache.uima.internal.util.MsgLocalizationClassLoader.CallStack;
 import org.apache.uima.internal.util.function.Runnable_withException;
 import org.apache.uima.util.Level;
 import org.apache.uima.util.Logger;
@@ -138,6 +139,29 @@ public class Misc {
   
   public static String formatcaller(String className, String methodName, int lineNumber) {
     return className.substring(1 + className.lastIndexOf('.')) + "." + methodName + "[" + lineNumber + "]";
+  }
+  
+  public static ClassLoader [] getCallingClass_classLoaders() {
+    
+   // get the call stack; "new" is needed to get the current context call stack
+    
+    final Class<?>[] cs = new CallStack().getCallStack();
+    // start at the caller of the caller's class loader
+    // cs[0] is getClassContext
+    // cs[1] is getCallStack
+    // cs[2] is this method, getCallingClass_classLoaders
+    ArrayList<ClassLoader> cls = new ArrayList<>();
+    for (int i = 3; i < cs.length; i++) {
+      Class<?> callingClass = cs[i];
+      ClassLoader cl = callingClass.getClassLoader();
+      if (null == cl) { // means system class loader
+        cl = ClassLoader.getSystemClassLoader();
+      }
+      if (! cls.contains(cl)) {
+        cls.add(cl);          
+      }
+    }
+    return cls.toArray(new ClassLoader[cls.size()]);
   }
 
   /**
@@ -1097,6 +1121,15 @@ public class Misc {
   static public boolean contains(String[] strings, String item) {
     for (String string: strings) {
       if (Misc.equalStrings(string,  item)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  static public boolean contains(ClassLoader[] cls, ClassLoader cl) {
+    for (ClassLoader item : cls) {
+      if (item == cl) {
         return true;
       }
     }
