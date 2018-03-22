@@ -30,7 +30,7 @@
   <body>
 <p>Implementation and Low-Level API for the CAS Interfaces.</p>
 <p>Internal APIs. Use these APIs at your own risk. APIs in this package are subject to change without notice, even in minor releases. Use of this package is not supported. If you think you have found a bug in this package, please try to reproduce it with the officially supported APIs before reporting it.</p>
-<hr />
+<hr>
 <h1>Internals documentation</h1>
 <p>NOTE: This documentation is plain HTML, generated from a WYSIWIG editor "tinymce".&nbsp;&nbsp; The way to work on this:&nbsp; after setting up a small web page with the tinymce (running from a local file), use the Tools - source code to cut/paste between this file's source and that editor.</p>
 <h2>Java Cover Objects</h2>
@@ -96,7 +96,7 @@
 <p><strong>SnapshotPointerIterator</strong> is a variant which creates a snapshot when the iterator is created, and then (ignoring any subsequent index updates) iterates over that.&nbsp; This iterator won't throw <strong><code>ConcurrentModificationException</code></strong>.</p>
 <p>The basic impls of IntIterator4bag/set/sorted are created by calls to pointerIterator; this method is implemented in each of the IntIterator4bag/set/sorted classes.</p>
 <p>The 2nd argument passed is a ref to this FSIndexRepositoryImpl's int[] used to detect concurrent modification exception.&nbsp; If null is passed, then no testing for this is done.&nbsp; This kind of call happens with the use of the <strong>refIterator()</strong> methods, which are used internally when it is known that the iteration will not be modifying the indexes in any way.</p>
-<hr />
+<hr>
 <p>Iterators which return Java cover object:</p>
 <p>&nbsp;</p>
 <ul>
