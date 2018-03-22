@@ -32,7 +32,7 @@
     <groupId>org.apache.uima</groupId>
     <artifactId>parent-pom</artifactId>
     <relativePath />
-    <version>10</version>
+    <version>11</version>
   </parent>
 
   <groupId>org.apache.uima</groupId>
@@ -193,7 +193,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
+          <version>3.0.0</version>
           <configuration>
             <source>${maven.compiler.source}</source>
             <javadocVersion>${maven.compiler.source}</javadocVersion> <!-- https://issues.apache.org/jira/browse/UIMA-5369 -->
@@ -212,6 +212,18 @@
               </configuration> 
             </execution>
           </executions>
+          <dependencies>
+            <!-- 
+              - The commons-lang3 3.5 used by default by the Javadoc plugin chokes on the
+              - Java 10 version string. Explicitly updating this plugin dependency works 
+              - around this problem until a new Javadoc plugin version has been released.
+              -->
+            <dependency>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-lang3</artifactId>
+              <version>3.7</version>
+            </dependency>
+          </dependencies>
         </plugin>
 
         <plugin>
@@ -268,35 +280,6 @@
     </plugins>
   </build>
   <profiles>
-    <!-- ************ Java 9 enablement ************** -->
-    <profile>
-      <id>java9</id>
-      <activation>
-        <jdk>9</jdk>
-      </activation>
-      <properties>
-        <maven.surefire.java9>--add-modules java.xml.bind</maven.surefire.java9>
-      </properties>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                <compilerArgs>
-                  <arg>--add-modules</arg>
-                  <arg>java.xml.bind</arg>
-                </compilerArgs>
-                <target>1.9</target>
-              </configuration>
-            </plugin>
-            
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-    
     <profile>
       <id>pmd</id>
       <build>
@@ -449,7 +432,7 @@
           <plugin>              
             <groupId>com.github.siom79.japicmp</groupId>
             <artifactId>japicmp-maven-plugin</artifactId>
-            <version>0.9.4</version>
+            <version>0.11.1</version>
             <configuration>
               <oldVersion>
                 <dependency>
@@ -472,6 +455,28 @@
                 </goals>
               </execution>
             </executions>
+            <dependencies>
+              <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.0</version>
+              </dependency>
+              <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>2.3.0</version>
+              </dependency>
+              <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.3.0</version>
+              </dependency>
+              <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>javax.activation-api</artifactId>
+                <version>1.2.0</version>
+              </dependency>
+            </dependencies>
           </plugin>
           
           <!-- This copy is to have the api change report included in the source distribution -->
