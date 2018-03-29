@@ -71,11 +71,11 @@ public class UimaBootstrap {
     URL[] urls = getUrls();
 //    URLClassLoader cl = new ParentFirstWithResourceClassLoader(urls);
 //    Thread.currentThread().setContextClassLoader(cl);
-    addUrlsToSystemLoader(urls);
+    ClassLoader myClassLoader = addUrlsToSystemLoader(urls);
     
     Class<?> classToLaunch = null;
     try {
-      classToLaunch = ClassLoader.getSystemClassLoader().loadClass(args[0]);
+      classToLaunch = myClassLoader.loadClass(args[0]);
     } catch (ClassNotFoundException e) {
      System.err.println("Cannot find class to launch");
      System.exit(1);
@@ -142,18 +142,20 @@ public class UimaBootstrap {
     urls.add(url);
   }
 
-  private static void addUrlsToSystemLoader(URL[] urls) throws IOException {
-    URLClassLoader systemClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-    try {
-       Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
-       method.setAccessible(true); // is normally "protected"
-       for (URL url : urls) {
-         method.invoke(systemClassLoader, new Object[]{url});
-       }
-    } catch (Throwable t) {
-       t.printStackTrace();
-       throw new IOException("Error, could not add URL to system classloader");
-    } 
+  private static ClassLoader addUrlsToSystemLoader(URL[] urls) throws IOException {
+    return new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
+    
+//    URLClassLoader systemClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+//    try {
+//       Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+//       method.setAccessible(true); // is normally "protected"
+//       for (URL url : urls) {
+//         method.invoke(systemClassLoader, new Object[]{url});
+//       }
+//    } catch (Throwable t) {
+//       t.printStackTrace();
+//       throw new IOException("Error, could not add URL to system classloader");
+//    } 
   }
   
   
