@@ -507,5 +507,41 @@
         </plugins>
       </build>
     </profile>
+    <!-- ************ Java 9+ enablement ************** -->
+    <profile>
+      <id>java9plus</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <properties>
+        <jaxb.version>2.3.0</jaxb.version>
+      </properties>
+      <dependencies>
+        <!-- 
+          - To avoid having to add the java.xml.bind module in Java 9 and higher, we simply
+          - directly add the corresponding dependencies. This seems to be the way to go
+          - anyway since java.xml.bind seems to be bound to be removed from future JDKs.
+          - See: https://stackoverflow.com/questions/43574426/how-to-resolve-java-lang-noclassdeffounderror-javax-xml-bind-jaxbexception-in-j/43574427
+          -->
+        <dependency>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+          <version>${jaxb.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-core</artifactId>
+          <version>${jaxb.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+          <version>${jaxb.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
+    </profile>  
   </profiles>
 </project>
