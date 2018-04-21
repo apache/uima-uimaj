@@ -61,6 +61,6 @@ public class DeleteFeatureStructureAction extends BaseSelectionListenerAction {
     FeatureStructureSelection featureStructures =
       new FeatureStructureSelection(getStructuredSelection());
 
-    editor.getDocument().removeFeatureStructures(featureStructures.toList());
+    editor.getDocument().removeFeatureStructures(featureStructures.getList());
   }
 }

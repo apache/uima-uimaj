@@ -769,7 +769,7 @@ final class EditViewPage extends Page implements ISelectionListener {
 
           // filter out selection which are cause by this view itself
           if (editView != part) {
-            viewer.setInput(fsSelection.toList().get(0));
+            viewer.setInput(fsSelection.getList().get(0));
           }
         }
       }

@@ -82,7 +82,7 @@ public class FeatureStructureSelection {
    *
    * @return all selected {@link FeatureStructure} objects
    */
-  public List<FeatureStructure> toList() {
+  public List<FeatureStructure> getList() {
     return mFeatureStructures;
   }
 
