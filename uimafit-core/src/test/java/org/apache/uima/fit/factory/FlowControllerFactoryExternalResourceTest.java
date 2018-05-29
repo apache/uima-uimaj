@@ -38,7 +38,7 @@
 
 package org.apache.uima.fit.factory;
 
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.apache.uima.fit.factory.FlowControllerFactory.createFlowControllerDescription;
 import static org.junit.Assert.assertNotNull;
 
@@ -65,7 +65,7 @@ public class FlowControllerFactoryExternalResourceTest {
     builder.setFlowControllerDescription(createFlowControllerDescription(
             TestFlowController.class,
             TestFlowController.PARAM_RESOURCE,
-            createExternalResourceDescription(TestExternalResource.class,
+            createResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
     AnalysisEngine aggregateEngine = builder.createAggregate();
     aggregateEngine.process(aggregateEngine.newCAS());

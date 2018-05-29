@@ -21,9 +21,9 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -110,8 +110,8 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
     bindResources(desc);
 
     // Bind external resources for DummyAE2 - necessary because autowiring is disabled
-    bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
-    bindExternalResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
+    bindResource(desc, DummyAE2.RES_INJECTED_POJO1, "pojoName1");
+    bindResource(desc, DummyAE2.RES_INJECTED_POJO2, "pojoName2");
 
     // Create a custom resource manager that allows to inject any Java object as an external
     // dependency
@@ -156,7 +156,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
 
   @Test
   public void testMultiBinding() throws Exception {
-    ExternalResourceDescription extDesc = createExternalResourceDescription(DummyResource.class);
+    ExternalResourceDescription extDesc = createResourceDescription(DummyResource.class);
 
     // Binding external resource to each Annotator individually
     AnalysisEngineDescription aed1 = createEngineDescription(MultiBindAE.class,
@@ -383,7 +383,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(ConfigurableDataResource.PARAM_EXTENSION);
       params.add(extension);
-      ExternalResourceDescription desc = ExternalResourceFactory.createNamedExternalResourceDescription(
+      ExternalResourceDescription desc = ExternalResourceFactory.createNamedResourceDescription(
               null, ConfigurableDataResource.class, params.toArray(new String[params.size()]));
       return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
     }
