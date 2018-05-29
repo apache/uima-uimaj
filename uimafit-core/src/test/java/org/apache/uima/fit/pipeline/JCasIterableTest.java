@@ -20,7 +20,7 @@ package org.apache.uima.fit.pipeline;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReaderDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.apache.uima.fit.pipeline.SimplePipeline.iteratePipeline;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -62,7 +62,7 @@ public class JCasIterableTest {
     ThreeDocsReader.resource = null;
     GetTextAE.resource = null;
     
-    ExternalResourceDescription res = createExternalResourceDescription(DummySharedResource.class);
+    ExternalResourceDescription res = createResourceDescription(DummySharedResource.class);
     for (@SuppressWarnings("unused") JCas jcas : iteratePipeline(
             createReaderDescription(ThreeDocsReader.class, "resource", res),
             createEngineDescription(GetTextAE.class, "resource", res))) {
@@ -93,10 +93,12 @@ public class JCasIterableTest {
       initTypeSystemCalled = true;
     }
           
+    @Override
     public Progress[] getProgress() {
       return new Progress[] { new ProgressImpl(n, N, "document") };
     }
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       return n < N;
     }

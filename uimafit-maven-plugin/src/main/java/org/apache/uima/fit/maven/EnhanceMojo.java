@@ -458,7 +458,7 @@ public class EnhanceMojo extends AbstractMojo {
       else if (ExternalResourceFactory.isExternalResourceField(field)) {
         type = "external resource";
         // Extract resource key from the uimaFIT annotation
-        pname = ExternalResourceFactory.createExternalResourceDependency(field).getKey();
+        pname = ExternalResourceFactory.createResourceDependency(field).getKey();
         // Extract JavaDoc for this resource from the source file
         pdesc = Util.getParameterDocumentation(aAST, field.getName(), 
                 resourceNameFields.get(pname));

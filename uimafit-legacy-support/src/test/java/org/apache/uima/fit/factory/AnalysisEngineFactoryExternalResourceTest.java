@@ -21,8 +21,9 @@ package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createSharedResourceDescription;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +64,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class,
             TestAnalysisEngineWithResource.PARAM_RESOURCE,
-            createExternalResourceDescription(TestExternalResource.class,
+            createResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE)));
 
     AnalysisEngine ae = createEngine(aeDesc);
@@ -75,7 +76,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testSharedInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
+    ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
 
@@ -107,12 +108,12 @@ public class AnalysisEngineFactoryExternalResourceTest {
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class,
             TestAnalysisEngineWithResource.PARAM_RESOURCE,
-            createExternalResourceDescription(
+            createResourceDescription(
                     TestExternalResource2.class,
                     TestExternalResource.PARAM_VALUE,
                     TestExternalResource.EXPECTED_VALUE,
                     TestExternalResource2.PARAM_RESOURCE,
-                    createExternalResourceDescription(TestExternalResource.class,
+                    createResourceDescription(TestExternalResource.class,
                             TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE))));
 
     AnalysisEngine ae = createEngine(aeDesc);
@@ -124,12 +125,12 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testSharedSimpleNesting() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
+    ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource2.class,
             TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE,
             TestExternalResource2.PARAM_RESOURCE,
-            createExternalResourceDescription(TestExternalResource.class,
+            createResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));
 
     AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
@@ -159,18 +160,18 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testDeeperNesting() throws Exception {
-    ExternalResourceDescription resDesc2 = createExternalResourceDescription(
+    ExternalResourceDescription resDesc2 = createResourceDescription(
             TestExternalResource.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
 
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
+    ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource2.class, TestExternalResource2.PARAM_RESOURCE, resDesc2,
             TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE);
 
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class,
             TestAnalysisEngineWithResource.PARAM_RESOURCE,
-            createExternalResourceDescription(TestExternalResource2.class,
+            createResourceDescription(TestExternalResource2.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE,
                     TestExternalResource2.PARAM_RESOURCE, resDesc)));
 
@@ -185,10 +186,10 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testSelfInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
+    ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource2.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
-    bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
+    bindResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
@@ -205,10 +206,10 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void resource_testDoubleSelfInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
+    ExternalResourceDescription resDesc = createResourceDescription(
             TestExternalResource2.class, TestExternalResource.PARAM_VALUE,
             TestExternalResource.EXPECTED_VALUE);
-    bindExternalResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
+    bindResource(resDesc, TestExternalResource2.PARAM_RESOURCE, resDesc);
 
     AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
             TestAnalysisEngineWithResource.class, TestAnalysisEngineWithResource.PARAM_RESOURCE,
@@ -238,7 +239,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE,
-            createExternalResourceDescription(TestSharedResourceObject.class, "http://dumm.my",
+            createSharedResourceDescription("http://dumm.my", TestSharedResourceObject.class,
                     TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE)));
 
     AnalysisEngine ae = createEngine(aeDesc);
@@ -250,8 +251,8 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void sharedObject_testSharedInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
-            TestSharedResourceObject.class, "http://dumm.my", TestSharedResourceObject.PARAM_VALUE,
+    ExternalResourceDescription resDesc = createSharedResourceDescription(
+            "http://dumm.my", TestSharedResourceObject.class, TestSharedResourceObject.PARAM_VALUE,
             TestSharedResourceObject.EXPECTED_VALUE);
 
     AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
@@ -279,10 +280,10 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void sharedObject_testSelfInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
-            TestSharedResourceObject2.class, "http://dumm.my",
+    ExternalResourceDescription resDesc = createSharedResourceDescription(
+            "http://dumm.my", TestSharedResourceObject2.class,
             TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
-    bindExternalResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
+    bindResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
 
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
@@ -322,6 +323,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     @ConfigurationParameter(name = ExternalResourceFactory.PARAM_RESOURCE_NAME)
     private String resourceName;
 
+    @Override
     public void afterResourcesInitialized() {
       System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
       // Ensure the External Resource is bound
@@ -332,6 +334,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
       assertConfiguredOk();
     }
 
+    @Override
     public String getResourceName() {
       return resourceName;
     }

@@ -39,7 +39,7 @@
 package org.apache.uima.fit.factory;
 
 import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDescription;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class CollectionReaderFactoryExternalResourceTest {
     CollectionReader reader = createReader(
             TestReader.class,
             TestReader.PARAM_RESOURCE,
-            createExternalResourceDescription(TestExternalResource.class,
+            createResourceDescription(TestExternalResource.class,
                     TestExternalResource.PARAM_VALUE, TestExternalResource.EXPECTED_VALUE));
 
     reader.hasNext();
@@ -74,16 +74,19 @@ public class CollectionReaderFactoryExternalResourceTest {
     @ExternalResource(key = PARAM_RESOURCE)
     private TestExternalResource resource;
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       assertNotNull(resource);
       resource.assertConfiguredOk();
       return false;
     }
 
+    @Override
     public void getNext(CAS aCAS) throws IOException, CollectionException {
       // This is never called
     }
 
+    @Override
     public Progress[] getProgress() {
       return new Progress[0];
     }

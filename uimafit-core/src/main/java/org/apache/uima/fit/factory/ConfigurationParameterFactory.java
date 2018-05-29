@@ -382,7 +382,7 @@ public final class ConfigurationParameterFactory {
       Object value = configurationData[i * 2 + 1];
 
       if (value == null
-              || ExternalResourceFactory.getExternalResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
+              || ExternalResourceFactory.getResourceParameterType(value) != ResourceValueType.NO_RESOURCE) {
         continue;
       }
 

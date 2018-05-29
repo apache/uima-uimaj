@@ -21,8 +21,8 @@ package org.apache.uima.fit.factory;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.createConfigurationData;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.ensureParametersComeInPairs;
 import static org.apache.uima.fit.factory.ConfigurationParameterFactory.setParameters;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDependencies;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createResourceDependencies;
 import static org.apache.uima.fit.factory.FsIndexFactory.createFsIndexCollection;
 import static org.apache.uima.fit.factory.ResourceCreationSpecifierFactory.createResourceCreationSpecifier;
 import static org.apache.uima.fit.factory.TypePrioritiesFactory.createTypePriorities;
@@ -655,7 +655,7 @@ public final class CollectionReaderFactory {
     // Extract ExternalResourceDescriptions from configurationData
     // <ParamterName, ExternalResourceDescription> will be stored in this map
     Map<String, ExternalResourceDescription> externalResources = ExternalResourceFactory
-            .extractExternalResourceParameters(configurationData);
+            .extractResourceParameters(configurationData);
 
     // Create description normally
     ConfigurationData cdata = createConfigurationData(configurationData);
@@ -827,12 +827,12 @@ public final class CollectionReaderFactory {
     }
 
     // Extract external resource dependencies
-    desc.setExternalResourceDependencies(createExternalResourceDependencies(readerClass));
+    desc.setExternalResourceDependencies(createResourceDependencies(readerClass));
 
     // Bind External Resources
     if (externalResources != null) {
       for (Entry<String, ExternalResourceDescription> e : externalResources.entrySet()) {
-        bindExternalResource(desc, e.getKey(), e.getValue());
+        bindResource(desc, e.getKey(), e.getValue());
       }
     }
 

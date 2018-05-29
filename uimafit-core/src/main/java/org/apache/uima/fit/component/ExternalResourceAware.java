@@ -30,7 +30,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 public interface ExternalResourceAware {
   /**
    * Get the name of the resource. This is set by
-   * {@link ExternalResourceFactory#bindExternalResource(org.apache.uima.resource.ResourceCreationSpecifier, String, org.apache.uima.resource.ExternalResourceDescription)
+   * {@link ExternalResourceFactory#bindResource(org.apache.uima.resource.ResourceCreationSpecifier, String, org.apache.uima.resource.ExternalResourceDescription)
    * bindExternalResource()} as the parameter {@link ExternalResourceFactory#PARAM_RESOURCE_NAME
    * PARAM_RESOURCE_NAME}. <br>
    * <b>It is mandatory that any resource implementing this interface declares the configuration
