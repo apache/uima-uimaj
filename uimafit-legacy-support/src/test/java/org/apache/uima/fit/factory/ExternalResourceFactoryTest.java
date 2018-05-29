@@ -383,7 +383,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(ConfigurableDataResource.PARAM_EXTENSION);
       params.add(extension);
-      ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
+      ExternalResourceDescription desc = ExternalResourceFactory.createNamedExternalResourceDescription(
               null, ConfigurableDataResource.class, params.toArray(new String[params.size()]));
       return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
     }

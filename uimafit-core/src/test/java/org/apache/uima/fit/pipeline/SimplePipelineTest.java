@@ -70,10 +70,12 @@ public class SimplePipelineTest {
       initTypeSystemCalled = true;
     }
     
+    @Override
     public Progress[] getProgress() {
       return null;
     }
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       assertTrue("typeSystemInit() has not been called", initTypeSystemCalled);
       return this.current < this.size;

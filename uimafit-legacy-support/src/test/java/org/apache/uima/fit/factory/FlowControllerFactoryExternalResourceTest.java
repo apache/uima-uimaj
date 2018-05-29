@@ -86,6 +86,7 @@ public class FlowControllerFactoryExternalResourceTest {
   }
 
   public static class TestFlowObject extends CasFlow_ImplBase {
+    @Override
     public Step next() throws AnalysisEngineProcessException {
       return new FinalStep();
     }

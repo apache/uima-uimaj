@@ -93,10 +93,12 @@ public class JCasIterableTest {
       initTypeSystemCalled = true;
     }
           
+    @Override
     public Progress[] getProgress() {
       return new Progress[] { new ProgressImpl(n, N, "document") };
     }
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       return n < N;
     }

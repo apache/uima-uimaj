@@ -23,6 +23,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalSharedResourceDescription;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
@@ -238,7 +239,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     AnalysisEngineDescription aeDesc = saveLoad(createEngineDescription(
             TestAnalysisEngineWithSharedResourceObject.class,
             TestAnalysisEngineWithSharedResourceObject.PARAM_RESOURCE,
-            createExternalResourceDescription(TestSharedResourceObject.class, "http://dumm.my",
+            createExternalSharedResourceDescription("http://dumm.my", TestSharedResourceObject.class,
                     TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE)));
 
     AnalysisEngine ae = createEngine(aeDesc);
@@ -250,8 +251,8 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void sharedObject_testSharedInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
-            TestSharedResourceObject.class, "http://dumm.my", TestSharedResourceObject.PARAM_VALUE,
+    ExternalResourceDescription resDesc = createExternalSharedResourceDescription(
+            "http://dumm.my", TestSharedResourceObject.class, TestSharedResourceObject.PARAM_VALUE,
             TestSharedResourceObject.EXPECTED_VALUE);
 
     AnalysisEngineDescription aeDesc1 = saveLoad(createEngineDescription(
@@ -279,8 +280,8 @@ public class AnalysisEngineFactoryExternalResourceTest {
    */
   @Test
   public void sharedObject_testSelfInjection() throws Exception {
-    ExternalResourceDescription resDesc = createExternalResourceDescription(
-            TestSharedResourceObject2.class, "http://dumm.my",
+    ExternalResourceDescription resDesc = createExternalSharedResourceDescription(
+            "http://dumm.my", TestSharedResourceObject2.class,
             TestSharedResourceObject.PARAM_VALUE, TestSharedResourceObject.EXPECTED_VALUE);
     bindExternalResource(resDesc, TestSharedResourceObject2.PARAM_RESOURCE, resDesc);
 
@@ -322,6 +323,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
     @ConfigurationParameter(name = ExternalResourceFactory.PARAM_RESOURCE_NAME)
     private String resourceName;
 
+    @Override
     public void afterResourcesInitialized() {
       System.out.println(getClass().getSimpleName() + ".afterResourcesInitialized()");
       // Ensure the External Resource is bound
@@ -332,6 +334,7 @@ public class AnalysisEngineFactoryExternalResourceTest {
       assertConfiguredOk();
     }
 
+    @Override
     public String getResourceName() {
       return resourceName;
     }

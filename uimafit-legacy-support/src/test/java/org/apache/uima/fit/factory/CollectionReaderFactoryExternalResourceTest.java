@@ -74,16 +74,19 @@ public class CollectionReaderFactoryExternalResourceTest {
     @ExternalResource(key = PARAM_RESOURCE)
     private TestExternalResource resource;
 
+    @Override
     public boolean hasNext() throws IOException, CollectionException {
       assertNotNull(resource);
       resource.assertConfiguredOk();
       return false;
     }
 
+    @Override
     public void getNext(CAS aCAS) throws IOException, CollectionException {
       // This is never called
     }
 
+    @Override
     public Progress[] getProgress() {
       return new Progress[0];
     }

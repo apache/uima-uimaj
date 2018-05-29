@@ -119,7 +119,7 @@ public final class ExternalResourceFactory {
    */
   public static ExternalResourceDescription createExternalResourceDescription(
           Class<? extends Resource> aInterface, Object... aParams) {
-    return createExternalResourceDescription(uniqueResourceKey(aInterface.getName()), aInterface,
+    return createNamedExternalResourceDescription(uniqueResourceKey(aInterface.getName()), aInterface,
             aParams);
   }
 
@@ -135,7 +135,7 @@ public final class ExternalResourceFactory {
    * @return the description.
    * @see CustomResourceSpecifier
    */
-  public static ExternalResourceDescription createExternalResourceDescription(final String aName,
+  public static ExternalResourceDescription createNamedExternalResourceDescription(final String aName,
           Class<? extends Resource> aInterface, Object... aParams) {
     ConfigurationParameterFactory.ensureParametersComeInPairs(aParams);
 
@@ -197,59 +197,59 @@ public final class ExternalResourceFactory {
 
   /**
    * Create an external resource description for a {@link SharedResourceObject}.
-   * 
-   * @param aInterface
-   *          the interface the resource should implement.
    * @param aUrl
    *          the URL from which the resource is initialized.
+   * @param aInterface
+   *          the interface the resource should implement.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * 
    * @return the description.
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createExternalResourceDescription(
-          Class<? extends SharedResourceObject> aInterface, String aUrl, Object... aParams) {
-    return createExternalResourceDescription(uniqueResourceKey(aInterface.getName()), aInterface,
+  public static ExternalResourceDescription createExternalSharedResourceDescription(
+          String aUrl, Class<? extends SharedResourceObject> aInterface, Object... aParams) {
+    return createNamedExternalResourceDescriptionUsingUrl(uniqueResourceKey(aInterface.getName()), aInterface,
             aUrl, aParams);
   }
 
   /**
    * Create an external resource description for a {@link SharedResourceObject}.
-   * 
-   * @param aInterface
-   *          the interface the resource should implement.
    * @param aUrl
    *          the URL from which the resource is initialized.
+   * @param aInterface
+   *          the interface the resource should implement.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * 
    * @return the description.
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createExternalResourceDescription(
-          Class<? extends SharedResourceObject> aInterface, URL aUrl, Object... aParams) {
-    return createExternalResourceDescription(uniqueResourceKey(aInterface.getName()), aInterface,
+  public static ExternalResourceDescription createExternalSharedResourceDescription(
+          URL aUrl, Class<? extends SharedResourceObject> aInterface, Object... aParams) {
+    return createNamedExternalResourceDescriptionUsingUrl(uniqueResourceKey(aInterface.getName()), aInterface,
             aUrl.toString(), aParams);
   }
 
   /**
    * Create an external resource description for a {@link SharedResourceObject}.
-   * 
-   * @param aInterface
-   *          the interface the resource should implement.
    * @param aFile
    *          the file from which the resource is initialized.
+   * @param aInterface
+   *          the interface the resource should implement.
    * @param aParams
    *          parameters passed to the resource when it is created.
+   * 
    * @return the description.
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createExternalResourceDescription(
-          Class<? extends SharedResourceObject> aInterface, File aFile, Object... aParams) {
+  public static ExternalResourceDescription createExternalSharedResourceDescription(
+          File aFile, Class<? extends SharedResourceObject> aInterface, Object... aParams) {
     try {
-      return createExternalResourceDescription(aInterface, aFile.toURI().toURL(), aParams);
+      return createExternalSharedResourceDescription(aFile.toURI().toURL(), aInterface, aParams);
     } catch (MalformedURLException e) {
       // This is something that usually cannot happen, so we degrade this to an
       // IllegalArgumentException which is a RuntimeException that does not need to be caught.
@@ -272,7 +272,7 @@ public final class ExternalResourceFactory {
    * @see ConfigurableDataResourceSpecifier
    * @see SharedResourceObject
    */
-  public static ExternalResourceDescription createExternalResourceDescription(final String aName,
+  public static ExternalResourceDescription createNamedExternalResourceDescriptionUsingUrl(final String aName,
           Class<? extends SharedResourceObject> aInterface, String aUrl, Object... aParams) {
     // Extract ExternalResourceDescriptions from configurationData
     List<ExternalResourceBinding> bindings = new ArrayList<ExternalResourceBinding>();
@@ -317,8 +317,8 @@ public final class ExternalResourceFactory {
    * @return the description.
    * @see FileResourceSpecifier
    */
-  public static ExternalResourceDescription createExternalResourceDescription(final String aName,
-          String aUrl) {
+  public static ExternalResourceDescription createNamedExternalFileResourceDescription(
+          final String aName, String aUrl) {
     ExternalResourceDescription extRes = new ExternalResourceDescription_impl();
     extRes.setName(aName);
     FileResourceSpecifier frs = new FileResourceSpecifier_impl();
@@ -540,7 +540,7 @@ public final class ExternalResourceFactory {
    */
   public static void bindResource(ResourceSpecifier aDesc, String aKey, String aUrl)
           throws InvalidXMLException {
-    ExternalResourceDescription extRes = createExternalResourceDescription(aKey, aUrl);
+    ExternalResourceDescription extRes = createNamedExternalFileResourceDescription(aKey, aUrl);
     bindResource(aDesc, aKey, extRes);
   }
 
@@ -588,7 +588,7 @@ public final class ExternalResourceFactory {
           ClassNotFoundException {
     // Appending a disambiguation suffix it possible to have multiple instances of the same
     // resource with different settings to different keys.
-    ExternalResourceDescription extRes = createExternalResourceDescription(
+    ExternalResourceDescription extRes = createNamedExternalResourceDescription(
             uniqueResourceKey(aRes.getName()), aRes, (Object[]) aParams);
     bindResource(aDesc, extRes);
   }
@@ -596,7 +596,6 @@ public final class ExternalResourceFactory {
   /**
    * Scan the given resource specifier for external resource dependencies and whenever a dependency
    * with a compatible type is found, the resource will be bound.
-   * 
    * @param aDesc
    *          a description.
    * @param aRes
@@ -611,10 +610,10 @@ public final class ExternalResourceFactory {
    *           if the resource implementation class or interface class could not be accessed
    * @see SharedResourceObject
    */
-  public static void bindResource(ResourceSpecifier aDesc,
+  public static void bindResourceUsingUrl(ResourceSpecifier aDesc,
           Class<? extends SharedResourceObject> aRes, String aUrl, Object... aParams)
           throws InvalidXMLException, ClassNotFoundException {
-    ExternalResourceDescription extRes = createExternalResourceDescription(
+    ExternalResourceDescription extRes = createNamedExternalResourceDescriptionUsingUrl(
             uniqueResourceKey(aRes.getName()), aRes, aUrl, aParams);
     bind((AnalysisEngineDescription) aDesc, extRes);
   }
@@ -637,10 +636,10 @@ public final class ExternalResourceFactory {
    *           if import resolution failed
    * @see SharedResourceObject
    */
-  public static void bindResource(ResourceSpecifier aDesc, Class<?> aApi,
+  public static void bindResourceUsingUrl(ResourceSpecifier aDesc, Class<?> aApi,
           Class<? extends SharedResourceObject> aRes, String aUrl, Object... aParams)
           throws InvalidXMLException {
-    bindResource(aDesc, aApi.getName(), aRes, aUrl, aParams);
+    bindResourceUsingUrl(aDesc, aApi.getName(), aRes, aUrl, aParams);
   }
 
   /**
@@ -661,10 +660,10 @@ public final class ExternalResourceFactory {
    *           if import resolution failed
    * @see SharedResourceObject
    */
-  public static void bindResource(ResourceSpecifier aDesc, String aKey,
+  public static void bindResourceUsingUrl(ResourceSpecifier aDesc, String aKey,
           Class<? extends SharedResourceObject> aRes, String aUrl, Object... aParams)
           throws InvalidXMLException {
-    ExternalResourceDescription extRes = createExternalResourceDescription(
+    ExternalResourceDescription extRes = createNamedExternalResourceDescriptionUsingUrl(
             uniqueResourceKey(aRes.getName()), aRes, aUrl, aParams);
     bind((AnalysisEngineDescription) aDesc, aKey, extRes);
   }
@@ -693,7 +692,7 @@ public final class ExternalResourceFactory {
 
     // Appending a disambiguation suffix it possible to have multiple instances of the same
     // resource with different settings to different keys.
-    ExternalResourceDescription extRes = createExternalResourceDescription(
+    ExternalResourceDescription extRes = createNamedExternalResourceDescription(
             uniqueResourceKey(aRes.getName()), aRes, (Object[]) aParams);
     bindResource(aDesc, aKey, extRes);
   }
@@ -880,7 +879,7 @@ public final class ExternalResourceFactory {
    * @throws InvalidXMLException
    *           if import resolution failed
    */
-  public static void createDependencyAndBind(AnalysisEngineDescription aDesc, String aKey,
+  public static void createDependencyAndBindUsingUrl(AnalysisEngineDescription aDesc, String aKey,
           Class<? extends SharedResourceObject> aImpl, String aUrl, Object... aParams)
           throws InvalidXMLException {
     if (aDesc.getExternalResourceDependency(aKey) == null) {
@@ -891,7 +890,7 @@ public final class ExternalResourceFactory {
       aDesc.setExternalResourceDependencies((ExternalResourceDependency[]) ArrayUtils.add(deps,
               createExternalResourceDependency(aKey, aImpl, false, null)));
     }
-    bindResource(aDesc, aKey, aImpl, aUrl, aParams);
+    bindResourceUsingUrl(aDesc, aKey, aImpl, aUrl, aParams);
   }
 
   /**

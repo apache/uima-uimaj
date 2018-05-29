@@ -24,7 +24,7 @@ import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindExternalResource;
 import static org.apache.uima.fit.factory.ExternalResourceFactory.bindResource;
-import static org.apache.uima.fit.factory.ExternalResourceFactory.createExternalResourceDescription;
+import static org.apache.uima.fit.factory.ExternalResourceFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -133,7 +133,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
   public void testAccessResourceFromAE() throws Exception {
     AnalysisEngine ae = createEngine(
             DummyAE3.class,
-            DummyAE3.RES_KEY_1, createExternalResourceDescription(
+            DummyAE3.RES_KEY_1, createNamedExternalResourceDescription(
                     "lala", AnnotatedResource.class,
                     AnnotatedResource.PARAM_VALUE, "1"));
 
@@ -654,7 +654,7 @@ public class ExternalResourceFactoryTest extends ComponentTestBase {
       List<String> params = new ArrayList<String>(Arrays.asList(aParams));
       params.add(AnnotatedDataResource.PARAM_EXTENSION);
       params.add(extension);
-      ExternalResourceDescription desc = ExternalResourceFactory.createExternalResourceDescription(
+      ExternalResourceDescription desc = ExternalResourceFactory.createNamedExternalResourceDescription(
               null, AnnotatedDataResource.class, params.toArray(new String[params.size()]));
       return (DataResource) UIMAFramework.produceResource(desc.getResourceSpecifier(), null);
     }
