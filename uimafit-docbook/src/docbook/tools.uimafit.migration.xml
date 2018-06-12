@@ -20,6 +20,19 @@
   <title>Migration Guide</title>
   <para>This section provides helpful information on incompatible changes between versions.</para>
   <section>
+    <title>Version 2.x to 3.x</title>
+    <formalpara>
+      <title>Legacy support module removed</title>
+      <para>The legacy support in uimaFIT 2.x was present allow being compatible with the
+      pre-Apache uimaFIT versions which were based on UIMA 2.x. Since uimaFIT 3.x is not 
+      compatible with UIMA 2.x anyway, the legacy module was removed now.</para>
+    </formalpara>
+    <formalpara>
+      <title>Version requirements</title>
+      <para>Depends on UIMA 3.0.0, Spring Framework 3.2.16 and Java 7.</para>
+    </formalpara>
+  </section>
+  <section>
     <title>Version 2.2.0 to 2.3.0</title>
     <formalpara>
       <title>CasIOUtil deprecated</title>
