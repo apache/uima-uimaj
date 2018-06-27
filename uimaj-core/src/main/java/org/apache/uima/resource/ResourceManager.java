@@ -381,7 +381,13 @@ public interface ResourceManager {
    * Frees all resources held by this ResourceManager, and marks the ResourceManager as having been destroyed.
    * A destroyed ResourceManager will throw an exception if an attempt is made to continue using it.
    * 
-   * Resources managed by a ResourceManager include all of the external shared Resources and a CAS Pool.
+   * Resources managed by a ResourceManager include all of the external shared Resources.
+   * If there is an extension class loader in use, it will be closed. 
+   * Any class loaders (including PEAR class loaders) that might use this as a parent will be
+   * affected by this closure.
+   * 
+   * Any streams opened using getResourceAsStream will also be closed.
+   * 
    * The Resources managed by this manager will have their destroy() methods called, as part of the
    * execution of this API.
    * 
