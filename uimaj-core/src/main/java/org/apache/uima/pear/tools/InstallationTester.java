@@ -21,7 +21,9 @@ package org.apache.uima.pear.tools;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.uima.UIMAException;
@@ -109,27 +111,67 @@ public class InstallationTester {
 
   public TestStatus doTest() throws IOException, InvalidXMLException,
           ResourceInitializationException {
-    if (uimaCategory.equals(UIMAUtil.ANALYSIS_ENGINE_CTG)) {
-      return testAnalysisEngine();
-    } else if (uimaCategory.equals(UIMAUtil.CAS_CONSUMER_CTG)) {
-      return testCasConsumer();
-    } else if (uimaCategory.equals(UIMAUtil.CAS_INITIALIZER_CTG)) {
-      return testCasInitializer();
-    } else if (uimaCategory.equals(UIMAUtil.COLLECTION_READER_CTG)) {
-      return testCollectionReader();
-    } else if (uimaCategory.equals(UIMAUtil.CPE_CONFIGURATION_CTG)) {
-      return testCpeCongifuration();
-    } else if (uimaCategory.equals(UIMAUtil.TYPE_SYSTEM_CTG)) {
+    
+    if (uimaCategory.equals(UIMAUtil.TYPE_SYSTEM_CTG)) {
       return testTypeSystem();
     }
+    
+    List<String> kinds = Arrays.asList(new String[] {UIMAUtil.ANALYSIS_ENGINE_CTG,
+                                UIMAUtil.CAS_CONSUMER_CTG,
+                                UIMAUtil.CAS_INITIALIZER_CTG,
+                                UIMAUtil.COLLECTION_READER_CTG,
+                                UIMAUtil.CPE_CONFIGURATION_CTG
+                                });
+    if ( ! kinds.contains(uimaCategory)) {
+      TestStatus status = new TestStatus();
+      status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
+              "installation_verification_type_not_detected", new Object[] { this.pkgBrowser
+                      .getInstallationDescriptor().getMainComponentId() }, null));
 
-    // create Test status object
-    TestStatus status = new TestStatus();
-    status.setMessage(I18nUtil.localizeMessage(PEAR_MESSAGE_RESOURCE_BUNDLE,
-            "installation_verification_type_not_detected", new Object[] { this.pkgBrowser
-                    .getInstallationDescriptor().getMainComponentId() }, null));
+      return status;
+    }
+    
+    // set system properties
+    setSystemProperties(this.pkgBrowser);
 
-    return status;
+    // create analysis engine
+    XMLInputSource xmlIn = null;
+    ResourceManager resource_manager = null;
+    
+
+    try {
+      xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
+      ResourceSpecifier specifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
+
+      resource_manager = getResourceManager(this.pkgBrowser);
+
+      TestStatus status = new TestStatus();
+      
+      if (uimaCategory.equals(UIMAUtil.ANALYSIS_ENGINE_CTG)) {
+        testAnalysisEngine(specifier, resource_manager, status);
+      } else if (uimaCategory.equals(UIMAUtil.CAS_CONSUMER_CTG)) {
+        testCasConsumer(specifier, resource_manager, status);
+      } else if (uimaCategory.equals(UIMAUtil.CAS_INITIALIZER_CTG)) {
+        testCasInitializer(specifier, resource_manager, status);
+      } else if (uimaCategory.equals(UIMAUtil.COLLECTION_READER_CTG)) {
+        testCollectionReader(specifier, resource_manager, status);
+      } else if (uimaCategory.equals(UIMAUtil.CPE_CONFIGURATION_CTG)) {
+        testCpeCongifuration(specifier, resource_manager, status);
+      } 
+      
+      // reset system properties
+      resetSystemProperties();
+  
+      // return status object
+      return status;
+    } finally {
+        if (xmlIn != null) {
+            xmlIn.close();
+        }        
+        if (resource_manager != null) {
+          resource_manager.destroy();
+        }
+    }
   }
 
   /**
@@ -186,14 +228,16 @@ public class InstallationTester {
     // reset system properties
     System.setProperties(this.systemProps);
   }
-
-  /**
+  
+   /**
    * Checks if a given analysis engine specifier file can be used to produce an instance of analysis
    * engine. Returns <code>true</code>, if an analysis engine can be instantiated,
    * <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if an AE can be instantiated, <code>false</code> otherwise.
-   * 
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -201,22 +245,21 @@ public class InstallationTester {
    * @throws ResourceInitializationException
    *           If the specified AE cannot be instantiated.
    */
-  private TestStatus testAnalysisEngine() throws IOException, InvalidXMLException,
-          ResourceInitializationException {
+  /**
+   * 
+   * @param specifier
+   * @param resource_manager
+   * @param status
+   * @throws IOException
+   * @throws InvalidXMLException
+   * @throws ResourceInitializationException
+   */
+  private void testAnalysisEngine(ResourceSpecifier specifier, 
+                                  ResourceManager resource_manager, 
+                                  TestStatus status) 
+                                      throws IOException, InvalidXMLException, ResourceInitializationException {
 
-    // set system properties
-    setSystemProperties(this.pkgBrowser);
-
-    // create analysis engine
-    XMLInputSource xmlIn = null;
-
-    try
-    {
-        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
-        ResourceSpecifier aeSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-
-        AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(aeSpecifier,
-                getResourceManager(this.pkgBrowser), null);
+        AnalysisEngine ae = UIMAFramework.produceAnalysisEngine(specifier, resource_manager, null);
         
         //create CAS from the analysis engine
         CAS cas = null;
@@ -224,9 +267,6 @@ public class InstallationTester {
           cas = ae.newCAS();
         }
         
-        // create Test status object
-        TestStatus status = new TestStatus();
-    
         //check test result
         if (ae != null && cas != null) {
           status.setRetCode(TestStatus.TEST_SUCCESSFUL);
@@ -236,29 +276,16 @@ public class InstallationTester {
                   "installation_verification_ae_not_created", new Object[] { this.pkgBrowser
                           .getInstallationDescriptor().getMainComponentId() }, null));
         }
-    
-        // reset system properties
-        this.resetSystemProperties();
-    
-        // return status object
-        return status;
-    }
-    finally
-    {
-        if (xmlIn != null)
-        {
-            xmlIn.close();
-        }
-    }
-
   }
 
   /**
    * Checks if a given CC specifier file can be used to produce an instance of CC. Returns
    * <code>true</code>, if a CC can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CC can be instantiated, <code>false</code> otherwise.
-   * 
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -266,22 +293,12 @@ public class InstallationTester {
    * @throws ResourceInitializationException
    *           If the specified CC cannot be instantiated.
    */
-  private TestStatus testCasConsumer() throws IOException, InvalidXMLException,
-          ResourceInitializationException {
-    // set system properties
-    setSystemProperties(this.pkgBrowser);
-
-    XMLInputSource xmlIn = null;
-
-    try
-    {
-        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor().getMainComponentDesc());
-        ResourceSpecifier ccSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-
-        CasConsumer cc = UIMAFramework.produceCasConsumer(ccSpecifier,
-                getResourceManager(this.pkgBrowser), null);
-        // create Test status object
-        TestStatus status = new TestStatus();
+  private void testCasConsumer(ResourceSpecifier specifier, 
+                               ResourceManager resource_manager, 
+                               TestStatus status) 
+                                         throws IOException, InvalidXMLException, ResourceInitializationException {
+ 
+        CasConsumer cc = UIMAFramework.produceCasConsumer(specifier, resource_manager, null);
     
         if (cc != null) {
           status.setRetCode(TestStatus.TEST_SUCCESSFUL);
@@ -291,27 +308,16 @@ public class InstallationTester {
                   "installation_verification_cc_not_created", new Object[] { this.pkgBrowser
                           .getInstallationDescriptor().getMainComponentId() }, null));
         }
-    
-        // reset system properties
-        this.resetSystemProperties();
-    
-        // return status object
-        return status;
-    }
-    finally
-    {
-        if (xmlIn != null)
-        {
-            xmlIn.close();
-        }
-    }
   }
 
   /**
    * Checks if a given CI specifier file can be used to produce an instance of CI. Returns
    * <code>true</code>, if a CI can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CI can be instantiated, <code>false</code> otherwise.
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -319,24 +325,13 @@ public class InstallationTester {
    * @throws ResourceInitializationException
    *           If the specified CI cannot be instantiated.
    */
-  private TestStatus testCasInitializer() throws IOException, InvalidXMLException,
-          ResourceInitializationException {
-    // set system properties
-    setSystemProperties(this.pkgBrowser);
+  private void testCasInitializer(ResourceSpecifier specifier, 
+                                  ResourceManager resource_manager, 
+                                  TestStatus status) 
+                                            throws IOException, InvalidXMLException, ResourceInitializationException {
 
-    XMLInputSource xmlIn = null;
+        CasInitializer ci = UIMAFramework.produceCasInitializer(specifier, resource_manager, null);
 
-    try
-    {
-        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-                .getMainComponentDesc());
-        ResourceSpecifier ciSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
-        
-        CasInitializer ci = UIMAFramework.produceCasInitializer(ciSpecifier,
-                getResourceManager(this.pkgBrowser), null);
-        // create Test status object
-        TestStatus status = new TestStatus();
-    
         if (ci != null) {
           status.setRetCode(TestStatus.TEST_SUCCESSFUL);
         } else {
@@ -345,27 +340,16 @@ public class InstallationTester {
                   "installation_verification_ci_not_created", new Object[] { this.pkgBrowser
                           .getInstallationDescriptor().getMainComponentId() }, null));
         }
-    
-        // reset system properties
-        this.resetSystemProperties();
-    
-        // return status object
-        return status;
-    }
-    finally
-    {
-        if (xmlIn != null)
-        {
-            xmlIn.close();
-        }
-    }
   }
 
   /**
    * Checks if a given CR specifier file can be used to produce an instance of CR. Returns
    * <code>true</code>, if a CR can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CR can be instantiated, <code>false</code> otherwise.
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -373,26 +357,13 @@ public class InstallationTester {
    * @throws ResourceInitializationException
    *           If the specified CR cannot be instantiated.
    */
-  private TestStatus testCollectionReader() throws IOException, InvalidXMLException,
-          ResourceInitializationException {
-    // set system properties
-    setSystemProperties(this.pkgBrowser);
-
-    XMLInputSource xmlIn = null;
-
-    try
-    {
-        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-                .getMainComponentDesc());
-        ResourceSpecifier crSpecifier = UIMAFramework.getXMLParser().parseResourceSpecifier(xmlIn);
+  private void testCollectionReader(ResourceSpecifier specifier, 
+                                    ResourceManager resource_manager, 
+                                    TestStatus status) 
+                                              throws IOException, InvalidXMLException, ResourceInitializationException {
+         CollectionReader cr = UIMAFramework.produceCollectionReader(specifier, resource_manager, null);
     
-        CollectionReader cr = UIMAFramework.produceCollectionReader(crSpecifier,
-                getResourceManager(this.pkgBrowser), null);
-    
-        // create Test status object
-        TestStatus status = new TestStatus();
-    
-        if (cr != null) {
+         if (cr != null) {
           status.setRetCode(TestStatus.TEST_SUCCESSFUL);
         } else {
           status.setRetCode(TestStatus.TEST_NOT_SUCCESSFUL);
@@ -400,28 +371,16 @@ public class InstallationTester {
                   "installation_verification_cr_not_created", new Object[] { this.pkgBrowser
                           .getInstallationDescriptor().getMainComponentId() }, null));
         }
-    
-        // reset system properties
-        this.resetSystemProperties();
-    
-        // return status object
-        return status;
-    }
-    finally
-    {
-        if (xmlIn != null)
-        {
-            xmlIn.close();
-        }
-    }
   }
 
   /**
    * Checks if a given CPE specifier file can be used to produce an instance of CPE. Returns
    * <code>true</code>, if a CPE can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CPE can be instantiated, <code>false</code> otherwise.
-   * 
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -429,24 +388,13 @@ public class InstallationTester {
    * @throws ResourceInitializationException
    *           If the specified CPE cannot be instantiated.
    */
-  private TestStatus testCpeCongifuration() throws IOException, InvalidXMLException,
-          ResourceInitializationException {
-    // set system properties
-    setSystemProperties(this.pkgBrowser);
-
-    XMLInputSource xmlIn = null;
-
-    try
-    {
-        xmlIn = new XMLInputSource(this.pkgBrowser.getInstallationDescriptor()
-                .getMainComponentDesc());
-        CpeDescription cpeDescription = UIMAFramework.getXMLParser().parseCpeDescription(xmlIn);
-    
+  private void testCpeCongifuration(ResourceSpecifier specifier, 
+                                    ResourceManager resource_manager, 
+                                    TestStatus status) 
+                                              throws IOException, InvalidXMLException, ResourceInitializationException {
+ 
         CollectionProcessingEngine cpe = UIMAFramework.produceCollectionProcessingEngine(
-                cpeDescription, getResourceManager(this.pkgBrowser), null);
-    
-        // create Test status object
-        TestStatus status = new TestStatus();
+                (CpeDescription) specifier, resource_manager, null);
     
         if (cpe != null) {
           status.setRetCode(TestStatus.TEST_SUCCESSFUL);
@@ -457,27 +405,13 @@ public class InstallationTester {
                           .getInstallationDescriptor().getMainComponentId() }, null));
         }
     
-        // reset system properties
-        this.resetSystemProperties();
-    
-        // return status object
-        return status;
-    }
-    finally
-    {
-        if (xmlIn != null)
-        {
-            xmlIn.close();
-        }
-    }
   }
 
   /**
    * Checks if a given TS specifier file can be used to create an instance of CAS. Returns
    * <code>true</code>, if a CAS can be created for a given TS, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CAS can be created for the given TS, <code>false</code>
-   *         otherwise.
+   * @return the result of the testing
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
