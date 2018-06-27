@@ -20,6 +20,7 @@
 package org.apache.uima.internal.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -77,6 +78,8 @@ public class UIMAClassLoader extends URLClassLoader {
   // not static
   final private Object[] syncLocks = new Object[nbrLocks];
 
+  private boolean isClosed = false;
+   
   /**
    * Transforms the string classpath to a URL array based classpath.
    * 
@@ -229,7 +232,7 @@ public class UIMAClassLoader extends URLClassLoader {
   
     }
   }
-
+  
   /* 
    * loads resource from this class loader first, if possible
    * (non-Javadoc)
@@ -237,12 +240,36 @@ public class UIMAClassLoader extends URLClassLoader {
    */
   @Override
   public URL getResource(String name) {
-    URL url = findResource(name);
     
-    if (null == url) {
-      url = super.getResource(name);
+    synchronized (syncLocks[name.hashCode() & (nbrLocks - 1)]) { // https://issues.apache.org/jira/browse/UIMA-5741
+      URL url = findResource(name);
+      
+      if (null == url) {
+        url = super.getResource(name);
+      }
+      return url;
     }
-    return url;
+  }
+  
+  /**
+   * The UIMA Class Loader extends URLClassLoader.  This kind of classloader supports
+   * the close() method.
+   * 
+   * When this class loader is closed, it remembers this.
+   *
+   * @return true if this class loader has been closed.
+   */
+  public boolean isClosed() {
+    return isClosed;
+  }
+
+  /* (non-Javadoc)
+   * @see java.net.URLClassLoader#close()
+   */
+  @Override
+  public void close() throws IOException {
+    isClosed = true;
+    super.close();
   }
   
 }
