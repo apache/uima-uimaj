@@ -100,7 +100,7 @@ public class ResourceManager_impl implements ResourceManager {
   protected static final String LOG_RESOURCE_BUNDLE = "org.apache.uima.impl.log_messages";
   
   protected static final Class<Resource> EMPTY_RESOURCE_CLASS = Resource.class;
-
+  
   private static final URL[] emptyURLarray = new URL[0]; 
 
   private AtomicBoolean isDestroyed = new AtomicBoolean(false);
@@ -895,6 +895,15 @@ public class ResourceManager_impl implements ResourceManager {
       if (r instanceof Resource) {
         ((Resource)r).destroy();
       }
+    }
+    
+    if (uimaCL != null) {
+      try {
+        uimaCL.close();
+      } catch (IOException e) {
+        UIMAFramework.getLogger().logrb(Level.WARNING, ResourceManager_impl.class.getName(),
+            "destroy", LOG_RESOURCE_BUNDLE, "UIMA_Classloader_close_exception", e);
+      }      
     }
     
     // no destroy of caspool at this time
