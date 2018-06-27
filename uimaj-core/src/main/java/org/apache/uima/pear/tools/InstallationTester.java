@@ -245,15 +245,6 @@ public class InstallationTester {
    * @throws ResourceInitializationException
    *           If the specified AE cannot be instantiated.
    */
-  /**
-   * 
-   * @param specifier
-   * @param resource_manager
-   * @param status
-   * @throws IOException
-   * @throws InvalidXMLException
-   * @throws ResourceInitializationException
-   */
   private void testAnalysisEngine(ResourceSpecifier specifier, 
                                   ResourceManager resource_manager, 
                                   TestStatus status) 
