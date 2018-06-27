@@ -234,14 +234,25 @@ public class InstallationTester {
    * engine. Returns <code>true</code>, if an analysis engine can be instantiated,
    * <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if an AE can be instantiated, <code>false</code> otherwise.
-   * 
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
    *           If the XML parser failed to parse the given input file.
    * @throws ResourceInitializationException
    *           If the specified AE cannot be instantiated.
+   */
+  /**
+   * 
+   * @param specifier
+   * @param resource_manager
+   * @param status
+   * @throws IOException
+   * @throws InvalidXMLException
+   * @throws ResourceInitializationException
    */
   private void testAnalysisEngine(ResourceSpecifier specifier, 
                                   ResourceManager resource_manager, 
@@ -271,8 +282,10 @@ public class InstallationTester {
    * Checks if a given CC specifier file can be used to produce an instance of CC. Returns
    * <code>true</code>, if a CC can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CC can be instantiated, <code>false</code> otherwise.
-   * 
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -301,7 +314,10 @@ public class InstallationTester {
    * Checks if a given CI specifier file can be used to produce an instance of CI. Returns
    * <code>true</code>, if a CI can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CI can be instantiated, <code>false</code> otherwise.
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -330,7 +346,10 @@ public class InstallationTester {
    * Checks if a given CR specifier file can be used to produce an instance of CR. Returns
    * <code>true</code>, if a CR can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CR can be instantiated, <code>false</code> otherwise.
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -358,8 +377,10 @@ public class InstallationTester {
    * Checks if a given CPE specifier file can be used to produce an instance of CPE. Returns
    * <code>true</code>, if a CPE can be instantiated, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CPE can be instantiated, <code>false</code> otherwise.
-   * 
+   * @param specifier the resource specifier
+   * @param resource_manager a new resource_manager
+   * @param status the place where to put the results
+   *
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
@@ -390,8 +411,7 @@ public class InstallationTester {
    * Checks if a given TS specifier file can be used to create an instance of CAS. Returns
    * <code>true</code>, if a CAS can be created for a given TS, <code>false</code> otherwise.
    * 
-   * @return <code>true</code>, if a CAS can be created for the given TS, <code>false</code>
-   *         otherwise.
+   * @return the result of the testing
    * @throws IOException
    *           If an I/O exception occurred while creating <code>XMLInputSource</code>.
    * @throws InvalidXMLException
