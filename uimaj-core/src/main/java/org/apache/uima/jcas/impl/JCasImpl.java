@@ -68,6 +68,7 @@ import org.apache.uima.cas.impl.LowLevelIndexRepository;
 import org.apache.uima.cas.impl.TypeImpl;
 import org.apache.uima.cas.impl.TypeSystemImpl;
 import org.apache.uima.cas.text.AnnotationIndex;
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.JFSIndexRepository;
@@ -1166,17 +1167,35 @@ public class JCasImpl extends AbstractCas_ImplBase implements AbstractCas, JCas 
   public static void clearData(CAS cas) {
     JCasImpl jcas = (JCasImpl) ((CASImpl) cas).getExistingJCas();
     final JCasSharedView sv = jcas.sharedView;
+    sv.stringArray0L = null;
+    sv.floatArray0L = null;
+    sv.fsArray0L = null;
+    sv.integerArray0L = null;
+
+//    JCasHashMap currentMap = sv.cAddr2JfsByClassLoader.get(  ((CASImpl) cas).getJCasClassLoader()  );
     for (Iterator<Map.Entry<ClassLoader, JCasHashMap>> it = sv.cAddr2JfsByClassLoader.entrySet().iterator(); it.hasNext();) {
       Map.Entry<ClassLoader, JCasHashMap> e = it.next();
-      sv.cAddr2Jfs = e.getValue();
-      sv.cAddr2Jfs.clear();  // implements resize as well
-      sv.stringArray0L = null;
-      sv.floatArray0L = null;
-      sv.fsArray0L = null;
-      sv.integerArray0L = null;
+      e.getValue().clear();  // implements resize as well
+      ClassLoader cl = e.getKey();
+      JCasHashMap jcas_hashmap = e.getValue();
+      jcas_hashmap.clear();
+      if (cl instanceof UIMAClassLoader) {
+        if (((UIMAClassLoader) cl).isClosed()) {
+          it.remove();
+          if (sv.cAddr2Jfs == jcas_hashmap) {
+            sv.cAddr2Jfs = null;
+          }
+        }            
+      }
+      
+//      sv.cAddr2Jfs = e.getValue();
+//      sv.cAddr2Jfs.clear();  // implements resize as well
+//      if (! e.getValue().equals(currentMap)) {
+//        it.remove();
+//      }
     }
-    sv.cAddr2Jfs = sv.cAddr2JfsByClassLoader
-        .get(((CASImpl) cas).getJCasClassLoader());
+//    sv.cAddr2Jfs = sv.cAddr2JfsByClassLoader
+//        .get(((CASImpl) cas).getJCasClassLoader());
   }
 
   /*
