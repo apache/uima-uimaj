@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -97,6 +98,7 @@ import org.apache.uima.internal.util.IntVector;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.internal.util.PositiveIntSet;
 import org.apache.uima.internal.util.PositiveIntSet_impl;
+import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.cas.AnnotationBase;
 import org.apache.uima.jcas.cas.BooleanArray;
@@ -575,8 +577,15 @@ public class CASImpl extends AbstractCas_ImplBase implements CAS, CASMgr, LowLev
       // pear caches
       id2tramp = null;
       id2base = null;
-      for (JCasHashMap m : cl2id2tramp.values()) {
-        m.clear();
+      for (Iterator<Entry<ClassLoader, JCasHashMap>> it = cl2id2tramp.entrySet().iterator(); it.hasNext();) {
+        Entry<ClassLoader, JCasHashMap> e = it.next();
+        ClassLoader cl = e.getKey();
+        e.getValue().clear();
+        if (cl instanceof UIMAClassLoader) {  // https://issues.apache.org/jira/browse/UIMA-5801
+          if (((UIMAClassLoader)cl).isClosed()) {
+            it.remove();
+          }
+        }
       }
 
       // index corruption avoidance
