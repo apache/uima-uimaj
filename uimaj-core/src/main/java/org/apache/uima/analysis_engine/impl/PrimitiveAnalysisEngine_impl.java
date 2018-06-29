@@ -42,6 +42,7 @@ import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.impl.UimaContext_ImplBase;
 import org.apache.uima.impl.Util;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.UUIDGenerator;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -208,16 +209,7 @@ public class PrimitiveAnalysisEngine_impl extends AnalysisEngineImplBase impleme
     // load annotator class
     Class<?> annotatorClass = null;
     try {
-      // get UIMA extension ClassLoader if available
-      final ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
-
-      if (cl != null) {
-        // use UIMA extension ClassLoader to load the class
-        annotatorClass = cl.loadClass(annotatorClassName);
-      } else {
-        // use application ClassLoader to load the class
-        annotatorClass = Class.forName(annotatorClassName);
-      }
+      annotatorClass = Class_TCCL.forName(annotatorClassName, getUimaContextAdmin().getResourceManager());
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(
               ResourceInitializationException.ANNOTATOR_CLASS_NOT_FOUND, new Object[] {

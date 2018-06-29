@@ -22,6 +22,7 @@ package org.apache.uima.impl;
 import java.util.Map;
 
 import org.apache.uima.ResourceFactory;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.CustomResourceSpecifier;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -43,22 +44,10 @@ public class CustomResourceFactory_impl implements ResourceFactory {
       String className = ((CustomResourceSpecifier)aSpecifier).getResourceClassName();
       //check additional params map for ResourceManager, and use the UIMA extension ClassLoader
       //if one exists
-      ClassLoader loader = null;
-      ResourceManager resMgr = null;
-      if (aAdditionalParams != null) {
-        resMgr = (ResourceManager)aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
-      }
-      if (resMgr != null) {
-        loader = resMgr.getExtensionClassLoader();
-      }
-      if (loader == null) {
-        loader = this.getClass().getClassLoader();
-      }
-      
       //load the Resourceclass
       Class<?> resourceClass;
       try {
-        resourceClass = Class.forName(className, true, loader);
+        resourceClass = Class_TCCL.forName(className, aAdditionalParams);
       } catch (ClassNotFoundException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,

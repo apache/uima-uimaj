@@ -26,6 +26,7 @@ import org.apache.uima.ResourceFactory;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -69,20 +70,8 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
       }
 
       // load class using UIMA Extension ClassLoader if there is one
-      ClassLoader cl = null;
-      ResourceManager resourceManager = null;
-      if (aAdditionalParams != null) {
-        resourceManager = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
-      }
-      if (resourceManager != null) {
-        cl = resourceManager.getExtensionClassLoader();
-      }
-      if (cl == null) {
-        cl = this.getClass().getClassLoader();
-      }
-
       try {
-        Class<?> implClass = Class.forName(className, true, cl);
+        Class<?> implClass = Class_TCCL.forName(className, aAdditionalParams);
 
         // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
         if (!BaseCollectionReader.class.isAssignableFrom(implClass)) {

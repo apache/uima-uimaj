@@ -29,6 +29,8 @@ package org.apache.uima.resource;
  */
 public interface ResourceManagerPearWrapper extends ResourceManager {
   /**
+   * N O T E :     N O   L O N G E R    U S E D    2018
+   * 
    * Pear Wrapper Resource Managers share all their values with their parent,
    * except for the 2 values used to store the Classpath and Datapath.
    * 

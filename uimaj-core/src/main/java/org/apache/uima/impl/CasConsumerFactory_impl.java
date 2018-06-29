@@ -27,6 +27,7 @@ import org.apache.uima.analysis_engine.impl.UimacppAnalysisEngineImpl;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.base_cpm.CasDataConsumer;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
@@ -65,21 +66,9 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         }
 
         // load class using UIMA Extension ClassLoader if there is one
-        ClassLoader cl = null;
         Class<?> implClass = null;
-        ResourceManager resourceManager = null;
-        if (aAdditionalParams != null) {
-          resourceManager = (ResourceManager) aAdditionalParams
-                  .get(Resource.PARAM_RESOURCE_MANAGER);
-        }
-        if (resourceManager != null) {
-          cl = resourceManager.getExtensionClassLoader();
-        }
-        if (cl == null) {
-          cl = this.getClass().getClassLoader();
-        }
         try {
-          implClass = Class.forName(className, true, cl);
+          implClass = Class_TCCL.forName(className, aAdditionalParams);
         } catch (ClassNotFoundException e) {
           throw new ResourceInitializationException(
                   ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,

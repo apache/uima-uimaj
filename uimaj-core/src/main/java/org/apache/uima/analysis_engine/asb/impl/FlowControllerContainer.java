@@ -41,6 +41,7 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.impl.Util;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -315,16 +316,7 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     // load FlowController class
     Class<?> flowControllerClass = null;
     try {
-      // get UIMA extension ClassLoader if available
-      ClassLoader cl = getUimaContextAdmin().getResourceManager().getExtensionClassLoader();
-
-      if (cl != null) {
-        // use UIMA extension ClassLoader to load the class
-        flowControllerClass = cl.loadClass(flowControllerClassName);
-      } else {
-        // use application ClassLoader to load the class
-        flowControllerClass = Class.forName(flowControllerClassName);
-      }
+      flowControllerClass = Class_TCCL.forName(flowControllerClassName, getUimaContextAdmin().getResourceManager());
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
               new Object[] { flowControllerClassName, aDescriptor.getSourceUrlString() }, e);
