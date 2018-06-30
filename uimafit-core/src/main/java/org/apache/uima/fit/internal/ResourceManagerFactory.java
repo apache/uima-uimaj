@@ -18,10 +18,13 @@
  */
 package org.apache.uima.fit.internal;
 
+import java.net.MalformedURLException;
+
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UimaContext;
 import org.apache.uima.UimaContextAdmin;
 import org.apache.uima.UimaContextHolder;
+import org.apache.uima.impl.UimaVersion;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.springframework.util.ClassUtils;
@@ -72,7 +75,25 @@ public class ResourceManagerFactory {
         // UIMA core still does not fall back to the context classloader in all cases.
         // This was the default behavior until uimaFIT 2.2.0.
         ResourceManager resMgr = UIMAFramework.newDefaultResourceManager();
-        resMgr.setExtensionClassLoader(ClassUtils.getDefaultClassLoader(), true);
+        
+        // Since UIMA Core version 2.10.3 and 3.0.1 the thread context classloader is taken
+        // into account by the core framework. Thus, we no longer have to explicitly set a
+        // classloader these or more recent versions. (cf. UIMA-5802)
+        short maj = UimaVersion.getMajorVersion();
+        short min = UimaVersion.getMinorVersion();
+        short rev = UimaVersion.getBuildRevision();
+        boolean uimaCoreIgnoresContextClassloader = 
+                (maj == 2 && (min < 10 || (min == 10 && rev < 3))) || // version < 2.10.3
+                (maj == 3 && ((min == 0 && rev < 1)));                // version < 3.0.1
+        if (uimaCoreIgnoresContextClassloader) {
+          try {
+            resMgr.setExtensionClassPath(ClassUtils.getDefaultClassLoader(), "", true);
+          }
+          catch (MalformedURLException e) {
+            throw new ResourceInitializationException(e);
+          }
+        }
+        
         return resMgr;
       }
     }
