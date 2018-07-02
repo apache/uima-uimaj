@@ -27,11 +27,11 @@ import org.apache.uima.analysis_engine.impl.UimacppAnalysisEngineImpl;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
 import org.apache.uima.collection.base_cpm.CasDataConsumer;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.uimacpp.UimacppAnalysisComponent;
 
 /**
@@ -66,16 +66,15 @@ public class CasConsumerFactory_impl implements ResourceFactory {
         }
 
         // load class using UIMA Extension ClassLoader if there is one
-        ClassLoader cl = null;
         Class<?> implClass = null;
-        ResourceManager resourceManager = null;
-        if (aAdditionalParams != null) {
-          resourceManager = (ResourceManager) aAdditionalParams
-                  .get(Resource.PARAM_RESOURCE_MANAGER);
+        try {
+          implClass = Class_TCCL.forName(className, aAdditionalParams);
+        } catch (ClassNotFoundException e) {
+          throw new ResourceInitializationException(
+                  ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { className,
+                      aSpecifier.getSourceUrlString() }, e);
         }
         
-        implClass = ResourceManager_impl.loadUserClassOrThrow(className, resourceManager, aSpecifier);
-
         // check to see if this is a subclass of Cas[Data]Consumer and of aResourceClass
         if (!CasConsumer.class.isAssignableFrom(implClass)
                 && !CasDataConsumer.class.isAssignableFrom(implClass)) {

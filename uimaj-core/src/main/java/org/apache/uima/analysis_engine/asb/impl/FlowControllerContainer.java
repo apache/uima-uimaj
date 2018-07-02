@@ -41,6 +41,7 @@ import org.apache.uima.flow.FlowControllerContext;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.flow.JCasFlow_ImplBase;
 import org.apache.uima.impl.Util;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.JmxMBeanAgent;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -213,13 +214,13 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
    * @throws AnalysisEngineProcessException
    *           if the FlowController failed
    */
-  public FlowContainer computeFlow(CAS aCAS) throws AnalysisEngineProcessException {
+  public FlowContainer computeFlow(final CAS aCAS) throws AnalysisEngineProcessException {
     mTimer.startIt();
     CAS view = null;
     UimaContext prevContext = setContextHolder();  // for use by POJOs
     try {
-      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());
-
+      // throws if _InitialView is mapped to non-existent sofa https://issues.apache.org/jira/browse/UIMA-5097
+      view = Util.getStartingView(aCAS, mSofaAware, getUimaContextAdmin().getComponentInfo());     
       // now get the right interface(e.g. CAS or JCAS)
       Class<? extends AbstractCas> requiredInterface = mFlowController.getRequiredCasInterface();
       AbstractCas casToPass = getCasManager().getCasInterface(view, requiredInterface);    
@@ -235,9 +236,9 @@ public class FlowControllerContainer extends ConfigurableResource_ImplBase {
     } catch (CASException e) {
       throw new AnalysisEngineProcessException(e);
     } finally {
+      aCAS.setCurrentComponentInfo(null); // https://issues.apache.org/jira/browse/UIMA-5097
       if (view != null) {
-        ((CASImpl)view).restoreClassLoaderUnlockCas();
-        view.setCurrentComponentInfo(null);
+        ((CASImpl)view).restoreClassLoaderUnlockCas();      
       }
       mTimer.stopIt();
       getMBean().reportAnalysisTime(mTimer.getDuration());

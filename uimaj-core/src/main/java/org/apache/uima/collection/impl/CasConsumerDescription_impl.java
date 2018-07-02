@@ -26,6 +26,7 @@ import org.apache.uima.Constants;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.collection.CasConsumer;
 import org.apache.uima.collection.CasConsumerDescription;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.impl.ResourceCreationSpecifier_impl;
@@ -86,9 +87,10 @@ public class CasConsumerDescription_impl extends ResourceCreationSpecifier_impl 
               new Object[] { getSourceUrlString() });
     }
     // try to load user class
+    // just UIMA extension ClassLoader if available
     Class<?> implClass;
     try {
-      implClass = aResourceManager.loadUserClass(getImplementationName());
+      implClass = Class_TCCL.forName(getImplementationName(), aResourceManager);
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
               new Object[] { getImplementationName(), getSourceUrlString() }, e);

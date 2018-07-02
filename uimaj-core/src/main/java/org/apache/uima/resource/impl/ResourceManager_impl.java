@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.UIMA_IllegalStateException;
 import org.apache.uima.analysis_engine.impl.AnalysisEngineImplBase;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.internal.util.UIMAClassLoader;
 import org.apache.uima.resource.CasManager;
 import org.apache.uima.resource.DataResource;
@@ -305,7 +306,7 @@ public class ResourceManager_impl implements ResourceManager {
   public synchronized void setExtensionClassPath(String classpath, boolean resolveResource)
           throws MalformedURLException {
     // create UIMA extension ClassLoader with the given classpath
-    uimaCL = new UIMAClassLoader(classpath, this.getClass().getClassLoader());
+    uimaCL = new UIMAClassLoader(classpath, Class_TCCL.get_parent_cl());
 
     if (resolveResource) {
       // set UIMA extension ClassLoader also to resolve resources
@@ -849,25 +850,17 @@ public class ResourceManager_impl implements ResourceManager {
   
   @Override
   public <N> Class<N> loadUserClass(String name) throws ClassNotFoundException {
-    ClassLoader cl = getExtensionClassLoader();
-    if (cl == null) {
-      cl = this.getClass().getClassLoader();
-    }
-    return (Class<N>) Class.forName(name, true, cl);
+    return Class_TCCL.forName(name, this, true);
   }
   
   public static Class<?> loadUserClass(String name, ResourceManager rm) throws ClassNotFoundException {
-    return (rm == null) 
-             ? Class.forName(name, true, ResourceManager_impl.class.getClassLoader())
-             : rm.loadUserClass(name);
+    return Class_TCCL.forName(name, rm, true);
   }
   
   public static Class<?> loadUserClassOrThrow(String name, ResourceManager rm, ResourceSpecifier aSpecifier) 
       throws ResourceInitializationException {
     try {
-      return (rm == null) 
-               ? Class.forName(name, true, ResourceManager_impl.class.getClassLoader())
-               : rm.loadUserClass(name);
+      return Class_TCCL.forName(name, rm, true);
     } catch (ClassNotFoundException e) {
       throw new ResourceInitializationException(
           ResourceInitializationException.CLASS_NOT_FOUND, new Object[] { name,

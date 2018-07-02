@@ -26,11 +26,11 @@ import org.apache.uima.ResourceFactory;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.collection.CollectionReader_ImplBase;
 import org.apache.uima.collection.base_cpm.BaseCollectionReader;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 import org.apache.uima.resource.ResourceSpecifier;
-import org.apache.uima.resource.impl.ResourceManager_impl;
 import org.apache.uima.resource.metadata.ProcessingResourceMetaData;
 
 /**
@@ -70,14 +70,8 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
       }
 
       // load class using UIMA Extension ClassLoader if there is one
-     
-      ResourceManager resourceManager = null;
-      if (aAdditionalParams != null) {
-        resourceManager = (ResourceManager) aAdditionalParams.get(Resource.PARAM_RESOURCE_MANAGER);
-      }
-      
       try {
-        Class<?> implClass = ResourceManager_impl.loadUserClassOrThrow(className, resourceManager, aSpecifier);
+        Class<?> implClass = Class_TCCL.forName(className, aAdditionalParams);
 
         // check to see if this is a subclass of BaseCollectionReader and of aResourceClass
         if (!BaseCollectionReader.class.isAssignableFrom(implClass)) {
@@ -107,6 +101,11 @@ public class CollectionReaderFactory_impl implements ResourceFactory {
                   ResourceInitializationException.ERROR_INITIALIZING_FROM_DESCRIPTOR, new Object[] {
                       className, aSpecifier.getSourceUrlString() });
         }
+      }
+      // if an exception occurs, log it but do not throw it... yet
+      catch (ClassNotFoundException e) {
+        throw new ResourceInitializationException(ResourceInitializationException.CLASS_NOT_FOUND,
+                new Object[] { className, aSpecifier.getSourceUrlString() }, e);
       } catch (IllegalAccessException e) {
         throw new ResourceInitializationException(
                 ResourceInitializationException.COULD_NOT_INSTANTIATE, new Object[] { className,
