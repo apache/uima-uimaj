@@ -61,6 +61,7 @@ import org.apache.uima.collection.CasInitializerDescription;
 import org.apache.uima.collection.CollectionReaderDescription;
 import org.apache.uima.flow.FlowControllerDescription;
 import org.apache.uima.internal.util.UIMAClassLoader;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.jcas.jcasgenp.MergerImpl;
 import org.apache.uima.resource.ResourceCreationSpecifier;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -1496,7 +1497,10 @@ public class MultiPageEditor extends FormEditor implements IUimaMultiPageEditor 
         // first arg in next is the parent of the class loader.  Make it be the
         //   uima framework's class loader (not this class's class loader)
         //   so the validation tests work properly (that test isAssignableFrom)
-        resourceManager.setExtensionClassPath(UIMAFramework.class.getClassLoader(), classPath, true);
+        resourceManager.setExtensionClassPath(
+            Class_TCCL.get_parent_cl(), // UIMAFramework.class.getClassLoader(), 
+            classPath, 
+            true);
         cachedRMclassPath = classPath;
         cachedRMcl = new SoftReference<UIMAClassLoader>((UIMAClassLoader) resourceManager.getExtensionClassLoader());
       }
