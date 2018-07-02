@@ -72,6 +72,7 @@ import org.apache.uima.collection.metadata.CpeDescriptorException;
 import org.apache.uima.collection.metadata.CpeResourceManagerConfiguration;
 import org.apache.uima.collection.metadata.CpeSofaMapping;
 import org.apache.uima.collection.metadata.CpeSofaMappings;
+import org.apache.uima.internal.util.Class_TCCL;
 import org.apache.uima.resource.ConfigurableResource_ImplBase;
 import org.apache.uima.resource.Resource;
 import org.apache.uima.resource.ResourceConfigurationException;
@@ -648,16 +649,7 @@ public class CPEFactory {
       } else {
         // String className = ((CasConsumerDescription) resourceSpecifier).getImplementationName();
         // load class using UIMA Extension ClassLoader if there is one
-        ClassLoader cl = null;
-        ResourceManager rm = getResourceManager();
-        if (rm != null) {
-          cl = rm.getExtensionClassLoader();
-        }
-        if (cl == null) {
-          cl = this.getClass().getClassLoader();
-        }
-        // Class currentClass = Class.forName(className, true, cl);
-        Class currentClass = Class.forName(implementationClass, true, cl);
+        Class currentClass = Class_TCCL.forName(implementationClass, getResourceManager());
 
         // check to see if this is a subclass of aResourceClass
         if (aResourceClass.isAssignableFrom(currentClass)) {
@@ -745,15 +737,7 @@ public class CPEFactory {
     try {
       className = ((CasInitializerDescription) aSpecifier).getImplementationName();
       // load class using UIMA Extension ClassLoader if there is one
-      ClassLoader cl = null;
-      ResourceManager rm = getResourceManager();
-      if (rm != null) {
-        cl = rm.getExtensionClassLoader();
-      }
-      if (cl == null) {
-        cl = this.getClass().getClassLoader();
-      }
-      Class currentClass = Class.forName(className, true, cl);
+      Class<?> currentClass = Class_TCCL.forName(className, getResourceManager());
       Object initializer = currentClass.newInstance();
       // check to see if this is a subclass of aResourceClass
       if (initializer instanceof CasInitializer) {
