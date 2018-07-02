@@ -1079,7 +1079,7 @@ public Object getLastCas() {
         }
 
         if ((filterExpression.getOperand() == null
-                && filterExpression.getOperand().getOperand() == null && !exists)
+                || filterExpression.getOperand().getOperand() == null || !exists)
                 || // this means that the feature must exist in CAS
                 ("!".equals(filterExpression.getOperand().getOperand()) && exists)) // this
         // means
