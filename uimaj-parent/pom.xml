@@ -145,7 +145,7 @@
      NON_BACKWARD_COMPATIBLE         - major version (+.0.0)
      -->
     <compat.level>BACKWARD_COMPATIBLE_USER</compat.level>
-    <compat.previous.version>2.10.1</compat.previous.version>
+    <compat.previous.version>2.10.2</compat.previous.version>
 
     <!-- 
      Configuring settings is best done through default properties that multiple plugins.
@@ -153,9 +153,6 @@
      properties already, they should be injected manually into the plugins. 
     -->    
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.surefire.heap>512m</maven.surefire.heap>
     <maven.surefire.argLine />
     <maven.surefire.java9 />
     
