@@ -50,6 +50,11 @@ public class CASRuntimeException extends UIMARuntimeException {
 	public static final String INAPPROP_RANGE = "INAPPROP_RANGE";
 	
 	/**
+	 * Wrong access method "getFeatureValue" for a feature "{0}" in a FeatureStructure with type "{1}" whose range is "{2}" which is not a featureStructure.
+	 */
+	public static final String INAPPROP_RANGE_NOT_FS = "INAPPROP_RANGE_NOT_FS";
+	
+	/**
 	 * Setting a reference value "{0}" from a string is not supported.
 	 */
 	 public static final String SET_REF_FROM_STRING_NOT_SUPPORTED = "SET_REF_FROM_STRING_NOT_SUPPORTED";

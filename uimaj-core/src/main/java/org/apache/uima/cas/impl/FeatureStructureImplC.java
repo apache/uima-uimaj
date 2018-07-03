@@ -36,7 +36,6 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.cas.FeatureStructure;
 import org.apache.uima.cas.SofaFS;
 import org.apache.uima.cas.Type;
-import org.apache.uima.cas.TypeSystem;
 import org.apache.uima.cas.impl.SlotKinds.SlotKind;
 import org.apache.uima.internal.util.Misc;
 import org.apache.uima.jcas.JCas;
@@ -836,6 +835,7 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
   @Override
   public TOP getFeatureValue(Feature feat) {
     if (IS_ENABLE_RUNTIME_FEATURE_VALIDATION) _Check_feature_defined_for_this_type(feat);
+    _check_feature_range_is_FeatureStructure(feat, this);
     return _getFeatureValueNc((FeatureImpl) feat);
   }
   
@@ -1674,6 +1674,14 @@ public class FeatureStructureImplC implements FeatureStructureImpl {
     if (!(((TypeImpl) (feat.getDomain()) ).subsumes(_typeImpl))) {
       /* Feature "{0}" is not defined for type "{1}". */
       throw new CASRuntimeException(CASRuntimeException.INAPPROP_FEAT, feat.getName(), _typeImpl.getName());
+    }
+  }
+  
+  private void _check_feature_range_is_FeatureStructure(Feature feat, FeatureStructureImplC fs) {
+    Type range = feat.getRange();
+    if (range.isPrimitive()) {
+      throw new CASRuntimeException(CASRuntimeException.INAPPROP_RANGE_NOT_FS,
+          feat.getName(), fs.getType().getName(), feat.getRange().getName() );
     }
   }
   

@@ -364,11 +364,12 @@ public class FeatureStructureTest extends TestCase {
 		}
 		assertTrue(caughtExc);
 		
+		// a "getter" test, not "setter" test, on purpose
     caughtExc = false;
     try {
       token.getFeatureValue(this.startFeature);
     } catch (CASRuntimeException e) {
-      assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
+      assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE_NOT_FS));
       caughtExc = true;
     }
     assertTrue(caughtExc);

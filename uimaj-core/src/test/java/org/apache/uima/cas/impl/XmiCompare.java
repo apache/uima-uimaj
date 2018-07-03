@@ -107,6 +107,14 @@ public class XmiCompare {
       if (args == null || args.length == 0) {
         d1 = Paths.get("some-explicit-coded-path/uv2-out-some-suffix");
         d2 = Paths.get("some-explicit-coded-path/uv2-out-some-other-suffix");
+        d1 = Paths.get("c:/a/t/ipd2018/uv2-out-b4-2");
+//        d2 = Paths.get("c:/a/t/ipd2018/uv2-out-b4");
+//        d1 = Paths.get("c:/a/t/ipd2018/uv2-out-measAnnot-fsiter-2c-getSurroundSent");
+        d2 = Paths.get("c:/a/t/ipd2018/uv2-out-measAnnot-fsiter-2d-getSurroundSent-partial");
+        
+        d1 = Paths.get("c:/a/t/ipd2018/uv2-out-b4");
+        d1 = Paths.get("c:/a/t/ipd2018/uv2-out-jp-merge-outer");
+        d2 = Paths.get("c:/a/t/ipd2018/uv2-out-jp-merge");
 
         
 //        skip = 725;  // optional skip amount
