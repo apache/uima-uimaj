@@ -363,6 +363,15 @@ public class FeatureStructureTest extends TestCase {
 			caughtExc = true;
 		}
 		assertTrue(caughtExc);
+		
+    caughtExc = false;
+    try {
+      token.getFeatureValue(this.startFeature);
+    } catch (CASRuntimeException e) {
+      assertTrue(e.getMessageKey().equals(CASRuntimeException.INAPPROP_RANGE));
+      caughtExc = true;
+    }
+    assertTrue(caughtExc);
 
 		assertTrue(token.getStringValue(this.lemmaFeat) == null);
 		String testString = "test";
