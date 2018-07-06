@@ -20,10 +20,8 @@
 package org.apache.uima.internal.util;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 import org.apache.uima.resource.Resource;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceManager;
 
 /**
